@@ -111,17 +111,17 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startVideoPlayerActivity);
 
-    this.viewModel.outputs.startCheckout()
+    this.viewModel.outputs.startCheckoutActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startCheckoutActivity);
 
-    this.viewModel.outputs.startManagePledge()
+    this.viewModel.outputs.startManagePledgeActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startManagePledge);
 
-    this.viewModel.outputs.startViewPledge()
+    this.viewModel.outputs.startViewPledgeActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startViewPledgeActivity);

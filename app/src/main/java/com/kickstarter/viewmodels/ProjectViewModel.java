@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -25,7 +24,6 @@ import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import java.net.CookieManager;
 
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
@@ -96,13 +94,13 @@ public interface ProjectViewModel {
     Observable<Project> startCommentsActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.CheckoutActivity}. */
-    Observable<Project> startCheckout();
+    Observable<Project> startCheckoutActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.CheckoutActivity} to manage the plege. */
-    Observable<Project> startManagePledge();
+    Observable<Project> startManagePledgeActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ViewPledgeActivity}. */
-    Observable<Project> startViewPledge();
+    Observable<Project> startViewPledgeActivity();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectActivity> implements ProjectAdapter.Delegate, Inputs, Outputs {
@@ -121,14 +119,14 @@ public interface ProjectViewModel {
       this.currentUser = environment.currentUser();
       this.sharedPreferences = environment.sharedPreferences();
 
-      // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
-      final Observable<RefTag> cookieRefTag = this.project
-        .take(1)
-        .map(p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences));
-
       final Observable<Project> initialProject = intent()
         .flatMap(i -> ProjectIntentMapper.project(i, this.client))
         .share();
+
+      // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
+      final Observable<RefTag> cookieRefTag = initialProject
+        .take(1)
+        .map(p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences));
 
       final Observable<RefTag> refTag = intent()
         .flatMap(ProjectIntentMapper::refTag);
@@ -157,11 +155,11 @@ public interface ProjectViewModel {
         .switchMap(this::starProject)
         .share();
 
-      initialProject
-        .mergeWith(projectOnUserChangeStar)
-        .mergeWith(starredProjectOnLoginSuccess)
-        .compose(bindToLifecycle())
-        .subscribe(this.project::onNext);
+      final Observable<Project> currentProject = Observable.merge(
+        initialProject,
+        projectOnUserChangeStar,
+        starredProjectOnLoginSuccess
+      );
 
       projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
         .filter(Project::isStarred)
@@ -174,20 +172,35 @@ public interface ProjectViewModel {
         .compose(bindToLifecycle())
         .subscribe(__ -> this.showLoginTout.onNext(null));
 
+      currentProject
+        .compose(combineLatestPair(this.currentConfig.observable()))
+        .map(pc -> Pair.create(pc.first, pc.second.countryCode()))
+        .subscribe(this.projectAndUserCountry::onNext);
+
+      this.playVideo = currentProject.compose(takeWhen(this.playVideoButtonClickedSubject));
+      this.showShareSheet = currentProject.compose(takeWhen(this.shareButtonClickedSubject));
+      this.startCampaignWebViewActivity = currentProject.compose(takeWhen(this.blurbTextViewClickedSubject));
+      this.startCheckoutActivity = currentProject.compose(takeWhen(this.backProjectButtonClickedSubject));
+      this.startCreatorBioWebViewActivity = currentProject.compose(takeWhen(this.creatorNameTextViewClickedSubject));
+      this.startCommentsActivity = currentProject.compose(takeWhen(this.commentsTextViewClickedSubject));
+      this.startManagePledgeActivity = currentProject.compose(takeWhen(this.managePledgeButtonClickedSubject));
+      this.startProjectUpdatesActivity = currentProject.compose(takeWhen(this.updatesTextViewClickedSubject));
+      this.startViewPledgeActivity = currentProject.compose(takeWhen(this.viewPledgeButtonClickedSubject));
+
       this.shareButtonClickedSubject
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackShowProjectShareSheet());
 
-      this.playVideoButtonClickedSubject
+      this.playVideo
         .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackVideoStart(this.project.getValue()));
+        .subscribe(this.koala::trackVideoStart);
 
       projectOnUserChangeStar
         .mergeWith(starredProjectOnLoginSuccess)
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackProjectStar);
 
-      Observable.combineLatest(refTag, cookieRefTag, this.project, ProjectViewModel.ViewModel.RefTagsAndProject::new)
+      Observable.combineLatest(refTag, cookieRefTag, currentProject, ProjectViewModel.ViewModel.RefTagsAndProject::new)
         .take(1)
         .compose(bindToLifecycle())
         .subscribe(data -> {
@@ -201,7 +214,8 @@ public interface ProjectViewModel {
             data.refTagFromIntent,
             RefTagUtils.storedCookieRefTagForProject(data.project, this.cookieManager, this.sharedPreferences)
           );
-        });
+        }
+      );
 
       pushNotificationEnvelope
         .take(1)
@@ -256,9 +270,18 @@ public interface ProjectViewModel {
     private final PublishSubject<Void> updatesTextViewClickedSubject = PublishSubject.create();
     private final PublishSubject<Void> viewPledgeButtonClickedSubject = PublishSubject.create();
 
-    private final BehaviorSubject<Project> project = BehaviorSubject.create();
+    private final Observable<Project> playVideo;
+    private final PublishSubject<Pair<Project, String>> projectAndUserCountry = PublishSubject.create();
     private final PublishSubject<Void> showLoginTout = PublishSubject.create();
+    private final Observable<Project> showShareSheet;
     private final PublishSubject<Void> showStarredPrompt = PublishSubject.create();
+    private final Observable<Project> startCampaignWebViewActivity;
+    private final Observable<Project> startCheckoutActivity;
+    private final Observable<Project> startCommentsActivity;
+    private final Observable<Project> startCreatorBioWebViewActivity;
+    private final Observable<Project> startManagePledgeActivity;
+    private final Observable<Project> startProjectUpdatesActivity;
+    private final Observable<Project> startViewPledgeActivity;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -319,40 +342,40 @@ public interface ProjectViewModel {
     }
 
     @Override public @NonNull Observable<Project> playVideo() {
-      return this.project.compose(takeWhen(this.playVideoButtonClickedSubject));
+      return this.playVideo;
     }
     @Override public @NonNull Observable<Pair<Project, String>> projectAndUserCountry() {
-      return this.project.compose(combineLatestPair(this.currentConfig.observable().map(Config::countryCode)));
+      return this.projectAndUserCountry;
     }
     @Override public @NonNull Observable<Project> startCampaignWebViewActivity() {
-      return this.project.compose(takeWhen(this.blurbTextViewClickedSubject));
+      return this.startCampaignWebViewActivity;
     }
     @Override public @NonNull Observable<Project> startCreatorBioWebViewActivity() {
-      return this.project.compose(takeWhen(this.creatorNameTextViewClickedSubject));
+      return this.startCreatorBioWebViewActivity;
     }
     @Override public @NonNull Observable<Project> startCommentsActivity() {
-      return this.project.compose(takeWhen(this.commentsTextViewClickedSubject));
+      return this.startCommentsActivity;
     }
     @Override public @NonNull Observable<Void> showLoginTout() {
       return this.showLoginTout;
     }
     @Override public @NonNull Observable<Project> showShareSheet() {
-      return this.project.compose(takeWhen(this.shareButtonClickedSubject));
+      return this.showShareSheet;
     }
     @Override public @NonNull Observable<Void> showStarredPrompt() {
       return this.showStarredPrompt;
     }
     @Override public @NonNull Observable<Project> startProjectUpdatesActivity() {
-      return this.project.compose(takeWhen(this.updatesTextViewClickedSubject));
+      return this.startProjectUpdatesActivity;
     }
-    @Override public @NonNull Observable<Project> startCheckout() {
-      return this.project.compose(takeWhen(this.backProjectButtonClickedSubject));
+    @Override public @NonNull Observable<Project> startCheckoutActivity() {
+      return this.startCheckoutActivity;
     }
-    @Override public @NonNull Observable<Project> startManagePledge() {
-      return this.project.compose(takeWhen(this.managePledgeButtonClickedSubject));
+    @Override public @NonNull Observable<Project> startManagePledgeActivity() {
+      return this.startManagePledgeActivity;
     }
-    @Override public @NonNull Observable<Project> startViewPledge() {
-      return this.project.compose(takeWhen(this.viewPledgeButtonClickedSubject));
+    @Override public @NonNull Observable<Project> startViewPledgeActivity() {
+      return this.startViewPledgeActivity;
     }
   }
 }

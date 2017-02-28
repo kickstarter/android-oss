@@ -165,17 +165,12 @@ public interface ProjectViewModel {
         starredProjectOnLoginSuccess
       );
 
-      projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
-        .filter(Project::isStarred)
-        .filter(Project::isLive)
-        .filter(p -> !p.isApproachingDeadline())
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.showStarredPrompt.onNext(null));
+      this.showStarredPrompt = projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
+        .filter(p -> p.isStarred() && p.isLive() && !p.isApproachingDeadline())
+        .compose(ignoreValues());
 
-      currentProject
-        .compose(combineLatestPair(this.currentConfig.observable().map(Config::countryCode)))
-        .compose(bindToLifecycle())
-        .subscribe(this.projectAndUserCountry::onNext);
+      this.projectAndUserCountry = currentProject
+        .compose(combineLatestPair(this.currentConfig.observable().map(Config::countryCode)));
 
       this.playVideo = currentProject.compose(takeWhen(this.playVideoButtonClicked));
       this.showShareSheet = currentProject.compose(takeWhen(this.shareButtonClicked));
@@ -271,10 +266,10 @@ public interface ProjectViewModel {
     private final PublishSubject<Void> viewPledgeButtonClicked = PublishSubject.create();
 
     private final Observable<Project> playVideo;
-    private final PublishSubject<Pair<Project, String>> projectAndUserCountry = PublishSubject.create();
+    private final Observable<Pair<Project, String>> projectAndUserCountry;
     private final Observable<Void> startLoginToutActivity;
     private final Observable<Project> showShareSheet;
-    private final PublishSubject<Void> showStarredPrompt = PublishSubject.create();
+    private final Observable<Void> showStarredPrompt;
     private final Observable<Project> startCampaignWebViewActivity;
     private final Observable<Project> startCheckoutActivity;
     private final Observable<Project> startCommentsActivity;

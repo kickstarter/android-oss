@@ -209,8 +209,7 @@ public interface ProjectViewModel {
             data.refTagFromIntent,
             RefTagUtils.storedCookieRefTagForProject(data.project, this.cookieManager, this.sharedPreferences)
           );
-        }
-      );
+        });
 
       pushNotificationEnvelope
         .take(1)

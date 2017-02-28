@@ -131,7 +131,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> this.showStarToast());
 
-    this.viewModel.outputs.showLoginTout()
+    this.viewModel.outputs.startLoginToutActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> this.startLoginToutActivity());

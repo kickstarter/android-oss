@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -27,6 +28,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
@@ -147,6 +149,8 @@ public interface ProjectViewModel {
         .switchMap(this::toggleProjectStar)
         .share();
 
+      this.startLoginToutActivity = loggedOutUserOnStarClick.compose(ignoreValues());
+
       final Observable<Project> starredProjectOnLoginSuccess = this.startLoginToutActivity
         .compose(combineLatestPair(this.currentUser.observable()))
         .filter(su -> su.second != null)
@@ -168,13 +172,8 @@ public interface ProjectViewModel {
         .compose(bindToLifecycle())
         .subscribe(__ -> this.showStarredPrompt.onNext(null));
 
-      loggedOutUserOnStarClick
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.startLoginToutActivity.onNext(null));
-
       currentProject
-        .compose(combineLatestPair(this.currentConfig.observable()))
-        .map(pc -> Pair.create(pc.first, pc.second.countryCode()))
+        .compose(combineLatestPair(this.currentConfig.observable().map(Config::countryCode)))
         .compose(bindToLifecycle())
         .subscribe(this.projectAndUserCountry::onNext);
 
@@ -273,7 +272,7 @@ public interface ProjectViewModel {
 
     private final Observable<Project> playVideo;
     private final PublishSubject<Pair<Project, String>> projectAndUserCountry = PublishSubject.create();
-    private final PublishSubject<Void> startLoginToutActivity = PublishSubject.create();
+    private final Observable<Void> startLoginToutActivity;
     private final Observable<Project> showShareSheet;
     private final PublishSubject<Void> showStarredPrompt = PublishSubject.create();
     private final Observable<Project> startCampaignWebViewActivity;

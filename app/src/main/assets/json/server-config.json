@@ -7287,6 +7287,7 @@
   },
   "features": {
     "elasticsearch": true,
+    "elasticsearch_sync": true,
     "elasticsearch_sync_diffs": true,
     "koala_tracking": true,
     "sns": true,
@@ -7501,7 +7502,7 @@
     }
   ],
   "ab_experiments": {
-    "koala_alt_frontend_tracking": "experimental",
+    "koala_alt_frontend_tracking": "control",
     "credit_card_input_placement": "control",
     "minimal_layout": "control",
     "lsi_vs_cf_recs": "control",

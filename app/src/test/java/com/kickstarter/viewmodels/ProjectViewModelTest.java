@@ -8,6 +8,7 @@ import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
@@ -32,7 +33,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
 
     projectTest.assertValues(project, project);
 
-    koalaTest.assertValues("Project Page");
+    koalaTest.assertValues(KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE);
   }
 
   @Test
@@ -47,7 +48,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment);
 
     final TestSubscriber<Void> loginToutTest = new TestSubscriber<>();
-    vm.outputs.showLoginTout().subscribe(loginToutTest);
+    vm.outputs.startLoginToutActivity().subscribe(loginToutTest);
 
     final TestSubscriber<Void> showStarredPromptTest = new TestSubscriber<>();
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
@@ -69,7 +70,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     loginToutTest.assertValueCount(1);
 
     // A koala event for starring should NOT be tracked
-    koalaTest.assertValues("Project Page");
+    koalaTest.assertValues(KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE);
 
     // Login
     currentUser.refresh(UserFactory.user());
@@ -79,7 +80,9 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     showStarredPromptTest.assertValueCount(1);
 
     // A koala event for starring should be tracked
-    koalaTest.assertValues("Project Page", "Project Star");
+    koalaTest.assertValues(
+      KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE, KoalaEvent.PROJECT_STAR, KoalaEvent.STARRED_PROJECT
+    );
   }
 
   @Test

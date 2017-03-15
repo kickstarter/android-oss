@@ -34,9 +34,8 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testCommentsViewModel_EmptyState() {
     final ApiClientType apiClient = new MockApiClient() {
-      @NonNull
       @Override
-      public Observable<CommentsEnvelope> fetchComments(final @NonNull Update update) {
+      public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update) {
         return Observable.empty();
       }
     };

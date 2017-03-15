@@ -106,10 +106,10 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startProjectUpdatesActivity);
 
-    this.viewModel.outputs.playVideo()
+    this.viewModel.outputs.startVideoActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::startVideoPlayerActivity);
+      .subscribe(this::startVideoActivity);
 
     this.viewModel.outputs.startCheckoutActivity()
       .compose(bindToLifecycle())
@@ -247,8 +247,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  private void startVideoPlayerActivity(final @NonNull Project project) {
-    final Intent intent = new Intent(this, VideoPlayerActivity.class)
+  private void startVideoActivity(final @NonNull Project project) {
+    final Intent intent = new Intent(this, VideoActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     startActivity(intent);
   }

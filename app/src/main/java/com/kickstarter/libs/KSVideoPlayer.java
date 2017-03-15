@@ -66,14 +66,10 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
   }
 
   @Override
-  public void onPlayWhenReadyCommitted() {
-
-  }
+  public void onPlayWhenReadyCommitted() {}
 
   @Override
-  public void onPlayerError(final @NonNull ExoPlaybackException error) {
-
-  }
+  public void onPlayerError(final @NonNull ExoPlaybackException error) {}
 
   /* ExoPlayer helpers */
   public long getCurrentPosition() {

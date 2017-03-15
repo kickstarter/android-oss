@@ -43,6 +43,7 @@ public final class ProjectFactory {
       .slug(slug)
       .updatedAt(DateTime.now())
       .urls(Project.Urls.builder().web(web).build())
+      .video(VideoFactory.video())
       .launchedAt(new DateTime().minusDays(10))
       .deadline(new DateTime().plusDays(10))
       .build();

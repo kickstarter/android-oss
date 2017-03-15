@@ -99,6 +99,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
     final ApiPaginator<Comment, CommentsEnvelope, Either<Project, Update>> paginator =
       ApiPaginator.<Comment, CommentsEnvelope, Either<Project, Update>>builder()
         .nextPage(nextPage)
+        .distinctUntilChanged(true)
         .startOverWith(startOverWith)
         .envelopeToListOfData(CommentsEnvelope::comments)
         .envelopeToMoreUrl(env -> env.urls().api().moreComments())

@@ -51,7 +51,7 @@ public class KSRendererBuilder implements RendererBuilder {
   @Override
   public void buildRenderers(final @NonNull KSVideoPlayer player) {
     final Allocator allocator = new DefaultAllocator(BUFFER_SEGMENT_SIZE);
-    final DataSource dataSource = new DefaultUriDataSource(context, videoLink);
+    final DataSource dataSource = new DefaultUriDataSource(context, null, videoLink, true);
     final ExtractorSampleSource sampleSource = new ExtractorSampleSource(Uri.parse(videoLink), dataSource,
       allocator, BUFFER_SEGMENT_COUNT * BUFFER_SEGMENT_SIZE);
 

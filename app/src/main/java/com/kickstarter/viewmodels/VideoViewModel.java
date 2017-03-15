@@ -8,7 +8,7 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.VideoPlayerActivity;
+import com.kickstarter.ui.activities.VideoActivity;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -20,7 +20,7 @@ public interface VideoViewModel {
     Observable<String> preparePlayerWithUrl();
   }
 
-  final class ViewModel extends ActivityViewModel<VideoPlayerActivity> implements Outputs {
+  final class ViewModel extends ActivityViewModel<VideoActivity> implements Outputs {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);

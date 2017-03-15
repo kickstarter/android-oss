@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresActivityViewModel(VideoViewModel.ViewModel.class)
-public final class VideoPlayerActivity extends BaseActivity<VideoViewModel.ViewModel> implements KSVideoPlayer.Listener {
+public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> implements KSVideoPlayer.Listener {
   private MediaController mediaController;
   private KSVideoPlayer player;
   private long playerPosition;

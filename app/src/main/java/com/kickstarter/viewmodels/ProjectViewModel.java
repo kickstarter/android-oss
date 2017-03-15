@@ -80,9 +80,6 @@ public interface ProjectViewModel {
     /** Emits when we should show the share sheet. */
     Observable<Project> showShareSheet();
 
-    /** Emits when we should play the video. */
-    Observable<Project> playVideo();
-
     /** Emits when we should start the campaign {@link com.kickstarter.ui.activities.WebViewActivity}. */
     Observable<Project> startCampaignWebViewActivity();
 
@@ -100,6 +97,9 @@ public interface ProjectViewModel {
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.CheckoutActivity} to manage the pledge. */
     Observable<Project> startManagePledgeActivity();
+
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.VideoActivity}. */
+    Observable<Project> startVideoActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ViewPledgeActivity}. */
     Observable<Project> startViewPledgeActivity();
@@ -172,7 +172,6 @@ public interface ProjectViewModel {
       this.projectAndUserCountry = currentProject
         .compose(combineLatestPair(this.currentConfig.observable().map(Config::countryCode)));
 
-      this.playVideo = currentProject.compose(takeWhen(this.playVideoButtonClicked));
       this.showShareSheet = currentProject.compose(takeWhen(this.shareButtonClicked));
       this.startCampaignWebViewActivity = currentProject.compose(takeWhen(this.blurbTextViewClicked));
       this.startCheckoutActivity = currentProject.compose(takeWhen(this.backProjectButtonClicked));
@@ -180,13 +179,14 @@ public interface ProjectViewModel {
       this.startCommentsActivity = currentProject.compose(takeWhen(this.commentsTextViewClicked));
       this.startManagePledgeActivity = currentProject.compose(takeWhen(this.managePledgeButtonClicked));
       this.startProjectUpdatesActivity = currentProject.compose(takeWhen(this.updatesTextViewClicked));
+      this.startVideoActivity = currentProject.compose(takeWhen(this.playVideoButtonClicked));
       this.startViewPledgeActivity = currentProject.compose(takeWhen(this.viewPledgeButtonClicked));
 
       this.shareButtonClicked
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackShowProjectShareSheet());
 
-      this.playVideo
+      this.startVideoActivity
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackVideoStart);
 
@@ -264,7 +264,6 @@ public interface ProjectViewModel {
     private final PublishSubject<Void> updatesTextViewClicked = PublishSubject.create();
     private final PublishSubject<Void> viewPledgeButtonClicked = PublishSubject.create();
 
-    private final Observable<Project> playVideo;
     private final Observable<Pair<Project, String>> projectAndUserCountry;
     private final Observable<Void> startLoginToutActivity;
     private final Observable<Project> showShareSheet;
@@ -275,6 +274,7 @@ public interface ProjectViewModel {
     private final Observable<Project> startCreatorBioWebViewActivity;
     private final Observable<Project> startManagePledgeActivity;
     private final Observable<Project> startProjectUpdatesActivity;
+    private final Observable<Project> startVideoActivity;
     private final Observable<Project> startViewPledgeActivity;
 
     public final Inputs inputs = this;
@@ -335,8 +335,8 @@ public interface ProjectViewModel {
       this.viewPledgeButtonClicked.onNext(null);
     }
 
-    @Override public @NonNull Observable<Project> playVideo() {
-      return this.playVideo;
+    @Override public @NonNull Observable<Project> startVideoActivity() {
+      return this.startVideoActivity;
     }
     @Override public @NonNull Observable<Pair<Project, String>> projectAndUserCountry() {
       return this.projectAndUserCountry;

@@ -162,4 +162,19 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     vm.inputs.updatesTextViewClicked();
     startProjectUpdatesActivity.assertValues(project);
   }
+
+  @Test
+  public void testProjectViewModel_StartVideoActivity() {
+    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment());
+    final Project project = ProjectFactory.project();
+
+    final TestSubscriber<Project> startVideoActivity = new TestSubscriber<>();
+    vm.outputs.startVideoActivity().subscribe(startVideoActivity);
+
+    // Start the view model with a project.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    vm.inputs.playVideoButtonClicked();
+    startVideoActivity.assertValues(project);
+  }
 }

@@ -33,8 +33,8 @@ public final class ApiPaginator<Data, Envelope, Params> {
   private final @NonNull Func1<Envelope, String> envelopeToMoreUrl;
   private final @NonNull Func1<List<Data>, List<Data>> pageTransformation;
   private final boolean clearWhenStartingOver;
-  private final boolean distinctUntilChanged;
   private final @NonNull Func2<List<Data>, List<Data>, List<Data>> concater;
+  private final boolean distinctUntilChanged;
 
   private final @NonNull PublishSubject<String> _morePath = PublishSubject.create();
   private final @NonNull PublishSubject<Boolean> _isFetching = PublishSubject.create();
@@ -62,8 +62,8 @@ public final class ApiPaginator<Data, Envelope, Params> {
     final @NonNull Func1<Envelope, String> envelopeToMoreUrl,
     final @NonNull Func1<List<Data>, List<Data>> pageTransformation,
     final boolean clearWhenStartingOver,
-    final boolean distinctUntilChanged,
-    final @NonNull Func2<List<Data>, List<Data>, List<Data>> concater
+    final @NonNull Func2<List<Data>, List<Data>, List<Data>> concater,
+    final boolean distinctUntilChanged
   ) {
     this.nextPage = nextPage;
     this.startOverWith = startOverWith;
@@ -89,8 +89,8 @@ public final class ApiPaginator<Data, Envelope, Params> {
     private Func1<Envelope, String> envelopeToMoreUrl;
     private Func1<List<Data>, List<Data>> pageTransformation;
     private boolean clearWhenStartingOver;
-    private boolean distinctUntilChanged;
     private Func2<List<Data>, List<Data>, List<Data>> concater = ListUtils::concat;
+    private boolean distinctUntilChanged;
 
     /**
      * [Required] An observable that emits whenever a new page of data should be loaded.
@@ -158,19 +158,19 @@ public final class ApiPaginator<Data, Envelope, Params> {
     }
 
     /**
-     * [Optional] Determines if the list of loaded data is should be distinct until changed.
-     */
-    public @NonNull Builder<Data, Envelope, Params> distinctUntilChanged(final boolean distinctUntilChanged) {
-      this.distinctUntilChanged = distinctUntilChanged;
-      return this;
-    }
-
-    /**
      * [Optional] Determines how two lists are concatenated together while paginating. A regular `ListUtils::concat` is probably
      * sufficient, but sometimes you may want `ListUtils::concatDistinct`
      */
     public @NonNull Builder<Data, Envelope, Params> concater(final @NonNull Func2<List<Data>, List<Data>, List<Data>> concater) {
       this.concater = concater;
+      return this;
+    }
+
+    /**
+     * [Optional] Determines if the list of loaded data is should be distinct until changed.
+     */
+    public @NonNull Builder<Data, Envelope, Params> distinctUntilChanged(final boolean distinctUntilChanged) {
+      this.distinctUntilChanged = distinctUntilChanged;
       return this;
     }
 
@@ -204,8 +204,8 @@ public final class ApiPaginator<Data, Envelope, Params> {
       }
 
       return new ApiPaginator<>(nextPage, startOverWith, envelopeToListOfData, loadWithParams,
-        loadWithPaginationPath, envelopeToMoreUrl, pageTransformation, clearWhenStartingOver, distinctUntilChanged,
-        concater);
+        loadWithPaginationPath, envelopeToMoreUrl, pageTransformation, clearWhenStartingOver, concater,
+        distinctUntilChanged);
     }
   }
 

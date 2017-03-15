@@ -148,7 +148,52 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testProjectViewMdoel_StartProjectUpdatesActivity() {
+  public void testProjectViewModel_StartCampaignWebViewActivity() {
+    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment());
+    final Project project = ProjectFactory.project();
+
+    final TestSubscriber<Project> startCampaignWebViewActivity = new TestSubscriber<>();
+    vm.outputs.startCampaignWebViewActivity().subscribe(startCampaignWebViewActivity);
+
+    // Start the view model with a project.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    vm.inputs.blurbTextViewClicked();
+    startCampaignWebViewActivity.assertValues(project);
+  }
+
+  @Test
+  public void testProjectViewModel_StartCreatorBioWebViewActivity() {
+    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment());
+    final Project project = ProjectFactory.project();
+
+    final TestSubscriber<Project> startCreatorBioWebViewActivity = new TestSubscriber<>();
+    vm.outputs.startCreatorBioWebViewActivity().subscribe(startCreatorBioWebViewActivity);
+
+    // Start the view model with a project.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    vm.inputs.creatorNameTextViewClicked();
+    startCreatorBioWebViewActivity.assertValues(project);
+  }
+
+  @Test
+  public void testProjectViewModel_StartCommentsActivity() {
+    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment());
+    final Project project = ProjectFactory.project();
+
+    final TestSubscriber<Project> startCommentsActivity = new TestSubscriber<>();
+    vm.outputs.startCommentsActivity().subscribe(startCommentsActivity);
+
+    // Start the view model with a project.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    vm.inputs.commentsTextViewClicked();
+    startCommentsActivity.assertValues(project);
+  }
+
+  @Test
+  public void testProjectViewModel_StartProjectUpdatesActivity() {
     final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment());
     final Project project = ProjectFactory.project();
 

@@ -38,10 +38,10 @@ public interface ProfileViewModel {
     Observable<User> user();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
-    Observable<Project> showProject();
+    Observable<Project> startProjectActivity();
 
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
-    Observable<Void> showDiscovery();
+    /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
+    Observable<Void> resumeDiscoveryActivity();
   }
 
   final class ViewModel extends ActivityViewModel<ProfileActivity> implements ProfileAdapter.Delegate, Inputs, Outputs {
@@ -106,10 +106,10 @@ public interface ProfileViewModel {
     @Override public @NonNull Observable<User> user() {
       return this.currentUser.loggedInUser();
     }
-    @Override public @NonNull Observable<Project> showProject() {
+    @Override public @NonNull Observable<Project> startProjectActivity() {
       return this.showProject;
     }
-    @Override public @NonNull Observable<Void> showDiscovery() {
+    @Override public @NonNull Observable<Void> resumeDiscoveryActivity() {
       return this.showDiscovery;
     }
   }

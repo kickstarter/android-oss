@@ -72,15 +72,15 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadProjects);
 
-    viewModel.outputs.showProject()
+    viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startProjectActivity);
 
-    viewModel.outputs.showDiscovery()
+    viewModel.outputs.resumeDiscoveryActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> startDiscoveryActivity());
+      .subscribe(__ -> resumeDiscoveryActivity());
   }
 
   @Override
@@ -136,7 +136,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
     }
   }
 
-  private void startDiscoveryActivity() {
+  private void resumeDiscoveryActivity() {
     ApplicationUtils.resumeDiscoveryActivity(this);
   }
 

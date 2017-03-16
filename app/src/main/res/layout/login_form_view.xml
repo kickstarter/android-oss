@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="fill_parent"
-  android:gravity="center_horizontal">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    tools:showIn="@layout/login_layout">
 
   <android.support.design.widget.TextInputLayout
     app:hintTextAppearance="@style/BodySecondary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_2">
+    android:layout_marginTop="@dimen/grid_2"
+    android:hint="@string/login_placeholder_email" >
 
-    <EditText
+    <android.support.design.widget.TextInputEditText
       android:id="@+id/email"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:inputType="textEmailAddress"
       android:maxLines="1"
-      style="@style/SubheadPrimary"
-      android:hint="@string/login_placeholder_email" />
+      style="@style/SubheadPrimary"/>
 
   </android.support.design.widget.TextInputLayout>
 
@@ -28,16 +30,17 @@
     app:hintTextAppearance="@style/BodySecondary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_1">
+    android:layout_marginTop="@dimen/grid_1"
+    android:hint="@string/login_placeholder_password"
+    app:passwordToggleEnabled="true">
 
-    <EditText
+    <android.support.design.widget.TextInputEditText
       android:id="@+id/password"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/grid_2"
       android:inputType="textPassword"
-      style="@style/SubheadPrimary"
-      android:hint="@string/login_placeholder_password" />
+      style="@style/SubheadPrimary" />
 
   </android.support.design.widget.TextInputLayout>
 

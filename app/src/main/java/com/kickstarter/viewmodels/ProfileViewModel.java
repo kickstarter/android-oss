@@ -2,10 +2,10 @@ package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -16,8 +16,6 @@ import com.kickstarter.ui.activities.ProfileActivity;
 import com.kickstarter.ui.adapters.ProfileAdapter;
 import com.kickstarter.ui.viewholders.EmptyProfileViewHolder;
 import com.kickstarter.ui.viewholders.ProfileCardViewHolder;
-import com.kickstarter.viewmodels.inputs.ProfileViewModelInputs;
-import com.kickstarter.viewmodels.outputs.ProfileViewModelOutputs;
 
 import java.util.List;
 
@@ -25,76 +23,94 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ProfileViewModel extends ActivityViewModel<ProfileActivity> implements ProfileAdapter.Delegate, ProfileViewModelInputs, ProfileViewModelOutputs {
-  private final ApiClientType client;
-  private final CurrentUserType currentUser;
+public interface ProfileViewModel {
 
-  // INPUTS
-  private final PublishSubject<Void> nextPage = PublishSubject.create();
-  public void nextPage() {
-    nextPage.onNext(null);
+  interface Inputs {
+    /** Call when the next page has been invoked. */
+    void nextPage();
   }
 
-  // OUTPUTS
-  private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
-  @Override public Observable<List<Project>> projects() {
-    return projects;
-  }
-  @Override public Observable<User> user() {
-    return currentUser.loggedInUser();
-  }
-  private final PublishSubject<Project> showProject = PublishSubject.create();
-  @Override
-  public Observable<Project> showProject() {
-    return showProject;
-  }
-  private final PublishSubject<Void> showDiscovery = PublishSubject.create();
-  @Override
-  public Observable<Void> showDiscovery() {
-    return showDiscovery;
+  interface Outputs {
+    /** Emits a list of projects to display in the profile. */
+    Observable<List<Project>> projects();
+
+    /** Emits the user to display in the profile. */
+    Observable<User> user();
+
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
+    Observable<Project> showProject();
+
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
+    Observable<Void> showDiscovery();
   }
 
-  public final ProfileViewModelInputs inputs = this;
-  public final ProfileViewModelOutputs outputs = this;
+  final class ViewModel extends ActivityViewModel<ProfileActivity> implements ProfileAdapter.Delegate, Inputs, Outputs {
+    private final ApiClientType client;
+    private final CurrentUserType currentUser;
 
-  public ProfileViewModel(final @NonNull Environment environment) {
-    super(environment);
+    public ViewModel(final @NonNull Environment environment) {
+      super(environment);
 
-    client = environment.apiClient();
-    currentUser = environment.currentUser();
+      this.client = environment.apiClient();
+      this.currentUser = environment.currentUser();
 
-    final Observable<User> freshUser = client.fetchCurrentUser()
-      .retry(2)
-      .compose(Transformers.neverError());
-    freshUser.subscribe(currentUser::refresh);
+      final Observable<User> freshUser = this.client.fetchCurrentUser()
+        .retry(2)
+        .compose(Transformers.neverError());
+      freshUser.subscribe(this.currentUser::refresh);
 
-    final DiscoveryParams params = DiscoveryParams.builder()
-      .backed(1)
-      .perPage(18)
-      .sort(DiscoveryParams.Sort.ENDING_SOON)
-      .build();
-
-    final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
-      ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
-        .nextPage(nextPage)
-        .envelopeToListOfData(DiscoverEnvelope::projects)
-        .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
-        .loadWithParams(__ -> client.fetchProjects(params))
-        .loadWithPaginationPath(client::fetchProjects)
+      final DiscoveryParams params = DiscoveryParams.builder()
+        .backed(1)
+        .perPage(18)
+        .sort(DiscoveryParams.Sort.ENDING_SOON)
         .build();
 
-    paginator.paginatedData()
-      .compose(bindToLifecycle())
-      .subscribe(projects::onNext);
+      final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
+        ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
+          .nextPage(this.nextPage)
+          .envelopeToListOfData(DiscoverEnvelope::projects)
+          .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
+          .loadWithParams(__ -> this.client.fetchProjects(params))
+          .loadWithPaginationPath(this.client::fetchProjects)
+          .build();
 
-    koala.trackProfileView();
-  }
+      paginator.paginatedData()
+        .compose(bindToLifecycle())
+        .subscribe(this.projects::onNext);
 
-  public void profileCardViewHolderClicked(final @NonNull ProfileCardViewHolder viewHolder, final @NonNull Project project) {
-    this.showProject.onNext(project);
-  }
+      this.koala.trackProfileView();
+    }
 
-  public void emptyProfileViewHolderExploreProjectsClicked(final @NonNull EmptyProfileViewHolder viewHolder) {
-    this.showDiscovery.onNext(null);
+    private final PublishSubject<Void> nextPage = PublishSubject.create();
+
+    private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
+    private final PublishSubject<Project> showProject = PublishSubject.create();
+    private final PublishSubject<Void> showDiscovery = PublishSubject.create();
+
+    public final ProfileViewModel.Inputs inputs = this;
+    public final ProfileViewModel.Outputs outputs = this;
+
+    @Override public void nextPage() {
+      this.nextPage.onNext(null);
+    }
+    @Override public void profileCardViewHolderClicked(final @NonNull ProfileCardViewHolder viewHolder, final @NonNull Project project) {
+      this.showProject.onNext(project);
+    }
+    @Override public void emptyProfileViewHolderExploreProjectsClicked(final @NonNull EmptyProfileViewHolder viewHolder) {
+      this.showDiscovery.onNext(null);
+    }
+
+    @Override public @NonNull Observable<List<Project>> projects() {
+      return this.projects;
+    }
+    @Override public @NonNull Observable<User> user() {
+      return this.currentUser.loggedInUser();
+    }
+    @Override public @NonNull Observable<Project> showProject() {
+      return this.showProject;
+    }
+    @Override public @NonNull Observable<Void> showDiscovery() {
+      return this.showDiscovery;
+    }
   }
 }

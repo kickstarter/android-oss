@@ -35,8 +35,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.IntegerUtils.isNonZero;
 
-@RequiresActivityViewModel(ProfileViewModel.class)
-public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
+@RequiresActivityViewModel(ProfileViewModel.ViewModel.class)
+public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewModel> {
   private ProfileAdapter adapter;
   private RecyclerViewPaginator paginator;
 

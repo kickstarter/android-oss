@@ -5,7 +5,7 @@
   android:layout_height="match_parent"
   android:orientation="vertical"
   android:focusable="true"
-  tools:context=".ActivityFeedActivity">
+  tools:context=".ui.activities.ActivityFeedActivity">
 
   <include layout="@layout/activity_feed_toolbar" />
 

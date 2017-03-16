@@ -131,40 +131,41 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:cardview-v7:25.1.0'
-    compile 'com.android.support:design:25.1.0'
+    compile "com.android.support:appcompat-v7:$supportLibVersion"
+    compile "com.android.support:cardview-v7:$supportLibVersion"
+    compile "com.android.support:design:$supportLibVersion"
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:recyclerview-v7:25.1.0'
-    compile 'com.android.support:support-annotations:25.1.0'
+    compile "com.android.support:recyclerview-v7:$supportLibVersion"
+    compile "com.android.support:support-annotations:$supportLibVersion"
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
-    compile 'com.github.frankiesardo:auto-parcel:0.3.1'
-    annotationProcessor 'com.github.frankiesardo:auto-parcel-processor:0.3.1'
-    compile 'com.google.android.gms:play-services-gcm:10.0.1'
-    compile 'com.google.android.gms:play-services-wallet:10.0.1'
+    compile "com.github.frankiesardo:auto-parcel:$autoparcelVersion"
+    annotationProcessor "com.github.frankiesardo:auto-parcel-processor:$autoparcelVersion"
+    compile "com.google.android.gms:play-services-gcm:$playservicesVersion"
+    compile "com.google.android.gms:play-services-wallet:$playservicesVersion"
     compile 'com.google.android.exoplayer:exoplayer:r1.5.5'
-    compile 'com.google.dagger:dagger:2.0'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.0'
+    compile "com.google.dagger:dagger:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.jakewharton:process-phoenix:1.0.2'
     compile 'com.jakewharton.timber:timber:3.0.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.stripe:stripe-android:1.0.3'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.1.2'
-    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.1.2'
+    debugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
+    compile "com.squareup.okhttp3:okhttp:$okhttp3Version"
+    compile "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
+    compile "com.squareup.okhttp3:okhttp-urlconnection:$okhttp3Version"
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta4'
-    compile 'com.trello:rxlifecycle:0.3.0'
-    compile 'com.trello:rxlifecycle-components:0.3.0'
+    compile "com.squareup.retrofit2:retrofit:$retrofit2Version"
+    compile "com.squareup.retrofit2:adapter-rxjava:$retrofit2Version"
+    compile "com.squareup.retrofit2:converter-gson:$retrofit2Version"
+    compile "com.trello:rxlifecycle:$rxlifecycleVersion"
+    compile "com.trello:rxlifecycle-components:$rxlifecycleVersion"
     compile 'io.reactivex:rxandroid:1.2.0'
     compile 'io.reactivex:rxjava:1.1.5'
-    compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
-    compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:0.3.0'
-    compile 'com.jakewharton.rxbinding:rxbinding-support-v4:0.3.0'
+    compile "com.jakewharton.rxbinding:rxbinding:$rxbindingVersion"
+    compile "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:$rxbindingVersion"
+    compile "com.jakewharton.rxbinding:rxbinding-support-v4:$rxbindingVersion"
     compile 'net.danlew:android.joda:2.7.2'
     compile 'net.hockeyapp.android:HockeySDK:3.6.1'
     compile 'org.jsoup:jsoup:1.8.2'
@@ -173,14 +174,14 @@ dependencies {
     // Testing
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
-    testCompile 'org.robolectric:robolectric:3.0'
-    testCompile 'org.robolectric:shadows-multidex:3.0'
-    testCompile "org.robolectric:shadows-play-services:3.0"
-    testCompile "org.robolectric:shadows-support-v4:3.0"
+    testCompile "org.robolectric:robolectric:$robolectricVersion"
+    testCompile "org.robolectric:shadows-multidex:$robolectricVersion"
+    testCompile "org.robolectric:shadows-play-services:$robolectricVersion"
+    testCompile "org.robolectric:shadows-support-v4:$robolectricVersion"
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile 'com.android.support.test:rules:0.5'
     androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support:support-annotations:25.1.0'
+    androidTestCompile "com.android.support:support-annotations:$supportLibVersion"
 }
 
 buildscript {

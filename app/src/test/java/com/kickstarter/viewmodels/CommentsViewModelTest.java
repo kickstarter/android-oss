@@ -15,6 +15,7 @@ import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
@@ -22,6 +23,8 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.data.CommentsData;
 
 import org.junit.Test;
+
+import java.util.List;
 
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -32,7 +35,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
   public void testCommentsViewModel_EmptyState() {
     final ApiClientType apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Project project) {
+      public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update) {
         return Observable.empty();
       }
     };
@@ -40,11 +43,16 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
     final Environment env = environment().toBuilder().apiClient(apiClient).build();
     final CommentsViewModel vm = new CommentsViewModel(env);
 
-    // Start the view model with a project.
+    final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
+    vm.outputs.commentsData().subscribe(commentsData);
+
+    // Start the view model with an update.
     vm.intent(new Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()));
 
     // Only Viewed Comments event should fire.
     koalaTest.assertValues(KoalaEvent.VIEWED_COMMENTS);
+
+    commentsData.assertNoValues();
   }
 
   @Test
@@ -84,8 +92,8 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
   public void testCommentsViewModel_ProjectCommentsEmit() {
     final CommentsViewModel vm = new CommentsViewModel(environment());
 
-    final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
-    vm.outputs.commentsData().subscribe(commentsData);
+    final TestSubscriber<List<Comment>> comments = new TestSubscriber<>();
+    vm.outputs.commentsData().map(CommentsData::comments).subscribe(comments);
 
     final TestSubscriber<Boolean> isFetchingComments = new TestSubscriber<>();
     vm.outputs.isFetchingComments().subscribe(isFetchingComments);
@@ -95,7 +103,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
     koalaTest.assertValues(KoalaEvent.VIEWED_COMMENTS, KoalaEvent.PROJECT_COMMENT_VIEW);
 
     // Comments should emit.
-    commentsData.assertValueCount(1);
+    comments.assertValueCount(1);
     isFetchingComments.assertValues(true, false);
   }
 

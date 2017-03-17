@@ -9,6 +9,7 @@ import com.kickstarter.factories.ActivityFactory;
 import com.kickstarter.factories.BackingFactory;
 import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.CommentFactory;
+import com.kickstarter.factories.CommentsEnvelopeFactory;
 import com.kickstarter.factories.LocationFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UpdateFactory;
@@ -141,37 +142,17 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Project project) {
-    return Observable.just(
-      CommentsEnvelope.builder()
-        .urls(CommentsEnvelope.UrlsEnvelope.builder()
-          .api(CommentsEnvelope.UrlsEnvelope.ApiEnvelope.builder()
-            .moreComments("more comments please")
-            .newerComments("newer comments please")
-            .build())
-          .build())
-        .comments(Collections.singletonList(CommentFactory.comment()))
-        .build()
-    );
+    return Observable.just(CommentsEnvelopeFactory.commentsEnvelope());
   }
 
   @Override
   public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update) {
-    return Observable.just(
-      CommentsEnvelope.builder()
-        .urls(CommentsEnvelope.UrlsEnvelope.builder()
-          .api(CommentsEnvelope.UrlsEnvelope.ApiEnvelope.builder()
-            .moreComments("more comments please")
-            .newerComments("newer comments please")
-            .build())
-          .build())
-        .comments(Collections.singletonList(CommentFactory.comment()))
-        .build()
-    );
+    return Observable.just(CommentsEnvelopeFactory.commentsEnvelope());
   }
 
   @Override
   public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
-    return Observable.empty();
+    return Observable.just(CommentsEnvelopeFactory.commentsEnvelope());
   }
 
   @Override

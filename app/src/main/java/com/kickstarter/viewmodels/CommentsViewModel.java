@@ -99,6 +99,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
     final ApiPaginator<Comment, CommentsEnvelope, Either<Project, Update>> paginator =
       ApiPaginator.<Comment, CommentsEnvelope, Either<Project, Update>>builder()
         .nextPage(nextPage)
+        .distinctUntilChanged(true)
         .startOverWith(startOverWith)
         .envelopeToListOfData(CommentsEnvelope::comments)
         .envelopeToMoreUrl(env -> env.urls().api().moreComments())
@@ -190,16 +191,9 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
 
     final Observable<Update> update = projectOrUpdate.map(Either::right);
 
-    // NB: A temporary workaround for nextPage ping on empty state. Better fix is to filter out
-    // non-scrollable views in `RecyclerViewPaginator`.
-    final Observable<Void> nonEmptyNextPage = comments
-      .filter(ObjectUtils::isNotNull)
-      .compose(ignoreValues())
-      .compose(takeWhen(nextPage));
-
     // TODO: add a pageCount to RecyclerViewPaginator to track loading newer comments.
     Observable.combineLatest(project, update, Pair::create)
-      .compose(takeWhen(nonEmptyNextPage))
+      .compose(takeWhen(nextPage))
       .compose(bindToLifecycle())
       .subscribe(pu ->
         koala.trackLoadedOlderComments(
@@ -230,7 +224,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
     projectOrUpdate
       .filter(Either::isLeft)
       .map(Either::left)
-      .compose(takeWhen(nonEmptyNextPage))
+      .compose(takeWhen(nextPage))
       .compose(bindToLifecycle())
       .subscribe(koala::trackLoadedOlderProjectComments);
 

@@ -7,6 +7,8 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.IntegerUtils;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
@@ -37,6 +39,30 @@ public interface ProfileViewModel {
   }
 
   interface Outputs {
+    /** Emits the user avatar image to be displayed. */
+    Observable<String> avatarImageViewUrl();
+
+    /** Emits when the backed projects count should be hidden. */
+    Observable<Boolean> backedCountTextViewHidden();
+
+    /** Emits the backed projects count to be displayed. */
+    Observable<String> backedCountTextViewText();
+
+    /** Emits when the backed projects text view should be hidden. */
+    Observable<Boolean> backedTextViewHidden();
+
+    /** Emits when the created projects count should be hidden. */
+    Observable<Boolean> createdCountTextViewHidden();
+
+    /** Emits the created projects count to be displayed. */
+    Observable<String> createdCountTextViewText();
+
+    /** Emits when the created projects text view should be hidden. */
+    Observable<Boolean> createdTextViewHidden();
+
+    /** Emits when the divider view should be hidden. */
+    Observable<Boolean> dividerViewHidden();
+
     /** Emits a list of projects to display in the profile. */
     Observable<List<Project>> projects();
 
@@ -46,8 +72,8 @@ public interface ProfileViewModel {
     /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
     Observable<Void> resumeDiscoveryActivity();
 
-    /** Emits the user to display in the profile. */
-    Observable<User> user();
+    /** Emits the user name to be displayed. */
+    Observable<String> userNameTextViewText();
   }
 
   final class ViewModel extends ActivityViewModel<ProfileActivity> implements ProfileAdapter.Delegate, Inputs, Outputs {
@@ -80,8 +106,33 @@ public interface ProfileViewModel {
           .loadWithPaginationPath(this.client::fetchProjects)
           .build();
 
+      final Observable<User> loggedInUser = this.currentUser.loggedInUser();
+
+      this.avatarImageViewUrl = loggedInUser.map(u -> u.avatar().medium());
+
+      this.backedCountTextViewHidden = loggedInUser
+        .map(u -> IntegerUtils.isZero(u.backedProjectsCount()));
+      this.backedTextViewHidden = this.backedCountTextViewHidden;
+
+      this.backedCountTextViewText = loggedInUser
+        .map(User::backedProjectsCount)
+        .filter(IntegerUtils::isNonZero)
+        .map(NumberUtils::format);
+
+      this.createdCountTextViewHidden = loggedInUser
+        .map(u -> IntegerUtils.isZero(u.createdProjectsCount()));
+      this.createdTextViewHidden = this.createdCountTextViewHidden;
+
+      this.createdCountTextViewText = loggedInUser
+        .map(User::createdProjectsCount)
+        .filter(IntegerUtils::isNonZero)
+        .map(NumberUtils::format);
+
+      this.dividerViewHidden = Observable.merge(this.backedTextViewHidden, this.createdTextViewHidden);
+
       this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked;
       this.startProjectActivity = this.projectCardClicked;
+      this.userNameTextViewText = loggedInUser.map(User::name);
 
       paginator.paginatedData()
         .compose(bindToLifecycle())
@@ -94,9 +145,18 @@ public interface ProfileViewModel {
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
 
+    private final Observable<String> avatarImageViewUrl;
+    private final Observable<Boolean> backedCountTextViewHidden;
+    private final Observable<String> backedCountTextViewText;
+    private final Observable<Boolean> backedTextViewHidden;
+    private final Observable<Boolean> createdCountTextViewHidden;
+    private final Observable<String> createdCountTextViewText;
+    private final Observable<Boolean> createdTextViewHidden;
+    private final Observable<Boolean> dividerViewHidden;
     private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
     private final Observable<Void> resumeDiscoveryActivity;
     private final Observable<Project> startProjectActivity;
+    private final Observable<String> userNameTextViewText;
 
     public final ProfileViewModel.Inputs inputs = this;
     public final ProfileViewModel.Outputs outputs = this;
@@ -117,17 +177,41 @@ public interface ProfileViewModel {
       this.projectCardClicked.onNext(project);
     }
 
+    @Override public @NonNull Observable<String> avatarImageViewUrl() {
+      return this.avatarImageViewUrl;
+    }
+    @Override public @NonNull Observable<String> backedCountTextViewText() {
+      return this.backedCountTextViewText;
+    }
+    @Override public @NonNull Observable<Boolean> backedCountTextViewHidden() {
+      return this.backedCountTextViewHidden;
+    }
+    @Override public @NonNull Observable<Boolean> backedTextViewHidden() {
+      return this.backedTextViewHidden;
+    }
+    @Override public @NonNull Observable<Boolean> createdCountTextViewHidden() {
+      return this.createdCountTextViewHidden;
+    }
+    @Override public @NonNull Observable<String> createdCountTextViewText() {
+      return this.createdCountTextViewText;
+    }
+    @Override public @NonNull Observable<Boolean> createdTextViewHidden() {
+      return this.createdTextViewHidden;
+    }
+    @Override public @NonNull Observable<Boolean> dividerViewHidden() {
+      return this.dividerViewHidden;
+    }
     @Override public @NonNull Observable<List<Project>> projects() {
       return this.projects;
-    }
-    @Override public @NonNull Observable<User> user() {
-      return this.currentUser.loggedInUser();
     }
     @Override public @NonNull Observable<Void> resumeDiscoveryActivity() {
       return this.resumeDiscoveryActivity;
     }
     @Override public @NonNull Observable<Project> startProjectActivity() {
       return this.startProjectActivity;
+    }
+    @Override public @NonNull Observable<String> userNameTextViewText() {
+      return this.userNameTextViewText;
     }
   }
 }

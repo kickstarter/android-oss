@@ -1,12 +1,15 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
+import android.util.Pair;
 
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.IntegerUtils;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
@@ -16,85 +19,201 @@ import com.kickstarter.ui.activities.ProfileActivity;
 import com.kickstarter.ui.adapters.ProfileAdapter;
 import com.kickstarter.ui.viewholders.EmptyProfileViewHolder;
 import com.kickstarter.ui.viewholders.ProfileCardViewHolder;
-import com.kickstarter.viewmodels.inputs.ProfileViewModelInputs;
-import com.kickstarter.viewmodels.outputs.ProfileViewModelOutputs;
 
 import java.util.List;
 
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ProfileViewModel extends ActivityViewModel<ProfileActivity> implements ProfileAdapter.Delegate, ProfileViewModelInputs, ProfileViewModelOutputs {
-  private final ApiClientType client;
-  private final CurrentUserType currentUser;
+public interface ProfileViewModel {
 
-  // INPUTS
-  private final PublishSubject<Void> nextPage = PublishSubject.create();
-  public void nextPage() {
-    nextPage.onNext(null);
+  interface Inputs {
+    /** Call when the Explore Projects button in the empty state has been clicked. */
+    void exploreProjectsButtonClicked();
+
+    /** Call when the next page has been invoked. */
+    void nextPage();
+
+    /** Call when a project card has been clicked. */
+    void projectCardClicked(final @NonNull Project project);
   }
 
-  // OUTPUTS
-  private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
-  @Override public Observable<List<Project>> projects() {
-    return projects;
+  interface Outputs {
+    /** Emits the user avatar image to be displayed. */
+    Observable<String> avatarImageViewUrl();
+
+    /** Emits when the backed projects count should be hidden. */
+    Observable<Boolean> backedCountTextViewHidden();
+
+    /** Emits the backed projects count to be displayed. */
+    Observable<String> backedCountTextViewText();
+
+    /** Emits when the backed projects text view should be hidden. */
+    Observable<Boolean> backedTextViewHidden();
+
+    /** Emits when the created projects count should be hidden. */
+    Observable<Boolean> createdCountTextViewHidden();
+
+    /** Emits the created projects count to be displayed. */
+    Observable<String> createdCountTextViewText();
+
+    /** Emits when the created projects text view should be hidden. */
+    Observable<Boolean> createdTextViewHidden();
+
+    /** Emits when the divider view should be hidden. */
+    Observable<Boolean> dividerViewHidden();
+
+    /** Emits a list of projects to display in the profile. */
+    Observable<List<Project>> projects();
+
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
+    Observable<Project> startProjectActivity();
+
+    /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
+    Observable<Void> resumeDiscoveryActivity();
+
+    /** Emits the user name to be displayed. */
+    Observable<String> userNameTextViewText();
   }
-  @Override public Observable<User> user() {
-    return currentUser.loggedInUser();
-  }
-  private final PublishSubject<Project> showProject = PublishSubject.create();
-  @Override
-  public Observable<Project> showProject() {
-    return showProject;
-  }
-  private final PublishSubject<Void> showDiscovery = PublishSubject.create();
-  @Override
-  public Observable<Void> showDiscovery() {
-    return showDiscovery;
-  }
 
-  public final ProfileViewModelInputs inputs = this;
-  public final ProfileViewModelOutputs outputs = this;
+  final class ViewModel extends ActivityViewModel<ProfileActivity> implements ProfileAdapter.Delegate, Inputs, Outputs {
+    private final ApiClientType client;
+    private final CurrentUserType currentUser;
 
-  public ProfileViewModel(final @NonNull Environment environment) {
-    super(environment);
+    public ViewModel(final @NonNull Environment environment) {
+      super(environment);
 
-    client = environment.apiClient();
-    currentUser = environment.currentUser();
+      this.client = environment.apiClient();
+      this.currentUser = environment.currentUser();
 
-    final Observable<User> freshUser = client.fetchCurrentUser()
-      .retry(2)
-      .compose(Transformers.neverError());
-    freshUser.subscribe(currentUser::refresh);
+      final Observable<User> freshUser = this.client.fetchCurrentUser()
+        .retry(2)
+        .compose(Transformers.neverError());
+      freshUser.subscribe(this.currentUser::refresh);
 
-    final DiscoveryParams params = DiscoveryParams.builder()
-      .backed(1)
-      .perPage(18)
-      .sort(DiscoveryParams.Sort.ENDING_SOON)
-      .build();
-
-    final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
-      ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
-        .nextPage(nextPage)
-        .envelopeToListOfData(DiscoverEnvelope::projects)
-        .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
-        .loadWithParams(__ -> client.fetchProjects(params))
-        .loadWithPaginationPath(client::fetchProjects)
+      final DiscoveryParams params = DiscoveryParams.builder()
+        .backed(1)
+        .perPage(18)
+        .sort(DiscoveryParams.Sort.ENDING_SOON)
         .build();
 
-    paginator.paginatedData()
-      .compose(bindToLifecycle())
-      .subscribe(projects::onNext);
+      final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
+        ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
+          .nextPage(this.nextPage)
+          .envelopeToListOfData(DiscoverEnvelope::projects)
+          .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
+          .loadWithParams(__ -> this.client.fetchProjects(params))
+          .loadWithPaginationPath(this.client::fetchProjects)
+          .build();
 
-    koala.trackProfileView();
-  }
+      final Observable<User> loggedInUser = this.currentUser.loggedInUser();
 
-  public void profileCardViewHolderClicked(final @NonNull ProfileCardViewHolder viewHolder, final @NonNull Project project) {
-    this.showProject.onNext(project);
-  }
+      this.avatarImageViewUrl = loggedInUser.map(u -> u.avatar().medium());
 
-  public void emptyProfileViewHolderExploreProjectsClicked(final @NonNull EmptyProfileViewHolder viewHolder) {
-    this.showDiscovery.onNext(null);
+      this.backedCountTextViewHidden = loggedInUser
+        .map(u -> IntegerUtils.isZero(u.backedProjectsCount()));
+      this.backedTextViewHidden = this.backedCountTextViewHidden;
+
+      this.backedCountTextViewText = loggedInUser
+        .map(User::backedProjectsCount)
+        .filter(IntegerUtils::isNonZero)
+        .map(NumberUtils::format);
+
+      this.createdCountTextViewHidden = loggedInUser
+        .map(u -> IntegerUtils.isZero(u.createdProjectsCount()));
+      this.createdTextViewHidden = this.createdCountTextViewHidden;
+
+      this.createdCountTextViewText = loggedInUser
+        .map(User::createdProjectsCount)
+        .filter(IntegerUtils::isNonZero)
+        .map(NumberUtils::format);
+
+      this.dividerViewHidden = Observable.combineLatest(
+        this.backedTextViewHidden,
+        this.createdTextViewHidden,
+        Pair::create
+      )
+        .map(p -> p.first || p.second);
+
+      this.projects = paginator.paginatedData();
+      this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked;
+      this.startProjectActivity = this.projectCardClicked;
+      this.userNameTextViewText = loggedInUser.map(User::name);
+
+      this.koala.trackProfileView();
+    }
+
+    private final PublishSubject<Void> exploreProjectsButtonClicked = PublishSubject.create();
+    private final PublishSubject<Void> nextPage = PublishSubject.create();
+    private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
+
+    private final Observable<String> avatarImageViewUrl;
+    private final Observable<Boolean> backedCountTextViewHidden;
+    private final Observable<String> backedCountTextViewText;
+    private final Observable<Boolean> backedTextViewHidden;
+    private final Observable<Boolean> createdCountTextViewHidden;
+    private final Observable<String> createdCountTextViewText;
+    private final Observable<Boolean> createdTextViewHidden;
+    private final Observable<Boolean> dividerViewHidden;
+    private final Observable<List<Project>> projects;
+    private final Observable<Void> resumeDiscoveryActivity;
+    private final Observable<Project> startProjectActivity;
+    private final Observable<String> userNameTextViewText;
+
+    public final ProfileViewModel.Inputs inputs = this;
+    public final ProfileViewModel.Outputs outputs = this;
+
+    @Override public void emptyProfileViewHolderExploreProjectsClicked(final @NonNull EmptyProfileViewHolder viewHolder) {
+      this.exploreProjectsButtonClicked();
+    }
+    @Override public void exploreProjectsButtonClicked() {
+      this.exploreProjectsButtonClicked.onNext(null);
+    }
+    @Override public void nextPage() {
+      this.nextPage.onNext(null);
+    }
+    @Override public void profileCardViewHolderClicked(final @NonNull ProfileCardViewHolder viewHolder, final @NonNull Project project) {
+      this.projectCardClicked(project);
+    }
+    @Override public void projectCardClicked(final @NonNull Project project) {
+      this.projectCardClicked.onNext(project);
+    }
+
+    @Override public @NonNull Observable<String> avatarImageViewUrl() {
+      return this.avatarImageViewUrl;
+    }
+    @Override public @NonNull Observable<String> backedCountTextViewText() {
+      return this.backedCountTextViewText;
+    }
+    @Override public @NonNull Observable<Boolean> backedCountTextViewHidden() {
+      return this.backedCountTextViewHidden;
+    }
+    @Override public @NonNull Observable<Boolean> backedTextViewHidden() {
+      return this.backedTextViewHidden;
+    }
+    @Override public @NonNull Observable<Boolean> createdCountTextViewHidden() {
+      return this.createdCountTextViewHidden;
+    }
+    @Override public @NonNull Observable<String> createdCountTextViewText() {
+      return this.createdCountTextViewText;
+    }
+    @Override public @NonNull Observable<Boolean> createdTextViewHidden() {
+      return this.createdTextViewHidden;
+    }
+    @Override public @NonNull Observable<Boolean> dividerViewHidden() {
+      return this.dividerViewHidden;
+    }
+    @Override public @NonNull Observable<List<Project>> projects() {
+      return this.projects;
+    }
+    @Override public @NonNull Observable<Void> resumeDiscoveryActivity() {
+      return this.resumeDiscoveryActivity;
+    }
+    @Override public @NonNull Observable<Project> startProjectActivity() {
+      return this.startProjectActivity;
+    }
+    @Override public @NonNull Observable<String> userNameTextViewText() {
+      return this.userNameTextViewText;
+    }
   }
 }

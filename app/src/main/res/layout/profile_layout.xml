@@ -25,7 +25,7 @@
         android:orientation="vertical">
 
         <ImageView
-          android:id="@+id/avatar"
+          android:id="@+id/avatar_image_view"
           android:background="@drawable/avatar_stroke"
           android:layout_gravity="center_horizontal"
           android:layout_width="@dimen/profile_avatar_width"
@@ -37,7 +37,7 @@
 
         <TextView
           style="@style/EditorialHeadline"
-          android:id="@+id/user_name"
+          android:id="@+id/user_name_text_view"
           android:gravity="center_horizontal"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
 
           <TextView
             style="@style/SubheadPrimary"
-            android:id="@+id/created"
+            android:id="@+id/created_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/grid_1_half"
@@ -67,7 +67,7 @@
 
           <TextView
             style="@style/SubheadPrimary"
-            android:id="@+id/created_num"
+            android:id="@+id/created_count_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/grid_1_half"
@@ -75,7 +75,7 @@
             tools:text="0" />
 
           <View
-            android:id="@+id/divider"
+            android:id="@+id/divider_view"
             android:background="@color/black_alpha_10"
             android:layout_width="1dp"
             android:layout_height="@dimen/grid_2"
@@ -87,7 +87,7 @@
 
           <TextView
             style="@style/SubheadPrimary"
-            android:id="@+id/backed"
+            android:id="@+id/backed_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/grid_1_half"
@@ -99,7 +99,7 @@
 
           <TextView
             style="@style/SubheadPrimary"
-            android:id="@+id/backed_num"
+            android:id="@+id/backed_count_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="0" />

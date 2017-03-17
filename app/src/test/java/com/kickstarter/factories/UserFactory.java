@@ -19,7 +19,10 @@ public final class UserFactory {
   }
 
   public static User creator() {
-    return user();
+    return user()
+      .toBuilder()
+      .createdProjectsCount(5)
+      .build();
   }
 
   public static User germanUser() {

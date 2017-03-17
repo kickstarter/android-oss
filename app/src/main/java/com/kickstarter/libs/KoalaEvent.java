@@ -9,6 +9,7 @@ public final class KoalaEvent {
   public static final String LOADED_OLDER_COMMENTS = "Loaded Older Comments";
   public static final String OPENED_EXTERNAL_LINK = "Opened External Link";
   public static final String POSTED_COMMENT = "Posted Comment";
+  public static final String PROFILE_VIEW_MY = "Profile View My";
   public static final String PROJECT_COMMENT_CREATE = "Project Comment Create";
   public static final String PROJECT_COMMENT_LOAD_OLDER = "Project Comment Load Older";
   public static final String PROJECT_COMMENT_VIEW = "Project Comment View";
@@ -18,6 +19,7 @@ public final class KoalaEvent {
   public static final String STARRED_PROJECT = "Starred Project";
   public static final String UNSTARRED_PROJECT = "Unstarred Project";
   public static final String VIEWED_COMMENTS = "Viewed Comments";
+  public static final String VIEWED_PROFILE = "Viewed Profile";
   public static final String VIEWED_PROJECT_PAGE = "Viewed Project Page";
   public static final String VIEWED_UPDATE = "Viewed Update";
   public static final String VIEWED_UPDATES = "Viewed Updates";

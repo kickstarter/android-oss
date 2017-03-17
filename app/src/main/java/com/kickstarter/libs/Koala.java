@@ -385,7 +385,10 @@ public final class Koala {
 
   // PROFILE
   public void trackProfileView() {
-    client.track("Profile View My");
+    // deprecated
+    client.track(KoalaEvent.PROFILE_VIEW_MY);
+
+    client.track(KoalaEvent.VIEWED_PROFILE);
   }
 
   // RATING

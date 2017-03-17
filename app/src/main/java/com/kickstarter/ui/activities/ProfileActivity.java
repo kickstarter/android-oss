@@ -21,7 +21,6 @@ import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProfileAdapter;
 import com.kickstarter.viewmodels.ProfileViewModel;
@@ -33,20 +32,18 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
-import static com.kickstarter.libs.utils.IntegerUtils.isNonZero;
-
-@RequiresActivityViewModel(ProfileViewModel.class)
-public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
+@RequiresActivityViewModel(ProfileViewModel.ViewModel.class)
+public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewModel> {
   private ProfileAdapter adapter;
   private RecyclerViewPaginator paginator;
 
-  protected @Bind(R.id.avatar) ImageView avatarImageView;
-  protected @Bind(R.id.user_name) TextView userNameTextView;
-  protected @Bind(R.id.created_num) TextView createdNumTextView;
-  protected @Bind(R.id.backed_num) TextView backedNumTextView;
-  protected @Bind(R.id.created) TextView createdTextView;
-  protected @Bind(R.id.backed) TextView backedTextView;
-  protected @Bind(R.id.divider) View dividerView;
+  protected @Bind(R.id.avatar_image_view) ImageView avatarImageView;
+  protected @Bind(R.id.user_name_text_view) TextView userNameTextView;
+  protected @Bind(R.id.created_count_text_view) TextView createdCountTextView;
+  protected @Bind(R.id.backed_count_text_view) TextView backedCountTextView;
+  protected @Bind(R.id.created_text_view) TextView createdTextView;
+  protected @Bind(R.id.backed_text_view) TextView backedTextView;
+  protected @Bind(R.id.divider_view) View dividerView;
   protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
   @Override
@@ -62,25 +59,65 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
 
     paginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
 
-    viewModel.outputs.user()
+    viewModel.outputs.avatarImageViewUrl()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::setViews);
+      .subscribe(url -> Picasso.with(this).load(url).transform(new CircleTransformation()).into(avatarImageView));
+
+    viewModel.outputs.backedCountTextViewHidden()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ViewUtils.setGone(this.backedCountTextView));
+
+    viewModel.outputs.backedCountTextViewText()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this.backedCountTextView::setText);
+
+    viewModel.outputs.backedTextViewHidden()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ViewUtils.setGone(this.backedTextView));
+
+    viewModel.outputs.createdCountTextViewHidden()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ViewUtils.setGone(this.createdCountTextView));
+
+    viewModel.outputs.createdCountTextViewText()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this.createdCountTextView::setText);
+
+    viewModel.outputs.createdTextViewHidden()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ViewUtils.setGone(this.createdTextView));
+
+    viewModel.outputs.dividerViewHidden()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ViewUtils.setGone(this.dividerView));
 
     viewModel.outputs.projects()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadProjects);
 
-    viewModel.outputs.showProject()
+    viewModel.outputs.resumeDiscoveryActivity()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> resumeDiscoveryActivity());
+
+    viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startProjectActivity);
 
-    viewModel.outputs.showDiscovery()
+    viewModel.outputs.userNameTextViewText()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> startDiscoveryActivity());
+      .subscribe(this.userNameTextView::setText);
   }
 
   @Override
@@ -109,34 +146,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
     }
   }
 
-  private void setViews(final @NonNull User user) {
-    Picasso.with(this).load(user.avatar()
-      .medium())
-      .transform(new CircleTransformation())
-      .into(avatarImageView);
-
-    userNameTextView.setText(user.name());
-
-    final Integer createdNum = user.createdProjectsCount();
-    if (isNonZero(createdNum)) {
-      createdNumTextView.setText(String.valueOf(createdNum));
-    } else {
-      createdTextView.setVisibility(View.GONE);
-      createdNumTextView.setVisibility(View.GONE);
-      dividerView.setVisibility(View.GONE);
-    }
-
-    final Integer backedNum = user.backedProjectsCount();
-    if (isNonZero(backedNum)) {
-      backedNumTextView.setText(String.valueOf(backedNum));
-    } else {
-      backedTextView.setVisibility(View.GONE);
-      backedNumTextView.setVisibility(View.GONE);
-      dividerView.setVisibility(View.GONE);
-    }
-  }
-
-  private void startDiscoveryActivity() {
+  private void resumeDiscoveryActivity() {
     ApplicationUtils.resumeDiscoveryActivity(this);
   }
 

@@ -34,6 +34,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
   private final @NonNull Func1<List<Data>, List<Data>> pageTransformation;
   private final boolean clearWhenStartingOver;
   private final @NonNull Func2<List<Data>, List<Data>, List<Data>> concater;
+  private final boolean distinctUntilChanged;
 
   private final @NonNull PublishSubject<String> _morePath = PublishSubject.create();
   private final @NonNull PublishSubject<Boolean> _isFetching = PublishSubject.create();
@@ -61,7 +62,8 @@ public final class ApiPaginator<Data, Envelope, Params> {
     final @NonNull Func1<Envelope, String> envelopeToMoreUrl,
     final @NonNull Func1<List<Data>, List<Data>> pageTransformation,
     final boolean clearWhenStartingOver,
-    final @NonNull Func2<List<Data>, List<Data>, List<Data>> concater
+    final @NonNull Func2<List<Data>, List<Data>, List<Data>> concater,
+    final boolean distinctUntilChanged
   ) {
     this.nextPage = nextPage;
     this.startOverWith = startOverWith;
@@ -72,6 +74,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
     this.loadWithPaginationPath = loadWithPaginationPath;
     this.clearWhenStartingOver = clearWhenStartingOver;
     this.concater = concater;
+    this.distinctUntilChanged = distinctUntilChanged;
 
     this.paginatedData = this.startOverWith.switchMap(this::dataWithPagination);
     this.loadingPage = this.startOverWith.switchMap(__ -> nextPage.scan(1, (accum, ___) -> accum + 1));
@@ -87,6 +90,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
     private Func1<List<Data>, List<Data>> pageTransformation;
     private boolean clearWhenStartingOver;
     private Func2<List<Data>, List<Data>, List<Data>> concater = ListUtils::concat;
+    private boolean distinctUntilChanged;
 
     /**
      * [Required] An observable that emits whenever a new page of data should be loaded.
@@ -162,6 +166,14 @@ public final class ApiPaginator<Data, Envelope, Params> {
       return this;
     }
 
+    /**
+     * [Optional] Determines if the list of loaded data is should be distinct until changed.
+     */
+    public @NonNull Builder<Data, Envelope, Params> distinctUntilChanged(final boolean distinctUntilChanged) {
+      this.distinctUntilChanged = distinctUntilChanged;
+      return this;
+    }
+
     public @NonNull ApiPaginator<Data, Envelope, Params> build() throws RuntimeException {
       // Early error when required field is not set
       if (nextPage == null) {
@@ -192,7 +204,8 @@ public final class ApiPaginator<Data, Envelope, Params> {
       }
 
       return new ApiPaginator<>(nextPage, startOverWith, envelopeToListOfData, loadWithParams,
-        loadWithPaginationPath, envelopeToMoreUrl, pageTransformation, clearWhenStartingOver, concater);
+        loadWithPaginationPath, envelopeToMoreUrl, pageTransformation, clearWhenStartingOver, concater,
+        distinctUntilChanged);
     }
   }
 
@@ -208,10 +221,11 @@ public final class ApiPaginator<Data, Envelope, Params> {
       .concatMap(this::fetchData)
       .takeUntil(List::isEmpty);
 
-    if (clearWhenStartingOver) {
-      return data.scan(new ArrayList<>(), concater);
-    }
-    return data.scan(concater);
+    final Observable<List<Data>> paginatedData = clearWhenStartingOver
+      ? data.scan(new ArrayList<>(), concater)
+      : data.scan(concater);
+
+    return distinctUntilChanged ? paginatedData.distinctUntilChanged() : paginatedData;
   }
 
   /**

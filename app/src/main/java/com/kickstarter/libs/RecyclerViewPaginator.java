@@ -14,6 +14,7 @@ public final class RecyclerViewPaginator {
   private final @NonNull RecyclerView recyclerView;
   private final @NonNull Action0 nextPage;
   private Subscription subscription;
+  private static final int DIRECTION_DOWN = 1;
 
   public RecyclerViewPaginator(final @NonNull RecyclerView recyclerView, final @NonNull Action0 nextPage) {
     this.recyclerView = recyclerView;
@@ -29,6 +30,7 @@ public final class RecyclerViewPaginator {
     stop();
 
     subscription = RxRecyclerView.scrollEvents(recyclerView)
+      .filter(__ -> recyclerView.canScrollVertically(DIRECTION_DOWN))
       .map(__ -> recyclerView.getLayoutManager())
       .ofType(LinearLayoutManager.class)
       .map(this::displayedItemFromLinearLayout)

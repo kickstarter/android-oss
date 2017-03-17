@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
+import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
@@ -128,7 +129,12 @@ public interface ProfileViewModel {
         .filter(IntegerUtils::isNonZero)
         .map(NumberUtils::format);
 
-      this.dividerViewHidden = Observable.merge(this.backedTextViewHidden, this.createdTextViewHidden);
+      this.dividerViewHidden = Observable.combineLatest(
+        this.backedTextViewHidden,
+        this.createdTextViewHidden,
+        Pair::create
+      )
+        .map(p -> p.first || p.second);
 
       this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked;
       this.startProjectActivity = this.projectCardClicked;

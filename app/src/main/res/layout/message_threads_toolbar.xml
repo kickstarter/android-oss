@@ -3,39 +3,25 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  tools:showIn="@layout/profile_layout"
+  tools:showIn="@layout/message_threads_layout"
   style="@style/Toolbar"
-  android:id="@+id/profile_toolbar"
-  android:background="@color/light_gray"
-  android:elevation="0dp"
-  android:gravity="top"
-  android:layout_height="@dimen/grid_10"
+  android:id="@+id/message_threads_toolbar"
   app:contentInsetLeft="0dp"
-  app:contentInsetStart="0dp"
-  app:layout_collapseMode="pin"
-  tools:ignore="UnusedAttribute">
+  app:contentInsetStart="0dp">
 
   <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <com.kickstarter.ui.views.IconTextView
+    <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
       android:id="@+id/back_button"
+      android:focusable="true"
       android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
       android:text="@string/arrow_back_icon" />
-
-    <com.kickstarter.ui.views.IconTextView
-      app:iconType="ss_kickstarter"
-      style="@style/ToolbarIcon"
-      android:id="@+id/messages_button"
-      android:focusable="true"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
-      android:text="@string/mail_icon" />
 
   </RelativeLayout>
 
 </com.kickstarter.ui.toolbars.KSToolbar>
-

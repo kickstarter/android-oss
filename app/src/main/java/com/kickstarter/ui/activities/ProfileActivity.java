@@ -31,6 +31,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.IntegerUtils.isNonZero;
@@ -72,6 +73,11 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadProjects);
 
+    viewModel.outputs.startMessageThreadsActivity()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> this.startMessageThreadsActivity());
+
     viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -88,6 +94,11 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
     super.onDestroy();
     paginator.stop();
     recyclerView.setAdapter(null);
+  }
+
+  @OnClick(R.id.messages_button)
+  public void messagesButtonClicked() {
+    viewModel.inputs.messsagesButtonClicked();
   }
 
   private void loadProjects(final @NonNull List<Project> projects) {
@@ -138,6 +149,11 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
 
   private void resumeDiscoveryActivity() {
     ApplicationUtils.resumeDiscoveryActivity(this);
+  }
+
+  private void startMessageThreadsActivity() {
+    final Intent intent = new Intent(this, MessageThreadsActivity.class);
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private void startProjectActivity(final @NonNull Project project) {

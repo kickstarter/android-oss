@@ -29,9 +29,6 @@ public interface ProfileViewModel {
     /** Call when the Explore Projects button in the empty state has been clicked. */
     void exploreProjectsButtonClicked();
 
-    /** Call when the messages button has been clicked. */
-    void messsagesButtonClicked();
-
     /** Call when the next page has been invoked. */
     void nextPage();
 
@@ -42,9 +39,6 @@ public interface ProfileViewModel {
   interface Outputs {
     /** Emits a list of projects to display in the profile. */
     Observable<List<Project>> projects();
-
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
-    Observable<Void> startMessageThreadsActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Project> startProjectActivity();
@@ -87,7 +81,6 @@ public interface ProfileViewModel {
           .build();
 
       this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked;
-      this.startMessageThreadsActivity = this.messsagesButtonClicked;
       this.startProjectActivity = this.projectCardClicked;
 
       paginator.paginatedData()
@@ -98,14 +91,12 @@ public interface ProfileViewModel {
     }
 
     private final PublishSubject<Void> exploreProjectsButtonClicked = PublishSubject.create();
-    private final PublishSubject<Void> messsagesButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
 
     private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
     private final Observable<Void> resumeDiscoveryActivity;
     private final Observable<Project> startProjectActivity;
-    private final Observable<Void> startMessageThreadsActivity;
 
     public final ProfileViewModel.Inputs inputs = this;
     public final ProfileViewModel.Outputs outputs = this;
@@ -115,9 +106,6 @@ public interface ProfileViewModel {
     }
     @Override public void exploreProjectsButtonClicked() {
       this.exploreProjectsButtonClicked.onNext(null);
-    }
-    @Override public void messsagesButtonClicked() {
-      this.messsagesButtonClicked.onNext(null);
     }
     @Override public void nextPage() {
       this.nextPage.onNext(null);
@@ -137,9 +125,6 @@ public interface ProfileViewModel {
     }
     @Override public @NonNull Observable<Void> resumeDiscoveryActivity() {
       return this.resumeDiscoveryActivity;
-    }
-    @Override public @NonNull Observable<Void> startMessageThreadsActivity() {
-      return this.startMessageThreadsActivity;
     }
     @Override public @NonNull Observable<Project> startProjectActivity() {
       return this.startProjectActivity;

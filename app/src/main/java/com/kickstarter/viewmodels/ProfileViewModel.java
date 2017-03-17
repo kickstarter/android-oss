@@ -23,7 +23,6 @@ import com.kickstarter.ui.viewholders.ProfileCardViewHolder;
 import java.util.List;
 
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public interface ProfileViewModel {
@@ -136,13 +135,10 @@ public interface ProfileViewModel {
       )
         .map(p -> p.first || p.second);
 
+      this.projects = paginator.paginatedData();
       this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked;
       this.startProjectActivity = this.projectCardClicked;
       this.userNameTextViewText = loggedInUser.map(User::name);
-
-      paginator.paginatedData()
-        .compose(bindToLifecycle())
-        .subscribe(this.projects::onNext);
 
       this.koala.trackProfileView();
     }
@@ -159,7 +155,7 @@ public interface ProfileViewModel {
     private final Observable<String> createdCountTextViewText;
     private final Observable<Boolean> createdTextViewHidden;
     private final Observable<Boolean> dividerViewHidden;
-    private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
+    private final Observable<List<Project>> projects;
     private final Observable<Void> resumeDiscoveryActivity;
     private final Observable<Project> startProjectActivity;
     private final Observable<String> userNameTextViewText;

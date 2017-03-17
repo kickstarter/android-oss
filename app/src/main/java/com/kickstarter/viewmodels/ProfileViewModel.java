@@ -26,22 +26,34 @@ import rx.subjects.PublishSubject;
 public interface ProfileViewModel {
 
   interface Inputs {
+    /** Call when the Explore Projects button in the empty state has been clicked. */
+    void exploreProjectsButtonClicked();
+
+    /** Call when the messages button has been clicked. */
+    void messsagesButtonClicked();
+
     /** Call when the next page has been invoked. */
     void nextPage();
+
+    /** Call when a project card has been clicked. */
+    void projectCardClicked(final @NonNull Project project);
   }
 
   interface Outputs {
     /** Emits a list of projects to display in the profile. */
     Observable<List<Project>> projects();
 
-    /** Emits the user to display in the profile. */
-    Observable<User> user();
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
+    Observable<Void> startMessageThreadsActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Project> startProjectActivity();
 
     /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
     Observable<Void> resumeDiscoveryActivity();
+
+    /** Emits the user to display in the profile. */
+    Observable<User> user();
   }
 
   final class ViewModel extends ActivityViewModel<ProfileActivity> implements ProfileAdapter.Delegate, Inputs, Outputs {
@@ -74,6 +86,10 @@ public interface ProfileViewModel {
           .loadWithPaginationPath(this.client::fetchProjects)
           .build();
 
+      this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked;
+      this.startMessageThreadsActivity = this.messsagesButtonClicked;
+      this.startProjectActivity = this.projectCardClicked;
+
       paginator.paginatedData()
         .compose(bindToLifecycle())
         .subscribe(this.projects::onNext);
@@ -81,23 +97,36 @@ public interface ProfileViewModel {
       this.koala.trackProfileView();
     }
 
+    private final PublishSubject<Void> exploreProjectsButtonClicked = PublishSubject.create();
+    private final PublishSubject<Void> messsagesButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
+    private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
 
     private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
-    private final PublishSubject<Project> showProject = PublishSubject.create();
-    private final PublishSubject<Void> showDiscovery = PublishSubject.create();
+    private final Observable<Void> resumeDiscoveryActivity;
+    private final Observable<Project> startProjectActivity;
+    private final Observable<Void> startMessageThreadsActivity;
 
     public final ProfileViewModel.Inputs inputs = this;
     public final ProfileViewModel.Outputs outputs = this;
 
+    @Override public void emptyProfileViewHolderExploreProjectsClicked(final @NonNull EmptyProfileViewHolder viewHolder) {
+      this.exploreProjectsButtonClicked();
+    }
+    @Override public void exploreProjectsButtonClicked() {
+      this.exploreProjectsButtonClicked.onNext(null);
+    }
+    @Override public void messsagesButtonClicked() {
+      this.messsagesButtonClicked.onNext(null);
+    }
     @Override public void nextPage() {
       this.nextPage.onNext(null);
     }
     @Override public void profileCardViewHolderClicked(final @NonNull ProfileCardViewHolder viewHolder, final @NonNull Project project) {
-      this.showProject.onNext(project);
+      this.projectCardClicked(project);
     }
-    @Override public void emptyProfileViewHolderExploreProjectsClicked(final @NonNull EmptyProfileViewHolder viewHolder) {
-      this.showDiscovery.onNext(null);
+    @Override public void projectCardClicked(final @NonNull Project project) {
+      this.projectCardClicked.onNext(project);
     }
 
     @Override public @NonNull Observable<List<Project>> projects() {
@@ -106,11 +135,14 @@ public interface ProfileViewModel {
     @Override public @NonNull Observable<User> user() {
       return this.currentUser.loggedInUser();
     }
-    @Override public @NonNull Observable<Project> startProjectActivity() {
-      return this.showProject;
-    }
     @Override public @NonNull Observable<Void> resumeDiscoveryActivity() {
-      return this.showDiscovery;
+      return this.resumeDiscoveryActivity;
+    }
+    @Override public @NonNull Observable<Void> startMessageThreadsActivity() {
+      return this.startMessageThreadsActivity;
+    }
+    @Override public @NonNull Observable<Project> startProjectActivity() {
+      return this.startProjectActivity;
     }
   }
 }

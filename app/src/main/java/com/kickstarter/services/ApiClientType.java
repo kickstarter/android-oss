@@ -17,6 +17,7 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 
 import java.util.List;
 
@@ -58,6 +59,10 @@ public interface ApiClientType {
   @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull String paginationPath);
 
   @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update);
+
+  @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project);
+
+  @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @NonNull String paginationPath);
 
   @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam);
 

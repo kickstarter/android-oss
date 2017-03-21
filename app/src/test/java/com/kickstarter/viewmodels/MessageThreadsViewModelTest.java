@@ -1,4 +1,7 @@
 package com.kickstarter.viewmodels;
 
-public class MessageThreadsViewModelTest {
+import com.kickstarter.KSRobolectricTestCase;
+
+public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
+
 }

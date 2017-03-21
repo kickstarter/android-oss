@@ -21,11 +21,11 @@ import butterknife.ButterKnife;
 @RequiresActivityViewModel(MessageThreadsViewModel.ViewModel.class)
 public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel.ViewModel> {
   private MessageThreadsAdapter adapter;
-  protected @Bind(R.id.message_threads_recycler_view) RecyclerView recyclerView;
-  protected @Bind(R.id.message_threads_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
+
+  protected @Bind(R.id.message_threads_recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.message_threads_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -43,6 +43,13 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     this.viewModel.outputs.messageThreads()
       .compose(bindToLifecycle())
       .compose(Transformers.observeForUI())
-      .subscribe(this.adapter::takeData);
+      .subscribe(this.adapter::messageThreads);
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    this.recyclerViewPaginator.stop();
+    this.recyclerView.setAdapter(null);
   }
 }

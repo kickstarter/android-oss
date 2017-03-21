@@ -199,6 +199,11 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads() {
+    return fetchMessageThreads(null);
+  }
+
+  @Override
   public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project) {
     final Observable<Response<MessageThreadsEnvelope>> apiResponse = project == null
       ? service.messageThreads()
@@ -210,7 +215,7 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @NonNull String paginationPath) {
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreadsWithPaginationPath(final @NonNull String paginationPath) {
     return service
       .paginatedMessageThreads(paginationPath)
       .lift(apiErrorOperator())

@@ -26,8 +26,6 @@ public interface MessageThreadsViewModel {
 
     /** Call when the swipe refresher is invoked. */
     void refresh();
-
-    /** Call when the search button is pressed. */
   }
 
   interface Outputs {
@@ -43,21 +41,19 @@ public interface MessageThreadsViewModel {
 
       this.client = environment.apiClient();
 
+      // this can be null which can be a problem
       final Observable<Project> project = intent()
         .take(1)
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
         .ofType(Project.class);
 
-
-      final ApiPaginator<MessageThread, MessageThreadsEnvelope, Project> paginator =
-        ApiPaginator.<MessageThread, MessageThreadsEnvelope, Project>builder()
+      final ApiPaginator<MessageThread, MessageThreadsEnvelope, Void> paginator =
+        ApiPaginator.<MessageThread, MessageThreadsEnvelope, Void>builder()
           .nextPage(this.nextPage)
-          .distinctUntilChanged(true)
-//          .startOverWith(refresh)
           .envelopeToListOfData(MessageThreadsEnvelope::messageThreads)
           .envelopeToMoreUrl(env -> env.urls().api().moreMessageThreads())
-          .loadWithParams(this.client::fetchMessageThreads)
-          .loadWithPaginationPath(this.client::fetchMessageThreads)
+          .loadWithParams(__ -> this.client.fetchMessageThreads())
+          .loadWithPaginationPath(this.client::fetchMessageThreadsWithPaginationPath)
           .build();
 
       this.messageThreads = paginator.paginatedData();

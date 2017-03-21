@@ -60,9 +60,11 @@ public interface ApiClientType {
 
   @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update);
 
+  @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads();
+
   @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project);
 
-  @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @NonNull String paginationPath);
+  @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreadsWithPaginationPath(final @NonNull String paginationPath);
 
   @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam);
 

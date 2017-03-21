@@ -77,7 +77,7 @@ public interface ApiService {
   Observable<Response<AccessTokenEnvelope>> login(@Body RegisterWithFacebookBody body);
 
   // Todo: replace "inbox" with Mailbox "inbox" or "sent" value
-  @GET("/v1/projects/message_threads/inbox")
+  @GET("/v1/message_threads/inbox")
   Observable<Response<MessageThreadsEnvelope>> messageThreads();
 
   @GET("/v1/projects/{project_id}/message_threads/inbox")

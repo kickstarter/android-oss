@@ -6,10 +6,8 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.models.MessageThread;
-import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
-import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.MessageThreadsActivity;
 import com.kickstarter.ui.adapters.MessageThreadsAdapter;
 
@@ -29,6 +27,9 @@ public interface MessageThreadsViewModel {
   }
 
   interface Outputs {
+    /** Emits a boolean indicating whether message threads are being fetched from the API. */
+    Observable<Boolean> isFetchingMessageThreads();
+
     /** Emits a list of message threads to be displayed. */
     Observable<List<MessageThread>> messageThreads();
   }
@@ -41,12 +42,6 @@ public interface MessageThreadsViewModel {
 
       this.client = environment.apiClient();
 
-      // this can be null which can be a problem
-      final Observable<Project> project = intent()
-        .take(1)
-        .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
-        .ofType(Project.class);
-
       final ApiPaginator<MessageThread, MessageThreadsEnvelope, Void> paginator =
         ApiPaginator.<MessageThread, MessageThreadsEnvelope, Void>builder()
           .nextPage(this.nextPage)
@@ -54,14 +49,17 @@ public interface MessageThreadsViewModel {
           .envelopeToMoreUrl(env -> env.urls().api().moreMessageThreads())
           .loadWithParams(__ -> this.client.fetchMessageThreads())
           .loadWithPaginationPath(this.client::fetchMessageThreadsWithPaginationPath)
+          .startOverWith(this.refresh)  // todo: fix initial load
           .build();
 
+      this.isFetchingMessageThreads = paginator.isFetching();
       this.messageThreads = paginator.paginatedData();
     }
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Void> refresh = PublishSubject.create();
 
+    private final Observable<Boolean> isFetchingMessageThreads;
     private final Observable<List<MessageThread>> messageThreads;
 
     public final MessageThreadsViewModel.Inputs inputs = this;
@@ -74,6 +72,9 @@ public interface MessageThreadsViewModel {
       this.refresh.onNext(null);
     }
 
+    @Override public @NonNull Observable<Boolean> isFetchingMessageThreads() {
+      return this.isFetchingMessageThreads;
+    }
     @Override public @NonNull Observable<List<MessageThread>> messageThreads() {
       return this.messageThreads;
     }

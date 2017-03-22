@@ -13,10 +13,12 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.adapters.MessageThreadsAdapter;
 import com.kickstarter.viewmodels.MessageThreadsViewModel;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -33,6 +35,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   protected @Bind(R.id.message_threads_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
   protected @Bind(R.id.unread_count_text_view) TextView unreadCountTextView;
 
+  protected @BindString(R.string.messages_navigation_inbox) String inboxString;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -49,13 +52,22 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
       this, this.swipeRefreshLayout, this.viewModel.inputs::refresh, this.viewModel.outputs::isFetchingMessageThreads
     );
 
-    this.mailboxTextView.setText("Inbox");  // todo: inbox and sent logic
-    this.unreadCountTextView.setText("3 new");
+    this.mailboxTextView.setText(inboxString);  // todo: Sent mailbox logic
 
     this.viewModel.outputs.messageThreads()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.adapter::messageThreads);
+
+    this.viewModel.outputs.unreadCountTextViewHidden()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.unreadCountTextView));
+
+    this.viewModel.outputs.unreadCountTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.unreadCountTextView::setText);
   }
 
   @Override

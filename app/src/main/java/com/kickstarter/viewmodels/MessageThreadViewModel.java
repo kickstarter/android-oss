@@ -18,7 +18,7 @@ public interface MessageThreadViewModel {
 
   interface Inputs {
     /** Call to configure with a MessageThread. */
-    void configureWith(final @NonNull MessageThread messageThread);
+    void configureWith(MessageThread messageThread);
   }
 
   interface Outputs {
@@ -33,6 +33,9 @@ public interface MessageThreadViewModel {
 
     /** Emits the participant name to display. */
     Observable<String> participantNameTextViewText();
+
+    /** Emits a boolean to determine if the unread indicator should be hidden. */
+    Observable<Boolean> unreadIndicatorImageViewHidden();
   }
 
   final class ViewModel extends ActivityViewModel<MessageThreadViewHolder> implements Inputs, Outputs {
@@ -47,6 +50,7 @@ public interface MessageThreadViewModel {
       this.messageBodyTextViewText = lastMessage.map(Message::body);
       this.participantAvatarUrl = participant.map(p -> p.avatar().medium());
       this.participantNameTextViewText = participant.map(User::name);
+      this.unreadIndicatorImageViewHidden = this.messageThread.map(m -> m.unreadMessagesCount() == 0);
     }
 
     private final PublishSubject<MessageThread> messageThread = PublishSubject.create();
@@ -55,6 +59,7 @@ public interface MessageThreadViewModel {
     private final Observable<String> messageBodyTextViewText;
     private final Observable<String> participantAvatarUrl;
     private final Observable<String> participantNameTextViewText;
+    private final Observable<Boolean> unreadIndicatorImageViewHidden;
 
     public final MessageThreadViewModel.Inputs inputs = this;
     public final MessageThreadViewModel.Outputs outputs = this;
@@ -74,6 +79,9 @@ public interface MessageThreadViewModel {
     }
     @Override public @NonNull Observable<String> participantNameTextViewText() {
       return this.participantNameTextViewText;
+    }
+    @Override public @NonNull Observable<Boolean> unreadIndicatorImageViewHidden() {
+      return this.unreadIndicatorImageViewHidden;
     }
   }
 }

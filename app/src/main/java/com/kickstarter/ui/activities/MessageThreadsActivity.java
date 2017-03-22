@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
+import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -27,8 +28,11 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
 
+  protected @Bind(R.id.mailbox_text_view) TextView mailboxTextView;
   protected @Bind(R.id.message_threads_recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.message_threads_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+  protected @Bind(R.id.unread_count_text_view) TextView unreadCountTextView;
+
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -44,6 +48,9 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     this.swipeRefresher = new SwipeRefresher(
       this, this.swipeRefreshLayout, this.viewModel.inputs::refresh, this.viewModel.outputs::isFetchingMessageThreads
     );
+
+    this.mailboxTextView.setText("Inbox");  // todo: inbox and sent logic
+    this.unreadCountTextView.setText("3 new");
 
     this.viewModel.outputs.messageThreads()
       .compose(bindToLifecycle())

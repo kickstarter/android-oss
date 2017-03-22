@@ -10,6 +10,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.viewmodels.MessageThreadViewModel;
 import com.squareup.picasso.Picasso;
@@ -25,10 +26,11 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public final class MessageThreadViewHolder extends KSViewHolder {
   private final MessageThreadViewModel.ViewModel viewModel;
 
-  public @Bind(R.id.date_text_view) TextView dateTextView;
-  public @Bind(R.id.message_body_text_view) TextView messageBodyTextView;
-  public @Bind(R.id.participant_avatar_image_view) ImageView participantAvatarImageView;
-  public @Bind(R.id.participant_name_text_view) TextView participantNameTextView;
+  protected @Bind(R.id.date_text_view) TextView dateTextView;
+  protected @Bind(R.id.message_body_text_view) TextView messageBodyTextView;
+  protected @Bind(R.id.participant_avatar_image_view) ImageView participantAvatarImageView;
+  protected @Bind(R.id.participant_name_text_view) TextView participantNameTextView;
+  protected @Bind(R.id.unread_indicator_image_view) ImageView unreadIndicatorImageView;
 
   private KSString ksString;
 
@@ -59,14 +61,17 @@ public final class MessageThreadViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.participantNameTextView::setText);
+
+    this.viewModel.outputs.unreadIndicatorImageViewHidden()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.unreadIndicatorImageView));
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
     final MessageThread messageThread = requireNonNull((MessageThread) data);
     this.viewModel.inputs.configureWith(messageThread);
-
-    this.participantNameTextView.setText(messageThread.participant().name());
   }
 
   private void setDateTextView(final @NonNull DateTime date) {

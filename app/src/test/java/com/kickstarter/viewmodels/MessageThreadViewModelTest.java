@@ -57,4 +57,28 @@ public final class MessageThreadViewModelTest extends KSRobolectricTestCase {
     participantAvatarUrl.assertValues(messageThread.participant().avatar().medium());
     participantNameTextViewText.assertValues(messageThread.participant().name());
   }
+
+  @Test
+  public void testUnreadIndicator() {
+    final MessageThreadViewModel.ViewModel vm = new MessageThreadViewModel.ViewModel(environment());
+
+    final MessageThread messageThreadWithUnread = MessageThreadFactory.messageThread()
+      .toBuilder()
+      .unreadMessagesCount(2)
+      .build();
+
+    final MessageThread messageThreadWithNoUnread = MessageThreadFactory.messageThread()
+      .toBuilder()
+      .unreadMessagesCount(0)
+      .build();
+
+    final TestSubscriber<Boolean> unreadIndicatorImageViewHidden = new TestSubscriber<>();
+    vm.outputs.unreadIndicatorImageViewHidden().subscribe(unreadIndicatorImageViewHidden);
+
+    vm.inputs.configureWith(messageThreadWithUnread);
+    unreadIndicatorImageViewHidden.assertValues(false);
+
+    vm.inputs.configureWith(messageThreadWithNoUnread);
+    unreadIndicatorImageViewHidden.assertValues(false, true);
+  }
 }

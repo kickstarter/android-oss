@@ -32,6 +32,9 @@ public interface MessageThreadsViewModel {
 
     /** Emits a list of message threads to be displayed. */
     Observable<List<MessageThread>> messageThreads();
+
+    /** Emits the unread message count to be displayed. */
+    Observable<String> unreadCountTextViewText();
   }
 
   final class ViewModel extends ActivityViewModel<MessageThreadsActivity> implements Inputs, Outputs {
@@ -61,6 +64,7 @@ public interface MessageThreadsViewModel {
 
     private final Observable<Boolean> isFetchingMessageThreads;
     private final Observable<List<MessageThread>> messageThreads;
+    private final Observable<String> unreadCountTextViewText = Observable.empty();
 
     public final MessageThreadsViewModel.Inputs inputs = this;
     public final MessageThreadsViewModel.Outputs outputs = this;
@@ -77,6 +81,9 @@ public interface MessageThreadsViewModel {
     }
     @Override public @NonNull Observable<List<MessageThread>> messageThreads() {
       return this.messageThreads;
+    }
+    @Override public @NonNull Observable<String> unreadCountTextViewText() {
+      return this.unreadCountTextViewText;
     }
   }
 }

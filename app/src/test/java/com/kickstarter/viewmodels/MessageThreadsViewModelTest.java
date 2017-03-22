@@ -41,8 +41,8 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<List<MessageThread>> messageThreads = new TestSubscriber<>();
     vm.outputs.messageThreads().subscribe(messageThreads);
 
-    // todo: this needs to actually happen
-    vm.inputs.refresh();
+    // todo: this needs to happen
+//    vm.inputs.refresh();
 
     // Message threads emit.
     messageThreads.assertValues(envelope.messageThreads());

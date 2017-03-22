@@ -16,15 +16,12 @@ import java.util.List;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public interface MessageThreadsViewModel {
 
   interface Inputs extends MessageThreadsAdapter.Delegate {
     /** Invoke when pagination should happen. */
     void nextPage();
-
-    void onCreate();
 
     /** Call when the swipe refresher is invoked. */
     void refresh();
@@ -46,20 +43,10 @@ public interface MessageThreadsViewModel {
 
       this.client = environment.apiClient();
 
-      // fix this in the morning!
-      final Observable<Void> startOverWith = Observable.merge(
-        this.onCreate,
-        this.refresh
-      ).take(1);
-
-      startOverWith.subscribe(s -> {
-        Timber.d("");
-      });
-
       final ApiPaginator<MessageThread, MessageThreadsEnvelope, Void> paginator =
         ApiPaginator.<MessageThread, MessageThreadsEnvelope, Void>builder()
           .nextPage(this.nextPage)
-          .startOverWith(startOverWith)  // todo: fix initial load
+//          .startOverWith(startOverWith)  // todo: fix initial load
           .envelopeToListOfData(MessageThreadsEnvelope::messageThreads)
           .envelopeToMoreUrl(env -> env.urls().api().moreMessageThreads())
           .loadWithParams(__ -> this.client.fetchMessageThreads())
@@ -74,7 +61,6 @@ public interface MessageThreadsViewModel {
     }
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();
-    private final PublishSubject<Void> onCreate = PublishSubject.create();
     private final PublishSubject<Void> refresh = PublishSubject.create();
 
     private final BehaviorSubject<Boolean> isFetchingMessageThreads = BehaviorSubject.create();
@@ -85,9 +71,6 @@ public interface MessageThreadsViewModel {
 
     @Override public void nextPage() {
       this.nextPage.onNext(null);
-    }
-    @Override public void onCreate() {
-      this.onCreate.onNext(null);
     }
     @Override public void refresh() {
       this.refresh.onNext(null);

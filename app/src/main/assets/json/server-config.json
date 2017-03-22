@@ -6138,9 +6138,9 @@
           },
           "status": {
             "canceled": "Annulé",
-            "successful": "Intégralement financé",
+            "successful": "Financé",
             "suspended": "Suspendu",
-            "unsuccessful": "Objectif de financement non atteint"
+            "unsuccessful": "Non financé"
           }
         },
         "settings": {
@@ -7303,7 +7303,6 @@
     "ios_favorite_categories": true,
     "ios_live_streams": true,
     "ios_live_stream_discovery": true,
-    "ios_scroll_output_observe_for_ui": true,
     "handbook_hero": true,
     "android_pay": true,
     "i18n_discovery_touts": true,
@@ -7502,11 +7501,9 @@
     }
   ],
   "ab_experiments": {
-    "koala_alt_frontend_tracking": "experimental",
-    "credit_card_input_placement": "control",
+    "koala_alt_frontend_tracking": "control",
     "minimal_layout": "control",
-    "lsi_vs_cf_recs": "control",
-    "search_v2": "control"
+    "blended_recs": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

@@ -923,9 +923,9 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_projects_empty_state_message" formatted="false">Vous n\'avez pas encore soutenu de projets. On change ça ?</string>
   <string name="profile_projects_empty_state_message_no_backed_projects_yet" formatted="false">Pas de projets soutenus</string>
   <string name="profile_projects_status_canceled" formatted="false">Annulé</string>
-  <string name="profile_projects_status_successful" formatted="false">Intégralement financé</string>
+  <string name="profile_projects_status_successful" formatted="false">Financé</string>
   <string name="profile_projects_status_suspended" formatted="false">Suspendu</string>
-  <string name="profile_projects_status_unsuccessful" formatted="false">Objectif de financement non atteint</string>
+  <string name="profile_projects_status_unsuccessful" formatted="false">Non financé</string>
   <string name="profile_projects_time_left_to_go" formatted="false">Plus que %{time_left}</string>
   <string name="profile_settings_about_contact" formatted="false">Contact</string>
   <string name="profile_settings_about_cookie" formatted="false">Politique en matière de cookies</string>

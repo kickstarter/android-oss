@@ -61,6 +61,7 @@ public final class ApiErrorOperator<T> implements Observable.Operator<T, retrofi
           }
         } else { 
           subscriber.onNext(response.body());
+          subscriber.onCompleted();
         }
       }
     };

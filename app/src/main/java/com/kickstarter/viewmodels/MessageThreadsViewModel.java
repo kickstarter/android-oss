@@ -14,7 +14,6 @@ import com.kickstarter.ui.adapters.MessageThreadsAdapter;
 import java.util.List;
 
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public interface MessageThreadsViewModel {
@@ -53,17 +52,14 @@ public interface MessageThreadsViewModel {
           .loadWithPaginationPath(this.client::fetchMessageThreadsWithPaginationPath)
           .build();
 
-      paginator.isFetching()
-        .compose(bindToLifecycle())
-        .subscribe(this.isFetchingMessageThreads::onNext);
-
+      this.isFetchingMessageThreads = paginator.isFetching();
       this.messageThreads = paginator.paginatedData();
     }
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Void> refresh = PublishSubject.create();
 
-    private final BehaviorSubject<Boolean> isFetchingMessageThreads = BehaviorSubject.create();
+    private final Observable<Boolean> isFetchingMessageThreads;
     private final Observable<List<MessageThread>> messageThreads;
 
     public final MessageThreadsViewModel.Inputs inputs = this;

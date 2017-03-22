@@ -49,6 +49,8 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.adapter::messageThreads);
+
+    this.viewModel.inputs.onCreate();
   }
 
   @Override

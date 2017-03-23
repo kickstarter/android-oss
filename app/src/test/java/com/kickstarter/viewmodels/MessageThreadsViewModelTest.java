@@ -23,6 +23,17 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
+  private MessageThreadsViewModel.ViewModel vm;
+  private TestSubscriber<List<MessageThread>> messageThreads = new TestSubscriber<>();
+  private TestSubscriber<Boolean> unreadCountTextViewHidden = new TestSubscriber<>();
+  private TestSubscriber<String> unreadCountTextViewText = new TestSubscriber<>();
+
+  private void setUpEnvironment(Environment env) {
+    this.vm = new MessageThreadsViewModel.ViewModel(env);
+    this.vm.outputs.messageThreads().subscribe(this.messageThreads);
+    this.vm.outputs.unreadCountTextViewHidden().subscribe(unreadCountTextViewHidden);
+    this.vm.outputs.unreadCountTextViewText().subscribe(unreadCountTextViewText);
+  }
 
   @Test
   public void testMessageThreadsEmit() {
@@ -37,14 +48,9 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    final Environment env = environment().toBuilder().apiClient(apiClient).build();
-    final MessageThreadsViewModel.ViewModel vm = new MessageThreadsViewModel.ViewModel(env);
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
-    final TestSubscriber<List<MessageThread>> messageThreads = new TestSubscriber<>();
-    vm.outputs.messageThreads().subscribe(messageThreads);
-
-    // Message threads emit.
-    messageThreads.assertValueCount(1);
+    this.messageThreads.assertValueCount(1);
   }
 
   @Test
@@ -57,17 +63,10 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    final Environment env = environment().toBuilder().apiClient(apiClient).build();
-    final MessageThreadsViewModel.ViewModel vm = new MessageThreadsViewModel.ViewModel(env);
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
-    final TestSubscriber<Boolean> unreadCountTextViewHidden = new TestSubscriber<>();
-    vm.outputs.unreadCountTextViewHidden().subscribe(unreadCountTextViewHidden);
-
-    final TestSubscriber<String> unreadCountTextViewText = new TestSubscriber<>();
-    vm.outputs.unreadCountTextViewText().subscribe(unreadCountTextViewText);
-
-    unreadCountTextViewHidden.assertValues(true);
-    unreadCountTextViewText.assertNoValues();
+    this.unreadCountTextViewHidden.assertValues(true);
+    this.unreadCountTextViewText.assertNoValues();
   }
 
   @Test
@@ -80,16 +79,9 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    final Environment env = environment().toBuilder().apiClient(apiClient).build();
-    final MessageThreadsViewModel.ViewModel vm = new MessageThreadsViewModel.ViewModel(env);
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
-    final TestSubscriber<Boolean> unreadCountTextViewHidden = new TestSubscriber<>();
-    vm.outputs.unreadCountTextViewHidden().subscribe(unreadCountTextViewHidden);
-
-    final TestSubscriber<String> unreadCountTextViewText = new TestSubscriber<>();
-    vm.outputs.unreadCountTextViewText().subscribe(unreadCountTextViewText);
-
-    unreadCountTextViewHidden.assertValues(false);
-    unreadCountTextViewText.assertValues(NumberUtils.format(user.unreadMessagesCount()));
+    this.unreadCountTextViewHidden.assertValues(false);
+    this.unreadCountTextViewText.assertValues(NumberUtils.format(user.unreadMessagesCount()));
   }
 }

@@ -52,6 +52,7 @@ public final class ProjectSocialActivity extends BaseActivity<ProjectSocialViewM
     back();
   }
 
+  @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }

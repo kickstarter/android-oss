@@ -4,9 +4,17 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
+  <include layout="@layout/messages_toolbar"/>
+
   <TextView
     android:text="Hello Julie"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" />
+
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/messages_recycler_view"
+    android:background="@color/discovery_background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
 
 </LinearLayout>

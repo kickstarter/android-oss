@@ -72,8 +72,8 @@ public interface MessageThreadViewModel {
     private final Observable<MessageThread> startMessagesActivity;
     private final Observable<Boolean> unreadIndicatorImageViewHidden;
 
-    public final MessageThreadViewModel.Inputs inputs = this;
-    public final MessageThreadViewModel.Outputs outputs = this;
+    public final Inputs inputs = this;
+    public final Outputs outputs = this;
 
     @Override public void configureWith(final @NonNull MessageThread messageThread) {
       this.messageThread.onNext(messageThread);

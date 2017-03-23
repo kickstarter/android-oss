@@ -77,9 +77,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
     this.distinctUntilChanged = distinctUntilChanged;
 
     this.paginatedData = this.startOverWith.switchMap(this::dataWithPagination);
-    this.loadingPage = this.startOverWith.switchMap(__ ->
-      nextPage.scan(1, (accum, ___) -> accum + 1)
-    );
+    this.loadingPage = this.startOverWith.switchMap(__ -> nextPage.scan(1, (accum, ___) -> accum + 1));
   }
 
   public final static class Builder<Data, Envelope, Params> {

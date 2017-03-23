@@ -99,6 +99,7 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
     setFormEnabled(!disabled);
   }
 
+  @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }

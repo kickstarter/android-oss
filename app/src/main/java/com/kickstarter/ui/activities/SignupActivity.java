@@ -120,6 +120,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
     setFormEnabled(!disabled);
   }
 
+  @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }

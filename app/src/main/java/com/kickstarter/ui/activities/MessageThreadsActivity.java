@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -44,7 +43,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     setContentView(R.layout.message_threads_layout);
     ButterKnife.bind(this);
 
-    this.adapter = new MessageThreadsAdapter(this.viewModel.inputs);
+    this.adapter = new MessageThreadsAdapter();
     this.recyclerView.setAdapter(this.adapter);
     this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -60,11 +59,6 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
       .compose(observeForUI())
       .subscribe(this.adapter::messageThreads);
 
-    this.viewModel.outputs.startMessagesActivity()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.startMessagesActivity());
-
     this.viewModel.outputs.unreadCountTextViewHidden()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -77,18 +71,14 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   }
 
   @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    this.recyclerViewPaginator.stop();
-    this.recyclerView.setAdapter(null);
-  }
-
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }
 
-  private void startMessagesActivity() {
-    final Intent intent = new Intent(this, MessagesActivity.class);
-    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    this.recyclerViewPaginator.stop();
+    this.recyclerView.setAdapter(null);
   }
 }

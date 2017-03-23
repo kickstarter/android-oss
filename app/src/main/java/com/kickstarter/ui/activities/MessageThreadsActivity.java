@@ -67,7 +67,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     this.viewModel.outputs.unreadCountTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this.unreadCountTextView::setText);
+      .subscribe(count -> this.unreadCountTextView.setText(count + " new"));  // todo: localize when design is finalized
   }
 
   @Override

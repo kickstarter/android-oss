@@ -95,6 +95,7 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
     finish();
   }
 
+  @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }

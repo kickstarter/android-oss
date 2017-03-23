@@ -73,6 +73,7 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> implem
   @Override
   public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {}
 
+  @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }

@@ -229,6 +229,7 @@ public final class CommentsActivity extends BaseActivity<CommentsViewModel> impl
     viewModel.inputs.loginSuccess();
   }
 
+  @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }

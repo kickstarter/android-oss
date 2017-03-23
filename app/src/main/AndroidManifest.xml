@@ -220,12 +220,22 @@
     </activity>
 
     <activity
+      android:name=".ui.activities.MessagesActivity"
+      android:parentActivityName=".ui.activities.MessageThreadsActivity">
+
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".ui.activities.MessageThreadsActivity" />
+
+    </activity>
+
+    <activity
       android:name=".ui.activities.MessageThreadsActivity"
       android:parentActivityName=".ui.activities.ProfileActivity">
 
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.MessageThreadsActivity" />
+        android:value=".ui.activities.ProfileActivity" />
 
     </activity>
 

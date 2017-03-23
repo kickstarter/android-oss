@@ -14,6 +14,7 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.ui.activities.MessageThreadsActivity;
+import com.kickstarter.ui.adapters.MessageThreadsAdapter;
 
 import java.util.List;
 
@@ -24,7 +25,10 @@ import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 
 public interface MessageThreadsViewModel {
 
-  interface Inputs {
+  interface Inputs extends MessageThreadsAdapter.Delegate {
+    /** Call when a message thread has been clicked. */
+    void messageThreadClicked();
+
     /** Invoke when pagination should happen. */
     void nextPage();
 
@@ -38,6 +42,9 @@ public interface MessageThreadsViewModel {
 
     /** Emits a list of message threads to be displayed. */
     Observable<List<MessageThread>> messageThreads();
+
+    /** Emits when we want to start the {@link com.kickstarter.ui.activities.MessagesActivity}. */
+    Observable<Void> startMessagesActivity();
 
     /** Emits a boolean to determine if the unread count text view should be hidden. */
     Observable<Boolean> unreadCountTextViewHidden();
@@ -83,19 +90,26 @@ public interface MessageThreadsViewModel {
           final Integer count = user.unreadMessagesCount();
           return ObjectUtils.isNull(count) || IntegerUtils.isZero(count);
         });
+
+      this.startMessagesActivity = this.messageThreadClicked;
     }
 
+    private final PublishSubject<Void> messageThreadClicked = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Void> refresh = PublishSubject.create();
 
     private final Observable<Boolean> isFetchingMessageThreads;
     private final Observable<List<MessageThread>> messageThreads;
+    private final Observable<Void> startMessagesActivity;
     private final Observable<Boolean> unreadCountTextViewHidden;
     private final Observable<String> unreadCountTextViewText;
 
     public final MessageThreadsViewModel.Inputs inputs = this;
     public final MessageThreadsViewModel.Outputs outputs = this;
 
+    @Override public void messageThreadClicked() {
+      this.messageThreadClicked.onNext(null);
+    }
     @Override public void nextPage() {
       this.nextPage.onNext(null);
     }
@@ -108,6 +122,9 @@ public interface MessageThreadsViewModel {
     }
     @Override public @NonNull Observable<List<MessageThread>> messageThreads() {
       return this.messageThreads;
+    }
+    @Override public @NonNull Observable<Void> startMessagesActivity() {
+      return this.startMessagesActivity;
     }
     @Override public @NonNull Observable<Boolean> unreadCountTextViewHidden() {
       return this.unreadCountTextViewHidden;

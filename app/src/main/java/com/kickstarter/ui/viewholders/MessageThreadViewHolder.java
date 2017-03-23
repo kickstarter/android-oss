@@ -24,6 +24,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class MessageThreadViewHolder extends KSViewHolder {
+  private final Delegate delegate;
   private final MessageThreadViewModel.ViewModel viewModel;
 
   protected @Bind(R.id.date_text_view) TextView dateTextView;
@@ -34,9 +35,14 @@ public final class MessageThreadViewHolder extends KSViewHolder {
 
   private KSString ksString;
 
-  public MessageThreadViewHolder(final @NonNull View view) {
+  public interface Delegate {
+    void messageThreadClicked();
+  }
+
+  public MessageThreadViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
 
+    this.delegate = delegate;
     this.ksString = environment().ksString();
     this.viewModel = new MessageThreadViewModel.ViewModel(environment());
 
@@ -72,6 +78,11 @@ public final class MessageThreadViewHolder extends KSViewHolder {
   public void bindData(final @Nullable Object data) throws Exception {
     final MessageThread messageThread = requireNonNull((MessageThread) data);
     this.viewModel.inputs.configureWith(messageThread);
+  }
+
+  @Override
+  public void onClick(final @NonNull View view) {
+    this.delegate.messageThreadClicked();
   }
 
   private void setDateTextView(final @NonNull DateTime date) {

@@ -93,8 +93,8 @@ public interface MessageThreadsViewModel {
     private final Observable<Boolean> unreadCountTextViewHidden;
     private final Observable<String> unreadCountTextViewText;
 
-    public final MessageThreadsViewModel.Inputs inputs = this;
-    public final MessageThreadsViewModel.Outputs outputs = this;
+    public final Inputs inputs = this;
+    public final Outputs outputs = this;
 
     @Override public void nextPage() {
       this.nextPage.onNext(null);

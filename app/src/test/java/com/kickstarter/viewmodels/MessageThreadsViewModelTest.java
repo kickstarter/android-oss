@@ -28,7 +28,7 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
   private TestSubscriber<Boolean> unreadCountTextViewHidden = new TestSubscriber<>();
   private TestSubscriber<String> unreadCountTextViewText = new TestSubscriber<>();
 
-  private void setUpEnvironment(Environment env) {
+  private void setUpEnvironment(final @NonNull Environment env) {
     this.vm = new MessageThreadsViewModel.ViewModel(env);
     this.vm.outputs.messageThreads().subscribe(this.messageThreads);
     this.vm.outputs.unreadCountTextViewHidden().subscribe(unreadCountTextViewHidden);

@@ -61,8 +61,8 @@ public interface MessageThreadHolderViewModel {
     private final Observable<String> participantNameTextViewText;
     private final Observable<Boolean> unreadIndicatorImageViewHidden;
 
-    public final MessageThreadHolderViewModel.Inputs inputs = this;
-    public final MessageThreadHolderViewModel.Outputs outputs = this;
+    public final Inputs inputs = this;
+    public final Outputs outputs = this;
 
     @Override public void configureWith(final @NonNull MessageThread messageThread) {
       this.messageThread.onNext(messageThread);

@@ -14,12 +14,7 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 
 public final class MessageThreadsAdapter extends KSAdapter {
-  private final Delegate delegate;
-
-  public interface Delegate {}
-
-  public MessageThreadsAdapter(final @NonNull Delegate delegate) {
-    this.delegate = delegate;
+  public MessageThreadsAdapter() {
     addSection(emptyList());
   }
 

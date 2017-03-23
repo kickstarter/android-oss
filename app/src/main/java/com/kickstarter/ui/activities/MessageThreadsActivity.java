@@ -43,7 +43,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     setContentView(R.layout.message_threads_layout);
     ButterKnife.bind(this);
 
-    this.adapter = new MessageThreadsAdapter(this.viewModel.inputs);
+    this.adapter = new MessageThreadsAdapter();
     this.recyclerView.setAdapter(this.adapter);
     this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

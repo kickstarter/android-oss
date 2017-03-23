@@ -14,7 +14,6 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.ui.activities.MessageThreadsActivity;
-import com.kickstarter.ui.adapters.MessageThreadsAdapter;
 
 import java.util.List;
 
@@ -25,7 +24,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 
 public interface MessageThreadsViewModel {
 
-  interface Inputs extends MessageThreadsAdapter.Delegate {
+  interface Inputs {
     /** Invoke when pagination should happen. */
     void nextPage();
 

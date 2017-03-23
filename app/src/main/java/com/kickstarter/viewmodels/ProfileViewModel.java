@@ -38,7 +38,7 @@ public interface ProfileViewModel {
     void nextPage();
 
     /** Call when a project card has been clicked. */
-    void projectCardClicked(final @NonNull Project project);
+    void projectCardClicked(Project project);
   }
 
   interface Outputs {

@@ -9,7 +9,8 @@
   android:id="@+id/message_threads_toolbar"
   android:background="@color/white"
   app:contentInsetLeft="0dp"
-  app:contentInsetStart="0dp">
+  app:contentInsetStart="0dp"
+  tools:ignore="UnusedAttribute">
 
   <RelativeLayout
     android:layout_width="match_parent"

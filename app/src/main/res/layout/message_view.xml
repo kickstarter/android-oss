@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/message_view"
+  android:layout_margin="@dimen/grid_1"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <TextView
+    android:id="@+id/message_body_text_view"
+    style="@style/SubheadPrimary"
+    android:background="@color/gray"
+    android:layout_margin="@dimen/grid_2"
+    android:padding="@dimen/grid_2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:text="Hey there!"/>
+
+  <ImageView
+    android:id="@+id/sender_avatar_image_view"
+    android:layout_width="@dimen/grid_4"
+    android:layout_height="@dimen/grid_4"
+    tools:background="@color/blue"/>
+
+</RelativeLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.kickstarter.ui.toolbars.KSToolbar
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  tools:showIn="@layout/messages_layout"
+  style="@style/Toolbar"
+  android:elevation="0dp"
+  android:id="@+id/messages_toolbar"
+  android:background="@color/white"
+  app:contentInsetLeft="0dp"
+  app:contentInsetStart="0dp"
+  tools:ignore="UnusedAttribute">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.kickstarter.ui.views.IconButton
+      style="@style/ToolbarIcon"
+      android:id="@+id/back_button"
+      android:focusable="true"
+      android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
+      android:text="@string/arrow_back_icon" />
+
+  </RelativeLayout>
+
+</com.kickstarter.ui.toolbars.KSToolbar>

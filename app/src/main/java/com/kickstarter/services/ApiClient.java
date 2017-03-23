@@ -14,6 +14,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
+import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.Update;
@@ -32,6 +33,7 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
@@ -194,6 +196,14 @@ public final class ApiClient implements ApiClientType {
   public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
     return service
       .paginatedProjectComments(paginationPath)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread) {
+    return service
+      .messagesForThread(messageThread.id())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

@@ -27,6 +27,7 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
@@ -75,6 +76,9 @@ public interface ApiService {
 
   @PUT("/v1/facebook/access_token?intent=register")
   Observable<Response<AccessTokenEnvelope>> login(@Body RegisterWithFacebookBody body);
+
+  @GET("/v1/message_threads/{message_thread_id}/messages")
+  Observable<Response<MessageThreadEnvelope>> messagesForThread(@Path("message_thread_id") long messageThreadId);
 
   // Todo: replace "inbox" with Mailbox "inbox" or "sent" value
   @GET("/v1/message_threads/inbox")

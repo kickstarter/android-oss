@@ -9,6 +9,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
+import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
@@ -17,6 +18,7 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 
 import java.util.List;
@@ -59,6 +61,8 @@ public interface ApiClientType {
   @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull String paginationPath);
 
   @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update);
+
+  @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread);
 
   @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads();
 

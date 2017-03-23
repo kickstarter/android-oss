@@ -12,7 +12,7 @@ import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.MessageThread;
-import com.kickstarter.viewmodels.MessageThreadViewModel;
+import com.kickstarter.viewmodels.MessageThreadHolderViewModel;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -24,7 +24,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class MessageThreadViewHolder extends KSViewHolder {
-  private final MessageThreadViewModel.ViewModel viewModel;
+  private final MessageThreadHolderViewModel.ViewModel viewModel;
 
   protected @Bind(R.id.date_text_view) TextView dateTextView;
   protected @Bind(R.id.message_body_text_view) TextView messageBodyTextView;
@@ -38,7 +38,7 @@ public final class MessageThreadViewHolder extends KSViewHolder {
     super(view);
 
     this.ksString = environment().ksString();
-    this.viewModel = new MessageThreadViewModel.ViewModel(environment());
+    this.viewModel = new MessageThreadHolderViewModel.ViewModel(environment());
 
     ButterKnife.bind(this, view);
 

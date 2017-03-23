@@ -9,11 +9,11 @@ import org.junit.Test;
 
 import rx.observers.TestSubscriber;
 
-public final class MessageThreadViewModelTest extends KSRobolectricTestCase {
+public final class MessageThreadHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testEmitsDateTime() {
-    final MessageThreadViewModel.ViewModel vm = new MessageThreadViewModel.ViewModel(environment());
+    final MessageThreadHolderViewModel.ViewModel vm = new MessageThreadHolderViewModel.ViewModel(environment());
     final MessageThread messageThread = MessageThreadFactory.messageThread();
 
     final TestSubscriber<DateTime> dateDateTime = new TestSubscriber<>();
@@ -27,7 +27,7 @@ public final class MessageThreadViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testEmitsMessageBodyTextViewText() {
-    final MessageThreadViewModel.ViewModel vm = new MessageThreadViewModel.ViewModel(environment());
+    final MessageThreadHolderViewModel.ViewModel vm = new MessageThreadHolderViewModel.ViewModel(environment());
     final MessageThread messageThread = MessageThreadFactory.messageThread();
 
     final TestSubscriber<String> messageBodyTextViewText = new TestSubscriber<>();
@@ -41,7 +41,7 @@ public final class MessageThreadViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testEmitsParticipantData() {
-    final MessageThreadViewModel.ViewModel vm = new MessageThreadViewModel.ViewModel(environment());
+    final MessageThreadHolderViewModel.ViewModel vm = new MessageThreadHolderViewModel.ViewModel(environment());
     final MessageThread messageThread = MessageThreadFactory.messageThread();
 
     final TestSubscriber<String> participantAvatarUrl = new TestSubscriber<>();
@@ -60,7 +60,7 @@ public final class MessageThreadViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testUnreadIndicator() {
-    final MessageThreadViewModel.ViewModel vm = new MessageThreadViewModel.ViewModel(environment());
+    final MessageThreadHolderViewModel.ViewModel vm = new MessageThreadHolderViewModel.ViewModel(environment());
 
     final MessageThread messageThreadWithUnread = MessageThreadFactory.messageThread()
       .toBuilder()

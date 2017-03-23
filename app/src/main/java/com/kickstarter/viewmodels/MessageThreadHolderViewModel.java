@@ -14,7 +14,7 @@ import org.joda.time.DateTime;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public interface MessageThreadViewModel {
+public interface MessageThreadHolderViewModel {
 
   interface Inputs {
     /** Call to configure with a MessageThread. */
@@ -61,8 +61,8 @@ public interface MessageThreadViewModel {
     private final Observable<String> participantNameTextViewText;
     private final Observable<Boolean> unreadIndicatorImageViewHidden;
 
-    public final MessageThreadViewModel.Inputs inputs = this;
-    public final MessageThreadViewModel.Outputs outputs = this;
+    public final MessageThreadHolderViewModel.Inputs inputs = this;
+    public final MessageThreadHolderViewModel.Outputs outputs = this;
 
     @Override public void configureWith(final @NonNull MessageThread messageThread) {
       this.messageThread.onNext(messageThread);

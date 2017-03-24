@@ -65,8 +65,9 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
+    // Unread count text view is hidden.
     this.unreadCountTextViewHidden.assertValues(true);
-    this.unreadCountTextViewText.assertNoValues();
+    this.unreadCountTextViewText.assertValues(NumberUtils.format(user.unreadMessagesCount()));
   }
 
   @Test
@@ -81,6 +82,7 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
+    // Unread count text view is shown.
     this.unreadCountTextViewHidden.assertValues(false);
     this.unreadCountTextViewText.assertValues(NumberUtils.format(user.unreadMessagesCount()));
   }

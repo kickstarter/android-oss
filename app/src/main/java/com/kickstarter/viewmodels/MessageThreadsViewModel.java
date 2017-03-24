@@ -8,7 +8,6 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
@@ -20,6 +19,7 @@ import java.util.List;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.coalesce;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 
 public interface MessageThreadsViewModel {
@@ -73,16 +73,12 @@ public interface MessageThreadsViewModel {
       this.isFetchingMessageThreads = paginator.isFetching();
       this.messageThreads = paginator.paginatedData();
 
-      this.unreadCountTextViewText = this.currentUser.loggedInUser()
+      final Observable<Integer> unreadMessagesCount = this.currentUser.loggedInUser()
         .map(User::unreadMessagesCount)
-        .filter(count -> ObjectUtils.isNotNull(count) && IntegerUtils.isNonZero(count))
-        .map(NumberUtils::format);
+        .compose(coalesce(0));
 
-      this.unreadCountTextViewHidden = this.currentUser.loggedInUser()
-        .map(user -> {
-          final Integer count = user.unreadMessagesCount();
-          return ObjectUtils.isNull(count) || IntegerUtils.isZero(count);
-        });
+      this.unreadCountTextViewHidden = unreadMessagesCount.map(IntegerUtils::isZero);
+      this.unreadCountTextViewText = unreadMessagesCount.map(NumberUtils::format);
     }
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();

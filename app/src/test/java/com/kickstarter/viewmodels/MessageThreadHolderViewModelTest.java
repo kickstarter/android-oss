@@ -1,7 +1,10 @@
 package com.kickstarter.viewmodels;
 
+import android.support.annotation.NonNull;
+
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.MessageThreadFactory;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.models.MessageThread;
 
 import org.joda.time.DateTime;
@@ -10,75 +13,75 @@ import org.junit.Test;
 import rx.observers.TestSubscriber;
 
 public final class MessageThreadHolderViewModelTest extends KSRobolectricTestCase {
+  private MessageThreadHolderViewModel.ViewModel vm;
+  private final MessageThread defaultMessageThread = MessageThreadFactory.messageThread();
+  private final TestSubscriber<DateTime> dateDateTime = new TestSubscriber<>();
+  private final TestSubscriber<String> messageBodyTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<String> participantAvatarUrl = new TestSubscriber<>();
+  private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> unreadIndicatorImageViewHidden = new TestSubscriber<>();
+
+  private void setUpEnvironment(final @NonNull Environment env) {
+    this.vm = new MessageThreadHolderViewModel.ViewModel(env);
+    this.vm.outputs.dateDateTime().subscribe(dateDateTime);
+    this.vm.outputs.messageBodyTextViewText().subscribe(messageBodyTextViewText);
+    this.vm.outputs.participantAvatarUrl().subscribe(participantAvatarUrl);
+    this.vm.outputs.participantNameTextViewText().subscribe(participantNameTextViewText);
+    this.vm.outputs.unreadIndicatorImageViewHidden().subscribe(unreadIndicatorImageViewHidden);
+  }
 
   @Test
   public void testEmitsDateTime() {
-    final MessageThreadHolderViewModel.ViewModel vm = new MessageThreadHolderViewModel.ViewModel(environment());
-    final MessageThread messageThread = MessageThreadFactory.messageThread();
-
-    final TestSubscriber<DateTime> dateDateTime = new TestSubscriber<>();
-    vm.outputs.dateDateTime().subscribe(dateDateTime);
+    setUpEnvironment(environment());
 
     // Configure the view model with a message thread.
-    vm.inputs.configureWith(messageThread);
+    this.vm.inputs.configureWith(this.defaultMessageThread);
 
-    dateDateTime.assertValues(messageThread.lastMessage().createdAt());
+    this.dateDateTime.assertValues(this.defaultMessageThread.lastMessage().createdAt());
   }
 
   @Test
   public void testEmitsMessageBodyTextViewText() {
-    final MessageThreadHolderViewModel.ViewModel vm = new MessageThreadHolderViewModel.ViewModel(environment());
-    final MessageThread messageThread = MessageThreadFactory.messageThread();
-
-    final TestSubscriber<String> messageBodyTextViewText = new TestSubscriber<>();
-    vm.outputs.messageBodyTextViewText().subscribe(messageBodyTextViewText);
+    setUpEnvironment(environment());
 
     // Configure the view model with a message thread.
-    vm.inputs.configureWith(messageThread);
+    this.vm.inputs.configureWith(this.defaultMessageThread);
 
-    messageBodyTextViewText.assertValues(messageThread.lastMessage().body());
+    this.messageBodyTextViewText.assertValues(this.defaultMessageThread.lastMessage().body());
   }
 
   @Test
   public void testEmitsParticipantData() {
-    final MessageThreadHolderViewModel.ViewModel vm = new MessageThreadHolderViewModel.ViewModel(environment());
-    final MessageThread messageThread = MessageThreadFactory.messageThread();
-
-    final TestSubscriber<String> participantAvatarUrl = new TestSubscriber<>();
-    vm.outputs.participantAvatarUrl().subscribe(participantAvatarUrl);
-
-    final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
-    vm.outputs.participantNameTextViewText().subscribe(participantNameTextViewText);
+    setUpEnvironment(environment());
 
     // Configure the view model with a message thread.
-    vm.inputs.configureWith(messageThread);
+    this.vm.inputs.configureWith(this.defaultMessageThread);
 
     // Emits participant's avatar url and name.
-    participantAvatarUrl.assertValues(messageThread.participant().avatar().medium());
-    participantNameTextViewText.assertValues(messageThread.participant().name());
+    this.participantAvatarUrl.assertValues(this.defaultMessageThread.participant().avatar().medium());
+    this.participantNameTextViewText.assertValues(this.defaultMessageThread.participant().name());
   }
 
   @Test
   public void testUnreadIndicator() {
-    final MessageThreadHolderViewModel.ViewModel vm = new MessageThreadHolderViewModel.ViewModel(environment());
+    setUpEnvironment(environment());
 
-    final MessageThread messageThreadWithUnread = MessageThreadFactory.messageThread()
+    final MessageThread messageThreadWithUnread = this.defaultMessageThread
       .toBuilder()
       .unreadMessagesCount(2)
       .build();
 
-    final MessageThread messageThreadWithNoUnread = MessageThreadFactory.messageThread()
+    final MessageThread messageThreadWithNoUnread = this.defaultMessageThread
       .toBuilder()
       .unreadMessagesCount(0)
       .build();
 
-    final TestSubscriber<Boolean> unreadIndicatorImageViewHidden = new TestSubscriber<>();
-    vm.outputs.unreadIndicatorImageViewHidden().subscribe(unreadIndicatorImageViewHidden);
+    // Configure the view model with a message thread with unreads.
+    this.vm.inputs.configureWith(messageThreadWithUnread);
+    this.unreadIndicatorImageViewHidden.assertValues(false);
 
-    vm.inputs.configureWith(messageThreadWithUnread);
-    unreadIndicatorImageViewHidden.assertValues(false);
-
-    vm.inputs.configureWith(messageThreadWithNoUnread);
-    unreadIndicatorImageViewHidden.assertValues(false, true);
+    // Configure the view model with a message thread with no unreads.
+    this.vm.inputs.configureWith(messageThreadWithNoUnread);
+    this.unreadIndicatorImageViewHidden.assertValues(false, true);
   }
 }

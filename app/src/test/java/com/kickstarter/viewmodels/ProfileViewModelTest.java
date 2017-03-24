@@ -235,14 +235,13 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testProfileViewModel_StartProjectActivity() {
+  public void testProfileViewModel_StartMessageThreadsActivity() {
     final ProfileViewModel.ViewModel vm = new ProfileViewModel.ViewModel(environment());
-    final Project project = ProjectFactory.backedProject();
 
-    final TestSubscriber<Project> startProjectActivity = new TestSubscriber<>();
-    vm.outputs.startProjectActivity().subscribe(startProjectActivity);
+    final TestSubscriber<Void> startMessageThreadsActivity = new TestSubscriber<>();
+    vm.outputs.startMessageThreadsActivity().subscribe(startMessageThreadsActivity);
 
-    vm.inputs.projectCardClicked(project);
-    startProjectActivity.assertValues(project);
+    vm.inputs.messsagesButtonClicked();
+    startMessageThreadsActivity.assertValueCount(1);
   }
 }

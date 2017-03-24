@@ -63,6 +63,7 @@ android {
             }
         }
         debug {
+            minifyEnabled false
             debuggable true
             applicationIdSuffix '.debug'
             signingConfig signingConfigs.debug

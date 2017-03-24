@@ -27,6 +27,7 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
 import java.util.List;
@@ -75,11 +76,18 @@ public interface ApiService {
   @PUT("/v1/facebook/access_token?intent=register")
   Observable<Response<AccessTokenEnvelope>> login(@Body RegisterWithFacebookBody body);
 
-  @GET("/v1/users/self/notifications")
-  Observable<Response<List<ProjectNotification>>> projectNotifications();
+  // Todo: replace "inbox" with Mailbox "inbox" or "sent" value
+  @GET("/v1/message_threads/inbox")
+  Observable<Response<MessageThreadsEnvelope>> messageThreads();
+
+  @GET("/v1/projects/{project_id}/message_threads/inbox")
+  Observable<Response<MessageThreadsEnvelope>> messageThreads(@Path("project_id") long projectId);
 
   @GET
   Observable<Response<CommentsEnvelope>> paginatedProjectComments(@Url String paginationPath);
+
+  @GET
+  Observable<Response<MessageThreadsEnvelope>> paginatedMessageThreads(@Url String paginationPath);
 
   @POST("/v1/projects/{param}/comments/")
   Observable<Response<Comment>> postProjectComment(@Path("param") String param, @Body CommentBody body);
@@ -99,6 +107,9 @@ public interface ApiService {
 
   @GET("/v1/projects/{project_param}/comments")
   Observable<Response<CommentsEnvelope>> projectComments(@Path("project_param") String projectParam);
+
+  @GET("/v1/users/self/notifications")
+  Observable<Response<List<ProjectNotification>>> projectNotifications();
 
   @GET("/v1/discover")
   Observable<Response<DiscoverEnvelope>> projects(@QueryMap Map<String, String> params);

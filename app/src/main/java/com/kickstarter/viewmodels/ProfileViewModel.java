@@ -31,11 +31,14 @@ public interface ProfileViewModel {
     /** Call when the Explore Projects button in the empty state has been clicked. */
     void exploreProjectsButtonClicked();
 
+    /** Call when the messages button has been clicked. */
+    void messsagesButtonClicked();
+
     /** Call when the next page has been invoked. */
     void nextPage();
 
     /** Call when a project card has been clicked. */
-    void projectCardClicked(final @NonNull Project project);
+    void projectCardClicked(Project project);
   }
 
   interface Outputs {
@@ -65,6 +68,9 @@ public interface ProfileViewModel {
 
     /** Emits a list of projects to display in the profile. */
     Observable<List<Project>> projects();
+
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
+    Observable<Void> startMessageThreadsActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Project> startProjectActivity();
@@ -138,12 +144,14 @@ public interface ProfileViewModel {
       this.projects = paginator.paginatedData();
       this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked;
       this.startProjectActivity = this.projectCardClicked;
+      this.startMessageThreadsActivity = this.messsagesButtonClicked;
       this.userNameTextViewText = loggedInUser.map(User::name);
 
       this.koala.trackProfileView();
     }
 
     private final PublishSubject<Void> exploreProjectsButtonClicked = PublishSubject.create();
+    private final PublishSubject<Void> messsagesButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
 
@@ -158,6 +166,7 @@ public interface ProfileViewModel {
     private final Observable<List<Project>> projects;
     private final Observable<Void> resumeDiscoveryActivity;
     private final Observable<Project> startProjectActivity;
+    private final Observable<Void> startMessageThreadsActivity;
     private final Observable<String> userNameTextViewText;
 
     public final ProfileViewModel.Inputs inputs = this;
@@ -168,6 +177,9 @@ public interface ProfileViewModel {
     }
     @Override public void exploreProjectsButtonClicked() {
       this.exploreProjectsButtonClicked.onNext(null);
+    }
+    @Override public void messsagesButtonClicked() {
+      this.messsagesButtonClicked.onNext(null);
     }
     @Override public void nextPage() {
       this.nextPage.onNext(null);
@@ -211,6 +223,9 @@ public interface ProfileViewModel {
     }
     @Override public @NonNull Observable<Project> startProjectActivity() {
       return this.startProjectActivity;
+    }
+    @Override public @NonNull Observable<Void> startMessageThreadsActivity() {
+      return this.startMessageThreadsActivity;
     }
     @Override public @NonNull Observable<String> userNameTextViewText() {
       return this.userNameTextViewText;

@@ -11,6 +11,7 @@ import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.CommentFactory;
 import com.kickstarter.factories.CommentsEnvelopeFactory;
 import com.kickstarter.factories.LocationFactory;
+import com.kickstarter.factories.MessageThreadsEnvelopeFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UpdateFactory;
 import com.kickstarter.factories.UserFactory;
@@ -28,6 +29,7 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -153,6 +155,21 @@ public class MockApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
     return Observable.just(CommentsEnvelopeFactory.commentsEnvelope());
+  }
+
+  @Override
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads() {
+    return Observable.just(MessageThreadsEnvelopeFactory.messageThreadsEnvelope());
+  }
+
+  @Override
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project) {
+    return Observable.just(MessageThreadsEnvelopeFactory.messageThreadsEnvelope());
+  }
+
+  @Override
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreadsWithPaginationPath(final @NonNull String paginationPath) {
+    return Observable.empty();
   }
 
   @Override

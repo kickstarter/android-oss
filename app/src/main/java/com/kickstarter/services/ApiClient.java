@@ -32,11 +32,13 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
 import java.util.Arrays;
 import java.util.List;
 
+import retrofit2.Response;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -192,6 +194,30 @@ public final class ApiClient implements ApiClientType {
   public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
     return service
       .paginatedProjectComments(paginationPath)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads() {
+    return fetchMessageThreads(null);
+  }
+
+  @Override
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project) {
+    final Observable<Response<MessageThreadsEnvelope>> apiResponse = project == null
+      ? service.messageThreads()
+      : service.messageThreads(project.id());
+
+    return apiResponse
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreadsWithPaginationPath(final @NonNull String paginationPath) {
+    return service
+      .paginatedMessageThreads(paginationPath)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

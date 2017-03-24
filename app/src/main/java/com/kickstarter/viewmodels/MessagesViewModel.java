@@ -13,12 +13,15 @@ import com.kickstarter.ui.activities.MessagesActivity;
 
 import java.util.List;
 
+import rx.Notification;
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 public interface MessagesViewModel {
 
   interface Inputs {
-
   }
 
   interface Outputs {
@@ -39,14 +42,19 @@ public interface MessagesViewModel {
         .map(i -> i.getParcelableExtra(IntentKey.MESSAGE_THREAD))
         .ofType(MessageThread.class);
 
-      final Observable<MessageThreadEnvelope> messageThreadEnvelope = messageThread
-        .switchMap(this.client::fetchMessagesForThread)
+      final Observable<Notification<MessageThreadEnvelope>> envelopeNotification = messageThread
+        .switchMap(thread -> this.client.fetchMessagesForThread(thread).materialize())
         .share();
 
-      this.messages = messageThreadEnvelope.map(MessageThreadEnvelope::messages);
+      final Observable<MessageThreadEnvelope> messageThreadEnvelope = envelopeNotification.compose(values());
+
+      messageThreadEnvelope
+        .map(MessageThreadEnvelope::messages)
+        .compose(bindToLifecycle())
+        .subscribe(this.messages::onNext);
     }
 
-    private final Observable<List<Message>> messages;
+    private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;

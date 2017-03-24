@@ -16,7 +16,7 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
-public interface MessageThreadViewModel {
+public interface MessageThreadHolderViewModel {
 
   interface Inputs {
     /** Call to configure with a MessageThread. */

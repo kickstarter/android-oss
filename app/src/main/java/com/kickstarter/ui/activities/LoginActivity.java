@@ -178,6 +178,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
+  @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }

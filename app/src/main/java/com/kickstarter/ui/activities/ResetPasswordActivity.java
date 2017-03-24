@@ -74,6 +74,7 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
     viewModel.inputs.resetPasswordClick();
   }
 
+  @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }

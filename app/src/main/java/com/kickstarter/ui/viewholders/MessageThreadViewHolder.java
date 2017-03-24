@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
@@ -18,7 +19,7 @@ import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.MessagesActivity;
-import com.kickstarter.viewmodels.MessageThreadViewModel;
+import com.kickstarter.viewmodels.MessageThreadHolderViewModel;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -32,7 +33,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
 public final class MessageThreadViewHolder extends KSViewHolder {
-  private final MessageThreadViewModel.ViewModel viewModel;
+  private final MessageThreadHolderViewModel.ViewModel viewModel;
 
   protected @Bind(R.id.date_text_view) TextView dateTextView;
   protected @Bind(R.id.message_body_text_view) TextView messageBodyTextView;
@@ -47,11 +48,11 @@ public final class MessageThreadViewHolder extends KSViewHolder {
     super(view);
 
     this.ksString = environment().ksString();
-    this.viewModel = new MessageThreadViewModel.ViewModel(environment());
+    this.viewModel = new MessageThreadHolderViewModel.ViewModel(environment());
 
     ButterKnife.bind(this, view);
 
-    RxView.clicks(messageThreadCardView)
+    RxView.clicks(this.messageThreadCardView)
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> this.viewModel.inputs.messageThreadCardViewClicked());

@@ -433,6 +433,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
     viewModel.inputs.pageIntercepted(url);
   }
 
+  @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }

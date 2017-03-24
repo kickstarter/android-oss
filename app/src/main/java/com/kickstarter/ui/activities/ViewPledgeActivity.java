@@ -220,6 +220,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
     ));
   }
 
+  @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }

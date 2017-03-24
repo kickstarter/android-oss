@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -10,6 +11,7 @@ import com.kickstarter.ui.adapters.MessagesAdapter;
 import com.kickstarter.viewmodels.MessagesViewModel;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(MessagesViewModel.ViewModel.class)
 public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewModel> {
@@ -26,5 +28,9 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.adapter::messages);
+  }
+
+  @Override protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
   }
 }

@@ -137,6 +137,7 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
     startActivity(intent);
   }
 
+  @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }

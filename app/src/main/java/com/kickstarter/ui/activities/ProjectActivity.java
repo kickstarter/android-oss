@@ -253,6 +253,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
     startActivity(intent);
   }
 
+  @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }

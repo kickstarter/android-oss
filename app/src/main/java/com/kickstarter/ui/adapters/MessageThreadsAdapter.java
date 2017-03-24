@@ -14,7 +14,6 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 
 public final class MessageThreadsAdapter extends KSAdapter {
-
   public MessageThreadsAdapter() {
     addSection(emptyList());
   }

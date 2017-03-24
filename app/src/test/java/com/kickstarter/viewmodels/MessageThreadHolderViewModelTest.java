@@ -14,7 +14,6 @@ import rx.observers.TestSubscriber;
 
 public final class MessageThreadHolderViewModelTest extends KSRobolectricTestCase {
   private MessageThreadHolderViewModel.ViewModel vm;
-  private final MessageThread defaultMessageThread = MessageThreadFactory.messageThread();
   private final TestSubscriber<DateTime> dateDateTime = new TestSubscriber<>();
   private final TestSubscriber<String> messageBodyTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> participantAvatarUrl = new TestSubscriber<>();
@@ -32,46 +31,50 @@ public final class MessageThreadHolderViewModelTest extends KSRobolectricTestCas
 
   @Test
   public void testEmitsDateTime() {
+    final MessageThread messageThread = MessageThreadFactory.messageThread();
     setUpEnvironment(environment());
 
     // Configure the view model with a message thread.
-    this.vm.inputs.configureWith(this.defaultMessageThread);
+    this.vm.inputs.configureWith(messageThread);
 
-    this.dateDateTime.assertValues(this.defaultMessageThread.lastMessage().createdAt());
+    this.dateDateTime.assertValues(messageThread.lastMessage().createdAt());
   }
 
   @Test
   public void testEmitsMessageBodyTextViewText() {
+    final MessageThread messageThread = MessageThreadFactory.messageThread();
     setUpEnvironment(environment());
 
     // Configure the view model with a message thread.
-    this.vm.inputs.configureWith(this.defaultMessageThread);
+    this.vm.inputs.configureWith(messageThread);
 
-    this.messageBodyTextViewText.assertValues(this.defaultMessageThread.lastMessage().body());
+    this.messageBodyTextViewText.assertValues(messageThread.lastMessage().body());
   }
 
   @Test
   public void testEmitsParticipantData() {
+    final MessageThread messageThread = MessageThreadFactory.messageThread();
     setUpEnvironment(environment());
 
     // Configure the view model with a message thread.
-    this.vm.inputs.configureWith(this.defaultMessageThread);
+    this.vm.inputs.configureWith(messageThread);
 
     // Emits participant's avatar url and name.
-    this.participantAvatarUrl.assertValues(this.defaultMessageThread.participant().avatar().medium());
-    this.participantNameTextViewText.assertValues(this.defaultMessageThread.participant().name());
+    this.participantAvatarUrl.assertValues(messageThread.participant().avatar().medium());
+    this.participantNameTextViewText.assertValues(messageThread.participant().name());
   }
 
   @Test
   public void testUnreadIndicator() {
+    final MessageThread messageThread = MessageThreadFactory.messageThread();
     setUpEnvironment(environment());
 
-    final MessageThread messageThreadWithUnread = this.defaultMessageThread
+    final MessageThread messageThreadWithUnread = messageThread
       .toBuilder()
       .unreadMessagesCount(2)
       .build();
 
-    final MessageThread messageThreadWithNoUnread = this.defaultMessageThread
+    final MessageThread messageThreadWithNoUnread = messageThread
       .toBuilder()
       .unreadMessagesCount(0)
       .build();

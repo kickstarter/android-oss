@@ -39,9 +39,11 @@ public interface MessagesViewModel {
         .map(i -> i.getParcelableExtra(IntentKey.MESSAGE_THREAD))
         .ofType(MessageThread.class);
 
-      this.messages = messageThread
-        .flatMap(this.client::fetchMessagesForThread)
-        .map(MessageThreadEnvelope::messages);
+      final Observable<MessageThreadEnvelope> messageThreadEnvelope = messageThread
+        .switchMap(this.client::fetchMessagesForThread)
+        .share();
+
+      this.messages = messageThreadEnvelope.map(MessageThreadEnvelope::messages);
     }
 
     private final Observable<List<Message>> messages;

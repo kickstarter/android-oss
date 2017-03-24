@@ -2,6 +2,8 @@ package com.kickstarter.ui.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 
 import com.kickstarter.R;
@@ -10,6 +12,9 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.ui.adapters.MessagesAdapter;
 import com.kickstarter.viewmodels.MessagesViewModel;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
@@ -17,12 +22,17 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewModel> {
   private MessagesAdapter adapter;
 
+  protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
+
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.messages_layout);
+    ButterKnife.bind(this);
 
     this.adapter = new MessagesAdapter();
+    this.recyclerView.setAdapter(this.adapter);
+    this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     this.viewModel.outputs.messages()
       .compose(bindToLifecycle())
@@ -30,7 +40,14 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .subscribe(this.adapter::messages);
   }
 
-  @Override protected @Nullable Pair<Integer, Integer> exitTransition() {
+  @Override
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    this.recyclerView.setAdapter(null);
   }
 }

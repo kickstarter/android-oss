@@ -26,7 +26,7 @@ public interface MessageHolderViewModel {
   }
 
   interface Outputs {
-    /** Emits a boolean that determineswhether creator's avatar image should be hidden. */
+    /** Emits a boolean that determines whether the creator's avatar image should be hidden. */
     Observable<Boolean> creatorAvatarImageHidden();
 
     /** Emits the url for the creator's avatar image. */

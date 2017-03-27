@@ -1,28 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.design.widget.CoordinatorLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:elevation="@dimen/toolbar_elevation"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <include
-    layout="@layout/messages_toolbar"
-    android:id="@+id/messages_toolbar"/>
+  <android.support.design.widget.AppBarLayout
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
+    <android.support.design.widget.CollapsingToolbarLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+    <LinearLayout
+      android:orientation="vertical"
+      android:gravity="center"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <include layout="@layout/messages_toolbar"/>
+
+      <TextView
+        android:id="@+id/messages_project_name_text_view"
+        style="@style/Headline"
+        android:layout_marginBottom="@dimen/grid_new_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="This Cool Project I Backed"/>
+
+      <TextView
+        android:id="@+id/messages_creator_name_text_view"
+        android:layout_marginBottom="@dimen/grid_new_4"
+        style="@style/BodyPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="by Some Creator"/>
+
+    </LinearLayout>
+
+    </android.support.design.widget.CollapsingToolbarLayout>
+
+  </android.support.design.widget.AppBarLayout>
 
   <android.support.v7.widget.RecyclerView
     android:id="@+id/messages_recycler_view"
     android:layout_below="@+id/messages_toolbar"
-    android:background="@color/discovery_background"
+    android:background="@color/white"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:scrollbars="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent"
+    tools:ignore="RtlSymmetry" />
 
-  <EditText
-    android:id="@+id/message_edit_text"
-    android:layout_alignParentBottom="true"
-    android:background="@color/blue"
+  <RelativeLayout
+    android:layout_gravity="bottom"
+    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_new_10" />
+    android:layout_height="@dimen/grid_new_10">
 
-</RelativeLayout>
+    <View
+      android:id="@+id/divider_view"
+      android:background="@color/ksr_grey_500"
+      android:layout_width="match_parent"
+      android:layout_height="0.5dp"/>
+
+    <RelativeLayout
+      android:layout_below="@id/divider_view"
+      android:layout_marginStart="@dimen/grid_new_4"
+      android:layout_marginLeft="@dimen/grid_new_4"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <EditText
+        android:id="@+id/message_edit_text"
+        style="@style/BodySecondary"
+        android:hint="@string/dashboard_activity_reply"
+        android:layout_toStartOf="@+id/send_message_button"
+        android:layout_toLeftOf="@+id/send_message_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_new_10" />
+
+      <Button
+        android:id="@+id/send_message_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/ksr_navy_600"
+        android:text="@string/social_buttons_send"/>
+
+    </RelativeLayout>
+
+  </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

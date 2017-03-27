@@ -24,11 +24,27 @@ import rx.observers.TestSubscriber;
 
 public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private MessagesViewModel.ViewModel vm;
+  private final TestSubscriber<String> creatorNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
+  private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new MessagesViewModel.ViewModel(environment);
+    this.vm.outputs.creatorNameTextViewText().subscribe(this.creatorNameTextViewText);
     this.vm.outputs.messages().subscribe(this.messages);
+    this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
+  }
+
+  @Test
+  public void testProjectData() {
+    final MessageThread messageThread = MessageThreadFactory.messageThread();
+    setUpEnvironment(environment());
+
+    // Start the view model with a message thread.
+    this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
+
+    this.creatorNameTextViewText.assertValues(messageThread.project().creator().name());
+    this.projectNameTextViewText.assertValues(messageThread.project().name());
   }
 
   @Test
@@ -47,7 +63,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
     // Start the view model with a message thread.
-    vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, MessageThreadFactory.messageThread()));
+    this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, MessageThreadFactory.messageThread()));
 
     // Messages emit.
     this.messages.assertValueCount(1);

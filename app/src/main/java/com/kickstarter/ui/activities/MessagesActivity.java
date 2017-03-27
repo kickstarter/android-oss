@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
+import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -22,6 +23,8 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewModel> {
   private MessagesAdapter adapter;
 
+  protected @Bind(R.id.messages_creator_name_text_view) TextView creatorNameTextView;
+  protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
 
   @Override
@@ -34,10 +37,20 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.recyclerView.setAdapter(this.adapter);
     this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+    this.viewModel.outputs.creatorNameTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.creatorNameTextView::setText);
+
     this.viewModel.outputs.messages()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.adapter::messages);
+
+    this.viewModel.outputs.projectNameTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.projectNameTextView::setText);
   }
 
   @Override

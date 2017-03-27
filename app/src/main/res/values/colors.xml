@@ -10,6 +10,8 @@
 
   <!-- Kickstarter colors -->
   <color name="ksr_grey_400">#EDEDED</color>
+  <color name="ksr_grey_500">#DCDEDD</color>
+  <color name="ksr_navy_600">#626369</color>
   <color name="ksr_navy_700">#353535</color>
 
   <!-- Legacy Kickstarter colors -->

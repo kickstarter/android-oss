@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:background="@color/light_gray"
@@ -105,6 +106,7 @@
             tools:text="0" />
 
         </LinearLayout>
+
       </LinearLayout>
 
     </android.support.design.widget.CollapsingToolbarLayout>

@@ -25,8 +25,14 @@ public interface MessagesViewModel {
   }
 
   interface Outputs {
+    /** Emits the creator name to be displayed. */
+    Observable<String> creatorNameTextViewText();
+
     /** Emits a list of messages to be displayed. */
     Observable<List<Message>> messages();
+
+    /** Emits the project name to be displayed. */
+    Observable<String> projectNameTextViewText();
   }
 
   final class ViewModel extends ActivityViewModel<MessagesActivity> implements Inputs, Outputs {
@@ -48,19 +54,37 @@ public interface MessagesViewModel {
 
       final Observable<MessageThreadEnvelope> messageThreadEnvelope = envelopeNotification.compose(values());
 
+      messageThread
+        .map(thread -> thread.project().creator().name())
+        .compose(bindToLifecycle())
+        .subscribe(this.creatorNameTextViewText::onNext);
+
       messageThreadEnvelope
         .map(MessageThreadEnvelope::messages)
         .compose(bindToLifecycle())
         .subscribe(this.messages::onNext);
+
+      messageThread
+        .map(thread -> thread.project().name())
+        .compose(bindToLifecycle())
+        .subscribe(this.projectNameTextViewText::onNext);
     }
 
+    private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
+    private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override public Observable<List<Message>> messages() {
+    @Override public @NonNull Observable<String> creatorNameTextViewText() {
+      return this.creatorNameTextViewText;
+    }
+    @Override public @NonNull Observable<List<Message>> messages() {
       return this.messages;
+    }
+    @Override public @NonNull Observable<String> projectNameTextViewText() {
+      return this.projectNameTextViewText;
     }
   }
 }

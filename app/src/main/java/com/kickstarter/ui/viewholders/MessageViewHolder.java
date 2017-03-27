@@ -2,8 +2,10 @@ package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -32,11 +34,6 @@ public final class MessageViewHolder extends KSViewHolder {
 
     ButterKnife.bind(this, view);
 
-    this.viewModel.outputs.messageBodyTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.messageBodyTextView::setText);
-
     this.viewModel.outputs.creatorAvatarImageHidden()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -46,6 +43,30 @@ public final class MessageViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setCreatorAvatarImageView);
+
+    this.viewModel.outputs.messageBodyTextViewAlignParentEnd()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::alignMessageBodyTextView);
+
+    this.viewModel.outputs.messageBodyTextViewBackgroundColorInt()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(colorInt ->
+        this.messageBodyTextView.setBackgroundColor(ContextCompat.getColor(this.context(), colorInt))
+      );
+
+    this.viewModel.outputs.messageBodyTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.messageBodyTextView::setText);
+
+    this.viewModel.outputs.messageBodyTextViewTextColorInt()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(colorInt ->
+        this.messageBodyTextView.setTextColor(ContextCompat.getColor(this.context(), colorInt))
+      );
   }
 
   @Override
@@ -54,8 +75,15 @@ public final class MessageViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(message);
   }
 
+  private void alignMessageBodyTextView(final boolean alignParentEnd) {
+    final RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.messageBodyTextView.getLayoutParams();
+    layoutParams.addRule(alignParentEnd ? RelativeLayout.ALIGN_PARENT_END : RelativeLayout.ALIGN_PARENT_START);
+    layoutParams.addRule(alignParentEnd ? RelativeLayout.ALIGN_PARENT_RIGHT : RelativeLayout.ALIGN_PARENT_LEFT);
+    this.messageBodyTextView.setLayoutParams(layoutParams);
+  }
+
   private void setCreatorAvatarImageView(final @NonNull String avatarUrl) {
-    Picasso.with(context()).load(avatarUrl)
+    Picasso.with(this.context()).load(avatarUrl)
       .transform(new CircleTransformation())
       .into(this.creatorAvatarImageView);
   }

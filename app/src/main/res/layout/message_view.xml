@@ -10,18 +10,22 @@
 
   <TextView
     android:id="@+id/message_body_text_view"
-    style="@style/SubheadPrimary"
-    android:background="@color/gray"
-    android:layout_margin="@dimen/grid_2"
-    android:padding="@dimen/grid_2"
+    style="@style/BodyPrimary"
+    android:background="@color/ksr_grey_400"
+    android:layout_margin="@dimen/grid_new_4"
+    android:padding="@dimen/grid_new_3"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     tools:text="Hey there!"/>
 
   <ImageView
     android:id="@+id/sender_avatar_image_view"
-    android:layout_width="@dimen/grid_4"
-    android:layout_height="@dimen/grid_4"
+    android:layout_marginLeft="@dimen/grid_new_2"
+    android:layout_marginStart="@dimen/grid_new_2"
+    android:layout_marginTop="@dimen/grid_new_2"
+    android:layout_width="@dimen/grid_new_4"
+    android:layout_height="@dimen/grid_new_4"
+    android:elevation="4dp"
     tools:background="@color/blue"/>
 
 </RelativeLayout>

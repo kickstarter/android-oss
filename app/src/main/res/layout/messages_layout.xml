@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <include layout="@layout/messages_toolbar"/>
+  <include
+    layout="@layout/messages_toolbar"
+    android:id="@+id/messages_toolbar"/>
+
+
 
   <android.support.v7.widget.RecyclerView
     android:id="@+id/messages_recycler_view"
+    android:layout_below="@+id/messages_toolbar"
     android:background="@color/discovery_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>
 
-</LinearLayout>
+  <EditText
+    android:id="@+id/message_edit_text"
+    android:layout_alignParentBottom="true"
+    android:background="@color/blue"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/grid_new_10" />
+
+</RelativeLayout>

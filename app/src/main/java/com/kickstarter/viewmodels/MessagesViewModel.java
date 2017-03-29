@@ -86,12 +86,14 @@ public interface MessagesViewModel {
       final Observable<Backing> backing = Observable.merge(
         messageThread.map(MessageThread::backing).filter(ObjectUtils::isNotNull),
         backingNotification.compose(values())
-      );
+      )
+        .filter(ObjectUtils::isNotNull);
 
       Observable.merge(
         messageThread.map(MessageThread::backing).map(ObjectUtils::isNull),
         backing.map(ObjectUtils::isNull)
       )
+        .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.backingInfoViewHidden::onNext);
 

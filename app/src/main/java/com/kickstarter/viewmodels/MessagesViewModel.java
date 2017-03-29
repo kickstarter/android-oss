@@ -1,11 +1,16 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
+import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.models.Backing;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
+import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.ui.IntentKey;
@@ -25,6 +30,12 @@ public interface MessagesViewModel {
   }
 
   interface Outputs {
+    /** Emits the backing and project to populate the backing info header. */
+    Observable<Pair<Backing, Project>> backingAndProject();
+
+    /** Emits a boolean that determines if the backing info view should be hidden. */
+    Observable<Boolean> backingInfoViewHidden();
+
     /** Emits the creator name to be displayed. */
     Observable<String> creatorNameTextViewText();
 
@@ -37,11 +48,13 @@ public interface MessagesViewModel {
 
   final class ViewModel extends ActivityViewModel<MessagesActivity> implements Inputs, Outputs {
     private final ApiClientType client;
+    private final CurrentUserType currentUser;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.client = environment.apiClient();
+      this.currentUser = environment.currentUser();
 
       final Observable<MessageThread> messageThread = intent()
         .take(1)
@@ -53,6 +66,39 @@ public interface MessagesViewModel {
         .share();
 
       final Observable<MessageThreadEnvelope> messageThreadEnvelope = envelopeNotification.compose(values());
+
+      final Observable<Notification<Backing>> backingNotification = Observable.combineLatest(
+        messageThread,
+        this.currentUser.observable(),
+        Pair::create
+      )
+        .filter(mu -> mu.first.backing() == null)
+        .switchMap(mu ->
+          mu.first.project().isBacking()
+            ? this.client.fetchProjectBacking(mu.first.project(), mu.second).materialize()
+            : this.client.fetchProjectBacking(mu.first.project(), mu.first.participant()).materialize()
+        )
+        .share();
+
+      final Observable<Backing> backing = Observable.merge(
+        messageThread.map(MessageThread::backing).filter(ObjectUtils::isNotNull),
+        backingNotification.compose(values())
+      );
+
+      Observable.merge(
+        messageThread.map(MessageThread::backing).map(ObjectUtils::isNull),
+        backing.map(ObjectUtils::isNull)
+      )
+        .compose(bindToLifecycle())
+        .subscribe(this.backingInfoViewHidden::onNext);
+
+      Observable.combineLatest(
+        backing,
+        messageThread.map(MessageThread::project),
+        Pair::create
+      )
+        .compose(bindToLifecycle())
+        .subscribe(this.backingAndProject::onNext);
 
       messageThread
         .map(thread -> thread.project().creator().name())
@@ -70,6 +116,8 @@ public interface MessagesViewModel {
         .subscribe(this.projectNameTextViewText::onNext);
     }
 
+    private final BehaviorSubject<Pair<Backing, Project>> backingAndProject = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> backingInfoViewHidden = BehaviorSubject.create();
     private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
@@ -77,6 +125,12 @@ public interface MessagesViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
+    @Override public @NonNull BehaviorSubject<Pair<Backing, Project>> backingAndProject() {
+      return this.backingAndProject;
+    }
+    @Override public @NonNull BehaviorSubject<Boolean> backingInfoViewHidden() {
+      return this.backingInfoViewHidden;
+    }
     @Override public @NonNull Observable<String> creatorNameTextViewText() {
       return this.creatorNameTextViewText;
     }

@@ -29,7 +29,6 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
-import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(MessagesViewModel.ViewModel.class)
 public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewModel> {
@@ -45,6 +44,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.view_pledge_button) Button viewPledgeButton;
 
+  protected @BindString(R.string.backer_modal_pledge_amount_on_pledge_date) String pledgeAmountOnPledgeDateString;
   protected @BindString(R.string.project_view_button) String viewPledgeString;
 
   @Override
@@ -98,11 +98,6 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   }
 
   @Override
-  protected @Nullable Pair<Integer, Integer> exitTransition() {
-    return slideInFromLeft();
-  }
-
-  @Override
   protected void onDestroy() {
     super.onDestroy();
     this.recyclerView.setAdapter(null);
@@ -110,7 +105,12 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
 
   private void setBackingInfoView(final @NonNull Pair<Backing, Project> backingAndProject) {
     final String pledgeAmount = ksCurrency.format(backingAndProject.first.amount(), backingAndProject.second);
-    final String dateTime = DateTimeUtils.relative(this, this.ksString, backingAndProject.first.pledgedAt());
-    this.backingAmountTextViewText.setText(pledgeAmount + " pledged on " + dateTime); // todo: localize
+    final String pledgeDate = DateTimeUtils.relative(this, this.ksString, backingAndProject.first.pledgedAt());
+
+    this.backingAmountTextViewText.setText(
+      this.ksString.format(
+        this.pledgeAmountOnPledgeDateString, "pledge_amount", pledgeAmount, "pledge_date", pledgeDate
+      )
+    );
   }
 }

@@ -24,6 +24,7 @@
   <string name="mode_comment_icon">\ue253</string>
   <string name="menu_icon">\ue5d2</string>
   <string name="more_vert_icon">\ue5d4</string>
+  <string name="more_horiz_icon">\ue5d3</string>
   <string name="notifications_icon">\ue7f4</string>
   <string name="person_add_icon">\ue7fe</string>
   <string name="phone_android_icon">\ue324</string>
@@ -38,7 +39,7 @@
   <string name="trending_up_icon">\ue8e5</string>
   <string name="whatshot_icon">\ue80e</string>
 
-  <!-- ss-kickstarter icon names from https://www.kickstarter.com/admin/style_guide -->
+  <!-- ss-kickstarter icon names from https://www.kickstarter.com/admin/styleguide -->
   <string name="backer_icon">backer</string>
   <string name="kickstarter_icon">kickstarter</string>
   <string name="mail_icon">mail</string>

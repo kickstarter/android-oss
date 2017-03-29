@@ -78,7 +78,7 @@
           <Button
             android:id="@+id/view_pledge_button"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:textColor="#00CC85"
+            android:textColor="@color/ksr_mint"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_alignParentEnd="true"

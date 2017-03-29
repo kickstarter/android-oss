@@ -25,15 +25,15 @@
       android:id="@+id/back_button"
       android:focusable="true"
       android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
-      android:text="@string/arrow_back_icon" />
+      android:text="@string/close_icon" />
 
-    <com.kickstarter.ui.views.IconTextView
+    <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
       android:id="@+id/messages_button"
       android:focusable="true"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
-      android:text="@string/settings_icon" />
+      android:text="@string/more_horiz_icon" />
 
   </RelativeLayout>
 

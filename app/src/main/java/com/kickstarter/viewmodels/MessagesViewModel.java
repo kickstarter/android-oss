@@ -120,14 +120,12 @@ public interface MessagesViewModel {
     }
 
     private final PublishSubject<String> messageEditText = PublishSubject.create();
-    private final PublishSubject<Void> recyclerViewLayoutChanged = PublishSubject.create();
 
     private final BehaviorSubject<Pair<Backing, Project>> backingAndProject = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> backingInfoViewHidden = BehaviorSubject.create();
     private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
-    private final BehaviorSubject<Integer> scrollToBottomPosition = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;

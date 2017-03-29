@@ -95,6 +95,8 @@
             android:layout_alignBaseline="@+id/view_pledge_button"
             android:layout_alignBottom="@+id/view_pledge_button"
             android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/view_pledge_button"
+            android:layout_toStartOf="@+id/view_pledge_button"
             tools:text="Hello there pledge"/>
 
         </RelativeLayout>

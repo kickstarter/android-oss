@@ -25,7 +25,7 @@
     android:layout_marginTop="@dimen/grid_new_2"
     android:layout_width="@dimen/grid_new_4"
     android:layout_height="@dimen/grid_new_4"
-    android:elevation="4dp"
-    tools:background="@color/blue"/>
+    tools:background="@color/blue"
+    tools:ignore="ContentDescription"/>
 
 </RelativeLayout>

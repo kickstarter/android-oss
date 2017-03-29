@@ -221,6 +221,7 @@
 
     <activity
       android:name=".ui.activities.MessagesActivity"
+      android:windowSoftInputMode="adjustResize"
       android:parentActivityName=".ui.activities.MessageThreadsActivity">
 
       <meta-data

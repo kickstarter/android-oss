@@ -3,6 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  android:fitsSystemWindows="true"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
@@ -115,6 +116,7 @@
       android:clipToPadding="false"
       android:scrollbars="vertical"
       app:layout_behavior="@string/appbar_scrolling_view_behavior"
+      android:layout_marginBottom="@dimen/grid_new_10"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       tools:ignore="RtlSymmetry"/>
@@ -123,6 +125,7 @@
       android:id="@+id/message_reply_layout"
       android:layout_alignParentBottom="true"
       android:layout_gravity="bottom"
+      android:layout_marginTop="@dimen/grid_new_3"
       android:background="@color/white"
       android:layout_width="match_parent"
       android:layout_height="@dimen/grid_new_10">

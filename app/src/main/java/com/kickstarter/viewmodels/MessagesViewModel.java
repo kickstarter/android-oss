@@ -21,12 +21,15 @@ import java.util.List;
 import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 public interface MessagesViewModel {
 
   interface Inputs {
+    /** Call when the message edit text changes. */
+    void messageEditTextChanged(String messageBody);
   }
 
   interface Outputs {
@@ -116,14 +119,22 @@ public interface MessagesViewModel {
         .subscribe(this.projectNameTextViewText::onNext);
     }
 
+    private final PublishSubject<String> messageEditText = PublishSubject.create();
+    private final PublishSubject<Void> recyclerViewLayoutChanged = PublishSubject.create();
+
     private final BehaviorSubject<Pair<Backing, Project>> backingAndProject = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> backingInfoViewHidden = BehaviorSubject.create();
     private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
+    private final BehaviorSubject<Integer> scrollToBottomPosition = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
+
+    @Override public void messageEditTextChanged(final @NonNull String messageBody) {
+      this.messageEditText.onNext(messageBody);
+    }
 
     @Override public @NonNull BehaviorSubject<Pair<Backing, Project>> backingAndProject() {
       return this.backingAndProject;

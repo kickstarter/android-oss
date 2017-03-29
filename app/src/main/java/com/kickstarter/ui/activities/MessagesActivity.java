@@ -8,8 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
@@ -38,6 +40,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.backing_amount_text_view) TextView backingAmountTextViewText;
   protected @Bind(R.id.backing_info_view) View backingInfoView;
   protected @Bind(R.id.messages_creator_name_text_view) TextView creatorNameTextView;
+  protected @Bind(R.id.message_edit_text) EditText messageEditText;
   protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.view_pledge_button) Button viewPledgeButton;
@@ -55,9 +58,18 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
 
     this.adapter = new MessagesAdapter();
     this.recyclerView.setAdapter(this.adapter);
-    this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+    layoutManager.setStackFromEnd(true);
+    this.recyclerView.setLayoutManager(layoutManager);
 
     this.viewPledgeButton.setText(viewPledgeString);
+
+    RxTextView.textChanges(this.messageEditText)
+      .skip(1)
+      .map(CharSequence::toString)
+      .compose(bindToLifecycle())
+      .subscribe(this.viewModel.inputs::messageEditTextChanged);
 
     this.viewModel.outputs.backingAndProject()
       .compose(bindToLifecycle())

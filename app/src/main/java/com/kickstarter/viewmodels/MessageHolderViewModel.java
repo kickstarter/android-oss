@@ -8,7 +8,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.models.Message;
-import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.viewholders.MessageViewHolder;
 
@@ -16,7 +15,6 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 
 public interface MessageHolderViewModel {
 
@@ -54,11 +52,6 @@ public interface MessageHolderViewModel {
 
       this.client = environment.apiClient();
       this.currentUser = environment.currentUser();
-
-      final Observable<User> freshUser = this.client.fetchCurrentUser()
-        .retry(2)
-        .compose(neverError());
-      freshUser.subscribe(this.currentUser::refresh);
 
       final Observable<Pair<Message, Boolean>> messageAndCurrentUserIsSender = this.message
         .compose(combineLatestPair(this.currentUser.loggedInUser()))

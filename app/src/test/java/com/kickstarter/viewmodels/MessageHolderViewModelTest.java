@@ -7,13 +7,12 @@ import com.kickstarter.R;
 import com.kickstarter.factories.MessageFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.User;
-import com.kickstarter.services.MockApiClient;
 
 import org.junit.Test;
 
-import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
@@ -54,13 +53,9 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
       .sender(sender)
       .build();
 
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<User> fetchCurrentUser() {
-        return Observable.just(recipient);
-      }
-    };
+    final MockCurrentUser currentUser = new MockCurrentUser(recipient);
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    setUpEnvironment(environment().toBuilder().currentUser(currentUser).build());
 
     this.vm.inputs.configureWith(message);
 
@@ -79,13 +74,9 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
       .sender(sender)
       .build();
 
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<User> fetchCurrentUser() {
-        return Observable.just(sender);
-      }
-    };
+    final MockCurrentUser currentUser = new MockCurrentUser(sender);
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    setUpEnvironment(environment().toBuilder().currentUser(currentUser).build());
 
     this.vm.inputs.configureWith(message);
 
@@ -104,13 +95,9 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
       .sender(sender)
       .build();
 
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<User> fetchCurrentUser() {
-        return Observable.just(recipient);
-      }
-    };
+    final MockCurrentUser currentUser = new MockCurrentUser(recipient);
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    setUpEnvironment(environment().toBuilder().currentUser(currentUser).build());
 
     this.vm.inputs.configureWith(message);
 
@@ -129,13 +116,9 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
       .sender(sender)
       .build();
 
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<User> fetchCurrentUser() {
-        return Observable.just(sender);
-      }
-    };
+    final MockCurrentUser currentUser = new MockCurrentUser(sender);
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    setUpEnvironment(environment().toBuilder().currentUser(currentUser).build());
 
     this.vm.inputs.configureWith(message);
 

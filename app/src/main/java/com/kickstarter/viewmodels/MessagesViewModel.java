@@ -84,7 +84,7 @@ public interface MessagesViewModel {
         .share();
 
       final Observable<Backing> backing = Observable.merge(
-        messageThread.map(MessageThread::backing).filter(ObjectUtils::isNotNull),
+        messageThread.map(MessageThread::backing),
         backingNotification.compose(values())
       )
         .filter(ObjectUtils::isNotNull);

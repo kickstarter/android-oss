@@ -38,7 +38,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
 
   protected @Bind(R.id.backing_amount_text_view) TextView backingAmountTextViewText;
   protected @Bind(R.id.backing_info_view) View backingInfoView;
-  protected @Bind(R.id.messages_creator_name_text_view) TextView creatorNameTextView;
+  protected @Bind(R.id.messages_participant_name_text_view) TextView participantNameTextView;
   protected @Bind(R.id.message_edit_text) EditText messageEditText;
   protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
@@ -81,10 +81,10 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.backingInfoView));
 
-    this.viewModel.outputs.creatorNameTextViewText()
+    this.viewModel.outputs.participantNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this.creatorNameTextView::setText);
+      .subscribe(this.participantNameTextView::setText);
 
     this.viewModel.outputs.messages()
       .compose(bindToLifecycle())

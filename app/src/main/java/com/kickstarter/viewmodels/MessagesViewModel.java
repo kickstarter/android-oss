@@ -39,8 +39,8 @@ public interface MessagesViewModel {
     /** Emits a boolean that determines if the backing info view should be hidden. */
     Observable<Boolean> backingInfoViewHidden();
 
-    /** Emits the creator name to be displayed. */
-    Observable<String> creatorNameTextViewText();
+    /** Emits the participant name to be displayed. */
+    Observable<String> participantNameTextViewText();
 
     /** Emits a list of messages to be displayed. */
     Observable<List<Message>> messages();
@@ -108,7 +108,7 @@ public interface MessagesViewModel {
       messageThread
         .map(thread -> thread.project().creator().name())
         .compose(bindToLifecycle())
-        .subscribe(this.creatorNameTextViewText::onNext);
+        .subscribe(this.participantNameTextViewText::onNext);
 
       messageThreadEnvelope
         .map(MessageThreadEnvelope::messages)
@@ -125,7 +125,7 @@ public interface MessagesViewModel {
 
     private final BehaviorSubject<Pair<Backing, Project>> backingAndProject = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> backingInfoViewHidden = BehaviorSubject.create();
-    private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
+    private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
 
@@ -142,8 +142,8 @@ public interface MessagesViewModel {
     @Override public @NonNull BehaviorSubject<Boolean> backingInfoViewHidden() {
       return this.backingInfoViewHidden;
     }
-    @Override public @NonNull Observable<String> creatorNameTextViewText() {
-      return this.creatorNameTextViewText;
+    @Override public @NonNull Observable<String> participantNameTextViewText() {
+      return this.participantNameTextViewText;
     }
     @Override public @NonNull Observable<List<Message>> messages() {
       return this.messages;

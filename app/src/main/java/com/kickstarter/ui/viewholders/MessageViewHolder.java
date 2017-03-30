@@ -25,7 +25,7 @@ public final class MessageViewHolder extends KSViewHolder {
   private final MessageHolderViewModel.ViewModel viewModel;
 
   protected @Bind(R.id.message_body_text_view) TextView messageBodyTextView;
-  protected @Bind(R.id.sender_avatar_image_view) ImageView creatorAvatarImageView;
+  protected @Bind(R.id.sender_avatar_image_view) ImageView participantAvatarImageView;
 
   public MessageViewHolder(final @NonNull View view) {
     super(view);
@@ -34,15 +34,15 @@ public final class MessageViewHolder extends KSViewHolder {
 
     ButterKnife.bind(this, view);
 
-    this.viewModel.outputs.creatorAvatarImageHidden()
+    this.viewModel.outputs.participantAvatarImageHidden()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.creatorAvatarImageView));
+      .subscribe(ViewUtils.setGone(this.participantAvatarImageView));
 
-    this.viewModel.outputs.creatorAvatarImageUrl()
+    this.viewModel.outputs.participantAvatarImageUrl()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::setCreatorAvatarImageView);
+      .subscribe(this::setParticipantAvatarImageView);
 
     this.viewModel.outputs.messageBodyTextViewAlignParentEnd()
       .compose(bindToLifecycle())
@@ -82,9 +82,9 @@ public final class MessageViewHolder extends KSViewHolder {
     this.messageBodyTextView.setLayoutParams(layoutParams);
   }
 
-  private void setCreatorAvatarImageView(final @NonNull String avatarUrl) {
+  private void setParticipantAvatarImageView(final @NonNull String avatarUrl) {
     Picasso.with(this.context()).load(avatarUrl)
       .transform(new CircleTransformation())
-      .into(this.creatorAvatarImageView);
+      .into(this.participantAvatarImageView);
   }
 }

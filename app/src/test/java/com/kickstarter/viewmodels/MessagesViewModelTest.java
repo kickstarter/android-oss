@@ -31,7 +31,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private MessagesViewModel.ViewModel vm;
   private final TestSubscriber<Pair<Backing, Project>> backingAndProject = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backingInfoViewHidden = new TestSubscriber<>();
-  private final TestSubscriber<String> creatorNameTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
 
@@ -39,7 +39,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm = new MessagesViewModel.ViewModel(environment);
     this.vm.outputs.backingAndProject().subscribe(this.backingAndProject);
     this.vm.outputs.backingInfoViewHidden().subscribe(this.backingInfoViewHidden);
-    this.vm.outputs.creatorNameTextViewText().subscribe(this.creatorNameTextViewText);
+    this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
     this.vm.outputs.messages().subscribe(this.messages);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
   }
@@ -87,7 +87,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Start the view model with a message thread.
     this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
 
-    this.creatorNameTextViewText.assertValues(messageThread.project().creator().name());
+    this.participantNameTextViewText.assertValues(messageThread.project().creator().name());
     this.projectNameTextViewText.assertValues(messageThread.project().name());
   }
 

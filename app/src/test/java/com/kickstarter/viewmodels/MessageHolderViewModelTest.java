@@ -18,8 +18,8 @@ import rx.observers.TestSubscriber;
 
 public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
   private MessageHolderViewModel.ViewModel vm;
-  private final TestSubscriber<Boolean> creatorAvatarImageHidden = new TestSubscriber<>();
-  private final TestSubscriber<String> creatorAvatarImageUrl = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> participantAvatarImageHidden = new TestSubscriber<>();
+  private final TestSubscriber<String> participantAvatarImageUrl = new TestSubscriber<>();
   private final TestSubscriber<Boolean> messageBodyTextViewAlignParentEnd = new TestSubscriber<>();
   private final TestSubscriber<Integer> messageBodyTextViewBackgroundColorInt = new TestSubscriber<>();
   private final TestSubscriber<String> messageBodyTextViewText = new TestSubscriber<>();
@@ -27,8 +27,8 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new MessageHolderViewModel.ViewModel(environment);
-    this.vm.outputs.creatorAvatarImageHidden().subscribe(this.creatorAvatarImageHidden);
-    this.vm.outputs.creatorAvatarImageUrl().subscribe(this.creatorAvatarImageUrl);
+    this.vm.outputs.participantAvatarImageHidden().subscribe(this.participantAvatarImageHidden);
+    this.vm.outputs.participantAvatarImageUrl().subscribe(this.participantAvatarImageUrl);
     this.vm.outputs.messageBodyTextViewAlignParentEnd().subscribe(this.messageBodyTextViewAlignParentEnd);
     this.vm.outputs.messageBodyTextViewBackgroundColorInt().subscribe(this.messageBodyTextViewBackgroundColorInt);
     this.vm.outputs.messageBodyTextViewText().subscribe(this.messageBodyTextViewText);
@@ -45,7 +45,7 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCreatorAvatarImage_CurrentUserIsRecipient() {
+  public void testParticipantAvatarImage_CurrentUserIsRecipient() {
     final User recipient = UserFactory.user().toBuilder().name("Ima Backer").id(123).build();
     final User sender = UserFactory.user().toBuilder().name("Ima Creator").id(456).build();
 
@@ -65,12 +65,12 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.configureWith(message);
 
     // Avatar shown for sender who is the creator.
-    this.creatorAvatarImageHidden.assertValues(false);
-    this.creatorAvatarImageUrl.assertValues(message.sender().avatar().medium());
+    this.participantAvatarImageHidden.assertValues(false);
+    this.participantAvatarImageUrl.assertValues(message.sender().avatar().medium());
   }
 
   @Test
-  public void testCreatorAvatarImage_CurrentUserIsSender() {
+  public void testParticipantAvatarImage_CurrentUserIsSender() {
     final User recipient = UserFactory.user().toBuilder().name("Ima Creator").id(123).build();
     final User sender = UserFactory.user().toBuilder().name("Ima Backer").id(456).build();
 
@@ -90,8 +90,8 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.configureWith(message);
 
     // Avatar hidden for sender who is the backer.
-    this.creatorAvatarImageHidden.assertValues(true);
-    this.creatorAvatarImageUrl.assertNoValues();
+    this.participantAvatarImageHidden.assertValues(true);
+    this.participantAvatarImageUrl.assertNoValues();
   }
 
   @Test

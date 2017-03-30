@@ -26,11 +26,11 @@ public interface MessageHolderViewModel {
   }
 
   interface Outputs {
-    /** Emits a boolean that determines whether the creator's avatar image should be hidden. */
-    Observable<Boolean> creatorAvatarImageHidden();
+    /** Emits a boolean that determines whether the participant's avatar image should be hidden. */
+    Observable<Boolean> participantAvatarImageHidden();
 
-    /** Emits the url for the creator's avatar image. */
-    Observable<String> creatorAvatarImageUrl();
+    /** Emits the url for the participant's avatar image. */
+    Observable<String> participantAvatarImageUrl();
 
     /** Emits a boolean to determine whether the message body view should align the parent view's end and right. */
     Observable<Boolean> messageBodyTextViewAlignParentEnd();
@@ -64,9 +64,9 @@ public interface MessageHolderViewModel {
         .compose(combineLatestPair(this.currentUser.loggedInUser()))
         .map(mu -> Pair.create(mu.first, mu.first.sender().id() == mu.second.id()));
 
-      this.creatorAvatarImageHidden = messageAndCurrentUserIsSender.map(mb -> mb.second);
+      this.participantAvatarImageHidden = messageAndCurrentUserIsSender.map(mb -> mb.second);
 
-      this.creatorAvatarImageUrl = messageAndCurrentUserIsSender
+      this.participantAvatarImageUrl = messageAndCurrentUserIsSender
         .filter(mb -> !mb.second)
         .map(mb -> mb.first.sender().avatar().medium());
 
@@ -83,8 +83,8 @@ public interface MessageHolderViewModel {
 
     private final PublishSubject<Message> message = PublishSubject.create();
 
-    private final Observable<Boolean> creatorAvatarImageHidden;
-    private final Observable<String> creatorAvatarImageUrl;
+    private final Observable<Boolean> participantAvatarImageHidden;
+    private final Observable<String> participantAvatarImageUrl;
     private final Observable<Boolean> messageBodyTextViewAlignParentEnd;
     private final Observable<Integer> messageBodyTextViewBackgroundColor;
     private final Observable<String> messageBodyTextViewText;
@@ -97,11 +97,11 @@ public interface MessageHolderViewModel {
       this.message.onNext(message);
     }
 
-    @Override public @NonNull Observable<Boolean> creatorAvatarImageHidden() {
-      return this.creatorAvatarImageHidden;
+    @Override public @NonNull Observable<Boolean> participantAvatarImageHidden() {
+      return this.participantAvatarImageHidden;
     }
-    @Override public @NonNull Observable<String> creatorAvatarImageUrl() {
-      return this.creatorAvatarImageUrl;
+    @Override public @NonNull Observable<String> participantAvatarImageUrl() {
+      return this.participantAvatarImageUrl;
     }
     @Override public @NonNull Observable<Boolean> messageBodyTextViewAlignParentEnd() {
       return this.messageBodyTextViewAlignParentEnd;

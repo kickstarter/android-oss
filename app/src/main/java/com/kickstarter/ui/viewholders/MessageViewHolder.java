@@ -3,6 +3,7 @@ package com.kickstarter.ui.viewholders;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -24,8 +25,10 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 public final class MessageViewHolder extends KSViewHolder {
   private final MessageHolderViewModel.ViewModel viewModel;
 
+  protected @Bind(R.id.message_body_card_view) CardView messageBodyCardView;
   protected @Bind(R.id.message_body_text_view) TextView messageBodyTextView;
   protected @Bind(R.id.sender_avatar_image_view) ImageView participantAvatarImageView;
+  protected @Bind(R.id.sent_status_text_view) TextView sentStatusTextView;
 
   public MessageViewHolder(final @NonNull View view) {
     super(view);
@@ -44,10 +47,10 @@ public final class MessageViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::setParticipantAvatarImageView);
 
-    this.viewModel.outputs.messageBodyTextViewAlignParentEnd()
+    this.viewModel.outputs.messageBodyCardViewAlignParentEnd()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::alignMessageBodyTextView);
+      .subscribe(this::alignMessageBodyCardView);
 
     this.viewModel.outputs.messageBodyTextViewBackgroundColorInt()
       .compose(bindToLifecycle())
@@ -67,6 +70,16 @@ public final class MessageViewHolder extends KSViewHolder {
       .subscribe(colorInt ->
         this.messageBodyTextView.setTextColor(ContextCompat.getColor(this.context(), colorInt))
       );
+
+    this.viewModel.outputs.sentStatusTextViewHidden()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.sentStatusTextView));
+
+    this.viewModel.outputs.sentStatusTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.sentStatusTextView::setText);
   }
 
   @Override
@@ -75,11 +88,11 @@ public final class MessageViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(message);
   }
 
-  private void alignMessageBodyTextView(final boolean alignParentEnd) {
-    final RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.messageBodyTextView.getLayoutParams();
+  private void alignMessageBodyCardView(final boolean alignParentEnd) {
+    final RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.messageBodyCardView.getLayoutParams();
     layoutParams.addRule(alignParentEnd ? RelativeLayout.ALIGN_PARENT_END : RelativeLayout.ALIGN_PARENT_START);
     layoutParams.addRule(alignParentEnd ? RelativeLayout.ALIGN_PARENT_RIGHT : RelativeLayout.ALIGN_PARENT_LEFT);
-    this.messageBodyTextView.setLayoutParams(layoutParams);
+    this.messageBodyCardView.setLayoutParams(layoutParams);
   }
 
   private void setParticipantAvatarImageView(final @NonNull String avatarUrl) {

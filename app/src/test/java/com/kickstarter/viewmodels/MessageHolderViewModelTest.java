@@ -28,7 +28,7 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
     this.vm = new MessageHolderViewModel.ViewModel(environment);
     this.vm.outputs.participantAvatarImageHidden().subscribe(this.participantAvatarImageHidden);
     this.vm.outputs.participantAvatarImageUrl().subscribe(this.participantAvatarImageUrl);
-    this.vm.outputs.messageBodyTextViewAlignParentEnd().subscribe(this.messageBodyTextViewAlignParentEnd);
+    this.vm.outputs.messageBodyCardViewAlignParentEnd().subscribe(this.messageBodyTextViewAlignParentEnd);
     this.vm.outputs.messageBodyTextViewBackgroundColorInt().subscribe(this.messageBodyTextViewBackgroundColorInt);
     this.vm.outputs.messageBodyTextViewText().subscribe(this.messageBodyTextViewText);
     this.vm.outputs.messageBodyTextViewTextColorInt().subscribe(this.messageBodyTextViewTextColorInt);

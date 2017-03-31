@@ -1,5 +1,5 @@
 <resources>
-  <!-- Kickstarter eight-point grid keylines-->
+  <!-- Kickstarter eight-point grid keylines -->
   <dimen name="grid_1_half">4dp</dimen>
   <dimen name="grid_1">8dp</dimen>
   <dimen name="grid_3_half">12dp</dimen>
@@ -23,6 +23,15 @@
   <dimen name="grid_20">160dp</dimen>
   <dimen name="grid_35">280dp</dimen>
   <dimen name="grid_40">320dp</dimen>
+
+  <!-- Kickstarter six-point grid keylines -->
+  <dimen name="grid_new_1">6dp</dimen>
+  <dimen name="grid_new_2">12dp</dimen>
+  <dimen name="grid_new_3">18dp</dimen>
+  <dimen name="grid_new_4">24dp</dimen>
+  <dimen name="grid_new_8">48dp</dimen>
+  <dimen name="grid_new_10">60dp</dimen>
+  <dimen name="grid_new_20">120dp</dimen>
 
   <!-- Typography-->
   <dimen name="caption">12sp</dimen>

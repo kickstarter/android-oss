@@ -71,13 +71,14 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   }
 
   @Override
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
+  }
+
+  @Override
   protected void onDestroy() {
     super.onDestroy();
     this.recyclerViewPaginator.stop();
     this.recyclerView.setAdapter(null);
-  }
-
-  protected @Nullable Pair<Integer, Integer> exitTransition() {
-    return slideInFromLeft();
   }
 }

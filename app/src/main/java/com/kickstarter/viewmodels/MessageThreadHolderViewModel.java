@@ -14,11 +14,16 @@ import org.joda.time.DateTime;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+
 public interface MessageThreadHolderViewModel {
 
   interface Inputs {
     /** Call to configure with a MessageThread. */
     void configureWith(MessageThread messageThread);
+
+    /** Call when the the message thread card view has been clicked. */
+    void messageThreadCardViewClicked();
   }
 
   interface Outputs {
@@ -33,6 +38,9 @@ public interface MessageThreadHolderViewModel {
 
     /** Emits the participant name to display. */
     Observable<String> participantNameTextViewText();
+
+    /** Emits when we want to start the {@link com.kickstarter.ui.activities.MessagesActivity}. */
+    Observable<MessageThread> startMessagesActivity();
 
     /** Emits a boolean to determine if the unread indicator should be hidden. */
     Observable<Boolean> unreadIndicatorImageViewHidden();
@@ -50,15 +58,18 @@ public interface MessageThreadHolderViewModel {
       this.messageBodyTextViewText = lastMessage.map(Message::body);
       this.participantAvatarUrl = participant.map(p -> p.avatar().medium());
       this.participantNameTextViewText = participant.map(User::name);
+      this.startMessagesActivity = this.messageThread.compose(takeWhen(this.messageThreadCardViewClicked));
       this.unreadIndicatorImageViewHidden = this.messageThread.map(m -> m.unreadMessagesCount() == 0);
     }
 
     private final PublishSubject<MessageThread> messageThread = PublishSubject.create();
+    private final PublishSubject<Void> messageThreadCardViewClicked = PublishSubject.create();
 
     private final Observable<DateTime> dateDateTime;
     private final Observable<String> messageBodyTextViewText;
     private final Observable<String> participantAvatarUrl;
     private final Observable<String> participantNameTextViewText;
+    private final Observable<MessageThread> startMessagesActivity;
     private final Observable<Boolean> unreadIndicatorImageViewHidden;
 
     public final Inputs inputs = this;
@@ -66,6 +77,9 @@ public interface MessageThreadHolderViewModel {
 
     @Override public void configureWith(final @NonNull MessageThread messageThread) {
       this.messageThread.onNext(messageThread);
+    }
+    @Override public void messageThreadCardViewClicked() {
+      this.messageThreadCardViewClicked.onNext(null);
     }
 
     @Override public @NonNull Observable<DateTime> dateDateTime() {
@@ -79,6 +93,9 @@ public interface MessageThreadHolderViewModel {
     }
     @Override public @NonNull Observable<String> participantNameTextViewText() {
       return this.participantNameTextViewText;
+    }
+    @Override public @NonNull Observable<MessageThread> startMessagesActivity() {
+      return this.startMessagesActivity;
     }
     @Override public @NonNull Observable<Boolean> unreadIndicatorImageViewHidden() {
       return this.unreadIndicatorImageViewHidden;

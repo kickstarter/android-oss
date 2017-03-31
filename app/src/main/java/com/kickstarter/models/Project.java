@@ -52,7 +52,7 @@ public abstract class Project implements Parcelable {
   public abstract @Nullable Float staticUsdRate();
   public abstract @Nullable Integer updatesCount();
   public abstract @Nullable List<Reward> rewards();
-  public abstract DateTime updatedAt();
+  public abstract @Nullable DateTime updatedAt();
   public abstract Urls urls();
   public abstract @Nullable Video video();
 

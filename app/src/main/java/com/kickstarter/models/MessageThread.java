@@ -10,7 +10,7 @@ import auto.parcel.AutoParcel;
 @AutoGson
 @AutoParcel
 public abstract class MessageThread implements Parcelable {
-  public abstract @Nullable Boolean backing();
+  public abstract @Nullable Backing backing();
   public abstract boolean closed();
   public abstract long id();
   public abstract Message lastMessage();
@@ -20,7 +20,7 @@ public abstract class MessageThread implements Parcelable {
 
   @AutoParcel.Builder
   public abstract static class Builder {
-    public abstract Builder backing(Boolean __);
+    public abstract Builder backing(Backing __);
     public abstract Builder closed(boolean __);
     public abstract Builder id(long __);
     public abstract Builder lastMessage(Message __);

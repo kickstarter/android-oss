@@ -72,6 +72,7 @@ public interface MessageThreadsViewModel {
 
       this.isFetchingMessageThreads = paginator.isFetching();
       this.messageThreads = paginator.paginatedData();
+      this.startMessagesActivity = this.messageThreadClicked;
 
       final Observable<Integer> unreadMessagesCount = this.currentUser.loggedInUser()
         .map(User::unreadMessagesCount)
@@ -81,11 +82,13 @@ public interface MessageThreadsViewModel {
       this.unreadCountTextViewText = unreadMessagesCount.map(NumberUtils::format);
     }
 
+    private final PublishSubject<Void> messageThreadClicked = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Void> refresh = PublishSubject.create();
 
     private final Observable<Boolean> isFetchingMessageThreads;
     private final Observable<List<MessageThread>> messageThreads;
+    private final Observable<Void> startMessagesActivity;
     private final Observable<Boolean> unreadCountTextViewHidden;
     private final Observable<String> unreadCountTextViewText;
 

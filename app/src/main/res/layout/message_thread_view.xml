@@ -56,8 +56,8 @@
         android:layout_marginLeft="@dimen/grid_2"
         android:layout_marginEnd="@dimen/grid_2"
         android:layout_marginRight="@dimen/grid_2"
-        android:layout_toLeftOf="@id/date_text_view"
-        android:layout_toStartOf="@id/date_text_view"
+        android:layout_toLeftOf="@+id/date_text_view"
+        android:layout_toStartOf="@+id/date_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 

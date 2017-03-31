@@ -34,6 +34,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<String> setEmptyMessageEditText = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new MessagesViewModel.ViewModel(environment);
@@ -42,6 +43,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
     this.vm.outputs.messages().subscribe(this.messages);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
+    this.vm.outputs.setEmptyMessageEditText().subscribe(this.setEmptyMessageEditText);
   }
 
   @Test
@@ -111,5 +113,29 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     // Messages emit.
     this.messages.assertValueCount(1);
+  }
+
+  @Test
+  public void testSendMessage() {
+    final Message sentMessage = MessageFactory.message();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<Message> sendMessage(final @NonNull MessageThread thread, final @NonNull String body) {
+        return Observable.just(sentMessage);
+      }
+    };
+
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+
+    // Start the view model with a message thread.
+    this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, MessageThreadFactory.messageThread()));
+
+    // Send a message successfully.
+    this.vm.inputs.messageEditTextChanged("Salutations friend!");
+    this.vm.inputs.sendMessageButtonClicked();
+
+    // Reply edit text should be cleared.
+    this.setEmptyMessageEditText.assertValueCount(1);
   }
 }

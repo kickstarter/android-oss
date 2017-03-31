@@ -27,6 +27,7 @@ import com.kickstarter.viewmodels.MessagesViewModel;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
@@ -95,12 +96,22 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.projectNameTextView::setText);
+
+    this.viewModel.outputs.setEmptyMessageEditText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.messageEditText::setText);
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
     this.recyclerView.setAdapter(null);
+  }
+
+  @OnClick(R.id.send_message_button)
+  public void sendMessageButtonClicked() {
+    this.viewModel.inputs.sendMessageButtonClicked();
   }
 
   private void setBackingInfoView(final @NonNull Pair<Backing, Project> backingAndProject) {

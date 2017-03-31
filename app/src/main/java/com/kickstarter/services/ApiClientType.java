@@ -9,6 +9,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
+import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.Project;
@@ -91,6 +92,9 @@ public interface ApiClientType {
   @NonNull Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken, boolean sendNewsletters);
 
   @NonNull Observable<User> resetPassword(final @NonNull String email);
+
+  // todo: MessageSubject can be Backing, MessageThread, or Project
+  @NonNull Observable<Message> sendMessage(final @NonNull MessageThread thread, final @NonNull String body);
 
   @NonNull Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email, final @NonNull String password,
     final @NonNull String passwordConfirmation, final boolean sendNewsletters);

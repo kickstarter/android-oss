@@ -74,8 +74,6 @@ public interface MessagesViewModel {
         .map(i -> i.getParcelableExtra(IntentKey.MESSAGE_THREAD))
         .ofType(MessageThread.class);
 
-
-      // use this to fetch thread again
       final Observable<Notification<Message>> messageNotification = messageThread
         .compose(combineLatestPair(this.messageEditTextChanged))
         .compose(takeWhen(this.sendMessageButtonClicked))
@@ -96,7 +94,7 @@ public interface MessagesViewModel {
 
       final Observable<Notification<MessageThreadEnvelope>> envelopeNotification = Observable.merge(
         messageThread,
-        messageThread.compose(takeWhen(messageSent))  // refresh on message send
+        messageThread.compose(takeWhen(messageSent))
       )
         .switchMap(thread -> this.client.fetchMessagesForThread(thread).materialize())
         .share();
@@ -173,6 +171,7 @@ public interface MessagesViewModel {
     @Override public void sendMessageButtonClicked() {
       this.sendMessageButtonClicked.onNext(null);
     }
+
     @Override public @NonNull BehaviorSubject<Pair<Backing, Project>> backingAndProject() {
       return this.backingAndProject;
     }

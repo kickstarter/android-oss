@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
@@ -29,8 +28,6 @@ import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
-import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
-import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
 public final class MessageThreadViewHolder extends KSViewHolder {
   private final MessageThreadHolderViewModel.ViewModel viewModel;
@@ -110,6 +107,5 @@ public final class MessageThreadViewHolder extends KSViewHolder {
       .putExtra(IntentKey.MESSAGE_THREAD, messageThread);
 
     context.startActivity(intent);
-    transition(context, slideInFromRight());
   }
 }

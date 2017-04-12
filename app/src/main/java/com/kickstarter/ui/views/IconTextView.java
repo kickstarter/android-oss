@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -14,7 +14,7 @@ import com.kickstarter.libs.Font;
 
 import javax.inject.Inject;
 
-public class IconTextView extends TextView {
+public class IconTextView extends AppCompatTextView {
   @Inject Font font;
 
   // Enum for the iconType XML parameter
@@ -37,13 +37,6 @@ public class IconTextView extends TextView {
   public IconTextView(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     initialize(context, attrs, defStyleAttr, 0);
-  }
-
-  @TargetApi(21)
-  public IconTextView(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr,
-    final int defStyleRes) {
-    super(context, attrs, defStyleAttr, defStyleRes);
-    initialize(context, attrs, defStyleAttr, defStyleRes);
   }
 
   protected void initialize(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr,

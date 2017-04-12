@@ -46,11 +46,11 @@ public interface MessagesViewModel {
     /** Emits a boolean that determines if the backing info view should be hidden. */
     Observable<Boolean> backingInfoViewHidden();
 
-    /** Emits the participant name to be displayed. */
-    Observable<String> participantNameTextViewText();
-
     /** Emits a list of messages to be displayed. */
     Observable<List<Message>> messages();
+
+    /** Emits the participant name to be displayed. */
+    Observable<String> participantNameTextViewText();
 
     /** Emits the project name to be displayed. */
     Observable<String> projectNameTextViewText();
@@ -157,8 +157,8 @@ public interface MessagesViewModel {
 
     private final BehaviorSubject<Pair<Backing, Project>> backingAndProject = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> backingInfoViewHidden = BehaviorSubject.create();
-    private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
+    private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final Observable<String> setEmptyMessageEditText;
 

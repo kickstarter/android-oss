@@ -12,7 +12,9 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.ArgumentsKey;
 import com.kickstarter.ui.fragments.DiscoveryFragment;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 
@@ -20,6 +22,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   private final Delegate delegate;
   private final FragmentManager fragmentManager;
   private List<String> pageTitles;
+  private Map<Integer,DiscoveryFragment> fragmentMap;
 
   public interface Delegate {
     void discoveryPagerAdapterSetPrimaryPage(DiscoveryPagerAdapter adapter, int position);
@@ -31,6 +34,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
     this.delegate = delegate;
     this.fragmentManager = fragmentManager;
     this.pageTitles = pageTitles;
+    this.fragmentMap = new HashMap<>();
   }
 
   @Override
@@ -41,7 +45,9 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
 
   @Override
   public @NonNull Fragment getItem(final int position) {
-    return DiscoveryFragment.newInstance(position);
+    DiscoveryFragment fragment = DiscoveryFragment.newInstance(position);
+    fragmentMap.put(position, fragment);
+    return fragment;
   }
 
   @Override
@@ -58,38 +64,20 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
    * Passes along root categories to its fragment position to help fetch appropriate projects.
    */
   public void takeCategoriesForPosition(final @NonNull List<Category> categories, final int position) {
-    Observable.from(fragmentManager.getFragments())
-      .ofType(DiscoveryFragment.class)
-      .filter(frag -> {
-        final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
-        return fragmentPosition == position;
-      })
-      .subscribe(frag -> frag.takeCategories(categories));
+    fragmentMap.get(position).takeCategories(categories);
   }
 
   /**
    * Take current params from activity and pass to the appropriate fragment.
    */
   public void takeParams(final @NonNull DiscoveryParams params) {
-    Observable.from(fragmentManager.getFragments())
-      .ofType(DiscoveryFragment.class)
-      .filter(frag -> {
-        final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
-        return DiscoveryUtils.positionFromSort(params.sort()) == fragmentPosition;
-      })
-      .subscribe(frag -> frag.updateParams(params));
+    fragmentMap.get(DiscoveryUtils.positionFromSort(params.sort())).updateParams(params);
   }
 
   /**
    * Call when the view model tells us to clear specific pages.
    */
   public void clearPages(final @NonNull List<Integer> pages) {
-    Observable.from(fragmentManager.getFragments())
-      .ofType(DiscoveryFragment.class)
-      .filter(frag -> {
-        final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
-        return pages.contains(fragmentPosition);
-      })
-      .subscribe(DiscoveryFragment::clearPage);
+    pages.stream().forEach(page -> fragmentMap.get(page).clearPage());
   }
 }

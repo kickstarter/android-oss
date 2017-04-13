@@ -41,8 +41,10 @@ public interface MessageHolderViewModel {
     /** Emits the color int for the message text. */
     Observable<Integer> messageBodyTextViewTextColorInt();
 
+    /** Emits a boolean to determine when the sent status text view should be hidden. */
     Observable<Boolean> sentStatusTextViewHidden();
 
+    /** Emits the sent status string to be displayed. */
     Observable<String> sentStatusTextViewText();
   }
 

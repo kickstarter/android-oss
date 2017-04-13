@@ -40,7 +40,7 @@
     android:layout_height="@dimen/grid_new_4"
     android:translationZ="3dp"
     tools:background="@color/blue"
-    tools:ignore="ContentDescription"/>
+    tools:ignore="ContentDescription,UnusedAttribute"/>
 
   <TextView
     android:id="@+id/sent_status_text_view"

@@ -9,20 +9,17 @@ import android.view.ViewGroup;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.ui.ArgumentsKey;
 import com.kickstarter.ui.fragments.DiscoveryFragment;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import rx.Observable;
-
 public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   private final Delegate delegate;
   private final FragmentManager fragmentManager;
   private List<String> pageTitles;
-  private Map<Integer,DiscoveryFragment> fragmentMap;
+  private Map<Integer, DiscoveryFragment> fragmentMap;
 
   public interface Delegate {
     void discoveryPagerAdapterSetPrimaryPage(DiscoveryPagerAdapter adapter, int position);
@@ -44,7 +41,9 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   }
 
   @Override
-  public @NonNull Fragment getItem(final int position) {
+  public
+  @NonNull
+  Fragment getItem(final int position) {
     DiscoveryFragment fragment = DiscoveryFragment.newInstance(position);
     fragmentMap.put(position, fragment);
     return fragment;

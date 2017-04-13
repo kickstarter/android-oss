@@ -43,9 +43,8 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
 
   public DiscoveryFragment() {}
 
-  public static
   @NonNull
-  DiscoveryFragment newInstance(final int position) {
+  public static DiscoveryFragment newInstance(final int position) {
     final DiscoveryFragment fragment = new DiscoveryFragment();
     final Bundle bundle = new Bundle();
     bundle.putInt(ArgumentsKey.DISCOVERY_SORT_POSITION, position);

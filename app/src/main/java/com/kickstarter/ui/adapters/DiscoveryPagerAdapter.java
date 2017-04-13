@@ -1,7 +1,6 @@
 package com.kickstarter.ui.adapters;
 
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
@@ -41,10 +40,9 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   }
 
   @Override
-  public
   @NonNull
-  Fragment getItem(final int position) {
-    DiscoveryFragment fragment = DiscoveryFragment.newInstance(position);
+  public DiscoveryFragment getItem(final int position) {
+    final DiscoveryFragment fragment = DiscoveryFragment.newInstance(position);
     fragmentMap.put(position, fragment);
     return fragment;
   }

@@ -16,7 +16,6 @@ import java.util.Map;
 
 public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   private final Delegate delegate;
-  private final FragmentManager fragmentManager;
   private List<String> pageTitles;
   private Map<Integer, DiscoveryFragment> fragmentMap;
 
@@ -28,7 +27,6 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
     final Delegate delegate) {
     super(fragmentManager);
     this.delegate = delegate;
-    this.fragmentManager = fragmentManager;
     this.pageTitles = pageTitles;
     this.fragmentMap = new HashMap<>();
   }

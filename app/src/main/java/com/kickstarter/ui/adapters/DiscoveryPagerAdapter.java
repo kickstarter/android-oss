@@ -75,6 +75,6 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
    * Call when the view model tells us to clear specific pages.
    */
   public void clearPages(final @NonNull List<Integer> pages) {
-    pages.stream().forEach(page -> fragmentMap.get(page).clearPage());
+    pages.forEach(page -> fragmentMap.get(page).clearPage());
   }
 }

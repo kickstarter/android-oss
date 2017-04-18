@@ -38,8 +38,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   }
 
   @Override
-  @NonNull
-  public DiscoveryFragment getItem(final int position) {
+  public @NonNull DiscoveryFragment getItem(final int position) {
     final DiscoveryFragment fragment = DiscoveryFragment.newInstance(position);
     fragmentMap.put(position, fragment);
     return fragment;
@@ -73,7 +72,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
    * Call when the view model tells us to clear specific pages.
    */
   public void clearPages(final @NonNull List<Integer> pages) {
-    for (int page: pages) {
+    for (int page : pages) {
       fragmentMap.get(page).clearPage();
     }
   }

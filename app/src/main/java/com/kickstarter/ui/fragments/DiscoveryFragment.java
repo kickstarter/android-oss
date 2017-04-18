@@ -43,8 +43,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
 
   public DiscoveryFragment() {}
 
-  @NonNull
-  public static DiscoveryFragment newInstance(final int position) {
+  public static @NonNull DiscoveryFragment newInstance(final int position) {
     final DiscoveryFragment fragment = new DiscoveryFragment();
     final Bundle bundle = new Bundle();
     bundle.putInt(ArgumentsKey.DISCOVERY_SORT_POSITION, position);
@@ -52,9 +51,8 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     return fragment;
   }
 
-  @Nullable
   @Override
-  public View onCreateView(final @NonNull LayoutInflater inflater, final @Nullable ViewGroup container,
+  public @Nullable View onCreateView(final @NonNull LayoutInflater inflater, final @Nullable ViewGroup container,
     final @Nullable Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
 

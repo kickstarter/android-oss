@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
@@ -28,6 +27,7 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
@@ -65,12 +65,6 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.recyclerView.setLayoutManager(layoutManager);
 
     this.viewPledgeButton.setText(viewPledgeString);
-
-    RxTextView.textChanges(this.messageEditText)
-      .skip(1)
-      .map(CharSequence::toString)
-      .compose(bindToLifecycle())
-      .subscribe(this.viewModel.inputs::messageEditTextChanged);
 
     this.viewModel.outputs.backingAndProject()
       .compose(bindToLifecycle())
@@ -112,6 +106,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   @OnClick(R.id.send_message_button)
   public void sendMessageButtonClicked() {
     this.viewModel.inputs.sendMessageButtonClicked();
+  }
+
+  @OnTextChanged(R.id.message_edit_text)
+  public void onMessageEditTextChanged(final @NonNull CharSequence message) {
+    this.viewModel.inputs.messageEditTextChanged(message.toString());
   }
 
   private void setBackingInfoView(final @NonNull Pair<Backing, Project> backingAndProject) {

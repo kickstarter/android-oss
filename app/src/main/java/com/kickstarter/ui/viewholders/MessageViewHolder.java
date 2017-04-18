@@ -28,7 +28,6 @@ public final class MessageViewHolder extends KSViewHolder {
   protected @Bind(R.id.message_body_card_view) CardView messageBodyCardView;
   protected @Bind(R.id.message_body_text_view) TextView messageBodyTextView;
   protected @Bind(R.id.sender_avatar_image_view) ImageView participantAvatarImageView;
-  protected @Bind(R.id.sent_status_text_view) TextView sentStatusTextView;
 
   public MessageViewHolder(final @NonNull View view) {
     super(view);
@@ -70,16 +69,6 @@ public final class MessageViewHolder extends KSViewHolder {
       .subscribe(colorInt ->
         this.messageBodyTextView.setTextColor(ContextCompat.getColor(this.context(), colorInt))
       );
-
-    this.viewModel.outputs.sentStatusTextViewHidden()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.sentStatusTextView));
-
-    this.viewModel.outputs.sentStatusTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.sentStatusTextView::setText);
   }
 
   @Override

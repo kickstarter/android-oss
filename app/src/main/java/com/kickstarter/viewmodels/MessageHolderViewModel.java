@@ -40,12 +40,6 @@ public interface MessageHolderViewModel {
 
     /** Emits the color int for the message text. */
     Observable<Integer> messageBodyTextViewTextColorInt();
-
-    /** Emits a boolean to determine when the sent status text view should be hidden. */
-    Observable<Boolean> sentStatusTextViewHidden();
-
-    /** Emits the sent status string to be displayed. */
-    Observable<String> sentStatusTextViewText();
   }
 
   final class ViewModel extends ActivityViewModel<MessageViewHolder> implements Inputs, Outputs {
@@ -75,11 +69,6 @@ public interface MessageHolderViewModel {
 
       this.messageBodyTextViewTextColor = messageAndCurrentUserIsSender
         .map(mb -> mb.second ? R.color.white : R.color.ksr_navy_700);
-
-      this.sentStatusTextViewHidden = messageAndCurrentUserIsSender
-        .map(mb -> !mb.second);
-
-      this.sentStatusTextViewText = Observable.just("Delivered");
     }
 
     private final PublishSubject<Message> message = PublishSubject.create();
@@ -90,8 +79,6 @@ public interface MessageHolderViewModel {
     private final Observable<Integer> messageBodyTextViewBackgroundColor;
     private final Observable<String> messageBodyTextViewText;
     private final Observable<Integer> messageBodyTextViewTextColor;
-    private final Observable<Boolean> sentStatusTextViewHidden;
-    private final Observable<String> sentStatusTextViewText;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -117,12 +104,6 @@ public interface MessageHolderViewModel {
     }
     @Override public @NonNull Observable<Integer> messageBodyTextViewTextColorInt() {
       return this.messageBodyTextViewTextColor;
-    }
-    @Override public @NonNull Observable<Boolean> sentStatusTextViewHidden() {
-      return this.sentStatusTextViewHidden;
-    }
-    @Override public @NonNull Observable<String> sentStatusTextViewText() {
-      return this.sentStatusTextViewText;
     }
   }
 }

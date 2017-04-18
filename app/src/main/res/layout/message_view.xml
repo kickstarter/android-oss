@@ -42,14 +42,4 @@
     tools:background="@color/blue"
     tools:ignore="ContentDescription,UnusedAttribute"/>
 
-  <TextView
-    android:id="@+id/sent_status_text_view"
-    style="@style/CaptionSecondary"
-    android:layout_below="@+id/message_body_card_view"
-    android:layout_alignParentEnd="true"
-    android:layout_marginRight="@dimen/grid_new_7"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    tools:text="Delivered"/>
-
 </RelativeLayout>

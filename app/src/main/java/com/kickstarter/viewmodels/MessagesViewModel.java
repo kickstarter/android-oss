@@ -83,7 +83,6 @@ public interface MessagesViewModel {
         )
         .share();
 
-      // use these for labels in VH?
       final Observable<Message> messageSent = messageNotification.compose(values());
 
       final Observable<ErrorEnvelope> messageError = messageNotification
@@ -172,10 +171,10 @@ public interface MessagesViewModel {
       this.sendMessageButtonClicked.onNext(null);
     }
 
-    @Override public @NonNull BehaviorSubject<Pair<Backing, Project>> backingAndProject() {
+    @Override public @NonNull Observable<Pair<Backing, Project>> backingAndProject() {
       return this.backingAndProject;
     }
-    @Override public @NonNull BehaviorSubject<Boolean> backingInfoViewHidden() {
+    @Override public @NonNull Observable<Boolean> backingInfoViewHidden() {
       return this.backingInfoViewHidden;
     }
     @Override public @NonNull Observable<String> participantNameTextViewText() {

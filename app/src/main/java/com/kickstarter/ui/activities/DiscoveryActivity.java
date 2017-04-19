@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -30,8 +29,6 @@ import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.views.SortTabLayout;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,7 +48,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   private DiscoveryDrawerAdapter drawerAdapter;
   private LinearLayoutManager drawerLayoutManager;
   private DiscoveryPagerAdapter pagerAdapter;
-  List<WeakReference<Fragment>> fragmentList = new ArrayList<>();
 
   protected @Inject ApiClientType client;
   protected @Inject InternalToolsType internalTools;
@@ -194,13 +190,5 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .setIcon(android.R.drawable.ic_dialog_alert)
       .show();
   }
-
-
-  @Override
-  public void onAttachFragment(Fragment fragment) {
-    super.onAttachFragment(fragment);
-    fragmentList.add(new WeakReference(fragment));
-  }
-
 
 }

@@ -17,7 +17,7 @@ import java.util.Map;
 public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   private final Delegate delegate;
   private List<String> pageTitles;
-  private Map<Integer, DiscoveryFragment> fragmentMap;
+  private static Map<Integer, DiscoveryFragment> fragmentMap;
 
   public interface Delegate {
     void discoveryPagerAdapterSetPrimaryPage(DiscoveryPagerAdapter adapter, int position);
@@ -28,7 +28,8 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
     super(fragmentManager);
     this.delegate = delegate;
     this.pageTitles = pageTitles;
-    this.fragmentMap = new HashMap<>();
+    if (fragmentMap == null)
+      fragmentMap = new HashMap<>();
   }
 
   @Override
@@ -58,14 +59,15 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
    * Passes along root categories to its fragment position to help fetch appropriate projects.
    */
   public void takeCategoriesForPosition(final @NonNull List<Category> categories, final int position) {
-    fragmentMap.get(position).takeCategories(categories);
+    safeGetFragment(position).takeCategories(categories);
   }
 
   /**
    * Take current params from activity and pass to the appropriate fragment.
    */
   public void takeParams(final @NonNull DiscoveryParams params) {
-    fragmentMap.get(DiscoveryUtils.positionFromSort(params.sort())).updateParams(params);
+    int position = DiscoveryUtils.positionFromSort(params.sort());
+    safeGetFragment(position).updateParams(params);
   }
 
   /**
@@ -73,7 +75,18 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
    */
   public void clearPages(final @NonNull List<Integer> pages) {
     for (int page : pages) {
-      fragmentMap.get(page).clearPage();
+      safeGetFragment(page).clearPage();
     }
+  }
+
+  /**
+   * Don't pull directly from the map as it may be null
+   */
+  private @NonNull DiscoveryFragment safeGetFragment(int position) {
+    DiscoveryFragment fragment = fragmentMap.get(position);
+    if (fragment == null)
+      fragment = getItem(position);
+
+    return fragment;
   }
 }

@@ -57,6 +57,9 @@ public interface MessagesViewModel {
 
     /** Emits an empty string when we want to clear the message edit text. */
     Observable<String> setEmptyMessageEditText();
+
+    /** Emits when we should show a message error toast. */
+    Observable<Boolean> showMessageErrorToast();
   }
 
   final class ViewModel extends ActivityViewModel<MessagesActivity> implements Inputs, Outputs {
@@ -84,10 +87,6 @@ public interface MessagesViewModel {
         .share();
 
       final Observable<Message> messageSent = messageNotification.compose(values());
-
-      final Observable<ErrorEnvelope> messageError = messageNotification
-        .compose(errors())
-        .map(ErrorEnvelope::fromThrowable);
 
       this.setEmptyMessageEditText = messageSent.map(__ -> "");
 
@@ -145,6 +144,12 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.messages::onNext);
 
+      messageNotification
+        .compose(errors())
+        .map(ErrorEnvelope::fromThrowable)
+        .map(ObjectUtils::isNotNull)
+        .subscribe(this.showMessageErrorToast::onNext);
+
       messageThread
         .map(thread -> thread.project().name())
         .compose(bindToLifecycle())
@@ -159,6 +164,7 @@ public interface MessagesViewModel {
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
     private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
+    private final PublishSubject<Boolean> showMessageErrorToast = PublishSubject.create();
     private final Observable<String> setEmptyMessageEditText;
 
     public final Inputs inputs = this;
@@ -185,6 +191,9 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
+    }
+    @Override public @NonNull Observable<Boolean> showMessageErrorToast() {
+      return this.showMessageErrorToast;
     }
     @Override public @NonNull Observable<String> setEmptyMessageEditText() {
       return this.setEmptyMessageEditText;

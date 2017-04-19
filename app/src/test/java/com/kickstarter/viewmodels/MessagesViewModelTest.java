@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.factories.ApiExceptionFactory;
 import com.kickstarter.factories.BackingFactory;
 import com.kickstarter.factories.MessageFactory;
 import com.kickstarter.factories.MessageThreadEnvelopeFactory;
@@ -35,6 +36,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> setEmptyMessageEditText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> showMessageErrorToast = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new MessagesViewModel.ViewModel(environment);
@@ -44,6 +46,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.messages().subscribe(this.messages);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.setEmptyMessageEditText().subscribe(this.setEmptyMessageEditText);
+    this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
   }
 
   @Test
@@ -116,7 +119,30 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testSendMessage() {
+  public void testSendMessage_Error() {
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<Message> sendMessage(final @NonNull MessageThread thread, final @NonNull String body) {
+        return Observable.error(ApiExceptionFactory.badRequestException());
+      }
+    };
+
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+
+    // Start the view model with a message thread.
+    this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, MessageThreadFactory.messageThread()));
+
+    // Send a message unsuccessfully.
+    this.vm.inputs.messageEditTextChanged("Hello there");
+    this.vm.inputs.sendMessageButtonClicked();
+
+    // Error toast is displayed, errored message body remains in edit text.
+    this.showMessageErrorToast.assertValues(true);
+    this.setEmptyMessageEditText.assertNoValues();
+  }
+
+  @Test
+  public void testSendMessage_Success() {
     final Message sentMessage = MessageFactory.message();
 
     final MockApiClient apiClient = new MockApiClient() {

@@ -95,6 +95,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.messageEditText::setText);
+
+    this.viewModel.outputs.showMessageErrorToast()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> ViewUtils.showToast(this, "Not delivered"));
   }
 
   @Override

@@ -28,8 +28,9 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
     super(fragmentManager);
     this.delegate = delegate;
     this.pageTitles = pageTitles;
-    if (fragmentMap == null)
+    if (fragmentMap == null) {
       fragmentMap = new HashMap<>();
+    }
   }
 
   @Override
@@ -66,7 +67,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
    * Take current params from activity and pass to the appropriate fragment.
    */
   public void takeParams(final @NonNull DiscoveryParams params) {
-    int position = DiscoveryUtils.positionFromSort(params.sort());
+    final int position = DiscoveryUtils.positionFromSort(params.sort());
     safeGetFragment(position).updateParams(params);
   }
 
@@ -82,10 +83,11 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   /**
    * Don't pull directly from the map as it may be null
    */
-  private @NonNull DiscoveryFragment safeGetFragment(int position) {
+  private @NonNull DiscoveryFragment safeGetFragment(final int position) {
     DiscoveryFragment fragment = fragmentMap.get(position);
-    if (fragment == null)
+    if (fragment == null) {
       fragment = getItem(position);
+    }
 
     return fragment;
   }

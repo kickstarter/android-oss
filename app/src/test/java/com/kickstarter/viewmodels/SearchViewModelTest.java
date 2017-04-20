@@ -14,7 +14,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testPopularProjectsLoadImmediately() {
-    final SearchViewModel viewModel = new SearchViewModel(environment());
+    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(environment());
 
     final TestSubscriber<Boolean> popularProjectsPresent = new TestSubscriber<>();
     viewModel.outputs.popularProjects().map(ps -> ps.size() > 0).subscribe(popularProjectsPresent);
@@ -33,7 +33,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       .scheduler(scheduler)
       .build();
 
-    final SearchViewModel viewModel = new SearchViewModel(env);
+    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
 
     final TestSubscriber<Boolean> searchProjectsPresent = new TestSubscriber<>();
     viewModel.outputs.searchProjects().map(ps -> ps.size() > 0).subscribe(searchProjectsPresent);

@@ -75,9 +75,7 @@ public interface SearchViewModel {
       search
         .filter(StringUtils::isEmpty)
         .compose(bindToLifecycle())
-        .subscribe(__ -> {
-          searchProjects.onNext(ListUtils.empty());
-        });
+        .subscribe(__ -> searchProjects.onNext(ListUtils.empty()));
 
       params
         .compose(Transformers.takePairWhen(paginator.paginatedData()))
@@ -110,7 +108,6 @@ public interface SearchViewModel {
 
     private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
-    private final BehaviorSubject<Project> startProjectActivity = BehaviorSubject.create();
 
     public final SearchViewModel.Inputs inputs = this;
     public final SearchViewModel.Outputs outputs = this;

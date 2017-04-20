@@ -149,6 +149,8 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
   }
 
   public void clearPage() {
-    viewModel.inputs.clearPage();
+    if (viewModel != null) {
+      viewModel.inputs.clearPage();
+    }
   }
 }

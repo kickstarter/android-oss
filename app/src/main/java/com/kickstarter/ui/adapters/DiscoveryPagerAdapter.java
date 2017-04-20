@@ -84,7 +84,16 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
    * Don't pull directly from the map as it may be null
    */
   private @NonNull DiscoveryFragment safeGetFragment(final int position) {
-    DiscoveryFragment fragment = fragmentMap.get(position);
+    DiscoveryFragment fragment = null;
+
+    if (fragmentMap == null) {
+      fragmentMap = new HashMap<>();
+    }
+
+    if (fragmentMap.containsKey(position)) {
+      fragment = fragmentMap.get(position);
+    }
+
     if (fragment == null) {
       fragment = getItem(position);
     }

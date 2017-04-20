@@ -10,7 +10,9 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
@@ -27,9 +29,9 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
 
   protected @Bind(R.id.creator_name_text_view) TextView creatorNameTextView;
   protected @Bind(R.id.project_name_text_view) TextView projectNameTextView;
-  protected @Bind(R.id.project_image_view) ImageView projectImageView;
+  @Bind(R.id.project_image_view) ImageView projectImageView;
 
-  protected @BindString(R.string.search_by_creator) String byCreatorString;
+  @BindString(R.string.search_stats) String searchStats;
 
   protected @Inject KSString ksString;
 
@@ -53,8 +55,9 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
   public void onBind() {
     final Context context = context();
 
-    creatorNameTextView.setText(ksString.format(byCreatorString,
-      "creator_name", project.creator().name()
+    creatorNameTextView.setText(ksString.format(searchStats,
+      "percent_funded", String.valueOf((int) project.percentageFunded()),
+      "days_to_go", NumberUtils.format(ProjectUtils.deadlineCountdownValue(project))
     ));
     projectNameTextView.setText(project.name());
 

@@ -128,7 +128,5 @@ public interface SearchViewModel {
     @Override public Observable<List<Project>> popularProjects() { return popularProjects; }
 
     @Override public Observable<List<Project>> searchProjects() { return searchProjects; }
-
-
   }
 }

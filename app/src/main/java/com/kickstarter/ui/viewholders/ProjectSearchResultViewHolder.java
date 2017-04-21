@@ -53,9 +53,7 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
     project = ObjectUtils.requireNonNull((Project) data, Project.class);
-  }
 
-  public void onBind() {
     final Context context = context();
 
     projectNameTextView.setText(project.name());
@@ -82,7 +80,7 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
     final int percentFundedIndex = projectStatsSpannable.toString().indexOf(percentFunded + "% ");
     final int daysToGoIndex = projectStatsSpannable.toString().indexOf(daysToGo);
 
-    projectStatsSpannable.setSpan(new TextAppearanceSpan(context, R.style.BodyGreen), percentFundedIndex, percentFundedIndex + percentFunded.length() + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    projectStatsSpannable.setSpan(new TextAppearanceSpan(context, R.style.BodyGreen), percentFundedIndex, percentFundedIndex + percentFunded.length() + 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     projectStatsSpannable.setSpan(new TextAppearanceSpan(context, R.style.BodyPrimaryMedium), daysToGoIndex, daysToGoIndex + daysToGo.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
     return projectStatsSpannable;

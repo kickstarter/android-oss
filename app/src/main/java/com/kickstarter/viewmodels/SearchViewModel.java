@@ -27,18 +27,26 @@ import rx.subjects.PublishSubject;
 public interface SearchViewModel {
 
   interface Inputs {
-    /** Load more data **/
+    /**
+     * Load more data
+     **/
     void nextPage();
 
-    /** Call on text change in search box **/
+    /**
+     * Call on text change in search box
+     **/
     void search(final @NonNull String s);
   }
 
   interface Outputs {
-    /** Emits list of popular projects **/
+    /**
+     * Emits list of popular projects
+     **/
     Observable<List<Project>> popularProjects();
 
-    /** Emits list of projects matching critera **/
+    /**
+     * Emits list of projects matching critera
+     **/
     Observable<List<Project>> searchProjects();
   }
 
@@ -119,14 +127,28 @@ public interface SearchViewModel {
     public final SearchViewModel.Inputs inputs = this;
     public final SearchViewModel.Outputs outputs = this;
 
-    @Override public void nextPage() { nextPage.onNext(null); }
+    // Inputs
+    @Override
+    public void nextPage() {
+      nextPage.onNext(null);
+    }
+    @Override
+    public void projectSearchResultClick(final ProjectSearchResultViewHolder viewHolder, final Project project) {
+      this.projectCardClicked.onNext(project);
+    }
+    @Override
+    public void search(final @NonNull String s) {
+      search.onNext(s);
+    }
 
-    @Override public void projectSearchResultClick(final ProjectSearchResultViewHolder viewHolder, final Project project) { this.projectCardClicked.onNext(project); }
-
-    @Override public void search(final @NonNull String s) { search.onNext(s); }
-
-    @Override public Observable<List<Project>> popularProjects() { return popularProjects; }
-
-    @Override public Observable<List<Project>> searchProjects() { return searchProjects; }
+    //Outputs
+    @Override
+    public Observable<List<Project>> popularProjects() {
+      return popularProjects;
+    }
+    @Override
+    public Observable<List<Project>> searchProjects() {
+      return searchProjects;
+    }
   }
 }

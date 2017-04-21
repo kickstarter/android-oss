@@ -104,10 +104,15 @@ public interface SearchViewModel {
         .subscribe(qp -> koala.trackSearchResults(qp.first, qp.second));
     }
 
+    private static final DiscoveryParams.Sort defaultSort = DiscoveryParams.Sort.POPULAR;
+    private static final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(defaultSort).build();
+
+    // Inputs
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
     private final PublishSubject<String> search = PublishSubject.create();
 
+    // Outputs
     private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
 
@@ -116,19 +121,14 @@ public interface SearchViewModel {
 
     @Override public void nextPage() { nextPage.onNext(null); }
 
+    @Override public void projectSearchResultClick(final ProjectSearchResultViewHolder viewHolder, final Project project) { this.projectCardClicked.onNext(project); }
+
     @Override public void search(final @NonNull String s) { search.onNext(s); }
 
     @Override public Observable<List<Project>> popularProjects() { return popularProjects; }
 
     @Override public Observable<List<Project>> searchProjects() { return searchProjects; }
 
-    private static final DiscoveryParams.Sort defaultSort = DiscoveryParams.Sort.POPULAR;
-    private static final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(defaultSort).build();
 
-
-    @Override
-    public void projectSearchResultClick(final ProjectSearchResultViewHolder viewHolder, final Project project) {
-      this.projectCardClicked.onNext(project);
-    }
   }
 }

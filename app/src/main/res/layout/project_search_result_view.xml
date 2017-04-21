@@ -24,8 +24,7 @@
       android:id="@+id/project_image_view"
       android:scaleType="centerCrop"
       android:background="@drawable/gray_gradient"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
+      android:layout_alignParentStart="true"
       android:adjustViewBounds="true"
       android:layout_width="@dimen/search_result_photo_width"
       android:layout_height="@dimen/search_result_photo_height"
@@ -34,15 +33,14 @@
     <LinearLayout
       android:orientation="vertical"
       android:layout_marginEnd="@dimen/grid_2"
-      android:layout_marginRight="@dimen/grid_2"
-      android:layout_centerVertical="true"
-      android:layout_toLeftOf="@id/project_image_view"
-      android:layout_toStartOf="@id/project_image_view"
+      android:layout_alignParentBottom="@id/project_image_view"
+      android:layout_marginStart="@dimen/grid_2"
+      android:layout_toEndOf="@id/project_image_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
       <TextView
-        style="@style/Headline"
+        style="@style/SubheadSecondaryMedium"
         android:id="@+id/project_name_text_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

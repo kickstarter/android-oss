@@ -3,6 +3,9 @@ package com.kickstarter.ui.viewholders;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.TextAppearanceSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -55,10 +58,22 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
   public void onBind() {
     final Context context = context();
 
-    creatorNameTextView.setText(ksString.format(searchStats,
-      "percent_funded", String.valueOf((int) project.percentageFunded()),
-      "days_to_go", NumberUtils.format(ProjectUtils.deadlineCountdownValue(project))
+    final String percentFunded = String.valueOf((int) project.percentageFunded());
+    final String daysToGo = " " + NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)) + " ";
+
+    final SpannableString text = new SpannableString(ksString.format(searchStats,
+      "percent_funded", percentFunded,
+      "days_to_go", daysToGo
     ));
+
+    final int percentFundedIndex = text.toString().indexOf(percentFunded + "% ");
+    final int daysToGoIndex = text.toString().indexOf(daysToGo);
+
+    text.setSpan(new TextAppearanceSpan(context, R.style.BodyGreen), percentFundedIndex, percentFundedIndex + percentFunded.length() + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    text.setSpan(new TextAppearanceSpan(context, R.style.BodyPrimaryMedium), daysToGoIndex, daysToGoIndex + daysToGo.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+    creatorNameTextView.setText(text, TextView.BufferType.SPANNABLE);
+
     projectNameTextView.setText(project.name());
 
     final Photo photo = project.photo();

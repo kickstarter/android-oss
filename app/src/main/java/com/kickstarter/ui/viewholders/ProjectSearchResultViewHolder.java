@@ -30,7 +30,7 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
   private Project project;
   private final Delegate delegate;
 
-  protected @Bind(R.id.creator_name_text_view) TextView creatorNameTextView;
+  protected @Bind(R.id.project_stats_text_view) TextView projectStatsTextView;
   protected @Bind(R.id.project_name_text_view) TextView projectNameTextView;
   @Bind(R.id.project_image_view) ImageView projectImageView;
 
@@ -58,23 +58,8 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
   public void onBind() {
     final Context context = context();
 
-    final String percentFunded = String.valueOf((int) project.percentageFunded());
-    final String daysToGo = " " + NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)) + " ";
-
-    final SpannableString text = new SpannableString(ksString.format(searchStats,
-      "percent_funded", percentFunded,
-      "days_to_go", daysToGo
-    ));
-
-    final int percentFundedIndex = text.toString().indexOf(percentFunded + "% ");
-    final int daysToGoIndex = text.toString().indexOf(daysToGo);
-
-    text.setSpan(new TextAppearanceSpan(context, R.style.BodyGreen), percentFundedIndex, percentFundedIndex + percentFunded.length() + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-    text.setSpan(new TextAppearanceSpan(context, R.style.BodyPrimaryMedium), daysToGoIndex, daysToGoIndex + daysToGo.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-    creatorNameTextView.setText(text, TextView.BufferType.SPANNABLE);
-
     projectNameTextView.setText(project.name());
+    projectStatsTextView.setText(createProjectStatsSpannable(context), TextView.BufferType.SPANNABLE);
 
     final Photo photo = project.photo();
     if (photo != null) {
@@ -83,6 +68,24 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
     } else {
       projectImageView.setVisibility(View.INVISIBLE);
     }
+  }
+
+  private @NonNull SpannableString createProjectStatsSpannable(final Context context) {
+    final String percentFunded = String.valueOf((int) project.percentageFunded());
+    final String daysToGo = " " + NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)) + " ";
+
+    final SpannableString projectStatsSpannable = new SpannableString(ksString.format(searchStats,
+      "percent_funded", percentFunded,
+      "days_to_go", daysToGo
+    ));
+
+    final int percentFundedIndex = projectStatsSpannable.toString().indexOf(percentFunded + "% ");
+    final int daysToGoIndex = projectStatsSpannable.toString().indexOf(daysToGo);
+
+    projectStatsSpannable.setSpan(new TextAppearanceSpan(context, R.style.BodyGreen), percentFundedIndex, percentFundedIndex + percentFunded.length() + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    projectStatsSpannable.setSpan(new TextAppearanceSpan(context, R.style.BodyPrimaryMedium), daysToGoIndex, daysToGoIndex + daysToGo.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+    return projectStatsSpannable;
   }
 
   @Override

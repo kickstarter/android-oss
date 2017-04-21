@@ -50,7 +50,7 @@
 
       <TextView
         style="@style/CaptionSecondary"
-        android:id="@+id/creator_name_text_view"
+        android:id="@+id/project_stats_text_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_1_half"

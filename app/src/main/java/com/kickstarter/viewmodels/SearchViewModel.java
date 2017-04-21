@@ -81,7 +81,7 @@ public interface SearchViewModel {
           .loadWithPaginationPath(apiClient::fetchProjects)
           .build();
 
-      search
+      this.search
         .filter(StringUtils::isEmpty)
         .compose(bindToLifecycle())
         .subscribe(__ -> searchProjects.onNext(ListUtils.empty()));
@@ -98,7 +98,7 @@ public interface SearchViewModel {
         });
 
       // Track us viewing this page
-      koala.trackSearchView();
+      this.koala.trackSearchView();
 
       // Track search results and pagination
       final Observable<Integer> pageCount = paginator.loadingPage();
@@ -130,7 +130,7 @@ public interface SearchViewModel {
     // Inputs
     @Override
     public void nextPage() {
-      nextPage.onNext(null);
+      this.nextPage.onNext(null);
     }
     @Override
     public void projectSearchResultClick(final ProjectSearchResultViewHolder viewHolder, final Project project) {
@@ -138,17 +138,17 @@ public interface SearchViewModel {
     }
     @Override
     public void search(final @NonNull String s) {
-      search.onNext(s);
+      this.search.onNext(s);
     }
 
     //Outputs
     @Override
     public Observable<List<Project>> popularProjects() {
-      return popularProjects;
+      return this.popularProjects;
     }
     @Override
     public Observable<List<Project>> searchProjects() {
-      return searchProjects;
+      return this.searchProjects;
     }
   }
 }

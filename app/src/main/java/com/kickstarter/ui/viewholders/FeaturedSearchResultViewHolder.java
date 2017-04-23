@@ -13,7 +13,7 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
-public final class SearchTermViewHolder extends KSViewHolder {
+public final class FeaturedSearchResultViewHolder extends KSViewHolder {
   private DiscoveryParams params;
 
   protected @Bind(R.id.search_term_text_view) TextView termTextView;
@@ -21,16 +21,14 @@ public final class SearchTermViewHolder extends KSViewHolder {
 
   protected @BindString(R.string.search_most_popular) String mostPopularString;
 
-  public SearchTermViewHolder(final @NonNull View view) {
+  public FeaturedSearchResultViewHolder(final @NonNull View view) {
     super(view);
     ButterKnife.bind(this, view);
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-  }
-
-  public void onBind() {
     termTextView.setText(mostPopularString);
   }
+
 }

@@ -52,19 +52,18 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    project = ObjectUtils.requireNonNull((Project) data, Project.class);
-
     final Context context = context();
 
-    projectNameTextView.setText(project.name());
-    projectStatsTextView.setText(createProjectStatsSpannable(context), TextView.BufferType.SPANNABLE);
+    this.project = ObjectUtils.requireNonNull((Project) data, Project.class);
+    this.projectNameTextView.setText(project.name());
+    this.projectStatsTextView.setText(createProjectStatsSpannable(context), TextView.BufferType.SPANNABLE);
 
     final Photo photo = project.photo();
     if (photo != null) {
-      projectImageView.setVisibility(View.VISIBLE);
+      this.projectImageView.setVisibility(View.VISIBLE);
       Picasso.with(context).load(photo.small()).into(projectImageView);
     } else {
-      projectImageView.setVisibility(View.INVISIBLE);
+      this.projectImageView.setVisibility(View.INVISIBLE);
     }
   }
 
@@ -88,7 +87,7 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
 
   @Override
   public void onClick(final @NonNull View view) {
-    delegate.projectSearchResultClick(this, project);
+    this.delegate.projectSearchResultClick(this, project);
   }
 }
 

@@ -27,26 +27,18 @@ import rx.subjects.PublishSubject;
 public interface SearchViewModel {
 
   interface Inputs {
-    /**
-     * Load more data
-     **/
+    /** Load more data **/
     void nextPage();
 
-    /**
-     * Call on text change in search box
-     **/
+    /** Call on text change in search box **/
     void search(final @NonNull String s);
   }
 
   interface Outputs {
-    /**
-     * Emits list of popular projects
-     **/
+    /** Emits list of popular projects */
     Observable<List<Project>> popularProjects();
 
-    /**
-     * Emits list of projects matching critera
-     **/
+    /** Emits list of projects matching critera */
     Observable<List<Project>> searchProjects();
   }
 
@@ -115,39 +107,30 @@ public interface SearchViewModel {
     private static final DiscoveryParams.Sort defaultSort = DiscoveryParams.Sort.POPULAR;
     private static final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(defaultSort).build();
 
-    // Inputs
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
     private final PublishSubject<String> search = PublishSubject.create();
 
-    // Outputs
     private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
 
     public final SearchViewModel.Inputs inputs = this;
     public final SearchViewModel.Outputs outputs = this;
 
-    // Inputs
-    @Override
-    public void nextPage() {
+    @Override public void nextPage() {
       this.nextPage.onNext(null);
     }
-    @Override
-    public void projectSearchResultClick(final ProjectSearchResultViewHolder viewHolder, final Project project) {
+    @Override public void projectSearchResultClick(final ProjectSearchResultViewHolder viewHolder, final Project project) {
       this.projectCardClicked.onNext(project);
     }
-    @Override
-    public void search(final @NonNull String s) {
+    @Override public void search(final @NonNull String s) {
       this.search.onNext(s);
     }
 
-    //Outputs
-    @Override
-    public Observable<List<Project>> popularProjects() {
+    @Override public Observable<List<Project>> popularProjects() {
       return this.popularProjects;
     }
-    @Override
-    public Observable<List<Project>> searchProjects() {
+    @Override public Observable<List<Project>> searchProjects() {
       return this.searchProjects;
     }
   }

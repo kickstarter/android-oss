@@ -3,9 +3,7 @@ package com.kickstarter.ui.viewholders;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.TextAppearanceSpan;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -55,8 +53,15 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
     final Context context = context();
 
     project = ObjectUtils.requireNonNull((Project) data, Project.class);
+
+    final String percentFunded = String.valueOf((int) project.percentageFunded());
+    final String daysToGo = " " + NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)) + " ";
+
     projectNameTextView.setText(project.name());
-    projectStatsTextView.setText(createProjectStatsSpannable(context), TextView.BufferType.SPANNABLE);
+    projectStatsTextView.setText(Html.fromHtml(ksString.format(searchStats,
+      "percent_funded", percentFunded,
+      "days_to_go", daysToGo
+    )));
 
     final Photo photo = project.photo();
 
@@ -70,24 +75,6 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
     } else {
       projectImageView.setVisibility(View.INVISIBLE);
     }
-  }
-
-  private @NonNull SpannableString createProjectStatsSpannable(final Context context) {
-    final String percentFunded = String.valueOf((int) project.percentageFunded());
-    final String daysToGo = " " + NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)) + " ";
-
-    final SpannableString projectStatsSpannable = new SpannableString(ksString.format(searchStats,
-      "percent_funded", percentFunded,
-      "days_to_go", daysToGo
-    ));
-
-    final int percentFundedIndex = projectStatsSpannable.toString().indexOf(percentFunded + "% ");
-    final int daysToGoIndex = projectStatsSpannable.toString().indexOf(daysToGo);
-
-    projectStatsSpannable.setSpan(new TextAppearanceSpan(context, R.style.BodyGreen), percentFundedIndex, percentFundedIndex + percentFunded.length() + 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-    projectStatsSpannable.setSpan(new TextAppearanceSpan(context, R.style.BodyPrimaryMedium), daysToGoIndex, daysToGoIndex + daysToGo.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-    return projectStatsSpannable;
   }
 
   @Override

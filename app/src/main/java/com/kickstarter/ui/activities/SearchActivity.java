@@ -26,8 +26,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresActivityViewModel(SearchViewModel.class)
-public final class SearchActivity extends BaseActivity<SearchViewModel> implements SearchAdapter.Delegate {
+@RequiresActivityViewModel(SearchViewModel.ViewModel.class)
+public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel> implements SearchAdapter.Delegate {
   private SearchAdapter adapter;
   private RecyclerViewPaginator paginator;
   protected @Bind(R.id.search_recycler_view) RecyclerView recyclerView;

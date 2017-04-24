@@ -26,12 +26,12 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
-public final class ProjectSearchResultViewHolder extends KSViewHolder {
-  private Project project;
-  private final Delegate delegate;
+public class ProjectSearchResultViewHolder extends KSViewHolder {
+  protected Project project;
+  protected final Delegate delegate;
 
-  protected @Bind(R.id.project_stats_text_view) TextView projectStatsTextView;
-  protected @Bind(R.id.project_name_text_view) TextView projectNameTextView;
+  @Bind(R.id.project_stats_text_view) TextView projectStatsTextView;
+  @Bind(R.id.project_name_text_view) TextView projectNameTextView;
   @Bind(R.id.project_image_view) ImageView projectImageView;
 
   @BindString(R.string.search_stats) String searchStats;
@@ -54,16 +54,16 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
   public void bindData(final @Nullable Object data) throws Exception {
     final Context context = context();
 
-    this.project = ObjectUtils.requireNonNull((Project) data, Project.class);
-    this.projectNameTextView.setText(project.name());
-    this.projectStatsTextView.setText(createProjectStatsSpannable(context), TextView.BufferType.SPANNABLE);
+    project = ObjectUtils.requireNonNull((Project) data, Project.class);
+    projectNameTextView.setText(project.name());
+    projectStatsTextView.setText(createProjectStatsSpannable(context), TextView.BufferType.SPANNABLE);
 
     final Photo photo = project.photo();
     if (photo != null) {
-      this.projectImageView.setVisibility(View.VISIBLE);
+      projectImageView.setVisibility(View.VISIBLE);
       Picasso.with(context).load(photo.small()).into(projectImageView);
     } else {
-      this.projectImageView.setVisibility(View.INVISIBLE);
+      projectImageView.setVisibility(View.INVISIBLE);
     }
   }
 
@@ -87,7 +87,7 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
 
   @Override
   public void onClick(final @NonNull View view) {
-    this.delegate.projectSearchResultClick(this, project);
+    delegate.projectSearchResultClick(this, project);
   }
 }
 

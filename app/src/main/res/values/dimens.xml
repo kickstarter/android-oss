@@ -112,6 +112,8 @@
   <dimen name="project_social_photo_height">@dimen/grid_4</dimen>
   <dimen name="search_result_photo_width">@dimen/grid_14</dimen>
   <dimen name="search_result_photo_height">63dp</dimen>
+  <dimen name="featured_search_result_photo_height">126dp</dimen>
+
   <dimen name="thanks_project_photo_width">208dp</dimen>
   <dimen name="thanks_project_photo_height">117dp</dimen>
 

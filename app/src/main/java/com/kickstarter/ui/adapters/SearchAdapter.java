@@ -27,9 +27,9 @@ public final class SearchAdapter extends KSAdapter {
     if (newProjects.size() == 0) {
       addSection(Collections.emptyList());
     } else {
-      addSection(Collections.singletonList(null));
+      addSection(getFeatureProject(newProjects));
     }
-    addSection(newProjects);
+    addSection(getProjectList(newProjects));
     notifyDataSetChanged();
   }
 
@@ -61,7 +61,7 @@ public final class SearchAdapter extends KSAdapter {
 
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.featured_search_result_view) {
-      return new FeaturedSearchResultViewHolder(view);
+      return new FeaturedSearchResultViewHolder(view, delegate);
     }
     return new ProjectSearchResultViewHolder(view, delegate);
   }

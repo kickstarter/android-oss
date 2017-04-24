@@ -12,16 +12,16 @@
   android:paddingTop="@dimen/grid_5_half">
 
   <TextView
-    style="@style/SubheadPrimary"
+    style="@style/Headline"
     android:id="@+id/search_term_text_view"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:textColor="@color/dark_gray"
     tools:text="@string/search_most_popular" />
 
   <RelativeLayout
     android:orientation="horizontal"
     android:layout_width="match_parent"
+    android:layout_marginTop="@dimen/grid_3"
     android:layout_height="wrap_content">
 
     <ImageView
@@ -32,15 +32,16 @@
       android:layout_alignParentEnd="true"
       android:adjustViewBounds="true"
       android:layout_width="@dimen/search_result_photo_width"
-      android:layout_height="@dimen/search_result_photo_height"
+      android:layout_height="@dimen/featured_search_result_photo_height"
       tools:ignore="ContentDescription" />
 
     <LinearLayout
       android:orientation="vertical"
-      android:layout_marginEnd="@dimen/grid_2"
+      android:layout_marginEnd="@dimen/grid_1"
       android:layout_below="@id/project_image_view"
-      android:layout_marginStart="@dimen/grid_2"
-      android:layout_toEndOf="@id/project_image_view"
+      android:layout_alignParentBottom="true"
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginStart="@dimen/grid_1"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 

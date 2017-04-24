@@ -336,7 +336,7 @@
   </style>
 
   <style name="BodyGreen" parent="BodyPrimary">
-    <item name="android:textColor">@color/ksr_green</item>
+    <item name="android:textColor">@color/green</item>
   </style>
 
   <style name="SubheadPrimary" parent="TextPrimary">
@@ -374,7 +374,7 @@
   </style>
 
   <style name="SearchHeading" parent="TextSecondary">
-    <item name="android:textSize">@dimen/search_heading</item>
+    <item name="android:textSize">@dimen/caption</item>
   </style>
 
   <!-- Cards -->

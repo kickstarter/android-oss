@@ -59,9 +59,14 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
     projectStatsTextView.setText(createProjectStatsSpannable(context), TextView.BufferType.SPANNABLE);
 
     final Photo photo = project.photo();
+
     if (photo != null) {
       projectImageView.setVisibility(View.VISIBLE);
-      Picasso.with(context).load(photo.small()).into(projectImageView);
+      if (this instanceof FeaturedSearchResultViewHolder) {
+        Picasso.with(context).load(photo.full()).into(projectImageView);
+      } else {
+        Picasso.with(context).load(photo.small()).into(projectImageView);
+      }
     } else {
       projectImageView.setVisibility(View.INVISIBLE);
     }

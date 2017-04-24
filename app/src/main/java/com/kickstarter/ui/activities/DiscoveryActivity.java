@@ -25,6 +25,7 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter;
 import com.kickstarter.ui.data.LoginReason;
+import com.kickstarter.ui.fragments.DiscoveryFragment;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.views.SortTabLayout;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
@@ -82,7 +83,16 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
     final List<String> viewPagerTitles = Arrays.asList(homeString, popularString, newestString, endingSoonString,
       mostFundedString);
-    pagerAdapter = new DiscoveryPagerAdapter(getSupportFragmentManager(), viewPagerTitles, viewModel.inputs);
+
+    final List<DiscoveryFragment> fragments = Arrays.asList(
+      DiscoveryFragment.newInstance(0),
+      DiscoveryFragment.newInstance(1),
+      DiscoveryFragment.newInstance(2),
+      DiscoveryFragment.newInstance(3),
+      DiscoveryFragment.newInstance(4)
+    );
+
+    pagerAdapter = new DiscoveryPagerAdapter(getSupportFragmentManager(), fragments, viewPagerTitles, viewModel.inputs);
     sortViewPager.setAdapter(pagerAdapter);
     sortTabLayout.setupWithViewPager(sortViewPager);
 

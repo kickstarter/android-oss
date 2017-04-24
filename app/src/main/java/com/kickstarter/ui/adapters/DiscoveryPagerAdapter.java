@@ -18,30 +18,40 @@ import rx.Observable;
 
 public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   private final Delegate delegate;
-  private final FragmentManager fragmentManager;
+//  private final FragmentManager fragmentManager;
   private List<String> pageTitles;
+  private List<DiscoveryFragment> fragments;
 
   public interface Delegate {
     void discoveryPagerAdapterSetPrimaryPage(DiscoveryPagerAdapter adapter, int position);
   }
 
-  public DiscoveryPagerAdapter(final @NonNull FragmentManager fragmentManager, final @NonNull List<String> pageTitles,
-    final Delegate delegate) {
+  public DiscoveryPagerAdapter(final @NonNull FragmentManager fragmentManager, final @NonNull List<DiscoveryFragment> fragments,
+    final @NonNull List<String> pageTitles, final Delegate delegate) {
     super(fragmentManager);
     this.delegate = delegate;
-    this.fragmentManager = fragmentManager;
+//    this.fragmentManager = fragmentManager;
+    this.fragments = fragments;
     this.pageTitles = pageTitles;
   }
 
   @Override
   public void setPrimaryItem(final @NonNull ViewGroup container, final int position, final @NonNull Object object) {
     super.setPrimaryItem(container, position, object);
+
     delegate.discoveryPagerAdapterSetPrimaryPage(this, position);
   }
 
   @Override
+  public @NonNull Object instantiateItem(final @NonNull ViewGroup container, final int position) {
+    final DiscoveryFragment fragment = (DiscoveryFragment) super.instantiateItem(container, position);
+    this.fragments.set(position, fragment);
+    return fragment;
+  }
+
+  @Override
   public @NonNull Fragment getItem(final int position) {
-    return DiscoveryFragment.newInstance(position);
+    return this.fragments.get(position);
   }
 
   @Override
@@ -58,8 +68,8 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
    * Passes along root categories to its fragment position to help fetch appropriate projects.
    */
   public void takeCategoriesForPosition(final @NonNull List<Category> categories, final int position) {
-    Observable.from(fragmentManager.getFragments())
-      .ofType(DiscoveryFragment.class)
+    Observable.from(this.fragments)
+      .filter(DiscoveryFragment::isAdded)
       .filter(frag -> {
         final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
         return fragmentPosition == position;
@@ -71,8 +81,8 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
    * Take current params from activity and pass to the appropriate fragment.
    */
   public void takeParams(final @NonNull DiscoveryParams params) {
-    Observable.from(fragmentManager.getFragments())
-      .ofType(DiscoveryFragment.class)
+    Observable.from(this.fragments)
+      .filter(DiscoveryFragment::isAdded) // this filters out fragments on rotation for some reason
       .filter(frag -> {
         final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
         return DiscoveryUtils.positionFromSort(params.sort()) == fragmentPosition;
@@ -84,8 +94,8 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
    * Call when the view model tells us to clear specific pages.
    */
   public void clearPages(final @NonNull List<Integer> pages) {
-    Observable.from(fragmentManager.getFragments())
-      .ofType(DiscoveryFragment.class)
+    Observable.from(this.fragments)
+      .filter(DiscoveryFragment::isAdded)
       .filter(frag -> {
         final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
         return pages.contains(fragmentPosition);

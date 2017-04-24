@@ -13,8 +13,6 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.SearchActivity;
-import com.kickstarter.ui.adapters.SearchAdapter;
-import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -27,34 +25,35 @@ import rx.subjects.PublishSubject;
 public interface SearchViewModel {
 
   interface Inputs {
-    /** Load more data **/
+    /** Call when the next page has been invoked. */
     void nextPage();
 
-    /** Call on text change in search box **/
+    /** Call when text changes in search box. */
     void search(final @NonNull String s);
   }
 
   interface Outputs {
-    /** Emits list of popular projects */
+    /** Emits list of popular projects. */
     Observable<List<Project>> popularProjects();
 
-    /** Emits list of projects matching critera */
+    /** Emits list of projects matching criteria. */
     Observable<List<Project>> searchProjects();
   }
 
-  final class ViewModel extends ActivityViewModel<SearchActivity> implements SearchAdapter.Delegate, Inputs, Outputs {
+  final class ViewModel extends ActivityViewModel<SearchActivity> implements Inputs, Outputs {
+
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       final ApiClientType apiClient = environment.apiClient();
       final Scheduler scheduler = environment.scheduler();
 
-      final Observable<DiscoveryParams> searchParams = search
+      final Observable<DiscoveryParams> searchParams = this.search
         .filter(StringUtils::isPresent)
         .debounce(300, TimeUnit.MILLISECONDS, scheduler)
         .map(s -> DiscoveryParams.builder().term(s).build());
 
-      final Observable<DiscoveryParams> popularParams = search
+      final Observable<DiscoveryParams> popularParams = this.search
         .filter(StringUtils::isEmpty)
         .map(__ -> defaultParams)
         .startWith(defaultParams);
@@ -63,7 +62,7 @@ public interface SearchViewModel {
 
       final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
-          .nextPage(nextPage)
+          .nextPage(this.nextPage)
           .startOverWith(params)
           .envelopeToListOfData(DiscoverEnvelope::projects)
           .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
@@ -76,16 +75,16 @@ public interface SearchViewModel {
       this.search
         .filter(StringUtils::isEmpty)
         .compose(bindToLifecycle())
-        .subscribe(__ -> searchProjects.onNext(ListUtils.empty()));
+        .subscribe(__ -> this.searchProjects.onNext(ListUtils.empty()));
 
       params
         .compose(Transformers.takePairWhen(paginator.paginatedData()))
         .compose(bindToLifecycle())
         .subscribe(paramsAndProjects -> {
           if (paramsAndProjects.first.sort() == defaultSort) {
-            popularProjects.onNext(paramsAndProjects.second);
+            this.popularProjects.onNext(paramsAndProjects.second);
           } else {
-            searchProjects.onNext(paramsAndProjects.second);
+            this.searchProjects.onNext(paramsAndProjects.second);
           }
         });
 
@@ -101,14 +100,13 @@ public interface SearchViewModel {
         .compose(Transformers.takePairWhen(pageCount))
         .filter(qp -> StringUtils.isPresent(qp.first))
         .compose(bindToLifecycle())
-        .subscribe(qp -> koala.trackSearchResults(qp.first, qp.second));
+        .subscribe(qp -> this.koala.trackSearchResults(qp.first, qp.second));
     }
 
     private static final DiscoveryParams.Sort defaultSort = DiscoveryParams.Sort.POPULAR;
     private static final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(defaultSort).build();
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();
-    private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
     private final PublishSubject<String> search = PublishSubject.create();
 
     private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
@@ -119,9 +117,6 @@ public interface SearchViewModel {
 
     @Override public void nextPage() {
       this.nextPage.onNext(null);
-    }
-    @Override public void projectSearchResultClick(final ProjectSearchResultViewHolder viewHolder, final Project project) {
-      this.projectCardClicked.onNext(project);
     }
     @Override public void search(final @NonNull String s) {
       this.search.onNext(s);

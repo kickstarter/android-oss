@@ -148,8 +148,20 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .compose(bindToLifecycle())
       .subscribe(commentsData::onNext);
 
-    project
-      .map(Project::isBacking)
+    final Observable<Boolean> userIsCreator = Observable.combineLatest(
+      currentUser.observable(),
+      project,
+      Pair::create
+    )
+      .map(up -> up.first.id() == up.second.creator().id());
+
+
+
+    Observable.combineLatest(
+      userIsCreator,
+      project.map(Project::isBacking),
+      (isCreator, isBacking) -> isCreator || isBacking
+    )
       .distinctUntilChanged()
       .compose(bindToLifecycle())
       .subscribe(showCommentButton::onNext);

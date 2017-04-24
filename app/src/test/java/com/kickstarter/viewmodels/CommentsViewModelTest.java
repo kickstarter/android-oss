@@ -16,6 +16,7 @@ import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
@@ -221,15 +222,39 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testCommentsViewModel_commentButtonHidden() {
     final CommentsViewModel vm = new CommentsViewModel(environment());
+    final Project project = ProjectFactory.project().toBuilder().isBacking(false).build();
 
     final TestSubscriber<Boolean> showCommentButtonTest = new TestSubscriber<>();
     vm.outputs.showCommentButton().subscribe(showCommentButtonTest);
 
     // Start the view model with a project.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     // Comment button should not be shown if not backing.
     showCommentButtonTest.assertValue(false);
+  }
+
+  @Test
+  public void testCommentsViewModel_commentButtonShown() {
+    final User currentUser = UserFactory.user().toBuilder().id(1234).build();
+    final Project project = ProjectFactory.project().toBuilder().isBacking(false).build();
+
+    final MockApiClient mockApiClient = new MockApiClient() {
+      @Override public @NonNull Observable<User> fetchCurrentUser() {
+        return Observable.just(currentUser);
+      }
+    };
+
+    final CommentsViewModel vm = new CommentsViewModel(environment().toBuilder().apiClient(mockApiClient).build());
+
+    final TestSubscriber<Boolean> showCommentButtonTest = new TestSubscriber<>();
+    vm.outputs.showCommentButton().subscribe(showCommentButtonTest);
+
+    // Start the view model with a project.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    // Comment button is shown for the creator.
+    showCommentButtonTest.assertValues(true);
   }
 
   @Test

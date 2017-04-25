@@ -30,31 +30,29 @@ public interface ProjectSearchResultHolderViewModel {
     Observable<Pair<Integer, Integer>> projectStats();
   }
 
-  final class ViewModel extends ActivityViewModel<ProjectSearchResultViewHolder> implements ProjectSearchResultHolderViewModel.Inputs, ProjectSearchResultHolderViewModel.Outputs {
+  final class ViewModel extends ActivityViewModel<ProjectSearchResultViewHolder> implements
+    ProjectSearchResultHolderViewModel.Inputs,
+    ProjectSearchResultHolderViewModel.Outputs {
 
-    public ViewModel(@NonNull Environment environment) {
+    public ViewModel(final @NonNull Environment environment) {
       super(environment);
     }
 
-    @Override public void configureWith(Project project) {
+    @Override public void configureWith(final @NonNull Project project) {
       projectImage.onNext(project.photo().med());
       projectName.onNext(project.name());
-      projectStats.onNext(new Pair<>((int) project.percentageFunded(), ProjectUtils.deadlineCountdownValue(project))); }
+      projectStats.onNext(new Pair<>((int) project.percentageFunded(), ProjectUtils.deadlineCountdownValue(project)));
+    }
 
     private final BehaviorSubject<String> projectImage = BehaviorSubject.create();
     private final BehaviorSubject<String> projectName = BehaviorSubject.create();
-    private final BehaviorSubject<Pair<Integer,Integer>> projectStats = BehaviorSubject.create();
+    private final BehaviorSubject<Pair<Integer, Integer>> projectStats = BehaviorSubject.create();
 
     public final ProjectSearchResultHolderViewModel.Inputs inputs = this;
     public final ProjectSearchResultHolderViewModel.Outputs outputs = this;
 
     @Override public Observable<String> projectImage() { return projectImage; }
     @Override public Observable<String> projectName() { return projectName; }
-    @Override public Observable<Pair<Integer,Integer>> projectStats() { return projectStats; }
-
-
-
+    @Override public Observable<Pair<Integer, Integer>> projectStats() { return projectStats; }
   }
-
-
 }

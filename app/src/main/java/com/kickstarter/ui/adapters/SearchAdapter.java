@@ -40,15 +40,15 @@ public final class SearchAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  private @NonNull List<Project> getProjectList(@NonNull List<Project> newProjects) {
+  private @NonNull List<Project> getProjectList(final @NonNull List<Project> newProjects) {
     return newProjects.size() > 1
-      ? newProjects.subList(1,newProjects.size()-1)
+      ? newProjects.subList(1, newProjects.size()-1)
       : Collections.emptyList();
   }
 
-  private @NonNull List<Project> getFeatureProject(@NonNull List<Project> newProjects) {
+  private @NonNull List<Project> getFeatureProject(final @NonNull List<Project> newProjects) {
     return newProjects.size() > 0
-      ? newProjects.subList(0,1)
+      ? newProjects.subList(0, 1)
       : Collections.emptyList();
   }
 

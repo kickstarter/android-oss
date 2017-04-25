@@ -15,7 +15,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
   private ProjectSearchResultHolderViewModel.ViewModel vm;
   private final TestSubscriber<String> projectImage = new TestSubscriber<>();
   private final TestSubscriber<String> projectName = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Integer,Integer>> projectStats = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Integer, Integer>> projectStats = new TestSubscriber<>();
   private Project project;
 
   @Before

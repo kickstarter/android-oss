@@ -51,9 +51,8 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     return fragment;
   }
 
-  @Nullable
   @Override
-  public View onCreateView(final @NonNull LayoutInflater inflater, final @Nullable ViewGroup container,
+  public @Nullable View onCreateView(final @NonNull LayoutInflater inflater, final @Nullable ViewGroup container,
     final @Nullable Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
 

@@ -18,9 +18,8 @@ import rx.Observable;
 
 public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   private final Delegate delegate;
-//  private final FragmentManager fragmentManager;
-  private List<String> pageTitles;
   private List<DiscoveryFragment> fragments;
+  private List<String> pageTitles;
 
   public interface Delegate {
     void discoveryPagerAdapterSetPrimaryPage(DiscoveryPagerAdapter adapter, int position);
@@ -29,8 +28,8 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   public DiscoveryPagerAdapter(final @NonNull FragmentManager fragmentManager, final @NonNull List<DiscoveryFragment> fragments,
     final @NonNull List<String> pageTitles, final Delegate delegate) {
     super(fragmentManager);
+
     this.delegate = delegate;
-//    this.fragmentManager = fragmentManager;
     this.fragments = fragments;
     this.pageTitles = pageTitles;
   }
@@ -38,8 +37,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   @Override
   public void setPrimaryItem(final @NonNull ViewGroup container, final int position, final @NonNull Object object) {
     super.setPrimaryItem(container, position, object);
-
-    delegate.discoveryPagerAdapterSetPrimaryPage(this, position);
+    this.delegate.discoveryPagerAdapterSetPrimaryPage(this, position);
   }
 
   @Override
@@ -61,7 +59,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
 
   @Override
   public CharSequence getPageTitle(final int position) {
-    return pageTitles.get(position);
+    return this.pageTitles.get(position);
   }
 
   /**
@@ -69,7 +67,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
    */
   public void takeCategoriesForPosition(final @NonNull List<Category> categories, final int position) {
     Observable.from(this.fragments)
-      .filter(DiscoveryFragment::isAdded)
+      .filter(DiscoveryFragment::isInstantiated)
       .filter(frag -> {
         final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
         return fragmentPosition == position;
@@ -82,7 +80,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
    */
   public void takeParams(final @NonNull DiscoveryParams params) {
     Observable.from(this.fragments)
-      .filter(DiscoveryFragment::isAdded) // this filters out fragments on rotation for some reason
+      .filter(DiscoveryFragment::isInstantiated)
       .filter(frag -> {
         final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
         return DiscoveryUtils.positionFromSort(params.sort()) == fragmentPosition;
@@ -95,7 +93,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
    */
   public void clearPages(final @NonNull List<Integer> pages) {
     Observable.from(this.fragments)
-      .filter(DiscoveryFragment::isAdded)
+      .filter(DiscoveryFragment::isInstantiated)
       .filter(frag -> {
         final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
         return pages.contains(fragmentPosition);

@@ -30,6 +30,7 @@ import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.views.SortTabLayout;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -81,18 +82,14 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     drawerAdapter = new DiscoveryDrawerAdapter(viewModel.inputs);
     drawerRecyclerView.setAdapter(drawerAdapter);
 
-    final List<String> viewPagerTitles = Arrays.asList(homeString, popularString, newestString, endingSoonString,
-      mostFundedString);
-
-    final List<DiscoveryFragment> fragments = Arrays.asList(
-      DiscoveryFragment.newInstance(0),
-      DiscoveryFragment.newInstance(1),
-      DiscoveryFragment.newInstance(2),
-      DiscoveryFragment.newInstance(3),
-      DiscoveryFragment.newInstance(4)
+    final List<String> viewPagerTitles = Arrays.asList(
+      homeString, popularString, newestString, endingSoonString, mostFundedString
     );
 
-    pagerAdapter = new DiscoveryPagerAdapter(getSupportFragmentManager(), fragments, viewPagerTitles, viewModel.inputs);
+    pagerAdapter = new DiscoveryPagerAdapter(
+      getSupportFragmentManager(), createFragments(viewPagerTitles.size()), viewPagerTitles, viewModel.inputs
+    );
+
     sortViewPager.setAdapter(pagerAdapter);
     sortTabLayout.setupWithViewPager(sortViewPager);
 
@@ -161,6 +158,14 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(viewModel.inputs::openDrawer);
+  }
+
+  private static @NonNull List<DiscoveryFragment> createFragments(final int pages) {
+    List<DiscoveryFragment> fragments = new ArrayList<>(pages);
+    for (int position = 0; position <= pages; position++) {
+      fragments.add(DiscoveryFragment.newInstance(position ));
+    }
+    return fragments;
   }
 
   public @NonNull DrawerLayout discoveryLayout() {

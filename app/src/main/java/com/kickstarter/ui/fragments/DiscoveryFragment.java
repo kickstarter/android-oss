@@ -115,6 +115,10 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     }
   }
 
+  public boolean isInstantiated() {
+    return this.recyclerView != null;
+  }
+
   private void startActivityUpdateActivity(final @NonNull Activity activity) {
     final Intent intent = new Intent(getActivity(), WebViewActivity.class)
       .putExtra(IntentKey.URL, activity.projectUpdateUrl());

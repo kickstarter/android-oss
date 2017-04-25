@@ -78,5 +78,8 @@ public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
-  private boolean didSearch() { return toolbar.searchEditText.length() > 0; }
+
+  private boolean didSearch() {
+    return toolbar.searchEditText.length() > 0;
+  }
 }

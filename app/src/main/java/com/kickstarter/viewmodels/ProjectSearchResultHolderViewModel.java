@@ -51,8 +51,14 @@ public interface ProjectSearchResultHolderViewModel {
     public final ProjectSearchResultHolderViewModel.Inputs inputs = this;
     public final ProjectSearchResultHolderViewModel.Outputs outputs = this;
 
-    @Override public Observable<String> projectImage() { return projectImage; }
-    @Override public Observable<String> projectName() { return projectName; }
-    @Override public Observable<Pair<Integer, Integer>> projectStats() { return projectStats; }
+    @Override public Observable<String> projectImage() {
+      return projectImage;
+    }
+    @Override public Observable<String> projectName() {
+      return projectName;
+    }
+    @Override public Observable<Pair<Integer, Integer>> projectStats() {
+      return projectStats;
+    }
   }
 }

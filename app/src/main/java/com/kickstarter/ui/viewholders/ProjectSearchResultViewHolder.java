@@ -1,8 +1,8 @@
 package com.kickstarter.ui.viewholders;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,11 +11,9 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
-import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
+import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -23,8 +21,13 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+import timber.log.Timber;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
 public class ProjectSearchResultViewHolder extends KSViewHolder {
+  private final ProjectSearchResultHolderViewModel.ViewModel viewModel;
+
   protected Project project;
   protected final Delegate delegate;
 
@@ -32,7 +35,7 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
   @Bind(R.id.project_name_text_view) TextView projectNameTextView;
   @Bind(R.id.project_image_view) ImageView projectImageView;
 
-  @BindString(R.string.search_stats) String searchStats;
+  @BindString(R.string.search_stats) String searchStatsString;
 
   protected @Inject KSString ksString;
 
@@ -42,39 +45,53 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
 
   public ProjectSearchResultViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
+
+    this.viewModel = new ProjectSearchResultHolderViewModel.ViewModel(environment());
     this.delegate = delegate;
 
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
+
+    this.viewModel.outputs.projectImage()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setProjectImage);
+
+    this.viewModel.outputs.projectName()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setProjectName);
+
+    this.viewModel.outputs.projectStats()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setProjectStats);
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    final Context context = context();
+    this.project = ObjectUtils.requireNonNull((Project) data, Project.class);
+    this.viewModel.inputs.configureWith(this.project);
+  }
 
-    project = ObjectUtils.requireNonNull((Project) data, Project.class);
+  void setProjectImage(final String imageUrl) {
+    this.projectImageView.setVisibility(imageUrl == null ? View.INVISIBLE : View.VISIBLE);
+    Picasso.with(context()).load(imageUrl).into(projectImageView);
+  }
 
-    final String percentFunded = String.valueOf((int) project.percentageFunded());
-    final String daysToGo = " " + NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)) + " ";
+  void setProjectName(final String name) {
+    this.projectNameTextView.setText(name);
+  }
 
-    projectNameTextView.setText(project.name());
-    projectStatsTextView.setText(Html.fromHtml(ksString.format(searchStats,
-      "percent_funded", percentFunded,
-      "days_to_go", daysToGo
-    )));
+  void setProjectStats(final Pair<Integer, Integer> stats) {
+    final String html = ksString.format(this.searchStatsString,
+      "percent_funded", String.valueOf(stats.first),
+      "days_to_go", String.valueOf(stats.second),
+      "color", "#" + Integer.toHexString(context().getResources().getColor(R.color.green)).substring(2));
 
-    final Photo photo = project.photo();
+    Timber.d(html);
 
-    if (photo != null) {
-      projectImageView.setVisibility(View.VISIBLE);
-      if (this instanceof FeaturedSearchResultViewHolder) {
-        Picasso.with(context).load(photo.full()).into(projectImageView);
-      } else {
-        Picasso.with(context).load(photo.small()).into(projectImageView);
-      }
-    } else {
-      projectImageView.setVisibility(View.INVISIBLE);
-    }
+    this.projectStatsTextView.setText(Html.fromHtml(html));
   }
 
   @Override

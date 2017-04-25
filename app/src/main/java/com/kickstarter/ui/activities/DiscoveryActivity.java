@@ -190,4 +190,5 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .setIcon(android.R.drawable.ic_dialog_alert)
       .show();
   }
+
 }

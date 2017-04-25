@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -18,7 +19,6 @@ import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.SearchAdapter;
 import com.kickstarter.ui.toolbars.SearchToolbar;
-import com.kickstarter.ui.viewholders.FeaturedSearchResultViewHolder;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 import com.kickstarter.viewmodels.SearchViewModel;
 
@@ -69,22 +69,13 @@ public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel
     recyclerView.setAdapter(null);
   }
 
-  public void projectSearchResultClick(final @NonNull ProjectSearchResultViewHolder viewHolder, final @NonNull Project project) {
+  public void projectSearchResultClick(final @NonNull ProjectSearchResultViewHolder viewHolder, final @NonNull Project project, final Pair<RefTag,RefTag> refTags) {
     final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT, project);
-
-    if (viewHolder instanceof FeaturedSearchResultViewHolder) {
-      intent.putExtra(IntentKey.REF_TAG, defaultSearch()
-        ? RefTag.searchPopularFeatured()
-        : RefTag.searchFeatured());
-    } else {
-      intent.putExtra(IntentKey.REF_TAG, defaultSearch()
-        ? RefTag.searchPopular()
-        : RefTag.search());
-    }
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.REF_TAG, didSearch() ? refTags.first : refTags.second);
 
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
-  private boolean defaultSearch() { return toolbar.searchEditText.length() == 0; }
+  private boolean didSearch() { return toolbar.searchEditText.length() > 0; }
 }

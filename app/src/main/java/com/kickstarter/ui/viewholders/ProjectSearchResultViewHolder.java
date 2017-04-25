@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel;
@@ -21,7 +22,6 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
@@ -40,7 +40,7 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
   protected @Inject KSString ksString;
 
   public interface Delegate {
-    void projectSearchResultClick(ProjectSearchResultViewHolder viewHolder, Project project);
+    void projectSearchResultClick(ProjectSearchResultViewHolder viewHolder, Project project, Pair<RefTag, RefTag> refTagPair);
   }
 
   public ProjectSearchResultViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -71,7 +71,7 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
     this.project = ObjectUtils.requireNonNull((Project) data, Project.class);
-    this.viewModel.inputs.configureWith(this.project);
+    this.viewModel.inputs.configureWith(this.project, this instanceof FeaturedSearchResultViewHolder);
   }
 
   void setProjectImage(final String imageUrl) {
@@ -89,14 +89,12 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
       "days_to_go", String.valueOf(stats.second),
       "color", "#" + Integer.toHexString(context().getResources().getColor(R.color.green)).substring(2));
 
-    Timber.d(html);
-
     this.projectStatsTextView.setText(Html.fromHtml(html));
   }
 
   @Override
   public void onClick(final @NonNull View view) {
-    delegate.projectSearchResultClick(this, project);
+    delegate.projectSearchResultClick(this, project, new Pair<>(RefTag.search(), RefTag.searchPopular()));
   }
 }
 

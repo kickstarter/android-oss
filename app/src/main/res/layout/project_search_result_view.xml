@@ -16,6 +16,8 @@
   android:paddingTop="@dimen/feed_padding_y">
 
   <RelativeLayout
+    android:layout_marginStart="@dimen/grid_new_1"
+    android:layout_marginEnd="@dimen/grid_new_1"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -40,8 +42,9 @@
       android:layout_height="wrap_content">
 
       <TextView
-        style="@style/SubheadSecondaryMedium"
+        style="@style/ActivityFeedCard"
         android:id="@+id/project_name_text_view"
+        android:textColor="@color/gray_black"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_1_half"
@@ -49,10 +52,11 @@
         tools:text="Name" />
 
       <TextView
-        style="@style/CaptionSecondary"
+        style="@style/CaptionPrimary"
         android:id="@+id/project_stats_text_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/black_alpha_50"
         android:layout_marginBottom="@dimen/grid_1_half"
         android:maxLines="2"
         android:text="@string/search_by_creator" />
@@ -63,7 +67,7 @@
   <View
     android:layout_width="fill_parent"
     android:layout_height="1dp"
-    android:layout_marginTop="@dimen/feed_padding_y"
+    android:layout_marginTop="@dimen/grid_new_1"
     android:background="@color/black_alpha_10" />
 
 </LinearLayout>

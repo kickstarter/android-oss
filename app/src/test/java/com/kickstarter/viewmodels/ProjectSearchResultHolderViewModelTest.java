@@ -22,7 +22,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
   public void setUpEnvironment() {
     this.vm = new ProjectSearchResultHolderViewModel.ViewModel(environment());
     project = ProjectFactory.project();
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(project, false);
     this.vm.outputs.projectImage().subscribe(this.projectImage);
     this.vm.outputs.projectName().subscribe(this.projectName);
     this.vm.outputs.projectStats().subscribe(this.projectStats);

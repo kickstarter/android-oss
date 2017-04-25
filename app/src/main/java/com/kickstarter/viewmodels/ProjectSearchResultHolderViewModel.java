@@ -16,7 +16,7 @@ public interface ProjectSearchResultHolderViewModel {
 
   interface Inputs {
     /** Call to configure the view model with a message. */
-    void configureWith(Project project);
+    void configureWith(Project project, boolean featured);
   }
 
   interface Outputs {
@@ -38,8 +38,8 @@ public interface ProjectSearchResultHolderViewModel {
       super(environment);
     }
 
-    @Override public void configureWith(final @NonNull Project project) {
-      projectImage.onNext(project.photo().med());
+    @Override public void configureWith(final @NonNull Project project, final boolean featured) {
+      projectImage.onNext(featured ? project.photo().full() : project.photo().med());
       projectName.onNext(project.name());
       projectStats.onNext(new Pair<>((int) project.percentageFunded(), ProjectUtils.deadlineCountdownValue(project)));
     }

@@ -28,6 +28,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresActivityViewModel(SearchViewModel.ViewModel.class)
 public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel> implements SearchAdapter.Delegate {
+
   private SearchAdapter adapter;
   private RecyclerViewPaginator paginator;
   protected @Bind(R.id.search_recycler_view) RecyclerView recyclerView;
@@ -69,7 +70,7 @@ public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel
     recyclerView.setAdapter(null);
   }
 
-  public void projectSearchResultClick(final @NonNull ProjectSearchResultViewHolder viewHolder, final @NonNull Project project, final Pair<RefTag,RefTag> refTags) {
+  public void projectSearchResultClick(final @NonNull ProjectSearchResultViewHolder viewHolder, final @NonNull Project project, final Pair<RefTag, RefTag> refTags) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT, project)
       .putExtra(IntentKey.REF_TAG, didSearch() ? refTags.first : refTags.second);

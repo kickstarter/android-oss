@@ -8,7 +8,7 @@
   android:layout_width="match_parent"
   android:fitsSystemWindows="true"
   android:nextFocusDown="@+id/recycler_view"
-  tools:context=".DiscoveryActivity">
+  tools:context=".ui.activities.DiscoveryActivity">
 
   <RelativeLayout
     android:layout_marginTop="@dimen/discovery_drawer_status_bar_height_negative"

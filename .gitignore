@@ -30,7 +30,7 @@ proguard/
 # Log Files
 *.log
 
-# OS generated files #
+# OSX files
 .DS_Store
 .Spotlight-V100
 .Trashes

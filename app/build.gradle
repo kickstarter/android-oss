@@ -36,6 +36,9 @@ android {
 
         // Enable Multidex to support over 65K methods
         multiDexEnabled true
+
+        // allow for multiple language fallbacks
+        resConfigs "auto"
     }
 
     signingConfigs {

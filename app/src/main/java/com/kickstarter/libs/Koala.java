@@ -180,24 +180,28 @@ public final class Koala {
 
   // SEARCH
   public void trackSearchView() {
-    client.track("Discover Search");
+    client.track(KoalaEvent.SEARCH_VIEWED);
   }
 
   public void trackSearchResults(final @NonNull String query, final int pageCount) {
     if (pageCount == 1) {
-      client.track("Discover Search Results", new HashMap<String, Object>() {
+      client.track(KoalaEvent.SEARCH_RESULTS_LOADED, new HashMap<String, Object>() {
         {
           put("search_term", query);
         }
       });
     } else {
-      client.track("Discover Search Results Load More", new HashMap<String, Object>() {
+      client.track(KoalaEvent.SEARCH_RESULTS_LOADED_MORE, new HashMap<String, Object>() {
         {
           put("search_term", query);
           put("page_count", pageCount);
         }
       });
     }
+  }
+
+  public void trackSearchCleared() {
+    client.track(KoalaEvent.SEARCH_CLEARED);
   }
 
   public void trackActivityTapped(final @NonNull Activity activity) {
@@ -443,4 +447,5 @@ public final class Koala {
 
     client.track(KoalaEvent.OPENED_EXTERNAL_LINK, props);
   }
+
 }

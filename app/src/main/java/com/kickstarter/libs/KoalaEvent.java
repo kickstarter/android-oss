@@ -16,6 +16,10 @@ public final class KoalaEvent {
   public static final String PROJECT_PAGE = "Project Page";
   public static final String PROJECT_STAR = "Project Star";
   public static final String PROJECT_UNSTAR = "Project Unstar";
+  public static final String SEARCH_CLEARED = "Cleared Search Term";
+  public static final String SEARCH_RESULTS_LOADED = "Loaded Search Results";
+  public static final String SEARCH_RESULTS_LOADED_MORE = "Loaded More Search Results";
+  public static final String SEARCH_VIEWED = "Viewed Search";
   public static final String STARRED_PROJECT = "Starred Project";
   public static final String UNSTARRED_PROJECT = "Unstarred Project";
   public static final String VIEWED_COMMENTS = "Viewed Comments";

@@ -161,9 +161,9 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   }
 
   private static @NonNull List<DiscoveryFragment> createFragments(final int pages) {
-    List<DiscoveryFragment> fragments = new ArrayList<>(pages);
+    final List<DiscoveryFragment> fragments = new ArrayList<>(pages);
     for (int position = 0; position <= pages; position++) {
-      fragments.add(DiscoveryFragment.newInstance(position ));
+      fragments.add(DiscoveryFragment.newInstance(position));
     }
     return fragments;
   }

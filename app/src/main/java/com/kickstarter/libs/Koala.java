@@ -201,7 +201,7 @@ public final class Koala {
         }
       };
       client.track(KoalaEvent.LOADED_MORE_SEARCH_RESULTS, params);
-      client.track(KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY, params);
+      client.track(KoalaEvent.DISCOVER_SEARCH_RESULTS_LOAD_MORE_LEGACY, params);
     }
   }
 

@@ -9,6 +9,7 @@ public final class KoalaEvent {
   public static final String CLEARED_SEARCH_TERM = "Cleared Search Term";
   public static final String DISCOVER_SEARCH_LEGACY = "Discover Search";
   public static final String DISCOVER_SEARCH_RESULTS_LEGACY = "Discover Search Results";
+  public static final String DISCOVER_SEARCH_RESULTS_LOAD_MORE_LEGACY = "Discover Search Results Load More";
   public static final String LOADED_MORE_SEARCH_RESULTS = "Loaded More Search Results";
   public static final String LOADED_OLDER_COMMENTS = "Loaded Older Comments";
   public static final String LOADED_SEARCH_RESULTS = "Loaded Search Results";

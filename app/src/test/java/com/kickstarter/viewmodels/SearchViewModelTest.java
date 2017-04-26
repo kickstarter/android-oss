@@ -92,4 +92,38 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
       KoalaEvent.CLEARED_SEARCH_TERM);
   }
+
+  void testSearchPagination() {
+    final TestScheduler scheduler = new TestScheduler();
+    final Environment env = environment().toBuilder()
+      .scheduler(scheduler)
+      .build();
+
+    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
+
+    final TestSubscriber<Boolean> searchProjectsPresent = new TestSubscriber<>();
+    viewModel.outputs.searchProjects().map(ps -> ps.size() > 0).subscribe(searchProjectsPresent);
+
+    searchProjectsPresent.assertNoValues();
+    koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
+
+    viewModel.inputs.search("cats");
+
+    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
+
+    searchProjectsPresent.assertValues(false, true);
+    koalaTest.assertValues(
+      KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
+      KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY
+    );
+
+    viewModel.inputs.nextPage();
+
+    searchProjectsPresent.assertValues(false, true, true);
+    koalaTest.assertValues(
+      KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
+      KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
+      KoalaEvent.LOADED_MORE_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LOAD_MORE_LEGACY
+    );
+  }
 }

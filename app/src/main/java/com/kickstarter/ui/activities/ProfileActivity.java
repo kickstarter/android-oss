@@ -32,7 +32,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
@@ -66,42 +65,42 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
 
     this.viewModel.outputs.avatarImageViewUrl()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(url -> Picasso.with(this).load(url).transform(new CircleTransformation()).into(this.avatarImageView));
 
     this.viewModel.outputs.backedCountTextViewHidden()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.backedCountTextView));
 
     this.viewModel.outputs.backedCountTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this.backedCountTextView::setText);
 
     this.viewModel.outputs.backedTextViewHidden()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.backedTextView));
 
     this.viewModel.outputs.createdCountTextViewHidden()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.createdCountTextView));
 
     this.viewModel.outputs.createdCountTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this.createdCountTextView::setText);
 
     this.viewModel.outputs.createdTextViewHidden()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.createdTextView));
 
     this.viewModel.outputs.dividerViewHidden()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.dividerView));
 
     this.viewModel.outputs.messagesButtonHidden()
@@ -111,27 +110,27 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
 
     this.viewModel.outputs.projects()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this::loadProjects);
 
     this.viewModel.outputs.resumeDiscoveryActivity()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(__ -> resumeDiscoveryActivity());
 
     this.viewModel.outputs.startMessageThreadsActivity()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(__ -> this.startMessageThreadsActivity());
 
     this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this::startProjectActivity);
 
     this.viewModel.outputs.userNameTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this.userNameTextView::setText);
   }
 

@@ -8,7 +8,6 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
@@ -25,6 +24,8 @@ import java.util.List;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 
 public interface ProfileViewModel {
 
@@ -100,7 +101,7 @@ public interface ProfileViewModel {
 
       final Observable<User> freshUser = this.client.fetchCurrentUser()
         .retry(2)
-        .compose(Transformers.neverError());
+        .compose(neverError());
       freshUser.subscribe(this.currentUser::refresh);
 
       final DiscoveryParams params = DiscoveryParams.builder()

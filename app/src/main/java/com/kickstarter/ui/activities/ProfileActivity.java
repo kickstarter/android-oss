@@ -34,20 +34,22 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
+
 @RequiresActivityViewModel(ProfileViewModel.ViewModel.class)
 public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewModel> {
   private ProfileAdapter adapter;
   private RecyclerViewPaginator paginator;
 
   protected @Bind(R.id.avatar_image_view) ImageView avatarImageView;
-  protected @Bind(R.id.user_name_text_view) TextView userNameTextView;
-  protected @Bind(R.id.created_count_text_view) TextView createdCountTextView;
   protected @Bind(R.id.backed_count_text_view) TextView backedCountTextView;
-  protected @Bind(R.id.created_text_view) TextView createdTextView;
   protected @Bind(R.id.backed_text_view) TextView backedTextView;
+  protected @Bind(R.id.created_count_text_view) TextView createdCountTextView;
+  protected @Bind(R.id.created_text_view) TextView createdTextView;
   protected @Bind(R.id.divider_view) View dividerView;
   protected @Bind(R.id.messages_button) IconButton messagesButton;
   protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.user_name_text_view) TextView userNameTextView;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {

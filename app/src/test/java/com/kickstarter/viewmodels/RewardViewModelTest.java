@@ -534,4 +534,28 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     vm.inputs.projectAndReward(project, RewardFactory.limitReached());
     whiteOverlayIsHiddenTest.assertValues(true, false);
   }
+
+  @Test
+  public void testNonEmptyRewardsDescriptionAreShown() {
+    final RewardViewModel vm = new RewardViewModel(environment());
+    final Project project = ProjectFactory.project();
+
+    final TestSubscriber<Boolean> hideRewardDescriptionTest = TestSubscriber.create();
+    vm.outputs.rewardDescriptionIsHidden().subscribe(hideRewardDescriptionTest);
+
+    vm.inputs.projectAndReward(project, RewardFactory.reward());
+    hideRewardDescriptionTest.assertValue(false);
+  }
+
+  @Test
+  public void testEmptyRewardsDescriptionAreHidden() {
+    final RewardViewModel vm = new RewardViewModel(environment());
+    final Project project = ProjectFactory.projectWithEmptyRewardDescription();
+
+    final TestSubscriber<Boolean> hideRewardDescriptionTest = TestSubscriber.create();
+    vm.outputs.rewardDescriptionIsHidden().subscribe(hideRewardDescriptionTest);
+
+    vm.inputs.projectAndReward(project, RewardFactory.noDescription());
+    hideRewardDescriptionTest.assertValue(true);
+  }
 }

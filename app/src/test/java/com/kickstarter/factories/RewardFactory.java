@@ -81,4 +81,11 @@ public final class RewardFactory {
       .minimum(1.0f)
       .build();
   }
+
+  public static @NonNull Reward noDescription() {
+    return reward().toBuilder()
+      .description("")
+      .build();
+
+  }
 }

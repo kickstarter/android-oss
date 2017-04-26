@@ -550,7 +550,7 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testEmptyRewardsDescriptionAreHidden() {
     final RewardViewModel vm = new RewardViewModel(environment());
-    final Project project = ProjectFactory.projectWithEmptyRewardDescription();
+    final Project project = ProjectFactory.project();
 
     final TestSubscriber<Boolean> hideRewardDescriptionTest = TestSubscriber.create();
     vm.outputs.rewardDescriptionIsHidden().subscribe(hideRewardDescriptionTest);

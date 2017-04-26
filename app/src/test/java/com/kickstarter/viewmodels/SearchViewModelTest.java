@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
+import com.kickstarter.libs.RefTag;
 
 import org.junit.Test;
 
@@ -125,5 +126,77 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
       KoalaEvent.LOADED_MORE_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LOAD_MORE_LEGACY
     );
+  }
+
+  @Test
+  public void testFeaturedSearchRefTags() {
+    final TestScheduler scheduler = new TestScheduler();
+    final Environment env = environment().toBuilder()
+      .scheduler(scheduler)
+      .build();
+
+    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
+
+    // populate search and overcome debounce
+    viewModel.inputs.search("cat");
+    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
+    final TestSubscriber<RefTag> projectClicked = new TestSubscriber<>();
+    viewModel.outputs.searchProjects().map(sp -> sp.get(0)).subscribe(viewModel.inputs::tappedProject);
+    viewModel.outputs.goToProject().map(p -> p.second).subscribe(projectClicked);
+    projectClicked.assertValue(RefTag.searchFeatured());
+  }
+
+  @Test
+  public void testSearchRefTags() {
+    final TestScheduler scheduler = new TestScheduler();
+    final Environment env = environment().toBuilder()
+      .scheduler(scheduler)
+      .build();
+
+    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
+
+    // populate search and overcome debounce
+    viewModel.inputs.search("cat");
+    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
+    final TestSubscriber<RefTag> projectClicked = new TestSubscriber<>();
+    viewModel.outputs.searchProjects().map(sp -> sp.get(2)).subscribe(viewModel.inputs::tappedProject);
+    viewModel.outputs.goToProject().map(p -> p.second).subscribe(projectClicked);
+    projectClicked.assertValue(RefTag.search());
+  }
+
+  @Test
+  public void testFeaturedPopularRefTags() {
+    final TestScheduler scheduler = new TestScheduler();
+    final Environment env = environment().toBuilder()
+      .scheduler(scheduler)
+      .build();
+
+    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
+
+    // clear search overcome debounce
+    viewModel.inputs.search("");
+    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
+    final TestSubscriber<RefTag> projectClicked = new TestSubscriber<>();
+    viewModel.outputs.popularProjects().map(sp -> sp.get(0)).subscribe(viewModel.inputs::tappedProject);
+    viewModel.outputs.goToProject().map(p -> p.second).subscribe(projectClicked);
+    projectClicked.assertValue(RefTag.searchPopularFeatured());
+  }
+
+  @Test
+  public void testPopularRefTags() {
+    final TestScheduler scheduler = new TestScheduler();
+    final Environment env = environment().toBuilder()
+      .scheduler(scheduler)
+      .build();
+
+    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
+
+    // clear search overcome debounce
+    viewModel.inputs.search("");
+    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
+    final TestSubscriber<RefTag> projectClicked = new TestSubscriber<>();
+    viewModel.outputs.popularProjects().map(sp -> sp.get(1)).subscribe(viewModel.inputs::tappedProject);
+    viewModel.outputs.goToProject().map(p -> p.second).subscribe(projectClicked);
+    projectClicked.assertValue(RefTag.searchPopular());
   }
 }

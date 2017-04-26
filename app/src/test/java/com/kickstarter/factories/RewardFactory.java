@@ -86,6 +86,5 @@ public final class RewardFactory {
     return reward().toBuilder()
       .description("")
       .build();
-
   }
 }

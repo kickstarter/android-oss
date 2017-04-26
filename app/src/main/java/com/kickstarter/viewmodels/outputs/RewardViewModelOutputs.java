@@ -84,6 +84,11 @@ public interface RewardViewModelOutputs {
   Observable<String> minimumTextViewText();
 
   /**
+   * Returns `true` if the reward description is empty and should be hidden in the UI
+   */
+  Observable<Boolean> rewardDescriptionIsHidden();
+
+  /**
    * Show the rewards items.
    */
   Observable<List<RewardsItem>> rewardsItems();

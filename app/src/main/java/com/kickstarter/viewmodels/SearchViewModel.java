@@ -81,7 +81,10 @@ public interface SearchViewModel {
       this.search
         .filter(StringUtils::isEmpty)
         .compose(bindToLifecycle())
-        .subscribe(__ -> this.searchProjects.onNext(ListUtils.empty()));
+        .subscribe(__ -> {
+          this.searchProjects.onNext(ListUtils.empty());
+          this.koala.trackSearchCleared();
+        });
 
       params
         .compose(Transformers.takePairWhen(paginator.paginatedData()))

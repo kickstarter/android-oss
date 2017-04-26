@@ -180,28 +180,33 @@ public final class Koala {
 
   // SEARCH
   public void trackSearchView() {
-    client.track(KoalaEvent.SEARCH_VIEWED);
+    client.track(KoalaEvent.VIEWED_SEARCH);
+    client.track(KoalaEvent.DISCOVER_SEARCH_LEGACY);
   }
 
   public void trackSearchResults(final @NonNull String query, final int pageCount) {
     if (pageCount == 1) {
-      client.track(KoalaEvent.SEARCH_RESULTS_LOADED, new HashMap<String, Object>() {
+      final Map<String, Object> params = new HashMap<String, Object>() {
         {
           put("search_term", query);
         }
-      });
+      };
+      client.track(KoalaEvent.LOADED_SEARCH_RESULTS, params);
+      client.track(KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY, params);
     } else {
-      client.track(KoalaEvent.SEARCH_RESULTS_LOADED_MORE, new HashMap<String, Object>() {
+      final Map<String, Object> params = new HashMap<String, Object>() {
         {
           put("search_term", query);
           put("page_count", pageCount);
         }
-      });
+      };
+      client.track(KoalaEvent.LOADED_MORE_SEARCH_RESULTS, params);
+      client.track(KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY, params);
     }
   }
 
   public void trackSearchCleared() {
-    client.track(KoalaEvent.SEARCH_CLEARED);
+    client.track(KoalaEvent.CLEARED_SEARCH_TERM);
   }
 
   public void trackActivityTapped(final @NonNull Activity activity) {

@@ -45,37 +45,51 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     // Popular projects emit immediately.
     popularProjectsPresent.assertValues(true);
     searchProjectsPresent.assertNoValues();
-    koalaTest.assertValues(KoalaEvent.SEARCH_VIEWED);
+    koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
 
     // Searching shouldn't emit values immediately
     viewModel.inputs.search("hello");
     searchProjectsPresent.assertNoValues();
-    koalaTest.assertValues(KoalaEvent.SEARCH_VIEWED);
+    koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
 
     // Waiting a small amount time shouldn't emit values
     scheduler.advanceTimeBy(200, TimeUnit.MILLISECONDS);
     searchProjectsPresent.assertNoValues();
-    koalaTest.assertValues(KoalaEvent.SEARCH_VIEWED);
+    koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
 
     // Waiting the rest of the time makes the search happen
     scheduler.advanceTimeBy(100, TimeUnit.MILLISECONDS);
     searchProjectsPresent.assertValues(false, true);
-    koalaTest.assertValues(KoalaEvent.SEARCH_VIEWED, KoalaEvent.SEARCH_RESULTS_LOADED);
+    koalaTest.assertValues(
+      KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
+      KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY
+    );
 
     // Typing more search terms doesn't emit more values
     viewModel.inputs.search("hello world!");
     searchProjectsPresent.assertValues(false, true);
-    koalaTest.assertValues(KoalaEvent.SEARCH_VIEWED, KoalaEvent.SEARCH_RESULTS_LOADED);
+    koalaTest.assertValues(
+      KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
+      KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY
+    );
 
     // Waiting enough time emits search results
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
     searchProjectsPresent.assertValues(false, true, false, true);
-    koalaTest.assertValues(KoalaEvent.SEARCH_VIEWED, KoalaEvent.SEARCH_RESULTS_LOADED, KoalaEvent.SEARCH_RESULTS_LOADED);
+    koalaTest.assertValues(
+      KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
+      KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
+      KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY
+    );
 
     // Clearing search terms brings back popular projects.
     viewModel.inputs.search("");
     searchProjectsPresent.assertValues(false, true, false, true, false);
     popularProjectsPresent.assertValues(true, false, true);
-    koalaTest.assertValues(KoalaEvent.SEARCH_VIEWED, KoalaEvent.SEARCH_RESULTS_LOADED, KoalaEvent.SEARCH_RESULTS_LOADED, KoalaEvent.SEARCH_CLEARED);
+    koalaTest.assertValues(
+      KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
+      KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
+      KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
+      KoalaEvent.CLEARED_SEARCH_TERM);
   }
 }

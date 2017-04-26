@@ -23,6 +23,7 @@ import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProfileAdapter;
+import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -45,6 +46,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
   protected @Bind(R.id.created_text_view) TextView createdTextView;
   protected @Bind(R.id.backed_text_view) TextView backedTextView;
   protected @Bind(R.id.divider_view) View dividerView;
+  protected @Bind(R.id.messages_button) IconButton messagesButton;
   protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
   @Override
@@ -99,6 +101,11 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ViewUtils.setGone(this.dividerView));
+
+    this.viewModel.outputs.messagesButtonHidden()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.messagesButton));
 
     viewModel.outputs.projects()
       .compose(bindToLifecycle())

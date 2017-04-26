@@ -1,10 +1,12 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
+import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.StringUtils;
@@ -30,6 +32,8 @@ public interface SearchViewModel {
 
     /** Call when text changes in search box. */
     void search(final @NonNull String s);
+
+    void tappedProject(final @NonNull Project project);
   }
 
   interface Outputs {
@@ -38,6 +42,8 @@ public interface SearchViewModel {
 
     /** Emits list of projects matching criteria. */
     Observable<List<Project>> searchProjects();
+
+    Observable<Pair<Project, RefTag>> goToProject();
   }
 
   final class ViewModel extends ActivityViewModel<SearchActivity> implements Inputs, Outputs {
@@ -96,6 +102,30 @@ public interface SearchViewModel {
       final Observable<String> query = params
         .map(DiscoveryParams::term);
 
+      final Observable<List<Project>> projects = Observable.merge(
+        this.popularProjects.asObservable(),
+        this.searchProjects.asObservable()
+      );
+
+      Observable.combineLatest(search, projects, Pair::create)
+        .compose(Transformers.takePairWhen(this.tappedProject))
+        .map(searchTermAndProjectsAndTappedProject -> {
+          final String searchTerm = searchTermAndProjectsAndTappedProject.first.first;
+          final List<Project> currentProjects = searchTermAndProjectsAndTappedProject.first.second;
+          final Project tappedProject = searchTermAndProjectsAndTappedProject.second;
+
+          if (searchTerm.length() == 0) {
+            return tappedProject == currentProjects.get(0)
+              ? Pair.create(tappedProject, RefTag.searchPopularFeatured())
+              : Pair.create(tappedProject, RefTag.searchPopular());
+          } else {
+            return tappedProject == currentProjects.get(0)
+              ? Pair.create(tappedProject, RefTag.searchFeatured())
+              : Pair.create(tappedProject, RefTag.search());
+          }
+        })
+        .subscribe(this.goToProject);
+
       query
         .compose(Transformers.takePairWhen(pageCount))
         .filter(qp -> StringUtils.isPresent(qp.first))
@@ -108,9 +138,11 @@ public interface SearchViewModel {
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<String> search = PublishSubject.create();
+    private final PublishSubject<Project> tappedProject = PublishSubject.create();
 
     private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
+    private final BehaviorSubject<Pair<Project, RefTag>> goToProject = BehaviorSubject.create();
 
     public final SearchViewModel.Inputs inputs = this;
     public final SearchViewModel.Outputs outputs = this;
@@ -121,12 +153,19 @@ public interface SearchViewModel {
     @Override public void search(final @NonNull String s) {
       this.search.onNext(s);
     }
+    @Override public void tappedProject(@NonNull Project project) {
+      this.tappedProject.onNext(project);
+    }
 
     @Override public Observable<List<Project>> popularProjects() {
       return this.popularProjects;
     }
     @Override public Observable<List<Project>> searchProjects() {
       return this.searchProjects;
+    }
+
+    @Override public Observable<Pair<Project, RefTag>> goToProject() {
+      return this.goToProject;
     }
   }
 }

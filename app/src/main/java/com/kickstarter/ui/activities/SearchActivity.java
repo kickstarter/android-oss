@@ -4,9 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 
 import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
 import com.kickstarter.R;
@@ -61,6 +62,20 @@ public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::loadSearchProjects);
+
+    this.viewModel.outputs.goToProject()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::goToProject);
+  }
+
+  private void goToProject(final @NonNull Pair<Project, RefTag> projectAndRefTag) {
+    final Intent intent = new Intent(this, ProjectActivity.class)
+      .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
+      .putExtra(IntentKey.REF_TAG, projectAndRefTag.second);
+
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   @Override
@@ -71,15 +86,6 @@ public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel
   }
 
   public void projectSearchResultClick(final @NonNull ProjectSearchResultViewHolder viewHolder, final @NonNull Project project, final Pair<RefTag, RefTag> refTags) {
-    final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT, project)
-      .putExtra(IntentKey.REF_TAG, didSearch() ? refTags.first : refTags.second);
-
-    startActivity(intent);
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  private boolean didSearch() {
-    return toolbar.searchEditText.length() > 0;
+    this.viewModel.inputs.tappedProject(project);
   }
 }

@@ -153,7 +153,7 @@ public interface SearchViewModel {
     @Override public void search(final @NonNull String s) {
       this.search.onNext(s);
     }
-    @Override public void tappedProject(@NonNull Project project) {
+    @Override public void tappedProject(final @NonNull Project project) {
       this.tappedProject.onNext(project);
     }
 

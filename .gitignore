@@ -14,6 +14,9 @@
 # Generated files
 gen/
 
+# ruby files
+/.ruby-version
+
 # Gradle files
 .gradle/
 build/
@@ -29,6 +32,10 @@ proguard/
 
 # OSX files
 .DS_Store
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
 # Eclipse project files
 .classpath

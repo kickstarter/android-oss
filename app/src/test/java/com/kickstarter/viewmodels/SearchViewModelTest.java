@@ -1,14 +1,28 @@
 package com.kickstarter.viewmodels;
 
+import android.support.annotation.NonNull;
+
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.factories.DiscoverEnvelopeFactory;
+import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.models.Project;
+import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.services.MockApiClient;
+import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.observers.TestSubscriber;
 import rx.schedulers.TestScheduler;
 
@@ -131,19 +145,39 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testFeaturedSearchRefTags() {
     final TestScheduler scheduler = new TestScheduler();
+
+    final List<Project> projects = Arrays.asList(
+      ProjectFactory.allTheWayProject(),
+      ProjectFactory.almostCompletedProject(),
+      ProjectFactory.backedProject()
+    );
+
+    MockApiClient apiClient = new MockApiClient() {
+      @NonNull
+      @Override
+      public Observable<DiscoverEnvelope> fetchProjects(@NonNull DiscoveryParams params) {
+        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
+      }
+    };
+
     final Environment env = environment().toBuilder()
       .scheduler(scheduler)
+      .apiClient(apiClient)
       .build();
 
     final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
 
-    // populate search and overcome debounce
+    final TestSubscriber<Project> goToProject= new TestSubscriber<>();
+    final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
+    viewModel.outputs.goToProject().map(p -> p.first).subscribe(goToProject);
+    viewModel.outputs.goToProject().map(p -> p.second).subscribe(goToRefTag);
+
     viewModel.inputs.search("cat");
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    final TestSubscriber<RefTag> projectClicked = new TestSubscriber<>();
-    viewModel.outputs.searchProjects().map(sp -> sp.get(0)).subscribe(viewModel.inputs::tappedProject);
-    viewModel.outputs.goToProject().map(p -> p.second).subscribe(projectClicked);
-    projectClicked.assertValue(RefTag.searchFeatured());
+    viewModel.inputs.tappedProject(projects.get(0));
+
+    goToRefTag.assertValues(RefTag.searchFeatured());
+    goToProject.assertValues(projects.get(0));
   }
 
   @Test

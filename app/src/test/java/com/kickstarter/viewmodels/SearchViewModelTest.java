@@ -8,17 +8,14 @@ import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
-import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -183,54 +180,117 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testSearchRefTags() {
     final TestScheduler scheduler = new TestScheduler();
+
+    final List<Project> projects = Arrays.asList(
+      ProjectFactory.allTheWayProject(),
+      ProjectFactory.almostCompletedProject(),
+      ProjectFactory.backedProject()
+    );
+
+    MockApiClient apiClient = new MockApiClient() {
+      @NonNull
+      @Override
+      public Observable<DiscoverEnvelope> fetchProjects(@NonNull DiscoveryParams params) {
+        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
+      }
+    };
+
     final Environment env = environment().toBuilder()
       .scheduler(scheduler)
+      .apiClient(apiClient)
       .build();
 
     final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
 
+    final TestSubscriber<Project> goToProject= new TestSubscriber<>();
+    final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
+    viewModel.outputs.goToProject().map(p -> p.first).subscribe(goToProject);
+    viewModel.outputs.goToProject().map(p -> p.second).subscribe(goToRefTag);
+
     // populate search and overcome debounce
     viewModel.inputs.search("cat");
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    final TestSubscriber<RefTag> projectClicked = new TestSubscriber<>();
-    viewModel.outputs.searchProjects().map(sp -> sp.get(2)).subscribe(viewModel.inputs::tappedProject);
-    viewModel.outputs.goToProject().map(p -> p.second).subscribe(projectClicked);
-    projectClicked.assertValue(RefTag.search());
+    viewModel.inputs.tappedProject(projects.get(1));
+
+    goToRefTag.assertValues(RefTag.search());
+    goToProject.assertValues(projects.get(1));
   }
 
   @Test
   public void testFeaturedPopularRefTags() {
     final TestScheduler scheduler = new TestScheduler();
+
+    final List<Project> projects = Arrays.asList(
+      ProjectFactory.allTheWayProject(),
+      ProjectFactory.almostCompletedProject(),
+      ProjectFactory.backedProject()
+    );
+
+    MockApiClient apiClient = new MockApiClient() {
+      @NonNull
+      @Override
+      public Observable<DiscoverEnvelope> fetchProjects(@NonNull DiscoveryParams params) {
+        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
+      }
+    };
+
     final Environment env = environment().toBuilder()
       .scheduler(scheduler)
+      .apiClient(apiClient)
       .build();
 
     final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
 
-    // clear search overcome debounce
+    final TestSubscriber<Project> goToProject= new TestSubscriber<>();
+    final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
+    viewModel.outputs.goToProject().map(p -> p.first).subscribe(goToProject);
+    viewModel.outputs.goToProject().map(p -> p.second).subscribe(goToRefTag);
+
+    // populate search and overcome debounce
     viewModel.inputs.search("");
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    final TestSubscriber<RefTag> projectClicked = new TestSubscriber<>();
-    viewModel.outputs.popularProjects().map(sp -> sp.get(0)).subscribe(viewModel.inputs::tappedProject);
-    viewModel.outputs.goToProject().map(p -> p.second).subscribe(projectClicked);
-    projectClicked.assertValue(RefTag.searchPopularFeatured());
+    viewModel.inputs.tappedProject(projects.get(0));
+
+    goToRefTag.assertValues(RefTag.searchPopularFeatured());
+    goToProject.assertValues(projects.get(0));
   }
 
   @Test
   public void testPopularRefTags() {
     final TestScheduler scheduler = new TestScheduler();
+
+    final List<Project> projects = Arrays.asList(
+      ProjectFactory.allTheWayProject(),
+      ProjectFactory.almostCompletedProject(),
+      ProjectFactory.backedProject()
+    );
+
+    MockApiClient apiClient = new MockApiClient() {
+      @NonNull
+      @Override
+      public Observable<DiscoverEnvelope> fetchProjects(@NonNull DiscoveryParams params) {
+        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
+      }
+    };
+
     final Environment env = environment().toBuilder()
       .scheduler(scheduler)
+      .apiClient(apiClient)
       .build();
 
     final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
 
-    // clear search overcome debounce
+    final TestSubscriber<Project> goToProject= new TestSubscriber<>();
+    final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
+    viewModel.outputs.goToProject().map(p -> p.first).subscribe(goToProject);
+    viewModel.outputs.goToProject().map(p -> p.second).subscribe(goToRefTag);
+
+    // populate search and overcome debounce
     viewModel.inputs.search("");
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    final TestSubscriber<RefTag> projectClicked = new TestSubscriber<>();
-    viewModel.outputs.popularProjects().map(sp -> sp.get(1)).subscribe(viewModel.inputs::tappedProject);
-    viewModel.outputs.goToProject().map(p -> p.second).subscribe(projectClicked);
-    projectClicked.assertValue(RefTag.searchPopular());
+    viewModel.inputs.tappedProject(projects.get(2));
+
+    goToRefTag.assertValues(RefTag.searchPopular());
+    goToProject.assertValues(projects.get(2));
   }
 }

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.kickstarter.libs.Config;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public final class ConfigFactory {
   private ConfigFactory() {}
@@ -33,6 +34,7 @@ public final class ConfigFactory {
 
     return Config.builder()
       .countryCode("US")
+      .features(Collections.emptyMap())
       .launchedCountries(Arrays.asList(US, GB, CA))
       .build();
   }

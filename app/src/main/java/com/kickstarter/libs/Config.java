@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import java.util.List;
+import java.util.Map;
 
 import auto.parcel.AutoParcel;
 
@@ -13,11 +14,13 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class Config implements Parcelable {
   public abstract String countryCode();
+  public abstract Map<String, Boolean> features();
   public abstract List<LaunchedCountry> launchedCountries();
 
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder countryCode(String __);
+    public abstract Builder features(Map<String, Boolean> __);
     public abstract Builder launchedCountries(List<LaunchedCountry> __);
     public abstract Config build();
   }

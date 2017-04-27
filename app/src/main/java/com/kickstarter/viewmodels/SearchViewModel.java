@@ -33,6 +33,7 @@ public interface SearchViewModel {
     /** Call when text changes in search box. */
     void search(final @NonNull String s);
 
+    // FIXME: document
     void tappedProject(final @NonNull Project project);
   }
 
@@ -43,6 +44,7 @@ public interface SearchViewModel {
     /** Emits list of projects matching criteria. */
     Observable<List<Project>> searchProjects();
 
+    // FIXME: document and alpha
     Observable<Pair<Project, RefTag>> goToProject();
   }
 

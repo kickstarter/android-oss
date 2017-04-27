@@ -59,7 +59,7 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
     this.viewModel.outputs.projectName()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::setProjectName);
+      .subscribe(this.projectNameTextView::setText);
 
     this.viewModel.outputs.projectStats()
       .compose(bindToLifecycle())
@@ -83,10 +83,6 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
   void setProjectImage(final String imageUrl) {
     this.projectImageView.setVisibility(imageUrl == null ? View.INVISIBLE : View.VISIBLE);
     Picasso.with(context()).load(imageUrl).into(projectImageView);
-  }
-
-  void setProjectName(final String name) {
-    this.projectNameTextView.setText(name);
   }
 
   void setProjectStats(final Pair<Integer, Integer> stats) {

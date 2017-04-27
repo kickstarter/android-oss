@@ -14,7 +14,7 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
-public class PopularSearchViewHolder extends KSViewHolder {
+public class PopularSearchTitleViewHolder extends KSViewHolder {
 
   @Bind(R.id.search_term_text_view) TextView termTextView;
   @BindString(R.string.search_most_popular) String mostPopularString;
@@ -23,7 +23,7 @@ public class PopularSearchViewHolder extends KSViewHolder {
 
   protected @Inject KSString ksString;
 
-  public PopularSearchViewHolder(final @NonNull View view) {
+  public PopularSearchTitleViewHolder(final @NonNull View view) {
     super(view);
     ButterKnife.bind(this, view);
     termTextView.setText(mostPopularString);

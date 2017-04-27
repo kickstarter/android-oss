@@ -2,13 +2,12 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.KSViewHolder;
-import com.kickstarter.ui.viewholders.PopularSearchViewHolder;
+import com.kickstarter.ui.viewholders.PopularSearchTitleViewHolder;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel;
 
@@ -90,7 +89,7 @@ public final class SearchAdapter extends KSAdapter {
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch (layout) {
       case R.layout.search_popular_title_view:
-        return new PopularSearchViewHolder(view);
+        return new PopularSearchTitleViewHolder(view);
       case R.layout.featured_search_result_view:
         return new ProjectSearchResultViewHolder(view, delegate);
       case R.layout.project_search_result_view:

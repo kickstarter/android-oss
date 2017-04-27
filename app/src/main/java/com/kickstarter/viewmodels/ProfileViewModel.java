@@ -5,9 +5,10 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
@@ -24,6 +25,9 @@ import java.util.List;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 
 public interface ProfileViewModel {
 
@@ -66,8 +70,14 @@ public interface ProfileViewModel {
     /** Emits when the divider view should be hidden. */
     Observable<Boolean> dividerViewHidden();
 
+    /** Emits when the messages button should be hidden. */
+    Observable<Boolean> messagesButtonHidden();
+
     /** Emits a list of projects to display in the profile. */
     Observable<List<Project>> projects();
+
+    /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
+    Observable<Void> resumeDiscoveryActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
     Observable<Void> startMessageThreadsActivity();
@@ -75,26 +85,25 @@ public interface ProfileViewModel {
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Project> startProjectActivity();
 
-    /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
-    Observable<Void> resumeDiscoveryActivity();
-
     /** Emits the user name to be displayed. */
     Observable<String> userNameTextViewText();
   }
 
   final class ViewModel extends ActivityViewModel<ProfileActivity> implements ProfileAdapter.Delegate, Inputs, Outputs {
     private final ApiClientType client;
+    private final CurrentConfigType currentConfig;
     private final CurrentUserType currentUser;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.client = environment.apiClient();
+      this.currentConfig = environment.currentConfig();
       this.currentUser = environment.currentUser();
 
       final Observable<User> freshUser = this.client.fetchCurrentUser()
         .retry(2)
-        .compose(Transformers.neverError());
+        .compose(neverError());
       freshUser.subscribe(this.currentUser::refresh);
 
       final DiscoveryParams params = DiscoveryParams.builder()
@@ -141,6 +150,9 @@ public interface ProfileViewModel {
       )
         .map(p -> p.first || p.second);
 
+      this.messagesButtonHidden = this.currentConfig.observable()
+        .map(config -> !coalesce(config.features().get(FeatureKey.ANDROID_MESSAGES), true));
+
       this.projects = paginator.paginatedData();
       this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked;
       this.startProjectActivity = this.projectCardClicked;
@@ -163,6 +175,7 @@ public interface ProfileViewModel {
     private final Observable<String> createdCountTextViewText;
     private final Observable<Boolean> createdTextViewHidden;
     private final Observable<Boolean> dividerViewHidden;
+    private final Observable<Boolean> messagesButtonHidden;
     private final Observable<List<Project>> projects;
     private final Observable<Void> resumeDiscoveryActivity;
     private final Observable<Project> startProjectActivity;
@@ -214,6 +227,9 @@ public interface ProfileViewModel {
     }
     @Override public @NonNull Observable<Boolean> dividerViewHidden() {
       return this.dividerViewHidden;
+    }
+    @Override public @NonNull Observable<Boolean> messagesButtonHidden() {
+      return this.messagesButtonHidden;
     }
     @Override public @NonNull Observable<List<Project>> projects() {
       return this.projects;

@@ -98,6 +98,11 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::setBackersTextView);
 
+    viewModel.outputs.rewardDescriptionIsHidden()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(descriptionTextView));
+
     viewModel.outputs.descriptionTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())

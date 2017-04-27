@@ -9,10 +9,12 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
+import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
@@ -47,6 +49,13 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
     this.client = environment.apiClient();
     this.currentUser = environment.currentUser();
 
+    final Observable<User> currentUser = Observable.merge(
+      this.currentUser.observable(),
+      this.currentUser.observable()
+        .compose(takeWhen(this.loginSuccess))
+        .flatMap(__ -> this.client.fetchCurrentUser().compose(neverError())).share()
+    );
+
     final Observable<Either<Project, Update>> projectOrUpdate = intent()
       .take(1)
       .map(i -> {
@@ -71,7 +80,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       initialProject
         .compose(takeWhen(loginSuccess))
         .flatMap(p -> client.fetchProject(p).compose(neverError()))
-      )
+    )
       .share();
 
     final Observable<Boolean> commentHasBody = commentBodyChanged
@@ -109,21 +118,41 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
 
     final Observable<List<Comment>> comments = paginator.paginatedData().share();
 
+    final Observable<Boolean> currentUserIsCreator = Observable.combineLatest(
+      currentUser,
+      project.map(Project::creator),
+      Pair::create
+    )
+      .map(userAndCreator -> userAndCreator.first != null && userAndCreator.first.id() == userAndCreator.second.id());
+
+    final Observable<Boolean> userCanComment = Observable.combineLatest(
+      currentUserIsCreator,
+      project.map(Project::isBacking),
+      (isCreator, isBacking) ->
+        isCreator || isBacking
+    );
+
+    final Observable<Project> commentableProject = Observable.combineLatest(
+      project,
+      userCanComment,
+      Pair::create
+    )
+      .filter(pc -> pc.second)
+      .map(pc -> pc.first);
+
     commentNotification
       .compose(errors())
       .map(ErrorEnvelope::fromThrowable)
       .subscribe(showPostCommentErrorToast::onNext);
 
-    project
+    commentableProject
       .compose(takeWhen(loginSuccess))
-      .filter(Project::isBacking)
       .take(1)
       .compose(bindToLifecycle())
       .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
 
-    project
+    commentableProject
       .compose(takeWhen(commentButtonClicked))
-      .filter(Project::isBacking)
       .compose(bindToLifecycle())
       .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
 
@@ -142,24 +171,14 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
     Observable.combineLatest(
       project,
       comments,
-      currentUser.observable(),
+      currentUser,
       CommentsData::deriveData
     )
       .compose(bindToLifecycle())
       .subscribe(commentsData::onNext);
 
-    final Observable<Boolean> currentUserIsCreator = Observable.combineLatest(
-      currentUser.loggedInUser(),
-      project.map(Project::creator),
-      Pair::create
-    )
-      .map(userAndCreator -> userAndCreator.first.id() == userAndCreator.second.id());
-
-    Observable.combineLatest(
-      currentUserIsCreator,
-      project.map(Project::isBacking),
-      (isCreator, isBacking) -> !(isCreator || isBacking)
-    )
+    userCanComment
+      .map(BooleanUtils::negate)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
       .subscribe(commentButtonHidden::onNext);

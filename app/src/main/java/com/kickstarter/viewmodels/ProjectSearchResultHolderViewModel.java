@@ -30,7 +30,7 @@ public interface ProjectSearchResultHolderViewModel {
     /** Call to configure the view model with a message. */
     void configureWith(Data data);
 
-    // FIXME: add documentation
+    /** Call to say user clicked a project */
     void onClick();
   }
 
@@ -44,7 +44,7 @@ public interface ProjectSearchResultHolderViewModel {
     /** Emits a completed / days to go pair */
     Observable<Pair<Integer, Integer>> projectStats();
 
-    // FIXME: add documentation and tests
+    /** Emits the project clicked by the user. */
     Observable<Project> notifyDelegateOfResultClick();
   }
 
@@ -56,7 +56,9 @@ public interface ProjectSearchResultHolderViewModel {
       super(environment);
 
       this.configData
-        // FIXME: check for nullability on `photo`
+        .filter(data -> data.project.photo() != null)
+        .filter(data -> data.project.photo().med() != null)
+        .filter(data -> data.project.photo().full() != null)
         .map(data -> data.isFeatured ? data.project.photo().full() : data.project.photo().med())
         .subscribe(this.projectImage);
 
@@ -66,7 +68,7 @@ public interface ProjectSearchResultHolderViewModel {
 
       this.configData
         .map(data ->
-          Pair.create((int)data.project.percentageFunded(), ProjectUtils.deadlineCountdownValue(data.project))
+          Pair.create((int) data.project.percentageFunded(), ProjectUtils.deadlineCountdownValue(data.project))
         )
         .subscribe(this.projectStats);
 

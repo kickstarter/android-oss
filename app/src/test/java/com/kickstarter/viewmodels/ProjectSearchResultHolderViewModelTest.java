@@ -5,7 +5,6 @@ import android.util.Pair;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.PhotoFactory;
 import com.kickstarter.factories.ProjectFactory;
-import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 
 import org.junit.Before;
@@ -15,10 +14,10 @@ import rx.observers.TestSubscriber;
 
 public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricTestCase {
   private ProjectSearchResultHolderViewModel.ViewModel vm;
+  private final TestSubscriber<Project> projectClickedTest = new TestSubscriber<>();
   private final TestSubscriber<String> projectImage = new TestSubscriber<>();
   private final TestSubscriber<String> projectName = new TestSubscriber<>();
   private final TestSubscriber<Pair<Integer, Integer>> projectStats = new TestSubscriber<>();
-  private Project project;
 
   @Before
   public void setUpEnvironment() {
@@ -31,7 +30,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
   @Test
   public void testEmitsProjectImage() {
-    project = ProjectFactory.project()
+    final Project project = ProjectFactory.project()
       .toBuilder()
       .photo(
         PhotoFactory.photo()
@@ -45,23 +44,71 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
     this.projectImage.assertValues("http://www.kickstarter.com/med.jpg");
   }
 
-  // FIXME: do the remaining tests
-  // FIXME: test the case of featured (check for the large photo)
-  // FIXME: add tests for new outputs
-
   @Test
-  public void testEmitsProjectName() {
-    this.projectName.assertValues(project.name());
+  public void testEmitsFeaturedProjectImage() {
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .photo(
+        PhotoFactory.photo()
+          .toBuilder()
+          .full("http://www.kickstarter.com/full.jpg")
+          .build()
+      )
+      .build();
+    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
+
+    this.projectImage.assertValues("http://www.kickstarter.com/full.jpg");
   }
 
   @Test
-  public void testEmits() {
+  public void testEmitsProjectName() {
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .photo(
+        PhotoFactory.photo()
+          .toBuilder()
+          .full("http://www.kickstarter.com/full.jpg")
+          .build()
+      )
+      .build();
+
+    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
     this.projectName.assertValues(project.name());
   }
 
   @SuppressWarnings("unchecked")
   @Test
-  public void testProjectStats() {
+  public void testEmitsProjectStats() {
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .photo(
+        PhotoFactory.photo()
+          .toBuilder()
+          .full("http://www.kickstarter.com/full.jpg")
+          .build()
+      )
+      .build();
+
+    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
     this.projectStats.assertValues(new Pair<>(50, 10));
+  }
+
+  @Test
+  public void testEmitsProjectClicked() {
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .photo(
+        PhotoFactory.photo()
+          .toBuilder()
+          .full("http://www.kickstarter.com/full.jpg")
+          .build()
+      )
+      .build();
+
+    this.vm.outputs.notifyDelegateOfResultClick().subscribe(projectClickedTest);
+    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
+    this.vm.inputs.onClick();
+
+    projectClickedTest.assertValue(project);
   }
 }

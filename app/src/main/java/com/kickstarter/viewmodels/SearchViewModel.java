@@ -33,19 +33,19 @@ public interface SearchViewModel {
     /** Call when text changes in search box. */
     void search(final @NonNull String s);
 
-    // FIXME: document
+    /** Call when a project is tapped in search results. */
     void tappedProject(final @NonNull Project project);
   }
 
   interface Outputs {
+    /** Emits info clicked project / reference tag pair. */
+    Observable<Pair<Project, RefTag>> goToProject();
+
     /** Emits list of popular projects. */
     Observable<List<Project>> popularProjects();
 
     /** Emits list of projects matching criteria. */
     Observable<List<Project>> searchProjects();
-
-    // FIXME: document and alpha
-    Observable<Pair<Project, RefTag>> goToProject();
   }
 
   final class ViewModel extends ActivityViewModel<SearchActivity> implements Inputs, Outputs {

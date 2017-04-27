@@ -2,8 +2,8 @@ package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.text.Html;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel;
@@ -75,7 +74,7 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
     final ProjectSearchResultHolderViewModel.Data configData = ObjectUtils.requireNonNull(
-      (ProjectSearchResultHolderViewModel.Data)data
+      (ProjectSearchResultHolderViewModel.Data) data
     );
     this.viewModel.inputs.configureWith(configData);
   }

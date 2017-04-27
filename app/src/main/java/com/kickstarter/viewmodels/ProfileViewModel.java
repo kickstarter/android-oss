@@ -8,6 +8,7 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
@@ -26,6 +27,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 
 public interface ProfileViewModel {
 
@@ -149,7 +151,7 @@ public interface ProfileViewModel {
         .map(p -> p.first || p.second);
 
       this.messagesButtonHidden = this.currentConfig.observable()
-        .map(config -> !config.features().getOrDefault("android_messages", false));
+        .map(config -> !coalesce(config.features().get(FeatureKey.ANDROID_MESSAGES) , true));
 
       this.projects = paginator.paginatedData();
       this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked;

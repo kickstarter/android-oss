@@ -9,6 +9,7 @@ import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.libs.utils.NumberUtils;
@@ -185,10 +186,10 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testProfileViewModel_MessagesButtonHidden() {
+  public void testProfileViewModel_MessagesButton_EnabledFeature() {
     final Config config = ConfigFactory.config()
       .toBuilder()
-      .features(Collections.singletonMap("android_messages", false))
+      .features(Collections.singletonMap(FeatureKey.ANDROID_MESSAGES, false))
       .build();
 
     final MockCurrentConfig currentConfig = new MockCurrentConfig();
@@ -198,6 +199,38 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
 
     // Messages button hidden for config with disabled feature flag.
     this.messagesButtonHidden.assertValues(true);
+  }
+
+  @Test
+  public void testProfileViewModel_MessagesButton_DisabledFeature() {
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.singletonMap(FeatureKey.ANDROID_MESSAGES, true))
+      .build();
+
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    setUpEnvironment(environment().toBuilder().currentConfig(currentConfig).build());
+
+    // Messages button shown for config with enabled feature flag.
+    this.messagesButtonHidden.assertValues(false);
+  }
+
+  @Test
+  public void testProfileViewModel_MessagesButton_NullFeature() {
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.emptyMap())
+      .build();
+
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    setUpEnvironment(environment().toBuilder().currentConfig(currentConfig).build());
+
+    // Messages button shown for config with missing feature flag.
+    this.messagesButtonHidden.assertValues(false);
   }
 
   @Test

@@ -151,7 +151,7 @@ public interface ProfileViewModel {
         .map(p -> p.first || p.second);
 
       this.messagesButtonHidden = this.currentConfig.observable()
-        .map(config -> !coalesce(config.features().get(FeatureKey.ANDROID_MESSAGES) , true));
+        .map(config -> !coalesce(config.features().get(FeatureKey.ANDROID_MESSAGES), true));
 
       this.projects = paginator.paginatedData();
       this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked;

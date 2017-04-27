@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.utils.ExceptionUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.FeaturedSearchResultViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -18,51 +19,63 @@ public final class SearchAdapter extends KSAdapter {
 
   public interface Delegate extends ProjectSearchResultViewHolder.Delegate {}
 
+  private static final int SECTION_POPULAR_TITLE = 0;
+  private static final int SECTION_FEATURED_PROJECT = 1;
+  private static final int SECTION_PROJECT = 2;
+
   public SearchAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
   }
 
   public void loadPopularProjects(final @NonNull List<Project> newProjects) {
     clearSections();
-    if (newProjects.size() == 0) {
-      addSection(Collections.emptyList());
-    } else {
-      addSection(getFeatureProject(newProjects));
+
+    if (newProjects.size() > 0) {
+      this.setSection(SECTION_POPULAR_TITLE, Collections.singletonList(null));
+      this.setSection(SECTION_FEATURED_PROJECT, Collections.singletonList(newProjects.get(0)));
+      this.setSection(SECTION_PROJECT, newProjects.subList(1, newProjects.size() - 1));
     }
-    addSection(getProjectList(newProjects));
+
     notifyDataSetChanged();
   }
 
   public void loadSearchProjects(final @NonNull List<Project> newProjects) {
     clearSections();
-    addSection(getFeatureProject(newProjects));
-    addSection(getProjectList(newProjects));
+
+    if (newProjects.size() > 0) {
+      this.setSection(SECTION_POPULAR_TITLE, Collections.emptyList());
+      this.setSection(SECTION_FEATURED_PROJECT, Collections.singletonList(newProjects.get(0)));
+      this.setSection(SECTION_PROJECT, newProjects.subList(1, newProjects.size() - 1));
+    }
+
     notifyDataSetChanged();
   }
 
-  private @NonNull List<Project> getProjectList(final @NonNull List<Project> newProjects) {
-    return newProjects.size() > 1
-      ? newProjects.subList(1, newProjects.size()-1)
-      : Collections.emptyList();
-  }
-
-  private @NonNull List<Project> getFeatureProject(final @NonNull List<Project> newProjects) {
-    return newProjects.size() > 0
-      ? newProjects.subList(0, 1)
-      : Collections.emptyList();
-  }
-
   protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
-    if (sectionRow.section() == 0) {
-      return R.layout.featured_search_result_view;
+    switch (sectionRow.section()) {
+      case SECTION_POPULAR_TITLE:
+        // TODO: create a popular_search_title_view layout that holds just the "Most popular" text view
+        return 0;//R.layout.featured_search_result_view;
+      case SECTION_FEATURED_PROJECT:
+        return R.layout.featured_search_result_view;
+      case SECTION_PROJECT:
+        return R.layout.project_search_result_view;
+      default:
+        throw new IllegalStateException("Invalid section row");
     }
-    return R.layout.project_search_result_view;
   }
 
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
-    if (layout == R.layout.featured_search_result_view) {
-      return new FeaturedSearchResultViewHolder(view, delegate);
+    switch (layout) {
+      case 0:
+        // TODO: create a popular search title view holder
+        return null;//R.layout.featured_search_result_view;
+      case R.layout.featured_search_result_view:
+        return new FeaturedSearchResultViewHolder(view, delegate);
+      case R.layout.project_search_result_view:
+        return new ProjectSearchResultViewHolder(view, delegate);
+      default:
+        throw new IllegalStateException("Invalid layout");
     }
-    return new ProjectSearchResultViewHolder(view, delegate);
   }
 }

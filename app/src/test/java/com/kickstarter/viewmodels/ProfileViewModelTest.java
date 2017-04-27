@@ -3,11 +3,15 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.DiscoverEnvelopeFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
+import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KoalaEvent;
+import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -25,6 +29,41 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public class ProfileViewModelTest extends KSRobolectricTestCase {
+  private ProfileViewModel.ViewModel vm;
+
+  private final TestSubscriber<String> avatarImageViewUrl = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> backedCountTextViewHidden = new TestSubscriber<>();
+  private final TestSubscriber<String> backedCountTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> backedTextViewHidden = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> createdCountTextViewHidden = new TestSubscriber<>();
+  private final TestSubscriber<String> createdCountTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> createdTextViewHidden = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> dividerViewHidden = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> messagesButtonHidden= new TestSubscriber<>();
+  private final TestSubscriber<List<Project>> projects = new TestSubscriber<>();
+  private final TestSubscriber<Void> resumeDiscoveryActivity = new TestSubscriber<>();
+  private final TestSubscriber<Void> startMessageThreadsActivity = new TestSubscriber<>();
+  private final TestSubscriber<Project> startProjectActivity = new TestSubscriber<>();
+  private final TestSubscriber<String> userNameTextViewText = new TestSubscriber<>();
+
+  private void setUpEnvironment(final @NonNull Environment environment) {
+    this.vm = new ProfileViewModel.ViewModel(environment);
+
+    this.vm.outputs.avatarImageViewUrl().subscribe(this.avatarImageViewUrl);
+    this.vm.outputs.backedCountTextViewHidden().subscribe(this.backedCountTextViewHidden);
+    this.vm.outputs.backedCountTextViewText().subscribe(this.backedCountTextViewText);
+    this.vm.outputs.backedTextViewHidden().subscribe(this.backedTextViewHidden);
+    this.vm.outputs.createdCountTextViewHidden().subscribe(this.createdCountTextViewHidden);
+    this.vm.outputs.createdCountTextViewText().subscribe(this.createdCountTextViewText);
+    this.vm.outputs.createdTextViewHidden().subscribe(this.createdTextViewHidden);
+    this.vm.outputs.dividerViewHidden().subscribe(this.dividerViewHidden);
+    this.vm.outputs.messagesButtonHidden().subscribe(this.messagesButtonHidden);
+    this.vm.outputs.projects().subscribe(this.projects);
+    this.vm.outputs.resumeDiscoveryActivity().subscribe(this.resumeDiscoveryActivity);
+    this.vm.outputs.startMessageThreadsActivity().subscribe(this.startMessageThreadsActivity);
+    this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
+    this.vm.outputs.userNameTextViewText().subscribe(this.userNameTextViewText);
+  }
 
   @Test
   public void testProfileViewModel_EmitsBackedAndCreatedProjectsData() {
@@ -39,42 +78,20 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    final Environment env = environment().toBuilder().apiClient(apiClient).build();
-    final ProfileViewModel.ViewModel vm = new ProfileViewModel.ViewModel(env);
-
-    final TestSubscriber<Boolean> backedCountTextViewHidden = new TestSubscriber<>();
-    vm.outputs.backedCountTextViewHidden().subscribe(backedCountTextViewHidden);
-
-    final TestSubscriber<String> backedCountTextViewText = new TestSubscriber<>();
-    vm.outputs.backedCountTextViewText().subscribe(backedCountTextViewText);
-
-    final TestSubscriber<Boolean> backedTextViewHidden = new TestSubscriber<>();
-    vm.outputs.backedTextViewHidden().subscribe(backedTextViewHidden);
-
-    final TestSubscriber<Boolean> createdCountTextViewHidden = new TestSubscriber<>();
-    vm.outputs.createdCountTextViewHidden().subscribe(createdCountTextViewHidden);
-
-    final TestSubscriber<String> createdCountTextViewText = new TestSubscriber<>();
-    vm.outputs.createdCountTextViewText().subscribe(createdCountTextViewText);
-
-    final TestSubscriber<Boolean> createdTextViewHidden = new TestSubscriber<>();
-    vm.outputs.createdTextViewHidden().subscribe(createdTextViewHidden);
-
-    final TestSubscriber<Boolean> dividerViewHidden = new TestSubscriber<>();
-    vm.outputs.dividerViewHidden().subscribe(dividerViewHidden);
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
     // Backed text views are displayed.
-    backedCountTextViewHidden.assertValues(false);
-    backedCountTextViewText.assertValues(NumberUtils.format(user.backedProjectsCount()));
-    backedTextViewHidden.assertValues(false);
+    this.backedCountTextViewHidden.assertValues(false);
+    this.backedCountTextViewText.assertValues(NumberUtils.format(user.backedProjectsCount()));
+    this.backedTextViewHidden.assertValues(false);
 
     // Created text views are displayed.
-    createdCountTextViewHidden.assertValues(false);
-    createdCountTextViewText.assertValues(NumberUtils.format(user.createdProjectsCount()));
-    createdTextViewHidden.assertValues(false);
+    this.createdCountTextViewHidden.assertValues(false);
+    this.createdCountTextViewText.assertValues(NumberUtils.format(user.createdProjectsCount()));
+    this.createdTextViewHidden.assertValues(false);
 
     // Divider view is displayed.
-    dividerViewHidden.assertValues(false);
+    this.dividerViewHidden.assertValues(false);
   }
 
   @Test
@@ -90,42 +107,20 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    final Environment env = environment().toBuilder().apiClient(apiClient).build();
-    final ProfileViewModel.ViewModel vm = new ProfileViewModel.ViewModel(env);
-
-    final TestSubscriber<Boolean> backedCountTextViewHidden = new TestSubscriber<>();
-    vm.outputs.backedCountTextViewHidden().subscribe(backedCountTextViewHidden);
-
-    final TestSubscriber<String> backedCountTextViewText = new TestSubscriber<>();
-    vm.outputs.backedCountTextViewText().subscribe(backedCountTextViewText);
-
-    final TestSubscriber<Boolean> backedTextViewHidden = new TestSubscriber<>();
-    vm.outputs.backedTextViewHidden().subscribe(backedTextViewHidden);
-
-    final TestSubscriber<Boolean> createdCountTextViewHidden = new TestSubscriber<>();
-    vm.outputs.createdCountTextViewHidden().subscribe(createdCountTextViewHidden);
-
-    final TestSubscriber<String> createdCountTextViewText = new TestSubscriber<>();
-    vm.outputs.createdCountTextViewText().subscribe(createdCountTextViewText);
-
-    final TestSubscriber<Boolean> createdTextViewHidden = new TestSubscriber<>();
-    vm.outputs.createdTextViewHidden().subscribe(createdTextViewHidden);
-
-    final TestSubscriber<Boolean> dividerViewHidden = new TestSubscriber<>();
-    vm.outputs.dividerViewHidden().subscribe(dividerViewHidden);
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
     // Backed text views are displayed.
-    backedCountTextViewHidden.assertValues(false);
-    backedCountTextViewText.assertValues(NumberUtils.format(user.backedProjectsCount()));
-    backedTextViewHidden.assertValues(false);
+    this.backedCountTextViewHidden.assertValues(false);
+    this.backedCountTextViewText.assertValues(NumberUtils.format(user.backedProjectsCount()));
+    this.backedTextViewHidden.assertValues(false);
 
     // Created text views are hidden.
-    createdCountTextViewHidden.assertValues(true);
-    createdCountTextViewText.assertNoValues();
-    createdTextViewHidden.assertValues(true);
+    this.createdCountTextViewHidden.assertValues(true);
+    this.createdCountTextViewText.assertNoValues();
+    this.createdTextViewHidden.assertValues(true);
 
     // Divider view is hidden.
-    dividerViewHidden.assertValues(true);
+    this.dividerViewHidden.assertValues(true);
   }
 
   @Test
@@ -141,42 +136,20 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    final Environment env = environment().toBuilder().apiClient(apiClient).build();
-    final ProfileViewModel.ViewModel vm = new ProfileViewModel.ViewModel(env);
-
-    final TestSubscriber<Boolean> backedCountTextViewHidden = new TestSubscriber<>();
-    vm.outputs.backedCountTextViewHidden().subscribe(backedCountTextViewHidden);
-
-    final TestSubscriber<String> backedCountTextViewText = new TestSubscriber<>();
-    vm.outputs.backedCountTextViewText().subscribe(backedCountTextViewText);
-
-    final TestSubscriber<Boolean> backedTextViewHidden = new TestSubscriber<>();
-    vm.outputs.backedTextViewHidden().subscribe(backedTextViewHidden);
-
-    final TestSubscriber<Boolean> createdCountTextViewHidden = new TestSubscriber<>();
-    vm.outputs.createdCountTextViewHidden().subscribe(createdCountTextViewHidden);
-
-    final TestSubscriber<String> createdCountTextViewText = new TestSubscriber<>();
-    vm.outputs.createdCountTextViewText().subscribe(createdCountTextViewText);
-
-    final TestSubscriber<Boolean> createdTextViewHidden = new TestSubscriber<>();
-    vm.outputs.createdTextViewHidden().subscribe(createdTextViewHidden);
-
-    final TestSubscriber<Boolean> dividerViewHidden = new TestSubscriber<>();
-    vm.outputs.dividerViewHidden().subscribe(dividerViewHidden);
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
     // Backed text views are hidden.
-    backedCountTextViewHidden.assertValues(true);
-    backedCountTextViewText.assertNoValues();
-    backedTextViewHidden.assertValues(true);
+    this.backedCountTextViewHidden.assertValues(true);
+    this.backedCountTextViewText.assertNoValues();
+    this.backedTextViewHidden.assertValues(true);
 
     // Created text views are displayed.
-    createdCountTextViewHidden.assertValues(false);
-    createdCountTextViewText.assertValues(NumberUtils.format(user.createdProjectsCount()));
-    createdTextViewHidden.assertValues(false);
+    this.createdCountTextViewHidden.assertValues(false);
+    this.createdCountTextViewText.assertValues(NumberUtils.format(user.createdProjectsCount()));
+    this.createdTextViewHidden.assertValues(false);
 
     // Divider view is hidden.
-    dividerViewHidden.assertValues(true);
+    this.dividerViewHidden.assertValues(true);
   }
 
   @Test
@@ -190,14 +163,10 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    final Environment env = environment().toBuilder().apiClient(apiClient).build();
-    final ProfileViewModel.ViewModel vm = new ProfileViewModel.ViewModel(env);
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
-    final TestSubscriber<List<Project>> projects = new TestSubscriber<>();
-    vm.outputs.projects().subscribe(projects);
-
-    koalaTest.assertValues(KoalaEvent.PROFILE_VIEW_MY, KoalaEvent.VIEWED_PROFILE);
-    projects.assertValueCount(1);
+    this.koalaTest.assertValues(KoalaEvent.PROFILE_VIEW_MY, KoalaEvent.VIEWED_PROFILE);
+    this.projects.assertValueCount(1);
   }
 
   @Test
@@ -210,38 +179,81 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    final Environment env = environment().toBuilder().apiClient(apiClient).build();
-    final ProfileViewModel.ViewModel vm = new ProfileViewModel.ViewModel(env);
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
-    final TestSubscriber<String> avatarImageViewUrl = new TestSubscriber<>();
-    vm.outputs.avatarImageViewUrl().subscribe(avatarImageViewUrl);
+    this.avatarImageViewUrl.assertValues(user.avatar().medium());
+    this.userNameTextViewText.assertValues(user.name());
+  }
 
-    final TestSubscriber<String> userNameTextViewText = new TestSubscriber<>();
-    vm.outputs.userNameTextViewText().subscribe(userNameTextViewText);
+  @Test
+  public void testProfileViewModel_MessagesButton_EnabledFeature() {
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.singletonMap(FeatureKey.ANDROID_MESSAGES, false))
+      .build();
 
-    avatarImageViewUrl.assertValues(user.avatar().medium());
-    userNameTextViewText.assertValues(user.name());
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    setUpEnvironment(environment().toBuilder().currentConfig(currentConfig).build());
+
+    // Messages button hidden for config with disabled feature flag.
+    this.messagesButtonHidden.assertValues(true);
+  }
+
+  @Test
+  public void testProfileViewModel_MessagesButton_DisabledFeature() {
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.singletonMap(FeatureKey.ANDROID_MESSAGES, true))
+      .build();
+
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    setUpEnvironment(environment().toBuilder().currentConfig(currentConfig).build());
+
+    // Messages button shown for config with enabled feature flag.
+    this.messagesButtonHidden.assertValues(false);
+  }
+
+  @Test
+  public void testProfileViewModel_MessagesButton_NullFeature() {
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.emptyMap())
+      .build();
+
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    setUpEnvironment(environment().toBuilder().currentConfig(currentConfig).build());
+
+    // Messages button shown for config with missing feature flag.
+    this.messagesButtonHidden.assertValues(false);
   }
 
   @Test
   public void testProfileViewModel_ResumeDiscoveryActivity() {
-    final ProfileViewModel.ViewModel vm = new ProfileViewModel.ViewModel(environment());
+    setUpEnvironment(environment());
 
-    final TestSubscriber<Void> resumeDiscoveryActivity = new TestSubscriber<>();
-    vm.outputs.resumeDiscoveryActivity().subscribe(resumeDiscoveryActivity);
-
-    vm.inputs.exploreProjectsButtonClicked();
-    resumeDiscoveryActivity.assertValueCount(1);
+    this.vm.inputs.exploreProjectsButtonClicked();
+    this.resumeDiscoveryActivity.assertValueCount(1);
   }
 
   @Test
   public void testProfileViewModel_StartMessageThreadsActivity() {
-    final ProfileViewModel.ViewModel vm = new ProfileViewModel.ViewModel(environment());
+    setUpEnvironment(environment());
 
-    final TestSubscriber<Void> startMessageThreadsActivity = new TestSubscriber<>();
-    vm.outputs.startMessageThreadsActivity().subscribe(startMessageThreadsActivity);
+    this.vm.inputs.messsagesButtonClicked();
+    this.startMessageThreadsActivity.assertValueCount(1);
+  }
 
-    vm.inputs.messsagesButtonClicked();
-    startMessageThreadsActivity.assertValueCount(1);
+  @Test
+  public void testProfileViewModel_StartProjectActivity() {
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectCardClicked(ProjectFactory.project());
+    this.startProjectActivity.assertValueCount(1);
   }
 }

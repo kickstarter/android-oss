@@ -149,10 +149,10 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       ProjectFactory.backedProject()
     );
 
-    MockApiClient apiClient = new MockApiClient() {
+    final MockApiClient apiClient = new MockApiClient() {
       @NonNull
       @Override
-      public Observable<DiscoverEnvelope> fetchProjects(@NonNull DiscoveryParams params) {
+      public Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
         return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
       }
     };
@@ -187,10 +187,10 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       ProjectFactory.backedProject()
     );
 
-    MockApiClient apiClient = new MockApiClient() {
+    final MockApiClient apiClient = new MockApiClient() {
       @NonNull
       @Override
-      public Observable<DiscoverEnvelope> fetchProjects(@NonNull DiscoveryParams params) {
+      public Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
         return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
       }
     };
@@ -226,10 +226,10 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       ProjectFactory.backedProject()
     );
 
-    MockApiClient apiClient = new MockApiClient() {
+    final MockApiClient apiClient = new MockApiClient() {
       @NonNull
       @Override
-      public Observable<DiscoverEnvelope> fetchProjects(@NonNull DiscoveryParams params) {
+      public Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
         return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
       }
     };
@@ -265,10 +265,10 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       ProjectFactory.backedProject()
     );
 
-    MockApiClient apiClient = new MockApiClient() {
+    final MockApiClient apiClient = new MockApiClient() {
       @NonNull
       @Override
-      public Observable<DiscoverEnvelope> fetchProjects(@NonNull DiscoveryParams params) {
+      public Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
         return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
       }
     };

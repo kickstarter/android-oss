@@ -54,7 +54,7 @@ public final class SearchAdapter extends KSAdapter {
   protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
     switch (sectionRow.section()) {
       case SECTION_POPULAR_TITLE:
-        return R.layout.search_popular;
+        return R.layout.search_popular_title_view;
       case SECTION_FEATURED_PROJECT:
         return R.layout.featured_search_result_view;
       case SECTION_PROJECT:
@@ -66,7 +66,7 @@ public final class SearchAdapter extends KSAdapter {
 
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch (layout) {
-      case R.layout.search_popular:
+      case R.layout.search_popular_title_view:
         return new PopularSearchViewHolder(view);
       case R.layout.featured_search_result_view:
         return new FeaturedSearchResultViewHolder(view, delegate);

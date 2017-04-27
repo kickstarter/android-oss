@@ -52,7 +52,7 @@ public abstract class RefTag implements Parcelable {
   }
 
   public static @NonNull RefTag searchPopular() {
-    return new AutoParcel_RefTag("search_popular");
+    return new AutoParcel_RefTag("search_popular_title_view");
   }
 
   public static @NonNull RefTag searchPopularFeatured() {

@@ -85,7 +85,7 @@ public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel
     recyclerView.setAdapter(null);
   }
 
-  public void projectSearchResultClick(final @NonNull ProjectSearchResultViewHolder viewHolder, final @NonNull Project project, final Pair<RefTag, RefTag> refTags) {
+  public void projectSearchResultClick(final @NonNull ProjectSearchResultViewHolder viewHolder, final @NonNull Project project) {
     this.viewModel.inputs.tappedProject(project);
   }
 }

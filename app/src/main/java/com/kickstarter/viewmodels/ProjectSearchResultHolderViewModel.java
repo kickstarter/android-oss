@@ -5,18 +5,33 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 public interface ProjectSearchResultHolderViewModel {
 
+  final class Data {
+    final Project project;
+    final boolean isFeatured;
+
+    public Data(final @NonNull Project project, final boolean isFeatured) {
+      this.project = project;
+      this.isFeatured = isFeatured;
+    }
+  }
+
   interface Inputs {
     /** Call to configure the view model with a message. */
-    void configureWith(Project project, boolean featured);
+    void configureWith(Data data);
+
+    // FIXME: add documentation
+    void onClick();
   }
 
   interface Outputs {
@@ -28,6 +43,9 @@ public interface ProjectSearchResultHolderViewModel {
 
     /** Emits a completed / days to go pair */
     Observable<Pair<Integer, Integer>> projectStats();
+
+    // FIXME: add documentation and tests
+    Observable<Project> notifyDelegateOfResultClick();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectSearchResultViewHolder> implements
@@ -36,14 +54,40 @@ public interface ProjectSearchResultHolderViewModel {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
+
+      this.configData
+        // FIXME: check for nullability on `photo`
+        .map(data -> data.isFeatured ? data.project.photo().full() : data.project.photo().med())
+        .subscribe(this.projectImage);
+
+      this.configData
+        .map(data -> data.project.name())
+        .subscribe(this.projectName);
+
+      this.configData
+        .map(data ->
+          Pair.create((int)data.project.percentageFunded(), ProjectUtils.deadlineCountdownValue(data.project))
+        )
+        .subscribe(this.projectStats);
+
+      this.configData
+        .map(data -> data.project)
+        .compose(Transformers.takeWhen(this.onClick))
+        .subscribe(this.notifyDelegateOfResultClick);
     }
 
-    @Override public void configureWith(final @NonNull Project project, final boolean featured) {
-      projectImage.onNext(featured ? project.photo().full() : project.photo().med());
-      projectName.onNext(project.name());
-      projectStats.onNext(new Pair<>((int) project.percentageFunded(), ProjectUtils.deadlineCountdownValue(project)));
+    @Override public void configureWith(final @NonNull Data data) {
+      this.configData.onNext(data);
     }
 
+    @Override public void onClick() {
+      this.onClick.onNext(null);
+    }
+
+    private final PublishSubject<Data> configData = PublishSubject.create();
+    private final PublishSubject<Void> onClick = PublishSubject.create();
+
+    private final BehaviorSubject<Project> notifyDelegateOfResultClick = BehaviorSubject.create();
     private final BehaviorSubject<String> projectImage = BehaviorSubject.create();
     private final BehaviorSubject<String> projectName = BehaviorSubject.create();
     private final BehaviorSubject<Pair<Integer, Integer>> projectStats = BehaviorSubject.create();
@@ -51,6 +95,9 @@ public interface ProjectSearchResultHolderViewModel {
     public final ProjectSearchResultHolderViewModel.Inputs inputs = this;
     public final ProjectSearchResultHolderViewModel.Outputs outputs = this;
 
+    @Override  public Observable<Project> notifyDelegateOfResultClick() {
+      return this.notifyDelegateOfResultClick;
+    }
     @Override public Observable<String> projectImage() {
       return projectImage;
     }

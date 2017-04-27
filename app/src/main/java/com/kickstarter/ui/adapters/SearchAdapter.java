@@ -2,17 +2,20 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.viewholders.FeaturedSearchResultViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.PopularSearchViewHolder;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
+import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel;
 
 import java.util.Collections;
 import java.util.List;
+
+import rx.Observable;
 
 public final class SearchAdapter extends KSAdapter {
   private final Delegate delegate;
@@ -32,8 +35,18 @@ public final class SearchAdapter extends KSAdapter {
 
     if (newProjects.size() > 0) {
       this.insertSection(SECTION_POPULAR_TITLE, Collections.singletonList(null));
-      this.insertSection(SECTION_FEATURED_PROJECT, Collections.singletonList(newProjects.get(0)));
-      this.insertSection(SECTION_PROJECT, newProjects.subList(1, newProjects.size() - 1));
+      this.insertSection(
+        SECTION_FEATURED_PROJECT,
+        Collections.singletonList(
+          new ProjectSearchResultHolderViewModel.Data(newProjects.get(0), true)
+        )
+      );
+      this.insertSection(
+        SECTION_PROJECT,
+        Observable.from(newProjects.subList(1, newProjects.size() - 1))
+          .map(p -> new ProjectSearchResultHolderViewModel.Data(p, false))
+          .toList().toBlocking().first()
+      );
     }
 
     notifyDataSetChanged();
@@ -44,8 +57,18 @@ public final class SearchAdapter extends KSAdapter {
 
     if (newProjects.size() > 0) {
       this.insertSection(SECTION_POPULAR_TITLE, Collections.emptyList());
-      this.insertSection(SECTION_FEATURED_PROJECT, Collections.singletonList(newProjects.get(0)));
-      this.insertSection(SECTION_PROJECT, newProjects.subList(1, newProjects.size() - 1));
+      this.insertSection(
+        SECTION_FEATURED_PROJECT,
+        Collections.singletonList(
+          new ProjectSearchResultHolderViewModel.Data(newProjects.get(0), true)
+        )
+      );
+      this.insertSection(
+        SECTION_PROJECT,
+        Observable.from(newProjects.subList(1, newProjects.size() - 1))
+          .map(p -> new ProjectSearchResultHolderViewModel.Data(p, false))
+          .toList().toBlocking().first()
+      );
     }
 
     notifyDataSetChanged();
@@ -69,7 +92,7 @@ public final class SearchAdapter extends KSAdapter {
       case R.layout.search_popular_title_view:
         return new PopularSearchViewHolder(view);
       case R.layout.featured_search_result_view:
-        return new FeaturedSearchResultViewHolder(view, delegate);
+        return new ProjectSearchResultViewHolder(view, delegate);
       case R.layout.project_search_result_view:
         return new ProjectSearchResultViewHolder(view, delegate);
       default:

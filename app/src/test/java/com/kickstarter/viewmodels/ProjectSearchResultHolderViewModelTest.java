@@ -3,7 +3,9 @@ package com.kickstarter.viewmodels;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.factories.PhotoFactory;
 import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 
 import org.junit.Before;
@@ -21,8 +23,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
   @Before
   public void setUpEnvironment() {
     this.vm = new ProjectSearchResultHolderViewModel.ViewModel(environment());
-    project = ProjectFactory.project();
-    this.vm.inputs.configureWith(project, false);
+
     this.vm.outputs.projectImage().subscribe(this.projectImage);
     this.vm.outputs.projectName().subscribe(this.projectName);
     this.vm.outputs.projectStats().subscribe(this.projectStats);
@@ -30,8 +31,23 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
   @Test
   public void testEmitsProjectImage() {
-    this.projectImage.assertValues(project.photo().med());
+    project = ProjectFactory.project()
+      .toBuilder()
+      .photo(
+        PhotoFactory.photo()
+          .toBuilder()
+          .med("http://www.kickstarter.com/med.jpg")
+          .build()
+      )
+      .build();
+    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, false));
+
+    this.projectImage.assertValues("http://www.kickstarter.com/med.jpg");
   }
+
+  // FIXME: do the remaining tests
+  // FIXME: test the case of featured (check for the large photo)
+  // FIXME: add tests for new outputs
 
   @Test
   public void testEmitsProjectName() {

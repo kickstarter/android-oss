@@ -28,7 +28,6 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 public class ProjectSearchResultViewHolder extends KSViewHolder {
   private final ProjectSearchResultHolderViewModel.ViewModel viewModel;
 
-  protected Project project;
   protected final Delegate delegate;
 
   @Bind(R.id.project_stats_text_view) TextView projectStatsTextView;
@@ -40,7 +39,7 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
   protected @Inject KSString ksString;
 
   public interface Delegate {
-    void projectSearchResultClick(ProjectSearchResultViewHolder viewHolder, Project project, Pair<RefTag, RefTag> refTagPair);
+    void projectSearchResultClick(ProjectSearchResultViewHolder viewHolder, Project project);
   }
 
   public ProjectSearchResultViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -66,12 +65,19 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setProjectStats);
+
+    this.viewModel.outputs.notifyDelegateOfResultClick()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(project -> this.delegate.projectSearchResultClick(this, project));
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    this.project = ObjectUtils.requireNonNull((Project) data, Project.class);
-    this.viewModel.inputs.configureWith(this.project, this instanceof FeaturedSearchResultViewHolder);
+    final ProjectSearchResultHolderViewModel.Data configData = ObjectUtils.requireNonNull(
+      (ProjectSearchResultHolderViewModel.Data)data
+    );
+    this.viewModel.inputs.configureWith(configData);
   }
 
   void setProjectImage(final String imageUrl) {
@@ -94,7 +100,7 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
 
   @Override
   public void onClick(final @NonNull View view) {
-    delegate.projectSearchResultClick(this, project, new Pair<>(RefTag.search(), RefTag.searchPopular()));
+    this.viewModel.inputs.onClick();
   }
 }
 

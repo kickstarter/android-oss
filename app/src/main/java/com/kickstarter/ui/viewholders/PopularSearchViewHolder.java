@@ -29,7 +29,7 @@ public class PopularSearchViewHolder extends KSViewHolder {
     termTextView.setText(mostPopularString);
   }
   @Override
-  public void bindData(@Nullable Object data) throws Exception {
+  public void bindData(final @Nullable Object data) throws Exception {
     // no data to bind, this viewholder is just a static title
   }
 }

@@ -7,6 +7,7 @@ import com.kickstarter.factories.PhotoFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.models.Project;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,7 +15,7 @@ import rx.observers.TestSubscriber;
 
 public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricTestCase {
   private ProjectSearchResultHolderViewModel.ViewModel vm;
-  private final TestSubscriber<Project> projectClickedTest = new TestSubscriber<>();
+  private final TestSubscriber<Project> notifyDelegateOfResultClick = new TestSubscriber<>();
   private final TestSubscriber<String> projectImage = new TestSubscriber<>();
   private final TestSubscriber<String> projectName = new TestSubscriber<>();
   private final TestSubscriber<Pair<Integer, Integer>> projectStats = new TestSubscriber<>();
@@ -23,6 +24,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
   public void setUpEnvironment() {
     this.vm = new ProjectSearchResultHolderViewModel.ViewModel(environment());
 
+    this.vm.outputs.notifyDelegateOfResultClick().subscribe(this.notifyDelegateOfResultClick);
     this.vm.outputs.projectImage().subscribe(this.projectImage);
     this.vm.outputs.projectName().subscribe(this.projectName);
     this.vm.outputs.projectStats().subscribe(this.projectStats);
@@ -62,15 +64,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
   @Test
   public void testEmitsProjectName() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .photo(
-        PhotoFactory.photo()
-          .toBuilder()
-          .full("http://www.kickstarter.com/full.jpg")
-          .build()
-      )
-      .build();
+    final Project project = ProjectFactory.project();
 
     this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
     this.projectName.assertValues(project.name());
@@ -81,12 +75,9 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
   public void testEmitsProjectStats() {
     final Project project = ProjectFactory.project()
       .toBuilder()
-      .photo(
-        PhotoFactory.photo()
-          .toBuilder()
-          .full("http://www.kickstarter.com/full.jpg")
-          .build()
-      )
+      .pledged(100)
+      .goal(200)
+      .deadline(new DateTime().plusHours(24 * 10 + 1))
       .build();
 
     this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
@@ -95,20 +86,11 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
   @Test
   public void testEmitsProjectClicked() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .photo(
-        PhotoFactory.photo()
-          .toBuilder()
-          .full("http://www.kickstarter.com/full.jpg")
-          .build()
-      )
-      .build();
+    final Project project = ProjectFactory.project();
 
-    this.vm.outputs.notifyDelegateOfResultClick().subscribe(projectClickedTest);
     this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
     this.vm.inputs.onClick();
 
-    projectClickedTest.assertValue(project);
+    this.notifyDelegateOfResultClick.assertValues(project);
   }
 }

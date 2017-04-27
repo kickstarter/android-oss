@@ -1,12 +1,14 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 
@@ -56,10 +58,7 @@ public interface ProjectSearchResultHolderViewModel {
       super(environment);
 
       this.configData
-        .filter(data -> data.project.photo() != null)
-        .filter(data -> data.project.photo().med() != null)
-        .filter(data -> data.project.photo().full() != null)
-        .map(data -> data.isFeatured ? data.project.photo().full() : data.project.photo().med())
+        .map(ViewModel::projectImage)
         .subscribe(this.projectImage);
 
       this.configData
@@ -108,6 +107,15 @@ public interface ProjectSearchResultHolderViewModel {
     }
     @Override public Observable<Pair<Integer, Integer>> projectStats() {
       return projectStats;
+    }
+
+    private static @Nullable String projectImage(final @NonNull Data data) {
+      final Photo photo = data.project.photo();
+      if (photo == null) {
+        return null;
+      }
+
+      return data.isFeatured ? photo.full() : photo.med();
     }
   }
 }

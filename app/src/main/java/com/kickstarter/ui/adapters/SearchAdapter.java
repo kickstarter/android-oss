@@ -5,10 +5,10 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.utils.ExceptionUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.FeaturedSearchResultViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
+import com.kickstarter.ui.viewholders.PopularSearchViewHolder;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 
 import java.util.Collections;
@@ -31,9 +31,9 @@ public final class SearchAdapter extends KSAdapter {
     clearSections();
 
     if (newProjects.size() > 0) {
-      this.setSection(SECTION_POPULAR_TITLE, Collections.singletonList(null));
-      this.setSection(SECTION_FEATURED_PROJECT, Collections.singletonList(newProjects.get(0)));
-      this.setSection(SECTION_PROJECT, newProjects.subList(1, newProjects.size() - 1));
+      this.insertSection(SECTION_POPULAR_TITLE, Collections.singletonList(null));
+      this.insertSection(SECTION_FEATURED_PROJECT, Collections.singletonList(newProjects.get(0)));
+      this.insertSection(SECTION_PROJECT, newProjects.subList(1, newProjects.size() - 1));
     }
 
     notifyDataSetChanged();
@@ -43,9 +43,9 @@ public final class SearchAdapter extends KSAdapter {
     clearSections();
 
     if (newProjects.size() > 0) {
-      this.setSection(SECTION_POPULAR_TITLE, Collections.emptyList());
-      this.setSection(SECTION_FEATURED_PROJECT, Collections.singletonList(newProjects.get(0)));
-      this.setSection(SECTION_PROJECT, newProjects.subList(1, newProjects.size() - 1));
+      this.insertSection(SECTION_POPULAR_TITLE, Collections.emptyList());
+      this.insertSection(SECTION_FEATURED_PROJECT, Collections.singletonList(newProjects.get(0)));
+      this.insertSection(SECTION_PROJECT, newProjects.subList(1, newProjects.size() - 1));
     }
 
     notifyDataSetChanged();
@@ -54,8 +54,7 @@ public final class SearchAdapter extends KSAdapter {
   protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
     switch (sectionRow.section()) {
       case SECTION_POPULAR_TITLE:
-        // TODO: create a popular_search_title_view layout that holds just the "Most popular" text view
-        return 0;//R.layout.featured_search_result_view;
+        return R.layout.search_popular;
       case SECTION_FEATURED_PROJECT:
         return R.layout.featured_search_result_view;
       case SECTION_PROJECT:
@@ -67,9 +66,8 @@ public final class SearchAdapter extends KSAdapter {
 
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch (layout) {
-      case 0:
-        // TODO: create a popular search title view holder
-        return null;//R.layout.featured_search_result_view;
+      case R.layout.search_popular:
+        return new PopularSearchViewHolder(view);
       case R.layout.featured_search_result_view:
         return new FeaturedSearchResultViewHolder(view, delegate);
       case R.layout.project_search_result_view:

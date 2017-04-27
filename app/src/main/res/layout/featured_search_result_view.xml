@@ -9,15 +9,7 @@
   android:paddingLeft="@dimen/feed_padding_x"
   android:paddingRight="@dimen/feed_padding_x"
   android:paddingStart="@dimen/feed_padding_x"
-  android:paddingTop="@dimen/grid_new_2"
   xmlns:card_view="http://schemas.android.com/apk/res-auto">
-
-  <TextView
-    android:id="@+id/search_term_text_view"
-    style="@style/Headline"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    tools:text="@string/search_most_popular" />
 
   <android.support.v7.widget.CardView
     android:layout_marginTop="@dimen/grid_new_2"

@@ -148,23 +148,21 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .compose(bindToLifecycle())
       .subscribe(commentsData::onNext);
 
-    final Observable<Boolean> userIsCreator = Observable.combineLatest(
-      currentUser.observable(),
-      project,
+    final Observable<Boolean> currentUserIsCreator = Observable.combineLatest(
+      currentUser.loggedInUser(),
+      project.map(Project::creator),
       Pair::create
     )
-      .map(up -> up.first.id() == up.second.creator().id());
-
-
+      .map(userAndCreator -> userAndCreator.first.id() == userAndCreator.second.id());
 
     Observable.combineLatest(
-      userIsCreator,
+      currentUserIsCreator,
       project.map(Project::isBacking),
-      (isCreator, isBacking) -> isCreator || isBacking
+      (isCreator, isBacking) -> !(isCreator || isBacking)
     )
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(showCommentButton::onNext);
+      .subscribe(commentButtonHidden::onNext);
 
     postedComment
       .compose(ignoreValues())
@@ -275,7 +273,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
   private final BehaviorSubject<Void> dismissCommentDialog = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> enablePostButton = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> isFetchingComments = BehaviorSubject.create();
-  private final BehaviorSubject<Boolean> showCommentButton = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> commentButtonHidden = BehaviorSubject.create();
   private final BehaviorSubject<Pair<Project, Boolean>> showCommentDialog = BehaviorSubject.create();
   private final PublishSubject<Void> showCommentPostedToast = PublishSubject.create();
   private final PublishSubject<ErrorEnvelope> showPostCommentErrorToast = PublishSubject.create();
@@ -320,8 +318,8 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
   @Override public @NonNull Observable<Boolean> isFetchingComments() {
     return isFetchingComments;
   }
-  @Override public @NonNull Observable<Boolean> showCommentButton() {
-    return showCommentButton;
+  @Override public @NonNull Observable<Boolean> commentButtonHidden() {
+    return commentButtonHidden;
   }
   @Override public @NonNull Observable<Pair<Project, Boolean>> showCommentDialog() {
     return showCommentDialog;

@@ -141,7 +141,10 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_postCommentFlow() {
-    final CommentsViewModel vm = new CommentsViewModel(environment());
+    final CommentsViewModel vm = new CommentsViewModel(
+      environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build()
+    );
+
     final Project project = ProjectFactory.backedProject();
 
     final TestSubscriber<Void> showCommentPostedToastTest = new TestSubscriber<>();
@@ -153,8 +156,8 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> postButtonIsEnabledTest = new TestSubscriber<>();
     vm.outputs.enablePostButton().subscribe(postButtonIsEnabledTest);
 
-    final TestSubscriber<Boolean> showCommentButtonTest = new TestSubscriber<>();
-    vm.outputs.showCommentButton().subscribe(showCommentButtonTest);
+    final TestSubscriber<Boolean> commentButtonHidden = new TestSubscriber<>();
+    vm.outputs.commentButtonHidden().subscribe(commentButtonHidden);
 
     final TestSubscriber<Pair<Project, Boolean>> showCommentDialogTest = new TestSubscriber<>();
     vm.outputs.showCommentDialog().subscribe(showCommentDialogTest);
@@ -164,7 +167,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
     koalaTest.assertValues(KoalaEvent.VIEWED_COMMENTS, KoalaEvent.PROJECT_COMMENT_VIEW);
 
     // Comment button should be shown.
-    showCommentButtonTest.assertValue(true);
+    commentButtonHidden.assertValue(false);
 
     // Click comment button. Comment dialog should be shown.
     vm.inputs.commentButtonClicked();
@@ -192,13 +195,8 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_loggedOutShowDialogFlow() {
-    final CurrentUserType currentUser = new MockCurrentUser();
-
-    final Environment environment = environment().toBuilder()
-      .currentUser(currentUser)
-      .build();
-
-    final CommentsViewModel vm = new CommentsViewModel(environment);
+    final CurrentUserType currentUser = new MockCurrentUser(UserFactory.user());
+    final CommentsViewModel vm = new CommentsViewModel(environment().toBuilder().currentUser(currentUser).build());
 
     final Project project = ProjectFactory.backedProject();
 
@@ -220,41 +218,68 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentsViewModel_commentButtonHidden() {
-    final CommentsViewModel vm = new CommentsViewModel(environment());
-    final Project project = ProjectFactory.project().toBuilder().isBacking(false).build();
+  public void testCommentsViewModel_showCommentButton_isBacking() {
+    final CommentsViewModel vm = new CommentsViewModel(
+      environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build()
+    );
 
-    final TestSubscriber<Boolean> showCommentButtonTest = new TestSubscriber<>();
-    vm.outputs.showCommentButton().subscribe(showCommentButtonTest);
+    final TestSubscriber<Boolean> commentButtonHidden = new TestSubscriber<>();
+    vm.outputs.commentButtonHidden().subscribe(commentButtonHidden);
 
-    // Start the view model with a project.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    // Start the view model with a backed project.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()));
 
-    // Comment button should not be shown if not backing.
-    showCommentButtonTest.assertValue(false);
+    // The comment button should be shown to backer.
+    commentButtonHidden.assertValue(false);
   }
 
   @Test
-  public void testCommentsViewModel_commentButtonShown() {
+  public void testCommentsViewModel_commentButtonShown_isCreator() {
     final User currentUser = UserFactory.user().toBuilder().id(1234).build();
-    final Project project = ProjectFactory.project().toBuilder().isBacking(false).build();
 
-    final MockApiClient mockApiClient = new MockApiClient() {
-      @Override public @NonNull Observable<User> fetchCurrentUser() {
-        return Observable.just(currentUser);
-      }
-    };
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .creator(currentUser)
+      .isBacking(false)
+      .build();
 
-    final CommentsViewModel vm = new CommentsViewModel(environment().toBuilder().apiClient(mockApiClient).build());
+    final CommentsViewModel vm = new CommentsViewModel(
+      environment().toBuilder().currentUser(new MockCurrentUser(currentUser)).build()
+    );
 
-    final TestSubscriber<Boolean> showCommentButtonTest = new TestSubscriber<>();
-    vm.outputs.showCommentButton().subscribe(showCommentButtonTest);
+    final TestSubscriber<Boolean> commentButtonHidden = new TestSubscriber<>();
+    vm.outputs.commentButtonHidden().subscribe(commentButtonHidden);
 
     // Start the view model with a project.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     // Comment button is shown for the creator.
-    showCommentButtonTest.assertValues(true);
+    commentButtonHidden.assertValues(false);
+  }
+
+  @Test
+  public void testCommentsViewModel_commentButtonHidden_notBackingNotCreator() {
+    final User creator = UserFactory.creator().toBuilder().id(222).build();
+    final User currentUser = UserFactory.user().toBuilder().id(111).build();
+
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .creator(creator)
+      .isBacking(false)
+      .build();
+
+    final CommentsViewModel vm = new CommentsViewModel(
+      environment().toBuilder().currentUser(new MockCurrentUser(currentUser)).build()
+    );
+
+    final TestSubscriber<Boolean> commentButtonHidden = new TestSubscriber<>();
+    vm.outputs.commentButtonHidden().subscribe(commentButtonHidden);
+
+    // Start the view model with a project.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    // Comment button should be hidden if not backing and not creator.
+    commentButtonHidden.assertValue(true);
   }
 
   @Test
@@ -295,20 +320,6 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
     vm.inputs.commentBodyChanged("Hello");
     currentCommentBodyTest.assertValues("Hello");
-  }
-
-  @Test
-  public void testCommentsViewModel_showCommentButton() {
-    final CommentsViewModel vm = new CommentsViewModel(environment());
-
-    final TestSubscriber<Boolean> showCommentButtonTest = new TestSubscriber<>();
-    vm.outputs.showCommentButton().subscribe(showCommentButtonTest);
-
-    // Start the view model with a backed project.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()));
-
-    // The comment button should be shown to backer.
-    showCommentButtonTest.assertValue(true);
   }
 
   @Test

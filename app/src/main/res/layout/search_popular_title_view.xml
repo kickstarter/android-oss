@@ -5,10 +5,10 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:paddingLeft="@dimen/feed_padding_x"
-  android:paddingStart="@dimen/feed_padding_x"
-  android:paddingEnd="@dimen/feed_padding_x"
-  android:paddingRight="@dimen/feed_padding_x"
+  android:paddingLeft="@dimen/search_padding_x"
+  android:paddingStart="@dimen/search_padding_x"
+  android:paddingEnd="@dimen/search_padding_x"
+  android:paddingRight="@dimen/search_padding_x"
   android:paddingTop="@dimen/grid_new_2">
 
   <TextView

@@ -16,8 +16,6 @@ public class PopularSearchTitleViewHolder extends KSViewHolder {
   @Bind(R.id.search_term_text_view) TextView termTextView;
   @BindString(R.string.search_most_popular) String mostPopularString;
 
-  @BindString(R.string.search_stats) String searchStatsString;
-
   public PopularSearchTitleViewHolder(final @NonNull View view) {
     super(view);
     ButterKnife.bind(this, view);
@@ -25,7 +23,7 @@ public class PopularSearchTitleViewHolder extends KSViewHolder {
   }
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    // no data to bind, this viewholder is just a static title
+    // no data to bind, this ViewHolder is just a static title
   }
 }
 

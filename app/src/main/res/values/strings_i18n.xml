@@ -1162,8 +1162,7 @@ saved</string>
   <string name="rewards_title_about_amount_usd" formatted="false">About %{reward_amount} USD</string>
   <string name="rewards_title_pledge_reward_currency_or_more" formatted="false">Pledge %{reward_currency} or more</string>
   <string name="search_by_creator" formatted="false">by %{creator_name}</string>
-  <string name="search_most_popular" formatted="false">Popular Projects</string>
-  <string name="search_stats" formatted="false"><![CDATA[<font size="12sp" color="%{color}">%{percent_funded}%</font> funded <strong>%{days_to_go}</strong> days to go]]></string>
+  <string name="search_most_popular" formatted="false">Most Popular</string>
   <string name="seconds" formatted="false">seconds</string>
   <string name="signup_button" formatted="false">Sign up</string>
   <string name="signup_button_email" formatted="false">Sign up with email</string>

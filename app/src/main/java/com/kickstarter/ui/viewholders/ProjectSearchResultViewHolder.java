@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Html;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,11 +28,15 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
 
   protected final Delegate delegate;
 
-  @Bind(R.id.project_stats_text_view) TextView projectStatsTextView;
   @Bind(R.id.project_name_text_view) TextView projectNameTextView;
   @Bind(R.id.project_image_view) ImageView projectImageView;
+  @Bind(R.id.project_stats_text_view_pct_complete_data) TextView projectStatsPctCompleteDataTextView;
+  @Bind(R.id.project_stats_text_view_pct_complete_string) TextView projectStatsPctCompleteStringTextView;
+  @Bind(R.id.project_stats_text_view_days_to_go_data) TextView projectStatsToGoDataTextView;
+  @Bind(R.id.project_stats_text_view_days_to_go_string) TextView projectStatsToGoStringTextView;
 
-  @BindString(R.string.search_stats) String searchStatsString;
+  @BindString(R.string.discovery_baseball_card_stats_funded) String fundedString;
+  @BindString(R.string.discovery_baseball_card_time_left_to_go) String toGoString;
 
   protected @Inject KSString ksString;
 
@@ -69,6 +72,9 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(project -> this.delegate.projectSearchResultClick(this, project));
+
+    projectStatsPctCompleteStringTextView.setText(" " + fundedString + " ");
+    projectStatsToGoStringTextView.setText(" " + ksString.format(toGoString, "time_left", ""));
   }
 
   @Override
@@ -85,12 +91,8 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
   }
 
   void setProjectStats(final Pair<Integer, Integer> stats) {
-    final String html = ksString.format(this.searchStatsString,
-      "percent_funded", String.valueOf(stats.first),
-      "days_to_go", String.valueOf(stats.second),
-      "color", "#" + Integer.toHexString(context().getResources().getColor(R.color.green)).substring(2));
-
-    this.projectStatsTextView.setText(Html.fromHtml(html));
+    this.projectStatsToGoDataTextView.setText(String.valueOf(stats.second));
+    this.projectStatsPctCompleteDataTextView.setText(String.valueOf(stats.first+"%"));
   }
 
   @Override

@@ -53,6 +53,11 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
 
+    this.viewModel.outputs.notifyDelegateOfResultClick()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(project -> this.delegate.projectSearchResultClick(this, project));
+
     this.viewModel.outputs.projectImage()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -67,11 +72,6 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setProjectStats);
-
-    this.viewModel.outputs.notifyDelegateOfResultClick()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(project -> this.delegate.projectSearchResultClick(this, project));
 
     projectStatsPctCompleteStringTextView.setText(String.format(" %s ", fundedString));
     projectStatsToGoStringTextView.setText(String.format(" %s ", ksString.format(toGoString, "time_left", "")));

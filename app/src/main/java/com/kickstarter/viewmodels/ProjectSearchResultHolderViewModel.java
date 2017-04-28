@@ -6,7 +6,6 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
@@ -15,6 +14,8 @@ import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface ProjectSearchResultHolderViewModel {
 
@@ -73,7 +74,7 @@ public interface ProjectSearchResultHolderViewModel {
 
       this.configData
         .map(data -> data.project)
-        .compose(Transformers.takeWhen(this.onClick))
+        .compose(takeWhen(this.onClick))
         .subscribe(this.notifyDelegateOfResultClick);
     }
 
@@ -96,17 +97,17 @@ public interface ProjectSearchResultHolderViewModel {
     public final ProjectSearchResultHolderViewModel.Inputs inputs = this;
     public final ProjectSearchResultHolderViewModel.Outputs outputs = this;
 
-    @Override  public Observable<Project> notifyDelegateOfResultClick() {
+    @Override public Observable<Project> notifyDelegateOfResultClick() {
       return this.notifyDelegateOfResultClick;
     }
     @Override public Observable<String> projectImage() {
-      return projectImage;
+      return this.projectImage;
     }
     @Override public Observable<String> projectName() {
-      return projectName;
+      return this.projectName;
     }
     @Override public Observable<Pair<Integer, Integer>> projectStats() {
-      return projectStats;
+      return this.projectStats;
     }
 
     private static @Nullable String projectImage(final @NonNull Data data) {

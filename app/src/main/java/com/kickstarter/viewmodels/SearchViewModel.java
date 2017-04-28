@@ -7,7 +7,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.Project;
@@ -23,6 +22,8 @@ import rx.Observable;
 import rx.Scheduler;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 
 public interface SearchViewModel {
 
@@ -89,7 +90,7 @@ public interface SearchViewModel {
         });
 
       params
-        .compose(Transformers.takePairWhen(paginator.paginatedData()))
+        .compose(takePairWhen(paginator.paginatedData()))
         .compose(bindToLifecycle())
         .subscribe(paramsAndProjects -> {
           if (paramsAndProjects.first.sort() == defaultSort) {
@@ -113,7 +114,8 @@ public interface SearchViewModel {
       );
 
       Observable.combineLatest(search, projects, Pair::create)
-        .compose(Transformers.takePairWhen(this.tappedProject))
+        .compose(bindToLifecycle())
+        .compose(takePairWhen(this.tappedProject))
         .map(searchTermAndProjectsAndTappedProject -> {
           final String searchTerm = searchTermAndProjectsAndTappedProject.first.first;
           final List<Project> currentProjects = searchTermAndProjectsAndTappedProject.first.second;
@@ -132,7 +134,7 @@ public interface SearchViewModel {
         .subscribe(this.goToProject);
 
       query
-        .compose(Transformers.takePairWhen(pageCount))
+        .compose(takePairWhen(pageCount))
         .filter(qp -> StringUtils.isPresent(qp.first))
         .compose(bindToLifecycle())
         .subscribe(qp -> this.koala.trackSearchResults(qp.first, qp.second));
@@ -162,15 +164,14 @@ public interface SearchViewModel {
       this.tappedProject.onNext(project);
     }
 
+    @Override public Observable<Pair<Project, RefTag>> goToProject() {
+      return this.goToProject;
+    }
     @Override public Observable<List<Project>> popularProjects() {
       return this.popularProjects;
     }
     @Override public Observable<List<Project>> searchProjects() {
       return this.searchProjects;
-    }
-
-    @Override public Observable<Pair<Project, RefTag>> goToProject() {
-      return this.goToProject;
     }
   }
 }

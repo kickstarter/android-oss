@@ -6,9 +6,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.KSString;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -20,8 +17,6 @@ public class PopularSearchTitleViewHolder extends KSViewHolder {
   @BindString(R.string.search_most_popular) String mostPopularString;
 
   @BindString(R.string.search_stats) String searchStatsString;
-
-  protected @Inject KSString ksString;
 
   public PopularSearchTitleViewHolder(final @NonNull View view) {
     super(view);

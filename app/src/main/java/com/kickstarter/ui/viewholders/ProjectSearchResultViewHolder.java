@@ -70,7 +70,6 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
       .subscribe(this::setProjectStats);
 
     projectStatsPctCompleteStringTextView.setText(String.format(" %s  ", fundedString));
-    projectStatsToGoStringTextView.setText(String.format("%s", ksString.format(toGoString, "time_left", "")));
   }
 
   @Override
@@ -87,8 +86,14 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
   }
 
   void setProjectStats(final Pair<Integer, Integer> stats) {
-    this.projectStatsToGoDataTextView.setText(String.valueOf(stats.second));
+    final int daysToGo = stats.second;
+    this.projectStatsToGoDataTextView.setText(String.valueOf(daysToGo));
     this.projectStatsPctCompleteDataTextView.setText(String.valueOf(stats.first+"%"));
+    this.projectStatsToGoStringTextView.setText(
+      String.format(" %s%s ",
+        ksString.format("days", daysToGo),
+        ksString.format(toGoString, "time_left", ""))
+    );
   }
 
   @Override

@@ -688,7 +688,12 @@ Veuillez réessayer ultérieurement.</string>
   <string name="dates_time_seconds_two" formatted="false">2 s</string>
   <string name="dates_time_seconds_zero" formatted="false">0 s</string>
   <string name="dates_yesterday" formatted="false">hier</string>
-  <string name="days" formatted="false">jours</string>
+  <string name="days_few" formatted="false">days</string>
+  <string name="days_many" formatted="false">days</string>
+  <string name="days_one" formatted="false">day</string>
+  <string name="days_plural" formatted="false">days</string>
+  <string name="days_two" formatted="false">days</string>
+  <string name="days_zero" formatted="false">days</string>
   <string name="discovery_accessibility_buttons_sort_hint" formatted="false">Modifie le tri.</string>
   <string name="discovery_accessibility_buttons_sort_label" formatted="false">Trier par %{sort}</string>
   <string name="discovery_accessibility_live_project_count" formatted="false">Projets en cours</string>
@@ -840,7 +845,12 @@ Veuillez réessayer ultérieurement.</string>
   <string name="general_social_buttons_connect_with_twitter" formatted="false">Connexion Twitter</string>
   <string name="general_switch_toggle_off" formatted="false">OFF</string>
   <string name="general_switch_toggle_on" formatted="false">ON</string>
-  <string name="hours" formatted="false">heures</string>
+  <string name="hours_few" formatted="false">hours</string>
+  <string name="hours_many" formatted="false">hours</string>
+  <string name="hours_one" formatted="false">hour</string>
+  <string name="hours_plural" formatted="false">hours</string>
+  <string name="hours_two" formatted="false">hours</string>
+  <string name="hours_zero" formatted="false">hours</string>
   <string name="invalid_api_client_alert_cancel" formatted="false">Annuler</string>
   <string name="invalid_api_client_alert_message" formatted="false">On dirait que vous utilisez une ancienne version de l\'application. Veuillez la mettre à jour depuis l\'App Store pour continuer à l\'utiliser.</string>
   <string name="invalid_api_client_alert_title" formatted="false">Veuillez mettre à jour</string>
@@ -918,7 +928,12 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="messages_navigation_sent" formatted="false">Envoyé</string>
   <string name="messages_search_placeholder_search_messages" formatted="false">Rechercher</string>
   <string name="messages_sent_date" formatted="false">envoyé le %{sent_date}</string>
-  <string name="minutes" formatted="false">minutes</string>
+  <string name="minutes_few" formatted="false">minutes</string>
+  <string name="minutes_many" formatted="false">minutes</string>
+  <string name="minutes_one" formatted="false">minute</string>
+  <string name="minutes_plural" formatted="false">minutes</string>
+  <string name="minutes_two" formatted="false">minutes</string>
+  <string name="minutes_zero" formatted="false">minutes</string>
   <string name="percentage_funded" formatted="false">Financé à %{percentage}</string>
   <string name="plus_shipping_cost" formatted="false">+ %{shipping_cost}</string>
   <string name="profile_buttons_messages" formatted="false">Messages</string>

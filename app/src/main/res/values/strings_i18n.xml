@@ -166,7 +166,7 @@ with friends.</string>
   <string name="No_Results" formatted="false">No Results</string>
   <string name="No_comments_yet" formatted="false">No comments yet.</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">No one has posted an update yet.</string>
-  <string name="No_pledges_from_friends_yet" formatted="false">No pledges \n
+  <string name="No_pledges_from_friends_yet" formatted="false">No pledges\n
 from friends yet.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">No replay is available for this live stream.</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Once you back a project, we’ll share personalized recommendations in this space.</string>
@@ -255,7 +255,7 @@ daring ideas.</string>
   <string name="Ships_to" formatted="false">Ships to:</string>
   <string name="Shows_list_of_subcategories" formatted="false">Shows list of subcategories.</string>
   <string name="Signs_up_with_Email" formatted="false">Signs up with Email.</string>
-  <string name="Something_catch_your_eye" formatted="false">Something \n
+  <string name="Something_catch_your_eye" formatted="false">Something\n
 catch your eye?</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Something went wrong, please try again.</string>
   <string name="Starting_soon" formatted="false">Starting soon</string>
@@ -691,7 +691,12 @@ Please try again later.</string>
   <string name="dates_time_seconds_two" formatted="false">2 secs</string>
   <string name="dates_time_seconds_zero" formatted="false">0 secs</string>
   <string name="dates_yesterday" formatted="false">yesterday</string>
-  <string name="days" formatted="false">days</string>
+  <string name="days_few" formatted="false">days</string>
+  <string name="days_many" formatted="false">days</string>
+  <string name="days_one" formatted="false">day</string>
+  <string name="days_plural" formatted="false">days</string>
+  <string name="days_two" formatted="false">days</string>
+  <string name="days_zero" formatted="false">days</string>
   <string name="discovery_accessibility_buttons_sort_hint" formatted="false">Changes sort.</string>
   <string name="discovery_accessibility_buttons_sort_label" formatted="false">Sort by %{sort}</string>
   <string name="discovery_accessibility_live_project_count" formatted="false">Live projects</string>
@@ -843,7 +848,12 @@ Please try again later.</string>
   <string name="general_social_buttons_connect_with_twitter" formatted="false">Connect with Twitter</string>
   <string name="general_switch_toggle_off" formatted="false">OFF</string>
   <string name="general_switch_toggle_on" formatted="false">ON</string>
-  <string name="hours" formatted="false">hours</string>
+  <string name="hours_few" formatted="false">hours</string>
+  <string name="hours_many" formatted="false">hours</string>
+  <string name="hours_one" formatted="false">hour</string>
+  <string name="hours_plural" formatted="false">hours</string>
+  <string name="hours_two" formatted="false">hours</string>
+  <string name="hours_zero" formatted="false">hours</string>
   <string name="invalid_api_client_alert_cancel" formatted="false">Cancel</string>
   <string name="invalid_api_client_alert_message" formatted="false">You seem to be using a really old version of the app. Please upgrade from the App Store to continue using.</string>
   <string name="invalid_api_client_alert_title" formatted="false">Please Upgrade</string>
@@ -921,7 +931,12 @@ This is commonly fixed by going to iOS Settings > Facebook and toggling access f
   <string name="messages_navigation_sent" formatted="false">Sent</string>
   <string name="messages_search_placeholder_search_messages" formatted="false">Search messages</string>
   <string name="messages_sent_date" formatted="false">sent %{sent_date}</string>
-  <string name="minutes" formatted="false">minutes</string>
+  <string name="minutes_few" formatted="false">minutes</string>
+  <string name="minutes_many" formatted="false">minutes</string>
+  <string name="minutes_one" formatted="false">minute</string>
+  <string name="minutes_plural" formatted="false">minutes</string>
+  <string name="minutes_two" formatted="false">minutes</string>
+  <string name="minutes_zero" formatted="false">minutes</string>
   <string name="percentage_funded" formatted="false">%{percentage} funded</string>
   <string name="plus_shipping_cost" formatted="false">+%{shipping_cost}</string>
   <string name="profile_buttons_messages" formatted="false">Messages</string>

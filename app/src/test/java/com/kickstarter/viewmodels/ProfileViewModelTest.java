@@ -189,22 +189,6 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
   public void testProfileViewModel_MessagesButton_EnabledFeature() {
     final Config config = ConfigFactory.config()
       .toBuilder()
-      .features(Collections.singletonMap(FeatureKey.ANDROID_MESSAGES, false))
-      .build();
-
-    final MockCurrentConfig currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
-    setUpEnvironment(environment().toBuilder().currentConfig(currentConfig).build());
-
-    // Messages button hidden for config with disabled feature flag.
-    this.messagesButtonHidden.assertValues(true);
-  }
-
-  @Test
-  public void testProfileViewModel_MessagesButton_DisabledFeature() {
-    final Config config = ConfigFactory.config()
-      .toBuilder()
       .features(Collections.singletonMap(FeatureKey.ANDROID_MESSAGES, true))
       .build();
 
@@ -229,8 +213,8 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
 
     setUpEnvironment(environment().toBuilder().currentConfig(currentConfig).build());
 
-    // Messages button shown for config with missing feature flag.
-    this.messagesButtonHidden.assertValues(false);
+    // Messages button hidden for config with missing feature flag.
+    this.messagesButtonHidden.assertValues(true);
   }
 
   @Test

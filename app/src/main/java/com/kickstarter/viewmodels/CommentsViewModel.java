@@ -51,9 +51,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
 
     final Observable<User> currentUser = Observable.merge(
       this.currentUser.observable(),
-      this.currentUser.observable()
-        .compose(takeWhen(this.loginSuccess))
-        .flatMap(__ -> this.client.fetchCurrentUser().compose(neverError())).share()
+      this.loginSuccess.flatMap(__ -> this.client.fetchCurrentUser().compose(neverError())).share()
     );
 
     final Observable<Either<Project, Update>> projectOrUpdate = intent()
@@ -118,19 +116,16 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
 
     final Observable<List<Comment>> comments = paginator.paginatedData().share();
 
-    final Observable<Boolean> currentUserIsCreator = Observable.combineLatest(
+    final Observable<Boolean> userCanComment = Observable.combineLatest(
       currentUser,
-      project.map(Project::creator),
+      project,
       Pair::create
     )
-      .map(userAndCreator -> userAndCreator.first != null && userAndCreator.first.id() == userAndCreator.second.id());
-
-    final Observable<Boolean> userCanComment = Observable.combineLatest(
-      currentUserIsCreator,
-      project.map(Project::isBacking),
-      (isCreator, isBacking) ->
-        isCreator || isBacking
-    );
+      .map(userAndProject -> {
+        final User creator = userAndProject.second.creator();
+        final boolean currentUserIsCreator = userAndProject.first != null && userAndProject.first.id() == creator.id();
+        return currentUserIsCreator || userAndProject.second.isBacking();
+      });
 
     final Observable<Project> commentableProject = Observable.combineLatest(
       project,

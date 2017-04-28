@@ -73,8 +73,8 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(project -> this.delegate.projectSearchResultClick(this, project));
 
-    projectStatsPctCompleteStringTextView.setText(" " + fundedString + " ");
-    projectStatsToGoStringTextView.setText(" " + ksString.format(toGoString, "time_left", ""));
+    projectStatsPctCompleteStringTextView.setText(String.format(" %s ", fundedString));
+    projectStatsToGoStringTextView.setText(String.format(" %s ", ksString.format(toGoString, "time_left", "")));
   }
 
   @Override

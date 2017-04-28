@@ -36,11 +36,16 @@
     <!-- TODO: This implementation is temporary until our i18n system can handle CDATA -->
     <LinearLayout
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       android:layout_marginBottom="@dimen/grid_new_1"
       android:layout_gravity="bottom"
       android:gravity="bottom"
       android:orientation="vertical">
+
+      <View
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
       <TextView
         android:id="@+id/project_name_text_view"

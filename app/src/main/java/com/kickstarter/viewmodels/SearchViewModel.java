@@ -86,7 +86,7 @@ public interface SearchViewModel {
         .compose(bindToLifecycle())
         .subscribe(__ -> {
           this.searchProjects.onNext(ListUtils.empty());
-          this.koala.trackSearchCleared();
+          this.koala.trackClearedSearchTerm();
         });
 
       params

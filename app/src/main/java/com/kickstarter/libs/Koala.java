@@ -181,6 +181,7 @@ public final class Koala {
   // SEARCH
   public void trackSearchView() {
     client.track(KoalaEvent.VIEWED_SEARCH);
+    // deprecated
     client.track(KoalaEvent.DISCOVER_SEARCH_LEGACY);
   }
 
@@ -192,6 +193,7 @@ public final class Koala {
         }
       };
       client.track(KoalaEvent.LOADED_SEARCH_RESULTS, params);
+      // deprecated
       client.track(KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY, params);
     } else {
       final Map<String, Object> params = new HashMap<String, Object>() {
@@ -201,11 +203,12 @@ public final class Koala {
         }
       };
       client.track(KoalaEvent.LOADED_MORE_SEARCH_RESULTS, params);
+      // deprecated
       client.track(KoalaEvent.DISCOVER_SEARCH_RESULTS_LOAD_MORE_LEGACY, params);
     }
   }
 
-  public void trackSearchCleared() {
+  public void trackClearedSearchTerm() {
     client.track(KoalaEvent.CLEARED_SEARCH_TERM);
   }
 
@@ -452,5 +455,4 @@ public final class Koala {
 
     client.track(KoalaEvent.OPENED_EXTERNAL_LINK, props);
   }
-
 }

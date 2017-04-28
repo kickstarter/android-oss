@@ -7,15 +7,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel;
 import com.squareup.picasso.Picasso;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -27,6 +24,7 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
   private final ProjectSearchResultHolderViewModel.ViewModel viewModel;
 
   protected final Delegate delegate;
+  private final KSString ksString;
 
   @Bind(R.id.project_name_text_view) TextView projectNameTextView;
   @Bind(R.id.project_image_view) ImageView projectImageView;
@@ -38,8 +36,6 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
   @BindString(R.string.discovery_baseball_card_stats_funded) String fundedString;
   @BindString(R.string.discovery_baseball_card_time_left_to_go) String toGoString;
 
-  protected @Inject KSString ksString;
-
   public interface Delegate {
     void projectSearchResultClick(ProjectSearchResultViewHolder viewHolder, Project project);
   }
@@ -49,8 +45,8 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
 
     this.viewModel = new ProjectSearchResultHolderViewModel.ViewModel(environment());
     this.delegate = delegate;
+    this.ksString = environment().ksString();
 
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
 
     this.viewModel.outputs.notifyDelegateOfResultClick()
@@ -73,8 +69,8 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::setProjectStats);
 
-    projectStatsPctCompleteStringTextView.setText(String.format(" %s ", fundedString));
-    projectStatsToGoStringTextView.setText(String.format(" %s ", ksString.format(toGoString, "time_left", "")));
+    projectStatsPctCompleteStringTextView.setText(String.format(" %s  ", fundedString));
+    projectStatsToGoStringTextView.setText(String.format("%s", ksString.format(toGoString, "time_left", "")));
   }
 
   @Override

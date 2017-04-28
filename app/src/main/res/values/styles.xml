@@ -335,10 +335,6 @@
     <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
   </style>
 
-  <style name="BodyGreen" parent="BodyPrimary">
-    <item name="android:textColor">@color/green</item>
-  </style>
-
   <style name="SubheadPrimary" parent="TextPrimary">
     <item name="android:textSize">@dimen/subhead</item>
     <item name="android:lineSpacingExtra">@dimen/subhead_line_spacing_extra</item>
@@ -371,10 +367,6 @@
   <style name="EditorialSubheadMedium" parent="TextPrimary">
     <item name="android:textSize">@dimen/editorial_subhead</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
-  </style>
-
-  <style name="SearchHeading" parent="TextSecondary">
-    <item name="android:textSize">@dimen/caption</item>
   </style>
 
   <!-- Cards -->

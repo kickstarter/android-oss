@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.BuildConfig;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 import java.util.Locale;
 
 public final class Build {
@@ -16,6 +19,10 @@ public final class Build {
 
   public @NonNull String applicationId() {
     return packageInfo.packageName;
+  }
+
+  public DateTime dateTime() {
+    return new DateTime(BuildConfig.BUILD_DATE, DateTimeZone.UTC).withZone(DateTimeZone.getDefault());
   }
 
   public static boolean isInternal() {
@@ -38,6 +45,10 @@ public final class Build {
    */
   public boolean isRelease() {
     return !BuildConfig.DEBUG;
+  }
+
+  public String sha() {
+    return BuildConfig.GIT_SHA;
   }
 
   public Integer versionCode() {

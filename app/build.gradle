@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'hu.supercluster.paperwork'
 apply from: 'quality.gradle'
 
 def externalPrivateVersion = new File(project.rootDir.path + "/app/external_version_code.txt").text.trim().toInteger()
@@ -19,15 +18,6 @@ if (file('signing.gradle').exists()) {
     apply from: 'signing.gradle'
 }
 
-// Paperwork caches build config items in app/src/main/assets/paperwork.json
-// And speeds up the build considerably (20x faster)
-paperwork {
-    set = [
-            GIT_SHA   : gitSha(),
-            BUILD_DATE: buildTime("yyyy-MM-dd'T'HH:mm:ss'Z'", "UTC")
-    ]
-}
-
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
@@ -37,6 +27,9 @@ android {
         minSdkVersion 17
         targetSdkVersion 25
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "GIT_SHA", "\"${commitSha()}\""
+        buildConfigField "String", "BUILD_DATE", "\"${commitTime()}\""
 
         // Enable Multidex to support over 65K methods
         multiDexEnabled true
@@ -177,7 +170,6 @@ dependencies {
     compile 'net.hockeyapp.android:HockeySDK:3.6.1'
     compile 'org.jsoup:jsoup:1.8.2'
     compile "com.mixpanel.android:mixpanel-android:4.6.4"
-    compile 'hu.supercluster:paperwork:1.2.7'
 
     // Testing
     testCompile 'junit:junit:4.12'
@@ -190,6 +182,34 @@ dependencies {
     androidTestCompile 'com.android.support.test:rules:0.5'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support:support-annotations:25.1.0'
+}
+
+def commitSha() {
+    def file = new File(project.buildDir, "commit-sha.txt")
+    if (file.exists()) {
+        return file.text
+    }
+
+    def value = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+
+    file.parentFile.mkdirs()
+    file.text = value
+    return value
+}
+
+def commitTime() {
+    def file = new File(project.buildDir, "commit-timestamp.txt")
+    if (file.exists()) {
+        return file.text
+    }
+
+    def date = new Date()
+    // TODO: upgrade gradle and use `getHeadGitCommit.date` instead
+    def value = date.format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
+
+    file.parentFile.mkdirs()
+    file.text = value
+    return value
 }
 
 buildscript {

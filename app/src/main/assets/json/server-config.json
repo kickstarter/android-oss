@@ -7556,7 +7556,6 @@
     "huzza": true,
     "view_prototype_gallery": true,
     "edit_prototype_gallery": true,
-    "fullstory": true,
     "huzza_creator_integration": true,
     "huzza_new_design": true,
     "sassy_classifier": true,
@@ -7734,11 +7733,11 @@
     }
   ],
   "ab_experiments": {
-    "backer_conf_cta_color": "green",
-    "koala_alt_frontend_tracking": "experimental",
+    "backer_conf_cta_color": "gray",
+    "koala_alt_frontend_tracking": "control",
     "thanks_page_recs": "control",
     "project_build": "control",
-    "mobile_safari_banners": "hide_banner"
+    "mobile_safari_banners": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

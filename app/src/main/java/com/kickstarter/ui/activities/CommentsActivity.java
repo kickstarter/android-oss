@@ -10,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -115,11 +114,10 @@ public final class CommentsActivity extends BaseActivity<CommentsViewModel> impl
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(bb -> setPostButtonEnabled(bb.second, bb.first));
 
-    viewModel.outputs.showCommentButton()
-      .map(show -> show ? View.VISIBLE : View.GONE)
+    viewModel.outputs.commentButtonHidden()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(commentButtonTextView::setVisibility);
+      .subscribe(ViewUtils.setGone(this.commentButtonTextView));
 
     viewModel.outputs.showCommentDialog()
       .filter(projectAndShow -> projectAndShow != null)

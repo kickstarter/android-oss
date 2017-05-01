@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -30,6 +29,8 @@ import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.viewmodels.InternalToolsViewModel;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 
 import java.util.Arrays;
@@ -42,6 +43,7 @@ import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import hu.supercluster.paperwork.Paperwork;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
@@ -67,7 +69,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
     ((KSApplication) getApplicationContext()).component().inject(this);
 
-    setupBuildInformationSection(this);
+    setupBuildInformationSection();
   }
 
   @OnClick(R.id.push_notifications_button)
@@ -106,6 +108,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   }
 
   private void submitBugReport(final @Nullable User user) {
+    Paperwork paperwork = new Paperwork(this);
     final String email = Secrets.FIELD_REPORT_EMAIL;
 
     final List<String> debugInfo = Arrays.asList(
@@ -113,7 +116,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
       build.variant(),
       build.versionName(),
       build.versionCode().toString(),
-      build.sha(this),
+      new Paperwork(this).get("GIT_SHA"),
       Integer.toString(android.os.Build.VERSION.SDK_INT),
       android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL,
       Locale.getDefault().getLanguage()
@@ -175,12 +178,20 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   }
 
   @SuppressLint("SetTextI18n")
-  private void setupBuildInformationSection(final @NonNull Context context) {
-    buildDate.setText(build.dateTime(context).toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss aa zzz")));
-    sha.setText(build.sha(context));
+  private void setupBuildInformationSection() {
+    Paperwork paperwork = new Paperwork(this);
+    buildDate.setText(dateTime().toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss aa zzz")));
+    sha.setText(paperwork.get("GIT_SHA"));
     variant.setText(build.variant());
     versionCode.setText(build.versionCode().toString());
     versionName.setText(build.versionName());
+  }
+
+  public DateTime dateTime() {
+    return new DateTime(
+      new Paperwork(this).get("BUILD_DATE"),
+      DateTimeZone.UTC).withZone(DateTimeZone.getDefault()
+    );
   }
 
   private void setEndpointAndRelaunch(final @NonNull ApiEndpoint apiEndpoint) {

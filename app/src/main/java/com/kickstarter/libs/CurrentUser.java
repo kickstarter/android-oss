@@ -73,7 +73,7 @@ public class CurrentUser extends CurrentUserType {
   }
 
   @Override
-  public Observable<User> observable() {
+  public @NonNull Observable<User> observable() {
     return user;
   }
 }

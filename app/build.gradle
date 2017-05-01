@@ -203,8 +203,8 @@ def commitTime() {
         return file.text
     }
 
-    def date = new Date()
     // TODO: upgrade gradle and use `getHeadGitCommit.date` instead
+    def date = new Date()
     def value = date.format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
 
     file.parentFile.mkdirs()

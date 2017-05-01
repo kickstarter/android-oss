@@ -134,6 +134,7 @@ backers</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">It’s a way to bring creative projects to life.</string>
   <string name="Its_better_with_friends" formatted="false">It’s better\n
 with friends.</string>
+  <string name="Joining_the_live_stream" formatted="false">Joining the live stream</string>
   <string name="Just_for_you" formatted="false">Just for you.</string>
   <string name="Keep_reading" formatted="false">Keep reading</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Keep up with future live streams</string>
@@ -190,6 +191,7 @@ from friends yet.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Please enter an amount of %{amount} or more.</string>
   <string name="Please_log_in_or_sign_up_to_back_this_project" formatted="false">Please log in or sign up to back this project.</string>
   <string name="Please_log_in_or_sign_up_to_message_this_creator" formatted="false">Please log in or sign up to message this creator.</string>
+  <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Please log in or sign up to participate in this live stream chat.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Please log in or sign up to subscribe to this live stream.</string>
   <string name="Pledge" formatted="false">Pledge:</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Pledge any amount to help bring this project to life.</string>

@@ -34,9 +34,9 @@ public interface CommentsViewModelOutputs {
   Observable<Boolean> isFetchingComments();
 
   /**
-   * Emits a boolean that determines if the comment button should be visible.
+   * Emits a boolean that determines if the comment button should be hidden.
    */
-  Observable<Boolean> showCommentButton();
+  Observable<Boolean> commentButtonHidden();
 
   /**
    * Emits a project and boolean to determine when the comment dialog should be shown.

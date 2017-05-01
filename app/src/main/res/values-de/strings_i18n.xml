@@ -133,6 +133,7 @@ Unterstützer</string>
   <string name="Info" formatted="false">Info</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">Es ist eine Plattform, um kreative Projekte ins Leben zu rufen.</string>
   <string name="Its_better_with_friends" formatted="false">Gemeinsam mehr erreichen</string>
+  <string name="Joining_the_live_stream" formatted="false">Joining the live stream</string>
   <string name="Just_for_you" formatted="false">Nur für dich.</string>
   <string name="Keep_reading" formatted="false">Mehr lesen</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Zeitnahe Info zu zukünftigen Live-Streams</string>
@@ -188,6 +189,7 @@ Unterstützer</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Bitte gib einen Finanzierungsbeitrag von mindestens %{amount} ein.</string>
   <string name="Please_log_in_or_sign_up_to_back_this_project" formatted="false">Um dieses Projekt zu unterstützen, musst du dich bitte anmelden oder registrieren.</string>
   <string name="Please_log_in_or_sign_up_to_message_this_creator" formatted="false">Um dem Projektgründer eine Nachricht zu senden, musst du dich bitte anmelden oder registrieren.</string>
+  <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Please log in or sign up to participate in this live stream chat.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Bitte melde dich an oder registriere dich, um diesen Live-Stream zu abonnieren.</string>
   <string name="Pledge" formatted="false">Beitrag:</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Du kannst jeden beliebigen Betrag eingeben, um das Projekt zu unterstützen.</string>
@@ -687,12 +689,12 @@ Bitte versuche es später noch einmal.</string>
   <string name="dates_time_seconds_two" formatted="false">2 Sek</string>
   <string name="dates_time_seconds_zero" formatted="false">0 Sek</string>
   <string name="dates_yesterday" formatted="false">Gestern</string>
-  <string name="days_few" formatted="false">days</string>
-  <string name="days_many" formatted="false">days</string>
-  <string name="days_one" formatted="false">day</string>
-  <string name="days_plural" formatted="false">days</string>
-  <string name="days_two" formatted="false">days</string>
-  <string name="days_zero" formatted="false">days</string>
+  <string name="days_few" formatted="false">Tg</string>
+  <string name="days_many" formatted="false">Tg</string>
+  <string name="days_one" formatted="false">Tag</string>
+  <string name="days_plural" formatted="false">Tg</string>
+  <string name="days_two" formatted="false">Tg</string>
+  <string name="days_zero" formatted="false">Tg</string>
   <string name="discovery_accessibility_buttons_sort_hint" formatted="false">Sortiert Änderungen.</string>
   <string name="discovery_accessibility_buttons_sort_label" formatted="false">Sortiert nach %{sort}</string>
   <string name="discovery_accessibility_live_project_count" formatted="false">Live-Projekte</string>
@@ -844,12 +846,12 @@ Bitte versuche es später noch einmal.</string>
   <string name="general_social_buttons_connect_with_twitter" formatted="false">MIt Twitter verknüpfen</string>
   <string name="general_switch_toggle_off" formatted="false">NEIN</string>
   <string name="general_switch_toggle_on" formatted="false">JA</string>
-  <string name="hours_few" formatted="false">hours</string>
-  <string name="hours_many" formatted="false">hours</string>
-  <string name="hours_one" formatted="false">hour</string>
-  <string name="hours_plural" formatted="false">hours</string>
-  <string name="hours_two" formatted="false">hours</string>
-  <string name="hours_zero" formatted="false">hours</string>
+  <string name="hours_few" formatted="false">Std</string>
+  <string name="hours_many" formatted="false">Std</string>
+  <string name="hours_one" formatted="false">Std</string>
+  <string name="hours_plural" formatted="false">Std</string>
+  <string name="hours_two" formatted="false">Std</string>
+  <string name="hours_zero" formatted="false">Std</string>
   <string name="invalid_api_client_alert_cancel" formatted="false">Abbrechen</string>
   <string name="invalid_api_client_alert_message" formatted="false">Du scheinst eine sehr alte Version der App zu benutzen. Um fortzufahren, installiere bitte die neueste Version aus dem App Store.</string>
   <string name="invalid_api_client_alert_title" formatted="false">Bitte aktualisieren</string>
@@ -927,12 +929,12 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="messages_navigation_sent" formatted="false">Gesendet</string>
   <string name="messages_search_placeholder_search_messages" formatted="false">Nachrichten suchen</string>
   <string name="messages_sent_date" formatted="false">gesendet %{sent_date}</string>
-  <string name="minutes_few" formatted="false">minutes</string>
-  <string name="minutes_many" formatted="false">minutes</string>
-  <string name="minutes_one" formatted="false">minute</string>
-  <string name="minutes_plural" formatted="false">minutes</string>
-  <string name="minutes_two" formatted="false">minutes</string>
-  <string name="minutes_zero" formatted="false">minutes</string>
+  <string name="minutes_few" formatted="false">Min</string>
+  <string name="minutes_many" formatted="false">Min</string>
+  <string name="minutes_one" formatted="false">Min</string>
+  <string name="minutes_plural" formatted="false">Min</string>
+  <string name="minutes_two" formatted="false">Min</string>
+  <string name="minutes_zero" formatted="false">Min</string>
   <string name="percentage_funded" formatted="false">%{percentage} finanziert</string>
   <string name="plus_shipping_cost" formatted="false">+%{shipping_cost}</string>
   <string name="profile_buttons_messages" formatted="false">Nachrichten</string>

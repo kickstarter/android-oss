@@ -157,6 +157,7 @@
       "Info": "Info",
       "Its_a_way_to_bring_creative_projects_to_life": "It’s a way to bring creative projects to life.",
       "Its_better_with_friends": "It’s better\nwith friends.",
+      "Joining_the_live_stream": "Joining the live stream",
       "Just_for_you": "Just for you.",
       "Keep_reading": "Keep reading",
       "Keep_up_with_future_live_streams": "Keep up with future live streams",
@@ -223,6 +224,7 @@
       "Please_enter_an_amount_of_amount_or_more": "Please enter an amount of %{amount} or more.",
       "Please_log_in_or_sign_up_to_back_this_project": "Please log in or sign up to back this project.",
       "Please_log_in_or_sign_up_to_message_this_creator": "Please log in or sign up to message this creator.",
+      "Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat": "Please log in or sign up to participate in this live stream chat.",
       "Please_log_in_or_sign_up_to_subscribe_to_this_live_stream": "Please log in or sign up to subscribe to this live stream.",
       "Pledge": "Pledge:",
       "Pledge_any_amount_to_help_bring_this_project_to_life": "Pledge any amount to help bring this project to life.",
@@ -1956,13 +1958,13 @@
       "Creator_name_was_streaming_live_on_Kickstarter": "Der Stream von %{creator_name} war gerade live auf Kickstarter",
       "Creator_name_will_be_streaming_live_on_Kickstarter_in_duration": "%{creator_name} wird in %{in_duration} live auf Kickstarter streamen",
       "days": {
-        "zero": "days",
-        "one": "day",
-        "two": "days",
-        "few": "days",
-        "many": "days"
+        "zero": "Tg",
+        "one": "Tag",
+        "two": "Tg",
+        "few": "Tg",
+        "many": "Tg"
       },
-      "days_plural": "days",
+      "days_plural": "Tg",
       "Discover_more_projects": "Erkunde mehr Projekte.",
       "Dismiss": "Verwerfen",
       "Done": "Fertig!",
@@ -2025,17 +2027,18 @@
       "Got_it_your_survey_response_has_been_submitted": "Alles klar! Deine Antwort auf die Befragung wurde übermittelt.",
       "Home": "Home",
       "hours": {
-        "zero": "hours",
-        "one": "hour",
-        "two": "hours",
-        "few": "hours",
-        "many": "hours"
+        "zero": "Std",
+        "one": "Std",
+        "two": "Std",
+        "few": "Std",
+        "many": "Std"
       },
-      "hours_plural": "hours",
+      "hours_plural": "Std",
       "Id_just_like_to_support_the_project": "Ich möchte das Projekt einfach nur unterstützen.",
       "Info": "Info",
       "Its_a_way_to_bring_creative_projects_to_life": "Es ist eine Plattform, um kreative Projekte ins Leben zu rufen.",
       "Its_better_with_friends": "Gemeinsam mehr erreichen",
+      "Joining_the_live_stream": "Joining the live stream",
       "Just_for_you": "Nur für dich.",
       "Keep_reading": "Mehr lesen",
       "Keep_up_with_future_live_streams": "Zeitnahe Info zu zukünftigen Live-Streams",
@@ -2068,13 +2071,13 @@
       "Message_backer": "Nachricht an Unterstützer senden",
       "Message_creator": "Nachricht an Projektgründer senden",
       "minutes": {
-        "zero": "minutes",
-        "one": "minute",
-        "two": "minutes",
-        "few": "minutes",
-        "many": "minutes"
+        "zero": "Min",
+        "one": "Min",
+        "two": "Min",
+        "few": "Min",
+        "many": "Min"
       },
-      "minutes_plural": "minutes",
+      "minutes_plural": "Min",
       "No_comments_yet": "Bisher noch keine Kommentare.",
       "No_one_has_posted_an_update_yet": "Es wurden noch keine Updates gepostet.",
       "No_pledges_from_friends_yet": "Es gibt noch keine Beiträge von Freunden.",
@@ -2102,6 +2105,7 @@
       "Please_enter_an_amount_of_amount_or_more": "Bitte gib einen Finanzierungsbeitrag von mindestens %{amount} ein.",
       "Please_log_in_or_sign_up_to_back_this_project": "Um dieses Projekt zu unterstützen, musst du dich bitte anmelden oder registrieren.",
       "Please_log_in_or_sign_up_to_message_this_creator": "Um dem Projektgründer eine Nachricht zu senden, musst du dich bitte anmelden oder registrieren.",
+      "Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat": "Please log in or sign up to participate in this live stream chat.",
       "Please_log_in_or_sign_up_to_subscribe_to_this_live_stream": "Bitte melde dich an oder registriere dich, um diesen Live-Stream zu abonnieren.",
       "Pledge": "Beitrag:",
       "Pledge_any_amount_to_help_bring_this_project_to_life": "Du kannst jeden beliebigen Betrag eingeben, um das Projekt zu unterstützen.",
@@ -3835,13 +3839,13 @@
       "Creator_name_was_streaming_live_on_Kickstarter": "%{creator_name} estuvo transmitiendo en vivo en Kickstarter",
       "Creator_name_will_be_streaming_live_on_Kickstarter_in_duration": "%{creator_name} estará trasnmitiendo en vivo en Kickstarter %{in_duration}",
       "days": {
-        "zero": "days",
-        "one": "day",
-        "two": "days",
-        "few": "days",
-        "many": "days"
+        "zero": "días",
+        "one": "día",
+        "two": "días",
+        "few": "días",
+        "many": "días"
       },
-      "days_plural": "days",
+      "days_plural": "días",
       "Discover_more_projects": "Descubre más proyectos.",
       "Dismiss": "Descartar",
       "Done": "Listo",
@@ -3904,17 +3908,18 @@
       "Got_it_your_survey_response_has_been_submitted": "¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.",
       "Home": "Inicio",
       "hours": {
-        "zero": "hours",
-        "one": "hour",
-        "two": "hours",
-        "few": "hours",
-        "many": "hours"
+        "zero": "horas",
+        "one": "hora",
+        "two": "horas",
+        "few": "horas",
+        "many": "horas"
       },
-      "hours_plural": "hours",
+      "hours_plural": "horas",
       "Id_just_like_to_support_the_project": "Sólo quiero apoyar este proyecto.",
       "Info": "Información",
       "Its_a_way_to_bring_creative_projects_to_life": "Es una plataforma para dar vida a proyectos creativos.",
       "Its_better_with_friends": "Todo en la vida es mejor con amigos ...",
+      "Joining_the_live_stream": "Joining the live stream",
       "Just_for_you": "Sólo para ti.",
       "Keep_reading": "Leer más",
       "Keep_up_with_future_live_streams": "Recibe info sobre live streams futuros",
@@ -3947,13 +3952,13 @@
       "Message_backer": "Enviar mensaje a patrocinador",
       "Message_creator": "Enviar mensaje al creador",
       "minutes": {
-        "zero": "minutes",
-        "one": "minute",
-        "two": "minutes",
-        "few": "minutes",
-        "many": "minutes"
+        "zero": "minutos",
+        "one": "minuto",
+        "two": "minutos",
+        "few": "minutos",
+        "many": "minutos"
       },
-      "minutes_plural": "minutes",
+      "minutes_plural": "minutos",
       "No_comments_yet": "No hay comentarios todavia.",
       "No_one_has_posted_an_update_yet": "Todavía no se han publicado actualizaciones.",
       "No_pledges_from_friends_yet": "Todavía no hay contribuciones de amigos.",
@@ -3981,6 +3986,7 @@
       "Please_enter_an_amount_of_amount_or_more": "Ingresa un monto de contribución de %{amount} o más.",
       "Please_log_in_or_sign_up_to_back_this_project": "Por favor inicia sesión o regístrate para patrocinar este proyecto.",
       "Please_log_in_or_sign_up_to_message_this_creator": "Por favor inicia sesión o regístrate para mandarle un mensaje a este creador.",
+      "Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat": "Please log in or sign up to participate in this live stream chat.",
       "Please_log_in_or_sign_up_to_subscribe_to_this_live_stream": "Por favor inicia sesión o regístrate para suscribirte a este Live Stream.",
       "Pledge": "Contribución:",
       "Pledge_any_amount_to_help_bring_this_project_to_life": "Puedes contribuir un monto de libre selección para apoyar este proyecto.",
@@ -5714,13 +5720,13 @@
       "Creator_name_was_streaming_live_on_Kickstarter": "%{creator_name} était en direct sur Kickstarter",
       "Creator_name_will_be_streaming_live_on_Kickstarter_in_duration": "%{creator_name} sera en direct sur Kickstarter %{in_duration}",
       "days": {
-        "zero": "days",
-        "one": "day",
-        "two": "days",
-        "few": "days",
-        "many": "days"
+        "zero": "jours",
+        "one": "jour",
+        "two": "jours",
+        "few": "jours",
+        "many": "jours"
       },
-      "days_plural": "days",
+      "days_plural": "jours",
       "Discover_more_projects": "Découvrez plus de projets.",
       "Dismiss": "Ignorer",
       "Done": "Terminé",
@@ -5783,17 +5789,18 @@
       "Got_it_your_survey_response_has_been_submitted": "Merci ! Vos réponses au questionnaire ont bien été envoyées.",
       "Home": "Accueil",
       "hours": {
-        "zero": "hours",
-        "one": "hour",
-        "two": "hours",
-        "few": "hours",
-        "many": "hours"
+        "zero": "heures",
+        "one": "heure",
+        "two": "heures",
+        "few": "heures",
+        "many": "heures"
       },
-      "hours_plural": "hours",
+      "hours_plural": "heures",
       "Id_just_like_to_support_the_project": "Je souhaite simplement soutenir le projet.",
       "Info": "Info",
       "Its_a_way_to_bring_creative_projects_to_life": "C'est un outil qui permet de donner vie à des projets créatifs.",
       "Its_better_with_friends": "On est mieux ensemble.",
+      "Joining_the_live_stream": "Joining the live stream",
       "Just_for_you": "Rien que pour vous.",
       "Keep_reading": "Plus",
       "Keep_up_with_future_live_streams": "Soyez informé des prochaines diffusions en direct",
@@ -5860,6 +5867,7 @@
       "Please_enter_an_amount_of_amount_or_more": "Veuillez saisir un montant de %{amount} ou plus.",
       "Please_log_in_or_sign_up_to_back_this_project": "Veuillez vous connecter ou vous inscrire pour soutenir ce projet.",
       "Please_log_in_or_sign_up_to_message_this_creator": "Veuillez vous connecter ou vous inscrire pour écrire à ce créateur.",
+      "Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat": "Please log in or sign up to participate in this live stream chat.",
       "Please_log_in_or_sign_up_to_subscribe_to_this_live_stream": "Veuillez vous connecter ou vous inscrire pour vous abonner à cette diffusion en direct.",
       "Pledge": "Engagement :",
       "Pledge_any_amount_to_help_bring_this_project_to_life": "Choisissez le montant de votre engagement à soutenir ce projet.",
@@ -7556,7 +7564,6 @@
     "huzza": true,
     "view_prototype_gallery": true,
     "edit_prototype_gallery": true,
-    "fullstory": true,
     "huzza_creator_integration": true,
     "huzza_new_design": true,
     "sassy_classifier": true,
@@ -7734,11 +7741,12 @@
     }
   ],
   "ab_experiments": {
-    "backer_conf_cta_color": "green",
-    "koala_alt_frontend_tracking": "experimental",
+    "backer_conf_cta_color": "gray",
+    "koala_alt_frontend_tracking": "control",
     "thanks_page_recs": "control",
     "project_build": "control",
-    "mobile_safari_banners": "hide_banner"
+    "mobile_safari_banners": "html_banner",
+    "remind_me_rebrand": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"
@@ -8254,6 +8262,6 @@
       ]
     }
   },
-  "country_code": "CA",
+  "country_code": "US",
   "locale": "en"
 }

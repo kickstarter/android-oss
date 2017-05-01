@@ -7543,6 +7543,7 @@
     "ios_favorite_categories": true,
     "ios_live_streams": true,
     "ios_live_stream_discovery": true,
+    "ios_scroll_output_observe_for_ui": true,
     "handbook_hero": true,
     "android_pay": true,
     "i18n_discovery_touts": true,
@@ -7742,10 +7743,10 @@
   ],
   "ab_experiments": {
     "backer_conf_cta_color": "gray",
-    "koala_alt_frontend_tracking": "control",
+    "koala_alt_frontend_tracking": "experimental",
     "thanks_page_recs": "control",
     "project_build": "control",
-    "mobile_safari_banners": "html_banner",
+    "mobile_safari_banners": "hide_banner",
     "remind_me_rebrand": "control"
   },
   "stripe": {

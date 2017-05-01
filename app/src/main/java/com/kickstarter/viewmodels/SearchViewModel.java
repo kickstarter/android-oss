@@ -31,11 +31,11 @@ public interface SearchViewModel {
     /** Call when the next page has been invoked. */
     void nextPage();
 
+    /** Call when a project is tapped in search results. */
+    void projectClicked(final @NonNull Project project);
+
     /** Call when text changes in search box. */
     void search(final @NonNull String s);
-
-    /** Call when a project is tapped in search results. */
-    void tappedProject(final @NonNull Project project);
   }
 
   interface Outputs {
@@ -160,7 +160,7 @@ public interface SearchViewModel {
     @Override public void search(final @NonNull String s) {
       this.search.onNext(s);
     }
-    @Override public void tappedProject(final @NonNull Project project) {
+    @Override public void projectClicked(final @NonNull Project project) {
       this.tappedProject.onNext(project);
     }
 

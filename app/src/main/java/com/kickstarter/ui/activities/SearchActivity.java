@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
@@ -86,6 +85,6 @@ public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel
   }
 
   public void projectSearchResultClick(final @NonNull ProjectSearchResultViewHolder viewHolder, final @NonNull Project project) {
-    this.viewModel.inputs.tappedProject(project);
+    this.viewModel.inputs.projectClicked(project);
   }
 }

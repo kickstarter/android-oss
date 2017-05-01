@@ -170,7 +170,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     viewModel.inputs.search("cat");
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    viewModel.inputs.tappedProject(projects.get(0));
+    viewModel.inputs.projectClicked(projects.get(0));
 
     goToRefTag.assertValues(RefTag.searchFeatured());
     goToProject.assertValues(projects.get(0));
@@ -208,7 +208,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     // populate search and overcome debounce
     viewModel.inputs.search("cat");
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    viewModel.inputs.tappedProject(projects.get(1));
+    viewModel.inputs.projectClicked(projects.get(1));
 
     goToRefTag.assertValues(RefTag.search());
     goToProject.assertValues(projects.get(1));
@@ -246,7 +246,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     // populate search and overcome debounce
     viewModel.inputs.search("");
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    viewModel.inputs.tappedProject(projects.get(0));
+    viewModel.inputs.projectClicked(projects.get(0));
 
     goToRefTag.assertValues(RefTag.searchPopularFeatured());
     goToProject.assertValues(projects.get(0));
@@ -284,7 +284,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     // populate search and overcome debounce
     viewModel.inputs.search("");
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    viewModel.inputs.tappedProject(projects.get(2));
+    viewModel.inputs.projectClicked(projects.get(2));
 
     goToRefTag.assertValues(RefTag.searchPopular());
     goToProject.assertValues(projects.get(2));

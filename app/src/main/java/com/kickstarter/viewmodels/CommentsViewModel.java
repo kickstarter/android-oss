@@ -9,10 +9,12 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
+import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
@@ -47,6 +49,11 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
     this.client = environment.apiClient();
     this.currentUser = environment.currentUser();
 
+    final Observable<User> currentUser = Observable.merge(
+      this.currentUser.observable(),
+      this.loginSuccess.flatMap(__ -> this.client.fetchCurrentUser().compose(neverError())).share()
+    );
+
     final Observable<Either<Project, Update>> projectOrUpdate = intent()
       .take(1)
       .map(i -> {
@@ -71,7 +78,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       initialProject
         .compose(takeWhen(loginSuccess))
         .flatMap(p -> client.fetchProject(p).compose(neverError()))
-      )
+    )
       .share();
 
     final Observable<Boolean> commentHasBody = commentBodyChanged
@@ -109,21 +116,38 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
 
     final Observable<List<Comment>> comments = paginator.paginatedData().share();
 
+    final Observable<Boolean> userCanComment = Observable.combineLatest(
+      currentUser,
+      project,
+      Pair::create
+    )
+      .map(userAndProject -> {
+        final User creator = userAndProject.second.creator();
+        final boolean currentUserIsCreator = userAndProject.first != null && userAndProject.first.id() == creator.id();
+        return currentUserIsCreator || userAndProject.second.isBacking();
+      });
+
+    final Observable<Project> commentableProject = Observable.combineLatest(
+      project,
+      userCanComment,
+      Pair::create
+    )
+      .filter(pc -> pc.second)
+      .map(pc -> pc.first);
+
     commentNotification
       .compose(errors())
       .map(ErrorEnvelope::fromThrowable)
       .subscribe(showPostCommentErrorToast::onNext);
 
-    project
+    commentableProject
       .compose(takeWhen(loginSuccess))
-      .filter(Project::isBacking)
       .take(1)
       .compose(bindToLifecycle())
       .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
 
-    project
+    commentableProject
       .compose(takeWhen(commentButtonClicked))
-      .filter(Project::isBacking)
       .compose(bindToLifecycle())
       .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
 
@@ -142,17 +166,17 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
     Observable.combineLatest(
       project,
       comments,
-      currentUser.observable(),
+      currentUser,
       CommentsData::deriveData
     )
       .compose(bindToLifecycle())
       .subscribe(commentsData::onNext);
 
-    project
-      .map(Project::isBacking)
+    userCanComment
+      .map(BooleanUtils::negate)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(showCommentButton::onNext);
+      .subscribe(commentButtonHidden::onNext);
 
     postedComment
       .compose(ignoreValues())
@@ -263,7 +287,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
   private final BehaviorSubject<Void> dismissCommentDialog = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> enablePostButton = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> isFetchingComments = BehaviorSubject.create();
-  private final BehaviorSubject<Boolean> showCommentButton = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> commentButtonHidden = BehaviorSubject.create();
   private final BehaviorSubject<Pair<Project, Boolean>> showCommentDialog = BehaviorSubject.create();
   private final PublishSubject<Void> showCommentPostedToast = PublishSubject.create();
   private final PublishSubject<ErrorEnvelope> showPostCommentErrorToast = PublishSubject.create();
@@ -308,8 +332,8 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
   @Override public @NonNull Observable<Boolean> isFetchingComments() {
     return isFetchingComments;
   }
-  @Override public @NonNull Observable<Boolean> showCommentButton() {
-    return showCommentButton;
+  @Override public @NonNull Observable<Boolean> commentButtonHidden() {
+    return commentButtonHidden;
   }
   @Override public @NonNull Observable<Pair<Project, Boolean>> showCommentDialog() {
     return showCommentDialog;

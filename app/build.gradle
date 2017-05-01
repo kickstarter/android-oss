@@ -36,6 +36,9 @@ android {
 
         // Enable Multidex to support over 65K methods
         multiDexEnabled true
+
+        // allow for multiple language fallbacks
+        resConfigs "auto"
     }
 
     signingConfigs {
@@ -185,7 +188,7 @@ dependencies {
 }
 
 buildscript {
-    ext.kotlin_version = '1.0.6'
+    ext.kotlin_version = '1.1.2'
 
     repositories {
         mavenCentral()

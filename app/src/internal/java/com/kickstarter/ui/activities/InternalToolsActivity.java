@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -66,7 +67,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
     ((KSApplication) getApplicationContext()).component().inject(this);
 
-    setupBuildInformationSection();
+    setupBuildInformationSection(this);
   }
 
   @OnClick(R.id.push_notifications_button)
@@ -112,7 +113,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
       build.variant(),
       build.versionName(),
       build.versionCode().toString(),
-      build.sha(),
+      build.sha(this),
       Integer.toString(android.os.Build.VERSION.SDK_INT),
       android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL,
       Locale.getDefault().getLanguage()
@@ -174,9 +175,9 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   }
 
   @SuppressLint("SetTextI18n")
-  private void setupBuildInformationSection() {
-    buildDate.setText(build.dateTime().toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss aa zzz")));
-    sha.setText(build.sha());
+  private void setupBuildInformationSection(final @NonNull Context context) {
+    buildDate.setText(build.dateTime(context).toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss aa zzz")));
+    sha.setText(build.sha(context));
     variant.setText(build.variant());
     versionCode.setText(build.versionCode().toString());
     versionName.setText(build.versionName());

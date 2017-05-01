@@ -1,5 +1,6 @@
 package com.kickstarter.libs;
 
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.support.annotation.NonNull;
 
@@ -9,6 +10,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import java.util.Locale;
+
+import hu.supercluster.paperwork.Paperwork;
 
 public final class Build {
   private final PackageInfo packageInfo;
@@ -21,8 +24,11 @@ public final class Build {
     return packageInfo.packageName;
   }
 
-  public DateTime dateTime() {
-    return new DateTime(BuildConfig.BUILD_DATE, DateTimeZone.UTC).withZone(DateTimeZone.getDefault());
+  public DateTime dateTime(final @NonNull Context context) {
+    return new DateTime(
+      new Paperwork(context).get("BUILD_DATE"),
+      DateTimeZone.UTC).withZone(DateTimeZone.getDefault()
+    );
   }
 
   public static boolean isInternal() {
@@ -47,8 +53,8 @@ public final class Build {
     return !BuildConfig.DEBUG;
   }
 
-  public String sha() {
-    return BuildConfig.GIT_SHA;
+  public String sha(final @NonNull Context context) {
+    return new Paperwork(context).get("GIT_SHA");
   }
 
   public Integer versionCode() {

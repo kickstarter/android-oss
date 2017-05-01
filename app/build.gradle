@@ -1,9 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'hu.supercluster.paperwork'
 apply from: 'quality.gradle'
 
-def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
-def date = new Date();
-def buildDate = date.format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
 def externalPrivateVersion = new File(project.rootDir.path + "/app/external_version_code.txt").text.trim().toInteger()
 def externalPublicVersion = new File(project.rootDir.path + "/app/external_version_name.txt").text.trim()
 def internalPrivateVersion = new File(project.rootDir.path + "/app/internal_version_code.txt").text.trim().toInteger()
@@ -11,14 +9,23 @@ def internalPublicVersion = new File(project.rootDir.path + "/app/internal_versi
 def isCircle = "true".equals(System.getenv("CIRCLECI"))
 
 ext.signing = [
-    storeFilePath : "path/to/keystore",
-    storePassword : "keystore password",
-    keyAlias      : "key alias",
-    keyPassword   : "key password"
+        storeFilePath: "path/to/keystore",
+        storePassword: "keystore password",
+        keyAlias     : "key alias",
+        keyPassword  : "key password"
 ]
 
 if (file('signing.gradle').exists()) {
     apply from: 'signing.gradle'
+}
+
+// Paperwork caches build config items in app/src/main/assets/paperwork.json
+// And speeds up the build considerably (20x faster)
+paperwork {
+    set = [
+            GIT_SHA   : gitSha(),
+            BUILD_DATE: buildTime("yyyy-MM-dd'T'HH:mm:ss'Z'", "UTC")
+    ]
 }
 
 android {
@@ -30,9 +37,6 @@ android {
         minSdkVersion 17
         targetSdkVersion 25
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
-        buildConfigField "String", "BUILD_DATE", "\"${buildDate}\""
 
         // Enable Multidex to support over 65K methods
         multiDexEnabled true
@@ -173,6 +177,7 @@ dependencies {
     compile 'net.hockeyapp.android:HockeySDK:3.6.1'
     compile 'org.jsoup:jsoup:1.8.2'
     compile "com.mixpanel.android:mixpanel-android:4.6.4"
+    compile 'hu.supercluster:paperwork:1.2.7'
 
     // Testing
     testCompile 'junit:junit:4.12'
@@ -204,7 +209,7 @@ buildscript {
 gradle.taskGraph.beforeTask { Task task ->
     if (task.name ==~ /process.*GoogleServices/) {
         android.applicationVariants.all { variant ->
-            if (task.name ==~ /(?i)process${variant.name}GoogleServices/){
+            if (task.name ==~ /(?i)process${variant.name}GoogleServices/) {
                 copy {
                     from "src/${variant.name}"
                     into '.'

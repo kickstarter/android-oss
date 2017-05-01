@@ -89,7 +89,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
     final Project project = ProjectFactory.project();
 
     this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
-    this.vm.inputs.onClick();
+    this.vm.inputs.projectClicked();
 
     this.notifyDelegateOfResultClick.assertValues(project);
   }

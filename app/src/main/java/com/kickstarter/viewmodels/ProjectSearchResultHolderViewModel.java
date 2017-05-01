@@ -34,7 +34,7 @@ public interface ProjectSearchResultHolderViewModel {
     void configureWith(Data data);
 
     /** Call to say user clicked a project */
-    void onClick();
+    void projectClicked();
   }
 
   interface Outputs {
@@ -74,20 +74,12 @@ public interface ProjectSearchResultHolderViewModel {
 
       this.configData
         .map(data -> data.project)
-        .compose(takeWhen(this.onClick))
+        .compose(takeWhen(this.projectClicked))
         .subscribe(this.notifyDelegateOfResultClick);
     }
 
-    @Override public void configureWith(final @NonNull Data data) {
-      this.configData.onNext(data);
-    }
-
-    @Override public void onClick() {
-      this.onClick.onNext(null);
-    }
-
     private final PublishSubject<Data> configData = PublishSubject.create();
-    private final PublishSubject<Void> onClick = PublishSubject.create();
+    private final PublishSubject<Void> projectClicked = PublishSubject.create();
 
     private final BehaviorSubject<Project> notifyDelegateOfResultClick = BehaviorSubject.create();
     private final BehaviorSubject<String> projectImage = BehaviorSubject.create();
@@ -96,6 +88,13 @@ public interface ProjectSearchResultHolderViewModel {
 
     public final ProjectSearchResultHolderViewModel.Inputs inputs = this;
     public final ProjectSearchResultHolderViewModel.Outputs outputs = this;
+
+    @Override public void configureWith(final @NonNull Data data) {
+      this.configData.onNext(data);
+    }
+    @Override public void projectClicked() {
+      this.projectClicked.onNext(null);
+    }
 
     @Override public Observable<Project> notifyDelegateOfResultClick() {
       return this.notifyDelegateOfResultClick;

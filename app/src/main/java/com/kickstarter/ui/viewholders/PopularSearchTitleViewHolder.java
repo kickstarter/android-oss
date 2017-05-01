@@ -13,7 +13,7 @@ import butterknife.ButterKnife;
 
 public class PopularSearchTitleViewHolder extends KSViewHolder {
 
-  @Bind(R.id.search_term_text_view) TextView termTextView;
+  @Bind(R.id.heading) TextView termTextView;
   @BindString(R.string.search_most_popular) String mostPopularString;
 
   public PopularSearchTitleViewHolder(final @NonNull View view) {

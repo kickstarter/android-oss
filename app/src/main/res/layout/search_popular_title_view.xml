@@ -13,7 +13,7 @@
 
   <TextView
     style="@style/Headline"
-    android:id="@+id/search_term_text_view"
+    android:id="@+id/heading"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:textColor="@color/gray_black"

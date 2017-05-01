@@ -64,7 +64,7 @@
         android:orientation="horizontal">
 
         <TextView
-          android:id="@+id/project_stats_text_view_pct_complete_data"
+          android:id="@+id/project_stats_text_view_percent_complete_data"
           style="@style/CaptionPrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
           android:textStyle="bold" />
 
         <TextView
-          android:id="@+id/project_stats_text_view_pct_complete_string"
+          android:id="@+id/project_stats_text_view_percent_complete_string"
           style="@style/CaptionPrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

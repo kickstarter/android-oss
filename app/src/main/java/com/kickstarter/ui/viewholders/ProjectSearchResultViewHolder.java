@@ -28,8 +28,8 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
 
   @Bind(R.id.project_name_text_view) TextView projectNameTextView;
   @Bind(R.id.project_image_view) ImageView projectImageView;
-  @Bind(R.id.project_stats_text_view_pct_complete_data) TextView projectStatsPctCompleteDataTextView;
-  @Bind(R.id.project_stats_text_view_pct_complete_string) TextView projectStatsPctCompleteStringTextView;
+  @Bind(R.id.project_stats_text_view_percent_complete_data) TextView projectStatsPctCompleteDataTextView;
+  @Bind(R.id.project_stats_text_view_percent_complete_string) TextView projectStatsPctCompleteStringTextView;
   @Bind(R.id.project_stats_text_view_days_to_go_data) TextView projectStatsToGoDataTextView;
   @Bind(R.id.project_stats_text_view_days_to_go_string) TextView projectStatsToGoStringTextView;
 
@@ -80,12 +80,12 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(configData);
   }
 
-  void setProjectImage(final String imageUrl) {
+  private void setProjectImage(@NonNull final String imageUrl) {
     this.projectImageView.setVisibility(imageUrl == null ? View.INVISIBLE : View.VISIBLE);
     Picasso.with(context()).load(imageUrl).into(projectImageView);
   }
 
-  void setProjectStats(final Pair<Integer, Integer> stats) {
+  private void setProjectStats(@NonNull final Pair<Integer, Integer> stats) {
     final int daysToGo = stats.second;
     this.projectStatsToGoDataTextView.setText(String.valueOf(daysToGo));
     this.projectStatsPctCompleteDataTextView.setText(String.valueOf(stats.first+"%"));
@@ -98,7 +98,7 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
 
   @Override
   public void onClick(final @NonNull View view) {
-    this.viewModel.inputs.onClick();
+    this.viewModel.inputs.projectClicked();
   }
 }
 

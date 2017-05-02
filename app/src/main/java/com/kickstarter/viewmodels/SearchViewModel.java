@@ -109,8 +109,8 @@ public interface SearchViewModel {
         .map(DiscoveryParams::term);
 
       final Observable<List<Project>> projects = Observable.merge(
-        this.popularProjects.asObservable(),
-        this.searchProjects.asObservable()
+        this.popularProjects,
+        this.searchProjects
       );
 
       Observable.combineLatest(search, projects, Pair::create)

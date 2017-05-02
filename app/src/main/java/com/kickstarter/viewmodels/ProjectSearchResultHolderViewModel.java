@@ -19,7 +19,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 public interface ProjectSearchResultHolderViewModel {
 
   final class Data {
-    final Project project;
+    public final Project project;
     final boolean isFeatured;
 
     public Data(final @NonNull Project project, final boolean isFeatured) {

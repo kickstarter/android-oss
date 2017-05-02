@@ -1,7 +1,5 @@
 package com.kickstarter.ui.adapters;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.models.Project;
@@ -15,7 +13,6 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
-
 
 public class SearchAdapterTest extends KSRobolectricTestCase implements SearchAdapter.Delegate {
 
@@ -103,12 +100,12 @@ public class SearchAdapterTest extends KSRobolectricTestCase implements SearchAd
   }
 
   // helper method to make tests easier to read
-  private Project getProjectFromSection(final @NonNull int section, final @NonNull int i) {
+  private Project getProjectFromSection(final int section, final int i) {
     return ((ProjectSearchResultHolderViewModel.Data) adapter.sections().get(section).get(i)).project;
   }
 
   @Override
-  public void projectSearchResultClick(ProjectSearchResultViewHolder viewHolder, Project project) {
+  public void projectSearchResultClick(final ProjectSearchResultViewHolder viewHolder, final Project project) {
     // nothing to do here
   }
 }

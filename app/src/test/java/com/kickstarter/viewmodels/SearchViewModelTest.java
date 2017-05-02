@@ -25,15 +25,29 @@ import rx.schedulers.TestScheduler;
 
 public class SearchViewModelTest extends KSRobolectricTestCase {
 
+  private SearchViewModel.ViewModel vm;
+  private final TestSubscriber<Project> goToProject = new TestSubscriber<>();
+  private final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
+  private final TestSubscriber<List<Project>> popularProjects = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> popularProjectsPresent = new TestSubscriber<>();
+  private final TestSubscriber<List<Project>> searchProjects = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> searchProjectsPresent = new TestSubscriber<>();
+
+  private void setUpEnvironment(final @NonNull Environment environment) {
+    this.vm = new SearchViewModel.ViewModel(environment);
+
+    this.vm.outputs.goToProject().map(p -> p.first).subscribe(goToProject);
+    this.vm.outputs.goToProject().map(p -> p.second).subscribe(goToRefTag);
+    this.vm.outputs.popularProjects().subscribe(this.popularProjects);
+    this.vm.outputs.searchProjects().subscribe(this.searchProjects);
+    this.vm.outputs.popularProjects().map(ps -> ps.size() > 0).subscribe(popularProjectsPresent);
+    this.vm.outputs.searchProjects().map(ps -> ps.size() > 0).subscribe(searchProjectsPresent);
+  }
+
   @Test
   public void testPopularProjectsLoadImmediately() {
-    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(environment());
 
-    final TestSubscriber<Boolean> popularProjectsPresent = new TestSubscriber<>();
-    viewModel.outputs.popularProjects().map(ps -> ps.size() > 0).subscribe(popularProjectsPresent);
-
-    final TestSubscriber<Boolean> searchProjectsPresent = new TestSubscriber<>();
-    viewModel.outputs.searchProjects().map(ps -> ps.size() > 0).subscribe(searchProjectsPresent);
+    setUpEnvironment(environment());
 
     popularProjectsPresent.assertValues(true);
     searchProjectsPresent.assertNoValues();
@@ -46,40 +60,34 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       .scheduler(scheduler)
       .build();
 
-    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
-
-    final TestSubscriber<Boolean> searchProjectsPresent = new TestSubscriber<>();
-    viewModel.outputs.searchProjects().map(ps -> ps.size() > 0).subscribe(searchProjectsPresent);
-
-    final TestSubscriber<Boolean> popularProjectsPresent = new TestSubscriber<>();
-    viewModel.outputs.popularProjects().map(ps -> ps.size() > 0).subscribe(popularProjectsPresent);
+    setUpEnvironment(env);
 
     // Popular projects emit immediately.
-    popularProjectsPresent.assertValues(true);
-    searchProjectsPresent.assertNoValues();
+    this.popularProjectsPresent.assertValues(true);
+    this.searchProjectsPresent.assertNoValues();
     koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
 
     // Searching shouldn't emit values immediately
-    viewModel.inputs.search("hello");
-    searchProjectsPresent.assertNoValues();
+    this.vm.inputs.search("hello");
+    this.searchProjectsPresent.assertNoValues();
     koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
 
     // Waiting a small amount time shouldn't emit values
     scheduler.advanceTimeBy(200, TimeUnit.MILLISECONDS);
-    searchProjectsPresent.assertNoValues();
+    this.searchProjectsPresent.assertNoValues();
     koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
 
     // Waiting the rest of the time makes the search happen
     scheduler.advanceTimeBy(100, TimeUnit.MILLISECONDS);
-    searchProjectsPresent.assertValues(false, true);
+    this.searchProjectsPresent.assertValues(false, true);
     koalaTest.assertValues(
       KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY
     );
 
     // Typing more search terms doesn't emit more values
-    viewModel.inputs.search("hello world!");
-    searchProjectsPresent.assertValues(false, true);
+    this.vm.inputs.search("hello world!");
+    this.searchProjectsPresent.assertValues(false, true);
     koalaTest.assertValues(
       KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY
@@ -87,7 +95,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     // Waiting enough time emits search results
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    searchProjectsPresent.assertValues(false, true, false, true);
+    this.searchProjectsPresent.assertValues(false, true, false, true);
     koalaTest.assertValues(
       KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
@@ -95,9 +103,9 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     );
 
     // Clearing search terms brings back popular projects.
-    viewModel.inputs.search("");
-    searchProjectsPresent.assertValues(false, true, false, true, false);
-    popularProjectsPresent.assertValues(true, false, true);
+    this.vm.inputs.search("");
+    this.searchProjectsPresent.assertValues(false, true, false, true, false);
+    this.popularProjectsPresent.assertValues(true, false, true);
     koalaTest.assertValues(
       KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
@@ -112,27 +120,24 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       .scheduler(scheduler)
       .build();
 
-    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
+    setUpEnvironment(env);
 
-    final TestSubscriber<Boolean> searchProjectsPresent = new TestSubscriber<>();
-    viewModel.outputs.searchProjects().map(ps -> ps.size() > 0).subscribe(searchProjectsPresent);
-
-    searchProjectsPresent.assertNoValues();
+    this.searchProjectsPresent.assertNoValues();
     koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
 
-    viewModel.inputs.search("cats");
+    this.vm.inputs.search("cats");
 
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
 
-    searchProjectsPresent.assertValues(false, true);
+    this.searchProjectsPresent.assertValues(false, true);
     koalaTest.assertValues(
       KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY
     );
 
-    viewModel.inputs.nextPage();
+    this.vm.inputs.nextPage();
 
-    searchProjectsPresent.assertValues(false, true);
+    this.searchProjectsPresent.assertValues(false, true);
     koalaTest.assertValues(
       KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
@@ -162,16 +167,11 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       .apiClient(apiClient)
       .build();
 
-    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
+    setUpEnvironment(env);
 
-    final TestSubscriber<Project> goToProject = new TestSubscriber<>();
-    final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
-    viewModel.outputs.goToProject().map(p -> p.first).subscribe(goToProject);
-    viewModel.outputs.goToProject().map(p -> p.second).subscribe(goToRefTag);
-
-    viewModel.inputs.search("cat");
+    this.vm.inputs.search("cat");
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    viewModel.inputs.projectClicked(projects.get(0));
+    this.vm.inputs.projectClicked(projects.get(0));
 
     goToRefTag.assertValues(RefTag.searchFeatured());
     goToProject.assertValues(projects.get(0));
@@ -198,17 +198,12 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       .apiClient(apiClient)
       .build();
 
-    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
-
-    final TestSubscriber<Project> goToProject = new TestSubscriber<>();
-    final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
-    viewModel.outputs.goToProject().map(p -> p.first).subscribe(goToProject);
-    viewModel.outputs.goToProject().map(p -> p.second).subscribe(goToRefTag);
+    setUpEnvironment(env);
 
     // populate search and overcome debounce
-    viewModel.inputs.search("cat");
+    this.vm.inputs.search("cat");
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    viewModel.inputs.projectClicked(projects.get(1));
+    this.vm.inputs.projectClicked(projects.get(1));
 
     goToRefTag.assertValues(RefTag.search());
     goToProject.assertValues(projects.get(1));
@@ -235,17 +230,12 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       .apiClient(apiClient)
       .build();
 
-    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
-
-    final TestSubscriber<Project> goToProject = new TestSubscriber<>();
-    final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
-    viewModel.outputs.goToProject().map(p -> p.first).subscribe(goToProject);
-    viewModel.outputs.goToProject().map(p -> p.second).subscribe(goToRefTag);
+    setUpEnvironment(env);
 
     // populate search and overcome debounce
-    viewModel.inputs.search("");
+    this.vm.inputs.search("");
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    viewModel.inputs.projectClicked(projects.get(0));
+    this.vm.inputs.projectClicked(projects.get(0));
 
     goToRefTag.assertValues(RefTag.searchPopularFeatured());
     goToProject.assertValues(projects.get(0));
@@ -272,24 +262,19 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       .apiClient(apiClient)
       .build();
 
-    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
-
-    final TestSubscriber<Project> goToProject = new TestSubscriber<>();
-    final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
-    viewModel.outputs.goToProject().map(p -> p.first).subscribe(goToProject);
-    viewModel.outputs.goToProject().map(p -> p.second).subscribe(goToRefTag);
+    setUpEnvironment(env);
 
     // populate search and overcome debounce
-    viewModel.inputs.search("");
+    this.vm.inputs.search("");
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    viewModel.inputs.projectClicked(projects.get(2));
+    this.vm.inputs.projectClicked(projects.get(2));
 
     goToRefTag.assertValues(RefTag.searchPopular());
     goToProject.assertValues(projects.get(2));
   }
 
   @Test
-  public void testNoResuts() {
+  public void testNoResults() {
     final TestScheduler scheduler = new TestScheduler();
 
     final List<Project> projects = Arrays.asList(
@@ -306,16 +291,12 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       .apiClient(apiClient)
       .build();
 
-    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
-
-    final TestSubscriber<List<Project>> projectList = new TestSubscriber<>();
-    viewModel.outputs.searchProjects().subscribe(projectList);
+    setUpEnvironment(env);
 
     // populate search and overcome debounce
-    viewModel.inputs.search("__");
+    this.vm.inputs.search("__");
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
 
-    projectList.assertValueCount(2);
-
+    searchProjects.assertValueCount(2);
   }
 }

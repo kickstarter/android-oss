@@ -27,12 +27,18 @@ public interface ProjectSearchResultHolderViewModel {
       this.isFeatured = isFeatured;
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override public boolean equals(final Object obj) {
       if (obj == null || !(obj instanceof Data)) {
         return false;
       }
       final Data data = (Data) obj;
       return data.project.equals(this.project) && data.isFeatured == this.isFeatured;
+    }
+
+    @Override public int hashCode() {
+      int result = project.hashCode();
+      result = 31 * result + (isFeatured ? 1 : 0);
+      return result;
     }
   }
 

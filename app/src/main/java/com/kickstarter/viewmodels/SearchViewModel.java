@@ -114,23 +114,23 @@ public interface SearchViewModel {
       );
 
       Observable.combineLatest(search, projects, Pair::create)
-        .compose(bindToLifecycle())
-        .compose(takePairWhen(this.tappedProject))
+        .compose(takePairWhen(this.projectClicked))
         .map(searchTermAndProjectsAndTappedProject -> {
           final String searchTerm = searchTermAndProjectsAndTappedProject.first.first;
           final List<Project> currentProjects = searchTermAndProjectsAndTappedProject.first.second;
-          final Project tappedProject = searchTermAndProjectsAndTappedProject.second;
+          final Project projectClicked = searchTermAndProjectsAndTappedProject.second;
 
           if (searchTerm.length() == 0) {
-            return tappedProject == currentProjects.get(0)
-              ? Pair.create(tappedProject, RefTag.searchPopularFeatured())
-              : Pair.create(tappedProject, RefTag.searchPopular());
+            return projectClicked == currentProjects.get(0)
+              ? Pair.create(projectClicked, RefTag.searchPopularFeatured())
+              : Pair.create(projectClicked, RefTag.searchPopular());
           } else {
-            return tappedProject == currentProjects.get(0)
-              ? Pair.create(tappedProject, RefTag.searchFeatured())
-              : Pair.create(tappedProject, RefTag.search());
+            return projectClicked == currentProjects.get(0)
+              ? Pair.create(projectClicked, RefTag.searchFeatured())
+              : Pair.create(projectClicked, RefTag.search());
           }
         })
+        .compose(bindToLifecycle())
         .subscribe(this.goToProject);
 
       query
@@ -144,8 +144,8 @@ public interface SearchViewModel {
     private static final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(defaultSort).build();
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();
+    private final PublishSubject<Project> projectClicked = PublishSubject.create();
     private final PublishSubject<String> search = PublishSubject.create();
-    private final PublishSubject<Project> tappedProject = PublishSubject.create();
 
     private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
@@ -157,11 +157,11 @@ public interface SearchViewModel {
     @Override public void nextPage() {
       this.nextPage.onNext(null);
     }
+    @Override public void projectClicked(final @NonNull Project project) {
+      this.projectClicked.onNext(project);
+    }
     @Override public void search(final @NonNull String s) {
       this.search.onNext(s);
-    }
-    @Override public void projectClicked(final @NonNull Project project) {
-      this.tappedProject.onNext(project);
     }
 
     @Override public Observable<Pair<Project, RefTag>> goToProject() {

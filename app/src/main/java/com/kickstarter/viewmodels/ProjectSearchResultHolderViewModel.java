@@ -12,7 +12,6 @@ import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
@@ -58,33 +57,29 @@ public interface ProjectSearchResultHolderViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.configData
-        .map(ViewModel::projectImage)
-        .subscribe(this.projectImage);
+      this.projectImage = this.configData
+        .map(ViewModel::projectImage);
 
-      this.configData
-        .map(data -> data.project.name())
-        .subscribe(this.projectName);
+      this.projectName = this.configData
+        .map(data -> data.project.name());
 
-      this.configData
+      this.projectStats = this.configData
         .map(data ->
           Pair.create((int) data.project.percentageFunded(), ProjectUtils.deadlineCountdownValue(data.project))
-        )
-        .subscribe(this.projectStats);
+        );
 
-      this.configData
+      this.notifyDelegateOfResultClick = this.configData
         .map(data -> data.project)
-        .compose(takeWhen(this.projectClicked))
-        .subscribe(this.notifyDelegateOfResultClick);
+        .compose(takeWhen(this.projectClicked));
     }
 
     private final PublishSubject<Data> configData = PublishSubject.create();
     private final PublishSubject<Void> projectClicked = PublishSubject.create();
 
-    private final BehaviorSubject<Project> notifyDelegateOfResultClick = BehaviorSubject.create();
-    private final BehaviorSubject<String> projectImage = BehaviorSubject.create();
-    private final BehaviorSubject<String> projectName = BehaviorSubject.create();
-    private final BehaviorSubject<Pair<Integer, Integer>> projectStats = BehaviorSubject.create();
+    private final Observable<Project> notifyDelegateOfResultClick;
+    private final Observable<String> projectImage;
+    private final Observable<String> projectName;
+    private final Observable<Pair<Integer, Integer>> projectStats;
 
     public final ProjectSearchResultHolderViewModel.Inputs inputs = this;
     public final ProjectSearchResultHolderViewModel.Outputs outputs = this;

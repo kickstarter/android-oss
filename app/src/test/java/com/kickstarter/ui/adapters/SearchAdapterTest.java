@@ -12,32 +12,35 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class SearchAdapterTest extends KSRobolectricTestCase implements SearchAdapter.Delegate {
 
-  private SearchAdapter adapter;
-
-  @Before
-  public void init() {
-    adapter = new SearchAdapter(this);
-  }
+  private SearchAdapter adapter = new SearchAdapter(this);
 
   @Test
   public void load3PopularProjects() throws Exception {
-    final List<Project> projects = Arrays.asList(
-      ProjectFactory.allTheWayProject(),
-      ProjectFactory.almostCompletedProject(),
-      ProjectFactory.backedProject()
+    final Project project0 = ProjectFactory.allTheWayProject();
+    final Project project1 = ProjectFactory.almostCompletedProject();
+    final Project project2 = ProjectFactory.backedProject();
+
+    adapter.loadPopularProjects(Arrays.asList(project0, project1, project2));
+
+    final List<List<ProjectSearchResultHolderViewModel.Data>> data = Arrays.asList(
+      Collections.singletonList(
+        null
+      ),
+      Collections.singletonList(
+        new ProjectSearchResultHolderViewModel.Data(project0, true)
+      ),
+      Arrays.asList(
+        new ProjectSearchResultHolderViewModel.Data(project1, false),
+        new ProjectSearchResultHolderViewModel.Data(project2, false)
+      )
     );
 
-    adapter.loadPopularProjects(projects);
-    Assert.assertEquals(1, adapter.sectionCount(SearchAdapter.SECTION_FEATURED_PROJECT));
-    Assert.assertEquals(projects.get(0), getProjectFromSection(SearchAdapter.SECTION_FEATURED_PROJECT, 0));
-    Assert.assertEquals(2, adapter.sectionCount(SearchAdapter.SECTION_PROJECT));
-    Assert.assertEquals(projects.get(1), getProjectFromSection(SearchAdapter.SECTION_PROJECT, 0));
-    Assert.assertEquals(projects.get(2), getProjectFromSection(SearchAdapter.SECTION_PROJECT, 1));
-
+    Assert.assertEquals(data, adapter.sections());
   }
 
   @Test

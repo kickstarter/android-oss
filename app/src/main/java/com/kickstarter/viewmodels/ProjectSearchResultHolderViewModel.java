@@ -26,6 +26,14 @@ public interface ProjectSearchResultHolderViewModel {
       this.project = project;
       this.isFeatured = isFeatured;
     }
+
+    @Override public boolean equals(Object obj) {
+      if (obj == null || !(obj instanceof Data)) {
+        return false;
+      }
+      final Data data = (Data) obj;
+      return data.project.equals(this.project) && data.isFeatured == this.isFeatured;
+    }
   }
 
   interface Inputs {

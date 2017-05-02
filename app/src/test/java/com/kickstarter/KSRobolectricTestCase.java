@@ -26,7 +26,7 @@ import rx.observers.TestSubscriber;
 public abstract class KSRobolectricTestCase extends TestCase {
   private TestKSApplication application;
   public TestSubscriber<String> koalaTest;
-  protected Environment environment;
+  private Environment environment;
 
   @Override
   @Before

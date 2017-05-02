@@ -8,7 +8,6 @@ import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel;
 
 import junit.framework.Assert;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -45,66 +44,79 @@ public class SearchAdapterTest extends KSRobolectricTestCase implements SearchAd
 
   @Test
   public void load1PopularProjects() throws Exception {
-    final List<Project> projects = Arrays.asList(
-      ProjectFactory.allTheWayProject()
-    );
+    final Project project0 = ProjectFactory.allTheWayProject();
 
-    adapter.loadPopularProjects(projects);
-    Assert.assertEquals(1, adapter.sectionCount(SearchAdapter.SECTION_FEATURED_PROJECT));
-    Assert.assertEquals(projects.get(0), getProjectFromSection(SearchAdapter.SECTION_FEATURED_PROJECT, 0));
-    Assert.assertEquals(0, adapter.sectionCount(SearchAdapter.SECTION_PROJECT));
+    adapter.loadPopularProjects(Collections.singletonList(project0));
+
+    final List<List<ProjectSearchResultHolderViewModel.Data>> data = Arrays.asList(
+      Collections.singletonList(
+        null
+      ),
+      Collections.singletonList(
+        new ProjectSearchResultHolderViewModel.Data(project0, true)
+      ),
+        Collections.emptyList()
+      );
+
+    Assert.assertEquals(data, adapter.sections());
   }
 
   @Test
   public void load0PopularProjects() throws Exception {
-    final List<Project> projects = Arrays.asList();
+    adapter.loadPopularProjects(Collections.emptyList());
 
-    adapter.loadPopularProjects(projects);
-    Assert.assertEquals(0, adapter.sectionCount(SearchAdapter.SECTION_FEATURED_PROJECT));
-    Assert.assertEquals(0, adapter.sectionCount(SearchAdapter.SECTION_PROJECT));
+    final List<List<ProjectSearchResultHolderViewModel.Data>> data = Collections.emptyList();
+
+    Assert.assertEquals(data, adapter.sections());
   }
 
   @Test
   public void load3SearchProjects() throws Exception {
-    final List<Project> projects = Arrays.asList(
-      ProjectFactory.allTheWayProject(),
-      ProjectFactory.almostCompletedProject(),
-      ProjectFactory.backedProject()
+    final Project project0 = ProjectFactory.allTheWayProject();
+    final Project project1 = ProjectFactory.almostCompletedProject();
+    final Project project2 = ProjectFactory.backedProject();
+
+    adapter.loadSearchProjects(Arrays.asList(project0, project1, project2));
+
+    final List<List<ProjectSearchResultHolderViewModel.Data>> data = Arrays.asList(
+      Collections.emptyList(),
+      Collections.singletonList(
+        new ProjectSearchResultHolderViewModel.Data(project0, true)
+      ),
+      Arrays.asList(
+        new ProjectSearchResultHolderViewModel.Data(project1, false),
+        new ProjectSearchResultHolderViewModel.Data(project2, false)
+      )
     );
 
-    adapter.loadSearchProjects(projects);
-    Assert.assertEquals(1, adapter.sectionCount(SearchAdapter.SECTION_FEATURED_PROJECT));
-    Assert.assertEquals(projects.get(0), getProjectFromSection(SearchAdapter.SECTION_FEATURED_PROJECT, 0));
-    Assert.assertEquals(2, adapter.sectionCount(SearchAdapter.SECTION_PROJECT));
-    Assert.assertEquals(projects.get(1), getProjectFromSection(SearchAdapter.SECTION_PROJECT, 0));
-    Assert.assertEquals(projects.get(2), getProjectFromSection(SearchAdapter.SECTION_PROJECT, 1));
+    Assert.assertEquals(data, adapter.sections());
   }
 
 
   @Test
   public void load1SearchProjects() throws Exception {
-    final List<Project> projects = Arrays.asList(
-      ProjectFactory.allTheWayProject()
+    final Project project0 = ProjectFactory.allTheWayProject();
+
+    adapter.loadSearchProjects(Arrays.asList(project0));
+
+    final List<List<ProjectSearchResultHolderViewModel.Data>> data = Arrays.asList(
+      Collections.emptyList(),
+      Collections.singletonList(
+        new ProjectSearchResultHolderViewModel.Data(project0, true)
+      ),
+      Collections.emptyList()
     );
 
-    adapter.loadSearchProjects(projects);
-    Assert.assertEquals(1, adapter.sectionCount(SearchAdapter.SECTION_FEATURED_PROJECT));
-    Assert.assertEquals(projects.get(0), getProjectFromSection(SearchAdapter.SECTION_FEATURED_PROJECT, 0));
-    Assert.assertEquals(0, adapter.sectionCount(SearchAdapter.SECTION_PROJECT));
+    Assert.assertEquals(data, adapter.sections());
   }
 
   @Test
   public void load0SearchProjects() throws Exception {
-    final List<Project> projects = Arrays.asList();
+    adapter.loadSearchProjects(Collections.emptyList());
 
-    adapter.loadSearchProjects(projects);
-    Assert.assertEquals(0, adapter.sectionCount(SearchAdapter.SECTION_FEATURED_PROJECT));
-    Assert.assertEquals(0, adapter.sectionCount(SearchAdapter.SECTION_PROJECT));
-  }
+    final List<List<ProjectSearchResultHolderViewModel.Data>> data = Collections.emptyList();
 
-  // helper method to make tests easier to read
-  private Project getProjectFromSection(final int section, final int i) {
-    return ((ProjectSearchResultHolderViewModel.Data) adapter.sections().get(section).get(i)).project;
+    Assert.assertEquals(data, adapter.sections());
   }
 
   @Override

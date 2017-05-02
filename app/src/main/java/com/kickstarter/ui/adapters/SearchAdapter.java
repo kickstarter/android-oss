@@ -21,9 +21,9 @@ public final class SearchAdapter extends KSAdapter {
 
   public interface Delegate extends ProjectSearchResultViewHolder.Delegate {}
 
-  private static final int SECTION_POPULAR_TITLE = 0;
-  private static final int SECTION_FEATURED_PROJECT = 1;
-  private static final int SECTION_PROJECT = 2;
+  protected static final int SECTION_POPULAR_TITLE = 0;
+  protected static final int SECTION_FEATURED_PROJECT = 1;
+  protected static final int SECTION_PROJECT = 2;
 
   public SearchAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
@@ -42,7 +42,7 @@ public final class SearchAdapter extends KSAdapter {
       );
       this.insertSection(
         SECTION_PROJECT,
-        Observable.from(newProjects.subList(1, newProjects.size() - 1))
+        Observable.from(newProjects.subList(1, newProjects.size()))
           .map(p -> new ProjectSearchResultHolderViewModel.Data(p, false))
           .toList().toBlocking().first()
       );
@@ -62,14 +62,12 @@ public final class SearchAdapter extends KSAdapter {
           new ProjectSearchResultHolderViewModel.Data(newProjects.get(0), true)
         )
       );
-      if (newProjects.size() > 1) {
         this.insertSection(
           SECTION_PROJECT,
-          Observable.from(newProjects.subList(1, newProjects.size() - 1))
+          Observable.from(newProjects.subList(1, newProjects.size()))
             .map(p -> new ProjectSearchResultHolderViewModel.Data(p, false))
             .toList().toBlocking().first()
         );
-      }
     }
 
     notifyDataSetChanged();

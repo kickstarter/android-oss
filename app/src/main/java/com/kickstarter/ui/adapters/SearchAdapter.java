@@ -62,12 +62,14 @@ public final class SearchAdapter extends KSAdapter {
           new ProjectSearchResultHolderViewModel.Data(newProjects.get(0), true)
         )
       );
-      this.insertSection(
-        SECTION_PROJECT,
-        Observable.from(newProjects.subList(1, newProjects.size() - 1))
-          .map(p -> new ProjectSearchResultHolderViewModel.Data(p, false))
-          .toList().toBlocking().first()
-      );
+      if (newProjects.size() > 1) {
+        this.insertSection(
+          SECTION_PROJECT,
+          Observable.from(newProjects.subList(1, newProjects.size() - 1))
+            .map(p -> new ProjectSearchResultHolderViewModel.Data(p, false))
+            .toList().toBlocking().first()
+        );
+      }
     }
 
     notifyDataSetChanged();

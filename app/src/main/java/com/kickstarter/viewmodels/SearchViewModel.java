@@ -115,10 +115,10 @@ public interface SearchViewModel {
 
       Observable.combineLatest(search, projects, Pair::create)
         .compose(takePairWhen(this.projectClicked))
-        .map(searchTermAndProjectsAndTappedProject -> {
-          final String searchTerm = searchTermAndProjectsAndTappedProject.first.first;
-          final List<Project> currentProjects = searchTermAndProjectsAndTappedProject.first.second;
-          final Project projectClicked = searchTermAndProjectsAndTappedProject.second;
+        .map(searchTermAndProjectsAndProjectClicked -> {
+          final String searchTerm = searchTermAndProjectsAndProjectClicked.first.first;
+          final List<Project> currentProjects = searchTermAndProjectsAndProjectClicked.first.second;
+          final Project projectClicked = searchTermAndProjectsAndProjectClicked.second;
 
           if (searchTerm.length() == 0) {
             return projectClicked == currentProjects.get(0)

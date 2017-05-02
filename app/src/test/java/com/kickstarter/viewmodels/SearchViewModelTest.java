@@ -151,7 +151,9 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
+      public
+      @NonNull
+      Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
         return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
       }
     };
@@ -163,7 +165,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
 
-    final TestSubscriber<Project> goToProject= new TestSubscriber<>();
+    final TestSubscriber<Project> goToProject = new TestSubscriber<>();
     final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
     viewModel.outputs.goToProject().map(p -> p.first).subscribe(goToProject);
     viewModel.outputs.goToProject().map(p -> p.second).subscribe(goToRefTag);
@@ -188,7 +190,9 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
+      public
+      @NonNull
+      Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
         return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
       }
     };
@@ -200,7 +204,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
 
-    final TestSubscriber<Project> goToProject= new TestSubscriber<>();
+    final TestSubscriber<Project> goToProject = new TestSubscriber<>();
     final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
     viewModel.outputs.goToProject().map(p -> p.first).subscribe(goToProject);
     viewModel.outputs.goToProject().map(p -> p.second).subscribe(goToRefTag);
@@ -226,7 +230,9 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
+      public
+      @NonNull
+      Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
         return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
       }
     };
@@ -238,7 +244,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
 
-    final TestSubscriber<Project> goToProject= new TestSubscriber<>();
+    final TestSubscriber<Project> goToProject = new TestSubscriber<>();
     final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
     viewModel.outputs.goToProject().map(p -> p.first).subscribe(goToProject);
     viewModel.outputs.goToProject().map(p -> p.second).subscribe(goToRefTag);
@@ -264,7 +270,9 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
+      public
+      @NonNull
+      Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
         return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
       }
     };
@@ -276,7 +284,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
 
-    final TestSubscriber<Project> goToProject= new TestSubscriber<>();
+    final TestSubscriber<Project> goToProject = new TestSubscriber<>();
     final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
     viewModel.outputs.goToProject().map(p -> p.first).subscribe(goToProject);
     viewModel.outputs.goToProject().map(p -> p.second).subscribe(goToRefTag);
@@ -288,5 +296,39 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     goToRefTag.assertValues(RefTag.searchPopular());
     goToProject.assertValues(projects.get(2));
+  }
+
+  @Test
+  public void testNoResuts() {
+    final TestScheduler scheduler = new TestScheduler();
+
+    final List<Project> projects = Arrays.asList(
+    );
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override
+      public
+      @NonNull
+      Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
+        return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
+      }
+    };
+
+    final Environment env = environment().toBuilder()
+      .scheduler(scheduler)
+      .apiClient(apiClient)
+      .build();
+
+    final SearchViewModel.ViewModel viewModel = new SearchViewModel.ViewModel(env);
+
+    final TestSubscriber<List<Project>> projectList = new TestSubscriber<>();
+    viewModel.outputs.searchProjects().subscribe(projectList);
+
+    // populate search and overcome debounce
+    viewModel.inputs.search("__");
+    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
+
+    projectList.assertValueCount(2);
+
   }
 }

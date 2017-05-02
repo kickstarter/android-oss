@@ -17,6 +17,6 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:textColor="@color/gray_black"
-    tools:text="@string/search_most_popular" />
+    tools:text="@string/Popular_Projects" />
 
 </LinearLayout>

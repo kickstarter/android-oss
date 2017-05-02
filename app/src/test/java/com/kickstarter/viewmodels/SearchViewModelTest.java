@@ -307,9 +307,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override
-      public
-      @NonNull
-      Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
+      public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
         return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(projects));
       }
     };

@@ -184,6 +184,7 @@ dependencies {
     androidTestCompile 'com.android.support:support-annotations:25.1.0'
 }
 
+// Solution for caching gitSha and commitTime courtesy of https://github.com/tasomaniac
 def commitSha() {
     def file = new File(project.buildDir, "commit-sha.txt")
     if (file.exists()) {

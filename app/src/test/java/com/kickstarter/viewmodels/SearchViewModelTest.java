@@ -105,7 +105,8 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       KoalaEvent.CLEARED_SEARCH_TERM);
   }
 
-  void testSearchPagination() {
+  @Test
+  public void testSearchPagination() {
     final TestScheduler scheduler = new TestScheduler();
     final Environment env = environment().toBuilder()
       .scheduler(scheduler)
@@ -131,7 +132,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     viewModel.inputs.nextPage();
 
-    searchProjectsPresent.assertValues(false, true, true);
+    searchProjectsPresent.assertValues(false, true);
     koalaTest.assertValues(
       KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,

@@ -21,8 +21,9 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
   private final TestSubscriber<Pair<Integer, Integer>> projectStats = new TestSubscriber<>();
 
   @Before
-  public void setUpEnvironment() {
-    this.vm = new ProjectSearchResultHolderViewModel.ViewModel(environment());
+  @Override public void setUp() throws Exception {
+    super.setUp();
+    this.vm = new ProjectSearchResultHolderViewModel.ViewModel(environment);
 
     this.vm.outputs.notifyDelegateOfResultClick().subscribe(this.notifyDelegateOfResultClick);
     this.vm.outputs.projectImage().subscribe(this.projectImage);

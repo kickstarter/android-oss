@@ -17,6 +17,7 @@ import com.kickstarter.models.Location;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
+import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
@@ -361,11 +362,27 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<SurveyResponse> surveyResponse(final @NonNull String surveyResponseId) {
+    return service
+      .surveyResponse(surveyResponseId)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
   public @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project) {
     return service
       .toggleProjectStar(project.param())
       .lift(apiErrorOperator())
       .map(StarEnvelope::project)
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<List<SurveyResponse>> unansweredSurveys() {
+    return service
+      .unansweredSurveys()
+      .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 

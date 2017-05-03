@@ -10,8 +10,9 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.MessageThread;
-import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.ProjectNotification;
+import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -97,7 +98,11 @@ public interface ApiClientType {
 
   @NonNull Observable<Project> starProject(final @NonNull Project project);
 
+  @NonNull Observable<SurveyResponse> surveyResponse(final @NonNull String surveyResponseId);
+
   @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project);
+
+  @NonNull Observable<List<SurveyResponse>> unansweredSurveys();
 
   @NonNull Observable<ProjectNotification> updateProjectNotifications(final @NonNull ProjectNotification projectNotification, final boolean checked);
 

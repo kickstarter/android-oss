@@ -7,6 +7,7 @@ import android.view.View;
 import com.kickstarter.R;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
@@ -15,6 +16,7 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
+import com.kickstarter.ui.viewholders.UnansweredSurveyViewHolder;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +24,8 @@ import java.util.List;
 public final class ActivityFeedAdapter extends KSAdapter {
   private static final int SECTION_LOGGED_IN_EMPTY_VIEW = 0;
   private static final int SECTION_LOGGED_OUT_EMPTY_VIEW = 1;
-  private static final int SECTION_ACTIVITIES_VIEW = 2;
+  private static final int SECTION_SURVEYS_VIEW = 2;
+  private static final int SECTION_ACTIVITIES_VIEW = 3;
 
   private final Delegate delegate;
 
@@ -34,11 +37,17 @@ public final class ActivityFeedAdapter extends KSAdapter {
 
     insertSection(SECTION_LOGGED_IN_EMPTY_VIEW, Collections.emptyList());
     insertSection(SECTION_LOGGED_OUT_EMPTY_VIEW, Collections.emptyList());
+    insertSection(SECTION_SURVEYS_VIEW, Collections.emptyList());
     insertSection(SECTION_ACTIVITIES_VIEW, Collections.emptyList());
   }
 
   public void takeActivities(final @NonNull List<Activity> activities) {
     setSection(SECTION_ACTIVITIES_VIEW, activities);
+    notifyDataSetChanged();
+  }
+
+  public void takeSurveys(final @NonNull List<SurveyResponse> surveyResponses) {
+    setSection(SECTION_SURVEYS_VIEW, surveyResponses);
     notifyDataSetChanged();
   }
 
@@ -54,29 +63,33 @@ public final class ActivityFeedAdapter extends KSAdapter {
 
   @Override
   protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
-    if (sectionRow.section() == SECTION_LOGGED_IN_EMPTY_VIEW) {
-      return R.layout.empty_activity_feed_view;
-    } else if (sectionRow.section() == SECTION_LOGGED_OUT_EMPTY_VIEW) {
-      return R.layout.empty_activity_feed_view;
-    } else if (sectionRow.section() == SECTION_ACTIVITIES_VIEW) {
-      if (objectFromSectionRow(sectionRow) instanceof Activity) {
-        final Activity activity = (Activity) objectFromSectionRow(sectionRow);
-        switch (activity.category()) {
-          case Activity.CATEGORY_BACKING:
-            return R.layout.activity_friend_backing_view;
-          case Activity.CATEGORY_FOLLOW:
-            return R.layout.activity_friend_follow_view;
-          case Activity.CATEGORY_FAILURE:
-          case Activity.CATEGORY_CANCELLATION:
-          case Activity.CATEGORY_SUSPENSION:
-            return R.layout.activity_project_state_changed_view;
-          case Activity.CATEGORY_LAUNCH:
-          case Activity.CATEGORY_SUCCESS:
-            return R.layout.activity_project_state_changed_positive_view;
-          case Activity.CATEGORY_UPDATE:
-            return R.layout.activity_project_update_view;
-          default:
-            return R.layout.empty_view;
+    switch (sectionRow.section()) {
+      case SECTION_LOGGED_IN_EMPTY_VIEW:
+        return R.layout.empty_activity_feed_view;
+      case SECTION_LOGGED_OUT_EMPTY_VIEW:
+        return R.layout.empty_activity_feed_view;
+      case SECTION_SURVEYS_VIEW:
+        return R.layout.unanswered_survey_view;
+      case SECTION_ACTIVITIES_VIEW: {
+        if (objectFromSectionRow(sectionRow) instanceof Activity) {
+          final Activity activity = (Activity) objectFromSectionRow(sectionRow);
+          switch (activity.category()) {
+            case Activity.CATEGORY_BACKING:
+              return R.layout.activity_friend_backing_view;
+            case Activity.CATEGORY_FOLLOW:
+              return R.layout.activity_friend_follow_view;
+            case Activity.CATEGORY_FAILURE:
+            case Activity.CATEGORY_CANCELLATION:
+            case Activity.CATEGORY_SUSPENSION:
+              return R.layout.activity_project_state_changed_view;
+            case Activity.CATEGORY_LAUNCH:
+            case Activity.CATEGORY_SUCCESS:
+              return R.layout.activity_project_state_changed_positive_view;
+            case Activity.CATEGORY_UPDATE:
+              return R.layout.activity_project_update_view;
+            default:
+              return R.layout.empty_view;
+          }
         }
       }
     }
@@ -87,6 +100,8 @@ public final class ActivityFeedAdapter extends KSAdapter {
   @Override
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch (layout) {
+      case R.layout.unanswered_survey_view:
+        return new UnansweredSurveyViewHolder(view);
       case R.layout.activity_friend_backing_view:
         return new FriendBackingViewHolder(view, delegate);
       case R.layout.activity_friend_follow_view:

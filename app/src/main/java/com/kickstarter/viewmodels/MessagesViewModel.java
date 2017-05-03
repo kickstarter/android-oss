@@ -81,7 +81,7 @@ public interface MessagesViewModel {
         .compose(combineLatestPair(this.messageEditTextChanged))
         .compose(takeWhen(this.sendMessageButtonClicked))
         .switchMap(threadAndBody ->
-          this.client.sendMessage(threadAndBody.first, threadAndBody.second)
+          this.client.sendMessageToThread(threadAndBody.first, threadAndBody.second)
             .materialize()
         )
         .share();

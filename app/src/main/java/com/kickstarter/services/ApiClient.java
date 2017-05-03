@@ -336,9 +336,9 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Message> sendMessage(final @NonNull MessageThread thread, final @NonNull String body) {
+  public @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread messageThread, final @NonNull String body) {
     return service
-      .sendMessageToThread(thread.id(), MessageBody.builder().body(body).build())
+      .sendMessageToThread(messageThread.id(), MessageBody.builder().body(body).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

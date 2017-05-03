@@ -11,8 +11,8 @@ import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
-import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -93,8 +93,7 @@ public interface ApiClientType {
 
   @NonNull Observable<User> resetPassword(final @NonNull String email);
 
-  // todo: MessageSubject can be Backing, MessageThread, or Project
-  @NonNull Observable<Message> sendMessage(final @NonNull MessageThread thread, final @NonNull String body);
+  @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread messageThread, final @NonNull String body);
 
   @NonNull Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email, final @NonNull String password,
     final @NonNull String passwordConfirmation, final boolean sendNewsletters);

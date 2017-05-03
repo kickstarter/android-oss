@@ -32,7 +32,7 @@ public interface UnansweredSurveyHolderViewModel {
     UnansweredSurveyHolderViewModel.Inputs,
     UnansweredSurveyHolderViewModel.Outputs {
 
-    public ViewModel(@NonNull Environment environment) {
+    public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.creatorAvatarImage = this.configData
@@ -51,7 +51,7 @@ public interface UnansweredSurveyHolderViewModel {
     private final Observable<String> creatorName;
     private final Observable<String> surveyDescription;
 
-    @Override public void configureWith(SurveyResponse surveyResponse) {
+    @Override public void configureWith(final @NonNull SurveyResponse surveyResponse) {
 
     }
     @Override public Observable<String> creatorAvatarImage() {
@@ -64,7 +64,7 @@ public interface UnansweredSurveyHolderViewModel {
       return null;
     }
 
-    private String getSurveyDescription(SurveyResponse surveyResponse) {
+    private String getSurveyDescription(final @NonNull SurveyResponse surveyResponse) {
       return "string";
     }
 

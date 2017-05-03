@@ -14,6 +14,7 @@ import com.kickstarter.factories.LocationFactory;
 import com.kickstarter.factories.MessageFactory;
 import com.kickstarter.factories.MessageThreadsEnvelopeFactory;
 import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.factories.SurveyResponseFactory;
 import com.kickstarter.factories.UpdateFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Config;
@@ -26,6 +27,7 @@ import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
+import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -325,8 +327,18 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<SurveyResponse> surveyResponse(final int surveyResponseId) {
+    return Observable.just(SurveyResponseFactory.surveyResponse().toBuilder().id(surveyResponseId).build());
+  }
+
+  @Override
   public @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project) {
     return Observable.just(project.toBuilder().isStarred(!project.isStarred()).build());
+  }
+  @NonNull
+  @Override
+  public Observable<List<SurveyResponse>> unansweredSurveys() {
+    return Observable.just(Arrays.asList(SurveyResponseFactory.surveyResponse(), SurveyResponseFactory.surveyResponse()));
   }
 
   @Override

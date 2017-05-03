@@ -70,6 +70,8 @@
   <dimen name="comment_body_padding_x">@dimen/grid_7</dimen>
   <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
   <dimen name="feed_padding_x">@dimen/grid_2</dimen>
+  <dimen name="search_padding_y">@dimen/grid_new_2</dimen>
+  <dimen name="search_padding_x">@dimen/grid_new_2</dimen>
   <dimen name="form_margin_x">@dimen/grid_2</dimen>
   <dimen name="project_padding_x">@dimen/grid_2</dimen>
   <dimen name="settings_icon_margin_x">@dimen/grid_1_half</dimen>
@@ -112,6 +114,8 @@
   <dimen name="project_social_photo_height">@dimen/grid_4</dimen>
   <dimen name="search_result_photo_width">@dimen/grid_14</dimen>
   <dimen name="search_result_photo_height">63dp</dimen>
+  <dimen name="featured_search_result_photo_height">126dp</dimen>
+
   <dimen name="thanks_project_photo_width">208dp</dimen>
   <dimen name="thanks_project_photo_height">117dp</dimen>
 

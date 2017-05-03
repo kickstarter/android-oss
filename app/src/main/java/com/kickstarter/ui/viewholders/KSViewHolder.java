@@ -34,7 +34,7 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
    */
   @Override
   public void onClick(final @NonNull View view) {
-    Timber.d("Default KSViewHolder onClick event");
+    Timber.d("Default KSViewHolder projectClicked event");
   }
 
   /**

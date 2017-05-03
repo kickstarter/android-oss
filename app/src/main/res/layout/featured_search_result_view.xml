@@ -1,104 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  android:id="@+id/project_search_result_view"
+<LinearLayout android:id="@+id/search_term_view"
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:card_view="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:background="@color/transparent"
-  android:focusable="true"
-  android:foreground="@drawable/click_indicator_light"
   android:orientation="vertical"
   android:paddingEnd="@dimen/search_padding_x"
   android:paddingLeft="@dimen/search_padding_x"
   android:paddingRight="@dimen/search_padding_x"
-  android:paddingStart="@dimen/search_padding_x"
-  android:paddingTop="@dimen/search_padding_x">
+  android:paddingStart="@dimen/search_padding_x">
 
-  <LinearLayout
+  <android.support.v7.widget.CardView
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="bottom"
-    android:gravity="bottom"
-    android:layout_marginEnd="@dimen/grid_new_1"
-    android:layout_marginStart="@dimen/grid_new_1"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/grid_new_2"
+    card_view:cardUseCompatPadding="true">
 
-    <ImageView
-      android:id="@+id/project_image_view"
-      android:layout_width="@dimen/search_result_photo_width"
-      android:layout_height="@dimen/search_result_photo_height"
-      android:layout_marginEnd="@dimen/grid_new_2"
-      android:adjustViewBounds="true"
-      android:background="@drawable/gray_gradient"
-      android:scaleType="centerCrop"
-      tools:ignore="ContentDescription" />
-
-
-    <!-- TODO: This implementation is temporary until our i18n system can handle CDATA -->
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_new_1"
-      android:layout_gravity="top"
-      android:gravity="bottom"
       android:orientation="vertical">
+
+      <ImageView
+        android:id="@+id/project_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/featured_search_result_photo_height"
+        android:adjustViewBounds="true"
+        android:background="@drawable/gray_gradient"
+        android:scaleType="centerCrop"
+        tools:ignore="ContentDescription" />
 
       <TextView
         android:id="@+id/project_name_text_view"
-        style="@style/TextPrimary"
+        style="@style/SubheadPrimaryMedium"
+        android:layout_marginStart="@dimen/grid_new_2"
+        android:layout_marginTop="@dimen/grid_new_2"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="bottom"
-        android:textAlignment="gravity"
-        android:layout_gravity="bottom"
-        android:layout_weight="0"
+        android:layout_height="wrap_content"
         android:maxLines="3"
-        android:textColor="@color/gray_black" />
+        android:textColor="@color/gray_black"
+        tools:text="Name" />
+
+      <!-- TODO: This implementation is temporary until our i18n system can handle CDATA -->
 
       <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="top"
-        android:layout_weight="0"
+        android:layout_marginStart="@dimen/grid_new_2"
         android:orientation="horizontal">
 
         <TextView
           android:id="@+id/project_stats_text_view_percent_complete_data"
-          style="@style/CaptionPrimary"
+          style="@style/ActivityFeedCard"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="1"
           android:textColor="@color/green"
+          android:layout_weight="0"
           android:textStyle="bold" />
 
         <TextView
           android:id="@+id/project_stats_text_view_percent_complete_string"
-          style="@style/CaptionPrimary"
+          style="@style/ActivityFeedCard"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_weight="0"
           android:maxLines="1"
           android:textColor="@color/black_alpha_50" />
 
         <TextView
           android:id="@+id/project_stats_text_view_days_to_go_data"
-          style="@style/CaptionPrimary"
+          style="@style/ActivityFeedCard"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_weight="0"
           android:maxLines="1"
           android:textColor="@color/gray_black"
           android:textStyle="bold" />
 
         <TextView
           android:id="@+id/project_stats_text_view_days_to_go_string"
-          style="@style/CaptionPrimary"
+          style="@style/ActivityFeedCard"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_weight="0"
           android:maxLines="1"
           android:textColor="@color/black_alpha_50" />
       </LinearLayout>
+
     </LinearLayout>
-  </LinearLayout>
+  </android.support.v7.widget.CardView>
 
   <View
     android:layout_width="fill_parent"

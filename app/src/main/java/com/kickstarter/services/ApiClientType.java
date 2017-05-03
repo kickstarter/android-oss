@@ -98,11 +98,11 @@ public interface ApiClientType {
 
   @NonNull Observable<Project> starProject(final @NonNull Project project);
 
-  @NonNull Observable<SurveyResponse> surveyResponse(final int surveyResponseId);
+  @NonNull Observable<SurveyResponse> fetchSurveyResponse(final int surveyResponseId);
 
   @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project);
 
-  @NonNull Observable<List<SurveyResponse>> unansweredSurveys();
+  @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys();
 
   @NonNull Observable<ProjectNotification> updateProjectNotifications(final @NonNull ProjectNotification projectNotification, final boolean checked);
 

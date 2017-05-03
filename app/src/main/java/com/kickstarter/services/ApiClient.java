@@ -233,6 +233,23 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+
+  @Override
+  public @NonNull Observable<SurveyResponse> fetchSurveyResponse(final @NonNull int surveyResponseId) {
+    return service
+      .surveyResponse(surveyResponseId)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
+    return service
+      .unansweredSurveys()
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
   @Override
   public @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam) {
     return service
@@ -362,27 +379,11 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<SurveyResponse> surveyResponse(final @NonNull int surveyResponseId) {
-    return service
-      .surveyResponse(surveyResponseId)
-      .lift(apiErrorOperator())
-      .subscribeOn(Schedulers.io());
-  }
-
-  @Override
   public @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project) {
     return service
       .toggleProjectStar(project.param())
       .lift(apiErrorOperator())
       .map(StarEnvelope::project)
-      .subscribeOn(Schedulers.io());
-  }
-
-  @Override
-  public @NonNull Observable<List<SurveyResponse>> unansweredSurveys() {
-    return service
-      .unansweredSurveys()
-      .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 

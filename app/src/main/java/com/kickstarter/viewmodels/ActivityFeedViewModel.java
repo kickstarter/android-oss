@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
+import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
@@ -11,6 +12,7 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
@@ -20,12 +22,14 @@ import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
+import com.trello.rxlifecycle.ActivityEvent;
 
 import java.util.List;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public interface ActivityFeedViewModel {
 
@@ -85,6 +89,22 @@ public interface ActivityFeedViewModel {
         projectUpdateProjectClick
       )
         .map(Activity::project);
+
+
+      final Observable<List<SurveyResponse>> responses = Observable.combineLatest(
+        this.lifecycle(),
+        currentUser.isLoggedIn(),
+        Pair::create
+        )
+        .filter(eventAndLoggedIn ->
+          eventAndLoggedIn.first == ActivityEvent.RESUME && eventAndLoggedIn.second
+        )
+        .switchMap(__ -> client.fetchUnansweredSurveys());
+
+      responses.subscribe(rs -> {
+        Timber.d("rs: " + rs);
+      });
+
 
       final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
         .nextPage(nextPage)

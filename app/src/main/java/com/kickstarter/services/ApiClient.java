@@ -362,7 +362,7 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<SurveyResponse> surveyResponse(final @NonNull String surveyResponseId) {
+  public @NonNull Observable<SurveyResponse> surveyResponse(final @NonNull int surveyResponseId) {
     return service
       .surveyResponse(surveyResponseId)
       .lift(apiErrorOperator())

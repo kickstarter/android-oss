@@ -9,8 +9,9 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
-import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.ProjectNotification;
+import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
@@ -133,8 +134,14 @@ public interface ApiService {
   @PUT("/v1/projects/{param}/star")
   Observable<Response<StarEnvelope>> starProject(@Path("param") String param);
 
+  @GET("/v1/users/self/surveys/{survey_response_id}")
+  Observable<Response<SurveyResponse>> surveyResponse(@Path("surveyResponseId") int surveyResponseId);
+
   @POST("/v1/projects/{param}/star/toggle")
   Observable<Response<StarEnvelope>> toggleProjectStar(@Path("param") String param);
+
+  @GET("/v1/users/self/surveys/unanswered")
+  Observable<Response<List<SurveyResponse>>> unansweredSurveys();
 
   @GET("/v1/projects/{project_param}/updates/{update_param}")
   Observable<Response<Update>> update(@Path("project_param") String projectParam, @Path("update_param") String updateParam);

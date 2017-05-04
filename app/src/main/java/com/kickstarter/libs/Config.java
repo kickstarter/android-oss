@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,8 @@ public abstract class Config implements Parcelable {
   }
 
   public static Builder builder() {
-    return new AutoParcel_Config.Builder();
+    return new AutoParcel_Config.Builder()
+      .features(Collections.emptyMap());
   }
 
   public abstract Builder toBuilder();

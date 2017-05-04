@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.view.View;
@@ -52,10 +53,10 @@ public class UnansweredSurveyViewHolder extends KSViewHolder {
     this.viewModel.outputs.surveyDescription()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(sds -> setSurveyDescription(sds));
+      .subscribe(this::setSurveyDescription);
 
   }
-  private void setSurveyDescription(List<String> surveyDescriptionStrings) {
+  private void setSurveyDescription(final @NonNull List<String> surveyDescriptionStrings) {
     this.surveyTextView.setText(Html.fromHtml(
       ksString.format(
         surveyDescriptionString,
@@ -72,7 +73,7 @@ public class UnansweredSurveyViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(configData);
   }
 
-  public void setCreatorAvatarImage(String creatorAvatarImage) {
+  private void setCreatorAvatarImage(final @NonNull String creatorAvatarImage) {
     Picasso.with(context()).load(creatorAvatarImage).into(this.creatorAvatarImageView);
   }
 }

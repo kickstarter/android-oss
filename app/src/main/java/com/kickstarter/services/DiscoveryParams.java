@@ -415,7 +415,11 @@ public abstract class DiscoveryParams implements Parcelable {
    * POTD comes back.
    */
   public boolean shouldIncludePotd() {
-    return isAllProjects() && page() != null && page() == 1 && (sort() == null || sort() == Sort.HOME);
+    return isAllProjects()
+      && page() != null
+      && page() == 1
+      && (sort() == null || sort() == Sort.HOME)
+      && (term() == null || term().isEmpty());
   }
 
   /**

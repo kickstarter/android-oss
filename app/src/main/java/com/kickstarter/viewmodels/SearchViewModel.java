@@ -1,11 +1,12 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
+import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.Project;
@@ -22,17 +23,25 @@ import rx.Scheduler;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
+
 public interface SearchViewModel {
 
   interface Inputs {
     /** Call when the next page has been invoked. */
     void nextPage();
 
+    /** Call when a project is tapped in search results. */
+    void projectClicked(final @NonNull Project project);
+
     /** Call when text changes in search box. */
     void search(final @NonNull String s);
   }
 
   interface Outputs {
+    /** Emits info clicked project / reference tag pair. */
+    Observable<Pair<Project, RefTag>> goToProject();
+
     /** Emits list of popular projects. */
     Observable<List<Project>> popularProjects();
 
@@ -75,10 +84,13 @@ public interface SearchViewModel {
       this.search
         .filter(StringUtils::isEmpty)
         .compose(bindToLifecycle())
-        .subscribe(__ -> this.searchProjects.onNext(ListUtils.empty()));
+        .subscribe(__ -> {
+          this.searchProjects.onNext(ListUtils.empty());
+          this.koala.trackClearedSearchTerm();
+        });
 
       params
-        .compose(Transformers.takePairWhen(paginator.paginatedData()))
+        .compose(takePairWhen(paginator.paginatedData()))
         .compose(bindToLifecycle())
         .subscribe(paramsAndProjects -> {
           if (paramsAndProjects.first.sort() == defaultSort) {
@@ -96,8 +108,33 @@ public interface SearchViewModel {
       final Observable<String> query = params
         .map(DiscoveryParams::term);
 
+      final Observable<List<Project>> projects = Observable.merge(
+        this.popularProjects,
+        this.searchProjects
+      );
+
+      Observable.combineLatest(search, projects, Pair::create)
+        .compose(takePairWhen(this.projectClicked))
+        .map(searchTermAndProjectsAndProjectClicked -> {
+          final String searchTerm = searchTermAndProjectsAndProjectClicked.first.first;
+          final List<Project> currentProjects = searchTermAndProjectsAndProjectClicked.first.second;
+          final Project projectClicked = searchTermAndProjectsAndProjectClicked.second;
+
+          if (searchTerm.length() == 0) {
+            return projectClicked == currentProjects.get(0)
+              ? Pair.create(projectClicked, RefTag.searchPopularFeatured())
+              : Pair.create(projectClicked, RefTag.searchPopular());
+          } else {
+            return projectClicked == currentProjects.get(0)
+              ? Pair.create(projectClicked, RefTag.searchFeatured())
+              : Pair.create(projectClicked, RefTag.search());
+          }
+        })
+        .compose(bindToLifecycle())
+        .subscribe(this.goToProject);
+
       query
-        .compose(Transformers.takePairWhen(pageCount))
+        .compose(takePairWhen(pageCount))
         .filter(qp -> StringUtils.isPresent(qp.first))
         .compose(bindToLifecycle())
         .subscribe(qp -> this.koala.trackSearchResults(qp.first, qp.second));
@@ -107,10 +144,12 @@ public interface SearchViewModel {
     private static final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(defaultSort).build();
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();
+    private final PublishSubject<Project> projectClicked = PublishSubject.create();
     private final PublishSubject<String> search = PublishSubject.create();
 
     private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
+    private final BehaviorSubject<Pair<Project, RefTag>> goToProject = BehaviorSubject.create();
 
     public final SearchViewModel.Inputs inputs = this;
     public final SearchViewModel.Outputs outputs = this;
@@ -118,10 +157,16 @@ public interface SearchViewModel {
     @Override public void nextPage() {
       this.nextPage.onNext(null);
     }
+    @Override public void projectClicked(final @NonNull Project project) {
+      this.projectClicked.onNext(project);
+    }
     @Override public void search(final @NonNull String s) {
       this.search.onNext(s);
     }
 
+    @Override public Observable<Pair<Project, RefTag>> goToProject() {
+      return this.goToProject;
+    }
     @Override public Observable<List<Project>> popularProjects() {
       return this.popularProjects;
     }

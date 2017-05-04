@@ -5,10 +5,15 @@ import com.kickstarter.factories.LocationFactory;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.services.DiscoveryParams;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class DiscoveryParamsUtilsTest extends TestCase {
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
+public class DiscoveryParamsUtilsTest {
+
+  @Test
   public void testRefTag() {
     assertEquals(
       DiscoveryParamsUtils.refTag(DiscoveryParams.builder().category(CategoryFactory.artCategory()).build()),
@@ -49,5 +54,13 @@ public class DiscoveryParamsUtilsTest extends TestCase {
       RefTag.discovery(),
       DiscoveryParamsUtils.refTag(DiscoveryParams.builder().build())
     );
+  }
+
+  @Test
+  public void testShouldIncludePotd() {
+    assertFalse(DiscoveryParams.builder().term("cat").build().shouldIncludePotd());
+    assertTrue(DiscoveryParams.builder().build().shouldIncludePotd());
+    assertFalse(DiscoveryParams.builder().page(2).build().shouldIncludePotd());
+    assertFalse(DiscoveryParams.builder().sort(DiscoveryParams.Sort.ENDING_SOON).build().shouldIncludePotd());
   }
 }

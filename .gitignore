@@ -57,8 +57,6 @@ app/kickstarter.keystore
 app/signing.gradle
 # Google API key for GCM, overwritten during builds depending on the variant
 app/google-services.json
-# Paperwork helps with caching build info
-paperwork.json
 
 # Credentials for uploading builds
 config/*.yml

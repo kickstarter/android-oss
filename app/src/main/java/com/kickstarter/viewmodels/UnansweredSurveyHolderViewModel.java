@@ -7,6 +7,9 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.ui.viewholders.UnansweredSurveyViewHolder;
 
+import java.util.Arrays;
+import java.util.List;
+
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -25,7 +28,7 @@ public interface UnansweredSurveyHolderViewModel {
     Observable<String> creatorName();
 
     /** Emits the survey description */
-    Observable<String> surveyDescription();
+    Observable<List<String>> surveyDescription();
   }
 
   final class ViewModel extends ActivityViewModel<UnansweredSurveyViewHolder> implements
@@ -49,23 +52,26 @@ public interface UnansweredSurveyHolderViewModel {
 
     private final Observable<String> creatorAvatarImage;
     private final Observable<String> creatorName;
-    private final Observable<String> surveyDescription;
+    private final Observable<List<String>> surveyDescription;
+
+    public final UnansweredSurveyHolderViewModel.Inputs inputs = this;
+    public final UnansweredSurveyHolderViewModel.Outputs outputs = this;
 
     @Override public void configureWith(final @NonNull SurveyResponse surveyResponse) {
-
+      this.configData.onNext(surveyResponse);
     }
     @Override public Observable<String> creatorAvatarImage() {
-      return null;
+      return this.creatorAvatarImage;
     }
     @Override public Observable<String> creatorName() {
-      return null;
+      return this.creatorName;
     }
-    @Override public Observable<String> surveyDescription() {
-      return null;
+    @Override public Observable<List<String>> surveyDescription() {
+      return this.surveyDescription;
     }
 
-    private String getSurveyDescription(final @NonNull SurveyResponse surveyResponse) {
-      return "string";
+    private List<String> getSurveyDescription(final @NonNull SurveyResponse surveyResponse) {
+      return Arrays.asList(surveyResponse.project().creator().name(), surveyResponse.project().name());
     }
 
   }

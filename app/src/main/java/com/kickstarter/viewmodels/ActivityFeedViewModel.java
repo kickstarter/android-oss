@@ -48,15 +48,6 @@ public interface ActivityFeedViewModel {
     /** Emits when view should be returned to Discovery projects. */
     Observable<Void> goToDiscovery();
 
-    /** Emits a boolean that determines if a logged-out, empty state should be displayed. */
-    Observable<Boolean> loggedOutEmptyStateIsVisible();
-
-    /** Emits a logged-in user with zero activities in order to display an empty state. */
-    Observable<Boolean> loggedInEmptyStateIsVisible();
-
-    /** Emits a boolean indicating whether activities are being fetched from the API. */
-    Observable<Boolean> isFetchingActivities();
-
     /** Emits when login tout should be shown. */
     Observable<Void> goToLogin();
 
@@ -65,6 +56,18 @@ public interface ActivityFeedViewModel {
 
     /** Emits an activity when project update should be shown. */
     Observable<Activity> goToProjectUpdate();
+
+    /** Emits a boolean indicating whether activities are being fetched from the API. */
+    Observable<Boolean> isFetchingActivities();
+
+    /** Emits a boolean that determines if a logged-out, empty state should be displayed. */
+    Observable<Boolean> loggedOutEmptyStateIsVisible();
+
+    /** Emits a logged-in user with zero activities in order to display an empty state. */
+    Observable<Boolean> loggedInEmptyStateIsVisible();
+
+    /** Emits a list of unanswered surveys to be shown in the user's activity feed */
+    Observable<List<SurveyResponse>> surveys();
   }
 
   final class ViewModel extends ActivityViewModel<ActivityFeedActivity> implements ActivityFeedAdapter.Delegate,
@@ -90,7 +93,6 @@ public interface ActivityFeedViewModel {
       )
         .map(Activity::project);
 
-
       final Observable<List<SurveyResponse>> responses = Observable.combineLatest(
         this.lifecycle(),
         currentUser.isLoggedIn(),
@@ -102,9 +104,9 @@ public interface ActivityFeedViewModel {
         .switchMap(__ -> client.fetchUnansweredSurveys());
 
       responses.subscribe(rs -> {
+        surveys.onNext(rs);
         Timber.d("rs: " + rs);
       });
-
 
       final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
         .nextPage(nextPage)
@@ -174,13 +176,14 @@ public interface ActivityFeedViewModel {
     private final PublishSubject<Void> refresh = PublishSubject.create();
 
     private final BehaviorSubject<List<Activity>> activities = BehaviorSubject.create();
-    private final BehaviorSubject<Boolean> isFetchingActivities= BehaviorSubject.create();
-    private final BehaviorSubject<Boolean> loggedInEmptyStateIsVisible = BehaviorSubject.create();
-    private final BehaviorSubject<Boolean> loggedOutEmptyStateIsVisible = BehaviorSubject.create();
     private final Observable<Void> goToDiscovery;
     private final Observable<Void> goToLogin;
     private final Observable<Project> goToProject;
     private final Observable<Activity> goToProjectUpdate;
+    private final BehaviorSubject<Boolean> isFetchingActivities= BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> loggedInEmptyStateIsVisible = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> loggedOutEmptyStateIsVisible = BehaviorSubject.create();
+    private final BehaviorSubject<List<SurveyResponse>> surveys = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -229,18 +232,6 @@ public interface ActivityFeedViewModel {
       return activities;
     }
 
-    @Override public @NonNull Observable<Boolean> isFetchingActivities() {
-      return isFetchingActivities;
-    }
-
-    @Override public @NonNull Observable<Boolean> loggedInEmptyStateIsVisible() {
-      return loggedInEmptyStateIsVisible;
-    }
-
-    @Override public @NonNull Observable<Boolean> loggedOutEmptyStateIsVisible() {
-      return loggedOutEmptyStateIsVisible;
-    }
-
     @Override public @NonNull Observable<Void> goToDiscovery() {
       return goToDiscovery;
     }
@@ -255,6 +246,22 @@ public interface ActivityFeedViewModel {
 
     @Override public @NonNull Observable<Activity> goToProjectUpdate() {
       return goToProjectUpdate;
+    }
+
+    @Override public @NonNull Observable<Boolean> isFetchingActivities() {
+      return isFetchingActivities;
+    }
+
+    @Override public @NonNull Observable<Boolean> loggedInEmptyStateIsVisible() {
+      return loggedInEmptyStateIsVisible;
+    }
+
+    @Override public @NonNull Observable<Boolean> loggedOutEmptyStateIsVisible() {
+      return loggedOutEmptyStateIsVisible;
+    }
+
+    @Override public Observable<List<SurveyResponse>> surveys() {
+      return surveys;
     }
   }
 }

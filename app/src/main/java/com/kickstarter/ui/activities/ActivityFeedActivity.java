@@ -21,6 +21,7 @@ import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ActivityFeedAdapter;
 import com.kickstarter.ui.data.LoginReason;
@@ -72,16 +73,6 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
       .compose(observeForUI())
       .subscribe(this::showActivities);
 
-    viewModel.outputs.loggedOutEmptyStateIsVisible()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(adapter::showLoggedOutEmptyState);
-
-    viewModel.outputs.loggedInEmptyStateIsVisible()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(adapter::showLoggedInEmptyState);
-
     viewModel.outputs.goToDiscovery()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -101,6 +92,21 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::startProjectUpdateActivity);
+
+    viewModel.outputs.loggedOutEmptyStateIsVisible()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(adapter::showLoggedOutEmptyState);
+
+    viewModel.outputs.loggedInEmptyStateIsVisible()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(adapter::showLoggedInEmptyState);
+
+    viewModel.outputs.surveys()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::showSurveys);
   }
 
   @Override
@@ -112,6 +118,10 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
 
   private void showActivities(final @NonNull List<Activity> activities) {
     adapter.takeActivities(activities);
+  }
+
+  private void showSurveys(final @NonNull List<SurveyResponse> surveyResponses) {
+    adapter.takeSurveys(surveyResponses);
   }
 
   private void resumeDiscoveryActivity() {

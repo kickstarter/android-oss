@@ -7,7 +7,6 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ActivityEnvelopeFactory;
 import com.kickstarter.factories.ActivityFactory;
 import com.kickstarter.factories.CategoryFactory;
-import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -204,8 +203,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
 
     // Clicking on a project card should show project activity.
-    showProject.assertNoValues();
-    vm.inputs.projectCardViewHolderClick(null, ProjectFactory.project());
-    showProject.assertValueCount(1);
+//    showProject.assertNoValues();
+//    vm.inputs.projectCardViewHolderClick(null, ProjectFactory.project());
+//    showProject.assertValueCount(1);
   }
 }

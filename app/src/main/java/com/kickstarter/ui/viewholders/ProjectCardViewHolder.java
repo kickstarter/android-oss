@@ -11,24 +11,17 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
-import com.kickstarter.libs.utils.DateTimeUtils;
-import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Category;
-import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
+import com.kickstarter.viewmodels.ProjectCardHolderViewModel;
 import com.squareup.picasso.Picasso;
-
-import org.joda.time.DateTime;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindDimen;
@@ -36,15 +29,20 @@ import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
-import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenDensity;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 
 public final class ProjectCardViewHolder extends KSViewHolder {
+  private final ProjectCardHolderViewModel.ViewModel viewModel;
+  private Project project;
+  private Context context;
+  private Delegate delegate;
+  private KSString ksString;
+
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
   protected @Bind(R.id.blurb) TextView blurbTextView;
-  protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
   protected @Bind(R.id.featured) TextView featuredTextView;
@@ -79,11 +77,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @BindString(R.string.discovery_baseball_card_metadata_featured_project) String featuredInString;
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 
-  private Project project;
-  private Context context;
-  private final Delegate delegate;
-
-  protected @Inject KSString ksString;
+  protected @Bind(R.id.category) TextView categoryTextView;
 
   public interface Delegate {
     void projectCardViewHolderClick(ProjectCardViewHolder viewHolder, Project project);
@@ -92,57 +86,171 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   public ProjectCardViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
-    this.context = view.getContext();
+    this.ksString = environment().ksString();
+    this.viewModel = new ProjectCardHolderViewModel.ViewModel(environment());
 
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
+
+    this.viewModel.outputs.backersCountText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.backersCountTextView::setText);
+
+    this.viewModel.outputs.backingViewGroupIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.backingViewGroup));
+
+    this.viewModel.outputs.blurbText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.blurbTextView::setText);
+
+    this.viewModel.outputs.categoryNameText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.categoryTextView::setText);
+
+    this.viewModel.outputs.deadlineCountdownText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.deadlineCountdownTextView::setText);
+
+    this.viewModel.outputs.featuredViewGroupIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone((this.featuredViewGroup)));
+
+    this.viewModel.outputs.friendAvatarUrl()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setFriendAvatarUrl);
+
+    this.viewModel.outputs.friendBackingViewIsHidden()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.friendBackingViewGroup));
+
+    this.viewModel.outputs.friendsForNamepile()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(friends ->
+        friendBackingMessageTextView.setText(SocialUtils.projectCardFriendNamepile(friends, ksString))
+      );
+
+    this.viewModel.outputs.imageIsInvisible()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setInvisible(this.photoImageView));
+
+    this.viewModel.outputs.metadataViewGroupIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.projectMetadataViewGroup));
+
+    this.viewModel.outputs.nameText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(nameTextView::setText);
+
+    this.viewModel.outputs.percentageFundedText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(percentTextView::setText);
+
+    this.viewModel.outputs.potdViewGroupIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone((this.potdViewGroup))); // test
+
+    this.viewModel.outputs.percentageFunded()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(percentageFundedProgressBar::setProgress);
+
+    this.viewModel.outputs.photoUrl()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::resizeProjectImage);
+
+    this.viewModel.outputs.projectOutput()
+      .subscribe(this::setDeadlineCountdownText);
+
+    this.viewModel.outputs.starredViewGroupIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone((this.starredViewGroup))); // test
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    project = requireNonNull((Project) data, Project.class);
+    final Project project = ObjectUtils.requireNonNull((Project) data);
+    this.viewModel.inputs.configureWith(project);
   }
 
-  public void onBind() {
-    backersCountTextView.setText(NumberUtils.format(project.backersCount()));
-    blurbTextView.setText(project.blurb());
+  private void resizeProjectImage(final @NonNull String avatarUrl) {
+    final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context) - grid4Dimen);
+    final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
+    photoImageView.setMaxHeight(targetImageHeight);
 
-    final Category category = project.category();
-    if (category != null) {
-      categoryTextView.setText(category.name());
-    } else {
-      categoryTextView.setText("");
-    }
+    Picasso.with(this.context())
+      .load(avatarUrl)
+      .resize(targetImageWidth, targetImageHeight)  // required to fit properly into apis < 18
+      .centerCrop()
+      .placeholder(grayGradientDrawable)
+      .into(photoImageView);
+  }
 
-    deadlineCountdownTextView.setText(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
+  private void setDeadlineCountdownText(final @NonNull Project project) {
     deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, context, ksString));
-    nameTextView.setText(project.name());
-    percentTextView.setText(NumberUtils.flooredPercentage(project.percentageFunded()));
-    percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(project.percentageFunded()));
-
-    final Photo photo = project.photo();
-    if (photo != null) {
-      photoImageView.setVisibility(View.VISIBLE);
-
-      final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context) - grid4Dimen);
-      final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
-      photoImageView.setMaxHeight(targetImageHeight);
-
-      Picasso.with(context)
-        .load(photo.full())
-        .resize(targetImageWidth, targetImageHeight)  // required to fit properly into apis < 18
-        .centerCrop()
-        .placeholder(grayGradientDrawable)
-        .into(photoImageView);
-
-    } else {
-      photoImageView.setVisibility(View.INVISIBLE);
-    }
-
-    setProjectMetadataView();
-    setProjectStateView(context);
   }
 
+  private void setFriendAvatarUrl(final @NonNull String avatarUrl) {
+    Picasso.with(context).load(avatarUrl)
+      .transform(new CircleTransformation())
+      .into(friendBackingAvatarImageView);
+  }
+
+  public void setProjectMetadataView() {
+
+    if (project.isBacking()) {
+      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
+      adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
+    } else if (project.isStarred()) {
+      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
+      adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
+    } else if (project.isPotdToday()) {
+      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
+      adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
+    } else if (project.isFeaturedToday()) {
+      final Category category = project.category();
+      if (category != null) {
+        final Category rootCategory = category.root();
+        if (rootCategory != null) {
+          featuredTextView.setText(ksString.format(featuredInString,
+            "category_name", rootCategory.name()));=
+          adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
+          adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
+        }
+      }
+    } else {
+      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid2Dimen, grid2Dimen, grid2Dimen);
+      adjustViewGroupTopMargin(projectCardViewGroup, 0);
+    }
+  }
+
+//
+//
+//  public void onBind() {
+//
+//
+//
+//
+//
+//    setProjectMetadataView();
+//    setProjectStateView(context);
+//  }
+//
   @Override
   public void onClick(final @NonNull View view) {
     delegate.projectCardViewHolderClick(this, project);
@@ -169,122 +277,53 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       landscapeViewGroup.setPadding(left, top, right, bottom);
     }
   }
+//
+//  public void setProjectStateView(final @NonNull Context context) {
+//    final DateTime stateChangedAt = ObjectUtils.coalesce(project.stateChangedAt(), new DateTime());
+//
+//    switch(project.state()) {
+//      case Project.STATE_SUCCESSFUL:
+//        percentageFundedProgressBar.setVisibility(View.GONE);
+//        projectStateViewGroup.setVisibility(View.VISIBLE);
+//        fundingUnsuccessfulTextView.setVisibility(View.GONE);
+//        successfullyFundedTextView.setVisibility(View.VISIBLE);
+//        successfullyFundedTextView.setText(ksString.format(bannerSuccessfulDateString,
+//          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
+//        ));
+//        break;
+//      case Project.STATE_CANCELED:
+//        percentageFundedProgressBar.setVisibility(View.GONE);
+//        projectStateViewGroup.setVisibility(View.VISIBLE);
+//        successfullyFundedTextView.setVisibility(View.GONE);
+//        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
+//        fundingUnsuccessfulTextView.setText(ksString.format(bannerCanceledDateString,
+//          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
+//        ));
+//        break;
+//      case Project.STATE_FAILED:
+//        percentageFundedProgressBar.setVisibility(View.GONE);
+//        projectStateViewGroup.setVisibility(View.VISIBLE);
+//        successfullyFundedTextView.setVisibility(View.GONE);
+//        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
+//        fundingUnsuccessfulTextView.setText(ksString.format(fundingUnsuccessfulDateString,
+//          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
+//        ));
+//        break;
+//      case Project.STATE_SUSPENDED:
+//        percentageFundedProgressBar.setVisibility(View.GONE);
+//        projectStateViewGroup.setVisibility(View.VISIBLE);
+//        successfullyFundedTextView.setVisibility(View.GONE);
+//        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
+//        fundingUnsuccessfulTextView.setText(ksString.format(bannerSuspendedDateString,
+//          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
+//        ));
+//        break;
+//      default:
+//        percentageFundedProgressBar.setVisibility(View.VISIBLE);
+//        projectStateViewGroup.setVisibility(View.GONE);
+//        break;
+//    }
+//  }
+//
 
-  public void setProjectStateView(final @NonNull Context context) {
-    final DateTime stateChangedAt = ObjectUtils.coalesce(project.stateChangedAt(), new DateTime());
-
-    switch(project.state()) {
-      case Project.STATE_SUCCESSFUL:
-        percentageFundedProgressBar.setVisibility(View.GONE);
-        projectStateViewGroup.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setVisibility(View.GONE);
-        successfullyFundedTextView.setVisibility(View.VISIBLE);
-        successfullyFundedTextView.setText(ksString.format(bannerSuccessfulDateString,
-          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
-        ));
-        break;
-      case Project.STATE_CANCELED:
-        percentageFundedProgressBar.setVisibility(View.GONE);
-        projectStateViewGroup.setVisibility(View.VISIBLE);
-        successfullyFundedTextView.setVisibility(View.GONE);
-        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setText(ksString.format(bannerCanceledDateString,
-          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
-        ));
-        break;
-      case Project.STATE_FAILED:
-        percentageFundedProgressBar.setVisibility(View.GONE);
-        projectStateViewGroup.setVisibility(View.VISIBLE);
-        successfullyFundedTextView.setVisibility(View.GONE);
-        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setText(ksString.format(fundingUnsuccessfulDateString,
-          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
-        ));
-        break;
-      case Project.STATE_SUSPENDED:
-        percentageFundedProgressBar.setVisibility(View.GONE);
-        projectStateViewGroup.setVisibility(View.VISIBLE);
-        successfullyFundedTextView.setVisibility(View.GONE);
-        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setText(ksString.format(bannerSuspendedDateString,
-          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
-        ));
-        break;
-      default:
-        percentageFundedProgressBar.setVisibility(View.VISIBLE);
-        projectStateViewGroup.setVisibility(View.GONE);
-        break;
-    }
-  }
-
-  public void setProjectMetadataView() {
-
-    // always show social
-    if (project.isFriendBacking()) {
-      friendBackingViewGroup.setVisibility(View.VISIBLE);
-
-      Picasso.with(context).load(project.friends().get(0).avatar()
-        .small())
-        .transform(new CircleTransformation())
-        .into(friendBackingAvatarImageView);
-
-      friendBackingMessageTextView.setText(SocialUtils.projectCardFriendNamepile(project.friends(), ksString));
-    } else {
-      friendBackingViewGroup.setVisibility(View.GONE);
-    }
-
-    if (project.isBacking()) {
-      projectMetadataViewGroup.setVisibility(View.VISIBLE);
-      backingViewGroup.setVisibility(View.VISIBLE);
-
-      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
-      adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
-
-      starredViewGroup.setVisibility(View.GONE);
-      potdViewGroup.setVisibility(View.GONE);
-      featuredViewGroup.setVisibility(View.GONE);
-    } else if (project.isStarred()) {
-      projectMetadataViewGroup.setVisibility(View.VISIBLE);
-      starredViewGroup.setVisibility(View.VISIBLE);
-
-      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
-      adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
-
-      backingViewGroup.setVisibility(View.GONE);
-      potdViewGroup.setVisibility(View.GONE);
-      featuredViewGroup.setVisibility(View.GONE);
-    } else if (project.isPotdToday()) {
-      projectMetadataViewGroup.setVisibility(View.VISIBLE);
-      potdViewGroup.setVisibility(View.VISIBLE);
-
-      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
-      adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
-
-      backingViewGroup.setVisibility(View.GONE);
-      starredViewGroup.setVisibility(View.GONE);
-      featuredViewGroup.setVisibility(View.GONE);
-    } else if (project.isFeaturedToday()) {
-      final Category category = project.category();
-      if (category != null) {
-        final Category rootCategory = category.root();
-        if (rootCategory != null) {
-          projectMetadataViewGroup.setVisibility(View.VISIBLE);
-          featuredViewGroup.setVisibility(View.VISIBLE);
-          featuredTextView.setText(ksString.format(featuredInString,
-            "category_name", rootCategory.name()));
-
-          adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
-          adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
-
-          backingViewGroup.setVisibility(View.GONE);
-          starredViewGroup.setVisibility(View.GONE);
-          potdViewGroup.setVisibility(View.GONE);
-        }
-      }
-    } else {
-      projectMetadataViewGroup.setVisibility(View.GONE);
-      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid2Dimen, grid2Dimen, grid2Dimen);
-      adjustViewGroupTopMargin(projectCardViewGroup, 0);
-    }
-  }
 }

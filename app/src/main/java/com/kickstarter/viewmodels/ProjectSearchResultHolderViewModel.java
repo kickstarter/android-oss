@@ -27,7 +27,8 @@ public interface ProjectSearchResultHolderViewModel {
       this.isFeatured = isFeatured;
     }
 
-    @Override public boolean equals(final Object obj) {
+    @Override
+    public boolean equals(final @NonNull Object obj) {
       if (obj == null || !(obj instanceof Data)) {
         return false;
       }
@@ -35,15 +36,14 @@ public interface ProjectSearchResultHolderViewModel {
       return data.project.equals(this.project) && data.isFeatured == this.isFeatured;
     }
 
-    @Override public int hashCode() {
-      int result = project.hashCode();
-      result = 31 * result + (isFeatured ? 1 : 0);
-      return result;
+    @Override
+    public int hashCode() {
+      return 31 * this.project.hashCode() + (this.isFeatured ? 1 : 0);
     }
   }
 
   interface Inputs {
-    /** Call to configure the view model with a message. */
+    /** Call to configure the view model with a project and isFeatured data. */
     void configureWith(Data data);
 
     /** Call to say user clicked a project */
@@ -51,28 +51,26 @@ public interface ProjectSearchResultHolderViewModel {
   }
 
   interface Outputs {
-    /** Emits key image of project */
-    Observable<String> projectImage();
+    /** Emits the project photo url to be displayed. */
+    Observable<String> projectPhotoUrl();
 
-    /** Emits title of project */
+    /** Emits title of project. */
     Observable<String> projectName();
 
-    /** Emits a completed / days to go pair */
+    /** Emits a completed / days to go pair. */
     Observable<Pair<Integer, Integer>> projectStats();
 
     /** Emits the project clicked by the user. */
     Observable<Project> notifyDelegateOfResultClick();
   }
 
-  final class ViewModel extends ActivityViewModel<ProjectSearchResultViewHolder> implements
-    ProjectSearchResultHolderViewModel.Inputs,
-    ProjectSearchResultHolderViewModel.Outputs {
+  final class ViewModel extends ActivityViewModel<ProjectSearchResultViewHolder> implements Inputs, Outputs {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.projectImage = this.configData
-        .map(ViewModel::projectImage);
+      this.projectPhotoUrl = this.configData
+        .map(ViewModel::photoUrl);
 
       this.projectName = this.configData
         .map(data -> data.project.name());
@@ -91,12 +89,12 @@ public interface ProjectSearchResultHolderViewModel {
     private final PublishSubject<Void> projectClicked = PublishSubject.create();
 
     private final Observable<Project> notifyDelegateOfResultClick;
-    private final Observable<String> projectImage;
+    private final Observable<String> projectPhotoUrl;
     private final Observable<String> projectName;
     private final Observable<Pair<Integer, Integer>> projectStats;
 
-    public final ProjectSearchResultHolderViewModel.Inputs inputs = this;
-    public final ProjectSearchResultHolderViewModel.Outputs outputs = this;
+    public final Inputs inputs = this;
+    public final Outputs outputs = this;
 
     @Override public void configureWith(final @NonNull Data data) {
       this.configData.onNext(data);
@@ -108,8 +106,8 @@ public interface ProjectSearchResultHolderViewModel {
     @Override public Observable<Project> notifyDelegateOfResultClick() {
       return this.notifyDelegateOfResultClick;
     }
-    @Override public Observable<String> projectImage() {
-      return this.projectImage;
+    @Override public Observable<String> projectPhotoUrl() {
+      return this.projectPhotoUrl;
     }
     @Override public Observable<String> projectName() {
       return this.projectName;
@@ -118,7 +116,7 @@ public interface ProjectSearchResultHolderViewModel {
       return this.projectStats;
     }
 
-    private static @Nullable String projectImage(final @NonNull Data data) {
+    private static @Nullable String photoUrl(final @NonNull Data data) {
       final Photo photo = data.project.photo();
       if (photo == null) {
         return null;

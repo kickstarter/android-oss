@@ -17,7 +17,7 @@ import rx.observers.TestSubscriber;
 public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricTestCase {
   private ProjectSearchResultHolderViewModel.ViewModel vm;
   private final TestSubscriber<Project> notifyDelegateOfResultClick = new TestSubscriber<>();
-  private final TestSubscriber<String> projectImage = new TestSubscriber<>();
+  private final TestSubscriber<String> projectPhotoUrl = new TestSubscriber<>();
   private final TestSubscriber<String> projectName = new TestSubscriber<>();
   private final TestSubscriber<Pair<Integer, Integer>> projectStats = new TestSubscriber<>();
 
@@ -25,7 +25,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
     this.vm = new ProjectSearchResultHolderViewModel.ViewModel(environment);
 
     this.vm.outputs.notifyDelegateOfResultClick().subscribe(this.notifyDelegateOfResultClick);
-    this.vm.outputs.projectImage().subscribe(this.projectImage);
+    this.vm.outputs.projectPhotoUrl().subscribe(this.projectPhotoUrl);
     this.vm.outputs.projectName().subscribe(this.projectName);
     this.vm.outputs.projectStats().subscribe(this.projectStats);
   }
@@ -46,7 +46,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
     this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, false));
 
-    this.projectImage.assertValues("http://www.kickstarter.com/med.jpg");
+    this.projectPhotoUrl.assertValues("http://www.kickstarter.com/med.jpg");
   }
 
   @Test
@@ -65,7 +65,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
     this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
 
-    this.projectImage.assertValues("http://www.kickstarter.com/full.jpg");
+    this.projectPhotoUrl.assertValues("http://www.kickstarter.com/full.jpg");
   }
 
   @Test

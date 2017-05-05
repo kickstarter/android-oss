@@ -21,10 +21,9 @@ import butterknife.ButterKnife;
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
 public class ProjectSearchResultViewHolder extends KSViewHolder {
-  private final ProjectSearchResultHolderViewModel.ViewModel viewModel;
-
   protected final Delegate delegate;
   private final KSString ksString;
+  private final ProjectSearchResultHolderViewModel.ViewModel viewModel;
 
   @Bind(R.id.project_name_text_view) TextView projectNameTextView;
   @Bind(R.id.project_image_view) ImageView projectImageView;
@@ -54,7 +53,7 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(project -> this.delegate.projectSearchResultClick(this, project));
 
-    this.viewModel.outputs.projectImage()
+    this.viewModel.outputs.projectPhotoUrl()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setProjectImage);
@@ -80,12 +79,12 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(configData);
   }
 
-  private void setProjectImage(@NonNull final String imageUrl) {
+  private void setProjectImage(final @NonNull String imageUrl) {
     this.projectImageView.setVisibility(imageUrl == null ? View.INVISIBLE : View.VISIBLE);
     Picasso.with(context()).load(imageUrl).into(projectImageView);
   }
 
-  private void setProjectStats(@NonNull final Pair<Integer, Integer> stats) {
+  private void setProjectStats(final @NonNull Pair<Integer, Integer> stats) {
     final int daysToGo = stats.second;
     this.projectStatsToGoDataTextView.setText(String.valueOf(daysToGo));
     this.projectStatsPctCompleteDataTextView.setText(String.valueOf(stats.first+"%"));

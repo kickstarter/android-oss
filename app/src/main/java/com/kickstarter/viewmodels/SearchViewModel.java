@@ -109,7 +109,7 @@ public interface SearchViewModel {
         this.searchProjects
       );
 
-      Observable.combineLatest(search, projects, Pair::create)
+      Observable.combineLatest(this.search, projects, Pair::create)
         .compose(takePairWhen(this.projectClicked))
         .map(searchTermAndProjectsAndProjectClicked -> {
           final String searchTerm = searchTermAndProjectsAndProjectClicked.first.first;
@@ -162,13 +162,13 @@ public interface SearchViewModel {
       this.search.onNext(s);
     }
 
-    @Override public Observable<Pair<Project, RefTag>> startProjectActivity() {
+    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
     }
-    @Override public Observable<List<Project>> popularProjects() {
+    @Override public @NonNull Observable<List<Project>> popularProjects() {
       return this.popularProjects;
     }
-    @Override public Observable<List<Project>> searchProjects() {
+    @Override public @NonNull Observable<List<Project>> searchProjects() {
       return this.searchProjects;
     }
   }

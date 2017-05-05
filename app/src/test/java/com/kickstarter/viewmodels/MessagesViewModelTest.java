@@ -36,7 +36,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> showMessageErrorToast = new TestSubscriber<>();
+  private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new MessagesViewModel.ViewModel(environment);
@@ -137,7 +137,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.sendMessageButtonClicked();
 
     // Error toast is displayed, errored message body remains in edit text.
-    this.showMessageErrorToast.assertValues(true);
+    this.showMessageErrorToast.assertValueCount(1);
     this.setMessageEditText.assertNoValues();
   }
 

@@ -99,7 +99,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.viewModel.outputs.showMessageErrorToast()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(__ -> ViewUtils.showToast(this, "Not delivered"));
+      .subscribe(error -> ViewUtils.showToast(this, error));
   }
 
   @Override

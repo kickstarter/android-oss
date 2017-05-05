@@ -58,8 +58,8 @@ public interface MessagesViewModel {
     /** Emits a string to set the message edit text to. */
     Observable<String> setMessageEditText();
 
-    /** Emits when we should show a message error toast. */
-    Observable<Boolean> showMessageErrorToast();
+    /** Emits a string to display in the message error toast. */
+    Observable<String> showMessageErrorToast();
   }
 
   final class ViewModel extends ActivityViewModel<MessagesActivity> implements Inputs, Outputs {
@@ -147,7 +147,7 @@ public interface MessagesViewModel {
       messageNotification
         .compose(errors())
         .map(ErrorEnvelope::fromThrowable)
-        .map(ObjectUtils::isNotNull)
+        .map(ErrorEnvelope::errorMessage)
         .subscribe(this.showMessageErrorToast::onNext);
 
       messageThread
@@ -164,7 +164,7 @@ public interface MessagesViewModel {
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
     private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
-    private final PublishSubject<Boolean> showMessageErrorToast = PublishSubject.create();
+    private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<String> setMessageEditText;
 
     public final Inputs inputs = this;
@@ -192,7 +192,7 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
     }
-    @Override public @NonNull Observable<Boolean> showMessageErrorToast() {
+    @Override public @NonNull Observable<String> showMessageErrorToast() {
       return this.showMessageErrorToast;
     }
     @Override public @NonNull Observable<String> setMessageEditText() {

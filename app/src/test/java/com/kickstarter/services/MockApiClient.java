@@ -301,7 +301,7 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Message> sendMessage(final @NonNull MessageThread thread, final @NonNull String body) {
+  public @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread thread, final @NonNull String body) {
     return Observable.just(MessageFactory.message());
   }
 

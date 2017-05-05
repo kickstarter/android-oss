@@ -122,7 +122,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   public void testSendMessage_Error() {
     final MockApiClient apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<Message> sendMessage(final @NonNull MessageThread thread, final @NonNull String body) {
+      public @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread thread, final @NonNull String body) {
         return Observable.error(ApiExceptionFactory.badRequestException());
       }
     };
@@ -147,7 +147,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<Message> sendMessage(final @NonNull MessageThread thread, final @NonNull String body) {
+      public @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread thread, final @NonNull String body) {
         return Observable.just(sentMessage);
       }
     };

@@ -39,14 +39,14 @@ public interface SearchViewModel {
   }
 
   interface Outputs {
-    /** Emits info clicked project / reference tag pair. */
-    Observable<Pair<Project, RefTag>> goToProject();
-
     /** Emits list of popular projects. */
     Observable<List<Project>> popularProjects();
 
     /** Emits list of projects matching criteria. */
     Observable<List<Project>> searchProjects();
+
+    /** Emits a project and ref tag when we should start a project activity. */
+    Observable<Pair<Project, RefTag>> startProjectActivity();
   }
 
   final class ViewModel extends ActivityViewModel<SearchActivity> implements Inputs, Outputs {
@@ -100,10 +100,6 @@ public interface SearchViewModel {
           }
         });
 
-      // Track us viewing this page
-      this.koala.trackSearchView();
-
-      // Track search results and pagination
       final Observable<Integer> pageCount = paginator.loadingPage();
       final Observable<String> query = params
         .map(DiscoveryParams::term);
@@ -131,13 +127,15 @@ public interface SearchViewModel {
           }
         })
         .compose(bindToLifecycle())
-        .subscribe(this.goToProject);
+        .subscribe(this.startProjectActivity);
 
       query
         .compose(takePairWhen(pageCount))
         .filter(qp -> StringUtils.isPresent(qp.first))
         .compose(bindToLifecycle())
         .subscribe(qp -> this.koala.trackSearchResults(qp.first, qp.second));
+
+      this.koala.trackSearchView();
     }
 
     private static final DiscoveryParams.Sort defaultSort = DiscoveryParams.Sort.POPULAR;
@@ -149,7 +147,7 @@ public interface SearchViewModel {
 
     private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
-    private final BehaviorSubject<Pair<Project, RefTag>> goToProject = BehaviorSubject.create();
+    private final BehaviorSubject<Pair<Project, RefTag>> startProjectActivity = BehaviorSubject.create();
 
     public final SearchViewModel.Inputs inputs = this;
     public final SearchViewModel.Outputs outputs = this;
@@ -164,8 +162,8 @@ public interface SearchViewModel {
       this.search.onNext(s);
     }
 
-    @Override public Observable<Pair<Project, RefTag>> goToProject() {
-      return this.goToProject;
+    @Override public Observable<Pair<Project, RefTag>> startProjectActivity() {
+      return this.startProjectActivity;
     }
     @Override public Observable<List<Project>> popularProjects() {
       return this.popularProjects;

@@ -24,7 +24,6 @@ import rx.observers.TestSubscriber;
 import rx.schedulers.TestScheduler;
 
 public class SearchViewModelTest extends KSRobolectricTestCase {
-
   private SearchViewModel.ViewModel vm;
   private final TestSubscriber<Project> goToProject = new TestSubscriber<>();
   private final TestSubscriber<RefTag> goToRefTag = new TestSubscriber<>();
@@ -36,8 +35,8 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new SearchViewModel.ViewModel(environment);
 
-    this.vm.outputs.goToProject().map(p -> p.first).subscribe(goToProject);
-    this.vm.outputs.goToProject().map(p -> p.second).subscribe(goToRefTag);
+    this.vm.outputs.startProjectActivity().map(p -> p.first).subscribe(goToProject);
+    this.vm.outputs.startProjectActivity().map(p -> p.second).subscribe(goToRefTag);
     this.vm.outputs.popularProjects().subscribe(this.popularProjects);
     this.vm.outputs.searchProjects().subscribe(this.searchProjects);
     this.vm.outputs.popularProjects().map(ps -> ps.size() > 0).subscribe(popularProjectsPresent);

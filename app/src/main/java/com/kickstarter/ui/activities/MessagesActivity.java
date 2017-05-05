@@ -91,7 +91,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(this.projectNameTextView::setText);
 
-    this.viewModel.outputs.setEmptyMessageEditText()
+    this.viewModel.outputs.setMessageEditText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.messageEditText::setText);

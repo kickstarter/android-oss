@@ -35,7 +35,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<String> setEmptyMessageEditText = new TestSubscriber<>();
+  private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> showMessageErrorToast = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
@@ -45,7 +45,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
     this.vm.outputs.messages().subscribe(this.messages);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
-    this.vm.outputs.setEmptyMessageEditText().subscribe(this.setEmptyMessageEditText);
+    this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
   }
 
@@ -138,7 +138,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     // Error toast is displayed, errored message body remains in edit text.
     this.showMessageErrorToast.assertValues(true);
-    this.setEmptyMessageEditText.assertNoValues();
+    this.setMessageEditText.assertNoValues();
   }
 
   @Test
@@ -162,6 +162,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.sendMessageButtonClicked();
 
     // Reply edit text should be cleared.
-    this.setEmptyMessageEditText.assertValueCount(1);
+    this.setMessageEditText.assertValueCount(1);
   }
 }

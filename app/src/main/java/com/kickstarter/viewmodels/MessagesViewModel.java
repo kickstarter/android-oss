@@ -55,8 +55,8 @@ public interface MessagesViewModel {
     /** Emits the project name to be displayed. */
     Observable<String> projectNameTextViewText();
 
-    /** Emits an empty string when we want to clear the message edit text. */
-    Observable<String> setEmptyMessageEditText();
+    /** Emits a string to set the message edit text to. */
+    Observable<String> setMessageEditText();
 
     /** Emits when we should show a message error toast. */
     Observable<Boolean> showMessageErrorToast();
@@ -88,7 +88,7 @@ public interface MessagesViewModel {
 
       final Observable<Message> messageSent = messageNotification.compose(values());
 
-      this.setEmptyMessageEditText = messageSent.map(__ -> "");
+      this.setMessageEditText = messageSent.map(__ -> "");
 
       final Observable<Notification<MessageThreadEnvelope>> envelopeNotification = Observable.merge(
         messageThread,
@@ -165,7 +165,7 @@ public interface MessagesViewModel {
     private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final PublishSubject<Boolean> showMessageErrorToast = PublishSubject.create();
-    private final Observable<String> setEmptyMessageEditText;
+    private final Observable<String> setMessageEditText;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -195,8 +195,8 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<Boolean> showMessageErrorToast() {
       return this.showMessageErrorToast;
     }
-    @Override public @NonNull Observable<String> setEmptyMessageEditText() {
-      return this.setEmptyMessageEditText;
+    @Override public @NonNull Observable<String> setMessageEditText() {
+      return this.setMessageEditText;
     }
   }
 }

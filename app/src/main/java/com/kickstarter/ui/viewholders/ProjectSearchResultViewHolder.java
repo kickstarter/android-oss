@@ -53,22 +53,22 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(project -> this.delegate.projectSearchResultClick(this, project));
 
+    this.viewModel.outputs.projectNameTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.projectNameTextView::setText);
+
     this.viewModel.outputs.projectPhotoUrl()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setProjectImage);
-
-    this.viewModel.outputs.projectName()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.projectNameTextView::setText);
 
     this.viewModel.outputs.projectStats()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setProjectStats);
 
-    projectStatsPctCompleteStringTextView.setText(String.format(" %s  ", fundedString));
+    this.projectStatsPctCompleteStringTextView.setText(String.format(" %s  ", this.fundedString));
   }
 
   @Override
@@ -90,8 +90,8 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
     this.projectStatsPctCompleteDataTextView.setText(String.valueOf(stats.first+"%"));
     this.projectStatsToGoStringTextView.setText(
       String.format(" %s%s ",
-        ksString.format("days", daysToGo),
-        ksString.format(toGoString, "time_left", ""))
+        this.ksString.format("days", daysToGo),
+        this.ksString.format(toGoString, "time_left", ""))
     );
   }
 

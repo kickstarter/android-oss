@@ -28,7 +28,7 @@ public interface ProjectSearchResultHolderViewModel {
     }
 
     @Override
-    public boolean equals(final @NonNull Object obj) {
+    public boolean equals(final @Nullable Object obj) {
       if (obj == null || !(obj instanceof Data)) {
         return false;
       }
@@ -51,11 +51,11 @@ public interface ProjectSearchResultHolderViewModel {
   }
 
   interface Outputs {
+    /** Emits title of project. */
+    Observable<String> projectNameTextViewText();
+
     /** Emits the project photo url to be displayed. */
     Observable<String> projectPhotoUrl();
-
-    /** Emits title of project. */
-    Observable<String> projectName();
 
     /** Emits a completed / days to go pair. */
     Observable<Pair<Integer, Integer>> projectStats();
@@ -72,7 +72,7 @@ public interface ProjectSearchResultHolderViewModel {
       this.projectPhotoUrl = this.configData
         .map(ViewModel::photoUrl);
 
-      this.projectName = this.configData
+      this.projectNameTextViewText = this.configData
         .map(data -> data.project.name());
 
       this.projectStats = this.configData
@@ -89,8 +89,8 @@ public interface ProjectSearchResultHolderViewModel {
     private final PublishSubject<Void> projectClicked = PublishSubject.create();
 
     private final Observable<Project> notifyDelegateOfResultClick;
+    private final Observable<String> projectNameTextViewText;
     private final Observable<String> projectPhotoUrl;
-    private final Observable<String> projectName;
     private final Observable<Pair<Integer, Integer>> projectStats;
 
     public final Inputs inputs = this;
@@ -109,14 +109,14 @@ public interface ProjectSearchResultHolderViewModel {
     @Override public Observable<String> projectPhotoUrl() {
       return this.projectPhotoUrl;
     }
-    @Override public Observable<String> projectName() {
-      return this.projectName;
+    @Override public Observable<String> projectNameTextViewText() {
+      return this.projectNameTextViewText;
     }
     @Override public Observable<Pair<Integer, Integer>> projectStats() {
       return this.projectStats;
     }
 
-    private static @Nullable String photoUrl(final @NonNull Data data) {
+    private static @NonNull String photoUrl(final @NonNull Data data) {
       final Photo photo = data.project.photo();
       if (photo == null) {
         return null;

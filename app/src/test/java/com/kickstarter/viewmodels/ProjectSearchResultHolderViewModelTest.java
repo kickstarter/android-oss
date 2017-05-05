@@ -17,16 +17,16 @@ import rx.observers.TestSubscriber;
 public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricTestCase {
   private ProjectSearchResultHolderViewModel.ViewModel vm;
   private final TestSubscriber<Project> notifyDelegateOfResultClick = new TestSubscriber<>();
+  private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectPhotoUrl = new TestSubscriber<>();
-  private final TestSubscriber<String> projectName = new TestSubscriber<>();
   private final TestSubscriber<Pair<Integer, Integer>> projectStats = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ProjectSearchResultHolderViewModel.ViewModel(environment);
 
     this.vm.outputs.notifyDelegateOfResultClick().subscribe(this.notifyDelegateOfResultClick);
+    this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.projectPhotoUrl().subscribe(this.projectPhotoUrl);
-    this.vm.outputs.projectName().subscribe(this.projectName);
     this.vm.outputs.projectStats().subscribe(this.projectStats);
   }
 
@@ -75,7 +75,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
-    this.projectName.assertValues(project.name());
+    this.projectNameTextViewText.assertValues(project.name());
   }
 
   @SuppressWarnings("unchecked")

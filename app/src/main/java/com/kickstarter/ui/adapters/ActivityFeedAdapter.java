@@ -16,6 +16,7 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
+import com.kickstarter.ui.viewholders.UnansweredSurveyHeaderViewHolder;
 import com.kickstarter.ui.viewholders.UnansweredSurveyViewHolder;
 
 import java.util.Collections;
@@ -24,8 +25,9 @@ import java.util.List;
 public final class ActivityFeedAdapter extends KSAdapter {
   private static final int SECTION_LOGGED_IN_EMPTY_VIEW = 0;
   private static final int SECTION_LOGGED_OUT_EMPTY_VIEW = 1;
-  private static final int SECTION_SURVEYS_VIEW = 2;
-  private static final int SECTION_ACTIVITIES_VIEW = 3;
+  private static final int SECTION_SURVEYS_HEADER_VIEW = 2;
+  private static final int SECTION_SURVEYS_VIEW = 3;
+  private static final int SECTION_ACTIVITIES_VIEW = 4;
 
   private final Delegate delegate;
 
@@ -37,6 +39,7 @@ public final class ActivityFeedAdapter extends KSAdapter {
 
     insertSection(SECTION_LOGGED_IN_EMPTY_VIEW, Collections.emptyList());
     insertSection(SECTION_LOGGED_OUT_EMPTY_VIEW, Collections.emptyList());
+    insertSection(SECTION_SURVEYS_HEADER_VIEW, Collections.singletonList(null));
     insertSection(SECTION_SURVEYS_VIEW, Collections.emptyList());
     insertSection(SECTION_ACTIVITIES_VIEW, Collections.emptyList());
   }
@@ -47,6 +50,9 @@ public final class ActivityFeedAdapter extends KSAdapter {
   }
 
   public void takeSurveys(final @NonNull List<SurveyResponse> surveyResponses) {
+    if (surveyResponses.size() > 0) {
+      setSection(SECTION_SURVEYS_HEADER_VIEW, Collections.singletonList(surveyResponses.size()));
+    }
     setSection(SECTION_SURVEYS_VIEW, surveyResponses);
     notifyDataSetChanged();
   }
@@ -68,6 +74,8 @@ public final class ActivityFeedAdapter extends KSAdapter {
         return R.layout.empty_activity_feed_view;
       case SECTION_LOGGED_OUT_EMPTY_VIEW:
         return R.layout.empty_activity_feed_view;
+      case SECTION_SURVEYS_HEADER_VIEW:
+        return R.layout.unanswered_surveys_header_view;
       case SECTION_SURVEYS_VIEW:
         return R.layout.unanswered_survey_view;
       case SECTION_ACTIVITIES_VIEW:
@@ -102,6 +110,8 @@ public final class ActivityFeedAdapter extends KSAdapter {
   @Override
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch (layout) {
+      case R.layout.unanswered_surveys_header_view:
+        return new UnansweredSurveyHeaderViewHolder(view);
       case R.layout.unanswered_survey_view:
         return new UnansweredSurveyViewHolder(view);
       case R.layout.activity_friend_backing_view:

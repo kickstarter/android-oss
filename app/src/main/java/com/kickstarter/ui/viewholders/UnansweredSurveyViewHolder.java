@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.viewmodels.UnansweredSurveyHolderViewModel;
@@ -74,6 +75,6 @@ public class UnansweredSurveyViewHolder extends KSViewHolder {
   }
 
   private void setCreatorAvatarImage(final @NonNull String creatorAvatarImage) {
-    Picasso.with(context()).load(creatorAvatarImage).into(this.creatorAvatarImageView);
+    Picasso.with(context()).load(creatorAvatarImage).transform(new CircleTransformation()).into(this.creatorAvatarImageView);
   }
 }

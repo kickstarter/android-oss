@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView
+  style="@style/Headline"
+  android:layout_margin="@dimen/grid_new_2"
+  android:id="@+id/heading"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:textColor="@color/green"
+  tools:text="@string/Survey"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools" />

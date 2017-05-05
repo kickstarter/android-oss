@@ -2,6 +2,7 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import android.view.View;
 
 import com.kickstarter.R;
@@ -9,7 +10,6 @@ import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.PopularSearchTitleViewHolder;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
-import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,13 +37,13 @@ public final class SearchAdapter extends KSAdapter {
       this.insertSection(
         SECTION_FEATURED_PROJECT,
         Collections.singletonList(
-          new ProjectSearchResultHolderViewModel.Data(newProjects.get(0), true)
+          Pair.create(newProjects.get(0), true)
         )
       );
       this.insertSection(
         SECTION_PROJECT,
         Observable.from(newProjects.subList(1, newProjects.size()))
-          .map(p -> new ProjectSearchResultHolderViewModel.Data(p, false))
+          .map(p -> Pair.create(p, false))
           .toList().toBlocking().first()
       );
     }
@@ -59,13 +59,13 @@ public final class SearchAdapter extends KSAdapter {
       this.insertSection(
         SECTION_FEATURED_PROJECT,
         Collections.singletonList(
-          new ProjectSearchResultHolderViewModel.Data(newProjects.get(0), true)
+          Pair.create(newProjects.get(0), true)
         )
       );
       this.insertSection(
         SECTION_PROJECT,
         Observable.from(newProjects.subList(1, newProjects.size()))
-          .map(p -> new ProjectSearchResultHolderViewModel.Data(p, false))
+          .map(p -> Pair.create(p, false))
           .toList().toBlocking().first()
       );
     }

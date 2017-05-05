@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -18,33 +17,9 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface ProjectSearchResultHolderViewModel {
 
-  final class Data {
-    public final Project project;
-    final boolean isFeatured;
-
-    public Data(final @NonNull Project project, final boolean isFeatured) {
-      this.project = project;
-      this.isFeatured = isFeatured;
-    }
-
-    @Override
-    public boolean equals(final @Nullable Object obj) {
-      if (obj == null || !(obj instanceof Data)) {
-        return false;
-      }
-      final Data data = (Data) obj;
-      return data.project.equals(this.project) && data.isFeatured == this.isFeatured;
-    }
-
-    @Override
-    public int hashCode() {
-      return 31 * this.project.hashCode() + (this.isFeatured ? 1 : 0);
-    }
-  }
-
   interface Inputs {
     /** Call to configure the view model with a project and isFeatured data. */
-    void configureWith(Data data);
+    void configureWith(Pair<Project, Boolean> projectAndIsFeatured);
 
     /** Call to say user clicked a project */
     void projectClicked();
@@ -69,23 +44,26 @@ public interface ProjectSearchResultHolderViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.projectPhotoUrl = this.configData
+      this.projectPhotoUrl = this.projectAndIsFeatured
         .map(ViewModel::photoUrl);
 
-      this.projectNameTextViewText = this.configData
-        .map(data -> data.project.name());
+      this.projectNameTextViewText = this.projectAndIsFeatured
+        .map(projectAndIsFeatured -> projectAndIsFeatured.first.name());
 
-      this.projectStats = this.configData
-        .map(data ->
-          Pair.create((int) data.project.percentageFunded(), ProjectUtils.deadlineCountdownValue(data.project))
+      this.projectStats = this.projectAndIsFeatured
+        .map(projectAndIsFeatured ->
+          Pair.create(
+            (int) projectAndIsFeatured.first.percentageFunded(),
+            ProjectUtils.deadlineCountdownValue(projectAndIsFeatured.first)
+          )
         );
 
-      this.notifyDelegateOfResultClick = this.configData
-        .map(data -> data.project)
+      this.notifyDelegateOfResultClick = this.projectAndIsFeatured
+        .map(projectAndIsFeatured -> projectAndIsFeatured.first)
         .compose(takeWhen(this.projectClicked));
     }
 
-    private final PublishSubject<Data> configData = PublishSubject.create();
+    private final PublishSubject<Pair<Project, Boolean>> projectAndIsFeatured = PublishSubject.create();
     private final PublishSubject<Void> projectClicked = PublishSubject.create();
 
     private final Observable<Project> notifyDelegateOfResultClick;
@@ -96,8 +74,8 @@ public interface ProjectSearchResultHolderViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override public void configureWith(final @NonNull Data data) {
-      this.configData.onNext(data);
+    @Override public void configureWith(final @NonNull Pair<Project, Boolean> projectAndIsFeatured) {
+      this.projectAndIsFeatured.onNext(projectAndIsFeatured);
     }
     @Override public void projectClicked() {
       this.projectClicked.onNext(null);
@@ -116,13 +94,13 @@ public interface ProjectSearchResultHolderViewModel {
       return this.projectStats;
     }
 
-    private static @NonNull String photoUrl(final @NonNull Data data) {
-      final Photo photo = data.project.photo();
+    private static @NonNull String photoUrl(final @NonNull Pair<Project, Boolean> projectAndIsFeatured) {
+      final Photo photo = projectAndIsFeatured.first.photo();
       if (photo == null) {
         return null;
       }
 
-      return data.isFeatured ? photo.full() : photo.med();
+      return projectAndIsFeatured.second ? photo.full() : photo.med();
     }
   }
 }

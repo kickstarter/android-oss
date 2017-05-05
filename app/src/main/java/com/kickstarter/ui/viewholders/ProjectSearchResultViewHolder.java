@@ -73,10 +73,9 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    final ProjectSearchResultHolderViewModel.Data configData = ObjectUtils.requireNonNull(
-      (ProjectSearchResultHolderViewModel.Data) data
-    );
-    this.viewModel.inputs.configureWith(configData);
+    @SuppressWarnings("unchecked")
+    final Pair<Project, Boolean> projectAndIsFeatured = ObjectUtils.requireNonNull((Pair<Project, Boolean>) data);
+    this.viewModel.inputs.configureWith(projectAndIsFeatured);
   }
 
   private void setProjectImage(final @NonNull String imageUrl) {

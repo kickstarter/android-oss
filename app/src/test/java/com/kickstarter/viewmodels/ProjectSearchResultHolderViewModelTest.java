@@ -44,7 +44,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, false));
+    this.vm.inputs.configureWith(Pair.create(project, false));
 
     this.projectPhotoUrl.assertValues("http://www.kickstarter.com/med.jpg");
   }
@@ -63,7 +63,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
+    this.vm.inputs.configureWith(Pair.create(project, true));
 
     this.projectPhotoUrl.assertValues("http://www.kickstarter.com/full.jpg");
   }
@@ -74,7 +74,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
+    this.vm.inputs.configureWith(Pair.create(project, true));
     this.projectNameTextViewText.assertValues(project.name());
   }
 
@@ -90,7 +90,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
+    this.vm.inputs.configureWith(Pair.create(project, true));
     this.projectStats.assertValues(new Pair<>(50, 10));
   }
 
@@ -100,7 +100,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
+    this.vm.inputs.configureWith(Pair.create(project, true));
     this.vm.inputs.projectClicked();
 
     this.notifyDelegateOfResultClick.assertValues(project);

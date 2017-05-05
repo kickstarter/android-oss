@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
+  style="@style/ActivityFeedCard"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_marginBottom="@dimen/grid_new_1"
+  android:layout_marginBottom="@dimen/grid_new_2"
+  android:focusable="true"
+  card_view:cardCornerRadius="0dp"
   card_view:cardUseCompatPadding="true">
 
   <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <ImageView
       android:id="@+id/survey_avatar_image"
-      style="@style/SubheadPrimaryMedium"
       android:layout_width="@dimen/discovery_activity_photo_width"
       android:layout_height="@dimen/discovery_activity_photo_height"
       android:layout_alignParentStart="true"
-      android:layout_marginTop="@dimen/grid_new_2"
+      android:layout_margin="@dimen/grid_new_2"
       tools:ignore="ContentDescription" />
 
     <TextView
       android:id="@+id/survey_title"
+      style="@style/SubheadPrimary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignTop="@id/survey_avatar_image"
@@ -36,7 +38,7 @@
 
     <TextView
       android:id="@+id/survey_text"
-      style="@style/ActivityFeedCard"
+      style="@style/Headline"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/survey_avatar_image"
@@ -51,15 +53,15 @@
       android:background="@color/gray" />
 
     <TextView
+      style="@style/BodyPrimary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_below="@id/separator"
       android:layout_centerHorizontal="true"
-      android:layout_margin="@dimen/grid_new_3"
+      android:layout_margin="@dimen/grid_new_2"
       android:text="@string/discovery_survey_button_respond_now"
       android:textAlignment="center"
       android:textColor="@color/green" />
-
 
   </RelativeLayout>
 </android.support.v7.widget.CardView>

@@ -19,7 +19,6 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
   private final TestSubscriber<Project> notifyDelegateOfResultClick = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectPhotoUrl = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Integer, Integer>> projectStats = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ProjectSearchResultHolderViewModel.ViewModel(environment);
@@ -27,7 +26,6 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
     this.vm.outputs.notifyDelegateOfResultClick().subscribe(this.notifyDelegateOfResultClick);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.projectPhotoUrl().subscribe(this.projectPhotoUrl);
-    this.vm.outputs.projectStats().subscribe(this.projectStats);
   }
 
   @Test
@@ -78,7 +76,6 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
     this.projectNameTextViewText.assertValues(project.name());
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testEmitsProjectStats() {
     final Project project = ProjectFactory.project()
@@ -91,7 +88,8 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(Pair.create(project, true));
-    this.projectStats.assertValues(new Pair<>(50, 10));
+
+    // todo: test new deadline outputs
   }
 
   @Test

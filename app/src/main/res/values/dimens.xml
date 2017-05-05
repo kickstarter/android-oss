@@ -25,6 +25,7 @@
   <dimen name="grid_40">320dp</dimen>
 
   <!-- Kickstarter six-point grid keylines -->
+  <dimen name="grid_new_1_half">3dp</dimen>
   <dimen name="grid_new_1">6dp</dimen>
   <dimen name="grid_new_2">12dp</dimen>
   <dimen name="grid_new_3">18dp</dimen>

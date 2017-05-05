@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel;
 import com.squareup.picasso.Picasso;
@@ -25,12 +26,12 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
   private final KSString ksString;
   private final ProjectSearchResultHolderViewModel.ViewModel viewModel;
 
+  @Bind(R.id.search_result_deadline_countdown_text_view) TextView deadlineCountdownValueTextView;
+  @Bind(R.id.search_result_deadline_unit_text_view) TextView deadlineCountdownUnitTextView;
   @Bind(R.id.project_name_text_view) TextView projectNameTextView;
   @Bind(R.id.project_image_view) ImageView projectImageView;
-  @Bind(R.id.project_stats_text_view_percent_complete_data) TextView projectStatsPctCompleteDataTextView;
-  @Bind(R.id.project_stats_text_view_percent_complete_string) TextView projectStatsPctCompleteStringTextView;
-  @Bind(R.id.project_stats_text_view_days_to_go_data) TextView projectStatsToGoDataTextView;
-  @Bind(R.id.project_stats_text_view_days_to_go_string) TextView projectStatsToGoStringTextView;
+  @Bind(R.id.search_result_percent_funded_text_view) TextView percentFundedTextView;
+  @Bind(R.id.search_result_funded_text_view) TextView fundedTextView;
 
   @BindString(R.string.discovery_baseball_card_stats_funded) String fundedString;
   @BindString(R.string.discovery_baseball_card_time_left_to_go) String toGoString;
@@ -48,10 +49,27 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
 
     ButterKnife.bind(this, view);
 
+    this.viewModel.outputs.deadlineCountdownValueTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.deadlineCountdownValueTextView::setText);
+
     this.viewModel.outputs.notifyDelegateOfResultClick()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(project -> this.delegate.projectSearchResultClick(this, project));
+
+    this.viewModel.outputs.percentFundedTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.percentFundedTextView::setText);
+
+    this.viewModel.outputs.projectForDeadlineCountdownUnitTextView()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(p ->
+        this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(p, context(), this.ksString))
+      );
 
     this.viewModel.outputs.projectNameTextViewText()
       .compose(bindToLifecycle())
@@ -61,14 +79,9 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
     this.viewModel.outputs.projectPhotoUrl()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::setProjectImage);
+      .subscribe(this::setProjectImageUrl);
 
-    this.viewModel.outputs.projectStats()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setProjectStats);
-
-    this.projectStatsPctCompleteStringTextView.setText(String.format(" %s  ", this.fundedString));
+    this.fundedTextView.setText(this.fundedString);
   }
 
   @Override
@@ -78,20 +91,8 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(projectAndIsFeatured);
   }
 
-  private void setProjectImage(final @NonNull String imageUrl) {
-    this.projectImageView.setVisibility(imageUrl == null ? View.INVISIBLE : View.VISIBLE);
-    Picasso.with(context()).load(imageUrl).into(projectImageView);
-  }
-
-  private void setProjectStats(final @NonNull Pair<Integer, Integer> stats) {
-    final int daysToGo = stats.second;
-    this.projectStatsToGoDataTextView.setText(String.valueOf(daysToGo));
-    this.projectStatsPctCompleteDataTextView.setText(String.valueOf(stats.first+"%"));
-    this.projectStatsToGoStringTextView.setText(
-      String.format(" %s%s ",
-        this.ksString.format("days", daysToGo),
-        this.ksString.format(toGoString, "time_left", ""))
-    );
+  private void setProjectImageUrl(final @NonNull String imageUrl) {
+    Picasso.with(context()).load(imageUrl).into(this.projectImageView);
   }
 
   @Override

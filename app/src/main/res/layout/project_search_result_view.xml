@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-  android:id="@+id/project_search_result_view"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/project_search_result_view"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:background="@color/transparent"
@@ -32,10 +32,9 @@
       android:adjustViewBounds="true"
       android:background="@drawable/gray_gradient"
       android:scaleType="centerCrop"
-      tools:ignore="ContentDescription" />
+      android:elevation="4dp"
+      tools:ignore="ContentDescription,UnusedAttribute" />
 
-
-    <!-- TODO: This implementation is temporary until our i18n system can handle CDATA -->
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -54,7 +53,8 @@
         android:layout_gravity="bottom"
         android:layout_weight="0"
         android:maxLines="3"
-        android:textColor="@color/gray_black" />
+        android:textColor="@color/gray_black"
+        tools:text="Exploding Kittens"/>
 
       <LinearLayout
         android:layout_width="wrap_content"
@@ -64,40 +64,53 @@
         android:orientation="horizontal">
 
         <TextView
-          android:id="@+id/project_stats_text_view_percent_complete_data"
+          android:id="@+id/search_result_percent_funded_text_view"
           style="@style/CaptionPrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="1"
           android:textColor="@color/green"
-          android:textStyle="bold" />
+          android:textStyle="bold"
+          android:layout_marginRight="@dimen/grid_new_1_half"
+          android:layout_marginEnd="@dimen/grid_new_1_half"
+          tools:text="100%"/>
 
         <TextView
-          android:id="@+id/project_stats_text_view_percent_complete_string"
+          android:id="@+id/search_result_funded_text_view"
           style="@style/CaptionPrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="1"
-          android:textColor="@color/black_alpha_50" />
+          android:textColor="@color/black_alpha_50"
+          android:layout_marginRight="@dimen/grid_new_1"
+          android:layout_marginEnd="@dimen/grid_new_1"
+          tools:text="funded"/>
 
         <TextView
-          android:id="@+id/project_stats_text_view_days_to_go_data"
+          android:id="@+id/search_result_deadline_countdown_text_view"
           style="@style/CaptionPrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="1"
           android:textColor="@color/gray_black"
-          android:textStyle="bold" />
+          android:textStyle="bold"
+          android:layout_marginRight="@dimen/grid_new_1_half"
+          android:layout_marginEnd="@dimen/grid_new_1_half"
+          tools:text="25"/>
 
         <TextView
-          android:id="@+id/project_stats_text_view_days_to_go_string"
+          android:id="@+id/search_result_deadline_unit_text_view"
           style="@style/CaptionPrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="1"
-          android:textColor="@color/black_alpha_50" />
+          android:textColor="@color/black_alpha_50"
+          tools:text="days to go"/>
+
       </LinearLayout>
+
     </LinearLayout>
+
   </LinearLayout>
 
   <View

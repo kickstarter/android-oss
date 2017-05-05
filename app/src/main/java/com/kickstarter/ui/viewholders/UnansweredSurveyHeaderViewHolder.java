@@ -18,17 +18,19 @@ public class UnansweredSurveyHeaderViewHolder extends KSViewHolder {
 
   @Bind(R.id.heading) TextView headingTextView;
 
-  public UnansweredSurveyHeaderViewHolder(@NonNull View view) {
+  public UnansweredSurveyHeaderViewHolder(final @NonNull View view) {
     super(view);
     ButterKnife.bind(this, view);
 
     ksString = environment().ksString();
   }
   @Override
-  public void bindData(@Nullable Object data) throws Exception {
+  public void bindData(final @Nullable Object data) throws Exception {
     // Null data means we should hide the view
     headingTextView.setVisibility(View.GONE);
-    if (data == null) return;
+    if (data == null) {
+      return;
+    }
 
     final int unansweredSurveyCount = ObjectUtils.requireNonNull(
       (int) data

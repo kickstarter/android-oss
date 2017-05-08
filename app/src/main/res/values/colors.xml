@@ -9,6 +9,7 @@
   <color name="window_background">@color/white</color>
 
   <!-- Kickstarter colors -->
+  <color name="ksr_grey_200">#F7F7F6</color>
   <color name="ksr_grey_400">#EDEDED</color>
   <color name="ksr_grey_500">#DCDEDD</color>
   <color name="ksr_navy_600">#626369</color>

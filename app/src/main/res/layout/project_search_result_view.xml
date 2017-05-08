@@ -32,7 +32,7 @@
       android:adjustViewBounds="true"
       android:background="@drawable/gray_gradient"
       android:scaleType="centerCrop"
-      android:elevation="4dp"
+      android:elevation="3dp"
       tools:ignore="ContentDescription,UnusedAttribute" />
 
     <LinearLayout
@@ -116,7 +116,7 @@
   <View
     android:layout_width="fill_parent"
     android:layout_height="1dp"
-    android:layout_marginTop="@dimen/grid_new_1"
+    android:layout_marginTop="@dimen/grid_new_2"
     android:background="@color/black_alpha_10" />
 
 </LinearLayout>

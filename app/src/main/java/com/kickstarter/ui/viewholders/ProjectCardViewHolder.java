@@ -1,6 +1,5 @@
 package com.kickstarter.ui.viewholders;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,14 +13,16 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.ProjectCardHolderViewModel;
 import com.squareup.picasso.Picasso;
+
+import org.joda.time.DateTime;
 
 import butterknife.Bind;
 import butterknife.BindDimen;
@@ -35,8 +36,6 @@ import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 
 public final class ProjectCardViewHolder extends KSViewHolder {
   private final ProjectCardHolderViewModel.ViewModel viewModel;
-  private Project project;
-  private Context context;
   private Delegate delegate;
   private KSString ksString;
 
@@ -138,6 +137,11 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         friendBackingMessageTextView.setText(SocialUtils.projectCardFriendNamepile(friends, ksString))
       );
 
+    this.viewModel.outputs.fundingUnsuccessfulTextViewIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(fundingUnsuccessfulTextView));
+
     this.viewModel.outputs.imageIsInvisible()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -152,6 +156,16 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(nameTextView::setText);
+
+    this.viewModel.outputs.notifyDelegateOfProjectClick()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(p -> delegate.projectCardViewHolderClick(this, p));
+
+    this.viewModel.outputs.percentageFundedProgressBarIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(percentageFundedProgressBar));
 
     this.viewModel.outputs.percentageFundedText()
       .compose(bindToLifecycle())
@@ -173,13 +187,62 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::resizeProjectImage);
 
+    this.viewModel.outputs.projectCanceledAt()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setCanceledTextView);
+
+    this.viewModel.outputs.projectFailedAt()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setFailedAtTextView);
+
     this.viewModel.outputs.projectOutput()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
       .subscribe(this::setDeadlineCountdownText);
+
+    this.viewModel.outputs.projectStateViewGroupIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone((this.projectStateViewGroup)));
+
+    this.viewModel.outputs.projectSuccessfulAt()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setSuccessfullyFundedTextView);
+
+    this.viewModel.outputs.projectSuspendedAt()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setSuspendedAtTextView);
+
+    this.viewModel.outputs.rootCategoryName()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(rootCategory ->
+        this.featuredTextView.setText(this.ksString.format(this.featuredInString, "category_name", rootCategory))
+      );
 
     this.viewModel.outputs.starredViewGroupIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone((this.starredViewGroup))); // test
+      .subscribe(ViewUtils.setGone((this.starredViewGroup)));
+
+    this.viewModel.outputs.successfullyFundedTextViewIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.successfullyFundedTextView));
+
+    this.viewModel.outputs.setDefaultTopPadding()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.setDefaultTopPadding());
+
+    this.viewModel.outputs.setMetadataTopPadding()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.setMetadataTopPadding());
   }
 
   @Override
@@ -189,7 +252,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   }
 
   private void resizeProjectImage(final @NonNull String avatarUrl) {
-    final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context) - grid4Dimen);
+    final int targetImageWidth = (int) (getScreenWidthDp(context()) * getScreenDensity(context()) - grid4Dimen);
     final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
     photoImageView.setMaxHeight(targetImageHeight);
 
@@ -202,64 +265,34 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   }
 
   private void setDeadlineCountdownText(final @NonNull Project project) {
-    deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, context, ksString));
+    deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, context(), ksString));
   }
 
   private void setFriendAvatarUrl(final @NonNull String avatarUrl) {
-    Picasso.with(context).load(avatarUrl)
+    Picasso.with(context()).load(avatarUrl)
       .transform(new CircleTransformation())
       .into(friendBackingAvatarImageView);
   }
 
-  public void setProjectMetadataView() {
-
-    if (project.isBacking()) {
-      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
-      adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
-    } else if (project.isStarred()) {
-      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
-      adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
-    } else if (project.isPotdToday()) {
-      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
-      adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
-    } else if (project.isFeaturedToday()) {
-      final Category category = project.category();
-      if (category != null) {
-        final Category rootCategory = category.root();
-        if (rootCategory != null) {
-          featuredTextView.setText(ksString.format(featuredInString,
-            "category_name", rootCategory.name()));=
-          adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
-          adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
-        }
-      }
-    } else {
-      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid2Dimen, grid2Dimen, grid2Dimen);
-      adjustViewGroupTopMargin(projectCardViewGroup, 0);
-    }
+  private void setDefaultTopPadding() {
+    adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid2Dimen, grid2Dimen, grid2Dimen);
+    adjustViewGroupTopMargin(projectCardViewGroup, 0);
   }
 
-//
-//
-//  public void onBind() {
-//
-//
-//
-//
-//
-//    setProjectMetadataView();
-//    setProjectStateView(context);
-//  }
-//
+  private void setMetadataTopPadding() {
+    adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
+    adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
+  }
+
   @Override
   public void onClick(final @NonNull View view) {
-    delegate.projectCardViewHolderClick(this, project);
+    this.viewModel.inputs.projectClicked();
   }
 
   /**
    *  Adjust spacing between cards when metadata label is present.
    */
-  public void adjustViewGroupTopMargin(final @NonNull ViewGroup viewGroup, final int topMargin) {
+  private void adjustViewGroupTopMargin(final @NonNull ViewGroup viewGroup, final int topMargin) {
     final RelativeLayout.MarginLayoutParams marginParams = new RelativeLayout.MarginLayoutParams(
       viewGroup.getLayoutParams()
     );
@@ -271,59 +304,34 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   /**
    * Adjust card content spacing when metadata label is present.
    */
-  public void adjustLandscapeTopPadding(final @Nullable ViewGroup landscapeViewGroup, final int left, final int top,
+  private void adjustLandscapeTopPadding(final @Nullable ViewGroup landscapeViewGroup, final int left, final int top,
     final int right, final int bottom) {
     if (landscapeViewGroup != null) {
       landscapeViewGroup.setPadding(left, top, right, bottom);
     }
   }
-//
-//  public void setProjectStateView(final @NonNull Context context) {
-//    final DateTime stateChangedAt = ObjectUtils.coalesce(project.stateChangedAt(), new DateTime());
-//
-//    switch(project.state()) {
-//      case Project.STATE_SUCCESSFUL:
-//        percentageFundedProgressBar.setVisibility(View.GONE);
-//        projectStateViewGroup.setVisibility(View.VISIBLE);
-//        fundingUnsuccessfulTextView.setVisibility(View.GONE);
-//        successfullyFundedTextView.setVisibility(View.VISIBLE);
-//        successfullyFundedTextView.setText(ksString.format(bannerSuccessfulDateString,
-//          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
-//        ));
-//        break;
-//      case Project.STATE_CANCELED:
-//        percentageFundedProgressBar.setVisibility(View.GONE);
-//        projectStateViewGroup.setVisibility(View.VISIBLE);
-//        successfullyFundedTextView.setVisibility(View.GONE);
-//        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-//        fundingUnsuccessfulTextView.setText(ksString.format(bannerCanceledDateString,
-//          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
-//        ));
-//        break;
-//      case Project.STATE_FAILED:
-//        percentageFundedProgressBar.setVisibility(View.GONE);
-//        projectStateViewGroup.setVisibility(View.VISIBLE);
-//        successfullyFundedTextView.setVisibility(View.GONE);
-//        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-//        fundingUnsuccessfulTextView.setText(ksString.format(fundingUnsuccessfulDateString,
-//          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
-//        ));
-//        break;
-//      case Project.STATE_SUSPENDED:
-//        percentageFundedProgressBar.setVisibility(View.GONE);
-//        projectStateViewGroup.setVisibility(View.VISIBLE);
-//        successfullyFundedTextView.setVisibility(View.GONE);
-//        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-//        fundingUnsuccessfulTextView.setText(ksString.format(bannerSuspendedDateString,
-//          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
-//        ));
-//        break;
-//      default:
-//        percentageFundedProgressBar.setVisibility(View.VISIBLE);
-//        projectStateViewGroup.setVisibility(View.GONE);
-//        break;
-//    }
-//  }
-//
 
+  private void setCanceledTextView(final @NonNull DateTime projectCanceledAt) {
+    fundingUnsuccessfulTextView.setText(ksString.format(bannerCanceledDateString,
+      "date", DateTimeUtils.relative(context(), ksString, projectCanceledAt)
+    ));
+  }
+
+  private void setSuccessfullyFundedTextView(final @NonNull DateTime projectSuccessfulAt) {
+    successfullyFundedTextView.setText(ksString.format(bannerSuccessfulDateString,
+      "date", DateTimeUtils.relative(context(), ksString, projectSuccessfulAt)
+    ));
+  }
+
+  private void setFailedAtTextView(final @NonNull DateTime projectFailedAt) {
+    fundingUnsuccessfulTextView.setText(ksString.format(fundingUnsuccessfulDateString,
+      "date", DateTimeUtils.relative(context(), ksString, projectFailedAt)
+    ));
+  }
+
+  private void setSuspendedAtTextView(final @NonNull DateTime projectSuspendedAt) {
+    fundingUnsuccessfulTextView.setText(ksString.format(bannerSuspendedDateString,
+      "date", DateTimeUtils.relative(context(), ksString, projectSuspendedAt)
+    ));
+  }
 }

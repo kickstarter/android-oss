@@ -45,6 +45,8 @@
           android:fontFamily="normal"
           android:layout_marginStart="@dimen/grid_new_2"
           android:layout_marginLeft="@dimen/grid_new_2"
+          android:layout_marginEnd="@dimen/grid_new_2"
+          android:layout_marginRight="@dimen/grid_new_2"
           android:layout_marginTop="@dimen/grid_new_2"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -56,12 +58,7 @@
           android:id="@+id/featured_search_result_stats"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_new_2"
-          android:layout_marginStart="@dimen/grid_new_2"
-          android:layout_marginLeft="@dimen/grid_new_2"
-          android:layout_marginRight="@dimen/grid_new_2"
-          android:layout_marginEnd="@dimen/grid_new_2"
-          android:layout_marginBottom="@dimen/grid_new_1"
+          android:layout_margin="@dimen/grid_new_2"
           android:orientation="horizontal">
 
           <TextView

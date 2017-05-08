@@ -7,7 +7,6 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:orientation="vertical"
-  android:foreground="@drawable/click_indicator_light"
   android:paddingEnd="@dimen/search_padding_x"
   android:paddingLeft="@dimen/search_padding_x"
   android:paddingRight="@dimen/search_padding_x"
@@ -18,6 +17,9 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_new_2"
     android:adjustViewBounds="true"
+    android:focusable="true"
+    android:foreground="@drawable/click_indicator_light"
+    card_view:cardBackgroundColor="@color/transparent"
     card_view:cardCornerRadius="0dp"
     card_view:elevation="@dimen/card_elevation">
 

@@ -64,7 +64,7 @@
           style="@style/CaptionPrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/green"
+          android:textColor="@color/ksr_text_green_700"
           android:textStyle="bold"
           android:layout_marginRight="@dimen/grid_new_1_half"
           android:layout_marginEnd="@dimen/grid_new_1_half"

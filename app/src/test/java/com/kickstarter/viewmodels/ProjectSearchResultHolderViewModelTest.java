@@ -7,6 +7,7 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.PhotoFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 
 import org.joda.time.DateTime;
@@ -17,6 +18,8 @@ import rx.observers.TestSubscriber;
 public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricTestCase {
   private ProjectSearchResultHolderViewModel.ViewModel vm;
   private final TestSubscriber<Project> notifyDelegateOfResultClick = new TestSubscriber<>();
+  private final TestSubscriber<String> percentFundedTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Project> projectForDeadlineCountdownUnitTextView = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectPhotoUrl = new TestSubscriber<>();
 
@@ -24,6 +27,8 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
     this.vm = new ProjectSearchResultHolderViewModel.ViewModel(environment);
 
     this.vm.outputs.notifyDelegateOfResultClick().subscribe(this.notifyDelegateOfResultClick);
+    this.vm.outputs.percentFundedTextViewText().subscribe(this.percentFundedTextViewText);
+    this.vm.outputs.projectForDeadlineCountdownUnitTextView().subscribe(this.projectForDeadlineCountdownUnitTextView);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.projectPhotoUrl().subscribe(this.projectPhotoUrl);
   }
@@ -89,7 +94,8 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
     this.vm.inputs.configureWith(Pair.create(project, true));
 
-    // todo: test new deadline outputs
+    this.percentFundedTextViewText.assertValues(NumberUtils.flooredPercentage(project.percentageFunded()));
+    this.projectForDeadlineCountdownUnitTextView.assertValues(project);
   }
 
   @Test

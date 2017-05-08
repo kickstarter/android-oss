@@ -30,6 +30,9 @@ public interface ProjectSearchResultHolderViewModel {
     /** Emits the formatted days to go text to be displayed. */
     Observable<String> deadlineCountdownValueTextViewText();
 
+    /** Emits the project clicked by the user. */
+    Observable<Project> notifyDelegateOfResultClick();
+
     /** Emits the percent funded text to be displayed. */
     Observable<String> percentFundedTextViewText();
 
@@ -41,9 +44,6 @@ public interface ProjectSearchResultHolderViewModel {
 
     /** Emits the project photo url to be displayed. */
     Observable<String> projectPhotoUrl();
-
-    /** Emits the project clicked by the user. */
-    Observable<Project> notifyDelegateOfResultClick();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectSearchResultViewHolder> implements Inputs, Outputs {

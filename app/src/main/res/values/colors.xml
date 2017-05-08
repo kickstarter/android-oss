@@ -4,8 +4,8 @@
   <color name="primary">@color/light_gray</color>
   <color name="primary_dark">@color/black</color>
   <color name="accent">@color/green</color>
-  <color name="text_primary">@color/black</color>
-  <color name="text_secondary">@color/dark_gray</color>
+  <color name="text_primary">@color/ksr_text_navy_700</color>
+  <color name="text_secondary">@color/ksr_text_navy_500</color>
   <color name="window_background">@color/white</color>
 
   <!-- Kickstarter colors. NB: we should be transitioning to using this color palette. -->
@@ -14,9 +14,10 @@
   <color name="ksr_grey_500">#DCDEDD</color>
   <color name="ksr_mint">#00CC85</color>
   <color name="ksr_navy_300">#EFEFF3</color>
-  <color name="ksr_navy_600">#626369</color>
-  <color name="ksr_navy_700">#353535</color>
   <color name="ksr_text_green_700">#05AF3C</color>
+  <color name="ksr_text_navy_600">#626369</color>
+  <color name="ksr_text_navy_500">#95959E</color>
+  <color name="ksr_text_navy_700">#353535</color>
 
   <!-- Legacy Kickstarter colors. NB: we should be moving away from this color palette. -->
   <color name="black">#000000</color>

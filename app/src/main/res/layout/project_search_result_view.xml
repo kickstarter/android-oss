@@ -72,10 +72,9 @@
 
         <TextView
           android:id="@+id/search_result_funded_text_view"
-          style="@style/CaptionPrimary"
+          style="@style/CaptionSecondary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/black_alpha_50"
           android:layout_marginRight="@dimen/grid_new_2"
           android:layout_marginEnd="@dimen/grid_new_2"
           tools:text="funded"/>
@@ -85,17 +84,15 @@
           style="@style/CaptionPrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/gray_black"
           android:layout_marginRight="@dimen/grid_new_1_half"
           android:layout_marginEnd="@dimen/grid_new_1_half"
           tools:text="25"/>
 
         <TextView
           android:id="@+id/search_result_deadline_unit_text_view"
-          style="@style/CaptionPrimary"
+          style="@style/CaptionSecondary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/black_alpha_50"
           tools:text="days to go"/>
 
       </LinearLayout>

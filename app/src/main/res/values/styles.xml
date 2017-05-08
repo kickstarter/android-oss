@@ -254,7 +254,7 @@
     <item name="android:layout_width">@dimen/button_icon_fixed_width</item>
     <item name="android:maxWidth">@dimen/button_icon_fixed_width</item>
     <item name="android:gravity">center</item>
-    <item name="android:textColor">@color/primary_dark</item>
+    <item name="android:textColor">@color/text_primary</item>
     <item name="android:textSize">@dimen/icon</item>
   </style>
 

@@ -9,11 +9,11 @@
   android:focusable="true"
   android:foreground="@drawable/click_indicator_light"
   android:orientation="vertical"
-  android:paddingEnd="@dimen/search_padding_x"
+  android:paddingTop="@dimen/search_padding_y"
   android:paddingLeft="@dimen/search_padding_x"
-  android:paddingRight="@dimen/search_padding_x"
   android:paddingStart="@dimen/search_padding_x"
-  android:paddingTop="@dimen/search_padding_x">
+  android:paddingRight="@dimen/search_padding_x"
+  android:paddingEnd="@dimen/search_padding_x">
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -22,6 +22,8 @@
     android:gravity="bottom"
     android:layout_marginEnd="@dimen/grid_new_1"
     android:layout_marginStart="@dimen/grid_new_1"
+    android:layout_marginLeft="@dimen/grid_new_1"
+    android:layout_marginRight="@dimen/grid_new_1"
     android:orientation="horizontal">
 
     <ImageView
@@ -38,9 +40,7 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_new_1"
-      android:layout_gravity="top"
-      android:gravity="bottom"
+      android:layout_gravity="center_vertical"
       android:orientation="vertical">
 
       <TextView

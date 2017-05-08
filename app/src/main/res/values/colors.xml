@@ -87,6 +87,7 @@
   <color name="green_darken_20">#00AB40</color>
   <color name="green_lighten_10">#45F88D</color>
   <color name="white_alpha_60">#99ffffff</color>
+  <color name="white_alpha_95">#F2ffffff</color>
 
   <!-- Click colors -->
   <color name="dark_gray_click">#1f000000</color>

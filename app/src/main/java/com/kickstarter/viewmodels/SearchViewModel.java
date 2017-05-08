@@ -104,30 +104,17 @@ public interface SearchViewModel {
       final Observable<String> query = params
         .map(DiscoveryParams::term);
 
-      final Observable<List<Project>> projects = Observable.merge(
-        this.popularProjects,
-        this.searchProjects
-      );
+      final Observable<List<Project>> projects = Observable.merge(this.popularProjects, this.searchProjects);
 
-      Observable.combineLatest(this.search, projects, Pair::create)
+      this.startProjectActivity = Observable.combineLatest(this.search, projects, Pair::create)
         .compose(takePairWhen(this.projectClicked))
         .map(searchTermAndProjectsAndProjectClicked -> {
           final String searchTerm = searchTermAndProjectsAndProjectClicked.first.first;
           final List<Project> currentProjects = searchTermAndProjectsAndProjectClicked.first.second;
           final Project projectClicked = searchTermAndProjectsAndProjectClicked.second;
 
-          if (searchTerm.length() == 0) {
-            return projectClicked == currentProjects.get(0)
-              ? Pair.create(projectClicked, RefTag.searchPopularFeatured())
-              : Pair.create(projectClicked, RefTag.searchPopular());
-          } else {
-            return projectClicked == currentProjects.get(0)
-              ? Pair.create(projectClicked, RefTag.searchFeatured())
-              : Pair.create(projectClicked, RefTag.search());
-          }
-        })
-        .compose(bindToLifecycle())
-        .subscribe(this.startProjectActivity);
+          return this.projectAndRefTag(searchTerm, currentProjects, projectClicked);
+        });
 
       query
         .compose(takePairWhen(pageCount))
@@ -141,13 +128,37 @@ public interface SearchViewModel {
     private static final DiscoveryParams.Sort defaultSort = DiscoveryParams.Sort.POPULAR;
     private static final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(defaultSort).build();
 
+    /**
+     * Returns a project and its appropriate ref tag given its location in a list of popular projects or search results.
+     *
+     * @param searchTerm        The search term entered to determine list of search results.
+     * @param projects          The list of popular or search result projects.
+     * @param selectedProject   The project selected by the user.
+     * @return                  The project and its appropriate ref tag.
+     */
+    private @NonNull Pair<Project, RefTag> projectAndRefTag(final @NonNull String searchTerm,
+      final @NonNull List<Project> projects, final @NonNull Project selectedProject) {
+
+      final boolean isFirstResult = selectedProject == projects.get(0);
+
+      if (searchTerm.length() == 0) {
+        return isFirstResult
+          ? Pair.create(selectedProject, RefTag.searchPopularFeatured())
+          : Pair.create(selectedProject, RefTag.searchPopular());
+      } else {
+        return isFirstResult
+          ? Pair.create(selectedProject, RefTag.searchFeatured())
+          : Pair.create(selectedProject, RefTag.search());
+      }
+    }
+
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Project> projectClicked = PublishSubject.create();
     private final PublishSubject<String> search = PublishSubject.create();
 
     private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
-    private final BehaviorSubject<Pair<Project, RefTag>> startProjectActivity = BehaviorSubject.create();
+    private final Observable<Pair<Project, RefTag>> startProjectActivity;
 
     public final SearchViewModel.Inputs inputs = this;
     public final SearchViewModel.Outputs outputs = this;

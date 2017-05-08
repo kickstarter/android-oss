@@ -45,7 +45,6 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testPopularProjectsLoadImmediately() {
-
     setUpEnvironment(environment());
 
     this.popularProjectsPresent.assertValues(true);

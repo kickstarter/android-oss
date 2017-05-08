@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:card_view="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/search_term_view"
+  xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/featured_search_result_view"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:orientation="vertical"
@@ -16,7 +16,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_new_2"
-    card_view:cardUseCompatPadding="true">
+    android:adjustViewBounds="true"
+    card_view:cardCornerRadius="0dp"
+    card_view:elevation="@dimen/card_elevation">
 
     <RelativeLayout
       android:layout_width="match_parent"
@@ -26,7 +28,6 @@
         android:id="@+id/project_image_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/search_result_featured_photo_height"
-        android:adjustViewBounds="true"
         android:background="@drawable/gray_gradient"
         android:scaleType="centerCrop"
         tools:ignore="ContentDescription" />
@@ -40,70 +41,62 @@
 
         <TextView
           android:id="@+id/project_name_text_view"
-          style="@style/SubheadPrimaryMedium"
+          style="@style/Headline"
+          android:fontFamily="normal"
           android:layout_marginStart="@dimen/grid_new_2"
           android:layout_marginLeft="@dimen/grid_new_2"
           android:layout_marginTop="@dimen/grid_new_2"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:maxLines="3"
-          android:textColor="@color/gray_black"
+          android:maxLines="2"
+          android:ellipsize="end"
           tools:text="Gravity: The Weighted Blanket for Sleep, Stress and Anxiety" />
 
         <LinearLayout
+          android:id="@+id/featured_search_result_stats"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/grid_new_2"
           android:layout_marginStart="@dimen/grid_new_2"
           android:layout_marginLeft="@dimen/grid_new_2"
+          android:layout_marginRight="@dimen/grid_new_2"
+          android:layout_marginEnd="@dimen/grid_new_2"
+          android:layout_marginBottom="@dimen/grid_new_1"
           android:orientation="horizontal">
 
           <TextView
             android:id="@+id/search_result_percent_funded_text_view"
-            style="@style/ActivityFeedCard"
+            style="@style/BodyPrimaryMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="1"
             android:textColor="@color/green"
-            android:layout_weight="0"
-            android:textStyle="bold"
             android:layout_marginEnd="@dimen/grid_new_1_half"
             android:layout_marginRight="@dimen/grid_new_1_half"
             tools:text="8,000%"/>
 
           <TextView
             android:id="@+id/search_result_funded_text_view"
-            style="@style/ActivityFeedCard"
+            style="@style/BodySecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:maxLines="1"
-            android:textColor="@color/black_alpha_50"
-            android:layout_marginEnd="@dimen/grid_new_1"
-            android:layout_marginRight="@dimen/grid_new_1"
+            android:layout_marginEnd="@dimen/grid_new_2"
+            android:layout_marginRight="@dimen/grid_new_2"
             tools:text="funded"/>
 
           <TextView
             android:id="@+id/search_result_deadline_countdown_text_view"
-            style="@style/ActivityFeedCard"
+            style="@style/BodyPrimaryMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:maxLines="1"
-            android:textColor="@color/gray_black"
-            android:textStyle="bold"
             android:layout_marginEnd="@dimen/grid_new_1_half"
             android:layout_marginRight="@dimen/grid_new_1_half"
             tools:text="25"/>
 
           <TextView
             android:id="@+id/search_result_deadline_unit_text_view"
-            style="@style/ActivityFeedCard"
+            style="@style/BodySecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:maxLines="1"
-            android:textColor="@color/black_alpha_50"
             tools:text="days to go"/>
 
         </LinearLayout>
@@ -117,7 +110,7 @@
   <View
     android:layout_width="fill_parent"
     android:layout_height="1dp"
-    android:layout_marginTop="@dimen/grid_new_1"
-    android:background="@color/black_alpha_10" />
+    android:layout_marginTop="@dimen/grid_new_3"
+    android:background="@color/ksr_navy_300" />
 
 </LinearLayout>

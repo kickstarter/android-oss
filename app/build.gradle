@@ -185,6 +185,7 @@ dependencies {
 }
 
 // Solution for caching gitSha and commitTime courtesy of https://github.com/tasomaniac
+// taken from https://github.com/gdg-x/frisbee/blob/develop/app/build.gradle
 def commitSha() {
     def file = new File(project.buildDir, "commit-sha.txt")
     if (file.exists()) {
@@ -204,7 +205,6 @@ def commitTime() {
         return file.text
     }
 
-    // TODO: upgrade gradle and use `getHeadGitCommit.date` instead
     def date = new Date()
     def value = date.format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
 

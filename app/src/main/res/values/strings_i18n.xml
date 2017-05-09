@@ -290,6 +290,7 @@ catch your eye?</string>
   <string name="Upcoming_live_streams" formatted="false">Upcoming live streams</string>
   <string name="Upcoming_with_creator_name" formatted="false">Upcoming with&lt;br/>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Update_pledge" formatted="false">Update pledge</string>
+  <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Video disabled until the internet connection improves</string>
   <string name="View" formatted="false">View</string>
   <string name="View_your_pledge" formatted="false">View your pledge</string>
   <string name="View_your_reward" formatted="false">View your reward</string>

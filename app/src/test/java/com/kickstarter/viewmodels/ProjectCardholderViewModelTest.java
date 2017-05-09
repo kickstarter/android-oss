@@ -50,7 +50,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> projectStateViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<DateTime> projectSuccessfulAt = new TestSubscriber<>();
   private final TestSubscriber<DateTime> projectSuspendedAt = new TestSubscriber<>();
-  private final TestSubscriber<String> rootCategoryName = new TestSubscriber<>();
+  private final TestSubscriber<String> rootCategoryNameForFeatured = new TestSubscriber<>();
   private final TestSubscriber<Void> setDefaultTopPadding = new TestSubscriber<>();
   private final TestSubscriber<Void> setMetadataTopPadding = new TestSubscriber<>();
   private final TestSubscriber<Boolean> starredViewGroupIsGone = new TestSubscriber<>();
@@ -81,7 +81,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.projectStateViewGroupIsGone().subscribe(this.projectStateViewGroupIsGone);
     this.vm.outputs.projectSuccessfulAt().subscribe(this.projectSuccessfulAt);
     this.vm.outputs.projectSuspendedAt().subscribe(this.projectSuspendedAt);
-    this.vm.outputs.rootCategoryName().subscribe(this.rootCategoryName);
+    this.vm.outputs.rootCategoryNameForFeatured().subscribe(this.rootCategoryNameForFeatured);
     this.vm.outputs.setDefaultTopPadding().subscribe(this.setDefaultTopPadding);
     this.vm.outputs.setMetadataTopPadding().subscribe(this.setMetadataTopPadding);
     this.vm.outputs.starredViewGroupIsGone().subscribe(this.starredViewGroupIsGone);
@@ -410,7 +410,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testRootCategoryName() {
+  public void testRootCategoryNameForFeatured() {
     final Category category = CategoryFactory.bluesCategory();
 
     final Project project = ProjectFactory.project()
@@ -421,7 +421,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.rootCategoryName.assertValues(category.root().name());
+    this.rootCategoryNameForFeatured.assertValues(category.root().name());
   }
 
   @Test

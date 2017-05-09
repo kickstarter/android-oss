@@ -61,7 +61,7 @@ public interface ProjectCardHolderViewModel {
     Observable<Boolean> projectStateViewGroupIsGone();
     Observable<DateTime> projectSuccessfulAt();
     Observable<DateTime> projectSuspendedAt();
-    Observable<String> rootCategoryName();
+    Observable<String> rootCategoryNameForFeatured();
     Observable<Void> setDefaultTopPadding();
     Observable<Void> setMetadataTopPadding();
     Observable<Boolean> starredViewGroupIsGone();
@@ -120,8 +120,8 @@ public interface ProjectCardHolderViewModel {
         .map(Project::photo)
         .map(ObjectUtils::isNull);
 
-      this.metadataViewGroupIsGone = this.project
-        .map(p -> !p.isBacking() && !p.isStarred() && !p.isPotdToday() && !p.isFeaturedToday());
+      this.metadataViewGroupIsGone = this.backingViewGroupIsGone
+        .map(BooleanUtils::isFalse);
 
       this.nameText = this.project
         .map(Project::name);
@@ -172,7 +172,7 @@ public interface ProjectCardHolderViewModel {
         .map(Project::stateChangedAt)
         .compose(coalesce(new DateTime()));
 
-      this.rootCategoryName = this.project
+      this.rootCategoryNameForFeatured = this.project
         .map(Project::category)
         .filter(ObjectUtils::isNotNull)
         .map(Category::root)
@@ -222,7 +222,7 @@ public interface ProjectCardHolderViewModel {
     private final Observable<DateTime> projectFailedAt;
     private final Observable<DateTime> projectSuccessfulAt;
     private final Observable<DateTime> projectSuspendedAt;
-    private final Observable<String> rootCategoryName;
+    private final Observable<String> rootCategoryNameForFeatured;
     private final Observable<Void> setDefaultTopPadding;
     private final Observable<Void> setMetadataTopPadding;
     private final Observable<Boolean> starredViewGroupIsGone;
@@ -264,7 +264,7 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<DateTime> projectFailedAt() { return this.projectFailedAt; }
     @Override public @NonNull Observable<DateTime> projectSuccessfulAt() { return this.projectSuccessfulAt; }
     @Override public @NonNull Observable<DateTime> projectSuspendedAt() { return this.projectSuspendedAt; }
-    @Override public @NonNull Observable<String> rootCategoryName() { return this.rootCategoryName; }
+    @Override public @NonNull Observable<String> rootCategoryNameForFeatured() { return this.rootCategoryNameForFeatured; }
     @Override public @NonNull Observable<Void> setDefaultTopPadding() { return this.setDefaultTopPadding; }
     @Override public @NonNull Observable<Void> setMetadataTopPadding() { return this.setMetadataTopPadding; }
     @Override public @NonNull Observable<Boolean> starredViewGroupIsGone() { return this.starredViewGroupIsGone; }

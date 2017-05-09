@@ -217,7 +217,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::setSuspendedAtTextView);
 
-    this.viewModel.outputs.rootCategoryName()
+    this.viewModel.outputs.rootCategoryNameForFeatured()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(rootCategory ->

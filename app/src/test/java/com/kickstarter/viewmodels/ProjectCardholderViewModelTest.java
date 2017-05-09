@@ -37,7 +37,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<List<User>> friendsForNamepile = new TestSubscriber<>();
   private final TestSubscriber<Boolean> fundingUnsuccessfulTextViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> imageIsInvisible = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> metadataViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> nameText = new TestSubscriber<>();
   private final TestSubscriber<Project> notifyDelegateOfProjectClick = new TestSubscriber<>();
   private final TestSubscriber<Integer> percentageFunded = new TestSubscriber<>();
@@ -51,8 +50,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<DateTime> projectSuccessfulAt = new TestSubscriber<>();
   private final TestSubscriber<DateTime> projectSuspendedAt = new TestSubscriber<>();
   private final TestSubscriber<String> rootCategoryNameForFeatured = new TestSubscriber<>();
-  private final TestSubscriber<Void> setDefaultTopPadding = new TestSubscriber<>();
-  private final TestSubscriber<Void> setMetadataTopPadding = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> setDefaultTopPadding = new TestSubscriber<>();
   private final TestSubscriber<Boolean> starredViewGroupIsGone = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
@@ -68,7 +66,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.friendsForNamepile().subscribe(this.friendsForNamepile);
     this.vm.outputs.fundingUnsuccessfulTextViewIsGone().subscribe(this.fundingUnsuccessfulTextViewIsGone);
     this.vm.outputs.imageIsInvisible().subscribe(this.imageIsInvisible);
-    this.vm.outputs.metadataViewGroupIsGone().subscribe(this.metadataViewGroupIsGone);
     this.vm.outputs.nameText().subscribe(this.nameText);
     this.vm.outputs.notifyDelegateOfProjectClick().subscribe(this.notifyDelegateOfProjectClick);
     this.vm.outputs.percentageFunded().subscribe(this.percentageFunded);
@@ -83,7 +80,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.projectSuspendedAt().subscribe(this.projectSuspendedAt);
     this.vm.outputs.rootCategoryNameForFeatured().subscribe(this.rootCategoryNameForFeatured);
     this.vm.outputs.setDefaultTopPadding().subscribe(this.setDefaultTopPadding);
-    this.vm.outputs.setMetadataTopPadding().subscribe(this.setMetadataTopPadding);
     this.vm.outputs.starredViewGroupIsGone().subscribe(this.starredViewGroupIsGone);
   }
 
@@ -248,15 +244,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.configureWith(project);
     this.imageIsInvisible.assertValues(ObjectUtils.isNull(project.photo()));
-  }
-
-  @Test
-  public void testEmitsMetadataViewGroupIsGone() {
-    final Project project = ProjectFactory.project().toBuilder().isStarred(true).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(project);
-    this.metadataViewGroupIsGone.assertValues(false);
   }
 
   @Test
@@ -427,7 +414,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testSetDefaultTopPadding() {
+  public void testSetDefaultTopPadding_noMetaData() {
     final Project project = ProjectFactory.project()
       .toBuilder()
       .isBacking(false)
@@ -439,20 +426,23 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.setDefaultTopPadding.assertValueCount(1);
+    this.setDefaultTopPadding.assertValue(true);
   }
 
   @Test
-  public void testSetMetadataTopPadding() {
+  public void testSetDefaultTopPadding_withMetData() {
     final Project project = ProjectFactory.project()
       .toBuilder()
       .isBacking(true)
+      .isStarred(false)
+      .potdAt(null)
+      .featuredAt(null)
       .build();
 
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.setMetadataTopPadding.assertValueCount(1);
+    this.setDefaultTopPadding.assertValue(false);
   }
 
   @Test

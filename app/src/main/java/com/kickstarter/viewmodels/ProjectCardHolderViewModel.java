@@ -13,7 +13,6 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Category;
-import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
@@ -63,8 +62,7 @@ public interface ProjectCardHolderViewModel {
     Observable<DateTime> projectSuccessfulAt();
     Observable<DateTime> projectSuspendedAt();
     Observable<String> rootCategoryNameForFeatured();
-    Observable<Void> setDefaultTopPadding();
-    Observable<Void> setMetadataTopPadding();
+    Observable<Boolean> setDefaultTopPadding();
     Observable<Boolean> starredViewGroupIsGone();
     Observable<Boolean> successfullyFundedTextViewIsGone();
   }
@@ -178,13 +176,7 @@ public interface ProjectCardHolderViewModel {
         .filter(ObjectUtils::isNotNull)
         .map(Category::name);
 
-      this.setDefaultTopPadding = this.metadataViewGroupIsGone
-        .filter(b -> b)
-        .compose(Transformers.ignoreValues());
-
-      this.setMetadataTopPadding = this.metadataViewGroupIsGone
-        .filter(b -> !b)
-        .compose(Transformers.ignoreValues());
+      this.setDefaultTopPadding = this.metadataViewGroupIsGone;
 
       this.starredViewGroupIsGone = this.project
         .map(p -> metadataForProject(p) != Metadata.STARRING);
@@ -222,8 +214,7 @@ public interface ProjectCardHolderViewModel {
     private final Observable<DateTime> projectSuccessfulAt;
     private final Observable<DateTime> projectSuspendedAt;
     private final Observable<String> rootCategoryNameForFeatured;
-    private final Observable<Void> setDefaultTopPadding;
-    private final Observable<Void> setMetadataTopPadding;
+    private final Observable<Boolean> setDefaultTopPadding;
     private final Observable<Boolean> starredViewGroupIsGone;
     private final Observable<Boolean> successfullyFundedTextViewIsGone;
 
@@ -318,11 +309,8 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<String> rootCategoryNameForFeatured() {
       return this.rootCategoryNameForFeatured;
     }
-    @Override public @NonNull Observable<Void> setDefaultTopPadding() {
+    @Override public @NonNull Observable<Boolean> setDefaultTopPadding() {
       return this.setDefaultTopPadding;
-    }
-    @Override public @NonNull Observable<Void> setMetadataTopPadding() {
-      return this.setMetadataTopPadding;
     }
     @Override public @NonNull Observable<Boolean> starredViewGroupIsGone() {
       return this.starredViewGroupIsGone;

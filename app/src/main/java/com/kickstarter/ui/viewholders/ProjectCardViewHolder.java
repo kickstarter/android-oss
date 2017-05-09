@@ -147,11 +147,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setInvisible(this.photoImageView));
 
-    this.viewModel.outputs.metadataViewGroupIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.projectMetadataViewGroup));
-
     this.viewModel.outputs.nameText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -237,12 +232,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.outputs.setDefaultTopPadding()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(__ -> this.setDefaultTopPadding());
-
-    this.viewModel.outputs.setMetadataTopPadding()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.setMetadataTopPadding());
+      .subscribe(this::setDefaultTopPadding);
   }
 
   @Override
@@ -274,14 +264,14 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .into(friendBackingAvatarImageView);
   }
 
-  private void setDefaultTopPadding() {
-    adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid2Dimen, grid2Dimen, grid2Dimen);
-    adjustViewGroupTopMargin(projectCardViewGroup, 0);
-  }
-
-  private void setMetadataTopPadding() {
-    adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
-    adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
+  private void setDefaultTopPadding(final boolean setDefaultPadding) {
+    if (setDefaultPadding) {
+      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid2Dimen, grid2Dimen, grid2Dimen);
+      adjustViewGroupTopMargin(projectCardViewGroup, 0);
+    } else {
+      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
+      adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
+    }
   }
 
   @Override

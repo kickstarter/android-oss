@@ -102,7 +102,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.backingViewGroupIsGone.assertValues(true);
+    this.backingViewGroupIsGone.assertValues(false);
   }
 
   @Test
@@ -117,7 +117,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.backingViewGroupIsGone.assertValues(false);
+    this.backingViewGroupIsGone.assertValues(true);
   }
 
   @Test
@@ -140,7 +140,9 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testEmitsDeadlineCountdownText() {
-    final Project project = ProjectFactory.project().toBuilder().deadline(new DateTime().plusDays(1)).build();
+    final Project project = ProjectFactory.project().toBuilder()
+      .deadline(new DateTime().plusHours(25))
+      .build();
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);

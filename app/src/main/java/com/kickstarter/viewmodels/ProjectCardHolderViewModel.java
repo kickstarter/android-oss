@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels;
 
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
@@ -80,7 +81,7 @@ public interface ProjectCardHolderViewModel {
         .map(NumberUtils::format);
 
       this.backingViewGroupIsGone = this.project
-        .map(p -> p.isBacking() || p.isStarred() || p.isPotdToday() || p.isFeaturedToday());
+        .map(p -> metadataForProject(p) != Metadata.BACKING);
 
       this.blurbText = this.project
         .map(Project::blurb);
@@ -95,7 +96,7 @@ public interface ProjectCardHolderViewModel {
         .map(NumberUtils::format);
 
       this.featuredViewGroupIsGone = this.project
-        .map(p -> p.isBacking() || p.isStarred() || p.isPotdToday() || !p.isFeaturedToday());
+        .map(p -> metadataForProject(p) != Metadata.CATEGORY_FEATURED);
 
       this.friendAvatarUrl = this.project
         .filter(Project::isFriendBacking)
@@ -120,8 +121,8 @@ public interface ProjectCardHolderViewModel {
         .map(Project::photo)
         .map(ObjectUtils::isNull);
 
-      this.metadataViewGroupIsGone = this.backingViewGroupIsGone
-        .map(BooleanUtils::isFalse);
+      this.metadataViewGroupIsGone = this.project
+        .map(p -> metadataForProject(p) == null);
 
       this.nameText = this.project
         .map(Project::name);
@@ -141,12 +142,10 @@ public interface ProjectCardHolderViewModel {
         .map(NumberUtils::flooredPercentage);
 
       this.photoUrl = this.project
-        .map(Project::photo)
-        .filter(ObjectUtils::isNotNull)
-        .map(Photo::med);
+        .map(p -> p.photo() == null ? null : p.photo().med());
 
       this.potdViewGroupIsGone = this.project
-        .map(p -> p.isBacking() || p.isStarred() || !p.isPotdToday() || p.isFeaturedToday());
+        .map(p -> metadataForProject(p) != Metadata.POTD);
 
       this.projectCanceledAt = this.project
         .filter(p -> p.state().equals(Project.STATE_CANCELED))
@@ -188,7 +187,7 @@ public interface ProjectCardHolderViewModel {
         .compose(Transformers.ignoreValues());
 
       this.starredViewGroupIsGone = this.project
-        .map(p -> p.isBacking() || !p.isStarred());
+        .map(p -> metadataForProject(p) != Metadata.STARRING);
 
       this.successfullyFundedTextViewIsGone = this.project
         .map(p -> !p.state().equals(Project.STATE_SUCCESSFUL));
@@ -330,6 +329,23 @@ public interface ProjectCardHolderViewModel {
     }
     @Override public @NonNull Observable<Boolean> successfullyFundedTextViewIsGone() {
       return this.successfullyFundedTextViewIsGone;
+    }
+
+    private enum Metadata {
+      BACKING, STARRING, POTD, CATEGORY_FEATURED
+    }
+
+    private static @Nullable Metadata metadataForProject(final @NonNull Project project) {
+      if (project.isBacking()) {
+        return Metadata.BACKING;
+      } else if (project.isStarred()) {
+        return Metadata.STARRING;
+      } else if (project.isPotdToday()) {
+        return Metadata.POTD;
+      } else if (project.isFeaturedToday()) {
+        return Metadata.CATEGORY_FEATURED;
+      }
+      return null;
     }
   }
 }

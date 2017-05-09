@@ -251,7 +251,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(project);
   }
 
-  private void resizeProjectImage(final @NonNull String avatarUrl) {
+  private void resizeProjectImage(final @Nullable String avatarUrl) {
     final int targetImageWidth = (int) (getScreenWidthDp(context()) * getScreenDensity(context()) - grid4Dimen);
     final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
     photoImageView.setMaxHeight(targetImageHeight);

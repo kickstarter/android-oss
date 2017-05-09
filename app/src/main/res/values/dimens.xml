@@ -113,8 +113,8 @@
   <dimen name="project_card_photo_landscape_height">135dp</dimen>
   <dimen name="project_card_photo_landscape_width">240dp</dimen>
   <dimen name="project_social_photo_height">@dimen/grid_4</dimen>
-  <dimen name="search_result_photo_width">@dimen/grid_14</dimen>
-  <dimen name="search_result_photo_height">63dp</dimen>
+  <dimen name="search_result_photo_width">80dp</dimen>
+  <dimen name="search_result_photo_height">45dp</dimen>
   <dimen name="search_result_featured_photo_height">@dimen/grid_new_33</dimen>
 
   <dimen name="thanks_project_photo_width">208dp</dimen>

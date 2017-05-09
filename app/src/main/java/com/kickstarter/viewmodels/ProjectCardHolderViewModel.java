@@ -73,14 +73,6 @@ public interface ProjectCardHolderViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      final Observable<Boolean> projectInEndedStates = this.project
-        .map(
-          p -> p.state().equals(Project.STATE_SUCCESSFUL)
-            || p.state().equals(Project.STATE_CANCELED)
-            || p.state().equals(Project.STATE_FAILED)
-            || p.state().equals(Project.STATE_SUSPENDED)
-        );
-
       this.projectOutput = this.project;
 
       this.backersCountText = this.project
@@ -141,7 +133,8 @@ public interface ProjectCardHolderViewModel {
         .map(Project::percentageFunded)
         .map(ProgressBarUtils::progress);
 
-      this.percentageFundedProgressBarIsGone = projectInEndedStates;
+      this.percentageFundedProgressBarIsGone = this.project
+        .map(ProjectUtils::isCompleted);
 
       this.percentageFundedText = this.project
         .map(Project::percentageFunded)
@@ -165,7 +158,8 @@ public interface ProjectCardHolderViewModel {
         .map(Project::stateChangedAt)
         .compose(coalesce(new DateTime()));
 
-      this.projectStateViewGroupIsGone = projectInEndedStates
+      this.projectStateViewGroupIsGone = this.project
+        .map(ProjectUtils::isCompleted)
         .map(BooleanUtils::negate);
 
       this.projectSuccessfulAt = this.project

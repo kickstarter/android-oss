@@ -5,13 +5,13 @@ def externalPrivateVersion = new File(project.rootDir.path + "/app/external_vers
 def externalPublicVersion = new File(project.rootDir.path + "/app/external_version_name.txt").text.trim()
 def internalPrivateVersion = new File(project.rootDir.path + "/app/internal_version_code.txt").text.trim().toInteger()
 def internalPublicVersion = new File(project.rootDir.path + "/app/internal_version_name.txt").text.trim()
-def isCircle = "true".equals(System.getenv("CIRCLECI"))
+def isCircle = "true" == System.getenv("CIRCLECI")
 
 ext.signing = [
-        storeFilePath: "path/to/keystore",
-        storePassword: "keystore password",
-        keyAlias     : "key alias",
-        keyPassword  : "key password"
+    storeFilePath: "path/to/keystore",
+    storePassword: "keystore password",
+    keyAlias     : "key alias",
+    keyPassword  : "key password"
 ]
 
 if (file('signing.gradle').exists()) {

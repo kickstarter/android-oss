@@ -93,6 +93,11 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
       .compose(observeForUI())
       .subscribe(this::startProjectUpdateActivity);
 
+    viewModel.outputs.goToSurvey()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startSurveyWebView);
+
     viewModel.outputs.loggedOutEmptyStateIsVisible()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -145,5 +150,11 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
     final Intent intent = new Intent(this, WebViewActivity.class)
       .putExtra(IntentKey.URL, activity.projectUpdateUrl());
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startSurveyWebView(final @NonNull SurveyResponse surveyResponse) {
+    final Intent intent = new Intent(this, WebViewActivity.class)
+      .putExtra(IntentKey.URL, surveyResponse.urlsEnvelope().webEnvelope().survey());
+    startActivityWithTransition(intent, R.anim.slide_in_bottom, R.anim.com_mixpanel_android_slide_down);
   }
 }

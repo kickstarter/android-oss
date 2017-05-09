@@ -33,9 +33,16 @@ public class UnansweredSurveyViewHolder extends KSViewHolder {
   @BindString(R.string.Creator_name_needs_some_information_to_deliver_your_reward_for_project_name) String surveyDescriptionString;
 
   private final UnansweredSurveyHolderViewModel.ViewModel viewModel;
-  public UnansweredSurveyViewHolder(final View view) {
-    super(view);
 
+  private final Delegate delegate;
+
+  public interface Delegate {
+    void surveyClicked(UnansweredSurveyViewHolder viewHolder, SurveyResponse surveyResponse);
+  }
+
+  public UnansweredSurveyViewHolder(final View view, final Delegate delegate) {
+    super(view);
+    this.delegate = delegate;
     this.viewModel = new UnansweredSurveyHolderViewModel.ViewModel(environment());
     this.ksString = environment().ksString();
 
@@ -55,8 +62,8 @@ public class UnansweredSurveyViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setSurveyDescription);
-
   }
+
   private void setSurveyDescription(final @NonNull List<String> surveyDescriptionStrings) {
     this.surveyTextView.setText(Html.fromHtml(
       ksString.format(
@@ -76,5 +83,10 @@ public class UnansweredSurveyViewHolder extends KSViewHolder {
 
   private void setCreatorAvatarImage(final @NonNull String creatorAvatarImage) {
     Picasso.with(context()).load(creatorAvatarImage).transform(new CircleTransformation()).into(this.creatorAvatarImageView);
+  }
+
+  @Override
+  public void onClick(@NonNull View view) {
+    this.viewModel.inputs.surveyClicked();
   }
 }

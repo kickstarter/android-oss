@@ -32,7 +32,7 @@ public final class ActivityFeedAdapter extends KSAdapter {
   private final Delegate delegate;
 
   public interface Delegate extends FriendBackingViewHolder.Delegate, ProjectStateChangedPositiveViewHolder.Delegate,
-    ProjectStateChangedViewHolder.Delegate, ProjectUpdateViewHolder.Delegate, EmptyActivityFeedViewHolder.Delegate {}
+    ProjectStateChangedViewHolder.Delegate, ProjectUpdateViewHolder.Delegate, EmptyActivityFeedViewHolder.Delegate, UnansweredSurveyViewHolder.Delegate {}
 
   public ActivityFeedAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
@@ -113,7 +113,7 @@ public final class ActivityFeedAdapter extends KSAdapter {
       case R.layout.unanswered_surveys_header_view:
         return new UnansweredSurveyHeaderViewHolder(view);
       case R.layout.unanswered_survey_view:
-        return new UnansweredSurveyViewHolder(view);
+        return new UnansweredSurveyViewHolder(view, delegate);
       case R.layout.activity_friend_backing_view:
         return new FriendBackingViewHolder(view, delegate);
       case R.layout.activity_friend_follow_view:

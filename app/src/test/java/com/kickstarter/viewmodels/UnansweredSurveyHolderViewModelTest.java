@@ -19,6 +19,7 @@ public class UnansweredSurveyHolderViewModelTest extends KSRobolectricTestCase {
   private UnansweredSurveyHolderViewModel.ViewModel vm;
   private final TestSubscriber<String> creatorAvatarImage = new TestSubscriber<>();
   private final TestSubscriber<String> creatorName = new TestSubscriber<>();
+  private final TestSubscriber<SurveyResponse> loadSurvey = new TestSubscriber<>();
   private final TestSubscriber<List<String>> surveyDescription = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
@@ -26,9 +27,9 @@ public class UnansweredSurveyHolderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.outputs.creatorAvatarImage().subscribe(this.creatorAvatarImage);
     this.vm.outputs.creatorName().subscribe(this.creatorName);
+    this.vm.outputs.loadSurvey().subscribe(this.loadSurvey);
     this.vm.outputs.surveyDescription().subscribe(this.surveyDescription);
   }
-
 
   @Test
   public void creatorAvatarImage() throws Exception {
@@ -50,5 +51,12 @@ public class UnansweredSurveyHolderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
     surveyDescription.assertValues(Arrays.asList(surveyResponse.project().creator().name(), surveyResponse.project().name()));
+  }
+  @Test
+  public void clickingSurveyEmitsUrl() throws Exception {
+    final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
+    setUpEnvironment(environment());
+    this.vm.inputs.configureWith(surveyResponse);
+    loadSurvey.assertValue(surveyResponse);
   }
 }

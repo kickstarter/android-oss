@@ -1,7 +1,10 @@
 package com.kickstarter.viewmodels;
 
+import android.support.annotation.NonNull;
+
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ActivityFactory;
+import com.kickstarter.factories.SurveyResponseFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -9,8 +12,10 @@ import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.MockApiClient;
+import com.kickstarter.viewmodels.ActivityFeedViewModel.ViewModel;
 
 import org.junit.Test;
 
@@ -20,12 +25,33 @@ import rx.observers.TestSubscriber;
 
 public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
+  private ViewModel vm;
+
+  final TestSubscriber<List<Activity>> activities = new TestSubscriber<>();
+  final TestSubscriber<Void> goToDiscovery = new TestSubscriber<>();
+  final TestSubscriber<Void> goToLogin = new TestSubscriber<>();
+  final TestSubscriber<Project> goToProject = new TestSubscriber<>();
+  final TestSubscriber<Activity> goToProjectUpdate = new TestSubscriber<>();
+  final TestSubscriber<SurveyResponse> goToSurvey = new TestSubscriber<>();
+  final TestSubscriber<Boolean> loggedOutEmptyStateIsVisible = new TestSubscriber<>();
+  final TestSubscriber<Boolean> loggedInEmptyStateIsVisible = new TestSubscriber<>();
+
+  private void setUpEnvironment(@NonNull final Environment environment) {
+    vm = new ViewModel(environment);
+
+    vm.outputs.activities().subscribe(this.activities);
+    vm.outputs.goToDiscovery().subscribe(this.goToDiscovery);
+    vm.outputs.goToLogin().subscribe(this.goToLogin);
+    vm.outputs.goToProject().subscribe(this.goToProject);
+    vm.outputs.goToProjectUpdate().subscribe(this.goToProjectUpdate);
+    vm.outputs.goToSurvey().subscribe(goToSurvey);
+    vm.outputs.loggedOutEmptyStateIsVisible().subscribe(loggedOutEmptyStateIsVisible);
+    vm.outputs.loggedInEmptyStateIsVisible().subscribe(loggedInEmptyStateIsVisible);
+  }
+
   @Test
   public void testActivitiesEmit() {
-    final ActivityFeedViewModel.ViewModel vm = new ActivityFeedViewModel.ViewModel(environment());
-
-    final TestSubscriber<List<Activity>> activities = new TestSubscriber<>();
-    vm.outputs.activities().subscribe(activities);
+    setUpEnvironment(environment());
 
     // Initialize the paginator.
     vm.inputs.refresh();
@@ -42,48 +68,36 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testClickingInterfaceElements() {
-    final ActivityFeedViewModel.ViewModel vm = new ActivityFeedViewModel.ViewModel(environment());
+    this.setUpEnvironment(this.environment());
 
-    final TestSubscriber<Void> goToDiscovery = new TestSubscriber<>();
-    vm.outputs.goToDiscovery().subscribe(goToDiscovery);
-
-    final TestSubscriber<Void> goToLogin = new TestSubscriber<>();
-    vm.outputs.goToLogin().subscribe(goToLogin);
-
-    final TestSubscriber<Project> goToProject = new TestSubscriber<>();
-    vm.outputs.goToProject().subscribe(goToProject);
-
-    final TestSubscriber<Activity> goToProjectUpdate = new TestSubscriber<>();
-    vm.outputs.goToProjectUpdate().subscribe(goToProjectUpdate);
-
-    goToDiscovery.assertNoValues();
-    goToLogin.assertNoValues();
-    goToProject.assertNoValues();
-    goToProjectUpdate.assertNoValues();
-    koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW);
+    this.goToDiscovery.assertNoValues();
+    this.goToLogin.assertNoValues();
+    this.goToProject.assertNoValues();
+    this.goToProjectUpdate.assertNoValues();
+    this.koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW);
 
     // Empty activity feed clicks do not trigger events yet.
-    vm.inputs.emptyActivityFeedDiscoverProjectsClicked(null);
-    goToDiscovery.assertValueCount(1);
+    this.vm.inputs.emptyActivityFeedDiscoverProjectsClicked(null);
+    this.goToDiscovery.assertValueCount(1);
 
-    vm.inputs.emptyActivityFeedLoginClicked(null);
-    goToLogin.assertValueCount(1);
+    this.vm.inputs.emptyActivityFeedLoginClicked(null);
+    this.goToLogin.assertValueCount(1);
 
-    vm.inputs.friendBackingClicked(null, ActivityFactory.friendBackingActivity());
-    vm.inputs.projectStateChangedClicked(null, ActivityFactory.projectStateChangedActivity());
-    vm.inputs.projectStateChangedPositiveClicked(null, ActivityFactory.projectStateChangedPositiveActivity());
-    vm.inputs.projectUpdateProjectClicked(null, ActivityFactory.updateActivity());
+    this.vm.inputs.friendBackingClicked(null, ActivityFactory.friendBackingActivity());
+    this.vm.inputs.projectStateChangedClicked(null, ActivityFactory.projectStateChangedActivity());
+    this.vm.inputs.projectStateChangedPositiveClicked(null, ActivityFactory.projectStateChangedPositiveActivity());
+    this.vm.inputs.projectUpdateProjectClicked(null, ActivityFactory.updateActivity());
 
-    koalaTest.assertValues(
+    this.koalaTest.assertValues(
       KoalaEvent.ACTIVITY_VIEW, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM,
       KoalaEvent.ACTIVITY_VIEW_ITEM
     );
-    goToProject.assertValueCount(4);
+    this.goToProject.assertValueCount(4);
 
-    vm.inputs.projectUpdateClicked(null, ActivityFactory.activity());
+    this.vm.inputs.projectUpdateClicked(null, ActivityFactory.activity());
 
-    goToProjectUpdate.assertValueCount(1);
-    koalaTest.assertValues(
+    this.goToProjectUpdate.assertValueCount(1);
+    this.koalaTest.assertValues(
       KoalaEvent.ACTIVITY_VIEW, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM,
       KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.VIEWED_UPDATE
     );
@@ -91,27 +105,15 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testLoginFlow() {
-    final ApiClientType apiClient = new MockApiClient();
-    final CurrentUserType currentUser = new MockCurrentUser();
+    ApiClientType apiClient = new MockApiClient();
+    CurrentUserType currentUser = new MockCurrentUser();
 
-    final Environment environment = environment().toBuilder()
+    Environment environment = this.environment().toBuilder()
       .apiClient(apiClient)
       .currentUser(currentUser)
       .build();
 
-    final ActivityFeedViewModel.ViewModel vm = new ActivityFeedViewModel.ViewModel(environment);
-
-    final TestSubscriber<List<Activity>> activities = new TestSubscriber<>();
-    vm.outputs.activities().subscribe(activities);
-
-    final TestSubscriber<Boolean> loggedOutEmptyStateIsVisible = new TestSubscriber<>();
-    vm.outputs.loggedOutEmptyStateIsVisible().subscribe(loggedOutEmptyStateIsVisible);
-
-    final TestSubscriber<Boolean> loggedInEmptyStateIsVisible = new TestSubscriber<>();
-    vm.outputs.loggedInEmptyStateIsVisible().subscribe(loggedInEmptyStateIsVisible);
-
-    final TestSubscriber<Void> goToLogin = new TestSubscriber<>();
-    vm.outputs.goToLogin().subscribe(goToLogin);
+    setUpEnvironment(environment);
 
     // Empty activity feed with login button should be shown.
     loggedOutEmptyStateIsVisible.assertValue(true);
@@ -125,5 +127,14 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     activities.assertValueCount(1);
     loggedOutEmptyStateIsVisible.assertValues(true, false);
     loggedInEmptyStateIsVisible.assertValue(false);
+  }
+
+  @Test public void testSurveyClick() {
+    final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
+
+    setUpEnvironment(environment());
+
+    vm.inputs.surveyClicked(null, surveyResponse);
+    goToSurvey.assertValue(surveyResponse);
   }
 }

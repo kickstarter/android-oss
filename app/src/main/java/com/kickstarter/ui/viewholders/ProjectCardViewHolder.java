@@ -118,7 +118,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.outputs.featuredViewGroupIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone((this.featuredViewGroup)));
+      .subscribe(ViewUtils.setGone(this.featuredViewGroup));
 
     this.viewModel.outputs.friendAvatarUrl()
       .compose(bindToLifecycle())
@@ -175,7 +175,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.outputs.potdViewGroupIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone((this.potdViewGroup))); // test
+      .subscribe(ViewUtils.setGone(this.potdViewGroup)); // test
 
     this.viewModel.outputs.percentageFunded()
       .compose(bindToLifecycle())
@@ -205,7 +205,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.outputs.projectStateViewGroupIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone((this.projectStateViewGroup)));
+      .subscribe(ViewUtils.setGone(this.projectStateViewGroup));
 
     this.viewModel.outputs.projectSuccessfulAt()
       .compose(bindToLifecycle())
@@ -227,7 +227,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.outputs.starredViewGroupIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone((this.starredViewGroup)));
+      .subscribe(ViewUtils.setGone(this.starredViewGroup));
 
     this.viewModel.outputs.successfullyFundedTextViewIsGone()
       .compose(bindToLifecycle())

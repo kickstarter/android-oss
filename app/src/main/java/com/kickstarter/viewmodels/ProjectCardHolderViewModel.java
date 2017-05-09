@@ -237,37 +237,99 @@ public interface ProjectCardHolderViewModel {
     }
 
     @Override
-    public void projectClicked() { this.projectClicked.onNext(null); }
+    public void projectClicked() {
+      this.projectClicked.onNext(null);
+    }
 
-    @Override public @NonNull Observable<String> backersCountText() { return this.backersCountText; }
-    @Override public @NonNull Observable<Boolean> backingViewGroupIsGone() { return this.backingViewGroupIsGone; }
-    @Override public @NonNull Observable<String> blurbText() { return this.blurbText; }
-    @Override public @NonNull Observable<String> categoryNameText() { return this.categoryNameText; }
-    @Override public @NonNull Observable<String> deadlineCountdownText() { return this.deadlineCountdownText; }
-    @Override public @NonNull Observable<Boolean> featuredViewGroupIsGone() { return this.featuredViewGroupIsGone; }
-    @Override public @NonNull Observable<String> friendAvatarUrl() { return this.friendAvatarUrl; }
-    @Override public @NonNull Observable<Boolean> friendBackingViewIsHidden() { return this.friendBackingViewIsHidden; }
-    @Override public @NonNull Observable<List<User>> friendsForNamepile() { return this.friendsForNamepile; }
-    @Override public @NonNull Observable<Boolean> fundingUnsuccessfulTextViewIsGone() { return this.fundingUnsuccessfulTextViewIsGone; }
-    @Override public @NonNull Observable<Boolean> imageIsInvisible() { return this.imageIsInvisible; }
-    @Override public @NonNull Observable<Boolean> metadataViewGroupIsGone() { return this.metadataViewGroupIsGone; }
-    @Override public @NonNull Observable<String> nameText() { return this.nameText; }
-    @Override public @NonNull Observable<Project> notifyDelegateOfProjectClick() { return this.notifyDelegateOfProjectClick; }
-    @Override public @NonNull Observable<Integer> percentageFunded() { return this.percentageFunded; }
-    @Override public @NonNull Observable<Boolean> percentageFundedProgressBarIsGone() { return this.percentageFundedProgressBarIsGone; }
-    @Override public @NonNull Observable<String> percentageFundedText() { return this.percentageFundedText; }
-    @Override public @NonNull Observable<String> photoUrl() { return this.photoUrl; }
-    @Override public @NonNull Observable<Boolean> potdViewGroupIsGone() { return this.potdViewGroupIsGone; }
-    @Override public @NonNull Observable<Project> projectOutput() { return this.projectOutput; }
-    @Override public @NonNull Observable<Boolean> projectStateViewGroupIsGone() { return this.projectStateViewGroupIsGone; }
-    @Override public @NonNull Observable<DateTime> projectCanceledAt() { return this.projectCanceledAt; }
-    @Override public @NonNull Observable<DateTime> projectFailedAt() { return this.projectFailedAt; }
-    @Override public @NonNull Observable<DateTime> projectSuccessfulAt() { return this.projectSuccessfulAt; }
-    @Override public @NonNull Observable<DateTime> projectSuspendedAt() { return this.projectSuspendedAt; }
-    @Override public @NonNull Observable<String> rootCategoryNameForFeatured() { return this.rootCategoryNameForFeatured; }
-    @Override public @NonNull Observable<Void> setDefaultTopPadding() { return this.setDefaultTopPadding; }
-    @Override public @NonNull Observable<Void> setMetadataTopPadding() { return this.setMetadataTopPadding; }
-    @Override public @NonNull Observable<Boolean> starredViewGroupIsGone() { return this.starredViewGroupIsGone; }
-    @Override public @NonNull Observable<Boolean> successfullyFundedTextViewIsGone() { return this.successfullyFundedTextViewIsGone; }
+    @Override public @NonNull Observable<String> backersCountText() {
+      return this.backersCountText;
+    }
+    @Override public @NonNull Observable<Boolean> backingViewGroupIsGone() {
+      return this.backingViewGroupIsGone;
+    }
+    @Override public @NonNull Observable<String> blurbText() {
+      return this.blurbText;
+    }
+    @Override public @NonNull Observable<String> categoryNameText() {
+      return this.categoryNameText;
+    }
+    @Override public @NonNull Observable<String> deadlineCountdownText() {
+      return this.deadlineCountdownText;
+    }
+    @Override public @NonNull Observable<Boolean> featuredViewGroupIsGone() {
+      return this.featuredViewGroupIsGone;
+    }
+    @Override public @NonNull Observable<String> friendAvatarUrl() {
+      return this.friendAvatarUrl;
+    }
+    @Override public @NonNull Observable<Boolean> friendBackingViewIsHidden() {
+      return this.friendBackingViewIsHidden;
+    }
+    @Override public @NonNull Observable<List<User>> friendsForNamepile() {
+      return this.friendsForNamepile;
+    }
+    @Override public @NonNull Observable<Boolean> fundingUnsuccessfulTextViewIsGone() {
+      return this.fundingUnsuccessfulTextViewIsGone;
+    }
+    @Override public @NonNull Observable<Boolean> imageIsInvisible() {
+      return this.imageIsInvisible;
+    }
+    @Override public @NonNull Observable<Boolean> metadataViewGroupIsGone() {
+      return this.metadataViewGroupIsGone;
+    }
+    @Override public @NonNull Observable<String> nameText() {
+      return this.nameText;
+    }
+    @Override public @NonNull Observable<Project> notifyDelegateOfProjectClick() {
+      return this.notifyDelegateOfProjectClick;
+    }
+    @Override public @NonNull Observable<Integer> percentageFunded() {
+      return this.percentageFunded;
+    }
+    @Override public @NonNull Observable<Boolean> percentageFundedProgressBarIsGone() {
+      return this.percentageFundedProgressBarIsGone;
+    }
+    @Override public @NonNull Observable<String> percentageFundedText() {
+      return this.percentageFundedText;
+    }
+    @Override public @NonNull Observable<String> photoUrl() {
+      return this.photoUrl;
+    }
+    @Override public @NonNull Observable<Boolean> potdViewGroupIsGone() {
+      return this.potdViewGroupIsGone;
+    }
+    @Override public @NonNull Observable<Project> projectOutput() {
+      return this.projectOutput;
+    }
+    @Override public @NonNull Observable<Boolean> projectStateViewGroupIsGone() {
+      return this.projectStateViewGroupIsGone;
+    }
+    @Override public @NonNull Observable<DateTime> projectCanceledAt() {
+      return this.projectCanceledAt;
+    }
+    @Override public @NonNull Observable<DateTime> projectFailedAt() {
+      return this.projectFailedAt;
+    }
+    @Override public @NonNull Observable<DateTime> projectSuccessfulAt() {
+      return this.projectSuccessfulAt;
+    }
+    @Override public @NonNull Observable<DateTime> projectSuspendedAt() {
+      return this.projectSuspendedAt;
+    }
+    @Override public @NonNull Observable<String> rootCategoryNameForFeatured() {
+      return this.rootCategoryNameForFeatured;
+    }
+    @Override public @NonNull Observable<Void> setDefaultTopPadding() {
+      return this.setDefaultTopPadding;
+    }
+    @Override public @NonNull Observable<Void> setMetadataTopPadding() {
+      return this.setMetadataTopPadding;
+    }
+    @Override public @NonNull Observable<Boolean> starredViewGroupIsGone() {
+      return this.starredViewGroupIsGone;
+    }
+    @Override public @NonNull Observable<Boolean> successfullyFundedTextViewIsGone() {
+      return this.successfullyFundedTextViewIsGone;
+    }
   }
 }

@@ -27,7 +27,7 @@
       android:maxLength="25"
       android:inputType="textNoSuggestions"
       android:maxLines="1"
-      android:hint="@string/tabbar_search_projects"
+      android:hint="@string/tabbar_search"
       android:textCursorDrawable="@null" />
 
     <com.kickstarter.ui.views.IconButton

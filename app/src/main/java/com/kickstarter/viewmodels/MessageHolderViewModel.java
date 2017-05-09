@@ -71,7 +71,7 @@ public interface MessageHolderViewModel {
         .map(mb -> mb.second ? R.color.black : R.color.ksr_grey_400);
 
       this.messageBodyTextViewTextColor = messageAndCurrentUserIsSender
-        .map(mb -> mb.second ? R.color.white : R.color.ksr_navy_700);
+        .map(mb -> mb.second ? R.color.white : R.color.ksr_text_navy_700);
     }
 
     private final PublishSubject<Message> message = PublishSubject.create();

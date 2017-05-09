@@ -1,13 +1,13 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
-import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 
@@ -18,113 +18,102 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface ProjectSearchResultHolderViewModel {
 
-  final class Data {
-    public final Project project;
-    final boolean isFeatured;
-
-    public Data(final @NonNull Project project, final boolean isFeatured) {
-      this.project = project;
-      this.isFeatured = isFeatured;
-    }
-
-    @Override public boolean equals(final Object obj) {
-      if (obj == null || !(obj instanceof Data)) {
-        return false;
-      }
-      final Data data = (Data) obj;
-      return data.project.equals(this.project) && data.isFeatured == this.isFeatured;
-    }
-
-    @Override public int hashCode() {
-      int result = project.hashCode();
-      result = 31 * result + (isFeatured ? 1 : 0);
-      return result;
-    }
-  }
-
   interface Inputs {
-    /** Call to configure the view model with a message. */
-    void configureWith(Data data);
+    /** Call to configure the view model with a project and isFeatured data. */
+    void configureWith(Pair<Project, Boolean> projectAndIsFeatured);
 
     /** Call to say user clicked a project */
     void projectClicked();
   }
 
   interface Outputs {
-    /** Emits key image of project */
-    Observable<String> projectImage();
-
-    /** Emits title of project */
-    Observable<String> projectName();
-
-    /** Emits a completed / days to go pair */
-    Observable<Pair<Integer, Integer>> projectStats();
+    /** Emits the formatted days to go text to be displayed. */
+    Observable<String> deadlineCountdownValueTextViewText();
 
     /** Emits the project clicked by the user. */
     Observable<Project> notifyDelegateOfResultClick();
+
+    /** Emits the percent funded text to be displayed. */
+    Observable<String> percentFundedTextViewText();
+
+    /** Emits the project be used to display the deadline countdown detail. */
+    Observable<Project> projectForDeadlineCountdownUnitTextView();
+
+    /** Emits the project title to be displayed. */
+    Observable<String> projectNameTextViewText();
+
+    /** Emits the project photo url to be displayed. */
+    Observable<String> projectPhotoUrl();
   }
 
-  final class ViewModel extends ActivityViewModel<ProjectSearchResultViewHolder> implements
-    ProjectSearchResultHolderViewModel.Inputs,
-    ProjectSearchResultHolderViewModel.Outputs {
+  final class ViewModel extends ActivityViewModel<ProjectSearchResultViewHolder> implements Inputs, Outputs {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.projectImage = this.configData
-        .map(ViewModel::projectImage);
-
-      this.projectName = this.configData
-        .map(data -> data.project.name());
-
-      this.projectStats = this.configData
-        .map(data ->
-          Pair.create((int) data.project.percentageFunded(), ProjectUtils.deadlineCountdownValue(data.project))
+      this.deadlineCountdownValueTextViewText = this.projectAndIsFeatured
+        .map(projectAndIsFeatured ->
+          NumberUtils.format(ProjectUtils.deadlineCountdownValue(projectAndIsFeatured.first))
         );
 
-      this.notifyDelegateOfResultClick = this.configData
-        .map(data -> data.project)
+      this.percentFundedTextViewText = this.projectAndIsFeatured
+        .map(projectAndIsFeatured -> NumberUtils.flooredPercentage(projectAndIsFeatured.first.percentageFunded()));
+
+      this.projectForDeadlineCountdownDetail = this.projectAndIsFeatured
+        .map(projectAndIsFeatured -> projectAndIsFeatured.first);
+
+      this.projectPhotoUrl = this.projectAndIsFeatured
+        .map(projectAndIsFeatured -> Pair.create(projectAndIsFeatured.first.photo(), projectAndIsFeatured.second))
+        .filter(photoAndIsFeatured -> ObjectUtils.isNotNull(photoAndIsFeatured.first))
+        .map(photoAndIsFeatured ->
+          photoAndIsFeatured.second ? photoAndIsFeatured.first.full() : photoAndIsFeatured.first.med()
+        );
+
+      this.projectNameTextViewText = this.projectAndIsFeatured
+        .map(projectAndIsFeatured -> projectAndIsFeatured.first.name());
+
+      this.notifyDelegateOfResultClick = this.projectAndIsFeatured
+        .map(projectAndIsFeatured -> projectAndIsFeatured.first)
         .compose(takeWhen(this.projectClicked));
     }
 
-    private final PublishSubject<Data> configData = PublishSubject.create();
+    private final PublishSubject<Pair<Project, Boolean>> projectAndIsFeatured = PublishSubject.create();
     private final PublishSubject<Void> projectClicked = PublishSubject.create();
 
+    private final Observable<String> deadlineCountdownValueTextViewText;
     private final Observable<Project> notifyDelegateOfResultClick;
-    private final Observable<String> projectImage;
-    private final Observable<String> projectName;
-    private final Observable<Pair<Integer, Integer>> projectStats;
+    private final Observable<String> percentFundedTextViewText;
+    private final Observable<Project> projectForDeadlineCountdownDetail;
+    private final Observable<String> projectNameTextViewText;
+    private final Observable<String> projectPhotoUrl;
 
-    public final ProjectSearchResultHolderViewModel.Inputs inputs = this;
-    public final ProjectSearchResultHolderViewModel.Outputs outputs = this;
+    public final Inputs inputs = this;
+    public final Outputs outputs = this;
 
-    @Override public void configureWith(final @NonNull Data data) {
-      this.configData.onNext(data);
+    @Override public void configureWith(final @NonNull Pair<Project, Boolean> projectAndIsFeatured) {
+      this.projectAndIsFeatured.onNext(projectAndIsFeatured);
     }
     @Override public void projectClicked() {
       this.projectClicked.onNext(null);
     }
 
-    @Override public Observable<Project> notifyDelegateOfResultClick() {
+    @Override public @NonNull Observable<String> deadlineCountdownValueTextViewText() {
+      return this.deadlineCountdownValueTextViewText;
+    }
+    @Override public @NonNull Observable<Project> notifyDelegateOfResultClick() {
       return this.notifyDelegateOfResultClick;
     }
-    @Override public Observable<String> projectImage() {
-      return this.projectImage;
+    @Override public @NonNull Observable<String> percentFundedTextViewText() {
+      return this.percentFundedTextViewText;
     }
-    @Override public Observable<String> projectName() {
-      return this.projectName;
+    @Override public @NonNull Observable<Project> projectForDeadlineCountdownUnitTextView() {
+      return this.projectForDeadlineCountdownDetail;
     }
-    @Override public Observable<Pair<Integer, Integer>> projectStats() {
-      return this.projectStats;
+    @Override public @NonNull Observable<String> projectPhotoUrl() {
+      return this.projectPhotoUrl;
     }
-
-    private static @Nullable String projectImage(final @NonNull Data data) {
-      final Photo photo = data.project.photo();
-      if (photo == null) {
-        return null;
-      }
-
-      return data.isFeatured ? photo.full() : photo.med();
+    @Override public @NonNull Observable<String> projectNameTextViewText() {
+      return this.projectNameTextViewText;
     }
   }
 }

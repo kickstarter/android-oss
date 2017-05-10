@@ -27,7 +27,7 @@ import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 import com.kickstarter.ui.viewholders.UnansweredSurveyViewHolder;
 import com.trello.rxlifecycle.ActivityEvent;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -107,22 +107,20 @@ public interface ActivityFeedViewModel {
       final Observable<Boolean> surveyFeatureEnabled = this.currentConfig.observable()
         .map(config -> coalesce(config.features().get(FeatureKey.ANDROID_SURVEYS), false));
 
-      final Observable<List<SurveyResponse>> responses = Observable.combineLatest(
+      Observable.combineLatest(
           this.onResume,
           this.currentUser.isLoggedIn(),
           Pair::create
         )
-        .filter(eventAndLoggedIn ->
-          eventAndLoggedIn.first == ActivityEvent.RESUME && eventAndLoggedIn.second
+        .filter(resumedAndLoggedIn ->
+          resumedAndLoggedIn.first == ActivityEvent.RESUME && resumedAndLoggedIn.second
         )
         .compose(Transformers.combineLatestPair(surveyFeatureEnabled))
-        .switchMap(lifecycleAndLoggedInAndEnabled ->
-          lifecycleAndLoggedInAndEnabled.second
+        .switchMap(resumedAndLoggedInAndEnabled ->
+          resumedAndLoggedInAndEnabled.second
             ? this.client.fetchUnansweredSurveys()
-            : Observable.just(Collections.emptyList())
-        );
-
-      responses
+            : Observable.just(new ArrayList<SurveyResponse>())
+        )
         .subscribe(this.surveys::onNext);
 
       final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()

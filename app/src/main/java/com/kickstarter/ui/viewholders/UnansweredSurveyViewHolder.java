@@ -86,7 +86,7 @@ public class UnansweredSurveyViewHolder extends KSViewHolder {
   }
 
   @Override
-  public void onClick(@NonNull View view) {
+  public void onClick(final @NonNull View view) {
     this.viewModel.inputs.surveyClicked();
   }
 }

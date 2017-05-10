@@ -86,7 +86,9 @@ public interface UnansweredSurveyHolderViewModel {
     @Override public Observable<List<String>> surveyDescription() {
       return this.surveyDescription;
     }
-    @Override public Observable<SurveyResponse> loadSurvey() { return this.configData; }
+    @Override public Observable<SurveyResponse> loadSurvey() {
+      return this.configData;
+    }
 
     private List<String> getSurveyDescription(final @NonNull SurveyResponse surveyResponse) {
       return Arrays.asList(surveyResponse.project().creator().name(), surveyResponse.project().name());

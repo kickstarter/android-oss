@@ -42,6 +42,9 @@ public interface ActivityFeedViewModel {
     /** Invoke when pagination should happen. */
     void nextPage();
 
+    /** Invoke when activity's onResume runs */
+    void resume();
+
     /** Invoke when the feed should be refreshed. */
     void refresh();
   }
@@ -104,13 +107,11 @@ public interface ActivityFeedViewModel {
       )
         .map(Activity::project);
 
-      Observable<Boolean> surveyFeatureEnabled = this.currentConfig.observable()
+      final Observable<Boolean> surveyFeatureEnabled = this.currentConfig.observable()
         .map(config -> coalesce(config.features().get(FeatureKey.ANDROID_SURVEYS), false));
 
-     // Observable<Boolean> surveyFeatureEnabled = Observable.just(false);
-
-      Observable<List<SurveyResponse>> responses = Observable.combineLatest(
-          lifecycle(),
+      final Observable<List<SurveyResponse>> responses = Observable.combineLatest(
+          resume,
           this.currentUser.isLoggedIn(),
           Pair::create
         )
@@ -118,14 +119,16 @@ public interface ActivityFeedViewModel {
           eventAndLoggedIn.first == ActivityEvent.RESUME && eventAndLoggedIn.second
         )
         .compose(Transformers.combineLatestPair(surveyFeatureEnabled))
-        .switchMap(lifecycleAndLoggedInAndEnabled -> lifecycleAndLoggedInAndEnabled.second
-          ? this.client.fetchUnansweredSurveys()
-          : Observable.just(Collections.emptyList()));
+        .switchMap(lifecycleAndLoggedInAndEnabled ->
+          lifecycleAndLoggedInAndEnabled.second
+            ? this.client.fetchUnansweredSurveys()
+            : Observable.just(Collections.emptyList())
+        );
 
       responses
         .subscribe(this.surveys::onNext);
 
-      ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
+      final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
         .nextPage(this.nextPage)
         .startOverWith(this.refresh)
         .envelopeToListOfData(ActivityEnvelope::activities)
@@ -186,6 +189,7 @@ public interface ActivityFeedViewModel {
     private final PublishSubject<Activity> friendBackingClick = PublishSubject.create();
     private final PublishSubject<Void> loginClick = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
+    private final PublishSubject<ActivityEvent> resume = PublishSubject.create();
     private final PublishSubject<Activity> projectStateChangedClick = PublishSubject.create();
     private final PublishSubject<Activity> projectStateChangedPositiveClick = PublishSubject.create();
     private final PublishSubject<Activity> projectUpdateClick = PublishSubject.create();
@@ -243,12 +247,16 @@ public interface ActivityFeedViewModel {
       this.projectUpdateProjectClick.onNext(activity);
     }
 
-    @Override public void surveyClicked(UnansweredSurveyViewHolder viewHolder, final @NonNull SurveyResponse surveyResponse) {
+    @Override public void surveyClicked(final @NonNull UnansweredSurveyViewHolder viewHolder, final @NonNull SurveyResponse surveyResponse) {
       this.surveyClick.onNext(surveyResponse);
     }
 
     @Override public void refresh() {
       this.refresh.onNext(null);
+    }
+
+    @Override public void resume() {
+      this.resume.onNext(ActivityEvent.RESUME);
     }
 
     @Override @NonNull public Observable<List<Activity>> activities() {

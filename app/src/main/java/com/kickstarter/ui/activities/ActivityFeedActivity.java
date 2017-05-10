@@ -115,6 +115,12 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   }
 
   @Override
+  protected void onResume() {
+    super.onResume();
+    viewModel.inputs.resume();
+  }
+
+  @Override
   protected void onDestroy() {
     super.onDestroy();
     recyclerViewPaginator.stop();

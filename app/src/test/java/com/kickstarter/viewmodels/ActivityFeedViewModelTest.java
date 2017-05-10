@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -117,10 +118,10 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testLoginFlow() {
-    ApiClientType apiClient = new MockApiClient();
-    CurrentUserType currentUser = new MockCurrentUser();
+    final ApiClientType apiClient = new MockApiClient();
+    final CurrentUserType currentUser = new MockCurrentUser();
 
-    Environment environment = this.environment().toBuilder()
+    final Environment environment = this.environment().toBuilder()
       .apiClient(apiClient)
       .currentUser(currentUser)
       .build();
@@ -153,21 +154,24 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testNoSurveyFeatureFlag() {
-    ApiClientType apiClient = new MockApiClient();
-    CurrentUserType currentUser = new MockCurrentUser();
-    Config config = ConfigFactory.config().toBuilder()
+    final ApiClientType apiClient = new MockApiClient();
+    final CurrentUserType currentUser = new MockCurrentUser();
+    currentUser.login(UserFactory.user(), "deadbeef");
+
+    final Config config = ConfigFactory.config().toBuilder()
       .features(Collections.EMPTY_MAP).build();
 
     final CurrentConfigType currentConfig = new MockCurrentConfig();
     currentConfig.config(config);
 
-    Environment environment = this.environment().toBuilder()
+    final Environment environment = this.environment().toBuilder()
       .apiClient(apiClient)
       .currentUser(currentUser)
       .currentConfig(currentConfig)
       .build();
 
     setUpEnvironment(environment);
+    vm.inputs.resume();
 
     surveys.assertValue(Collections.emptyList());
   }
@@ -188,18 +192,19 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    CurrentUserType currentUser = new MockCurrentUser();
+    final CurrentUserType currentUser = new MockCurrentUser();
+    currentUser.login(UserFactory.user(), "deadbeef");
 
-    HashMap<String, Boolean> featureMap = new HashMap<>();
+    final Map<String, Boolean> featureMap = new HashMap<>();
     featureMap.put(FeatureKey.ANDROID_SURVEYS, false);
 
-    Config config = ConfigFactory.config().toBuilder()
+    final Config config = ConfigFactory.config().toBuilder()
       .features(featureMap).build();
 
     final CurrentConfigType currentConfig = new MockCurrentConfig();
     currentConfig.config(config);
 
-    Environment environment = this.environment().toBuilder()
+    final Environment environment = this.environment().toBuilder()
       .scheduler(scheduler)
       .apiClient(apiClient)
       .currentUser(currentUser)
@@ -207,6 +212,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment);
+    vm.inputs.resume();
 
     surveys.assertValues(Collections.emptyList());
   }
@@ -227,18 +233,101 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    CurrentUserType currentUser = new MockCurrentUser();
+    final CurrentUserType currentUser = new MockCurrentUser();
+    currentUser.login(UserFactory.user(), "deadbeef");
 
-    HashMap<String, Boolean> featureMap = new HashMap<>();
+    final Map<String, Boolean> featureMap = new HashMap<>();
     featureMap.put(FeatureKey.ANDROID_SURVEYS, true);
 
-    Config config = ConfigFactory.config().toBuilder()
+    final Config config = ConfigFactory.config().toBuilder()
       .features(featureMap).build();
 
     final CurrentConfigType currentConfig = new MockCurrentConfig();
     currentConfig.config(config);
 
-    Environment environment = this.environment().toBuilder()
+    final Environment environment = this.environment().toBuilder()
+      .scheduler(scheduler)
+      .apiClient(apiClient)
+      .currentUser(currentUser)
+      .currentConfig(currentConfig)
+      .build();
+
+    setUpEnvironment(environment);
+    vm.inputs.resume();
+
+    surveys.assertValues(surveyResponses);
+  }
+
+  @Test
+  public void testSurveyFeatureFlagUserLoggedOut() {
+    final TestScheduler scheduler = new TestScheduler();
+
+    final List<SurveyResponse> surveyResponses = Arrays.asList(
+      SurveyResponseFactory.surveyResponse(),
+      SurveyResponseFactory.surveyResponse()
+    );
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override public @NonNull
+      Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
+        return Observable.just(surveyResponses);
+      }
+    };
+
+    final CurrentUserType currentUser = new MockCurrentUser();
+    currentUser.logout();
+
+    final Map<String, Boolean> featureMap = new HashMap<>();
+    featureMap.put(FeatureKey.ANDROID_SURVEYS, true);
+
+    final Config config = ConfigFactory.config().toBuilder()
+      .features(featureMap).build();
+
+    final CurrentConfigType currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    final Environment environment = this.environment().toBuilder()
+      .scheduler(scheduler)
+      .apiClient(apiClient)
+      .currentUser(currentUser)
+      .currentConfig(currentConfig)
+      .build();
+
+    setUpEnvironment(environment);
+    vm.inputs.resume();
+
+    surveys.assertNoValues();
+  }
+
+  @Test
+  public void testSurveyFeatureFlagTrueLoggedInButNotResumed() {
+    final TestScheduler scheduler = new TestScheduler();
+
+    final List<SurveyResponse> surveyResponses = Arrays.asList(
+      SurveyResponseFactory.surveyResponse(),
+      SurveyResponseFactory.surveyResponse()
+    );
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override public @NonNull
+      Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
+        return Observable.just(surveyResponses);
+      }
+    };
+
+    final CurrentUserType currentUser = new MockCurrentUser();
+    currentUser.login(UserFactory.user(), "deadbeef");
+
+    final Map<String, Boolean> featureMap = new HashMap<>();
+    featureMap.put(FeatureKey.ANDROID_SURVEYS, true);
+
+    final Config config = ConfigFactory.config().toBuilder()
+      .features(featureMap).build();
+
+    final CurrentConfigType currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    final Environment environment = this.environment().toBuilder()
       .scheduler(scheduler)
       .apiClient(apiClient)
       .currentUser(currentUser)
@@ -247,7 +336,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     setUpEnvironment(environment);
 
-    surveys.assertValues(surveyResponses);
+    surveys.assertNoValues();
   }
+
 
 }

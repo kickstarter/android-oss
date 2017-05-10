@@ -7547,6 +7547,7 @@
     "ios_favorite_categories": true,
     "ios_live_streams": true,
     "ios_live_stream_discovery": true,
+    "ios_live_stream_chat": true,
     "handbook_hero": true,
     "android_pay": true,
     "i18n_discovery_touts": true,
@@ -7558,7 +7559,6 @@
     "spotlight_baseball_cards": true,
     "nyt_film": true,
     "recaptcha": true,
-    "log_devices": true,
     "itemization": true,
     "impact_page": true,
     "follow_creators": true,
@@ -7746,10 +7746,10 @@
     }
   ],
   "ab_experiments": {
-    "backer_conf_cta_color": "gray",
+    "backer_conf_cta_color": "green",
     "koala_alt_frontend_tracking": "control",
     "project_build": "control",
-    "mobile_safari_banners": "control",
+    "mobile_safari_banners": "html_banner",
     "remind_me_rebrand": "control",
     "blending_factor": "control",
     "games_guest_pledging": "control",

@@ -171,7 +171,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment);
-    vm.inputs.resume();
+    vm.onResume();
 
     surveys.assertValue(Collections.emptyList());
   }
@@ -212,7 +212,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment);
-    vm.inputs.resume();
+    vm.onResume();
 
     surveys.assertValues(Collections.emptyList());
   }
@@ -253,7 +253,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment);
-    vm.inputs.resume();
+    vm.onResume();
 
     surveys.assertValues(surveyResponses);
   }
@@ -294,7 +294,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment);
-    vm.inputs.resume();
+    vm.onResume();
 
     surveys.assertNoValues();
   }

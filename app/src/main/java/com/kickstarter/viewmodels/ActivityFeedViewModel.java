@@ -42,9 +42,6 @@ public interface ActivityFeedViewModel {
     /** Invoke when pagination should happen. */
     void nextPage();
 
-    /** Invoke when activity's onResume runs */
-    void resume();
-
     /** Invoke when the feed should be refreshed. */
     void refresh();
   }
@@ -111,7 +108,7 @@ public interface ActivityFeedViewModel {
         .map(config -> coalesce(config.features().get(FeatureKey.ANDROID_SURVEYS), false));
 
       final Observable<List<SurveyResponse>> responses = Observable.combineLatest(
-          resume,
+          this.onResume,
           this.currentUser.isLoggedIn(),
           Pair::create
         )
@@ -189,7 +186,6 @@ public interface ActivityFeedViewModel {
     private final PublishSubject<Activity> friendBackingClick = PublishSubject.create();
     private final PublishSubject<Void> loginClick = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
-    private final PublishSubject<ActivityEvent> resume = PublishSubject.create();
     private final PublishSubject<Activity> projectStateChangedClick = PublishSubject.create();
     private final PublishSubject<Activity> projectStateChangedPositiveClick = PublishSubject.create();
     private final PublishSubject<Activity> projectUpdateClick = PublishSubject.create();
@@ -253,10 +249,6 @@ public interface ActivityFeedViewModel {
 
     @Override public void refresh() {
       this.refresh.onNext(null);
-    }
-
-    @Override public void resume() {
-      this.resume.onNext(ActivityEvent.RESUME);
     }
 
     @Override @NonNull public Observable<List<Activity>> activities() {

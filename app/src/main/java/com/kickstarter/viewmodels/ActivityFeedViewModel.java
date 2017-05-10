@@ -5,8 +5,10 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KoalaContext.Update;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -25,12 +27,14 @@ import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 import com.kickstarter.ui.viewholders.UnansweredSurveyViewHolder;
 import com.trello.rxlifecycle.ActivityEvent;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
+
+import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 
 public interface ActivityFeedViewModel {
 
@@ -78,12 +82,14 @@ public interface ActivityFeedViewModel {
     ActivityFeedViewModel.Inputs, ActivityFeedViewModel.Outputs {
 
     private final ApiClientType client;
+    private final CurrentConfigType currentConfig;
     private final CurrentUserType currentUser;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.client = environment.apiClient();
+      this.currentConfig = environment.currentConfig();
       this.currentUser = environment.currentUser();
 
       this.goToDiscovery = this.discoverProjectsClick;
@@ -98,20 +104,26 @@ public interface ActivityFeedViewModel {
       )
         .map(Activity::project);
 
+      Observable<Boolean> surveyFeatureEnabled = this.currentConfig.observable()
+        .map(config -> coalesce(config.features().get(FeatureKey.ANDROID_SURVEYS), false));
+
+     // Observable<Boolean> surveyFeatureEnabled = Observable.just(false);
+
       Observable<List<SurveyResponse>> responses = Observable.combineLatest(
-        lifecycle(),
-        this.currentUser.isLoggedIn(),
-        Pair::create
+          lifecycle(),
+          this.currentUser.isLoggedIn(),
+          Pair::create
         )
         .filter(eventAndLoggedIn ->
           eventAndLoggedIn.first == ActivityEvent.RESUME && eventAndLoggedIn.second
         )
-        .switchMap(__ -> this.client.fetchUnansweredSurveys());
+        .compose(Transformers.combineLatestPair(surveyFeatureEnabled))
+        .switchMap(lifecycleAndLoggedInAndEnabled -> lifecycleAndLoggedInAndEnabled.second
+          ? this.client.fetchUnansweredSurveys()
+          : Observable.just(Collections.emptyList()));
 
-      responses.subscribe(rs -> {
-        this.surveys.onNext(rs);
-        Timber.d("rs: " + rs);
-      });
+      responses
+        .subscribe(this.surveys::onNext);
 
       ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
         .nextPage(this.nextPage)
@@ -279,6 +291,5 @@ public interface ActivityFeedViewModel {
     @Override public Observable<List<SurveyResponse>> surveys() {
       return this.surveys;
     }
-
   }
 }

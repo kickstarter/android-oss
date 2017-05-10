@@ -26,9 +26,10 @@ public class UnansweredSurveyHeaderViewHolder extends KSViewHolder {
   }
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
+
     // Null data means we should hide the view
-    headingTextView.setVisibility(View.GONE);
     if (data == null) {
+      headingTextView.setVisibility(View.GONE);
       return;
     }
 
@@ -42,6 +43,6 @@ public class UnansweredSurveyHeaderViewHolder extends KSViewHolder {
         "reward_survey_count",
         String.valueOf(unansweredSurveyCount)));
 
-    headingTextView.setVisibility(View.VISIBLE);
+    headingTextView.setVisibility(unansweredSurveyCount > 0 ? View.VISIBLE : View.GONE);
   }
 }

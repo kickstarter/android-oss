@@ -4,11 +4,16 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ActivityFactory;
+import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.SurveyResponseFactory;
 import com.kickstarter.factories.UserFactory;
+import com.kickstarter.libs.Config;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KoalaEvent;
+import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -19,9 +24,14 @@ import com.kickstarter.viewmodels.ActivityFeedViewModel.ViewModel;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
+import rx.Observable;
 import rx.observers.TestSubscriber;
+import rx.schedulers.TestScheduler;
 
 public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
@@ -35,6 +45,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   final TestSubscriber<SurveyResponse> goToSurvey = new TestSubscriber<>();
   final TestSubscriber<Boolean> loggedOutEmptyStateIsVisible = new TestSubscriber<>();
   final TestSubscriber<Boolean> loggedInEmptyStateIsVisible = new TestSubscriber<>();
+  final TestSubscriber<List<SurveyResponse>> surveys = new TestSubscriber<>();
 
   private void setUpEnvironment(@NonNull final Environment environment) {
     vm = new ViewModel(environment);
@@ -47,6 +58,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     vm.outputs.goToSurvey().subscribe(goToSurvey);
     vm.outputs.loggedOutEmptyStateIsVisible().subscribe(loggedOutEmptyStateIsVisible);
     vm.outputs.loggedInEmptyStateIsVisible().subscribe(loggedInEmptyStateIsVisible);
+    vm.outputs.surveys().subscribe(surveys);
   }
 
   @Test
@@ -129,7 +141,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     loggedInEmptyStateIsVisible.assertValue(false);
   }
 
-  @Test public void testSurveyClick() {
+  @Test
+  public void testSurveyClick() {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
 
     setUpEnvironment(environment());
@@ -137,4 +150,104 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     vm.inputs.surveyClicked(null, surveyResponse);
     goToSurvey.assertValue(surveyResponse);
   }
+
+  @Test
+  public void testNoSurveyFeatureFlag() {
+    ApiClientType apiClient = new MockApiClient();
+    CurrentUserType currentUser = new MockCurrentUser();
+    Config config = ConfigFactory.config().toBuilder()
+      .features(Collections.EMPTY_MAP).build();
+
+    final CurrentConfigType currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    Environment environment = this.environment().toBuilder()
+      .apiClient(apiClient)
+      .currentUser(currentUser)
+      .currentConfig(currentConfig)
+      .build();
+
+    setUpEnvironment(environment);
+
+    surveys.assertValue(Collections.emptyList());
+  }
+
+  @Test
+  public void testSurveyFeatureFlagFalse() {
+    final TestScheduler scheduler = new TestScheduler();
+
+    final List<SurveyResponse> surveyResponses = Arrays.asList(
+      SurveyResponseFactory.surveyResponse(),
+      SurveyResponseFactory.surveyResponse()
+    );
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override public @NonNull
+      Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
+        return Observable.just(surveyResponses);
+      }
+    };
+
+    CurrentUserType currentUser = new MockCurrentUser();
+
+    HashMap<String, Boolean> featureMap = new HashMap<>();
+    featureMap.put(FeatureKey.ANDROID_SURVEYS, false);
+
+    Config config = ConfigFactory.config().toBuilder()
+      .features(featureMap).build();
+
+    final CurrentConfigType currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    Environment environment = this.environment().toBuilder()
+      .scheduler(scheduler)
+      .apiClient(apiClient)
+      .currentUser(currentUser)
+      .currentConfig(currentConfig)
+      .build();
+
+    setUpEnvironment(environment);
+
+    surveys.assertValues(Collections.emptyList());
+  }
+
+  @Test
+  public void testSurveyFeatureFlagTrue() {
+    final TestScheduler scheduler = new TestScheduler();
+
+    final List<SurveyResponse> surveyResponses = Arrays.asList(
+      SurveyResponseFactory.surveyResponse(),
+      SurveyResponseFactory.surveyResponse()
+    );
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override public @NonNull
+      Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
+        return Observable.just(surveyResponses);
+      }
+    };
+
+    CurrentUserType currentUser = new MockCurrentUser();
+
+    HashMap<String, Boolean> featureMap = new HashMap<>();
+    featureMap.put(FeatureKey.ANDROID_SURVEYS, true);
+
+    Config config = ConfigFactory.config().toBuilder()
+      .features(featureMap).build();
+
+    final CurrentConfigType currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    Environment environment = this.environment().toBuilder()
+      .scheduler(scheduler)
+      .apiClient(apiClient)
+      .currentUser(currentUser)
+      .currentConfig(currentConfig)
+      .build();
+
+    setUpEnvironment(environment);
+
+    surveys.assertValues(surveyResponses);
+  }
+
 }

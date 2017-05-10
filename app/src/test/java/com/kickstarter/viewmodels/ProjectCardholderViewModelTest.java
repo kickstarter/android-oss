@@ -25,11 +25,11 @@ import rx.observers.TestSubscriber;
 
 
 public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
-  ProjectCardHolderViewModel.ViewModel vm;
-  private final TestSubscriber<String> backersCountText = new TestSubscriber<>();
+  private ProjectCardHolderViewModel.ViewModel vm;
+  private final TestSubscriber<String> backersCountTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backingViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> blurbText = new TestSubscriber<>();
-  private final TestSubscriber<String> categoryNameText = new TestSubscriber<>();
+  private final TestSubscriber<String> categoryNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> deadlineCountdownText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> featuredViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> friendBackingViewIsHidden = new TestSubscriber<>();
@@ -42,7 +42,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Project> notifyDelegateOfProjectClick = new TestSubscriber<>();
   private final TestSubscriber<Integer> percentageFunded = new TestSubscriber<>();
   private final TestSubscriber<Boolean> percentageFundedProgressBarIsGone = new TestSubscriber<>();
-  private final TestSubscriber<String> percentageFundedText = new TestSubscriber<>();
+  private final TestSubscriber<String> percentageFundedTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> photoUrl = new TestSubscriber<>();
   private final TestSubscriber<Boolean> potdViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<DateTime> projectCanceledAt = new TestSubscriber<>();
@@ -56,10 +56,10 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ProjectCardHolderViewModel.ViewModel(environment);
-    this.vm.outputs.backersCountText().subscribe(this.backersCountText);
+    this.vm.outputs.backersCountTextViewText().subscribe(this.backersCountTextViewText);
     this.vm.outputs.backingViewGroupIsGone().subscribe(this.backingViewGroupIsGone);
     this.vm.outputs.blurbText().subscribe(this.blurbText);
-    this.vm.outputs.categoryNameText().subscribe(this.categoryNameText);
+    this.vm.outputs.categoryNameTextViewText().subscribe(this.categoryNameTextViewText);
     this.vm.outputs.deadlineCountdownText().subscribe(this.deadlineCountdownText);
     this.vm.outputs.featuredViewGroupIsGone().subscribe(this.featuredViewGroupIsGone);
     this.vm.outputs.friendBackingViewIsHidden().subscribe(this.friendBackingViewIsHidden);
@@ -72,7 +72,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.notifyDelegateOfProjectClick().subscribe(this.notifyDelegateOfProjectClick);
     this.vm.outputs.percentageFunded().subscribe(this.percentageFunded);
     this.vm.outputs.percentageFundedProgressBarIsGone().subscribe(this.percentageFundedProgressBarIsGone);
-    this.vm.outputs.percentageFundedText().subscribe(this.percentageFundedText);
+    this.vm.outputs.percentageFundedTextViewText().subscribe(this.percentageFundedTextViewText);
     this.vm.outputs.photoUrl().subscribe(this.photoUrl);
     this.vm.outputs.potdViewGroupIsGone().subscribe(this.potdViewGroupIsGone);
     this.vm.outputs.projectCanceledAt().subscribe(this.projectCanceledAt);
@@ -86,12 +86,12 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testEmitsBackersCount() {
+  public void testEmitsBackersCountTextViewText() {
     final Project project = ProjectFactory.project().toBuilder().backersCount(50).build();
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.backersCountText.assertValues(NumberUtils.format(50));
+    this.backersCountTextViewText.assertValues(NumberUtils.format(50));
   }
 
   @Test
@@ -128,12 +128,12 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testEmitsCategoryNameText() {
+  public void testEmitsCategoryNameTextViewText() {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.categoryNameText.assertValues(project.category().name());
+    this.categoryNameTextViewText.assertValues(project.category().name());
   }
 
   @Test
@@ -304,12 +304,12 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testPercentageFundedText() {
+  public void testPercentageFundedTextViewText() {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.percentageFundedText.assertValues(NumberUtils.flooredPercentage(project.percentageFunded()));
+    this.percentageFundedTextViewText.assertValues(NumberUtils.flooredPercentage(project.percentageFunded()));
   }
 
   @Test

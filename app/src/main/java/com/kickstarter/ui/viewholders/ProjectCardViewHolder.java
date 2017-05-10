@@ -42,6 +42,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
   protected @Bind(R.id.blurb) TextView blurbTextView;
+  protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
   protected @Bind(R.id.featured) TextView featuredTextView;
@@ -76,8 +77,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @BindString(R.string.discovery_baseball_card_metadata_featured_project) String featuredInString;
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 
-  protected @Bind(R.id.category) TextView categoryTextView;
-
   public interface Delegate {
     void projectCardViewHolderClick(ProjectCardViewHolder viewHolder, Project project);
   }
@@ -90,7 +89,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
     ButterKnife.bind(this, view);
 
-    this.viewModel.outputs.backersCountText()
+    this.viewModel.outputs.backersCountTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.backersCountTextView::setText);
@@ -105,7 +104,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.blurbTextView::setText);
 
-    this.viewModel.outputs.categoryNameText()
+    this.viewModel.outputs.categoryNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.categoryTextView::setText);
@@ -162,7 +161,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(percentageFundedProgressBar));
 
-    this.viewModel.outputs.percentageFundedText()
+    this.viewModel.outputs.percentageFundedTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(percentTextView::setText);
@@ -170,7 +169,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.outputs.potdViewGroupIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.potdViewGroup)); // test
+      .subscribe(ViewUtils.setGone(this.potdViewGroup));
 
     this.viewModel.outputs.percentageFunded()
       .compose(bindToLifecycle())
@@ -192,7 +191,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::setFailedAtTextView);
 
-    this.viewModel.outputs.projectOutput()
+    this.viewModel.outputs.projectForDeadlineCountdownDetail()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setDeadlineCountdownText);

@@ -26,23 +26,19 @@ public class UnansweredSurveyHeaderViewHolder extends KSViewHolder {
   }
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-
-    // Null data means we should hide the view
-    if (data == null) {
-      headingTextView.setVisibility(View.GONE);
-      return;
-    }
-
     final int unansweredSurveyCount = ObjectUtils.requireNonNull(
       (int) data
     );
-    headingTextView.setText(
-      ksString.format(
-        "Reward_Surveys",
-        unansweredSurveyCount,
-        "reward_survey_count",
-        String.valueOf(unansweredSurveyCount)));
-
-    headingTextView.setVisibility(unansweredSurveyCount > 0 ? View.VISIBLE : View.GONE);
+    if (unansweredSurveyCount > 0) {
+      headingTextView.setText(
+        ksString.format(
+          "Reward_Surveys",
+          unansweredSurveyCount,
+          "reward_survey_count",
+          String.valueOf(unansweredSurveyCount)));
+      headingTextView.setVisibility(View.VISIBLE);
+    } else {
+      headingTextView.setVisibility(View.GONE);
+    }
   }
 }

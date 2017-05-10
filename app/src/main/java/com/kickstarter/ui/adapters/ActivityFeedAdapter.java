@@ -39,7 +39,7 @@ public final class ActivityFeedAdapter extends KSAdapter {
 
     insertSection(SECTION_LOGGED_IN_EMPTY_VIEW, Collections.emptyList());
     insertSection(SECTION_LOGGED_OUT_EMPTY_VIEW, Collections.emptyList());
-    insertSection(SECTION_SURVEYS_HEADER_VIEW, Collections.singletonList(null));
+    insertSection(SECTION_SURVEYS_HEADER_VIEW, Collections.emptyList());
     insertSection(SECTION_SURVEYS_VIEW, Collections.emptyList());
     insertSection(SECTION_ACTIVITIES_VIEW, Collections.emptyList());
   }

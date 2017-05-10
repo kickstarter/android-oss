@@ -219,6 +219,11 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         this.featuredTextView.setText(this.ksString.format(this.featuredInString, "category_name", rootCategory))
       );
 
+    this.viewModel.outputs.metadataViewGroupIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.projectMetadataViewGroup));
+
     this.viewModel.outputs.starredViewGroupIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())

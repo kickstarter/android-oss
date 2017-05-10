@@ -38,6 +38,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> fundingUnsuccessfulTextViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> imageIsInvisible = new TestSubscriber<>();
   private final TestSubscriber<String> nameText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> metadataViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<Project> notifyDelegateOfProjectClick = new TestSubscriber<>();
   private final TestSubscriber<Integer> percentageFunded = new TestSubscriber<>();
   private final TestSubscriber<Boolean> percentageFundedProgressBarIsGone = new TestSubscriber<>();
@@ -66,6 +67,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.friendsForNamepile().subscribe(this.friendsForNamepile);
     this.vm.outputs.fundingUnsuccessfulTextViewIsGone().subscribe(this.fundingUnsuccessfulTextViewIsGone);
     this.vm.outputs.imageIsInvisible().subscribe(this.imageIsInvisible);
+    this.vm.outputs.metadataViewGroupIsGone().subscribe(this.metadataViewGroupIsGone);
     this.vm.outputs.nameText().subscribe(this.nameText);
     this.vm.outputs.notifyDelegateOfProjectClick().subscribe(this.notifyDelegateOfProjectClick);
     this.vm.outputs.percentageFunded().subscribe(this.percentageFunded);
@@ -244,6 +246,15 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.configureWith(project);
     this.imageIsInvisible.assertValues(ObjectUtils.isNull(project.photo()));
+  }
+
+  @Test
+  public void testEmitsMetadataViewGroupIsGone() {
+    final Project project = ProjectFactory.project().toBuilder().isStarred(true).build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(project);
+    this.metadataViewGroupIsGone.assertValues(false);
   }
 
   @Test
@@ -430,7 +441,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testSetDefaultTopPadding_withMetData() {
+  public void testSetDefaultTopPadding_withMetaData() {
     final Project project = ProjectFactory.project()
       .toBuilder()
       .isBacking(true)

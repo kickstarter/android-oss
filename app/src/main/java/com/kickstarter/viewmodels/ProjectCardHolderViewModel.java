@@ -29,13 +29,11 @@ import static com.kickstarter.libs.rx.transformers.Transformers.coalesce;
 public interface ProjectCardHolderViewModel {
 
   interface Inputs {
-    /** Call to configure the view model with a project. */
     void configureWith(Project project);
     void projectClicked();
   }
 
   interface Outputs {
-    /** Emits the string name of the projects category. */
     Observable<String> backersCountText();
     Observable<Boolean> backingViewGroupIsGone();
     Observable<String> categoryNameText();

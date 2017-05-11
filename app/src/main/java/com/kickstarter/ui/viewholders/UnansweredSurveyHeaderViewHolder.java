@@ -36,9 +36,6 @@ public class UnansweredSurveyHeaderViewHolder extends KSViewHolder {
           unansweredSurveyCount,
           "reward_survey_count",
           String.valueOf(unansweredSurveyCount)));
-      headingTextView.setVisibility(View.VISIBLE);
-    } else {
-      headingTextView.setVisibility(View.GONE);
     }
   }
 }

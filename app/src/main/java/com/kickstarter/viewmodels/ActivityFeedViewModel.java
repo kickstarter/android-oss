@@ -18,14 +18,13 @@ import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
-import com.kickstarter.ui.adapters.ActivityFeedAdapter.Delegate;
+import com.kickstarter.ui.adapters.ActivityFeedAdapter;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 import com.kickstarter.ui.viewholders.UnansweredSurveyViewHolder;
-import com.trello.rxlifecycle.ActivityEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,7 @@ import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 
 public interface ActivityFeedViewModel {
 
-  interface Inputs extends Delegate {
+  interface Inputs extends ActivityFeedAdapter.Delegate {
     /** Invoke when pagination should happen. */
     void nextPage();
 
@@ -82,7 +81,7 @@ public interface ActivityFeedViewModel {
   }
 
   final class ViewModel extends ActivityViewModel<ActivityFeedActivity> implements
-    ActivityFeedViewModel.Inputs, ActivityFeedViewModel.Outputs {
+    Inputs, Outputs {
 
     private final ApiClientType client;
     private final CurrentConfigType currentConfig;
@@ -115,15 +114,15 @@ public interface ActivityFeedViewModel {
           this.currentUser.isLoggedIn(),
           Pair::create
         )
-        .filter(resumedAndLoggedIn ->
-          resumedAndLoggedIn.first == ActivityEvent.RESUME && resumedAndLoggedIn.second
-        )
+        .map(resumedAndLoggedIn -> resumedAndLoggedIn.second)
+        .filter(loggedIn -> loggedIn)
         .compose(Transformers.combineLatestPair(surveyFeatureEnabled))
-        .switchMap(resumedAndLoggedInAndEnabled ->
-          resumedAndLoggedInAndEnabled.second
+        .switchMap(loggedInAndEnabled ->
+          loggedInAndEnabled.second
             ? this.client.fetchUnansweredSurveys()
             : Observable.just(new ArrayList<SurveyResponse>())
         )
+        .compose(this.bindToLifecycle())
         .subscribe(this.surveys::onNext);
 
       final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
@@ -187,7 +186,7 @@ public interface ActivityFeedViewModel {
     private final PublishSubject<Activity> friendBackingClick = PublishSubject.create();
     private final PublishSubject<Void> loginClick = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
-    private final PublishSubject<ActivityEvent> resume = PublishSubject.create();
+    private final PublishSubject<Void> resume = PublishSubject.create();
     private final PublishSubject<Activity> projectStateChangedClick = PublishSubject.create();
     private final PublishSubject<Activity> projectStateChangedPositiveClick = PublishSubject.create();
     private final PublishSubject<Activity> projectUpdateClick = PublishSubject.create();
@@ -206,8 +205,8 @@ public interface ActivityFeedViewModel {
     private final BehaviorSubject<Boolean> loggedOutEmptyStateIsVisible = BehaviorSubject.create();
     private final BehaviorSubject<List<SurveyResponse>> surveys = BehaviorSubject.create();
 
-    public final ActivityFeedViewModel.Inputs inputs = this;
-    public final ActivityFeedViewModel.Outputs outputs = this;
+    public final Inputs inputs = this;
+    public final Outputs outputs = this;
 
     @Override public void emptyActivityFeedDiscoverProjectsClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
       this.discoverProjectsClick.onNext(null);
@@ -254,7 +253,7 @@ public interface ActivityFeedViewModel {
     }
 
     @Override public void resume() {
-      this.resume.onNext(ActivityEvent.RESUME);
+      this.resume.onNext(null);
     }
 
     @Override @NonNull public Observable<List<Activity>> activities() {

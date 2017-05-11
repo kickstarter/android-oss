@@ -5,12 +5,10 @@ import android.support.annotation.NonNull;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.SurveyResponseFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
 
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
 
 import rx.observers.TestSubscriber;
 
@@ -20,7 +18,7 @@ public class UnansweredSurveyHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> creatorAvatarImage = new TestSubscriber<>();
   private final TestSubscriber<String> creatorName = new TestSubscriber<>();
   private final TestSubscriber<SurveyResponse> loadSurvey = new TestSubscriber<>();
-  private final TestSubscriber<List<String>> surveyDescription = new TestSubscriber<>();
+  private final TestSubscriber<Project> projectForSurveyDescription = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new UnansweredSurveyHolderViewModel.ViewModel(environment);
@@ -28,7 +26,7 @@ public class UnansweredSurveyHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.creatorAvatarImage().subscribe(this.creatorAvatarImage);
     this.vm.outputs.creatorName().subscribe(this.creatorName);
     this.vm.outputs.loadSurvey().subscribe(this.loadSurvey);
-    this.vm.outputs.surveyDescription().subscribe(this.surveyDescription);
+    this.vm.outputs.projectForSurveyDescription().subscribe(this.projectForSurveyDescription);
   }
 
   @Test
@@ -50,7 +48,7 @@ public class UnansweredSurveyHolderViewModelTest extends KSRobolectricTestCase {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
-    surveyDescription.assertValues(Arrays.asList(surveyResponse.project().creator().name(), surveyResponse.project().name()));
+    projectForSurveyDescription.assertValues(surveyResponse.project());
   }
   @Test
   public void clickingSurveyEmitsUrl() throws Exception {

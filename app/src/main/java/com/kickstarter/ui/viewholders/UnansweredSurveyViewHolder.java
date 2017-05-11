@@ -11,11 +11,10 @@ import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.viewmodels.UnansweredSurveyHolderViewModel;
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -58,18 +57,18 @@ public class UnansweredSurveyViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.surveyTitleTextView::setText);
 
-    this.viewModel.outputs.surveyDescription()
+    this.viewModel.outputs.projectForSurveyDescription()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setSurveyDescription);
   }
 
-  private void setSurveyDescription(final @NonNull List<String> surveyDescriptionStrings) {
+  private void setSurveyDescription(final @NonNull Project projectForSurveyDescription) {
     this.surveyTextView.setText(Html.fromHtml(
       ksString.format(
         surveyDescriptionString,
-        "creator_name", surveyDescriptionStrings.get(0),
-        "project_name", surveyDescriptionStrings.get(1)
+        "creator_name", projectForSurveyDescription.creator().name(),
+        "project_name", projectForSurveyDescription.name()
       )));
   }
 

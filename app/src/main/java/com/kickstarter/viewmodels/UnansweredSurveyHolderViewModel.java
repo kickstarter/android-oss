@@ -4,11 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.ui.viewholders.UnansweredSurveyViewHolder;
-
-import java.util.Arrays;
-import java.util.List;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -32,16 +30,15 @@ public interface UnansweredSurveyHolderViewModel {
     /** Emits the creator name */
     Observable<String> creatorName();
 
-    /** Emits the survey description */
-    Observable<List<String>> surveyDescription();
+    /** Emits the project from survey */
+    Observable<Project> projectForSurveyDescription();
 
     /** Emits the survey url */
     Observable<SurveyResponse> loadSurvey();
   }
 
-  final class ViewModel extends ActivityViewModel<UnansweredSurveyViewHolder> implements
-    UnansweredSurveyHolderViewModel.Inputs,
-    UnansweredSurveyHolderViewModel.Outputs {
+  final class ViewModel extends ActivityViewModel<UnansweredSurveyViewHolder>
+    implements Inputs, Outputs {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -52,8 +49,8 @@ public interface UnansweredSurveyHolderViewModel {
       this.creatorName = this.configData
         .map(sr -> sr.project().creator().name());
 
-      this.surveyDescription = this.configData
-        .map(this::getSurveyDescription);
+      this.projectForSurveyDescription = this.configData
+        .map(ViewModel::getProjectFromSurvey);
 
       this.goToSurvey = this.configData
         .compose(takeWhen(this.surveyClicked));
@@ -64,11 +61,11 @@ public interface UnansweredSurveyHolderViewModel {
 
     private final Observable<String> creatorAvatarImage;
     private final Observable<String> creatorName;
-    private final Observable<List<String>> surveyDescription;
+    private final Observable<Project> projectForSurveyDescription;
     private final Observable<SurveyResponse> goToSurvey;
 
-    public final UnansweredSurveyHolderViewModel.Inputs inputs = this;
-    public final UnansweredSurveyHolderViewModel.Outputs outputs = this;
+    public final Inputs inputs = this;
+    public final Outputs outputs = this;
 
     @Override public void configureWith(final @NonNull SurveyResponse surveyResponse) {
       this.configData.onNext(surveyResponse);
@@ -83,15 +80,15 @@ public interface UnansweredSurveyHolderViewModel {
     @Override public Observable<String> creatorName() {
       return this.creatorName;
     }
-    @Override public Observable<List<String>> surveyDescription() {
-      return this.surveyDescription;
+    @Override public Observable<Project> projectForSurveyDescription() {
+      return this.projectForSurveyDescription;
     }
     @Override public Observable<SurveyResponse> loadSurvey() {
       return this.configData;
     }
 
-    private List<String> getSurveyDescription(final @NonNull SurveyResponse surveyResponse) {
-      return Arrays.asList(surveyResponse.project().creator().name(), surveyResponse.project().name());
+    private static Project getProjectFromSurvey(final @NonNull SurveyResponse surveyResponse) {
+      return surveyResponse.project();
     }
   }
 

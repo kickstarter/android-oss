@@ -41,7 +41,7 @@
       android:layout_centerVertical="true"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textColor="@color/ksr_navy_600"
+      android:textColor="@color/ksr_text_navy_600"
       android:text="@string/social_buttons_send"/>
 
   </RelativeLayout>

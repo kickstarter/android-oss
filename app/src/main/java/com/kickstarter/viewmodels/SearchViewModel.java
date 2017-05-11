@@ -39,14 +39,14 @@ public interface SearchViewModel {
   }
 
   interface Outputs {
-    /** Emits info clicked project / reference tag pair. */
-    Observable<Pair<Project, RefTag>> goToProject();
-
     /** Emits list of popular projects. */
     Observable<List<Project>> popularProjects();
 
     /** Emits list of projects matching criteria. */
     Observable<List<Project>> searchProjects();
+
+    /** Emits a project and ref tag when we should start a project activity. */
+    Observable<Pair<Project, RefTag>> startProjectActivity();
   }
 
   final class ViewModel extends ActivityViewModel<SearchActivity> implements Inputs, Outputs {
@@ -100,48 +100,57 @@ public interface SearchViewModel {
           }
         });
 
-      // Track us viewing this page
-      this.koala.trackSearchView();
-
-      // Track search results and pagination
       final Observable<Integer> pageCount = paginator.loadingPage();
       final Observable<String> query = params
         .map(DiscoveryParams::term);
 
-      final Observable<List<Project>> projects = Observable.merge(
-        this.popularProjects,
-        this.searchProjects
-      );
+      final Observable<List<Project>> projects = Observable.merge(this.popularProjects, this.searchProjects);
 
-      Observable.combineLatest(search, projects, Pair::create)
+      this.startProjectActivity = Observable.combineLatest(this.search, projects, Pair::create)
         .compose(takePairWhen(this.projectClicked))
         .map(searchTermAndProjectsAndProjectClicked -> {
           final String searchTerm = searchTermAndProjectsAndProjectClicked.first.first;
           final List<Project> currentProjects = searchTermAndProjectsAndProjectClicked.first.second;
           final Project projectClicked = searchTermAndProjectsAndProjectClicked.second;
 
-          if (searchTerm.length() == 0) {
-            return projectClicked == currentProjects.get(0)
-              ? Pair.create(projectClicked, RefTag.searchPopularFeatured())
-              : Pair.create(projectClicked, RefTag.searchPopular());
-          } else {
-            return projectClicked == currentProjects.get(0)
-              ? Pair.create(projectClicked, RefTag.searchFeatured())
-              : Pair.create(projectClicked, RefTag.search());
-          }
-        })
-        .compose(bindToLifecycle())
-        .subscribe(this.goToProject);
+          return this.projectAndRefTag(searchTerm, currentProjects, projectClicked);
+        });
 
       query
         .compose(takePairWhen(pageCount))
         .filter(qp -> StringUtils.isPresent(qp.first))
         .compose(bindToLifecycle())
         .subscribe(qp -> this.koala.trackSearchResults(qp.first, qp.second));
+
+      this.koala.trackSearchView();
     }
 
     private static final DiscoveryParams.Sort defaultSort = DiscoveryParams.Sort.POPULAR;
     private static final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(defaultSort).build();
+
+    /**
+     * Returns a project and its appropriate ref tag given its location in a list of popular projects or search results.
+     *
+     * @param searchTerm        The search term entered to determine list of search results.
+     * @param projects          The list of popular or search result projects.
+     * @param selectedProject   The project selected by the user.
+     * @return                  The project and its appropriate ref tag.
+     */
+    private @NonNull Pair<Project, RefTag> projectAndRefTag(final @NonNull String searchTerm,
+      final @NonNull List<Project> projects, final @NonNull Project selectedProject) {
+
+      final boolean isFirstResult = selectedProject == projects.get(0);
+
+      if (searchTerm.length() == 0) {
+        return isFirstResult
+          ? Pair.create(selectedProject, RefTag.searchPopularFeatured())
+          : Pair.create(selectedProject, RefTag.searchPopular());
+      } else {
+        return isFirstResult
+          ? Pair.create(selectedProject, RefTag.searchFeatured())
+          : Pair.create(selectedProject, RefTag.search());
+      }
+    }
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Project> projectClicked = PublishSubject.create();
@@ -149,7 +158,7 @@ public interface SearchViewModel {
 
     private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
-    private final BehaviorSubject<Pair<Project, RefTag>> goToProject = BehaviorSubject.create();
+    private final Observable<Pair<Project, RefTag>> startProjectActivity;
 
     public final SearchViewModel.Inputs inputs = this;
     public final SearchViewModel.Outputs outputs = this;
@@ -164,13 +173,13 @@ public interface SearchViewModel {
       this.search.onNext(s);
     }
 
-    @Override public Observable<Pair<Project, RefTag>> goToProject() {
-      return this.goToProject;
+    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
+      return this.startProjectActivity;
     }
-    @Override public Observable<List<Project>> popularProjects() {
+    @Override public @NonNull Observable<List<Project>> popularProjects() {
       return this.popularProjects;
     }
-    @Override public Observable<List<Project>> searchProjects() {
+    @Override public @NonNull Observable<List<Project>> searchProjects() {
       return this.searchProjects;
     }
   }

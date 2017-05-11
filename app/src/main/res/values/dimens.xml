@@ -25,6 +25,7 @@
   <dimen name="grid_40">320dp</dimen>
 
   <!-- Kickstarter six-point grid keylines -->
+  <dimen name="grid_new_1_half">3dp</dimen>
   <dimen name="grid_new_1">6dp</dimen>
   <dimen name="grid_new_2">12dp</dimen>
   <dimen name="grid_new_3">18dp</dimen>
@@ -33,6 +34,7 @@
   <dimen name="grid_new_8">48dp</dimen>
   <dimen name="grid_new_10">60dp</dimen>
   <dimen name="grid_new_20">120dp</dimen>
+  <dimen name="grid_new_33">198dp</dimen>
 
   <!-- Typography-->
   <dimen name="caption">12sp</dimen>
@@ -112,9 +114,9 @@
   <dimen name="project_card_photo_landscape_height">135dp</dimen>
   <dimen name="project_card_photo_landscape_width">240dp</dimen>
   <dimen name="project_social_photo_height">@dimen/grid_4</dimen>
-  <dimen name="search_result_photo_width">@dimen/grid_14</dimen>
-  <dimen name="search_result_photo_height">63dp</dimen>
-  <dimen name="featured_search_result_photo_height">126dp</dimen>
+  <dimen name="search_result_photo_width">80dp</dimen>
+  <dimen name="search_result_photo_height">45dp</dimen>
+  <dimen name="search_result_featured_photo_height">@dimen/grid_new_33</dimen>
 
   <dimen name="thanks_project_photo_width">208dp</dimen>
   <dimen name="thanks_project_photo_height">117dp</dimen>

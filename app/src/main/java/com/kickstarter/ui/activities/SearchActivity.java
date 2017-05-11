@@ -28,9 +28,9 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresActivityViewModel(SearchViewModel.ViewModel.class)
 public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel> implements SearchAdapter.Delegate {
-
   private SearchAdapter adapter;
   private RecyclerViewPaginator paginator;
+
   protected @Bind(R.id.search_recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.search_toolbar) SearchToolbar toolbar;
 
@@ -40,35 +40,35 @@ public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel
     setContentView(R.layout.search_layout);
     ButterKnife.bind(this);
 
-    adapter = new SearchAdapter(this);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    recyclerView.setAdapter(adapter);
+    this.adapter = new SearchAdapter(this);
+    this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    this.recyclerView.setAdapter(this.adapter);
 
-    paginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
+    this.paginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage);
 
-    RxRecyclerView.scrollEvents(recyclerView)
+    RxRecyclerView.scrollEvents(this.recyclerView)
       .compose(bindToLifecycle())
       .filter(scrollEvent -> scrollEvent.dy() != 0) // Skip scroll events when y is 0, usually indicates new data
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> InputUtils.hideKeyboard(this, getCurrentFocus()));
 
-    viewModel.outputs.popularProjects()
+    this.viewModel.outputs.popularProjects()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(adapter::loadPopularProjects);
+      .subscribe(this.adapter::loadPopularProjects);
 
-    viewModel.outputs.searchProjects()
+    this.viewModel.outputs.searchProjects()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(adapter::loadSearchProjects);
+      .subscribe(this.adapter::loadSearchProjects);
 
-    this.viewModel.outputs.goToProject()
+    this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::goToProject);
+      .subscribe(this::startProjectActivity);
   }
 
-  private void goToProject(final @NonNull Pair<Project, RefTag> projectAndRefTag) {
+  private void startProjectActivity(final @NonNull Pair<Project, RefTag> projectAndRefTag) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
       .putExtra(IntentKey.REF_TAG, projectAndRefTag.second);
@@ -80,8 +80,8 @@ public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    paginator.stop();
-    recyclerView.setAdapter(null);
+    this.paginator.stop();
+    this.recyclerView.setAdapter(null);
   }
 
   public void projectSearchResultClick(final @NonNull ProjectSearchResultViewHolder viewHolder, final @NonNull Project project) {

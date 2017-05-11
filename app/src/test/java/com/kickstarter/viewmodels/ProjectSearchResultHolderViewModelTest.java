@@ -7,6 +7,7 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.PhotoFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 
 import org.joda.time.DateTime;
@@ -17,17 +18,19 @@ import rx.observers.TestSubscriber;
 public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricTestCase {
   private ProjectSearchResultHolderViewModel.ViewModel vm;
   private final TestSubscriber<Project> notifyDelegateOfResultClick = new TestSubscriber<>();
-  private final TestSubscriber<String> projectImage = new TestSubscriber<>();
-  private final TestSubscriber<String> projectName = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Integer, Integer>> projectStats = new TestSubscriber<>();
+  private final TestSubscriber<String> percentFundedTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Project> projectForDeadlineCountdownUnitTextView = new TestSubscriber<>();
+  private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<String> projectPhotoUrl = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ProjectSearchResultHolderViewModel.ViewModel(environment);
 
     this.vm.outputs.notifyDelegateOfResultClick().subscribe(this.notifyDelegateOfResultClick);
-    this.vm.outputs.projectImage().subscribe(this.projectImage);
-    this.vm.outputs.projectName().subscribe(this.projectName);
-    this.vm.outputs.projectStats().subscribe(this.projectStats);
+    this.vm.outputs.percentFundedTextViewText().subscribe(this.percentFundedTextViewText);
+    this.vm.outputs.projectForDeadlineCountdownUnitTextView().subscribe(this.projectForDeadlineCountdownUnitTextView);
+    this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
+    this.vm.outputs.projectPhotoUrl().subscribe(this.projectPhotoUrl);
   }
 
   @Test
@@ -44,9 +47,9 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, false));
+    this.vm.inputs.configureWith(Pair.create(project, false));
 
-    this.projectImage.assertValues("http://www.kickstarter.com/med.jpg");
+    this.projectPhotoUrl.assertValues("http://www.kickstarter.com/med.jpg");
   }
 
   @Test
@@ -63,9 +66,9 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
+    this.vm.inputs.configureWith(Pair.create(project, true));
 
-    this.projectImage.assertValues("http://www.kickstarter.com/full.jpg");
+    this.projectPhotoUrl.assertValues("http://www.kickstarter.com/full.jpg");
   }
 
   @Test
@@ -74,11 +77,10 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
-    this.projectName.assertValues(project.name());
+    this.vm.inputs.configureWith(Pair.create(project, true));
+    this.projectNameTextViewText.assertValues(project.name());
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testEmitsProjectStats() {
     final Project project = ProjectFactory.project()
@@ -90,8 +92,10 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
-    this.projectStats.assertValues(new Pair<>(50, 10));
+    this.vm.inputs.configureWith(Pair.create(project, true));
+
+    this.percentFundedTextViewText.assertValues(NumberUtils.flooredPercentage(project.percentageFunded()));
+    this.projectForDeadlineCountdownUnitTextView.assertValues(project);
   }
 
   @Test
@@ -100,7 +104,7 @@ public final class ProjectSearchResultHolderViewModelTest extends KSRobolectricT
 
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(new ProjectSearchResultHolderViewModel.Data(project, true));
+    this.vm.inputs.configureWith(Pair.create(project, true));
     this.vm.inputs.projectClicked();
 
     this.notifyDelegateOfResultClick.assertValues(project);

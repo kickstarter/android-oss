@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/search_term_view"
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:card_view="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/featured_search_result_view"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:orientation="vertical"
@@ -15,87 +16,101 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_new_2"
-    card_view:cardUseCompatPadding="true">
+    android:adjustViewBounds="true"
+    android:focusable="true"
+    android:foreground="@drawable/click_indicator_light"
+    card_view:cardBackgroundColor="@color/transparent"
+    card_view:cardCornerRadius="0dp"
+    card_view:elevation="@dimen/card_elevation">
 
-    <LinearLayout
+    <RelativeLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical">
+      android:layout_height="wrap_content">
 
       <ImageView
         android:id="@+id/project_image_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/featured_search_result_photo_height"
-        android:adjustViewBounds="true"
+        android:layout_height="@dimen/search_result_featured_photo_height"
         android:background="@drawable/gray_gradient"
         android:scaleType="centerCrop"
         tools:ignore="ContentDescription" />
 
-      <TextView
-        android:id="@+id/project_name_text_view"
-        style="@style/SubheadPrimaryMedium"
-        android:layout_marginStart="@dimen/grid_new_2"
-        android:layout_marginTop="@dimen/grid_new_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="3"
-        android:textColor="@color/gray_black"
-        tools:text="Name" />
-
-      <!-- TODO: This implementation is temporary until our i18n system can handle CDATA -->
-
       <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/grid_new_2"
-        android:orientation="horizontal">
+        android:layout_alignBottom="@id/project_image_view"
+        android:orientation="vertical"
+        android:background="@color/white_alpha_95"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <TextView
-          android:id="@+id/project_stats_text_view_percent_complete_data"
-          style="@style/ActivityFeedCard"
+          android:id="@+id/project_name_text_view"
+          style="@style/Headline"
+          android:fontFamily="normal"
+          android:layout_marginStart="@dimen/grid_new_2"
+          android:layout_marginLeft="@dimen/grid_new_2"
+          android:layout_marginEnd="@dimen/grid_new_2"
+          android:layout_marginRight="@dimen/grid_new_2"
+          android:layout_marginTop="@dimen/grid_new_2"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:maxLines="1"
-          android:textColor="@color/green"
-          android:layout_weight="0"
-          android:textStyle="bold" />
+          android:maxLines="2"
+          android:ellipsize="end"
+          tools:text="Gravity: The Weighted Blanket for Sleep, Stress and Anxiety" />
 
-        <TextView
-          android:id="@+id/project_stats_text_view_percent_complete_string"
-          style="@style/ActivityFeedCard"
+        <LinearLayout
+          android:id="@+id/featured_search_result_stats"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="0"
-          android:maxLines="1"
-          android:textColor="@color/black_alpha_50" />
+          android:layout_margin="@dimen/grid_new_2"
+          android:orientation="horizontal">
 
-        <TextView
-          android:id="@+id/project_stats_text_view_days_to_go_data"
-          style="@style/ActivityFeedCard"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_weight="0"
-          android:maxLines="1"
-          android:textColor="@color/gray_black"
-          android:textStyle="bold" />
+          <TextView
+            android:id="@+id/search_result_percent_funded_text_view"
+            style="@style/BodyPrimaryMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/ksr_text_green_700"
+            android:layout_marginEnd="@dimen/grid_new_1_half"
+            android:layout_marginRight="@dimen/grid_new_1_half"
+            tools:text="8,000%"/>
 
-        <TextView
-          android:id="@+id/project_stats_text_view_days_to_go_string"
-          style="@style/ActivityFeedCard"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_weight="0"
-          android:maxLines="1"
-          android:textColor="@color/black_alpha_50" />
+          <TextView
+            android:id="@+id/search_result_funded_text_view"
+            style="@style/BodySecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/grid_new_2"
+            android:layout_marginRight="@dimen/grid_new_2"
+            tools:text="funded"/>
+
+          <TextView
+            android:id="@+id/search_result_deadline_countdown_text_view"
+            style="@style/BodyPrimaryMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/grid_new_1_half"
+            android:layout_marginRight="@dimen/grid_new_1_half"
+            tools:text="25"/>
+
+          <TextView
+            android:id="@+id/search_result_deadline_unit_text_view"
+            style="@style/BodySecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="days to go"/>
+
+        </LinearLayout>
+
       </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
+
   </android.support.v7.widget.CardView>
 
   <View
     android:layout_width="fill_parent"
     android:layout_height="1dp"
-    android:layout_marginTop="@dimen/grid_new_1"
-    android:background="@color/black_alpha_10" />
+    android:layout_marginTop="@dimen/grid_new_3"
+    android:background="@color/ksr_navy_300" />
 
 </LinearLayout>

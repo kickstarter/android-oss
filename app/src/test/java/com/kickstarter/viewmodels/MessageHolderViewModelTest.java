@@ -103,7 +103,7 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
 
     this.messageBodyTextViewAlignParentEnd.assertValues(false);
     this.messageBodyTextViewBackgroundColorInt.assertValues(R.color.ksr_grey_400);
-    this.messageBodyTextViewTextColorInt.assertValues(R.color.ksr_navy_700);
+    this.messageBodyTextViewTextColorInt.assertValues(R.color.ksr_text_navy_700);
   }
 
   @Test

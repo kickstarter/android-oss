@@ -133,7 +133,7 @@ patrocinadores</string>
   <string name="Info" formatted="false">Información</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">Es una plataforma para dar vida a proyectos creativos.</string>
   <string name="Its_better_with_friends" formatted="false">Todo en la vida es mejor con amigos ...</string>
-  <string name="Joining_the_live_stream" formatted="false">Joining the live stream</string>
+  <string name="Joining_the_live_stream" formatted="false">Abriendo conexión a Live Stream</string>
   <string name="Just_for_you" formatted="false">Sólo para ti.</string>
   <string name="Keep_reading" formatted="false">Leer más</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Recibe info sobre live streams futuros</string>
@@ -189,7 +189,7 @@ patrocinadores</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Ingresa un monto de contribución de %{amount} o más.</string>
   <string name="Please_log_in_or_sign_up_to_back_this_project" formatted="false">Por favor inicia sesión o regístrate para patrocinar este proyecto.</string>
   <string name="Please_log_in_or_sign_up_to_message_this_creator" formatted="false">Por favor inicia sesión o regístrate para mandarle un mensaje a este creador.</string>
-  <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Please log in or sign up to participate in this live stream chat.</string>
+  <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Por favor inicia sesión o regístrate para participar en este Live Stream.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Por favor inicia sesión o regístrate para suscribirte a este Live Stream.</string>
   <string name="Pledge" formatted="false">Contribución:</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Puedes contribuir un monto de libre selección para apoyar este proyecto.</string>
@@ -286,6 +286,7 @@ patrocinadores</string>
   <string name="Upcoming_live_streams" formatted="false">Live streams futuros</string>
   <string name="Upcoming_with_creator_name" formatted="false">Próximamente: Video de &lt;br/>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Update_pledge" formatted="false">Actualizar contribución</string>
+  <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Video disabled until the internet connection improves</string>
   <string name="View" formatted="false">Ver</string>
   <string name="View_your_pledge" formatted="false">Revisa tu contribución</string>
   <string name="View_your_reward" formatted="false">Mostrar recompensa</string>

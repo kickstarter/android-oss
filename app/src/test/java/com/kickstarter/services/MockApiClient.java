@@ -11,6 +11,7 @@ import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.CommentFactory;
 import com.kickstarter.factories.CommentsEnvelopeFactory;
 import com.kickstarter.factories.LocationFactory;
+import com.kickstarter.factories.MessageFactory;
 import com.kickstarter.factories.MessageThreadsEnvelopeFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.SurveyResponseFactory;
@@ -22,6 +23,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
+import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
@@ -288,7 +290,6 @@ public class MockApiClient implements ApiClientType {
     return Observable.just(CommentFactory.comment().toBuilder().body(body).build());
   }
 
-
   @Override
   public @NonNull Observable<Empty> registerPushToken(final @NonNull String token) {
     return Observable.empty();
@@ -297,6 +298,11 @@ public class MockApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<User> resetPassword(final @NonNull String email) {
     return Observable.just(UserFactory.user());
+  }
+
+  @Override
+  public @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread thread, final @NonNull String body) {
+    return Observable.just(MessageFactory.message());
   }
 
   @Override

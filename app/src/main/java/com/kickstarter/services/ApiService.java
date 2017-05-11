@@ -9,6 +9,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
+import com.kickstarter.models.Message;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.SurveyResponse;
@@ -16,6 +17,7 @@ import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
+import com.kickstarter.services.apirequests.MessageBody;
 import com.kickstarter.services.apirequests.ProjectNotificationBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
@@ -127,6 +129,17 @@ public interface ApiService {
 
   @POST("/v1/users/reset")
   Observable<Response<User>> resetPassword(@Body ResetPasswordBody body);
+
+  @POST("/v1/message_threads/{message_thread_id}/messages")
+  Observable<Response<Message>> sendMessageToThread(@Path("message_thread_id") long messageThreadId, @Body MessageBody body);
+
+  @POST("/v1/projects/{project_id}/backers/{backer_id}/messages")
+  Observable<Response<Message>> sendMessageToBacker(
+    @Path("project_id") long projectId, @Path("backer_id") long backerId, @Body MessageBody body
+  );
+
+  @POST("/v1/projects/{project_id}/messages")
+  Observable<Response<Message>> sendMessageToProject(@Path("project_id") long projectId, @Body MessageBody body);
 
   @POST("/v1/users")
   Observable<Response<AccessTokenEnvelope>> signup(@Body SignupBody body);

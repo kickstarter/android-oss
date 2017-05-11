@@ -8,7 +8,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.models.Message;
-import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.viewholders.MessageViewHolder;
 
 import rx.Observable;
@@ -31,7 +30,7 @@ public interface MessageHolderViewModel {
     Observable<String> participantAvatarImageUrl();
 
     /** Emits a boolean to determine whether the message body view should align the parent view's end and right. */
-    Observable<Boolean> messageBodyTextViewAlignParentEnd();
+    Observable<Boolean> messageBodyCardViewAlignParentEnd();
 
     /** Emits the color int for the message background. */
     Observable<Integer> messageBodyTextViewBackgroundColorInt();
@@ -44,13 +43,11 @@ public interface MessageHolderViewModel {
   }
 
   final class ViewModel extends ActivityViewModel<MessageViewHolder> implements Inputs, Outputs {
-    private final ApiClientType client;
     private final CurrentUserType currentUser;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.client = environment.apiClient();
       this.currentUser = environment.currentUser();
 
       final Observable<Pair<Message, Boolean>> messageAndCurrentUserIsSender = this.message
@@ -96,7 +93,7 @@ public interface MessageHolderViewModel {
     @Override public @NonNull Observable<String> participantAvatarImageUrl() {
       return this.participantAvatarImageUrl;
     }
-    @Override public @NonNull Observable<Boolean> messageBodyTextViewAlignParentEnd() {
+    @Override public @NonNull Observable<Boolean> messageBodyCardViewAlignParentEnd() {
       return this.messageBodyTextViewAlignParentEnd;
     }
     @Override public @NonNull Observable<Integer> messageBodyTextViewBackgroundColorInt() {

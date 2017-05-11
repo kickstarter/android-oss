@@ -12,6 +12,7 @@ import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.MessagesActivity;
@@ -23,6 +24,9 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.errors;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 public interface MessagesViewModel {
@@ -30,6 +34,9 @@ public interface MessagesViewModel {
   interface Inputs {
     /** Call when the message edit text changes. */
     void messageEditTextChanged(String messageBody);
+
+    /** Call when the send message button has been clicked. */
+    void sendMessageButtonClicked();
   }
 
   interface Outputs {
@@ -39,14 +46,20 @@ public interface MessagesViewModel {
     /** Emits a boolean that determines if the backing info view should be hidden. */
     Observable<Boolean> backingInfoViewHidden();
 
-    /** Emits the participant name to be displayed. */
-    Observable<String> participantNameTextViewText();
-
     /** Emits a list of messages to be displayed. */
     Observable<List<Message>> messages();
 
+    /** Emits the participant name to be displayed. */
+    Observable<String> participantNameTextViewText();
+
     /** Emits the project name to be displayed. */
     Observable<String> projectNameTextViewText();
+
+    /** Emits a string to set the message edit text to. */
+    Observable<String> setMessageEditText();
+
+    /** Emits a string to display in the message error toast. */
+    Observable<String> showMessageErrorToast();
   }
 
   final class ViewModel extends ActivityViewModel<MessagesActivity> implements Inputs, Outputs {
@@ -64,7 +77,23 @@ public interface MessagesViewModel {
         .map(i -> i.getParcelableExtra(IntentKey.MESSAGE_THREAD))
         .ofType(MessageThread.class);
 
-      final Observable<Notification<MessageThreadEnvelope>> envelopeNotification = messageThread
+      final Observable<Notification<Message>> messageNotification = messageThread
+        .compose(combineLatestPair(this.messageEditTextChanged))
+        .compose(takeWhen(this.sendMessageButtonClicked))
+        .switchMap(threadAndBody ->
+          this.client.sendMessageToThread(threadAndBody.first, threadAndBody.second)
+            .materialize()
+        )
+        .share();
+
+      final Observable<Message> messageSent = messageNotification.compose(values());
+
+      this.setMessageEditText = messageSent.map(__ -> "");
+
+      final Observable<Notification<MessageThreadEnvelope>> envelopeNotification = Observable.merge(
+        messageThread,
+        messageThread.compose(takeWhen(messageSent))
+      )
         .switchMap(thread -> this.client.fetchMessagesForThread(thread).materialize())
         .share();
 
@@ -115,31 +144,43 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.messages::onNext);
 
+      messageNotification
+        .compose(errors())
+        .map(ErrorEnvelope::fromThrowable)
+        .map(ErrorEnvelope::errorMessage)
+        .subscribe(this.showMessageErrorToast::onNext);
+
       messageThread
         .map(thread -> thread.project().name())
         .compose(bindToLifecycle())
         .subscribe(this.projectNameTextViewText::onNext);
     }
 
-    private final PublishSubject<String> messageEditText = PublishSubject.create();
+    private final PublishSubject<String> messageEditTextChanged = PublishSubject.create();
+    private final PublishSubject<Void> sendMessageButtonClicked = PublishSubject.create();
 
     private final BehaviorSubject<Pair<Backing, Project>> backingAndProject = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> backingInfoViewHidden = BehaviorSubject.create();
-    private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
+    private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
+    private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
+    private final Observable<String> setMessageEditText;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
     @Override public void messageEditTextChanged(final @NonNull String messageBody) {
-      this.messageEditText.onNext(messageBody);
+      this.messageEditTextChanged.onNext(messageBody);
+    }
+    @Override public void sendMessageButtonClicked() {
+      this.sendMessageButtonClicked.onNext(null);
     }
 
-    @Override public @NonNull BehaviorSubject<Pair<Backing, Project>> backingAndProject() {
+    @Override public @NonNull Observable<Pair<Backing, Project>> backingAndProject() {
       return this.backingAndProject;
     }
-    @Override public @NonNull BehaviorSubject<Boolean> backingInfoViewHidden() {
+    @Override public @NonNull Observable<Boolean> backingInfoViewHidden() {
       return this.backingInfoViewHidden;
     }
     @Override public @NonNull Observable<String> participantNameTextViewText() {
@@ -150,6 +191,12 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
+    }
+    @Override public @NonNull Observable<String> showMessageErrorToast() {
+      return this.showMessageErrorToast;
+    }
+    @Override public @NonNull Observable<String> setMessageEditText() {
+      return this.setMessageEditText;
     }
   }
 }

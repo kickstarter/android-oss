@@ -23,9 +23,8 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
   private final CompositeSubscription subscriptions = new CompositeSubscription();
 
   private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
-  private final PublishSubject<Intent> intent = PublishSubject.create();
-  protected final PublishSubject<ActivityEvent> onResume = PublishSubject.create();
 
+  private final PublishSubject<Intent> intent = PublishSubject.create();
   protected final Koala koala;
 
   public ActivityViewModel(final @NonNull Environment environment) {
@@ -61,11 +60,6 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
   protected void onResume(final @NonNull ViewType view) {
     Timber.d("onResume %s", this.toString());
     onTakeView(view);
-    onResume();
-  }
-
-  public void onResume() {
-    this.onResume.onNext(ActivityEvent.RESUME);
   }
 
   @CallSuper

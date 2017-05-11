@@ -48,18 +48,18 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   final TestSubscriber<Boolean> loggedInEmptyStateIsVisible = new TestSubscriber<>();
   final TestSubscriber<List<SurveyResponse>> surveys = new TestSubscriber<>();
 
-  private void setUpEnvironment(@NonNull final Environment environment) {
-    vm = new ViewModel(environment);
+  private void setUpEnvironment(final @NonNull Environment environment) {
+    this.vm = new ViewModel(environment);
 
-    vm.outputs.activities().subscribe(this.activities);
-    vm.outputs.goToDiscovery().subscribe(this.goToDiscovery);
-    vm.outputs.goToLogin().subscribe(this.goToLogin);
-    vm.outputs.goToProject().subscribe(this.goToProject);
-    vm.outputs.goToProjectUpdate().subscribe(this.goToProjectUpdate);
-    vm.outputs.goToSurvey().subscribe(goToSurvey);
-    vm.outputs.loggedOutEmptyStateIsVisible().subscribe(loggedOutEmptyStateIsVisible);
-    vm.outputs.loggedInEmptyStateIsVisible().subscribe(loggedInEmptyStateIsVisible);
-    vm.outputs.surveys().subscribe(surveys);
+    this.vm.outputs.activities().subscribe(this.activities);
+    this.vm.outputs.goToDiscovery().subscribe(this.goToDiscovery);
+    this.vm.outputs.goToLogin().subscribe(this.goToLogin);
+    this.vm.outputs.goToProject().subscribe(this.goToProject);
+    this.vm.outputs.goToProjectUpdate().subscribe(this.goToProjectUpdate);
+    this.vm.outputs.goToSurvey().subscribe(this.goToSurvey);
+    this.vm.outputs.loggedOutEmptyStateIsVisible().subscribe(this.loggedOutEmptyStateIsVisible);
+    this.vm.outputs.loggedInEmptyStateIsVisible().subscribe(this.loggedInEmptyStateIsVisible);
+    this.vm.outputs.surveys().subscribe(this.surveys);
   }
 
   @Test
@@ -67,16 +67,16 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     // Initialize the paginator.
-    vm.inputs.refresh();
+    this.vm.inputs.refresh();
 
     // Activities should emit.
-    activities.assertValueCount(1);
-    koalaTest.assertValue(KoalaEvent.ACTIVITY_VIEW);
+    this.activities.assertValueCount(1);
+    this.koalaTest.assertValue(KoalaEvent.ACTIVITY_VIEW);
 
     // Paginate.
-    vm.inputs.nextPage();
-    activities.assertValueCount(1);
-    koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW, KoalaEvent.ACTIVITY_LOAD_MORE);
+    this.vm.inputs.nextPage();
+    this.activities.assertValueCount(1);
+    this.koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW, KoalaEvent.ACTIVITY_LOAD_MORE);
   }
 
   @Test
@@ -129,17 +129,17 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment);
 
     // Empty activity feed with login button should be shown.
-    loggedOutEmptyStateIsVisible.assertValue(true);
+    this.loggedOutEmptyStateIsVisible.assertValue(true);
 
     // Login.
-    vm.inputs.emptyActivityFeedLoginClicked(null);
-    goToLogin.assertValueCount(1);
+    this.vm.inputs.emptyActivityFeedLoginClicked(null);
+    this.goToLogin.assertValueCount(1);
     currentUser.refresh(UserFactory.user());
 
     // Empty states are not shown when activities emit on successful login.
-    activities.assertValueCount(1);
-    loggedOutEmptyStateIsVisible.assertValues(true, false);
-    loggedInEmptyStateIsVisible.assertValue(false);
+    this.activities.assertValueCount(1);
+    this.loggedOutEmptyStateIsVisible.assertValues(true, false);
+    this.loggedInEmptyStateIsVisible.assertValue(false);
   }
 
   @Test
@@ -148,8 +148,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     setUpEnvironment(environment());
 
-    vm.inputs.surveyClicked(null, surveyResponse);
-    goToSurvey.assertValue(surveyResponse);
+    this.vm.inputs.surveyClicked(null, surveyResponse);
+    this.goToSurvey.assertValue(surveyResponse);
   }
 
   @Test
@@ -171,9 +171,9 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment);
-    vm.inputs.resume();
+    this.vm.inputs.resume();
 
-    surveys.assertValue(Collections.emptyList());
+    this.surveys.assertValue(Collections.emptyList());
   }
 
   @Test
@@ -186,8 +186,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     );
 
     final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull
-      Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
+      @Override
+      public @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
         return Observable.just(surveyResponses);
       }
     };
@@ -212,9 +212,9 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment);
-    vm.inputs.resume();
+    this.vm.inputs.resume();
 
-    surveys.assertValues(Collections.emptyList());
+    this.surveys.assertValues(Collections.emptyList());
   }
 
   @Test
@@ -227,8 +227,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     );
 
     final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull
-      Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
+      @Override
+      public @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
         return Observable.just(surveyResponses);
       }
     };
@@ -253,9 +253,9 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment);
-    vm.inputs.resume();
+    this.vm.inputs.resume();
 
-    surveys.assertValues(surveyResponses);
+    this.surveys.assertValues(surveyResponses);
   }
 
   @Test
@@ -268,8 +268,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     );
 
     final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull
-      Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
+      @Override
+      public @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
         return Observable.just(surveyResponses);
       }
     };
@@ -294,9 +294,9 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment);
-    vm.inputs.resume();
+    this.vm.inputs.resume();
 
-    surveys.assertNoValues();
+    this.surveys.assertNoValues();
   }
 
   @Test
@@ -309,8 +309,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     );
 
     final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull
-      Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
+      @Override
+      public @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
         return Observable.just(surveyResponses);
       }
     };
@@ -336,8 +336,6 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     setUpEnvironment(environment);
 
-    surveys.assertNoValues();
+    this.surveys.assertNoValues();
   }
-
-
 }

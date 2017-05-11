@@ -11,7 +11,7 @@
   card_view:cardCornerRadius="0dp"
   card_view:cardUseCompatPadding="true">
 
-  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -44,13 +44,13 @@
       android:layout_below="@id/survey_avatar_image"
       android:layout_margin="@dimen/grid_new_2" />
 
-    <View
+    <include
       android:id="@+id/separator"
-      android:layout_width="match_parent"
-      android:layout_height="1dp"
+      layout="@layout/horizontal_line_1dp_view"
       android:layout_below="@id/survey_text"
       android:layout_marginTop="@dimen/grid_new_1"
-      android:background="@color/gray" />
+      android:layout_height="1dp"
+      android:layout_width="match_parent" />
 
     <TextView
       android:id="@+id/respond_button"
@@ -75,4 +75,5 @@
       tools:ignore="ContentDescription" />
 
   </RelativeLayout>
+
 </android.support.v7.widget.CardView>

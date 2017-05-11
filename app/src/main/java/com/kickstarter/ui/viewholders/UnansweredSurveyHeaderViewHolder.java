@@ -10,6 +10,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.ObjectUtils;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 
 public class UnansweredSurveyHeaderViewHolder extends KSViewHolder {
@@ -17,6 +18,8 @@ public class UnansweredSurveyHeaderViewHolder extends KSViewHolder {
   private final KSString ksString;
 
   @Bind(R.id.heading) TextView headingTextView;
+  @BindString(R.string.token_reward_surveys) String rewardSurveysToken;
+  @BindString(R.string.token_reward_survey_count) String rewardSurveyCountToken;
 
   public UnansweredSurveyHeaderViewHolder(final @NonNull View view) {
     super(view);
@@ -32,9 +35,9 @@ public class UnansweredSurveyHeaderViewHolder extends KSViewHolder {
     if (unansweredSurveyCount > 0) {
       headingTextView.setText(
         ksString.format(
-          "Reward_Surveys",
+          rewardSurveysToken,
           unansweredSurveyCount,
-          "reward_survey_count",
+          rewardSurveyCountToken,
           String.valueOf(unansweredSurveyCount)));
     }
   }

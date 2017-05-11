@@ -74,16 +74,16 @@ public interface UnansweredSurveyHolderViewModel {
       this.surveyClicked.onNext(null);
     }
 
-    @Override public Observable<String> creatorAvatarImage() {
+    @Override public @NonNull Observable<String> creatorAvatarImage() {
       return this.creatorAvatarImage;
     }
-    @Override public Observable<String> creatorName() {
+    @Override public @NonNull Observable<String> creatorName() {
       return this.creatorName;
     }
-    @Override public Observable<Project> projectForSurveyDescription() {
+    @Override public @NonNull Observable<Project> projectForSurveyDescription() {
       return this.projectForSurveyDescription;
     }
-    @Override public Observable<SurveyResponse> loadSurvey() {
+    @Override public @NonNull Observable<SurveyResponse> loadSurvey() {
       return this.configData;
     }
 

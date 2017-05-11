@@ -45,6 +45,8 @@
   <string name="Sha">SHA</string>
   <string name="Staging">Staging</string>
   <string name="Submit_feedback">Submit feedback</string>
+  <string name="token_reward_surveys">Reward_Surveys</string>
+  <string name="token_reward_survey_count">reward_survey_count</string>
   <string name="Upgrade_app">Upgrade app</string>
   <string name="Variant">Variant</string>
   <string name="Version_code">Version Code</string>

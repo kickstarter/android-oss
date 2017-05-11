@@ -22,24 +22,23 @@ import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
-public class UnansweredSurveyViewHolder extends KSViewHolder {
+public final class UnansweredSurveyViewHolder extends KSViewHolder {
 
+  private final Delegate delegate;
   private final KSString ksString;
+  private final UnansweredSurveyHolderViewModel.ViewModel viewModel;
+
   @Bind(R.id.survey_avatar_image) ImageView creatorAvatarImageView;
   @Bind(R.id.survey_title) TextView surveyTitleTextView;
   @Bind(R.id.survey_text) TextView surveyTextView;
 
   @BindString(R.string.Creator_name_needs_some_information_to_deliver_your_reward_for_project_name) String surveyDescriptionString;
 
-  private final UnansweredSurveyHolderViewModel.ViewModel viewModel;
-
-  private final Delegate delegate;
-
   public interface Delegate {
     void surveyClicked(UnansweredSurveyViewHolder viewHolder, SurveyResponse surveyResponse);
   }
 
-  public UnansweredSurveyViewHolder(final View view, final Delegate delegate) {
+  public UnansweredSurveyViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     this.viewModel = new UnansweredSurveyHolderViewModel.ViewModel(environment());

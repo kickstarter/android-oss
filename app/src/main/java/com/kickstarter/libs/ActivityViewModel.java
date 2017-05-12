@@ -38,11 +38,6 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
     this.activityResult.onNext(activityResult);
   }
 
-  /** Returns an observable of lifecycle events for this activity. */
-  public @NonNull Observable<ActivityEvent> lifecycle() {
-    return this.view.switchMap(ActivityLifecycleType::lifecycle);
-  }
-
   /**
    * Takes intent data from the view.
    */

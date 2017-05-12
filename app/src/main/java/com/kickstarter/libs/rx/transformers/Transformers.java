@@ -1,7 +1,6 @@
 package com.kickstarter.libs.rx.transformers;
 
 import android.support.annotation.NonNull;
-import android.util.Pair;
 
 import com.kickstarter.services.ApiException;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
@@ -184,12 +183,5 @@ public final class Transformers {
    */
   public static @NonNull <T> ObserveForUITransformer<T> observeForUI() {
     return new ObserveForUITransformer<>();
-  }
-
-  /**
-   * Emits the second of any input pair
-   */
-  public static <R> R second(final @NonNull Pair<?, R> anyPair) {
-    return anyPair.second;
   }
 }

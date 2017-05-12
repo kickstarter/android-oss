@@ -13,6 +13,7 @@ import com.kickstarter.libs.KoalaContext.Update;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
@@ -115,7 +116,7 @@ public interface ActivityFeedViewModel {
           this.currentUser.isLoggedIn(),
           Pair::create
         )
-        .map(Transformers::second)
+        .map(PairUtils::second)
         .filter(BooleanUtils::isTrue)
         .compose(Transformers.combineLatestPair(surveyFeatureEnabled))
         .switchMap(loggedInAndEnabled ->

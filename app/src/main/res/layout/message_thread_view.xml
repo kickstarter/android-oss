@@ -35,7 +35,7 @@
         android:layout_height="@dimen/comments_feed_avatar_height"
         tools:background="@color/green"
         tools:ignore="ContentDescription"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
       <TextView
@@ -65,6 +65,7 @@
           android:id="@+id/participant_name_text_view"
           style="@style/SubheadPrimary"
           android:layout_width="wrap_content"
+          android:layout_marginBottom="@dimen/grid_new_1"
           android:layout_height="wrap_content"
           tools:text="Participant Name" />
 

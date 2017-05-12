@@ -1,39 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:focusable="true"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
   <include layout="@layout/message_threads_toolbar"/>
-
-  <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/grid_5">
-
-    <TextView
-      android:id="@+id/mailbox_text_view"
-      style="@style/EditorialHeadline"
-      android:layout_centerVertical="true"
-      android:layout_centerHorizontal="true"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      tools:text="Inbox"/>
-
-    <TextView
-      android:id="@+id/unread_count_text_view"
-      android:textColor="@color/blue"
-      style="@style/SubheadPrimaryMedium"
-      android:layout_marginTop="@dimen/grid_2"
-      android:layout_below="@+id/mailbox_text_view"
-      android:layout_centerHorizontal="true"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      tools:text="3 new"/>
-
-  </RelativeLayout>
 
   <android.support.v4.widget.SwipeRefreshLayout
     android:id="@+id/message_threads_swipe_refresh_layout"
@@ -42,7 +15,7 @@
 
     <android.support.v7.widget.RecyclerView
       android:id="@+id/message_threads_recycler_view"
-      android:background="@color/discovery_background"
+      android:background="@color/white"
       android:layout_width="match_parent"
       android:layout_height="match_parent"/>
 

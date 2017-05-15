@@ -9,7 +9,7 @@ public final class PairUtils {
   /**
    * Returns the first of any input pair
    */
-  public static <R> R first(final @NonNull Pair<R,?> anyPair) {
+  public static <R> R first(final @NonNull Pair<R, ?> anyPair) {
     return anyPair.first;
   }
 

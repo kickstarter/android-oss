@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,7 +38,7 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
 
   protected @BindString(R.string.activity_project_update_update_count) String projectUpdateCountString;
 
-  private final Delegate delegate;
+  private final @Nullable Delegate delegate;
 
   protected @Inject KSString ksString;
 
@@ -46,7 +47,7 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
     void projectUpdateClicked(ProjectUpdateViewHolder viewHolder, Activity activity);
   }
 
-  public ProjectUpdateViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
+  public ProjectUpdateViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
@@ -96,11 +97,15 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
 
   @OnClick(R.id.project_info)
   public void projectOnClick() {
-    delegate.projectUpdateProjectClicked(this, activity());
+    if (this.delegate != null) {
+      this.delegate.projectUpdateProjectClicked(this, activity());
+    }
   }
 
   @OnClick(R.id.update_info)
   public void updateOnClick() {
-    delegate.projectUpdateClicked(this, activity());
+    if (this.delegate != null) {
+      this.delegate.projectUpdateClicked(this, activity());
+    }
   }
 }

@@ -2,6 +2,7 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.kickstarter.R;
@@ -29,12 +30,12 @@ public final class ActivityFeedAdapter extends KSAdapter {
   private static final int SECTION_SURVEYS_VIEW = 3;
   private static final int SECTION_ACTIVITIES_VIEW = 4;
 
-  private final Delegate delegate;
+  private final @Nullable Delegate delegate;
 
   public interface Delegate extends FriendBackingViewHolder.Delegate, ProjectStateChangedPositiveViewHolder.Delegate,
     ProjectStateChangedViewHolder.Delegate, ProjectUpdateViewHolder.Delegate, EmptyActivityFeedViewHolder.Delegate, UnansweredSurveyViewHolder.Delegate {}
 
-  public ActivityFeedAdapter(final @NonNull Delegate delegate) {
+  public ActivityFeedAdapter(final @Nullable Delegate delegate) {
     this.delegate = delegate;
 
     insertSection(SECTION_LOGGED_IN_EMPTY_VIEW, Collections.emptyList());
@@ -108,7 +109,6 @@ public final class ActivityFeedAdapter extends KSAdapter {
     }
     return R.layout.empty_view;
   }
-
 
   @Override
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {

@@ -19,9 +19,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class ActivityFeedAdapterTest extends KSRobolectricTestCase implements ActivityFeedAdapter.Delegate {
+public class ActivityFeedAdapterTest extends KSRobolectricTestCase {
 
-  private ActivityFeedAdapter adapter = new ActivityFeedAdapter(this);
+  private ActivityFeedAdapter adapter = new ActivityFeedAdapter(null);
 
   @Test
   public void justActivities() throws Exception {
@@ -122,42 +122,5 @@ public class ActivityFeedAdapterTest extends KSRobolectricTestCase implements Ac
     );
 
     Assert.assertEquals(data, adapter.sections());
-  }
-
-  /**
-   *  These below methods are required to create instance of adapter, but don't need to do anything
-   */
-
-  @Override
-  public void emptyActivityFeedDiscoverProjectsClicked(final EmptyActivityFeedViewHolder viewHolder) {
-
-  }
-  @Override
-  public void emptyActivityFeedLoginClicked(final EmptyActivityFeedViewHolder viewHolder) {
-
-  }
-  @Override
-  public void projectStateChangedClicked(final ProjectStateChangedViewHolder viewHolder, final Activity activity) {
-
-  }
-  @Override
-  public void surveyClicked(final UnansweredSurveyViewHolder viewHolder, final SurveyResponse surveyResponse) {
-
-  }
-  @Override
-  public void friendBackingClicked(final FriendBackingViewHolder viewHolder, final Activity activity) {
-
-  }
-  @Override
-  public void projectUpdateProjectClicked(final ProjectUpdateViewHolder viewHolder, final Activity activity) {
-
-  }
-  @Override
-  public void projectUpdateClicked(final ProjectUpdateViewHolder viewHolder, final Activity activity) {
-
-  }
-  @Override
-  public void projectStateChangedPositiveClicked(final ProjectStateChangedPositiveViewHolder viewHolder, final Activity activity) {
-
   }
 }

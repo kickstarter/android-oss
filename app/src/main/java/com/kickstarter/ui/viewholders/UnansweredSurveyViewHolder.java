@@ -24,7 +24,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
 public final class UnansweredSurveyViewHolder extends KSViewHolder {
 
-  private final Delegate delegate;
+  private final @Nullable Delegate delegate;
   private final KSString ksString;
   private final UnansweredSurveyHolderViewModel.ViewModel viewModel;
 
@@ -38,7 +38,7 @@ public final class UnansweredSurveyViewHolder extends KSViewHolder {
     void surveyClicked(UnansweredSurveyViewHolder viewHolder, SurveyResponse surveyResponse);
   }
 
-  public UnansweredSurveyViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
+  public UnansweredSurveyViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
     super(view);
     this.delegate = delegate;
     this.viewModel = new UnansweredSurveyHolderViewModel.ViewModel(environment());

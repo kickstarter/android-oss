@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
@@ -52,13 +53,13 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
   @Inject KSCurrency ksCurrency;
   @Inject KSString ksString;
 
-  private final Delegate delegate;
+  private final @Nullable Delegate delegate;
 
   public interface Delegate {
     void projectStateChangedPositiveClicked(ProjectStateChangedPositiveViewHolder viewHolder, Activity activity);
   }
 
-  public ProjectStateChangedPositiveViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
+  public ProjectStateChangedPositiveViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ButterKnife.bind(this, view);
@@ -132,6 +133,8 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
 
   @OnClick(R.id.card_view)
   public void onClick() {
-    delegate.projectStateChangedPositiveClicked(this, activity());
+    if (this.delegate != null) {
+      this.delegate.projectStateChangedPositiveClicked(this, activity());
+    }
   }
 }

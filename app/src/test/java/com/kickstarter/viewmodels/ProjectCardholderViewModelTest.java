@@ -139,12 +139,12 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testEmitsDeadlineCountdownText() {
     final Project project = ProjectFactory.project().toBuilder()
-      .deadline(new DateTime().plusHours(25))
+      .deadline(new DateTime().plusSeconds(60 * 60 * 24 + 1))
       .build();
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.deadlineCountdownText.assertValues(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
+    this.deadlineCountdownText.assertValues("24");
   }
 
   @Test

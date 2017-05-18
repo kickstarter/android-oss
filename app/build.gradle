@@ -1,20 +1,17 @@
 apply plugin: 'com.android.application'
 apply from: 'quality.gradle'
 
-def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
-def date = new Date();
-def buildDate = date.format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
 def externalPrivateVersion = new File(project.rootDir.path + "/app/external_version_code.txt").text.trim().toInteger()
 def externalPublicVersion = new File(project.rootDir.path + "/app/external_version_name.txt").text.trim()
 def internalPrivateVersion = new File(project.rootDir.path + "/app/internal_version_code.txt").text.trim().toInteger()
 def internalPublicVersion = new File(project.rootDir.path + "/app/internal_version_name.txt").text.trim()
-def isCircle = "true".equals(System.getenv("CIRCLECI"))
+def isCircle = "true" == System.getenv("CIRCLECI")
 
 ext.signing = [
-    storeFilePath : "path/to/keystore",
-    storePassword : "keystore password",
-    keyAlias      : "key alias",
-    keyPassword   : "key password"
+    storeFilePath: "path/to/keystore",
+    storePassword: "keystore password",
+    keyAlias     : "key alias",
+    keyPassword  : "key password"
 ]
 
 if (file('signing.gradle').exists()) {
@@ -31,8 +28,8 @@ android {
         targetSdkVersion 25
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
-        buildConfigField "String", "BUILD_DATE", "\"${buildDate}\""
+        buildConfigField "String", "GIT_SHA", "\"${commitSha()}\""
+        buildConfigField "String", "BUILD_DATE", "\"${commitTime()}\""
 
         // Enable Multidex to support over 65K methods
         multiDexEnabled true
@@ -187,6 +184,34 @@ dependencies {
     androidTestCompile 'com.android.support:support-annotations:25.1.0'
 }
 
+// SHA and timestamp caching courtesy of https://github.com/gdg-x/frisbee/blob/develop/app/build.gradle#L193-L218
+def commitSha() {
+    def file = new File(project.buildDir, "commit-sha.txt")
+    if (file.exists()) {
+        return file.text
+    }
+
+    def value = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+
+    file.parentFile.mkdirs()
+    file.text = value
+    return value
+}
+
+def commitTime() {
+    def file = new File(project.buildDir, "commit-timestamp.txt")
+    if (file.exists()) {
+        return file.text
+    }
+
+    def date = new Date()
+    def value = date.format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
+
+    file.parentFile.mkdirs()
+    file.text = value
+    return value
+}
+
 buildscript {
     ext.kotlin_version = '1.1.2'
 
@@ -204,7 +229,7 @@ buildscript {
 gradle.taskGraph.beforeTask { Task task ->
     if (task.name ==~ /process.*GoogleServices/) {
         android.applicationVariants.all { variant ->
-            if (task.name ==~ /(?i)process${variant.name}GoogleServices/){
+            if (task.name ==~ /(?i)process${variant.name}GoogleServices/) {
                 copy {
                     from "src/${variant.name}"
                     into '.'

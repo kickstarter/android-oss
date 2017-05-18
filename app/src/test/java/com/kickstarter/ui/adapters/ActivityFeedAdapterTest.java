@@ -5,12 +5,6 @@ import com.kickstarter.factories.ActivityFactory;
 import com.kickstarter.factories.SurveyResponseFactory;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.SurveyResponse;
-import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
-import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
-import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
-import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
-import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
-import com.kickstarter.ui.viewholders.UnansweredSurveyViewHolder;
 
 import org.junit.Assert;
 import org.junit.Test;

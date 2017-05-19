@@ -19,14 +19,14 @@ public final class SurveyResponseFactory {
       .build();
 
     final UrlsEnvelope urlsEnvelope = UrlsEnvelope.builder()
-      .webEnvelope(webEnvelope)
+      .web(webEnvelope)
       .build();
 
     return SurveyResponse.builder()
       .answeredAt(new DateTime().minusDays(10))
       .id(IdFactory.id())
       .project(ProjectFactory.allTheWayProject())
-      .urlsEnvelope(urlsEnvelope)
+      .urls(urlsEnvelope)
       .build();
   }
 }

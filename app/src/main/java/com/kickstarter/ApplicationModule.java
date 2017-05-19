@@ -200,7 +200,7 @@ public final class ApplicationModule {
   @Singleton
   @NonNull HttpLoggingInterceptor provideHttpLoggingInterceptor() {
     final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-    interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+    interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
     return interceptor;
   }
 

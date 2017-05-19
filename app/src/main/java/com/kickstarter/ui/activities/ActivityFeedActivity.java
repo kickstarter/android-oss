@@ -32,6 +32,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
@@ -46,6 +47,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   @Inject CurrentUserType currentUser;
 
   private RecyclerViewPaginator recyclerViewPaginator;
+  protected @BindString(R.string.discovery_survey_reward_survey) String rewardSurveyString;
   private SwipeRefresher swipeRefresher;
 
   @Override
@@ -162,7 +164,8 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   private void startSurveyWebView(final @NonNull SurveyResponse surveyResponse) {
     try {
       final Intent intent = new Intent(this, WebViewActivity.class)
-        .putExtra(IntentKey.URL, surveyResponse.urls().web().survey());
+        .putExtra(IntentKey.URL, surveyResponse.urls().web().survey())
+        .putExtra(IntentKey.TOOLBAR_TITLE, rewardSurveyString);
       startActivityWithTransition(intent, R.anim.slide_in_bottom, R.anim.com_mixpanel_android_slide_down);
     } catch (final NullPointerException npe) {
       npe.printStackTrace();

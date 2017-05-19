@@ -15,12 +15,12 @@ public abstract class SurveyResponse implements Parcelable {
   public abstract @Nullable DateTime answeredAt();
   public abstract int id();
   public abstract @Nullable Project project();
-  public abstract UrlsEnvelope urlsEnvelope();
+  public abstract UrlsEnvelope urls();
 
   @AutoGson
   @AutoParcel
   public abstract static class UrlsEnvelope implements Parcelable {
-    public abstract WebEnvelope webEnvelope();
+    public abstract WebEnvelope web();
 
     @AutoGson
     @AutoParcel
@@ -40,7 +40,7 @@ public abstract class SurveyResponse implements Parcelable {
 
     @AutoParcel.Builder
     public abstract static class Builder {
-      public abstract SurveyResponse.UrlsEnvelope.Builder webEnvelope(SurveyResponse.UrlsEnvelope.WebEnvelope __);
+      public abstract SurveyResponse.UrlsEnvelope.Builder web(SurveyResponse.UrlsEnvelope.WebEnvelope __);
       public abstract SurveyResponse.UrlsEnvelope build();
     }
 
@@ -54,7 +54,7 @@ public abstract class SurveyResponse implements Parcelable {
     public abstract Builder answeredAt(DateTime __);
     public abstract Builder id(int __);
     public abstract Builder project(Project __);
-    public abstract Builder urlsEnvelope(UrlsEnvelope __);
+    public abstract Builder urls(UrlsEnvelope __);
     public abstract SurveyResponse build();
   }
 

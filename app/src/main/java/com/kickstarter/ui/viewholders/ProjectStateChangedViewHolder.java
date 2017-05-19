@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,7 +29,7 @@ public final class ProjectStateChangedViewHolder extends ActivityListViewHolder 
   protected @BindString(R.string.activity_project_state_change_project_was_cancelled_by_creator) String projectCanceledByCreatorString;
   protected @BindString(R.string.activity_project_state_change_project_was_suspended) String projectSuspendedString;
 
-  private final Delegate delegate;
+  private final @Nullable Delegate delegate;
 
   @Inject KSString ksString;
 
@@ -36,7 +37,7 @@ public final class ProjectStateChangedViewHolder extends ActivityListViewHolder 
     void projectStateChangedClicked(ProjectStateChangedViewHolder viewHolder, Activity activity);
   }
 
-  public ProjectStateChangedViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
+  public ProjectStateChangedViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
@@ -79,6 +80,8 @@ public final class ProjectStateChangedViewHolder extends ActivityListViewHolder 
 
   @OnClick(R.id.card_view)
   public void stateChangeCardClick() {
-    delegate.projectStateChangedClicked(this, activity());
+    if (this.delegate != null) {
+      this.delegate.projectStateChangedClicked(this, activity());
+    }
   }
 }

@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.viewmodels.UnansweredSurveyHolderViewModel;
@@ -21,11 +20,13 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class UnansweredSurveyViewHolder extends KSViewHolder {
 
   private final @Nullable Delegate delegate;
   private final KSString ksString;
+  private SurveyResponse survey;
   private final UnansweredSurveyHolderViewModel.ViewModel viewModel;
 
   @Bind(R.id.survey_avatar_image) ImageView creatorAvatarImageView;
@@ -33,6 +34,7 @@ public final class UnansweredSurveyViewHolder extends KSViewHolder {
   @Bind(R.id.survey_text) TextView surveyTextView;
 
   @BindString(R.string.Creator_name_needs_some_information_to_deliver_your_reward_for_project_name) String surveyDescriptionString;
+
 
   public interface Delegate {
     void surveyClicked(UnansweredSurveyViewHolder viewHolder, SurveyResponse surveyResponse);
@@ -73,9 +75,10 @@ public final class UnansweredSurveyViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    final SurveyResponse configData = ObjectUtils.requireNonNull(
+    final SurveyResponse configData = requireNonNull(
       (SurveyResponse) data
     );
+    this.survey = configData;
     this.viewModel.inputs.configureWith(configData);
   }
 
@@ -85,6 +88,8 @@ public final class UnansweredSurveyViewHolder extends KSViewHolder {
 
   @Override
   public void onClick(final @NonNull View view) {
-    this.viewModel.inputs.surveyClicked();
+    if (delegate != null) {
+      delegate.surveyClicked(this, this.survey);
+    }
   }
 }

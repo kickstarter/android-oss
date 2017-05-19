@@ -33,7 +33,8 @@ public final class ActivityFeedAdapter extends KSAdapter {
   private final @Nullable Delegate delegate;
 
   public interface Delegate extends FriendBackingViewHolder.Delegate, ProjectStateChangedPositiveViewHolder.Delegate,
-    ProjectStateChangedViewHolder.Delegate, ProjectUpdateViewHolder.Delegate, EmptyActivityFeedViewHolder.Delegate, UnansweredSurveyViewHolder.Delegate {}
+    ProjectStateChangedViewHolder.Delegate, ProjectUpdateViewHolder.Delegate, EmptyActivityFeedViewHolder.Delegate,
+    UnansweredSurveyViewHolder.Delegate {}
 
   public ActivityFeedAdapter(final @Nullable Delegate delegate) {
     this.delegate = delegate;

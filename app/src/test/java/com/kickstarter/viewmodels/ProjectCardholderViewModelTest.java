@@ -10,7 +10,6 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -139,12 +138,12 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testEmitsDeadlineCountdownText() {
     final Project project = ProjectFactory.project().toBuilder()
-      .deadline(new DateTime().plusHours(25))
+      .deadline(new DateTime().plusSeconds(60 * 60 * 24 + 1))
       .build();
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.deadlineCountdownText.assertValues(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
+    this.deadlineCountdownText.assertValues("24");
   }
 
   @Test

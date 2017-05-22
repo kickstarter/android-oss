@@ -136,7 +136,7 @@ public final class Transformers {
    *   .subscribe(show)
    * ```
    */
-  @NonNull public static <T, R> WaitUntilTransformer<T, R> waitUntil(final @NonNull Observable<R> until) {
+  public static @NonNull <T, R> WaitUntilTransformer<T, R> waitUntil(final @NonNull Observable<R> until) {
     return new WaitUntilTransformer<>(until);
   }
 
@@ -154,7 +154,7 @@ public final class Transformers {
    *   .subscribe(subject::onNext)
    * ```
    */
-  @NonNull public static <S> IgnoreValuesTransformer<S> ignoreValues() {
+  public static @NonNull <S> IgnoreValuesTransformer<S> ignoreValues() {
     return new IgnoreValuesTransformer<>();
   }
 
@@ -162,7 +162,7 @@ public final class Transformers {
    * Emits the number of times the source has emitted for every emission of the source. The
    * first emitted value will be `1`.
    */
-  @NonNull public static <T> IncrementalCountTransformer<T> incrementalCount() {
+  public static @NonNull <T> IncrementalCountTransformer<T> incrementalCount() {
     return new IncrementalCountTransformer<>();
   }
 

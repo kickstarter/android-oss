@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,13 +37,13 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
 
   @Inject KSString ksString;
 
-  private final Delegate delegate;
+  private final @Nullable Delegate delegate;
 
   public interface Delegate {
     void friendBackingClicked(FriendBackingViewHolder viewHolder, Activity activity);
   }
 
-  public FriendBackingViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
+  public FriendBackingViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
@@ -100,7 +101,9 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
 
   @OnClick(R.id.friend_backing_card_view)
   public void onClick() {
-    delegate.friendBackingClicked(this, activity());
+    if (this.delegate != null) {
+      this.delegate.friendBackingClicked(this, activity());
+    }
   }
 }
 

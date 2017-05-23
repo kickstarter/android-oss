@@ -15,6 +15,7 @@
     card_view:cardPreventCornerOverlap="false"
     card_view:cardElevation="@dimen/card_elevation"
     card_view:cardUseCompatPadding="true"
+    card_view:cardCornerRadius="0dp"
     android:foreground="@drawable/click_indicator_light"
     android:focusable="true"
     android:layout_marginStart="@dimen/card_margin_x"

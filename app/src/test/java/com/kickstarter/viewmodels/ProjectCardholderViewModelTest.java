@@ -141,7 +141,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.photoUrl.assertValues(project.photo().med());
+    this.photoUrl.assertValues(project.photo().full());
   }
 
   @Test

@@ -3,20 +3,17 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/project_metadata_view_group"
-  android:visibility="gone"
+  android:visibility="visible"
   android:clipToPadding="false"
   android:clipChildren="false"
   android:elevation="@dimen/grid_1_half"
   android:layout_marginTop="@dimen/grid_1"
   android:layout_marginStart="@dimen/grid_1"
-  android:layout_marginLeft="@dimen/grid_1"
-  android:layout_marginRight="@dimen/grid_4"
   android:layout_marginEnd="@dimen/grid_4"
   android:layout_alignStart="@+id/project_card_view"
-  android:layout_alignLeft="@+id/project_card_view"
   android:paddingLeft="@dimen/grid_1"
   android:paddingRight="@dimen/grid_1"
-  android:background="@drawable/metadata_label_rounded_background"
+  android:background="@color/white"
   android:gravity="center_vertical"
   android:layout_width="wrap_content"
   android:layout_height="@dimen/metadata_label_height"
@@ -30,12 +27,10 @@
     android:layout_height="wrap_content">
 
     <com.kickstarter.ui.views.IconTextView
-      app:iconType="ss_kickstarter"
       android:paddingTop="@dimen/grid_1_half"
-      android:text="@string/backer_icon"
-      android:textColor="@color/green"
+      android:text="@string/check_icon"
+      android:textColor="@color/white"
       android:layout_gravity="center_vertical"
-      android:layout_marginRight="@dimen/grid_1_half"
       android:layout_marginEnd="@dimen/grid_1_half"
       android:textSize="@dimen/subhead"
       android:layout_width="wrap_content"
@@ -45,6 +40,7 @@
       style="@style/BodyPrimaryMedium"
       android:includeFontPadding="false"
       android:layout_gravity="center_vertical"
+      android:textColor="@color/white"
       android:text="@string/discovery_baseball_card_metadata_backer"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
@@ -62,8 +58,7 @@
       android:text="@string/star_icon"
       android:layout_gravity="center_vertical"
       android:textSize="@dimen/subhead"
-      android:textColor="@color/green"
-      android:layout_marginRight="@dimen/grid_1_half"
+      android:textColor="@color/text_primary"
       android:layout_marginEnd="@dimen/grid_1_half"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
@@ -90,11 +85,10 @@
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:gravity="center_vertical"
-      android:layout_marginRight="@dimen/grid_1_half"
       android:layout_marginEnd="@dimen/grid_1_half"
       android:text="@string/favorite_icon"
       android:textSize="@dimen/subhead"
-      android:textColor="@color/green" />
+      android:textColor="@color/text_primary" />
 
     <TextView
       android:id="@+id/potd"
@@ -117,11 +111,10 @@
     <com.kickstarter.ui.views.IconTextView
       app:iconType="ss_kickstarter"
       android:textSize="@dimen/caption"
-      android:textColor="@color/green"
+      android:textColor="@color/text_primary"
       android:gravity="center_vertical"
       android:text="@string/kickstarter_icon"
       android:paddingTop="3dp"
-      android:layout_marginRight="@dimen/grid_1"
       android:layout_marginEnd="@dimen/grid_1"
       android:layout_width="wrap_content"
       android:layout_height="match_parent" />

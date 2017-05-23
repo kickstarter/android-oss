@@ -129,7 +129,7 @@ public interface ProjectCardHolderViewModel {
         .map(NumberUtils::flooredPercentage);
 
       this.photoUrl = this.project
-        .map(p -> p.photo() == null ? null : p.photo().med());
+        .map(p -> p.photo() == null ? null : p.photo().full());
 
       this.potdViewGroupIsGone = this.project
         .map(p -> metadataForProject(p) != Metadata.POTD);

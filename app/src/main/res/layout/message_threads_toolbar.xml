@@ -52,11 +52,11 @@
 
         <TextView
           android:id="@+id/unread_count_text_view"
-          android:textColor="@color/blue"
+          android:textColor="@color/ksr_blue"
           style="@style/BodyPrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          tools:text="3 new"/>
+          tools:text="3 unread"/>
 
       </LinearLayout>
 

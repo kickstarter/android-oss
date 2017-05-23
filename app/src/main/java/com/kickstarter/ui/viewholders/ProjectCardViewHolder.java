@@ -3,6 +3,8 @@ package com.kickstarter.ui.viewholders;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.SpannableString;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -41,8 +43,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
-  protected @Bind(R.id.blurb) TextView blurbTextView;
-  protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
   protected @Bind(R.id.featured) TextView featuredTextView;
@@ -52,7 +52,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.friend_backing_group) ViewGroup friendBackingViewGroup;
   protected @Bind(R.id.funding_unsuccessful_text_view) TextView fundingUnsuccessfulTextView;
   protected @Nullable @Bind(R.id.land_card_view_group) ViewGroup landCardViewGroup;
-  protected @Bind(R.id.name) TextView nameTextView;
+  protected @Bind(R.id.name_and_blurb_text_view) TextView nameAndBlurbTextView;
   protected @Bind(R.id.percent) TextView percentTextView;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.photo) ImageView photoImageView;
@@ -99,16 +99,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.backingViewGroup));
 
-    this.viewModel.outputs.blurbText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.blurbTextView::setText);
-
-    this.viewModel.outputs.categoryNameTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.categoryTextView::setText);
-
     this.viewModel.outputs.deadlineCountdownText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -146,10 +136,10 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setInvisible(this.photoImageView));
 
-    this.viewModel.outputs.nameText()
+    this.viewModel.outputs.nameAndBlurbText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(nameTextView::setText);
+      .subscribe(this::setStyledNameAndBlurb);
 
     this.viewModel.outputs.notifyDelegateOfProjectClick()
       .compose(bindToLifecycle())
@@ -243,6 +233,11 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   public void bindData(final @Nullable Object data) throws Exception {
     final Project project = ObjectUtils.requireNonNull((Project) data);
     this.viewModel.inputs.configureWith(project);
+  }
+
+  private void setStyledNameAndBlurb(final @NonNull Pair<String, String> nameAndBlurb) {
+    SpannableString styledString = new SpannableString(nameAndBlurb.first + ": " + nameAndBlurb.second);
+    nameAndBlurbTextView.setText(styledString);
   }
 
   private void resizeProjectImage(final @Nullable String avatarUrl) {

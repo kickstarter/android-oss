@@ -11,16 +11,13 @@
     android:id="@+id/project_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="@dimen/card_corner_radius"
     card_view:cardBackgroundColor="@color/transparent"
     card_view:cardElevation="@dimen/card_elevation"
     android:foreground="@drawable/click_indicator_light"
     android:focusable="true"
     android:layout_marginBottom="@dimen/project_card_margin_bottom"
     android:layout_marginTop="@dimen/project_card_margin_top"
-    android:layout_marginLeft="@dimen/card_margin_x"
     android:layout_marginStart="@dimen/card_margin_x"
-    android:layout_marginRight="@dimen/card_margin_x"
     android:layout_marginEnd="@dimen/card_margin_x">
 
     <LinearLayout
@@ -35,40 +32,22 @@
         android:id="@+id/project_card_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/grid_2"
-        android:paddingLeft="@dimen/grid_2"
-        android:paddingRight="@dimen/grid_2"
+        android:paddingTop="@dimen/grid_new_4"
+        android:paddingLeft="@dimen/grid_new_4"
+        android:paddingRight="@dimen/grid_new_4"
         android:orientation="vertical">
 
         <TextView
-          android:id="@+id/category"
-          android:layout_marginBottom="@dimen/grid_1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          style="@style/CaptionSecondaryMedium"
-          tools:text="Installations" />
-
-        <TextView
-          android:id="@+id/name"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:id="@+id/name_and_blurb_text_view"
           style="@style/Headline"
-          android:paddingBottom="@dimen/grid_1"
-          tools:text="Somewhere In Between - The Work of Ella Sala Myers" />
-
-        <TextView
-          android:id="@+id/blurb"
-          style="@style/CaptionPrimary"
-          android:maxLines="2"
-          android:ellipsize="end"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          tools:text="Project description here" />
+          tools:text="Project name here: somebody once told me the world world is gonna"/>
 
         <ProgressBar
           style="@style/ProgressBar"
           android:visibility="visible"
-          android:layout_marginTop="@dimen/grid_5_half"
+          android:layout_marginTop="@dimen/grid_new_5"
           android:id="@+id/percentage_funded"
           android:layout_width="match_parent"
           android:layout_height="@dimen/progress_bar_height"
@@ -79,7 +58,7 @@
       </LinearLayout>
 
       <include layout="@layout/project_state_view"
-        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_new_3"
         android:layout_height="@dimen/grid_9_half"
         android:layout_width="match_parent"
         android:id="@+id/project_state_view_group"/>
@@ -87,10 +66,10 @@
       <include layout="@layout/project_card_stats_view"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_marginTop="@dimen/grid_3_half"
-        android:layout_marginBottom="@dimen/grid_2"
-        android:layout_marginLeft="@dimen/grid_2"
-        android:layout_marginRight="@dimen/grid_2"/>
+        android:layout_marginTop="@dimen/grid_new_3"
+        android:layout_marginBottom="@dimen/grid_new_4"
+        android:layout_marginStart="@dimen/grid_new_4"
+        android:layout_marginEnd="@dimen/grid_new_4"/>
 
     </LinearLayout>
 

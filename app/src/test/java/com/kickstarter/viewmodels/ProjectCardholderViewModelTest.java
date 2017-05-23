@@ -28,7 +28,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> backersCountTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backingViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> blurbText = new TestSubscriber<>();
-  private final TestSubscriber<String> categoryNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> deadlineCountdownText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> featuredViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> friendBackingViewIsHidden = new TestSubscriber<>();
@@ -58,7 +57,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.backersCountTextViewText().subscribe(this.backersCountTextViewText);
     this.vm.outputs.backingViewGroupIsGone().subscribe(this.backingViewGroupIsGone);
     this.vm.outputs.blurbText().subscribe(this.blurbText);
-    this.vm.outputs.categoryNameTextViewText().subscribe(this.categoryNameTextViewText);
     this.vm.outputs.deadlineCountdownText().subscribe(this.deadlineCountdownText);
     this.vm.outputs.featuredViewGroupIsGone().subscribe(this.featuredViewGroupIsGone);
     this.vm.outputs.friendBackingViewIsHidden().subscribe(this.friendBackingViewIsHidden);
@@ -124,15 +122,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.configureWith(project);
     this.blurbText.assertValues("somebody once told me");
-  }
-
-  @Test
-  public void testEmitsCategoryNameTextViewText() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(project);
-    this.categoryNameTextViewText.assertValues(project.category().name());
   }
 
   @Test

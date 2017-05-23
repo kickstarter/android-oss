@@ -10,7 +10,32 @@
   <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginEnd="@dimen/grid_new_5">
+
+    <TextView
+      android:id="@+id/percent"
+      style="@style/CaptionPrimaryMedium"
+      android:textColor="@color/ksr_text_green_700"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="85%" />
+
+    <TextView
+      android:text="@string/discovery_baseball_card_stats_funded"
+      android:textColor="@color/ksr_text_green_700"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/CaptionSecondary" />
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginEnd="@dimen/grid_new_5">
+
     <TextView
       android:id="@+id/backers_count"
       style="@style/CaptionPrimaryMedium"
@@ -22,27 +47,6 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/discovery_baseball_card_stats_backers"
-      style="@style/CaptionSecondary" />
-  </LinearLayout>
-
-  <LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_marginEnd="@dimen/grid_4"
-    android:layout_marginStart="@dimen/grid_4">
-
-    <TextView
-      android:id="@+id/percent"
-      style="@style/CaptionPrimaryMedium"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      tools:text="85%" />
-
-    <TextView
-      android:text="@string/discovery_baseball_card_stats_funded"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
       style="@style/CaptionSecondary" />
 
   </LinearLayout>

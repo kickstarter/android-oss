@@ -30,6 +30,7 @@
   <dimen name="grid_new_2">12dp</dimen>
   <dimen name="grid_new_3">18dp</dimen>
   <dimen name="grid_new_4">24dp</dimen>
+  <dimen name="grid_new_5">30dp</dimen>
   <dimen name="grid_new_7">42dp</dimen>
   <dimen name="grid_new_8">48dp</dimen>
   <dimen name="grid_new_10">60dp</dimen>
@@ -57,9 +58,9 @@
   <!-- Cards -->
   <dimen name="card_corner_radius">4dp</dimen>
   <dimen name="card_elevation">2dp</dimen>
-  <dimen name="card_margin_x">@dimen/grid_2</dimen>
-  <dimen name="project_card_margin_top">@dimen/grid_3</dimen>
-  <dimen name="project_card_margin_bottom">@dimen/grid_1</dimen>
+  <dimen name="card_margin_x">@dimen/grid_new_2</dimen>
+  <dimen name="project_card_margin_top">@dimen/grid_new_3</dimen>
+  <dimen name="project_card_margin_bottom">@dimen/grid_new_1</dimen>
   <dimen name="profile_card_height">178dp</dimen>
 
   <!-- Discovery drawer -->

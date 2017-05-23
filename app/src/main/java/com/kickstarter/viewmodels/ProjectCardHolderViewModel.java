@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
@@ -36,7 +37,6 @@ public interface ProjectCardHolderViewModel {
   interface Outputs {
     Observable<String> backersCountTextViewText();
     Observable<Boolean> backingViewGroupIsGone();
-    Observable<String> categoryNameTextViewText();
     Observable<String> deadlineCountdownText();
     Observable<Boolean> featuredViewGroupIsGone();
     Observable<List<User>> friendsForNamepile();
@@ -50,8 +50,7 @@ public interface ProjectCardHolderViewModel {
     Observable<Boolean> percentageFundedProgressBarIsGone();
     Observable<String> percentageFundedTextViewText();
     Observable<String> photoUrl();
-    Observable<String> blurbText();
-    Observable<String> nameText();
+    Observable<Pair<String, String>> nameAndBlurbText();
     Observable<Project> notifyDelegateOfProjectClick();
     Observable<Boolean> potdViewGroupIsGone();
     Observable<DateTime> projectCanceledAt();
@@ -78,14 +77,6 @@ public interface ProjectCardHolderViewModel {
 
       this.backingViewGroupIsGone = this.project
         .map(p -> metadataForProject(p) != Metadata.BACKING);
-
-      this.blurbText = this.project
-        .map(Project::blurb);
-
-      this.categoryNameTextViewText = this.project
-        .map(Project::category)
-        .map(Category::name)
-        .compose(coalesce(""));
 
       this.deadlineCountdownText = this.project
         .map(ProjectUtils::deadlineCountdownValue)
@@ -120,8 +111,8 @@ public interface ProjectCardHolderViewModel {
       this.metadataViewGroupIsGone = this.project
         .map(p -> metadataForProject(p) == null);
 
-      this.nameText = this.project
-        .map(Project::name);
+      this.nameAndBlurbText = this.project
+        .map(p -> Pair.create(p.name(), p.blurb()));
 
       this.notifyDelegateOfProjectClick = this.project
         .compose(Transformers.takeWhen(this.projectClicked));
@@ -188,8 +179,6 @@ public interface ProjectCardHolderViewModel {
 
     private final Observable<String> backersCountTextViewText;
     private final Observable<Boolean> backingViewGroupIsGone;
-    private final Observable<String> blurbText;
-    private final Observable<String> categoryNameTextViewText;
     private final Observable<String> deadlineCountdownText;
     private final Observable<Boolean> featuredViewGroupIsGone;
     private final Observable<String> friendAvatarUrl;
@@ -198,7 +187,7 @@ public interface ProjectCardHolderViewModel {
     private final Observable<Boolean> fundingUnsuccessfulTextViewIsGone;
     private final Observable<Boolean> imageIsInvisible;
     private final Observable<Boolean> metadataViewGroupIsGone;
-    private final Observable<String> nameText;
+    private final Observable<Pair<String, String>> nameAndBlurbText;
     private final Observable<Project> notifyDelegateOfProjectClick;
     private final Observable<Integer> percentageFunded;
     private final Observable<Boolean> percentageFundedProgressBarIsGone;
@@ -235,12 +224,6 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<Boolean> backingViewGroupIsGone() {
       return this.backingViewGroupIsGone;
     }
-    @Override public @NonNull Observable<String> blurbText() {
-      return this.blurbText;
-    }
-    @Override public @NonNull Observable<String> categoryNameTextViewText() {
-      return this.categoryNameTextViewText;
-    }
     @Override public @NonNull Observable<String> deadlineCountdownText() {
       return this.deadlineCountdownText;
     }
@@ -265,8 +248,9 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<Boolean> metadataViewGroupIsGone() {
       return this.metadataViewGroupIsGone;
     }
-    @Override public @NonNull Observable<String> nameText() {
-      return this.nameText;
+    @Override
+    public Observable<Pair<String, String>> nameAndBlurbText() {
+      return this.nameAndBlurbText;
     }
     @Override public @NonNull Observable<Project> notifyDelegateOfProjectClick() {
       return this.notifyDelegateOfProjectClick;

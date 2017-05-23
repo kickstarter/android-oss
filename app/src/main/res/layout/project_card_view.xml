@@ -39,9 +39,12 @@
 
         <TextView
           android:id="@+id/name_and_blurb_text_view"
-          style="@style/Headline"
+          style="@style/TextPrimary"
+          android:textSize="@dimen/headline"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:ellipsize="end"
+          android:maxLines="3"
           tools:text="Project name here: somebody once told me the world world is gonna"/>
 
         <ProgressBar

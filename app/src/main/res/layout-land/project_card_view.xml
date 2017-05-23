@@ -47,12 +47,14 @@
 
         <TextView
           android:id="@+id/name_and_blurb_text_view"
-          style="@style/Headline"
+          style="@style/TextPrimary"
+          android:textSize="@dimen/headline"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:paddingBottom="@dimen/grid_new_5"
           android:maxLines="3"
           android:lines="3"
+          android:ellipsize="end"
           tools:text="Project name here: some description"/>
 
         <ProgressBar

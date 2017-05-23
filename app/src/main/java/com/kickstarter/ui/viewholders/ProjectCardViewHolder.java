@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.squareup.picasso.Picasso;
 import org.joda.time.DateTime;
 
 import butterknife.Bind;
+import butterknife.BindColor;
 import butterknife.BindDimen;
 import butterknife.BindDrawable;
 import butterknife.BindString;
@@ -62,6 +64,9 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
   protected @Bind(R.id.starred_view_group) ViewGroup starredViewGroup;
   protected @Bind(R.id.successfully_funded_text_view) TextView successfullyFundedTextView;
+
+  protected @BindColor(R.color.ksr_text_navy_500) int ksrTextNavy500;
+  protected @BindColor(R.color.ksr_text_navy_700) int ksrTextNavy700;
 
   protected @BindDimen(R.dimen.grid_1) int grid1Dimen;
   protected @BindDimen(R.dimen.grid_2) int grid2Dimen;
@@ -236,8 +241,24 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   }
 
   private void setStyledNameAndBlurb(final @NonNull Pair<String, String> nameAndBlurb) {
-    SpannableString styledString = new SpannableString(nameAndBlurb.first + ": " + nameAndBlurb.second);
-    nameAndBlurbTextView.setText(styledString);
+    final String nameString = ProjectUtils.isProjectNamePunctuated(nameAndBlurb.first)
+      ? nameAndBlurb.first + " "
+      : nameAndBlurb.first + ": ";
+
+    final String blurbString = nameAndBlurb.second;
+
+    final SpannableString styledString = new SpannableString(nameString + blurbString);
+
+    styledString.setSpan(new ForegroundColorSpan(this.ksrTextNavy700), 0, nameString.length(), 0);
+
+    styledString.setSpan(
+      new ForegroundColorSpan(this.ksrTextNavy500),
+      nameString.length(),
+      nameString.length() + blurbString.length(),
+      0
+    );
+
+    this.nameAndBlurbTextView.setText(styledString);
   }
 
   private void resizeProjectImage(final @Nullable String avatarUrl) {

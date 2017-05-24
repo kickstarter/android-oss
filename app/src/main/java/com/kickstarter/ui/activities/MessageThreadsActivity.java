@@ -58,7 +58,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
       this, this.swipeRefreshLayout, this.viewModel.inputs::refresh, this.viewModel.outputs::isFetchingMessageThreads
     );
 
-    this.mailboxTextView.setText(inboxString);  // todo: Sent mailbox logic
+    this.mailboxTextView.setText(this.inboxString);  // todo: Sent mailbox logic
 
     this.viewModel.outputs.messageThreads()
       .compose(bindToLifecycle())

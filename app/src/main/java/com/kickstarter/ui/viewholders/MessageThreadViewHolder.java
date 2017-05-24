@@ -2,8 +2,11 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,6 +27,9 @@ import com.squareup.picasso.Picasso;
 import org.joda.time.DateTime;
 
 import butterknife.Bind;
+import butterknife.BindDimen;
+import butterknife.BindDrawable;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -38,6 +44,14 @@ public final class MessageThreadViewHolder extends KSViewHolder {
   protected @Bind(R.id.participant_avatar_image_view) ImageView participantAvatarImageView;
   protected @Bind(R.id.participant_name_text_view) TextView participantNameTextView;
   protected @Bind(R.id.unread_indicator_image_view) ImageView unreadIndicatorImageView;
+
+  @BindDimen(R.dimen.card_elevation) int cardElevationDimen;
+  @BindDimen(R.dimen.card_no_elevation) int cardNoElevationDimen;
+
+  @BindDrawable(R.drawable.click_indicator_light) Drawable clickIndicatorLightDrawable;
+  @BindDrawable(R.drawable.message_thread_border_background) Drawable messageThreadBorderBackgroundDrawable;
+
+  @BindString(R.string.font_family_medium) String fontFamilyMediumString;
 
   private KSString ksString;
 
@@ -54,10 +68,25 @@ public final class MessageThreadViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(__ -> this.viewModel.inputs.messageThreadCardViewClicked());
 
+    this.viewModel.outputs.cardViewIsElevated()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setCardViewElevation);
+
     this.viewModel.outputs.dateDateTime()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setDateTextView);
+
+    this.viewModel.outputs.dateTextViewColorInt()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(colorInt -> this.dateTextView.setTextColor(ContextCompat.getColor(context(), colorInt)));
+
+    this.viewModel.outputs.dateTextViewIsMediumWeight()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setDateTextViewFontFamily);
 
     this.viewModel.outputs.messageBodyTextViewText()
       .compose(bindToLifecycle())
@@ -68,6 +97,11 @@ public final class MessageThreadViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setParticipantAvatarImageView);
+
+    this.viewModel.outputs.participantNameTextViewIsMediumWeight()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setParticipantNameTextViewFontFamily);
 
     this.viewModel.outputs.participantNameTextViewText()
       .compose(bindToLifecycle())
@@ -91,14 +125,26 @@ public final class MessageThreadViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(messageThread);
   }
 
+  private void setCardViewElevation(final boolean isElevated) {
+    if (isElevated) {
+      this.messageThreadCardView.setCardElevation(this.cardElevationDimen);
+      this.messageThreadCardView.setForeground(this.clickIndicatorLightDrawable);
+    } else {
+      this.messageThreadCardView.setCardElevation(this.cardNoElevationDimen);
+      this.messageThreadCardView.setForeground(this.messageThreadBorderBackgroundDrawable);
+    }
+  }
+
   private void setDateTextView(final @NonNull DateTime date) {
     this.dateTextView.setText(DateTimeUtils.relative(context(), ksString, date));
   }
 
-  private void setParticipantAvatarImageView(final @NonNull String avatarUrl) {
-    Picasso.with(context()).load(avatarUrl)
-      .transform(new CircleTransformation())
-      .into(this.participantAvatarImageView);
+  private void setDateTextViewFontFamily(final boolean isMediumWeight) {
+    if (isMediumWeight) {
+      this.dateTextView.setTypeface(Typeface.create(this.fontFamilyMediumString, Typeface.NORMAL));
+    } else {
+      this.dateTextView.setTypeface(Typeface.DEFAULT);
+    }
   }
 
   private void startMessagesActivity(final @NonNull MessageThread messageThread) {
@@ -107,5 +153,19 @@ public final class MessageThreadViewHolder extends KSViewHolder {
       .putExtra(IntentKey.MESSAGE_THREAD, messageThread);
 
     context.startActivity(intent);
+  }
+
+  private void setParticipantAvatarImageView(final @NonNull String avatarUrl) {
+    Picasso.with(context()).load(avatarUrl)
+      .transform(new CircleTransformation())
+      .into(this.participantAvatarImageView);
+  }
+
+  private void setParticipantNameTextViewFontFamily(final boolean isMediumWeight) {
+    if (isMediumWeight) {
+      this.participantNameTextView.setTypeface(Typeface.create(this.fontFamilyMediumString, Typeface.NORMAL));
+    } else {
+      this.participantNameTextView.setTypeface(Typeface.DEFAULT);
+    }
   }
 }

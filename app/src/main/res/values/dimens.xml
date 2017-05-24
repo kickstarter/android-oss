@@ -60,6 +60,7 @@
   <dimen name="card_corner_radius">4dp</dimen>
   <dimen name="card_elevation">2dp</dimen>
   <dimen name="card_margin_x">@dimen/grid_2</dimen>
+  <dimen name="card_no_elevation">0dp</dimen>
   <dimen name="project_card_margin_top">@dimen/grid_3</dimen>
   <dimen name="project_card_margin_bottom">@dimen/grid_1</dimen>
   <dimen name="profile_card_height">178dp</dimen>

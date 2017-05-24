@@ -10,16 +10,15 @@
   <android.support.v7.widget.CardView
     android:id="@+id/message_thread_card_view"
     android:focusable="true"
-    android:foreground="@drawable/click_indicator_light"
-    android:layout_marginTop="@dimen/grid_new_1"
+    android:foreground="@drawable/message_thread_border_background"
     android:layout_marginStart="@dimen/grid_new_2"
     android:layout_marginEnd="@dimen/grid_new_2"
-    android:layout_marginBottom="@dimen/grid_new_2"
+    android:layout_marginBottom="@dimen/grid_new_1"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/white"
-    app:cardElevation="@dimen/card_elevation"
+    app:cardBackgroundColor="@color/transparent"
+    app:cardElevation="0dp"
     app:cardCornerRadius="@dimen/card_corner_radius">
 
     <RelativeLayout
@@ -38,7 +37,7 @@
 
       <TextView
         android:id="@+id/date_text_view"
-        style="@style/CaptionSecondary"
+        style="@style/CaptionPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Yesterday"
@@ -57,7 +56,7 @@
 
         <TextView
           android:id="@+id/participant_name_text_view"
-          style="@style/SubheadPrimary"
+          style="@style/BodyPrimary"
           android:layout_width="wrap_content"
           android:layout_marginBottom="@dimen/grid_new_1"
           android:layout_height="wrap_content"

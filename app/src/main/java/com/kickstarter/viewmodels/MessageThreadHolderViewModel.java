@@ -2,8 +2,10 @@ package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.User;
@@ -27,6 +29,15 @@ public interface MessageThreadHolderViewModel {
   }
 
   interface Outputs {
+    /** Emits when the card view should be elevated. */
+    Observable<Boolean> cardViewIsElevated();
+
+    /** Emits the color to set the date text view to. */
+    Observable<Integer> dateTextViewColorInt();
+
+    /** Emits when the date font weight is medium. */
+    Observable<Boolean> dateTextViewIsMediumWeight();
+
     /** Emits the date to display. */
     Observable<DateTime> dateDateTime();
 
@@ -35,6 +46,9 @@ public interface MessageThreadHolderViewModel {
 
     /** Emits the participant's avatar url to display. */
     Observable<String> participantAvatarUrl();
+
+    /** Emits when the participant name font weight is medium. */
+    Observable<Boolean> participantNameTextViewIsMediumWeight();
 
     /** Emits the participant name to display. */
     Observable<String> participantNameTextViewText();
@@ -51,12 +65,20 @@ public interface MessageThreadHolderViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
+      final Observable<Boolean> hasUnreadMessages = this.messageThread.map(
+        m -> IntegerUtils.isNonZero(m.unreadMessagesCount())
+      );
+
       final Observable<Message> lastMessage = this.messageThread.map(MessageThread::lastMessage);
       final Observable<User> participant = this.messageThread.map(MessageThread::participant);
 
+      this.cardViewIsElevated = hasUnreadMessages;
       this.dateDateTime = lastMessage.map(Message::createdAt);
+      this.dateTextViewColorInt = hasUnreadMessages.map(b -> b ? R.color.ksr_blue : R.color.text_primary);
+      this.dateTextViewIsMediumWeight = hasUnreadMessages;
       this.messageBodyTextViewText = lastMessage.map(Message::body);
       this.participantAvatarUrl = participant.map(p -> p.avatar().medium());
+      this.participantNameTextViewIsMediumWeight = hasUnreadMessages;
       this.participantNameTextViewText = participant.map(User::name);
       this.startMessagesActivity = this.messageThread.compose(takeWhen(this.messageThreadCardViewClicked));
       this.unreadIndicatorImageViewHidden = this.messageThread.map(m -> m.unreadMessagesCount() == 0);
@@ -65,9 +87,13 @@ public interface MessageThreadHolderViewModel {
     private final PublishSubject<MessageThread> messageThread = PublishSubject.create();
     private final PublishSubject<Void> messageThreadCardViewClicked = PublishSubject.create();
 
+    private final Observable<Boolean> cardViewIsElevated;
+    private final Observable<Integer> dateTextViewColorInt;
+    private final Observable<Boolean> dateTextViewIsMediumWeight;
     private final Observable<DateTime> dateDateTime;
     private final Observable<String> messageBodyTextViewText;
     private final Observable<String> participantAvatarUrl;
+    private final Observable<Boolean> participantNameTextViewIsMediumWeight;
     private final Observable<String> participantNameTextViewText;
     private final Observable<MessageThread> startMessagesActivity;
     private final Observable<Boolean> unreadIndicatorImageViewHidden;
@@ -82,6 +108,15 @@ public interface MessageThreadHolderViewModel {
       this.messageThreadCardViewClicked.onNext(null);
     }
 
+    @Override public @NonNull Observable<Boolean> cardViewIsElevated() {
+      return this.cardViewIsElevated;
+    }
+    @Override public @NonNull Observable<Integer> dateTextViewColorInt() {
+      return this.dateTextViewColorInt;
+    }
+    @Override public @NonNull Observable<Boolean> dateTextViewIsMediumWeight() {
+      return this.dateTextViewIsMediumWeight;
+    }
     @Override public @NonNull Observable<DateTime> dateDateTime() {
       return this.dateDateTime;
     }
@@ -90,6 +125,9 @@ public interface MessageThreadHolderViewModel {
     }
     @Override public @NonNull Observable<String> participantAvatarUrl() {
       return this.participantAvatarUrl;
+    }
+    @Override public @NonNull Observable<Boolean> participantNameTextViewIsMediumWeight() {
+      return this.participantNameTextViewIsMediumWeight;
     }
     @Override public @NonNull Observable<String> participantNameTextViewText() {
       return this.participantNameTextViewText;

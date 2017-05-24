@@ -11,7 +11,7 @@
     android:color="@color/ksr_blue"/>
 
   <stroke
-    android:width="2dp"
+    android:width="1.5dp"
     android:color="@color/white"/>
 
 </shape>

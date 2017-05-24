@@ -10,10 +10,11 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.ui.adapters.MessageThreadsAdapter;
 import com.kickstarter.viewmodels.MessageThreadsViewModel;
 
@@ -27,6 +28,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 @RequiresActivityViewModel(MessageThreadsViewModel.ViewModel.class)
 public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel.ViewModel> {
   private MessageThreadsAdapter adapter;
+  private KSString ksString;
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
 
@@ -36,6 +38,9 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   protected @Bind(R.id.unread_count_text_view) TextView unreadCountTextView;
 
   protected @BindString(R.string.messages_navigation_inbox) String inboxString;
+  protected @BindString(R.string.No_messages) String noMessagesString;
+  protected @BindString(R.string.No_unread_messages) String noUnreadMessagesString;
+  protected @BindString(R.string.unread_count_unread) String unreadCountUnreadString;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -44,6 +49,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     ButterKnife.bind(this);
 
     this.adapter = new MessageThreadsAdapter();
+    this.ksString = environment().ksString();
     this.recyclerView.setAdapter(this.adapter);
     this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -59,15 +65,10 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
       .compose(observeForUI())
       .subscribe(this.adapter::messageThreads);
 
-    this.viewModel.outputs.unreadCountTextViewHidden()
+    this.viewModel.outputs.unreadMessagesCount()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.unreadCountTextView));
-
-    this.viewModel.outputs.unreadCountTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.unreadCountTextView::setText);  // todo: localize when design is finalized
+      .subscribe(this::setUnreadTextViewText);
   }
 
   @Override
@@ -80,5 +81,17 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     super.onDestroy();
     this.recyclerViewPaginator.stop();
     this.recyclerView.setAdapter(null);
+  }
+
+  private void setUnreadTextViewText(final @Nullable Integer unreadCount) {
+    if (unreadCount == null) {
+      this.unreadCountTextView.setText(this.noMessagesString);
+    } else if (unreadCount == 0 ) {
+      this.unreadCountTextView.setText(this.noUnreadMessagesString);
+    } else {
+      this.unreadCountTextView.setText(
+        this.ksString.format(this.unreadCountUnreadString, "unread_count", NumberUtils.format(unreadCount))
+      );
+    }
   }
 }

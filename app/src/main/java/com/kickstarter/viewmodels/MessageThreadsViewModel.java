@@ -6,8 +6,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.IntegerUtils;
-import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
@@ -19,7 +17,6 @@ import java.util.List;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.coalesce;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 
 public interface MessageThreadsViewModel {
@@ -39,11 +36,8 @@ public interface MessageThreadsViewModel {
     /** Emits a list of message threads to be displayed. */
     Observable<List<MessageThread>> messageThreads();
 
-    /** Emits a boolean to determine if the unread count text view should be hidden. */
-    Observable<Boolean> unreadCountTextViewHidden();
-
     /** Emits the unread message count to be displayed. */
-    Observable<String> unreadCountTextViewText();
+    Observable<Integer> unreadMessagesCount();
   }
 
   final class ViewModel extends ActivityViewModel<MessageThreadsActivity> implements Inputs, Outputs {
@@ -75,11 +69,9 @@ public interface MessageThreadsViewModel {
       this.startMessagesActivity = this.messageThreadClicked;
 
       final Observable<Integer> unreadMessagesCount = this.currentUser.loggedInUser()
-        .map(User::unreadMessagesCount)
-        .compose(coalesce(0));
+        .map(User::unreadMessagesCount);
 
-      this.unreadCountTextViewHidden = unreadMessagesCount.map(IntegerUtils::isZero);
-      this.unreadCountTextViewText = unreadMessagesCount.map(NumberUtils::format);
+      this.unreadMessagesCount = unreadMessagesCount;
     }
 
     private final PublishSubject<Void> messageThreadClicked = PublishSubject.create();
@@ -89,8 +81,7 @@ public interface MessageThreadsViewModel {
     private final Observable<Boolean> isFetchingMessageThreads;
     private final Observable<List<MessageThread>> messageThreads;
     private final Observable<Void> startMessagesActivity;
-    private final Observable<Boolean> unreadCountTextViewHidden;
-    private final Observable<String> unreadCountTextViewText;
+    private final Observable<Integer> unreadMessagesCount;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -108,11 +99,8 @@ public interface MessageThreadsViewModel {
     @Override public @NonNull Observable<List<MessageThread>> messageThreads() {
       return this.messageThreads;
     }
-    @Override public @NonNull Observable<Boolean> unreadCountTextViewHidden() {
-      return this.unreadCountTextViewHidden;
-    }
-    @Override public @NonNull Observable<String> unreadCountTextViewText() {
-      return this.unreadCountTextViewText;
+    @Override public @NonNull Observable<Integer> unreadMessagesCount() {
+      return this.unreadMessagesCount;
     }
   }
 }

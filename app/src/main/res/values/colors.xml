@@ -10,6 +10,7 @@
 
   <!-- Kickstarter colors. NB: we should be transitioning to using this color palette. -->
   <color name="ksr_blue">#003BFF</color>
+  <color name="ksr_grey_100">#FBFBFA</color>
   <color name="ksr_grey_200">#F7F7F6</color>
   <color name="ksr_grey_400">#EDEDED</color>
   <color name="ksr_grey_500">#DCDEDD</color>
@@ -116,6 +117,9 @@
   <color name="discovery_status_bar">@color/black</color>
   <color name="discovery_drawer_item_selected">#ffededed</color>
   <color name="discovery_drawer_header">@color/light_gray</color>
+
+  <!-- Messages colors -->
+  <color name="messages_background">@color/ksr_grey_100</color>
 
   <!-- Rewards colors -->
   <color name="reward_orange">#edaa39</color>

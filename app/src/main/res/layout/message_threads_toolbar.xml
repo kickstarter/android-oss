@@ -7,7 +7,7 @@
   android:layout_height="wrap_content"
   android:layout_width="match_parent"
   android:id="@+id/message_threads_toolbar"
-  android:background="@color/white"
+  android:background="@color/messages_background"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   tools:ignore="UnusedAttribute">

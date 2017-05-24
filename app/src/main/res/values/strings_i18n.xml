@@ -166,10 +166,12 @@ with friends.</string>
   <string name="Message_creator" formatted="false">Message creator</string>
   <string name="No_Results" formatted="false">No Results</string>
   <string name="No_comments_yet" formatted="false">No comments yet.</string>
+  <string name="No_messages" formatted="false">No messages</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">No one has posted an update yet.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">No pledges\n
 from friends yet.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">No replay is available for this live stream.</string>
+  <string name="No_unread_messages" formatted="false">No unread messages</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Once you back a project, we’ll share personalized recommendations in this space.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Only %{amount_of_time} left to watch this.</string>
   <string name="Opens_comments" formatted="false">Opens comments.</string>
@@ -193,17 +195,19 @@ from friends yet.</string>
   <string name="Please_log_in_or_sign_up_to_message_this_creator" formatted="false">Please log in or sign up to message this creator.</string>
   <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Please log in or sign up to participate in this live stream chat.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Please log in or sign up to subscribe to this live stream.</string>
-  <string name="Pledge" formatted="false">Pledge:</string>
+  <string name="Pledge" formatted="false">Pledge</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Pledge any amount to help bring this project to life.</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Pledge to projects and view all your saved and backed projects in one place.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Pledge to your favorites, then view all the projects you’ve backed here.</string>
   <string name="Pledge_was_dropped" formatted="false">Pledge was dropped.</string>
   <string name="Pledge_without_a_reward" formatted="false">Pledge without a reward</string>
+  <string name="Pledged_on_date" formatted="false">&lt;b>Pledged&lt;/b> on %{pledge_date}</string>
   <string name="Popular" formatted="false">Popular</string>
   <string name="Popular_Projects" formatted="false">Popular Projects</string>
   <string name="Project_Cancelled" formatted="false">Project Cancelled.</string>
   <string name="Project_Suspended" formatted="false">Project Suspended.</string>
   <string name="Project_cancelled" formatted="false">Project cancelled</string>
+  <string name="Project_saved" formatted="false">Project saved.</string>
   <string name="Projects_We_Love" formatted="false">Projects We Love</string>
   <string name="Public_comment" formatted="false">Public comment</string>
   <string name="Pursue_daring_ideas" formatted="false">Pursue\n
@@ -221,11 +225,13 @@ daring ideas.</string>
   <string name="Replay_live_stream_with_creator_name" formatted="false">Replay live stream with&lt;br>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Replay_past_live_stream" formatted="false">Replay past live stream</string>
   <string name="Replay_past_live_streams" formatted="false">Replay past live streams</string>
+  <string name="Reply_to_user_name" formatted="false">Reply to %{user_name}…</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_one" formatted="false">Reward Survey</string>
   <string name="Reward_Surveys_two" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} Reward Surveys</string>
+  <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Reward&lt;/b> estimated for delivery in %{delivery_date}</string>
   <string name="Reward_selected" formatted="false">Reward selected</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} rewards:</string>
   <string name="Rewards_count_rewards_colon_many" formatted="false">%{rewards_count} rewards:</string>
@@ -253,7 +259,6 @@ daring ideas.</string>
   <string name="Share_this_project_on_Twitter" formatted="false">Share this project on Twitter.</string>
   <string name="Share_update" formatted="false">Share update</string>
   <string name="Shipping" formatted="false">Shipping</string>
-  <string name="Shipping_colon" formatted="false">Shipping:</string>
   <string name="Ships_to" formatted="false">Ships to:</string>
   <string name="Shows_list_of_subcategories" formatted="false">Shows list of subcategories.</string>
   <string name="Signs_up_with_Email" formatted="false">Signs up with Email.</string>
@@ -261,7 +266,7 @@ daring ideas.</string>
 catch your eye?</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Something went wrong, please try again.</string>
   <string name="Starting_soon" formatted="false">Starting soon</string>
-  <string name="Status" formatted="false">Status:</string>
+  <string name="Status" formatted="false">Status</string>
   <string name="Subscribe" formatted="false">Subscribe</string>
   <string name="Subscribed" formatted="false">Subscribed</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Subscribes to upcoming live streams.</string>
@@ -299,9 +304,11 @@ catch your eye?</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">We were unable to connect to the live stream chat.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">We were unable to load the shipping destinations.\n
 Please try again later.</string>
+  <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">We’ll remind you 48 hours before this project ends, and you\'ll get a reminder about all projects you save moving forward. To view everything you’ve saved, visit your profile.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">When you save a project we’ll send you a reminder 48 hours before it ends</string>
   <string name="You_Launched" formatted="false">You Launched!</string>
   <string name="You_backed_this_project" formatted="false">You backed this project.</string>
+  <string name="You_pledged_on_date" formatted="false">&lt;b>You pledged&lt;/b> on %{pledge_date}</string>
   <string name="You_saved_this_project" formatted="false">You saved this project.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Your chat message wasn\'t sent successfully.</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Your friends haven’t backed any projects yet, but once they do, you’ll see them listed here.</string>
@@ -311,6 +318,7 @@ Please try again later.</string>
   <string name="Your_pledge_was_canceled_or_the_creator_canceled" formatted="false">Your pledge was canceled or the creator canceled the project before its deadline.</string>
   <string name="Your_pledge_was_dropped" formatted="false">Your pledge was dropped.</string>
   <string name="Your_reward" formatted="false">Your reward</string>
+  <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Your reward&lt;/b> estimated for delivery in %{delivery_date}</string>
   <string name="Your_shipping_destination" formatted="false">Your shipping destination</string>
   <string name="Youre_a_backer" formatted="false">You’re a backer!</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">You\'re about to create a new Kickstarter account with the email address you use for Facebook. Please confirm that it’s correct before proceeding.</string>
@@ -941,6 +949,7 @@ This is commonly fixed by going to iOS Settings > Facebook and toggling access f
   <string name="minutes_two" formatted="false">minutes</string>
   <string name="minutes_zero" formatted="false">minutes</string>
   <string name="percentage_funded" formatted="false">%{percentage} funded</string>
+  <string name="pledge_amount_pledged_on_pledge_date" formatted="false">&lt;b>%{pledge_amount}&lt;/b> pledged on %{pledge_date}</string>
   <string name="plus_shipping_cost" formatted="false">+%{shipping_cost}</string>
   <string name="profile_buttons_messages" formatted="false">Messages</string>
   <string name="profile_buttons_settings" formatted="false">Settings</string>
@@ -1260,6 +1269,7 @@ saved</string>
   <string name="two_factor_error_message" formatted="false">The code provided does not match.</string>
   <string name="two_factor_message" formatted="false">Please enter your verification code to continue.</string>
   <string name="two_factor_title" formatted="false">Verify</string>
+  <string name="unread_count_unread" formatted="false">%{unread_count} unread</string>
   <string name="update_comments_creator" formatted="false">Creator</string>
   <string name="update_comments_empty_state_backer_button" formatted="false">Leave a comment</string>
   <string name="update_comments_empty_state_backer_message" formatted="false">Aw, how sad. Be the first backer to leave a comment on this update.</string>

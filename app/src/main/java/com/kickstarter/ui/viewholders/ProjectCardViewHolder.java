@@ -163,6 +163,11 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(percentageFundedProgressBar));
 
+    this.viewModel.outputs.percentageFundedProgressBarColor()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(colorInt -> percentageFundedProgressBar.setBackgroundColor(ContextCompat.getColor(this.context(), colorInt)));
+
     this.viewModel.outputs.percentageFundedTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -228,7 +233,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.outputs.metadataViewGroupBackgroundColor()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(colorInt -> ContextCompat.getColor(this.context(), colorInt));
+      .subscribe(colorInt -> projectMetadataViewGroup.setBackgroundColor(ContextCompat.getColor(this.context(), colorInt)));
 
     this.viewModel.outputs.metadataViewGroupIsGone()
       .compose(bindToLifecycle())

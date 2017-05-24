@@ -41,6 +41,7 @@ public final class MessageThreadViewHolder extends KSViewHolder {
   protected @Bind(R.id.date_text_view) TextView dateTextView;
   protected @Bind(R.id.message_body_text_view) TextView messageBodyTextView;
   protected @Bind(R.id.message_thread_card_view) CardView messageThreadCardView;
+  protected @Bind(R.id.message_thread_unread_count_text_view) TextView unreadCountTextView;
   protected @Bind(R.id.participant_avatar_image_view) ImageView participantAvatarImageView;
   protected @Bind(R.id.participant_name_text_view) TextView participantNameTextView;
   protected @Bind(R.id.unread_indicator_image_view) ImageView unreadIndicatorImageView;
@@ -113,7 +114,17 @@ public final class MessageThreadViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::startMessagesActivity);
 
-    this.viewModel.outputs.unreadIndicatorImageViewHidden()
+    this.viewModel.outputs.unreadCountTextViewIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.unreadCountTextView));
+
+    this.viewModel.outputs.unreadCountTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setUnreadCountTextView);
+
+    this.viewModel.outputs.unreadIndicatorViewHidden()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.unreadIndicatorImageView));
@@ -167,5 +178,9 @@ public final class MessageThreadViewHolder extends KSViewHolder {
     } else {
       this.participantNameTextView.setTypeface(Typeface.DEFAULT);
     }
+  }
+
+  private void setUnreadCountTextView(final @NonNull String unreadCount) {
+    this.unreadCountTextView.setText("(" + unreadCount + ")");
   }
 }

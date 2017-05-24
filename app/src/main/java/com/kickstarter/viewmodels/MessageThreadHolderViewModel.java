@@ -5,7 +5,9 @@ import android.support.annotation.NonNull;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.IntegerUtils;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.User;
@@ -56,8 +58,11 @@ public interface MessageThreadHolderViewModel {
     /** Emits when we want to start the {@link com.kickstarter.ui.activities.MessagesActivity}. */
     Observable<MessageThread> startMessagesActivity();
 
+    Observable<Boolean> unreadCountTextViewIsGone();
+    Observable<String> unreadCountTextViewText();
+
     /** Emits a boolean to determine if the unread indicator should be hidden. */
-    Observable<Boolean> unreadIndicatorImageViewHidden();
+    Observable<Boolean> unreadIndicatorViewHidden();
   }
 
   final class ViewModel extends ActivityViewModel<MessageThreadViewHolder> implements Inputs, Outputs {
@@ -81,7 +86,11 @@ public interface MessageThreadHolderViewModel {
       this.participantNameTextViewIsMediumWeight = hasUnreadMessages;
       this.participantNameTextViewText = participant.map(User::name);
       this.startMessagesActivity = this.messageThread.compose(takeWhen(this.messageThreadCardViewClicked));
-      this.unreadIndicatorImageViewHidden = this.messageThread.map(m -> m.unreadMessagesCount() == 0);
+      this.unreadCountTextViewIsGone = hasUnreadMessages.map(BooleanUtils::negate);
+      this.unreadCountTextViewText = this.messageThread
+        .map(MessageThread::unreadMessagesCount)
+        .map(NumberUtils::format);
+      this.unreadIndicatorViewHidden = this.messageThread.map(m -> m.unreadMessagesCount() == 0);
     }
 
     private final PublishSubject<MessageThread> messageThread = PublishSubject.create();
@@ -96,7 +105,9 @@ public interface MessageThreadHolderViewModel {
     private final Observable<Boolean> participantNameTextViewIsMediumWeight;
     private final Observable<String> participantNameTextViewText;
     private final Observable<MessageThread> startMessagesActivity;
-    private final Observable<Boolean> unreadIndicatorImageViewHidden;
+    private final Observable<Boolean> unreadCountTextViewIsGone;
+    private final Observable<String> unreadCountTextViewText;
+    private final Observable<Boolean> unreadIndicatorViewHidden;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -135,8 +146,14 @@ public interface MessageThreadHolderViewModel {
     @Override public @NonNull Observable<MessageThread> startMessagesActivity() {
       return this.startMessagesActivity;
     }
-    @Override public @NonNull Observable<Boolean> unreadIndicatorImageViewHidden() {
-      return this.unreadIndicatorImageViewHidden;
+    @Override public @NonNull Observable<Boolean> unreadCountTextViewIsGone() {
+      return this.unreadCountTextViewIsGone;
+    }
+    @Override public @NonNull Observable<String> unreadCountTextViewText() {
+      return this.unreadCountTextViewText;
+    }
+    @Override public @NonNull Observable<Boolean> unreadIndicatorViewHidden() {
+      return this.unreadIndicatorViewHidden;
     }
   }
 }

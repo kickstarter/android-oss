@@ -54,13 +54,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <TextView
-          android:id="@+id/participant_name_text_view"
-          style="@style/BodyPrimary"
-          android:layout_width="wrap_content"
+        <LinearLayout
+          android:orientation="horizontal"
           android:layout_marginBottom="@dimen/grid_new_1"
-          android:layout_height="wrap_content"
-          tools:text="Participant Name" />
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content">
+
+          <TextView
+            android:id="@+id/participant_name_text_view"
+            style="@style/BodyPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_weight="3"
+            android:layout_marginEnd="@dimen/grid_new_1"
+            tools:text="Participant Name" />
+
+          <TextView
+            android:id="@+id/message_thread_unread_count_text_view"
+            style="@style/CaptionPrimary"
+            android:textColor="@color/ksr_blue"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/grid_new_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="(2)"/>
+
+        </LinearLayout>
 
         <TextView
           android:id="@+id/message_body_text_view"

@@ -37,8 +37,8 @@
 
       <LinearLayout
         android:id="@+id/mailbox_and_unread_layout"
-        android:layout_centerVertical="true"
         android:orientation="vertical"
+        android:layout_centerVertical="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 

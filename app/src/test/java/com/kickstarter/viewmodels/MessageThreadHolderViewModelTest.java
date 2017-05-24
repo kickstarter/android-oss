@@ -26,7 +26,7 @@ public final class MessageThreadHolderViewModelTest extends KSRobolectricTestCas
     this.vm.outputs.messageBodyTextViewText().subscribe(messageBodyTextViewText);
     this.vm.outputs.participantAvatarUrl().subscribe(participantAvatarUrl);
     this.vm.outputs.participantNameTextViewText().subscribe(participantNameTextViewText);
-    this.vm.outputs.unreadIndicatorImageViewHidden().subscribe(unreadIndicatorImageViewHidden);
+    this.vm.outputs.unreadIndicatorViewHidden().subscribe(unreadIndicatorImageViewHidden);
   }
 
   @Test

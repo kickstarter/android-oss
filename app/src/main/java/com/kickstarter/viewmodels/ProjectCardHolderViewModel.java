@@ -44,7 +44,8 @@ public interface ProjectCardHolderViewModel {
     Observable<String> friendAvatarUrl();
     Observable<Boolean> imageIsInvisible();
     Observable<Boolean> friendBackingViewIsHidden();
-    Observable<Boolean> fundingUnsuccessfulTextViewIsGone();
+    Observable<Boolean> fundingUnsuccessfulViewGroupIsGone();
+    Observable<Boolean> fundingSuccessfulViewGroupIsGone();
     Observable<Boolean> metadataViewGroupIsGone();
     Observable<Integer> metadataViewGroupBackgroundColor();
     Observable<Project> projectForDeadlineCountdownDetail();
@@ -56,6 +57,7 @@ public interface ProjectCardHolderViewModel {
     Observable<Project> notifyDelegateOfProjectClick();
     Observable<Boolean> potdViewGroupIsGone();
     Observable<DateTime> projectCanceledAt();
+    Observable<Boolean> projectCardStatsViewGroupIsGone();
     Observable<DateTime> projectFailedAt();
     Observable<Boolean> projectStateViewGroupIsGone();
     Observable<DateTime> projectSuccessfulAt();
@@ -63,7 +65,6 @@ public interface ProjectCardHolderViewModel {
     Observable<String> rootCategoryNameForFeatured();
     Observable<Boolean> setDefaultTopPadding();
     Observable<Boolean> starredViewGroupIsGone();
-    Observable<Boolean> successfullyFundedTextViewIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectCardViewHolder> implements Inputs, Outputs {
@@ -100,11 +101,14 @@ public interface ProjectCardHolderViewModel {
         .filter(Project::isFriendBacking)
         .map(Project::friends);
 
-      this.fundingUnsuccessfulTextViewIsGone = this.project
+      this.fundingUnsuccessfulViewGroupIsGone = this.project
         .map(p ->
           !p.state().equals(Project.STATE_CANCELED)
             && !p.state().equals(Project.STATE_FAILED)
             && !p.state().equals(Project.STATE_SUSPENDED));
+
+      this.fundingSuccessfulViewGroupIsGone = this.project
+        .map(p -> !p.state().equals(Project.STATE_SUCCESSFUL));
 
       this.imageIsInvisible = this.project
         .map(Project::photo)
@@ -127,7 +131,7 @@ public interface ProjectCardHolderViewModel {
         .map(ProgressBarUtils::progress);
 
       this.percentageFundedProgressBarIsGone = this.project
-        .map(ProjectUtils::isCompleted);
+        .map(p -> p.state().equals(Project.STATE_CANCELED));
 
       this.percentageFundedTextViewText = this.project
         .map(Project::percentageFunded)
@@ -143,6 +147,9 @@ public interface ProjectCardHolderViewModel {
         .filter(p -> p.state().equals(Project.STATE_CANCELED))
         .map(Project::stateChangedAt)
         .compose(coalesce(new DateTime()));
+
+      this.projectCardStatsViewGroupIsGone = this.project
+        .map(p -> !p.state().equals(Project.STATE_LIVE));
 
       this.projectFailedAt = this.project
         .filter(p -> p.state().equals(Project.STATE_FAILED))
@@ -174,9 +181,6 @@ public interface ProjectCardHolderViewModel {
 
       this.starredViewGroupIsGone = this.project
         .map(p -> metadataForProject(p) != Metadata.STARRING);
-
-      this.successfullyFundedTextViewIsGone = this.project
-        .map(p -> !p.state().equals(Project.STATE_SUCCESSFUL));
     }
 
     private final PublishSubject<Project> project = PublishSubject.create();
@@ -189,7 +193,8 @@ public interface ProjectCardHolderViewModel {
     private final Observable<String> friendAvatarUrl;
     private final Observable<Boolean> friendBackingViewIsHidden;
     private final Observable<List<User>> friendsForNamepile;
-    private final Observable<Boolean> fundingUnsuccessfulTextViewIsGone;
+    private final Observable<Boolean> fundingSuccessfulViewGroupIsGone;
+    private final Observable<Boolean> fundingUnsuccessfulViewGroupIsGone;
     private final Observable<Boolean> imageIsInvisible;
     private final Observable<Integer> metadataViewGroupBackgroundColor;
     private final Observable<Boolean> metadataViewGroupIsGone;
@@ -201,6 +206,7 @@ public interface ProjectCardHolderViewModel {
     private final Observable<String> photoUrl;
     private final Observable<Boolean> potdViewGroupIsGone;
     private final Observable<Project> projectForDeadlineCountdownDetail;
+    private final Observable<Boolean> projectCardStatsViewGroupIsGone;
     private final Observable<Boolean> projectStateViewGroupIsGone;
     private final Observable<DateTime> projectCanceledAt;
     private final Observable<DateTime> projectFailedAt;
@@ -209,7 +215,6 @@ public interface ProjectCardHolderViewModel {
     private final Observable<String> rootCategoryNameForFeatured;
     private final Observable<Boolean> setDefaultTopPadding;
     private final Observable<Boolean> starredViewGroupIsGone;
-    private final Observable<Boolean> successfullyFundedTextViewIsGone;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -245,8 +250,8 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<List<User>> friendsForNamepile() {
       return this.friendsForNamepile;
     }
-    @Override public @NonNull Observable<Boolean> fundingUnsuccessfulTextViewIsGone() {
-      return this.fundingUnsuccessfulTextViewIsGone;
+    @Override public @NonNull Observable<Boolean> fundingUnsuccessfulViewGroupIsGone() {
+      return this.fundingUnsuccessfulViewGroupIsGone;
     }
     @Override public @NonNull Observable<Boolean> imageIsInvisible() {
       return this.imageIsInvisible;
@@ -280,6 +285,7 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<Boolean> potdViewGroupIsGone() {
       return this.potdViewGroupIsGone;
     }
+    @Override public @NonNull Observable<Boolean> projectCardStatsViewGroupIsGone() { return this.projectCardStatsViewGroupIsGone; }
     @Override public @NonNull Observable<Project> projectForDeadlineCountdownDetail() {
       return this.projectForDeadlineCountdownDetail;
     }
@@ -307,8 +313,8 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<Boolean> starredViewGroupIsGone() {
       return this.starredViewGroupIsGone;
     }
-    @Override public @NonNull Observable<Boolean> successfullyFundedTextViewIsGone() {
-      return this.successfullyFundedTextViewIsGone;
+    @Override public @NonNull Observable<Boolean> fundingSuccessfulViewGroupIsGone() {
+      return this.fundingSuccessfulViewGroupIsGone;
     }
 
     private enum Metadata {

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
+import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -45,6 +46,7 @@ public interface ProjectCardHolderViewModel {
     Observable<Boolean> friendBackingViewIsHidden();
     Observable<Boolean> fundingUnsuccessfulTextViewIsGone();
     Observable<Boolean> metadataViewGroupIsGone();
+    Observable<Integer> metadataViewGroupBackgroundColor();
     Observable<Project> projectForDeadlineCountdownDetail();
     Observable<Integer> percentageFunded();
     Observable<Boolean> percentageFundedProgressBarIsGone();
@@ -110,6 +112,9 @@ public interface ProjectCardHolderViewModel {
 
       this.metadataViewGroupIsGone = this.project
         .map(p -> metadataForProject(p) == null);
+
+      this.metadataViewGroupBackgroundColor = this.backingViewGroupIsGone
+        .map(gone -> gone ? R.color.white : R.color.ksr_green_500);
 
       this.nameAndBlurbText = this.project
         .map(p -> Pair.create(p.name(), p.blurb()));
@@ -186,6 +191,7 @@ public interface ProjectCardHolderViewModel {
     private final Observable<List<User>> friendsForNamepile;
     private final Observable<Boolean> fundingUnsuccessfulTextViewIsGone;
     private final Observable<Boolean> imageIsInvisible;
+    private final Observable<Integer> metadataViewGroupBackgroundColor;
     private final Observable<Boolean> metadataViewGroupIsGone;
     private final Observable<Pair<String, String>> nameAndBlurbText;
     private final Observable<Project> notifyDelegateOfProjectClick;
@@ -244,6 +250,10 @@ public interface ProjectCardHolderViewModel {
     }
     @Override public @NonNull Observable<Boolean> imageIsInvisible() {
       return this.imageIsInvisible;
+    }
+    @Override
+    public Observable<Integer> metadataViewGroupBackgroundColor() {
+      return this.metadataViewGroupBackgroundColor;
     }
     @Override public @NonNull Observable<Boolean> metadataViewGroupIsGone() {
       return this.metadataViewGroupIsGone;

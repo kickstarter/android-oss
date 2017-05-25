@@ -57,7 +57,7 @@
           android:layout_height="@dimen/progress_bar_height"
           android:max="100"
           android:minHeight="@dimen/progress_bar_min_height"
-          android:progress="50" />
+          android:progress="50"/>
 
       </LinearLayout>
 

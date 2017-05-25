@@ -50,7 +50,6 @@ public interface ProjectCardHolderViewModel {
     Observable<Integer> metadataViewGroupBackgroundColor();
     Observable<Project> projectForDeadlineCountdownDetail();
     Observable<Integer> percentageFundedForProgressBar();
-    Observable<Integer> percentageFundedProgressBarColor();
     Observable<Boolean> percentageFundedProgressBarIsGone();
     Observable<String> percentageFundedTextViewText();
     Observable<String> photoUrl();
@@ -131,9 +130,6 @@ public interface ProjectCardHolderViewModel {
         .map(p -> (p.state().equals(Project.STATE_LIVE) || p.state().equals(Project.STATE_SUCCESSFUL)) ? p.percentageFunded() : 0.0f)
         .map(ProgressBarUtils::progress);
 
-      this.percentageFundedProgressBarColor = this.project
-        .map(p -> p.state().equals(Project.STATE_FAILED) ? R.color.ksr_grey_500 : R.color.ksr_green_500);
-
       this.percentageFundedProgressBarIsGone = this.project
         .map(p -> p.state().equals(Project.STATE_CANCELED));
 
@@ -205,7 +201,6 @@ public interface ProjectCardHolderViewModel {
     private final Observable<Pair<String, String>> nameAndBlurbText;
     private final Observable<Project> notifyDelegateOfProjectClick;
     private final Observable<Integer> percentageFundedForProgressBar;
-    private final Observable<Integer> percentageFundedProgressBarColor;
     private final Observable<Boolean> percentageFundedProgressBarIsGone;
     private final Observable<String> percentageFundedTextViewText;
     private final Observable<String> photoUrl;
@@ -278,7 +273,6 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<Integer> percentageFundedForProgressBar() {
       return this.percentageFundedForProgressBar;
     }
-    @Override public @NonNull Observable<Integer> percentageFundedProgressBarColor() { return this.percentageFundedProgressBarColor; }
     @Override public @NonNull Observable<Boolean> percentageFundedProgressBarIsGone() {
       return this.percentageFundedProgressBarIsGone;
     }

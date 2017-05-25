@@ -178,7 +178,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.potdViewGroup));
 
-    this.viewModel.outputs.percentageFunded()
+    this.viewModel.outputs.percentageFundedForProgressBar()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(percentageFundedProgressBar::setProgress);

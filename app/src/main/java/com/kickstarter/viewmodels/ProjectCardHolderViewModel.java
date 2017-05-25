@@ -49,7 +49,7 @@ public interface ProjectCardHolderViewModel {
     Observable<Boolean> metadataViewGroupIsGone();
     Observable<Integer> metadataViewGroupBackgroundColor();
     Observable<Project> projectForDeadlineCountdownDetail();
-    Observable<Integer> percentageFunded();
+    Observable<Integer> percentageFundedForProgressBar();
     Observable<Integer> percentageFundedProgressBarColor();
     Observable<Boolean> percentageFundedProgressBarIsGone();
     Observable<String> percentageFundedTextViewText();
@@ -127,8 +127,8 @@ public interface ProjectCardHolderViewModel {
       this.notifyDelegateOfProjectClick = this.project
         .compose(Transformers.takeWhen(this.projectClicked));
 
-      this.percentageFunded = this.project
-        .map(Project::percentageFunded)
+      this.percentageFundedForProgressBar = this.project
+        .map(p -> (p.state().equals(Project.STATE_LIVE) || p.state().equals(Project.STATE_SUCCESSFUL)) ? p.percentageFunded() : 0.0f)
         .map(ProgressBarUtils::progress);
 
       this.percentageFundedProgressBarColor = this.project
@@ -204,7 +204,7 @@ public interface ProjectCardHolderViewModel {
     private final Observable<Boolean> metadataViewGroupIsGone;
     private final Observable<Pair<String, String>> nameAndBlurbText;
     private final Observable<Project> notifyDelegateOfProjectClick;
-    private final Observable<Integer> percentageFunded;
+    private final Observable<Integer> percentageFundedForProgressBar;
     private final Observable<Integer> percentageFundedProgressBarColor;
     private final Observable<Boolean> percentageFundedProgressBarIsGone;
     private final Observable<String> percentageFundedTextViewText;
@@ -275,8 +275,8 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<Project> notifyDelegateOfProjectClick() {
       return this.notifyDelegateOfProjectClick;
     }
-    @Override public @NonNull Observable<Integer> percentageFunded() {
-      return this.percentageFunded;
+    @Override public @NonNull Observable<Integer> percentageFundedForProgressBar() {
+      return this.percentageFundedForProgressBar;
     }
     @Override public @NonNull Observable<Integer> percentageFundedProgressBarColor() { return this.percentageFundedProgressBarColor; }
     @Override public @NonNull Observable<Boolean> percentageFundedProgressBarIsGone() {

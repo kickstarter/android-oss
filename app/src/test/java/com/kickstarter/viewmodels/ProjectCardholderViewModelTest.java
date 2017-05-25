@@ -41,7 +41,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> metadataViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<Pair<String, String>> nameAndBlurbText = new TestSubscriber<>();
   private final TestSubscriber<Project> notifyDelegateOfProjectClick = new TestSubscriber<>();
-  private final TestSubscriber<Integer> percentageFunded = new TestSubscriber<>();
+  private final TestSubscriber<Integer> percentageFundedForProgressBar = new TestSubscriber<>();
   private final TestSubscriber<Integer> percentageFundedProgressBarColor = new TestSubscriber<>();
   private final TestSubscriber<Boolean> percentageFundedProgressBarIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> percentageFundedTextViewText = new TestSubscriber<>();
@@ -73,7 +73,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.metadataViewGroupIsGone().subscribe(this.metadataViewGroupIsGone);
     this.vm.outputs.nameAndBlurbText().subscribe(this.nameAndBlurbText);
     this.vm.outputs.notifyDelegateOfProjectClick().subscribe(this.notifyDelegateOfProjectClick);
-    this.vm.outputs.percentageFunded().subscribe(this.percentageFunded);
+    this.vm.outputs.percentageFundedForProgressBar().subscribe(this.percentageFundedForProgressBar);
     this.vm.outputs.percentageFundedProgressBarColor().subscribe(this.percentageFundedProgressBarColor);
     this.vm.outputs.percentageFundedProgressBarIsGone().subscribe(this.percentageFundedProgressBarIsGone);
     this.vm.outputs.percentageFundedTextViewText().subscribe(this.percentageFundedTextViewText);
@@ -283,12 +283,21 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testPercentageFunded() {
-    final Project project = ProjectFactory.project();
+  public void testPercentageFunded_projectSuccessful() {
+    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_SUCCESSFUL).build();
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.percentageFunded.assertValues(ProgressBarUtils.progress(project.percentageFunded()));
+    this.percentageFundedForProgressBar.assertValues(ProgressBarUtils.progress(project.percentageFunded()));
+  }
+
+  @Test
+  public void testPercentageFunded_projectFailed() {
+    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_FAILED).build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(project);
+    this.percentageFundedForProgressBar.assertValues(ProgressBarUtils.progress(0.0f));
   }
 
   @Test

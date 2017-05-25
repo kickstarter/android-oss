@@ -285,7 +285,10 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<Boolean> potdViewGroupIsGone() {
       return this.potdViewGroupIsGone;
     }
-    @Override public @NonNull Observable<Boolean> projectCardStatsViewGroupIsGone() { return this.projectCardStatsViewGroupIsGone; }
+    @Override public @NonNull Observable<Boolean> projectCardStatsViewGroupIsGone() {
+      return this.projectCardStatsViewGroupIsGone;
+    }
+
     @Override public @NonNull Observable<Project> projectForDeadlineCountdownDetail() {
       return this.projectForDeadlineCountdownDetail;
     }

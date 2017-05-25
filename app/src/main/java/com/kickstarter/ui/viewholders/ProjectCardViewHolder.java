@@ -35,8 +35,6 @@ import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
-import static com.kickstarter.R.id.funding_unsuccessful_text_view;
-import static com.kickstarter.R.string.dashboard_creator_project_funding_unsuccessful;
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenDensity;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
@@ -58,7 +56,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.funding_successful_date_text_view) TextView fundingSuccessfulTextViewDate;
   protected @Bind(R.id.funding_unsuccessful_view_group) ViewGroup fundingUnsuccessfulViewGroup;
   protected @Bind(R.id.funding_successful_view_group) ViewGroup fundingSuccessfulViewGroup;
-  protected @Bind(funding_unsuccessful_text_view) TextView fundingUnsuccessfulTextView;
+  protected @Bind(R.id.funding_unsuccessful_text_view) TextView fundingUnsuccessfulTextView;
   protected @Bind(R.id.funding_unsuccessful_date_text_view) TextView fundingUnuccessfulTextViewDate;
   protected @Nullable @Bind(R.id.land_card_view_group) ViewGroup landCardViewGroup;
   protected @Bind(R.id.name_and_blurb_text_view) TextView nameAndBlurbTextView;
@@ -84,7 +82,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
   protected @BindString(R.string.discovery_baseball_card_status_banner_canceled) String fundingCanceledString;
   protected @BindString(R.string.discovery_baseball_card_status_banner_suspended_date) String bannerSuspendedDateString;
-  protected @BindString(dashboard_creator_project_funding_unsuccessful) String fundingUnsuccessfulString;
+  protected @BindString(R.string.dashboard_creator_project_funding_unsuccessful) String fundingUnsuccessfulString;
   protected @BindString(R.string.discovery_baseball_card_status_banner_successful_date) String bannerSuccessfulDateString;
   protected @BindString(R.string.discovery_baseball_card_metadata_featured_project) String featuredInString;
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;

@@ -262,7 +262,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testEmitsNameAndBlurbText() {
-    Pair<String, String> nameAndBlurbPair = Pair.create("Farquaad", "Somebody once told me");
+    final Pair<String, String> nameAndBlurbPair = Pair.create("Farquaad", "Somebody once told me");
     final Project project = ProjectFactory.project().toBuilder().name(nameAndBlurbPair.first).blurb(nameAndBlurbPair.second).build();
     setUpEnvironment(environment());
 

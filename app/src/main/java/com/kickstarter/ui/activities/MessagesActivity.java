@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -45,7 +46,8 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.view_pledge_button) Button viewPledgeButton;
 
-  protected @BindString(R.string.backer_modal_pledge_amount_on_pledge_date) String pledgeAmountOnPledgeDateString;
+  protected @BindString(R.string.project_creator_by_creator) String byCreatorString;
+  protected @BindString(R.string.pledge_amount_pledged_on_pledge_date) String pledgeAmountPledgedOnPledgeDateString;
   protected @BindString(R.string.project_view_button) String viewPledgeString;
 
   @Override
@@ -79,7 +81,9 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.viewModel.outputs.participantNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this.participantNameTextView::setText);
+      .subscribe(name ->
+        this.participantNameTextView.setText(this.ksString.format(this.byCreatorString, "creator_name", name))
+      );
 
     this.viewModel.outputs.messages()
       .compose(bindToLifecycle())
@@ -123,8 +127,10 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     final String pledgeDate = DateTimeUtils.relative(this, this.ksString, backingAndProject.first.pledgedAt());
 
     this.backingAmountTextViewText.setText(
-      this.ksString.format(
-        this.pledgeAmountOnPledgeDateString, "pledge_amount", pledgeAmount, "pledge_date", pledgeDate
+      Html.fromHtml(
+        this.ksString.format(
+          this.pledgeAmountPledgedOnPledgeDateString, "pledge_amount", pledgeAmount, "pledge_date", pledgeDate
+        )
       )
     );
   }

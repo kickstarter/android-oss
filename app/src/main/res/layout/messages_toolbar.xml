@@ -32,7 +32,6 @@
       android:id="@+id/messages_button"
       android:focusable="true"
       android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
       android:text="@string/more_horiz_icon" />
 
   </RelativeLayout>

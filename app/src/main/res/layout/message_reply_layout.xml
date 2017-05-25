@@ -16,7 +16,6 @@
   <RelativeLayout
     android:layout_below="@id/divider_view"
     android:layout_marginStart="@dimen/grid_new_4"
-    android:layout_marginLeft="@dimen/grid_new_4"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -27,7 +26,6 @@
       android:background="@color/transparent"
       android:hint="@string/dashboard_activity_reply"
       android:layout_toStartOf="@+id/send_message_button"
-      android:layout_toLeftOf="@+id/send_message_button"
       android:layout_width="match_parent"
       android:layout_height="@dimen/grid_new_10" />
 
@@ -35,7 +33,6 @@
       android:id="@+id/send_message_button"
       style="@style/Widget.AppCompat.Button.Borderless"
       android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
       android:paddingStart="0dp"
       android:paddingEnd="0dp"
       android:layout_centerVertical="true"

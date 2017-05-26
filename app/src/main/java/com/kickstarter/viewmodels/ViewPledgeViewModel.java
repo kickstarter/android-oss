@@ -147,6 +147,7 @@ public final class ViewPledgeViewModel extends ActivityViewModel<ViewPledgeActiv
       .map(Reward::estimatedDeliveryOn)
       .filter(ObjectUtils::isNotNull)
       .map(DateTimeUtils::estimatedDeliveryOn)
+      .compose(bindToLifecycle())
       .subscribe(estimatedDeliverySectionTextViewText);
 
     project

@@ -57,7 +57,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.funding_unsuccessful_view_group) ViewGroup fundingUnsuccessfulViewGroup;
   protected @Bind(R.id.funding_successful_view_group) ViewGroup fundingSuccessfulViewGroup;
   protected @Bind(R.id.funding_unsuccessful_text_view) TextView fundingUnsuccessfulTextView;
-  protected @Bind(R.id.funding_unsuccessful_date_text_view) TextView fundingUnuccessfulTextViewDate;
+  protected @Bind(R.id.funding_unsuccessful_date_text_view) TextView fundingUnsuccessfulTextViewDate;
   protected @Nullable @Bind(R.id.land_card_view_group) ViewGroup landCardViewGroup;
   protected @Bind(R.id.name_and_blurb_text_view) TextView nameAndBlurbTextView;
   protected @Bind(R.id.percent) TextView percentTextView;
@@ -133,13 +133,13 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(friends ->
-        friendBackingMessageTextView.setText(SocialUtils.projectCardFriendNamepile(friends, ksString))
+        this.friendBackingMessageTextView.setText(SocialUtils.projectCardFriendNamepile(friends, ksString))
       );
 
     this.viewModel.outputs.fundingUnsuccessfulViewGroupIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(fundingUnsuccessfulViewGroup));
+      .subscribe(ViewUtils.setGone(this.fundingUnsuccessfulViewGroup));
 
     this.viewModel.outputs.imageIsInvisible()
       .compose(bindToLifecycle())
@@ -156,15 +156,10 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(p -> delegate.projectCardViewHolderClick(this, p));
 
-    this.viewModel.outputs.percentageFundedProgressBarIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(percentageFundedProgressBar));
-
     this.viewModel.outputs.percentageFundedTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(percentTextView::setText);
+      .subscribe(this.percentTextView::setText);
 
     this.viewModel.outputs.potdViewGroupIsGone()
       .compose(bindToLifecycle())
@@ -174,7 +169,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.outputs.percentageFundedForProgressBar()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(percentageFundedProgressBar::setProgress);
+      .subscribe(this.percentageFundedProgressBar::setProgress);
 
     this.viewModel.outputs.photoUrl()
       .compose(bindToLifecycle())
@@ -189,7 +184,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.outputs.projectCardStatsViewGroupIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(projectCardStatsViewGroup));
+      .subscribe(ViewUtils.setGone(this.projectCardStatsViewGroup));
 
     this.viewModel.outputs.projectFailedAt()
       .compose(bindToLifecycle())
@@ -226,7 +221,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.outputs.metadataViewGroupBackgroundColor()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(colorInt -> projectMetadataViewGroup.setBackgroundColor(ContextCompat.getColor(this.context(), colorInt)));
+      .subscribe(colorInt -> this.projectMetadataViewGroup.setBackgroundColor(ContextCompat.getColor(this.context(), colorInt)));
 
     this.viewModel.outputs.metadataViewGroupIsGone()
       .compose(bindToLifecycle())
@@ -337,21 +332,21 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   }
 
   private void setCanceledTextView(final @NonNull DateTime projectCanceledAt) {
-    fundingUnuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), ksString, projectCanceledAt));
-    fundingUnsuccessfulTextView.setText(fundingCanceledString);
+    this.fundingUnsuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), ksString, projectCanceledAt));
+    this.fundingUnsuccessfulTextView.setText(this.fundingCanceledString);
   }
 
   private void setSuccessfullyFundedDateTextView(final @NonNull DateTime projectSuccessfulAt) {
-    fundingSuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), ksString, projectSuccessfulAt));
+    this.fundingSuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), ksString, projectSuccessfulAt));
   }
 
   private void setFailedAtTextView(final @NonNull DateTime projectFailedAt) {
-    fundingUnuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), ksString, projectFailedAt));
-    fundingUnsuccessfulTextView.setText(fundingUnsuccessfulString);
+    this.fundingUnsuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), ksString, projectFailedAt));
+    this.fundingUnsuccessfulTextView.setText(this.fundingUnsuccessfulString);
 
   }
 
   private void setSuspendedAtTextView(final @NonNull DateTime projectSuspendedAt) {
-    fundingUnuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), ksString, projectSuspendedAt));
+    this.fundingUnsuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), ksString, projectSuspendedAt));
   }
 }

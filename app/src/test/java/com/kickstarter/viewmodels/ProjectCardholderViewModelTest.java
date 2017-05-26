@@ -42,7 +42,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Pair<String, String>> nameAndBlurbText = new TestSubscriber<>();
   private final TestSubscriber<Project> notifyDelegateOfProjectClick = new TestSubscriber<>();
   private final TestSubscriber<Integer> percentageFundedForProgressBar = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> percentageFundedProgressBarIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> percentageFundedTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> photoUrl = new TestSubscriber<>();
   private final TestSubscriber<Boolean> potdViewGroupIsGone = new TestSubscriber<>();
@@ -73,7 +72,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.nameAndBlurbText().subscribe(this.nameAndBlurbText);
     this.vm.outputs.notifyDelegateOfProjectClick().subscribe(this.notifyDelegateOfProjectClick);
     this.vm.outputs.percentageFundedForProgressBar().subscribe(this.percentageFundedForProgressBar);
-    this.vm.outputs.percentageFundedProgressBarIsGone().subscribe(this.percentageFundedProgressBarIsGone);
     this.vm.outputs.percentageFundedTextViewText().subscribe(this.percentageFundedTextViewText);
     this.vm.outputs.photoUrl().subscribe(this.photoUrl);
     this.vm.outputs.potdViewGroupIsGone().subscribe(this.potdViewGroupIsGone);
@@ -296,24 +294,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.configureWith(project);
     this.percentageFundedForProgressBar.assertValues(ProgressBarUtils.progress(0.0f));
-  }
-
-  @Test
-  public void testPercentageFundedProgressBarIsGone_projectSuccessful() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_SUCCESSFUL).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(project);
-    this.percentageFundedProgressBarIsGone.assertValues(false);
-  }
-
-  @Test
-  public void testPercentageFundedProgressBarIsGone_projectLive() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_LIVE).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(project);
-    this.percentageFundedProgressBarIsGone.assertValues(false);
   }
 
   @Test

@@ -22,6 +22,7 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.ui.IntentKey;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.util.List;
@@ -98,6 +99,55 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
     vm.intent(intent(backing));
 
     creatorNameTextViewTextTest.assertValues(backing.project().creator().name());
+  }
+
+  @Test
+  public void testEstimatedDeliverySectionIsGone_deliveryNull() {
+    final Reward reward = RewardFactory.reward().toBuilder()
+      .estimatedDeliveryOn(null)
+      .build();
+    final Backing backing = BackingFactory.backing().toBuilder()
+      .reward(reward)
+      .build();
+    final ViewPledgeViewModel vm = vm(backing);
+    final TestSubscriber<Boolean> estimatedDeliverySectionIsGone = TestSubscriber.create();
+    vm.outputs.estimatedDeliverySectionIsGone().subscribe(estimatedDeliverySectionIsGone);
+
+    estimatedDeliverySectionIsGone.assertValues(true);
+  }
+
+  @Test
+  public void getTestEstimatedDeliverySectionIsGone_deliveryNotNull() {
+    final Reward reward = RewardFactory.reward().toBuilder()
+      .estimatedDeliveryOn(new DateTime().now())
+      .build();
+    final Backing backing = BackingFactory.backing().toBuilder()
+      .reward(reward)
+      .build();
+    final ViewPledgeViewModel vm = vm(backing);
+
+    vm.intent(intent(backing));
+    final TestSubscriber<Boolean> estimatedDeliverySectionIsGone = TestSubscriber.create();
+    vm.outputs.estimatedDeliverySectionIsGone().subscribe(estimatedDeliverySectionIsGone);
+
+    estimatedDeliverySectionIsGone.assertValues(false);
+  }
+
+  @Test
+  public void estimatedDeliverySectionTextViewText() {
+    final DateTime testDateTime = new DateTime().now();
+    final Reward reward = RewardFactory.reward().toBuilder()
+      .estimatedDeliveryOn(testDateTime)
+      .build();
+    final Backing backing = BackingFactory.backing().toBuilder()
+      .reward(reward)
+      .build();
+    final ViewPledgeViewModel vm = vm(backing);
+    vm.intent(intent(backing));
+    final TestSubscriber<String> estimatedDeliverySectionTextViewText = TestSubscriber.create();
+    vm.outputs.estimatedDeliverySectionTextViewText().subscribe(estimatedDeliverySectionTextViewText);
+
+    estimatedDeliverySectionTextViewText.assertValues(DateTimeUtils.estimatedDeliveryOn(testDateTime));
   }
 
   @Test

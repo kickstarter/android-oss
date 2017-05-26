@@ -138,8 +138,15 @@ public final class ViewPledgeViewModel extends ActivityViewModel<ViewPledgeActiv
       .subscribe(rewardsItemsAreHidden);
 
     reward
+      .map(Reward::estimatedDeliveryOn)
       .map(ObjectUtils::isNull)
+      .compose(bindToLifecycle())
       .subscribe(estimatedDeliverySectionIsGone);
+
+    reward
+      .map(Reward::estimatedDeliveryOn)
+      .map(DateTimeUtils::estimatedDeliveryOn) // filter for non null? use the one with locale?
+      .subscribe(estimatedDeliverySectionTextViewText);
 
     project
       .compose(zipPair(shippableBacking))
@@ -185,6 +192,7 @@ public final class ViewPledgeViewModel extends ActivityViewModel<ViewPledgeActiv
   private final BehaviorSubject<Pair<String, String>> backingAmountAndDateTextViewText = BehaviorSubject.create();
   private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> estimatedDeliverySectionIsGone = BehaviorSubject.create();
+  private final BehaviorSubject<String> estimatedDeliverySectionTextViewText = BehaviorSubject.create();
   private final Observable<Void> goBack;
   private final BehaviorSubject<String> loadBackerAvatar = BehaviorSubject.create();
   private final BehaviorSubject<String> loadProjectPhoto = BehaviorSubject.create();
@@ -223,8 +231,13 @@ public final class ViewPledgeViewModel extends ActivityViewModel<ViewPledgeActiv
     return creatorNameTextViewText;
   }
 
-  @Override public @NonNull Observable<Boolean> estimatedDeliverySectionIsGone() { return estimatedDeliverySectionIsGone; }
+  @Override public @NonNull Observable<Boolean> estimatedDeliverySectionIsGone() {
+    return estimatedDeliverySectionIsGone;
+  }
 
+  @Override public @NonNull Observable<String> estimatedDeliverySectionTextViewText() {
+    return estimatedDeliverySectionTextViewText;
+  }
   @Override public @NonNull Observable<Void> goBack() {
     return goBack;
   }

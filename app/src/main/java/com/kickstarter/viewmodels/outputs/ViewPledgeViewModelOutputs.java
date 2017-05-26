@@ -39,6 +39,11 @@ public interface ViewPledgeViewModelOutputs {
    */
   Observable<Boolean> estimatedDeliverySectionIsGone();
 
+  /*
+   * text date for the estimated delivery section
+   */
+  Observable<String> estimatedDeliverySectionTextViewText();
+
   /**
    * Navigate back.
    */

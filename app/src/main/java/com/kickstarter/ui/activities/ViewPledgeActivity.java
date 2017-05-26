@@ -42,6 +42,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
   protected @Bind(R.id.project_context_image_view) ImageView projectContextPhotoImageView;
   protected @Bind(R.id.project_context_project_name) TextView projectContextProjectNameTextView;
   protected @Bind(R.id.project_context_view) View projectContextView;
+  protected @Bind(R.id.view_pledge_estimated_delivery) TextView pledgeEstimatedDeliveryTextView;
   protected @Bind(R.id.view_pledge_reward_minimum_and_description) TextView rewardMinimumAndDescriptionTextView;
   protected @Bind(R.id.view_pledge_rewards_item_recycler_view) RecyclerView rewardsItemRecyclerView;
   protected @Bind(R.id.view_pledge_rewards_item_section) View rewardsItemSection;
@@ -109,6 +110,11 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
       .compose(bindToLifecycle())
       .observeOn(mainThread())
       .subscribe(ViewUtils.setGone(this.pledgeEstimatedDeliverySection));
+
+    viewModel.outputs.estimatedDeliverySectionTextViewText()
+      .compose(bindToLifecycle())
+      .observeOn(mainThread())
+      .subscribe(pledgeEstimatedDeliveryTextView::setText);
 
     viewModel.outputs.goBack()
       .compose(bindToLifecycle())

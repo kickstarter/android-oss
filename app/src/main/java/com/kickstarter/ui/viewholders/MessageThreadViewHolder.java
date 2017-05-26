@@ -50,7 +50,7 @@ public final class MessageThreadViewHolder extends KSViewHolder {
   @BindDimen(R.dimen.card_no_elevation) int cardNoElevationDimen;
 
   @BindDrawable(R.drawable.click_indicator_light) Drawable clickIndicatorLightDrawable;
-  @BindDrawable(R.drawable.message_thread_border_background) Drawable messageThreadBorderBackgroundDrawable;
+  @BindDrawable(R.drawable.message_thread_click_indicator) Drawable messageThreadClickIndicator;
 
   @BindString(R.string.font_family_medium) String fontFamilyMediumString;
 
@@ -142,7 +142,7 @@ public final class MessageThreadViewHolder extends KSViewHolder {
       this.messageThreadCardView.setForeground(this.clickIndicatorLightDrawable);
     } else {
       this.messageThreadCardView.setCardElevation(this.cardNoElevationDimen);
-      this.messageThreadCardView.setForeground(this.messageThreadBorderBackgroundDrawable);
+      this.messageThreadCardView.setForeground(this.messageThreadClickIndicator);
     }
   }
 

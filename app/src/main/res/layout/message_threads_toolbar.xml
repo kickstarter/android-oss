@@ -10,6 +10,7 @@
   android:background="@color/messages_background"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
+  tools:showIn="@layout/message_threads_layout"
   tools:ignore="UnusedAttribute">
 
   <LinearLayout

@@ -137,6 +137,10 @@ public final class ViewPledgeViewModel extends ActivityViewModel<ViewPledgeActiv
       .compose(bindToLifecycle())
       .subscribe(rewardsItemsAreHidden);
 
+    reward
+      .map(ObjectUtils::isNull)
+      .subscribe(estimatedDeliverySectionIsGone);
+
     project
       .compose(zipPair(shippableBacking))
       .map(pb -> ksCurrency.format(pb.second.shippingAmount(), pb.first))
@@ -180,6 +184,7 @@ public final class ViewPledgeViewModel extends ActivityViewModel<ViewPledgeActiv
   private final BehaviorSubject<String> backingStatus = BehaviorSubject.create();
   private final BehaviorSubject<Pair<String, String>> backingAmountAndDateTextViewText = BehaviorSubject.create();
   private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> estimatedDeliverySectionIsGone = BehaviorSubject.create();
   private final Observable<Void> goBack;
   private final BehaviorSubject<String> loadBackerAvatar = BehaviorSubject.create();
   private final BehaviorSubject<String> loadProjectPhoto = BehaviorSubject.create();
@@ -217,6 +222,8 @@ public final class ViewPledgeViewModel extends ActivityViewModel<ViewPledgeActiv
   @Override public @NonNull Observable<String> creatorNameTextViewText() {
     return creatorNameTextViewText;
   }
+
+  @Override public @NonNull Observable<Boolean> estimatedDeliverySectionIsGone() { return estimatedDeliverySectionIsGone; }
 
   @Override public @NonNull Observable<Void> goBack() {
     return goBack;

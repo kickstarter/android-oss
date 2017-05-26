@@ -37,6 +37,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
   protected @Bind(R.id.view_pledge_backer_number) TextView backerNumberTextView;
   protected @Bind(R.id.view_pledge_backing_amount_and_date_text_view) TextView backingAmountAndDateTextView;
   protected @Bind(R.id.view_pledge_backing_status) TextView backingStatusTextView;
+  protected @Bind(R.id.view_pledge_estimated_delivery_section) View pledgeEstimatedDeliverySection;
   protected @Bind(R.id.project_context_creator_name) TextView projectContextCreatorNameTextView;
   protected @Bind(R.id.project_context_image_view) ImageView projectContextPhotoImageView;
   protected @Bind(R.id.project_context_project_name) TextView projectContextProjectNameTextView;
@@ -103,6 +104,11 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
       .compose(bindToLifecycle())
       .observeOn(mainThread())
       .subscribe(this::setCreatorNameTextViewText);
+
+    viewModel.outputs.estimatedDeliverySectionIsGone()
+      .compose(bindToLifecycle())
+      .observeOn(mainThread())
+      .subscribe(ViewUtils.setGone(this.pledgeEstimatedDeliverySection));
 
     viewModel.outputs.goBack()
       .compose(bindToLifecycle())

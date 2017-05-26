@@ -110,6 +110,8 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
       .reward(reward)
       .build();
     final ViewPledgeViewModel vm = vm(backing);
+
+    vm.intent(intent(backing));
     final TestSubscriber<Boolean> estimatedDeliverySectionIsGone = TestSubscriber.create();
     vm.outputs.estimatedDeliverySectionIsGone().subscribe(estimatedDeliverySectionIsGone);
 

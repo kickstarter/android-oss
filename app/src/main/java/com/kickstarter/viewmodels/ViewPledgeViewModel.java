@@ -145,8 +145,8 @@ public final class ViewPledgeViewModel extends ActivityViewModel<ViewPledgeActiv
 
     reward
       .map(Reward::estimatedDeliveryOn)
-      .filter(ObjectUtils::isNotNull) // is it cool to filter
-      .map(DateTimeUtils::estimatedDeliveryOn) //use the one with locale?
+      .filter(ObjectUtils::isNotNull)
+      .map(DateTimeUtils::estimatedDeliveryOn)
       .subscribe(estimatedDeliverySectionTextViewText);
 
     project

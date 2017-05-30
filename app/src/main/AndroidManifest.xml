@@ -71,7 +71,7 @@
     <activity
       android:name=".ui.activities.CreatorDashboardActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
-      android:theme="@style/DiscoveryActivity">
+      android:theme="@style/ProjectActivity">
 
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"

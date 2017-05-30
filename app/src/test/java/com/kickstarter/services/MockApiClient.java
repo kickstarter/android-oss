@@ -36,6 +36,7 @@ import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -141,6 +142,11 @@ public class MockApiClient implements ApiClientType {
         )
         .build()
     );
+  }
+
+  @Override
+  public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean isMember) {
+    return Observable.empty();
   }
 
   @Override

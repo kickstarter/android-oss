@@ -34,6 +34,16 @@ public interface ViewPledgeViewModelOutputs {
    */
   Observable<String> creatorNameTextViewText();
 
+  /*
+   *  Whether to hide the estimated delivery date section
+   */
+  Observable<Boolean> estimatedDeliverySectionIsGone();
+
+  /*
+   * text date for the estimated delivery section
+   */
+  Observable<String> estimatedDeliverySectionTextViewText();
+
   /**
    * Navigate back.
    */

@@ -165,7 +165,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/grid_3"/>
+        </LinearLayout>
 
+        <LinearLayout
+          android:id="@+id/view_pledge_estimated_delivery_section"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <include layout="@layout/horizontal_line_1dp_view"/>
+
+          <TextView
+            style="@style/SubheadPrimaryMedium"
+            android:text="@string/Estimated_delivery"
+            android:paddingTop="@dimen/grid_2"
+            android:paddingBottom="@dimen/grid_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:id="@+id/view_pledge_estimated_delivery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/grid_3"
+            tools:text="June 2016"/>
         </LinearLayout>
 
       </LinearLayout>

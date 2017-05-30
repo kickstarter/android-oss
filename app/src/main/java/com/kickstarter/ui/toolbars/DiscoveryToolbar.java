@@ -20,6 +20,7 @@ import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
+import com.kickstarter.ui.activities.CreatorDashboardActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.SearchActivity;
 
@@ -32,6 +33,7 @@ import rx.Observable;
 
 public final class DiscoveryToolbar extends KSToolbar {
   @Bind(R.id.activity_feed_button) TextView activityFeedButton;
+  @Bind(R.id.creator_dashboard_button) TextView creatorDashboardButton;
   @Bind(R.id.filter_text_view) TextView filterTextView;
   @Bind(R.id.discovery_status_bar) View discoveryStatusBar;
   @Bind(R.id.menu_button) TextView menuButton;
@@ -66,6 +68,11 @@ public final class DiscoveryToolbar extends KSToolbar {
     activityFeedButton.setOnClickListener(v -> {
       final Context context = getContext();
       context.startActivity(new Intent(context, ActivityFeedActivity.class));
+    });
+
+    creatorDashboardButton.setOnClickListener(v -> {
+      final Context context = getContext();
+      context.startActivity(new Intent(context, CreatorDashboardActivity.class));
     });
   }
 

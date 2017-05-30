@@ -38,6 +38,7 @@ import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
 import java.util.Arrays;
@@ -153,6 +154,14 @@ public final class ApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<Project> fetchProject(final @NonNull Project project) {
     return fetchProject(project.param()).startWith(project);
+  }
+
+  @Override
+  public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean isMember) {
+    return service
+      .projects(isMember ? 1 : 0)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   @Override

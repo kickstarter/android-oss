@@ -22,6 +22,7 @@ import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 
 import java.util.List;
 
@@ -51,6 +52,8 @@ public interface ApiClientType {
   @NonNull Observable<Project> fetchProject(final @NonNull String param);
 
   @NonNull Observable<Project> fetchProject(final @NonNull Project project);
+
+  @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean isMember);
 
   @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params);
 

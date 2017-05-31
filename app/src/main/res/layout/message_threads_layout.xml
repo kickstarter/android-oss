@@ -22,7 +22,6 @@
       android:fitsSystemWindows="true"
       app:expandedTitleMarginStart="48dp"
       app:expandedTitleMarginEnd="64dp"
-      app:expandedTitleTextAppearance="@style/MessageThreadsToolbarExpanded"
       app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
       <LinearLayout
@@ -74,6 +73,7 @@
             android:layout_height="@dimen/button_icon_fixed_width"
             android:layout_alignParentEnd="true"
             android:layout_alignTop="@+id/mailbox_and_unread_layout"
+            android:paddingBottom="@dimen/grid_new_1"
             android:focusable="true"
             android:text="@string/search_icon" />
 

@@ -16,6 +16,7 @@ import com.kickstarter.viewmodels.CreatorDashboardViewModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
@@ -40,6 +41,10 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
   }
 
+  @OnClick({ R.id.creator_view_project_button, R.id.creator_dashboard_project_context_view} )
+  protected void viewProjectButtonClicked() {
+    this.viewModel.inputs.projectViewClicked();
+  }
 
   private void startProjectActivity(final @NonNull Project project, final @NonNull RefTag refTag) {
     final Intent intent = new Intent(this, ProjectActivity.class)

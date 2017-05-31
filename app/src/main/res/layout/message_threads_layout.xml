@@ -1,24 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:focusable="true"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
-
-  <include layout="@layout/message_threads_toolbar"/>
-
-  <android.support.v4.widget.SwipeRefreshLayout
-    android:id="@+id/message_threads_swipe_refresh_layout"
+  android:layout_height="match_parent"
+  android:fitsSystemWindows="true">
+  
+  <android.support.design.widget.AppBarLayout
+    android:id="@+id/message_threads_app_bar_layout"
+    android:background="@color/messages_background"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true">
 
-    <android.support.v7.widget.RecyclerView
-      android:id="@+id/message_threads_recycler_view"
-      android:background="@color/messages_background"
+    <android.support.design.widget.CollapsingToolbarLayout
+      android:id="@+id/message_threads_collapsing_toolbar_layout"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+      android:layout_height="match_parent"
+      android:fitsSystemWindows="true"
+      app:expandedTitleMarginStart="48dp"
+      app:expandedTitleMarginEnd="64dp"
+      app:expandedTitleTextAppearance="@style/MessageThreadsToolbarExpanded"
+      app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-  </android.support.v4.widget.SwipeRefreshLayout>
+      <LinearLayout
+        android:paddingTop="@dimen/grid_new_6"
+        android:paddingBottom="@dimen/grid_new_5"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        app:layout_collapseMode="parallax">
 
-</LinearLayout>
+        <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:clipToPadding="false"
+          android:paddingStart="@dimen/grid_new_4"
+          android:paddingEnd="@dimen/grid_new_4"
+          android:paddingBottom="@dimen/grid_new_8">
+
+          <LinearLayout
+            android:id="@+id/mailbox_and_unread_layout"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+              android:id="@+id/mailbox_text_view"
+              style="@style/EditorialHeadline"
+              android:textSize="@dimen/big_type"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              tools:text="Inbox"/>
+
+            <TextView
+              android:id="@+id/unread_count_text_view"
+              android:textColor="@color/ksr_blue"
+              style="@style/BodyPrimaryMedium"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              tools:text="3 unread"/>
+
+          </LinearLayout>
+
+          <com.kickstarter.ui.views.IconButton
+            android:id="@+id/search_messages_icon_button"
+            style="@style/ToolbarIcon"
+            android:layout_height="@dimen/button_icon_fixed_width"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/mailbox_and_unread_layout"
+            android:focusable="true"
+            android:text="@string/search_icon" />
+
+        </RelativeLayout>
+
+      </LinearLayout>
+
+      <include layout="@layout/message_threads_toolbar"/>
+
+    </android.support.design.widget.CollapsingToolbarLayout>
+
+  </android.support.design.widget.AppBarLayout>
+
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/message_threads_recycler_view"
+    android:background="@color/messages_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+</android.support.design.widget.CoordinatorLayout>

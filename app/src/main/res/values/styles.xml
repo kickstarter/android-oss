@@ -239,6 +239,7 @@
     <item name="android:layout_height">wrap_content</item>
   </style>
 
+  <!-- Toolbars -->
   <style name="ToolbarBase" parent="Base.Widget.AppCompat.Toolbar">
     <item name="android:background">@color/primary</item>
     <item name="android:foregroundGravity">center_vertical</item>

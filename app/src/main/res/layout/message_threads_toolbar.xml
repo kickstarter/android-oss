@@ -3,75 +3,49 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/message_threads_toolbar"
   android:elevation="0dp"
   android:layout_height="wrap_content"
   android:layout_width="match_parent"
-  android:id="@+id/message_threads_toolbar"
-  android:background="@color/messages_background"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
+  app:layout_collapseMode="pin"
+  app:layout_scrollFlags="enterAlways"
   tools:showIn="@layout/message_threads_layout"
   tools:ignore="UnusedAttribute">
 
+  <com.kickstarter.ui.views.IconButton
+    style="@style/ToolbarIcon"
+    android:id="@+id/back_button"
+    android:focusable="true"
+    android:layout_height="@dimen/button_icon_fixed_width"
+    android:layout_width="@dimen/button_icon_fixed_width"
+    android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
+    android:text="@string/arrow_back_icon" />
+
   <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_vertical"
-    android:orientation="vertical">
+    android:id="@+id/message_threads_collapsed_toolbar_title"
+    android:animateLayoutChanges="true"
+    android:visibility="invisible"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-    <com.kickstarter.ui.views.IconButton
-      style="@style/ToolbarIcon"
-      android:id="@+id/back_button"
-      android:focusable="true"
-      android:layout_height="@dimen/button_icon_fixed_width"
-      android:layout_width="@dimen/button_icon_fixed_width"
-      android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
-      android:text="@string/arrow_back_icon" />
+    <TextView
+      style="@style/Headline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/messages_navigation_inbox"/>
 
-    <RelativeLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:clipToPadding="false"
-      android:paddingStart="@dimen/grid_new_4"
-      android:paddingEnd="@dimen/grid_new_4"
-      android:paddingBottom="@dimen/grid_new_8">
-
-      <LinearLayout
-        android:id="@+id/mailbox_and_unread_layout"
-        android:orientation="vertical"
-        android:layout_centerVertical="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-          android:id="@+id/mailbox_text_view"
-          style="@style/EditorialHeadline"
-          android:textSize="@dimen/big_type"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="Inbox"/>
-
-        <TextView
-          android:id="@+id/unread_count_text_view"
-          android:textColor="@color/ksr_blue"
-          style="@style/BodyPrimaryMedium"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="3 unread"/>
-
-      </LinearLayout>
-
-      <com.kickstarter.ui.views.IconButton
-        android:id="@+id/search_messages_icon_button"
-        style="@style/ToolbarIcon"
-        android:layout_height="@dimen/button_icon_fixed_width"
-        android:layout_marginTop="@dimen/grid_new_2"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/mailbox_and_unread_layout"
-        android:focusable="true"
-        android:text="@string/search_icon" />
-
-    </RelativeLayout>
+    <TextView
+      android:id="@+id/message_threads_toolbar_unread_count_text_view"
+      style="@style/Headline"
+      android:layout_marginStart="@dimen/grid_new_1"
+      android:layout_marginEnd="@dimen/grid_new_1"
+      android:textColor="@color/ksr_blue"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="(3)"/>
 
   </LinearLayout>
 

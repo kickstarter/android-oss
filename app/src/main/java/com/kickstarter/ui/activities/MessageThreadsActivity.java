@@ -2,17 +2,18 @@ package com.kickstarter.ui.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
+import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RecyclerViewPaginator;
-import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.ui.adapters.MessageThreadsAdapter;
@@ -30,12 +31,15 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   private MessageThreadsAdapter adapter;
   private KSString ksString;
   private RecyclerViewPaginator recyclerViewPaginator;
-  private SwipeRefresher swipeRefresher;
 
+  protected @Bind(R.id.message_threads_app_bar_layout) AppBarLayout appBarLayout;
   protected @Bind(R.id.mailbox_text_view) TextView mailboxTextView;
+  protected @Bind(R.id.mailbox_and_unread_layout) View expandedToolbarTitle;
+  protected @Bind(R.id.message_threads_collapsed_toolbar_title) View collapsedToolbarTitle;
+  protected @Bind(R.id.message_threads_collapsing_toolbar_layout) CollapsingToolbarLayout collapsingToolbarLayout;
   protected @Bind(R.id.message_threads_recycler_view) RecyclerView recyclerView;
-  protected @Bind(R.id.message_threads_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
   protected @Bind(R.id.unread_count_text_view) TextView unreadCountTextView;
+  protected @Bind(R.id.message_threads_toolbar_unread_count_text_view) TextView unreadCountToolbarTextView;
 
   protected @BindString(R.string.messages_navigation_inbox) String inboxString;
   protected @BindString(R.string.No_messages) String noMessagesString;
@@ -54,11 +58,10 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage);
-    this.swipeRefresher = new SwipeRefresher(
-      this, this.swipeRefreshLayout, this.viewModel.inputs::refresh, this.viewModel.outputs::isFetchingMessageThreads
-    );
 
     this.mailboxTextView.setText(this.inboxString);  // todo: Sent mailbox logic
+
+    setOffsetChangedListener();
 
     this.viewModel.outputs.messageThreads()
       .compose(bindToLifecycle())
@@ -83,15 +86,33 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     this.recyclerView.setAdapter(null);
   }
 
+  private void setOffsetChangedListener() {
+    this.appBarLayout.addOnOffsetChangedListener(
+      ((appBarLayout, offset) -> {
+        if (offset == 0) {  // expanded
+          this.expandedToolbarTitle.setVisibility(View.VISIBLE);
+          this.collapsedToolbarTitle.setVisibility(View.INVISIBLE);
+
+        } else if (Math.abs(offset) >= appBarLayout.getTotalScrollRange()) {
+          this.expandedToolbarTitle.setVisibility(View.INVISIBLE);
+          this.collapsedToolbarTitle.setVisibility(View.VISIBLE);
+        }
+      })
+    );
+  }
+
   private void setUnreadTextViewText(final @Nullable Integer unreadCount) {
     if (unreadCount == null) {
       this.unreadCountTextView.setText(this.noMessagesString);
     } else if (unreadCount == 0 ) {
       this.unreadCountTextView.setText(this.noUnreadMessagesString);
     } else {
+      final String unreadCountString = NumberUtils.format(unreadCount);
+
       this.unreadCountTextView.setText(
-        this.ksString.format(this.unreadCountUnreadString, "unread_count", NumberUtils.format(unreadCount))
+        this.ksString.format(this.unreadCountUnreadString, "unread_count", unreadCountString)
       );
+      this.unreadCountToolbarTextView.setText("(" + unreadCountString + ")");
     }
   }
 }

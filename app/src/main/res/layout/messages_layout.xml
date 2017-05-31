@@ -13,7 +13,6 @@
 
     <android.support.design.widget.AppBarLayout
       android:id="@+id/project_data_app_bar"
-      android:background="@color/white"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:expanded="false">
@@ -21,6 +20,8 @@
       <android.support.design.widget.CollapsingToolbarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="@dimen/toolbar_elevation"
+        android:background="@color/ksr_grey_100"
         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
         <include layout="@layout/messages_toolbar"/>
@@ -28,8 +29,6 @@
         <LinearLayout
           android:orientation="vertical"
           android:layout_marginTop="@dimen/grid_new_10"
-          android:layout_marginLeft="@dimen/grid_new_8"
-          android:layout_marginRight="@dimen/grid_new_8"
           android:layout_marginStart="@dimen/grid_new_8"
           android:layout_marginEnd="@dimen/grid_new_8"
           android:gravity="center"
@@ -40,18 +39,16 @@
           <TextView
             android:id="@+id/messages_project_name_text_view"
             style="@style/Headline"
-            android:gravity="center"
             android:ellipsize="end"
-            android:layout_marginBottom="@dimen/grid_new_3"
+            android:layout_marginBottom="@dimen/grid_new_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="This Cool Project I Backed"/>
 
           <TextView
             android:id="@+id/messages_participant_name_text_view"
-            android:layout_marginBottom="@dimen/grid_new_4"
+            android:layout_marginBottom="@dimen/grid_new_5"
             style="@style/BodyPrimary"
-            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="by Some Creator"/>
@@ -64,6 +61,7 @@
         android:id="@+id/backing_info_view"
         android:layout_gravity="center_vertical"
         android:layout_width="match_parent"
+        android:background="@color/white"
         android:layout_height="@dimen/grid_new_10"
         app:layout_scrollFlags="scroll|enterAlways">
 
@@ -83,7 +81,6 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:paddingStart="0dp"
             android:paddingEnd="0dp"
             tools:text="View pledge"/>
@@ -96,7 +93,6 @@
             android:layout_alignBaseline="@+id/view_pledge_button"
             android:layout_alignBottom="@+id/view_pledge_button"
             android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/view_pledge_button"
             android:layout_toStartOf="@+id/view_pledge_button"
             tools:text="Hello there pledge"/>
 

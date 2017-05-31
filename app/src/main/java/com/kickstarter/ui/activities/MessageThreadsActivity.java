@@ -59,7 +59,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
 
     this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage);
 
-    this.mailboxTextView.setText(this.inboxString);  // todo: Sent mailbox logic
+    this.mailboxTextView.setText(this.inboxString);  // todo: Sent mailbox logic enum
 
     setOffsetChangedListener();
 
@@ -86,6 +86,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     this.recyclerView.setAdapter(null);
   }
 
+  // todo: make inputs and outputs
   private void setOffsetChangedListener() {
     this.appBarLayout.addOnOffsetChangedListener(
       ((appBarLayout, offset) -> {

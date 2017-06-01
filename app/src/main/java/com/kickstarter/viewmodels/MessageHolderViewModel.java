@@ -40,6 +40,9 @@ public interface MessageHolderViewModel {
 
     /** Emits the color int for the message text. */
     Observable<Integer> messageBodyTextViewTextColorInt();
+
+    /** Emits a boolean to determine whether to set message body text view padding for a sender. */
+    Observable<Boolean> shouldSetMessageBodyTextViewPaddingForSender();
   }
 
   final class ViewModel extends ActivityViewModel<MessageViewHolder> implements Inputs, Outputs {
@@ -60,7 +63,7 @@ public interface MessageHolderViewModel {
         .filter(mb -> !mb.second)
         .map(mb -> mb.first.sender().avatar().medium());
 
-      this.messageBodyTextViewAlignParentEnd = messageAndCurrentUserIsSender.map(mb -> mb.second);
+      this.messageBodyCardViewAlignParentEnd = messageAndCurrentUserIsSender.map(mb -> mb.second);
 
       this.messageBodyTextViewText = this.message.map(Message::body);
 
@@ -69,16 +72,19 @@ public interface MessageHolderViewModel {
 
       this.messageBodyTextViewTextColor = messageAndCurrentUserIsSender
         .map(mb -> mb.second ? R.color.white : R.color.ksr_text_navy_700);
+
+      this.shouldSetMessageBodyTextViewPaddingForSender = this.messageBodyCardViewAlignParentEnd;
     }
 
     private final PublishSubject<Message> message = PublishSubject.create();
 
     private final Observable<Boolean> participantAvatarImageHidden;
     private final Observable<String> participantAvatarImageUrl;
-    private final Observable<Boolean> messageBodyTextViewAlignParentEnd;
+    private final Observable<Boolean> messageBodyCardViewAlignParentEnd;
     private final Observable<Integer> messageBodyTextViewBackgroundColor;
     private final Observable<String> messageBodyTextViewText;
     private final Observable<Integer> messageBodyTextViewTextColor;
+    private final Observable<Boolean> shouldSetMessageBodyTextViewPaddingForSender;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -94,7 +100,7 @@ public interface MessageHolderViewModel {
       return this.participantAvatarImageUrl;
     }
     @Override public @NonNull Observable<Boolean> messageBodyCardViewAlignParentEnd() {
-      return this.messageBodyTextViewAlignParentEnd;
+      return this.messageBodyCardViewAlignParentEnd;
     }
     @Override public @NonNull Observable<Integer> messageBodyTextViewBackgroundColorInt() {
       return this.messageBodyTextViewBackgroundColor;
@@ -104,6 +110,9 @@ public interface MessageHolderViewModel {
     }
     @Override public @NonNull Observable<Integer> messageBodyTextViewTextColorInt() {
       return this.messageBodyTextViewTextColor;
+    }
+    @Override public @NonNull Observable<Boolean> shouldSetMessageBodyTextViewPaddingForSender() {
+      return this.shouldSetMessageBodyTextViewPaddingForSender;
     }
   }
 }

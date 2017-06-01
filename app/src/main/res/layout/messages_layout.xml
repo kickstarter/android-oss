@@ -40,6 +40,7 @@
             android:id="@+id/messages_project_name_text_view"
             style="@style/Headline"
             android:ellipsize="end"
+            android:gravity="center"
             android:layout_marginBottom="@dimen/grid_new_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

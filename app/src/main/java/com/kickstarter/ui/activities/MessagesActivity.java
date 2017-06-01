@@ -49,6 +49,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @BindString(R.string.project_creator_by_creator) String byCreatorString;
   protected @BindString(R.string.pledge_amount_pledged_on_pledge_date) String pledgeAmountPledgedOnPledgeDateString;
   protected @BindString(R.string.project_view_button) String viewPledgeString;
+  protected @BindString(R.string.Reply_to_user_name) String replyToUserNameString;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -78,17 +79,22 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.backingInfoView));
 
+    this.viewModel.outputs.messageEditTextHint()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setMessageEditTextHint);
+
+    this.viewModel.outputs.messages()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.adapter::messages);
+
     this.viewModel.outputs.participantNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(name ->
         this.participantNameTextView.setText(this.ksString.format(this.byCreatorString, "creator_name", name))
       );
-
-    this.viewModel.outputs.messages()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.adapter::messages);
 
     this.viewModel.outputs.projectNameTextViewText()
       .compose(bindToLifecycle())
@@ -133,5 +139,9 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
         )
       )
     );
+  }
+
+  private void setMessageEditTextHint(final @NonNull String name) {
+    this.messageEditText.setHint(this.ksString.format(this.replyToUserNameString, "user_name", name));
   }
 }

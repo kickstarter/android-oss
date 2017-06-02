@@ -8,6 +8,7 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
@@ -39,6 +40,7 @@ import rx.subjects.PublishSubject;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 
 public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs,
   DiscoveryViewModelOutputs {
@@ -62,6 +64,9 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
     showLoginTout = loggedOutLoginToutClick;
     showProfile = profileClick;
     showSettings = settingsClick;
+
+    creatorDashboardButtonIsGone = environment.currentConfig().observable()
+      .map(config -> !coalesce(config.features().get(FeatureKey.ANDROID_CREATOR_VIEW), false));
 
     // Seed params when we are freshly launching the app with no data.
     final Observable<DiscoveryParams> paramsFromInitialIntent = intent()
@@ -201,6 +206,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   private final PublishSubject<Void> settingsClick = PublishSubject.create();
   private final PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
 
+  private final Observable<Boolean> creatorDashboardButtonIsGone;
   private final BehaviorSubject<List<Integer>> clearPages = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> drawerIsOpen = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> expandSortTabLayout = BehaviorSubject.create();
@@ -254,6 +260,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   @Override public @NonNull Observable<List<Integer>> clearPages() {
     return clearPages;
   }
+  @Override public @NonNull Observable<Boolean> creatorDashboardButtonIsGone() { return creatorDashboardButtonIsGone; }
   @Override public @NonNull Observable<Boolean> drawerIsOpen() {
     return drawerIsOpen;
   }

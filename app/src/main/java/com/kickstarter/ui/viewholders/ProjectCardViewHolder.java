@@ -73,10 +73,10 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @BindColor(R.color.ksr_text_navy_500) int ksrTextNavy500;
   protected @BindColor(R.color.ksr_text_navy_700) int ksrTextNavy700;
 
-  protected @BindDimen(R.dimen.grid_1) int grid1Dimen;
-  protected @BindDimen(R.dimen.grid_2) int grid2Dimen;
-  protected @BindDimen(R.dimen.grid_3) int grid3Dimen;
-  protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
+  protected @BindDimen(R.dimen.grid_new_1) int gridNew1Dimen;
+  protected @BindDimen(R.dimen.grid_new_2) int gridNew2Dimen;
+  protected @BindDimen(R.dimen.grid_new_3) int gridNew3Dimen;
+  protected @BindDimen(R.dimen.grid_new_4) int gridNew4Dimen;
 
   protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
 
@@ -272,7 +272,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   }
 
   private void resizeProjectImage(final @Nullable String avatarUrl) {
-    final int targetImageWidth = (int) (getScreenWidthDp(context()) * getScreenDensity(context()) - grid4Dimen);
+    final int targetImageWidth = (int) (getScreenWidthDp(context()) * getScreenDensity(context()) - gridNew4Dimen);
     final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
     photoImageView.setMaxHeight(targetImageHeight);
 
@@ -296,11 +296,11 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
   private void setDefaultTopPadding(final boolean setDefaultPadding) {
     if (setDefaultPadding) {
-      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid2Dimen, grid2Dimen, grid2Dimen);
+      adjustLandscapeTopPadding(landCardViewGroup, gridNew2Dimen, gridNew2Dimen, gridNew2Dimen, gridNew2Dimen);
       adjustViewGroupTopMargin(projectCardViewGroup, 0);
     } else {
-      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
-      adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
+      adjustLandscapeTopPadding(landCardViewGroup, gridNew2Dimen, gridNew3Dimen, gridNew2Dimen, gridNew2Dimen);
+      adjustViewGroupTopMargin(projectCardViewGroup, gridNew1Dimen);
     }
   }
 

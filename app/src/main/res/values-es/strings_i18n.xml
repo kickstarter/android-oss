@@ -165,11 +165,11 @@ patrocinadores</string>
   <string name="Message_creator" formatted="false">Enviar mensaje al creador</string>
   <string name="No_Results" formatted="false">Sin resultados</string>
   <string name="No_comments_yet" formatted="false">No hay comentarios todavia.</string>
-  <string name="No_messages" formatted="false">No messages</string>
+  <string name="No_messages" formatted="false">No hay mensajes</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Todavía no se han publicado actualizaciones.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Todavía no hay contribuciones de amigos.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Este Live Stream no cuenta con repetición.</string>
-  <string name="No_unread_messages" formatted="false">No unread messages</string>
+  <string name="No_unread_messages" formatted="false">No hay mensajes no leídos</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Tu patrocinio de un proyecto nos ayuda a hacerte recomendaciones personalizadas.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Queda poco tiempo para verlo (%{amount_of_time}).</string>
   <string name="Opens_comments" formatted="false">Abre comentarios.</string>
@@ -222,7 +222,7 @@ patrocinadores</string>
   <string name="Replay_live_stream_with_creator_name" formatted="false">Repetir live stream de&lt;br>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Replay_past_live_stream" formatted="false">Repetir live stream pasado</string>
   <string name="Replay_past_live_streams" formatted="false">Repetir live streams pasados</string>
-  <string name="Reply_to_user_name" formatted="false">Reply to %{user_name}…</string>
+  <string name="Reply_to_user_name" formatted="false">Responder a %{user_name}…</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_Surveys_one" formatted="false">Cuestionario</string>
@@ -945,7 +945,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="minutes_two" formatted="false">minutos</string>
   <string name="minutes_zero" formatted="false">minutos</string>
   <string name="percentage_funded" formatted="false">%{percentage} financiado</string>
-  <string name="pledge_amount_pledged_on_pledge_date" formatted="false">&lt;b>%{pledge_amount}&lt;/b> pledged on %{pledge_date}</string>
+  <string name="pledge_amount_pledged_on_pledge_date" formatted="false">&lt;b>%{pledge_amount}&lt;/b> contribuidos el %{pledge_date}</string>
   <string name="plus_shipping_cost" formatted="false">+%{shipping_cost}</string>
   <string name="profile_buttons_messages" formatted="false">Mensajes</string>
   <string name="profile_buttons_settings" formatted="false">Configuración</string>
@@ -1263,7 +1263,7 @@ guardados</string>
   <string name="two_factor_error_message" formatted="false">Este código no existe.</string>
   <string name="two_factor_message" formatted="false">Por favor ingresa tu código de verificación para poder continuar.</string>
   <string name="two_factor_title" formatted="false">Verificar</string>
-  <string name="unread_count_unread" formatted="false">%{unread_count} unread</string>
+  <string name="unread_count_unread" formatted="false">%{unread_count} sin leer</string>
   <string name="update_comments_creator" formatted="false">Creador</string>
   <string name="update_comments_empty_state_backer_button" formatted="false">Deja un comentario</string>
   <string name="update_comments_empty_state_backer_message" formatted="false">Ay, qué pena. Sé el primer patrocinador en dejar un comentario en este proyecto.</string>

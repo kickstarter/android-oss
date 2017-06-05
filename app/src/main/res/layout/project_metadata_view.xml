@@ -9,18 +9,16 @@
   android:elevation="@dimen/grid_1_half"
   android:layout_marginTop="@dimen/grid_1"
   android:layout_marginStart="@dimen/grid_1"
-  android:layout_marginLeft="@dimen/grid_1"
-  android:layout_marginRight="@dimen/grid_4"
   android:layout_marginEnd="@dimen/grid_4"
   android:layout_alignStart="@+id/project_card_view"
-  android:layout_alignLeft="@+id/project_card_view"
   android:paddingLeft="@dimen/grid_1"
   android:paddingRight="@dimen/grid_1"
-  android:background="@drawable/metadata_label_rounded_background"
+  android:background="@color/white"
   android:gravity="center_vertical"
   android:layout_width="wrap_content"
   android:layout_height="@dimen/metadata_label_height"
-  tools:ignore="UnusedAttribute">
+  tools:ignore="UnusedAttribute"
+  tools:showIn="@layout/project_card_view">
 
   <LinearLayout
     android:id="@+id/backing_group"
@@ -30,21 +28,20 @@
     android:layout_height="wrap_content">
 
     <com.kickstarter.ui.views.IconTextView
-      app:iconType="ss_kickstarter"
       android:paddingTop="@dimen/grid_1_half"
-      android:text="@string/backer_icon"
-      android:textColor="@color/green"
+      android:text="@string/check_icon"
+      android:textColor="@color/white"
       android:layout_gravity="center_vertical"
-      android:layout_marginRight="@dimen/grid_1_half"
       android:layout_marginEnd="@dimen/grid_1_half"
       android:textSize="@dimen/subhead"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
     <TextView
-      style="@style/BodyPrimaryMedium"
+      style="@style/CaptionPrimaryMedium"
       android:includeFontPadding="false"
       android:layout_gravity="center_vertical"
+      android:textColor="@color/white"
       android:text="@string/discovery_baseball_card_metadata_backer"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
@@ -62,8 +59,7 @@
       android:text="@string/star_icon"
       android:layout_gravity="center_vertical"
       android:textSize="@dimen/subhead"
-      android:textColor="@color/green"
-      android:layout_marginRight="@dimen/grid_1_half"
+      android:textColor="@color/text_primary"
       android:layout_marginEnd="@dimen/grid_1_half"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
@@ -71,7 +67,7 @@
     <TextView
       android:text="@string/You_saved_this_project"
       android:includeFontPadding="false"
-      style="@style/BodyPrimaryMedium"
+      style="@style/CaptionPrimaryMedium"
       android:layout_gravity="center_vertical"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
@@ -90,11 +86,10 @@
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:gravity="center_vertical"
-      android:layout_marginRight="@dimen/grid_1_half"
       android:layout_marginEnd="@dimen/grid_1_half"
       android:text="@string/favorite_icon"
       android:textSize="@dimen/subhead"
-      android:textColor="@color/green" />
+      android:textColor="@color/text_primary" />
 
     <TextView
       android:id="@+id/potd"
@@ -103,7 +98,7 @@
       android:layout_height="match_parent"
       android:gravity="center_vertical"
       android:text="@string/discovery_baseball_card_metadata_project_of_the_Day"
-      style="@style/BodyPrimaryMedium" />
+      style="@style/CaptionPrimaryMedium" />
 
   </LinearLayout>
 
@@ -117,11 +112,10 @@
     <com.kickstarter.ui.views.IconTextView
       app:iconType="ss_kickstarter"
       android:textSize="@dimen/caption"
-      android:textColor="@color/green"
+      android:textColor="@color/text_primary"
       android:gravity="center_vertical"
       android:text="@string/kickstarter_icon"
       android:paddingTop="3dp"
-      android:layout_marginRight="@dimen/grid_1"
       android:layout_marginEnd="@dimen/grid_1"
       android:layout_width="wrap_content"
       android:layout_height="match_parent" />
@@ -132,7 +126,7 @@
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:gravity="center_vertical"
-      style="@style/BodyPrimaryMedium" />
+      style="@style/CaptionPrimaryMedium" />
 
   </LinearLayout>
 

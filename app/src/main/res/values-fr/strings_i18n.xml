@@ -165,12 +165,12 @@ contributeurs</string>
   <string name="Message_creator" formatted="false">Envoyer un message au créateur</string>
   <string name="No_Results" formatted="false">Pas de résultats</string>
   <string name="No_comments_yet" formatted="false">Pas de commentaires.</string>
-  <string name="No_messages" formatted="false">No messages</string>
+  <string name="No_messages" formatted="false">Pas de messages</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Pas d\'actus publiées pour le moment.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Mes amis \n
 n\'ont rien soutenu.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Pas de rediffusion possible pour cette diffusion en direct.</string>
-  <string name="No_unread_messages" formatted="false">No unread messages</string>
+  <string name="No_unread_messages" formatted="false">Pas de messages non lus</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Une fois que vous aurez soutenu un projet, des recommandations personnalisées s\'afficheront ici.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Plus que %{amount_of_time} pour regarder cette diffusion.</string>
   <string name="Opens_comments" formatted="false">Ouvre les commentaires.</string>
@@ -223,7 +223,7 @@ n\'ont rien soutenu.</string>
   <string name="Replay_live_stream_with_creator_name" formatted="false">Revoir la diffusion en direct de &lt;br>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Replay_past_live_stream" formatted="false">Rediffusion</string>
   <string name="Replay_past_live_streams" formatted="false">Revoir des diffusions en direct passées</string>
-  <string name="Reply_to_user_name" formatted="false">Reply to %{user_name}…</string>
+  <string name="Reply_to_user_name" formatted="false">Répondre à %{user_name}…</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_one" formatted="false">Questionnaire</string>
@@ -946,7 +946,7 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="minutes_two" formatted="false">minutes</string>
   <string name="minutes_zero" formatted="false">minutes</string>
   <string name="percentage_funded" formatted="false">Financé à %{percentage}</string>
-  <string name="pledge_amount_pledged_on_pledge_date" formatted="false">&lt;b>%{pledge_amount}&lt;/b> pledged on %{pledge_date}</string>
+  <string name="pledge_amount_pledged_on_pledge_date" formatted="false">&lt;b>%{pledge_amount}&lt;/b> engagés le %{pledge_date}</string>
   <string name="plus_shipping_cost" formatted="false">+ %{shipping_cost}</string>
   <string name="profile_buttons_messages" formatted="false">Messages</string>
   <string name="profile_buttons_settings" formatted="false">Paramètres</string>
@@ -1264,7 +1264,7 @@ projets enregistrés</string>
   <string name="two_factor_error_message" formatted="false">Le code fourni ne correspond pas.</string>
   <string name="two_factor_message" formatted="false">Veuillez saisir votre code de vérification.</string>
   <string name="two_factor_title" formatted="false">Vérifier</string>
-  <string name="unread_count_unread" formatted="false">%{unread_count} unread</string>
+  <string name="unread_count_unread" formatted="false">%{unread_count} messages non lus</string>
   <string name="update_comments_creator" formatted="false">Créateur</string>
   <string name="update_comments_empty_state_backer_button" formatted="false">Laisser un commentaire</string>
   <string name="update_comments_empty_state_backer_message" formatted="false">Oh, quel dommage.  Soyez le premier contributeur à laisser un commentaire sur cette actu.</string>

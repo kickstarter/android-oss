@@ -1,30 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/project_state_view_group"
-  android:visibility="gone"
+  android:visibility="visible"
   android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="@dimen/grid_7_half">
+  android:layout_height="wrap_content"
+  tools:showIn="@layout/project_card_view"
+  android:paddingBottom="@dimen/grid_new_4">
 
-  <TextView
-    android:id="@+id/successfully_funded_text_view"
-    android:visibility="gone"
-    style="@style/BodyPrimaryMedium"
-    android:textColor="@color/white"
-    android:background="@color/green"
-    android:gravity="center"
+  <LinearLayout
+    android:id="@+id/funding_successful_view_group"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <TextView
+      android:id="@+id/funding_successful_text_view"
+      style="@style/BodyPrimaryMedium"
+      android:textColor="@color/ksr_text_green_700"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/Funding_successful"
+      android:layout_marginEnd="@dimen/grid_new_4"/>
+    <TextView
+      android:id="@+id/funding_successful_date_text_view"
+      style="@style/CaptionSecondary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="Mar 31, 2015"/>
+  </LinearLayout>
 
-  <TextView
-    android:id="@+id/funding_unsuccessful_text_view"
-    android:visibility="gone"
-    style="@style/BodyPrimaryMedium"
-    android:textColor="@color/white"
-    android:background="@color/dark_gray"
-    android:gravity="center"
+  <LinearLayout
+    android:id="@+id/funding_unsuccessful_view_group"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <TextView
+      android:id="@+id/funding_unsuccessful_text_view"
+      style="@style/BodyPrimaryMedium"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="Funding unsuccessful"
+      android:layout_marginEnd="@dimen/grid_new_2"/>
+    <TextView
+      android:id="@+id/funding_unsuccessful_date_text_view"
+      style="@style/CaptionSecondary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="Mar 31, 2015"/>
+  </LinearLayout>
+
 
 </LinearLayout>

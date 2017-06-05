@@ -2,6 +2,7 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/project_card_stats_view_group"
   tools:showIn="@layout/project_card_view"
   android:layout_width="wrap_content"
   android:layout_height="wrap_content"
@@ -10,10 +11,35 @@
   <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginEnd="@dimen/grid_new_5">
+
+    <TextView
+      android:id="@+id/percent"
+      style="@style/BodyPrimaryMedium"
+      android:textColor="@color/ksr_text_green_700"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="85%" />
+
+    <TextView
+      android:text="@string/discovery_baseball_card_stats_funded"
+      android:textColor="@color/ksr_text_green_700"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/BodyPrimary" />
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginEnd="@dimen/grid_new_5">
+
     <TextView
       android:id="@+id/backers_count"
-      style="@style/CaptionPrimaryMedium"
+      style="@style/BodyPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       tools:text="12,000" />
@@ -22,28 +48,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/discovery_baseball_card_stats_backers"
-      style="@style/CaptionSecondary" />
-  </LinearLayout>
-
-  <LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_marginEnd="@dimen/grid_4"
-    android:layout_marginStart="@dimen/grid_4">
-
-    <TextView
-      android:id="@+id/percent"
-      style="@style/CaptionPrimaryMedium"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      tools:text="85%" />
-
-    <TextView
-      android:text="@string/discovery_baseball_card_stats_funded"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      style="@style/CaptionSecondary" />
+      style="@style/BodyPrimary" />
 
   </LinearLayout>
 
@@ -53,7 +58,7 @@
     android:orientation="vertical">
 
     <TextView
-      style="@style/CaptionPrimaryMedium"
+      style="@style/BodyPrimaryMedium"
       android:id="@+id/deadline_countdown"
       android:maxLines="1"
       android:layout_width="wrap_content"
@@ -64,7 +69,7 @@
       android:id="@+id/deadline_countdown_unit"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      style="@style/CaptionSecondary"
+      style="@style/BodyPrimary"
       tools:text="dias mas" />
 
   </LinearLayout>

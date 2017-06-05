@@ -90,6 +90,14 @@ public final class ProjectUtils {
   }
 
   /**
+   * Returns `true` if the project name ends with a punctuation character.
+   */
+  public static boolean isProjectNamePunctuated(final @NonNull String name) {
+    final String lastChar = name.substring(name.length() - 1);
+    return lastChar.matches(".*\\p{Punct}");
+  }
+
+  /**
    * Returns 16:9 height relative to input width.
    */
   public static int photoHeightFromWidthRatio(final int width) {

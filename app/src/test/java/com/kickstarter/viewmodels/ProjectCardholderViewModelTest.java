@@ -1,8 +1,10 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
+import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.R;
 import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
@@ -27,24 +29,24 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   private ProjectCardHolderViewModel.ViewModel vm;
   private final TestSubscriber<String> backersCountTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backingViewGroupIsGone = new TestSubscriber<>();
-  private final TestSubscriber<String> blurbText = new TestSubscriber<>();
-  private final TestSubscriber<String> categoryNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> deadlineCountdownText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> featuredViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> friendBackingViewIsHidden = new TestSubscriber<>();
   private final TestSubscriber<String> friendAvatarUrl = new TestSubscriber<>();
   private final TestSubscriber<List<User>> friendsForNamepile = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> fundingUnsuccessfulTextViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> fundingUnsuccessfulViewGroupIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> fundingSuccessfulViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> imageIsInvisible = new TestSubscriber<>();
-  private final TestSubscriber<String> nameText = new TestSubscriber<>();
+  private final TestSubscriber<Integer> metadataViewGroupBackgroundColor = new TestSubscriber<>();
   private final TestSubscriber<Boolean> metadataViewGroupIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Pair<String, String>> nameAndBlurbText = new TestSubscriber<>();
   private final TestSubscriber<Project> notifyDelegateOfProjectClick = new TestSubscriber<>();
-  private final TestSubscriber<Integer> percentageFunded = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> percentageFundedProgressBarIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Integer> percentageFundedForProgressBar = new TestSubscriber<>();
   private final TestSubscriber<String> percentageFundedTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> photoUrl = new TestSubscriber<>();
   private final TestSubscriber<Boolean> potdViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<DateTime> projectCanceledAt = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> projectCardStatsViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<DateTime> projectFailedAt = new TestSubscriber<>();
   private final TestSubscriber<Boolean> projectStateViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<DateTime> projectSuccessfulAt = new TestSubscriber<>();
@@ -57,24 +59,24 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     this.vm = new ProjectCardHolderViewModel.ViewModel(environment);
     this.vm.outputs.backersCountTextViewText().subscribe(this.backersCountTextViewText);
     this.vm.outputs.backingViewGroupIsGone().subscribe(this.backingViewGroupIsGone);
-    this.vm.outputs.blurbText().subscribe(this.blurbText);
-    this.vm.outputs.categoryNameTextViewText().subscribe(this.categoryNameTextViewText);
     this.vm.outputs.deadlineCountdownText().subscribe(this.deadlineCountdownText);
     this.vm.outputs.featuredViewGroupIsGone().subscribe(this.featuredViewGroupIsGone);
     this.vm.outputs.friendBackingViewIsHidden().subscribe(this.friendBackingViewIsHidden);
     this.vm.outputs.friendAvatarUrl().subscribe(this.friendAvatarUrl);
     this.vm.outputs.friendsForNamepile().subscribe(this.friendsForNamepile);
-    this.vm.outputs.fundingUnsuccessfulTextViewIsGone().subscribe(this.fundingUnsuccessfulTextViewIsGone);
+    this.vm.outputs.fundingUnsuccessfulViewGroupIsGone().subscribe(this.fundingUnsuccessfulViewGroupIsGone);
+    this.vm.outputs.fundingSuccessfulViewGroupIsGone().subscribe(this.fundingSuccessfulViewGroupIsGone);
     this.vm.outputs.imageIsInvisible().subscribe(this.imageIsInvisible);
+    this.vm.outputs.metadataViewGroupBackgroundColor().subscribe(this.metadataViewGroupBackgroundColor);
     this.vm.outputs.metadataViewGroupIsGone().subscribe(this.metadataViewGroupIsGone);
-    this.vm.outputs.nameText().subscribe(this.nameText);
+    this.vm.outputs.nameAndBlurbText().subscribe(this.nameAndBlurbText);
     this.vm.outputs.notifyDelegateOfProjectClick().subscribe(this.notifyDelegateOfProjectClick);
-    this.vm.outputs.percentageFunded().subscribe(this.percentageFunded);
-    this.vm.outputs.percentageFundedProgressBarIsGone().subscribe(this.percentageFundedProgressBarIsGone);
+    this.vm.outputs.percentageFundedForProgressBar().subscribe(this.percentageFundedForProgressBar);
     this.vm.outputs.percentageFundedTextViewText().subscribe(this.percentageFundedTextViewText);
     this.vm.outputs.photoUrl().subscribe(this.photoUrl);
     this.vm.outputs.potdViewGroupIsGone().subscribe(this.potdViewGroupIsGone);
     this.vm.outputs.projectCanceledAt().subscribe(this.projectCanceledAt);
+    this.vm.outputs.projectCardStatsViewGroupIsGone().subscribe(this.projectCardStatsViewGroupIsGone);
     this.vm.outputs.projectFailedAt().subscribe(this.projectFailedAt);
     this.vm.outputs.projectStateViewGroupIsGone().subscribe(this.projectStateViewGroupIsGone);
     this.vm.outputs.projectSuccessfulAt().subscribe(this.projectSuccessfulAt);
@@ -118,24 +120,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testEmitsBlurbText() {
-    final Project project = ProjectFactory.project().toBuilder().blurb("somebody once told me").build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(project);
-    this.blurbText.assertValues("somebody once told me");
-  }
-
-  @Test
-  public void testEmitsCategoryNameTextViewText() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(project);
-    this.categoryNameTextViewText.assertValues(project.category().name());
-  }
-
-  @Test
   public void testEmitsDeadlineCountdownText() {
     final Project project = ProjectFactory.project().toBuilder()
       .deadline(new DateTime().plusSeconds(60 * 60 * 24 + 1))
@@ -144,15 +128,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.configureWith(project);
     this.deadlineCountdownText.assertValues("24");
-  }
-
-  @Test
-  public void testEmitsPhotoUrl() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(project);
-    this.photoUrl.assertValues(project.photo().med());
   }
 
   @Test
@@ -226,16 +201,34 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.fundingUnsuccessfulTextViewIsGone.assertValues(true);
+    this.fundingUnsuccessfulViewGroupIsGone.assertValues(true);
   }
 
   @Test
-  public void testFundingUnsuccessfulTextViewIsGone_projectFailed() {
+  public void testFundingUnsuccessfulViewGroupIsGone_projectFailed() {
     final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_FAILED).build();
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.fundingUnsuccessfulTextViewIsGone.assertValues(false);
+    this.fundingUnsuccessfulViewGroupIsGone.assertValues(false);
+  }
+
+  @Test
+  public void testFundingSuccessfulViewGroupIsGone_projectFailed() {
+    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_FAILED).build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(project);
+    this.fundingSuccessfulViewGroupIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testFundingSuccessfulViewGroupIsGone_projectSuccessful() {
+    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_SUCCESSFUL).build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(project);
+    this.fundingSuccessfulViewGroupIsGone.assertValues(false);
   }
 
   @Test
@@ -248,6 +241,15 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testMetadataViewGroupBackgroundColor() {
+    final Project project = ProjectFactory.project().toBuilder().isBacking(true).build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(project);
+    this.metadataViewGroupBackgroundColor.assertValues(R.color.ksr_green_500);
+  }
+
+  @Test
   public void testEmitsMetadataViewGroupIsGone() {
     final Project project = ProjectFactory.project().toBuilder().isStarred(true).build();
     setUpEnvironment(environment());
@@ -257,12 +259,13 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testEmitsNameText() {
-    final Project project = ProjectFactory.project();
+  public void testEmitsNameAndBlurbText() {
+    final Pair<String, String> nameAndBlurbPair = Pair.create("Farquaad", "Somebody once told me");
+    final Project project = ProjectFactory.project().toBuilder().name(nameAndBlurbPair.first).blurb(nameAndBlurbPair.second).build();
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.nameText.assertValues(project.name());
+    this.nameAndBlurbText.assertValues(nameAndBlurbPair);
   }
 
   @Test
@@ -276,30 +279,21 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testPercentageFunded() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(project);
-    this.percentageFunded.assertValues(ProgressBarUtils.progress(project.percentageFunded()));
-  }
-
-  @Test
-  public void testPercentageFundedProgressBarIsGone_projectSuccessful() {
+  public void testPercentageFunded_projectSuccessful() {
     final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_SUCCESSFUL).build();
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.percentageFundedProgressBarIsGone.assertValues(true);
+    this.percentageFundedForProgressBar.assertValues(ProgressBarUtils.progress(project.percentageFunded()));
   }
 
   @Test
-  public void testPercentageFundedProgressBarIsGone_projectLive() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_LIVE).build();
+  public void testPercentageFunded_projectFailed() {
+    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_FAILED).build();
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.percentageFundedProgressBarIsGone.assertValues(false);
+    this.percentageFundedForProgressBar.assertValues(ProgressBarUtils.progress(0.0f));
   }
 
   @Test
@@ -309,6 +303,15 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.configureWith(project);
     this.percentageFundedTextViewText.assertValues(NumberUtils.flooredPercentage(project.percentageFunded()));
+  }
+
+  @Test
+  public void testEmitsPhotoUrl() {
+    final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(project);
+    this.photoUrl.assertValues(project.photo().full());
   }
 
   @Test
@@ -346,6 +349,24 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.configureWith(project);
     this.projectCanceledAt.assertValues(project.stateChangedAt());
+  }
+
+  @Test
+  public void testProjectCardStatsViewGroupIsGone_isLive() {
+    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_LIVE).build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(project);
+    this.projectCardStatsViewGroupIsGone.assertValues(false);
+  }
+
+  @Test
+  public void testProjectCardStatsViewGroupIsGone_isCanceled() {
+    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_CANCELED).build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(project);
+    this.projectCardStatsViewGroupIsGone.assertValues(true);
   }
 
   @Test
@@ -471,23 +492,5 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.configureWith(project);
     this.starredViewGroupIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testSuccessfullyFundedTextViewIsGone_projectSuccessful() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_SUCCESSFUL).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(project);
-    this.projectStateViewGroupIsGone.assertValues(false);
-  }
-
-  @Test
-  public void testSuccessfullyFundedTextViewIsGone_projectFailed() {
-    final Project project = ProjectFactory.project().toBuilder().state(Project.STATE_FAILED).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(project);
-    this.projectStateViewGroupIsGone.assertValues(false);
   }
 }

@@ -165,9 +165,11 @@ patrocinadores</string>
   <string name="Message_creator" formatted="false">Enviar mensaje al creador</string>
   <string name="No_Results" formatted="false">Sin resultados</string>
   <string name="No_comments_yet" formatted="false">No hay comentarios todavia.</string>
+  <string name="No_messages" formatted="false">No hay mensajes</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Todavía no se han publicado actualizaciones.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Todavía no hay contribuciones de amigos.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Este Live Stream no cuenta con repetición.</string>
+  <string name="No_unread_messages" formatted="false">No hay mensajes no leídos</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Tu patrocinio de un proyecto nos ayuda a hacerte recomendaciones personalizadas.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Queda poco tiempo para verlo (%{amount_of_time}).</string>
   <string name="Opens_comments" formatted="false">Abre comentarios.</string>
@@ -197,11 +199,13 @@ patrocinadores</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Patrocina tus favoritos y ve todos tus proyectos en un solo lugar.</string>
   <string name="Pledge_was_dropped" formatted="false">Contribución fue descartada.</string>
   <string name="Pledge_without_a_reward" formatted="false">Contribuir sin recompensa</string>
+  <string name="Pledged_on_date" formatted="false">&lt;b>Contribuido&lt;/b> el %{pledge_date}</string>
   <string name="Popular" formatted="false">Popular</string>
   <string name="Popular_Projects" formatted="false">Proyectos populares</string>
   <string name="Project_Cancelled" formatted="false">Proyecto cancelado.</string>
   <string name="Project_Suspended" formatted="false">Proyecto suspendido.</string>
   <string name="Project_cancelled" formatted="false">Proyecto cancelado</string>
+  <string name="Project_saved" formatted="false">Proyecto guardado.</string>
   <string name="Projects_We_Love" formatted="false">Nuestros Favoritos</string>
   <string name="Public_comment" formatted="false">Comentario público</string>
   <string name="Pursue_daring_ideas" formatted="false">Un universo de geniales ideas.</string>
@@ -218,11 +222,13 @@ patrocinadores</string>
   <string name="Replay_live_stream_with_creator_name" formatted="false">Repetir live stream de&lt;br>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Replay_past_live_stream" formatted="false">Repetir live stream pasado</string>
   <string name="Replay_past_live_streams" formatted="false">Repetir live streams pasados</string>
+  <string name="Reply_to_user_name" formatted="false">Responder a %{user_name}…</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_Surveys_one" formatted="false">Cuestionario</string>
   <string name="Reward_Surveys_two" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} cuestionarios</string>
+  <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Recompensa&lt;/b> estimada para entregarse en %{delivery_date}</string>
   <string name="Reward_selected" formatted="false">Recompensa seleccionada</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} recompensas:</string>
   <string name="Rewards_count_rewards_colon_many" formatted="false">%{rewards_count} recompensas:</string>
@@ -250,7 +256,6 @@ patrocinadores</string>
   <string name="Share_this_project_on_Twitter" formatted="false">Compartir este proyecto en Twitter.</string>
   <string name="Share_update" formatted="false">Compartir</string>
   <string name="Shipping" formatted="false">Envío</string>
-  <string name="Shipping_colon" formatted="false">Envío:</string>
   <string name="Ships_to" formatted="false">Envío a:</string>
   <string name="Shows_list_of_subcategories" formatted="false">Mostrar lista de subcategorías.</string>
   <string name="Signs_up_with_Email" formatted="false">Registro con correo electrónico.</string>
@@ -286,7 +291,7 @@ patrocinadores</string>
   <string name="Upcoming_live_streams" formatted="false">Live streams futuros</string>
   <string name="Upcoming_with_creator_name" formatted="false">Próximamente: Video de &lt;br/>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Update_pledge" formatted="false">Actualizar contribución</string>
-  <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Video disabled until the internet connection improves</string>
+  <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Video desactivado hasta se reestablezca la conexión de internet</string>
   <string name="View" formatted="false">Ver</string>
   <string name="View_your_pledge" formatted="false">Revisa tu contribución</string>
   <string name="View_your_reward" formatted="false">Mostrar recompensa</string>
@@ -295,9 +300,11 @@ patrocinadores</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">No se pudo conectar al chat de live stream.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">No se pudieron cargar los destinos de envío.\n
 Por favor inténtalo de nuevo más tarde.</string>
+  <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Te recordaremos 48 horas antes de que finalice este proyecto y recibirás un recordatorio sobre todos los proyectos que guardes de aquí en adelante. Para ver todo lo que has guardado, visita tu perfil.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Cuando guardes un proyecto, te enviaremos un recordatorio por correo electrónico 48 horas antes de que finalice</string>
   <string name="You_Launched" formatted="false">¡Tu proyecto fue publicado!</string>
   <string name="You_backed_this_project" formatted="false">Patrocinaste este proyecto.</string>
+  <string name="You_pledged_on_date" formatted="false">&lt;b>Contribuiste&lt;/b> el %{pledge_date}</string>
   <string name="You_saved_this_project" formatted="false">Uno de tus proyectos guardados.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Tu mensaje no fue enviado.</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Tus amigos todavía no han hecho contribuciones, pero en cuanto lo hagan, se verán reflejadas aquí.</string>
@@ -307,6 +314,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Your_pledge_was_canceled_or_the_creator_canceled" formatted="false">El patrocinador canceló la contribución o el creador canceló el proyecto antes de que éste llegara al plazo estipulado.</string>
   <string name="Your_pledge_was_dropped" formatted="false">Tu Contribución fue descartada.</string>
   <string name="Your_reward" formatted="false">Tu recompensa</string>
+  <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Tu recompensa&lt;/b> estimada para entregarse en %{delivery_date}</string>
   <string name="Your_shipping_destination" formatted="false">Tu destino de envío</string>
   <string name="Youre_a_backer" formatted="false">¡Eres un patrocinador!</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Estás a punto de crear una nueva cuenta de Kickstarter usando el correo electrónico associado a tu cuenta de Facebook. Por favor confírmalo antes de proceder.</string>
@@ -937,6 +945,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="minutes_two" formatted="false">minutos</string>
   <string name="minutes_zero" formatted="false">minutos</string>
   <string name="percentage_funded" formatted="false">%{percentage} financiado</string>
+  <string name="pledge_amount_pledged_on_pledge_date" formatted="false">&lt;b>%{pledge_amount}&lt;/b> contribuidos el %{pledge_date}</string>
   <string name="plus_shipping_cost" formatted="false">+%{shipping_cost}</string>
   <string name="profile_buttons_messages" formatted="false">Mensajes</string>
   <string name="profile_buttons_settings" formatted="false">Configuración</string>
@@ -1254,6 +1263,7 @@ guardados</string>
   <string name="two_factor_error_message" formatted="false">Este código no existe.</string>
   <string name="two_factor_message" formatted="false">Por favor ingresa tu código de verificación para poder continuar.</string>
   <string name="two_factor_title" formatted="false">Verificar</string>
+  <string name="unread_count_unread" formatted="false">%{unread_count} sin leer</string>
   <string name="update_comments_creator" formatted="false">Creador</string>
   <string name="update_comments_empty_state_backer_button" formatted="false">Deja un comentario</string>
   <string name="update_comments_empty_state_backer_message" formatted="false">Ay, qué pena. Sé el primer patrocinador en dejar un comentario en este proyecto.</string>

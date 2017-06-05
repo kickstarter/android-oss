@@ -7786,8 +7786,8 @@
     }
   ],
   "ab_experiments": {
-    "backer_conf_cta_color": "green",
-    "koala_alt_frontend_tracking": "experimental",
+    "backer_conf_cta_color": "gray",
+    "koala_alt_frontend_tracking": "control",
     "project_build": "control",
     "mobile_safari_banners": "hide_banner",
     "remind_me_rebrand": "control",

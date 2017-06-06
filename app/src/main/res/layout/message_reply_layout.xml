@@ -23,6 +23,8 @@
     <EditText
       android:id="@+id/message_edit_text"
       style="@style/BodySecondary"
+      android:textColorHint="@color/text_secondary"
+      android:textColor="@color/text_primary"
       android:textCursorDrawable="@null"
       android:background="@color/transparent"
       android:layout_toStartOf="@+id/send_message_button"

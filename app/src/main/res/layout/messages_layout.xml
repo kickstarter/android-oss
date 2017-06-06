@@ -50,7 +50,7 @@
           <TextView
             android:id="@+id/messages_participant_name_text_view"
             android:layout_marginBottom="@dimen/grid_new_5"
-            style="@style/BodyPrimary"
+            style="@style/FootnotePrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="by Some Creator"/>
@@ -79,7 +79,9 @@
           <Button
             android:id="@+id/view_pledge_button"
             style="@style/Widget.AppCompat.Button.Borderless"
+            android:textSize="@dimen/footnote"
             android:textColor="@color/ksr_text_green_700"
+            android:textStyle="bold"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_alignParentEnd="true"
@@ -89,7 +91,7 @@
 
           <TextView
             android:id="@+id/backing_amount_text_view"
-            style="@style/BodyPrimary"
+            style="@style/FootnotePrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/view_pledge_button"

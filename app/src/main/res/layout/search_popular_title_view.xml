@@ -12,7 +12,7 @@
   android:layout_marginTop="@dimen/grid_new_2">
 
   <TextView
-    style="@style/EditorialHeadline"
+    style="@style/Title2"
     android:fontFamily="normal"
     android:id="@+id/heading"
     android:layout_width="wrap_content"

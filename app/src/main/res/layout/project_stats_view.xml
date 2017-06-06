@@ -17,7 +17,7 @@
 
     <TextView
       android:id="@+id/backers_count"
-      style="@style/SubheadPrimaryMedium"
+      style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -39,7 +39,7 @@
 
     <TextView
       android:id="@+id/pledged"
-      style="@style/SubheadPrimaryMedium"
+      style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -62,7 +62,7 @@
     <TextView
       android:id="@+id/deadline_countdown_text_view"
       android:maxLines="1"
-      style="@style/SubheadPrimaryMedium"
+      style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 

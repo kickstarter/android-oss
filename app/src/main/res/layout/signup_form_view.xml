@@ -19,7 +19,7 @@
       android:layout_height="wrap_content"
       android:inputType="textPersonName|textCapWords"
       android:maxLines="1"
-      style="@style/SubheadPrimary"
+      style="@style/CalloutPrimary"
       android:hint="@string/signup_input_fields_full_name" />
 
   </android.support.design.widget.TextInputLayout>
@@ -36,7 +36,7 @@
       android:layout_height="wrap_content"
       android:inputType="textEmailAddress"
       android:maxLines="1"
-      style="@style/SubheadPrimary"
+      style="@style/CalloutPrimary"
       android:hint="@string/login_placeholder_email" />
 
   </android.support.design.widget.TextInputLayout>
@@ -54,7 +54,7 @@
       android:layout_marginBottom="@dimen/grid_2"
       android:inputType="textPassword"
       android:maxLines="1"
-      style="@style/SubheadPrimary"
+      style="@style/CalloutPrimary"
       android:hint="@string/signup_input_fields_password_min_characters" />
 
   </android.support.design.widget.TextInputLayout>

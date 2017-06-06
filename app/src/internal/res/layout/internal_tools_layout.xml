@@ -40,7 +40,7 @@
       <include layout="@layout/horizontal_line_1dp_view" />
 
       <TextView
-        style="@style/SubheadPrimaryMedium"
+        style="@style/CalloutPrimaryMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_3"
@@ -95,7 +95,7 @@
           android:weightSum="1" >
 
           <TextView
-            style="@style/SubheadPrimaryMedium"
+            style="@style/CalloutPrimaryMedium"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

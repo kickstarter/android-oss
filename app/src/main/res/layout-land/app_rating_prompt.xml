@@ -8,7 +8,7 @@
   android:orientation="vertical">
 
   <TextView
-    style="@style/EditorialSubheadMedium"
+    style="@style/Title3Medium"
     android:id="@+id/title_text_view"
     android:gravity="center_horizontal"
     android:layout_width="match_parent"

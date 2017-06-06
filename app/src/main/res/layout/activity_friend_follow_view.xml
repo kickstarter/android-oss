@@ -24,7 +24,7 @@
       tools:ignore="ContentDescription" />
 
     <TextView
-      style="@style/SubheadPrimary"
+      style="@style/CalloutPrimary"
       android:id="@+id/title"
       android:bufferType="spannable"
       android:layout_width="0dp"

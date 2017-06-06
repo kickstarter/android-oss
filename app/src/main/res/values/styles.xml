@@ -174,7 +174,7 @@
   <style name="ProjectActionButton" parent="Button">
     <item name="android:layout_width">fill_parent</item>
     <item name="android:layout_height">@dimen/project_action_button_height</item>
-    <item name="android:textSize">@dimen/subhead</item>
+    <item name="android:textSize">@dimen/callout</item>
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
@@ -189,7 +189,7 @@
     <item name="android:text">@string/mail_icon</item>
     <item name="android:focusable">true</item>
     <item name="android:layout_centerVertical">true</item>
-    <item name="android:textSize">@dimen/subhead</item>
+    <item name="android:textSize">@dimen/callout</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_width">@dimen/settings_icon_fixed_width</item>
     <item name="android:gravity">center</item>
@@ -226,7 +226,7 @@
     <item name="android:layout_height">@dimen/grid_8</item>
   </style>
 
-  <style name="SettingsSectionLabel" parent="SubheadPrimary">
+  <style name="SettingsSectionLabel" parent="CalloutPrimary">
     <item name="android:layout_weight">1</item>
     <item name="android:layout_width">0dp</item>
     <item name="android:layout_height">wrap_content</item>
@@ -313,6 +313,14 @@
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
+  <style name="FootnotePrimary" parent="TextPrimary">
+    <item name="android:textSize">@dimen/footnote</item>
+  </style>
+
+  <style name="FootnotePrimaryMedium" parent="FootnotePrimary">
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  </style>
+
   <style name="BodyPrimary" parent="TextPrimary">
     <item name="android:textSize">@dimen/body</item>
     <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
@@ -336,19 +344,23 @@
     <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
   </style>
 
-  <style name="SubheadPrimary" parent="TextPrimary">
-    <item name="android:textSize">@dimen/subhead</item>
-    <item name="android:lineSpacingExtra">@dimen/subhead_line_spacing_extra</item>
+  <style name="CalloutPrimary" parent="TextPrimary">
+    <item name="android:textSize">@dimen/callout</item>
+    <item name="android:lineSpacingExtra">@dimen/callout_line_spacing_extra</item>
   </style>
 
-  <style name="SubheadPrimaryMedium" parent="SubheadPrimary">
+  <style name="CalloutPrimaryMedium" parent="CalloutPrimary">
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
-  <style name="SubheadSecondaryMedium" parent="TextSecondary">
-    <item name="android:textSize">@dimen/subhead</item>
-    <item name="android:lineSpacingExtra">@dimen/subhead_line_spacing_extra</item>
+  <style name="CalloutSecondaryMedium" parent="TextSecondary">
+    <item name="android:textSize">@dimen/callout</item>
+    <item name="android:lineSpacingExtra">@dimen/callout_line_spacing_extra</item>
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  </style>
+
+  <style name="Subheadline" parent="TextPrimary">
+    <item name="android:textSize">@dimen/subheadline</item>
   </style>
 
   <style name="Headline" parent="TextPrimary">
@@ -356,17 +368,17 @@
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
-  <style name="EditorialHeadline" parent="TextPrimary">
-    <item name="android:textSize">@dimen/editorial_headline</item>
+  <style name="Title2" parent="TextPrimary">
+    <item name="android:textSize">@dimen/title_2</item>
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
-  <style name="EditorialSubhead" parent="TextPrimary">
-    <item name="android:textSize">@dimen/editorial_subhead</item>
+  <style name="Title3" parent="TextPrimary">
+    <item name="android:textSize">@dimen/title_3</item>
   </style>
 
-  <style name="EditorialSubheadMedium" parent="TextPrimary">
-    <item name="android:textSize">@dimen/editorial_subhead</item>
+  <style name="Title3Medium" parent="TextPrimary">
+    <item name="android:textSize">@dimen/title_3</item>
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 

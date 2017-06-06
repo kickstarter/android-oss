@@ -46,7 +46,7 @@ public final class TopFilterViewHolder extends KSViewHolder {
     final Context context = context();
 
     filterTextView.setText(item.params().filterString(context, environment().ksString()));
-    filterTextView.setTextAppearance(context, item.selected() ? R.style.SubheadPrimaryMedium : R.style.SubheadPrimary);
+    filterTextView.setTextAppearance(context, item.selected() ? R.style.CalloutPrimaryMedium : R.style.CalloutPrimary);
 
     filterView.setBackgroundColor(item.selected() ? filterSelectedColor : filterUnselectedColor);
   }

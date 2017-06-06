@@ -52,7 +52,7 @@
         android:orientation="vertical">
 
         <TextView
-          style="@style/SubheadPrimary"
+          style="@style/CalloutPrimary"
           android:id="@+id/backed_project"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
           android:textAllCaps="false" />
 
         <TextView
-          style="@style/SubheadPrimary"
+          style="@style/CalloutPrimary"
           android:gravity="center_horizontal"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"

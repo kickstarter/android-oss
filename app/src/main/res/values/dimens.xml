@@ -40,16 +40,18 @@
 
   <!-- Typography-->
   <dimen name="caption">12sp</dimen>
+  <dimen name="footnote">13sp</dimen>
   <dimen name="body">14sp</dimen>
-  <dimen name="subhead">16sp</dimen>
+  <dimen name="subheadline">15sp</dimen>
+  <dimen name="callout">16sp</dimen>
   <dimen name="headline">18sp</dimen>
-  <dimen name="editorial_subhead">20sp</dimen>
-  <dimen name="editorial_headline">22sp</dimen>
+  <dimen name="title_3">20sp</dimen>
+  <dimen name="title_2">22sp</dimen>
   <dimen name="title_1">28sp</dimen>
 
   <dimen name="caption_line_spacing_extra">2dp</dimen>
   <dimen name="body_line_spacing_extra">2dp</dimen>
-  <dimen name="subhead_line_spacing_extra">4dp</dimen>
+  <dimen name="callout_line_spacing_extra">4dp</dimen>
 
   <!-- Icon sizes -->
   <dimen name="icon">22sp</dimen>

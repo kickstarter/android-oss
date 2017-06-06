@@ -25,7 +25,7 @@
       android:layout_height="wrap_content"
       android:inputType="number"
       android:maxLines="1"
-      style="@style/SubheadPrimary"
+      style="@style/CalloutPrimary"
       android:hint="@string/two_factor_code_placeholder" />
 
   </android.support.design.widget.TextInputLayout>

@@ -14,40 +14,46 @@
   tools:showIn="@layout/message_threads_layout"
   tools:ignore="UnusedAttribute">
 
-  <com.kickstarter.ui.views.IconButton
-    style="@style/ToolbarIcon"
-    android:id="@+id/back_button"
-    android:focusable="true"
-    android:layout_height="@dimen/button_icon_fixed_width"
-    android:layout_width="@dimen/button_icon_fixed_width"
-    android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
-    android:text="@string/arrow_back_icon" />
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-  <LinearLayout
-    android:id="@+id/message_threads_collapsed_toolbar_title"
-    android:gravity="center"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
-    android:orientation="horizontal"
-    android:visibility="invisible">
+    <com.kickstarter.ui.views.IconButton
+      style="@style/ToolbarIcon"
+      android:id="@+id/back_button"
+      android:focusable="true"
+      android:layout_height="@dimen/button_icon_fixed_width"
+      android:layout_width="@dimen/button_icon_fixed_width"
+      android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
+      android:text="@string/arrow_back_icon" />
 
-    <TextView
-      style="@style/Subheadline"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/messages_navigation_inbox" />
+    <LinearLayout
+      android:id="@+id/message_threads_collapsed_toolbar_title"
+      android:gravity="center"
+      android:layout_centerVertical="true"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:animateLayoutChanges="true"
+      android:visibility="invisible">
 
-    <TextView
-      android:id="@+id/message_threads_toolbar_unread_count_text_view"
-      style="@style/FootnotePrimaryMedium"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/grid_new_1"
-      android:layout_marginStart="@dimen/grid_new_1"
-      android:textColor="@color/ksr_text_green_700"
-      tools:text="(3)" />
+      <TextView
+        style="@style/Subheadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/messages_navigation_inbox" />
 
-  </LinearLayout>
+      <TextView
+        android:id="@+id/message_threads_toolbar_unread_count_text_view"
+        style="@style/FootnotePrimaryMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/grid_new_1"
+        android:layout_marginStart="@dimen/grid_new_1"
+        android:textColor="@color/ksr_text_green_700"
+        tools:text="(3)" />
+
+    </LinearLayout>
+
+  </RelativeLayout>
 
 </com.kickstarter.ui.toolbars.KSToolbar>

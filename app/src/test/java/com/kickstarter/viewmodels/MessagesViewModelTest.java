@@ -41,6 +41,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new MessagesViewModel.ViewModel(environment);
+
     this.vm.outputs.backingAndProject().subscribe(this.backingAndProject);
     this.vm.outputs.backingInfoViewHidden().subscribe(this.backingInfoViewHidden);
     this.vm.outputs.messageEditTextHint().subscribe(this.messageEditTextHint);

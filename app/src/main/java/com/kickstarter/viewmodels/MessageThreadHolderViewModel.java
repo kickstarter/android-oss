@@ -33,11 +33,11 @@ public interface MessageThreadHolderViewModel {
     /** Emits when the card view should be elevated. */
     Observable<Boolean> cardViewIsElevated();
 
-    /** Emits when the date font weight is medium. */
-    Observable<Boolean> dateTextViewIsMediumWeight();
-
     /** Emits the date to display. */
     Observable<DateTime> dateDateTime();
+
+    /** Emits when the date font weight is medium. */
+    Observable<Boolean> dateTextViewIsMediumWeight();
 
     /** Emits the message body to display. */
     Observable<String> messageBodyTextViewText();
@@ -54,7 +54,10 @@ public interface MessageThreadHolderViewModel {
     /** Emits when we want to start the {@link com.kickstarter.ui.activities.MessagesActivity}. */
     Observable<MessageThread> startMessagesActivity();
 
+    /** Emits a boolean to determine if the unread count text view should be gone. */
     Observable<Boolean> unreadCountTextViewIsGone();
+
+    /** Emits the unread count text view text to be displayed. */
     Observable<String> unreadCountTextViewText();
 
     /** Emits a boolean to determine if the unread indicator should be hidden. */
@@ -92,8 +95,8 @@ public interface MessageThreadHolderViewModel {
     private final PublishSubject<Void> messageThreadCardViewClicked = PublishSubject.create();
 
     private final Observable<Boolean> cardViewIsElevated;
-    private final Observable<Boolean> dateTextViewIsMediumWeight;
     private final Observable<DateTime> dateDateTime;
+    private final Observable<Boolean> dateTextViewIsMediumWeight;
     private final Observable<String> messageBodyTextViewText;
     private final Observable<String> participantAvatarUrl;
     private final Observable<Boolean> participantNameTextViewIsMediumWeight;
@@ -116,11 +119,11 @@ public interface MessageThreadHolderViewModel {
     @Override public @NonNull Observable<Boolean> cardViewIsElevated() {
       return this.cardViewIsElevated;
     }
-    @Override public @NonNull Observable<Boolean> dateTextViewIsMediumWeight() {
-      return this.dateTextViewIsMediumWeight;
-    }
     @Override public @NonNull Observable<DateTime> dateDateTime() {
       return this.dateDateTime;
+    }
+    @Override public @NonNull Observable<Boolean> dateTextViewIsMediumWeight() {
+      return this.dateTextViewIsMediumWeight;
     }
     @Override public @NonNull Observable<String> messageBodyTextViewText() {
       return this.messageBodyTextViewText;

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.MessageThreadFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.MessageThread;
 
 import org.joda.time.DateTime;
@@ -14,19 +15,32 @@ import rx.observers.TestSubscriber;
 
 public final class MessageThreadHolderViewModelTest extends KSRobolectricTestCase {
   private MessageThreadHolderViewModel.ViewModel vm;
+  private final TestSubscriber<Boolean> cardViewIsElevated = new TestSubscriber<>();
   private final TestSubscriber<DateTime> dateDateTime = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> dateTextViewIsMediumWeight = new TestSubscriber<>();
   private final TestSubscriber<String> messageBodyTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> participantAvatarUrl = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> participantNameTextViewIsMediumWeight = new TestSubscriber<>();
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> unreadIndicatorImageViewHidden = new TestSubscriber<>();
+  private final TestSubscriber<MessageThread> startMessagesActivity = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> unreadCountTextViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> unreadCountTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> unreadIndicatorViewHidden = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment env) {
     this.vm = new MessageThreadHolderViewModel.ViewModel(env);
-    this.vm.outputs.dateDateTime().subscribe(dateDateTime);
-    this.vm.outputs.messageBodyTextViewText().subscribe(messageBodyTextViewText);
-    this.vm.outputs.participantAvatarUrl().subscribe(participantAvatarUrl);
-    this.vm.outputs.participantNameTextViewText().subscribe(participantNameTextViewText);
-    this.vm.outputs.unreadIndicatorViewHidden().subscribe(unreadIndicatorImageViewHidden);
+
+    this.vm.outputs.cardViewIsElevated().subscribe(this.cardViewIsElevated);
+    this.vm.outputs.dateDateTime().subscribe(this.dateDateTime);
+    this.vm.outputs.dateTextViewIsMediumWeight().subscribe(this.dateTextViewIsMediumWeight);
+    this.vm.outputs.messageBodyTextViewText().subscribe(this.messageBodyTextViewText);
+    this.vm.outputs.participantAvatarUrl().subscribe(this.participantAvatarUrl);
+    this.vm.outputs.participantNameTextViewIsMediumWeight().subscribe(this.participantNameTextViewIsMediumWeight);
+    this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
+    this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity);
+    this.vm.outputs.unreadCountTextViewIsGone().subscribe(this.unreadCountTextViewIsGone);
+    this.vm.outputs.unreadCountTextViewText().subscribe(this.unreadCountTextViewText);
+    this.vm.outputs.unreadIndicatorViewHidden().subscribe(this.unreadIndicatorViewHidden);
   }
 
   @Test
@@ -65,7 +79,19 @@ public final class MessageThreadHolderViewModelTest extends KSRobolectricTestCas
   }
 
   @Test
-  public void testUnreadIndicator() {
+  public void testStartMessagesActivity() {
+    final MessageThread messageThread = MessageThreadFactory.messageThread();
+    setUpEnvironment(environment());
+
+    // Configure the view model with a message thread.
+    this.vm.inputs.configureWith(messageThread);
+    this.vm.inputs.messageThreadCardViewClicked();
+
+    this.startMessagesActivity.assertValues(messageThread);
+  }
+
+  @Test
+  public void testUnreadMessageThread() {
     final MessageThread messageThread = MessageThreadFactory.messageThread();
     setUpEnvironment(environment());
 
@@ -79,12 +105,25 @@ public final class MessageThreadHolderViewModelTest extends KSRobolectricTestCas
       .unreadMessagesCount(0)
       .build();
 
-    // Configure the view model with a message thread with unreads.
+    // Configure the view model with a message thread with unread messages.
     this.vm.inputs.configureWith(messageThreadWithUnread);
-    this.unreadIndicatorImageViewHidden.assertValues(false);
 
-    // Configure the view model with a message thread with no unreads.
+    this.unreadIndicatorViewHidden.assertValues(false);
+    this.dateTextViewIsMediumWeight.assertValues(true);
+    this.participantNameTextViewIsMediumWeight.assertValues(true);
+    this.unreadCountTextViewIsGone.assertValues(false);
+    this.unreadCountTextViewText.assertValues(NumberUtils.format(messageThreadWithUnread.unreadMessagesCount()));
+
+    // Configure the view model with a message thread with no unread messages.
     this.vm.inputs.configureWith(messageThreadWithNoUnread);
-    this.unreadIndicatorImageViewHidden.assertValues(false, true);
+
+    this.unreadIndicatorViewHidden.assertValues(false, true);
+    this.dateTextViewIsMediumWeight.assertValues(true, false);
+    this.participantNameTextViewIsMediumWeight.assertValues(true, false);
+    this.unreadCountTextViewIsGone.assertValues(false, true);
+    this.unreadCountTextViewText.assertValues(
+      NumberUtils.format(messageThreadWithUnread.unreadMessagesCount()),
+      NumberUtils.format(messageThreadWithNoUnread.unreadMessagesCount())
+    );
   }
 }

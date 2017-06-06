@@ -16,6 +16,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.ui.adapters.MessageThreadsAdapter;
 import com.kickstarter.viewmodels.MessageThreadsViewModel;
 
@@ -89,7 +90,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   // todo: make inputs and outputs
   private void setOffsetChangedListener() {
     this.appBarLayout.addOnOffsetChangedListener(
-      ((appBarLayout, offset) -> {
+      (appBarLayout, offset) -> {
         if (offset == 0) {  // expanded
           this.expandedToolbarTitle.setVisibility(View.VISIBLE);
           this.collapsedToolbarTitle.setVisibility(View.INVISIBLE);
@@ -98,14 +99,14 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
           this.expandedToolbarTitle.setVisibility(View.INVISIBLE);
           this.collapsedToolbarTitle.setVisibility(View.VISIBLE);
         }
-      })
+      }
     );
   }
 
   private void setUnreadTextViewText(final @Nullable Integer unreadCount) {
     if (unreadCount == null) {
       this.unreadCountTextView.setText(this.noMessagesString);
-    } else if (unreadCount == 0 ) {
+    } else if (unreadCount == 0) {
       this.unreadCountTextView.setText(this.noUnreadMessagesString);
     } else {
       final String unreadCountString = NumberUtils.format(unreadCount);
@@ -113,7 +114,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
       this.unreadCountTextView.setText(
         this.ksString.format(this.unreadCountUnreadString, "unread_count", unreadCountString)
       );
-      this.unreadCountToolbarTextView.setText("(" + unreadCountString + ")");
+      this.unreadCountToolbarTextView.setText(StringUtils.wrapInParentheses(unreadCountString));
     }
   }
 }

@@ -22,7 +22,8 @@
         android:layout_height="wrap_content"
         android:elevation="@dimen/toolbar_elevation"
         android:background="@color/ksr_grey_100"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed">
+        app:layout_scrollFlags="scroll|exitUntilCollapsed"
+        tools:ignore="UnusedAttribute">
 
         <include layout="@layout/messages_toolbar"/>
 

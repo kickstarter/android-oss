@@ -8,7 +8,7 @@
     android:height="@dimen/grid_new_2"/>
 
   <solid
-    android:color="@color/ksr_blue"/>
+    android:color="@color/ksr_text_green_700"/>
 
   <stroke
     android:width="1.5dp"

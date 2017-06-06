@@ -74,7 +74,7 @@
           <TextView
             android:id="@+id/message_thread_unread_count_text_view"
             style="@style/CaptionPrimary"
-            android:textColor="@color/ksr_blue"
+            android:textColor="@color/ksr_text_green_700"
             android:textStyle="bold"
             android:layout_weight="0"
             android:layout_marginEnd="@dimen/grid_new_1"

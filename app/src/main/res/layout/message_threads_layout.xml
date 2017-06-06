@@ -58,7 +58,7 @@
 
             <TextView
               android:id="@+id/unread_count_text_view"
-              android:textColor="@color/ksr_blue"
+              android:textColor="@color/ksr_text_green_700"
               style="@style/BodyPrimaryMedium"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"

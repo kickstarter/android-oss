@@ -9,7 +9,6 @@
   <color name="window_background">@color/white</color>
 
   <!-- Kickstarter colors. NB: we should be transitioning to using this color palette. -->
-  <color name="ksr_blue">#003BFF</color>
   <color name="ksr_green_500">#25CB68</color>
   <color name="ksr_grey_100">#FBFBFA</color>
   <color name="ksr_grey_200">#F7F7F6</color>

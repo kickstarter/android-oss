@@ -7789,7 +7789,7 @@
     "backer_conf_cta_color": "gray",
     "koala_alt_frontend_tracking": "control",
     "project_build": "control",
-    "mobile_safari_banners": "hide_banner",
+    "mobile_safari_banners": "html_banner",
     "remind_me_rebrand": "control",
     "games_guest_pledging": "control",
     "react_project_cards": "control",

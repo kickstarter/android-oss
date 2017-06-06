@@ -117,9 +117,6 @@
   <color name="discovery_drawer_item_selected">#ffededed</color>
   <color name="discovery_drawer_header">@color/light_gray</color>
 
-  <!-- Messages colors -->
-  <color name="messages_background">@color/ksr_grey_100</color>
-
   <!-- Rewards colors -->
   <color name="reward_orange">#edaa39</color>
   <color name="reward_orange_dark">#493109</color>

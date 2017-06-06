@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
 
-import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.BooleanUtils;
@@ -33,9 +32,6 @@ public interface MessageThreadHolderViewModel {
   interface Outputs {
     /** Emits when the card view should be elevated. */
     Observable<Boolean> cardViewIsElevated();
-
-    /** Emits the color to set the date text view to. */
-    Observable<Integer> dateTextViewColorInt();
 
     /** Emits when the date font weight is medium. */
     Observable<Boolean> dateTextViewIsMediumWeight();
@@ -79,7 +75,6 @@ public interface MessageThreadHolderViewModel {
 
       this.cardViewIsElevated = hasUnreadMessages;
       this.dateDateTime = lastMessage.map(Message::createdAt);
-      this.dateTextViewColorInt = hasUnreadMessages.map(b -> b ? R.color.ksr_blue : R.color.text_primary);
       this.dateTextViewIsMediumWeight = hasUnreadMessages;
       this.messageBodyTextViewText = lastMessage.map(Message::body);
       this.participantAvatarUrl = participant.map(p -> p.avatar().medium());
@@ -97,7 +92,6 @@ public interface MessageThreadHolderViewModel {
     private final PublishSubject<Void> messageThreadCardViewClicked = PublishSubject.create();
 
     private final Observable<Boolean> cardViewIsElevated;
-    private final Observable<Integer> dateTextViewColorInt;
     private final Observable<Boolean> dateTextViewIsMediumWeight;
     private final Observable<DateTime> dateDateTime;
     private final Observable<String> messageBodyTextViewText;
@@ -121,9 +115,6 @@ public interface MessageThreadHolderViewModel {
 
     @Override public @NonNull Observable<Boolean> cardViewIsElevated() {
       return this.cardViewIsElevated;
-    }
-    @Override public @NonNull Observable<Integer> dateTextViewColorInt() {
-      return this.dateTextViewColorInt;
     }
     @Override public @NonNull Observable<Boolean> dateTextViewIsMediumWeight() {
       return this.dateTextViewIsMediumWeight;

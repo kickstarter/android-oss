@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
@@ -78,11 +77,6 @@ public final class MessageThreadViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setDateTextView);
-
-    this.viewModel.outputs.dateTextViewColorInt()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(colorInt -> this.dateTextView.setTextColor(ContextCompat.getColor(context(), colorInt)));
 
     this.viewModel.outputs.dateTextViewIsMediumWeight()
       .compose(bindToLifecycle())

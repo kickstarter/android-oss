@@ -39,7 +39,8 @@
   <dimen name="grid_new_33">198dp</dimen>
 
   <!-- Typography-->
-  <dimen name="caption">12sp</dimen>
+  <dimen name="caption_2">11sp</dimen>
+  <dimen name="caption_1">12sp</dimen>
   <dimen name="footnote">13sp</dimen>
   <dimen name="body">14sp</dimen>
   <dimen name="subheadline">15sp</dimen>

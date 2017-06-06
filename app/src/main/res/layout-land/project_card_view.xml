@@ -115,7 +115,7 @@
 
     <TextView
       android:id="@+id/friend_backing_message"
-      style="@style/CaptionPrimaryMedium"
+      style="@style/Caption1PrimaryMedium"
       android:layout_gravity="center_vertical"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />

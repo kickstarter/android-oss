@@ -50,7 +50,7 @@
     android:text="@string/login_buttons_log_in" />
 
   <TextView
-    style="@style/CaptionPrimary"
+    style="@style/Caption1Primary"
     android:id="@+id/forgot_your_password_text_view"
     android:background="@drawable/click_indicator_light_masked"
     android:layout_width="wrap_content"

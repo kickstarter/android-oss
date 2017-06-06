@@ -56,7 +56,7 @@
 
       <TextView
         android:id="@+id/project_state_subhead_text_view"
-        style="@style/CaptionPrimary"
+        style="@style/Caption1Primary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="This project was funded on" />

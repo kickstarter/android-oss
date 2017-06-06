@@ -46,7 +46,7 @@
           tools:text="Project name" />
 
         <TextView
-          style="@style/CaptionSecondary"
+          style="@style/Caption1Secondary"
           android:id="@+id/creator_name"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
         tools:ignore="ContentDescription" />
 
       <TextView
-        style="@style/CaptionPrimary"
+        style="@style/Caption1Primary"
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

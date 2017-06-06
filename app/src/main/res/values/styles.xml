@@ -295,21 +295,26 @@
     <item name="android:fontFamily">@string/font_family_sans_serif</item>
   </style>
 
-  <style name="CaptionPrimary" parent="TextPrimary">
-    <item name="android:textSize">@dimen/caption</item>
+  <style name="Caption2Primary" parent="TextPrimary">
+    <item name="android:textSize">@dimen/caption_2</item>
     <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
   </style>
 
-  <style name="CaptionPrimaryMedium" parent="CaptionPrimary">
+  <style name="Caption1Primary" parent="TextPrimary">
+    <item name="android:textSize">@dimen/caption_1</item>
+    <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
+  </style>
+
+  <style name="Caption1PrimaryMedium" parent="Caption1Primary">
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
-  <style name="CaptionSecondary" parent="TextSecondary">
-    <item name="android:textSize">@dimen/caption</item>
+  <style name="Caption1Secondary" parent="TextSecondary">
+    <item name="android:textSize">@dimen/caption_1</item>
     <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
   </style>
 
-  <style name="CaptionSecondaryMedium" parent="CaptionSecondary">
+  <style name="Caption1SecondaryMedium" parent="Caption1Secondary">
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
@@ -419,7 +424,7 @@
   <style name="ActivitySampleCard" parent="ActivitySampleCardBase" />
 
   <!-- Rewards -->
-  <style name="RewardLimitedText" parent="CaptionPrimaryMedium">
+  <style name="RewardLimitedText" parent="Caption1PrimaryMedium">
     <item name="android:textColor">@color/reward_orange_dark</item>
   </style>
 

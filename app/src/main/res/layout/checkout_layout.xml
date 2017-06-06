@@ -98,7 +98,7 @@
             android:paddingLeft="0dp"
             android:paddingRight="0dp"
             style="@style/BorderButton"
-            android:textAppearance="@style/CaptionPrimary"
+            android:textAppearance="@style/Caption1Primary"
             android:text="@string/project_checkout_android_pay_change"
             android:layout_gravity="center" />
 
@@ -128,7 +128,7 @@
           android:layout_marginTop="@dimen/grid_1"
           android:layout_marginBottom="@dimen/grid_4"
           android:background="@drawable/click_indicator_light_masked"
-          style="@style/CaptionSecondary" />
+          style="@style/Caption1Secondary" />
 
         <include layout="@layout/horizontal_line_0_5dp_view"/>
 
@@ -140,7 +140,7 @@
           android:gravity="center"
           android:layout_marginBottom="@dimen/grid_8"
           android:background="@drawable/click_indicator_dark_masked"
-          style="@style/CaptionSecondary" />
+          style="@style/Caption1Secondary" />
 
       </LinearLayout>
 

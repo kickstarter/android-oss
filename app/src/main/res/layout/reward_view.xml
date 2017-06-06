@@ -41,7 +41,7 @@
         tools:visibility="visible">
 
         <TextView
-          style="@style/CaptionSecondaryMedium"
+          style="@style/Caption1SecondaryMedium"
           android:background="@color/green"
           android:textColor="@color/white"
           android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
             tools:text="$20 AUD" />
 
           <TextView
-            style="@style/CaptionSecondary"
+            style="@style/Caption1Secondary"
             android:id="@+id/reward_usd_conversion_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

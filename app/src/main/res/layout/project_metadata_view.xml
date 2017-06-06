@@ -38,7 +38,7 @@
       android:layout_height="wrap_content" />
 
     <TextView
-      style="@style/CaptionPrimaryMedium"
+      style="@style/Caption1PrimaryMedium"
       android:includeFontPadding="false"
       android:layout_gravity="center_vertical"
       android:textColor="@color/white"
@@ -67,7 +67,7 @@
     <TextView
       android:text="@string/You_saved_this_project"
       android:includeFontPadding="false"
-      style="@style/CaptionPrimaryMedium"
+      style="@style/Caption1PrimaryMedium"
       android:layout_gravity="center_vertical"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
@@ -98,7 +98,7 @@
       android:layout_height="match_parent"
       android:gravity="center_vertical"
       android:text="@string/discovery_baseball_card_metadata_project_of_the_Day"
-      style="@style/CaptionPrimaryMedium" />
+      style="@style/Caption1PrimaryMedium" />
 
   </LinearLayout>
 
@@ -111,7 +111,7 @@
 
     <com.kickstarter.ui.views.IconTextView
       app:iconType="ss_kickstarter"
-      android:textSize="@dimen/caption"
+      android:textSize="@dimen/caption_1"
       android:textColor="@color/text_primary"
       android:gravity="center_vertical"
       android:text="@string/kickstarter_icon"
@@ -126,7 +126,7 @@
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:gravity="center_vertical"
-      style="@style/CaptionPrimaryMedium" />
+      style="@style/Caption1PrimaryMedium" />
 
   </LinearLayout>
 

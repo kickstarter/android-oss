@@ -25,7 +25,7 @@
       android:layout_marginEnd="@dimen/grid_new_4"/>
     <TextView
       android:id="@+id/funding_successful_date_text_view"
-      style="@style/CaptionSecondary"
+      style="@style/Caption1Secondary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       tools:text="Mar 31, 2015"/>
@@ -45,7 +45,7 @@
       android:layout_marginEnd="@dimen/grid_new_2"/>
     <TextView
       android:id="@+id/funding_unsuccessful_date_text_view"
-      style="@style/CaptionSecondary"
+      style="@style/Caption1Secondary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       tools:text="Mar 31, 2015"/>

@@ -69,7 +69,7 @@
           app:iconType="ss_kickstarter"
           android:id="@+id/backer_badge"
           android:layout_gravity="center_vertical"
-          android:textSize="@dimen/caption"
+          android:textSize="@dimen/caption_1"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="1dp"
@@ -177,7 +177,7 @@
 
       <TextView
         android:id="@+id/project_state_subhead_text_view"
-        style="@style/CaptionPrimary"
+        style="@style/Caption1Primary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="This project was funded on" />
@@ -196,7 +196,7 @@
       <TextView
         android:id="@+id/usd_conversion_text_view"
         android:visibility="gone"
-        style="@style/CaptionSecondary"
+        style="@style/Caption1Secondary"
         android:layout_marginTop="@dimen/grid_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -224,7 +224,7 @@
 
       <TextView
         android:id="@+id/project_social_text"
-        style="@style/CaptionPrimaryMedium"
+        style="@style/Caption1PrimaryMedium"
         android:layout_marginStart="@dimen/grid_2"
         android:layout_marginLeft="@dimen/grid_2"
         android:layout_width="wrap_content"

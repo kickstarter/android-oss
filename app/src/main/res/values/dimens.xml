@@ -34,6 +34,7 @@
   <dimen name="grid_new_6">36dp</dimen>
   <dimen name="grid_new_7">42dp</dimen>
   <dimen name="grid_new_8">48dp</dimen>
+  <dimen name="grid_new_9">54dp</dimen>
   <dimen name="grid_new_10">60dp</dimen>
   <dimen name="grid_new_20">120dp</dimen>
   <dimen name="grid_new_33">198dp</dimen>

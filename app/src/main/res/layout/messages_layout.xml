@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="@dimen/toolbar_elevation"
-        android:background="@color/ksr_grey_100"
+        android:background="@color/white"
         app:layout_scrollFlags="scroll|exitUntilCollapsed"
         tools:ignore="UnusedAttribute">
 

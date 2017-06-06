@@ -13,8 +13,6 @@ import com.kickstarter.ui.viewholders.MessageViewHolder;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-
 public interface MessageHolderViewModel {
 
   interface Inputs {
@@ -53,8 +51,11 @@ public interface MessageHolderViewModel {
 
       this.currentUser = environment.currentUser();
 
-      final Observable<Pair<Message, Boolean>> messageAndCurrentUserIsSender = this.message
-        .compose(combineLatestPair(this.currentUser.loggedInUser()))
+      final Observable<Pair<Message, Boolean>> messageAndCurrentUserIsSender = Observable.combineLatest(
+        this.message,
+        this.currentUser.loggedInUser(),
+        Pair::create
+      )
         .map(mu -> Pair.create(mu.first, mu.first.sender().id() == mu.second.id()));
 
       this.participantAvatarImageHidden = messageAndCurrentUserIsSender.map(mb -> mb.second);

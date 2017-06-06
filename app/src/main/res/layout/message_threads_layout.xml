@@ -51,8 +51,7 @@
 
             <TextView
               android:id="@+id/mailbox_text_view"
-              style="@style/EditorialHeadline"
-              android:textSize="@dimen/big_type"
+              style="@style/Title1"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               tools:text="Inbox"/>

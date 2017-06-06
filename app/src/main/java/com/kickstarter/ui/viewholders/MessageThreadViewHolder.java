@@ -52,7 +52,7 @@ public final class MessageThreadViewHolder extends KSViewHolder {
   @BindDrawable(R.drawable.click_indicator_light) Drawable clickIndicatorLightDrawable;
   @BindDrawable(R.drawable.message_thread_click_indicator) Drawable messageThreadClickIndicator;
 
-  @BindString(R.string.font_family_medium) String fontFamilyMediumString;
+  @BindString(R.string.font_family_sans_serif_medium) String fontFamilyMediumString;
 
   private KSString ksString;
 

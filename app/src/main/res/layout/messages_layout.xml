@@ -39,6 +39,7 @@
           <TextView
             android:id="@+id/messages_project_name_text_view"
             style="@style/Headline"
+            android:fontFamily="@string/font_family_maison_neue_book"
             android:ellipsize="end"
             android:gravity="center"
             android:layout_marginBottom="@dimen/grid_new_2"

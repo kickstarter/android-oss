@@ -1,6 +1,5 @@
 package com.kickstarter.ui.viewholders;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -46,13 +45,13 @@ public final class MessageThreadViewHolder extends KSViewHolder {
   protected @Bind(R.id.participant_name_text_view) TextView participantNameTextView;
   protected @Bind(R.id.unread_indicator_image_view) ImageView unreadIndicatorImageView;
 
-  @BindDimen(R.dimen.card_elevation) int cardElevationDimen;
-  @BindDimen(R.dimen.card_no_elevation) int cardNoElevationDimen;
+  protected @BindDimen(R.dimen.card_elevation) int cardElevationDimen;
+  protected @BindDimen(R.dimen.card_no_elevation) int cardNoElevationDimen;
 
-  @BindDrawable(R.drawable.click_indicator_light) Drawable clickIndicatorLightDrawable;
-  @BindDrawable(R.drawable.message_thread_click_indicator) Drawable messageThreadClickIndicator;
+  protected @BindDrawable(R.drawable.click_indicator_light) Drawable clickIndicatorLightDrawable;
+  protected @BindDrawable(R.drawable.message_thread_click_indicator) Drawable messageThreadClickIndicator;
 
-  @BindString(R.string.font_family_sans_serif_medium) String fontFamilyMediumString;
+  protected @BindString(R.string.font_family_sans_serif_medium) String fontFamilyMediumString;
 
   private KSString ksString;
 
@@ -154,11 +153,10 @@ public final class MessageThreadViewHolder extends KSViewHolder {
   }
 
   private void startMessagesActivity(final @NonNull MessageThread messageThread) {
-    final Context context = context();
-    final Intent intent = new Intent(context, MessagesActivity.class)
+    final Intent intent = new Intent(context(), MessagesActivity.class)
       .putExtra(IntentKey.MESSAGE_THREAD, messageThread);
 
-    context.startActivity(intent);
+    context().startActivity(intent);
   }
 
   private void setParticipantAvatarImageView(final @NonNull String avatarUrl) {

@@ -23,13 +23,17 @@ import rx.observers.TestSubscriber;
 
 public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
   private MessageThreadsViewModel.ViewModel vm;
-  private TestSubscriber<List<MessageThread>> messageThreads = new TestSubscriber<>();
-  private TestSubscriber<Integer> unreadCountTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> hasNoMessages = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> hasNoUnreadMessages = new TestSubscriber<>();
+  private final TestSubscriber<List<MessageThread>> messageThreads = new TestSubscriber<>();
+  private final TestSubscriber<Integer> unreadMessagesCount = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment env) {
     this.vm = new MessageThreadsViewModel.ViewModel(env);
+    this.vm.outputs.hasNoMessages().subscribe(this.hasNoMessages);
+    this.vm.outputs.hasNoUnreadMessages().subscribe(this.hasNoUnreadMessages);
     this.vm.outputs.messageThreads().subscribe(this.messageThreads);
-    this.vm.outputs.unreadMessagesCount().subscribe(unreadCountTextViewText);
+    this.vm.outputs.unreadMessagesCount().subscribe(this.unreadMessagesCount);
   }
 
   @Test
@@ -63,6 +67,39 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
     // Unread count text view is shown.
-    this.unreadCountTextViewText.assertValues(user.unreadMessagesCount());
+    this.unreadMessagesCount.assertValues(user.unreadMessagesCount());
+    this.hasNoUnreadMessages.assertValues(false);
+  }
+
+  @Test
+  public void testNoMessages() {
+    final User user = UserFactory.user().toBuilder().unreadMessagesCount(null).build();
+
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override public @NonNull Observable<User> fetchCurrentUser() {
+        return Observable.just(user);
+      }
+    };
+
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+
+    this.hasNoMessages.assertValues(true);
+    this.unreadMessagesCount.assertNoValues();
+  }
+
+  @Test
+  public void testNoUnreadMessages() {
+    final User user = UserFactory.user().toBuilder().unreadMessagesCount(0).build();
+
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override public @NonNull Observable<User> fetchCurrentUser() {
+        return Observable.just(user);
+      }
+    };
+
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+
+    this.hasNoUnreadMessages.assertValues(true);
+    this.unreadMessagesCount.assertValues(0);
   }
 }

@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -64,6 +65,16 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
 
     setOffsetChangedListener();
 
+    this.viewModel.outputs.hasNoMessages()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.unreadCountTextView.setText(this.noMessagesString));
+
+    this.viewModel.outputs.hasNoUnreadMessages()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.unreadCountTextView.setText(this.noUnreadMessagesString));
+
     this.viewModel.outputs.messageThreads()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -103,18 +114,11 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     );
   }
 
-  private void setUnreadTextViewText(final @Nullable Integer unreadCount) {
-    if (unreadCount == null) {
-      this.unreadCountTextView.setText(this.noMessagesString);
-    } else if (unreadCount == 0) {
-      this.unreadCountTextView.setText(this.noUnreadMessagesString);
-    } else {
-      final String unreadCountString = NumberUtils.format(unreadCount);
-
-      this.unreadCountTextView.setText(
-        this.ksString.format(this.unreadCountUnreadString, "unread_count", unreadCountString)
-      );
-      this.unreadCountToolbarTextView.setText(StringUtils.wrapInParentheses(unreadCountString));
-    }
+  private void setUnreadTextViewText(final @NonNull Integer unreadCount) {
+    final String unreadCountString = NumberUtils.format(unreadCount);
+    this.unreadCountTextView.setText(
+      this.ksString.format(this.unreadCountUnreadString, "unread_count", unreadCountString)
+    );
+    this.unreadCountToolbarTextView.setText(StringUtils.wrapInParentheses(unreadCountString));
   }
 }

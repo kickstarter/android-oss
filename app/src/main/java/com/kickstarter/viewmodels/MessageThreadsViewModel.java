@@ -6,6 +6,8 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.IntegerUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
@@ -30,6 +32,12 @@ public interface MessageThreadsViewModel {
   }
 
   interface Outputs {
+    /** Emits a boolean to determine if there are no messages. */
+    Observable<Boolean> hasNoMessages();
+
+    /** Emits a boolean to determine if there are no unread messages. */
+    Observable<Boolean> hasNoUnreadMessages();
+
     /** Emits a boolean indicating whether message threads are being fetched from the API. */
     Observable<Boolean> isFetchingMessageThreads();
 
@@ -66,21 +74,22 @@ public interface MessageThreadsViewModel {
 
       this.isFetchingMessageThreads = paginator.isFetching();
       this.messageThreads = paginator.paginatedData();
-      this.startMessagesActivity = this.messageThreadClicked;
 
       final Observable<Integer> unreadMessagesCount = this.currentUser.loggedInUser()
         .map(User::unreadMessagesCount);
 
-      this.unreadMessagesCount = unreadMessagesCount;
+      this.hasNoMessages = unreadMessagesCount.map(ObjectUtils::isNull);
+      this.hasNoUnreadMessages = unreadMessagesCount.map(IntegerUtils::isZero);
+      this.unreadMessagesCount = unreadMessagesCount.filter(ObjectUtils::isNotNull);
     }
 
-    private final PublishSubject<Void> messageThreadClicked = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Void> refresh = PublishSubject.create();
 
+    private final Observable<Boolean> hasNoMessages;
+    private final Observable<Boolean> hasNoUnreadMessages;
     private final Observable<Boolean> isFetchingMessageThreads;
     private final Observable<List<MessageThread>> messageThreads;
-    private final Observable<Void> startMessagesActivity;
     private final Observable<Integer> unreadMessagesCount;
 
     public final Inputs inputs = this;
@@ -93,6 +102,12 @@ public interface MessageThreadsViewModel {
       this.refresh.onNext(null);
     }
 
+    @Override public @NonNull Observable<Boolean> hasNoMessages() {
+      return this.hasNoMessages;
+    }
+    @Override public @NonNull Observable<Boolean> hasNoUnreadMessages() {
+      return this.hasNoUnreadMessages;
+    }
     @Override public @NonNull Observable<Boolean> isFetchingMessageThreads() {
       return this.isFetchingMessageThreads;
     }

@@ -12,7 +12,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-      style="@style/SubheadPrimaryMedium"
+      style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_1"
@@ -27,7 +27,7 @@
       tools:text="201506261815" />
 
     <TextView
-      style="@style/SubheadPrimaryMedium"
+      style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_3"
@@ -42,7 +42,7 @@
       tools:text="The changelog" />
 
     <TextView
-      style="@style/SubheadPrimaryMedium"
+      style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_3"

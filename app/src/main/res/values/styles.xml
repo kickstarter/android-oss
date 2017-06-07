@@ -124,7 +124,7 @@
   <style name="RoundedButtonBase" parent="Button">
     <item name="android:paddingLeft">@dimen/grid_5</item>
     <item name="android:paddingRight">@dimen/grid_5</item>
-    <item name="android:fontFamily">@string/font_family_medium</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
   <style name="RoundedButton" parent="Button" />
@@ -174,8 +174,8 @@
   <style name="ProjectActionButton" parent="Button">
     <item name="android:layout_width">fill_parent</item>
     <item name="android:layout_height">@dimen/project_action_button_height</item>
-    <item name="android:textSize">@dimen/subhead</item>
-    <item name="android:fontFamily">@string/font_family_medium</item>
+    <item name="android:textSize">@dimen/callout</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
   <style name="ActivitySampleSeeAllButton" parent="BorderButton">
@@ -189,7 +189,7 @@
     <item name="android:text">@string/mail_icon</item>
     <item name="android:focusable">true</item>
     <item name="android:layout_centerVertical">true</item>
-    <item name="android:textSize">@dimen/subhead</item>
+    <item name="android:textSize">@dimen/callout</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_width">@dimen/settings_icon_fixed_width</item>
     <item name="android:gravity">center</item>
@@ -226,7 +226,7 @@
     <item name="android:layout_height">@dimen/grid_8</item>
   </style>
 
-  <style name="SettingsSectionLabel" parent="SubheadPrimary">
+  <style name="SettingsSectionLabel" parent="CalloutPrimary">
     <item name="android:layout_weight">1</item>
     <item name="android:layout_width">0dp</item>
     <item name="android:layout_height">wrap_content</item>
@@ -239,6 +239,7 @@
     <item name="android:layout_height">wrap_content</item>
   </style>
 
+  <!-- Toolbars -->
   <style name="ToolbarBase" parent="Base.Widget.AppCompat.Toolbar">
     <item name="android:background">@color/primary</item>
     <item name="android:foregroundGravity">center_vertical</item>
@@ -279,37 +280,54 @@
   <style name="TextPrimary">
     <item name="android:textColor">@color/text_primary</item>
     <item name="android:textStyle">normal</item>
-    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif</item>
   </style>
   
   <style name="TextSecondary">
     <item name="android:textColor">@color/text_secondary</item>
     <item name="android:textStyle">normal</item>
-    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif</item>
   </style>
 
   <style name="TextWhite">
     <item name="android:textColor">@color/white</item>
     <item name="android:textStyle">normal</item>
-    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif</item>
   </style>
 
-  <style name="CaptionPrimary" parent="TextPrimary">
-    <item name="android:textSize">@dimen/caption</item>
+  <style name="Caption2Primary" parent="TextPrimary">
+    <item name="android:textSize">@dimen/caption_2</item>
     <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
   </style>
 
-  <style name="CaptionPrimaryMedium" parent="CaptionPrimary">
-    <item name="android:fontFamily">@string/font_family_medium</item>
-  </style>
-
-  <style name="CaptionSecondary" parent="TextSecondary">
-    <item name="android:textSize">@dimen/caption</item>
+  <style name="Caption1Primary" parent="TextPrimary">
+    <item name="android:textSize">@dimen/caption_1</item>
     <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
   </style>
 
-  <style name="CaptionSecondaryMedium" parent="CaptionSecondary">
-    <item name="android:fontFamily">@string/font_family_medium</item>
+  <style name="Caption1PrimaryMedium" parent="Caption1Primary">
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  </style>
+
+  <style name="Caption1Secondary" parent="TextSecondary">
+    <item name="android:textSize">@dimen/caption_1</item>
+    <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
+  </style>
+
+  <style name="Caption1SecondaryMedium" parent="Caption1Secondary">
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  </style>
+
+  <style name="FootnotePrimary" parent="TextPrimary">
+    <item name="android:textSize">@dimen/footnote</item>
+  </style>
+
+  <style name="FootnotePrimaryMedium" parent="FootnotePrimary">
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  </style>
+
+  <style name="FootnoteSecondary" parent="TextSecondary">
+    <item name="android:textSize">@dimen/footnote</item>
   </style>
 
   <style name="BodyPrimary" parent="TextPrimary">
@@ -318,7 +336,7 @@
   </style>
 
   <style name="BodyPrimaryMedium" parent="BodyPrimary">
-    <item name="android:fontFamily">@string/font_family_medium</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
   
   <style name="BodySecondary" parent="TextSecondary">
@@ -327,7 +345,7 @@
   </style>
 
   <style name="BodySecondaryMedium" parent="BodySecondary">
-    <item name="android:fontFamily">@string/font_family_medium</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
   <style name="BodyWhite" parent="TextWhite">
@@ -335,38 +353,47 @@
     <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
   </style>
 
-  <style name="SubheadPrimary" parent="TextPrimary">
-    <item name="android:textSize">@dimen/subhead</item>
-    <item name="android:lineSpacingExtra">@dimen/subhead_line_spacing_extra</item>
+  <style name="CalloutPrimary" parent="TextPrimary">
+    <item name="android:textSize">@dimen/callout</item>
+    <item name="android:lineSpacingExtra">@dimen/callout_line_spacing_extra</item>
   </style>
 
-  <style name="SubheadPrimaryMedium" parent="SubheadPrimary">
-    <item name="android:fontFamily">@string/font_family_medium</item>
+  <style name="CalloutPrimaryMedium" parent="CalloutPrimary">
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
-  <style name="SubheadSecondaryMedium" parent="TextSecondary">
-    <item name="android:textSize">@dimen/subhead</item>
-    <item name="android:lineSpacingExtra">@dimen/subhead_line_spacing_extra</item>
-    <item name="android:fontFamily">@string/font_family_medium</item>
+  <style name="CalloutSecondaryMedium" parent="TextSecondary">
+    <item name="android:textSize">@dimen/callout</item>
+    <item name="android:lineSpacingExtra">@dimen/callout_line_spacing_extra</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  </style>
+
+  <style name="Subheadline" parent="TextPrimary">
+    <item name="android:textSize">@dimen/subheadline</item>
   </style>
 
   <style name="Headline" parent="TextPrimary">
     <item name="android:textSize">@dimen/headline</item>
-    <item name="android:fontFamily">@string/font_family_medium</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
-  <style name="EditorialHeadline" parent="TextPrimary">
-    <item name="android:textSize">@dimen/editorial_headline</item>
-    <item name="android:fontFamily">@string/font_family_medium</item>
+  <style name="Title2" parent="TextPrimary">
+    <item name="android:textSize">@dimen/title_2</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
-  <style name="EditorialSubhead" parent="TextPrimary">
-    <item name="android:textSize">@dimen/editorial_subhead</item>
+  <style name="Title3" parent="TextPrimary">
+    <item name="android:textSize">@dimen/title_3</item>
   </style>
 
-  <style name="EditorialSubheadMedium" parent="TextPrimary">
-    <item name="android:textSize">@dimen/editorial_subhead</item>
-    <item name="android:fontFamily">@string/font_family_medium</item>
+  <style name="Title3Medium" parent="TextPrimary">
+    <item name="android:textSize">@dimen/title_3</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  </style>
+
+  <style name="Title1" parent="TextPrimary">
+    <item name="android:textSize">@dimen/title_1</item>
+    <item name="android:fontFamily">@string/font_family_maison_neue_book</item>
   </style>
 
   <!-- Cards -->
@@ -401,7 +428,7 @@
   <style name="ActivitySampleCard" parent="ActivitySampleCardBase" />
 
   <!-- Rewards -->
-  <style name="RewardLimitedText" parent="CaptionPrimaryMedium">
+  <style name="RewardLimitedText" parent="Caption1PrimaryMedium">
     <item name="android:textColor">@color/reward_orange_dark</item>
   </style>
 

@@ -39,7 +39,7 @@
       android:layout_toRightOf="@id/avatar"
       android:layout_toEndOf="@id/avatar"
       android:paddingTop="@dimen/grid_1"
-      style="@style/CaptionSecondary"
+      style="@style/Caption1Secondary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -53,7 +53,7 @@
       android:layout_toRightOf="@id/avatar"
       android:layout_toEndOf="@id/avatar"
       android:ellipsize="marquee"
-      style="@style/SubheadPrimaryMedium"
+      style="@style/CalloutPrimaryMedium"
       android:layout_below="@id/created_by"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
         android:layout_alignParentLeft="true"
         android:gravity="center_vertical"
         android:textColor="@color/green_state_pressed_color"
-        android:textSize="@dimen/subhead"
+        android:textSize="@dimen/callout"
         android:text="@string/project_menu_buttons_campaign" />
 
       <com.kickstarter.ui.views.IconButton
@@ -125,7 +125,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:textColor="@color/green_state_pressed_color"
-        android:textSize="@dimen/subhead"
+        android:textSize="@dimen/callout"
         android:text="@string/project_menu_buttons_updates" />
 
       <TextView
@@ -163,7 +163,7 @@
         android:layout_alignParentLeft="true"
         android:gravity="center_vertical"
         android:textColor="@color/green_state_pressed_color"
-        android:textSize="@dimen/subhead"
+        android:textSize="@dimen/callout"
         android:text="@string/project_menu_buttons_comments" />
 
       <TextView
@@ -182,7 +182,7 @@
 
   <TextView
     android:id="@+id/project_disclaimer_text_view"
-    style="@style/CaptionSecondary"
+    style="@style/Caption1Secondary"
     android:paddingRight="@dimen/project_padding_x"
     android:paddingLeft="@dimen/project_padding_x"
     android:paddingStart="@dimen/project_padding_x"

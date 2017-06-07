@@ -4,9 +4,20 @@
   xmlns:tools="http://schemas.android.com/tools"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:id="@+id/message_view"
+  android:clipToPadding="false"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
+
+  <ImageView
+    android:id="@+id/sender_avatar_image_view"
+    android:layout_width="@dimen/grid_new_4"
+    android:layout_height="@dimen/grid_new_4"
+    android:layout_marginStart="@dimen/grid_new_2"
+    android:layout_marginTop="@dimen/grid_new_2"
+    android:elevation="2dp"
+    android:background="@drawable/circle_background"
+    tools:ignore="ContentDescription,UnusedAttribute"/>
 
   <android.support.v7.widget.CardView
     android:id="@+id/message_body_card_view"
@@ -14,8 +25,6 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/grid_new_4"
     android:layout_marginEnd="@dimen/grid_new_4"
-    android:layout_marginLeft="@dimen/grid_new_4"
-    android:layout_marginRight="@dimen/grid_new_4"
     android:layout_marginTop="@dimen/grid_new_4"
     android:layout_marginBottom="@dimen/grid_new_1"
     app:cardElevation="0dp">
@@ -30,16 +39,5 @@
       tools:text="Hey there!"/>
 
   </android.support.v7.widget.CardView>
-
-  <ImageView
-    android:id="@+id/sender_avatar_image_view"
-    android:layout_marginLeft="@dimen/grid_new_2"
-    android:layout_marginStart="@dimen/grid_new_2"
-    android:layout_marginTop="@dimen/grid_new_2"
-    android:layout_width="@dimen/grid_new_4"
-    android:layout_height="@dimen/grid_new_4"
-    android:translationZ="3dp"
-    tools:background="@color/blue"
-    tools:ignore="ContentDescription,UnusedAttribute"/>
 
 </RelativeLayout>

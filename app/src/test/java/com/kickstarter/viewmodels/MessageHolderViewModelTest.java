@@ -23,6 +23,7 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Integer> messageBodyTextViewBackgroundColorInt = new TestSubscriber<>();
   private final TestSubscriber<String> messageBodyTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Integer> messageBodyTextViewTextColorInt = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> shouldSetMessageBodyPaddingForSender = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new MessageHolderViewModel.ViewModel(environment);
@@ -32,6 +33,7 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.messageBodyTextViewBackgroundColorInt().subscribe(this.messageBodyTextViewBackgroundColorInt);
     this.vm.outputs.messageBodyTextViewText().subscribe(this.messageBodyTextViewText);
     this.vm.outputs.messageBodyTextViewTextColorInt().subscribe(this.messageBodyTextViewTextColorInt);
+    this.vm.outputs.shouldSetMessageBodyTextViewPaddingForSender().subscribe(this.shouldSetMessageBodyPaddingForSender);
   }
 
   @Test
@@ -102,6 +104,7 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.configureWith(message);
 
     this.messageBodyTextViewAlignParentEnd.assertValues(false);
+    this.shouldSetMessageBodyPaddingForSender.assertValues(false);
     this.messageBodyTextViewBackgroundColorInt.assertValues(R.color.ksr_grey_400);
     this.messageBodyTextViewTextColorInt.assertValues(R.color.ksr_text_navy_700);
   }
@@ -123,6 +126,7 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.configureWith(message);
 
     this.messageBodyTextViewAlignParentEnd.assertValues(true);
+    this.shouldSetMessageBodyPaddingForSender.assertValues(true);
     this.messageBodyTextViewBackgroundColorInt.assertValues(R.color.black);
     this.messageBodyTextViewTextColorInt.assertValues(R.color.white);
   }

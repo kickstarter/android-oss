@@ -37,7 +37,7 @@
           tools:ignore="ContentDescription" />
 
         <TextView
-          style="@style/EditorialHeadline"
+          style="@style/Title2"
           android:id="@+id/user_name_text_view"
           android:gravity="center_horizontal"
           android:layout_width="match_parent"
@@ -55,7 +55,7 @@
           android:orientation="horizontal">
 
           <TextView
-            style="@style/SubheadPrimary"
+            style="@style/CalloutPrimary"
             android:id="@+id/created_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
             android:textColor="@color/text_secondary" />
 
           <TextView
-            style="@style/SubheadPrimary"
+            style="@style/CalloutPrimary"
             android:id="@+id/created_count_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
             android:layout_marginTop="3dp"/>
 
           <TextView
-            style="@style/SubheadPrimary"
+            style="@style/CalloutPrimary"
             android:id="@+id/backed_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
             android:textColor="@color/text_secondary" />
 
           <TextView
-            style="@style/SubheadPrimary"
+            style="@style/CalloutPrimary"
             android:id="@+id/backed_count_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

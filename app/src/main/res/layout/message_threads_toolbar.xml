@@ -3,35 +3,56 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  tools:showIn="@layout/message_threads_layout"
-  style="@style/Toolbar"
-  android:elevation="0dp"
   android:id="@+id/message_threads_toolbar"
-  android:background="@color/white"
+  android:elevation="0dp"
+  android:layout_height="wrap_content"
+  android:layout_width="match_parent"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
+  app:layout_collapseMode="pin"
+  app:layout_scrollFlags="enterAlways"
+  tools:showIn="@layout/message_threads_layout"
   tools:ignore="UnusedAttribute">
 
   <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:layout_height="match_parent">
 
     <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
       android:id="@+id/back_button"
       android:focusable="true"
+      android:layout_height="@dimen/button_icon_fixed_width"
+      android:layout_width="@dimen/button_icon_fixed_width"
       android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
       android:text="@string/arrow_back_icon" />
 
-    <com.kickstarter.ui.views.IconButton
-      style="@style/ToolbarIcon"
-      android:id="@+id/search_messages_icon_button"
-      android:focusable="true"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
-      android:text="@string/search_icon" />
+    <LinearLayout
+      android:id="@+id/message_threads_collapsed_toolbar_title"
+      android:gravity="center"
+      android:layout_centerVertical="true"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:animateLayoutChanges="true"
+      android:visibility="invisible">
+
+      <TextView
+        style="@style/Subheadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/messages_navigation_inbox" />
+
+      <TextView
+        android:id="@+id/message_threads_toolbar_unread_count_text_view"
+        style="@style/FootnotePrimaryMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/grid_new_1"
+        android:layout_marginStart="@dimen/grid_new_1"
+        android:textColor="@color/ksr_text_green_700"
+        tools:text="(3)" />
+
+    </LinearLayout>
 
   </RelativeLayout>
 

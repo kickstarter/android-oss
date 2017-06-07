@@ -25,7 +25,7 @@
 
     <TextView
       android:id="@+id/survey_title"
-      style="@style/SubheadPrimary"
+      style="@style/CalloutPrimary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignTop="@id/survey_avatar_image"

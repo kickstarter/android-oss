@@ -14,7 +14,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-      style="@style/SubheadPrimaryMedium"
+      style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/debug_push_notifications_device_registration" />
@@ -45,7 +45,7 @@
       layout="@layout/horizontal_line_1dp_view" />
 
     <TextView
-      style="@style/SubheadPrimaryMedium"
+      style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_2"

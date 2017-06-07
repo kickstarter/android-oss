@@ -32,18 +32,21 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private MessagesViewModel.ViewModel vm;
   private final TestSubscriber<Pair<Backing, Project>> backingAndProject = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backingInfoViewHidden = new TestSubscriber<>();
-  private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<String> messageEditTextHint = new TestSubscriber<>();
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
+  private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
   private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new MessagesViewModel.ViewModel(environment);
+
     this.vm.outputs.backingAndProject().subscribe(this.backingAndProject);
     this.vm.outputs.backingInfoViewHidden().subscribe(this.backingInfoViewHidden);
-    this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
+    this.vm.outputs.messageEditTextHint().subscribe(this.messageEditTextHint);
     this.vm.outputs.messages().subscribe(this.messages);
+    this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
@@ -94,6 +97,17 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     this.participantNameTextViewText.assertValues(messageThread.project().creator().name());
     this.projectNameTextViewText.assertValues(messageThread.project().name());
+  }
+
+  @Test
+  public void testMessageEditTextHint() {
+    final MessageThread messageThread = MessageThreadFactory.messageThread();
+    setUpEnvironment(environment());
+
+    // Start the view model with a message thread.
+    this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
+
+    this.messageEditTextHint.assertValues(messageThread.project().creator().name());
   }
 
   @Test

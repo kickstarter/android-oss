@@ -41,7 +41,7 @@
         android:layout_height="wrap_content" />
 
       <TextView
-        style="@style/CaptionSecondary"
+        style="@style/Caption1Secondary"
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
         android:text="@string/signup_button_email" />
 
       <com.kickstarter.ui.views.HtmlTextView
-        style="@style/CaptionSecondary"
+        style="@style/Caption1Secondary"
         android:id="@+id/disclaimer_text_view"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="wrap_content"

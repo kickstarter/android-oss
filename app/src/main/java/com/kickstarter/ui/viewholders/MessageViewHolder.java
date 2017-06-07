@@ -18,6 +18,7 @@ import com.kickstarter.viewmodels.MessageHolderViewModel;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
+import butterknife.BindDimen;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -28,6 +29,9 @@ public final class MessageViewHolder extends KSViewHolder {
   protected @Bind(R.id.message_body_card_view) CardView messageBodyCardView;
   protected @Bind(R.id.message_body_text_view) TextView messageBodyTextView;
   protected @Bind(R.id.sender_avatar_image_view) ImageView participantAvatarImageView;
+
+  protected @BindDimen(R.dimen.grid_new_2) int gridNew2Dimen;
+  protected @BindDimen(R.dimen.grid_new_3) int gridNew3Dimen;
 
   public MessageViewHolder(final @NonNull View view) {
     super(view);
@@ -69,6 +73,11 @@ public final class MessageViewHolder extends KSViewHolder {
       .subscribe(colorInt ->
         this.messageBodyTextView.setTextColor(ContextCompat.getColor(this.context(), colorInt))
       );
+
+    this.viewModel.outputs.shouldSetMessageBodyTextViewPaddingForSender()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setMessageBodyTextViewPadding);
   }
 
   @Override
@@ -82,6 +91,14 @@ public final class MessageViewHolder extends KSViewHolder {
     layoutParams.addRule(alignParentEnd ? RelativeLayout.ALIGN_PARENT_END : RelativeLayout.ALIGN_PARENT_START);
     layoutParams.addRule(alignParentEnd ? RelativeLayout.ALIGN_PARENT_RIGHT : RelativeLayout.ALIGN_PARENT_LEFT);
     this.messageBodyCardView.setLayoutParams(layoutParams);
+  }
+
+  private void setMessageBodyTextViewPadding(final boolean isSender) {
+    if (isSender) {
+      this.messageBodyTextView.setPadding(gridNew2Dimen, gridNew2Dimen, gridNew2Dimen, gridNew2Dimen);
+    } else {
+      this.messageBodyTextView.setPadding(gridNew3Dimen, gridNew3Dimen, gridNew3Dimen, gridNew2Dimen);
+    }
   }
 
   private void setParticipantAvatarImageView(final @NonNull String avatarUrl) {

@@ -61,10 +61,10 @@ public final class ChildFilterViewHolder extends KSViewHolder {
       filterTextView.setText(item.params().filterString(context, ksString));
     }
     if (item.selected()) {
-      filterTextView.setTextAppearance(context, R.style.SubheadPrimaryMedium);
+      filterTextView.setTextAppearance(context, R.style.CalloutPrimaryMedium);
       filterTextView.setTextColor(blackColor);
     } else {
-      filterTextView.setTextAppearance(context, R.style.SubheadPrimary);
+      filterTextView.setTextAppearance(context, R.style.CalloutPrimary);
       filterTextView.setTextColor(darkGrayColor);
     }
 

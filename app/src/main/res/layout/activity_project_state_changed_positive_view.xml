@@ -32,7 +32,7 @@
       android:layout_weight="1">
 
       <TextView
-        style="@style/EditorialHeadline"
+        style="@style/Title2"
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
         android:orientation="vertical">
 
         <TextView
-          style="@style/SubheadPrimaryMedium"
+          style="@style/CalloutPrimaryMedium"
           android:id="@+id/left_stat_first"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
           tools:text="Left Stat First" />
 
         <TextView
-          style="@style/SubheadPrimaryMedium"
+          style="@style/CalloutPrimaryMedium"
           android:id="@+id/left_stat_second"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
         android:orientation="vertical">
 
         <TextView
-          style="@style/SubheadPrimaryMedium"
+          style="@style/CalloutPrimaryMedium"
           android:id="@+id/right_stat_first"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
           tools:text="Right Stat First" />
 
         <TextView
-          style="@style/SubheadPrimaryMedium"
+          style="@style/CalloutPrimaryMedium"
           android:id="@+id/right_stat_second"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

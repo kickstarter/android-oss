@@ -7,7 +7,6 @@ import com.kickstarter.factories.MessageThreadFactory;
 import com.kickstarter.factories.MessageThreadsEnvelopeFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
@@ -24,15 +23,17 @@ import rx.observers.TestSubscriber;
 
 public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
   private MessageThreadsViewModel.ViewModel vm;
-  private TestSubscriber<List<MessageThread>> messageThreads = new TestSubscriber<>();
-  private TestSubscriber<Boolean> unreadCountTextViewHidden = new TestSubscriber<>();
-  private TestSubscriber<String> unreadCountTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> hasNoMessages = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> hasNoUnreadMessages = new TestSubscriber<>();
+  private final TestSubscriber<List<MessageThread>> messageThreads = new TestSubscriber<>();
+  private final TestSubscriber<Integer> unreadMessagesCount = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment env) {
     this.vm = new MessageThreadsViewModel.ViewModel(env);
+    this.vm.outputs.hasNoMessages().subscribe(this.hasNoMessages);
+    this.vm.outputs.hasNoUnreadMessages().subscribe(this.hasNoUnreadMessages);
     this.vm.outputs.messageThreads().subscribe(this.messageThreads);
-    this.vm.outputs.unreadCountTextViewHidden().subscribe(unreadCountTextViewHidden);
-    this.vm.outputs.unreadCountTextViewText().subscribe(unreadCountTextViewText);
+    this.vm.outputs.unreadMessagesCount().subscribe(this.unreadMessagesCount);
   }
 
   @Test
@@ -54,24 +55,7 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testUnreadCountTextView_Hidden() {
-    final User user = UserFactory.user().toBuilder().unreadMessagesCount(0).build();
-
-    final ApiClientType apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<User> fetchCurrentUser() {
-        return Observable.just(user);
-      }
-    };
-
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-
-    // Unread count text view is hidden.
-    this.unreadCountTextViewHidden.assertValues(true);
-    this.unreadCountTextViewText.assertValues(NumberUtils.format(user.unreadMessagesCount()));
-  }
-
-  @Test
-  public void testUnreadCountTextView_NotHidden() {
+  public void testUnreadCountTextView() {
     final User user = UserFactory.user().toBuilder().unreadMessagesCount(3).build();
 
     final ApiClientType apiClient = new MockApiClient() {
@@ -83,7 +67,39 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
     // Unread count text view is shown.
-    this.unreadCountTextViewHidden.assertValues(false);
-    this.unreadCountTextViewText.assertValues(NumberUtils.format(user.unreadMessagesCount()));
+    this.unreadMessagesCount.assertValues(user.unreadMessagesCount());
+    this.hasNoUnreadMessages.assertValues(false);
+  }
+
+  @Test
+  public void testNoMessages() {
+    final User user = UserFactory.user().toBuilder().unreadMessagesCount(null).build();
+
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override public @NonNull Observable<User> fetchCurrentUser() {
+        return Observable.just(user);
+      }
+    };
+
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+
+    this.hasNoMessages.assertValues(true);
+    this.unreadMessagesCount.assertNoValues();
+  }
+
+  @Test
+  public void testNoUnreadMessages() {
+    final User user = UserFactory.user().toBuilder().unreadMessagesCount(0).build();
+
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override public @NonNull Observable<User> fetchCurrentUser() {
+        return Observable.just(user);
+      }
+    };
+
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+
+    this.hasNoUnreadMessages.assertValues(true);
+    this.unreadMessagesCount.assertValues(0);
   }
 }

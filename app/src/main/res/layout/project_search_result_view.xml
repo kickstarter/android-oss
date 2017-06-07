@@ -58,7 +58,7 @@
 
         <TextView
           android:id="@+id/search_result_percent_funded_text_view"
-          style="@style/CaptionPrimaryMedium"
+          style="@style/Caption1PrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textColor="@color/ksr_text_green_700"
@@ -69,7 +69,7 @@
 
         <TextView
           android:id="@+id/search_result_funded_text_view"
-          style="@style/CaptionSecondary"
+          style="@style/Caption1Secondary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginRight="@dimen/grid_new_2"
@@ -78,7 +78,7 @@
 
         <TextView
           android:id="@+id/search_result_deadline_countdown_text_view"
-          style="@style/CaptionPrimaryMedium"
+          style="@style/Caption1PrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginRight="@dimen/grid_new_1_half"
@@ -87,7 +87,7 @@
 
         <TextView
           android:id="@+id/search_result_deadline_unit_text_view"
-          style="@style/CaptionSecondary"
+          style="@style/Caption1Secondary"
           android:maxLines="1"
           android:ellipsize="end"
           android:layout_width="wrap_content"

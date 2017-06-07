@@ -25,7 +25,7 @@
       android:textColor="@color/ksr_text_navy_500"
       android:id="@+id/back_button"
       android:focusable="true"
-      android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
+      android:contentDescription="@string/general_navigation_buttons_close"
       android:text="@string/close_icon" />
 
     <com.kickstarter.ui.views.IconButton

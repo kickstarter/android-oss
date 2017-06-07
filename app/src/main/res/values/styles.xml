@@ -259,6 +259,11 @@
     <item name="android:textSize">@dimen/icon</item>
   </style>
 
+  <style name="ToolbarIconBackButton" parent="ToolbarIcon">
+    <item name="android:paddingLeft">@dimen/grid_new_2</item>
+    <item name="android:drawableStart">@drawable/icon__arrow_left</item>
+  </style>
+
   <style name="ToolbarIconDarkBackground" parent="ToolbarIcon">
     <item name="android:background">@drawable/button_selector</item>
     <item name="android:focusable">true</item>

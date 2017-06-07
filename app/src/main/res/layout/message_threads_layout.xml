@@ -24,43 +24,37 @@
       app:expandedTitleMarginEnd="64dp"
       app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-      <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+      <LinearLayout
+        android:id="@+id/mailbox_and_unread_layout"
         android:clipToPadding="false"
         android:paddingTop="@dimen/grid_new_7"
         android:paddingStart="@dimen/grid_new_4"
         android:paddingEnd="@dimen/grid_new_4"
         android:paddingBottom="@dimen/grid_new_9"
-        app:layout_collapseMode="parallax">
+        app:layout_collapseMode="parallax"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="RelativeOverlap">
 
-        <LinearLayout
-          android:id="@+id/mailbox_and_unread_layout"
-          android:animateLayoutChanges="true"
-          android:orientation="vertical"
-          android:layout_centerVertical="true"
+        <TextView
+          android:id="@+id/mailbox_text_view"
+          style="@style/Title1"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          tools:ignore="RelativeOverlap">
+          tools:text="Inbox"/>
 
-          <TextView
-            android:id="@+id/mailbox_text_view"
-            style="@style/Title1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Inbox"/>
+        <TextView
+          android:id="@+id/unread_count_text_view"
+          android:textColor="@color/ksr_text_green_700"
+          style="@style/FootnotePrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="3 unread"/>
 
-          <TextView
-            android:id="@+id/unread_count_text_view"
-            android:textColor="@color/ksr_text_green_700"
-            style="@style/FootnotePrimaryMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="3 unread"/>
-
-        </LinearLayout>
-
-      </RelativeLayout>
+      </LinearLayout>
 
       <include layout="@layout/message_threads_toolbar"/>
 

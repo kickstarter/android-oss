@@ -64,6 +64,8 @@ public interface ApiClientType {
 
   @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update);
 
+  @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing);
+
   @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread);
 
   @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads();
@@ -93,6 +95,8 @@ public interface ApiClientType {
   @NonNull Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken, boolean sendNewsletters);
 
   @NonNull Observable<User> resetPassword(final @NonNull String email);
+
+  @NonNull Observable<Message> sendMessageToBacking(final @NonNull Backing backing, final @NonNull String body);
 
   @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread messageThread, final @NonNull String body);
 

@@ -30,8 +30,8 @@ import butterknife.ButterKnife;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
-@RequiresActivityViewModel(ViewPledgeViewModel.class)
-public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> {
+@RequiresActivityViewModel(ViewPledgeViewModel.ViewModel.class)
+public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel.ViewModel> {
   protected @Bind(R.id.view_pledge_avatar_image_view) ImageView avatarImageView;
   protected @Bind(R.id.view_pledge_backer_name) TextView backerNameTextView;
   protected @Bind(R.id.view_pledge_backer_number) TextView backerNumberTextView;
@@ -68,6 +68,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
     super.onCreate(savedInstanceState);
     setContentView(R.layout.view_pledge_layout);
     ButterKnife.bind(this);
+
     final RewardsItemAdapter rewardsItemAdapter = new RewardsItemAdapter();
     rewardsItemRecyclerView.setAdapter(rewardsItemAdapter);
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);

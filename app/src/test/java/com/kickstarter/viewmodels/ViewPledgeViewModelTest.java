@@ -37,7 +37,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testBackerNameTextViewText() {
     final Backing backing = BackingFactory.backing();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     final TestSubscriber<String> backerNameTextViewTextTest = TestSubscriber.create();
     vm.outputs.backerNameTextViewText().subscribe(backerNameTextViewTextTest);
@@ -50,7 +50,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testBackerNumberTextViewText() {
     final Backing backing = BackingFactory.backing();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     final TestSubscriber<String> backerNumberTextViewTextTest = TestSubscriber.create();
     vm.outputs.backerNumberTextViewText().subscribe(backerNumberTextViewTextTest);
@@ -65,7 +65,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing().toBuilder()
       .amount(50.0f)
       .build();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     final TestSubscriber<Pair<String, String>> backingAmountAndDateTextViewTextTest = TestSubscriber.create();
     vm.outputs.backingAmountAndDateTextViewText().subscribe(backingAmountAndDateTextViewTextTest);
@@ -78,7 +78,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testBackingStatus() {
     final Backing backing = BackingFactory.backing();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     final TestSubscriber<String> backingStatusTextViewTest = TestSubscriber.create();
     vm.outputs.backingStatus().subscribe(backingStatusTextViewTest);
@@ -91,7 +91,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testCreatorNameTextViewText() {
     final Backing backing = BackingFactory.backing();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     final TestSubscriber<String> creatorNameTextViewTextTest = TestSubscriber.create();
     vm.outputs.creatorNameTextViewText().subscribe(creatorNameTextViewTextTest);
@@ -109,7 +109,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing().toBuilder()
       .reward(reward)
       .build();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     vm.intent(intent(backing));
     final TestSubscriber<Boolean> estimatedDeliverySectionIsGone = TestSubscriber.create();
@@ -126,7 +126,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing().toBuilder()
       .reward(reward)
       .build();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     vm.intent(intent(backing));
     final TestSubscriber<Boolean> estimatedDeliverySectionIsGone = TestSubscriber.create();
@@ -144,7 +144,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing().toBuilder()
       .reward(reward)
       .build();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
     vm.intent(intent(backing));
     final TestSubscriber<String> estimatedDeliverySectionTextViewText = TestSubscriber.create();
     vm.outputs.estimatedDeliverySectionTextViewText().subscribe(estimatedDeliverySectionTextViewText);
@@ -155,7 +155,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testGoBackOnProjectClick() {
     final Backing backing = BackingFactory.backing();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     final TestSubscriber<Void> goBackTest = TestSubscriber.create();
     vm.outputs.goBack().subscribe(goBackTest);
@@ -170,7 +170,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testLoadBackerAvatar() {
     final Backing backing = BackingFactory.backing();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     final TestSubscriber<String> loadBackerAvatarTest = TestSubscriber.create();
     vm.outputs.loadBackerAvatar().subscribe(loadBackerAvatarTest);
@@ -183,7 +183,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testLoadProjectPhoto() {
     final Backing backing = BackingFactory.backing();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     final TestSubscriber<String> loadProjectPhotoTest = TestSubscriber.create();
     vm.outputs.loadProjectPhoto().subscribe(loadProjectPhotoTest);
@@ -196,7 +196,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testProjectNameTextViewText() {
     final Backing backing = BackingFactory.backing();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     final TestSubscriber<String> projectNameTextViewTextTest = TestSubscriber.create();
     vm.outputs.projectNameTextViewText().subscribe(projectNameTextViewTextTest);
@@ -214,7 +214,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing().toBuilder()
       .reward(reward)
       .build();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     final TestSubscriber<Pair<String, String>> rewardMinimumAndDescriptionTextViewTextTest = TestSubscriber.create();
     vm.outputs.rewardMinimumAndDescriptionTextViewText().subscribe(rewardMinimumAndDescriptionTextViewTextTest);
@@ -232,7 +232,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing().toBuilder()
       .reward(reward)
       .build();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     final TestSubscriber<List<RewardsItem>> rewardsItemsTest = TestSubscriber.create();
     vm.outputs.rewardsItems().subscribe(rewardsItemsTest);
@@ -251,7 +251,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing().toBuilder()
       .reward(reward)
       .build();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     final TestSubscriber<List<RewardsItem>> rewardsItemsTest = TestSubscriber.create();
     vm.outputs.rewardsItems().subscribe(rewardsItemsTest);
@@ -267,7 +267,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testShipping_withoutShippingLocation() {
     final Backing backing = BackingFactory.backing();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     final TestSubscriber<String> shippingLocationTextViewTextTest = TestSubscriber.create();
     vm.outputs.shippingLocationTextViewText().subscribe(shippingLocationTextViewTextTest);
@@ -293,7 +293,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
       .rewardId(reward.id())
       .shippingAmount(5.0f)
       .build();
-    final ViewPledgeViewModel vm = vm(backing);
+    final ViewPledgeViewModel.ViewModel vm = vm(backing);
 
     final TestSubscriber<String> shippingLocationTextViewTextTest = TestSubscriber.create();
     vm.outputs.shippingLocationTextViewText().subscribe(shippingLocationTextViewTextTest);
@@ -329,7 +329,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
     return new Intent().putExtra(IntentKey.PROJECT, backing.project());
   }
 
-  private @NonNull ViewPledgeViewModel vm(final @NonNull Backing backing) {
-    return new ViewPledgeViewModel(environment(backing));
+  private @NonNull ViewPledgeViewModel.ViewModel vm(final @NonNull Backing backing) {
+    return new ViewPledgeViewModel.ViewModel(environment(backing));
   }
 }

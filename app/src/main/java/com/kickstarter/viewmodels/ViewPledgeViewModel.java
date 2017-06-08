@@ -35,6 +35,7 @@ import rx.subjects.PublishSubject;
 import static com.kickstarter.libs.rx.transformers.Transformers.coalesce;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
 
 public interface ViewPledgeViewModel {
@@ -98,6 +99,9 @@ public interface ViewPledgeViewModel {
 
     /** Set the visibility of the shipping section.*/
     Observable<Boolean> shippingSectionIsHidden();
+
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.MessagesActivity}. */
+    Observable<Pair<Project, Backing>> startMessagesActivity();
   }
 
   final class ViewModel extends ActivityViewModel<ViewPledgeActivity> implements Inputs, Outputs {
@@ -117,9 +121,9 @@ public interface ViewPledgeViewModel {
         .ofType(Project.class);
 
       final Observable<Backing> backing = project
-        .compose(combineLatestPair(currentUser.observable()))
+        .compose(combineLatestPair(this.currentUser.observable()))
         .filter(pu -> pu.second != null)
-        .switchMap(pu -> client.fetchProjectBacking(pu.first, pu.second)
+        .switchMap(pu -> this.client.fetchProjectBacking(pu.first, pu.second)
           .retry(3)
           .compose(neverError())
         )
@@ -134,6 +138,9 @@ public interface ViewPledgeViewModel {
       final Observable<Reward> reward = backing
         .map(Backing::reward)
         .filter(ObjectUtils::isNotNull);
+
+      this.startMessagesActivity = Observable.zip(project, backing, Pair::create)
+        .compose(takeWhen(this.viewMessagesButtonClicked));
 
       backing
         .map(Backing::sequence)
@@ -269,6 +276,7 @@ public interface ViewPledgeViewModel {
     private final BehaviorSubject<String> shippingAmountTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> shippingLocationTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shippingSectionIsHidden = BehaviorSubject.create();
+    private final Observable<Pair<Project, Backing>> startMessagesActivity;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -330,6 +338,9 @@ public interface ViewPledgeViewModel {
     }
     @Override public @NonNull Observable<Boolean> shippingSectionIsHidden() {
       return this.shippingSectionIsHidden;
+    }
+    @Override public @NonNull Observable<Pair<Project, Backing>> startMessagesActivity() {
+      return this.startMessagesActivity;
     }
   }
 }

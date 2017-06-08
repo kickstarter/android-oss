@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +19,8 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Backing;
+import com.kickstarter.models.Project;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.RewardsItemAdapter;
 import com.kickstarter.viewmodels.ViewPledgeViewModel;
 import com.squareup.picasso.Picasso;
@@ -161,6 +164,16 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel.V
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.shippingSection));
+
+    this.viewModel.outputs.startMessagesActivity()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startMessagesActivity);
+  }
+
+  @Override
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
   }
 
   @OnClick(R.id.project_context_view)
@@ -228,8 +241,11 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel.V
     );
   }
 
-  @Override
-  protected @Nullable Pair<Integer, Integer> exitTransition() {
-    return slideInFromLeft();
+  private void startMessagesActivity(final @NonNull Pair<Project, Backing> projectAndBacking) {
+    final Intent intent = new Intent(this, MessagesActivity.class)
+      .putExtra(IntentKey.PROJECT, projectAndBacking.first)
+      .putExtra(IntentKey.BACKING, projectAndBacking.second);
+
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

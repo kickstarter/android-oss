@@ -95,7 +95,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel.V
       .compose(observeForUI())
       .subscribe(ad -> setBackingAmountAndDateTextViewText(ad.first, ad.second));
 
-    this.viewModel.outputs.backingStatus()
+    this.viewModel.outputs.backingStatusTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setBackingStatusTextViewText);
@@ -140,7 +140,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel.V
       .compose(observeForUI())
       .subscribe(rewardsItemAdapter::rewardsItems);
 
-    this.viewModel.outputs.rewardsItemsAreHidden()
+    this.viewModel.outputs.rewardsItemsAreGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.rewardsItemSection));
@@ -160,7 +160,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel.V
       .compose(observeForUI())
       .subscribe(this.shippingLocationTextView::setText);
 
-    this.viewModel.outputs.shippingSectionIsHidden()
+    this.viewModel.outputs.shippingSectionIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.shippingSection));

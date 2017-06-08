@@ -56,7 +56,7 @@ public interface ViewPledgeViewModel {
     Observable<String> backerNumberTextViewText();
 
     /** Set the backing status TextView's text. */
-    Observable<String> backingStatus();
+    Observable<String> backingStatusTextViewText();
 
     /** Set the backing amount and date TextView's text. */
     Observable<Pair<String, String>> backingAmountAndDateTextViewText();
@@ -88,8 +88,8 @@ public interface ViewPledgeViewModel {
     /** Show the rewards items. */
     Observable<List<RewardsItem>> rewardsItems();
 
-    /** Returns `true` if the items section should be hidden, `false` otherwise. */
-    Observable<Boolean> rewardsItemsAreHidden();
+    /** Returns `true` if the items section should be gone, `false` otherwise. */
+    Observable<Boolean> rewardsItemsAreGone();
 
     /** Set the shipping amount TextView's text. */
     Observable<String> shippingAmountTextViewText();
@@ -98,7 +98,7 @@ public interface ViewPledgeViewModel {
     Observable<String> shippingLocationTextViewText();
 
     /** Set the visibility of the shipping section.*/
-    Observable<Boolean> shippingSectionIsHidden();
+    Observable<Boolean> shippingSectionIsGone();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.MessagesActivity}. */
     Observable<Pair<Project, Backing>> startMessagesActivity();
@@ -162,7 +162,7 @@ public interface ViewPledgeViewModel {
       backing
         .map(Backing::status)
         .compose(bindToLifecycle())
-        .subscribe(this.backingStatus);
+        .subscribe(this.backingStatusTextViewText);
 
       project
         .map(p -> p.creator().name())
@@ -205,7 +205,7 @@ public interface ViewPledgeViewModel {
         .map(RewardUtils::isItemized)
         .map(BooleanUtils::negate)
         .compose(bindToLifecycle())
-        .subscribe(this.rewardsItemsAreHidden);
+        .subscribe(this.rewardsItemsAreGone);
 
       reward
         .map(Reward::estimatedDeliveryOn)
@@ -237,7 +237,7 @@ public interface ViewPledgeViewModel {
         .map(BackingUtils::isShippable)
         .map(BooleanUtils::negate)
         .compose(bindToLifecycle())
-        .subscribe(this.shippingSectionIsHidden);
+        .subscribe(this.shippingSectionIsGone);
     }
 
     private static @NonNull Pair<String, String> backingAmountAndDate(final @NonNull KSCurrency ksCurrency,
@@ -261,7 +261,7 @@ public interface ViewPledgeViewModel {
 
     private final BehaviorSubject<String> backerNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> backerNumberTextViewText = BehaviorSubject.create();
-    private final BehaviorSubject<String> backingStatus = BehaviorSubject.create();
+    private final BehaviorSubject<String> backingStatusTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<Pair<String, String>> backingAmountAndDateTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> estimatedDeliverySectionIsGone = BehaviorSubject.create();
@@ -272,10 +272,10 @@ public interface ViewPledgeViewModel {
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<Pair<String, String>> rewardMinimumAndDescriptionTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<List<RewardsItem>> rewardsItems = BehaviorSubject.create();
-    private final BehaviorSubject<Boolean> rewardsItemsAreHidden = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> rewardsItemsAreGone = BehaviorSubject.create();
     private final BehaviorSubject<String> shippingAmountTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> shippingLocationTextViewText = BehaviorSubject.create();
-    private final BehaviorSubject<Boolean> shippingSectionIsHidden = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> shippingSectionIsGone = BehaviorSubject.create();
     private final Observable<Pair<Project, Backing>> startMessagesActivity;
 
     public final Inputs inputs = this;
@@ -297,8 +297,8 @@ public interface ViewPledgeViewModel {
     @Override public @NonNull Observable<Pair<String, String>> backingAmountAndDateTextViewText() {
       return this.backingAmountAndDateTextViewText;
     }
-    @Override public @NonNull Observable<String> backingStatus() {
-      return this.backingStatus;
+    @Override public @NonNull Observable<String> backingStatusTextViewText() {
+      return this.backingStatusTextViewText;
     }
     @Override public @NonNull Observable<String> creatorNameTextViewText() {
       return this.creatorNameTextViewText;
@@ -327,8 +327,8 @@ public interface ViewPledgeViewModel {
     @Override public @NonNull Observable<List<RewardsItem>> rewardsItems() {
       return this.rewardsItems;
     }
-    @Override public @NonNull Observable<Boolean> rewardsItemsAreHidden() {
-      return this.rewardsItemsAreHidden;
+    @Override public @NonNull Observable<Boolean> rewardsItemsAreGone() {
+      return this.rewardsItemsAreGone;
     }
     @Override public @NonNull Observable<String> shippingAmountTextViewText() {
       return this.shippingAmountTextViewText;
@@ -336,8 +336,8 @@ public interface ViewPledgeViewModel {
     @Override public @NonNull Observable<String> shippingLocationTextViewText() {
       return this.shippingLocationTextViewText;
     }
-    @Override public @NonNull Observable<Boolean> shippingSectionIsHidden() {
-      return this.shippingSectionIsHidden;
+    @Override public @NonNull Observable<Boolean> shippingSectionIsGone() {
+      return this.shippingSectionIsGone;
     }
     @Override public @NonNull Observable<Pair<Project, Backing>> startMessagesActivity() {
       return this.startMessagesActivity;

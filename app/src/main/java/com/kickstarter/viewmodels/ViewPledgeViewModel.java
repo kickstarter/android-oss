@@ -139,8 +139,10 @@ public interface ViewPledgeViewModel {
         .map(Backing::reward)
         .filter(ObjectUtils::isNotNull);
 
-      this.startMessagesActivity = Observable.zip(project, backing, Pair::create)
-        .compose(takeWhen(this.viewMessagesButtonClicked));
+      Observable.zip(project, backing, Pair::create)
+        .compose(takeWhen(this.viewMessagesButtonClicked))
+        .compose(bindToLifecycle())
+        .subscribe(this.startMessagesActivity);
 
       backing
         .map(Backing::sequence)
@@ -276,7 +278,7 @@ public interface ViewPledgeViewModel {
     private final BehaviorSubject<String> shippingAmountTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> shippingLocationTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shippingSectionIsGone = BehaviorSubject.create();
-    private final Observable<Pair<Project, Backing>> startMessagesActivity;
+    private final PublishSubject<Pair<Project, Backing>> startMessagesActivity = PublishSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;

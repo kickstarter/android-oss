@@ -16,11 +16,8 @@
     android:orientation="horizontal">
 
     <com.kickstarter.ui.views.IconTextView
-      style="@style/ToolbarIcon"
-      android:id="@+id/back_button"
-      android:focusable="true"
-      android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
-      android:text="@string/arrow_back_icon" />
+      style="@style/ToolbarIconBackButton"
+      android:id="@+id/back_button" />
 
     <TextView
       style="@style/ToolbarTitle"

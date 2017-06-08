@@ -42,6 +42,9 @@ public interface ViewPledgeViewModel {
   interface Inputs {
     /** Call when the project context section is clicked. */
     void projectClicked();
+
+    /** Call when the view messages button is clicked. */
+    void viewMessagesButtonClicked();
   }
 
   interface Outputs {
@@ -98,13 +101,16 @@ public interface ViewPledgeViewModel {
   }
 
   final class ViewModel extends ActivityViewModel<ViewPledgeActivity> implements Inputs, Outputs {
+    private final ApiClientType client;
+    private final CurrentUserType currentUser;
+    private final KSCurrency ksCurrency;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      final ApiClientType client = environment.apiClient();
-      final CurrentUserType currentUser = environment.currentUser();
-      final KSCurrency ksCurrency = environment.ksCurrency();
+      this.client = environment.apiClient();
+      this.currentUser = environment.currentUser();
+      this.ksCurrency = environment.ksCurrency();
 
       final Observable<Project> project = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
@@ -133,98 +139,98 @@ public interface ViewPledgeViewModel {
         .map(Backing::sequence)
         .map(NumberUtils::format)
         .compose(bindToLifecycle())
-        .subscribe(backerNumberTextViewText);
+        .subscribe(this.backerNumberTextViewText);
 
       backer
         .map(User::name)
         .compose(bindToLifecycle())
-        .subscribe(backerNameTextViewText);
+        .subscribe(this.backerNameTextViewText);
 
       project
         .compose(zipPair(backing))
-        .map(pb -> backingAmountAndDate(ksCurrency, pb.first, pb.second))
+        .map(pb -> backingAmountAndDate(this.ksCurrency, pb.first, pb.second))
         .compose(bindToLifecycle())
-        .subscribe(backingAmountAndDateTextViewText);
+        .subscribe(this.backingAmountAndDateTextViewText);
 
       backing
         .map(Backing::status)
         .compose(bindToLifecycle())
-        .subscribe(backingStatus);
+        .subscribe(this.backingStatus);
 
       project
         .map(p -> p.creator().name())
         .compose(bindToLifecycle())
-        .subscribe(creatorNameTextViewText);
+        .subscribe(this.creatorNameTextViewText);
 
-      goBack = projectClicked;
+      this.goBack = this.projectClicked;
 
       backer
         .map(User::avatar)
         .map(Avatar::medium)
         .compose(bindToLifecycle())
-        .subscribe(loadBackerAvatar);
+        .subscribe(this.loadBackerAvatar);
 
       project
         .map(Project::photo)
         .filter(ObjectUtils::isNotNull)
         .map(Photo::full)
         .compose(bindToLifecycle())
-        .subscribe(loadProjectPhoto);
+        .subscribe(this.loadProjectPhoto);
 
       project
         .map(Project::name)
         .compose(bindToLifecycle())
-        .subscribe(projectNameTextViewText);
+        .subscribe(this.projectNameTextViewText);
 
       project
         .compose(zipPair(backing.map(Backing::reward)))
-        .map(pr -> rewardMinimumAndDescription(ksCurrency, pr.first, pr.second))
+        .map(pr -> rewardMinimumAndDescription(this.ksCurrency, pr.first, pr.second))
         .compose(bindToLifecycle())
-        .subscribe(rewardMinimumAndDescriptionTextViewText);
+        .subscribe(this.rewardMinimumAndDescriptionTextViewText);
 
       reward
         .map(Reward::rewardsItems)
         .compose(coalesce(new ArrayList<RewardsItem>()))
         .compose(bindToLifecycle())
-        .subscribe(rewardsItems);
+        .subscribe(this.rewardsItems);
 
       reward
         .map(RewardUtils::isItemized)
         .map(BooleanUtils::negate)
         .compose(bindToLifecycle())
-        .subscribe(rewardsItemsAreHidden);
+        .subscribe(this.rewardsItemsAreHidden);
 
       reward
         .map(Reward::estimatedDeliveryOn)
         .map(ObjectUtils::isNull)
         .compose(bindToLifecycle())
-        .subscribe(estimatedDeliverySectionIsGone);
+        .subscribe(this.estimatedDeliverySectionIsGone);
 
       reward
         .map(Reward::estimatedDeliveryOn)
         .filter(ObjectUtils::isNotNull)
         .map(DateTimeUtils::estimatedDeliveryOn)
         .compose(bindToLifecycle())
-        .subscribe(estimatedDeliverySectionTextViewText);
+        .subscribe(this.estimatedDeliverySectionTextViewText);
 
       project
         .compose(zipPair(shippableBacking))
-        .map(pb -> ksCurrency.format(pb.second.shippingAmount(), pb.first))
+        .map(pb -> this.ksCurrency.format(pb.second.shippingAmount(), pb.first))
         .compose(bindToLifecycle())
-        .subscribe(shippingAmountTextViewText);
+        .subscribe(this.shippingAmountTextViewText);
 
       backing
         .map(Backing::location)
         .filter(ObjectUtils::isNotNull)
         .map(Location::displayableName)
         .compose(bindToLifecycle())
-        .subscribe(shippingLocationTextViewText);
+        .subscribe(this.shippingLocationTextViewText);
 
       backing
         .map(BackingUtils::isShippable)
         .map(BooleanUtils::negate)
         .compose(bindToLifecycle())
-        .subscribe(shippingSectionIsHidden);
+        .subscribe(this.shippingSectionIsHidden);
     }
 
     private static @NonNull Pair<String, String> backingAmountAndDate(final @NonNull KSCurrency ksCurrency,
@@ -244,6 +250,7 @@ public interface ViewPledgeViewModel {
     }
 
     private final PublishSubject<Void> projectClicked = PublishSubject.create();
+    private final PublishSubject<Void> viewMessagesButtonClicked = PublishSubject.create();
 
     private final BehaviorSubject<String> backerNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> backerNumberTextViewText = BehaviorSubject.create();
@@ -267,59 +274,62 @@ public interface ViewPledgeViewModel {
     public final Outputs outputs = this;
 
     @Override public void projectClicked() {
-      projectClicked.onNext(null);
+      this.projectClicked.onNext(null);
+    }
+    @Override public void viewMessagesButtonClicked() {
+      this.viewMessagesButtonClicked.onNext(null);
     }
 
     @Override public @NonNull Observable<String> backerNameTextViewText() {
-      return backerNameTextViewText;
+      return this.backerNameTextViewText;
     }
     @Override public @NonNull Observable<String> backerNumberTextViewText() {
-      return backerNumberTextViewText;
+      return this.backerNumberTextViewText;
     }
     @Override public @NonNull Observable<Pair<String, String>> backingAmountAndDateTextViewText() {
-      return backingAmountAndDateTextViewText;
+      return this.backingAmountAndDateTextViewText;
     }
     @Override public @NonNull Observable<String> backingStatus() {
-      return backingStatus;
+      return this.backingStatus;
     }
     @Override public @NonNull Observable<String> creatorNameTextViewText() {
-      return creatorNameTextViewText;
+      return this.creatorNameTextViewText;
     }
     @Override public @NonNull Observable<Boolean> estimatedDeliverySectionIsGone() {
-      return estimatedDeliverySectionIsGone;
+      return this.estimatedDeliverySectionIsGone;
     }
     @Override public @NonNull Observable<String> estimatedDeliverySectionTextViewText() {
-      return estimatedDeliverySectionTextViewText;
+      return this.estimatedDeliverySectionTextViewText;
     }
     @Override public @NonNull Observable<Void> goBack() {
-      return goBack;
+      return this.goBack;
     }
     @Override public @NonNull Observable<String> loadBackerAvatar() {
-      return loadBackerAvatar;
+      return this.loadBackerAvatar;
     }
     @Override public @NonNull Observable<String> loadProjectPhoto() {
-      return loadProjectPhoto;
+      return this.loadProjectPhoto;
     }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
-      return projectNameTextViewText;
+      return this.projectNameTextViewText;
     }
     @Override public @NonNull Observable<Pair<String, String>> rewardMinimumAndDescriptionTextViewText() {
-      return rewardMinimumAndDescriptionTextViewText;
+      return this.rewardMinimumAndDescriptionTextViewText;
     }
     @Override public @NonNull Observable<List<RewardsItem>> rewardsItems() {
-      return rewardsItems;
+      return this.rewardsItems;
     }
     @Override public @NonNull Observable<Boolean> rewardsItemsAreHidden() {
-      return rewardsItemsAreHidden;
+      return this.rewardsItemsAreHidden;
     }
     @Override public @NonNull Observable<String> shippingAmountTextViewText() {
-      return shippingAmountTextViewText;
+      return this.shippingAmountTextViewText;
     }
     @Override public @NonNull Observable<String> shippingLocationTextViewText() {
-      return shippingLocationTextViewText;
+      return this.shippingLocationTextViewText;
     }
     @Override public @NonNull Observable<Boolean> shippingSectionIsHidden() {
-      return shippingSectionIsHidden;
+      return this.shippingSectionIsHidden;
     }
   }
 }

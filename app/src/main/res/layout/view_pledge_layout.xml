@@ -21,32 +21,29 @@
 
       <LinearLayout
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/grid_3"
-        android:paddingLeft="@dimen/feed_padding_x"
-        android:paddingRight="@dimen/feed_padding_x"
+        android:layout_marginTop="@dimen/feed_padding_y"
         android:paddingStart="@dimen/feed_padding_x"
         android:paddingEnd="@dimen/feed_padding_x"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <RelativeLayout
-          android:layout_marginBottom="@dimen/grid_3"
+          android:layout_marginBottom="@dimen/grid_new_4"
           android:layout_width="match_parent"
           android:layout_height="wrap_content">
 
           <ImageView
             android:id="@+id/view_pledge_avatar_image_view"
-            android:layout_width="@dimen/grid_8"
-            android:layout_height="@dimen/grid_8"
+            android:layout_width="@dimen/grid_new_10"
+            android:layout_height="@dimen/grid_new_10"
+            android:focusable="false"
+            tools:background="@color/blue"
             tools:ignore="ContentDescription" />
 
           <RelativeLayout
-            android:layout_toRightOf="@id/view_pledge_avatar_image_view"
             android:layout_toEndOf="@id/view_pledge_avatar_image_view"
-            android:paddingLeft="@dimen/grid_2"
-            android:paddingStart="@dimen/grid_2"
-            android:paddingRight="@dimen/grid_2"
-            android:paddingEnd="@dimen/grid_2"
+            android:paddingStart="@dimen/grid_new_3"
+            android:paddingEnd="@dimen/grid_new_3"
             android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -55,25 +52,37 @@
               android:id="@+id/view_pledge_backer_name"
               style="@style/CalloutPrimaryMedium"
               android:layout_width="wrap_content"
-              android:layout_height="wrap_content" />
+              android:layout_height="wrap_content"
+              tools:text="Blob Fish"/>
 
             <TextView
               android:id="@+id/view_pledge_backer_number"
               style="@style/BodySecondary"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_below="@id/view_pledge_backer_name"/>
+              android:layout_below="@id/view_pledge_backer_name"
+              tools:text="Backer #42"/>
+
           </RelativeLayout>
 
         </RelativeLayout>
+
+        <Button
+          android:id="@+id/view_pledge_view_messages_button"
+          android:layout_marginBottom="@dimen/grid_new_3"
+          style="@style/BorderButton"
+          android:padding="@dimen/grid_new_2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/backer_modal_view_messages"/>
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 
         <TextView
           style="@style/CalloutPrimaryMedium"
           android:text="@string/backer_modal_pledged_title"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_1"
+          android:paddingTop="@dimen/grid_new_2"
+          android:paddingBottom="@dimen/grid_new_1"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"/>
 
@@ -88,11 +97,11 @@
           android:id="@+id/view_pledge_backing_status"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:paddingBottom="@dimen/grid_3"/>
+          android:paddingBottom="@dimen/grid_new_3"/>
 
         <LinearLayout
           android:orientation="vertical"
-          android:paddingBottom="@dimen/grid_1"
+          android:paddingBottom="@dimen/grid_new_1"
           android:layout_width="match_parent"
           android:layout_height="wrap_content">
 
@@ -101,8 +110,8 @@
           <TextView
             style="@style/CalloutPrimaryMedium"
             android:text="@string/backer_modal_reward_title"
-            android:paddingTop="@dimen/grid_2"
-            android:paddingBottom="@dimen/grid_1"
+            android:paddingTop="@dimen/grid_new_2"
+            android:paddingBottom="@dimen/grid_new_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -115,7 +124,7 @@
           <LinearLayout
             android:id="@+id/view_pledge_rewards_item_section"
             android:orientation="vertical"
-            android:paddingTop="@dimen/grid_2"
+            android:paddingTop="@dimen/grid_new_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -139,7 +148,7 @@
         <LinearLayout
           android:id="@+id/view_pledge_shipping_section"
           android:orientation="vertical"
-          android:paddingTop="@dimen/grid_2"
+          android:paddingTop="@dimen/grid_new_2"
           android:layout_width="match_parent"
           android:layout_height="wrap_content">
 
@@ -148,8 +157,8 @@
           <TextView
             style="@style/CalloutPrimaryMedium"
             android:text="@string/backer_modal_shipping_title"
-            android:paddingTop="@dimen/grid_2"
-            android:paddingBottom="@dimen/grid_1"
+            android:paddingTop="@dimen/grid_new_2"
+            android:paddingBottom="@dimen/grid_new_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

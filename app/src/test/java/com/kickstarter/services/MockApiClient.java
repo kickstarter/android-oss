@@ -164,6 +164,11 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(@NonNull Backing backing) {
+    return Observable.empty();
+  }
+
+  @Override
   public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread) {
     return Observable.empty();
   }
@@ -298,6 +303,11 @@ public class MockApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<User> resetPassword(final @NonNull String email) {
     return Observable.just(UserFactory.user());
+  }
+
+  @Override
+  public @NonNull Observable<Message> sendMessageToBacking(final @NonNull Backing backing, final @NonNull String body) {
+    return Observable.empty();
   }
 
   @Override

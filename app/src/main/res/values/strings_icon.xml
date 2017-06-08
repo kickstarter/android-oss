@@ -5,7 +5,6 @@
     Unicode for an icon can be looked up at: https://github.com/google/material-design-icons/blob/03e5ebc7f534d034494c7abd5a80e97fad1e32b5/iconfont/codepoints
   -->
   <string name="account_circle">\ue853</string>
-  <string name="arrow_back_icon">\ue5c4</string>
   <string name="bug_report_icon">\ue868</string>
   <string name="check_icon">\ue5ca</string>
   <string name="chevron_right_icon">\ue5cc</string>

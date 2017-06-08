@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
+import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentConfigType;
@@ -109,7 +110,7 @@ public interface ActivityFeedViewModel {
         .map(Activity::project);
 
       final Observable<Boolean> surveyFeatureEnabled = this.currentConfig.observable()
-        .map(config -> coalesce(config.features().get(FeatureKey.ANDROID_SURVEYS), false));
+        .map(config -> coalesce(config.features().get(FeatureKey.ANDROID_SURVEYS), false) || BuildConfig.DEBUG);
 
       Observable.combineLatest(
           resume,

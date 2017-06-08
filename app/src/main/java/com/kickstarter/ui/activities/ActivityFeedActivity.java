@@ -32,7 +32,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
@@ -45,6 +47,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   @Inject CurrentUserType currentUser;
 
   private RecyclerViewPaginator recyclerViewPaginator;
+  protected @BindString(R.string.discovery_survey_reward_survey) String rewardSurveyString;
   private SwipeRefresher swipeRefresher;
 
   @Override
@@ -93,10 +96,10 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
       .compose(observeForUI())
       .subscribe(this::startProjectUpdateActivity);
 
-    /*viewModel.outputs.goToSurvey()
+    viewModel.outputs.goToSurvey()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::startSurveyWebView);*/
+      .subscribe(this::startSurveyWebView);
 
     viewModel.outputs.loggedOutEmptyStateIsVisible()
       .compose(bindToLifecycle())
@@ -158,15 +161,16 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-//  private void startSurveyWebView(final @NonNull SurveyResponse surveyResponse) {
-//    try {
-//      final Intent intent = new Intent(this, WebViewActivity.class)
-//        .putExtra(IntentKey.URL, surveyResponse.urls().web().survey());
-//      startActivityWithTransition(intent, R.anim.slide_in_bottom, R.anim.com_mixpanel_android_slide_down);
-//    } catch (final NullPointerException npe) {
-//      npe.printStackTrace();
-//      Timber.e("Missing url for survey!");
-//      // missing a url to go to for the survey
-//    }
-//  }
+  private void startSurveyWebView(final @NonNull SurveyResponse surveyResponse) {
+    try {
+      final Intent intent = new Intent(this, WebViewActivity.class)
+        .putExtra(IntentKey.URL, surveyResponse.urls().web().survey())
+        .putExtra(IntentKey.TOOLBAR_TITLE, rewardSurveyString);
+      startActivityWithTransition(intent, R.anim.slide_in_bottom, R.anim.com_mixpanel_android_slide_down);
+    } catch (final NullPointerException npe) {
+      npe.printStackTrace();
+      Timber.e("Missing url for survey!");
+      // missing a url to go to for the survey
+    }
+  }
 }

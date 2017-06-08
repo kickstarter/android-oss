@@ -4,9 +4,12 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BackingUtils;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DateTimeUtils;
@@ -32,7 +35,6 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.coalesce;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
@@ -102,10 +104,14 @@ public interface ViewPledgeViewModel {
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.MessagesActivity}. */
     Observable<Pair<Project, Backing>> startMessagesActivity();
+
+    /** Emits a boolean to determine when the View Messages button should be gone. */
+    Observable<Boolean> viewMessagesButtonIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<ViewPledgeActivity> implements Inputs, Outputs {
     private final ApiClientType client;
+    private final CurrentConfigType currentConfig;
     private final CurrentUserType currentUser;
     private final KSCurrency ksCurrency;
 
@@ -113,6 +119,7 @@ public interface ViewPledgeViewModel {
       super(environment);
 
       this.client = environment.apiClient();
+      this.currentConfig = environment.currentConfig();
       this.currentUser = environment.currentUser();
       this.ksCurrency = environment.ksCurrency();
 
@@ -199,7 +206,7 @@ public interface ViewPledgeViewModel {
 
       reward
         .map(Reward::rewardsItems)
-        .compose(coalesce(new ArrayList<RewardsItem>()))
+        .compose(Transformers.coalesce(new ArrayList<RewardsItem>()))
         .compose(bindToLifecycle())
         .subscribe(this.rewardsItems);
 
@@ -240,6 +247,9 @@ public interface ViewPledgeViewModel {
         .map(BooleanUtils::negate)
         .compose(bindToLifecycle())
         .subscribe(this.shippingSectionIsGone);
+
+      this.viewMessagesButtonIsGone = this.currentConfig.observable()
+        .map(config -> !ObjectUtils.coalesce(config.features().get(FeatureKey.ANDROID_MESSAGES), false));
     }
 
     private static @NonNull Pair<String, String> backingAmountAndDate(final @NonNull KSCurrency ksCurrency,
@@ -279,6 +289,7 @@ public interface ViewPledgeViewModel {
     private final BehaviorSubject<String> shippingLocationTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shippingSectionIsGone = BehaviorSubject.create();
     private final PublishSubject<Pair<Project, Backing>> startMessagesActivity = PublishSubject.create();
+    private final Observable<Boolean> viewMessagesButtonIsGone;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -343,6 +354,9 @@ public interface ViewPledgeViewModel {
     }
     @Override public @NonNull Observable<Pair<Project, Backing>> startMessagesActivity() {
       return this.startMessagesActivity;
+    }
+    @Override public @NonNull Observable<Boolean> viewMessagesButtonIsGone() {
+      return this.viewMessagesButtonIsGone;
     }
   }
 }

@@ -6,9 +6,13 @@ import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.BackingFactory;
+import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.LocationFactory;
 import com.kickstarter.factories.RewardFactory;
+import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
+import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
@@ -24,6 +28,7 @@ import com.kickstarter.ui.IntentKey;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -51,6 +56,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> shippingLocationTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> shippingSectionIsGone = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, Backing>> startMessagesActivity = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> viewMessagesButtonIsGone = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ViewPledgeViewModel.ViewModel(environment);
@@ -72,6 +78,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.shippingLocationTextViewText().subscribe(this.shippingLocationTextViewText);
     this.vm.outputs.shippingSectionIsGone().subscribe(this.shippingSectionIsGone);
     this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity);
+    this.vm.outputs.viewMessagesButtonIsGone().subscribe(this.viewMessagesButtonIsGone);
   }
 
   @Test
@@ -283,6 +290,40 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.viewMessagesButtonClicked();
 
     this.startMessagesActivity.assertValues(Pair.create(backing.project(), backing));
+  }
+
+  @Test
+  public void testViewMessagesButtonIsGone() {
+    final Backing backing = BackingFactory.backing();
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.emptyMap())
+      .build();
+
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    setUpEnvironment(envWithBacking(backing).toBuilder().currentConfig(currentConfig).build());
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+
+    this.viewMessagesButtonIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testViewMessagesButtonIsVisible() {
+    final Backing backing = BackingFactory.backing();
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.singletonMap(FeatureKey.ANDROID_MESSAGES, true))
+      .build();
+
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    setUpEnvironment(envWithBacking(backing).toBuilder().currentConfig(currentConfig).build());
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+
+    this.viewMessagesButtonIsGone.assertValues(false);
   }
 
   /**

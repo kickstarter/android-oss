@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -52,6 +53,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel.V
   protected @Bind(R.id.view_pledge_shipping_amount) TextView shippingAmountTextView;
   protected @Bind(R.id.view_pledge_shipping_location) TextView shippingLocationTextView;
   protected @Bind(R.id.view_pledge_shipping_section) View shippingSection;
+  protected @Bind(R.id.view_pledge_view_messages_button) Button viewMessagesButton;
 
   protected @BindString(R.string.backer_modal_backer_number) String backerNumberString;
   protected @BindString(R.string.backer_modal_status_backing_status) String backingStatusString;
@@ -169,6 +171,11 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel.V
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::startMessagesActivity);
+
+    this.viewModel.outputs.viewMessagesButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.viewMessagesButton));
   }
 
   @Override

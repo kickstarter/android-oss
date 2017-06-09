@@ -74,7 +74,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(this::setBackingInfoView);
 
-    this.viewModel.outputs.backingInfoViewHidden()
+    this.viewModel.outputs.backingInfoViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.backingInfoView));

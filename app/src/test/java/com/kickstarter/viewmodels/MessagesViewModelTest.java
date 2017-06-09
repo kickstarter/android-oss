@@ -31,7 +31,7 @@ import rx.observers.TestSubscriber;
 public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private MessagesViewModel.ViewModel vm;
   private final TestSubscriber<Pair<Backing, Project>> backingAndProject = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> backingInfoViewHidden = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> backingInfoViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> messageEditTextHint = new TestSubscriber<>();
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
@@ -43,7 +43,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm = new MessagesViewModel.ViewModel(environment);
 
     this.vm.outputs.backingAndProject().subscribe(this.backingAndProject);
-    this.vm.outputs.backingInfoViewHidden().subscribe(this.backingInfoViewHidden);
+    this.vm.outputs.backingInfoViewIsGone().subscribe(this.backingInfoViewIsGone);
     this.vm.outputs.messageEditTextHint().subscribe(this.messageEditTextHint);
     this.vm.outputs.messages().subscribe(this.messages);
     this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
@@ -64,7 +64,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
 
     this.backingAndProject.assertValues(Pair.create(messageThread.backing(), messageThread.project()));
-    this.backingInfoViewHidden.assertValues(false);
+    this.backingInfoViewIsGone.assertValues(false);
   }
 
   @Test
@@ -84,7 +84,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
 
     this.backingAndProject.assertNoValues();
-    this.backingInfoViewHidden.assertValues(true);
+    this.backingInfoViewIsGone.assertValues(true);
   }
 
   @Test

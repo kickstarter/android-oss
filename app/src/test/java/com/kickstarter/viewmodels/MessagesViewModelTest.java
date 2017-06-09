@@ -10,7 +10,10 @@ import com.kickstarter.factories.BackingFactory;
 import com.kickstarter.factories.MessageFactory;
 import com.kickstarter.factories.MessageThreadEnvelopeFactory;
 import com.kickstarter.factories.MessageThreadFactory;
+import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
@@ -53,17 +56,43 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testBackingInfo_Backing() {
-    final MessageThread messageThread = MessageThreadFactory.messageThread().toBuilder()
-      .backing(BackingFactory.backing())
+  public void testBackingAndProject_Participant() {
+    final Project project = ProjectFactory.project().toBuilder()
+      .isBacking(false)
       .build();
 
-    setUpEnvironment(environment());
+    final Backing backing = BackingFactory.backing().toBuilder()
+      .project(project)
+      .build();
+
+    final MessageThread messageThread = MessageThreadFactory.messageThread().toBuilder()
+      .project(project)
+      .backing(backing)
+      .build();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread) {
+        return Observable.just(MessageThreadEnvelopeFactory.messageThreadEnvelope());
+      }
+
+      @Override
+      public @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user) {
+        return Observable.just(backing);
+      }
+    };
+
+    setUpEnvironment(
+      environment().toBuilder()
+        .apiClient(apiClient)
+        .currentUser(new MockCurrentUser(UserFactory.user()))
+        .build()
+    );
 
     // Start the view model with a message thread.
     this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
 
-    this.backingAndProject.assertValues(Pair.create(messageThread.backing(), messageThread.project()));
+    this.backingAndProject.assertValues(Pair.create(backing, backing.project()));
     this.backingInfoViewIsGone.assertValues(false);
   }
 
@@ -90,7 +119,15 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testProjectData() {
     final MessageThread messageThread = MessageThreadFactory.messageThread();
-    setUpEnvironment(environment());
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(@NonNull MessageThread messageThread) {
+        return Observable.just(MessageThreadEnvelopeFactory.messageThreadEnvelope());
+      }
+    };
+
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
     // Start the view model with a message thread.
     this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
@@ -102,7 +139,15 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testMessageEditTextHint() {
     final MessageThread messageThread = MessageThreadFactory.messageThread();
-    setUpEnvironment(environment());
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(@NonNull MessageThread messageThread) {
+        return Observable.just(MessageThreadEnvelopeFactory.messageThreadEnvelope());
+      }
+    };
+
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
     // Start the view model with a message thread.
     this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));

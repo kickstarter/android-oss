@@ -100,7 +100,7 @@ public interface MessagesViewModel {
         .filter(ObjectUtils::isNotNull);
 
       final Observable<Either<Backing, MessageThread>> backingOrThread = Observable.merge(
-        configBacking.filter(ObjectUtils::isNotNull).map(backing -> new Either.Left<>(backing)),
+        configBacking.map(backing -> new Either.Left<>(backing)),
         configThread.map(thread -> new Either.Right<>(thread))
       );
 
@@ -135,7 +135,7 @@ public interface MessagesViewModel {
         .map(MessageThreadEnvelope::messageThread)
         .map(MessageThread::participant);
 
-      participant // idk if this is right
+      participant
         .map(User::name)
         .compose(bindToLifecycle())
         .subscribe(this.participantNameTextViewText::onNext);
@@ -151,20 +151,19 @@ public interface MessagesViewModel {
         .map(data -> data.isLeft() ? data.left().project() : data.right().first); // how do we avoid these warnings
 
       Observable.combineLatest(
-        configBacking,
+        backingOrThread,
         project,
         participant,
-        currentUser.observable(),
+        this.currentUser.observable(),
         MessagesData::new
       )
         .switchMap(data -> backingAndProjectFromData(data, this.client))
         .compose(bindToLifecycle())
         .subscribe(this.backingAndProject::onNext);
 
-      Observable.merge(
-        backingOrThread.map(Either::left).map(ObjectUtils::isNull),
-        backingOrThread.map(Either::right).map(MessageThread::backing).map(ObjectUtils::isNull)
-      )
+
+      backingOrThread
+        .map(e -> e.left() == null && e.right().backing() == null)
         .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.backingInfoViewIsGone::onNext);
@@ -184,8 +183,8 @@ public interface MessagesViewModel {
     private static @NonNull Observable<Pair<Backing, Project>> backingAndProjectFromData(final @NonNull MessagesData data,
       final @NonNull ApiClientType client) {
 
-      if (data.getBacking() != null) {
-        return Observable.just(Pair.create(data.getBacking(), data.getProject()));
+      if (data.getBackingOrThread().isLeft()) {
+        return Observable.just(Pair.create(data.getBackingOrThread().left(), data.getProject()));
       } else {
         final Observable<Notification<Backing>> backingNotification = data.getProject().isBacking()
           ? client.fetchProjectBacking(data.getProject(), data.getCurrentUser()).materialize().share()

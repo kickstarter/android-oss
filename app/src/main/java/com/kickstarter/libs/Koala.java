@@ -395,6 +395,18 @@ public final class Koala {
     });
   }
 
+  // MESSAGES
+  public void trackSentMessage(final @NonNull Project project, final @NonNull KoalaContext.Message context) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(project);
+    props.put("context", context.getTrackingString());
+
+    this.client.track(KoalaEvent.SENT_MESSAGE, props);
+  }
+
+  public void trackViewedMessageThread(final @NonNull Project project) {
+    this.client.track(KoalaEvent.VIEWED_MESSAGE_THREAD, KoalaUtils.projectProperties(project));
+  }
+
   // PROFILE
   public void trackProfileView() {
     // deprecated

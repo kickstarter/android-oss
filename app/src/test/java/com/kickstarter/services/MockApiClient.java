@@ -12,6 +12,7 @@ import com.kickstarter.factories.CommentFactory;
 import com.kickstarter.factories.CommentsEnvelopeFactory;
 import com.kickstarter.factories.LocationFactory;
 import com.kickstarter.factories.MessageFactory;
+import com.kickstarter.factories.MessageThreadEnvelopeFactory;
 import com.kickstarter.factories.MessageThreadsEnvelopeFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.SurveyResponseFactory;
@@ -165,12 +166,12 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(@NonNull Backing backing) {
-    return Observable.empty();
+    return Observable.just(MessageThreadEnvelopeFactory.messageThreadEnvelope());
   }
 
   @Override
   public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread) {
-    return Observable.empty();
+    return Observable.just(MessageThreadEnvelopeFactory.messageThreadEnvelope());
   }
 
   @Override

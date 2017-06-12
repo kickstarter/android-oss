@@ -13,6 +13,7 @@ import com.kickstarter.factories.MessageThreadFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Message;
@@ -107,13 +108,41 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(UserFactory.user())).build()
+    );
 
     // Start the view model with a message thread.
     this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
 
     this.backingAndProject.assertNoValues();
     this.backingInfoViewIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testConfiguredWithThread() {
+    final MessageThread messageThread = MessageThreadFactory.messageThread();
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
+
+    // Start the view model with a message thread.
+    this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
+
+    this.backingAndProject.assertValueCount(1);
+    this.messages.assertValueCount(1);
+    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
+  }
+
+  @Test
+  public void testConfiguredWithProject_AndBacking() {
+    final Backing backing = BackingFactory.backing();
+    final Project project = ProjectFactory.project();
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
+
+    this.vm.intent(new Intent().putExtra(IntentKey.BACKING, backing).putExtra(IntentKey.PROJECT, project));
+
+    this.backingAndProject.assertValueCount(1);
+    this.messages.assertValueCount(1);
+    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
   }
 
   @Test
@@ -127,7 +156,9 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(UserFactory.user())).build()
+    );
 
     // Start the view model with a message thread.
     this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
@@ -147,7 +178,9 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(UserFactory.user())).build()
+    );
 
     // Start the view model with a message thread.
     this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
@@ -168,7 +201,9 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(UserFactory.user())).build()
+    );
 
     // Start the view model with a message thread.
     this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, MessageThreadFactory.messageThread()));
@@ -186,7 +221,9 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(UserFactory.user())).build()
+    );
 
     // Start the view model with a message thread.
     this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, MessageThreadFactory.messageThread()));
@@ -211,7 +248,9 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(UserFactory.user())).build()
+    );
 
     // Start the view model with a message thread.
     this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, MessageThreadFactory.messageThread()));

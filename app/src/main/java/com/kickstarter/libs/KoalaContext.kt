@@ -38,6 +38,24 @@ class KoalaContext {
   }
 
   /**
+   * Determines the place from which Messages were presented.
+   * TODO: re-evaluate since there's no longer a dialog.
+   *
+   * BACKER_MODAL:        The backing view, usually seen by pressing "View pledge" on the project page.
+   * CREATOR_ACTIVITY:    The creator's activity feed.
+   * MESSAGES:            The messages inbox.
+   * PROJECT_MESSAGES:    The messages inbox for a particular project of a creator's.
+   * PROJECT_PAGE:        The project page.
+   */
+  enum class Message(val trackingString: String) {
+    BACKER_MODAL("backer_modal"),
+    CREATOR_ACTIVITY("creator_activity"),
+    MESSAGES("messages"),
+    PROJECT_MESSAGES("project_messages"),
+    PROJECT_PAGE("project_page")
+  }
+
+  /**
    * Determines the place from which the Update was presented.
    *
    * UPDATES:           The updates index.

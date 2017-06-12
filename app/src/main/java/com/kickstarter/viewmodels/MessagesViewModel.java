@@ -161,7 +161,6 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.backingAndProject::onNext);
 
-
       backingOrThread
         .map(e -> e.left() == null && e.right().backing() == null)
         .distinctUntilChanged()
@@ -178,6 +177,11 @@ public interface MessagesViewModel {
         .map(Project::name)
         .compose(bindToLifecycle())
         .subscribe(this.projectNameTextViewText::onNext);
+
+      project
+        .take(1)
+        .compose(bindToLifecycle())
+        .subscribe(this.koala::trackViewedMessageThread);
     }
 
     private static @NonNull Observable<Pair<Backing, Project>> backingAndProjectFromData(final @NonNull MessagesData data,

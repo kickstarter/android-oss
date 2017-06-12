@@ -138,6 +138,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
 
+    // Start the view model with a backing and a project.
     this.vm.intent(new Intent().putExtra(IntentKey.BACKING, backing).putExtra(IntentKey.PROJECT, project));
 
     this.backingAndProject.assertValueCount(1);
@@ -210,6 +211,31 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     // Messages emit.
     this.messages.assertValueCount(1);
+  }
+
+  @Test
+  public void testNoMessages() {
+    final Backing backing = BackingFactory.backing();
+    final Project project = ProjectFactory.project();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(@NonNull Backing backing) {
+        return Observable.empty();
+      }
+    };
+
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(UserFactory.user())).build()
+    );
+
+    // Start the view model with a backing and a project.
+    this.vm.intent(new Intent().putExtra(IntentKey.BACKING, backing).putExtra(IntentKey.PROJECT, project));
+
+    // All data except for messages should emit.
+    this.messages.assertNoValues();
+    this.participantNameTextViewText.assertValues(project.creator().name());
+    this.backingAndProject.assertValues(Pair.create(backing, project));
   }
 
   @Test

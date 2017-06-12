@@ -30,6 +30,7 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.errors;
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
@@ -115,7 +116,7 @@ public interface MessagesViewModel {
         .materialize()
         .share();
 
-      final Observable<Message> messageSent = messageNotification.compose(values());
+      final Observable<Message> messageSent = messageNotification.compose(values()).ofType(Message.class);
 
       this.setMessageEditText = messageSent.map(__ -> "");
 
@@ -129,11 +130,28 @@ public interface MessagesViewModel {
           } else {
             return this.client.fetchMessagesForThread(bOrT.right());
           }
-        }).share();
+        })
+        .compose(neverError())
+        .share();
 
-      final Observable<User> participant = messageThreadEnvelope
-        .map(MessageThreadEnvelope::messageThread)
-        .map(MessageThread::participant);
+      final Observable<Project> project = configData
+        .map(data -> data.isLeft() ? data.left().project() : data.right().first); // how do we avoid these warnings
+
+      // todo: check collabs
+      final Observable<User> participant = Observable.merge(
+        messageThreadEnvelope
+          .map(MessageThreadEnvelope::messageThread)
+          .filter(ObjectUtils::isNotNull)
+          .map(MessageThread::participant),
+        project.map(Project::creator)
+      )
+        .take(1);
+
+      messageThreadEnvelope
+        .map(MessageThreadEnvelope::messages)
+        .filter(ObjectUtils::isNotNull)
+        .compose(bindToLifecycle())
+        .subscribe(this.messages::onNext);
 
       participant
         .map(User::name)
@@ -141,14 +159,6 @@ public interface MessagesViewModel {
         .subscribe(this.participantNameTextViewText::onNext);
 
       this.messageEditTextHint = this.participantNameTextViewText;
-
-      messageThreadEnvelope
-        .map(MessageThreadEnvelope::messages)
-        .compose(bindToLifecycle())
-        .subscribe(this.messages::onNext);
-
-      final Observable<Project> project = configData
-        .map(data -> data.isLeft() ? data.left().project() : data.right().first); // how do we avoid these warnings
 
       Observable.combineLatest(
         backingOrThread,
@@ -161,8 +171,8 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.backingAndProject::onNext);
 
-      backingOrThread
-        .map(e -> e.left() == null && e.right().backing() == null)
+      this.backingAndProject
+        .map(bp -> bp.first == null)
         .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.backingInfoViewIsGone::onNext);

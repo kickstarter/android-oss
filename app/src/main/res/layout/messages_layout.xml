@@ -94,10 +94,10 @@
             style="@style/FootnotePrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/view_pledge_button"
-            android:layout_alignBottom="@+id/view_pledge_button"
+            android:layout_alignBaseline="@+id/messages_view_pledge_button"
+            android:layout_alignBottom="@+id/messages_view_pledge_button"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/view_pledge_button"
+            android:layout_toStartOf="@+id/messages_view_pledge_button"
             tools:text="$42 pledged on June 9, 2017"/>
 
         </RelativeLayout>

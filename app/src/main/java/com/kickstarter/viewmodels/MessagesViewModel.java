@@ -210,7 +210,6 @@ public interface MessagesViewModel {
       this.backButtonIsGone = this.viewPledgeButtonIsGone.map(BooleanUtils::negate);
       this.closeButtonIsGone = this.backButtonIsGone.map(BooleanUtils::negate);
       this.goBack = this.backOrCloseButtonClicked;
-      this.startViewPledgeActivity = project.compose(takeWhen(this.viewPledgeButtonClicked));
 
       messageNotification
         .compose(errors())
@@ -222,6 +221,11 @@ public interface MessagesViewModel {
         .map(Project::name)
         .compose(bindToLifecycle())
         .subscribe(this.projectNameTextViewText::onNext);
+
+      project
+        .compose(takeWhen(this.viewPledgeButtonClicked))
+        .compose(bindToLifecycle())
+        .subscribe(this.startViewPledgeActivity::onNext);
 
       project
         .take(1)
@@ -266,7 +270,7 @@ public interface MessagesViewModel {
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<String> setMessageEditText;
-    private final Observable<Project> startViewPledgeActivity;
+    private final BehaviorSubject<Project> startViewPledgeActivity = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> viewPledgeButtonIsGone = BehaviorSubject.create();
 
     public final Inputs inputs = this;

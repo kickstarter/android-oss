@@ -75,7 +75,7 @@
           android:padding="@dimen/grid_new_2"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="@string/backer_modal_view_messages"/>
+          android:text="@string/Message_creator"/>
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 

@@ -71,7 +71,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     layoutManager.setStackFromEnd(true);
     this.recyclerView.setLayoutManager(layoutManager);
 
-    this.viewPledgeButton.setText(viewPledgeString);
+    this.viewPledgeButton.setText(this.viewPledgeString);
 
     this.viewModel.outputs.backButtonIsGone()
       .compose(bindToLifecycle())

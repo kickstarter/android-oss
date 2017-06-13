@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.MessagesAdapter;
 import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.MessagesViewModel;
@@ -48,7 +50,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.message_edit_text) EditText messageEditText;
   protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
-  protected @Bind(R.id.view_pledge_button) Button viewPledgeButton;
+  protected @Bind(R.id.messages_view_pledge_button) Button viewPledgeButton;
 
   protected @BindString(R.string.project_creator_by_creator) String byCreatorString;
   protected @BindString(R.string.pledge_amount_pledged_on_pledge_date) String pledgeAmountPledgedOnPledgeDateString;
@@ -133,6 +135,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(error -> ViewUtils.showToast(this, error));
 
+    this.viewModel.outputs.startViewPledgeActivity()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startViewPledgeActivity);
+
     this.viewModel.outputs.viewPledgeButtonIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -156,8 +163,13 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   }
 
   @OnClick(R.id.send_message_button)
-  public void sendMessageButtonClicked() {
+  protected void sendMessageButtonClicked() {
     this.viewModel.inputs.sendMessageButtonClicked();
+  }
+
+  @OnClick(R.id.messages_view_pledge_button)
+  protected void viewPledgeButtonClicked() {
+    this.viewModel.inputs.viewPledgeButtonClicked();
   }
 
   @OnTextChanged(R.id.message_edit_text)
@@ -180,5 +192,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
 
   private void setMessageEditTextHint(final @NonNull String name) {
     this.messageEditText.setHint(this.ksString.format(this.replyToUserNameString, "user_name", name));
+  }
+
+  private void startViewPledgeActivity(final @NonNull Project project) {
+    final Intent intent = new Intent(this, ViewPledgeActivity.class)
+      .putExtra(IntentKey.PROJECT, project);
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

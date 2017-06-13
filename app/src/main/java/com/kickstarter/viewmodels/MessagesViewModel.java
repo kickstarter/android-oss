@@ -47,6 +47,9 @@ public interface MessagesViewModel {
 
     /** Call when the send message button has been clicked. */
     void sendMessageButtonClicked();
+
+    /** Call when the view pledge button is clicked. */
+    void viewPledgeButtonClicked();
   }
 
   interface Outputs {
@@ -82,6 +85,9 @@ public interface MessagesViewModel {
 
     /** Emits a string to display in the message error toast. */
     Observable<String> showMessageErrorToast();
+
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ViewPledgeActivity}. */
+    Observable<Project> startViewPledgeActivity();
 
     /** Emits a boolean that determines if the View pledge button should be gone. */
     Observable<Boolean> viewPledgeButtonIsGone();
@@ -204,6 +210,7 @@ public interface MessagesViewModel {
       this.backButtonIsGone = this.viewPledgeButtonIsGone.map(BooleanUtils::negate);
       this.closeButtonIsGone = this.backButtonIsGone.map(BooleanUtils::negate);
       this.goBack = this.backOrCloseButtonClicked;
+      this.startViewPledgeActivity = project.compose(takeWhen(this.viewPledgeButtonClicked));
 
       messageNotification
         .compose(errors())
@@ -246,6 +253,7 @@ public interface MessagesViewModel {
     private final PublishSubject<Void> backOrCloseButtonClicked = PublishSubject.create();
     private final PublishSubject<String> messageEditTextChanged = PublishSubject.create();
     private final PublishSubject<Void> sendMessageButtonClicked = PublishSubject.create();
+    private final PublishSubject<Void> viewPledgeButtonClicked = PublishSubject.create();
 
     private final Observable<Boolean> backButtonIsGone;
     private final BehaviorSubject<Pair<Backing, Project>> backingAndProject = BehaviorSubject.create();
@@ -258,6 +266,7 @@ public interface MessagesViewModel {
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<String> setMessageEditText;
+    private final Observable<Project> startViewPledgeActivity;
     private final BehaviorSubject<Boolean> viewPledgeButtonIsGone = BehaviorSubject.create();
 
     public final Inputs inputs = this;
@@ -271,6 +280,9 @@ public interface MessagesViewModel {
     }
     @Override public void sendMessageButtonClicked() {
       this.sendMessageButtonClicked.onNext(null);
+    }
+    @Override public void viewPledgeButtonClicked() {
+      this.viewPledgeButtonClicked.onNext(null);
     }
 
     @Override public @NonNull Observable<Boolean> backButtonIsGone() {
@@ -305,6 +317,9 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<String> setMessageEditText() {
       return this.setMessageEditText;
+    }
+    @Override public @NonNull Observable<Project> startViewPledgeActivity() {
+      return this.startViewPledgeActivity;
     }
     @Override public @NonNull Observable<Boolean> viewPledgeButtonIsGone() {
       return this.viewPledgeButtonIsGone;

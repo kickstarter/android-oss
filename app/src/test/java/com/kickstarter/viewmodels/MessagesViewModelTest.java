@@ -46,6 +46,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
   private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
+  private final TestSubscriber<Project> startViewPledgeAcivity = new TestSubscriber<>();
   private final TestSubscriber<Boolean> viewPledgeButtonIsGone = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
@@ -61,6 +62,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
+    this.vm.outputs.startViewPledgeActivity().subscribe(this.startViewPledgeAcivity);
     this.vm.outputs.viewPledgeButtonIsGone().subscribe(this.viewPledgeButtonIsGone);
   }
 
@@ -328,6 +330,17 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.setMessageEditText.assertValues("");
 
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD, KoalaEvent.SENT_MESSAGE);
+  }
+
+  @Test
+  public void testStartViewPledgeActivity() {
+    final Project project = ProjectFactory.project();
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
+
+    this.vm.intent(backerModalContextIntent(BackingFactory.backing(), project));
+    this.vm.inputs.viewPledgeButtonClicked();
+
+    this.startViewPledgeAcivity.assertValues(project);
   }
 
   @Test

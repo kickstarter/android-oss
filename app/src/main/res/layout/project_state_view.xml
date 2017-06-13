@@ -40,6 +40,7 @@
       android:id="@+id/funding_unsuccessful_text_view"
       style="@style/BodyPrimaryMedium"
       android:layout_width="wrap_content"
+
       android:layout_height="wrap_content"
       tools:text="Funding unsuccessful"
       android:layout_marginEnd="@dimen/grid_new_2"/>

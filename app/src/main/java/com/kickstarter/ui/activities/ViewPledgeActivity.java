@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,10 +8,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Environment;
@@ -19,6 +20,8 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Backing;
+import com.kickstarter.models.Project;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.RewardsItemAdapter;
 import com.kickstarter.viewmodels.ViewPledgeViewModel;
 import com.squareup.picasso.Picasso;
@@ -26,12 +29,13 @@ import com.squareup.picasso.Picasso;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
-import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
-@RequiresActivityViewModel(ViewPledgeViewModel.class)
-public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> {
+@RequiresActivityViewModel(ViewPledgeViewModel.ViewModel.class)
+public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel.ViewModel> {
   protected @Bind(R.id.view_pledge_avatar_image_view) ImageView avatarImageView;
   protected @Bind(R.id.view_pledge_backer_name) TextView backerNameTextView;
   protected @Bind(R.id.view_pledge_backer_number) TextView backerNumberTextView;
@@ -49,6 +53,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
   protected @Bind(R.id.view_pledge_shipping_amount) TextView shippingAmountTextView;
   protected @Bind(R.id.view_pledge_shipping_location) TextView shippingLocationTextView;
   protected @Bind(R.id.view_pledge_shipping_section) View shippingSection;
+  protected @Bind(R.id.view_pledge_view_messages_button) Button viewMessagesButton;
 
   protected @BindString(R.string.backer_modal_backer_number) String backerNumberString;
   protected @BindString(R.string.backer_modal_status_backing_status) String backingStatusString;
@@ -68,124 +73,140 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
     super.onCreate(savedInstanceState);
     setContentView(R.layout.view_pledge_layout);
     ButterKnife.bind(this);
+
     final RewardsItemAdapter rewardsItemAdapter = new RewardsItemAdapter();
-    rewardsItemRecyclerView.setAdapter(rewardsItemAdapter);
+    this.rewardsItemRecyclerView.setAdapter(rewardsItemAdapter);
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-    rewardsItemRecyclerView.setLayoutManager(layoutManager);
+    this.rewardsItemRecyclerView.setLayoutManager(layoutManager);
 
     final Environment environment = environment();
-    ksString = environment.ksString();
+    this.ksString = environment.ksString();
 
-    RxView.clicks(projectContextView)
+    this.viewModel.outputs.backerNameTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
-      .subscribe(__ -> viewModel.inputs.projectClicked());
+      .compose(observeForUI())
+      .subscribe(this.backerNameTextView::setText);
 
-    viewModel.outputs.backerNameTextViewText()
+    this.viewModel.outputs.backerNumberTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
-      .subscribe(backerNameTextView::setText);
-
-    viewModel.outputs.backerNumberTextViewText()
-      .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(this::setBackerNumberTextViewText);
 
-    viewModel.outputs.backingAmountAndDateTextViewText()
+    this.viewModel.outputs.backingAmountAndDateTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ad -> setBackingAmountAndDateTextViewText(ad.first, ad.second));
 
-    viewModel.outputs.backingStatus()
+    this.viewModel.outputs.backingStatusTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(this::setBackingStatusTextViewText);
 
-    viewModel.outputs.creatorNameTextViewText()
+    this.viewModel.outputs.creatorNameTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(this::setCreatorNameTextViewText);
 
-    viewModel.outputs.estimatedDeliverySectionIsGone()
+    this.viewModel.outputs.estimatedDeliverySectionIsGone()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.pledgeEstimatedDeliverySection));
 
-    viewModel.outputs.estimatedDeliverySectionTextViewText()
+    this.viewModel.outputs.estimatedDeliverySectionTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
-      .subscribe(pledgeEstimatedDeliveryTextView::setText);
+      .compose(observeForUI())
+      .subscribe(this.pledgeEstimatedDeliveryTextView::setText);
 
-    viewModel.outputs.goBack()
+    this.viewModel.outputs.goBack()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(__ -> back());
 
-    viewModel.outputs.loadBackerAvatar()
+    this.viewModel.outputs.loadBackerAvatar()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(this::loadBackerAvatar);
 
-    viewModel.outputs.loadProjectPhoto()
+    this.viewModel.outputs.loadProjectPhoto()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
-      .subscribe(url -> Picasso.with(this).load(url).into(projectContextPhotoImageView));
+      .compose(observeForUI())
+      .subscribe(url -> Picasso.with(this).load(url).into(this.projectContextPhotoImageView));
 
-    viewModel.outputs.projectNameTextViewText()
+    this.viewModel.outputs.projectNameTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
-      .subscribe(projectContextProjectNameTextView::setText);
+      .compose(observeForUI())
+      .subscribe(this.projectContextProjectNameTextView::setText);
 
-    viewModel.outputs.rewardsItems()
+    this.viewModel.outputs.rewardsItems()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(rewardsItemAdapter::rewardsItems);
 
-    viewModel.outputs.rewardsItemsAreHidden()
+    this.viewModel.outputs.rewardsItemsAreGone()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
-      .subscribe(ViewUtils.setGone(rewardsItemSection));
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.rewardsItemSection));
 
-    viewModel.outputs.rewardMinimumAndDescriptionTextViewText()
+    this.viewModel.outputs.rewardMinimumAndDescriptionTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(md -> setRewardMinimumAndDescriptionTextViewText(md.first, md.second));
 
-    viewModel.outputs.shippingAmountTextViewText()
+    this.viewModel.outputs.shippingAmountTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
-      .subscribe(shippingAmountTextView::setText);
+      .compose(observeForUI())
+      .subscribe(this.shippingAmountTextView::setText);
 
-    viewModel.outputs.shippingLocationTextViewText()
+    this.viewModel.outputs.shippingLocationTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
-      .subscribe(shippingLocationTextView::setText);
+      .compose(observeForUI())
+      .subscribe(this.shippingLocationTextView::setText);
 
-    viewModel.outputs.shippingSectionIsHidden()
+    this.viewModel.outputs.shippingSectionIsGone()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
-      .subscribe(ViewUtils.setGone(shippingSection));
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.shippingSection));
+
+    this.viewModel.outputs.startMessagesActivity()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startMessagesActivity);
+
+    this.viewModel.outputs.viewMessagesButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.viewMessagesButton));
+  }
+
+  @Override
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
+  }
+
+  @OnClick(R.id.project_context_view)
+  protected void projectContextClicked() {
+    this.viewModel.inputs.projectClicked();
+  }
+
+  @OnClick(R.id.view_pledge_view_messages_button)
+  protected void viewMessagesButtonClicked() {
+    this.viewModel.inputs.viewMessagesButtonClicked();
   }
 
   private void loadBackerAvatar(final @NonNull String url) {
     Picasso.with(this).load(url)
       .transform(new CircleTransformation())
-      .into(avatarImageView);
+      .into(this.avatarImageView);
   }
 
   private void setBackingAmountAndDateTextViewText(final @NonNull String amount, final @NonNull String date) {
-    backingAmountAndDateTextView.setText(ksString.format(
-      pledgeAmountPledgeDateString,
-      "pledge_amount", amount,
-      "pledge_date", date
-    ));
+    this.backingAmountAndDateTextView.setText(
+      this.ksString.format(this.pledgeAmountPledgeDateString, "pledge_amount", amount, "pledge_date", date)
+    );
   }
 
   private void setBackerNumberTextViewText(final @NonNull String sequence) {
-    backerNumberTextView.setText(ksString.format(
-      backerNumberString,
-      "backer_number", sequence
-    ));
+    this.backerNumberTextView.setText(this.ksString.format(this.backerNumberString, "backer_number", sequence));
   }
 
   private void setBackingStatusTextViewText(final @NonNull String status) {
@@ -210,30 +231,28 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
         str = "";
     }
 
-    backingStatusTextView.setText(ksString.format(
-      backingStatusString,
-      "backing_status", str
-    ));
-
+    this.backingStatusTextView.setText(this.ksString.format(this.backingStatusString, "backing_status", str));
   }
 
   private void setCreatorNameTextViewText(final @NonNull String name) {
-    projectContextCreatorNameTextView.setText(ksString.format(
-      creatorNameString,
-      "creator_name", name
-    ));
+    this.projectContextCreatorNameTextView.setText(this.ksString.format(this.creatorNameString, "creator_name", name));
   }
 
-  private void setRewardMinimumAndDescriptionTextViewText(final @NonNull String minimum, final @NonNull String description) {
-    rewardMinimumAndDescriptionTextView.setText(ksString.format(
-      rewardAmountRewardDescriptionString,
-      "reward_amount", minimum,
-      "reward_description", description
-    ));
+  private void setRewardMinimumAndDescriptionTextViewText(final @NonNull String minimum,
+    final @NonNull String description) {
+
+    this.rewardMinimumAndDescriptionTextView.setText(
+      this.ksString.format(
+        this.rewardAmountRewardDescriptionString, "reward_amount", minimum, "reward_description", description
+      )
+    );
   }
 
-  @Override
-  protected @Nullable Pair<Integer, Integer> exitTransition() {
-    return slideInFromLeft();
+  private void startMessagesActivity(final @NonNull Pair<Project, Backing> projectAndBacking) {
+    final Intent intent = new Intent(this, MessagesActivity.class)
+      .putExtra(IntentKey.PROJECT, projectAndBacking.first)
+      .putExtra(IntentKey.BACKING, projectAndBacking.second);
+
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

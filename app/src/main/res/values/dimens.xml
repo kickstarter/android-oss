@@ -78,8 +78,8 @@
   <!-- Layout padding -->
   <dimen name="activity_padding_x">0dp</dimen>
   <dimen name="comment_body_padding_x">@dimen/grid_7</dimen>
-  <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
-  <dimen name="feed_padding_x">@dimen/grid_2</dimen>
+  <dimen name="feed_padding_y">@dimen/grid_new_3</dimen>
+  <dimen name="feed_padding_x">@dimen/grid_new_2</dimen>
   <dimen name="search_padding_y">@dimen/grid_new_2</dimen>
   <dimen name="search_padding_x">@dimen/grid_new_2</dimen>
   <dimen name="form_margin_x">@dimen/grid_2</dimen>

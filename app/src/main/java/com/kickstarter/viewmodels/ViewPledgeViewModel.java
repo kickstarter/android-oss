@@ -4,9 +4,12 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BackingUtils;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DateTimeUtils;
@@ -24,8 +27,6 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ViewPledgeActivity;
-import com.kickstarter.viewmodels.inputs.ViewPledgeViewModelInputs;
-import com.kickstarter.viewmodels.outputs.ViewPledgeViewModelOutputs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,249 +35,328 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.coalesce;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
 
-public final class ViewPledgeViewModel extends ActivityViewModel<ViewPledgeActivity> implements ViewPledgeViewModelInputs,
-  ViewPledgeViewModelOutputs  {
+public interface ViewPledgeViewModel {
 
-  public ViewPledgeViewModel(final @NonNull Environment environment) {
-    super(environment);
+  interface Inputs {
+    /** Call when the project context section is clicked. */
+    void projectClicked();
 
-    final ApiClientType client = environment.apiClient();
-    final CurrentUserType currentUser = environment.currentUser();
-    final KSCurrency ksCurrency = environment.ksCurrency();
-
-    final Observable<Project> project = intent()
-      .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
-      .ofType(Project.class);
-
-    final Observable<Backing> backing = project
-      .compose(combineLatestPair(currentUser.observable()))
-      .filter(pu -> pu.second != null)
-      .switchMap(pu -> client.fetchProjectBacking(pu.first, pu.second)
-        .retry(3)
-        .compose(neverError())
-      )
-      .share();
-
-    final Observable<User> backer = backing
-      .map(Backing::backer);
-
-    final Observable<Backing> shippableBacking = backing
-      .filter(BackingUtils::isShippable);
-
-    final Observable<Reward> reward = backing
-      .map(Backing::reward)
-      .filter(ObjectUtils::isNotNull);
-
-    backing
-      .map(Backing::sequence)
-      .map(NumberUtils::format)
-      .compose(bindToLifecycle())
-      .subscribe(backerNumberTextViewText);
-
-    backer
-      .map(User::name)
-      .compose(bindToLifecycle())
-      .subscribe(backerNameTextViewText);
-
-    project
-      .compose(zipPair(backing))
-      .map(pb -> backingAmountAndDate(ksCurrency, pb.first, pb.second))
-      .compose(bindToLifecycle())
-      .subscribe(backingAmountAndDateTextViewText);
-
-    backing
-      .map(Backing::status)
-      .compose(bindToLifecycle())
-      .subscribe(backingStatus);
-
-    project
-      .map(p -> p.creator().name())
-      .compose(bindToLifecycle())
-      .subscribe(creatorNameTextViewText);
-
-    goBack = projectClicked;
-
-    backer
-      .map(User::avatar)
-      .map(Avatar::medium)
-      .compose(bindToLifecycle())
-      .subscribe(loadBackerAvatar);
-
-    project
-      .map(Project::photo)
-      .filter(ObjectUtils::isNotNull)
-      .map(Photo::full)
-      .compose(bindToLifecycle())
-      .subscribe(loadProjectPhoto);
-
-    project
-      .map(Project::name)
-      .compose(bindToLifecycle())
-      .subscribe(projectNameTextViewText);
-
-    project
-      .compose(zipPair(backing.map(Backing::reward)))
-      .map(pr -> rewardMinimumAndDescription(ksCurrency, pr.first, pr.second))
-      .compose(bindToLifecycle())
-      .subscribe(rewardMinimumAndDescriptionTextViewText);
-
-    reward
-      .map(Reward::rewardsItems)
-      .compose(coalesce(new ArrayList<RewardsItem>()))
-      .compose(bindToLifecycle())
-      .subscribe(rewardsItems);
-
-    reward
-      .map(RewardUtils::isItemized)
-      .map(BooleanUtils::negate)
-      .compose(bindToLifecycle())
-      .subscribe(rewardsItemsAreHidden);
-
-    reward
-      .map(Reward::estimatedDeliveryOn)
-      .map(ObjectUtils::isNull)
-      .compose(bindToLifecycle())
-      .subscribe(estimatedDeliverySectionIsGone);
-
-    reward
-      .map(Reward::estimatedDeliveryOn)
-      .filter(ObjectUtils::isNotNull)
-      .map(DateTimeUtils::estimatedDeliveryOn)
-      .compose(bindToLifecycle())
-      .subscribe(estimatedDeliverySectionTextViewText);
-
-    project
-      .compose(zipPair(shippableBacking))
-      .map(pb -> ksCurrency.format(pb.second.shippingAmount(), pb.first))
-      .compose(bindToLifecycle())
-      .subscribe(shippingAmountTextViewText);
-
-    backing
-      .map(Backing::location)
-      .filter(ObjectUtils::isNotNull)
-      .map(Location::displayableName)
-      .compose(bindToLifecycle())
-      .subscribe(shippingLocationTextViewText);
-
-    backing
-      .map(BackingUtils::isShippable)
-      .map(BooleanUtils::negate)
-      .compose(bindToLifecycle())
-      .subscribe(shippingSectionIsHidden);
+    /** Call when the view messages button is clicked. */
+    void viewMessagesButtonClicked();
   }
 
-  private static Pair<String, String> backingAmountAndDate(final @NonNull KSCurrency ksCurrency,
-    final @NonNull Project project, final @NonNull Backing backing) {
+  interface Outputs {
+    /** Set the backer name TextView's text. */
+    Observable<String> backerNameTextViewText();
 
-    final String amount = ksCurrency.format(backing.amount(), project);
-    final String date = DateTimeUtils.fullDate(backing.pledgedAt());
+    /** Set the backer number TextView's text. */
+    Observable<String> backerNumberTextViewText();
 
-    return Pair.create(amount, date);
+    /** Set the backing status TextView's text. */
+    Observable<String> backingStatusTextViewText();
+
+    /** Set the backing amount and date TextView's text. */
+    Observable<Pair<String, String>> backingAmountAndDateTextViewText();
+
+    /** Set the creator name TextView's text. */
+    Observable<String> creatorNameTextViewText();
+
+    /** Whether to hide the estimated delivery date section. */
+    Observable<Boolean> estimatedDeliverySectionIsGone();
+
+    /** text date for the estimated delivery section. */
+    Observable<String> estimatedDeliverySectionTextViewText();
+
+    /** Navigate back. */
+    Observable<Void> goBack();
+
+    /** Load the backer avatar given the URL. */
+    Observable<String> loadBackerAvatar();
+
+    /** Load the project photo given the URL. */
+    Observable<String> loadProjectPhoto();
+
+    /** Set the project name TextView's text. */
+    Observable<String> projectNameTextViewText();
+
+    /** Set the reward minimum and description TextView's text. */
+    Observable<Pair<String, String>> rewardMinimumAndDescriptionTextViewText();
+
+    /** Show the rewards items. */
+    Observable<List<RewardsItem>> rewardsItems();
+
+    /** Returns `true` if the items section should be gone, `false` otherwise. */
+    Observable<Boolean> rewardsItemsAreGone();
+
+    /** Set the shipping amount TextView's text. */
+    Observable<String> shippingAmountTextViewText();
+
+    /** Set the shipping location TextView's text. */
+    Observable<String> shippingLocationTextViewText();
+
+    /** Set the visibility of the shipping section.*/
+    Observable<Boolean> shippingSectionIsGone();
+
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.MessagesActivity}. */
+    Observable<Pair<Project, Backing>> startMessagesActivity();
+
+    /** Emits a boolean to determine when the View Messages button should be gone. */
+    Observable<Boolean> viewMessagesButtonIsGone();
   }
 
-  private static Pair<String, String> rewardMinimumAndDescription(final @NonNull KSCurrency ksCurrency,
-    final @NonNull Project project, final @NonNull Reward reward) {
+  final class ViewModel extends ActivityViewModel<ViewPledgeActivity> implements Inputs, Outputs {
+    private final ApiClientType client;
+    private final CurrentConfigType currentConfig;
+    private final CurrentUserType currentUser;
+    private final KSCurrency ksCurrency;
 
-    final String minimum = ksCurrency.format(reward.minimum(), project);
-    return Pair.create(minimum, reward.description());
-  }
+    public ViewModel(final @NonNull Environment environment) {
+      super(environment);
 
-  private final PublishSubject<Void> projectClicked = PublishSubject.create();
+      this.client = environment.apiClient();
+      this.currentConfig = environment.currentConfig();
+      this.currentUser = environment.currentUser();
+      this.ksCurrency = environment.ksCurrency();
 
-  private final BehaviorSubject<String> backerNameTextViewText = BehaviorSubject.create();
-  private final BehaviorSubject<String> backerNumberTextViewText = BehaviorSubject.create();
-  private final BehaviorSubject<String> backingStatus = BehaviorSubject.create();
-  private final BehaviorSubject<Pair<String, String>> backingAmountAndDateTextViewText = BehaviorSubject.create();
-  private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
-  private final BehaviorSubject<Boolean> estimatedDeliverySectionIsGone = BehaviorSubject.create();
-  private final BehaviorSubject<String> estimatedDeliverySectionTextViewText = BehaviorSubject.create();
-  private final Observable<Void> goBack;
-  private final BehaviorSubject<String> loadBackerAvatar = BehaviorSubject.create();
-  private final BehaviorSubject<String> loadProjectPhoto = BehaviorSubject.create();
-  private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
-  private final BehaviorSubject<Pair<String, String>> rewardMinimumAndDescriptionTextViewText = BehaviorSubject.create();
-  private final BehaviorSubject<List<RewardsItem>> rewardsItems = BehaviorSubject.create();
-  private final BehaviorSubject<Boolean> rewardsItemsAreHidden = BehaviorSubject.create();
-  private final BehaviorSubject<String> shippingAmountTextViewText = BehaviorSubject.create();
-  private final BehaviorSubject<String> shippingLocationTextViewText = BehaviorSubject.create();
-  private final BehaviorSubject<Boolean> shippingSectionIsHidden = BehaviorSubject.create();
+      final Observable<Project> project = intent()
+        .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
+        .ofType(Project.class);
 
-  public final ViewPledgeViewModelInputs inputs = this;
-  public final ViewPledgeViewModelOutputs outputs = this;
+      final Observable<Backing> backing = project
+        .compose(combineLatestPair(this.currentUser.observable()))
+        .filter(pu -> pu.second != null)
+        .switchMap(pu -> this.client.fetchProjectBacking(pu.first, pu.second)
+          .retry(3)
+          .compose(neverError())
+        )
+        .share();
 
-  @Override public void projectClicked() {
-    projectClicked.onNext(null);
-  }
+      final Observable<User> backer = backing
+        .map(Backing::backer);
 
-  @Override public @NonNull Observable<String> backerNameTextViewText() {
-    return backerNameTextViewText;
-  }
+      final Observable<Backing> shippableBacking = backing
+        .filter(BackingUtils::isShippable);
 
-  @Override public @NonNull Observable<String> backerNumberTextViewText() {
-    return backerNumberTextViewText;
-  }
+      final Observable<Reward> reward = backing
+        .map(Backing::reward)
+        .filter(ObjectUtils::isNotNull);
 
-  @Override public @NonNull Observable<Pair<String, String>> backingAmountAndDateTextViewText() {
-    return backingAmountAndDateTextViewText;
-  }
+      Observable.zip(project, backing, Pair::create)
+        .compose(takeWhen(this.viewMessagesButtonClicked))
+        .compose(bindToLifecycle())
+        .subscribe(this.startMessagesActivity);
 
-  @Override public @NonNull Observable<String> backingStatus() {
-    return backingStatus;
-  }
+      backing
+        .map(Backing::sequence)
+        .map(NumberUtils::format)
+        .compose(bindToLifecycle())
+        .subscribe(this.backerNumberTextViewText);
 
-  @Override public @NonNull Observable<String> creatorNameTextViewText() {
-    return creatorNameTextViewText;
-  }
+      backer
+        .map(User::name)
+        .compose(bindToLifecycle())
+        .subscribe(this.backerNameTextViewText);
 
-  @Override public @NonNull Observable<Boolean> estimatedDeliverySectionIsGone() {
-    return estimatedDeliverySectionIsGone;
-  }
+      project
+        .compose(zipPair(backing))
+        .map(pb -> backingAmountAndDate(this.ksCurrency, pb.first, pb.second))
+        .compose(bindToLifecycle())
+        .subscribe(this.backingAmountAndDateTextViewText);
 
-  @Override public @NonNull Observable<String> estimatedDeliverySectionTextViewText() {
-    return estimatedDeliverySectionTextViewText;
-  }
-  @Override public @NonNull Observable<Void> goBack() {
-    return goBack;
-  }
+      backing
+        .map(Backing::status)
+        .compose(bindToLifecycle())
+        .subscribe(this.backingStatusTextViewText);
 
-  @Override public @NonNull Observable<String> loadBackerAvatar() {
-    return loadBackerAvatar;
-  }
+      project
+        .map(p -> p.creator().name())
+        .compose(bindToLifecycle())
+        .subscribe(this.creatorNameTextViewText);
 
-  @Override public @NonNull Observable<String> loadProjectPhoto() {
-    return loadProjectPhoto;
-  }
+      this.goBack = this.projectClicked;
 
-  @Override public @NonNull Observable<String> projectNameTextViewText() {
-    return projectNameTextViewText;
-  }
+      backer
+        .map(User::avatar)
+        .map(Avatar::medium)
+        .compose(bindToLifecycle())
+        .subscribe(this.loadBackerAvatar);
 
-  @Override public @NonNull Observable<Pair<String, String>> rewardMinimumAndDescriptionTextViewText() {
-    return rewardMinimumAndDescriptionTextViewText;
-  }
+      project
+        .map(Project::photo)
+        .filter(ObjectUtils::isNotNull)
+        .map(Photo::full)
+        .compose(bindToLifecycle())
+        .subscribe(this.loadProjectPhoto);
 
-  @Override public @NonNull Observable<List<RewardsItem>> rewardsItems() {
-    return rewardsItems;
-  }
+      project
+        .map(Project::name)
+        .compose(bindToLifecycle())
+        .subscribe(this.projectNameTextViewText);
 
-  @Override public @NonNull Observable<Boolean> rewardsItemsAreHidden() {
-    return rewardsItemsAreHidden;
-  }
+      project
+        .compose(zipPair(backing.map(Backing::reward)))
+        .map(pr -> rewardMinimumAndDescription(this.ksCurrency, pr.first, pr.second))
+        .compose(bindToLifecycle())
+        .subscribe(this.rewardMinimumAndDescriptionTextViewText);
 
-  @Override public @NonNull Observable<String> shippingAmountTextViewText() {
-    return shippingAmountTextViewText;
-  }
+      reward
+        .map(Reward::rewardsItems)
+        .compose(Transformers.coalesce(new ArrayList<RewardsItem>()))
+        .compose(bindToLifecycle())
+        .subscribe(this.rewardsItems);
 
-  @Override public @NonNull Observable<String> shippingLocationTextViewText() {
-    return shippingLocationTextViewText;
-  }
+      reward
+        .map(RewardUtils::isItemized)
+        .map(BooleanUtils::negate)
+        .compose(bindToLifecycle())
+        .subscribe(this.rewardsItemsAreGone);
 
-  @Override public @NonNull Observable<Boolean> shippingSectionIsHidden() {
-    return shippingSectionIsHidden;
+      reward
+        .map(Reward::estimatedDeliveryOn)
+        .map(ObjectUtils::isNull)
+        .compose(bindToLifecycle())
+        .subscribe(this.estimatedDeliverySectionIsGone);
+
+      reward
+        .map(Reward::estimatedDeliveryOn)
+        .filter(ObjectUtils::isNotNull)
+        .map(DateTimeUtils::estimatedDeliveryOn)
+        .compose(bindToLifecycle())
+        .subscribe(this.estimatedDeliverySectionTextViewText);
+
+      project
+        .compose(zipPair(shippableBacking))
+        .map(pb -> this.ksCurrency.format(pb.second.shippingAmount(), pb.first))
+        .compose(bindToLifecycle())
+        .subscribe(this.shippingAmountTextViewText);
+
+      backing
+        .map(Backing::location)
+        .filter(ObjectUtils::isNotNull)
+        .map(Location::displayableName)
+        .compose(bindToLifecycle())
+        .subscribe(this.shippingLocationTextViewText);
+
+      backing
+        .map(BackingUtils::isShippable)
+        .map(BooleanUtils::negate)
+        .compose(bindToLifecycle())
+        .subscribe(this.shippingSectionIsGone);
+
+      this.viewMessagesButtonIsGone = this.currentConfig.observable()
+        .map(config -> !ObjectUtils.coalesce(config.features().get(FeatureKey.ANDROID_MESSAGES), false));
+    }
+
+    private static @NonNull Pair<String, String> backingAmountAndDate(final @NonNull KSCurrency ksCurrency,
+      final @NonNull Project project, final @NonNull Backing backing) {
+
+      final String amount = ksCurrency.format(backing.amount(), project);
+      final String date = DateTimeUtils.fullDate(backing.pledgedAt());
+
+      return Pair.create(amount, date);
+    }
+
+    private static @NonNull Pair<String, String> rewardMinimumAndDescription(final @NonNull KSCurrency ksCurrency,
+      final @NonNull Project project, final @NonNull Reward reward) {
+
+      final String minimum = ksCurrency.format(reward.minimum(), project);
+      return Pair.create(minimum, reward.description());
+    }
+
+    private final PublishSubject<Void> projectClicked = PublishSubject.create();
+    private final PublishSubject<Void> viewMessagesButtonClicked = PublishSubject.create();
+
+    private final BehaviorSubject<String> backerNameTextViewText = BehaviorSubject.create();
+    private final BehaviorSubject<String> backerNumberTextViewText = BehaviorSubject.create();
+    private final BehaviorSubject<String> backingStatusTextViewText = BehaviorSubject.create();
+    private final BehaviorSubject<Pair<String, String>> backingAmountAndDateTextViewText = BehaviorSubject.create();
+    private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> estimatedDeliverySectionIsGone = BehaviorSubject.create();
+    private final BehaviorSubject<String> estimatedDeliverySectionTextViewText = BehaviorSubject.create();
+    private final Observable<Void> goBack;
+    private final BehaviorSubject<String> loadBackerAvatar = BehaviorSubject.create();
+    private final BehaviorSubject<String> loadProjectPhoto = BehaviorSubject.create();
+    private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
+    private final BehaviorSubject<Pair<String, String>> rewardMinimumAndDescriptionTextViewText = BehaviorSubject.create();
+    private final BehaviorSubject<List<RewardsItem>> rewardsItems = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> rewardsItemsAreGone = BehaviorSubject.create();
+    private final BehaviorSubject<String> shippingAmountTextViewText = BehaviorSubject.create();
+    private final BehaviorSubject<String> shippingLocationTextViewText = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> shippingSectionIsGone = BehaviorSubject.create();
+    private final PublishSubject<Pair<Project, Backing>> startMessagesActivity = PublishSubject.create();
+    private final Observable<Boolean> viewMessagesButtonIsGone;
+
+    public final Inputs inputs = this;
+    public final Outputs outputs = this;
+
+    @Override public void projectClicked() {
+      this.projectClicked.onNext(null);
+    }
+    @Override public void viewMessagesButtonClicked() {
+      this.viewMessagesButtonClicked.onNext(null);
+    }
+
+    @Override public @NonNull Observable<String> backerNameTextViewText() {
+      return this.backerNameTextViewText;
+    }
+    @Override public @NonNull Observable<String> backerNumberTextViewText() {
+      return this.backerNumberTextViewText;
+    }
+    @Override public @NonNull Observable<Pair<String, String>> backingAmountAndDateTextViewText() {
+      return this.backingAmountAndDateTextViewText;
+    }
+    @Override public @NonNull Observable<String> backingStatusTextViewText() {
+      return this.backingStatusTextViewText;
+    }
+    @Override public @NonNull Observable<String> creatorNameTextViewText() {
+      return this.creatorNameTextViewText;
+    }
+    @Override public @NonNull Observable<Boolean> estimatedDeliverySectionIsGone() {
+      return this.estimatedDeliverySectionIsGone;
+    }
+    @Override public @NonNull Observable<String> estimatedDeliverySectionTextViewText() {
+      return this.estimatedDeliverySectionTextViewText;
+    }
+    @Override public @NonNull Observable<Void> goBack() {
+      return this.goBack;
+    }
+    @Override public @NonNull Observable<String> loadBackerAvatar() {
+      return this.loadBackerAvatar;
+    }
+    @Override public @NonNull Observable<String> loadProjectPhoto() {
+      return this.loadProjectPhoto;
+    }
+    @Override public @NonNull Observable<String> projectNameTextViewText() {
+      return this.projectNameTextViewText;
+    }
+    @Override public @NonNull Observable<Pair<String, String>> rewardMinimumAndDescriptionTextViewText() {
+      return this.rewardMinimumAndDescriptionTextViewText;
+    }
+    @Override public @NonNull Observable<List<RewardsItem>> rewardsItems() {
+      return this.rewardsItems;
+    }
+    @Override public @NonNull Observable<Boolean> rewardsItemsAreGone() {
+      return this.rewardsItemsAreGone;
+    }
+    @Override public @NonNull Observable<String> shippingAmountTextViewText() {
+      return this.shippingAmountTextViewText;
+    }
+    @Override public @NonNull Observable<String> shippingLocationTextViewText() {
+      return this.shippingLocationTextViewText;
+    }
+    @Override public @NonNull Observable<Boolean> shippingSectionIsGone() {
+      return this.shippingSectionIsGone;
+    }
+    @Override public @NonNull Observable<Pair<Project, Backing>> startMessagesActivity() {
+      return this.startMessagesActivity;
+    }
+    @Override public @NonNull Observable<Boolean> viewMessagesButtonIsGone() {
+      return this.viewMessagesButtonIsGone;
+    }
   }
 }

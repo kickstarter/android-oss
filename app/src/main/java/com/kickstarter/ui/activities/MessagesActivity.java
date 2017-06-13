@@ -93,6 +93,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.closeButton));
 
+    this.viewModel.outputs.goBack()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> back());
+
     this.viewModel.outputs.messageEditTextHint()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -143,6 +148,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected void onDestroy() {
     super.onDestroy();
     this.recyclerView.setAdapter(null);
+  }
+
+  @OnClick({R.id.messages_toolbar_back_button, R.id.messages_toolbar_close_button})
+  protected void backOrCloseButtonClicked() {
+    this.viewModel.inputs.backOrCloseButtonClicked();
   }
 
   @OnClick(R.id.send_message_button)

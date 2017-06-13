@@ -39,6 +39,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Pair<Backing, Project>> backingAndProject = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backingInfoViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> closeButtonIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Void> goBack = new TestSubscriber<>();
   private final TestSubscriber<String> messageEditTextHint = new TestSubscriber<>();
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
@@ -53,6 +54,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.backingAndProject().subscribe(this.backingAndProject);
     this.vm.outputs.backingInfoViewIsGone().subscribe(this.backingInfoViewIsGone);
     this.vm.outputs.closeButtonIsGone().subscribe(this.closeButtonIsGone);
+    this.vm.outputs.goBack().subscribe(this.goBack);
     this.vm.outputs.messageEditTextHint().subscribe(this.messageEditTextHint);
     this.vm.outputs.messages().subscribe(this.messages);
     this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
@@ -170,6 +172,14 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.backingAndProject.assertValueCount(1);
     this.messages.assertValueCount(1);
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
+  }
+
+  @Test
+  public void testGoBack() {
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
+    this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
+    this.vm.inputs.backOrCloseButtonClicked();
+    this.goBack.assertValueCount(1);
   }
 
   @Test

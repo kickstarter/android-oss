@@ -39,6 +39,9 @@ import static com.kickstarter.libs.rx.transformers.Transformers.values;
 public interface MessagesViewModel {
 
   interface Inputs {
+    /** Call when the back or close button has been clicked. */
+    void backOrCloseButtonClicked();
+
     /** Call when the message edit text changes. */
     void messageEditTextChanged(String messageBody);
 
@@ -58,6 +61,9 @@ public interface MessagesViewModel {
 
     /** Emits a boolean that determines if the close button should be gone. */
     Observable<Boolean> closeButtonIsGone();
+
+    /** Emits when we should navigate back. */
+    Observable<Void> goBack();
 
     /** Emits a string to display as the message edit text hint. */
     Observable<String> messageEditTextHint();
@@ -197,6 +203,7 @@ public interface MessagesViewModel {
 
       this.backButtonIsGone = this.viewPledgeButtonIsGone.map(BooleanUtils::negate);
       this.closeButtonIsGone = this.backButtonIsGone.map(BooleanUtils::negate);
+      this.goBack = this.backOrCloseButtonClicked;
 
       messageNotification
         .compose(errors())
@@ -236,13 +243,15 @@ public interface MessagesViewModel {
       }
     }
 
+    private final PublishSubject<Void> backOrCloseButtonClicked = PublishSubject.create();
     private final PublishSubject<String> messageEditTextChanged = PublishSubject.create();
     private final PublishSubject<Void> sendMessageButtonClicked = PublishSubject.create();
 
     private final Observable<Boolean> backButtonIsGone;
     private final BehaviorSubject<Pair<Backing, Project>> backingAndProject = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> backingInfoViewIsGone = BehaviorSubject.create();
-    private final Observable<Boolean> closeButtonIsGone ;
+    private final Observable<Boolean> closeButtonIsGone;
+    private final Observable<Void> goBack;
     private final Observable<String> messageEditTextHint;
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
     private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
@@ -254,6 +263,9 @@ public interface MessagesViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
+    @Override public void backOrCloseButtonClicked() {
+      this.backOrCloseButtonClicked.onNext(null);
+    }
     @Override public void messageEditTextChanged(final @NonNull String messageBody) {
       this.messageEditTextChanged.onNext(messageBody);
     }
@@ -273,14 +285,17 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<Boolean> closeButtonIsGone() {
       return this.closeButtonIsGone;
     }
-    @Override public @NonNull Observable<String> participantNameTextViewText() {
-      return this.participantNameTextViewText;
+    @Override public @NonNull Observable<Void> goBack() {
+      return this.goBack;
     }
     @Override public @NonNull Observable<String> messageEditTextHint() {
       return this.messageEditTextHint;
     }
     @Override public @NonNull Observable<List<Message>> messages() {
       return this.messages;
+    }
+    @Override public @NonNull Observable<String> participantNameTextViewText() {
+      return this.participantNameTextViewText;
     }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;

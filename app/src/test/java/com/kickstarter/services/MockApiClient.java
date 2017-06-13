@@ -165,7 +165,7 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(@NonNull Backing backing) {
+  public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
     return Observable.just(MessageThreadEnvelopeFactory.messageThreadEnvelope());
   }
 

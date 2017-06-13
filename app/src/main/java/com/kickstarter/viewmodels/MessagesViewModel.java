@@ -7,6 +7,7 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.Backing;
@@ -81,7 +82,6 @@ public interface MessagesViewModel {
       this.currentUser = environment.currentUser();
 
       final Observable<Either<MessageThread, Pair<Project, Backing>>> configData = intent()
-        .take(1)
         .map(i -> {
           final MessageThread messageThread = i.getParcelableExtra(IntentKey.MESSAGE_THREAD);
           return messageThread != null
@@ -90,6 +90,10 @@ public interface MessagesViewModel {
               Pair.create(i.getParcelableExtra(IntentKey.PROJECT), i.getParcelableExtra(IntentKey.BACKING))
           );
         });
+
+      final Observable<KoalaContext.Message> koalaContext = intent()
+        .map(i -> i.getSerializableExtra(IntentKey.KOALA_CONTEXT))
+        .ofType(KoalaContext.Message.class);
 
       final Observable<Backing> configBacking = configData
         .map(Either::right)
@@ -137,7 +141,7 @@ public interface MessagesViewModel {
       final Observable<Project> project = configData
         .map(data -> data.isLeft() ? data.left().project() : data.right().first); // how do we avoid these warnings
 
-      // todo: check collabs
+      // todo: audit for collaborators
       final Observable<User> participant = Observable.merge(
         messageThreadEnvelope
           .map(MessageThreadEnvelope::messageThread)
@@ -173,7 +177,6 @@ public interface MessagesViewModel {
 
       this.backingAndProject
         .map(bp -> bp.first == null)
-        .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.backingInfoViewIsGone::onNext);
 
@@ -192,6 +195,11 @@ public interface MessagesViewModel {
         .take(1)
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackViewedMessageThread);
+
+      Observable.combineLatest(project, koalaContext, Pair::create)
+        .compose(takeWhen(messageSent))
+        .compose(bindToLifecycle())
+        .subscribe(pc -> this.koala.trackSentMessage(pc.first, pc.second));
     }
 
     private static @NonNull Observable<Pair<Backing, Project>> backingAndProjectFromData(final @NonNull MessagesData data,
@@ -206,7 +214,6 @@ public interface MessagesViewModel {
 
         return backingNotification
           .compose(values())
-          .ofType(Backing.class)
           .map(b -> Pair.create(b, data.getProject()));
       }
     }

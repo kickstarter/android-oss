@@ -13,6 +13,7 @@ import com.kickstarter.factories.MessageThreadFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Backing;
@@ -91,7 +92,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a message thread.
-    this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
+    this.vm.intent(messageThreadIntent(messageThread));
 
     this.backingAndProject.assertValues(Pair.create(backing, backing.project()));
     this.backingInfoViewIsGone.assertValues(false);
@@ -113,9 +114,9 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a message thread.
-    this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
+    this.vm.intent(messageThreadIntent(messageThread));
 
-    this.backingAndProject.assertNoValues();
+    this.backingAndProject.assertValues(Pair.create(null, messageThread.project()));
     this.backingInfoViewIsGone.assertValues(true);
   }
 
@@ -125,7 +126,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
 
     // Start the view model with a message thread.
-    this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
+    this.vm.intent(messageThreadIntent(messageThread));
 
     this.backingAndProject.assertValueCount(1);
     this.messages.assertValueCount(1);
@@ -139,7 +140,12 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
 
     // Start the view model with a backing and a project.
-    this.vm.intent(new Intent().putExtra(IntentKey.BACKING, backing).putExtra(IntentKey.PROJECT, project));
+    this.vm.intent(
+      new Intent()
+        .putExtra(IntentKey.BACKING, backing)
+        .putExtra(IntentKey.PROJECT, project)
+        .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.BACKER_MODAL)
+    );
 
     this.backingAndProject.assertValueCount(1);
     this.messages.assertValueCount(1);
@@ -152,7 +158,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(@NonNull MessageThread messageThread) {
+      public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread thread) {
         return Observable.just(MessageThreadEnvelopeFactory.messageThreadEnvelope());
       }
     };
@@ -162,7 +168,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a message thread.
-    this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
+    this.vm.intent(messageThreadIntent(messageThread));
 
     this.participantNameTextViewText.assertValues(messageThread.project().creator().name());
     this.projectNameTextViewText.assertValues(messageThread.project().name());
@@ -174,7 +180,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(@NonNull MessageThread messageThread) {
+      public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread thread) {
         return Observable.just(MessageThreadEnvelopeFactory.messageThreadEnvelope());
       }
     };
@@ -184,7 +190,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a message thread.
-    this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, messageThread));
+    this.vm.intent(messageThreadIntent(messageThread));
 
     this.messageEditTextHint.assertValues(messageThread.project().creator().name());
   }
@@ -207,7 +213,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a message thread.
-    this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, MessageThreadFactory.messageThread()));
+    this.vm.intent(messageThreadIntent(MessageThreadFactory.messageThread()));
 
     // Messages emit.
     this.messages.assertValueCount(1);
@@ -220,7 +226,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(@NonNull Backing backing) {
+      public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
         return Observable.empty();
       }
     };
@@ -230,7 +236,12 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a backing and a project.
-    this.vm.intent(new Intent().putExtra(IntentKey.BACKING, backing).putExtra(IntentKey.PROJECT, project));
+    this.vm.intent(
+      new Intent()
+        .putExtra(IntentKey.BACKING, backing)
+        .putExtra(IntentKey.PROJECT, project)
+        .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.BACKER_MODAL)
+    );
 
     // All data except for messages should emit.
     this.messages.assertNoValues();
@@ -252,7 +263,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a message thread.
-    this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, MessageThreadFactory.messageThread()));
+    this.vm.intent(messageThreadIntent(MessageThreadFactory.messageThread()));
 
     // Send a message unsuccessfully.
     this.vm.inputs.messageEditTextChanged("Hello there");
@@ -261,6 +272,9 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Error toast is displayed, errored message body remains in edit text.
     this.showMessageErrorToast.assertValueCount(1);
     this.setMessageEditText.assertNoValues();
+
+    // No sent message event tracked.
+    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
   }
 
   @Test
@@ -279,13 +293,21 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a message thread.
-    this.vm.intent(new Intent().putExtra(IntentKey.MESSAGE_THREAD, MessageThreadFactory.messageThread()));
+    this.vm.intent(messageThreadIntent(MessageThreadFactory.messageThread()));
 
     // Send a message successfully.
     this.vm.inputs.messageEditTextChanged("Salutations friend!");
     this.vm.inputs.sendMessageButtonClicked();
 
     // Reply edit text should be cleared.
-    this.setMessageEditText.assertValueCount(1);
+    this.setMessageEditText.assertValues("");
+
+    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD, KoalaEvent.SENT_MESSAGE);
+  }
+
+  private static @NonNull Intent messageThreadIntent(final @NonNull MessageThread messageThread) {
+    return new Intent()
+      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.MESSAGES)
+      .putExtra(IntentKey.MESSAGE_THREAD, messageThread);
   }
 }

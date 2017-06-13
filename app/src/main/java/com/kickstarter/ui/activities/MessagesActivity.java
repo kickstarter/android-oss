@@ -18,10 +18,12 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.adapters.MessagesAdapter;
+import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.MessagesViewModel;
 
 import butterknife.Bind;
@@ -38,8 +40,10 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   private KSString ksString;
   private MessagesAdapter adapter;
 
+  protected @Bind(R.id.messages_toolbar_back_button) IconButton backButton;
   protected @Bind(R.id.backing_amount_text_view) TextView backingAmountTextViewText;
   protected @Bind(R.id.backing_info_view) View backingInfoView;
+  protected @Bind(R.id.messages_toolbar_close_button) IconButton closeButton;
   protected @Bind(R.id.messages_participant_name_text_view) TextView participantNameTextView;
   protected @Bind(R.id.message_edit_text) EditText messageEditText;
   protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
@@ -69,6 +73,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
 
     this.viewPledgeButton.setText(viewPledgeString);
 
+    this.viewModel.outputs.backButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.backButton));
+
     this.viewModel.outputs.backingAndProject()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -78,6 +87,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.backingInfoView));
+
+    this.viewModel.outputs.closeButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.closeButton));
 
     this.viewModel.outputs.messageEditTextHint()
       .compose(bindToLifecycle())
@@ -118,6 +132,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.viewPledgeButton));
+  }
+
+  @Override
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return this.backButton.getVisibility() == View.VISIBLE ? TransitionUtils.slideInFromLeft() : null;
   }
 
   @Override

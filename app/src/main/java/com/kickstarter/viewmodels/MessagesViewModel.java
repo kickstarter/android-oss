@@ -8,6 +8,7 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
+import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.Backing;
@@ -46,11 +47,17 @@ public interface MessagesViewModel {
   }
 
   interface Outputs {
+    /** Emits a boolean that determines if the back button should be gone. */
+    Observable<Boolean> backButtonIsGone();
+
     /** Emits the backing and project to populate the backing info header. */
     Observable<Pair<Backing, Project>> backingAndProject();
 
     /** Emits a boolean that determines if the backing info view should be gone. */
     Observable<Boolean> backingInfoViewIsGone();
+
+    /** Emits a boolean that determines if the close button should be gone. */
+    Observable<Boolean> closeButtonIsGone();
 
     /** Emits a string to display as the message edit text hint. */
     Observable<String> messageEditTextHint();
@@ -188,6 +195,9 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.viewPledgeButtonIsGone::onNext);
 
+      this.backButtonIsGone = this.viewPledgeButtonIsGone.map(BooleanUtils::negate);
+      this.closeButtonIsGone = this.backButtonIsGone.map(BooleanUtils::negate);
+
       messageNotification
         .compose(errors())
         .map(ErrorEnvelope::fromThrowable)
@@ -229,8 +239,10 @@ public interface MessagesViewModel {
     private final PublishSubject<String> messageEditTextChanged = PublishSubject.create();
     private final PublishSubject<Void> sendMessageButtonClicked = PublishSubject.create();
 
+    private final Observable<Boolean> backButtonIsGone;
     private final BehaviorSubject<Pair<Backing, Project>> backingAndProject = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> backingInfoViewIsGone = BehaviorSubject.create();
+    private final Observable<Boolean> closeButtonIsGone ;
     private final Observable<String> messageEditTextHint;
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
     private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
@@ -249,11 +261,17 @@ public interface MessagesViewModel {
       this.sendMessageButtonClicked.onNext(null);
     }
 
+    @Override public @NonNull Observable<Boolean> backButtonIsGone() {
+      return this.backButtonIsGone;
+    }
     @Override public @NonNull Observable<Pair<Backing, Project>> backingAndProject() {
       return this.backingAndProject;
     }
     @Override public @NonNull Observable<Boolean> backingInfoViewIsGone() {
       return this.backingInfoViewIsGone;
+    }
+    @Override public @NonNull Observable<Boolean> closeButtonIsGone() {
+      return this.closeButtonIsGone;
     }
     @Override public @NonNull Observable<String> participantNameTextViewText() {
       return this.participantNameTextViewText;
@@ -273,7 +291,7 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<String> setMessageEditText() {
       return this.setMessageEditText;
     }
-    @Override public @NonNull BehaviorSubject<Boolean> viewPledgeButtonIsGone() {
+    @Override public @NonNull Observable<Boolean> viewPledgeButtonIsGone() {
       return this.viewPledgeButtonIsGone;
     }
   }

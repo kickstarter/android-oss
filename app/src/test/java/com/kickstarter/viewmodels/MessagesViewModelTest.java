@@ -35,8 +35,10 @@ import rx.observers.TestSubscriber;
 
 public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private MessagesViewModel.ViewModel vm;
+  private final TestSubscriber<Boolean> backButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<Pair<Backing, Project>> backingAndProject = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backingInfoViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> closeButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> messageEditTextHint = new TestSubscriber<>();
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
@@ -47,9 +49,10 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new MessagesViewModel.ViewModel(environment);
-
+    this.vm.outputs.backButtonIsGone().subscribe(this.backButtonIsGone);
     this.vm.outputs.backingAndProject().subscribe(this.backingAndProject);
     this.vm.outputs.backingInfoViewIsGone().subscribe(this.backingInfoViewIsGone);
+    this.vm.outputs.closeButtonIsGone().subscribe(this.closeButtonIsGone);
     this.vm.outputs.messageEditTextHint().subscribe(this.messageEditTextHint);
     this.vm.outputs.messages().subscribe(this.messages);
     this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
@@ -57,6 +60,26 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
     this.vm.outputs.viewPledgeButtonIsGone().subscribe(this.viewPledgeButtonIsGone);
+  }
+
+  @Test
+  public void testBackButton_IsGone() {
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
+    this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
+
+    // Back button is gone if navigating from non-backer modal view.
+    this.backButtonIsGone.assertValues(true);
+    this.closeButtonIsGone.assertValues(false);
+  }
+
+  @Test
+  public void testBackButton_IsVisible() {
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
+    this.vm.intent(backerModalContextIntent(BackingFactory.backing(), ProjectFactory.project()));
+
+    // Back button is visible if navigating from backer modal view.
+    this.backButtonIsGone.assertValues(false);
+    this.closeButtonIsGone.assertValues(true);
   }
 
   @Test

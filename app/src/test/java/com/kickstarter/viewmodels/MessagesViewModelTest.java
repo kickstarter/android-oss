@@ -43,6 +43,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
   private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> viewPledgeButtonIsGone = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new MessagesViewModel.ViewModel(environment);
@@ -55,6 +56,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
+    this.vm.outputs.viewPledgeButtonIsGone().subscribe(this.viewPledgeButtonIsGone);
   }
 
   @Test
@@ -92,7 +94,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a message thread.
-    this.vm.intent(messageThreadIntent(messageThread));
+    this.vm.intent(messagesContextIntent(messageThread));
 
     this.backingAndProject.assertValues(Pair.create(backing, backing.project()));
     this.backingInfoViewIsGone.assertValues(false);
@@ -114,7 +116,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a message thread.
-    this.vm.intent(messageThreadIntent(messageThread));
+    this.vm.intent(messagesContextIntent(messageThread));
 
     this.backingAndProject.assertValues(Pair.create(null, messageThread.project()));
     this.backingInfoViewIsGone.assertValues(true);
@@ -126,7 +128,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
 
     // Start the view model with a message thread.
-    this.vm.intent(messageThreadIntent(messageThread));
+    this.vm.intent(messagesContextIntent(messageThread));
 
     this.backingAndProject.assertValueCount(1);
     this.messages.assertValueCount(1);
@@ -140,12 +142,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
 
     // Start the view model with a backing and a project.
-    this.vm.intent(
-      new Intent()
-        .putExtra(IntentKey.BACKING, backing)
-        .putExtra(IntentKey.PROJECT, project)
-        .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.BACKER_MODAL)
-    );
+    this.vm.intent(backerModalContextIntent(backing, project));
 
     this.backingAndProject.assertValueCount(1);
     this.messages.assertValueCount(1);
@@ -168,7 +165,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a message thread.
-    this.vm.intent(messageThreadIntent(messageThread));
+    this.vm.intent(messagesContextIntent(messageThread));
 
     this.participantNameTextViewText.assertValues(messageThread.project().creator().name());
     this.projectNameTextViewText.assertValues(messageThread.project().name());
@@ -190,7 +187,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a message thread.
-    this.vm.intent(messageThreadIntent(messageThread));
+    this.vm.intent(messagesContextIntent(messageThread));
 
     this.messageEditTextHint.assertValues(messageThread.project().creator().name());
   }
@@ -213,7 +210,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a message thread.
-    this.vm.intent(messageThreadIntent(MessageThreadFactory.messageThread()));
+    this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
 
     // Messages emit.
     this.messages.assertValueCount(1);
@@ -236,12 +233,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a backing and a project.
-    this.vm.intent(
-      new Intent()
-        .putExtra(IntentKey.BACKING, backing)
-        .putExtra(IntentKey.PROJECT, project)
-        .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.BACKER_MODAL)
-    );
+    this.vm.intent(backerModalContextIntent(backing, project));
 
     // All data except for messages should emit.
     this.messages.assertNoValues();
@@ -263,7 +255,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a message thread.
-    this.vm.intent(messageThreadIntent(MessageThreadFactory.messageThread()));
+    this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
 
     // Send a message unsuccessfully.
     this.vm.inputs.messageEditTextChanged("Hello there");
@@ -293,7 +285,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     );
 
     // Start the view model with a message thread.
-    this.vm.intent(messageThreadIntent(MessageThreadFactory.messageThread()));
+    this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
 
     // Send a message successfully.
     this.vm.inputs.messageEditTextChanged("Salutations friend!");
@@ -305,9 +297,34 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD, KoalaEvent.SENT_MESSAGE);
   }
 
-  private static @NonNull Intent messageThreadIntent(final @NonNull MessageThread messageThread) {
+  @Test
+  public void testViewPledgeButton_IsGone() {
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
+    this.vm.intent(backerModalContextIntent(BackingFactory.backing(), ProjectFactory.project()));
+
+    // View pledge button is hidden when context is from the backer modal.
+    this.viewPledgeButtonIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testViewPledgeButton_IsVisible() {
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
+    this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
+
+    // View pledge button is shown when context is from anywhere but the backer modal.
+    this.viewPledgeButtonIsGone.assertValues(false);
+  }
+
+  private static @NonNull Intent backerModalContextIntent(final @NonNull Backing backing, final @NonNull Project project) {
     return new Intent()
-      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.MESSAGES)
-      .putExtra(IntentKey.MESSAGE_THREAD, messageThread);
+      .putExtra(IntentKey.BACKING, backing)
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.BACKER_MODAL);
+  }
+
+  private static @NonNull Intent messagesContextIntent(final @NonNull MessageThread messageThread) {
+    return new Intent()
+      .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
+      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.MESSAGES);
   }
 }

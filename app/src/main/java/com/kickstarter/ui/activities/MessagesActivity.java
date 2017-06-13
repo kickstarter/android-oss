@@ -113,6 +113,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(error -> ViewUtils.showToast(this, error));
+
+    this.viewModel.outputs.viewPledgeButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.viewPledgeButton));
   }
 
   @Override

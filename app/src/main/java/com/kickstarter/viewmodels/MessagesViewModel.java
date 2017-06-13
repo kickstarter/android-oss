@@ -69,6 +69,9 @@ public interface MessagesViewModel {
 
     /** Emits a string to display in the message error toast. */
     Observable<String> showMessageErrorToast();
+
+    /** Emits a boolean that determines if the View pledge button should be gone. */
+    Observable<Boolean> viewPledgeButtonIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<MessagesActivity> implements Inputs, Outputs {
@@ -180,6 +183,11 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.backingInfoViewIsGone::onNext);
 
+      koalaContext
+        .map(c -> c.equals(KoalaContext.Message.BACKER_MODAL))
+        .compose(bindToLifecycle())
+        .subscribe(this.viewPledgeButtonIsGone::onNext);
+
       messageNotification
         .compose(errors())
         .map(ErrorEnvelope::fromThrowable)
@@ -229,6 +237,7 @@ public interface MessagesViewModel {
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<String> setMessageEditText;
+    private final BehaviorSubject<Boolean> viewPledgeButtonIsGone = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -263,6 +272,9 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<String> setMessageEditText() {
       return this.setMessageEditText;
+    }
+    @Override public @NonNull BehaviorSubject<Boolean> viewPledgeButtonIsGone() {
+      return this.viewPledgeButtonIsGone;
     }
   }
 }

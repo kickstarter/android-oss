@@ -55,6 +55,11 @@ public final class Koala {
     client.track("Android Pay Canceled");
   }
 
+  // BACKING
+  public void trackViewedPledgeInfo(final @NonNull Project project) {
+    this.client.track(KoalaEvent.VIEWED_PLEDGE_INFO, KoalaUtils.projectProperties(project));
+  }
+
   // DISCOVERY
   public void trackDiscovery(final @NonNull DiscoveryParams params, final boolean isOnboardingVisible) {
     final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(params);

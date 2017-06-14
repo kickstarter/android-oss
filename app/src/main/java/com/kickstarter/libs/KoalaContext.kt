@@ -39,7 +39,6 @@ class KoalaContext {
 
   /**
    * Determines the place from which Messages were presented.
-   * TODO: re-evaluate since there's no longer a dialog.
    *
    * BACKER_MODAL:        The backing view, usually seen by pressing "View pledge" on the project page.
    * CREATOR_ACTIVITY:    The creator's activity feed.

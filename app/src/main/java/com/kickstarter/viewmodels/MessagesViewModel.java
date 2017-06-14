@@ -135,9 +135,10 @@ public interface MessagesViewModel {
         .compose(combineLatestPair(this.messageEditTextChanged))
         .compose(takeWhen(this.sendMessageButtonClicked))
         .switchMap(backingOrThreadAndBody ->
-          backingOrThreadAndBody.first.isLeft()
-            ? this.client.sendMessageToBacking(backingOrThreadAndBody.first.left(), backingOrThreadAndBody.second)
-            : this.client.sendMessageToThread(backingOrThreadAndBody.first.right(), backingOrThreadAndBody.second)
+          backingOrThreadAndBody.first.either(
+            backing -> this.client.sendMessageToBacking(backing, backingOrThreadAndBody.second),
+            thread -> this.client.sendMessageToThread(thread, backingOrThreadAndBody.second)
+          )
         )
         .materialize()
         .share();
@@ -150,20 +151,13 @@ public interface MessagesViewModel {
         backingOrThread,
         backingOrThread.compose(takeWhen(messageSent))
       )
-        .switchMap(bOrT -> {
-          if (bOrT.isLeft()) {
-            return this.client.fetchMessagesForBacking(bOrT.left());
-          } else {
-            return this.client.fetchMessagesForThread(bOrT.right());
-          }
-        })
+        .switchMap(bOrT -> bOrT.either(this.client::fetchMessagesForBacking, this.client::fetchMessagesForThread))
         .compose(neverError())
         .share();
 
       final Observable<Project> project = configData
-        .map(data -> data.isLeft() ? data.left().project() : data.right().first); // how do we avoid these warnings
+        .map(data -> data.either(MessageThread::project, projectAndBacking -> projectAndBacking.first));
 
-      // todo: audit for collaborators
       final Observable<User> participant = Observable.merge(
         messageThreadEnvelope
           .map(MessageThreadEnvelope::messageThread)
@@ -241,17 +235,18 @@ public interface MessagesViewModel {
     private static @NonNull Observable<Pair<Backing, Project>> backingAndProjectFromData(final @NonNull MessagesData data,
       final @NonNull ApiClientType client) {
 
-      if (data.getBackingOrThread().isLeft()) {
-        return Observable.just(Pair.create(data.getBackingOrThread().left(), data.getProject()));
-      } else {
-        final Observable<Notification<Backing>> backingNotification = data.getProject().isBacking()
-          ? client.fetchProjectBacking(data.getProject(), data.getCurrentUser()).materialize().share()
-          : client.fetchProjectBacking(data.getProject(), data.getParticipant()).materialize().share();
+      return data.getBackingOrThread().either(
+        backing -> Observable.just(Pair.create(backing, data.getProject())),
+        thread -> {
+          final Observable<Notification<Backing>> backingNotification = data.getProject().isBacking()
+            ? client.fetchProjectBacking(data.getProject(), data.getCurrentUser()).materialize().share()
+            : client.fetchProjectBacking(data.getProject(), data.getParticipant()).materialize().share();
 
-        return backingNotification
-          .compose(values())
-          .map(b -> Pair.create(b, data.getProject()));
-      }
+          return backingNotification
+            .compose(values())
+            .map(b -> Pair.create(b, data.getProject()));
+        }
+      );
     }
 
     private final PublishSubject<Void> backOrCloseButtonClicked = PublishSubject.create();

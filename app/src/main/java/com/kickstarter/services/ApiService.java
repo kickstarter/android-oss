@@ -10,6 +10,7 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Message;
+import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.SurveyResponse;
@@ -79,6 +80,9 @@ public interface ApiService {
 
   @PUT("/v1/facebook/access_token?intent=register")
   Observable<Response<AccessTokenEnvelope>> login(@Body RegisterWithFacebookBody body);
+
+  @PUT("/v1/message_threads/{message_thread_id}/read")
+  Observable<Response<MessageThread>> markAsRead(@Path("message_thread_id") long messageThreadId);
 
   @GET("/v1/projects/{project_id}/backers/{backer_id}/messages")
   Observable<Response<MessageThreadEnvelope>> messagesForBacking(

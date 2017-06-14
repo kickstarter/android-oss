@@ -243,7 +243,6 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
-
   @Override
   public @NonNull Observable<SurveyResponse> fetchSurveyResponse(final int surveyResponseId) {
     return service
@@ -294,18 +293,6 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken, final boolean sendNewsletters) {
-    return service
-      .login(RegisterWithFacebookBody.builder()
-        .accessToken(fbAccessToken)
-        .sendNewsletters(sendNewsletters)
-        .newsletterOptIn(sendNewsletters)
-        .build())
-      .lift(apiErrorOperator())
-      .subscribeOn(Schedulers.io());
-  }
-
-  @Override
   public @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password) {
     return service
       .login(XauthBody.builder()
@@ -330,6 +317,14 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<MessageThread> markAsRead(final @NonNull MessageThread messageThread) {
+    return this.service
+      .markAsRead(messageThread.id())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
   public @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
     return service
       .postProjectComment(project.param(), CommentBody.builder().body(body).build())
@@ -349,6 +344,18 @@ public final class ApiClient implements ApiClientType {
   public @NonNull Observable<Empty> registerPushToken(final @NonNull String token) {
     return service
       .registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken, final boolean sendNewsletters) {
+    return service
+      .login(RegisterWithFacebookBody.builder()
+        .accessToken(fbAccessToken)
+        .sendNewsletters(sendNewsletters)
+        .newsletterOptIn(sendNewsletters)
+        .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

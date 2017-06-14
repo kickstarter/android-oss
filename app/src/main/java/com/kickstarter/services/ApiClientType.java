@@ -86,6 +86,8 @@ public interface ApiClientType {
 
   @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password, final @NonNull String code);
 
+  @NonNull Observable<MessageThread> markAsRead(final @NonNull MessageThread messageThread);
+
   @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body);
 
   @NonNull Observable<Comment> postComment(final @NonNull Update update, final @NonNull String body);

@@ -7,7 +7,7 @@ import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 
 import java.util.List;
 
-public class ProjectsEnvelopeFactory {
+final public class ProjectsEnvelopeFactory {
   private ProjectsEnvelopeFactory() {}
 
   public static @NonNull ProjectsEnvelope projectsEnvelope(final @NonNull List<Project> projects) {

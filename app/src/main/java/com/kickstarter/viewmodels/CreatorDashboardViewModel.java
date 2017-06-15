@@ -8,6 +8,8 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
@@ -26,9 +28,11 @@ public interface CreatorDashboardViewModel {
 
   interface Outputs {
 
+    Observable<Project> latestProject();
+    Observable<String> projectBackersCountText();
     Observable<String> projectNameTextViewText();
-
     Observable<Pair<Project, RefTag>> startProjectActivity();
+    Observable<String> timeRemaining();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardActivity> implements Inputs, Outputs {
@@ -50,18 +54,31 @@ public interface CreatorDashboardViewModel {
       final Observable<Project> latestProject = projects
         .map(ListUtils::first);
 
+      this.latestProject = latestProject;
+
+      this.projectBackersCountText = latestProject
+        .map(Project::backersCount)
+        .map(NumberUtils::format);
+
       this.projectNameTextViewText = latestProject
         .map(Project::name);
 
       this.startProjectActivity = latestProject
         .compose(Transformers.takeWhen(this.projectViewClicked))
         .map(p -> Pair.create(p, RefTag.dashboard()));
+
+      this.timeRemaining = latestProject
+        .map(ProjectUtils::deadlineCountdownValue)
+        .map(NumberUtils::format);
     }
 
     private final PublishSubject<Void> projectViewClicked = PublishSubject.create();
 
+    private final Observable<Project> latestProject;
+    private final Observable<String> projectBackersCountText;
     private final Observable<String> projectNameTextViewText;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
+    private final Observable<String> timeRemaining;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -72,6 +89,16 @@ public interface CreatorDashboardViewModel {
     }
 
     @Override
+    public Observable<Project> latestProject() {
+      return this.latestProject;
+    }
+
+    @Override
+    public Observable<String> projectBackersCountText() {
+      return this.projectBackersCountText;
+    }
+
+    @Override
     public Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
     }
@@ -79,6 +106,11 @@ public interface CreatorDashboardViewModel {
     @Override
     public Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
+    }
+
+    @Override
+    public Observable<String> timeRemaining() {
+      return this.timeRemaining;
     }
   }
 }

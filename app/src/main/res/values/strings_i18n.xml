@@ -439,6 +439,7 @@ Please try again later.</string>
   <string name="comments_count_comments_one" formatted="false">%{comments_count} comment</string>
   <string name="comments_count_comments_two" formatted="false">%{comments_count} comments</string>
   <string name="comments_count_comments_zero" formatted="false">%{comments_count} comments</string>
+  <string name="creator_dashboard_progress" formatted="false">Progress</string>
   <string name="creator_project_preview_subtitle_days_to_go_percent_funded" formatted="false">%{days_to_go} to go · %{percent_funded} funded</string>
   <string name="creator_project_preview_subtitle_funded_on_deadline" formatted="false">Funded on %{deadline}</string>
   <string name="creator_project_preview_subtitle_funding_canceled" formatted="false">Funding canceled</string>

@@ -31,6 +31,7 @@
       android:layout_height="@dimen/grid_new_5"
       android:padding="0dp"
       android:background="@drawable/button_white_border_gray_500"
+      android:text="@string/View"
       style="@style/BorderButton"
       tools:text="View"
       android:layout_alignParentEnd="true" />
@@ -41,14 +42,19 @@
     android:id="@+id/creator_dashboard_progress_text"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="Progress"
+    android:layout_marginBottom="@dimen/grid_new_2"
+    android:layout_marginTop="@dimen/grid_new_2"
+    android:paddingLeft="@dimen/grid_new_2"
+    android:text="@string/creator_dashboard_progress"
+    tools:text="Progress"
     style="@style/Title3Navy"
     />
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/grid_new_2">
 
     <LinearLayout
       android:layout_width="wrap_content"
@@ -68,6 +74,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/BodySecondary"
+        android:layout_marginEnd="@dimen/grid_new_4"
         tools:text="pledged of $22000 goal"/>
 
       </LinearLayout>
@@ -89,6 +96,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         style="@style/BodySecondary"
+        android:layout_marginEnd="@dimen/grid_new_4"
+        android:text="@string/discovery_baseball_card_stats_backers"
         tools:text="backers"/>
 
     </LinearLayout>

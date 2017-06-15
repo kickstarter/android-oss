@@ -260,7 +260,9 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   @Override public @NonNull Observable<List<Integer>> clearPages() {
     return clearPages;
   }
-  @Override public @NonNull Observable<Boolean> creatorDashboardButtonIsGone() { return creatorDashboardButtonIsGone; }
+  @Override public @NonNull Observable<Boolean> creatorDashboardButtonIsGone() {
+    return creatorDashboardButtonIsGone;
+  }
   @Override public @NonNull Observable<Boolean> drawerIsOpen() {
     return drawerIsOpen;
   }

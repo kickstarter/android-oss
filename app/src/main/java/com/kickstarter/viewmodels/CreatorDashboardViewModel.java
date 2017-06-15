@@ -88,28 +88,19 @@ public interface CreatorDashboardViewModel {
       this.projectViewClicked.onNext(null);
     }
 
-    @Override
-    public Observable<Project> latestProject() {
+    @Override public @NonNull Observable<Project> latestProject() {
       return this.latestProject;
     }
-
-    @Override
-    public Observable<String> projectBackersCountText() {
+    @Override public @NonNull Observable<String> projectBackersCountText() {
       return this.projectBackersCountText;
     }
-
-    @Override
-    public Observable<String> projectNameTextViewText() {
+    @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
     }
-
-    @Override
-    public Observable<Pair<Project, RefTag>> startProjectActivity() {
+    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
     }
-
-    @Override
-    public Observable<String> timeRemaining() {
+    @Override public @NonNull Observable<String> timeRemaining() {
       return this.timeRemaining;
     }
   }

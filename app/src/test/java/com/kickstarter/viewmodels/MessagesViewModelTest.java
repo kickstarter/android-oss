@@ -47,6 +47,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
   private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
   private final TestSubscriber<Project> startViewPledgeAcivity = new TestSubscriber<>();
+  private final TestSubscriber<Void> successfullyMarkedAsRead = new TestSubscriber<>();
   private final TestSubscriber<Boolean> viewPledgeButtonIsGone = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
@@ -63,6 +64,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
     this.vm.outputs.startViewPledgeActivity().subscribe(this.startViewPledgeAcivity);
+    this.vm.outputs.successfullyMarkedAsRead().subscribe(this.successfullyMarkedAsRead);
     this.vm.outputs.viewPledgeButtonIsGone().subscribe(this.viewPledgeButtonIsGone);
   }
 
@@ -341,6 +343,27 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.viewPledgeButtonClicked();
 
     this.startViewPledgeAcivity.assertValues(project);
+  }
+
+  @Test
+  public void testSuccessfullyMarkedAsRead() {
+    final MessageThread messageThread = MessageThreadFactory.messageThread();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @NonNull
+      @Override
+      public Observable<MessageThread> markAsRead(final @NonNull MessageThread thread) {
+        return Observable.just(messageThread);
+      }
+    };
+
+    setUpEnvironment(
+      environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).apiClient(apiClient).build()
+    );
+
+    this.vm.intent(messagesContextIntent(messageThread));
+
+    this.successfullyMarkedAsRead.assertValueCount(1);
   }
 
   @Test

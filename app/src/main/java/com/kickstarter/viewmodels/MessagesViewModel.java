@@ -162,6 +162,8 @@ public interface MessagesViewModel {
       final Observable<Project> project = configData
         .map(data -> data.either(MessageThread::project, projectAndBacking -> projectAndBacking.first));
 
+      // If view model was not initialized with a MessageThread, participant is
+      // the project creator.
       final Observable<User> participant = Observable.merge(
         messageThreadEnvelope
           .map(MessageThreadEnvelope::messageThread)

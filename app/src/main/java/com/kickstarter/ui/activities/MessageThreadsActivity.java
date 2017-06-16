@@ -104,6 +104,12 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     this.recyclerView.setAdapter(null);
   }
 
+  @Override
+  protected void onResume() {
+    super.onResume();
+    this.viewModel.inputs.onResume();
+  }
+
   // todo: make inputs and outputs
   private void setOffsetChangedListener() {
     this.appBarLayout.addOnOffsetChangedListener(

@@ -21,12 +21,16 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface MessageThreadsViewModel {
 
   interface Inputs {
-    /** Invoke when pagination should happen. */
+    /** Call when pagination should happen. */
     void nextPage();
+
+    /** Call when onResume of the activity's lifecycle happens. */
+    void onResume();
 
     /** Call when the swipe refresher is invoked. */
     void refresh();
@@ -62,9 +66,12 @@ public interface MessageThreadsViewModel {
       this.client = environment.apiClient();
       this.currentUser = environment.currentUser();
 
-      final Observable<User> freshUser = this.client.fetchCurrentUser()
+      final Observable<User> freshUser = intent()
+        .compose(takeWhen(this.onResume))
+        .switchMap(__ -> this.client.fetchCurrentUser())
         .retry(2)
         .compose(neverError());
+
       freshUser.subscribe(this.currentUser::refresh);
 
       final ApiPaginator<MessageThread, MessageThreadsEnvelope, Void> paginator =
@@ -80,7 +87,8 @@ public interface MessageThreadsViewModel {
       this.messageThreads = paginator.paginatedData();
 
       final Observable<Integer> unreadMessagesCount = this.currentUser.loggedInUser()
-        .map(User::unreadMessagesCount);
+        .map(User::unreadMessagesCount)
+        .distinctUntilChanged();
 
       this.hasNoMessages = unreadMessagesCount.map(ObjectUtils::isNull);
       this.hasNoUnreadMessages = unreadMessagesCount.map(IntegerUtils::isZero);
@@ -97,6 +105,7 @@ public interface MessageThreadsViewModel {
     }
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();
+    private final PublishSubject<Void> onResume = PublishSubject.create();
     private final PublishSubject<Void> refresh = PublishSubject.create();
 
     private final Observable<Boolean> hasNoMessages;
@@ -111,6 +120,9 @@ public interface MessageThreadsViewModel {
 
     @Override public void nextPage() {
       this.nextPage.onNext(null);
+    }
+    @Override public void onResume() {
+      this.onResume.onNext(null);
     }
     @Override public void refresh() {
       this.refresh.onNext(null);

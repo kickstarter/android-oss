@@ -1,6 +1,6 @@
 package com.kickstarter.ui;
 
-public class SharedPreferenceKey {
+public final class SharedPreferenceKey {
   private SharedPreferenceKey() {}
 
   public static final String ACCESS_TOKEN = "access_token";

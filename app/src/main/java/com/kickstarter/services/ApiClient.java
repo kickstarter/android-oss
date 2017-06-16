@@ -204,6 +204,14 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
+    return service
+      .messagesForBacking(backing.projectId(), backing.backerId())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
   public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread) {
     return service
       .messagesForThread(messageThread.id())
@@ -349,6 +357,14 @@ public final class ApiClient implements ApiClientType {
   public @NonNull Observable<User> resetPassword(final @NonNull String email) {
     return service
       .resetPassword(ResetPasswordBody.builder().email(email).build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<Message> sendMessageToBacking(final @NonNull Backing backing, final @NonNull String body) {
+    return service
+      .sendMessageToBacking(backing.projectId(), backing.backerId(), MessageBody.builder().body(body).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

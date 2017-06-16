@@ -80,6 +80,11 @@ public interface ApiService {
   @PUT("/v1/facebook/access_token?intent=register")
   Observable<Response<AccessTokenEnvelope>> login(@Body RegisterWithFacebookBody body);
 
+  @GET("/v1/projects/{project_id}/backers/{backer_id}/messages")
+  Observable<Response<MessageThreadEnvelope>> messagesForBacking(
+    @Path("project_id") long projectId, @Path("backer_id") long backerId
+  );
+
   @GET("/v1/message_threads/{message_thread_id}/messages")
   Observable<Response<MessageThreadEnvelope>> messagesForThread(@Path("message_thread_id") long messageThreadId);
 
@@ -134,7 +139,7 @@ public interface ApiService {
   Observable<Response<Message>> sendMessageToThread(@Path("message_thread_id") long messageThreadId, @Body MessageBody body);
 
   @POST("/v1/projects/{project_id}/backers/{backer_id}/messages")
-  Observable<Response<Message>> sendMessageToBacker(
+  Observable<Response<Message>> sendMessageToBacking(
     @Path("project_id") long projectId, @Path("backer_id") long backerId, @Body MessageBody body
   );
 

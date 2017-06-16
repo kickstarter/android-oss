@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,10 +19,13 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.MessagesAdapter;
+import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.MessagesViewModel;
 
 import butterknife.Bind;
@@ -38,13 +42,15 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   private KSString ksString;
   private MessagesAdapter adapter;
 
+  protected @Bind(R.id.messages_toolbar_back_button) IconButton backButton;
   protected @Bind(R.id.backing_amount_text_view) TextView backingAmountTextViewText;
   protected @Bind(R.id.backing_info_view) View backingInfoView;
+  protected @Bind(R.id.messages_toolbar_close_button) IconButton closeButton;
   protected @Bind(R.id.messages_participant_name_text_view) TextView participantNameTextView;
   protected @Bind(R.id.message_edit_text) EditText messageEditText;
   protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
-  protected @Bind(R.id.view_pledge_button) Button viewPledgeButton;
+  protected @Bind(R.id.messages_view_pledge_button) Button viewPledgeButton;
 
   protected @BindString(R.string.project_creator_by_creator) String byCreatorString;
   protected @BindString(R.string.pledge_amount_pledged_on_pledge_date) String pledgeAmountPledgedOnPledgeDateString;
@@ -67,17 +73,32 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     layoutManager.setStackFromEnd(true);
     this.recyclerView.setLayoutManager(layoutManager);
 
-    this.viewPledgeButton.setText(viewPledgeString);
+    this.viewPledgeButton.setText(this.viewPledgeString);
+
+    this.viewModel.outputs.backButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.backButton));
 
     this.viewModel.outputs.backingAndProject()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setBackingInfoView);
 
-    this.viewModel.outputs.backingInfoViewHidden()
+    this.viewModel.outputs.backingInfoViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.backingInfoView));
+
+    this.viewModel.outputs.closeButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.closeButton));
+
+    this.viewModel.outputs.goBack()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> back());
 
     this.viewModel.outputs.messageEditTextHint()
       .compose(bindToLifecycle())
@@ -113,6 +134,21 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(error -> ViewUtils.showToast(this, error));
+
+    this.viewModel.outputs.startViewPledgeActivity()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startViewPledgeActivity);
+
+    this.viewModel.outputs.viewPledgeButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.viewPledgeButton));
+  }
+
+  @Override
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return this.backButton.getVisibility() == View.VISIBLE ? TransitionUtils.slideInFromLeft() : null;
   }
 
   @Override
@@ -121,9 +157,19 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.recyclerView.setAdapter(null);
   }
 
+  @OnClick({R.id.messages_toolbar_back_button, R.id.messages_toolbar_close_button})
+  protected void backOrCloseButtonClicked() {
+    this.viewModel.inputs.backOrCloseButtonClicked();
+  }
+
   @OnClick(R.id.send_message_button)
-  public void sendMessageButtonClicked() {
+  protected void sendMessageButtonClicked() {
     this.viewModel.inputs.sendMessageButtonClicked();
+  }
+
+  @OnClick(R.id.messages_view_pledge_button)
+  protected void viewPledgeButtonClicked() {
+    this.viewModel.inputs.viewPledgeButtonClicked();
   }
 
   @OnTextChanged(R.id.message_edit_text)
@@ -146,5 +192,13 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
 
   private void setMessageEditTextHint(final @NonNull String name) {
     this.messageEditText.setHint(this.ksString.format(this.replyToUserNameString, "user_name", name));
+  }
+
+  private void startViewPledgeActivity(final @NonNull Project project) {
+    final Intent intent = new Intent(this, ViewPledgeActivity.class)
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true);
+
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

@@ -12,6 +12,7 @@ import com.kickstarter.factories.RewardFactory;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.FeatureKey;
+import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.utils.DateTimeUtils;
@@ -88,6 +89,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
 
     this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
     this.backerNameTextViewText.assertValues(backing.backer().name());
+    this.koalaTest.assertValues(KoalaEvent.VIEWED_PLEDGE_INFO);
   }
 
   @Test
@@ -293,7 +295,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testViewMessagesButtonIsGone() {
+  public void testViewMessagesButtonIsGone_FlagDisabled() {
     final Backing backing = BackingFactory.backing();
     final Config config = ConfigFactory.config()
       .toBuilder()
@@ -310,7 +312,27 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testViewMessagesButtonIsVisible() {
+  public void testViewMessagesButtonIsGone_FlagEnabled_FromMessages() {
+    final Backing backing = BackingFactory.backing();
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.singletonMap(FeatureKey.ANDROID_MESSAGES, true))
+      .build();
+
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    setUpEnvironment(envWithBacking(backing).toBuilder().currentConfig(currentConfig).build());
+
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true)
+    );
+
+    this.viewMessagesButtonIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testViewMessagesButtonIsVisible_FlagEnabled() {
     final Backing backing = BackingFactory.backing();
     final Config config = ConfigFactory.config()
       .toBuilder()

@@ -21,9 +21,13 @@
     android:orientation="horizontal">
 
     <com.kickstarter.ui.views.IconButton
+      android:id="@+id/messages_toolbar_back_button"
+      style="@style/ToolbarIconBackButton" />
+
+    <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
       android:textColor="@color/ksr_text_navy_500"
-      android:id="@+id/back_button"
+      android:id="@+id/messages_toolbar_close_button"
       android:focusable="true"
       android:contentDescription="@string/general_navigation_buttons_close"
       android:text="@string/close_icon" />

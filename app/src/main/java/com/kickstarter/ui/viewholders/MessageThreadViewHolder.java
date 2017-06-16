@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.StringUtils;
@@ -154,7 +155,8 @@ public final class MessageThreadViewHolder extends KSViewHolder {
 
   private void startMessagesActivity(final @NonNull MessageThread messageThread) {
     final Intent intent = new Intent(context(), MessagesActivity.class)
-      .putExtra(IntentKey.MESSAGE_THREAD, messageThread);
+      .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
+      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.MESSAGES);
 
     context().startActivity(intent);
   }

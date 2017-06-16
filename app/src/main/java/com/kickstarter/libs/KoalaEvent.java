@@ -22,12 +22,17 @@ public final class KoalaEvent {
   public static final String PROJECT_PAGE = "Project Page";
   public static final String PROJECT_STAR = "Project Star";
   public static final String PROJECT_UNSTAR = "Project Unstar";
+  public static final String SENT_MESSAGE = "Sent Message";
   public static final String STARRED_PROJECT = "Starred Project";
   public static final String UNSTARRED_PROJECT = "Unstarred Project";
   public static final String VIEWED_COMMENTS = "Viewed Comments";
+  public static final String VIEWED_MESSAGE_INBOX = "Viewed Message Inbox";
+  public static final String VIEWED_MESSAGE_THREAD = "Viewed Message Thread";
+  public static final String VIEWED_PLEDGE_INFO = "Viewed Pledge Info";
   public static final String VIEWED_PROFILE = "Viewed Profile";
   public static final String VIEWED_PROJECT_PAGE = "Viewed Project Page";
   public static final String VIEWED_SEARCH = "Viewed Search";
+  public static final String VIEWED_SENT_MESSAGES = "Viewed Sent Messages";
   public static final String VIEWED_UPDATE = "Viewed Update";
   public static final String VIEWED_UPDATES = "Viewed Updates";
 }

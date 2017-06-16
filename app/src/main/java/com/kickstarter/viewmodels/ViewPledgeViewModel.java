@@ -127,6 +127,13 @@ public interface ViewPledgeViewModel {
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
         .ofType(Project.class);
 
+      final Observable<Boolean> isFromMessagesActivity = intent()
+        .map(i -> i.getBooleanExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, false))
+        .ofType(Boolean.class);
+
+      final Observable<Boolean> featureFlagIsEnabled = this.currentConfig.observable()
+        .map(config -> ObjectUtils.coalesce(config.features().get(FeatureKey.ANDROID_MESSAGES), false));
+
       final Observable<Backing> backing = project
         .compose(combineLatestPair(this.currentUser.observable()))
         .filter(pu -> pu.second != null)
@@ -248,8 +255,18 @@ public interface ViewPledgeViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.shippingSectionIsGone);
 
-      this.viewMessagesButtonIsGone = this.currentConfig.observable()
-        .map(config -> !ObjectUtils.coalesce(config.features().get(FeatureKey.ANDROID_MESSAGES), false));
+      Observable.zip(
+        isFromMessagesActivity,
+        featureFlagIsEnabled,
+        Pair::create
+      )
+        .map(fromMessagesAndFlagEnabled -> fromMessagesAndFlagEnabled.first || !fromMessagesAndFlagEnabled.second)
+        .compose(bindToLifecycle())
+        .subscribe(this.viewMessagesButtonIsGone::onNext);
+
+      project
+        .compose(bindToLifecycle())
+        .subscribe(this.koala::trackViewedPledgeInfo);
     }
 
     private static @NonNull Pair<String, String> backingAmountAndDate(final @NonNull KSCurrency ksCurrency,
@@ -289,7 +306,7 @@ public interface ViewPledgeViewModel {
     private final BehaviorSubject<String> shippingLocationTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shippingSectionIsGone = BehaviorSubject.create();
     private final PublishSubject<Pair<Project, Backing>> startMessagesActivity = PublishSubject.create();
-    private final Observable<Boolean> viewMessagesButtonIsGone;
+    private final BehaviorSubject<Boolean> viewMessagesButtonIsGone = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;

@@ -6,11 +6,11 @@ import android.support.annotation.NonNull;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.BooleanUtils;
-import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.SharedPreferenceKey;
 import com.kickstarter.ui.viewholders.MessageThreadViewHolder;
 
 import org.joda.time.DateTime;
@@ -18,6 +18,7 @@ import org.joda.time.DateTime;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface MessageThreadHolderViewModel {
@@ -73,9 +74,14 @@ public interface MessageThreadHolderViewModel {
 
       this.sharedPreferences = environment.sharedPreferences();
 
-      // todo: refactor with cache? when to reload from model? ugh
-      final Observable<Boolean> hasUnreadMessages = this.messageThread.map(
-        m -> IntegerUtils.isNonZero(m.unreadMessagesCount())
+      // Store the correct initial hasUnreadMessages value.
+      this.messageThread
+        .compose(observeForUI())
+        .subscribe(thread -> setHasUnreadMessagesPreference(thread, this.sharedPreferences));
+
+      final Observable<Boolean> hasUnreadMessages = Observable.merge(
+        this.messageThread.map(thread -> hasUnreadMessages(thread, this.sharedPreferences)),
+        this.messageThreadCardViewClicked.map(__ -> false)
       );
 
       final Observable<Message> lastMessage = this.messageThread.map(MessageThread::lastMessage);
@@ -94,18 +100,15 @@ public interface MessageThreadHolderViewModel {
         .map(MessageThread::unreadMessagesCount)
         .map(NumberUtils::format);
 
+      this.unreadIndicatorViewHidden = hasUnreadMessages.map(BooleanUtils::negate);
+
       this.messageThread
         .compose(takeWhen(this.messageThreadCardViewClicked))
         .subscribe(thread -> markedAsRead(thread, this.sharedPreferences));
-
-      this.unreadIndicatorViewHidden = Observable.merge(
-        this.messageThreadCardViewClicked.map(__ -> true),
-        this.messageThread.map(thread -> !hasUnreadMessages(thread, this.sharedPreferences))
-      );
     }
 
     private static @NonNull String cacheKey(final @NonNull MessageThread messageThread) {
-      return "message_thread_has_unread_messages" + "_" + messageThread.id();
+      return SharedPreferenceKey.MESSAGE_THREAD_HAS_UNREAD_MESSAGES + messageThread.id();
     }
 
     private static boolean hasUnreadMessages(final @NonNull MessageThread messageThread,
@@ -117,6 +120,14 @@ public interface MessageThreadHolderViewModel {
       final @NonNull SharedPreferences sharedPreferences) {
       final SharedPreferences.Editor editor = sharedPreferences.edit();
       editor.putBoolean(cacheKey(messageThread), false);
+      editor.apply();
+    }
+
+    private static void setHasUnreadMessagesPreference(final @NonNull MessageThread messageThread,
+      final @NonNull SharedPreferences sharedPreferences) {
+
+      final SharedPreferences.Editor editor = sharedPreferences.edit();
+      editor.putBoolean(cacheKey(messageThread), messageThread.unreadMessagesCount() > 0);
       editor.apply();
     }
 

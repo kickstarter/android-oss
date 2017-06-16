@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
+import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
@@ -44,6 +45,9 @@ public interface MessageThreadsViewModel {
     /** Emits a list of message threads to be displayed. */
     Observable<List<MessageThread>> messageThreads();
 
+    /** Emits a boolean to determine if the unread count toolbar text view should be gone. */
+    Observable<Boolean> unreadCountToolbarTextViewIsGone();
+
     /** Emits the unread message count to be displayed. */
     Observable<Integer> unreadMessagesCount();
   }
@@ -80,7 +84,16 @@ public interface MessageThreadsViewModel {
 
       this.hasNoMessages = unreadMessagesCount.map(ObjectUtils::isNull);
       this.hasNoUnreadMessages = unreadMessagesCount.map(IntegerUtils::isZero);
-      this.unreadMessagesCount = unreadMessagesCount.filter(ObjectUtils::isNotNull);
+      this.unreadCountToolbarTextViewIsGone = Observable.zip(
+        this.hasNoMessages,
+        this.hasNoUnreadMessages,
+        Pair::create
+      )
+        .map(noMessagesAndNoUnread -> noMessagesAndNoUnread.first || noMessagesAndNoUnread.second);
+
+      this.unreadMessagesCount = unreadMessagesCount
+        .filter(ObjectUtils::isNotNull)
+        .filter(IntegerUtils::isNonZero);
     }
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();
@@ -90,6 +103,7 @@ public interface MessageThreadsViewModel {
     private final Observable<Boolean> hasNoUnreadMessages;
     private final Observable<Boolean> isFetchingMessageThreads;
     private final Observable<List<MessageThread>> messageThreads;
+    private final Observable<Boolean> unreadCountToolbarTextViewIsGone;
     private final Observable<Integer> unreadMessagesCount;
 
     public final Inputs inputs = this;
@@ -113,6 +127,9 @@ public interface MessageThreadsViewModel {
     }
     @Override public @NonNull Observable<List<MessageThread>> messageThreads() {
       return this.messageThreads;
+    }
+    @Override public @NonNull Observable<Boolean> unreadCountToolbarTextViewIsGone() {
+      return this.unreadCountToolbarTextViewIsGone;
     }
     @Override public @NonNull Observable<Integer> unreadMessagesCount() {
       return this.unreadMessagesCount;

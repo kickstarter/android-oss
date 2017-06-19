@@ -11,6 +11,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
@@ -82,7 +83,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .share();
 
     final Observable<Boolean> commentHasBody = commentBodyChanged
-      .map(body -> body.length() > 0);
+      .map(StringUtils::isPresent);
 
     final Observable<Notification<Comment>> commentNotification = projectOrUpdate
       .compose(combineLatestPair(this.commentBodyChanged))

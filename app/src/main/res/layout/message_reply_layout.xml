@@ -35,14 +35,17 @@
 
     <Button
       android:id="@+id/send_message_button"
-      style="@style/Widget.AppCompat.Button.Borderless"
+      android:background="@drawable/click_indicator_light_masked"
       android:layout_alignParentEnd="true"
       android:paddingStart="0dp"
       android:paddingEnd="0dp"
+      android:enabled="false"
+      android:focusable="true"
+      android:clickable="true"
       android:layout_centerVertical="true"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:textColor="@color/ksr_text_navy_600"
+      android:layout_height="match_parent"
+      android:textColor="@color/navy_600_enabled_dark_grey_400_disabled_color"
       android:text="@string/social_buttons_send"/>
 
   </RelativeLayout>

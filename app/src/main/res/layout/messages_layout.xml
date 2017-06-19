@@ -77,9 +77,8 @@
 
           <Button
             android:id="@+id/messages_view_pledge_button"
-            android:background="@color/transparent"
             android:textSize="@dimen/footnote"
-            android:foreground="@drawable/click_indicator_light"
+            android:background="@drawable/click_indicator_light_masked"
             android:textColor="@color/ksr_text_green_700"
             android:textStyle="bold"
             android:layout_height="match_parent"

@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
@@ -52,6 +53,8 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    this.vm.intent(new Intent());
+    this.vm.inputs.onResume();
 
     this.messageThreads.assertValueCount(1);
   }
@@ -67,6 +70,8 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    this.vm.intent(new Intent());
+    this.vm.inputs.onResume();
 
     // Unread count text view is shown.
     this.unreadMessagesCount.assertValues(user.unreadMessagesCount());
@@ -85,6 +90,8 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    this.vm.intent(new Intent());
+    this.vm.inputs.onResume();
 
     this.hasNoMessages.assertValues(true);
     this.unreadMessagesCount.assertNoValues();
@@ -102,6 +109,8 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    this.vm.intent(new Intent());
+    this.vm.inputs.onResume();
 
     this.hasNoUnreadMessages.assertValues(true);
     this.unreadMessagesCount.assertNoValues();

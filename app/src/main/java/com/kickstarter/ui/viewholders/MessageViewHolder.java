@@ -2,11 +2,9 @@ package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -21,7 +19,6 @@ import com.squareup.picasso.Picasso;
 import org.joda.time.DateTime;
 
 import butterknife.Bind;
-import butterknife.BindDimen;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -30,12 +27,11 @@ public final class MessageViewHolder extends KSViewHolder {
   private final MessageHolderViewModel.ViewModel viewModel;
 
   protected @Bind(R.id.message_center_timestamp_text_view) TextView centerTimestampTextView;
-  protected @Bind(R.id.message_body_card_view) CardView messageBodyCardView;
-  protected @Bind(R.id.message_body_text_view) TextView messageBodyTextView;
-  protected @Bind(R.id.sender_avatar_image_view) ImageView participantAvatarImageView;
-
-  protected @BindDimen(R.dimen.grid_new_2) int gridNew2Dimen;
-  protected @BindDimen(R.dimen.grid_new_3) int gridNew3Dimen;
+  protected @Bind(R.id.message_body_recipient_card_view) CardView messageBodyRecipientCardView;
+  protected @Bind(R.id.message_body_recipient_text_view) TextView messageBodyRecipientTextView;
+  protected @Bind(R.id.message_body_sender_card_view) CardView messageBodySenderCardView;
+  protected @Bind(R.id.message_body_sender_text_view) TextView messageBodySenderTextView;
+  protected @Bind(R.id.message_sender_avatar_image_view) ImageView participantAvatarImageView;
 
   public MessageViewHolder(final @NonNull View view) {
     super(view);
@@ -49,6 +45,26 @@ public final class MessageViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::setCenterTimestampTextView);
 
+    this.viewModel.outputs.messageBodyRecipientCardViewIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.messageBodyRecipientCardView));
+
+    this.viewModel.outputs.messageBodyRecipientTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.messageBodyRecipientTextView::setText);
+
+    this.viewModel.outputs.messageBodySenderCardViewIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.messageBodySenderCardView));
+
+    this.viewModel.outputs.messageBodySenderTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.messageBodySenderTextView::setText);
+
     this.viewModel.outputs.participantAvatarImageHidden()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -58,35 +74,6 @@ public final class MessageViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setParticipantAvatarImageView);
-
-    this.viewModel.outputs.messageBodyCardViewAlignParentEnd()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::alignMessageBodyCardView);
-
-    this.viewModel.outputs.messageBodyTextViewBackgroundColorInt()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(colorInt ->
-        this.messageBodyTextView.setBackgroundColor(ContextCompat.getColor(this.context(), colorInt))
-      );
-
-    this.viewModel.outputs.messageBodyTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.messageBodyTextView::setText);
-
-    this.viewModel.outputs.messageBodyTextViewTextColorInt()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(colorInt ->
-        this.messageBodyTextView.setTextColor(ContextCompat.getColor(this.context(), colorInt))
-      );
-
-    this.viewModel.outputs.shouldSetMessageBodyTextViewPaddingForSender()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setMessageBodyTextViewPadding);
   }
 
   @Override
@@ -95,22 +82,8 @@ public final class MessageViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(message);
   }
 
-  private void alignMessageBodyCardView(final boolean alignParentEnd) {
-    final RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.messageBodyCardView.getLayoutParams();
-    layoutParams.addRule(alignParentEnd ? RelativeLayout.ALIGN_PARENT_END : RelativeLayout.ALIGN_PARENT_START);
-    this.messageBodyCardView.setLayoutParams(layoutParams);
-  }
-
   private void setCenterTimestampTextView(final @NonNull DateTime dateTime) {
     this.centerTimestampTextView.setText(DateTimeUtils.mediumDateShortTime(dateTime));
-  }
-
-  private void setMessageBodyTextViewPadding(final boolean isSender) {
-    if (isSender) {
-      this.messageBodyTextView.setPadding(gridNew2Dimen, gridNew2Dimen, gridNew2Dimen, gridNew2Dimen);
-    } else {
-      this.messageBodyTextView.setPadding(gridNew3Dimen, gridNew3Dimen, gridNew3Dimen, gridNew2Dimen);
-    }
   }
 
   private void setParticipantAvatarImageView(final @NonNull String avatarUrl) {

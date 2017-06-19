@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.R;
 import com.kickstarter.factories.MessageFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Environment;
@@ -19,24 +18,22 @@ import rx.observers.TestSubscriber;
 public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
   private MessageHolderViewModel.ViewModel vm;
   private final TestSubscriber<DateTime> centerTimestampDateTime = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> messageBodyTextViewAlignParentEnd = new TestSubscriber<>();
-  private final TestSubscriber<Integer> messageBodyTextViewBackgroundColorInt = new TestSubscriber<>();
-  private final TestSubscriber<String> messageBodyTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<Integer> messageBodyTextViewTextColorInt = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> messageBodyRecipientCardViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> messageBodyRecipientTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> messageBodySenderCardViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> messageBodySenderTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> participantAvatarImageHidden = new TestSubscriber<>();
   private final TestSubscriber<String> participantAvatarImageUrl = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> shouldSetMessageBodyPaddingForSender = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new MessageHolderViewModel.ViewModel(environment);
     this.vm.outputs.centerTimestampDateTime().subscribe(this.centerTimestampDateTime);
-    this.vm.outputs.messageBodyCardViewAlignParentEnd().subscribe(this.messageBodyTextViewAlignParentEnd);
-    this.vm.outputs.messageBodyTextViewBackgroundColorInt().subscribe(this.messageBodyTextViewBackgroundColorInt);
-    this.vm.outputs.messageBodyTextViewText().subscribe(this.messageBodyTextViewText);
-    this.vm.outputs.messageBodyTextViewTextColorInt().subscribe(this.messageBodyTextViewTextColorInt);
+    this.vm.outputs.messageBodyRecipientCardViewIsGone().subscribe(this.messageBodyRecipientCardViewIsGone);
+    this.vm.outputs.messageBodyRecipientTextViewText().subscribe(this.messageBodyRecipientTextViewText);
+    this.vm.outputs.messageBodySenderCardViewIsGone().subscribe(this.messageBodySenderCardViewIsGone);
+    this.vm.outputs.messageBodySenderTextViewText().subscribe(this.messageBodySenderTextViewText);
     this.vm.outputs.participantAvatarImageHidden().subscribe(this.participantAvatarImageHidden);
     this.vm.outputs.participantAvatarImageUrl().subscribe(this.participantAvatarImageUrl);
-    this.vm.outputs.shouldSetMessageBodyTextViewPaddingForSender().subscribe(this.shouldSetMessageBodyPaddingForSender);
   }
 
   @Test
@@ -46,15 +43,6 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.configureWith(message);
     this.centerTimestampDateTime.assertValues(message.createdAt());
-  }
-
-  @Test
-  public void testEmitsMessageBody() {
-    final Message message = MessageFactory.message();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(message);
-    this.messageBodyTextViewText.assertValues(message.body());
   }
 
   @Test
@@ -73,10 +61,10 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.configureWith(message);
 
-    this.messageBodyTextViewAlignParentEnd.assertValues(false);
-    this.shouldSetMessageBodyPaddingForSender.assertValues(false);
-    this.messageBodyTextViewBackgroundColorInt.assertValues(R.color.ksr_grey_400);
-    this.messageBodyTextViewTextColorInt.assertValues(R.color.ksr_text_navy_700);
+    this.messageBodyRecipientCardViewIsGone.assertValues(false);
+    this.messageBodyRecipientTextViewText.assertValues(message.body());
+    this.messageBodySenderCardViewIsGone.assertValues(true);
+    this.messageBodySenderTextViewText.assertNoValues();
   }
 
   @Test
@@ -95,10 +83,10 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.configureWith(message);
 
-    this.messageBodyTextViewAlignParentEnd.assertValues(true);
-    this.shouldSetMessageBodyPaddingForSender.assertValues(true);
-    this.messageBodyTextViewBackgroundColorInt.assertValues(R.color.black);
-    this.messageBodyTextViewTextColorInt.assertValues(R.color.white);
+    this.messageBodyRecipientCardViewIsGone.assertValues(true);
+    this.messageBodyRecipientTextViewText.assertNoValues();
+    this.messageBodySenderCardViewIsGone.assertValues(false);
+    this.messageBodySenderTextViewText.assertValues(message.body());
   }
 
   @Test

@@ -38,8 +38,8 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public final class MessageThreadViewHolder extends KSViewHolder {
   private final MessageThreadHolderViewModel.ViewModel viewModel;
 
-  protected @Bind(R.id.date_text_view) TextView dateTextView;
-  protected @Bind(R.id.message_body_text_view) TextView messageBodyTextView;
+  protected @Bind(R.id.message_thread_date_text_view) TextView dateTextView;
+  protected @Bind(R.id.message_thread_body_text_view) TextView messageBodyTextView;
   protected @Bind(R.id.message_thread_card_view) CardView messageThreadCardView;
   protected @Bind(R.id.message_thread_unread_count_text_view) TextView unreadCountTextView;
   protected @Bind(R.id.participant_avatar_image_view) ImageView participantAvatarImageView;

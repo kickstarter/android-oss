@@ -3,10 +3,11 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
-import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.Message;
 import com.kickstarter.ui.viewholders.MessageViewHolder;
 
@@ -26,26 +27,23 @@ public interface MessageHolderViewModel {
     /** Emits a DateTime to be displayed in the center timestamp text view. */
     Observable<DateTime> centerTimestampDateTime();
 
-    /** Emits a boolean to determine whether the message body view should align the parent view's end and right. */
-    Observable<Boolean> messageBodyCardViewAlignParentEnd();
+    /** Emits a boolean to determine whether the message recipient card view should be gone. */
+    Observable<Boolean> messageBodyRecipientCardViewIsGone();
 
-    /** Emits the color int for the message background. */
-    Observable<Integer> messageBodyTextViewBackgroundColorInt();
+    /** Emits the recipient's message body text view text. */
+    Observable<String> messageBodyRecipientTextViewText();
 
-    /** Emits the message body text view text. */
-    Observable<String> messageBodyTextViewText();
+    /** Emits a boolean to determine whether the message sender card view should be gone. */
+    Observable<Boolean> messageBodySenderCardViewIsGone();
 
-    /** Emits the color int for the message text. */
-    Observable<Integer> messageBodyTextViewTextColorInt();
+    /** Emits the sender's message body text view text. */
+    Observable<String> messageBodySenderTextViewText();
 
     /** Emits a boolean that determines whether the participant's avatar image should be hidden. */
     Observable<Boolean> participantAvatarImageHidden();
 
     /** Emits the url for the participant's avatar image. */
     Observable<String> participantAvatarImageUrl();
-
-    /** Emits a boolean to determine whether to set message body text view padding for a sender. */
-    Observable<Boolean> shouldSetMessageBodyTextViewPaddingForSender();
   }
 
   final class ViewModel extends ActivityViewModel<MessageViewHolder> implements Inputs, Outputs {
@@ -65,37 +63,36 @@ public interface MessageHolderViewModel {
 
       this.centerTimestampDateTime = this.message.map(Message::createdAt);
 
-      this.messageBodyCardViewAlignParentEnd = messageAndCurrentUserIsSender
-        .map(mb -> mb.second)
-        .distinctUntilChanged();
+      this.messageBodyRecipientCardViewIsGone = messageAndCurrentUserIsSender
+        .map(PairUtils::second);
 
-      this.messageBodyTextViewText = this.message.map(Message::body);
+      this.messageBodyRecipientTextViewText = messageAndCurrentUserIsSender
+        .filter(mb -> !mb.second)
+        .map(mb -> mb.first.body());
 
-      this.messageBodyTextViewBackgroundColor = messageAndCurrentUserIsSender
-        .map(mb -> mb.second ? R.color.black : R.color.ksr_grey_400);
+      this.messageBodySenderCardViewIsGone = this.messageBodyRecipientCardViewIsGone
+        .map(BooleanUtils::negate);
 
-      this.messageBodyTextViewTextColor = messageAndCurrentUserIsSender
-        .map(mb -> mb.second ? R.color.white : R.color.ksr_text_navy_700);
+      this.messageBodySenderTextViewText = messageAndCurrentUserIsSender
+        .filter(mb -> mb.second)
+        .map(mb -> mb.first.body());
 
-      this.participantAvatarImageHidden = messageAndCurrentUserIsSender.map(mb -> mb.second);
+      this.participantAvatarImageHidden = this.messageBodyRecipientCardViewIsGone;
 
       this.participantAvatarImageUrl = messageAndCurrentUserIsSender
         .filter(mb -> !mb.second)
         .map(mb -> mb.first.sender().avatar().medium());
-
-      this.shouldSetMessageBodyTextViewPaddingForSender = this.messageBodyCardViewAlignParentEnd;
     }
 
     private final PublishSubject<Message> message = PublishSubject.create();
 
     private final Observable<DateTime> centerTimestampDateTime;
-    private final Observable<Boolean> messageBodyCardViewAlignParentEnd;
-    private final Observable<Integer> messageBodyTextViewBackgroundColor;
-    private final Observable<String> messageBodyTextViewText;
-    private final Observable<Integer> messageBodyTextViewTextColor;
+    private final Observable<Boolean> messageBodyRecipientCardViewIsGone;
+    private final Observable<String> messageBodyRecipientTextViewText;
+    private final Observable<Boolean> messageBodySenderCardViewIsGone;
+    private final Observable<String> messageBodySenderTextViewText;
     private final Observable<Boolean> participantAvatarImageHidden;
     private final Observable<String> participantAvatarImageUrl;
-    private final Observable<Boolean> shouldSetMessageBodyTextViewPaddingForSender;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -107,26 +104,23 @@ public interface MessageHolderViewModel {
     @Override public @NonNull Observable<DateTime> centerTimestampDateTime() {
       return this.centerTimestampDateTime;
     }
-    @Override public @NonNull Observable<Boolean> messageBodyCardViewAlignParentEnd() {
-      return this.messageBodyCardViewAlignParentEnd;
+    @Override public @NonNull Observable<Boolean> messageBodyRecipientCardViewIsGone() {
+      return this.messageBodyRecipientCardViewIsGone;
     }
-    @Override public @NonNull Observable<Integer> messageBodyTextViewBackgroundColorInt() {
-      return this.messageBodyTextViewBackgroundColor;
+    @Override public @NonNull Observable<Boolean> messageBodySenderCardViewIsGone() {
+      return this.messageBodySenderCardViewIsGone;
     }
-    @Override public @NonNull Observable<String> messageBodyTextViewText() {
-      return this.messageBodyTextViewText;
+    @Override public @NonNull Observable<String> messageBodySenderTextViewText() {
+      return this.messageBodySenderTextViewText;
     }
-    @Override public @NonNull Observable<Integer> messageBodyTextViewTextColorInt() {
-      return this.messageBodyTextViewTextColor;
+    @Override public @NonNull Observable<String> messageBodyRecipientTextViewText() {
+      return this.messageBodyRecipientTextViewText;
     }
     @Override public @NonNull Observable<Boolean> participantAvatarImageHidden() {
       return this.participantAvatarImageHidden;
     }
     @Override public @NonNull Observable<String> participantAvatarImageUrl() {
       return this.participantAvatarImageUrl;
-    }
-    @Override public @NonNull Observable<Boolean> shouldSetMessageBodyTextViewPaddingForSender() {
-      return this.shouldSetMessageBodyTextViewPaddingForSender;
     }
   }
 }

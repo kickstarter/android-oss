@@ -50,6 +50,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.message_edit_text) EditText messageEditText;
   protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.send_message_button) Button sendMessageButton;
   protected @Bind(R.id.messages_view_pledge_button) Button viewPledgeButton;
 
   protected @BindString(R.string.project_creator_by_creator) String byCreatorString;
@@ -129,6 +130,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.messageEditText::setText);
+
+    this.viewModel.outputs.sendMessageButtonIsEnabled()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.sendMessageButton::setEnabled);
 
     this.viewModel.outputs.showMessageErrorToast()
       .compose(bindToLifecycle())

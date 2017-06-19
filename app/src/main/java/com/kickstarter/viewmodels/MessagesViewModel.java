@@ -11,6 +11,7 @@ import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
+import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
@@ -80,6 +81,9 @@ public interface MessagesViewModel {
 
     /** Emits the project name to be displayed. */
     Observable<String> projectNameTextViewText();
+
+    /** Emits a boolean that determines if the Send button should be enabled. */
+    Observable<Boolean> sendMessageButtonIsEnabled();
 
     /** Emits a string to set the message edit text to. */
     Observable<String> setMessageEditText();
@@ -173,6 +177,9 @@ public interface MessagesViewModel {
       )
         .take(1);
 
+      final Observable<Boolean> messageHasBody = this.messageEditTextChanged
+        .map(StringUtils::isPresent);
+
       messageThreadEnvelope
         .map(MessageThreadEnvelope::messageThread)
         .filter(ObjectUtils::isNotNull)
@@ -219,6 +226,7 @@ public interface MessagesViewModel {
       this.backButtonIsGone = this.viewPledgeButtonIsGone.map(BooleanUtils::negate);
       this.closeButtonIsGone = this.backButtonIsGone.map(BooleanUtils::negate);
       this.goBack = this.backOrCloseButtonClicked;
+      this.sendMessageButtonIsEnabled = messageHasBody;
 
       messageNotification
         .compose(errors())
@@ -279,6 +287,7 @@ public interface MessagesViewModel {
     private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
+    private final Observable<Boolean> sendMessageButtonIsEnabled;
     private final Observable<String> setMessageEditText;
     private final BehaviorSubject<Project> startViewPledgeActivity = BehaviorSubject.create();
     private final BehaviorSubject<Void> successfullyMarkedAsRead = BehaviorSubject.create();
@@ -329,6 +338,9 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<String> showMessageErrorToast() {
       return this.showMessageErrorToast;
+    }
+    @Override public @NonNull Observable<Boolean> sendMessageButtonIsEnabled() {
+      return this.sendMessageButtonIsEnabled;
     }
     @Override public @NonNull Observable<String> setMessageEditText() {
       return this.setMessageEditText;

@@ -44,6 +44,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> sendMessageButtonIsEnabled = new TestSubscriber<>();
   private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
   private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
   private final TestSubscriber<Project> startViewPledgeAcivity = new TestSubscriber<>();
@@ -61,6 +62,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.messages().subscribe(this.messages);
     this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
+    this.vm.outputs.sendMessageButtonIsEnabled().subscribe(this.sendMessageButtonIsEnabled);
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
     this.vm.outputs.startViewPledgeActivity().subscribe(this.startViewPledgeAcivity);
@@ -332,6 +334,20 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.setMessageEditText.assertValues("");
 
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD, KoalaEvent.SENT_MESSAGE);
+  }
+
+  @Test
+  public void testSendMessageButtonIsEnabled() {
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
+    this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
+
+    this.sendMessageButtonIsEnabled.assertNoValues();
+
+    this.vm.inputs.messageEditTextChanged("hello");
+    this.sendMessageButtonIsEnabled.assertValues(true);
+
+    this.vm.inputs.messageEditTextChanged("");
+    this.sendMessageButtonIsEnabled.assertValues(true, false);
   }
 
   @Test

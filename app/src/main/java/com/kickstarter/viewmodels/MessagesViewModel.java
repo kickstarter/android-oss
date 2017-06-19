@@ -139,6 +139,8 @@ public interface MessagesViewModel {
         configThread.map(thread -> new Either.Right<>(thread))
       );
 
+      final PublishSubject<Boolean> messageIsSending = PublishSubject.create();
+
       final Observable<Notification<Message>> messageNotification = backingOrThread
         .compose(combineLatestPair(this.messageEditTextChanged))
         .compose(takeWhen(this.sendMessageButtonClicked))
@@ -147,6 +149,7 @@ public interface MessagesViewModel {
             backing -> this.client.sendMessageToBacking(backing, backingOrThreadAndBody.second),
             thread -> this.client.sendMessageToThread(thread, backingOrThreadAndBody.second)
           )
+          .doOnSubscribe(() -> messageIsSending.onNext(true))
         )
         .materialize()
         .share();
@@ -226,7 +229,7 @@ public interface MessagesViewModel {
       this.backButtonIsGone = this.viewPledgeButtonIsGone.map(BooleanUtils::negate);
       this.closeButtonIsGone = this.backButtonIsGone.map(BooleanUtils::negate);
       this.goBack = this.backOrCloseButtonClicked;
-      this.sendMessageButtonIsEnabled = messageHasBody;
+      this.sendMessageButtonIsEnabled = Observable.merge(messageHasBody, messageIsSending.map(BooleanUtils::negate));
 
       messageNotification
         .compose(errors())

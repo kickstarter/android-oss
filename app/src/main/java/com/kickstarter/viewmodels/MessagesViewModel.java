@@ -32,6 +32,7 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.errors;
+import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
@@ -88,6 +89,9 @@ public interface MessagesViewModel {
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ViewPledgeActivity}. */
     Observable<Project> startViewPledgeActivity();
+
+    /** Emits when the thread has been marked as read. */
+    Observable<Void> successfullyMarkedAsRead();
 
     /** Emits a boolean that determines if the View pledge button should be gone. */
     Observable<Boolean> viewPledgeButtonIsGone();
@@ -168,6 +172,15 @@ public interface MessagesViewModel {
         project.map(Project::creator)
       )
         .take(1);
+
+      messageThreadEnvelope
+        .map(MessageThreadEnvelope::messageThread)
+        .filter(ObjectUtils::isNotNull)
+        .switchMap(this.client::markAsRead)
+        .materialize()
+        .compose(ignoreValues())
+        .compose(bindToLifecycle())
+        .subscribe(this.successfullyMarkedAsRead::onNext);
 
       messageThreadEnvelope
         .map(MessageThreadEnvelope::messages)
@@ -268,6 +281,7 @@ public interface MessagesViewModel {
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<String> setMessageEditText;
     private final BehaviorSubject<Project> startViewPledgeActivity = BehaviorSubject.create();
+    private final BehaviorSubject<Void> successfullyMarkedAsRead = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> viewPledgeButtonIsGone = BehaviorSubject.create();
 
     public final Inputs inputs = this;
@@ -321,6 +335,9 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<Project> startViewPledgeActivity() {
       return this.startViewPledgeActivity;
+    }
+    @Override public @NonNull Observable<Void> successfullyMarkedAsRead() {
+      return this.successfullyMarkedAsRead;
     }
     @Override public @NonNull Observable<Boolean> viewPledgeButtonIsGone() {
       return this.viewPledgeButtonIsGone;

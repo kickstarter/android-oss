@@ -18,6 +18,7 @@ import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.StringUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.adapters.MessageThreadsAdapter;
 import com.kickstarter.viewmodels.MessageThreadsViewModel;
 
@@ -80,6 +81,11 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
       .compose(observeForUI())
       .subscribe(this.adapter::messageThreads);
 
+    this.viewModel.outputs.unreadCountToolbarTextViewIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.unreadCountToolbarTextView));
+
     this.viewModel.outputs.unreadMessagesCount()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -96,6 +102,12 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     super.onDestroy();
     this.recyclerViewPaginator.stop();
     this.recyclerView.setAdapter(null);
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    this.viewModel.inputs.onResume();
   }
 
   // todo: make inputs and outputs

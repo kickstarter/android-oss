@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
+import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
@@ -20,12 +21,16 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface MessageThreadsViewModel {
 
   interface Inputs {
-    /** Invoke when pagination should happen. */
+    /** Call when pagination should happen. */
     void nextPage();
+
+    /** Call when onResume of the activity's lifecycle happens. */
+    void onResume();
 
     /** Call when the swipe refresher is invoked. */
     void refresh();
@@ -44,6 +49,9 @@ public interface MessageThreadsViewModel {
     /** Emits a list of message threads to be displayed. */
     Observable<List<MessageThread>> messageThreads();
 
+    /** Emits a boolean to determine if the unread count toolbar text view should be gone. */
+    Observable<Boolean> unreadCountToolbarTextViewIsGone();
+
     /** Emits the unread message count to be displayed. */
     Observable<Integer> unreadMessagesCount();
   }
@@ -58,9 +66,12 @@ public interface MessageThreadsViewModel {
       this.client = environment.apiClient();
       this.currentUser = environment.currentUser();
 
-      final Observable<User> freshUser = this.client.fetchCurrentUser()
+      final Observable<User> freshUser = intent()
+        .compose(takeWhen(this.onResume))
+        .switchMap(__ -> this.client.fetchCurrentUser())
         .retry(2)
         .compose(neverError());
+
       freshUser.subscribe(this.currentUser::refresh);
 
       final ApiPaginator<MessageThread, MessageThreadsEnvelope, Void> paginator =
@@ -76,20 +87,32 @@ public interface MessageThreadsViewModel {
       this.messageThreads = paginator.paginatedData();
 
       final Observable<Integer> unreadMessagesCount = this.currentUser.loggedInUser()
-        .map(User::unreadMessagesCount);
+        .map(User::unreadMessagesCount)
+        .distinctUntilChanged();
 
       this.hasNoMessages = unreadMessagesCount.map(ObjectUtils::isNull);
       this.hasNoUnreadMessages = unreadMessagesCount.map(IntegerUtils::isZero);
-      this.unreadMessagesCount = unreadMessagesCount.filter(ObjectUtils::isNotNull);
+      this.unreadCountToolbarTextViewIsGone = Observable.zip(
+        this.hasNoMessages,
+        this.hasNoUnreadMessages,
+        Pair::create
+      )
+        .map(noMessagesAndNoUnread -> noMessagesAndNoUnread.first || noMessagesAndNoUnread.second);
+
+      this.unreadMessagesCount = unreadMessagesCount
+        .filter(ObjectUtils::isNotNull)
+        .filter(IntegerUtils::isNonZero);
     }
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();
+    private final PublishSubject<Void> onResume = PublishSubject.create();
     private final PublishSubject<Void> refresh = PublishSubject.create();
 
     private final Observable<Boolean> hasNoMessages;
     private final Observable<Boolean> hasNoUnreadMessages;
     private final Observable<Boolean> isFetchingMessageThreads;
     private final Observable<List<MessageThread>> messageThreads;
+    private final Observable<Boolean> unreadCountToolbarTextViewIsGone;
     private final Observable<Integer> unreadMessagesCount;
 
     public final Inputs inputs = this;
@@ -97,6 +120,9 @@ public interface MessageThreadsViewModel {
 
     @Override public void nextPage() {
       this.nextPage.onNext(null);
+    }
+    @Override public void onResume() {
+      this.onResume.onNext(null);
     }
     @Override public void refresh() {
       this.refresh.onNext(null);
@@ -113,6 +139,9 @@ public interface MessageThreadsViewModel {
     }
     @Override public @NonNull Observable<List<MessageThread>> messageThreads() {
       return this.messageThreads;
+    }
+    @Override public @NonNull Observable<Boolean> unreadCountToolbarTextViewIsGone() {
+      return this.unreadCountToolbarTextViewIsGone;
     }
     @Override public @NonNull Observable<Integer> unreadMessagesCount() {
       return this.unreadMessagesCount;

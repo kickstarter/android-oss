@@ -10,6 +10,8 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.models.Message;
 import com.kickstarter.ui.viewholders.MessageViewHolder;
 
+import org.joda.time.DateTime;
+
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -21,11 +23,8 @@ public interface MessageHolderViewModel {
   }
 
   interface Outputs {
-    /** Emits a boolean that determines whether the participant's avatar image should be hidden. */
-    Observable<Boolean> participantAvatarImageHidden();
-
-    /** Emits the url for the participant's avatar image. */
-    Observable<String> participantAvatarImageUrl();
+    /** Emits a DateTime to be displayed in the center timestamp text view. */
+    Observable<DateTime> centerTimestampDateTime();
 
     /** Emits a boolean to determine whether the message body view should align the parent view's end and right. */
     Observable<Boolean> messageBodyCardViewAlignParentEnd();
@@ -38,6 +37,12 @@ public interface MessageHolderViewModel {
 
     /** Emits the color int for the message text. */
     Observable<Integer> messageBodyTextViewTextColorInt();
+
+    /** Emits a boolean that determines whether the participant's avatar image should be hidden. */
+    Observable<Boolean> participantAvatarImageHidden();
+
+    /** Emits the url for the participant's avatar image. */
+    Observable<String> participantAvatarImageUrl();
 
     /** Emits a boolean to determine whether to set message body text view padding for a sender. */
     Observable<Boolean> shouldSetMessageBodyTextViewPaddingForSender();
@@ -58,13 +63,11 @@ public interface MessageHolderViewModel {
       )
         .map(mu -> Pair.create(mu.first, mu.first.sender().id() == mu.second.id()));
 
-      this.participantAvatarImageHidden = messageAndCurrentUserIsSender.map(mb -> mb.second);
+      this.centerTimestampDateTime = this.message.map(Message::createdAt);
 
-      this.participantAvatarImageUrl = messageAndCurrentUserIsSender
-        .filter(mb -> !mb.second)
-        .map(mb -> mb.first.sender().avatar().medium());
-
-      this.messageBodyCardViewAlignParentEnd = messageAndCurrentUserIsSender.map(mb -> mb.second);
+      this.messageBodyCardViewAlignParentEnd = messageAndCurrentUserIsSender
+        .map(mb -> mb.second)
+        .distinctUntilChanged();
 
       this.messageBodyTextViewText = this.message.map(Message::body);
 
@@ -74,17 +77,24 @@ public interface MessageHolderViewModel {
       this.messageBodyTextViewTextColor = messageAndCurrentUserIsSender
         .map(mb -> mb.second ? R.color.white : R.color.ksr_text_navy_700);
 
+      this.participantAvatarImageHidden = messageAndCurrentUserIsSender.map(mb -> mb.second);
+
+      this.participantAvatarImageUrl = messageAndCurrentUserIsSender
+        .filter(mb -> !mb.second)
+        .map(mb -> mb.first.sender().avatar().medium());
+
       this.shouldSetMessageBodyTextViewPaddingForSender = this.messageBodyCardViewAlignParentEnd;
     }
 
     private final PublishSubject<Message> message = PublishSubject.create();
 
-    private final Observable<Boolean> participantAvatarImageHidden;
-    private final Observable<String> participantAvatarImageUrl;
+    private final Observable<DateTime> centerTimestampDateTime;
     private final Observable<Boolean> messageBodyCardViewAlignParentEnd;
     private final Observable<Integer> messageBodyTextViewBackgroundColor;
     private final Observable<String> messageBodyTextViewText;
     private final Observable<Integer> messageBodyTextViewTextColor;
+    private final Observable<Boolean> participantAvatarImageHidden;
+    private final Observable<String> participantAvatarImageUrl;
     private final Observable<Boolean> shouldSetMessageBodyTextViewPaddingForSender;
 
     public final Inputs inputs = this;
@@ -94,11 +104,8 @@ public interface MessageHolderViewModel {
       this.message.onNext(message);
     }
 
-    @Override public @NonNull Observable<Boolean> participantAvatarImageHidden() {
-      return this.participantAvatarImageHidden;
-    }
-    @Override public @NonNull Observable<String> participantAvatarImageUrl() {
-      return this.participantAvatarImageUrl;
+    @Override public @NonNull Observable<DateTime> centerTimestampDateTime() {
+      return this.centerTimestampDateTime;
     }
     @Override public @NonNull Observable<Boolean> messageBodyCardViewAlignParentEnd() {
       return this.messageBodyCardViewAlignParentEnd;
@@ -111,6 +118,12 @@ public interface MessageHolderViewModel {
     }
     @Override public @NonNull Observable<Integer> messageBodyTextViewTextColorInt() {
       return this.messageBodyTextViewTextColor;
+    }
+    @Override public @NonNull Observable<Boolean> participantAvatarImageHidden() {
+      return this.participantAvatarImageHidden;
+    }
+    @Override public @NonNull Observable<String> participantAvatarImageUrl() {
+      return this.participantAvatarImageUrl;
     }
     @Override public @NonNull Observable<Boolean> shouldSetMessageBodyTextViewPaddingForSender() {
       return this.shouldSetMessageBodyTextViewPaddingForSender;

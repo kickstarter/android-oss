@@ -11,11 +11,14 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.transformations.CircleTransformation;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Message;
 import com.kickstarter.viewmodels.MessageHolderViewModel;
 import com.squareup.picasso.Picasso;
+
+import org.joda.time.DateTime;
 
 import butterknife.Bind;
 import butterknife.BindDimen;
@@ -26,6 +29,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 public final class MessageViewHolder extends KSViewHolder {
   private final MessageHolderViewModel.ViewModel viewModel;
 
+  protected @Bind(R.id.message_center_timestamp_text_view) TextView centerTimestampTextView;
   protected @Bind(R.id.message_body_card_view) CardView messageBodyCardView;
   protected @Bind(R.id.message_body_text_view) TextView messageBodyTextView;
   protected @Bind(R.id.sender_avatar_image_view) ImageView participantAvatarImageView;
@@ -39,6 +43,11 @@ public final class MessageViewHolder extends KSViewHolder {
     this.viewModel = new MessageHolderViewModel.ViewModel(environment());
 
     ButterKnife.bind(this, view);
+
+    this.viewModel.outputs.centerTimestampDateTime()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setCenterTimestampTextView);
 
     this.viewModel.outputs.participantAvatarImageHidden()
       .compose(bindToLifecycle())
@@ -89,8 +98,11 @@ public final class MessageViewHolder extends KSViewHolder {
   private void alignMessageBodyCardView(final boolean alignParentEnd) {
     final RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.messageBodyCardView.getLayoutParams();
     layoutParams.addRule(alignParentEnd ? RelativeLayout.ALIGN_PARENT_END : RelativeLayout.ALIGN_PARENT_START);
-    layoutParams.addRule(alignParentEnd ? RelativeLayout.ALIGN_PARENT_RIGHT : RelativeLayout.ALIGN_PARENT_LEFT);
     this.messageBodyCardView.setLayoutParams(layoutParams);
+  }
+
+  private void setCenterTimestampTextView(final @NonNull DateTime dateTime) {
+    this.centerTimestampTextView.setText(DateTimeUtils.mediumDateShortTime(dateTime));
   }
 
   private void setMessageBodyTextViewPadding(final boolean isSender) {

@@ -9,35 +9,53 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
 
-  <ImageView
-    android:id="@+id/sender_avatar_image_view"
-    android:layout_width="@dimen/grid_new_4"
-    android:layout_height="@dimen/grid_new_4"
-    android:layout_marginStart="@dimen/grid_new_2"
-    android:layout_marginTop="@dimen/grid_new_2"
-    android:elevation="2dp"
-    android:background="@drawable/circle_background"
-    tools:ignore="ContentDescription,UnusedAttribute"/>
-
-  <android.support.v7.widget.CardView
-    android:id="@+id/message_body_card_view"
+  <TextView
+    android:id="@+id/message_center_timestamp_text_view"
+    style="@style/Caption2Primary"
+    android:textColor="@color/ksr_text_navy_600"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="@dimen/grid_new_5"
+    android:layout_marginBottom="@dimen/grid_new_1"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/grid_new_4"
-    android:layout_marginEnd="@dimen/grid_new_4"
-    android:layout_marginTop="@dimen/grid_new_4"
-    android:layout_marginBottom="@dimen/grid_new_1"
-    app:cardElevation="0dp">
+    tools:text="June 19, 2017 at 4:00 PM"/>
 
-    <TextView
-      android:id="@+id/message_body_text_view"
-      style="@style/BodyPrimary"
-      android:padding="@dimen/grid_new_2"
-      android:background="@color/ksr_grey_400"
+  <RelativeLayout
+    android:id="@+id/message_body_layout"
+    android:layout_below="@id/message_center_timestamp_text_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+      android:id="@+id/sender_avatar_image_view"
+      android:layout_width="@dimen/grid_new_4"
+      android:layout_height="@dimen/grid_new_4"
+      android:layout_marginStart="@dimen/grid_new_2"
+      android:elevation="2dp"
+      android:background="@drawable/circle_background"
+      tools:ignore="ContentDescription,UnusedAttribute"/>
+
+    <android.support.v7.widget.CardView
+      android:id="@+id/message_body_card_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      tools:text="Hey there!"/>
+      android:layout_marginStart="@dimen/grid_new_4"
+      android:layout_marginEnd="@dimen/grid_new_4"
+      android:layout_marginTop="@dimen/grid_new_2"
+      android:layout_marginBottom="@dimen/grid_new_1"
+      app:cardElevation="0dp">
 
-  </android.support.v7.widget.CardView>
+      <TextView
+        android:id="@+id/message_body_text_view"
+        style="@style/BodyPrimary"
+        android:padding="@dimen/grid_new_2"
+        android:background="@color/ksr_grey_400"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Hey there!"/>
+
+    </android.support.v7.widget.CardView>
+
+  </RelativeLayout>
 
 </RelativeLayout>

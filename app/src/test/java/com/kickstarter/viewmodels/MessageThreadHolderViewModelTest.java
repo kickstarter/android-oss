@@ -79,31 +79,54 @@ public final class MessageThreadHolderViewModelTest extends KSRobolectricTestCas
   }
 
   @Test
-  public void testStartMessagesActivity() {
-    final MessageThread messageThread = MessageThreadFactory.messageThread();
+  public void testMessageThread_Clicked() {
+    final MessageThread messageThread = MessageThreadFactory.messageThread()
+      .toBuilder()
+      .id(12345)
+      .unreadMessagesCount(1)
+      .build();
     setUpEnvironment(environment());
 
-    // Configure the view model with a message thread.
     this.vm.inputs.configureWith(messageThread);
-    this.vm.inputs.messageThreadCardViewClicked();
+    this.cardViewIsElevated.assertValues(true);
+    this.dateTextViewIsMediumWeight.assertValues(true);
+    this.unreadCountTextViewIsGone.assertValues(false);
+    this.unreadIndicatorViewHidden.assertValues(false);
 
-    this.startMessagesActivity.assertValues(messageThread);
+    this.vm.inputs.messageThreadCardViewClicked();
+    this.cardViewIsElevated.assertValues(true, false);
+    this.dateTextViewIsMediumWeight.assertValues(true, false);
+    this.unreadCountTextViewIsGone.assertValues(false, true);
+    this.unreadIndicatorViewHidden.assertValues(false, true);
   }
 
   @Test
-  public void testUnreadMessageThread() {
-    final MessageThread messageThread = MessageThreadFactory.messageThread();
+  public void testMessageThread_HasNoUnreadMessages() {
+    final MessageThread messageThreadWithNoUnread = MessageThreadFactory.messageThread()
+      .toBuilder()
+      .unreadMessagesCount(0)
+      .build();
+
     setUpEnvironment(environment());
 
-    final MessageThread messageThreadWithUnread = messageThread
+    // Configure the view model with a message thread with no unread messages.
+    this.vm.inputs.configureWith(messageThreadWithNoUnread);
+
+    this.unreadIndicatorViewHidden.assertValues(true);
+    this.dateTextViewIsMediumWeight.assertValues(false);
+    this.participantNameTextViewIsMediumWeight.assertValues(false);
+    this.unreadCountTextViewIsGone.assertValues(true);
+    this.unreadCountTextViewText.assertValues(NumberUtils.format(messageThreadWithNoUnread.unreadMessagesCount()));
+  }
+
+  @Test
+  public void testMessageThread_HasUnreadMessages() {
+    final MessageThread messageThreadWithUnread = MessageThreadFactory.messageThread()
       .toBuilder()
       .unreadMessagesCount(2)
       .build();
 
-    final MessageThread messageThreadWithNoUnread = messageThread
-      .toBuilder()
-      .unreadMessagesCount(0)
-      .build();
+    setUpEnvironment(environment());
 
     // Configure the view model with a message thread with unread messages.
     this.vm.inputs.configureWith(messageThreadWithUnread);
@@ -113,17 +136,17 @@ public final class MessageThreadHolderViewModelTest extends KSRobolectricTestCas
     this.participantNameTextViewIsMediumWeight.assertValues(true);
     this.unreadCountTextViewIsGone.assertValues(false);
     this.unreadCountTextViewText.assertValues(NumberUtils.format(messageThreadWithUnread.unreadMessagesCount()));
+  }
 
-    // Configure the view model with a message thread with no unread messages.
-    this.vm.inputs.configureWith(messageThreadWithNoUnread);
+  @Test
+  public void testStartMessagesActivity() {
+    final MessageThread messageThread = MessageThreadFactory.messageThread();
+    setUpEnvironment(environment());
 
-    this.unreadIndicatorViewHidden.assertValues(false, true);
-    this.dateTextViewIsMediumWeight.assertValues(true, false);
-    this.participantNameTextViewIsMediumWeight.assertValues(true, false);
-    this.unreadCountTextViewIsGone.assertValues(false, true);
-    this.unreadCountTextViewText.assertValues(
-      NumberUtils.format(messageThreadWithUnread.unreadMessagesCount()),
-      NumberUtils.format(messageThreadWithNoUnread.unreadMessagesCount())
-    );
+    // Configure the view model with a message thread.
+    this.vm.inputs.configureWith(messageThread);
+    this.vm.inputs.messageThreadCardViewClicked();
+
+    this.startMessagesActivity.assertValues(messageThread);
   }
 }

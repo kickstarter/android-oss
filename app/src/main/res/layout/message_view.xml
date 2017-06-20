@@ -88,7 +88,7 @@
     android:visibility="gone"
     tools:text="3:45 PM"/>
 
-  <!--Todo: this might have to live in message_layout-->
+  <!--Todo: Not delivered logic will come from MessagesActivity -->
   <TextView
     android:id="@+id/message_delivery_status_text_view"
     android:layout_below="@+id/message_body_sender_card_view"
@@ -98,6 +98,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/grid_new_3"
-    android:text="Delivered"/>
+    android:text="@string/Delivered"/>
 
 </RelativeLayout>

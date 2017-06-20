@@ -34,6 +34,12 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testLongDate() {
+    assertEquals("December 17, 2015", DateTimeUtils.longDate(DateTime.parse("2015-12-17T18:35:05Z")));
+    assertEquals("17 décembre 2015", DateTimeUtils.longDate(DateTime.parse("2015-12-17T18:35:05Z"), Locale.FRENCH));
+  }
+
+  @Test
   public void testMediumDate() {
     assertEquals("Dec 17, 2015", DateTimeUtils.mediumDate(DateTime.parse("2015-12-17T18:35:05Z")));
     assertEquals("17 déc. 2015", DateTimeUtils.mediumDate(DateTime.parse("2015-12-17T18:35:05Z"), Locale.FRENCH));

@@ -60,9 +60,7 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectNameTextViewText() {
-    final List<Project> projects = Arrays.asList(
-      ProjectFactory.project()
-    );
+    final List<Project> projects = Arrays.asList(ProjectFactory.project());
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override public @NonNull
@@ -99,8 +97,7 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     );
 
     final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull
-      Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
+      @Override public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
         return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects));
       }
     };

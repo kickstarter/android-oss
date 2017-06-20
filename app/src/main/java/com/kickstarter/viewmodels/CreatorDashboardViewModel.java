@@ -6,7 +6,6 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
@@ -21,17 +20,29 @@ import rx.Notification;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.values;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+
+
 public interface CreatorDashboardViewModel {
   interface Inputs {
     void projectViewClicked();
   }
 
   interface Outputs {
-
+    /* most recent project by the creator */
     Observable<Project> latestProject();
+
+    /* localized count of number of backers */
     Observable<String> projectBackersCountText();
+
+    /* name of the latest project */
     Observable<String> projectNameTextViewText();
+
+    /* call when button is clicked to view individual project page */
     Observable<Pair<Project, RefTag>> startProjectActivity();
+
+    /* time remaining for latest project (no units) */
     Observable<String> timeRemaining();
   }
 
@@ -46,7 +57,7 @@ public interface CreatorDashboardViewModel {
         this.client.fetchProjects(true).materialize().share();
 
       final Observable<ProjectsEnvelope> projectsEnvelope = projectsNotification
-        .compose(Transformers.values());
+        .compose(values());
 
       final Observable<List<Project>> projects = projectsEnvelope
         .map(ProjectsEnvelope::projects);
@@ -64,7 +75,7 @@ public interface CreatorDashboardViewModel {
         .map(Project::name);
 
       this.startProjectActivity = latestProject
-        .compose(Transformers.takeWhen(this.projectViewClicked))
+        .compose(takeWhen(this.projectViewClicked))
         .map(p -> Pair.create(p, RefTag.dashboard()));
 
       this.timeRemaining = latestProject

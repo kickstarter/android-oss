@@ -64,16 +64,18 @@ public final class DiscoveryToolbar extends KSToolbar {
 
     ButterKnife.bind(this);
     ((KSApplication) getContext().getApplicationContext()).component().inject(this);
+  }
 
-    activityFeedButton.setOnClickListener(v -> {
-      final Context context = getContext();
-      context.startActivity(new Intent(context, ActivityFeedActivity.class));
-    });
+  @OnClick({R.id.activity_feed_button})
+  protected void activityFeedButtonClick() {
+    final Context context = getContext();
+    context.startActivity(new Intent(context, ActivityFeedActivity.class));
+  }
 
-    creatorDashboardButton.setOnClickListener(v -> {
-      final Context context = getContext();
-      context.startActivity(new Intent(context, CreatorDashboardActivity.class));
-    });
+  @OnClick({R.id.creator_dashboard_button})
+  protected void creatorDashboardButtonClick() {
+    final Context context = getContext();
+    context.startActivity(new Intent(context, CreatorDashboardActivity.class));
   }
 
   @OnClick({R.id.menu_button, R.id.filter_text_view})

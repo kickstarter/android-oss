@@ -101,6 +101,6 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
   }
 
   private void setTimeRemainingTextTextView(final @NonNull Project latestProject) {
-    timeRemainingTextTextView.setText(ProjectUtils.deadlineCountdownDetail(latestProject, this.getApplicationContext(), ksString));
+    timeRemainingTextTextView.setText(ProjectUtils.deadlineCountdownDetail(latestProject, this, ksString));
   }
 }

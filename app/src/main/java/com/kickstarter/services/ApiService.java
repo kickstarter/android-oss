@@ -88,7 +88,6 @@ public interface ApiService {
   @GET("/v1/message_threads/inbox")
   Observable<Response<MessageThreadsEnvelope>> messageThreads();
 
-
   @GET("/v1/projects/{project_id}/message_threads/inbox")
   Observable<Response<MessageThreadsEnvelope>> messageThreads(@Path("project_id") long projectId);
 

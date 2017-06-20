@@ -66,13 +66,13 @@ public final class DiscoveryToolbar extends KSToolbar {
     ((KSApplication) getContext().getApplicationContext()).component().inject(this);
   }
 
-  @OnClick({R.id.activity_feed_button})
+  @OnClick(R.id.activity_feed_button)
   protected void activityFeedButtonClick() {
     final Context context = getContext();
     context.startActivity(new Intent(context, ActivityFeedActivity.class));
   }
 
-  @OnClick({R.id.creator_dashboard_button})
+  @OnClick(R.id.creator_dashboard_button)
   protected void creatorDashboardButtonClick() {
     final Context context = getContext();
     context.startActivity(new Intent(context, CreatorDashboardActivity.class));

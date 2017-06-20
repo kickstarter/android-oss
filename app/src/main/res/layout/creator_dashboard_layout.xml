@@ -34,6 +34,7 @@
       android:text="@string/View"
       style="@style/BorderButton"
       tools:text="View"
+      tools:ignore="RelativeOverlap"
       android:layout_alignParentEnd="true" />
 
   </RelativeLayout>

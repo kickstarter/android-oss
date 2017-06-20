@@ -27,8 +27,9 @@ public interface MessageHolderViewModel {
   }
 
   interface Outputs {
-    /** Emits a DateTime to be displayed in the center timestamp text view. */
-    Observable<DateTime> centerTimestampDateTime();
+    /** Emits a DateTime to be displayed in the right timestamp text view. */
+    // todo: keep this output for swipe-reveal timestamp
+    Observable<DateTime> createdAtDateTime();
 
     /** Emits a boolean to determine whether the delivery status text view should be gone. */
     Observable<Boolean> deliveryStatusTextViewIsGone();
@@ -67,7 +68,7 @@ public interface MessageHolderViewModel {
       )
         .map(mu -> Pair.create(mu.first, mu.first.sender().id() == mu.second.id()));
 
-      this.centerTimestampDateTime = this.message.map(Message::createdAt);
+      this.createdAtDateTime = this.message.map(Message::createdAt);
 
       this.messageBodyRecipientCardViewIsGone = messageAndCurrentUserIsSender
         .map(PairUtils::second);
@@ -102,7 +103,7 @@ public interface MessageHolderViewModel {
     private final PublishSubject<Boolean> isLastPosition = PublishSubject.create();
     private final PublishSubject<Message> message = PublishSubject.create();
 
-    private final Observable<DateTime> centerTimestampDateTime;
+    private final Observable<DateTime> createdAtDateTime;
     private final Observable<Boolean> deliveryStatusTextViewIsGone;
     private final Observable<Boolean> messageBodyRecipientCardViewIsGone;
     private final Observable<String> messageBodyRecipientTextViewText;
@@ -121,8 +122,8 @@ public interface MessageHolderViewModel {
       this.isLastPosition.onNext(isLastPosition);
     }
 
-    @Override public @NonNull Observable<DateTime> centerTimestampDateTime() {
-      return this.centerTimestampDateTime;
+    @Override public @NonNull Observable<DateTime> createdAtDateTime() {
+      return this.createdAtDateTime;
     }
     @Override public @NonNull Observable<Boolean> deliveryStatusTextViewIsGone() {
       return this.deliveryStatusTextViewIsGone;

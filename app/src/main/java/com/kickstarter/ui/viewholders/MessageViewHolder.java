@@ -9,14 +9,11 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.transformations.CircleTransformation;
-import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Message;
 import com.kickstarter.viewmodels.MessageHolderViewModel;
 import com.squareup.picasso.Picasso;
-
-import org.joda.time.DateTime;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,7 +23,6 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 public final class MessageViewHolder extends KSViewHolder {
   private final MessageHolderViewModel.ViewModel viewModel;
 
-  protected @Bind(R.id.message_center_timestamp_text_view) TextView centerTimestampTextView;
   protected @Bind(R.id.message_delivery_status_text_view) TextView deliveryStatusTextView;
   protected @Bind(R.id.message_body_recipient_card_view) CardView messageBodyRecipientCardView;
   protected @Bind(R.id.message_body_recipient_text_view) TextView messageBodyRecipientTextView;
@@ -38,11 +34,6 @@ public final class MessageViewHolder extends KSViewHolder {
     super(view);
     this.viewModel = new MessageHolderViewModel.ViewModel(environment());
     ButterKnife.bind(this, view);
-
-    this.viewModel.outputs.centerTimestampDateTime()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setCenterTimestampTextView);
 
     this.viewModel.outputs.deliveryStatusTextViewIsGone()
       .compose(bindToLifecycle())
@@ -88,10 +79,6 @@ public final class MessageViewHolder extends KSViewHolder {
 
   public void isLastPosition(final boolean isLastPosition) {
     this.viewModel.inputs.isLastPosition(isLastPosition);
-  }
-
-  private void setCenterTimestampTextView(final @NonNull DateTime dateTime) {
-    this.centerTimestampTextView.setText(DateTimeUtils.mediumDateShortTime(dateTime));
   }
 
   private void setParticipantAvatarImageView(final @NonNull String avatarUrl) {

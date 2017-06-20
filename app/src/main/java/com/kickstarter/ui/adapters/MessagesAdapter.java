@@ -7,26 +7,47 @@ import android.view.View;
 import com.kickstarter.R;
 import com.kickstarter.models.Message;
 import com.kickstarter.ui.viewholders.KSViewHolder;
+import com.kickstarter.ui.viewholders.MessageCenterTimestampViewHolder;
 import com.kickstarter.ui.viewholders.MessageViewHolder;
 
+import org.joda.time.DateTime;
+
+import java.util.Collections;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
+import rx.Observable;
 
 public final class MessagesAdapter extends KSAdapter {
+  public MessagesAdapter() {}
 
-  public MessagesAdapter() {
-    addSection(emptyList());
+  private int getLayoutId(final @NonNull SectionRow sectionRow) {
+    if (objectFromSectionRow(sectionRow) instanceof DateTime) {
+      return R.layout.message_center_timestamp_layout;
+    } else if (objectFromSectionRow(sectionRow) instanceof Message) {
+      return R.layout.message_view;
+    }
+    return R.layout.empty_view;
   }
 
   public void messages(final @NonNull List<Message> messages) {
-    setSection(0, messages);
+    // Group messages by start of day.
+    Observable.from(messages)
+      .groupBy(message -> message.createdAt().withTimeAtStartOfDay())
+      .forEach(dateAndGroupedMessages -> {
+        addSection(Collections.singletonList(dateAndGroupedMessages.getKey()));
+
+        dateAndGroupedMessages
+          .forEach(message ->
+            addSection(Collections.singletonList(message))
+          );
+      });
+
     notifyDataSetChanged();
   }
 
   @Override
   protected int layout(final @NonNull SectionRow sectionRow) {
-    return R.layout.message_view;
+    return getLayoutId(sectionRow);
   }
 
   @Override
@@ -34,12 +55,20 @@ public final class MessagesAdapter extends KSAdapter {
     final @NonNull List<Object> payloads) {
     super.onBindViewHolder(holder, position, payloads);
 
-    final MessageViewHolder messageViewHolder = (MessageViewHolder) holder;
-    messageViewHolder.isLastPosition(position == getItemCount() - 1);
+    if (holder instanceof MessageViewHolder) {
+      ((MessageViewHolder) holder).isLastPosition(position == getItemCount() - 1);
+    }
   }
 
   @Override
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
-    return new MessageViewHolder(view);
+    switch (layout) {
+      case R.layout.message_center_timestamp_layout:
+        return new MessageCenterTimestampViewHolder(view);
+      case R.layout.message_view:
+        return new MessageViewHolder(view);
+      default:
+        throw new IllegalStateException("Invalid layout.");
+    }
   }
 }

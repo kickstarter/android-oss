@@ -17,7 +17,7 @@ import rx.observers.TestSubscriber;
 
 public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
   private MessageHolderViewModel.ViewModel vm;
-  private final TestSubscriber<DateTime> centerTimestampDateTime = new TestSubscriber<>();
+  private final TestSubscriber<DateTime> createdAtDateTime = new TestSubscriber<>();
   private final TestSubscriber<Boolean> messageBodyRecipientCardViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> messageBodyRecipientTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> messageBodySenderCardViewIsGone = new TestSubscriber<>();
@@ -27,7 +27,7 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new MessageHolderViewModel.ViewModel(environment);
-    this.vm.outputs.centerTimestampDateTime().subscribe(this.centerTimestampDateTime);
+    this.vm.outputs.createdAtDateTime().subscribe(this.createdAtDateTime);
     this.vm.outputs.messageBodyRecipientCardViewIsGone().subscribe(this.messageBodyRecipientCardViewIsGone);
     this.vm.outputs.messageBodyRecipientTextViewText().subscribe(this.messageBodyRecipientTextViewText);
     this.vm.outputs.messageBodySenderCardViewIsGone().subscribe(this.messageBodySenderCardViewIsGone);
@@ -37,12 +37,12 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCenterTimestamp() {
+  public void testCreatedAtTimestamp() {
     final Message message = MessageFactory.message();
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(message);
-    this.centerTimestampDateTime.assertValues(message.createdAt());
+    this.createdAtDateTime.assertValues(message.createdAt());
   }
 
   @Test

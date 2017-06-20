@@ -30,6 +30,15 @@ public final class MessagesAdapter extends KSAdapter {
   }
 
   @Override
+  public void onBindViewHolder(final @NonNull KSViewHolder holder, final int position,
+    final @NonNull List<Object> payloads) {
+    super.onBindViewHolder(holder, position, payloads);
+
+    final MessageViewHolder messageViewHolder = (MessageViewHolder) holder;
+    messageViewHolder.isLastPosition(position == getItemCount() - 1);
+  }
+
+  @Override
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     return new MessageViewHolder(view);
   }

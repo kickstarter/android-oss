@@ -88,4 +88,16 @@
 
   </android.support.v7.widget.CardView>
 
+  <!--Todo: this might have to live in message_layout-->
+  <TextView
+    android:id="@+id/message_delivery_status_text_view"
+    android:layout_below="@+id/message_body_sender_card_view"
+    android:layout_alignEnd="@id/message_body_sender_card_view"
+    style="@style/Caption2Primary"
+    android:textColor="@color/ksr_dark_grey_400"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/grid_new_3"
+    android:text="Delivered"/>
+
 </RelativeLayout>

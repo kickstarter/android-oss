@@ -27,6 +27,7 @@ public final class MessageViewHolder extends KSViewHolder {
   private final MessageHolderViewModel.ViewModel viewModel;
 
   protected @Bind(R.id.message_center_timestamp_text_view) TextView centerTimestampTextView;
+  protected @Bind(R.id.message_delivery_status_text_view) TextView deliveryStatusTextView;
   protected @Bind(R.id.message_body_recipient_card_view) CardView messageBodyRecipientCardView;
   protected @Bind(R.id.message_body_recipient_text_view) TextView messageBodyRecipientTextView;
   protected @Bind(R.id.message_body_sender_card_view) CardView messageBodySenderCardView;
@@ -35,15 +36,18 @@ public final class MessageViewHolder extends KSViewHolder {
 
   public MessageViewHolder(final @NonNull View view) {
     super(view);
-
     this.viewModel = new MessageHolderViewModel.ViewModel(environment());
-
     ButterKnife.bind(this, view);
 
     this.viewModel.outputs.centerTimestampDateTime()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setCenterTimestampTextView);
+
+    this.viewModel.outputs.deliveryStatusTextViewIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.deliveryStatusTextView));
 
     this.viewModel.outputs.messageBodyRecipientCardViewIsGone()
       .compose(bindToLifecycle())
@@ -80,6 +84,10 @@ public final class MessageViewHolder extends KSViewHolder {
   public void bindData(final @Nullable Object data) throws Exception {
     final Message message = ObjectUtils.requireNonNull((Message) data);
     this.viewModel.inputs.configureWith(message);
+  }
+
+  public void isLastPosition(final boolean isLastPosition) {
+    this.viewModel.inputs.isLastPosition(isLastPosition);
   }
 
   private void setCenterTimestampTextView(final @NonNull DateTime dateTime) {

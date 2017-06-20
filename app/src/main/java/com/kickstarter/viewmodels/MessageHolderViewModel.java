@@ -21,11 +21,17 @@ public interface MessageHolderViewModel {
   interface Inputs {
     /** Call to configure the view model with a message. */
     void configureWith(Message message);
+
+    /** Call to let view model know if message view holder is in the last adapter position. */
+    void isLastPosition(boolean isLastPosition);
   }
 
   interface Outputs {
     /** Emits a DateTime to be displayed in the center timestamp text view. */
     Observable<DateTime> centerTimestampDateTime();
+
+    /** Emits a boolean to determine whether the delivery status text view should be gone. */
+    Observable<Boolean> deliveryStatusTextViewIsGone();
 
     /** Emits a boolean to determine whether the message recipient card view should be gone. */
     Observable<Boolean> messageBodyRecipientCardViewIsGone();
@@ -77,6 +83,15 @@ public interface MessageHolderViewModel {
         .filter(mb -> mb.second)
         .map(mb -> mb.first.body());
 
+      this.deliveryStatusTextViewIsGone = Observable.zip(
+        this.isLastPosition,
+        this.messageBodySenderCardViewIsGone,
+        Pair::create
+      )
+        .map(isLastPositionAndSenderViewIsGone ->
+          !isLastPositionAndSenderViewIsGone.first || isLastPositionAndSenderViewIsGone.second
+        );
+
       this.participantAvatarImageHidden = this.messageBodyRecipientCardViewIsGone;
 
       this.participantAvatarImageUrl = messageAndCurrentUserIsSender
@@ -84,9 +99,11 @@ public interface MessageHolderViewModel {
         .map(mb -> mb.first.sender().avatar().medium());
     }
 
+    private final PublishSubject<Boolean> isLastPosition = PublishSubject.create();
     private final PublishSubject<Message> message = PublishSubject.create();
 
     private final Observable<DateTime> centerTimestampDateTime;
+    private final Observable<Boolean> deliveryStatusTextViewIsGone;
     private final Observable<Boolean> messageBodyRecipientCardViewIsGone;
     private final Observable<String> messageBodyRecipientTextViewText;
     private final Observable<Boolean> messageBodySenderCardViewIsGone;
@@ -100,9 +117,15 @@ public interface MessageHolderViewModel {
     @Override public void configureWith(final @NonNull Message message) {
       this.message.onNext(message);
     }
+    @Override public void isLastPosition(boolean isLastPosition) {
+      this.isLastPosition.onNext(isLastPosition);
+    }
 
     @Override public @NonNull Observable<DateTime> centerTimestampDateTime() {
       return this.centerTimestampDateTime;
+    }
+    @Override public @NonNull Observable<Boolean> deliveryStatusTextViewIsGone() {
+      return this.deliveryStatusTextViewIsGone;
     }
     @Override public @NonNull Observable<Boolean> messageBodyRecipientCardViewIsGone() {
       return this.messageBodyRecipientCardViewIsGone;

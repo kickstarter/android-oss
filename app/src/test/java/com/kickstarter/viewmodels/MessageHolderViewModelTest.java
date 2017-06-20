@@ -7,33 +7,33 @@ import com.kickstarter.factories.MessageFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.User;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
 
 import rx.observers.TestSubscriber;
 
 public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
   private MessageHolderViewModel.ViewModel vm;
-  private final TestSubscriber<DateTime> createdAtDateTime = new TestSubscriber<>();
   private final TestSubscriber<Boolean> messageBodyRecipientCardViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> messageBodyRecipientTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> messageBodySenderCardViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> messageBodySenderTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> participantAvatarImageHidden = new TestSubscriber<>();
   private final TestSubscriber<String> participantAvatarImageUrl = new TestSubscriber<>();
+  private final TestSubscriber<String> timestampTextViewText = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new MessageHolderViewModel.ViewModel(environment);
-    this.vm.outputs.createdAtDateTime().subscribe(this.createdAtDateTime);
     this.vm.outputs.messageBodyRecipientCardViewIsGone().subscribe(this.messageBodyRecipientCardViewIsGone);
     this.vm.outputs.messageBodyRecipientTextViewText().subscribe(this.messageBodyRecipientTextViewText);
     this.vm.outputs.messageBodySenderCardViewIsGone().subscribe(this.messageBodySenderCardViewIsGone);
     this.vm.outputs.messageBodySenderTextViewText().subscribe(this.messageBodySenderTextViewText);
     this.vm.outputs.participantAvatarImageHidden().subscribe(this.participantAvatarImageHidden);
     this.vm.outputs.participantAvatarImageUrl().subscribe(this.participantAvatarImageUrl);
+    this.vm.outputs.timestampTextViewText().subscribe(this.timestampTextViewText);
   }
 
   @Test
@@ -42,7 +42,7 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(message);
-    this.createdAtDateTime.assertValues(message.createdAt());
+    this.timestampTextViewText.assertValues(DateTimeUtils.shortTime(message.createdAt()));
   }
 
   @Test

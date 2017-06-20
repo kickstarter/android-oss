@@ -29,6 +29,7 @@ public final class MessageViewHolder extends KSViewHolder {
   protected @Bind(R.id.message_body_sender_card_view) CardView messageBodySenderCardView;
   protected @Bind(R.id.message_body_sender_text_view) TextView messageBodySenderTextView;
   protected @Bind(R.id.message_sender_avatar_image_view) ImageView participantAvatarImageView;
+  protected @Bind(R.id.message_timestamp_text_view) TextView timestampTextView;
 
   public MessageViewHolder(final @NonNull View view) {
     super(view);
@@ -69,6 +70,11 @@ public final class MessageViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setParticipantAvatarImageView);
+
+    this.viewModel.outputs.timestampTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.timestampTextView::setText);
   }
 
   @Override

@@ -209,6 +209,20 @@ public final class DateTimeUtils {
   }
 
   /**
+   * e.g.: 4:20 PM
+   */
+  public static @NonNull String shortTime(final @NonNull DateTime dateTime) {
+    return shortTime(dateTime, Locale.getDefault());
+  }
+
+  /**
+   * e.g.: 4:20 PM
+   */
+  public static @NonNull String shortTime(final @NonNull DateTime dateTime, final @NonNull Locale locale) {
+    return dateTime.toString(DateTimeFormat.shortTime().withLocale(locale).withZoneUTC());
+  }
+
+  /**
    * Utility to pair a unit (e.g. "minutes", "hours", "days") with a measurement. Returns `null` if the difference
    * exceeds the threshold.
    */

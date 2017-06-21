@@ -7,7 +7,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.BooleanUtils;
-import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.Message;
 import com.kickstarter.ui.viewholders.MessageViewHolder;
@@ -46,10 +45,6 @@ public interface MessageHolderViewModel {
 
     /** Emits the url for the participant's avatar image. */
     Observable<String> participantAvatarImageUrl();
-
-    /** Emits a DateTime to be displayed in the right timestamp text view. */
-    // todo: keep this output for swipe-reveal timestamp
-    Observable<String> timestampTextViewText();
   }
 
   final class ViewModel extends ActivityViewModel<MessageViewHolder> implements Inputs, Outputs {
@@ -66,10 +61,6 @@ public interface MessageHolderViewModel {
         Pair::create
       )
         .map(mu -> Pair.create(mu.first, mu.first.sender().id() == mu.second.id()));
-
-      this.timestampTextViewText = this.message
-        .map(Message::createdAt)
-        .map(DateTimeUtils::shortTime);
 
       this.messageBodyRecipientCardViewIsGone = messageAndCurrentUserIsSender
         .map(PairUtils::second);
@@ -111,7 +102,6 @@ public interface MessageHolderViewModel {
     private final Observable<String> messageBodySenderTextViewText;
     private final Observable<Boolean> participantAvatarImageHidden;
     private final Observable<String> participantAvatarImageUrl;
-    private final Observable<String> timestampTextViewText;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -143,9 +133,6 @@ public interface MessageHolderViewModel {
     }
     @Override public @NonNull Observable<String> participantAvatarImageUrl() {
       return this.participantAvatarImageUrl;
-    }
-    @Override public @NonNull Observable<String> timestampTextViewText() {
-      return this.timestampTextViewText;
     }
   }
 }

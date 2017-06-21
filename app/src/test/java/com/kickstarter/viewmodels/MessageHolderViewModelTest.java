@@ -7,7 +7,6 @@ import com.kickstarter.factories.MessageFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
-import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.User;
 
@@ -23,7 +22,6 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> messageBodySenderTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> participantAvatarImageHidden = new TestSubscriber<>();
   private final TestSubscriber<String> participantAvatarImageUrl = new TestSubscriber<>();
-  private final TestSubscriber<String> timestampTextViewText = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new MessageHolderViewModel.ViewModel(environment);
@@ -33,16 +31,6 @@ public final class MessageHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.messageBodySenderTextViewText().subscribe(this.messageBodySenderTextViewText);
     this.vm.outputs.participantAvatarImageHidden().subscribe(this.participantAvatarImageHidden);
     this.vm.outputs.participantAvatarImageUrl().subscribe(this.participantAvatarImageUrl);
-    this.vm.outputs.timestampTextViewText().subscribe(this.timestampTextViewText);
-  }
-
-  @Test
-  public void testCreatedAtTimestamp() {
-    final Message message = MessageFactory.message();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(message);
-    this.timestampTextViewText.assertValues(DateTimeUtils.shortTime(message.createdAt()));
   }
 
   @Test

@@ -270,7 +270,7 @@ n\'ont rien soutenu.</string>
   <string name="Subscribed" formatted="false">Abonné </string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Abonnement aux diffusions en direct à venir.</string>
   <string name="Survey" formatted="false">Questionnaire</string>
-  <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Tap the star icon on a project to get notified 48 hours before it ends.</string>
+  <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Cliquez sur l\'icône en forme d\'étoile située à côté du projet pour recevoir une notification 48 avant la fin de sa campagne.</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Tap the star on each project page to save it. We’ll remind you 48 hours before the project ends.</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Merci pour votre soutien.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">L\'adresse e-mail associée à ce compte Facebook a déjà été enregistrée par un autre utilisateur Kickstarter.</string>

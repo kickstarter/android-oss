@@ -269,8 +269,8 @@ Unterstützer</string>
   <string name="Subscribed" formatted="false">Abo aktiviert</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Zukünftige Live-Streams abonnieren.</string>
   <string name="Survey" formatted="false">Befragung</string>
-  <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Tap the star icon on a project to get notified 48 hours before it ends.</string>
-  <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Tap the star on each project page to save it. We’ll remind you 48 hours before the project ends.</string>
+  <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Tippe auf den Stern neben einem Projekt und wir benachrichtigen dich 48 Stunden, bevor es abläuft.</string>
+  <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Klicke einfach auf den Stern auf der Projektseite, um ein Projekt zu speichern. Wir werden dir 48 Stunden vor Ablauf eine Benachrichtigung schicken.</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Vielen Dank für deine Unterstützung dieses Projekts.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">Diese E-Mail-Adresse ist bereits einem anderen Kickstarter-Nutzer zugeordnet.</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">Keine Verbindungn zu Live-Stream</string>

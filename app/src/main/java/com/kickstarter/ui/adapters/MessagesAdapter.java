@@ -35,11 +35,8 @@ public final class MessagesAdapter extends KSAdapter {
       .groupBy(message -> message.createdAt().withTimeAtStartOfDay())
       .forEach(dateAndGroupedMessages -> {
         addSection(Collections.singletonList(dateAndGroupedMessages.getKey()));
-
         dateAndGroupedMessages
-          .forEach(message ->
-            addSection(Collections.singletonList(message))
-          );
+          .forEach(message -> addSection(Collections.singletonList(message)));
       });
 
     notifyDataSetChanged();
@@ -56,6 +53,7 @@ public final class MessagesAdapter extends KSAdapter {
     super.onBindViewHolder(holder, position, payloads);
 
     if (holder instanceof MessageViewHolder) {
+      // Let the MessageViewHolder know if it is the last position in the RecyclerView.
       ((MessageViewHolder) holder).isLastPosition(position == getItemCount() - 1);
     }
   }

@@ -60,7 +60,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/card_corner_radius"
-    app:cardElevation="0dp">
+    app:cardElevation="0dp"
+    tools:ignore="RelativeOverlap">
 
     <TextView
       android:id="@+id/message_body_sender_text_view"

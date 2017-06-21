@@ -109,7 +109,7 @@ public interface MessageHolderViewModel {
     @Override public void configureWith(final @NonNull Message message) {
       this.message.onNext(message);
     }
-    @Override public void isLastPosition(boolean isLastPosition) {
+    @Override public void isLastPosition(final boolean isLastPosition) {
       this.isLastPosition.onNext(isLastPosition);
     }
 

@@ -53,6 +53,7 @@ public final class MessagesAdapter extends KSAdapter {
     super.onBindViewHolder(holder, position, payloads);
 
     if (holder instanceof MessageViewHolder) {
+      // Let the MessageViewHolder know if it is the last position in the RecyclerView.
       ((MessageViewHolder) holder).isLastPosition(position == getItemCount() - 1);
     }
   }

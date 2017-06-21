@@ -15,6 +15,7 @@ import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
@@ -46,24 +47,31 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCreatorDashboardButtonIsGone__featureDisabled() {
-    final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
+  public void testCreatorDashboardButtonIsGone__isCreatorFeatureDisabled() {
+    final User creator = UserFactory.creator();
+    final MockCurrentUser currentUser = new MockCurrentUser(creator);
+
     final Config config = ConfigFactory.config()
       .toBuilder()
       .features(Collections.emptyMap())
       .build();
-
     final MockCurrentConfig currentConfig = new MockCurrentConfig();
     currentConfig.config(config);
+    final Environment env = environment().toBuilder()
+      .currentUser(currentUser)
+      .currentConfig(currentConfig).build();
+    final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
 
-    final DiscoveryViewModel vm = new DiscoveryViewModel(environment().toBuilder().currentConfig(currentConfig).build());
+    final DiscoveryViewModel vm = new DiscoveryViewModel(env);
     vm.outputs.creatorDashboardButtonIsGone().subscribe(creatorDashboardButtonIsGone);
     creatorDashboardButtonIsGone.assertValues(true);
   }
 
   @Test
-  public void testCreatorDashboardButtonIsGone__featureEnabled() {
-    final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
+  public void testCreatorDashboardButtonIsGone__notCreatorFeatureEnabled() {
+    final User notCreator = UserFactory.user().toBuilder().createdProjectsCount(0).build();
+    final MockCurrentUser currentUser = new MockCurrentUser(notCreator);
+
     final Config config = ConfigFactory.config()
       .toBuilder()
       .features(Collections.singletonMap(FeatureKey.ANDROID_CREATOR_VIEW, true))
@@ -72,7 +80,35 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final MockCurrentConfig currentConfig = new MockCurrentConfig();
     currentConfig.config(config);
 
-    final DiscoveryViewModel vm = new DiscoveryViewModel(environment().toBuilder().currentConfig(currentConfig).build());
+    final Environment env = environment().toBuilder()
+      .currentUser(currentUser)
+      .currentConfig(currentConfig).build();
+    final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
+
+    final DiscoveryViewModel vm = new DiscoveryViewModel(env);
+    vm.outputs.creatorDashboardButtonIsGone().subscribe(creatorDashboardButtonIsGone);
+    creatorDashboardButtonIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testCreatorDashboardButtonIsGone__isCreatorFeatureEnabled() {
+    final User creator = UserFactory.creator();
+    final MockCurrentUser currentUser = new MockCurrentUser(creator);
+
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.singletonMap(FeatureKey.ANDROID_CREATOR_VIEW, true))
+      .build();
+
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    final Environment env = environment().toBuilder()
+      .currentUser(currentUser)
+      .currentConfig(currentConfig).build();
+    final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
+
+    final DiscoveryViewModel vm = new DiscoveryViewModel(env);
     vm.outputs.creatorDashboardButtonIsGone().subscribe(creatorDashboardButtonIsGone);
     creatorDashboardButtonIsGone.assertValues(false);
   }

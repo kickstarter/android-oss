@@ -12,6 +12,7 @@ import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
@@ -65,8 +66,17 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
     showProfile = profileClick;
     showSettings = settingsClick;
 
-    creatorDashboardButtonIsGone = environment.currentConfig().observable()
-      .map(config -> !coalesce(config.features().get(FeatureKey.ANDROID_CREATOR_VIEW), false));
+    final Observable<Boolean> userIsCreator = currentUser.observable()
+      .map(u -> u != null && u.createdProjectsCount() > 0);
+
+    final Observable<Boolean> userCanViewCreatorDash = environment.currentConfig().observable()
+      .map(config -> coalesce(config.features().get(FeatureKey.ANDROID_CREATOR_VIEW), false));
+
+    creatorDashboardButtonIsGone = Observable.combineLatest(
+      userIsCreator,
+      userCanViewCreatorDash,
+      Pair::create)
+      .map(isCreatorAndViewDash -> !isCreatorAndViewDash.first || !isCreatorAndViewDash.second);
 
     // Seed params when we are freshly launching the app with no data.
     final Observable<DiscoveryParams> paramsFromInitialIntent = intent()

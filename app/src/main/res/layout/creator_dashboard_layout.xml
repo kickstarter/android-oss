@@ -45,8 +45,9 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/grid_new_2"
     android:layout_marginTop="@dimen/grid_new_2"
-    android:paddingLeft="@dimen/grid_new_2"
-    android:text="@string/creator_dashboard_progress"
+    android:paddingStart="@dimen/grid_new_2"
+    android:paddingEnd="@dimen/grid_new_2"
+    android:text="@string/dashboard_graphs_funding_title_funding_progress"
     tools:text="Progress"
     style="@style/Title3Navy" />
 
@@ -54,7 +55,8 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:orientation="horizontal"
-    android:paddingLeft="@dimen/grid_new_2">
+    android:paddingStart="@dimen/grid_new_2"
+    android:paddingEnd="@dimen/grid_new_2">
 
     <LinearLayout
       android:layout_width="wrap_content"

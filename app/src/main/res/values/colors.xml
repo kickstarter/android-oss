@@ -10,12 +10,14 @@
 
   <!-- Kickstarter colors. NB: we should be transitioning to using this color palette. -->
   <color name="ksr_dark_grey_400">#9B9E9E</color>
+  <color name="ksr_dark_grey_500">#656868</color>
   <color name="ksr_green_500">#25CB68</color>
   <color name="ksr_grey_100">#FBFBFA</color>
   <color name="ksr_grey_200">#F7F7F6</color>
   <color name="ksr_grey_400">#EDEDED</color>
   <color name="ksr_grey_500">#DCDEDD</color>
   <color name="ksr_navy_300">#EFEFF3</color>
+  <color name="ksr_soft_black">#282828</color>
   <color name="ksr_text_green_700">#05AF3C</color>
   <color name="ksr_text_navy_600">#626369</color>
   <color name="ksr_text_navy_500">#95959E</color>

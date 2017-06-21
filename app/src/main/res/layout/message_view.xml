@@ -5,39 +5,85 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:id="@+id/message_view"
   android:clipToPadding="false"
-  android:orientation="vertical"
+  android:clipChildren="false"
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
 
-  <ImageView
-    android:id="@+id/sender_avatar_image_view"
-    android:layout_width="@dimen/grid_new_4"
-    android:layout_height="@dimen/grid_new_4"
-    android:layout_marginStart="@dimen/grid_new_2"
-    android:layout_marginTop="@dimen/grid_new_2"
-    android:elevation="2dp"
-    android:background="@drawable/circle_background"
-    tools:ignore="ContentDescription,UnusedAttribute"/>
-
-  <android.support.v7.widget.CardView
-    android:id="@+id/message_body_card_view"
+  <RelativeLayout
+    android:id="@+id/message_body_recipient_layout"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/grid_new_4"
-    android:layout_marginEnd="@dimen/grid_new_4"
-    android:layout_marginTop="@dimen/grid_new_4"
-    android:layout_marginBottom="@dimen/grid_new_1"
-    app:cardElevation="0dp">
+    android:layout_height="wrap_content">
 
-    <TextView
-      android:id="@+id/message_body_text_view"
-      style="@style/BodyPrimary"
-      android:padding="@dimen/grid_new_2"
-      android:background="@color/ksr_grey_400"
+    <ImageView
+      android:id="@+id/message_sender_avatar_image_view"
+      android:layout_width="@dimen/grid_new_4"
+      android:layout_height="@dimen/grid_new_4"
+      android:layout_marginStart="@dimen/grid_new_3"
+      android:elevation="2dp"
+      android:background="@drawable/circle_background"
+      tools:ignore="ContentDescription,UnusedAttribute"/>
+
+    <android.support.v7.widget.CardView
+      android:id="@+id/message_body_recipient_card_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      tools:text="Hey there!"/>
+      android:layout_alignParentStart="true"
+      android:layout_marginStart="@dimen/grid_new_4"
+      android:layout_marginEnd="@dimen/grid_new_7"
+      android:layout_marginTop="@dimen/grid_new_2"
+      android:layout_marginBottom="@dimen/grid_new_1"
+      app:cardCornerRadius="@dimen/card_corner_radius"
+      app:cardElevation="0dp">
+
+      <TextView
+        android:id="@+id/message_body_recipient_text_view"
+        style="@style/BodyPrimary"
+        android:paddingStart="@dimen/grid_new_3"
+        android:paddingEnd="@dimen/grid_new_3"
+        android:paddingTop="@dimen/grid_new_3"
+        android:paddingBottom="@dimen/grid_new_2"
+        android:background="@color/ksr_grey_400"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Hey there!"/>
+
+    </android.support.v7.widget.CardView>
+
+  </RelativeLayout>
+
+  <android.support.v7.widget.CardView
+    android:id="@+id/message_body_sender_card_view"
+    android:layout_alignParentEnd="true"
+    android:layout_marginStart="@dimen/grid_new_7"
+    android:layout_marginEnd="@dimen/grid_new_4"
+    android:layout_marginBottom="@dimen/grid_new_1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="0dp"
+    tools:ignore="RelativeOverlap">
+
+    <TextView
+      android:id="@+id/message_body_sender_text_view"
+      style="@style/BodyPrimary"
+      android:textColor="@color/white"
+      android:padding="@dimen/grid_new_2"
+      android:background="@color/ksr_soft_black"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="What's up?"/>
 
   </android.support.v7.widget.CardView>
+
+  <TextView
+    android:id="@+id/message_delivery_status_text_view"
+    android:layout_below="@+id/message_body_sender_card_view"
+    android:layout_alignEnd="@id/message_body_sender_card_view"
+    style="@style/Caption2Primary"
+    android:textColor="@color/ksr_dark_grey_400"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/grid_new_3"
+    android:text="@string/Delivered"/>
 
 </RelativeLayout>

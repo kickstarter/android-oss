@@ -36,7 +36,7 @@
         android:layout_alignParentStart="true" />
 
       <TextView
-        android:id="@+id/date_text_view"
+        android:id="@+id/message_thread_date_text_view"
         style="@style/Caption2Primary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
         android:layout_toEndOf="@+id/participant_avatar_image_view"
         android:layout_marginStart="@dimen/grid_new_2"
         android:layout_marginEnd="@dimen/grid_new_2"
-        android:layout_toStartOf="@+id/date_text_view"
+        android:layout_toStartOf="@+id/message_thread_date_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -85,7 +85,7 @@
         </LinearLayout>
 
         <TextView
-          android:id="@+id/message_body_text_view"
+          android:id="@+id/message_thread_body_text_view"
           style="@style/FootnoteSecondary"
           android:lines="2"
           android:ellipsize="end"

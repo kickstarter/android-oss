@@ -31,6 +31,10 @@ public abstract class RefTag implements Parcelable {
     return new AutoParcel_RefTag("city");
   }
 
+  public static @NonNull RefTag dashboard() {
+    return new AutoParcel_RefTag("dashboard");
+  }
+
   public static @NonNull RefTag recommended() {
     return new AutoParcel_RefTag("recommended");
   }

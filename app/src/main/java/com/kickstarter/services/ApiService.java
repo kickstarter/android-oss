@@ -33,6 +33,7 @@ import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
 import java.util.List;
@@ -126,6 +127,9 @@ public interface ApiService {
 
   @GET("/v1/users/self/notifications")
   Observable<Response<List<ProjectNotification>>> projectNotifications();
+
+  @GET("/v1/users/self/projects")
+  Observable<Response<ProjectsEnvelope>> projects(@Query("member") int isMember);
 
   @GET("/v1/discover")
   Observable<Response<DiscoverEnvelope>> projects(@QueryMap Map<String, String> params);

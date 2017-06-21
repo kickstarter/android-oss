@@ -7588,6 +7588,7 @@
     "ios_live_streams": true,
     "ios_live_stream_discovery": true,
     "ios_live_stream_chat": true,
+    "ios_backer_dashboard": true,
     "handbook_hero": true,
     "android_pay": true,
     "i18n_discovery_touts": true,
@@ -7613,7 +7614,8 @@
     "sassy_classifier": true,
     "ksr_live_homepage": true,
     "message_spam": true,
-    "ref_banner_ads": true
+    "ref_banner_ads": true,
+    "react_guest_pledging": true
   },
   "launched_countries": [
     {
@@ -7786,12 +7788,12 @@
     }
   ],
   "ab_experiments": {
-    "backer_conf_cta_color": "gray",
+    "backer_conf_cta_color": "green",
     "koala_alt_frontend_tracking": "control",
     "project_build": "control",
-    "mobile_safari_banners": "html_banner",
     "remind_me_rebrand": "control",
     "games_guest_pledging": "control",
+    "react_guest_pledging": "control",
     "react_project_cards": "control",
     "react_payment_sources_form": "control"
   },

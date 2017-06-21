@@ -20,6 +20,7 @@
   <color name="ksr_text_navy_600">#626369</color>
   <color name="ksr_text_navy_500">#95959E</color>
   <color name="ksr_text_navy_700">#353535</color>
+  <color name="ksr_text_navy_800">#062340</color>
 
   <!-- Legacy Kickstarter colors. NB: we should be moving away from this color palette. -->
   <color name="black">#000000</color>

@@ -19,6 +19,7 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
@@ -27,6 +28,7 @@ import com.kickstarter.ui.adapters.DiscoveryPagerAdapter;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.fragments.DiscoveryFragment;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
+import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.ui.views.SortTabLayout;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 
@@ -54,6 +56,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   protected @Inject ApiClientType client;
   protected @Inject InternalToolsType internalTools;
 
+  protected @Bind(R.id.creator_dashboard_button) IconButton creatorDashboardButton;
   protected @Bind(R.id.discovery_layout) DrawerLayout discoveryLayout;
   protected @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
   protected @Bind(R.id.discovery_drawer_recycler_view) RecyclerView drawerRecyclerView;
@@ -92,6 +95,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
     sortViewPager.setAdapter(pagerAdapter);
     sortTabLayout.setupWithViewPager(sortViewPager);
+
+    viewModel.outputs.creatorDashboardButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.creatorDashboardButton));
 
     viewModel.outputs.expandSortTabLayout()
       .compose(bindToLifecycle())

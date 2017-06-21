@@ -7597,6 +7597,7 @@
     "ios_live_stream_discovery": true,
     "ios_live_stream_chat": true,
     "ios_backer_dashboard": true,
+    "handbook_hero": true,
     "android_pay": true,
     "i18n_discovery_touts": true,
     "i18n_start_tout": true,

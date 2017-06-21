@@ -393,6 +393,10 @@
     <item name="android:textSize">@dimen/title_3</item>
   </style>
 
+  <style name="Title3Navy" parent="Title3">
+    <item name="android:textColor">@color/ksr_text_navy_800</item>
+  </style>
+
   <style name="Title3Medium" parent="TextPrimary">
     <item name="android:textSize">@dimen/title_3</item>
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>

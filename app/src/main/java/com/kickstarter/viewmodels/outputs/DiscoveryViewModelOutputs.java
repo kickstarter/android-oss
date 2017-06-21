@@ -13,6 +13,10 @@ import rx.Observable;
 
 public interface DiscoveryViewModelOutputs {
   /**
+   * Emits a boolean that determines whether to show the creator view button
+   */
+  Observable<Boolean> creatorDashboardButtonIsGone();
+  /**
    * Emits a boolean that determines if the drawer is open or not.
    */
   Observable<Boolean> drawerIsOpen();

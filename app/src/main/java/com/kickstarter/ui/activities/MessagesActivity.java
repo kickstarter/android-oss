@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -42,12 +43,14 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   private KSString ksString;
   private MessagesAdapter adapter;
 
+  protected @Bind(R.id.messages_app_bar_layout) AppBarLayout appBarLayout;
   protected @Bind(R.id.messages_toolbar_back_button) IconButton backButton;
   protected @Bind(R.id.backing_amount_text_view) TextView backingAmountTextViewText;
   protected @Bind(R.id.backing_info_view) View backingInfoView;
   protected @Bind(R.id.messages_toolbar_close_button) IconButton closeButton;
   protected @Bind(R.id.messages_participant_name_text_view) TextView participantNameTextView;
   protected @Bind(R.id.message_edit_text) EditText messageEditText;
+  protected @Bind(R.id.messages_project_name_collapsed_text_view) TextView projectNameCollapsedTextView;
   protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.send_message_button) Button sendMessageButton;
@@ -75,6 +78,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.recyclerView.setLayoutManager(layoutManager);
 
     this.viewPledgeButton.setText(this.viewPledgeString);
+
+    // todo: make a utils for this
+    this.appBarLayout.addOnOffsetChangedListener((appBarLayout, offset) ->
+      this.projectNameCollapsedTextView.setAlpha((float) Math.abs(offset) / appBarLayout.getTotalScrollRange())
+    );
 
     this.viewModel.outputs.backButtonIsGone()
       .compose(bindToLifecycle())
@@ -124,7 +132,10 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.viewModel.outputs.projectNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this.projectNameTextView::setText);
+      .subscribe(name -> {
+        this.projectNameCollapsedTextView.setText(name);
+        this.projectNameTextView.setText(name);
+      });
 
     this.viewModel.outputs.setMessageEditText()
       .compose(bindToLifecycle())

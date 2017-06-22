@@ -30,13 +30,13 @@
         android:paddingStart="@dimen/grid_new_3"
         android:paddingEnd="@dimen/grid_new_2"
         android:paddingBottom="@dimen/grid_new_10"
-        app:layout_collapseMode="parallax"
-        app:layout_collapseParallaxMultiplier="0.2"
         android:animateLayoutChanges="true"
         android:orientation="vertical"
         android:layout_centerVertical="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_collapseMode="parallax"
+        app:layout_collapseParallaxMultiplier="0.2"
         tools:ignore="RelativeOverlap">
 
         <TextView

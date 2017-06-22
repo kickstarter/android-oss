@@ -56,6 +56,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
 
     this.adapter = new MessageThreadsAdapter();
     this.ksString = environment().ksString();
+
     this.recyclerView.setAdapter(this.adapter);
     this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -109,6 +110,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     this.viewModel.inputs.onResume();
   }
 
+  // Fade the collapsed toolbar title as toolbar expands.
   private void setOffsetChangedListener() {
     this.appBarLayout.addOnOffsetChangedListener((appBarLayout, offset) ->
       this.collapsedToolbarTitle.setAlpha((float) Math.abs(offset) / appBarLayout.getTotalScrollRange())

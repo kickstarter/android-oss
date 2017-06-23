@@ -427,7 +427,7 @@ public abstract class DiscoveryParams implements Parcelable {
    * featured project for the category comes back.
    */
   public boolean shouldIncludeFeatured() {
-    return category() != null && page() != null && page() == 1 && (sort() == null || sort() == Sort.HOME);
+    return category() != null && category().parent() == null && page() != null && page() == 1 && (sort() == null || sort() == Sort.HOME);
   }
 
   @Override

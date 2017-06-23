@@ -10,7 +10,8 @@
   <android.support.design.widget.AppBarLayout
     android:id="@+id/messages_app_bar_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:elevation="0dp">
 
     <android.support.design.widget.CollapsingToolbarLayout
       android:layout_width="match_parent"
@@ -62,6 +63,7 @@
       android:layout_width="match_parent"
       android:background="@color/white"
       android:layout_height="@dimen/grid_new_10"
+      app:elevation="0dp"
       app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
       <RelativeLayout

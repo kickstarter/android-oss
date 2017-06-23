@@ -116,7 +116,7 @@
       android:clipToPadding="false"
       android:scrollbars="vertical"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/grid_new_10"
       app:layout_behavior="@string/appbar_scrolling_view_behavior"
       tools:ignore="RtlSymmetry" />

@@ -20,6 +20,7 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.ToolbarUtils;
 import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Backing;
@@ -50,8 +51,8 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.messages_toolbar_close_button) IconButton closeButton;
   protected @Bind(R.id.messages_participant_name_text_view) TextView participantNameTextView;
   protected @Bind(R.id.message_edit_text) EditText messageEditText;
-  protected @Bind(R.id.messages_project_name_collapsed_text_view) TextView projectNameCollapsedTextView;
   protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
+  protected @Bind(R.id.messages_project_name_collapsed_text_view) TextView projectNameToolbarTextView;
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.send_message_button) Button sendMessageButton;
   protected @Bind(R.id.messages_view_pledge_button) Button viewPledgeButton;
@@ -79,10 +80,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
 
     this.viewPledgeButton.setText(this.viewPledgeString);
 
-    // todo: make a utils for this
-    this.appBarLayout.addOnOffsetChangedListener((appBarLayout, offset) ->
-      this.projectNameCollapsedTextView.setAlpha((float) Math.abs(offset) / appBarLayout.getTotalScrollRange())
-    );
+    ToolbarUtils.INSTANCE.fadeToolbarTitleOnExpand(this.appBarLayout, this.projectNameToolbarTextView);
 
     this.viewModel.outputs.backButtonIsGone()
       .compose(bindToLifecycle())
@@ -133,7 +131,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(name -> {
-        this.projectNameCollapsedTextView.setText(name);
+        this.projectNameToolbarTextView.setText(name);
         this.projectNameTextView.setText(name);
       });
 

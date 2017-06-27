@@ -44,6 +44,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<String> projectNameToolbarTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> sendMessageButtonIsEnabled = new TestSubscriber<>();
   private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
   private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
@@ -62,6 +63,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.messages().subscribe(this.messages);
     this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
+    this.vm.outputs.projectNameToolbarTextViewText().subscribe(this.projectNameToolbarTextViewText);
     this.vm.outputs.sendMessageButtonIsEnabled().subscribe(this.sendMessageButtonIsEnabled);
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
@@ -208,6 +210,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     this.participantNameTextViewText.assertValues(messageThread.project().creator().name());
     this.projectNameTextViewText.assertValues(messageThread.project().name());
+    this.projectNameToolbarTextViewText.assertValues(messageThread.project().name());
   }
 
   @Test

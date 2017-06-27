@@ -130,10 +130,12 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.viewModel.outputs.projectNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(name -> {
-        this.projectNameToolbarTextView.setText(name);
-        this.projectNameTextView.setText(name);
-      });
+      .subscribe(this.projectNameTextView::setText);
+
+    this.viewModel.outputs.projectNameToolbarTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.projectNameToolbarTextView::setText);
 
     this.viewModel.outputs.setMessageEditText()
       .compose(bindToLifecycle())

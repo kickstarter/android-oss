@@ -17,27 +17,38 @@
   <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:gravity="center_vertical">
 
-    <com.kickstarter.ui.views.IconButton
-      android:id="@+id/messages_toolbar_back_button"
-      style="@style/ToolbarIconBackButton" />
+    <RelativeLayout
+      android:id="@+id/messages_back_close_buttons"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent">
 
-    <com.kickstarter.ui.views.IconButton
-      style="@style/ToolbarIcon"
-      android:textColor="@color/ksr_text_navy_500"
-      android:id="@+id/messages_toolbar_close_button"
-      android:focusable="true"
-      android:contentDescription="@string/general_navigation_buttons_close"
-      android:text="@string/close_icon" />
+      <com.kickstarter.ui.views.IconButton
+        android:id="@+id/messages_toolbar_back_button"
+        style="@style/ToolbarIconBackButton" />
 
-    <com.kickstarter.ui.views.IconButton
-      style="@style/ToolbarIcon"
-      android:id="@+id/messages_button"
-      android:focusable="true"
-      android:layout_alignParentEnd="true"
-      android:text="@string/more_horiz_icon" />
+      <com.kickstarter.ui.views.IconButton
+        style="@style/ToolbarIcon"
+        android:textColor="@color/ksr_text_navy_500"
+        android:id="@+id/messages_toolbar_close_button"
+        android:focusable="true"
+        android:contentDescription="@string/general_navigation_buttons_close"
+        android:text="@string/close_icon" />
+
+    </RelativeLayout>
+
+    <TextView
+      android:id="@+id/messages_project_name_collapsed_text_view"
+      style="@style/Subheadline"
+      android:layout_toEndOf="@id/messages_back_close_buttons"
+      android:layout_centerVertical="true"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/grid_new_4"
+      android:maxLines="1"
+      android:ellipsize="end"
+      tools:text="This Cool Project I Backed With A Very Long Name Yay"/>
 
   </RelativeLayout>
 

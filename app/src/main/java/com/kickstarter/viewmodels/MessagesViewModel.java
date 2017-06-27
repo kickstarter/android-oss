@@ -82,6 +82,9 @@ public interface MessagesViewModel {
     /** Emits the project name to be displayed. */
     Observable<String> projectNameTextViewText();
 
+    /** Emits the project name to be displayed in the toolbar. */
+    Observable<String> projectNameToolbarTextViewText();
+
     /** Emits a boolean that determines if the Send button should be enabled. */
     Observable<Boolean> sendMessageButtonIsEnabled();
 
@@ -242,6 +245,8 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.projectNameTextViewText::onNext);
 
+      this.projectNameToolbarTextViewText = this.projectNameTextViewText;
+
       project
         .compose(takeWhen(this.viewPledgeButtonClicked))
         .compose(bindToLifecycle())
@@ -289,6 +294,7 @@ public interface MessagesViewModel {
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
     private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
+    private final Observable<String> projectNameToolbarTextViewText;
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<Boolean> sendMessageButtonIsEnabled;
     private final Observable<String> setMessageEditText;
@@ -338,6 +344,9 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
+    }
+    @Override public @NonNull Observable<String> projectNameToolbarTextViewText() {
+      return this.projectNameToolbarTextViewText;
     }
     @Override public @NonNull Observable<String> showMessageErrorToast() {
       return this.showMessageErrorToast;

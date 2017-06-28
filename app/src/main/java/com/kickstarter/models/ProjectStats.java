@@ -1,19 +1,19 @@
-package com.kickstarter.services.apiresponses;
+package com.kickstarter.models;
 
-import java.util.List;
 import android.os.Parcelable;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import org.joda.time.DateTime;
 
-import java.util.List;
-
 import auto.parcel.AutoParcel;
+import rx.schedulers.TimeInterval;
+
+import static com.kickstarter.R.id.pledged;
 
 @AutoGson
 @AutoParcel
-public abstract class ProjectStatsEnvelope implements Parcelable {
+public abstract class ProjectStats implements Parcelable {
 
   public enum ReferrerType {
     CUSTOM, EXTERNAL, INTERNAL, UNKNOWN
@@ -22,7 +22,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
   public abstract CumulativeStats cumulativeStats();
   public abstract FundingDateStats fundingDateStats();
   public abstract ReferrerStats referrerStats();
-  public abstract List<RewardStats> rewardDistribution();
+  public abstract RewardStats rewardDistribution();
   public abstract VideoStats videoStats();
 
 
@@ -31,14 +31,12 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
     public abstract Builder cumulativeStats(CumulativeStats __);
     public abstract Builder fundingDateStats(FundingDateStats __);
     public abstract Builder referrerStats(ReferrerStats __);
-    public abstract Builder rewardDistribution(List<RewardStats> __);
+    public abstract Builder rewardDistribution(RewardStats __);
     public abstract Builder videoStats(VideoStats __);
-    public abstract ProjectStatsEnvelope build();
+    public abstract ProjectStats build();
   }
 
-  public static Builder builder() {
-    return new AutoParcel_ProjectStatsEnvelope.Builder();
-  }
+  public static Builder builder() { return new AutoParcel_ProjectStats.Builder(); }
 
   public abstract Builder toBuilder();
 
@@ -61,9 +59,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
       public abstract CumulativeStats build();
     }
 
-    public static Builder builder() {
-      return new AutoParcel_ProjectStatsEnvelope_CumulativeStats.Builder();
-    }
+    public static Builder builder() { return new AutoParcel_ProjectStats_CumulativeStats.Builder(); }
 
     public abstract Builder toBuilder();
   }
@@ -87,9 +83,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
       public abstract FundingDateStats build();
     }
 
-    public static Builder builder() {
-      return new AutoParcel_ProjectStatsEnvelope_FundingDateStats.Builder();
-    }
+    public static Builder builder() { return new AutoParcel_ProjectStats_FundingDateStats.Builder(); }
 
     public abstract Builder toBuilder();
   }
@@ -112,12 +106,10 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
       public abstract Builder pledged(int __);
       public abstract Builder referrerName(String __);
       public abstract Builder referrerType(ReferrerType __);
-      public abstract ReferrerStats build();
+      public abstract ReferrerStats builder();
     }
 
-    public static Builder builder() {
-      return new AutoParcel_ProjectStatsEnvelope_ReferrerStats.Builder();
-    }
+    public static Builder builder() { return new AutoParcel_ProjectStats_ReferrerStats.Builder(); }
 
     public abstract Builder toBuilder();
   }
@@ -136,14 +128,13 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
       public abstract Builder rewardId(int __);
       public abstract Builder minimum(int __);
       public abstract Builder pledged(int __);
-      public abstract RewardStats build();
+      public abstract RewardStats builder();
     }
 
-    public static Builder builder() {
-      return new AutoParcel_ProjectStatsEnvelope_RewardStats.Builder();
-    }
+    public static Builder builder() { return new AutoParcel_ProjectStats_RewardStats.Builder(); }
 
     public abstract Builder toBuilder();
+//    public static RewardStats zero = RewardStats(backersCount: 0, rewardId: 0, minimum: 0, pledged: 0)
   }
 
   @AutoParcel
@@ -160,12 +151,10 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
       public abstract Builder externalStarts(int __);
       public abstract Builder internalCompletions(int __);
       public abstract Builder internalStarts(int __);
-      public abstract VideoStats build();
+      public abstract VideoStats builder();
     }
 
-    public static Builder builder() {
-      return new AutoParcel_ProjectStatsEnvelope_VideoStats.Builder();
-    }
+    public static Builder builder() { return new AutoParcel_ProjectStats_VideoStats.Builder(); }
 
     public abstract Builder toBuilder();
   }

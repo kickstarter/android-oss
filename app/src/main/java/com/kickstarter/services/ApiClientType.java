@@ -22,6 +22,7 @@ import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.ui.data.MessageSubject;
 
@@ -59,6 +60,8 @@ public interface ApiClientType {
   @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params);
 
   @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull String paginationUrl);
+
+  @NonNull Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project);
 
   @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user);
 

@@ -10,6 +10,7 @@ import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.ProjectStats;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.ui.activities.CreatorDashboardActivity;
@@ -64,6 +65,9 @@ public interface CreatorDashboardViewModel {
 
       final Observable<Project> latestProject = projects
         .map(ListUtils::first);
+
+      final Observable<ProjectStats> projectStatsNotification = latestProject
+        .switchMap(this.client::fetchProjectStats);
 
       this.latestProject = latestProject;
 

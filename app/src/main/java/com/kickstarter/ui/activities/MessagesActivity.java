@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -19,6 +20,7 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.ToolbarUtils;
 import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Backing;
@@ -42,6 +44,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   private KSString ksString;
   private MessagesAdapter adapter;
 
+  protected @Bind(R.id.messages_app_bar_layout) AppBarLayout appBarLayout;
   protected @Bind(R.id.messages_toolbar_back_button) IconButton backButton;
   protected @Bind(R.id.backing_amount_text_view) TextView backingAmountTextViewText;
   protected @Bind(R.id.backing_info_view) View backingInfoView;
@@ -49,6 +52,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.messages_participant_name_text_view) TextView participantNameTextView;
   protected @Bind(R.id.message_edit_text) EditText messageEditText;
   protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
+  protected @Bind(R.id.messages_project_name_collapsed_text_view) TextView projectNameToolbarTextView;
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.send_message_button) Button sendMessageButton;
   protected @Bind(R.id.messages_view_pledge_button) Button viewPledgeButton;
@@ -75,6 +79,8 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.recyclerView.setLayoutManager(layoutManager);
 
     this.viewPledgeButton.setText(this.viewPledgeString);
+
+    ToolbarUtils.INSTANCE.fadeToolbarTitleOnExpand(this.appBarLayout, this.projectNameToolbarTextView);
 
     this.viewModel.outputs.backButtonIsGone()
       .compose(bindToLifecycle())
@@ -125,6 +131,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.projectNameTextView::setText);
+
+    this.viewModel.outputs.projectNameToolbarTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.projectNameToolbarTextView::setText);
 
     this.viewModel.outputs.setMessageEditText()
       .compose(bindToLifecycle())

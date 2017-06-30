@@ -73,6 +73,7 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
     super.onResume();
 
     this.viewModel.outputs.webViewUrl()
+      .take(1)
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.ksWebView::loadUrl);

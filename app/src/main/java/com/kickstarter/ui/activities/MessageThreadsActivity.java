@@ -18,6 +18,7 @@ import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.StringUtils;
+import com.kickstarter.libs.utils.ToolbarUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.adapters.MessageThreadsAdapter;
 import com.kickstarter.viewmodels.MessageThreadsViewModel;
@@ -36,10 +37,9 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   private RecyclerViewPaginator recyclerViewPaginator;
 
   protected @Bind(R.id.message_threads_app_bar_layout) AppBarLayout appBarLayout;
-  protected @Bind(R.id.mailbox_text_view) TextView mailboxTextView;
-  protected @Bind(R.id.mailbox_and_unread_layout) View expandedToolbarTitle;
   protected @Bind(R.id.message_threads_collapsed_toolbar_title) View collapsedToolbarTitle;
   protected @Bind(R.id.message_threads_collapsing_toolbar_layout) CollapsingToolbarLayout collapsingToolbarLayout;
+  protected @Bind(R.id.mailbox_text_view) TextView mailboxTextView;
   protected @Bind(R.id.message_threads_recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.unread_count_text_view) TextView unreadCountTextView;
   protected @Bind(R.id.message_threads_toolbar_unread_count_text_view) TextView unreadCountToolbarTextView;
@@ -57,6 +57,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
 
     this.adapter = new MessageThreadsAdapter();
     this.ksString = environment().ksString();
+
     this.recyclerView.setAdapter(this.adapter);
     this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -64,7 +65,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
 
     this.mailboxTextView.setText(this.inboxString);  // todo: Sent mailbox logic enum
 
-    setOffsetChangedListener();
+    ToolbarUtils.INSTANCE.fadeToolbarTitleOnExpand(this.appBarLayout, this.collapsedToolbarTitle);
 
     this.viewModel.outputs.hasNoMessages()
       .compose(bindToLifecycle())
@@ -108,22 +109,6 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   protected void onResume() {
     super.onResume();
     this.viewModel.inputs.onResume();
-  }
-
-  // todo: make inputs and outputs
-  private void setOffsetChangedListener() {
-    this.appBarLayout.addOnOffsetChangedListener(
-      (appBarLayout, offset) -> {
-        if (offset == 0) {  // expanded
-          this.expandedToolbarTitle.setVisibility(View.VISIBLE);
-          this.collapsedToolbarTitle.setVisibility(View.INVISIBLE);
-
-        } else if (Math.abs(offset) >= appBarLayout.getTotalScrollRange()) {
-          this.expandedToolbarTitle.setVisibility(View.INVISIBLE);
-          this.collapsedToolbarTitle.setVisibility(View.VISIBLE);
-        }
-      }
-    );
   }
 
   private void setUnreadTextViewText(final @NonNull Integer unreadCount) {

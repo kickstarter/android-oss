@@ -7,6 +7,7 @@
   android:background="@color/white"
   android:id="@+id/message_threads_toolbar"
   android:elevation="0dp"
+  android:animateLayoutChanges="true"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   app:layout_collapseMode="pin"
@@ -28,8 +29,7 @@
       android:layout_centerVertical="true"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:animateLayoutChanges="true"
-      android:visibility="invisible">
+      android:animateLayoutChanges="true">
 
       <TextView
         style="@style/Subheadline"

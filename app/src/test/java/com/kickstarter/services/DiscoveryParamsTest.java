@@ -3,6 +3,8 @@ package com.kickstarter.services;
 import android.net.Uri;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.factories.CategoryFactory;
+import com.kickstarter.models.Category;
 
 import org.junit.Test;
 
@@ -132,5 +134,16 @@ public final class DiscoveryParamsTest extends KSRobolectricTestCase {
 
     final Uri searchUri = Uri.parse("https://www.kickstarter.com/projects/search?term=skull+graphic+tee");
     assertEquals(params, DiscoveryParams.fromUri(searchUri));
+  }
+
+  @Test
+  public void testShouldIncludeFeatured() {
+    final Category nonRootCategory = CategoryFactory.bluesCategory();
+    final DiscoveryParams nonRootParams = DiscoveryParams.builder().category(nonRootCategory).build();
+    assertEquals(false, nonRootParams.shouldIncludeFeatured());
+
+    final Category rootCategory = CategoryFactory.gamesCategory();
+    final DiscoveryParams rootParams = DiscoveryParams.builder().category(rootCategory).build();
+    assertEquals(true, rootParams.shouldIncludeFeatured());
   }
 }

@@ -71,7 +71,7 @@ Unterstützer</string>
   <string name="Creator_name_was_live_time_ago" formatted="false">&lt;b>%{creator_name}&lt;/b> war vor %{time_ago} live</string>
   <string name="Creator_name_was_streaming_live_on_Kickstarter" formatted="false">Der Stream von %{creator_name} war gerade live auf Kickstarter</string>
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} wird in %{in_duration} live auf Kickstarter streamen</string>
-  <string name="Delivered" formatted="false">Delivered</string>
+  <string name="Delivered" formatted="false">Verschickt</string>
   <string name="Discover_more_projects" formatted="false">Erkunde mehr Projekte.</string>
   <string name="Dismiss" formatted="false">Verwerfen</string>
   <string name="Done" formatted="false">Fertig!</string>
@@ -103,12 +103,12 @@ Unterstützer</string>
   <string name="Find_projects_youll_love_and_help_bring" formatted="false">Finde Projekte, die zu dir passen und hilf mit bei der Umsetzung neuer, kreativer Ideen.</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Finde Projekte nach deinem Geschmack - in Kunst, Design, Film, Spiele, Musik und vielen anderen Kategorien. Wenn du ein Projekt unterstützt hast, wird deren Aktivität hier angezeigt.</string>
   <string name="First_created" formatted="false">Erstes Projekt</string>
-  <string name="Follow_friend_name" formatted="false">Follow %{friend_name}.</string>
+  <string name="Follow_friend_name" formatted="false">%{friend_name} folgen.</string>
   <string name="Follow_friends" formatted="false">Freunden folgen</string>
   <string name="Follow_more_friends" formatted="false">Folge noch mehr Freunden</string>
   <string name="Follow_your_Facebook_friends_and_get_notified" formatted="false">Folge deinen Freunden und wir werden dich benachrichtigen, sobald sie ein Projekt unterstützen oder veröffentlichen.</string>
   <string name="Follow_your_Facebook_friends_and_keep_up_with_the_projects" formatted="false">Folge deinen Facebook-Freunden - wir halten dich auf dem Laufenden, wenn sie ein Projekt unterstützen oder veröffentlichen.</string>
-  <string name="Followed" formatted="false">Followed</string>
+  <string name="Followed" formatted="false">Abonniert</string>
   <string name="Following" formatted="false">Abonniert</string>
   <string name="Follows_friend_name" formatted="false">%{friend_name} folgen.</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> hat ein &lt;i>Kunst-Projekt&lt;/i> unterstützt.</string>
@@ -173,8 +173,8 @@ Unterstützer</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Es gibt noch keine Beiträge von Freunden.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Keine Wiedergabe verügbar für diesen Live-Stream.</string>
   <string name="No_unread_messages" formatted="false">Keine ungelesenen Nachrichten</string>
-  <string name="Not_delivered" formatted="false">Not delivered</string>
-  <string name="Not_followed" formatted="false">Not followed</string>
+  <string name="Not_delivered" formatted="false">Nicht verschickt</string>
+  <string name="Not_followed" formatted="false">Nicht abonniert</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Wenn du ein Projekt unterstützt, werden wir dir hier maßgeschneiderte Empfehlungen machen.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Nur noch %{amount_of_time} live!</string>
   <string name="Opens_comments" formatted="false">Öffnet Kommentare.</string>
@@ -287,7 +287,7 @@ Unterstützer</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">Für schnellen Zugriff auf deine meist besuchten Kategorien, tippe auf das Dropdown-Menü oben.</string>
   <string name="To_read_this_project_update_you_must_be_a_backer" formatted="false">Um diesen Update zum Projekt lesen zu können, musst du ein Unterstützer dieses Projekts sein. Bitte melde dich an oder registriere dich.</string>
   <string name="Total_pledged" formatted="false">Anzahl der Beiträge insgesamt</string>
-  <string name="Unfollow_friend_name" formatted="false">Unfollow %{friend_name}</string>
+  <string name="Unfollow_friend_name" formatted="false">%{friend_name} nicht mehr folgen</string>
   <string name="Unfollows_friend_name" formatted="false">%{friend_name} nicht mehr folgen.</string>
   <string name="Unsaves_project" formatted="false">Macht Speichern dieses Projektes rückgängig.</string>
   <string name="Unsubscribe" formatted="false">Abo abbestellen</string>

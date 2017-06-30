@@ -174,7 +174,7 @@ patrocinadores</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Este Live Stream no cuenta con repetición.</string>
   <string name="No_unread_messages" formatted="false">No hay mensajes no leídos</string>
   <string name="Not_delivered" formatted="false">No entregado</string>
-  <string name="Not_followed" formatted="false">Not followed</string>
+  <string name="Not_followed" formatted="false">No siguiendo</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Tu patrocinio de un proyecto nos ayuda a hacerte recomendaciones personalizadas.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Queda poco tiempo para verlo (%{amount_of_time}).</string>
   <string name="Opens_comments" formatted="false">Abre comentarios.</string>

@@ -103,7 +103,7 @@ backers</string>
   <string name="Find_projects_youll_love_and_help_bring" formatted="false">Find projects you’ll love and help bring creative ideas to life.</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Find projects you’ll love in art, design, film, games, music, and more. Once you back a project, you’ll see all your activity here.</string>
   <string name="First_created" formatted="false">First created</string>
-  <string name="Follow_friend_name" formatted="false">Follow %{friend_name}.</string>
+  <string name="Follow_friend_name" formatted="false">Follow %{friend_name}</string>
   <string name="Follow_friends" formatted="false">Follow friends</string>
   <string name="Follow_more_friends" formatted="false">Follow more friends</string>
   <string name="Follow_your_Facebook_friends_and_get_notified" formatted="false">Follow your Facebook friends and get notified when they back or launch projects.</string>

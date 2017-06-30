@@ -6,6 +6,7 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.BuildCheck;
+import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.FeatureKey;
@@ -13,6 +14,7 @@ import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.IntegerUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
@@ -70,7 +72,9 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       .map(u -> u != null && IntegerUtils.isNonZero(u.createdProjectsCount()));
 
     final Observable<Boolean> creatorViewFeatureFlagIsEnabled = environment.currentConfig().observable()
-      .map(config -> coalesce(config.features().get(FeatureKey.ANDROID_CREATOR_VIEW), false));
+      .map(Config::features)
+      .filter(ObjectUtils::isNotNull)
+      .map(f -> coalesce(f.get(FeatureKey.ANDROID_CREATOR_VIEW), false));
 
     this.creatorDashboardButtonIsGone = Observable.combineLatest(
       userIsCreator,

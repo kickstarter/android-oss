@@ -6,6 +6,8 @@ import com.kickstarter.libs.qualifiers.AutoGson;
 
 import org.joda.time.DateTime;
 
+import java.util.List;
+
 import auto.parcel.AutoParcel;
 import rx.schedulers.TimeInterval;
 
@@ -22,7 +24,7 @@ public abstract class ProjectStats implements Parcelable {
   public abstract CumulativeStats cumulativeStats();
   public abstract FundingDateStats fundingDateStats();
   public abstract ReferrerStats referrerStats();
-  public abstract RewardStats rewardDistribution();
+  public abstract List<RewardStats> rewardDistribution();
   public abstract VideoStats videoStats();
 
 
@@ -31,7 +33,7 @@ public abstract class ProjectStats implements Parcelable {
     public abstract Builder cumulativeStats(CumulativeStats __);
     public abstract Builder fundingDateStats(FundingDateStats __);
     public abstract Builder referrerStats(ReferrerStats __);
-    public abstract Builder rewardDistribution(RewardStats __);
+    public abstract Builder rewardDistribution(List<RewardStats> __);
     public abstract Builder videoStats(VideoStats __);
     public abstract ProjectStats build();
   }

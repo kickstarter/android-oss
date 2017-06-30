@@ -127,4 +127,6 @@
 
   </LinearLayout>
 
+  <include layout="@layout/creator_dashboard_reward_stats"/>
+
 </LinearLayout>

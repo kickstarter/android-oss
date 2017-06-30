@@ -15,6 +15,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.adapters.CreatorDashboardAdapter;
 import com.kickstarter.viewmodels.CreatorDashboardViewModel;
 
 import java.math.RoundingMode;
@@ -35,10 +36,12 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
   protected @Bind(R.id.creator_dashboard_project_name) TextView projectNameTextView;
   protected @Bind(R.id.creator_dashboard_time_remaining) TextView timeRemainingTextView;
   protected @Bind(R.id.creator_dashboard_time_remaining_text) TextView timeRemainingTextTextView;
+  protected @Bind(R.id.creator_dashboard_reward_count) TextView rewardCountTextView;
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 
   private KSCurrency ksCurrency;
   private KSString ksString;
+  private CreatorDashboardAdapter adapter;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -48,6 +51,8 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
 
     this.ksCurrency = this.environment().ksCurrency();
     this.ksString = this.environment().ksString();
+
+    this.adapter = new CreatorDashboardAdapter();
 
     viewModel.outputs.latestProject()
       .compose(bindToLifecycle())
@@ -73,6 +78,11 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(projectNameTextView::setText);
+
+    viewModel.outputs.rewardCount()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(rewardCountTextView::setText);
 
     viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())

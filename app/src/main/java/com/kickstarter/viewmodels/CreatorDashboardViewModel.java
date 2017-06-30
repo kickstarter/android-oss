@@ -40,6 +40,9 @@ public interface CreatorDashboardViewModel {
     /* name of the latest project */
     Observable<String> projectNameTextViewText();
 
+    /* number of rows for the rewards table */
+    Observable<String> rewardCount();
+
     /* call when button is clicked to view individual project page */
     Observable<Pair<Project, RefTag>> startProjectActivity();
 
@@ -66,7 +69,7 @@ public interface CreatorDashboardViewModel {
       final Observable<Project> latestProject = projects
         .map(ListUtils::first);
 
-      final Observable<ProjectStats> projectStatsNotification = latestProject
+      final Observable<ProjectStats> projectStats = latestProject
         .switchMap(this.client::fetchProjectStats);
 
       this.latestProject = latestProject;
@@ -77,6 +80,10 @@ public interface CreatorDashboardViewModel {
 
       this.projectNameTextViewText = latestProject
         .map(Project::name);
+
+      this.rewardCount = projectStats
+        .map(ps -> ps.rewardDistribution().size())
+        .map(NumberUtils::format);
 
       this.startProjectActivity = latestProject
         .compose(takeWhen(this.projectViewClicked))
@@ -92,6 +99,7 @@ public interface CreatorDashboardViewModel {
     private final Observable<Project> latestProject;
     private final Observable<String> projectBackersCountText;
     private final Observable<String> projectNameTextViewText;
+    private final Observable<String> rewardCount;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
     private final Observable<String> timeRemaining;
 
@@ -112,6 +120,7 @@ public interface CreatorDashboardViewModel {
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
     }
+    @Override public @NonNull Observable<String> rewardCount() { return this.rewardCount; }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
     }

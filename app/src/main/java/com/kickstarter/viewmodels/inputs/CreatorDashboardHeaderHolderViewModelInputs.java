@@ -1,8 +1,9 @@
 package com.kickstarter.viewmodels.inputs;
 
-/**
- * Created by julieswoope on 6/30/17.
- */
+import com.kickstarter.models.Project;
+import com.kickstarter.models.ProjectStats;
+
 
 public interface CreatorDashboardHeaderHolderViewModelInputs {
+  void projectAndStats(Project project, ProjectStats projectStats);
 }

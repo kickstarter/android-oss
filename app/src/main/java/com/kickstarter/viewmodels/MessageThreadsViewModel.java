@@ -20,6 +20,7 @@ import com.kickstarter.ui.activities.MessageThreadsActivity;
 import java.util.List;
 
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
@@ -83,17 +84,29 @@ public interface MessageThreadsViewModel {
 
       freshUser.subscribe(this.currentUser::refresh);
 
+      // Ping refresh on initial load to trigger paginator
+      intent()
+        .take(1)
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.refresh());
+
       final ApiPaginator<MessageThread, MessageThreadsEnvelope, Void> paginator =
         ApiPaginator.<MessageThread, MessageThreadsEnvelope, Void>builder()
           .nextPage(this.nextPage)
+          .startOverWith(this.refresh)
           .envelopeToListOfData(MessageThreadsEnvelope::messageThreads)
           .envelopeToMoreUrl(env -> env.urls().api().moreMessageThreads())
           .loadWithParams(__ -> this.client.fetchMessageThreads())
           .loadWithPaginationPath(this.client::fetchMessageThreadsWithPaginationPath)
           .build();
 
-      this.isFetchingMessageThreads = paginator.isFetching();
-      this.messageThreads = paginator.paginatedData();
+      paginator.isFetching()
+        .compose(bindToLifecycle())
+        .subscribe(this.isFetchingMessageThreads);
+
+      paginator.paginatedData()
+        .compose(bindToLifecycle())
+        .subscribe(this.messageThreads);
 
       final Observable<Integer> unreadMessagesCount = this.currentUser.loggedInUser()
         .map(User::unreadMessagesCount)
@@ -126,8 +139,8 @@ public interface MessageThreadsViewModel {
 
     private final Observable<Boolean> hasNoMessages;
     private final Observable<Boolean> hasNoUnreadMessages;
-    private final Observable<Boolean> isFetchingMessageThreads;
-    private final Observable<List<MessageThread>> messageThreads;
+    private final BehaviorSubject<Boolean> isFetchingMessageThreads = BehaviorSubject.create();
+    private final BehaviorSubject<List<MessageThread>> messageThreads = BehaviorSubject.create();
     private final Observable<Integer> unreadCountTextViewColorInt;
     private final Observable<Integer> unreadCountTextViewTypefaceInt;
     private final Observable<Boolean> unreadCountToolbarTextViewIsGone;

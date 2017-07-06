@@ -21,6 +21,7 @@ import rx.Notification;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
@@ -34,20 +35,11 @@ public interface CreatorDashboardViewModel {
     /* most recent project by the creator */
     Observable<Project> latestProject();
 
-    /* localized count of number of backers */
-    Observable<String> projectBackersCountText();
-
-    /* name of the latest project */
-    Observable<String> projectNameTextViewText();
-
-    /* number of rows for the rewards table */
-    Observable<String> rewardCount();
+    /* project and associated stats object */
+    Observable<Pair<Project, ProjectStats>> projectAndStats();
 
     /* call when button is clicked to view individual project page */
     Observable<Pair<Project, RefTag>> startProjectActivity();
-
-    /* time remaining for latest project (no units) */
-    Observable<String> timeRemaining();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardActivity> implements Inputs, Outputs {
@@ -74,34 +66,20 @@ public interface CreatorDashboardViewModel {
 
       this.latestProject = latestProject;
 
-      this.projectBackersCountText = latestProject
-        .map(Project::backersCount)
-        .map(NumberUtils::format);
 
-      this.projectNameTextViewText = latestProject
-        .map(Project::name);
-
-      this.rewardCount = projectStats
-        .map(ps -> ps.rewardDistribution().size())
-        .map(NumberUtils::format);
+      this.projectAndStats = latestProject
+        .compose(combineLatestPair(projectStats));
 
       this.startProjectActivity = latestProject
         .compose(takeWhen(this.projectViewClicked))
         .map(p -> Pair.create(p, RefTag.dashboard()));
-
-      this.timeRemaining = latestProject
-        .map(ProjectUtils::deadlineCountdownValue)
-        .map(NumberUtils::format);
     }
 
     private final PublishSubject<Void> projectViewClicked = PublishSubject.create();
 
     private final Observable<Project> latestProject;
-    private final Observable<String> projectBackersCountText;
-    private final Observable<String> projectNameTextViewText;
-    private final Observable<String> rewardCount;
+    private final Observable<Pair<Project, ProjectStats>> projectAndStats;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
-    private final Observable<String> timeRemaining;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -114,18 +92,7 @@ public interface CreatorDashboardViewModel {
     @Override public @NonNull Observable<Project> latestProject() {
       return this.latestProject;
     }
-    @Override public @NonNull Observable<String> projectBackersCountText() {
-      return this.projectBackersCountText;
-    }
-    @Override public @NonNull Observable<String> projectNameTextViewText() {
-      return this.projectNameTextViewText;
-    }
-    @Override public @NonNull Observable<String> rewardCount() { return this.rewardCount; }
-    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
-      return this.startProjectActivity;
-    }
-    @Override public @NonNull Observable<String> timeRemaining() {
-      return this.timeRemaining;
-    }
+    @Override public @NonNull Observable<Pair<Project, ProjectStats>> projectAndStats() { return this.projectAndStats; }
+    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() { return this.startProjectActivity; }
   }
 }

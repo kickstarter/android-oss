@@ -6,4 +6,5 @@ import com.kickstarter.models.ProjectStats;
 
 public interface CreatorDashboardHeaderHolderViewModelInputs {
   void projectAndStats(Project project, ProjectStats projectStats);
+  void projectViewClicked();
 }

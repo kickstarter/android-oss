@@ -108,7 +108,7 @@ public abstract class ProjectStats implements Parcelable {
       public abstract Builder pledged(int __);
       public abstract Builder referrerName(String __);
       public abstract Builder referrerType(ReferrerType __);
-      public abstract ReferrerStats builder();
+      public abstract ReferrerStats build();
     }
 
     public static Builder builder() { return new AutoParcel_ProjectStats_ReferrerStats.Builder(); }
@@ -130,7 +130,7 @@ public abstract class ProjectStats implements Parcelable {
       public abstract Builder rewardId(int __);
       public abstract Builder minimum(int __);
       public abstract Builder pledged(int __);
-      public abstract RewardStats builder();
+      public abstract RewardStats build();
     }
 
     public static Builder builder() { return new AutoParcel_ProjectStats_RewardStats.Builder(); }
@@ -153,7 +153,7 @@ public abstract class ProjectStats implements Parcelable {
       public abstract Builder externalStarts(int __);
       public abstract Builder internalCompletions(int __);
       public abstract Builder internalStarts(int __);
-      public abstract VideoStats builder();
+      public abstract VideoStats build();
     }
 
     public static Builder builder() { return new AutoParcel_ProjectStats_VideoStats.Builder(); }

@@ -40,6 +40,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> backingInfoViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> closeButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<Void> goBack = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Message, Integer>> messageAndPosition = new TestSubscriber<>();
   private final TestSubscriber<String> messageEditTextHint = new TestSubscriber<>();
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
@@ -59,6 +60,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.backingInfoViewIsGone().subscribe(this.backingInfoViewIsGone);
     this.vm.outputs.closeButtonIsGone().subscribe(this.closeButtonIsGone);
     this.vm.outputs.goBack().subscribe(this.goBack);
+    this.vm.outputs.messageAndPosition().subscribe(this.messageAndPosition);
     this.vm.outputs.messageEditTextHint().subscribe(this.messageEditTextHint);
     this.vm.outputs.messages().subscribe(this.messages);
     this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
@@ -303,9 +305,10 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.messageEditTextChanged("Hello there");
     this.vm.inputs.sendMessageButtonClicked();
 
-    // Error toast is displayed, errored message body remains in edit text.
+    // Error toast is displayed, errored message body remains in edit text, no new message is emitted.
     this.showMessageErrorToast.assertValueCount(1);
     this.setMessageEditText.assertNoValues();
+    this.messageAndPosition.assertNoValues();
 
     // No sent message event tracked.
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
@@ -329,9 +332,17 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Start the view model with a message thread.
     this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
 
+    // Initial messages emit.
+    this.messages.assertValueCount(1);
+    this.messageAndPosition.assertNoValues();
+
     // Send a message successfully.
     this.vm.inputs.messageEditTextChanged("Salutations friend!");
     this.vm.inputs.sendMessageButtonClicked();
+
+    // Messages list does not emit again, only the new message and its position.
+    this.messages.assertValueCount(1);
+    this.messageAndPosition.assertValueCount(1);
 
     // Reply edit text should be cleared.
     this.setMessageEditText.assertValues("");

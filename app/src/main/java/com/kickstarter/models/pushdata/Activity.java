@@ -35,5 +35,4 @@ public abstract class Activity implements Parcelable {
   }
 
   public abstract Builder toBuilder();
-
 }

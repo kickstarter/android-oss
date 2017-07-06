@@ -2,6 +2,7 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import android.view.View;
 
 import com.kickstarter.R;
@@ -40,6 +41,14 @@ public final class MessagesAdapter extends KSAdapter {
       });
 
     notifyDataSetChanged();
+  }
+
+  public void appendNewMessage(final @NonNull Pair<Message, Integer> messageAndPosition) {
+    // Add a date view holder and a message body view holder.
+    addSection(Collections.singletonList(messageAndPosition.first.createdAt()));
+    addSection(Collections.singletonList(messageAndPosition.first));
+
+    notifyItemInserted(messageAndPosition.second);
   }
 
   @Override

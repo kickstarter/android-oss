@@ -1,8 +1,10 @@
 package com.kickstarter.viewmodels;
 
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
+import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
@@ -22,6 +24,7 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+import static com.kickstarter.libs.utils.IntegerUtils.intValueOrZero;
 
 public interface MessageThreadsViewModel {
 
@@ -48,6 +51,12 @@ public interface MessageThreadsViewModel {
 
     /** Emits a list of message threads to be displayed. */
     Observable<List<MessageThread>> messageThreads();
+
+    /** Emits a color integer to set the unread count text view to. */
+    Observable<Integer> unreadCountTextViewColorInt();
+
+    /** Emits a typeface integer to set the unread count text view to. */
+    Observable<Integer> unreadCountTextViewTypefaceInt();
 
     /** Emits a boolean to determine if the unread count toolbar text view should be gone. */
     Observable<Boolean> unreadCountToolbarTextViewIsGone();
@@ -92,6 +101,13 @@ public interface MessageThreadsViewModel {
 
       this.hasNoMessages = unreadMessagesCount.map(ObjectUtils::isNull);
       this.hasNoUnreadMessages = unreadMessagesCount.map(IntegerUtils::isZero);
+
+      this.unreadCountTextViewColorInt = unreadMessagesCount
+        .map(count -> intValueOrZero(count) > 0 ? R.color.ksr_text_green_700 : R.color.ksr_dark_grey_400);
+
+      this.unreadCountTextViewTypefaceInt = unreadMessagesCount
+        .map(count -> intValueOrZero(count) > 0 ? Typeface.BOLD : Typeface.NORMAL);
+
       this.unreadCountToolbarTextViewIsGone = Observable.zip(
         this.hasNoMessages,
         this.hasNoUnreadMessages,
@@ -112,6 +128,8 @@ public interface MessageThreadsViewModel {
     private final Observable<Boolean> hasNoUnreadMessages;
     private final Observable<Boolean> isFetchingMessageThreads;
     private final Observable<List<MessageThread>> messageThreads;
+    private final Observable<Integer> unreadCountTextViewColorInt;
+    private final Observable<Integer> unreadCountTextViewTypefaceInt;
     private final Observable<Boolean> unreadCountToolbarTextViewIsGone;
     private final Observable<Integer> unreadMessagesCount;
 
@@ -139,6 +157,12 @@ public interface MessageThreadsViewModel {
     }
     @Override public @NonNull Observable<List<MessageThread>> messageThreads() {
       return this.messageThreads;
+    }
+    @Override public @NonNull Observable<Integer> unreadCountTextViewColorInt() {
+      return this.unreadCountTextViewColorInt;
+    }
+    @Override public @NonNull Observable<Integer> unreadCountTextViewTypefaceInt() {
+      return this.unreadCountTextViewTypefaceInt;
     }
     @Override public @NonNull Observable<Boolean> unreadCountToolbarTextViewIsGone() {
       return this.unreadCountToolbarTextViewIsGone;

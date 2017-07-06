@@ -1,10 +1,12 @@
 package com.kickstarter.ui.activities;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
@@ -47,6 +49,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   protected @BindString(R.string.messages_navigation_inbox) String inboxString;
   protected @BindString(R.string.No_messages) String noMessagesString;
   protected @BindString(R.string.No_unread_messages) String noUnreadMessagesString;
+  protected @BindString(R.string.font_family_sans_serif) String sansSerifString;
   protected @BindString(R.string.unread_count_unread) String unreadCountUnreadString;
 
   @Override
@@ -81,6 +84,16 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.adapter::messageThreads);
+
+    this.viewModel.outputs.unreadCountTextViewColorInt()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(colorInt -> this.unreadCountTextView.setTextColor(ContextCompat.getColor(this, colorInt)));
+
+    this.viewModel.outputs.unreadCountTextViewTypefaceInt()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(typeInt -> this.unreadCountTextView.setTypeface(Typeface.create(this.sansSerifString, typeInt)));
 
     this.viewModel.outputs.unreadCountToolbarTextViewIsGone()
       .compose(bindToLifecycle())

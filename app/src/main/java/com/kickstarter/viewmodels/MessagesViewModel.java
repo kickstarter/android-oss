@@ -70,6 +70,9 @@ public interface MessagesViewModel {
     /** Emits when we should navigate back. */
     Observable<Void> goBack();
 
+    /** Emits the message and its position in the list. */
+    Observable<Pair<Message, Integer>> messageAndPosition();
+
     /** Emits a string to display as the message edit text hint. */
     Observable<String> messageEditTextHint();
 
@@ -161,13 +164,22 @@ public interface MessagesViewModel {
 
       this.setMessageEditText = messageSent.map(__ -> "");
 
-      final Observable<MessageThreadEnvelope> messageThreadEnvelope = Observable.merge(
-        backingOrThread,
-        backingOrThread.compose(takeWhen(messageSent))
-      )
+      final Observable<MessageThreadEnvelope> initialMessageThreadEnvelope = backingOrThread
         .switchMap(bOrT -> bOrT.either(this.client::fetchMessagesForBacking, this.client::fetchMessagesForThread))
         .compose(neverError())
         .share();
+
+      final Observable<MessageThreadEnvelope> sentMessageThreadEnvelope = backingOrThread
+        .compose(takeWhen(messageSent))
+        .switchMap(bOrT -> bOrT.either(this.client::fetchMessagesForBacking, this.client::fetchMessagesForThread))
+        .compose(neverError())
+        .share();
+
+      final Observable<MessageThreadEnvelope> messageThreadEnvelope = Observable.merge(
+        initialMessageThreadEnvelope,
+        sentMessageThreadEnvelope
+      )
+        .distinctUntilChanged();
 
       final Observable<Project> project = configData
         .map(data -> data.either(MessageThread::project, projectAndBacking -> projectAndBacking.first));
@@ -175,7 +187,7 @@ public interface MessagesViewModel {
       // If view model was not initialized with a MessageThread, participant is
       // the project creator.
       final Observable<User> participant = Observable.merge(
-        messageThreadEnvelope
+        initialMessageThreadEnvelope
           .map(MessageThreadEnvelope::messageThread)
           .filter(ObjectUtils::isNotNull)
           .map(MessageThread::participant),
@@ -195,11 +207,19 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.successfullyMarkedAsRead::onNext);
 
-      messageThreadEnvelope
+      initialMessageThreadEnvelope
         .map(MessageThreadEnvelope::messages)
         .filter(ObjectUtils::isNotNull)
         .compose(bindToLifecycle())
         .subscribe(this.messages::onNext);
+
+      // Grab the most recently sent message and its position
+      sentMessageThreadEnvelope
+        .map(MessageThreadEnvelope::messages)
+        .filter(ObjectUtils::isNotNull)
+        .map(messages -> Pair.create(messages.get(messages.size() - 1), messages.size()))
+        .compose(bindToLifecycle())
+        .subscribe(this.messageAndPosition::onNext);
 
       participant
         .map(User::name)
@@ -290,6 +310,7 @@ public interface MessagesViewModel {
     private final BehaviorSubject<Boolean> backingInfoViewIsGone = BehaviorSubject.create();
     private final Observable<Boolean> closeButtonIsGone;
     private final Observable<Void> goBack;
+    private final BehaviorSubject<Pair<Message, Integer>> messageAndPosition = BehaviorSubject.create();
     private final Observable<String> messageEditTextHint;
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
     private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
@@ -332,6 +353,9 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<Void> goBack() {
       return this.goBack;
+    }
+    @Override public @NonNull Observable<Pair<Message, Integer>> messageAndPosition() {
+      return this.messageAndPosition;
     }
     @Override public @NonNull Observable<String> messageEditTextHint() {
       return this.messageEditTextHint;

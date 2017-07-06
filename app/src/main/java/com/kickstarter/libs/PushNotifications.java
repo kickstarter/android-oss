@@ -216,7 +216,8 @@ public final class PushNotifications {
     final @NonNull MessageThread messageThread) {
 
     final Intent messageThreadIntent = new Intent(this.context, MessagesActivity.class)
-      .putExtra(IntentKey.MESSAGE_THREAD, messageThread);
+      .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
+      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.PUSH);
 
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
       .addNextIntentWithParentStack(messageThreadIntent);

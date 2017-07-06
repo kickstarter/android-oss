@@ -35,13 +35,13 @@ import com.squareup.picasso.RequestCreator;
 import java.io.IOException;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
-import static rx.schedulers.Schedulers.newThread;
 
 public final class PushNotifications {
   private final @ApplicationContext Context context;
@@ -64,7 +64,7 @@ public final class PushNotifications {
       this.notifications
         .onBackpressureBuffer()
         .filter(PushNotificationEnvelope::isFriendFollow)
-        .observeOn(newThread())
+        .observeOn(Schedulers.newThread())
         .subscribe(this::displayNotificationFromFriendFollowActivity)
     );
 
@@ -73,7 +73,7 @@ public final class PushNotifications {
         .onBackpressureBuffer()
         .filter(PushNotificationEnvelope::isMessage)
         .flatMap(this::fetchMessageThreadWithEnvelope)
-        .observeOn(newThread())
+        .observeOn(Schedulers.newThread())
         .subscribe(envelopeAndMessageThread ->
           this.displayNotificationFromMessageActivity(envelopeAndMessageThread.first, envelopeAndMessageThread.second)
         )
@@ -83,7 +83,7 @@ public final class PushNotifications {
       this.notifications
         .onBackpressureBuffer()
         .filter(PushNotificationEnvelope::isProjectActivity)
-        .observeOn(newThread())
+        .observeOn(Schedulers.newThread())
         .subscribe(this::displayNotificationFromProjectActivity)
     );
 
@@ -91,7 +91,7 @@ public final class PushNotifications {
       this.notifications
         .onBackpressureBuffer()
         .filter(PushNotificationEnvelope::isProjectReminder)
-        .observeOn(newThread())
+        .observeOn(Schedulers.newThread())
         .subscribe(this::displayNotificationFromProjectReminder)
     );
 
@@ -101,7 +101,7 @@ public final class PushNotifications {
         .filter(PushNotificationEnvelope::isProjectUpdateActivity)
         .flatMap(this::fetchUpdateWithEnvelope)
         .filter(ObjectUtils::isNotNull)
-        .observeOn(newThread())
+        .observeOn(Schedulers.newThread())
         .subscribe(envelopeAndUpdate ->
           this.displayNotificationFromUpdateActivity(envelopeAndUpdate.first, envelopeAndUpdate.second)
         )

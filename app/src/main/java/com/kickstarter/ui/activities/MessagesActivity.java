@@ -117,6 +117,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(this::setMessageEditTextHint);
 
+    this.viewModel.outputs.messageEditTextShouldRequestFocus()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.messageEditText.requestFocus());
+
     this.viewModel.outputs.messages()
       .compose(bindToLifecycle())
       .compose(observeForUI())

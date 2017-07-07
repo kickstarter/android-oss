@@ -76,6 +76,9 @@ public interface MessagesViewModel {
     /** Emits a string to display as the message edit text hint. */
     Observable<String> messageEditTextHint();
 
+    /** Emits a boolean to determine when the edit text should request focus. */
+    Observable<Boolean> messageEditTextShouldRequestFocus();
+
     /** Emits a list of messages to be displayed. */
     Observable<List<Message>> messages();
 
@@ -226,6 +229,12 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.participantNameTextViewText::onNext);
 
+      this.messages
+        .map(m -> m.size() == 0)
+        .take(1)
+        .compose(bindToLifecycle())
+        .subscribe(this.messageEditTextShouldRequestFocus::onNext);
+
       this.messageEditTextHint = this.participantNameTextViewText;
 
       Observable.combineLatest(
@@ -312,6 +321,7 @@ public interface MessagesViewModel {
     private final Observable<Void> goBack;
     private final BehaviorSubject<Pair<Message, Integer>> messageAndPosition = BehaviorSubject.create();
     private final Observable<String> messageEditTextHint;
+    private final PublishSubject<Boolean> messageEditTextShouldRequestFocus = PublishSubject.create();
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
     private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
@@ -359,6 +369,9 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<String> messageEditTextHint() {
       return this.messageEditTextHint;
+    }
+    @Override public @NonNull Observable<Boolean> messageEditTextShouldRequestFocus() {
+      return messageEditTextShouldRequestFocus;
     }
     @Override public @NonNull Observable<List<Message>> messages() {
       return this.messages;

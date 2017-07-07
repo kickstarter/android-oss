@@ -100,7 +100,7 @@ public final class DebugPushNotificationsView extends ScrollView {
   @OnClick(R.id.simulate_message_button)
   public void simulateMessageButtonClick() {
     final GCM gcm = GCM.builder()
-      .title("Kickstarter")
+      .title("New message")
       .alert("Native Squad sent you a message about Help Me Transform This Pile of Wood.")
       .build();
 

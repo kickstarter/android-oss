@@ -73,6 +73,7 @@ public final class PushNotifications {
         .onBackpressureBuffer()
         .filter(PushNotificationEnvelope::isMessage)
         .flatMap(this::fetchMessageThreadWithEnvelope)
+        .filter(ObjectUtils::isNotNull)
         .observeOn(Schedulers.newThread())
         .subscribe(envelopeAndMessageThread ->
           this.displayNotificationFromMessageActivity(envelopeAndMessageThread.first, envelopeAndMessageThread.second)

@@ -7635,6 +7635,7 @@
     "new_message_inbox": true,
     "sticky_nav": true,
     "ref_banner_ads": true,
+    "react_discovery_cards": true,
     "react_guest_pledging": true,
     "kickstarter_gold": true
   },
@@ -7813,7 +7814,7 @@
     "project_build": "control",
     "react_guest_pledging": "control",
     "react_payment_sources_form": "control",
-    "social_icons_bucket": "control"
+    "social_icons_bucket": "experimental"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

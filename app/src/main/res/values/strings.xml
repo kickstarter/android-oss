@@ -17,6 +17,7 @@
   <string name="debug_push_notifications_device_registration">Device registration</string>
   <string name="debug_push_notifications_friend_backing">Friend backing</string>
   <string name="debug_push_notifications_friend_follow">Friend follow</string>
+  <string name="debug_push_notifications_message">Message</string>
   <string name="debug_push_notifications_project_cancellation">Project cancellation</string>
   <string name="debug_push_notifications_project_failure">Project failure</string>
   <string name="debug_push_notifications_project_launch">Project launch</string>

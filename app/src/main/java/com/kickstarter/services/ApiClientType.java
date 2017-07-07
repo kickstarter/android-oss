@@ -71,6 +71,8 @@ public interface ApiClientType {
 
   @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread);
 
+  @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull Long messageThreadId);
+
   @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads();
 
   @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project);

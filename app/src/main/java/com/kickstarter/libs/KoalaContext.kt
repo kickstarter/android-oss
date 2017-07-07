@@ -51,7 +51,8 @@ class KoalaContext {
     CREATOR_ACTIVITY("creator_activity"),
     MESSAGES("messages"),
     PROJECT_MESSAGES("project_messages"),
-    PROJECT_PAGE("project_page")
+    PROJECT_PAGE("project_page"),
+    PUSH("push")
   }
 
   /**

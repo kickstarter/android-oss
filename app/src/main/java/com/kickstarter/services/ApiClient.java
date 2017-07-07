@@ -229,6 +229,14 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull Long messageThreadId) {
+    return service
+      .messagesForThread(messageThreadId)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
   public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads() {
     return fetchMessageThreads(null);
   }

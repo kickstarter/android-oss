@@ -41,8 +41,10 @@ public class MessageService extends GcmListenerService {
     }
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
-      .activity(gson.fromJson(data.getString("activity"), Activity.class))
-      .gcm(gson.fromJson(data.getString("gcm"), GCM.class))
+      .activity(this.gson.fromJson(data.getString("activity"), Activity.class))
+      .gcm(this.gson.fromJson(data.getString("gcm"), GCM.class))
+      .message(this.gson.fromJson(data.getString("message"), PushNotificationEnvelope.Message.class))
+      .project(this.gson.fromJson(data.getString("project"), PushNotificationEnvelope.Project.class))
       .build();
 
     if (envelope == null) {
@@ -51,6 +53,6 @@ public class MessageService extends GcmListenerService {
     }
 
     Timber.d("Received message: %s", envelope.toString());
-    pushNotifications.add(envelope);
+    this.pushNotifications.add(envelope);
   }
 }

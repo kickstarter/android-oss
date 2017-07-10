@@ -424,6 +424,16 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testViewMessages_FromPush() {
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
+    this.vm.intent(pushContextIntent());
+
+    this.backButtonIsGone.assertValues(true);
+    this.closeButtonIsGone.assertValues(false);
+    this.viewPledgeButtonIsGone.assertValues(false);
+  }
+
+  @Test
   public void testViewPledgeButton_IsGone() {
     setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
     this.vm.intent(backerModalContextIntent(BackingFactory.backing(), ProjectFactory.project()));
@@ -452,5 +462,10 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     return new Intent()
       .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
       .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.MESSAGES);
+  }
+
+  private static @NonNull Intent pushContextIntent() {
+    return messagesContextIntent(MessageThreadFactory.messageThread())
+      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.PUSH);
   }
 }

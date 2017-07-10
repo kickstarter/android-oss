@@ -10,6 +10,8 @@ import com.kickstarter.factories.ProjectsEnvelopeFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
@@ -120,6 +122,8 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.timeRemaining.assertValues("9");
+    final Project project = ListUtils.first(projects);
+    final int deadlineVal = ProjectUtils.deadlineCountdownValue(project);
+    this.timeRemaining.assertValues(NumberUtils.format(deadlineVal));
   }
 }

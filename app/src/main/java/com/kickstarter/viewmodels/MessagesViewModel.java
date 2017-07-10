@@ -22,6 +22,7 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.MessagesActivity;
+import com.kickstarter.ui.data.MessageSubject;
 import com.kickstarter.ui.data.MessagesData;
 
 import java.util.List;
@@ -155,8 +156,8 @@ public interface MessagesViewModel {
         .compose(takeWhen(this.sendMessageButtonClicked))
         .switchMap(backingOrThreadAndBody ->
           backingOrThreadAndBody.first.either(
-            backing -> this.client.sendMessageToBacking(backing, backingOrThreadAndBody.second),
-            thread -> this.client.sendMessageToThread(thread, backingOrThreadAndBody.second)
+            backing -> this.client.sendMessage(new MessageSubject.Backing(backing), backingOrThreadAndBody.second),
+            thread -> this.client.sendMessage(new MessageSubject.MessageThread(thread), backingOrThreadAndBody.second)
           )
           .doOnSubscribe(() -> messageIsSending.onNext(true))
         )

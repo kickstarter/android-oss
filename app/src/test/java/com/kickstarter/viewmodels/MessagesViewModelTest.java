@@ -24,6 +24,7 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.data.MessageSubject;
 
 import org.junit.Test;
 
@@ -292,7 +293,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   public void testSendMessage_Error() {
     final MockApiClient apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread thread, final @NonNull String body) {
+      public @NonNull Observable<Message> sendMessage(final @NonNull MessageSubject messageSubject, final @NonNull String body) {
         return Observable.error(ApiExceptionFactory.badRequestException());
       }
     };
@@ -323,7 +324,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread thread, final @NonNull String body) {
+      public @NonNull Observable<Message> sendMessage(final @NonNull MessageSubject messageSubject, final @NonNull String body) {
         return Observable.just(sentMessage);
       }
     };
@@ -387,7 +388,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Start the view model with a message thread.
     this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
 
-    this.messages.assertNoValues();
     this.messageEditTextShouldRequestFocus.assertValues(true);
   }
 

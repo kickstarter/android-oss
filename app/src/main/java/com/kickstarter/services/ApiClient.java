@@ -40,6 +40,7 @@ import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
+import com.kickstarter.ui.data.MessageSubject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -386,17 +387,16 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Message> sendMessageToBacking(final @NonNull Backing backing, final @NonNull String body) {
-    return service
-      .sendMessageToBacking(backing.projectId(), backing.backerId(), MessageBody.builder().body(body).build())
-      .lift(apiErrorOperator())
-      .subscribeOn(Schedulers.io());
-  }
-
-  @Override
-  public @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread messageThread, final @NonNull String body) {
-    return service
-      .sendMessageToThread(messageThread.id(), MessageBody.builder().body(body).build())
+  public @NonNull Observable<Message> sendMessage(final @NonNull MessageSubject messageSubject, final @NonNull String body) {
+    return messageSubject
+      .value(
+        backing -> this.service
+          .sendMessageToBacking(backing.projectId(), backing.backerId(), MessageBody.builder().body(body).build()),
+        messageThread -> this.service
+          .sendMessageToThread(messageThread.id(), MessageBody.builder().body(body).build()),
+        project -> this.service
+          .sendMessageToProject(project.id(), MessageBody.builder().body(body).build())
+      )
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

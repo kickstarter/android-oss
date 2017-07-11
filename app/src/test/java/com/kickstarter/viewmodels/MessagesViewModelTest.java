@@ -43,7 +43,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> goBack = new TestSubscriber<>();
   private final TestSubscriber<Pair<Message, Integer>> messageAndPosition = new TestSubscriber<>();
   private final TestSubscriber<String> messageEditTextHint = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> messageEditTextShouldRequestFocus = new TestSubscriber<>();
+  private final TestSubscriber<Void> messageEditTextShouldRequestFocus = new TestSubscriber<>();
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
@@ -261,7 +261,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     // Messages emit, keyboard not shown.
     this.messages.assertValueCount(1);
-    this.messageEditTextShouldRequestFocus.assertValues(false);
+    this.messageEditTextShouldRequestFocus.assertNoValues();
   }
 
   @Test
@@ -370,13 +370,15 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testShouldRequestFocus() {
+    final Backing backing = BackingFactory.backing();
+
     final MessageThreadEnvelope envelope = MessageThreadEnvelopeFactory.messageThreadEnvelope()
       .toBuilder()
-      .messages(Collections.emptyList())
+      .messages(null)
       .build();
 
     final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread) {
+      @Override public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
         return Observable.just(envelope);
       }
     };
@@ -385,10 +387,10 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
       environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(UserFactory.user())).build()
     );
 
-    // Start the view model with a message thread.
-    this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
+    // Start the view model with a backing and project.
+    this.vm.intent(backerModalContextIntent(backing, ProjectFactory.project()));
 
-    this.messageEditTextShouldRequestFocus.assertValues(true);
+    this.messageEditTextShouldRequestFocus.assertValueCount(1);
   }
 
   @Test

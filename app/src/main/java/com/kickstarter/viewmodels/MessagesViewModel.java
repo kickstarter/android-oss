@@ -183,7 +183,7 @@ public interface MessagesViewModel {
           data.getBackingOrThread().either(
             // Message subject is the project if the current user is the backer,
             // otherwise the current user is the creator and will send a message to the backing.
-            backing -> backing.backer() == data.getCurrentUser()
+            backing -> backing.backerId() == data.getCurrentUser().id()
               ? new MessageSubject.Project(data.getProject())
               : new MessageSubject.Backing(backing),
             // If instantiated with a message thread the thread is the subject.

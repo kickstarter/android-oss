@@ -151,27 +151,57 @@ public interface MessagesViewModel {
 
       final PublishSubject<Boolean> messageIsSending = PublishSubject.create();
 
-      final Observable<Notification<Message>> messageNotification = backingOrThread
-        .compose(combineLatestPair(this.messageEditTextChanged))
-        .compose(takeWhen(this.sendMessageButtonClicked))
-        .switchMap(backingOrThreadAndBody ->
-          backingOrThreadAndBody.first.either(
-            backing -> this.client.sendMessage(new MessageSubject.Backing(backing), backingOrThreadAndBody.second),
-            thread -> this.client.sendMessage(new MessageSubject.MessageThread(thread), backingOrThreadAndBody.second)
-          )
-          .doOnSubscribe(() -> messageIsSending.onNext(true))
-        )
-        .materialize()
-        .share();
-
-      final Observable<Message> messageSent = messageNotification.compose(values()).ofType(Message.class);
-
-      this.setMessageEditText = messageSent.map(__ -> "");
+      final Observable<Project> project = configData
+        .map(data -> data.either(MessageThread::project, projectAndBacking -> projectAndBacking.first));
 
       final Observable<MessageThreadEnvelope> initialMessageThreadEnvelope = backingOrThread
         .switchMap(bOrT -> bOrT.either(this.client::fetchMessagesForBacking, this.client::fetchMessagesForThread))
         .compose(neverError())
         .share();
+
+      // If view model was not initialized with a MessageThread, participant is
+      // the project creator.
+      final Observable<User> participant = Observable.merge(
+        initialMessageThreadEnvelope
+          .map(MessageThreadEnvelope::messageThread)
+          .filter(ObjectUtils::isNotNull)
+          .map(MessageThread::participant),
+        project.map(Project::creator)
+      )
+        .take(1);
+
+      final Observable<MessagesData> messagesData = Observable.combineLatest(
+        backingOrThread,
+        project,
+        participant,
+        this.currentUser.observable(),
+        MessagesData::new
+      );
+
+      final Observable<MessageSubject> messageSubject = messagesData
+        .map(data ->
+          data.getBackingOrThread().either(
+            // Message subject is the project if the current user is the backer,
+            // otherwise the current user is the creator and will send a message to the backing.
+            backing -> backing.backer() == data.getCurrentUser()
+              ? new MessageSubject.Project(data.getProject())
+              : new MessageSubject.Backing(backing),
+            // If instantiated with a message thread the thread is the subject.
+            MessageSubject.MessageThread::new
+          )
+        );
+
+      final Observable<Notification<Message>> messageNotification = messageSubject
+        .compose(combineLatestPair(this.messageEditTextChanged))
+        .compose(takeWhen(this.sendMessageButtonClicked))
+        .switchMap(messageSubjectAndBody ->
+          this.client.sendMessage(messageSubjectAndBody.first, messageSubjectAndBody.second)
+            .doOnSubscribe(() -> messageIsSending.onNext(true))
+        )
+        .materialize()
+        .share();
+
+      final Observable<Message> messageSent = messageNotification.compose(values()).ofType(Message.class);
 
       final Observable<MessageThreadEnvelope> sentMessageThreadEnvelope = backingOrThread
         .compose(takeWhen(messageSent))
@@ -185,19 +215,7 @@ public interface MessagesViewModel {
       )
         .distinctUntilChanged();
 
-      final Observable<Project> project = configData
-        .map(data -> data.either(MessageThread::project, projectAndBacking -> projectAndBacking.first));
-
-      // If view model was not initialized with a MessageThread, participant is
-      // the project creator.
-      final Observable<User> participant = Observable.merge(
-        initialMessageThreadEnvelope
-          .map(MessageThreadEnvelope::messageThread)
-          .filter(ObjectUtils::isNotNull)
-          .map(MessageThread::participant),
-        project.map(Project::creator)
-      )
-        .take(1);
+      this.setMessageEditText = messageSent.map(__ -> "");
 
       final Observable<Boolean> messageHasBody = this.messageEditTextChanged
         .map(StringUtils::isPresent);
@@ -238,13 +256,7 @@ public interface MessagesViewModel {
 
       this.messageEditTextHint = this.participantNameTextViewText;
 
-      Observable.combineLatest(
-        backingOrThread,
-        project,
-        participant,
-        this.currentUser.observable(),
-        MessagesData::new
-      )
+      messagesData
         .switchMap(data -> backingAndProjectFromData(data, this.client))
         .compose(bindToLifecycle())
         .subscribe(this.backingAndProject::onNext);

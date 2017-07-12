@@ -23,6 +23,7 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
+import com.kickstarter.ui.data.MessageSubject;
 
 import java.util.List;
 
@@ -103,9 +104,7 @@ public interface ApiClientType {
 
   @NonNull Observable<User> resetPassword(final @NonNull String email);
 
-  @NonNull Observable<Message> sendMessageToBacking(final @NonNull Backing backing, final @NonNull String body);
-
-  @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread messageThread, final @NonNull String body);
+  @NonNull Observable<Message> sendMessage(final @NonNull MessageSubject messageSubject, final @NonNull String body);
 
   @NonNull Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email, final @NonNull String password,
     final @NonNull String passwordConfirmation, final boolean sendNewsletters);

@@ -11,7 +11,6 @@ import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.CommentFactory;
 import com.kickstarter.factories.CommentsEnvelopeFactory;
 import com.kickstarter.factories.LocationFactory;
-import com.kickstarter.factories.MessageFactory;
 import com.kickstarter.factories.MessageThreadEnvelopeFactory;
 import com.kickstarter.factories.MessageThreadsEnvelopeFactory;
 import com.kickstarter.factories.ProjectFactory;
@@ -38,6 +37,7 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
+import com.kickstarter.ui.data.MessageSubject;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -323,13 +323,8 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Message> sendMessageToBacking(final @NonNull Backing backing, final @NonNull String body) {
+  public @NonNull Observable<Message> sendMessage(final @NonNull MessageSubject messageSubject, final @NonNull String body) {
     return Observable.empty();
-  }
-
-  @Override
-  public @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread thread, final @NonNull String body) {
-    return Observable.just(MessageFactory.message());
   }
 
   @Override

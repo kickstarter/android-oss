@@ -24,6 +24,7 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.data.MessageSubject;
 
 import org.junit.Test;
 
@@ -42,6 +43,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> goBack = new TestSubscriber<>();
   private final TestSubscriber<Pair<Message, Integer>> messageAndPosition = new TestSubscriber<>();
   private final TestSubscriber<String> messageEditTextHint = new TestSubscriber<>();
+  private final TestSubscriber<Void> messageEditTextShouldRequestFocus = new TestSubscriber<>();
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
@@ -49,7 +51,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> sendMessageButtonIsEnabled = new TestSubscriber<>();
   private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
   private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
-  private final TestSubscriber<Project> startViewPledgeAcivity = new TestSubscriber<>();
+  private final TestSubscriber<Project> startViewPledgeActivity = new TestSubscriber<>();
   private final TestSubscriber<Void> successfullyMarkedAsRead = new TestSubscriber<>();
   private final TestSubscriber<Boolean> viewPledgeButtonIsGone = new TestSubscriber<>();
 
@@ -62,6 +64,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.goBack().subscribe(this.goBack);
     this.vm.outputs.messageAndPosition().subscribe(this.messageAndPosition);
     this.vm.outputs.messageEditTextHint().subscribe(this.messageEditTextHint);
+    this.vm.outputs.messageEditTextShouldRequestFocus().subscribe(this.messageEditTextShouldRequestFocus);
     this.vm.outputs.messages().subscribe(this.messages);
     this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
@@ -69,7 +72,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.sendMessageButtonIsEnabled().subscribe(this.sendMessageButtonIsEnabled);
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
-    this.vm.outputs.startViewPledgeActivity().subscribe(this.startViewPledgeAcivity);
+    this.vm.outputs.startViewPledgeActivity().subscribe(this.startViewPledgeActivity);
     this.vm.outputs.successfullyMarkedAsRead().subscribe(this.successfullyMarkedAsRead);
     this.vm.outputs.viewPledgeButtonIsGone().subscribe(this.viewPledgeButtonIsGone);
   }
@@ -256,8 +259,9 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Start the view model with a message thread.
     this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
 
-    // Messages emit.
+    // Messages emit, keyboard not shown.
     this.messages.assertValueCount(1);
+    this.messageEditTextShouldRequestFocus.assertNoValues();
   }
 
   @Test
@@ -289,7 +293,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   public void testSendMessage_Error() {
     final MockApiClient apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread thread, final @NonNull String body) {
+      public @NonNull Observable<Message> sendMessage(final @NonNull MessageSubject messageSubject, final @NonNull String body) {
         return Observable.error(ApiExceptionFactory.badRequestException());
       }
     };
@@ -320,7 +324,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread thread, final @NonNull String body) {
+      public @NonNull Observable<Message> sendMessage(final @NonNull MessageSubject messageSubject, final @NonNull String body) {
         return Observable.just(sentMessage);
       }
     };
@@ -365,6 +369,31 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testShouldRequestFocus() {
+    final Backing backing = BackingFactory.backing();
+
+    final MessageThreadEnvelope envelope = MessageThreadEnvelopeFactory.messageThreadEnvelope()
+      .toBuilder()
+      .messages(null)
+      .build();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
+        return Observable.just(envelope);
+      }
+    };
+
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(UserFactory.user())).build()
+    );
+
+    // Start the view model with a backing and project.
+    this.vm.intent(backerModalContextIntent(backing, ProjectFactory.project()));
+
+    this.messageEditTextShouldRequestFocus.assertValueCount(1);
+  }
+
+  @Test
   public void testStartViewPledgeActivity() {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
@@ -372,7 +401,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(backerModalContextIntent(BackingFactory.backing(), project));
     this.vm.inputs.viewPledgeButtonClicked();
 
-    this.startViewPledgeAcivity.assertValues(project);
+    this.startViewPledgeActivity.assertValues(project);
   }
 
   @Test

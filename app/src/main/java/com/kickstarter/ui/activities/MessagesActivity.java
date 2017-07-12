@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Pair;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -117,6 +118,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(this::setMessageEditTextHint);
 
+    this.viewModel.outputs.messageEditTextShouldRequestFocus()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.requestFocusAndOpenKeyboard());
+
     this.viewModel.outputs.messages()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -197,6 +203,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   @OnTextChanged(R.id.message_edit_text)
   public void onMessageEditTextChanged(final @NonNull CharSequence message) {
     this.viewModel.inputs.messageEditTextChanged(message.toString());
+  }
+
+  private void requestFocusAndOpenKeyboard() {
+    this.messageEditText.requestFocus();
+    this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
   }
 
   private void setBackingInfoView(final @NonNull Pair<Backing, Project> backingAndProject) {

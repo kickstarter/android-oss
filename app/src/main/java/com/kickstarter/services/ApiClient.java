@@ -388,14 +388,16 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Message> sendMessage(final @NonNull MessageSubject messageSubject, final @NonNull String body) {
+    final MessageBody messageBody = MessageBody.builder().body(body).build();
+
     return messageSubject
       .value(
         backing -> this.service
-          .sendMessageToBacking(backing.projectId(), backing.backerId(), MessageBody.builder().body(body).build()),
+          .sendMessageToBacking(backing.projectId(), backing.backerId(), messageBody),
         messageThread -> this.service
-          .sendMessageToThread(messageThread.id(), MessageBody.builder().body(body).build()),
+          .sendMessageToThread(messageThread.id(), messageBody),
         project -> this.service
-          .sendMessageToProject(project.id(), MessageBody.builder().body(body).build())
+          .sendMessageToProject(project.id(), messageBody)
       )
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());

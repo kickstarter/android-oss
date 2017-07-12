@@ -232,6 +232,7 @@ public interface MessagesViewModel {
       initialMessageThreadEnvelope
         .map(MessageThreadEnvelope::messages)
         .filter(ObjectUtils::isNotNull)
+        .take(1)
         .compose(bindToLifecycle())
         .subscribe(this.messages::onNext);
 

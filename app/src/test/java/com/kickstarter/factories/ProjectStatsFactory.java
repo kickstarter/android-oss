@@ -2,50 +2,45 @@ package com.kickstarter.factories;
 
 import android.support.annotation.NonNull;
 
-import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.ProjectStats;
 
 import org.joda.time.DateTime;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.kickstarter.R.id.code;
-import static org.cyberneko.html.HTMLElements.I;
-
-public class ProjectStatsFactory {
+public final class ProjectStatsFactory {
   private ProjectStatsFactory() {}
 
   public static @NonNull ProjectStats projectStats() {
-    ProjectStats.CumulativeStats cumulativeStats = CumulativeStatsFactory
+    final ProjectStats.CumulativeStats cumulativeStats = CumulativeStatsFactory
       .cumulativeStats()
       .toBuilder()
       .build();
 
-    ProjectStats.FundingDateStats fundingDateStats = FundingDateStatsFactory
+    final ProjectStats.FundingDateStats fundingDateStats = FundingDateStatsFactory
       .fundingDateStats()
       .toBuilder()
       .build();
 
-    ProjectStats.ReferrerStats referrerStats = ReferrerStatsFactory
+    final ProjectStats.ReferrerStats referrerStats = ReferrerStatsFactory
       .referrerStats()
       .toBuilder()
       .build();
 
-    ProjectStats.RewardStats rewardStats = RewardStatsFactory
+    final ProjectStats.RewardStats rewardStats = RewardStatsFactory
       .rewardStats()
       .toBuilder()
       .build();
 
-    ProjectStats.VideoStats videoStats = VideoStatsFactory
+    final ProjectStats.VideoStats videoStats = VideoStatsFactory
       .videoStats()
       .toBuilder()
       .build();
 
-    List<ProjectStats.RewardStats> rewardStatsList = Collections.unmodifiableList(new ArrayList<ProjectStats.RewardStats>(Arrays.asList(rewardStats)));
+    final List<ProjectStats.RewardStats> rewardStatsList = Collections.unmodifiableList(new ArrayList<ProjectStats.RewardStats>(Arrays.asList(rewardStats)));
 
     return ProjectStats.builder()
       .cumulativeStats(cumulativeStats)
@@ -56,11 +51,10 @@ public class ProjectStatsFactory {
       .build();
   }
 
-  public static class CumulativeStatsFactory {
+  public static final class CumulativeStatsFactory {
     private CumulativeStatsFactory() {}
 
-    public static @NonNull
-    ProjectStats.CumulativeStats cumulativeStats() {
+    public static @NonNull ProjectStats.CumulativeStats cumulativeStats() {
       return ProjectStats.CumulativeStats.builder()
         .averagePledge(5)
         .backersCount(10)
@@ -71,7 +65,7 @@ public class ProjectStatsFactory {
     }
   }
 
-  public static class FundingDateStatsFactory {
+  public static final class FundingDateStatsFactory {
     private FundingDateStatsFactory() {}
 
     public static @NonNull ProjectStats.FundingDateStats fundingDateStats() {
@@ -85,7 +79,7 @@ public class ProjectStatsFactory {
     }
   }
 
-  public static class ReferrerStatsFactory {
+  public static final class ReferrerStatsFactory {
     private ReferrerStatsFactory() {}
 
     public static @NonNull ProjectStats.ReferrerStats referrerStats() {
@@ -100,7 +94,7 @@ public class ProjectStatsFactory {
     }
   }
 
-  public static class RewardStatsFactory {
+  public static final class RewardStatsFactory {
     private RewardStatsFactory() {}
 
     public static @NonNull ProjectStats.RewardStats rewardStats() {
@@ -113,7 +107,7 @@ public class ProjectStatsFactory {
     }
   }
 
-  public static class VideoStatsFactory {
+  public static final class VideoStatsFactory {
     private VideoStatsFactory() {}
 
     public static @NonNull ProjectStats.VideoStats videoStats() {

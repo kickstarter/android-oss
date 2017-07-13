@@ -7,8 +7,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectStats;
 import com.kickstarter.services.ApiClientType;
@@ -92,7 +90,11 @@ public interface CreatorDashboardViewModel {
     @Override public @NonNull Observable<Project> latestProject() {
       return this.latestProject;
     }
-    @Override public @NonNull Observable<Pair<Project, ProjectStats>> projectAndStats() { return this.projectAndStats; }
-    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() { return this.startProjectActivity; }
+    @Override public @NonNull Observable<Pair<Project, ProjectStats>> projectAndStats() {
+      return this.projectAndStats;
+    }
+    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
+      return this.startProjectActivity;
+    }
   }
 }

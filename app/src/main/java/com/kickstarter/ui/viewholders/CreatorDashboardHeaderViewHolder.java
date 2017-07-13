@@ -26,7 +26,6 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.kickstarter.R.id.creator_dashboard_time_remaining;
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
@@ -39,7 +38,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   protected @Bind(R.id.creator_dashboard_funding_text) TextView fundingTextTextView;
   protected @Bind(R.id.creator_dashboard_percent) TextView percentTextView;
   protected @Bind(R.id.creator_dashboard_project_name) TextView projectNameTextView;
-  protected @Bind(creator_dashboard_time_remaining) TextView timeRemainingTextView;
+  protected @Bind(R.id.creator_dashboard_time_remaining) TextView timeRemainingTextView;
   protected @Bind(R.id.creator_dashboard_time_remaining_text) TextView timeRemainingTextTextView;
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 
@@ -96,7 +95,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
   }
 
-  @OnClick({ R.id.creator_view_project_button })
+  @OnClick(R.id.creator_view_project_button)
   protected void viewProjectButtonClicked() {
     this.viewModel.inputs.projectViewClicked();
   }

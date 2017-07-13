@@ -6,24 +6,15 @@ import android.util.Pair;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.ProjectStatsFactory;
-import com.kickstarter.factories.ProjectsEnvelopeFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectStats;
-import com.kickstarter.services.MockApiClient;
-import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
-
-import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTestCase {
@@ -81,7 +72,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     this.startProjectActivity.assertValues(Pair.create(project, RefTag.dashboard()));
   }
 
-    @Test
+  @Test
   public void testTimeRemainingText() {
     final Project project = ProjectFactory.project().toBuilder().deadline(new DateTime().plusDays(10)).build();
     final ProjectStats projectStats = ProjectStatsFactory.projectStats();

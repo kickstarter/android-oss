@@ -9,11 +9,9 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectStats;
-import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 import com.kickstarter.viewmodels.inputs.CreatorDashboardHeaderHolderViewModelInputs;
 import com.kickstarter.viewmodels.outputs.CreatorDashboardHeaderHolderViewModelOutputs;
@@ -88,17 +86,27 @@ public interface CreatorDashboardHeaderHolderViewModel {
     }
 
     @Override
-    public void projectAndStats(Project project, ProjectStats projectStats) {
+    public void projectAndStats(final Project project, final ProjectStats projectStats) {
       this.projectAndStats.onNext(Pair.create(project, projectStats));
     }
 
-    @Override public @NonNull Observable<String> percentageFunded() { return this.percentageFunded; }
-    @Override public @NonNull Observable<Project> currentProject() { return this.currentProject; }
+    @Override public @NonNull Observable<String> percentageFunded() {
+      return this.percentageFunded;
+    }
+    @Override public @NonNull Observable<Project> currentProject() {
+      return this.currentProject;
+    }
     @Override public @NonNull Observable<String> projectBackersCountText() {
       return this.projectBackersCountText;
     }
-    @Override public @NonNull Observable<String> projectNameTextViewText() {return this.projectNameTextViewText; }
-    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() { return this.startProjectActivity; }
-    @Override public @NonNull Observable<String> timeRemainingText() { return this.timeRemainingText; }
+    @Override public @NonNull Observable<String> projectNameTextViewText() {
+      return this.projectNameTextViewText;
+    }
+    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
+      return this.startProjectActivity;
+    }
+    @Override public @NonNull Observable<String> timeRemainingText() {
+      return this.timeRemainingText;
+    }
   }
 }

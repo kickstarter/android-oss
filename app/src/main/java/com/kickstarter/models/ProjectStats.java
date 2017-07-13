@@ -9,9 +9,6 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 import auto.parcel.AutoParcel;
-import rx.schedulers.TimeInterval;
-
-import static com.kickstarter.R.id.pledged;
 
 @AutoGson
 @AutoParcel
@@ -38,7 +35,9 @@ public abstract class ProjectStats implements Parcelable {
     public abstract ProjectStats build();
   }
 
-  public static Builder builder() { return new AutoParcel_ProjectStats.Builder(); }
+  public static Builder builder() {
+    return new AutoParcel_ProjectStats.Builder();
+  }
 
   public abstract Builder toBuilder();
 
@@ -61,7 +60,9 @@ public abstract class ProjectStats implements Parcelable {
       public abstract CumulativeStats build();
     }
 
-    public static Builder builder() { return new AutoParcel_ProjectStats_CumulativeStats.Builder(); }
+    public static Builder builder() {
+      return new AutoParcel_ProjectStats_CumulativeStats.Builder();
+    }
 
     public abstract Builder toBuilder();
   }
@@ -85,7 +86,9 @@ public abstract class ProjectStats implements Parcelable {
       public abstract FundingDateStats build();
     }
 
-    public static Builder builder() { return new AutoParcel_ProjectStats_FundingDateStats.Builder(); }
+    public static Builder builder() {
+      return new AutoParcel_ProjectStats_FundingDateStats.Builder();
+    }
 
     public abstract Builder toBuilder();
   }
@@ -111,7 +114,9 @@ public abstract class ProjectStats implements Parcelable {
       public abstract ReferrerStats build();
     }
 
-    public static Builder builder() { return new AutoParcel_ProjectStats_ReferrerStats.Builder(); }
+    public static Builder builder() {
+      return new AutoParcel_ProjectStats_ReferrerStats.Builder();
+    }
 
     public abstract Builder toBuilder();
   }
@@ -133,10 +138,11 @@ public abstract class ProjectStats implements Parcelable {
       public abstract RewardStats build();
     }
 
-    public static Builder builder() { return new AutoParcel_ProjectStats_RewardStats.Builder(); }
+    public static Builder builder() {
+      return new AutoParcel_ProjectStats_RewardStats.Builder();
+    }
 
     public abstract Builder toBuilder();
-//    public static RewardStats zero = RewardStats(backersCount: 0, rewardId: 0, minimum: 0, pledged: 0)
   }
 
   @AutoParcel
@@ -156,7 +162,9 @@ public abstract class ProjectStats implements Parcelable {
       public abstract VideoStats build();
     }
 
-    public static Builder builder() { return new AutoParcel_ProjectStats_VideoStats.Builder(); }
+    public static Builder builder() {
+      return new AutoParcel_ProjectStats_VideoStats.Builder();
+    }
 
     public abstract Builder toBuilder();
   }

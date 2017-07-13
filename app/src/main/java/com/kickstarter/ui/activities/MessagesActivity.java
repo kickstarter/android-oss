@@ -145,6 +145,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(this.projectNameToolbarTextView::setText);
 
+    this.viewModel.outputs.scrollRecyclerViewToBottom()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.recyclerView.scrollToPosition(this.adapter.getItemCount() - 1));
+
     this.viewModel.outputs.setMessageEditText()
       .compose(bindToLifecycle())
       .compose(observeForUI())

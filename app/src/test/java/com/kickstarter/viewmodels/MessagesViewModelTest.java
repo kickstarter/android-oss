@@ -48,6 +48,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameToolbarTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Void> scrollRecyclerViewToBottom = new TestSubscriber<>();
   private final TestSubscriber<Boolean> sendMessageButtonIsEnabled = new TestSubscriber<>();
   private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
   private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
@@ -69,6 +70,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.projectNameToolbarTextViewText().subscribe(this.projectNameToolbarTextViewText);
+    this.vm.outputs.scrollRecyclerViewToBottom().subscribe(this.scrollRecyclerViewToBottom);
     this.vm.outputs.sendMessageButtonIsEnabled().subscribe(this.sendMessageButtonIsEnabled);
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
@@ -348,8 +350,9 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.messages.assertValueCount(1);
     this.messageAndPosition.assertValueCount(1);
 
-    // Reply edit text should be cleared.
+    // Reply edit text should be cleared and view should be scrolled to new message.
     this.setMessageEditText.assertValues("");
+    this.scrollRecyclerViewToBottom.assertValueCount(1);
 
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD, KoalaEvent.SENT_MESSAGE);
   }

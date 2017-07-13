@@ -92,6 +92,9 @@ public interface MessagesViewModel {
     /** Emits the project name to be displayed in the toolbar. */
     Observable<String> projectNameToolbarTextViewText();
 
+    /** Emits when the RecyclerView should be scrolled to the bottom. */
+    Observable<Void> scrollRecyclerViewToBottom();
+
     /** Emits a boolean that determines if the Send button should be enabled. */
     Observable<Boolean> sendMessageButtonIsEnabled();
 
@@ -215,8 +218,6 @@ public interface MessagesViewModel {
       )
         .distinctUntilChanged();
 
-      this.setMessageEditText = messageSent.map(__ -> "");
-
       final Observable<Boolean> messageHasBody = this.messageEditTextChanged
         .map(StringUtils::isPresent);
 
@@ -257,8 +258,6 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.messageEditTextShouldRequestFocus::onNext);
 
-      this.messageEditTextHint = this.participantNameTextViewText;
-
       messagesData
         .switchMap(data -> backingAndProjectFromData(data, this.client))
         .compose(bindToLifecycle())
@@ -277,7 +276,11 @@ public interface MessagesViewModel {
       this.backButtonIsGone = this.viewPledgeButtonIsGone.map(BooleanUtils::negate);
       this.closeButtonIsGone = this.backButtonIsGone.map(BooleanUtils::negate);
       this.goBack = this.backOrCloseButtonClicked;
+      this.messageEditTextHint = this.participantNameTextViewText;
+      this.projectNameToolbarTextViewText = this.projectNameTextViewText;
+      this.scrollRecyclerViewToBottom = this.messageAndPosition.compose(ignoreValues());
       this.sendMessageButtonIsEnabled = Observable.merge(messageHasBody, messageIsSending.map(BooleanUtils::negate));
+      this.setMessageEditText = messageSent.map(__ -> "");
 
       messageNotification
         .compose(errors())
@@ -289,8 +292,6 @@ public interface MessagesViewModel {
         .map(Project::name)
         .compose(bindToLifecycle())
         .subscribe(this.projectNameTextViewText::onNext);
-
-      this.projectNameToolbarTextViewText = this.projectNameTextViewText;
 
       project
         .compose(takeWhen(this.viewPledgeButtonClicked))
@@ -342,6 +343,7 @@ public interface MessagesViewModel {
     private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final Observable<String> projectNameToolbarTextViewText;
+    private final Observable<Void> scrollRecyclerViewToBottom;
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<Boolean> sendMessageButtonIsEnabled;
     private final Observable<String> setMessageEditText;
@@ -400,6 +402,9 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<String> projectNameToolbarTextViewText() {
       return this.projectNameToolbarTextViewText;
+    }
+    @Override public @NonNull Observable<Void> scrollRecyclerViewToBottom() {
+      return this.scrollRecyclerViewToBottom;
     }
     @Override public @NonNull Observable<String> showMessageErrorToast() {
       return this.showMessageErrorToast;

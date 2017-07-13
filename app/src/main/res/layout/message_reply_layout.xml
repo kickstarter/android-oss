@@ -30,6 +30,8 @@
       android:layout_toStartOf="@+id/send_message_button"
       android:layout_width="match_parent"
       android:layout_height="@dimen/grid_new_10"
+      android:maxLines="1"
+      android:ellipsize="end"
       tools:hint="Reply to Blob..."
       tools:ignore="LabelFor"/>
 

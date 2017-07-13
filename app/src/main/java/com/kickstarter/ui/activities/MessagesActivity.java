@@ -126,10 +126,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.viewModel.outputs.messages()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(m -> {
-        this.adapter.messages(m);
-        this.recyclerView.invalidate();
-      });
+      .subscribe(this.adapter::messages);
 
     this.viewModel.outputs.participantNameTextViewText()
       .compose(bindToLifecycle())

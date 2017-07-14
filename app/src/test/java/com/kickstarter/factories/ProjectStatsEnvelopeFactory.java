@@ -2,11 +2,13 @@ package com.kickstarter.factories;
 
 import android.support.annotation.NonNull;
 
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
+import com.kickstarter.models.ProjectStatsEnvelope;
 
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public final class ProjectStatsEnvelopeFactory {
@@ -38,7 +40,7 @@ public final class ProjectStatsEnvelopeFactory {
       .toBuilder()
       .build();
 
-    final List<ProjectStatsEnvelope.RewardStats> rewardStatsList = Arrays.asList(rewardStats);
+    final List<ProjectStatsEnvelope.RewardStats> rewardStatsList = Collections.unmodifiableList(new ArrayList<ProjectStatsEnvelope.RewardStats>(Arrays.asList(rewardStats)));
 
     return ProjectStatsEnvelope.builder()
       .cumulativeStats(cumulativeStats)

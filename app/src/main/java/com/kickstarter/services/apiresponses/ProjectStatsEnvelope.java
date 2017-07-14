@@ -12,7 +12,7 @@ import auto.parcel.AutoParcel;
 
 @AutoGson
 @AutoParcel
-public abstract class ProjectStats implements Parcelable {
+public abstract class ProjectStatsEnvelope implements Parcelable {
 
   public enum ReferrerType {
     CUSTOM, EXTERNAL, INTERNAL, UNKNOWN
@@ -32,11 +32,11 @@ public abstract class ProjectStats implements Parcelable {
     public abstract Builder referrerStats(ReferrerStats __);
     public abstract Builder rewardDistribution(List<RewardStats> __);
     public abstract Builder videoStats(VideoStats __);
-    public abstract ProjectStats build();
+    public abstract ProjectStatsEnvelope build();
   }
 
   public static Builder builder() {
-    return new AutoParcel_ProjectStats.Builder();
+    return new AutoParcel_ProjectStatsEnvelope.Builder();
   }
 
   public abstract Builder toBuilder();
@@ -61,7 +61,7 @@ public abstract class ProjectStats implements Parcelable {
     }
 
     public static Builder builder() {
-      return new AutoParcel_ProjectStats_CumulativeStats.Builder();
+      return new AutoParcel_ProjectStatsEnvelope_CumulativeStats.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -87,7 +87,7 @@ public abstract class ProjectStats implements Parcelable {
     }
 
     public static Builder builder() {
-      return new AutoParcel_ProjectStats_FundingDateStats.Builder();
+      return new AutoParcel_ProjectStatsEnvelope_FundingDateStats.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -115,7 +115,7 @@ public abstract class ProjectStats implements Parcelable {
     }
 
     public static Builder builder() {
-      return new AutoParcel_ProjectStats_ReferrerStats.Builder();
+      return new AutoParcel_ProjectStatsEnvelope_ReferrerStats.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -139,7 +139,7 @@ public abstract class ProjectStats implements Parcelable {
     }
 
     public static Builder builder() {
-      return new AutoParcel_ProjectStats_RewardStats.Builder();
+      return new AutoParcel_ProjectStatsEnvelope_RewardStats.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -163,7 +163,7 @@ public abstract class ProjectStats implements Parcelable {
     }
 
     public static Builder builder() {
-      return new AutoParcel_ProjectStats_VideoStats.Builder();
+      return new AutoParcel_ProjectStatsEnvelope_VideoStats.Builder();
     }
 
     public abstract Builder toBuilder();

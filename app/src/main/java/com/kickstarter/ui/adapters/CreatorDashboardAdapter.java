@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.ProjectStats;
+import com.kickstarter.models.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 
@@ -24,12 +24,10 @@ public class CreatorDashboardAdapter extends KSAdapter {
     return new CreatorDashboardHeaderViewHolder(view);
   }
 
-  /**
-   * Populate adapter data.
-   */
-  public void takeProjectAndStats(final @NonNull Project project, final @NonNull ProjectStats projectStats) {
+
+  public void takeProjectAndStats(final @NonNull Project project, final @NonNull ProjectStatsEnvelope projectStatsEnvelope) {
     sections().clear();
-    sections().add(Collections.singletonList(Pair.create(project, projectStats)));
+    sections().add(Collections.singletonList(Pair.create(project, projectStatsEnvelope)));
     notifyDataSetChanged();
   }
 }

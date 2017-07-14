@@ -9,76 +9,92 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.ProjectStats;
+import com.kickstarter.models.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
-import com.kickstarter.viewmodels.inputs.CreatorDashboardHeaderHolderViewModelInputs;
-import com.kickstarter.viewmodels.outputs.CreatorDashboardHeaderHolderViewModelOutputs;
 
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public interface CreatorDashboardHeaderHolderViewModel {
 
-  final class ViewModel extends ActivityViewModel<CreatorDashboardHeaderViewHolder> implements
-    CreatorDashboardHeaderHolderViewModelInputs, CreatorDashboardHeaderHolderViewModelOutputs {
+  interface Inputs {
+    void projectAndStats(Project project, ProjectStatsEnvelope projectStats);
+    void projectViewClicked();
+  }
 
+  interface Outputs {
+    /* string number with the percentage of a projects funding */
+    Observable<String> percentageFunded();
+
+    /* localized count of number of backers */
+    Observable<String> projectBackersCountText();
+
+    /* current project's name */
+    Observable<String> projectNameTextViewText();
+
+    /* project that is currently being viewed */
+    Observable<Project> currentProject();
+
+    /* time remaining for latest project (no units) */
+    Observable<String> timeRemainingText();
+
+    /* call when button is clicked to view individual project page */
+    Observable<Pair<Project, RefTag>> startProjectActivity();
+  }
+
+  final class ViewModel extends ActivityViewModel<CreatorDashboardHeaderViewHolder> implements
+    Inputs, Outputs {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      projectAndStats
-        .map(ps -> ps.first)
-        .subscribe(this.currentProject);
+      this.currentProject =  projectAndStats
+        .map(PairUtils::first);
 
-      projectAndStats
-        .map(ps -> ps.first)
+      this.percentageFunded = projectAndStats
+        .map(PairUtils::first)
         .map(Project::percentageFunded)
         .map(NumberUtils::flooredPercentage)
-        .compose(bindToLifecycle())
-        .subscribe(this.percentageFunded);
+        .compose(bindToLifecycle());
 
-      projectAndStats
-        .map(ps -> ps.first)
+      this.projectBackersCountText = projectAndStats
+        .map(PairUtils::first)
         .map(Project::backersCount)
         .map(NumberUtils::format)
-        .compose(bindToLifecycle())
-        .subscribe(projectBackersCountText);
+        .compose(bindToLifecycle());
 
-      projectAndStats
-        .map(ps -> ps.first)
+      this.projectNameTextViewText = projectAndStats
+        .map(PairUtils::first)
         .map(Project::name)
         .distinctUntilChanged()
-        .compose(bindToLifecycle())
-        .subscribe(projectNameTextViewText);
+        .compose(bindToLifecycle());
 
-      projectAndStats
-        .map(ps -> ps.first)
+      this.timeRemainingText = projectAndStats
+        .map(PairUtils::first)
         .map(ProjectUtils::deadlineCountdownValue)
-        .map(NumberUtils::format)
-        .subscribe(timeRemainingText);
+        .map(NumberUtils::format);
 
-      this.currentProject()
+      this.startProjectActivity = this.currentProject()
         .compose(Transformers.takeWhen(projectViewClicked))
-        .map(p -> Pair.create(p, RefTag.dashboard()))
-        .subscribe(this.startProjectActivity);
+        .map(p -> Pair.create(p, RefTag.dashboard()));
     }
 
 
-    public final CreatorDashboardHeaderHolderViewModelInputs inputs = this;
-    public final CreatorDashboardHeaderHolderViewModelOutputs outputs = this;
+    public final Inputs inputs = this;
+    public final Outputs outputs = this;
 
-    private final PublishSubject<Pair<Project, ProjectStats>> projectAndStats = PublishSubject.create();
+    private final PublishSubject<Pair<Project, ProjectStatsEnvelope>> projectAndStats = PublishSubject.create();
     private final PublishSubject<Void> projectViewClicked = PublishSubject.create();
 
-    private final BehaviorSubject<String> percentageFunded = BehaviorSubject.create();
-    private final BehaviorSubject<Project> currentProject = BehaviorSubject.create();
-    private final BehaviorSubject<String> projectBackersCountText = BehaviorSubject.create();
-    private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
-    private final BehaviorSubject<Pair<Project, RefTag>> startProjectActivity = BehaviorSubject.create();
-    private final BehaviorSubject<String> timeRemainingText = BehaviorSubject.create();
+    private final Observable<String> percentageFunded;
+    private final Observable<Project> currentProject;
+    private final Observable<String> projectBackersCountText;
+    private final Observable<String> projectNameTextViewText;
+    private final Observable<Pair<Project, RefTag>> startProjectActivity;
+    private final Observable<String> timeRemainingText;
 
     @Override
     public void projectViewClicked() {
@@ -86,8 +102,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
     }
 
     @Override
-    public void projectAndStats(final Project project, final ProjectStats projectStats) {
-      this.projectAndStats.onNext(Pair.create(project, projectStats));
+    public void projectAndStats(final @NonNull Project project, final @NonNull ProjectStatsEnvelope ProjectStatsEnvelope) {
+      this.projectAndStats.onNext(Pair.create(project, ProjectStatsEnvelope));
     }
 
     @Override public @NonNull Observable<String> percentageFunded() {

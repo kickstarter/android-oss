@@ -12,15 +12,13 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.ProjectStats;
+import com.kickstarter.models.ProjectStatsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.CreatorDashboardAdapter;
 import com.kickstarter.viewmodels.CreatorDashboardViewModel;
 
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
@@ -44,7 +42,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
 
     viewModel.outputs.projectAndStats()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(ps -> this.renderProjectAndStats(ps.first, ps.second));
 
     viewModel.outputs.startProjectActivity()
@@ -60,7 +58,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     startActivity(intent);
   }
 
-  private void renderProjectAndStats(final @NonNull Project project, final @NonNull ProjectStats projectStats) {
-    adapter.takeProjectAndStats(project, projectStats);
+  private void renderProjectAndStats(final @NonNull Project project, final @NonNull ProjectStatsEnvelope projectStatsEnvelope) {
+    adapter.takeProjectAndStats(project, projectStatsEnvelope);
   }
 }

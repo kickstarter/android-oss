@@ -5,13 +5,13 @@ import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
-import com.kickstarter.factories.ProjectStatsFactory;
+import com.kickstarter.factories.ProjectStatsEnvelopeFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.ProjectStats;
+import com.kickstarter.models.ProjectStatsEnvelope;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -33,30 +33,35 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   @Test
   public void testProjectBackersCountText() {
     final Project project = ProjectFactory.project().toBuilder().backersCount(10).build();
-    final ProjectStats projectStats = ProjectStatsFactory.projectStats();
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
+
+    setUpEnvironment(environment());
     this.vm = new CreatorDashboardHeaderHolderViewModel.ViewModel(environment());
     this.vm.outputs.projectBackersCountText().subscribe(this.projectBackersCountText);
-    this.vm.inputs.projectAndStats(project, projectStats);
+    this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
     this.projectBackersCountText.assertValues("10");
   }
 
   @Test
   public void testProjectNameTextViewText() {
     final Project project = ProjectFactory.project().toBuilder().name("somebody once told me").build();
-    final ProjectStats projectStats = ProjectStatsFactory.projectStats();
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
+
+    setUpEnvironment(environment());
     this.vm = new CreatorDashboardHeaderHolderViewModel.ViewModel(environment());
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
-    this.vm.inputs.projectAndStats(project, projectStats);
+    this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
     this.projectNameTextViewText.assertValues("somebody once told me");
   }
 
   @Test
   public void testPercentageFunded() {
+    setUpEnvironment(environment());
     final Project project = ProjectFactory.project();
-    final ProjectStats projectStats = ProjectStatsFactory.projectStats();
-    this.vm = new CreatorDashboardHeaderHolderViewModel.ViewModel(environment());
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
+
     this.vm.outputs.percentageFunded().subscribe(this.percentageFunded);
-    this.vm.inputs.projectAndStats(project, projectStats);
+    this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
     final String percentageFundedOutput = NumberUtils.flooredPercentage(project.percentageFunded());
     this.percentageFunded.assertValues(percentageFundedOutput);
   }
@@ -64,22 +69,24 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   @Test
   public void testStartProjectActivity() {
     final Project project = ProjectFactory.project();
-    final ProjectStats projectStats = ProjectStatsFactory.projectStats();
-    this.vm = new CreatorDashboardHeaderHolderViewModel.ViewModel(environment());
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
+
+    setUpEnvironment(environment());
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
-    this.vm.inputs.projectAndStats(project, projectStats);
+    this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
     this.vm.inputs.projectViewClicked();
     this.startProjectActivity.assertValues(Pair.create(project, RefTag.dashboard()));
   }
 
   @Test
   public void testTimeRemainingText() {
+    setUpEnvironment(environment());
     final Project project = ProjectFactory.project().toBuilder().deadline(new DateTime().plusDays(10)).build();
-    final ProjectStats projectStats = ProjectStatsFactory.projectStats();
-    this.vm = new CreatorDashboardHeaderHolderViewModel.ViewModel(environment());
-    this.vm.outputs.timeRemainingText().subscribe(this.timeRemainingText);
-    this.vm.inputs.projectAndStats(project, projectStats);
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
     final int deadlineVal = ProjectUtils.deadlineCountdownValue(project);
+
+    this.vm.outputs.timeRemainingText().subscribe(this.timeRemainingText);
+    this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
     this.timeRemainingText.assertValues(NumberUtils.format(deadlineVal));
   }
 }

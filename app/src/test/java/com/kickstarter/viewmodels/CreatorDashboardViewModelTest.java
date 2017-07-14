@@ -6,13 +6,13 @@ import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
-import com.kickstarter.factories.ProjectStatsFactory;
+import com.kickstarter.factories.ProjectStatsEnvelopeFactory;
 import com.kickstarter.factories.ProjectsEnvelopeFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.ProjectStats;
+import com.kickstarter.models.ProjectStatsEnvelope;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 
@@ -28,7 +28,7 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
   private CreatorDashboardViewModel.ViewModel vm;
 
   private final TestSubscriber<Project> latestProject = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, ProjectStats>> projectAndStats = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, ProjectStatsEnvelope>> projectAndStats = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
@@ -61,20 +61,20 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
       ProjectFactory.project()
     );
 
-    final ProjectStats projectStats = ProjectStatsFactory.projectStats();
+    final ProjectStatsEnvelope ProjectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
     final MockApiClient apiClient = new MockApiClient() {
       @Override public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
         return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects));
       }
       @Override public @NonNull
-      Observable<ProjectStats> fetchProjectStats(final Project project) {
-        return Observable.just(projectStats);
+      Observable<ProjectStatsEnvelope> fetchProjectStats(final Project project) {
+        return Observable.just(ProjectStatsEnvelope);
       }
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
     this.latestProject.assertValues(ListUtils.first(projects));
-    final Pair<Project, ProjectStats> outputPair = Pair.create(ListUtils.first(projects), projectStats);
+    final Pair<Project, ProjectStatsEnvelope> outputPair = Pair.create(ListUtils.first(projects), ProjectStatsEnvelope);
     this.projectAndStats.assertValues(outputPair);
   }
 }

@@ -8,7 +8,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.ProjectStats;
+import com.kickstarter.models.ProjectStatsEnvelope;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.ui.activities.CreatorDashboardActivity;
@@ -34,7 +34,7 @@ public interface CreatorDashboardViewModel {
     Observable<Project> latestProject();
 
     /* project and associated stats object */
-    Observable<Pair<Project, ProjectStats>> projectAndStats();
+    Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats();
 
     /* call when button is clicked to view individual project page */
     Observable<Pair<Project, RefTag>> startProjectActivity();
@@ -59,14 +59,18 @@ public interface CreatorDashboardViewModel {
       final Observable<Project> latestProject = projects
         .map(ListUtils::first);
 
-      final Observable<ProjectStats> projectStats = latestProject
-        .switchMap(this.client::fetchProjectStats);
+      final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = latestProject
+        .switchMap(this.client::fetchProjectStats)
+        .share()
+        .materialize();
+
+      final Observable<ProjectStatsEnvelope> projectStatsEnvelope = projectStatsEnvelopeNotification
+        .compose(values());
 
       this.latestProject = latestProject;
 
-
       this.projectAndStats = latestProject
-        .compose(combineLatestPair(projectStats));
+        .compose(combineLatestPair(projectStatsEnvelope));
 
       this.startProjectActivity = latestProject
         .compose(takeWhen(this.projectViewClicked))
@@ -76,7 +80,7 @@ public interface CreatorDashboardViewModel {
     private final PublishSubject<Void> projectViewClicked = PublishSubject.create();
 
     private final Observable<Project> latestProject;
-    private final Observable<Pair<Project, ProjectStats>> projectAndStats;
+    private final Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
 
     public final Inputs inputs = this;
@@ -90,7 +94,7 @@ public interface CreatorDashboardViewModel {
     @Override public @NonNull Observable<Project> latestProject() {
       return this.latestProject;
     }
-    @Override public @NonNull Observable<Pair<Project, ProjectStats>> projectAndStats() {
+    @Override public @NonNull Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats() {
       return this.projectAndStats;
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {

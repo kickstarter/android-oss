@@ -14,7 +14,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.ProjectStats;
+import com.kickstarter.models.ProjectStatsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.viewmodels.CreatorDashboardHeaderHolderViewModel;
@@ -64,11 +64,6 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::setPledgedOfGoalString);
 
-    viewModel.outputs.currentProject()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setPledgedOfGoalString);
-
     viewModel.outputs.percentageFunded()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -103,22 +98,20 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
     // coerce to projectstats and project
-    final Pair<Project, ProjectStats> projectAndProjectStats = requireNonNull((Pair<Project, ProjectStats>) data);
-    final Project project = requireNonNull(projectAndProjectStats.first, Project.class);
-    final ProjectStats projectStats = requireNonNull(projectAndProjectStats.second, ProjectStats.class);
-    viewModel.inputs.projectAndStats(project, projectStats);
+    final Pair<Project, ProjectStatsEnvelope> projectAndProjectStats = requireNonNull((Pair<Project, ProjectStatsEnvelope>) data);
+    viewModel.inputs.projectAndStats(projectAndProjectStats.first, projectAndProjectStats.second);
   }
 
-  private void setPledgedOfGoalString(final @NonNull Project latestProject) {
-    final String goalString = ksCurrency.format(latestProject.pledged(), latestProject, false, true, RoundingMode.DOWN);
+  private void setPledgedOfGoalString(final @NonNull Project currentProject) {
+    final String goalString = ksCurrency.format(currentProject.pledged(), currentProject, false, true, RoundingMode.DOWN);
     amountRaisedTextView.setText(goalString);
 
     final String goalText = ksString.format(this.pledgedOfGoalString, "goal", goalString);
     fundingTextTextView.setText(goalText);
   }
 
-  private void setTimeRemainingTextTextView(final @NonNull Project latestProject) {
-    timeRemainingTextTextView.setText(ProjectUtils.deadlineCountdownDetail(latestProject, this.context(), ksString));
+  private void setTimeRemainingTextTextView(final @NonNull Project currentProject) {
+    timeRemainingTextTextView.setText(ProjectUtils.deadlineCountdownDetail(currentProject, this.context(), ksString));
   }
 
   private void startProjectActivity(final @NonNull Project project, final @NonNull RefTag refTag) {
@@ -127,5 +120,4 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .putExtra(IntentKey.REF_TAG, refTag);
     this.context().startActivity(intent);
   }
-
 }

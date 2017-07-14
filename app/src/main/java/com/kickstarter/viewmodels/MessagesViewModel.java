@@ -36,6 +36,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 import static com.kickstarter.libs.rx.transformers.Transformers.errors;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
@@ -47,6 +48,9 @@ public interface MessagesViewModel {
 
     /** Call when the message edit text changes. */
     void messageEditTextChanged(String messageBody);
+
+    /** Call when the message edit text is in focus. */
+    void messageEditTextIsFocused(boolean isFocused);
 
     /** Call when the send message button has been clicked. */
     void sendMessageButtonClicked();
@@ -109,6 +113,9 @@ public interface MessagesViewModel {
 
     /** Emits when the thread has been marked as read. */
     Observable<Void> successfullyMarkedAsRead();
+
+    /** Emits a boolean to determine when the toolbar should be expanded. */
+    Observable<Boolean> toolbarIsExpanded();
 
     /** Emits a boolean that determines if the View pledge button should be gone. */
     Observable<Boolean> viewPledgeButtonIsGone();
@@ -282,6 +289,11 @@ public interface MessagesViewModel {
       this.sendMessageButtonIsEnabled = Observable.merge(messageHasBody, messageIsSending.map(BooleanUtils::negate));
       this.setMessageEditText = messageSent.map(__ -> "");
 
+      this.toolbarIsExpanded = this.messages
+        .compose(takePairWhen(this.messageEditTextIsFocused))
+        .map(PairUtils::second)
+        .map(BooleanUtils::negate);
+
       messageNotification
         .compose(errors())
         .map(ErrorEnvelope::fromThrowable)
@@ -328,6 +340,7 @@ public interface MessagesViewModel {
 
     private final PublishSubject<Void> backOrCloseButtonClicked = PublishSubject.create();
     private final PublishSubject<String> messageEditTextChanged = PublishSubject.create();
+    private final PublishSubject<Boolean> messageEditTextIsFocused = PublishSubject.create();
     private final PublishSubject<Void> sendMessageButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> viewPledgeButtonClicked = PublishSubject.create();
 
@@ -349,6 +362,7 @@ public interface MessagesViewModel {
     private final Observable<String> setMessageEditText;
     private final BehaviorSubject<Project> startViewPledgeActivity = BehaviorSubject.create();
     private final BehaviorSubject<Void> successfullyMarkedAsRead = BehaviorSubject.create();
+    private final Observable<Boolean> toolbarIsExpanded;
     private final BehaviorSubject<Boolean> viewPledgeButtonIsGone = BehaviorSubject.create();
 
     public final Inputs inputs = this;
@@ -359,6 +373,9 @@ public interface MessagesViewModel {
     }
     @Override public void messageEditTextChanged(final @NonNull String messageBody) {
       this.messageEditTextChanged.onNext(messageBody);
+    }
+    @Override public void messageEditTextIsFocused(final boolean isFocused) {
+      this.messageEditTextIsFocused.onNext(isFocused);
     }
     @Override public void sendMessageButtonClicked() {
       this.sendMessageButtonClicked.onNext(null);
@@ -420,6 +437,9 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<Void> successfullyMarkedAsRead() {
       return this.successfullyMarkedAsRead;
+    }
+    @Override public @NonNull Observable<Boolean> toolbarIsExpanded() {
+      return this.toolbarIsExpanded;
     }
     @Override public @NonNull Observable<Boolean> viewPledgeButtonIsGone() {
       return this.viewPledgeButtonIsGone;

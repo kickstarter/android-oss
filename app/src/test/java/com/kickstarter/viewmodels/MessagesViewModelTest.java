@@ -54,6 +54,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
   private final TestSubscriber<Project> startViewPledgeActivity = new TestSubscriber<>();
   private final TestSubscriber<Void> successfullyMarkedAsRead = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> toolbarIsExpanded = new TestSubscriber<>();
   private final TestSubscriber<Boolean> viewPledgeButtonIsGone = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
@@ -76,6 +77,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
     this.vm.outputs.startViewPledgeActivity().subscribe(this.startViewPledgeActivity);
     this.vm.outputs.successfullyMarkedAsRead().subscribe(this.successfullyMarkedAsRead);
+    this.vm.outputs.toolbarIsExpanded().subscribe(this.toolbarIsExpanded);
     this.vm.outputs.viewPledgeButtonIsGone().subscribe(this.viewPledgeButtonIsGone);
   }
 
@@ -426,6 +428,60 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(messagesContextIntent(messageThread));
 
     this.successfullyMarkedAsRead.assertValueCount(1);
+  }
+
+  @Test
+  public void testToolbarIsExpanded_NoMessages() {
+    final Backing backing = BackingFactory.backing();
+
+    final MessageThreadEnvelope envelope = MessageThreadEnvelopeFactory.messageThreadEnvelope()
+      .toBuilder()
+      .messages(null)
+      .build();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
+        return Observable.just(envelope);
+      }
+    };
+
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(UserFactory.user())).build()
+    );
+
+    // Start the view model with a backing and project.
+    this.vm.intent(backerModalContextIntent(backing, ProjectFactory.project()));
+    this.vm.inputs.messageEditTextIsFocused(true);
+
+    // Toolbar stays expanded when keyboard opens and no messages.
+    this.toolbarIsExpanded.assertNoValues();
+  }
+
+  @Test
+  public void testToolbarIsExpanded_WithMessages() {
+    final Backing backing = BackingFactory.backing();
+
+    final MessageThreadEnvelope envelope = MessageThreadEnvelopeFactory.messageThreadEnvelope()
+      .toBuilder()
+      .messages(Collections.singletonList(MessageFactory.message()))
+      .build();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
+        return Observable.just(envelope);
+      }
+    };
+
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(UserFactory.user())).build()
+    );
+
+    // Start the view model with a backing and project.
+    this.vm.intent(backerModalContextIntent(backing, ProjectFactory.project()));
+    this.vm.inputs.messageEditTextIsFocused(true);
+
+    // Toolbar collapsed when keyboard opens and there are messages.
+    this.toolbarIsExpanded.assertValues(false);
   }
 
   @Test

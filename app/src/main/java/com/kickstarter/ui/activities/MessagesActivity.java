@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
@@ -82,6 +83,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.viewPledgeButton.setText(this.viewPledgeString);
 
     ToolbarUtils.INSTANCE.fadeToolbarTitleOnExpand(this.appBarLayout, this.projectNameToolbarTextView);
+
+    RxView.focusChanges(this.messageEditText)
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.viewModel.inputs::messageEditTextIsFocused);
 
     this.viewModel.outputs.backButtonIsGone()
       .compose(bindToLifecycle())
@@ -169,6 +175,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::startViewPledgeActivity);
+
+    this.viewModel.outputs.toolbarIsExpanded()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.appBarLayout::setExpanded);
 
     this.viewModel.outputs.viewPledgeButtonIsGone()
       .compose(bindToLifecycle())

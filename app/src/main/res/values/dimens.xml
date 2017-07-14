@@ -113,6 +113,7 @@
   <dimen name="activity_feed_update_photo_height">@dimen/grid_9</dimen>
   <dimen name="comments_feed_avatar_width">@dimen/grid_11_half</dimen>
   <dimen name="comments_feed_avatar_height">@dimen/grid_11_half</dimen>
+  <dimen name="message_avatar_border_width">2dp</dimen>
   <dimen name="profile_avatar_width">100dp</dimen>
   <dimen name="profile_avatar_height">@dimen/profile_avatar_width</dimen>
   <dimen name="profile_card_photo_height">90dp</dimen>

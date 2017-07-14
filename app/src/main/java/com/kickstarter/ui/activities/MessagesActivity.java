@@ -114,7 +114,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(__ -> back());
 
-    this.viewModel.outputs.messageAndPosition()
+    this.viewModel.outputs.sentMessage()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.adapter::appendNewMessage);

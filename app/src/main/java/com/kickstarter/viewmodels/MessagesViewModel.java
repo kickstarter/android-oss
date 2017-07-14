@@ -75,9 +75,6 @@ public interface MessagesViewModel {
     /** Emits when we should navigate back. */
     Observable<Void> goBack();
 
-    /** Emits the message and its position in the list. */
-    Observable<Pair<Message, Integer>> messageAndPosition();
-
     /** Emits a string to display as the message edit text hint. */
     Observable<String> messageEditTextHint();
 
@@ -101,6 +98,9 @@ public interface MessagesViewModel {
 
     /** Emits a boolean that determines if the Send button should be enabled. */
     Observable<Boolean> sendMessageButtonIsEnabled();
+
+    /** Emits the most recently sent message. */
+    Observable<Message> sentMessage();
 
     /** Emits a string to set the message edit text to. */
     Observable<String> setMessageEditText();
@@ -244,13 +244,9 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.messages::onNext);
 
-      // Grab the most recently sent message and its position
-      sentMessageThreadEnvelope
-        .map(MessageThreadEnvelope::messages)
-        .filter(ObjectUtils::isNotNull)
-        .map(messages -> Pair.create(messages.get(messages.size() - 1), messages.size()))
+      messageSent
         .compose(bindToLifecycle())
-        .subscribe(this.messageAndPosition::onNext);
+        .subscribe(this.sentMessage::onNext);
 
       participant
         .map(User::name)
@@ -285,7 +281,7 @@ public interface MessagesViewModel {
       this.goBack = this.backOrCloseButtonClicked;
       this.messageEditTextHint = this.participantNameTextViewText;
       this.projectNameToolbarTextViewText = this.projectNameTextViewText;
-      this.scrollRecyclerViewToBottom = this.messageAndPosition.compose(ignoreValues());
+      this.scrollRecyclerViewToBottom = this.sentMessage.compose(ignoreValues());
       this.sendMessageButtonIsEnabled = Observable.merge(messageHasBody, messageIsSending.map(BooleanUtils::negate));
       this.setMessageEditText = messageSent.map(__ -> "");
 
@@ -349,7 +345,6 @@ public interface MessagesViewModel {
     private final BehaviorSubject<Boolean> backingInfoViewIsGone = BehaviorSubject.create();
     private final Observable<Boolean> closeButtonIsGone;
     private final Observable<Void> goBack;
-    private final BehaviorSubject<Pair<Message, Integer>> messageAndPosition = BehaviorSubject.create();
     private final Observable<String> messageEditTextHint;
     private final PublishSubject<Void> messageEditTextShouldRequestFocus = PublishSubject.create();
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
@@ -359,6 +354,7 @@ public interface MessagesViewModel {
     private final Observable<Void> scrollRecyclerViewToBottom;
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<Boolean> sendMessageButtonIsEnabled;
+    private final BehaviorSubject<Message> sentMessage = BehaviorSubject.create();
     private final Observable<String> setMessageEditText;
     private final BehaviorSubject<Project> startViewPledgeActivity = BehaviorSubject.create();
     private final BehaviorSubject<Void> successfullyMarkedAsRead = BehaviorSubject.create();
@@ -399,9 +395,6 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<Void> goBack() {
       return this.goBack;
     }
-    @Override public @NonNull Observable<Pair<Message, Integer>> messageAndPosition() {
-      return this.messageAndPosition;
-    }
     @Override public @NonNull Observable<String> messageEditTextHint() {
       return this.messageEditTextHint;
     }
@@ -428,6 +421,9 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<Boolean> sendMessageButtonIsEnabled() {
       return this.sendMessageButtonIsEnabled;
+    }
+    @Override public @NonNull Observable<Message> sentMessage() {
+      return this.sentMessage;
     }
     @Override public @NonNull Observable<String> setMessageEditText() {
       return this.setMessageEditText;

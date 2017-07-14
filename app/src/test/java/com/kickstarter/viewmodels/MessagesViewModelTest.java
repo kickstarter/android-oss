@@ -41,7 +41,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> backingInfoViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> closeButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<Void> goBack = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Message, Integer>> messageAndPosition = new TestSubscriber<>();
   private final TestSubscriber<String> messageEditTextHint = new TestSubscriber<>();
   private final TestSubscriber<Void> messageEditTextShouldRequestFocus = new TestSubscriber<>();
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
@@ -50,6 +49,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> projectNameToolbarTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Void> scrollRecyclerViewToBottom = new TestSubscriber<>();
   private final TestSubscriber<Boolean> sendMessageButtonIsEnabled = new TestSubscriber<>();
+  private final TestSubscriber<Message> sentMessage = new TestSubscriber<>();
   private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
   private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
   private final TestSubscriber<Project> startViewPledgeActivity = new TestSubscriber<>();
@@ -64,7 +64,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.backingInfoViewIsGone().subscribe(this.backingInfoViewIsGone);
     this.vm.outputs.closeButtonIsGone().subscribe(this.closeButtonIsGone);
     this.vm.outputs.goBack().subscribe(this.goBack);
-    this.vm.outputs.messageAndPosition().subscribe(this.messageAndPosition);
     this.vm.outputs.messageEditTextHint().subscribe(this.messageEditTextHint);
     this.vm.outputs.messageEditTextShouldRequestFocus().subscribe(this.messageEditTextShouldRequestFocus);
     this.vm.outputs.messages().subscribe(this.messages);
@@ -73,6 +72,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.projectNameToolbarTextViewText().subscribe(this.projectNameToolbarTextViewText);
     this.vm.outputs.scrollRecyclerViewToBottom().subscribe(this.scrollRecyclerViewToBottom);
     this.vm.outputs.sendMessageButtonIsEnabled().subscribe(this.sendMessageButtonIsEnabled);
+    this.vm.outputs.sentMessage().subscribe(this.sentMessage);
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
     this.vm.outputs.startViewPledgeActivity().subscribe(this.startViewPledgeActivity);
@@ -316,7 +316,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Error toast is displayed, errored message body remains in edit text, no new message is emitted.
     this.showMessageErrorToast.assertValueCount(1);
     this.setMessageEditText.assertNoValues();
-    this.messageAndPosition.assertNoValues();
+    this.sentMessage.assertNoValues();
 
     // No sent message event tracked.
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
@@ -342,7 +342,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     // Initial messages emit.
     this.messages.assertValueCount(1);
-    this.messageAndPosition.assertNoValues();
+    this.sentMessage.assertNoValues();
 
     // Send a message successfully.
     this.vm.inputs.messageEditTextChanged("Salutations friend!");
@@ -350,7 +350,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     // Messages list does not emit again, only the new message and its position.
     this.messages.assertValueCount(1);
-    this.messageAndPosition.assertValueCount(1);
+    this.sentMessage.assertValueCount(1);
 
     // Reply edit text should be cleared and view should be scrolled to new message.
     this.setMessageEditText.assertValues("");

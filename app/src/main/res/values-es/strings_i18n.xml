@@ -130,6 +130,7 @@ patrocinadores</string>
   <string name="Funding_successful" formatted="false">Financiado con éxito</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Recibe notificaciones sobre los Live Streams de este creador</string>
   <string name="Go_to_project_page" formatted="false">Ir a la página de proyecto</string>
+  <string name="Got_it" formatted="false">¡Listo!</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.</string>
   <string name="Home" formatted="false">Inicio</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Sólo quiero apoyar este proyecto.</string>
@@ -166,6 +167,7 @@ patrocinadores</string>
   <string name="Manage_your_reward" formatted="false">Administra tu recompensa</string>
   <string name="Message_backer" formatted="false">Enviar mensaje a patrocinador</string>
   <string name="Message_creator" formatted="false">Enviar mensaje al creador</string>
+  <string name="Message_user_name" formatted="false">Message %{user_name}…</string>
   <string name="No_Results" formatted="false">Sin resultados</string>
   <string name="No_comments_yet" formatted="false">No hay comentarios todavia.</string>
   <string name="No_messages" formatted="false">No hay mensajes</string>
@@ -272,6 +274,8 @@ patrocinadores</string>
   <string name="Subscribed" formatted="false">Suscripción activa</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Activa subscripción a futuros Live-Streams.</string>
   <string name="Survey" formatted="false">Cuestionario</string>
+  <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Haz clic en el icono de corazón de un proyecto para recibir una notificación 48 horas antes de que finalice.</string>
+  <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Haz clic en el corazón en la página de cada proyecto para guardarlo. Te recordaremos 48 horas antes de que finalice el proyecto.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Toca el icono de estrella de un proyecto para recibir una notificación 48 horas antes de que finalice.</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Toca la estrella en cada página del proyecto para guardarlo. Te recordaremos 48 horas antes de que finalice el proyecto.</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Gracias por apoyar este proyecto.</string>
@@ -286,9 +290,11 @@ patrocinadores</string>
   <string name="Time_left_left" formatted="false">%{time_left} restantes</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">Accede a tus categorías favoritas en el menú en la parte superior de la app.</string>
   <string name="To_read_this_project_update_you_must_be_a_backer" formatted="false">Sólo los patrocinadores pueden leer esta actualización, por favor inicia sesión o regístrate para continuar.</string>
+  <string name="Toggle_saving_this_project" formatted="false">Guardar/No guardar este proyecto</string>
   <string name="Total_pledged" formatted="false">Contribuciones en total</string>
   <string name="Unfollow_friend_name" formatted="false">Dejar de seguir a %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Dejar de seguir a %{friend_name}.</string>
+  <string name="Unsaved" formatted="false">Sin guardar</string>
   <string name="Unsaves_project" formatted="false">Deshacer "guardar proyecto".</string>
   <string name="Unsubscribe" formatted="false">Anular suscripción</string>
   <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">Desactiva subscripción a futuros Live-Streams.</string>

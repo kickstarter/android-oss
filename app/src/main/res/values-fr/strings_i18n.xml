@@ -130,6 +130,7 @@ contributeurs</string>
   <string name="Funding_successful" formatted="false">Intégralement financé</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Envoyez-moi des notifications au sujet des diffusions en direct de ce créateur.</string>
   <string name="Go_to_project_page" formatted="false">Accéder à la page de projet</string>
+  <string name="Got_it" formatted="false">Super.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Merci ! Vos réponses au questionnaire ont bien été envoyées.</string>
   <string name="Home" formatted="false">Accueil</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Je souhaite simplement soutenir le projet.</string>
@@ -166,6 +167,7 @@ contributeurs</string>
   <string name="Manage_your_reward" formatted="false">Gérer votre récompense</string>
   <string name="Message_backer" formatted="false">Envoyer un message au contributeur</string>
   <string name="Message_creator" formatted="false">Envoyer un message au créateur</string>
+  <string name="Message_user_name" formatted="false">Message %{user_name}…</string>
   <string name="No_Results" formatted="false">Pas de résultats</string>
   <string name="No_comments_yet" formatted="false">Pas de commentaires.</string>
   <string name="No_messages" formatted="false">Pas de messages</string>
@@ -273,6 +275,8 @@ n\'ont rien soutenu.</string>
   <string name="Subscribed" formatted="false">Abonné </string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Abonnement aux diffusions en direct à venir.</string>
   <string name="Survey" formatted="false">Questionnaire</string>
+  <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Cliquez sur l\'icône en forme de cœur située à côté du projet pour recevoir une notification 48 avant la fin de la campagne.</string>
+  <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Cliquez sur le cœur qui apparaît sur la page du projet pour l\'ajouter à vos favoris. Nous vous enverrons un petit rappel 48 heures avant la fin de la campagne.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Cliquez sur l\'icône en forme d\'étoile située à côté du projet pour recevoir une notification 48 avant la fin de sa campagne.</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Cliquez sur l\'étoile qui apparaît sur la page du projet pour l\'ajouter à vos favoris. Nous vous enverrons un petit rappel 48 heures avant la fin de la campagne.</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Merci pour votre soutien.</string>
@@ -287,9 +291,11 @@ n\'ont rien soutenu.</string>
   <string name="Time_left_left" formatted="false">Plus que %{time_left}</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">Pour retrouver toutes vos catégories préférées, cliquez sur le menu déroulant Découvrir dans l\'application.</string>
   <string name="To_read_this_project_update_you_must_be_a_backer" formatted="false">Seuls les contributeurs ont accès à cette actu de projet. Connectez-vous ou inscrivez-vous pour continuer.</string>
+  <string name="Toggle_saving_this_project" formatted="false">Toggle saving this project</string>
   <string name="Total_pledged" formatted="false">Total engagé</string>
   <string name="Unfollow_friend_name" formatted="false">Ne plus suivre %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Désabonnement des actus de %{friend_name}.</string>
+  <string name="Unsaved" formatted="false">Non enregistré</string>
   <string name="Unsaves_project" formatted="false">Annule l\'enregistrement du projet.</string>
   <string name="Unsubscribe" formatted="false">Se désabonner</string>
   <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">Désabonnement des diffusions en direct à venir.</string>

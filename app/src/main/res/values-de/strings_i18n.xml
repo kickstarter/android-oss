@@ -130,6 +130,7 @@ Unterstützer</string>
   <string name="Funding_successful" formatted="false">Finanzierung erfolgreich</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Benachrichtigungen zu den Live-Streams dieses Projektgründers erhalten.</string>
   <string name="Go_to_project_page" formatted="false">Zu Projektseite</string>
+  <string name="Got_it" formatted="false">Alles klar!</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Alles klar! Deine Antwort auf die Befragung wurde übermittelt.</string>
   <string name="Home" formatted="false">Home</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Ich möchte das Projekt einfach nur unterstützen.</string>
@@ -166,6 +167,7 @@ Unterstützer</string>
   <string name="Manage_your_reward" formatted="false">Belohnung verwalten</string>
   <string name="Message_backer" formatted="false">Nachricht an Unterstützer senden</string>
   <string name="Message_creator" formatted="false">Nachricht an Projektgründer senden</string>
+  <string name="Message_user_name" formatted="false">Message %{user_name}…</string>
   <string name="No_Results" formatted="false">Keine Ergebnisse</string>
   <string name="No_comments_yet" formatted="false">Bisher noch keine Kommentare.</string>
   <string name="No_messages" formatted="false">Keine Nachrichten</string>
@@ -272,6 +274,8 @@ Unterstützer</string>
   <string name="Subscribed" formatted="false">Abo aktiviert</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Zukünftige Live-Streams abonnieren.</string>
   <string name="Survey" formatted="false">Befragung</string>
+  <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Tippe auf das Herz neben einem Projekt und wir benachrichtigen dich 48 Stunden, bevor es abläuft.</string>
+  <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Klicke einfach auf das Herz auf der Projektseite, um dieses Projekt zu speichern. Wir werden dir 48 Stunden vor Ablauf eine Benachrichtigung schicken.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Tippe auf den Stern neben einem Projekt und wir benachrichtigen dich 48 Stunden, bevor es abläuft.</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Klicke einfach auf den Stern auf der Projektseite, um ein Projekt zu speichern. Wir werden dir 48 Stunden vor Ablauf eine Benachrichtigung schicken.</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Vielen Dank für deine Unterstützung dieses Projekts.</string>
@@ -286,9 +290,11 @@ Unterstützer</string>
   <string name="Time_left_left" formatted="false">%{time_left} übrig</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">Für schnellen Zugriff auf deine meist besuchten Kategorien, tippe auf das Dropdown-Menü oben.</string>
   <string name="To_read_this_project_update_you_must_be_a_backer" formatted="false">Um diesen Update zum Projekt lesen zu können, musst du ein Unterstützer dieses Projekts sein. Bitte melde dich an oder registriere dich.</string>
+  <string name="Toggle_saving_this_project" formatted="false">Umschalten zu Projekt speichern</string>
   <string name="Total_pledged" formatted="false">Anzahl der Beiträge insgesamt</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} nicht mehr folgen</string>
   <string name="Unfollows_friend_name" formatted="false">%{friend_name} nicht mehr folgen.</string>
+  <string name="Unsaved" formatted="false">Speichern wurde rückgängig gemacht</string>
   <string name="Unsaves_project" formatted="false">Macht Speichern dieses Projektes rückgängig.</string>
   <string name="Unsubscribe" formatted="false">Abo abbestellen</string>
   <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">Abo für zukünftige Live-Streams abbestellen.</string>

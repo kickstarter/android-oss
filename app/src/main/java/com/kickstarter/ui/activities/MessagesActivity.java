@@ -60,9 +60,9 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.messages_view_pledge_button) Button viewPledgeButton;
 
   protected @BindString(R.string.project_creator_by_creator) String byCreatorString;
+  protected @BindString(R.string.Message_user_name) String messageUserNameString;
   protected @BindString(R.string.pledge_amount_pledged_on_pledge_date) String pledgeAmountPledgedOnPledgeDateString;
   protected @BindString(R.string.project_view_button) String viewPledgeString;
-  protected @BindString(R.string.Reply_to_user_name) String replyToUserNameString;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -237,7 +237,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   }
 
   private void setMessageEditTextHint(final @NonNull String name) {
-    this.messageEditText.setHint(this.ksString.format(this.replyToUserNameString, "user_name", name));
+    this.messageEditText.setHint(this.ksString.format(this.messageUserNameString, "user_name", name));
   }
 
   private void startViewPledgeActivity(final @NonNull Project project) {

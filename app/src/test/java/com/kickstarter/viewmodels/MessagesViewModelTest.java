@@ -72,7 +72,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.projectNameToolbarTextViewText().subscribe(this.projectNameToolbarTextViewText);
     this.vm.outputs.scrollRecyclerViewToBottom().subscribe(this.scrollRecyclerViewToBottom);
     this.vm.outputs.sendMessageButtonIsEnabled().subscribe(this.sendMessageButtonIsEnabled);
-    this.vm.outputs.sentMessage().subscribe(this.sentMessage);
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
     this.vm.outputs.startViewPledgeActivity().subscribe(this.startViewPledgeActivity);
@@ -316,7 +315,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Error toast is displayed, errored message body remains in edit text, no new message is emitted.
     this.showMessageErrorToast.assertValueCount(1);
     this.setMessageEditText.assertNoValues();
-    this.sentMessage.assertNoValues();
 
     // No sent message event tracked.
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
@@ -342,15 +340,13 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     // Initial messages emit.
     this.messages.assertValueCount(1);
-    this.sentMessage.assertNoValues();
 
     // Send a message successfully.
     this.vm.inputs.messageEditTextChanged("Salutations friend!");
     this.vm.inputs.sendMessageButtonClicked();
 
-    // Messages list does not emit again, only the new message and its position.
-    this.messages.assertValueCount(1);
-    this.sentMessage.assertValueCount(1);
+    // New message list emits.
+    this.messages.assertValueCount(2);
 
     // Reply edit text should be cleared and view should be scrolled to new message.
     this.setMessageEditText.assertValues("");

@@ -30,6 +30,8 @@ public final class MessagesAdapter extends KSAdapter {
   }
 
   public void messages(final @NonNull List<Message> messages) {
+    clearSections();
+
     // Group messages by start of day.
     Observable.from(messages)
       .groupBy(message -> message.createdAt().withTimeAtStartOfDay())
@@ -40,15 +42,6 @@ public final class MessagesAdapter extends KSAdapter {
       });
 
     notifyDataSetChanged();
-  }
-
-  public void appendNewMessage(final @NonNull Message message) {
-    // Add a date view holder and a message body view holder.
-    addSection(Collections.singletonList(message.createdAt()));
-    addSection(Collections.singletonList(message));
-
-    // Notify the last position, where the message was just inserted.
-    notifyItemInserted(this.getItemCount() - 1);
   }
 
   @Override

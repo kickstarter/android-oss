@@ -114,11 +114,6 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(__ -> back());
 
-    this.viewModel.outputs.sentMessage()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.adapter::appendNewMessage);
-
     this.viewModel.outputs.messageEditTextHint()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -224,7 +219,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   }
 
   private void setBackingInfoView(final @NonNull Pair<Backing, Project> backingAndProject) {
-    final String pledgeAmount = ksCurrency.format(backingAndProject.first.amount(), backingAndProject.second);
+    final String pledgeAmount = this.ksCurrency.format(backingAndProject.first.amount(), backingAndProject.second);
     final String pledgeDate = DateTimeUtils.relative(this, this.ksString, backingAndProject.first.pledgedAt());
 
     this.backingAmountTextViewText.setText(

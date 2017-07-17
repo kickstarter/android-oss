@@ -9,6 +9,7 @@ import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.StringUtils;
@@ -98,9 +99,6 @@ public interface MessagesViewModel {
 
     /** Emits a boolean that determines if the Send button should be enabled. */
     Observable<Boolean> sendMessageButtonIsEnabled();
-
-    /** Emits the most recently sent message. */
-    Observable<Message> sentMessage();
 
     /** Emits a string to set the message edit text to. */
     Observable<String> setMessageEditText();
@@ -237,16 +235,26 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.successfullyMarkedAsRead::onNext);
 
-      initialMessageThreadEnvelope
+      final Observable<List<Message>> initialMessages = initialMessageThreadEnvelope
         .map(MessageThreadEnvelope::messages)
-        .filter(ObjectUtils::isNotNull)
+        .filter(ObjectUtils::isNotNull);
+
+      final Observable<List<Message>> newMessages = sentMessageThreadEnvelope
+        .map(MessageThreadEnvelope::messages);
+
+      final Observable<List<Message>> updatedMessages = initialMessages
+        .compose(takePairWhen(newMessages))
+        .map(mm -> ListUtils.concatDistinct(mm.first, mm.second));
+
+      // Load the initial messages once, subsequently load newer messages if any.
+      initialMessages
         .take(1)
         .compose(bindToLifecycle())
         .subscribe(this.messages::onNext);
 
-      messageSent
+      updatedMessages
         .compose(bindToLifecycle())
-        .subscribe(this.sentMessage::onNext);
+        .subscribe(this.messages::onNext);
 
       participant
         .map(User::name)
@@ -281,7 +289,7 @@ public interface MessagesViewModel {
       this.goBack = this.backOrCloseButtonClicked;
       this.messageEditTextHint = this.participantNameTextViewText;
       this.projectNameToolbarTextViewText = this.projectNameTextViewText;
-      this.scrollRecyclerViewToBottom = this.sentMessage.compose(ignoreValues());
+      this.scrollRecyclerViewToBottom = updatedMessages.compose(ignoreValues());
       this.sendMessageButtonIsEnabled = Observable.merge(messageHasBody, messageIsSending.map(BooleanUtils::negate));
       this.setMessageEditText = messageSent.map(__ -> "");
 
@@ -354,7 +362,6 @@ public interface MessagesViewModel {
     private final Observable<Void> scrollRecyclerViewToBottom;
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<Boolean> sendMessageButtonIsEnabled;
-    private final BehaviorSubject<Message> sentMessage = BehaviorSubject.create();
     private final Observable<String> setMessageEditText;
     private final BehaviorSubject<Project> startViewPledgeActivity = BehaviorSubject.create();
     private final BehaviorSubject<Void> successfullyMarkedAsRead = BehaviorSubject.create();
@@ -421,9 +428,6 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<Boolean> sendMessageButtonIsEnabled() {
       return this.sendMessageButtonIsEnabled;
-    }
-    @Override public @NonNull Observable<Message> sentMessage() {
-      return this.sentMessage;
     }
     @Override public @NonNull Observable<String> setMessageEditText() {
       return this.setMessageEditText;

@@ -12,7 +12,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.ProjectStatsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 

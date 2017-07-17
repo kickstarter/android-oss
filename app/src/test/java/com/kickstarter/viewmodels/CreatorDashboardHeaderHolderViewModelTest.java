@@ -11,7 +11,7 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.ProjectStatsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 
 import org.joda.time.DateTime;
 import org.junit.Test;

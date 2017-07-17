@@ -2,7 +2,7 @@ package com.kickstarter.factories;
 
 import android.support.annotation.NonNull;
 
-import com.kickstarter.models.ProjectStatsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 
 import org.joda.time.DateTime;
 

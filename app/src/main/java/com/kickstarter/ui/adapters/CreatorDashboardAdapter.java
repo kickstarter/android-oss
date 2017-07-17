@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.ProjectStatsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 

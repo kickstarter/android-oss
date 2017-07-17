@@ -12,7 +12,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.ProjectStatsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.CreatorDashboardAdapter;
 import com.kickstarter.viewmodels.CreatorDashboardViewModel;

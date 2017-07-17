@@ -13,6 +13,7 @@ import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
@@ -59,6 +60,8 @@ public interface ApiClientType {
   @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params);
 
   @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull String paginationUrl);
+
+  @NonNull Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project);
 
   @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user);
 

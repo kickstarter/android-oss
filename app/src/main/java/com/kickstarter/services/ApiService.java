@@ -13,6 +13,7 @@ import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
@@ -136,6 +137,9 @@ public interface ApiService {
 
   @GET
   Observable<Response<DiscoverEnvelope>> projects(@Url String paginationUrl);
+
+  @GET("/v1/projects/{project_param}/stats")
+  Observable<Response<ProjectStatsEnvelope>> projectStats(@Path("project_param") String projectParam);
 
   @POST("/v1/users/self/push_tokens")
   Observable<Response<Empty>> registerPushToken(@Body PushTokenBody body);

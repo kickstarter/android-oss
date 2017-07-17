@@ -1,4 +1,4 @@
-package com.kickstarter.models;
+package com.kickstarter.services.apiresponses;
 
 import android.os.Parcelable;
 

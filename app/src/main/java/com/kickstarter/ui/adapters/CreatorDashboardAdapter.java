@@ -21,7 +21,7 @@ public class CreatorDashboardAdapter extends KSAdapter {
     if (sectionRow.section() == 0) {
       return R.layout.dashboard_funding_view;
     } else {
-      return R.layout.dashboard_reward_stats_recycler_view;
+      return R.layout.dashboard_reward_stats_view;
     }
   }
 
@@ -36,6 +36,12 @@ public class CreatorDashboardAdapter extends KSAdapter {
   public void takeProjectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStatsEnvelope) {
     sections().clear();
     sections().add(Collections.singletonList(projectAndStatsEnvelope));
+
+    sections().add(
+      Collections.singletonList(
+        Pair.create(projectAndStatsEnvelope.first, projectAndStatsEnvelope.second.rewardDistribution())
+      )
+    );
     notifyDataSetChanged();
   }
 }

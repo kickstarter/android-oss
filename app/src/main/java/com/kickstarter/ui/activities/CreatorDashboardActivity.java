@@ -62,4 +62,10 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
   private void renderProjectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStats) {
     this.adapter.takeProjectAndStats(projectAndStats);
   }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    creatorDashboardRecyclerView.setAdapter(null);
+  }
 }

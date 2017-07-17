@@ -1,5 +1,6 @@
 package com.kickstarter.services.apiresponses;
 
+import java.util.List;
 import android.os.Parcelable;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
@@ -23,6 +24,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
   public abstract ReferrerStats referrerStats();
   public abstract List<RewardStats> rewardDistribution();
   public abstract VideoStats videoStats();
+
 
   @AutoParcel.Builder
   public abstract static class Builder {

@@ -21,7 +21,7 @@ import rx.subjects.PublishSubject;
 public interface CreatorDashboardHeaderHolderViewModel {
 
   interface Inputs {
-    void projectAndStats(Project project, ProjectStatsEnvelope projectStats);
+    void projectAndStats(Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope);
     void projectViewClicked();
   }
 
@@ -102,8 +102,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
     }
 
     @Override
-    public void projectAndStats(final @NonNull Project project, final @NonNull ProjectStatsEnvelope ProjectStatsEnvelope) {
-      this.projectAndStats.onNext(Pair.create(project, ProjectStatsEnvelope));
+    public void projectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope) {
+      this.projectAndStats.onNext(projectAndProjectStatsEnvelope);
     }
 
     @Override public @NonNull Observable<String> percentageFunded() {

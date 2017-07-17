@@ -24,10 +24,9 @@ public class CreatorDashboardAdapter extends KSAdapter {
     return new CreatorDashboardHeaderViewHolder(view);
   }
 
-
-  public void takeProjectAndStats(final @NonNull Project project, final @NonNull ProjectStatsEnvelope projectStatsEnvelope) {
+  public void takeProjectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStatsEnvelope) {
     sections().clear();
-    sections().add(Collections.singletonList(Pair.create(project, projectStatsEnvelope)));
+    sections().add(Collections.singletonList(projectAndStatsEnvelope));
     notifyDataSetChanged();
   }
 }

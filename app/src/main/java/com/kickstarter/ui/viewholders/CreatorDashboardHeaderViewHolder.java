@@ -99,7 +99,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   public void bindData(final @Nullable Object data) throws Exception {
     // coerce to projectstats and project
     final Pair<Project, ProjectStatsEnvelope> projectAndProjectStats = requireNonNull((Pair<Project, ProjectStatsEnvelope>) data);
-    this.viewModel.inputs.projectAndStats(projectAndProjectStats.first, projectAndProjectStats.second);
+    this.viewModel.inputs.projectAndStats(projectAndProjectStats);
   }
 
   private void setPledgedOfGoalString(final @NonNull Project currentProject) {

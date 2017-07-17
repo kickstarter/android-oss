@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -43,7 +44,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.viewModel.outputs.projectAndStats()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ps -> this.renderProjectAndStats(ps.first, ps.second));
+      .subscribe(this::renderProjectAndStats);
 
     this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
@@ -58,7 +59,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     startActivity(intent);
   }
 
-  private void renderProjectAndStats(final @NonNull Project project, final @NonNull ProjectStatsEnvelope projectStatsEnvelope) {
-    this.adapter.takeProjectAndStats(project, projectStatsEnvelope);
+  private void renderProjectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStats) {
+    this.adapter.takeProjectAndStats(projectAndStats);
   }
 }

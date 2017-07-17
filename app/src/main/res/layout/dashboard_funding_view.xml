@@ -12,6 +12,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/grid_new_2"
     android:paddingStart="@dimen/grid_new_2"
+    android:paddingEnd="@dimen/grid_new_2"
     style="@style/Title3"
     tools:text="ayyyy it's shrek" />
 

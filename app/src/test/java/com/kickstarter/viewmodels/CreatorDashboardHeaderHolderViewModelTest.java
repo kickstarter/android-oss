@@ -41,7 +41,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
 
     setUpEnvironment(environment());
-    this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
+    this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
     this.projectBackersCountText.assertValues("10");
   }
 
@@ -51,7 +51,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
 
     setUpEnvironment(environment());
-    this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
+    this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
     this.projectNameTextViewText.assertValues("somebody once told me");
   }
 
@@ -61,7 +61,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final Project project = ProjectFactory.project();
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
 
-    this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
+    this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
     final String percentageFundedOutput = NumberUtils.flooredPercentage(project.percentageFunded());
     this.percentageFunded.assertValues(percentageFundedOutput);
   }
@@ -72,7 +72,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
 
     setUpEnvironment(environment());
-    this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
+    this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
     this.vm.inputs.projectViewClicked();
     this.startProjectActivity.assertValues(Pair.create(project, RefTag.dashboard()));
   }
@@ -84,7 +84,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
     final int deadlineVal = ProjectUtils.deadlineCountdownValue(project);
 
-    this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
+    this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
     this.timeRemainingText.assertValues(NumberUtils.format(deadlineVal));
   }
 }

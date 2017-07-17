@@ -2,10 +2,12 @@ package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.kickstarter.R;
+import com.kickstarter.ui.adapters.CreatorDashboardRewardStatsAdapter;
 import com.kickstarter.viewmodels.CreatorDashboardRewardStatsHolderViewModel;
 
 import butterknife.Bind;
@@ -17,11 +19,13 @@ public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
 
   public CreatorDashboardRewardStatsViewHolder(final @NonNull View view) {
     super(view);
-    final CreatorDashboardRewardStatsHolderViewModel.ViewModel viewModel;
-    viewModel = new CreatorDashboardRewardStatsHolderViewModel.ViewModel(environment());
+    final CreatorDashboardRewardStatsHolderViewModel.ViewModel viewModel = new CreatorDashboardRewardStatsHolderViewModel.ViewModel(environment());
     ButterKnife.bind(this, view);
 
-
+    final CreatorDashboardRewardStatsAdapter rewardStatsAdapter = new CreatorDashboardRewardStatsAdapter();
+    this.creatorDashboardRewardStatsRecyclerView.setAdapter(rewardStatsAdapter);
+    final LinearLayoutManager layoutManager = new LinearLayoutManager(context());
+    creatorDashboardRewardStatsRecyclerView.setLayoutManager(layoutManager);
   }
 
   @Override

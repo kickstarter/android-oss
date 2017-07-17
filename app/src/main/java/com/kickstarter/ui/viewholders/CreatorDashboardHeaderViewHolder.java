@@ -48,43 +48,43 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   public CreatorDashboardHeaderViewHolder(final @NonNull View view) {
     super(view);
 
-    viewModel = new CreatorDashboardHeaderHolderViewModel.ViewModel(environment());
+    this.viewModel = new CreatorDashboardHeaderHolderViewModel.ViewModel(environment());
     ButterKnife.bind(this, view);
 
     this.ksCurrency = this.environment().ksCurrency();
     this.ksString = this.environment().ksString();
 
-    viewModel.outputs.currentProject()
+    this.viewModel.outputs.currentProject()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setTimeRemainingTextTextView);
 
-    viewModel.outputs.currentProject()
+    this.viewModel.outputs.currentProject()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setPledgedOfGoalString);
 
-    viewModel.outputs.percentageFunded()
+    this.viewModel.outputs.percentageFunded()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(percentTextView::setText);
 
-    viewModel.outputs.projectBackersCountText()
+    this.viewModel.outputs.projectBackersCountText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(backerCountTextView::setText);
 
-    viewModel.outputs.projectNameTextViewText()
+    this.viewModel.outputs.projectNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(projectNameTextView::setText);
 
-    viewModel.outputs.timeRemainingText()
+    this.viewModel.outputs.timeRemainingText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(timeRemainingTextView::setText);
 
-    viewModel.outputs.startProjectActivity()
+    this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
@@ -99,19 +99,19 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   public void bindData(final @Nullable Object data) throws Exception {
     // coerce to projectstats and project
     final Pair<Project, ProjectStatsEnvelope> projectAndProjectStats = requireNonNull((Pair<Project, ProjectStatsEnvelope>) data);
-    viewModel.inputs.projectAndStats(projectAndProjectStats.first, projectAndProjectStats.second);
+    this.viewModel.inputs.projectAndStats(projectAndProjectStats.first, projectAndProjectStats.second);
   }
 
   private void setPledgedOfGoalString(final @NonNull Project currentProject) {
     final String goalString = ksCurrency.format(currentProject.pledged(), currentProject, false, true, RoundingMode.DOWN);
-    amountRaisedTextView.setText(goalString);
+    this.amountRaisedTextView.setText(goalString);
 
     final String goalText = ksString.format(this.pledgedOfGoalString, "goal", goalString);
-    fundingTextTextView.setText(goalText);
+    this.fundingTextTextView.setText(goalText);
   }
 
   private void setTimeRemainingTextTextView(final @NonNull Project currentProject) {
-    timeRemainingTextTextView.setText(ProjectUtils.deadlineCountdownDetail(currentProject, this.context(), ksString));
+    this.timeRemainingTextTextView.setText(ProjectUtils.deadlineCountdownDetail(currentProject, this.context(), ksString));
   }
 
   private void startProjectActivity(final @NonNull Project project, final @NonNull RefTag refTag) {

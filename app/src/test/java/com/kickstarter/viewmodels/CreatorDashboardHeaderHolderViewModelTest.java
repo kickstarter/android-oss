@@ -28,6 +28,11 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardHeaderHolderViewModel.ViewModel(environment);
+    this.vm.outputs.projectBackersCountText().subscribe(this.projectBackersCountText);
+    this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
+    this.vm.outputs.percentageFunded().subscribe(this.percentageFunded);
+    this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
+    this.vm.outputs.timeRemainingText().subscribe(this.timeRemainingText);
   }
 
   @Test
@@ -36,8 +41,6 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
 
     setUpEnvironment(environment());
-    this.vm = new CreatorDashboardHeaderHolderViewModel.ViewModel(environment());
-    this.vm.outputs.projectBackersCountText().subscribe(this.projectBackersCountText);
     this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
     this.projectBackersCountText.assertValues("10");
   }
@@ -48,8 +51,6 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
 
     setUpEnvironment(environment());
-    this.vm = new CreatorDashboardHeaderHolderViewModel.ViewModel(environment());
-    this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
     this.projectNameTextViewText.assertValues("somebody once told me");
   }
@@ -60,7 +61,6 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final Project project = ProjectFactory.project();
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
 
-    this.vm.outputs.percentageFunded().subscribe(this.percentageFunded);
     this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
     final String percentageFundedOutput = NumberUtils.flooredPercentage(project.percentageFunded());
     this.percentageFunded.assertValues(percentageFundedOutput);
@@ -72,7 +72,6 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
 
     setUpEnvironment(environment());
-    this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
     this.vm.inputs.projectViewClicked();
     this.startProjectActivity.assertValues(Pair.create(project, RefTag.dashboard()));
@@ -85,7 +84,6 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
     final int deadlineVal = ProjectUtils.deadlineCountdownValue(project);
 
-    this.vm.outputs.timeRemainingText().subscribe(this.timeRemainingText);
     this.vm.inputs.projectAndStats(project, projectStatsEnvelope);
     this.timeRemainingText.assertValues(NumberUtils.format(deadlineVal));
   }

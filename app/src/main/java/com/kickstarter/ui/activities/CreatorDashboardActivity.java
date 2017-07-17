@@ -36,16 +36,16 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     ButterKnife.bind(this);
 
     this.adapter = new CreatorDashboardAdapter();
-    creatorDashboardRecyclerView.setAdapter(this.adapter);
-    creatorDashboardRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    this.creatorDashboardRecyclerView.setAdapter(this.adapter);
+    this.creatorDashboardRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-    viewModel.outputs.projectAndStats()
+    this.viewModel.outputs.projectAndStats()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ps -> this.renderProjectAndStats(ps.first, ps.second));
 
-    viewModel.outputs.startProjectActivity()
+    this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
@@ -59,6 +59,6 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
   }
 
   private void renderProjectAndStats(final @NonNull Project project, final @NonNull ProjectStatsEnvelope projectStatsEnvelope) {
-    adapter.takeProjectAndStats(project, projectStatsEnvelope);
+    this.adapter.takeProjectAndStats(project, projectStatsEnvelope);
   }
 }

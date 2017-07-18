@@ -78,7 +78,7 @@ public interface MessageThreadsViewModel {
       this.currentUser = environment.currentUser();
 
       final Observable<User> freshUser = intent()
-        .compose(takeWhen(this.onResume))
+        .compose(takeWhen(Observable.merge(this.onResume, this.refresh)))
         .switchMap(__ -> this.client.fetchCurrentUser())
         .retry(2)
         .compose(neverError());

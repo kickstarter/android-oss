@@ -18,7 +18,6 @@ import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
@@ -39,8 +38,10 @@ import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
+import com.kickstarter.ui.data.Mailbox;
 import com.kickstarter.ui.data.MessageSubject;
 
 import java.util.Arrays;
@@ -247,15 +248,17 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads() {
-    return fetchMessageThreads(null);
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @NonNull Mailbox mailbox) {
+    return this.fetchMessageThreads(null, mailbox);
   }
 
   @Override
-  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project) {
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project,
+    final @NonNull Mailbox mailbox) {
+
     final Observable<Response<MessageThreadsEnvelope>> apiResponse = project == null
-      ? service.messageThreads()
-      : service.messageThreads(project.id());
+      ? this.service.messageThreads(mailbox.getType())
+      : this.service.messageThreads(project.id(), mailbox.getType());
 
     return apiResponse
       .lift(apiErrorOperator())

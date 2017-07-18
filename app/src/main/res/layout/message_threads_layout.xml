@@ -4,7 +4,6 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/message_threads_coordinator_layout"
-  android:focusable="true"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:fitsSystemWindows="true">
@@ -26,6 +25,8 @@
 
       <LinearLayout
         android:id="@+id/mailbox_and_unread_layout"
+        android:focusable="true"
+        android:importantForAccessibility="yes"
         android:clipToPadding="false"
         android:paddingTop="@dimen/grid_new_9"
         android:paddingStart="@dimen/grid_new_3"

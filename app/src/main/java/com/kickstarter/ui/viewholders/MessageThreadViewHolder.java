@@ -53,6 +53,7 @@ public final class MessageThreadViewHolder extends KSViewHolder {
   protected @BindDrawable(R.drawable.message_thread_click_indicator) Drawable messageThreadClickIndicator;
 
   protected @BindString(R.string.font_family_sans_serif_medium) String fontFamilyMediumString;
+  protected @BindString(R.string.unread_count_unread) String unreadCountUnreadString;
 
   private KSString ksString;
 
@@ -177,5 +178,9 @@ public final class MessageThreadViewHolder extends KSViewHolder {
 
   private void setUnreadCountTextView(final @NonNull String unreadCount) {
     this.unreadCountTextView.setText(StringUtils.wrapInParentheses(unreadCount));
+
+    this.unreadCountTextView.setContentDescription(
+      this.ksString.format(this.unreadCountUnreadString, "unread_count", unreadCount)
+    );
   }
 }

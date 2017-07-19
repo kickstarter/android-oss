@@ -33,6 +33,7 @@ import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.MessagesViewModel;
 
 import butterknife.Bind;
+import butterknife.BindDimen;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -58,6 +59,8 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.send_message_button) Button sendMessageButton;
   protected @Bind(R.id.messages_view_pledge_button) Button viewPledgeButton;
+
+  protected @BindDimen(R.dimen.grid_new_10) int gridNew10Dimen;
 
   protected @BindString(R.string.project_creator_by_creator) String byCreatorString;
   protected @BindString(R.string.Message_user_name) String messageUserNameString;
@@ -88,6 +91,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.viewModel.inputs::messageEditTextIsFocused);
+
+    this.appBarLayout.addOnOffsetChangedListener((layout, offset) -> {
+      this.viewModel.inputs.appBarTotalScrollRange(layout.getTotalScrollRange());
+      this.viewModel.inputs.appBarOffset(offset);
+    });
 
     this.viewModel.outputs.backButtonIsGone()
       .compose(bindToLifecycle())
@@ -145,6 +153,16 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.projectNameToolbarTextView::setText);
+
+    this.viewModel.outputs.recyclerViewBottomPadding()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setRecyclerViewBottomPadding);
+
+    this.viewModel.outputs.recyclerViewInitialBottomPadding()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setRecyclerViewBottomPadding);
 
     this.viewModel.outputs.scrollRecyclerViewToBottom()
       .compose(bindToLifecycle())
@@ -233,6 +251,10 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
 
   private void setMessageEditTextHint(final @NonNull String name) {
     this.messageEditText.setHint(this.ksString.format(this.messageUserNameString, "user_name", name));
+  }
+
+  private void setRecyclerViewBottomPadding(final int bottomPadding) {
+    this.recyclerView.setPadding(0, 0, 0, bottomPadding + this.gridNew10Dimen);
   }
 
   private void startViewPledgeActivity(final @NonNull Project project) {

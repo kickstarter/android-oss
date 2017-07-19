@@ -9,6 +9,7 @@ import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
@@ -44,6 +45,12 @@ import static com.kickstarter.libs.rx.transformers.Transformers.values;
 public interface MessagesViewModel {
 
   interface Inputs {
+    /** Call with the app bar's vertical offset value. */
+    void appBarOffset(final int verticalOffset);
+
+    /** Call with the app bar's total scroll range. */
+    void appBarTotalScrollRange(final int totalScrollRange);
+
     /** Call when the back or close button has been clicked. */
     void backOrCloseButtonClicked();
 
@@ -93,6 +100,12 @@ public interface MessagesViewModel {
 
     /** Emits the project name to be displayed in the toolbar. */
     Observable<String> projectNameToolbarTextViewText();
+
+    /** Emits the bottom padding for the recycler view. */
+    Observable<Integer> recyclerViewBottomPadding();
+
+    /** Emits the initial bottom padding for the recycler view to account for the app bar scroll range. */
+    Observable<Integer> recyclerViewInitialBottomPadding();
 
     /** Emits when the RecyclerView should be scrolled to the bottom. */
     Observable<Void> scrollRecyclerViewToBottom();
@@ -319,6 +332,13 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackViewedMessageThread);
 
+      this.recyclerViewInitialBottomPadding = this.appBarTotalScrollRange.take(1);
+      this.recyclerViewBottomPadding = this.appBarOffset
+        .filter(IntegerUtils::isNonZero)
+        .compose(ignoreValues())
+        .map(__ -> 0)
+        .take(1);
+
       Observable.combineLatest(project, koalaContext, Pair::create)
         .compose(takeWhen(messageSent))
         .compose(bindToLifecycle())
@@ -342,6 +362,8 @@ public interface MessagesViewModel {
       );
     }
 
+    private final PublishSubject<Integer> appBarOffset = PublishSubject.create();
+    private final PublishSubject<Integer> appBarTotalScrollRange = PublishSubject.create();
     private final PublishSubject<Void> backOrCloseButtonClicked = PublishSubject.create();
     private final PublishSubject<String> messageEditTextChanged = PublishSubject.create();
     private final PublishSubject<Boolean> messageEditTextIsFocused = PublishSubject.create();
@@ -359,6 +381,8 @@ public interface MessagesViewModel {
     private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final Observable<String> projectNameToolbarTextViewText;
+    private final Observable<Integer> recyclerViewBottomPadding;
+    private final Observable<Integer> recyclerViewInitialBottomPadding;
     private final Observable<Void> scrollRecyclerViewToBottom;
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<Boolean> sendMessageButtonIsEnabled;
@@ -371,6 +395,12 @@ public interface MessagesViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
+    @Override public void appBarOffset(final int verticalOffset) {
+      this.appBarOffset.onNext(verticalOffset);
+    }
+    @Override public void appBarTotalScrollRange(final int totalScrollRange) {
+      this.appBarTotalScrollRange.onNext(totalScrollRange);
+    }
     @Override public void backOrCloseButtonClicked() {
       this.backOrCloseButtonClicked.onNext(null);
     }
@@ -419,6 +449,12 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<String> projectNameToolbarTextViewText() {
       return this.projectNameToolbarTextViewText;
+    }
+    @Override public @NonNull Observable<Integer> recyclerViewBottomPadding() {
+      return this.recyclerViewBottomPadding;
+    }
+    @Override public @NonNull Observable<Integer> recyclerViewInitialBottomPadding() {
+      return this.recyclerViewInitialBottomPadding;
     }
     @Override public @NonNull Observable<Void> scrollRecyclerViewToBottom() {
       return this.scrollRecyclerViewToBottom;

@@ -66,12 +66,10 @@
   <android.support.v7.widget.RecyclerView
     android:id="@+id/messages_recycler_view"
     android:background="@color/white"
-    android:clipChildren="false"
-    android:clipToPadding="false"
     android:scrollbars="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/grid_new_10"
+    android:clipToPadding="false"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:ignore="RtlSymmetry" />
 

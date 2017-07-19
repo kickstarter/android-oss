@@ -102,7 +102,7 @@ public interface MessagesViewModel {
     Observable<String> projectNameToolbarTextViewText();
 
     /** Emits the bottom padding for the recycler view. */
-    Observable<Integer> recyclerViewBottomPadding();
+    Observable<Void> recyclerViewDefaultBottomPadding();
 
     /** Emits the initial bottom padding for the recycler view to account for the app bar scroll range. */
     Observable<Integer> recyclerViewInitialBottomPadding();
@@ -332,11 +332,13 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackViewedMessageThread);
 
+      // Set only the initial padding once to counteract the appbar offset.
       this.recyclerViewInitialBottomPadding = this.appBarTotalScrollRange.take(1);
-      this.recyclerViewBottomPadding = this.appBarOffset
+
+      // Take only the first instance in which the offset changes.
+      this.recyclerViewDefaultBottomPadding = this.appBarOffset
         .filter(IntegerUtils::isNonZero)
         .compose(ignoreValues())
-        .map(__ -> 0)
         .take(1);
 
       Observable.combineLatest(project, koalaContext, Pair::create)
@@ -381,7 +383,7 @@ public interface MessagesViewModel {
     private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final Observable<String> projectNameToolbarTextViewText;
-    private final Observable<Integer> recyclerViewBottomPadding;
+    private final Observable<Void> recyclerViewDefaultBottomPadding;
     private final Observable<Integer> recyclerViewInitialBottomPadding;
     private final Observable<Void> scrollRecyclerViewToBottom;
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
@@ -450,8 +452,8 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<String> projectNameToolbarTextViewText() {
       return this.projectNameToolbarTextViewText;
     }
-    @Override public @NonNull Observable<Integer> recyclerViewBottomPadding() {
-      return this.recyclerViewBottomPadding;
+    @Override public @NonNull Observable<Void> recyclerViewDefaultBottomPadding() {
+      return this.recyclerViewDefaultBottomPadding;
     }
     @Override public @NonNull Observable<Integer> recyclerViewInitialBottomPadding() {
       return this.recyclerViewInitialBottomPadding;

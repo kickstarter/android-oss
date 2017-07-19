@@ -154,15 +154,15 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(this.projectNameToolbarTextView::setText);
 
-    this.viewModel.outputs.recyclerViewBottomPadding()
+    this.viewModel.outputs.recyclerViewDefaultBottomPadding()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::setRecyclerViewBottomPadding);
+      .subscribe(__ -> this.setDefaultRecyclerViewBottomPadding());
 
     this.viewModel.outputs.recyclerViewInitialBottomPadding()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::setRecyclerViewBottomPadding);
+      .subscribe(this::setInitialRecyclerViewBottomPadding);
 
     this.viewModel.outputs.scrollRecyclerViewToBottom()
       .compose(bindToLifecycle())
@@ -249,13 +249,17 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     );
   }
 
-  private void setMessageEditTextHint(final @NonNull String name) {
-    this.messageEditText.setHint(this.ksString.format(this.messageUserNameString, "user_name", name));
+  private void setDefaultRecyclerViewBottomPadding() {
+    this.recyclerView.setPadding(0, 0, 0, this.messageReplyLayoutHeightDimen);
   }
 
-  private void setRecyclerViewBottomPadding(final int bottomPadding) {
+  private void setInitialRecyclerViewBottomPadding(final int bottomPadding) {
     // Default padding is the height of the reply layout
     this.recyclerView.setPadding(0, 0, 0, bottomPadding + this.messageReplyLayoutHeightDimen);
+  }
+
+  private void setMessageEditTextHint(final @NonNull String name) {
+    this.messageEditText.setHint(this.ksString.format(this.messageUserNameString, "user_name", name));
   }
 
   private void startViewPledgeActivity(final @NonNull Project project) {

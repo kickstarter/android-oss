@@ -47,9 +47,10 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameToolbarTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Void> recyclerViewDefaultBottomPadding = new TestSubscriber<>();
+  private final TestSubscriber<Integer> recyclerViewInitialBottomPadding = new TestSubscriber<>();
   private final TestSubscriber<Void> scrollRecyclerViewToBottom = new TestSubscriber<>();
   private final TestSubscriber<Boolean> sendMessageButtonIsEnabled = new TestSubscriber<>();
-  private final TestSubscriber<Message> sentMessage = new TestSubscriber<>();
   private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
   private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
   private final TestSubscriber<Project> startViewPledgeActivity = new TestSubscriber<>();
@@ -70,6 +71,8 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.projectNameToolbarTextViewText().subscribe(this.projectNameToolbarTextViewText);
+    this.vm.outputs.recyclerViewDefaultBottomPadding().subscribe(this.recyclerViewDefaultBottomPadding);
+    this.vm.outputs.recyclerViewInitialBottomPadding().subscribe(this.recyclerViewInitialBottomPadding);
     this.vm.outputs.scrollRecyclerViewToBottom().subscribe(this.scrollRecyclerViewToBottom);
     this.vm.outputs.sendMessageButtonIsEnabled().subscribe(this.sendMessageButtonIsEnabled);
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
@@ -290,6 +293,40 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.messages.assertNoValues();
     this.participantNameTextViewText.assertValues(project.creator().name());
     this.backingAndProject.assertValues(Pair.create(backing, project));
+  }
+
+  @Test
+  public void testRecyclerViewBottomPadding() {
+    final int appBarTotalScrolLRange = 327;
+
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
+
+    // Start the view model with a message thread.
+    this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
+
+    // View initially loaded with a 0 (expanded) offset.
+    this.vm.inputs.appBarOffset(0);
+    this.vm.inputs.appBarTotalScrollRange(appBarTotalScrolLRange);
+
+    // Only initial bottom padding emits.
+    this.recyclerViewDefaultBottomPadding.assertNoValues();
+    this.recyclerViewInitialBottomPadding.assertValues(appBarTotalScrolLRange);
+
+    // User scrolls.
+    this.vm.inputs.appBarOffset(-30);
+    this.vm.inputs.appBarTotalScrollRange(appBarTotalScrolLRange);
+
+    // Default padding emits, initial padding does not emit again.
+    this.recyclerViewDefaultBottomPadding.assertValueCount(1);
+    this.recyclerViewInitialBottomPadding.assertValues(appBarTotalScrolLRange);
+
+    // User scrolls.
+    this.vm.inputs.appBarOffset(20);
+    this.vm.inputs.appBarTotalScrollRange(appBarTotalScrolLRange);
+
+    // Padding does not change.
+    this.recyclerViewDefaultBottomPadding.assertValueCount(1);
+    this.recyclerViewInitialBottomPadding.assertValues(appBarTotalScrolLRange);
   }
 
   @Test

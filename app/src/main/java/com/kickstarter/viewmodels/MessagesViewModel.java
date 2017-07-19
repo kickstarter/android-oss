@@ -389,7 +389,7 @@ public interface MessagesViewModel {
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<Boolean> sendMessageButtonIsEnabled;
     private final Observable<String> setMessageEditText;
-    private final BehaviorSubject<Project> startViewPledgeActivity = BehaviorSubject.create();
+    private final PublishSubject<Project> startViewPledgeActivity = PublishSubject.create();
     private final BehaviorSubject<Void> successfullyMarkedAsRead = BehaviorSubject.create();
     private final Observable<Boolean> toolbarIsExpanded;
     private final BehaviorSubject<Boolean> viewPledgeButtonIsGone = BehaviorSubject.create();

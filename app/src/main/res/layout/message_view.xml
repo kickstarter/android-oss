@@ -31,7 +31,7 @@
       android:layout_marginStart="@dimen/grid_new_4"
       android:layout_marginEnd="@dimen/grid_new_7"
       android:layout_marginTop="@dimen/grid_new_2"
-      android:layout_marginBottom="@dimen/grid_new_1"
+      android:layout_marginBottom="@dimen/grid_new_3"
       app:cardCornerRadius="@dimen/card_corner_radius"
       app:cardElevation="0dp">
 

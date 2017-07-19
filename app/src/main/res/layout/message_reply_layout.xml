@@ -6,7 +6,7 @@
   android:layout_gravity="bottom"
   android:background="@color/white"
   android:layout_width="match_parent"
-  android:layout_height="@dimen/grid_new_10">
+  android:layout_height="@dimen/message_reply_layout_height">
 
   <View
     android:id="@+id/divider_view"

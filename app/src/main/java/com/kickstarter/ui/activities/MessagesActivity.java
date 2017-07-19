@@ -60,7 +60,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.send_message_button) Button sendMessageButton;
   protected @Bind(R.id.messages_view_pledge_button) Button viewPledgeButton;
 
-  protected @BindDimen(R.dimen.grid_new_10) int gridNew10Dimen;
+  protected @BindDimen(R.dimen.message_reply_layout_height) int messageReplyLayoutHeightDimen;
 
   protected @BindString(R.string.project_creator_by_creator) String byCreatorString;
   protected @BindString(R.string.Message_user_name) String messageUserNameString;
@@ -254,7 +254,8 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   }
 
   private void setRecyclerViewBottomPadding(final int bottomPadding) {
-    this.recyclerView.setPadding(0, 0, 0, bottomPadding + this.gridNew10Dimen);
+    // Default padding is the height of the reply layout
+    this.recyclerView.setPadding(0, 0, 0, bottomPadding + this.messageReplyLayoutHeightDimen);
   }
 
   private void startViewPledgeActivity(final @NonNull Project project) {

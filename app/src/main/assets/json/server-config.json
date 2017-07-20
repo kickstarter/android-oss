@@ -2097,7 +2097,7 @@
       "Manage_your_reward": "Belohnung verwalten",
       "Message_backer": "Nachricht an Unterstützer senden",
       "Message_creator": "Nachricht an Projektgründer senden",
-      "Message_user_name": "Message %{user_name}…",
+      "Message_user_name": "Nachricht senden an %{user_name}…",
       "minutes": {
         "zero": "Min",
         "one": "Min",
@@ -4001,7 +4001,7 @@
       "Manage_your_reward": "Administra tu recompensa",
       "Message_backer": "Enviar mensaje a patrocinador",
       "Message_creator": "Enviar mensaje al creador",
-      "Message_user_name": "Message %{user_name}…",
+      "Message_user_name": "Mensaje a %{user_name}…",
       "minutes": {
         "zero": "minutos",
         "one": "minuto",
@@ -5905,7 +5905,7 @@
       "Manage_your_reward": "Gérer votre récompense",
       "Message_backer": "Envoyer un message au contributeur",
       "Message_creator": "Envoyer un message au créateur",
-      "Message_user_name": "Message %{user_name}…",
+      "Message_user_name": "Envoyer un message à %{user_name}",
       "minutes": {
         "zero": "minutes",
         "one": "minute",
@@ -6066,7 +6066,7 @@
       "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "Ce compte Facebook est déjà relié à un autre utilisateur Kickstarter.",
       "Time_left_left": "Plus que %{time_left}",
       "To_access_all_your_favorite_categories_tap_the_explore_dropdown": "Pour retrouver toutes vos catégories préférées, cliquez sur le menu déroulant Découvrir dans l'application.",
-      "Toggle_saving_this_project": "Toggle saving this project",
+      "Toggle_saving_this_project": "Enregistrer / ne pas enregistrer ce projet",
       "To_read_this_project_update_you_must_be_a_backer": "Seuls les contributeurs ont accès à cette actu de projet. Connectez-vous ou inscrivez-vous pour continuer.",
       "Total_pledged": "Total engagé",
       "updates_count_updates": {

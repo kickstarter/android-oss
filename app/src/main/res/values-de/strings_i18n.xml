@@ -167,7 +167,7 @@ Unterstützer</string>
   <string name="Manage_your_reward" formatted="false">Belohnung verwalten</string>
   <string name="Message_backer" formatted="false">Nachricht an Unterstützer senden</string>
   <string name="Message_creator" formatted="false">Nachricht an Projektgründer senden</string>
-  <string name="Message_user_name" formatted="false">Message %{user_name}…</string>
+  <string name="Message_user_name" formatted="false">Nachricht senden an %{user_name}…</string>
   <string name="No_Results" formatted="false">Keine Ergebnisse</string>
   <string name="No_comments_yet" formatted="false">Bisher noch keine Kommentare.</string>
   <string name="No_messages" formatted="false">Keine Nachrichten</string>

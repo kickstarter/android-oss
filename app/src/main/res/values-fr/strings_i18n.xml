@@ -167,7 +167,7 @@ contributeurs</string>
   <string name="Manage_your_reward" formatted="false">Gérer votre récompense</string>
   <string name="Message_backer" formatted="false">Envoyer un message au contributeur</string>
   <string name="Message_creator" formatted="false">Envoyer un message au créateur</string>
-  <string name="Message_user_name" formatted="false">Message %{user_name}…</string>
+  <string name="Message_user_name" formatted="false">Envoyer un message à %{user_name}</string>
   <string name="No_Results" formatted="false">Pas de résultats</string>
   <string name="No_comments_yet" formatted="false">Pas de commentaires.</string>
   <string name="No_messages" formatted="false">Pas de messages</string>
@@ -291,7 +291,7 @@ n\'ont rien soutenu.</string>
   <string name="Time_left_left" formatted="false">Plus que %{time_left}</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">Pour retrouver toutes vos catégories préférées, cliquez sur le menu déroulant Découvrir dans l\'application.</string>
   <string name="To_read_this_project_update_you_must_be_a_backer" formatted="false">Seuls les contributeurs ont accès à cette actu de projet. Connectez-vous ou inscrivez-vous pour continuer.</string>
-  <string name="Toggle_saving_this_project" formatted="false">Toggle saving this project</string>
+  <string name="Toggle_saving_this_project" formatted="false">Enregistrer / ne pas enregistrer ce projet</string>
   <string name="Total_pledged" formatted="false">Total engagé</string>
   <string name="Unfollow_friend_name" formatted="false">Ne plus suivre %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Désabonnement des actus de %{friend_name}.</string>

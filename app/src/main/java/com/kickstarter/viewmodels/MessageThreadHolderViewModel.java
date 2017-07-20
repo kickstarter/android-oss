@@ -76,7 +76,6 @@ public interface MessageThreadHolderViewModel {
 
       // Store the correct initial hasUnreadMessages value.
       this.messageThread
-        .take(1)
         .compose(observeForUI())
         .subscribe(thread -> setHasUnreadMessagesPreference(thread, this.sharedPreferences));
 

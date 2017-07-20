@@ -77,8 +77,10 @@ public interface MessageThreadsViewModel {
       this.client = environment.apiClient();
       this.currentUser = environment.currentUser();
 
+      final Observable<Void> startOverWith = Observable.merge(this.onResume, this.refresh);
+
       final Observable<User> freshUser = intent()
-        .compose(takeWhen(Observable.merge(this.onResume, this.refresh)))
+        .compose(takeWhen(startOverWith))
         .switchMap(__ -> this.client.fetchCurrentUser())
         .retry(2)
         .compose(neverError());
@@ -94,7 +96,7 @@ public interface MessageThreadsViewModel {
       final ApiPaginator<MessageThread, MessageThreadsEnvelope, Void> paginator =
         ApiPaginator.<MessageThread, MessageThreadsEnvelope, Void>builder()
           .nextPage(this.nextPage)
-          .startOverWith(this.refresh)
+          .startOverWith(startOverWith)
           .envelopeToListOfData(MessageThreadsEnvelope::messageThreads)
           .envelopeToMoreUrl(env -> env.urls().api().moreMessageThreads())
           .loadWithParams(__ -> this.client.fetchMessageThreads(Mailbox.INBOX))

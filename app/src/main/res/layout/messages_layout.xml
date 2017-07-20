@@ -12,7 +12,6 @@
     android:id="@+id/messages_app_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:expanded="true"
     app:elevation="0dp">
 
     <android.support.design.widget.CollapsingToolbarLayout

@@ -19,7 +19,8 @@ public final class MessageThreadsAdapter extends KSAdapter {
   }
 
   public void messageThreads(final @NonNull List<MessageThread> messageThreads) {
-    setSection(0, messageThreads);
+    clearSections();
+    addSection(messageThreads);
     notifyDataSetChanged();
   }
 

@@ -61,10 +61,13 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.intent(new Intent());
-    this.vm.inputs.onResume();
 
+    this.vm.intent(new Intent());
     this.messageThreads.assertValueCount(1);
+
+    this.vm.inputs.onResume();
+    this.messageThreads.assertValueCount(2);
+
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_INBOX);
   }
 

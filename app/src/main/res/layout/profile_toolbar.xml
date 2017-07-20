@@ -30,7 +30,7 @@
       android:id="@+id/messages_button"
       android:focusable="true"
       android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
+      android:contentDescription="@string/accessibility_dashboard_buttons_messages"
       android:text="@string/mail_icon" />
 
   </RelativeLayout>

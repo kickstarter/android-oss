@@ -41,18 +41,21 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> backingInfoViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> closeButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<Void> goBack = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Message, Integer>> messageAndPosition = new TestSubscriber<>();
   private final TestSubscriber<String> messageEditTextHint = new TestSubscriber<>();
   private final TestSubscriber<Void> messageEditTextShouldRequestFocus = new TestSubscriber<>();
   private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameToolbarTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Void> recyclerViewDefaultBottomPadding = new TestSubscriber<>();
+  private final TestSubscriber<Integer> recyclerViewInitialBottomPadding = new TestSubscriber<>();
+  private final TestSubscriber<Void> scrollRecyclerViewToBottom = new TestSubscriber<>();
   private final TestSubscriber<Boolean> sendMessageButtonIsEnabled = new TestSubscriber<>();
   private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
   private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
   private final TestSubscriber<Project> startViewPledgeActivity = new TestSubscriber<>();
   private final TestSubscriber<Void> successfullyMarkedAsRead = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> toolbarIsExpanded = new TestSubscriber<>();
   private final TestSubscriber<Boolean> viewPledgeButtonIsGone = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
@@ -62,18 +65,21 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.backingInfoViewIsGone().subscribe(this.backingInfoViewIsGone);
     this.vm.outputs.closeButtonIsGone().subscribe(this.closeButtonIsGone);
     this.vm.outputs.goBack().subscribe(this.goBack);
-    this.vm.outputs.messageAndPosition().subscribe(this.messageAndPosition);
     this.vm.outputs.messageEditTextHint().subscribe(this.messageEditTextHint);
     this.vm.outputs.messageEditTextShouldRequestFocus().subscribe(this.messageEditTextShouldRequestFocus);
     this.vm.outputs.messages().subscribe(this.messages);
     this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.projectNameToolbarTextViewText().subscribe(this.projectNameToolbarTextViewText);
+    this.vm.outputs.recyclerViewDefaultBottomPadding().subscribe(this.recyclerViewDefaultBottomPadding);
+    this.vm.outputs.recyclerViewInitialBottomPadding().subscribe(this.recyclerViewInitialBottomPadding);
+    this.vm.outputs.scrollRecyclerViewToBottom().subscribe(this.scrollRecyclerViewToBottom);
     this.vm.outputs.sendMessageButtonIsEnabled().subscribe(this.sendMessageButtonIsEnabled);
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
     this.vm.outputs.startViewPledgeActivity().subscribe(this.startViewPledgeActivity);
     this.vm.outputs.successfullyMarkedAsRead().subscribe(this.successfullyMarkedAsRead);
+    this.vm.outputs.toolbarIsExpanded().subscribe(this.toolbarIsExpanded);
     this.vm.outputs.viewPledgeButtonIsGone().subscribe(this.viewPledgeButtonIsGone);
   }
 
@@ -290,6 +296,40 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testRecyclerViewBottomPadding() {
+    final int appBarTotalScrolLRange = 327;
+
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
+
+    // Start the view model with a message thread.
+    this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
+
+    // View initially loaded with a 0 (expanded) offset.
+    this.vm.inputs.appBarOffset(0);
+    this.vm.inputs.appBarTotalScrollRange(appBarTotalScrolLRange);
+
+    // Only initial bottom padding emits.
+    this.recyclerViewDefaultBottomPadding.assertNoValues();
+    this.recyclerViewInitialBottomPadding.assertValues(appBarTotalScrolLRange);
+
+    // User scrolls.
+    this.vm.inputs.appBarOffset(-30);
+    this.vm.inputs.appBarTotalScrollRange(appBarTotalScrolLRange);
+
+    // Default padding emits, initial padding does not emit again.
+    this.recyclerViewDefaultBottomPadding.assertValueCount(1);
+    this.recyclerViewInitialBottomPadding.assertValues(appBarTotalScrolLRange);
+
+    // User scrolls.
+    this.vm.inputs.appBarOffset(20);
+    this.vm.inputs.appBarTotalScrollRange(appBarTotalScrolLRange);
+
+    // Padding does not change.
+    this.recyclerViewDefaultBottomPadding.assertValueCount(1);
+    this.recyclerViewInitialBottomPadding.assertValues(appBarTotalScrolLRange);
+  }
+
+  @Test
   public void testSendMessage_Error() {
     final MockApiClient apiClient = new MockApiClient() {
       @Override
@@ -312,7 +352,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Error toast is displayed, errored message body remains in edit text, no new message is emitted.
     this.showMessageErrorToast.assertValueCount(1);
     this.setMessageEditText.assertNoValues();
-    this.messageAndPosition.assertNoValues();
 
     // No sent message event tracked.
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
@@ -338,18 +377,17 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     // Initial messages emit.
     this.messages.assertValueCount(1);
-    this.messageAndPosition.assertNoValues();
 
     // Send a message successfully.
     this.vm.inputs.messageEditTextChanged("Salutations friend!");
     this.vm.inputs.sendMessageButtonClicked();
 
-    // Messages list does not emit again, only the new message and its position.
-    this.messages.assertValueCount(1);
-    this.messageAndPosition.assertValueCount(1);
+    // New message list emits.
+    this.messages.assertValueCount(2);
 
-    // Reply edit text should be cleared.
+    // Reply edit text should be cleared and view should be scrolled to new message.
     this.setMessageEditText.assertValues("");
+    this.scrollRecyclerViewToBottom.assertValueCount(1);
 
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD, KoalaEvent.SENT_MESSAGE);
   }
@@ -423,6 +461,60 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(messagesContextIntent(messageThread));
 
     this.successfullyMarkedAsRead.assertValueCount(1);
+  }
+
+  @Test
+  public void testToolbarIsExpanded_NoMessages() {
+    final Backing backing = BackingFactory.backing();
+
+    final MessageThreadEnvelope envelope = MessageThreadEnvelopeFactory.messageThreadEnvelope()
+      .toBuilder()
+      .messages(null)
+      .build();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
+        return Observable.just(envelope);
+      }
+    };
+
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(UserFactory.user())).build()
+    );
+
+    // Start the view model with a backing and project.
+    this.vm.intent(backerModalContextIntent(backing, ProjectFactory.project()));
+    this.vm.inputs.messageEditTextIsFocused(true);
+
+    // Toolbar stays expanded when keyboard opens and no messages.
+    this.toolbarIsExpanded.assertNoValues();
+  }
+
+  @Test
+  public void testToolbarIsExpanded_WithMessages() {
+    final Backing backing = BackingFactory.backing();
+
+    final MessageThreadEnvelope envelope = MessageThreadEnvelopeFactory.messageThreadEnvelope()
+      .toBuilder()
+      .messages(Collections.singletonList(MessageFactory.message()))
+      .build();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
+        return Observable.just(envelope);
+      }
+    };
+
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(UserFactory.user())).build()
+    );
+
+    // Start the view model with a backing and project.
+    this.vm.intent(backerModalContextIntent(backing, ProjectFactory.project()));
+    this.vm.inputs.messageEditTextIsFocused(true);
+
+    // Toolbar collapsed when keyboard opens and there are messages.
+    this.toolbarIsExpanded.assertValues(false);
   }
 
   @Test

@@ -16,6 +16,7 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.ui.activities.MessageThreadsActivity;
+import com.kickstarter.ui.data.Mailbox;
 
 import java.util.List;
 
@@ -77,7 +78,7 @@ public interface MessageThreadsViewModel {
       this.currentUser = environment.currentUser();
 
       final Observable<User> freshUser = intent()
-        .compose(takeWhen(this.onResume))
+        .compose(takeWhen(Observable.merge(this.onResume, this.refresh)))
         .switchMap(__ -> this.client.fetchCurrentUser())
         .retry(2)
         .compose(neverError());
@@ -96,7 +97,7 @@ public interface MessageThreadsViewModel {
           .startOverWith(this.refresh)
           .envelopeToListOfData(MessageThreadsEnvelope::messageThreads)
           .envelopeToMoreUrl(env -> env.urls().api().moreMessageThreads())
-          .loadWithParams(__ -> this.client.fetchMessageThreads())
+          .loadWithParams(__ -> this.client.fetchMessageThreads(Mailbox.INBOX))
           .loadWithPaginationPath(this.client::fetchMessageThreadsWithPaginationPath)
           .build();
 
@@ -131,6 +132,11 @@ public interface MessageThreadsViewModel {
       this.unreadMessagesCount = unreadMessagesCount
         .filter(ObjectUtils::isNotNull)
         .filter(IntegerUtils::isNonZero);
+
+      intent()
+        .take(1)
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.koala.trackViewedMailbox(Mailbox.INBOX, null));
     }
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();

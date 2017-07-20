@@ -9,6 +9,8 @@ import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.IntegerUtils;
+import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.StringUtils;
@@ -36,17 +38,27 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 import static com.kickstarter.libs.rx.transformers.Transformers.errors;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 public interface MessagesViewModel {
 
   interface Inputs {
+    /** Call with the app bar's vertical offset value. */
+    void appBarOffset(final int verticalOffset);
+
+    /** Call with the app bar's total scroll range. */
+    void appBarTotalScrollRange(final int totalScrollRange);
+
     /** Call when the back or close button has been clicked. */
     void backOrCloseButtonClicked();
 
     /** Call when the message edit text changes. */
     void messageEditTextChanged(String messageBody);
+
+    /** Call when the message edit text is in focus. */
+    void messageEditTextIsFocused(boolean isFocused);
 
     /** Call when the send message button has been clicked. */
     void sendMessageButtonClicked();
@@ -71,9 +83,6 @@ public interface MessagesViewModel {
     /** Emits when we should navigate back. */
     Observable<Void> goBack();
 
-    /** Emits the message and its position in the list. */
-    Observable<Pair<Message, Integer>> messageAndPosition();
-
     /** Emits a string to display as the message edit text hint. */
     Observable<String> messageEditTextHint();
 
@@ -92,6 +101,15 @@ public interface MessagesViewModel {
     /** Emits the project name to be displayed in the toolbar. */
     Observable<String> projectNameToolbarTextViewText();
 
+    /** Emits the bottom padding for the recycler view. */
+    Observable<Void> recyclerViewDefaultBottomPadding();
+
+    /** Emits the initial bottom padding for the recycler view to account for the app bar scroll range. */
+    Observable<Integer> recyclerViewInitialBottomPadding();
+
+    /** Emits when the RecyclerView should be scrolled to the bottom. */
+    Observable<Void> scrollRecyclerViewToBottom();
+
     /** Emits a boolean that determines if the Send button should be enabled. */
     Observable<Boolean> sendMessageButtonIsEnabled();
 
@@ -106,6 +124,9 @@ public interface MessagesViewModel {
 
     /** Emits when the thread has been marked as read. */
     Observable<Void> successfullyMarkedAsRead();
+
+    /** Emits a boolean to determine when the toolbar should be expanded. */
+    Observable<Boolean> toolbarIsExpanded();
 
     /** Emits a boolean that determines if the View pledge button should be gone. */
     Observable<Boolean> viewPledgeButtonIsGone();
@@ -215,8 +236,6 @@ public interface MessagesViewModel {
       )
         .distinctUntilChanged();
 
-      this.setMessageEditText = messageSent.map(__ -> "");
-
       final Observable<Boolean> messageHasBody = this.messageEditTextChanged
         .map(StringUtils::isPresent);
 
@@ -229,19 +248,26 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.successfullyMarkedAsRead::onNext);
 
-      initialMessageThreadEnvelope
+      final Observable<List<Message>> initialMessages = initialMessageThreadEnvelope
         .map(MessageThreadEnvelope::messages)
-        .filter(ObjectUtils::isNotNull)
+        .filter(ObjectUtils::isNotNull);
+
+      final Observable<List<Message>> newMessages = sentMessageThreadEnvelope
+        .map(MessageThreadEnvelope::messages);
+
+      final Observable<List<Message>> updatedMessages = initialMessages
+        .compose(takePairWhen(newMessages))
+        .map(mm -> ListUtils.concatDistinct(mm.first, mm.second));
+
+      // Load the initial messages once, subsequently load newer messages if any.
+      initialMessages
+        .take(1)
         .compose(bindToLifecycle())
         .subscribe(this.messages::onNext);
 
-      // Grab the most recently sent message and its position
-      sentMessageThreadEnvelope
-        .map(MessageThreadEnvelope::messages)
-        .filter(ObjectUtils::isNotNull)
-        .map(messages -> Pair.create(messages.get(messages.size() - 1), messages.size()))
+      updatedMessages
         .compose(bindToLifecycle())
-        .subscribe(this.messageAndPosition::onNext);
+        .subscribe(this.messages::onNext);
 
       participant
         .map(User::name)
@@ -255,8 +281,6 @@ public interface MessagesViewModel {
         .compose(ignoreValues())
         .compose(bindToLifecycle())
         .subscribe(this.messageEditTextShouldRequestFocus::onNext);
-
-      this.messageEditTextHint = this.participantNameTextViewText;
 
       messagesData
         .switchMap(data -> backingAndProjectFromData(data, this.client))
@@ -276,7 +300,16 @@ public interface MessagesViewModel {
       this.backButtonIsGone = this.viewPledgeButtonIsGone.map(BooleanUtils::negate);
       this.closeButtonIsGone = this.backButtonIsGone.map(BooleanUtils::negate);
       this.goBack = this.backOrCloseButtonClicked;
+      this.messageEditTextHint = this.participantNameTextViewText;
+      this.projectNameToolbarTextViewText = this.projectNameTextViewText;
+      this.scrollRecyclerViewToBottom = updatedMessages.compose(ignoreValues());
       this.sendMessageButtonIsEnabled = Observable.merge(messageHasBody, messageIsSending.map(BooleanUtils::negate));
+      this.setMessageEditText = messageSent.map(__ -> "");
+
+      this.toolbarIsExpanded = this.messages
+        .compose(takePairWhen(this.messageEditTextIsFocused))
+        .map(PairUtils::second)
+        .map(BooleanUtils::negate);
 
       messageNotification
         .compose(errors())
@@ -289,8 +322,6 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.projectNameTextViewText::onNext);
 
-      this.projectNameToolbarTextViewText = this.projectNameTextViewText;
-
       project
         .compose(takeWhen(this.viewPledgeButtonClicked))
         .compose(bindToLifecycle())
@@ -300,6 +331,15 @@ public interface MessagesViewModel {
         .take(1)
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackViewedMessageThread);
+
+      // Set only the initial padding once to counteract the appbar offset.
+      this.recyclerViewInitialBottomPadding = this.appBarTotalScrollRange.take(1);
+
+      // Take only the first instance in which the offset changes.
+      this.recyclerViewDefaultBottomPadding = this.appBarOffset
+        .filter(IntegerUtils::isNonZero)
+        .compose(ignoreValues())
+        .take(1);
 
       Observable.combineLatest(project, koalaContext, Pair::create)
         .compose(takeWhen(messageSent))
@@ -324,8 +364,11 @@ public interface MessagesViewModel {
       );
     }
 
+    private final PublishSubject<Integer> appBarOffset = PublishSubject.create();
+    private final PublishSubject<Integer> appBarTotalScrollRange = PublishSubject.create();
     private final PublishSubject<Void> backOrCloseButtonClicked = PublishSubject.create();
     private final PublishSubject<String> messageEditTextChanged = PublishSubject.create();
+    private final PublishSubject<Boolean> messageEditTextIsFocused = PublishSubject.create();
     private final PublishSubject<Void> sendMessageButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> viewPledgeButtonClicked = PublishSubject.create();
 
@@ -334,28 +377,40 @@ public interface MessagesViewModel {
     private final BehaviorSubject<Boolean> backingInfoViewIsGone = BehaviorSubject.create();
     private final Observable<Boolean> closeButtonIsGone;
     private final Observable<Void> goBack;
-    private final BehaviorSubject<Pair<Message, Integer>> messageAndPosition = BehaviorSubject.create();
     private final Observable<String> messageEditTextHint;
     private final PublishSubject<Void> messageEditTextShouldRequestFocus = PublishSubject.create();
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
     private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final Observable<String> projectNameToolbarTextViewText;
+    private final Observable<Void> recyclerViewDefaultBottomPadding;
+    private final Observable<Integer> recyclerViewInitialBottomPadding;
+    private final Observable<Void> scrollRecyclerViewToBottom;
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<Boolean> sendMessageButtonIsEnabled;
     private final Observable<String> setMessageEditText;
-    private final BehaviorSubject<Project> startViewPledgeActivity = BehaviorSubject.create();
+    private final PublishSubject<Project> startViewPledgeActivity = PublishSubject.create();
     private final BehaviorSubject<Void> successfullyMarkedAsRead = BehaviorSubject.create();
+    private final Observable<Boolean> toolbarIsExpanded;
     private final BehaviorSubject<Boolean> viewPledgeButtonIsGone = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
+    @Override public void appBarOffset(final int verticalOffset) {
+      this.appBarOffset.onNext(verticalOffset);
+    }
+    @Override public void appBarTotalScrollRange(final int totalScrollRange) {
+      this.appBarTotalScrollRange.onNext(totalScrollRange);
+    }
     @Override public void backOrCloseButtonClicked() {
       this.backOrCloseButtonClicked.onNext(null);
     }
     @Override public void messageEditTextChanged(final @NonNull String messageBody) {
       this.messageEditTextChanged.onNext(messageBody);
+    }
+    @Override public void messageEditTextIsFocused(final boolean isFocused) {
+      this.messageEditTextIsFocused.onNext(isFocused);
     }
     @Override public void sendMessageButtonClicked() {
       this.sendMessageButtonClicked.onNext(null);
@@ -379,9 +434,6 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<Void> goBack() {
       return this.goBack;
     }
-    @Override public @NonNull Observable<Pair<Message, Integer>> messageAndPosition() {
-      return this.messageAndPosition;
-    }
     @Override public @NonNull Observable<String> messageEditTextHint() {
       return this.messageEditTextHint;
     }
@@ -400,6 +452,15 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<String> projectNameToolbarTextViewText() {
       return this.projectNameToolbarTextViewText;
     }
+    @Override public @NonNull Observable<Void> recyclerViewDefaultBottomPadding() {
+      return this.recyclerViewDefaultBottomPadding;
+    }
+    @Override public @NonNull Observable<Integer> recyclerViewInitialBottomPadding() {
+      return this.recyclerViewInitialBottomPadding;
+    }
+    @Override public @NonNull Observable<Void> scrollRecyclerViewToBottom() {
+      return this.scrollRecyclerViewToBottom;
+    }
     @Override public @NonNull Observable<String> showMessageErrorToast() {
       return this.showMessageErrorToast;
     }
@@ -414,6 +475,9 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<Void> successfullyMarkedAsRead() {
       return this.successfullyMarkedAsRead;
+    }
+    @Override public @NonNull Observable<Boolean> toolbarIsExpanded() {
+      return this.toolbarIsExpanded;
     }
     @Override public @NonNull Observable<Boolean> viewPledgeButtonIsGone() {
       return this.viewPledgeButtonIsGone;

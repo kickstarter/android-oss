@@ -10,11 +10,13 @@ import com.kickstarter.factories.MessageThreadFactory;
 import com.kickstarter.factories.MessageThreadsEnvelopeFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.ui.data.Mailbox;
 
 import org.junit.Test;
 
@@ -53,7 +55,7 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
       .build();
 
     final ApiClientType apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads() {
+      @Override public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @NonNull Mailbox mailbox) {
         return Observable.just(envelope);
       }
     };
@@ -63,6 +65,7 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.onResume();
 
     this.messageThreads.assertValueCount(1);
+    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_INBOX);
   }
 
   @Test

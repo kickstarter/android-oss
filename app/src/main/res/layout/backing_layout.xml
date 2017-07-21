@@ -6,7 +6,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <include layout="@layout/view_pledge_toolbar"/>
+  <include layout="@layout/backing_toolbar"/>
 
   <ScrollView
     android:layout_width="match_parent"
@@ -33,7 +33,7 @@
           android:layout_height="wrap_content">
 
           <ImageView
-            android:id="@+id/view_pledge_avatar_image_view"
+            android:id="@+id/backing_avatar_image_view"
             android:layout_width="@dimen/grid_new_10"
             android:layout_height="@dimen/grid_new_10"
             android:focusable="false"
@@ -41,7 +41,7 @@
             tools:ignore="ContentDescription" />
 
           <RelativeLayout
-            android:layout_toEndOf="@id/view_pledge_avatar_image_view"
+            android:layout_toEndOf="@id/backing_avatar_image_view"
             android:paddingStart="@dimen/grid_new_3"
             android:paddingEnd="@dimen/grid_new_3"
             android:layout_centerInParent="true"
@@ -49,18 +49,18 @@
             android:layout_height="wrap_content">
 
             <TextView
-              android:id="@+id/view_pledge_backer_name"
+              android:id="@+id/backing_backer_name"
               style="@style/CalloutPrimaryMedium"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               tools:text="Blob Fish"/>
 
             <TextView
-              android:id="@+id/view_pledge_backer_number"
+              android:id="@+id/backing_backer_number"
               style="@style/BodySecondary"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_below="@id/view_pledge_backer_name"
+              android:layout_below="@id/backing_backer_name"
               tools:text="Backer #42"/>
 
           </RelativeLayout>
@@ -68,7 +68,7 @@
         </RelativeLayout>
 
         <Button
-          android:id="@+id/view_pledge_view_messages_button"
+          android:id="@+id/backing_view_messages_button"
           android:layout_marginBottom="@dimen/grid_new_3"
           android:visibility="visible"
           style="@style/BorderButton"
@@ -89,14 +89,14 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:id="@+id/view_pledge_backing_amount_and_date_text_view"
+          android:id="@+id/backing_amount_and_date_text_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           tools:text="$1 on Thursday, June 8, 2017"/>
 
         <TextView
           style="@style/BodyPrimary"
-          android:id="@+id/view_pledge_backing_status"
+          android:id="@+id/backing_status"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:paddingBottom="@dimen/grid_new_3"
@@ -120,13 +120,13 @@
 
           <TextView
             style="@style/BodyPrimary"
-            android:id="@+id/view_pledge_reward_minimum_and_description"
+            android:id="@+id/backing_reward_minimum_and_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="$1 - I will send you some stale bread."/>
 
           <LinearLayout
-            android:id="@+id/view_pledge_rewards_item_section"
+            android:id="@+id/backing_rewards_item_section"
             android:orientation="vertical"
             android:paddingTop="@dimen/grid_new_2"
             android:layout_width="match_parent"
@@ -141,7 +141,7 @@
               android:text="@string/project_view_pledge_includes" />
 
             <android.support.v7.widget.RecyclerView
-              android:id="@+id/view_pledge_rewards_item_recycler_view"
+              android:id="@+id/backing_rewards_item_recycler_view"
               android:layout_width="match_parent"
               android:layout_height="wrap_content" />
 
@@ -150,7 +150,7 @@
         </LinearLayout>
 
         <LinearLayout
-          android:id="@+id/view_pledge_shipping_section"
+          android:id="@+id/backing_shipping_section"
           android:orientation="vertical"
           android:paddingTop="@dimen/grid_new_2"
           android:layout_width="match_parent"
@@ -168,20 +168,20 @@
 
           <TextView
             style="@style/BodyPrimary"
-            android:id="@+id/view_pledge_shipping_location"
+            android:id="@+id/backing_shipping_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
           <TextView
             style="@style/BodyPrimary"
-            android:id="@+id/view_pledge_shipping_amount"
+            android:id="@+id/backing_shipping_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/grid_3"/>
         </LinearLayout>
 
         <LinearLayout
-          android:id="@+id/view_pledge_estimated_delivery_section"
+          android:id="@+id/backing_estimated_delivery_section"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="vertical">
@@ -198,7 +198,7 @@
 
           <TextView
             style="@style/BodyPrimary"
-            android:id="@+id/view_pledge_estimated_delivery"
+            android:id="@+id/backing_estimated_delivery"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/grid_3"

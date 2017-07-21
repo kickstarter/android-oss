@@ -263,7 +263,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   }
 
   private void startViewPledgeActivity(final @NonNull Project project) {
-    final Intent intent = new Intent(this, ViewPledgeActivity.class)
+    final Intent intent = new Intent(this, BackingActivity.class)
       .putExtra(IntentKey.PROJECT, project)
       .putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true);
 

@@ -391,7 +391,7 @@
     </activity>
 
     <activity
-      android:name=".ui.activities.ViewPledgeActivity"
+      android:name=".ui.activities.BackingActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@style/ViewPledgeActivity">
 

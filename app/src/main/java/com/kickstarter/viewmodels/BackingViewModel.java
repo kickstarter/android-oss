@@ -26,7 +26,7 @@ import com.kickstarter.models.RewardsItem;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.ViewPledgeActivity;
+import com.kickstarter.ui.activities.BackingActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
 
-public interface ViewPledgeViewModel {
+public interface BackingViewModel {
 
   interface Inputs {
     /** Call when the project context section is clicked. */
@@ -109,7 +109,7 @@ public interface ViewPledgeViewModel {
     Observable<Boolean> viewMessagesButtonIsGone();
   }
 
-  final class ViewModel extends ActivityViewModel<ViewPledgeActivity> implements Inputs, Outputs {
+  final class ViewModel extends ActivityViewModel<BackingActivity> implements Inputs, Outputs {
     private final ApiClientType client;
     private final CurrentConfigType currentConfig;
     private final CurrentUserType currentUser;

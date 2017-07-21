@@ -37,8 +37,8 @@ import rx.observers.TestSubscriber;
 
 import static java.util.Collections.emptyList;
 
-public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
-  private ViewPledgeViewModel.ViewModel vm;
+public final class BackingViewModelTest extends KSRobolectricTestCase {
+  private BackingViewModel.ViewModel vm;
   private final TestSubscriber<String> backerNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> backerNumberTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> backingStatusTextViewText = new TestSubscriber<>();
@@ -60,7 +60,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> viewMessagesButtonIsGone = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new ViewPledgeViewModel.ViewModel(environment);
+    this.vm = new BackingViewModel.ViewModel(environment);
     this.vm.outputs.backerNameTextViewText().subscribe(this.backerNameTextViewText);
     this.vm.outputs.backerNumberTextViewText().subscribe(this.backerNumberTextViewText);
     this.vm.outputs.backingStatusTextViewText().subscribe(this.backingStatusTextViewText);

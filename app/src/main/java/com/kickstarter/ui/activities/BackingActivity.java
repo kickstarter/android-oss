@@ -24,7 +24,7 @@ import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.RewardsItemAdapter;
-import com.kickstarter.viewmodels.ViewPledgeViewModel;
+import com.kickstarter.viewmodels.BackingViewModel;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -35,26 +35,26 @@ import butterknife.OnClick;
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresActivityViewModel(ViewPledgeViewModel.ViewModel.class)
-public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel.ViewModel> {
-  protected @Bind(R.id.view_pledge_avatar_image_view) ImageView avatarImageView;
-  protected @Bind(R.id.view_pledge_backer_name) TextView backerNameTextView;
-  protected @Bind(R.id.view_pledge_backer_number) TextView backerNumberTextView;
-  protected @Bind(R.id.view_pledge_backing_amount_and_date_text_view) TextView backingAmountAndDateTextView;
-  protected @Bind(R.id.view_pledge_backing_status) TextView backingStatusTextView;
-  protected @Bind(R.id.view_pledge_estimated_delivery_section) View pledgeEstimatedDeliverySection;
+@RequiresActivityViewModel(BackingViewModel.ViewModel.class)
+public final class BackingActivity extends BaseActivity<BackingViewModel.ViewModel> {
+  protected @Bind(R.id.backing_avatar_image_view) ImageView avatarImageView;
+  protected @Bind(R.id.backing_backer_name) TextView backerNameTextView;
+  protected @Bind(R.id.backing_backer_number) TextView backerNumberTextView;
+  protected @Bind(R.id.backing_amount_and_date_text_view) TextView backingAmountAndDateTextView;
+  protected @Bind(R.id.backing_status) TextView backingStatusTextView;
+  protected @Bind(R.id.backing_estimated_delivery_section) View pledgeEstimatedDeliverySection;
   protected @Bind(R.id.project_context_creator_name) TextView projectContextCreatorNameTextView;
   protected @Bind(R.id.project_context_image_view) ImageView projectContextPhotoImageView;
   protected @Bind(R.id.project_context_project_name) TextView projectContextProjectNameTextView;
   protected @Bind(R.id.project_context_view) View projectContextView;
-  protected @Bind(R.id.view_pledge_estimated_delivery) TextView pledgeEstimatedDeliveryTextView;
-  protected @Bind(R.id.view_pledge_reward_minimum_and_description) TextView rewardMinimumAndDescriptionTextView;
-  protected @Bind(R.id.view_pledge_rewards_item_recycler_view) RecyclerView rewardsItemRecyclerView;
-  protected @Bind(R.id.view_pledge_rewards_item_section) View rewardsItemSection;
-  protected @Bind(R.id.view_pledge_shipping_amount) TextView shippingAmountTextView;
-  protected @Bind(R.id.view_pledge_shipping_location) TextView shippingLocationTextView;
-  protected @Bind(R.id.view_pledge_shipping_section) View shippingSection;
-  protected @Bind(R.id.view_pledge_view_messages_button) Button viewMessagesButton;
+  protected @Bind(R.id.backing_estimated_delivery) TextView pledgeEstimatedDeliveryTextView;
+  protected @Bind(R.id.backing_reward_minimum_and_description) TextView rewardMinimumAndDescriptionTextView;
+  protected @Bind(R.id.backing_rewards_item_recycler_view) RecyclerView rewardsItemRecyclerView;
+  protected @Bind(R.id.backing_rewards_item_section) View rewardsItemSection;
+  protected @Bind(R.id.backing_shipping_amount) TextView shippingAmountTextView;
+  protected @Bind(R.id.backing_shipping_location) TextView shippingLocationTextView;
+  protected @Bind(R.id.backing_shipping_section) View shippingSection;
+  protected @Bind(R.id.backing_view_messages_button) Button viewMessagesButton;
 
   protected @BindString(R.string.backer_modal_backer_number) String backerNumberString;
   protected @BindString(R.string.backer_modal_status_backing_status) String backingStatusString;
@@ -72,7 +72,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel.V
   @Override
   public void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.view_pledge_layout);
+    setContentView(R.layout.backing_layout);
     ButterKnife.bind(this);
 
     final RewardsItemAdapter rewardsItemAdapter = new RewardsItemAdapter();
@@ -189,7 +189,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel.V
     this.viewModel.inputs.projectClicked();
   }
 
-  @OnClick(R.id.view_pledge_view_messages_button)
+  @OnClick(R.id.backing_view_messages_button)
   protected void viewMessagesButtonClicked() {
     this.viewModel.inputs.viewMessagesButtonClicked();
   }

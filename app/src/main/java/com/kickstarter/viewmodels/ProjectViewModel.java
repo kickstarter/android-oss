@@ -16,6 +16,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
+import com.kickstarter.ui.activities.BackingActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.intentmappers.IntentMapper;
@@ -101,7 +102,7 @@ public interface ProjectViewModel {
     /** Emits when we should start the {@link com.kickstarter.ui.activities.VideoActivity}. */
     Observable<Project> startVideoActivity();
 
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.ViewPledgeActivity}. */
+    /** Emits when we should start the {@link BackingActivity}. */
     Observable<Project> startViewPledgeActivity();
   }
 

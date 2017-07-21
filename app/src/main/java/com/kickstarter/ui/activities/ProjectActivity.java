@@ -242,7 +242,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
   }
 
   private void startViewPledgeActivity(final @NonNull Project project) {
-    final Intent intent = new Intent(this, ViewPledgeActivity.class)
+    final Intent intent = new Intent(this, BackingActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

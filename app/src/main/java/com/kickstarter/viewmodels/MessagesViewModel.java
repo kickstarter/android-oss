@@ -23,6 +23,7 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.activities.BackingActivity;
 import com.kickstarter.ui.activities.MessagesActivity;
 import com.kickstarter.ui.data.MessageSubject;
 import com.kickstarter.ui.data.MessagesData;
@@ -119,7 +120,7 @@ public interface MessagesViewModel {
     /** Emits a string to display in the message error toast. */
     Observable<String> showMessageErrorToast();
 
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.ViewPledgeActivity}. */
+    /** Emits when we should start the {@link BackingActivity}. */
     Observable<Project> startViewPledgeActivity();
 
     /** Emits when the thread has been marked as read. */

@@ -4,6 +4,8 @@
     <ignore path="src/internal/AndroidManifest.xml" />
   </issue>
 
+  <issue id="IconColors" severity="ignore"/>
+
   <issue id="InvalidPackage" severity="ignore" />
 
   <issue id="MissingTranslation" severity="ignore" />

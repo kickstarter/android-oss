@@ -16,6 +16,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
+import com.kickstarter.ui.activities.BackingActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.intentmappers.IntentMapper;
@@ -101,8 +102,8 @@ public interface ProjectViewModel {
     /** Emits when we should start the {@link com.kickstarter.ui.activities.VideoActivity}. */
     Observable<Project> startVideoActivity();
 
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.ViewPledgeActivity}. */
-    Observable<Project> startViewPledgeActivity();
+    /** Emits when we should start the {@link BackingActivity}. */
+    Observable<Project> startBackingActivity();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectActivity> implements ProjectAdapter.Delegate, Inputs, Outputs {
@@ -180,7 +181,7 @@ public interface ProjectViewModel {
       this.startManagePledgeActivity = currentProject.compose(takeWhen(this.managePledgeButtonClicked));
       this.startProjectUpdatesActivity = currentProject.compose(takeWhen(this.updatesTextViewClicked));
       this.startVideoActivity = currentProject.compose(takeWhen(this.playVideoButtonClicked));
-      this.startViewPledgeActivity = currentProject.compose(takeWhen(this.viewPledgeButtonClicked));
+      this.startBackingActivity = currentProject.compose(takeWhen(this.viewPledgeButtonClicked));
 
       this.shareButtonClicked
         .compose(bindToLifecycle())
@@ -275,7 +276,7 @@ public interface ProjectViewModel {
     private final Observable<Project> startManagePledgeActivity;
     private final Observable<Project> startProjectUpdatesActivity;
     private final Observable<Project> startVideoActivity;
-    private final Observable<Project> startViewPledgeActivity;
+    private final Observable<Project> startBackingActivity;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -368,8 +369,8 @@ public interface ProjectViewModel {
     @Override public @NonNull Observable<Project> startManagePledgeActivity() {
       return this.startManagePledgeActivity;
     }
-    @Override public @NonNull Observable<Project> startViewPledgeActivity() {
-      return this.startViewPledgeActivity;
+    @Override public @NonNull Observable<Project> startBackingActivity() {
+      return this.startBackingActivity;
     }
   }
 }

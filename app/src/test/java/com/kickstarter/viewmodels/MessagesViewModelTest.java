@@ -77,7 +77,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.sendMessageButtonIsEnabled().subscribe(this.sendMessageButtonIsEnabled);
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
-    this.vm.outputs.startViewPledgeActivity().subscribe(this.startViewPledgeActivity);
+    this.vm.outputs.startBackingActivity().subscribe(this.startViewPledgeActivity);
     this.vm.outputs.successfullyMarkedAsRead().subscribe(this.successfullyMarkedAsRead);
     this.vm.outputs.toolbarIsExpanded().subscribe(this.toolbarIsExpanded);
     this.vm.outputs.viewPledgeButtonIsGone().subscribe(this.viewPledgeButtonIsGone);

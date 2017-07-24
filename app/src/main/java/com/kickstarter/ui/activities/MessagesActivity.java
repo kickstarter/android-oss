@@ -184,10 +184,10 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(error -> ViewUtils.showToast(this, error));
 
-    this.viewModel.outputs.startViewPledgeActivity()
+    this.viewModel.outputs.startBackingActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::startViewPledgeActivity);
+      .subscribe(this::startBackingActivity);
 
     this.viewModel.outputs.toolbarIsExpanded()
       .compose(bindToLifecycle())
@@ -262,8 +262,8 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.messageEditText.setHint(this.ksString.format(this.messageUserNameString, "user_name", name));
   }
 
-  private void startViewPledgeActivity(final @NonNull Project project) {
-    final Intent intent = new Intent(this, ViewPledgeActivity.class)
+  private void startBackingActivity(final @NonNull Project project) {
+    final Intent intent = new Intent(this, BackingActivity.class)
       .putExtra(IntentKey.PROJECT, project)
       .putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true);
 

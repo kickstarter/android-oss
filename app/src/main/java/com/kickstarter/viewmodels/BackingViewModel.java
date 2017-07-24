@@ -201,10 +201,11 @@ public interface BackingViewModel {
         .map(p -> Pair.create(p, RefTag.pledgeInfo()))
         .subscribe(this.startProjectActivity::onNext);
 
-      this.goBack = isFromMessagesActivity
+      isFromMessagesActivity
         .filter(BooleanUtils::isFalse)
         .compose(takeWhen(this.projectClicked))
-        .compose(ignoreValues());
+        .compose(ignoreValues())
+        .subscribe(this.goBack::onNext);
 
       backer
         .map(User::avatar)
@@ -314,7 +315,7 @@ public interface BackingViewModel {
     private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> estimatedDeliverySectionIsGone = BehaviorSubject.create();
     private final BehaviorSubject<String> estimatedDeliverySectionTextViewText = BehaviorSubject.create();
-    private final Observable<Void> goBack;
+    private final PublishSubject<Void> goBack = PublishSubject.create();
     private final BehaviorSubject<String> loadBackerAvatar = BehaviorSubject.create();
     private final BehaviorSubject<String> loadProjectPhoto = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();

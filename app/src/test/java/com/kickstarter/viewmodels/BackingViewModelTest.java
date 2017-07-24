@@ -15,6 +15,7 @@ import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Backing;
@@ -57,6 +58,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> shippingLocationTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> shippingSectionIsGone = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, Backing>> startMessagesActivity = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
   private final TestSubscriber<Boolean> viewMessagesButtonIsGone = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
@@ -79,6 +81,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.shippingLocationTextViewText().subscribe(this.shippingLocationTextViewText);
     this.vm.outputs.shippingSectionIsGone().subscribe(this.shippingSectionIsGone);
     this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity);
+    this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.viewMessagesButtonIsGone().subscribe(this.viewMessagesButtonIsGone);
   }
 
@@ -183,6 +186,9 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.projectClicked();
     this.goBack.assertValueCount(1);
+
+    // Project context click doesn't start project activity if not from Messages.
+    this.startProjectActivity.assertNoValues();
   }
 
   @Test
@@ -292,6 +298,20 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.viewMessagesButtonClicked();
 
     this.startMessagesActivity.assertValues(Pair.create(backing.project(), backing));
+  }
+
+  @Test
+  public void testStartProjectActivity() {
+    final Backing backing = BackingFactory.backing();
+    setUpEnvironment(envWithBacking(BackingFactory.backing()));
+
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true)
+    );
+
+    this.vm.inputs.projectClicked();
+    this.startProjectActivity.assertValues(Pair.create(backing.project(), RefTag.pledgeInfo()));
+    this.goBack.assertNoValues();
   }
 
   @Test

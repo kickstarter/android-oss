@@ -9,12 +9,14 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BackingUtils;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.RewardUtils;
 import com.kickstarter.models.Avatar;
 import com.kickstarter.models.Backing;
@@ -36,6 +38,7 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
@@ -104,6 +107,9 @@ public interface BackingViewModel {
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.MessagesActivity}. */
     Observable<Pair<Project, Backing>> startMessagesActivity();
+
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
+    Observable<Pair<Project, RefTag>> startProjectActivity();
 
     /** Emits a boolean to determine when the View Messages button should be gone. */
     Observable<Boolean> viewMessagesButtonIsGone();
@@ -185,7 +191,20 @@ public interface BackingViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.creatorNameTextViewText);
 
-      this.goBack = this.projectClicked;
+      Observable.zip(
+        isFromMessagesActivity.filter(BooleanUtils::isTrue),
+        project,
+        Pair::create
+      )
+        .map(PairUtils::second)
+        .compose(takeWhen(this.projectClicked))
+        .map(p -> Pair.create(p, RefTag.pledgeInfo()))
+        .subscribe(this.startProjectActivity::onNext);
+
+      this.goBack = isFromMessagesActivity
+        .filter(BooleanUtils::isFalse)
+        .compose(takeWhen(this.projectClicked))
+        .compose(ignoreValues());
 
       backer
         .map(User::avatar)
@@ -306,6 +325,7 @@ public interface BackingViewModel {
     private final BehaviorSubject<String> shippingLocationTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shippingSectionIsGone = BehaviorSubject.create();
     private final PublishSubject<Pair<Project, Backing>> startMessagesActivity = PublishSubject.create();
+    private final PublishSubject<Pair<Project, RefTag>> startProjectActivity = PublishSubject.create();
     private final BehaviorSubject<Boolean> viewMessagesButtonIsGone = BehaviorSubject.create();
 
     public final Inputs inputs = this;
@@ -371,6 +391,9 @@ public interface BackingViewModel {
     }
     @Override public @NonNull Observable<Pair<Project, Backing>> startMessagesActivity() {
       return this.startMessagesActivity;
+    }
+    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
+      return this.startProjectActivity;
     }
     @Override public @NonNull Observable<Boolean> viewMessagesButtonIsGone() {
       return this.viewMessagesButtonIsGone;

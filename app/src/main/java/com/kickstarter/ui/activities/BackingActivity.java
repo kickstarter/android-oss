@@ -17,6 +17,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.KoalaContext;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.ViewUtils;
@@ -173,6 +174,11 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
       .compose(observeForUI())
       .subscribe(this::startMessagesActivity);
 
+    this.viewModel.outputs.startProjectActivity()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startProjectActivity);
+
     this.viewModel.outputs.viewMessagesButtonIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -254,6 +260,14 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
       .putExtra(IntentKey.PROJECT, projectAndBacking.first)
       .putExtra(IntentKey.BACKING, projectAndBacking.second)
       .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.BACKER_MODAL);
+
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startProjectActivity(final @NonNull Pair<Project, RefTag> projectAndRefTag) {
+    final Intent intent = new Intent(this, ProjectActivity.class)
+      .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
+      .putExtra(IntentKey.REF_TAG, projectAndRefTag.second);
 
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

@@ -103,7 +103,7 @@ public interface ProjectViewModel {
     Observable<Project> startVideoActivity();
 
     /** Emits when we should start the {@link BackingActivity}. */
-    Observable<Project> startViewPledgeActivity();
+    Observable<Project> startBackingActivity();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectActivity> implements ProjectAdapter.Delegate, Inputs, Outputs {
@@ -181,7 +181,7 @@ public interface ProjectViewModel {
       this.startManagePledgeActivity = currentProject.compose(takeWhen(this.managePledgeButtonClicked));
       this.startProjectUpdatesActivity = currentProject.compose(takeWhen(this.updatesTextViewClicked));
       this.startVideoActivity = currentProject.compose(takeWhen(this.playVideoButtonClicked));
-      this.startViewPledgeActivity = currentProject.compose(takeWhen(this.viewPledgeButtonClicked));
+      this.startBackingActivity = currentProject.compose(takeWhen(this.viewPledgeButtonClicked));
 
       this.shareButtonClicked
         .compose(bindToLifecycle())
@@ -276,7 +276,7 @@ public interface ProjectViewModel {
     private final Observable<Project> startManagePledgeActivity;
     private final Observable<Project> startProjectUpdatesActivity;
     private final Observable<Project> startVideoActivity;
-    private final Observable<Project> startViewPledgeActivity;
+    private final Observable<Project> startBackingActivity;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -369,8 +369,8 @@ public interface ProjectViewModel {
     @Override public @NonNull Observable<Project> startManagePledgeActivity() {
       return this.startManagePledgeActivity;
     }
-    @Override public @NonNull Observable<Project> startViewPledgeActivity() {
-      return this.startViewPledgeActivity;
+    @Override public @NonNull Observable<Project> startBackingActivity() {
+      return this.startBackingActivity;
     }
   }
 }

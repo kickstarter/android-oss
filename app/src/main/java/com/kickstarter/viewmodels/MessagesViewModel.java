@@ -121,7 +121,7 @@ public interface MessagesViewModel {
     Observable<String> showMessageErrorToast();
 
     /** Emits when we should start the {@link BackingActivity}. */
-    Observable<Project> startViewPledgeActivity();
+    Observable<Project> startBackingActivity();
 
     /** Emits when the thread has been marked as read. */
     Observable<Void> successfullyMarkedAsRead();
@@ -326,7 +326,7 @@ public interface MessagesViewModel {
       project
         .compose(takeWhen(this.viewPledgeButtonClicked))
         .compose(bindToLifecycle())
-        .subscribe(this.startViewPledgeActivity::onNext);
+        .subscribe(this.startBackingActivity::onNext);
 
       project
         .take(1)
@@ -390,7 +390,7 @@ public interface MessagesViewModel {
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<Boolean> sendMessageButtonIsEnabled;
     private final Observable<String> setMessageEditText;
-    private final PublishSubject<Project> startViewPledgeActivity = PublishSubject.create();
+    private final PublishSubject<Project> startBackingActivity = PublishSubject.create();
     private final BehaviorSubject<Void> successfullyMarkedAsRead = BehaviorSubject.create();
     private final Observable<Boolean> toolbarIsExpanded;
     private final BehaviorSubject<Boolean> viewPledgeButtonIsGone = BehaviorSubject.create();
@@ -471,8 +471,8 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<String> setMessageEditText() {
       return this.setMessageEditText;
     }
-    @Override public @NonNull Observable<Project> startViewPledgeActivity() {
-      return this.startViewPledgeActivity;
+    @Override public @NonNull Observable<Project> startBackingActivity() {
+      return this.startBackingActivity;
     }
     @Override public @NonNull Observable<Void> successfullyMarkedAsRead() {
       return this.successfullyMarkedAsRead;

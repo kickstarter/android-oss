@@ -76,7 +76,7 @@
 
   <style name="VideoPlayerActivity" parent="VideoPlayerBase" />
 
-  <style name="ViewPledgeActivity" parent="KSTheme">
+  <style name="BackingActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
   </style>
 

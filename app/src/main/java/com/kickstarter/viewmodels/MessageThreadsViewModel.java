@@ -24,6 +24,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.utils.IntegerUtils.intValueOrZero;
@@ -77,21 +78,30 @@ public interface MessageThreadsViewModel {
       this.client = environment.apiClient();
       this.currentUser = environment.currentUser();
 
-      final Observable<Void> startOverWith = Observable.merge(this.onResume, this.refresh);
+      final Observable<Void> refreshUser = Observable.merge(this.onResume, this.refresh);
 
       final Observable<User> freshUser = intent()
-        .compose(takeWhen(startOverWith))
+        .compose(takeWhen(refreshUser))
         .switchMap(__ -> this.client.fetchCurrentUser())
         .retry(2)
         .compose(neverError());
 
       freshUser.subscribe(this.currentUser::refresh);
 
+      final Observable<Integer> unreadMessagesCount = this.currentUser.loggedInUser()
+        .map(User::unreadMessagesCount)
+        .distinctUntilChanged();
+
       // Ping refresh on initial load to trigger paginator
       intent()
         .take(1)
         .compose(bindToLifecycle())
         .subscribe(__ -> this.refresh());
+
+      final Observable<Void> startOverWith = Observable.merge(
+        unreadMessagesCount.compose(ignoreValues()),
+        this.refresh
+      );
 
       final ApiPaginator<MessageThread, MessageThreadsEnvelope, Void> paginator =
         ApiPaginator.<MessageThread, MessageThreadsEnvelope, Void>builder()
@@ -110,10 +120,6 @@ public interface MessageThreadsViewModel {
       paginator.paginatedData()
         .compose(bindToLifecycle())
         .subscribe(this.messageThreads);
-
-      final Observable<Integer> unreadMessagesCount = this.currentUser.loggedInUser()
-        .map(User::unreadMessagesCount)
-        .distinctUntilChanged();
 
       this.hasNoMessages = unreadMessagesCount.map(ObjectUtils::isNull);
       this.hasNoUnreadMessages = unreadMessagesCount.map(IntegerUtils::isZero);

@@ -99,7 +99,7 @@ public interface MessageThreadsViewModel {
         .subscribe(__ -> this.refresh());
 
       final Observable<Void> startOverWith = Observable.merge(
-        unreadMessagesCount.distinctUntilChanged().compose(ignoreValues()),
+        unreadMessagesCount.compose(ignoreValues()),
         this.refresh
       );
 

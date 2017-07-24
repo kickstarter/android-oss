@@ -65,8 +65,9 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(new Intent());
     this.messageThreads.assertValueCount(1);
 
+    // Same message threads should not emit again.
     this.vm.inputs.onResume();
-    this.messageThreads.assertValueCount(2);
+    this.messageThreads.assertValueCount(1);
 
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_INBOX);
   }

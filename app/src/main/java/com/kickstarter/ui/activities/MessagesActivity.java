@@ -21,6 +21,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.AnimationUtils;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ToolbarUtils;
 import com.kickstarter.libs.utils.TransitionUtils;
@@ -52,8 +53,9 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.backing_amount_text_view) TextView backingAmountTextViewText;
   protected @Bind(R.id.backing_info_view) View backingInfoView;
   protected @Bind(R.id.messages_toolbar_close_button) IconButton closeButton;
-  protected @Bind(R.id.messages_participant_name_text_view) TextView participantNameTextView;
+  protected @Bind(R.id.messages_loading_indicator) View loadingIndicatorView;
   protected @Bind(R.id.message_edit_text) EditText messageEditText;
+  protected @Bind(R.id.messages_participant_name_text_view) TextView participantNameTextView;
   protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
   protected @Bind(R.id.messages_project_name_collapsed_text_view) TextView projectNameToolbarTextView;
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
@@ -121,6 +123,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> back());
+
+    this.viewModel.outputs.loadingIndicatorViewIsAppeared()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::animateLoadingIndicatorView);
 
     this.viewModel.outputs.messageEditTextHint()
       .compose(bindToLifecycle())
@@ -229,6 +236,14 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   @OnTextChanged(R.id.message_edit_text)
   public void onMessageEditTextChanged(final @NonNull CharSequence message) {
     this.viewModel.inputs.messageEditTextChanged(message.toString());
+  }
+
+  private void animateLoadingIndicatorView(final boolean shouldAppear) {
+    if (shouldAppear) {
+      this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
+    } else {
+      this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
+    }
   }
 
   private void requestFocusAndOpenKeyboard() {

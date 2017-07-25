@@ -84,6 +84,8 @@ public interface MessagesViewModel {
     /** Emits when we should navigate back. */
     Observable<Void> goBack();
 
+    Observable<Boolean> loadingIndicatorViewIsAppeared();
+
     /** Emits a string to display as the message edit text hint. */
     Observable<String> messageEditTextHint();
 
@@ -172,14 +174,23 @@ public interface MessagesViewModel {
       );
 
       final PublishSubject<Boolean> messageIsSending = PublishSubject.create();
+      final PublishSubject<Boolean> messagesAreLoading = PublishSubject.create();
 
       final Observable<Project> project = configData
         .map(data -> data.either(MessageThread::project, projectAndBacking -> projectAndBacking.first));
 
       final Observable<MessageThreadEnvelope> initialMessageThreadEnvelope = backingOrThread
         .switchMap(bOrT -> bOrT.either(this.client::fetchMessagesForBacking, this.client::fetchMessagesForThread))
+        .doOnSubscribe(() -> messagesAreLoading.onNext(true))
+        .doOnTerminate(() -> messagesAreLoading.onNext(false))
         .compose(neverError())
         .share();
+
+      messagesAreLoading
+        .map(BooleanUtils::negate)
+        .distinctUntilChanged()
+        .compose(bindToLifecycle())
+        .subscribe(this.loadingIndicatorViewIsAppeared::onNext);
 
       // If view model was not initialized with a MessageThread, participant is
       // the project creator.
@@ -378,6 +389,7 @@ public interface MessagesViewModel {
     private final BehaviorSubject<Boolean> backingInfoViewIsGone = BehaviorSubject.create();
     private final Observable<Boolean> closeButtonIsGone;
     private final Observable<Void> goBack;
+    private final BehaviorSubject<Boolean> loadingIndicatorViewIsAppeared = BehaviorSubject.create();
     private final Observable<String> messageEditTextHint;
     private final PublishSubject<Void> messageEditTextShouldRequestFocus = PublishSubject.create();
     private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
@@ -434,6 +446,9 @@ public interface MessagesViewModel {
     }
     @Override public @NonNull Observable<Void> goBack() {
       return this.goBack;
+    }
+    @Override public @NonNull Observable<Boolean> loadingIndicatorViewIsAppeared() {
+      return this.loadingIndicatorViewIsAppeared;
     }
     @Override public @NonNull Observable<String> messageEditTextHint() {
       return this.messageEditTextHint;

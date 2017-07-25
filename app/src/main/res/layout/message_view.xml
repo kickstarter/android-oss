@@ -14,15 +14,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
-      android:id="@+id/message_sender_avatar_image_view"
-      android:layout_width="@dimen/grid_new_4"
-      android:layout_height="@dimen/grid_new_4"
-      android:layout_marginStart="@dimen/grid_new_3"
-      android:elevation="2dp"
-      android:background="@drawable/message_avatar_circle_background"
-      tools:ignore="ContentDescription,UnusedAttribute"/>
-
     <android.support.v7.widget.CardView
       android:id="@+id/message_body_recipient_card_view"
       android:layout_width="wrap_content"
@@ -48,6 +39,15 @@
         tools:text="Hey there!"/>
 
     </android.support.v7.widget.CardView>
+
+    <ImageView
+      android:id="@+id/message_sender_avatar_image_view"
+      android:layout_width="@dimen/grid_new_4"
+      android:layout_height="@dimen/grid_new_4"
+      android:layout_marginStart="@dimen/grid_new_3"
+      android:elevation="2dp"
+      android:background="@drawable/message_avatar_circle_background"
+      tools:ignore="ContentDescription,UnusedAttribute"/>
 
   </RelativeLayout>
 

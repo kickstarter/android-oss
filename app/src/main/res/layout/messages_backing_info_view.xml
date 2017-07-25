@@ -3,13 +3,13 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/backing_info_view"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   tools:showIn="@layout/messages_layout">
 
   <RelativeLayout
-    android:id="@+id/backing_info_view"
     android:background="@color/white"
     android:paddingStart="@dimen/grid_new_3"
     android:paddingEnd="0dp"

@@ -6,7 +6,7 @@
   android:layout_gravity="bottom"
   android:background="@color/white"
   android:layout_width="match_parent"
-  android:layout_height="@dimen/message_reply_layout_height">
+  android:layout_height="wrap_content">
 
   <View
     android:id="@+id/divider_view"
@@ -18,7 +18,7 @@
     android:layout_below="@id/divider_view"
     android:layout_marginStart="@dimen/grid_new_4"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <EditText
       android:id="@+id/message_edit_text"
@@ -29,8 +29,8 @@
       android:background="@color/transparent"
       android:layout_toStartOf="@+id/send_message_button"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/grid_new_10"
-      android:maxLines="1"
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/message_reply_layout_height"
       android:ellipsize="end"
       tools:hint="Message Blob..."
       tools:ignore="LabelFor"/>
@@ -46,7 +46,7 @@
       android:clickable="true"
       android:layout_centerVertical="true"
       android:layout_width="wrap_content"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:textColor="@color/navy_600_enabled_dark_grey_400_disabled_color"
       android:text="@string/social_buttons_send"/>
 

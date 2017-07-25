@@ -21,7 +21,6 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.AnimationUtils;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ToolbarUtils;
 import com.kickstarter.libs.utils.TransitionUtils;
@@ -124,10 +123,10 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(__ -> back());
 
-    this.viewModel.outputs.loadingIndicatorViewIsAppeared()
+    this.viewModel.outputs.loadingIndicatorViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::animateLoadingIndicatorView);
+      .subscribe(ViewUtils.setGone(this.loadingIndicatorView));
 
     this.viewModel.outputs.messageEditTextHint()
       .compose(bindToLifecycle())
@@ -236,14 +235,6 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   @OnTextChanged(R.id.message_edit_text)
   public void onMessageEditTextChanged(final @NonNull CharSequence message) {
     this.viewModel.inputs.messageEditTextChanged(message.toString());
-  }
-
-  private void animateLoadingIndicatorView(final boolean shouldAppear) {
-    if (shouldAppear) {
-      this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
-    } else {
-      this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
-    }
   }
 
   private void requestFocusAndOpenKeyboard() {

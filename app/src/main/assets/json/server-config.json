@@ -7651,6 +7651,7 @@
     "huzza": true,
     "view_prototype_gallery": true,
     "edit_prototype_gallery": true,
+    "fullstory": true,
     "huzza_creator_integration": true,
     "huzza_new_design": true,
     "sassy_classifier": true,
@@ -7834,7 +7835,7 @@
     }
   ],
   "ab_experiments": {
-    "koala_alt_frontend_tracking": "control",
+    "koala_alt_frontend_tracking": "experimental",
     "project_build": "control",
     "react_guest_pledging": "control",
     "react_payment_sources_form": "control",

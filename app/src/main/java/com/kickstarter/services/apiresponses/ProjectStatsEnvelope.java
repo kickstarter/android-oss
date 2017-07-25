@@ -24,6 +24,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
   public abstract List<RewardStats> rewardDistribution();
   public abstract VideoStats videoStats();
 
+
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder cumulativeStats(CumulativeStats __);

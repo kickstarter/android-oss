@@ -44,6 +44,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   protected @Bind(R.id.message_threads_app_bar_layout) AppBarLayout appBarLayout;
   protected @Bind(R.id.message_threads_collapsed_toolbar_title) View collapsedToolbarTitle;
   protected @Bind(R.id.message_threads_collapsing_toolbar_layout) CollapsingToolbarLayout collapsingToolbarLayout;
+  protected @Bind(R.id.message_threads_loading_indicator) View loadingIndicatorView;
   protected @Bind(R.id.mailbox_text_view) TextView mailboxTextView;
   protected @Bind(R.id.message_threads_recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.message_threads_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
@@ -86,6 +87,11 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> this.unreadCountTextView.setText(this.noUnreadMessagesString));
+
+    this.viewModel.outputs.loadingIndicatorViewIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.loadingIndicatorView));
 
     this.viewModel.outputs.messageThreads()
       .compose(bindToLifecycle())

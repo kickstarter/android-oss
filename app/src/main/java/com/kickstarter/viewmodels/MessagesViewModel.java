@@ -251,18 +251,20 @@ public interface MessagesViewModel {
         .subscribe(this.successfullyMarkedAsRead::onNext);
 
       final Observable<List<Message>> initialMessages = initialMessageThreadEnvelope
-        .map(MessageThreadEnvelope::messages)
-        .filter(ObjectUtils::isNotNull);
+        .map(MessageThreadEnvelope::messages);
 
       final Observable<List<Message>> newMessages = sentMessageThreadEnvelope
         .map(MessageThreadEnvelope::messages);
 
+      // Concat distinct messages to initial message list. Return just the new messages if
+      // initial list is null, i.e. a new message thread.
       final Observable<List<Message>> updatedMessages = initialMessages
         .compose(takePairWhen(newMessages))
-        .map(mm -> ListUtils.concatDistinct(mm.first, mm.second));
+        .map(mm -> mm.first == null ? mm.second : ListUtils.concatDistinct(mm.first, mm.second));
 
       // Load the initial messages once, subsequently load newer messages if any.
       initialMessages
+        .filter(ObjectUtils::isNotNull)
         .take(1)
         .compose(bindToLifecycle())
         .subscribe(this.messages::onNext);

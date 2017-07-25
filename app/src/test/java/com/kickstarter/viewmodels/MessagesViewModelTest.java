@@ -146,12 +146,19 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testBackingInfo_NoBacking() {
-    final MessageThread messageThread = MessageThreadFactory.messageThread().toBuilder().backing(null).build();
+    final Project project = ProjectFactory.project().toBuilder()
+      .isBacking(false)
+      .build();
+
+    final MessageThread messageThread = MessageThreadFactory.messageThread().toBuilder()
+      .project(project)
+      .backing(null)
+      .build();
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override
       public @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user) {
-        return Observable.just(null);
+        return Observable.error(ApiExceptionFactory.badRequestException());
       }
     };
 
@@ -162,7 +169,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Start the view model with a message thread.
     this.vm.intent(messagesContextIntent(messageThread));
 
-    this.backingAndProject.assertValues(Pair.create(null, messageThread.project()));
+    this.backingAndProject.assertNoValues();
     this.backingInfoViewIsGone.assertValues(true);
   }
 

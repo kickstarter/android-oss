@@ -17,8 +17,8 @@
     <android.support.design.widget.CollapsingToolbarLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:elevation="@dimen/toolbar_elevation"
       android:background="@color/white"
+      android:elevation="@dimen/toolbar_elevation"
       app:contentScrim="@color/white"
       app:layout_scrollFlags="scroll|exitUntilCollapsed"
       tools:ignore="UnusedAttribute">
@@ -57,6 +57,11 @@
       <include layout="@layout/messages_toolbar"/>
 
     </android.support.design.widget.CollapsingToolbarLayout>
+
+    <View
+      android:background="@color/white"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/grid_new_1"/>
 
     <include layout="@layout/messages_backing_info_view"/>
 

@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -261,18 +262,20 @@ public interface MessagesViewModel {
         .subscribe(this.successfullyMarkedAsRead::onNext);
 
       final Observable<List<Message>> initialMessages = initialMessageThreadEnvelope
-        .map(MessageThreadEnvelope::messages)
-        .filter(ObjectUtils::isNotNull);
+        .map(MessageThreadEnvelope::messages);
 
       final Observable<List<Message>> newMessages = sentMessageThreadEnvelope
         .map(MessageThreadEnvelope::messages);
 
+      // Concat distinct messages to initial message list. Return just the new messages if
+      // initial list is null, i.e. a new message thread.
       final Observable<List<Message>> updatedMessages = initialMessages
         .compose(takePairWhen(newMessages))
-        .map(mm -> ListUtils.concatDistinct(mm.first, mm.second));
+        .map(mm -> mm.first == null ? mm.second : ListUtils.concatDistinct(mm.first, mm.second));
 
       // Load the initial messages once, subsequently load newer messages if any.
       initialMessages
+        .filter(ObjectUtils::isNotNull)
         .take(1)
         .compose(bindToLifecycle())
         .subscribe(this.messages::onNext);
@@ -296,11 +299,13 @@ public interface MessagesViewModel {
 
       messagesData
         .switchMap(data -> backingAndProjectFromData(data, this.client))
+        .filter(ObjectUtils::isNotNull)
         .compose(bindToLifecycle())
         .subscribe(this.backingAndProject::onNext);
 
-      this.backingAndProject
-        .map(bp -> bp.first == null)
+      messagesData
+        .switchMap(data -> backingAndProjectFromData(data, this.client))
+        .map(ObjectUtils::isNull)
         .compose(bindToLifecycle())
         .subscribe(this.backingInfoViewIsGone::onNext);
 
@@ -359,7 +364,7 @@ public interface MessagesViewModel {
         .subscribe(pc -> this.koala.trackSentMessage(pc.first, pc.second));
     }
 
-    private static @NonNull Observable<Pair<Backing, Project>> backingAndProjectFromData(final @NonNull MessagesData data,
+    private static @Nullable Observable<Pair<Backing, Project>> backingAndProjectFromData(final @NonNull MessagesData data,
       final @NonNull ApiClientType client) {
 
       return data.getBackingOrThread().either(
@@ -369,9 +374,11 @@ public interface MessagesViewModel {
             ? client.fetchProjectBacking(data.getProject(), data.getCurrentUser()).materialize().share()
             : client.fetchProjectBacking(data.getProject(), data.getParticipant()).materialize().share();
 
-          return backingNotification
-            .compose(values())
-            .map(b -> Pair.create(b, data.getProject()));
+          return Observable.merge(
+            backingNotification.compose(errors()).map(__ -> null),
+            backingNotification.compose(values()).map(b -> Pair.create(b, data.getProject()))
+          )
+            .take(1);
         }
       );
     }

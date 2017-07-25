@@ -39,7 +39,7 @@
         android:gravity="left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="3dip"
+        android:padding="@dimen/grid_new_1_half"
         android:layout_weight="1"/>
       <TextView
         android:text="@string/dashboard_graphs_funding_backers"

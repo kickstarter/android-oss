@@ -33,7 +33,6 @@ public class DashboardRewardStatsRowHolderViewModelTest extends KSRobolectricTes
 
   @Test
   public void testRewardBackerCount() {
-    final Project project = ProjectFactory.project();
     final ProjectStatsEnvelope.RewardStats rewardStats = ProjectStatsEnvelopeFactory.RewardStatsFactory
       .rewardStats()
       .toBuilder()
@@ -41,13 +40,12 @@ public class DashboardRewardStatsRowHolderViewModelTest extends KSRobolectricTes
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.projectAndRewardStats(Pair.create(project, rewardStats));
+    this.vm.inputs.projectAndRewardStats(Pair.create(ProjectFactory.project(), rewardStats));
     this.rewardBackerCount.assertValues(NumberUtils.format(10));
   }
 
   @Test
   public void testRewardMinimum() {
-    final Project project = ProjectFactory.project();
     final ProjectStatsEnvelope.RewardStats rewardStats = ProjectStatsEnvelopeFactory.RewardStatsFactory
       .rewardStats()
       .toBuilder()
@@ -55,7 +53,7 @@ public class DashboardRewardStatsRowHolderViewModelTest extends KSRobolectricTes
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.projectAndRewardStats(Pair.create(project, rewardStats));
+    this.vm.inputs.projectAndRewardStats(Pair.create(ProjectFactory.project(), rewardStats));
     this.rewardMinimum.assertValues(NumberUtils.format(5));
   }
 

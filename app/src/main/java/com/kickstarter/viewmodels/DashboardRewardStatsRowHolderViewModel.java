@@ -15,8 +15,6 @@ import com.kickstarter.ui.viewholders.CreatorDashboardRewardStatsRowViewHolder;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-
 public interface DashboardRewardStatsRowHolderViewModel {
 
   interface Inputs {
@@ -24,8 +22,8 @@ public interface DashboardRewardStatsRowHolderViewModel {
   }
 
   interface Outputs {
-    /* current project being viewed */
-    Observable<Project> currentProject();
+    /* percent of the total that came from this reward */
+    Observable<String> percentageOfTotalPledged();
 
     /* project and the amount pledged for this reward */
     Observable<Pair<Project, Float>> projectAndPledgedForReward();
@@ -35,10 +33,6 @@ public interface DashboardRewardStatsRowHolderViewModel {
 
     /* minimum for reward */
     Observable<String> rewardMinimum();
-
-    /* percent of the total that came from this reward */
-    Observable<String> percentageOfTotalPledged();
-
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardRewardStatsRowViewHolder> implements
@@ -46,22 +40,15 @@ public interface DashboardRewardStatsRowHolderViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.currentProject = projectAndRewardStats
-        .map(PairUtils::first);
-
       this.rewardStats = projectAndRewardStats
         .map(PairUtils::second);
-
-      this.floatAmountPledgedForReward = rewardStats
-        .map(ProjectStatsEnvelope.RewardStats::pledged)
-        .map(Integer::floatValue);
 
       this.rewardBackerCount = this.rewardStats
         .map(ProjectStatsEnvelope.RewardStats::backersCount)
         .map(NumberUtils::format);
 
-      this.projectAndPledgedForReward = this.currentProject
-        .compose(combineLatestPair(this.floatAmountPledgedForReward));
+      this.projectAndPledgedForReward = projectAndRewardStats
+        .map(pr -> Pair.create(pr.first, (float) (pr.second.pledged())));
 
       this.rewardMinimum = this.rewardStats
         .map(ProjectStatsEnvelope.RewardStats::minimum)
@@ -80,22 +67,18 @@ public interface DashboardRewardStatsRowHolderViewModel {
     public final Outputs outputs = this;
 
     private final PublishSubject<Pair<Project, ProjectStatsEnvelope.RewardStats>> projectAndRewardStats = PublishSubject.create();
-    private final Observable<Float> floatAmountPledgedForReward;
-    private final Observable<Project> currentProject;
-    private final Observable<String> rewardBackerCount;
-    private final Observable<ProjectStatsEnvelope.RewardStats> rewardStats;
+
     private final Observable<String> percentageOfTotalPledged;
     private final Observable<Pair<Project, Float>> projectAndPledgedForReward;
+    private final Observable<String> rewardBackerCount;
     private final Observable<String> rewardMinimum;
+    private final Observable<ProjectStatsEnvelope.RewardStats> rewardStats;
 
     @Override
     public void projectAndRewardStats(final @NonNull Pair<Project, ProjectStatsEnvelope.RewardStats> projectAndRewardStats) {
       this.projectAndRewardStats.onNext(projectAndRewardStats);
     }
 
-    @Override public @NonNull Observable<Project> currentProject() {
-      return this.currentProject;
-    }
     @Override public @NonNull Observable<Pair<Project, Float>> projectAndPledgedForReward() {
       return this.projectAndPledgedForReward;
     }

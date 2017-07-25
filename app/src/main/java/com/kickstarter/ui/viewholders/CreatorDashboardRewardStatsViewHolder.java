@@ -50,6 +50,6 @@ public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
 
   @Override
   protected void destroy() {
-    rewardStatsRecyclerView.setAdapter(null);
+    this.rewardStatsRecyclerView.setAdapter(null);
   }
 }

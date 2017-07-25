@@ -66,6 +66,6 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    creatorDashboardRecyclerView.setAdapter(null);
+    this.creatorDashboardRecyclerView.setAdapter(null);
   }
 }

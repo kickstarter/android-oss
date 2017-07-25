@@ -17,7 +17,6 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 
-
 public interface DashboardRewardStatsRowHolderViewModel {
 
   interface Inputs {
@@ -76,7 +75,6 @@ public interface DashboardRewardStatsRowHolderViewModel {
         })
         .map(StringUtils::wrapInParentheses);
     }
-
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;

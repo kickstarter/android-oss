@@ -29,7 +29,6 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
-
       this.projectAndRewardStats = projectAndRewardStatsInput;
     }
 

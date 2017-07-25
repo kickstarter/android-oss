@@ -59,9 +59,7 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    final Pair<Project, ProjectStatsEnvelope.RewardStats> projectAndRewardStats =
-      requireNonNull((Pair<Project, ProjectStatsEnvelope.RewardStats>) data);
-
+    final Pair<Project, ProjectStatsEnvelope.RewardStats> projectAndRewardStats = requireNonNull((Pair<Project, ProjectStatsEnvelope.RewardStats>) data);
     viewModel.inputs.projectAndRewardStats(projectAndRewardStats);
   }
 

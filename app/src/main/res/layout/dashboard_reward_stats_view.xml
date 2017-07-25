@@ -10,14 +10,14 @@
   <TextView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="Reward Stats"
+    android:text="@string/dashboard_graphs_rewards_title_rewards"
     style="@style/Headline"
     android:layout_marginLeft="@dimen/grid_new_2" />
 
-  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  <LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="0dp"
     android:layout_weight="3"
     android:layout_marginTop="@dimen/grid_new_1">
 
@@ -27,8 +27,7 @@
       android:orientation="horizontal">
 
       <TextView
-        android:layout_column="0"
-        android:text="Top Rewards"
+        android:text="@string/dashboard_graphs_rewards_top_rewards"
         android:gravity="left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,16 +35,14 @@
         android:paddingEnd="@dimen/grid_new_4"
         android:layout_weight="1"/>
       <TextView
-        android:layout_column="1"
-        android:text="Pledged"
+        android:text="@string/dashboard_graphs_funding_pledged"
         android:gravity="left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="3dip"
         android:layout_weight="1"/>
       <TextView
-        android:layout_column="2"
-        android:text="Backers"
+        android:text="@string/dashboard_graphs_funding_backers"
         android:gravity="left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

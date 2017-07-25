@@ -14,7 +14,9 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.junit.Test;
+
 import rx.observers.TestSubscriber;
 
 public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTestCase {
@@ -80,11 +82,13 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   @Test
   public void testTimeRemainingText() {
     setUpEnvironment(environment());
+    DateTimeUtils.setCurrentMillisFixed(new DateTime().getMillis());
     final Project project = ProjectFactory.project().toBuilder().deadline(new DateTime().plusDays(10)).build();
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
     final int deadlineVal = ProjectUtils.deadlineCountdownValue(project);
 
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
     this.timeRemainingText.assertValues(NumberUtils.format(deadlineVal));
+    DateTimeUtils.setCurrentMillisSystem();
   }
 }

@@ -30,6 +30,8 @@ public final class MessagesAdapter extends KSAdapter {
   }
 
   public void messages(final @NonNull List<Message> messages) {
+    clearSections();
+
     // Group messages by start of day.
     Observable.from(messages)
       .groupBy(message -> message.createdAt().withTimeAtStartOfDay())

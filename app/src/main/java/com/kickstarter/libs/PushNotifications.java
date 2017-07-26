@@ -15,16 +15,18 @@ import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.transformations.CropSquareTransformation;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.pushdata.Activity;
 import com.kickstarter.models.pushdata.GCM;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.activities.MessagesActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.activities.WebViewActivity;
 import com.squareup.picasso.Picasso;
@@ -37,6 +39,9 @@ import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 
 public final class PushNotifications {
   private final @ApplicationContext Context context;
@@ -55,37 +60,59 @@ public final class PushNotifications {
   }
 
   public void initialize() {
-    subscriptions.add(notifications
-      .onBackpressureBuffer()
-      .filter(PushNotificationEnvelope::isFriendFollow)
-      .observeOn(Schedulers.newThread())
-      .subscribe(this::displayNotificationFromFriendFollowActivity));
+    this.subscriptions.add(
+      this.notifications
+        .onBackpressureBuffer()
+        .filter(PushNotificationEnvelope::isFriendFollow)
+        .observeOn(Schedulers.newThread())
+        .subscribe(this::displayNotificationFromFriendFollowActivity)
+    );
 
-    subscriptions.add(notifications
-      .onBackpressureBuffer()
-      .filter(PushNotificationEnvelope::isProjectActivity)
-      .observeOn(Schedulers.newThread())
-      .subscribe(this::displayNotificationFromProjectActivity));
+    this.subscriptions.add(
+      this.notifications
+        .onBackpressureBuffer()
+        .filter(PushNotificationEnvelope::isMessage)
+        .flatMap(this::fetchMessageThreadWithEnvelope)
+        .filter(ObjectUtils::isNotNull)
+        .observeOn(Schedulers.newThread())
+        .subscribe(envelopeAndMessageThread ->
+          this.displayNotificationFromMessageActivity(envelopeAndMessageThread.first, envelopeAndMessageThread.second)
+        )
+    );
 
-    subscriptions.add(notifications
-      .onBackpressureBuffer()
-      .filter(PushNotificationEnvelope::isProjectReminder)
-      .observeOn(Schedulers.newThread())
-      .subscribe(this::displayNotificationFromProjectReminder));
+    this.subscriptions.add(
+      this.notifications
+        .onBackpressureBuffer()
+        .filter(PushNotificationEnvelope::isProjectActivity)
+        .observeOn(Schedulers.newThread())
+        .subscribe(this::displayNotificationFromProjectActivity)
+    );
 
-    subscriptions.add(notifications
-      .onBackpressureBuffer()
-      .filter(PushNotificationEnvelope::isProjectUpdateActivity)
-      .flatMap(this::fetchUpdateWithEnvelope)
-      .filter(ObjectUtils::isNotNull)
-      .observeOn(Schedulers.newThread())
-      .subscribe(envelopeAndUpdate -> displayNotificationFromUpdateActivity(envelopeAndUpdate.first, envelopeAndUpdate.second)));
+    this.subscriptions.add(
+      this.notifications
+        .onBackpressureBuffer()
+        .filter(PushNotificationEnvelope::isProjectReminder)
+        .observeOn(Schedulers.newThread())
+        .subscribe(this::displayNotificationFromProjectReminder)
+    );
 
-    deviceRegistrar.registerDevice();
+    this.subscriptions.add(
+      this.notifications
+        .onBackpressureBuffer()
+        .filter(PushNotificationEnvelope::isProjectUpdateActivity)
+        .flatMap(this::fetchUpdateWithEnvelope)
+        .filter(ObjectUtils::isNotNull)
+        .observeOn(Schedulers.newThread())
+        .subscribe(envelopeAndUpdate ->
+          this.displayNotificationFromUpdateActivity(envelopeAndUpdate.first, envelopeAndUpdate.second)
+        )
+    );
+
+    this.deviceRegistrar.registerDevice();
   }
 
   public void add(final @NonNull PushNotificationEnvelope envelope) {
-    notifications.onNext(envelope);
+    this.notifications.onNext(envelope);
   }
 
   private void displayNotificationFromFriendFollowActivity(final @NonNull PushNotificationEnvelope envelope) {
@@ -99,6 +126,22 @@ public final class PushNotifications {
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
       .setLargeIcon(fetchBitmap(activity.userPhoto(), true))
       .build();
+    notificationManager().notify(envelope.signature(), notification);
+  }
+
+  private void displayNotificationFromMessageActivity(final @NonNull PushNotificationEnvelope envelope,
+    final @NonNull MessageThread messageThread) {
+    final GCM gcm = envelope.gcm();
+
+    final PushNotificationEnvelope.Message message = envelope.message();
+    if (message == null) {
+      return;
+    }
+
+    final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
+      .setContentIntent(messageThreadIntent(envelope, messageThread))
+      .build();
+
     notificationManager().notify(envelope.signature(), notification);
   }
 
@@ -143,7 +186,9 @@ public final class PushNotifications {
     notificationManager().notify(envelope.signature(), notification);
   }
 
-  private void displayNotificationFromUpdateActivity(final @NonNull PushNotificationEnvelope envelope, final @NonNull Update update) {
+  private void displayNotificationFromUpdateActivity(final @NonNull PushNotificationEnvelope envelope,
+    final @NonNull Update update) {
+
     final GCM gcm = envelope.gcm();
 
     final Activity activity = envelope.activity();
@@ -168,37 +213,55 @@ public final class PushNotifications {
     notificationManager().notify(envelope.signature(), notification);
   }
 
-  private @NonNull NotificationCompat.Builder notificationBuilder(final @NonNull String title, final @NonNull String text) {
-    return new NotificationCompat.Builder(context)
+  private @NonNull PendingIntent messageThreadIntent(final @NonNull PushNotificationEnvelope envelope,
+    final @NonNull MessageThread messageThread) {
+
+    final Intent messageThreadIntent = new Intent(this.context, MessagesActivity.class)
+      .putExtra(IntentKey.MESSAGE_THREAD, messageThread)
+      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.PUSH);
+
+    final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
+      .addNextIntentWithParentStack(messageThreadIntent);
+
+    return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT);
+  }
+
+  private @NonNull NotificationCompat.Builder notificationBuilder(final @NonNull String title,
+    final @NonNull String text) {
+
+    return new NotificationCompat.Builder(this.context)
       .setSmallIcon(R.drawable.ic_kickstarter_k)
-      .setColor(ContextCompat.getColor(context, R.color.green))
+      .setColor(ContextCompat.getColor(this.context, R.color.green))
       .setContentText(text)
       .setContentTitle(title)
       .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
       .setAutoCancel(true);
   }
 
-  private @NonNull PendingIntent projectContentIntent(final @NonNull PushNotificationEnvelope envelope, final @NonNull String projectParam) {
-    final Intent projectIntent = new Intent(context, ProjectActivity.class)
+  private @NonNull PendingIntent projectContentIntent(final @NonNull PushNotificationEnvelope envelope,
+    final @NonNull String projectParam) {
+
+    final Intent projectIntent = new Intent(this.context, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT_PARAM, projectParam)
       .putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, envelope);
 
-    final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context)
+    final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
       .addNextIntentWithParentStack(projectIntent);
 
     return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
-  private @NonNull PendingIntent projectUpdateContentIntent(final @NonNull PushNotificationEnvelope envelope, final @NonNull Update update, final @NonNull String projectParam) {
+  private @NonNull PendingIntent projectUpdateContentIntent(final @NonNull PushNotificationEnvelope envelope,
+    final @NonNull Update update, final @NonNull String projectParam) {
 
-    final Intent projectIntent = new Intent(context, ProjectActivity.class)
+    final Intent projectIntent = new Intent(this.context, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT_PARAM, projectParam);
 
-    final Intent updateIntent = new Intent(context, WebViewActivity.class)
+    final Intent updateIntent = new Intent(this.context, WebViewActivity.class)
       .putExtra(IntentKey.URL, update.urls().web().update())
       .putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, envelope);
 
-    final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context)
+    final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
       .addNextIntentWithParentStack(projectIntent)
       .addNextIntent(updateIntent);
 
@@ -211,7 +274,7 @@ public final class PushNotifications {
     }
 
     try {
-      RequestCreator requestCreator = Picasso.with(context).load(url).transform(new CropSquareTransformation());
+      RequestCreator requestCreator = Picasso.with(this.context).load(url).transform(new CropSquareTransformation());
       if (transformIntoCircle) {
         requestCreator = requestCreator.transform(new CircleTransformation());
       }
@@ -223,10 +286,28 @@ public final class PushNotifications {
   }
 
   private @NonNull NotificationManager notificationManager() {
-    return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    return (NotificationManager) this.context.getSystemService(Context.NOTIFICATION_SERVICE);
   }
 
-  private @Nullable Observable<Pair<PushNotificationEnvelope, Update>> fetchUpdateWithEnvelope(final @NonNull PushNotificationEnvelope envelope) {
+  private @Nullable Observable<Pair<PushNotificationEnvelope, MessageThread>> fetchMessageThreadWithEnvelope(
+    final @NonNull PushNotificationEnvelope envelope) {
+
+    final PushNotificationEnvelope.Message message = envelope.message();
+    if (message == null) {
+      return null;
+    }
+
+    final Observable<MessageThread> messageThread = this.client.fetchMessagesForThread(message.messageThreadId())
+      .compose(neverError())
+      .map(MessageThreadEnvelope::messageThread);
+
+    return Observable.just(envelope)
+      .compose(combineLatestPair(messageThread));
+  }
+
+  private @Nullable Observable<Pair<PushNotificationEnvelope, Update>> fetchUpdateWithEnvelope(
+    final @NonNull PushNotificationEnvelope envelope) {
+
     final Activity activity = envelope.activity();
     if (activity == null) {
       return null;
@@ -245,10 +326,10 @@ public final class PushNotifications {
     final String projectParam = ObjectUtils.toString(projectId);
     final String updateParam = ObjectUtils.toString(updateId);
 
-    final Observable<Update> update = client.fetchUpdate(projectParam, updateParam)
-      .compose(Transformers.neverError());
+    final Observable<Update> update = this.client.fetchUpdate(projectParam, updateParam)
+      .compose(neverError());
 
     return Observable.just(envelope)
-      .compose(Transformers.combineLatestPair(update));
+      .compose(combineLatestPair(update));
   }
 }

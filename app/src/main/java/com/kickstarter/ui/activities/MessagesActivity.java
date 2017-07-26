@@ -10,10 +10,12 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Pair;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
@@ -31,6 +33,7 @@ import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.MessagesViewModel;
 
 import butterknife.Bind;
+import butterknife.BindDimen;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -57,10 +60,12 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.send_message_button) Button sendMessageButton;
   protected @Bind(R.id.messages_view_pledge_button) Button viewPledgeButton;
 
+  protected @BindDimen(R.dimen.message_reply_layout_height) int messageReplyLayoutHeightDimen;
+
   protected @BindString(R.string.project_creator_by_creator) String byCreatorString;
+  protected @BindString(R.string.Message_user_name) String messageUserNameString;
   protected @BindString(R.string.pledge_amount_pledged_on_pledge_date) String pledgeAmountPledgedOnPledgeDateString;
   protected @BindString(R.string.project_view_button) String viewPledgeString;
-  protected @BindString(R.string.Reply_to_user_name) String replyToUserNameString;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -81,6 +86,16 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.viewPledgeButton.setText(this.viewPledgeString);
 
     ToolbarUtils.INSTANCE.fadeToolbarTitleOnExpand(this.appBarLayout, this.projectNameToolbarTextView);
+
+    RxView.focusChanges(this.messageEditText)
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.viewModel.inputs::messageEditTextIsFocused);
+
+    this.appBarLayout.addOnOffsetChangedListener((layout, offset) -> {
+      this.viewModel.inputs.appBarTotalScrollRange(layout.getTotalScrollRange());
+      this.viewModel.inputs.appBarOffset(offset);
+    });
 
     this.viewModel.outputs.backButtonIsGone()
       .compose(bindToLifecycle())
@@ -112,13 +127,15 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(this::setMessageEditTextHint);
 
+    this.viewModel.outputs.messageEditTextShouldRequestFocus()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.requestFocusAndOpenKeyboard());
+
     this.viewModel.outputs.messages()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(m -> {
-        this.adapter.messages(m);
-        this.recyclerView.invalidate();
-      });
+      .subscribe(this.adapter::messages);
 
     this.viewModel.outputs.participantNameTextViewText()
       .compose(bindToLifecycle())
@@ -137,6 +154,21 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(this.projectNameToolbarTextView::setText);
 
+    this.viewModel.outputs.recyclerViewDefaultBottomPadding()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.setDefaultRecyclerViewBottomPadding());
+
+    this.viewModel.outputs.recyclerViewInitialBottomPadding()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setInitialRecyclerViewBottomPadding);
+
+    this.viewModel.outputs.scrollRecyclerViewToBottom()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.recyclerView.scrollToPosition(this.adapter.getItemCount() - 1));
+
     this.viewModel.outputs.setMessageEditText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -152,10 +184,15 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(error -> ViewUtils.showToast(this, error));
 
-    this.viewModel.outputs.startViewPledgeActivity()
+    this.viewModel.outputs.startBackingActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::startViewPledgeActivity);
+      .subscribe(this::startBackingActivity);
+
+    this.viewModel.outputs.toolbarIsExpanded()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.appBarLayout::setExpanded);
 
     this.viewModel.outputs.viewPledgeButtonIsGone()
       .compose(bindToLifecycle())
@@ -194,8 +231,13 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.viewModel.inputs.messageEditTextChanged(message.toString());
   }
 
+  private void requestFocusAndOpenKeyboard() {
+    this.messageEditText.requestFocus();
+    this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+  }
+
   private void setBackingInfoView(final @NonNull Pair<Backing, Project> backingAndProject) {
-    final String pledgeAmount = ksCurrency.format(backingAndProject.first.amount(), backingAndProject.second);
+    final String pledgeAmount = this.ksCurrency.format(backingAndProject.first.amount(), backingAndProject.second);
     final String pledgeDate = DateTimeUtils.relative(this, this.ksString, backingAndProject.first.pledgedAt());
 
     this.backingAmountTextViewText.setText(
@@ -207,12 +249,21 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     );
   }
 
-  private void setMessageEditTextHint(final @NonNull String name) {
-    this.messageEditText.setHint(this.ksString.format(this.replyToUserNameString, "user_name", name));
+  private void setDefaultRecyclerViewBottomPadding() {
+    this.recyclerView.setPadding(0, 0, 0, this.messageReplyLayoutHeightDimen);
   }
 
-  private void startViewPledgeActivity(final @NonNull Project project) {
-    final Intent intent = new Intent(this, ViewPledgeActivity.class)
+  private void setInitialRecyclerViewBottomPadding(final int bottomPadding) {
+    // Default padding is the height of the reply layout
+    this.recyclerView.setPadding(0, 0, 0, bottomPadding + this.messageReplyLayoutHeightDimen);
+  }
+
+  private void setMessageEditTextHint(final @NonNull String name) {
+    this.messageEditText.setHint(this.ksString.format(this.messageUserNameString, "user_name", name));
+  }
+
+  private void startBackingActivity(final @NonNull Project project) {
+    final Intent intent = new Intent(this, BackingActivity.class)
       .putExtra(IntentKey.PROJECT, project)
       .putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true);
 

@@ -13,6 +13,7 @@ import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
@@ -23,6 +24,8 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
+import com.kickstarter.ui.data.Mailbox;
+import com.kickstarter.ui.data.MessageSubject;
 
 import java.util.List;
 
@@ -59,6 +62,8 @@ public interface ApiClientType {
 
   @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull String paginationUrl);
 
+  @NonNull Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project);
+
   @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user);
 
   @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Project project);
@@ -71,9 +76,11 @@ public interface ApiClientType {
 
   @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread);
 
-  @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads();
+  @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull Long messageThreadId);
 
-  @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project);
+  @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @NonNull Mailbox mailbox);
+
+  @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project, final @NonNull Mailbox mailbox);
 
   @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreadsWithPaginationPath(final @NonNull String paginationPath);
 
@@ -101,9 +108,7 @@ public interface ApiClientType {
 
   @NonNull Observable<User> resetPassword(final @NonNull String email);
 
-  @NonNull Observable<Message> sendMessageToBacking(final @NonNull Backing backing, final @NonNull String body);
-
-  @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread messageThread, final @NonNull String body);
+  @NonNull Observable<Message> sendMessage(final @NonNull MessageSubject messageSubject, final @NonNull String body);
 
   @NonNull Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email, final @NonNull String password,
     final @NonNull String passwordConfirmation, final boolean sendNewsletters);

@@ -121,10 +121,10 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startManagePledge);
 
-    this.viewModel.outputs.startViewPledgeActivity()
+    this.viewModel.outputs.startBackingActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::startViewPledgeActivity);
+      .subscribe(this::startBackingActivity);
 
     this.viewModel.outputs.showStarredPrompt()
       .compose(bindToLifecycle())
@@ -241,8 +241,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
   }
 
-  private void startViewPledgeActivity(final @NonNull Project project) {
-    final Intent intent = new Intent(this, ViewPledgeActivity.class)
+  private void startBackingActivity(final @NonNull Project project) {
+    final Intent intent = new Intent(this, BackingActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

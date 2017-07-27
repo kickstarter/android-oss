@@ -46,7 +46,6 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
   protected @Bind(R.id.created_count_text_view) TextView createdCountTextView;
   protected @Bind(R.id.created_text_view) TextView createdTextView;
   protected @Bind(R.id.divider_view) View dividerView;
-  protected @Bind(R.id.messages_button) IconButton messagesButton;
   protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.user_name_text_view) TextView userNameTextView;
 
@@ -102,11 +101,6 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.dividerView));
-
-    this.viewModel.outputs.messagesButtonHidden()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.messagesButton));
 
     this.viewModel.outputs.projects()
       .compose(bindToLifecycle())

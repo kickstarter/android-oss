@@ -5,14 +5,11 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
-import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
@@ -29,7 +26,6 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
-import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 
 public interface ProfileViewModel {
 
@@ -71,9 +67,6 @@ public interface ProfileViewModel {
 
     /** Emits when the divider view should be hidden. */
     Observable<Boolean> dividerViewHidden();
-
-    /** Emits when the messages button should be hidden. */
-    Observable<Boolean> messagesButtonHidden();
 
     /** Emits a list of projects to display in the profile. */
     Observable<List<Project>> projects();
@@ -152,11 +145,6 @@ public interface ProfileViewModel {
       )
         .map(p -> p.first || p.second);
 
-      this.messagesButtonHidden = this.currentConfig.observable()
-        .map(Config::features)
-        .filter(ObjectUtils::isNotNull)
-        .map(f -> !coalesce(f.get(FeatureKey.ANDROID_MESSAGES), false));
-
       this.projects = paginator.paginatedData();
       this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked;
       this.startProjectActivity = this.projectCardClicked;
@@ -179,7 +167,6 @@ public interface ProfileViewModel {
     private final Observable<String> createdCountTextViewText;
     private final Observable<Boolean> createdTextViewHidden;
     private final Observable<Boolean> dividerViewHidden;
-    private final Observable<Boolean> messagesButtonHidden;
     private final Observable<List<Project>> projects;
     private final Observable<Void> resumeDiscoveryActivity;
     private final Observable<Project> startProjectActivity;
@@ -231,9 +218,6 @@ public interface ProfileViewModel {
     }
     @Override public @NonNull Observable<Boolean> dividerViewHidden() {
       return this.dividerViewHidden;
-    }
-    @Override public @NonNull Observable<Boolean> messagesButtonHidden() {
-      return this.messagesButtonHidden;
     }
     @Override public @NonNull Observable<List<Project>> projects() {
       return this.projects;

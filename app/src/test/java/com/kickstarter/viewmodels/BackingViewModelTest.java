@@ -6,14 +6,10 @@ import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.BackingFactory;
-import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.LocationFactory;
 import com.kickstarter.factories.RewardFactory;
-import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KoalaEvent;
-import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.DateTimeUtils;
@@ -30,7 +26,6 @@ import com.kickstarter.ui.IntentKey;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -315,34 +310,9 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testViewMessagesButtonIsGone_FlagDisabled() {
+  public void testViewMessagesButtonIsGone_FromMessages() {
     final Backing backing = BackingFactory.backing();
-    final Config config = ConfigFactory.config()
-      .toBuilder()
-      .features(Collections.emptyMap())
-      .build();
-
-    final MockCurrentConfig currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
-    setUpEnvironment(envWithBacking(backing).toBuilder().currentConfig(currentConfig).build());
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
-
-    this.viewMessagesButtonIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testViewMessagesButtonIsGone_FlagEnabled_FromMessages() {
-    final Backing backing = BackingFactory.backing();
-    final Config config = ConfigFactory.config()
-      .toBuilder()
-      .features(Collections.singletonMap(FeatureKey.ANDROID_MESSAGES, true))
-      .build();
-
-    final MockCurrentConfig currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
-    setUpEnvironment(envWithBacking(backing).toBuilder().currentConfig(currentConfig).build());
+    setUpEnvironment(envWithBacking(backing));
 
     this.vm.intent(
       new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true)
@@ -352,17 +322,10 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testViewMessagesButtonIsVisible_FlagEnabled() {
+  public void testViewMessagesButtonIsVisible() {
     final Backing backing = BackingFactory.backing();
-    final Config config = ConfigFactory.config()
-      .toBuilder()
-      .features(Collections.singletonMap(FeatureKey.ANDROID_MESSAGES, true))
-      .build();
+    setUpEnvironment(envWithBacking(backing));
 
-    final MockCurrentConfig currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
-    setUpEnvironment(envWithBacking(backing).toBuilder().currentConfig(currentConfig).build());
     this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
 
     this.viewMessagesButtonIsGone.assertValues(false);

@@ -22,7 +22,6 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.DateTimeUtils;
-import com.kickstarter.libs.utils.ToolbarUtils;
 import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Backing;
@@ -86,17 +85,12 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
 
     this.viewPledgeButton.setText(this.viewPledgeString);
 
-    ToolbarUtils.INSTANCE.fadeToolbarTitleOnExpand(this.appBarLayout, this.projectNameToolbarTextView);
+    setAppBarOffsetChangedListener(this.appBarLayout);
 
     RxView.focusChanges(this.messageEditText)
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.viewModel.inputs::messageEditTextIsFocused);
-
-    this.appBarLayout.addOnOffsetChangedListener((layout, offset) -> {
-      this.viewModel.inputs.appBarTotalScrollRange(layout.getTotalScrollRange());
-      this.viewModel.inputs.appBarOffset(offset);
-    });
 
     this.viewModel.outputs.backButtonIsGone()
       .compose(bindToLifecycle())
@@ -240,6 +234,20 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   private void requestFocusAndOpenKeyboard() {
     this.messageEditText.requestFocus();
     this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+  }
+
+  /**
+   * Sets an OffsetChangedListener for the view's AppBarLayout to:
+   * 1. determine the toolbar's alpha based on scroll range
+   * 2. adjust the view's bottom padding via inputs
+   */
+  private void setAppBarOffsetChangedListener(final @NonNull AppBarLayout appBarLayout) {
+    appBarLayout.addOnOffsetChangedListener((layout, offset) -> {
+      this.projectNameToolbarTextView.setAlpha(Math.abs(offset) / layout.getTotalScrollRange());
+
+      this.viewModel.inputs.appBarTotalScrollRange(layout.getTotalScrollRange());
+      this.viewModel.inputs.appBarOffset(offset);
+    });
   }
 
   private void setBackingInfoView(final @NonNull Pair<Backing, Project> backingAndProject) {

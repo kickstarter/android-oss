@@ -4,10 +4,8 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -117,7 +115,6 @@ public interface BackingViewModel {
 
   final class ViewModel extends ActivityViewModel<BackingActivity> implements Inputs, Outputs {
     private final ApiClientType client;
-    private final CurrentConfigType currentConfig;
     private final CurrentUserType currentUser;
     private final KSCurrency ksCurrency;
 
@@ -125,7 +122,6 @@ public interface BackingViewModel {
       super(environment);
 
       this.client = environment.apiClient();
-      this.currentConfig = environment.currentConfig();
       this.currentUser = environment.currentUser();
       this.ksCurrency = environment.ksCurrency();
 
@@ -136,9 +132,6 @@ public interface BackingViewModel {
       final Observable<Boolean> isFromMessagesActivity = intent()
         .map(i -> i.getBooleanExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, false))
         .ofType(Boolean.class);
-
-      final Observable<Boolean> featureFlagIsEnabled = this.currentConfig.observable()
-        .map(config -> ObjectUtils.coalesce(config.features().get(FeatureKey.ANDROID_MESSAGES), false));
 
       final Observable<Backing> backing = project
         .compose(combineLatestPair(this.currentUser.observable()))
@@ -275,14 +268,10 @@ public interface BackingViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.shippingSectionIsGone);
 
-      Observable.zip(
-        isFromMessagesActivity,
-        featureFlagIsEnabled,
-        Pair::create
-      )
-        .map(fromMessagesAndFlagEnabled -> fromMessagesAndFlagEnabled.first || !fromMessagesAndFlagEnabled.second)
+      isFromMessagesActivity
+        .map(BooleanUtils::isTrue)
         .compose(bindToLifecycle())
-        .subscribe(this.viewMessagesButtonIsGone::onNext);
+        .subscribe(this.viewMessagesButtonIsGone);
 
       project
         .compose(bindToLifecycle())

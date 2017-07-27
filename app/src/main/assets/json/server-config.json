@@ -7838,7 +7838,7 @@
     "project_build": "control",
     "react_guest_pledging": "control",
     "react_payment_sources_form": "control",
-    "favorites_recs": "control",
+    "favorites_recs": "experimental",
     "thanks_page_better_recs": "control",
     "social_icons_bucket": "control",
     "guided_search": "control"

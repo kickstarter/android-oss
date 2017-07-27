@@ -23,7 +23,6 @@ import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProfileAdapter;
-import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 

@@ -40,17 +40,17 @@ public interface DashboardRewardStatsRowHolderViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.rewardStats = projectAndRewardStats
+      final Observable<ProjectStatsEnvelope.RewardStats> rewardStats = projectAndRewardStats
         .map(PairUtils::second);
 
-      this.rewardBackerCount = this.rewardStats
+      this.rewardBackerCount = rewardStats
         .map(ProjectStatsEnvelope.RewardStats::backersCount)
         .map(NumberUtils::format);
 
       this.projectAndPledgedForReward = projectAndRewardStats
         .map(pr -> Pair.create(pr.first, (float) (pr.second.pledged())));
 
-      this.rewardMinimum = this.rewardStats
+      this.rewardMinimum = rewardStats
         .map(ProjectStatsEnvelope.RewardStats::minimum)
         .map(NumberUtils::format);
 
@@ -72,21 +72,20 @@ public interface DashboardRewardStatsRowHolderViewModel {
     private final Observable<Pair<Project, Float>> projectAndPledgedForReward;
     private final Observable<String> rewardBackerCount;
     private final Observable<String> rewardMinimum;
-    private final Observable<ProjectStatsEnvelope.RewardStats> rewardStats;
 
     @Override
     public void projectAndRewardStats(final @NonNull Pair<Project, ProjectStatsEnvelope.RewardStats> projectAndRewardStats) {
       this.projectAndRewardStats.onNext(projectAndRewardStats);
     }
 
+    @Override public @NonNull Observable<String> percentageOfTotalPledged() {
+      return this.percentageOfTotalPledged;
+    }
     @Override public @NonNull Observable<Pair<Project, Float>> projectAndPledgedForReward() {
       return this.projectAndPledgedForReward;
     }
     @Override public @NonNull Observable<String> rewardBackerCount() {
       return this.rewardBackerCount;
-    }
-    @Override public @NonNull Observable<String> percentageOfTotalPledged() {
-      return this.percentageOfTotalPledged;
     }
     @Override public @NonNull Observable<String> rewardMinimum() {
       return this.rewardMinimum;

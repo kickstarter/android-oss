@@ -187,8 +187,10 @@ public final class ApiClient implements ApiClientType {
   public @NonNull Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project) {
     return service
       .projectStats(project.param())
+      .map(x -> x)
       .lift(apiErrorOperator())
-      .subscribeOn(Schedulers.io());
+      .subscribeOn(Schedulers.io())
+;
   }
 
   @Override

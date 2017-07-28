@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
@@ -10,7 +11,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
-import com.kickstarter.viewmodels.DashboardRewardStatsRowHolderViewModel;
+import com.kickstarter.viewmodels.CreatorDashboardReferrerStatsRowHolderViewModel;
 
 import java.math.RoundingMode;
 
@@ -20,51 +21,51 @@ import butterknife.ButterKnife;
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
-public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
+public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHolder {
 
-  private final DashboardRewardStatsRowHolderViewModel.ViewModel viewModel;
-  protected @Bind(R.id.reward_minimum_text_view) TextView rewardMinimumTextView;
-  protected @Bind(R.id.amount_pledged_for_reward_text_view) TextView amountForRewardPledgedTextView;
-  protected @Bind(R.id.percentage_pledged_for_reward_text_view) TextView percentagePledgedForRewardTextView;
-  protected @Bind(R.id.reward_backer_count_text_view) TextView rewardBackerCountTextView;
+  private final CreatorDashboardReferrerStatsRowHolderViewModel.ViewModel viewModel;
+  protected @Bind(R.id.amount_pledged_for_referrer_text_view) TextView amountPledgedForReferrerTextView;
+  protected @Bind(R.id.percentage_pledged_for_referrer_text_view) TextView percentagePledgedForReferrerTextView;
+  protected @Bind(R.id.referrer_source_text_view) TextView referrerSourceTextView;
+  protected @Bind(R.id.referrer_backer_count_text_view) TextView referrerBackerCountTextView;
 
   private KSCurrency ksCurrency;
 
-  public CreatorDashboardRewardStatsRowViewHolder(final @NonNull View view) {
+  public CreatorDashboardReferrerStatsRowViewHolder(final @NonNull View view) {
     super(view);
-    this.viewModel = new DashboardRewardStatsRowHolderViewModel.ViewModel(environment());
+    this.viewModel = new CreatorDashboardReferrerStatsRowHolderViewModel.ViewModel(environment());
     ButterKnife.bind(this, view);
     this.ksCurrency = this.environment().ksCurrency();
 
     this.viewModel.outputs.percentageOfTotalPledged()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(percentagePledgedForRewardTextView::setText);
+      .subscribe(percentagePledgedForReferrerTextView::setText);
 
-    this.viewModel.outputs.projectAndPledgedForReward()
+    this.viewModel.outputs.projectAndPledgedForReferrer()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setPledgedColumnValue);
 
-    this.viewModel.outputs.rewardBackerCount()
+    this.viewModel.outputs.referrerBackerCount()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(rewardBackerCountTextView::setText);
+      .subscribe(referrerBackerCountTextView::setText);
 
-    this.viewModel.outputs.rewardMinimum()
+    this.viewModel.outputs.referrerCode()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(rewardMinimumTextView::setText);
+      .subscribe(x -> referrerSourceTextView.setText(x));
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    final Pair<Project, ProjectStatsEnvelope.RewardStats> projectAndRewardStats = requireNonNull((Pair<Project, ProjectStatsEnvelope.RewardStats>) data);
-    viewModel.inputs.projectAndRewardStats(projectAndRewardStats);
+    final Pair<Project, ProjectStatsEnvelope.ReferrerStats> projectAndReferrerStats = requireNonNull((Pair<Project, ProjectStatsEnvelope.ReferrerStats>) data);
+    this.viewModel.inputs.projectAndReferrerStatsInput(projectAndReferrerStats);
   }
 
   private void setPledgedColumnValue(final @NonNull Pair<Project, Float> projectAndPledgedForReward) {
     final String goalString = ksCurrency.format(projectAndPledgedForReward.second, projectAndPledgedForReward.first, false, true, RoundingMode.DOWN);
-    amountForRewardPledgedTextView.setText(goalString);
+    amountPledgedForReferrerTextView.setText(goalString);
   }
 }

@@ -14,13 +14,13 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class ProjectStatsEnvelope implements Parcelable {
 
-  public enum ReferrerType {
-    CUSTOM, EXTERNAL, INTERNAL, UNKNOWN
-  }
+//  public enum ReferrerType {
+//    CUSTOM, EXTERNAL, INTERNAL, UNKNOWN
+//  }
 
   public abstract CumulativeStats cumulativeStats();
   public abstract FundingDateStats fundingDateStats();
-  public abstract ReferrerStats referrerStats();
+  public abstract List<ReferrerStats> referralDistribution();
   public abstract List<RewardStats> rewardDistribution();
   public abstract VideoStats videoStats();
 
@@ -29,7 +29,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
   public abstract static class Builder {
     public abstract Builder cumulativeStats(CumulativeStats __);
     public abstract Builder fundingDateStats(FundingDateStats __);
-    public abstract Builder referrerStats(ReferrerStats __);
+    public abstract Builder referralDistribution(List<ReferrerStats> __);
     public abstract Builder rewardDistribution(List<RewardStats> __);
     public abstract Builder videoStats(VideoStats __);
     public abstract ProjectStatsEnvelope build();
@@ -101,7 +101,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
     public abstract double percentageOfDollars();
     public abstract int pledged();
     public abstract String referrerName();
-    public abstract ReferrerType referrerType();
+    public abstract String referrerType();
 
     @AutoParcel.Builder
     public abstract static class Builder {
@@ -110,7 +110,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
       public abstract Builder percentageOfDollars(double __);
       public abstract Builder pledged(int __);
       public abstract Builder referrerName(String __);
-      public abstract Builder referrerType(ReferrerType __);
+      public abstract Builder referrerType(String __);
       public abstract ReferrerStats build();
     }
 

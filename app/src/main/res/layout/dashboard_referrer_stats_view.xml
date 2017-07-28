@@ -9,7 +9,7 @@
   <TextView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="@string/dashboard_graphs_rewards_title_rewards"
+    android:text="@string/dashboard_graphs_referrers_title_referrers"
     style="@style/Headline"
     android:layout_marginLeft="@dimen/grid_new_2" />
 
@@ -26,7 +26,7 @@
       android:orientation="horizontal">
 
       <TextView
-        android:text="@string/dashboard_graphs_rewards_top_rewards"
+        android:text="@string/dashboard_graphs_referrers_source"
         android:gravity="left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         android:paddingEnd="@dimen/grid_new_4"
         android:layout_weight="1"/>
       <TextView
-        android:text="@string/dashboard_graphs_funding_pledged"
+        android:text="@string/dashboard_graphs_rewards_pledged"
         android:gravity="left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,11 +51,12 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-      android:id="@+id/dashboard_reward_stats_recycler_view"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
-
   </LinearLayout>
+
+
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/dashboard_referrer_stats_recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
 
 </LinearLayout>

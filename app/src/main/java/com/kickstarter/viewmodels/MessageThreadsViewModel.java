@@ -9,7 +9,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.MessageThread;
@@ -52,9 +51,6 @@ public interface MessageThreadsViewModel {
 
     /** Emits a boolean indicating whether message threads are being fetched from the API. */
     Observable<Boolean> isFetchingMessageThreads();
-
-    /** Emits a boolean to determine if the loading indicator should be gone. */
-    Observable<Boolean> loadingIndicatorViewIsGone();
 
     /** Emits a list of message threads to be displayed. */
     Observable<List<MessageThread>> messageThreads();
@@ -123,13 +119,7 @@ public interface MessageThreadsViewModel {
 
       paginator.paginatedData()
         .compose(bindToLifecycle())
-        .subscribe(m -> {
-          this.messageThreads.onNext(m);
-          this.isFetchingMessageThreads.onNext(false);
-        });
-
-      this.loadingIndicatorViewIsGone = this.isFetchingMessageThreads
-        .map(BooleanUtils::negate);
+        .subscribe(this.messageThreads);
 
       this.hasNoMessages = unreadMessagesCount.map(ObjectUtils::isNull);
       this.hasNoUnreadMessages = unreadMessagesCount.map(IntegerUtils::isZero);
@@ -164,7 +154,6 @@ public interface MessageThreadsViewModel {
     private final Observable<Boolean> hasNoMessages;
     private final Observable<Boolean> hasNoUnreadMessages;
     private final BehaviorSubject<Boolean> isFetchingMessageThreads = BehaviorSubject.create();
-    private final Observable<Boolean> loadingIndicatorViewIsGone;
     private final BehaviorSubject<List<MessageThread>> messageThreads = BehaviorSubject.create();
     private final Observable<Integer> unreadCountTextViewColorInt;
     private final Observable<Integer> unreadCountTextViewTypefaceInt;
@@ -192,9 +181,6 @@ public interface MessageThreadsViewModel {
     }
     @Override public @NonNull Observable<Boolean> isFetchingMessageThreads() {
       return this.isFetchingMessageThreads;
-    }
-    @Override public @NonNull Observable<Boolean> loadingIndicatorViewIsGone() {
-      return this.loadingIndicatorViewIsGone;
     }
     @Override public @NonNull Observable<List<MessageThread>> messageThreads() {
       return this.messageThreads;

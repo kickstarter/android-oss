@@ -193,8 +193,7 @@ public interface MessagesViewModel {
             .doAfterTerminate(() -> messagesAreLoading.onNext(false))
             .compose(neverError())
             .share();
-          }
-        );
+        });
 
       this.loadingIndicatorViewIsGone = messagesAreLoading
         .map(BooleanUtils::negate)

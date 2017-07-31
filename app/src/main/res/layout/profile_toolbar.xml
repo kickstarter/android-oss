@@ -21,21 +21,20 @@
     android:orientation="horizontal">
 
     <com.kickstarter.ui.views.IconTextView
-      style="@style/ToolbarIcon"
-      android:id="@+id/back_button"
-      android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
-      android:text="@string/arrow_back_icon" />
+      style="@style/ToolbarIconBackButton"
+      android:id="@+id/back_button" />
 
-    <com.kickstarter.ui.views.IconTextView
-      app:iconType="ss_kickstarter"
+    <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
+      android:drawableStart="@drawable/ic_action_icon__mail"
+      android:drawableTint="@color/black"
       android:id="@+id/messages_button"
       android:focusable="true"
+      android:paddingStart="@dimen/grid_2"
+      android:paddingEnd="@dimen/grid_2"
       android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
-      android:text="@string/mail_icon" />
+      android:contentDescription="@string/accessibility_dashboard_buttons_messages" />
 
   </RelativeLayout>
 
 </com.kickstarter.ui.toolbars.KSToolbar>
-

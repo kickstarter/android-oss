@@ -31,6 +31,14 @@ public abstract class RefTag implements Parcelable {
     return new AutoParcel_RefTag("city");
   }
 
+  public static @NonNull RefTag dashboard() {
+    return new AutoParcel_RefTag("dashboard");
+  }
+
+  public static @NonNull RefTag pledgeInfo() {
+    return new AutoParcel_RefTag("pledge_info");
+  }
+
   public static @NonNull RefTag recommended() {
     return new AutoParcel_RefTag("recommended");
   }
@@ -45,6 +53,18 @@ public abstract class RefTag implements Parcelable {
 
   public static @NonNull RefTag search() {
     return new AutoParcel_RefTag("search");
+  }
+
+  public static @NonNull RefTag searchFeatured() {
+    return new AutoParcel_RefTag("search_featured");
+  }
+
+  public static @NonNull RefTag searchPopular() {
+    return new AutoParcel_RefTag("search_popular_title_view");
+  }
+
+  public static @NonNull RefTag searchPopularFeatured() {
+    return new AutoParcel_RefTag("search_popular_featured");
   }
 
   public static @NonNull RefTag discovery() {

@@ -63,6 +63,7 @@ import com.kickstarter.services.WebService;
 import com.kickstarter.services.interceptors.ApiRequestInterceptor;
 import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
+import com.kickstarter.ui.SharedPreferenceKey;
 
 import org.joda.time.DateTime;
 
@@ -246,7 +247,7 @@ public final class ApplicationModule {
   @Singleton
   @AccessTokenPreference
   @NonNull StringPreferenceType provideAccessTokenPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new StringPreference(sharedPreferences, "access_token");
+    return new StringPreference(sharedPreferences, SharedPreferenceKey.ACCESS_TOKEN);
   }
 
   @Provides
@@ -266,21 +267,21 @@ public final class ApplicationModule {
   @Singleton
   @ConfigPreference
   @NonNull StringPreferenceType providesConfigPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new StringPreference(sharedPreferences, "config");
+    return new StringPreference(sharedPreferences, SharedPreferenceKey.CONFIG);
   }
 
   @Provides
   @Singleton
   @ActivitySamplePreference
   @NonNull IntPreferenceType provideActivitySamplePreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new IntPreference(sharedPreferences, "last_seen_activity_id");
+    return new IntPreference(sharedPreferences, SharedPreferenceKey.LAST_SEEN_ACTIVITY_ID);
   }
 
   @Provides
   @Singleton
   @AppRatingPreference
   @NonNull BooleanPreferenceType provideAppRatingPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new BooleanPreference(sharedPreferences, "has_seen_app_rating");
+    return new BooleanPreference(sharedPreferences, SharedPreferenceKey.HAS_SEEN_APP_RATING);
   }
 
   @Provides
@@ -361,7 +362,7 @@ public final class ApplicationModule {
   @Singleton
   @GamesNewsletterPreference
   @NonNull BooleanPreferenceType provideGamesNewsletterPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new BooleanPreference(sharedPreferences, "has_seen_games_newsletter");
+    return new BooleanPreference(sharedPreferences, SharedPreferenceKey.HAS_SEEN_GAMES_NEWSLETTER);
   }
 
   @Provides
@@ -454,6 +455,6 @@ public final class ApplicationModule {
   @Singleton
   @UserPreference
   @NonNull StringPreferenceType provideUserPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new StringPreference(sharedPreferences, "user");
+    return new StringPreference(sharedPreferences, SharedPreferenceKey.USER);
   }
 }

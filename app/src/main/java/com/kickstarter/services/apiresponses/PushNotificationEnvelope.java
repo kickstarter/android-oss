@@ -17,6 +17,7 @@ import auto.parcel.AutoParcel;
 public abstract class PushNotificationEnvelope implements Parcelable {
   public abstract @Nullable Activity activity();
   public abstract GCM gcm();
+  public abstract @Nullable Message message();
   public abstract @Nullable Project project();
 
   private final static List<String> PROJECT_NOTIFICATION_CATEGORIES = Arrays.asList(
@@ -24,12 +25,14 @@ public abstract class PushNotificationEnvelope implements Parcelable {
     com.kickstarter.models.Activity.CATEGORY_CANCELLATION,
     com.kickstarter.models.Activity.CATEGORY_FAILURE,
     com.kickstarter.models.Activity.CATEGORY_LAUNCH,
-    com.kickstarter.models.Activity.CATEGORY_SUCCESS);
+    com.kickstarter.models.Activity.CATEGORY_SUCCESS
+  );
 
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder activity(Activity __);
     public abstract Builder gcm(GCM __);
+    public abstract Builder message(Message __);
     public abstract Builder project(Project __);
     public abstract PushNotificationEnvelope build();
   }
@@ -42,6 +45,10 @@ public abstract class PushNotificationEnvelope implements Parcelable {
 
   public boolean isFriendFollow() {
     return activity() != null && activity().category().equals(com.kickstarter.models.Activity.CATEGORY_FOLLOW);
+  }
+
+  public boolean isMessage() {
+    return message() != null;
   }
 
   public boolean isProjectActivity() {
@@ -66,6 +73,24 @@ public abstract class PushNotificationEnvelope implements Parcelable {
     // The server doesn't send unique notification ids, so hashing the alert text is a weak substitute. Probably won't
     // make use of this feature anyhow.
     return gcm().alert().hashCode();
+  }
+
+  @AutoGson
+  @AutoParcel
+  public abstract static class Message implements Parcelable {
+    public abstract Long messageThreadId();
+    public abstract Long projectId();
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder messageThreadId(Long __);
+      public abstract Builder projectId(Long __);
+      public abstract Message build();
+    }
+
+    public static Builder builder() {
+      return new AutoParcel_PushNotificationEnvelope_Message.Builder();
+    }
   }
 
   @AutoGson

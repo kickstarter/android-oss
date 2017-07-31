@@ -18,7 +18,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/grid_2"
-      style="@style/SubheadPrimary"
+      style="@style/CalloutPrimary"
       android:hint="@string/Enter_the_base_url_of_the_api"
       android:inputType="textUri" />
 

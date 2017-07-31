@@ -11,8 +11,10 @@ import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.CommentFactory;
 import com.kickstarter.factories.CommentsEnvelopeFactory;
 import com.kickstarter.factories.LocationFactory;
+import com.kickstarter.factories.MessageThreadEnvelopeFactory;
 import com.kickstarter.factories.MessageThreadsEnvelopeFactory;
 import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.factories.SurveyResponseFactory;
 import com.kickstarter.factories.UpdateFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Config;
@@ -21,15 +23,23 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
+import com.kickstarter.models.Message;
+import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
+import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectsEnvelope;
+import com.kickstarter.ui.data.Mailbox;
+import com.kickstarter.ui.data.MessageSubject;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -138,7 +148,17 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean isMember) {
+    return Observable.empty();
+  }
+
+  @Override
   public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull String paginationUrl) {
+    return Observable.empty();
+  }
+
+  @Override
+  public @NonNull Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project) {
     return Observable.empty();
   }
 
@@ -158,12 +178,27 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads() {
+  public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
+    return Observable.just(MessageThreadEnvelopeFactory.messageThreadEnvelope());
+  }
+
+  @Override
+  public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread) {
+    return Observable.just(MessageThreadEnvelopeFactory.messageThreadEnvelope());
+  }
+
+  @Override
+  public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull Long messageThreadId) {
+    return Observable.empty();
+  }
+
+  @Override
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @NonNull Mailbox mailbox) {
     return Observable.just(MessageThreadsEnvelopeFactory.messageThreadsEnvelope());
   }
 
   @Override
-  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project) {
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project, final @NonNull Mailbox mailbox) {
     return Observable.just(MessageThreadsEnvelopeFactory.messageThreadsEnvelope());
   }
 
@@ -270,6 +305,11 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<MessageThread> markAsRead(final @NonNull MessageThread messageThread) {
+    return Observable.empty();
+  }
+
+  @Override
   public @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
     return Observable.just(CommentFactory.comment().toBuilder().body(body).build());
   }
@@ -279,7 +319,6 @@ public class MockApiClient implements ApiClientType {
     return Observable.just(CommentFactory.comment().toBuilder().body(body).build());
   }
 
-
   @Override
   public @NonNull Observable<Empty> registerPushToken(final @NonNull String token) {
     return Observable.empty();
@@ -288,6 +327,11 @@ public class MockApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<User> resetPassword(final @NonNull String email) {
     return Observable.just(UserFactory.user());
+  }
+
+  @Override
+  public @NonNull Observable<Message> sendMessage(final @NonNull MessageSubject messageSubject, final @NonNull String body) {
+    return Observable.empty();
   }
 
   @Override
@@ -312,8 +356,18 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<SurveyResponse> fetchSurveyResponse(final int surveyResponseId) {
+    return Observable.just(SurveyResponseFactory.surveyResponse().toBuilder().id(surveyResponseId).build());
+  }
+
+  @Override
   public @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project) {
     return Observable.just(project.toBuilder().isStarred(!project.isStarred()).build());
+  }
+
+  @Override
+  public @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
+    return Observable.just(Arrays.asList(SurveyResponseFactory.surveyResponse(), SurveyResponseFactory.surveyResponse()));
   }
 
   @Override

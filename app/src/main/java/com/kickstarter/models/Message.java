@@ -17,7 +17,6 @@ public abstract class Message implements Parcelable {
   public abstract User recipient();
   public abstract User sender();
 
-
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder body(String __);

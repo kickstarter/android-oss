@@ -4,13 +4,18 @@ import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.CategoryFactory;
+import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.InternalBuildEnvelopeFactory;
 import com.kickstarter.factories.UserFactory;
+import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
+import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
@@ -18,6 +23,7 @@ import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import rx.observers.TestSubscriber;
@@ -38,6 +44,73 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Build check should be shown when newer build is available.
     vm.inputs.newerBuildIsAvailable(buildEnvelope);
     showBuildCheckAlert.assertValue(buildEnvelope);
+  }
+
+  @Test
+  public void testCreatorDashboardButtonIsGone__isCreatorFeatureDisabled() {
+    final User creator = UserFactory.creator();
+    final MockCurrentUser currentUser = new MockCurrentUser(creator);
+
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.emptyMap())
+      .build();
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+    final Environment env = environment().toBuilder()
+      .currentUser(currentUser)
+      .currentConfig(currentConfig).build();
+    final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
+
+    final DiscoveryViewModel vm = new DiscoveryViewModel(env);
+    vm.outputs.creatorDashboardButtonIsGone().subscribe(creatorDashboardButtonIsGone);
+    creatorDashboardButtonIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testCreatorDashboardButtonIsGone__notCreatorFeatureEnabled() {
+    final User notCreator = UserFactory.user().toBuilder().createdProjectsCount(0).build();
+    final MockCurrentUser currentUser = new MockCurrentUser(notCreator);
+
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.singletonMap(FeatureKey.ANDROID_CREATOR_VIEW, true))
+      .build();
+
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    final Environment env = environment().toBuilder()
+      .currentUser(currentUser)
+      .currentConfig(currentConfig).build();
+    final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
+
+    final DiscoveryViewModel vm = new DiscoveryViewModel(env);
+    vm.outputs.creatorDashboardButtonIsGone().subscribe(creatorDashboardButtonIsGone);
+    creatorDashboardButtonIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testCreatorDashboardButtonIsGone__isCreatorFeatureEnabled() {
+    final User creator = UserFactory.creator();
+    final MockCurrentUser currentUser = new MockCurrentUser(creator);
+
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.singletonMap(FeatureKey.ANDROID_CREATOR_VIEW, true))
+      .build();
+
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    final Environment env = environment().toBuilder()
+      .currentUser(currentUser)
+      .currentConfig(currentConfig).build();
+    final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
+
+    final DiscoveryViewModel vm = new DiscoveryViewModel(env);
+    vm.outputs.creatorDashboardButtonIsGone().subscribe(creatorDashboardButtonIsGone);
+    creatorDashboardButtonIsGone.assertValues(false);
   }
 
   @Test

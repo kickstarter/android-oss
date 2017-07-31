@@ -1,51 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:orientation="vertical"
-  android:focusable="true"
+  android:id="@+id/message_threads_coordinator_layout"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
-
-  <include layout="@layout/message_threads_toolbar"/>
-
-  <RelativeLayout
+  android:layout_height="match_parent"
+  android:fitsSystemWindows="true">
+  
+  <android.support.design.widget.AppBarLayout
+    android:id="@+id/message_threads_app_bar_layout"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/grid_5">
+    android:fitsSystemWindows="true">
 
-    <TextView
-      android:id="@+id/mailbox_text_view"
-      style="@style/EditorialHeadline"
-      android:layout_centerVertical="true"
-      android:layout_centerHorizontal="true"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      tools:text="Inbox"/>
+    <android.support.design.widget.CollapsingToolbarLayout
+      android:id="@+id/message_threads_collapsing_toolbar_layout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:fitsSystemWindows="true"
+      app:contentScrim="@color/white"
+      app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-    <TextView
-      android:id="@+id/unread_count_text_view"
-      android:textColor="@color/blue"
-      style="@style/SubheadPrimaryMedium"
-      android:layout_marginTop="@dimen/grid_2"
-      android:layout_below="@id/mailbox_text_view"
-      android:layout_centerHorizontal="true"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      tools:text="3 new"/>
+      <LinearLayout
+        android:id="@+id/mailbox_and_unread_layout"
+        android:focusable="true"
+        android:importantForAccessibility="yes"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/grid_9"
+        android:paddingStart="@dimen/grid_3"
+        android:paddingEnd="@dimen/grid_2"
+        android:paddingBottom="@dimen/grid_10"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_collapseMode="parallax"
+        app:layout_collapseParallaxMultiplier="0.2"
+        tools:ignore="RelativeOverlap">
 
-  </RelativeLayout>
+        <TextView
+          android:id="@+id/mailbox_text_view"
+          style="@style/Title1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="Inbox"/>
+
+        <TextView
+          android:id="@+id/unread_count_text_view"
+          android:textColor="@color/ksr_text_green_700"
+          style="@style/FootnotePrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="3 unread"/>
+
+      </LinearLayout>
+
+      <include layout="@layout/message_threads_toolbar"/>
+
+    </android.support.design.widget.CollapsingToolbarLayout>
+
+  </android.support.design.widget.AppBarLayout>
 
   <android.support.v4.widget.SwipeRefreshLayout
     android:id="@+id/message_threads_swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <android.support.v7.widget.RecyclerView
       android:id="@+id/message_threads_recycler_view"
-      android:background="@color/discovery_background"
+      android:scrollbars="vertical"
+      android:background="@color/white"
       android:layout_width="match_parent"
       android:layout_height="match_parent"/>
 
   </android.support.v4.widget.SwipeRefreshLayout>
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

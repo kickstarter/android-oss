@@ -21,7 +21,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.CheckoutActivity;
-import com.kickstarter.ui.activities.ViewPledgeActivity;
+import com.kickstarter.ui.activities.BackingActivity;
 import com.kickstarter.ui.adapters.RewardsItemAdapter;
 import com.kickstarter.viewmodels.RewardViewModel;
 
@@ -97,6 +97,11 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setBackersTextView);
+
+    viewModel.outputs.rewardDescriptionIsHidden()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(descriptionTextView));
 
     viewModel.outputs.descriptionTextViewText()
       .compose(bindToLifecycle())
@@ -229,7 +234,7 @@ public final class RewardViewHolder extends KSViewHolder {
 
   private void goToViewPledge(final @NonNull Project project) {
     final Context context = context();
-    final Intent intent = new Intent(context, ViewPledgeActivity.class)
+    final Intent intent = new Intent(context, BackingActivity.class)
       .putExtra(IntentKey.PROJECT, project);
 
     context.startActivity(intent);

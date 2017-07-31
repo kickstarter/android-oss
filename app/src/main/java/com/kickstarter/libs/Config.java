@@ -2,10 +2,13 @@ package com.kickstarter.libs;
 
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import auto.parcel.AutoParcel;
 
@@ -13,11 +16,13 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class Config implements Parcelable {
   public abstract String countryCode();
+  public abstract @Nullable Map<String, Boolean> features();
   public abstract List<LaunchedCountry> launchedCountries();
 
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder countryCode(String __);
+    public abstract Builder features(Map<String, Boolean> __);
     public abstract Builder launchedCountries(List<LaunchedCountry> __);
     public abstract Config build();
   }
@@ -47,7 +52,8 @@ public abstract class Config implements Parcelable {
   }
 
   public static Builder builder() {
-    return new AutoParcel_Config.Builder();
+    return new AutoParcel_Config.Builder()
+      .features(Collections.emptyMap());
   }
 
   public abstract Builder toBuilder();

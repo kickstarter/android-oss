@@ -1,37 +1,40 @@
 package com.kickstarter.ui.viewholders;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.models.Photo;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel;
 import com.squareup.picasso.Picasso;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
-public final class ProjectSearchResultViewHolder extends KSViewHolder {
-  private Project project;
-  private final Delegate delegate;
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
-  protected @Bind(R.id.creator_name_text_view) TextView creatorNameTextView;
-  protected @Bind(R.id.project_name_text_view) TextView projectNameTextView;
-  protected @Bind(R.id.project_image_view) ImageView projectImageView;
+public class ProjectSearchResultViewHolder extends KSViewHolder {
+  protected final Delegate delegate;
+  private final KSString ksString;
+  private final ProjectSearchResultHolderViewModel.ViewModel viewModel;
 
-  protected @BindString(R.string.search_by_creator) String byCreatorString;
+  @Bind(R.id.search_result_deadline_countdown_text_view) TextView deadlineCountdownValueTextView;
+  @Bind(R.id.search_result_deadline_unit_text_view) TextView deadlineCountdownUnitTextView;
+  @Bind(R.id.project_name_text_view) TextView projectNameTextView;
+  @Bind(R.id.project_image_view) ImageView projectImageView;
+  @Bind(R.id.search_result_percent_funded_text_view) TextView percentFundedTextView;
+  @Bind(R.id.search_result_funded_text_view) TextView fundedTextView;
 
-  protected @Inject KSString ksString;
+  @BindString(R.string.discovery_baseball_card_stats_funded) String fundedString;
+  @BindString(R.string.discovery_baseball_card_time_left_to_go) String toGoString;
 
   public interface Delegate {
     void projectSearchResultClick(ProjectSearchResultViewHolder viewHolder, Project project);
@@ -39,37 +42,62 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
 
   public ProjectSearchResultViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
-    this.delegate = delegate;
 
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
+    this.viewModel = new ProjectSearchResultHolderViewModel.ViewModel(environment());
+    this.delegate = delegate;
+    this.ksString = environment().ksString();
+
     ButterKnife.bind(this, view);
+
+    this.viewModel.outputs.deadlineCountdownValueTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.deadlineCountdownValueTextView::setText);
+
+    this.viewModel.outputs.notifyDelegateOfResultClick()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(project -> this.delegate.projectSearchResultClick(this, project));
+
+    this.viewModel.outputs.percentFundedTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.percentFundedTextView::setText);
+
+    this.viewModel.outputs.projectForDeadlineCountdownUnitTextView()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(p ->
+        this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(p, context(), this.ksString))
+      );
+
+    this.viewModel.outputs.projectNameTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.projectNameTextView::setText);
+
+    this.viewModel.outputs.projectPhotoUrl()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setProjectImageUrl);
+
+    this.fundedTextView.setText(this.fundedString);
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    project = ObjectUtils.requireNonNull((Project) data, Project.class);
+    @SuppressWarnings("unchecked")
+    final Pair<Project, Boolean> projectAndIsFeatured = ObjectUtils.requireNonNull((Pair<Project, Boolean>) data);
+    this.viewModel.inputs.configureWith(projectAndIsFeatured);
   }
 
-  public void onBind() {
-    final Context context = context();
-
-    creatorNameTextView.setText(ksString.format(byCreatorString,
-      "creator_name", project.creator().name()
-    ));
-    projectNameTextView.setText(project.name());
-
-    final Photo photo = project.photo();
-    if (photo != null) {
-      projectImageView.setVisibility(View.VISIBLE);
-      Picasso.with(context).load(photo.small()).into(projectImageView);
-    } else {
-      projectImageView.setVisibility(View.INVISIBLE);
-    }
+  private void setProjectImageUrl(final @NonNull String imageUrl) {
+    Picasso.with(context()).load(imageUrl).into(this.projectImageView);
   }
 
   @Override
   public void onClick(final @NonNull View view) {
-    delegate.projectSearchResultClick(this, project);
+    this.viewModel.inputs.projectClicked();
   }
 }
 

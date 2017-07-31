@@ -14,7 +14,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-      style="@style/SubheadPrimaryMedium"
+      style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/debug_push_notifications_device_registration" />
@@ -45,11 +45,20 @@
       layout="@layout/horizontal_line_1dp_view" />
 
     <TextView
-      style="@style/SubheadPrimaryMedium"
+      style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_2"
       android:text="@string/debug_push_notifications_simulate_notifications" />
+
+    <Button
+      android:id="@+id/simulate_message_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/debug_push_notifications_message"
+      style="@style/BorderButton" />
 
     <Button
       android:id="@+id/simulate_project_launch_button"

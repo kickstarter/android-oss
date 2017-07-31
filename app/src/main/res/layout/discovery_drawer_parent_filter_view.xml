@@ -6,7 +6,7 @@
   android:layout_height="wrap_content">
 
   <TextView
-    style="@style/SubheadPrimary"
+    style="@style/CalloutPrimary"
     android:paddingTop="@dimen/discovery_drawer_filter_padding_y"
     android:paddingBottom="@dimen/discovery_drawer_filter_padding_y"
     android:paddingStart="@dimen/grid_2"

@@ -26,9 +26,9 @@ public final class DiscoveryAdapter extends KSAdapter {
 
   private final Delegate delegate;
 
-  public interface Delegate extends ProjectCardViewHolder.Delegate, DiscoveryOnboardingViewHolder.Delegate,
+  public interface Delegate extends DiscoveryOnboardingViewHolder.Delegate,
     ActivitySampleFriendFollowViewHolder.Delegate, ActivitySampleFriendBackingViewHolder.Delegate,
-    ActivitySampleProjectViewHolder.Delegate {}
+    ActivitySampleProjectViewHolder.Delegate, ProjectCardViewHolder.Delegate {}
 
   public DiscoveryAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;

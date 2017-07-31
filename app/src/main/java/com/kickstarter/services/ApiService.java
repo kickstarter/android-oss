@@ -9,12 +9,16 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
-import com.kickstarter.models.ProjectNotification;
+import com.kickstarter.models.Message;
+import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.ProjectNotification;
+import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
+import com.kickstarter.services.apirequests.MessageBody;
 import com.kickstarter.services.apirequests.ProjectNotificationBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
@@ -27,7 +31,10 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
 import java.util.List;
@@ -76,12 +83,25 @@ public interface ApiService {
   @PUT("/v1/facebook/access_token?intent=register")
   Observable<Response<AccessTokenEnvelope>> login(@Body RegisterWithFacebookBody body);
 
-  // Todo: replace "inbox" with Mailbox "inbox" or "sent" value
-  @GET("/v1/message_threads/inbox")
-  Observable<Response<MessageThreadsEnvelope>> messageThreads();
+  @PUT("/v1/message_threads/{message_thread_id}/read")
+  Observable<Response<MessageThread>> markAsRead(@Path("message_thread_id") long messageThreadId);
 
-  @GET("/v1/projects/{project_id}/message_threads/inbox")
-  Observable<Response<MessageThreadsEnvelope>> messageThreads(@Path("project_id") long projectId);
+  @GET("/v1/projects/{project_id}/backers/{backer_id}/messages")
+  Observable<Response<MessageThreadEnvelope>> messagesForBacking(
+    @Path("project_id") long projectId, @Path("backer_id") long backerId
+  );
+
+  @GET("/v1/message_threads/{message_thread_id}/messages")
+  Observable<Response<MessageThreadEnvelope>> messagesForThread(@Path("message_thread_id") long messageThreadId);
+
+  @GET("/v1/message_threads/{mailbox}")
+  Observable<Response<MessageThreadsEnvelope>> messageThreads(@Path("mailbox") String mailbox);
+
+  @GET("/v1/projects/{project_id}/message_threads/{mailbox}")
+  Observable<Response<MessageThreadsEnvelope>> messageThreads(
+    @Path("project_id") long projectId,
+    @Path("mailbox") String mailbox
+  );
 
   @GET
   Observable<Response<CommentsEnvelope>> paginatedProjectComments(@Url String paginationPath);
@@ -111,11 +131,17 @@ public interface ApiService {
   @GET("/v1/users/self/notifications")
   Observable<Response<List<ProjectNotification>>> projectNotifications();
 
+  @GET("/v1/users/self/projects")
+  Observable<Response<ProjectsEnvelope>> projects(@Query("member") int isMember);
+
   @GET("/v1/discover")
   Observable<Response<DiscoverEnvelope>> projects(@QueryMap Map<String, String> params);
 
   @GET
   Observable<Response<DiscoverEnvelope>> projects(@Url String paginationUrl);
+
+  @GET("/v1/projects/{project_param}/stats")
+  Observable<Response<ProjectStatsEnvelope>> projectStats(@Path("project_param") String projectParam);
 
   @POST("/v1/users/self/push_tokens")
   Observable<Response<Empty>> registerPushToken(@Body PushTokenBody body);
@@ -123,14 +149,31 @@ public interface ApiService {
   @POST("/v1/users/reset")
   Observable<Response<User>> resetPassword(@Body ResetPasswordBody body);
 
+  @POST("/v1/message_threads/{message_thread_id}/messages")
+  Observable<Response<Message>> sendMessageToThread(@Path("message_thread_id") long messageThreadId, @Body MessageBody body);
+
+  @POST("/v1/projects/{project_id}/backers/{backer_id}/messages")
+  Observable<Response<Message>> sendMessageToBacking(
+    @Path("project_id") long projectId, @Path("backer_id") long backerId, @Body MessageBody body
+  );
+
+  @POST("/v1/projects/{project_id}/messages")
+  Observable<Response<Message>> sendMessageToProject(@Path("project_id") long projectId, @Body MessageBody body);
+
   @POST("/v1/users")
   Observable<Response<AccessTokenEnvelope>> signup(@Body SignupBody body);
 
   @PUT("/v1/projects/{param}/star")
   Observable<Response<StarEnvelope>> starProject(@Path("param") String param);
 
+  @GET("/v1/users/self/surveys/{survey_response_id}")
+  Observable<Response<SurveyResponse>> surveyResponse(@Path("surveyResponseId") int surveyResponseId);
+
   @POST("/v1/projects/{param}/star/toggle")
   Observable<Response<StarEnvelope>> toggleProjectStar(@Path("param") String param);
+
+  @GET("/v1/users/self/surveys/unanswered")
+  Observable<Response<List<SurveyResponse>>> unansweredSurveys();
 
   @GET("/v1/projects/{project_param}/updates/{update_param}")
   Observable<Response<Update>> update(@Path("project_param") String projectParam, @Path("update_param") String updateParam);

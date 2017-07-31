@@ -14,11 +14,8 @@
     android:layout_height="match_parent">
 
     <com.kickstarter.ui.views.IconButton
-      style="@style/ToolbarIcon"
-      android:id="@+id/back_button"
-      android:focusable="true"
-      android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
-      android:text="@string/arrow_back_icon" />
+      style="@style/ToolbarIconBackButton"
+      android:id="@+id/back_button"/>
 
     <EditText
       style="@style/ToolbarTitle"
@@ -27,7 +24,7 @@
       android:maxLength="25"
       android:inputType="textNoSuggestions"
       android:maxLines="1"
-      android:hint="@string/tabbar_search_projects"
+      android:hint="@string/tabbar_search"
       android:textCursorDrawable="@null" />
 
     <com.kickstarter.ui.views.IconButton
@@ -36,7 +33,6 @@
       android:focusable="true"
       android:clickable="true"
       android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
       android:text="@string/close_icon"
       android:contentDescription="@string/accessibility_discovery_buttons_close" />
 

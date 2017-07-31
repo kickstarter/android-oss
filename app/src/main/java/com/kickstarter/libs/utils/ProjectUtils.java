@@ -85,7 +85,16 @@ public final class ProjectUtils {
     return Project.STATE_CANCELED.equals(state) ||
       Project.STATE_FAILED.equals(state) ||
       Project.STATE_SUCCESSFUL.equals(state) ||
-      Project.STATE_PURGED.equals(state);
+      Project.STATE_PURGED.equals(state) ||
+      Project.STATE_SUSPENDED.equals(state);
+  }
+
+  /**
+   * Returns `true` if the project name ends with a punctuation character.
+   */
+  public static boolean isProjectNamePunctuated(final @NonNull String name) {
+    final String lastChar = name.substring(name.length() - 1);
+    return lastChar.matches(".*\\p{Punct}");
   }
 
   /**

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <include layout="@layout/backing_toolbar"/>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <include layout="@layout/project_context_view" />
+
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/feed_padding_y"
+        android:paddingStart="@dimen/feed_padding_x"
+        android:paddingEnd="@dimen/feed_padding_x"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+          android:layout_marginBottom="@dimen/grid_3"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+          <ImageView
+            android:id="@+id/backing_avatar_image_view"
+            android:layout_width="@dimen/grid_10"
+            android:layout_height="@dimen/grid_10"
+            android:focusable="false"
+            tools:background="@color/blue"
+            tools:ignore="ContentDescription" />
+
+          <RelativeLayout
+            android:layout_toEndOf="@id/backing_avatar_image_view"
+            android:paddingStart="@dimen/grid_3"
+            android:paddingEnd="@dimen/grid_3"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+              android:id="@+id/backing_backer_name"
+              style="@style/CalloutPrimaryMedium"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              tools:text="Blob Fish"/>
+
+            <TextView
+              android:id="@+id/backing_backer_number"
+              style="@style/BodySecondary"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_below="@id/backing_backer_name"
+              tools:text="Backer #42"/>
+
+          </RelativeLayout>
+
+        </RelativeLayout>
+
+        <Button
+          android:id="@+id/backing_view_messages_button"
+          android:layout_marginBottom="@dimen/grid_3"
+          android:visibility="visible"
+          style="@style/BorderButton"
+          android:padding="@dimen/grid_2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/Message_creator"/>
+
+        <include layout="@layout/horizontal_line_1dp_view"/>
+
+        <TextView
+          style="@style/CalloutPrimaryMedium"
+          android:text="@string/backer_modal_pledged_title"
+          android:paddingTop="@dimen/grid_2"
+          android:paddingBottom="@dimen/grid_1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"/>
+
+        <TextView
+          style="@style/BodyPrimary"
+          android:id="@+id/backing_amount_and_date_text_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          tools:text="$1 on Thursday, June 8, 2017"/>
+
+        <TextView
+          style="@style/BodyPrimary"
+          android:id="@+id/backing_status"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingBottom="@dimen/grid_3"
+          tools:text="Status: Collected"/>
+
+        <LinearLayout
+          android:orientation="vertical"
+          android:paddingBottom="@dimen/grid_3"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+          <include layout="@layout/horizontal_line_1dp_view"/>
+
+          <TextView
+            style="@style/CalloutPrimaryMedium"
+            android:text="@string/backer_modal_reward_title"
+            android:paddingTop="@dimen/grid_2"
+            android:paddingBottom="@dimen/grid_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:id="@+id/backing_reward_minimum_and_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="$1 - I will send you some stale bread."/>
+
+          <LinearLayout
+            android:id="@+id/backing_rewards_item_section"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/grid_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+              style="@style/BodySecondary"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/project_view_pledge_includes" />
+
+            <android.support.v7.widget.RecyclerView
+              android:id="@+id/backing_rewards_item_recycler_view"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content" />
+
+          </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/backing_shipping_section"
+          android:orientation="vertical"
+          android:paddingTop="@dimen/grid_2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+          <include layout="@layout/horizontal_line_1dp_view"/>
+
+          <TextView
+            style="@style/CalloutPrimaryMedium"
+            android:text="@string/backer_modal_shipping_title"
+            android:paddingTop="@dimen/grid_2"
+            android:paddingBottom="@dimen/grid_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:id="@+id/backing_shipping_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:id="@+id/backing_shipping_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/grid_3"/>
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/backing_estimated_delivery_section"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <include layout="@layout/horizontal_line_1dp_view"/>
+
+          <TextView
+            style="@style/CalloutPrimaryMedium"
+            android:text="@string/Estimated_delivery"
+            android:paddingTop="@dimen/grid_2"
+            android:paddingBottom="@dimen/grid_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:id="@+id/backing_estimated_delivery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/grid_3"
+            tools:text="June 2016"/>
+        </LinearLayout>
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </ScrollView>
+
+</LinearLayout>

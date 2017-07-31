@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 
 import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
 import com.kickstarter.R;
@@ -25,10 +26,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresActivityViewModel(SearchViewModel.class)
-public final class SearchActivity extends BaseActivity<SearchViewModel> implements SearchAdapter.Delegate {
+@RequiresActivityViewModel(SearchViewModel.ViewModel.class)
+public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel> implements SearchAdapter.Delegate {
   private SearchAdapter adapter;
   private RecyclerViewPaginator paginator;
+
   protected @Bind(R.id.search_recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.search_toolbar) SearchToolbar toolbar;
 
@@ -38,41 +40,51 @@ public final class SearchActivity extends BaseActivity<SearchViewModel> implemen
     setContentView(R.layout.search_layout);
     ButterKnife.bind(this);
 
-    adapter = new SearchAdapter(this);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    recyclerView.setAdapter(adapter);
+    this.adapter = new SearchAdapter(this);
+    this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    this.recyclerView.setAdapter(this.adapter);
 
-    paginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
+    this.paginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage);
 
-    RxRecyclerView.scrollEvents(recyclerView)
+    RxRecyclerView.scrollEvents(this.recyclerView)
       .compose(bindToLifecycle())
       .filter(scrollEvent -> scrollEvent.dy() != 0) // Skip scroll events when y is 0, usually indicates new data
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> InputUtils.hideKeyboard(this, getCurrentFocus()));
 
-    viewModel.outputs.popularProjects()
+    this.viewModel.outputs.popularProjects()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(adapter::loadPopularProjects);
+      .subscribe(this.adapter::loadPopularProjects);
 
-    viewModel.outputs.searchProjects()
+    this.viewModel.outputs.searchProjects()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(adapter::loadSearchProjects);
+      .subscribe(this.adapter::loadSearchProjects);
+
+    this.viewModel.outputs.startProjectActivity()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startProjectActivity);
+  }
+
+  private void startProjectActivity(final @NonNull Pair<Project, RefTag> projectAndRefTag) {
+    final Intent intent = new Intent(this, ProjectActivity.class)
+      .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
+      .putExtra(IntentKey.REF_TAG, projectAndRefTag.second);
+
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    paginator.stop();
-    recyclerView.setAdapter(null);
+    this.paginator.stop();
+    this.recyclerView.setAdapter(null);
   }
 
   public void projectSearchResultClick(final @NonNull ProjectSearchResultViewHolder viewHolder, final @NonNull Project project) {
-    final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT, project)
-      .putExtra(IntentKey.REF_TAG, RefTag.search());
-    startActivity(intent);
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    this.viewModel.inputs.projectClicked(project);
   }
 }

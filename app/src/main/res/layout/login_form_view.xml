@@ -19,7 +19,7 @@
       android:layout_height="wrap_content"
       android:inputType="textEmailAddress"
       android:maxLines="1"
-      style="@style/SubheadPrimary"
+      style="@style/CalloutPrimary"
       android:hint="@string/login_placeholder_email" />
 
   </android.support.design.widget.TextInputLayout>
@@ -36,7 +36,7 @@
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/grid_2"
       android:inputType="textPassword"
-      style="@style/SubheadPrimary"
+      style="@style/CalloutPrimary"
       android:hint="@string/login_placeholder_password" />
 
   </android.support.design.widget.TextInputLayout>
@@ -50,7 +50,7 @@
     android:text="@string/login_buttons_log_in" />
 
   <TextView
-    style="@style/CaptionPrimary"
+    style="@style/Caption1Primary"
     android:id="@+id/forgot_your_password_text_view"
     android:background="@drawable/click_indicator_light_masked"
     android:layout_width="wrap_content"

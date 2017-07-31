@@ -10,18 +10,15 @@
   <android.support.v7.widget.CardView
     android:id="@+id/message_thread_card_view"
     android:focusable="true"
-    android:foreground="@drawable/click_indicator_light"
-    android:layout_marginTop="@dimen/grid_1"
-    android:layout_marginStart="@dimen/project_padding_x"
-    android:layout_marginLeft="@dimen/project_padding_x"
-    android:layout_marginRight="@dimen/project_padding_x"
-    android:layout_marginEnd="@dimen/project_padding_x"
-    android:layout_marginBottom="@dimen/grid_2"
+    android:foreground="@drawable/message_thread_click_indicator"
+    android:layout_marginStart="@dimen/grid_2"
+    android:layout_marginEnd="@dimen/grid_2"
+    android:layout_marginBottom="@dimen/grid_1"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/white"
-    app:cardElevation="@dimen/card_elevation"
+    app:cardElevation="0dp"
     app:cardCornerRadius="@dimen/card_corner_radius">
 
     <RelativeLayout
@@ -31,16 +28,16 @@
 
       <ImageView
         android:id="@+id/participant_avatar_image_view"
-        android:layout_width="@dimen/comments_feed_avatar_width"
-        android:layout_height="@dimen/comments_feed_avatar_height"
+        android:layout_width="@dimen/grid_5"
+        android:layout_height="@dimen/grid_5"
         tools:background="@color/green"
         tools:ignore="ContentDescription"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
       <TextView
-        android:id="@+id/date_text_view"
-        style="@style/CaptionSecondary"
+        android:id="@+id/message_thread_date_text_view"
+        style="@style/Caption2Primary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Yesterday"
@@ -51,30 +48,50 @@
         android:orientation="vertical"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/participant_avatar_image_view"
-        android:layout_toRightOf="@+id/participant_avatar_image_view"
         android:layout_marginStart="@dimen/grid_2"
-        android:layout_marginLeft="@dimen/grid_2"
         android:layout_marginEnd="@dimen/grid_2"
-        android:layout_marginRight="@dimen/grid_2"
-        android:layout_toLeftOf="@id/date_text_view"
-        android:layout_toStartOf="@id/date_text_view"
+        android:layout_toStartOf="@+id/message_thread_date_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <TextView
-          android:id="@+id/participant_name_text_view"
-          style="@style/SubheadPrimary"
+        <LinearLayout
+          android:orientation="horizontal"
+          android:layout_marginBottom="@dimen/grid_1"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="Participant Name" />
+          android:layout_height="wrap_content">
+
+          <TextView
+            android:id="@+id/participant_name_text_view"
+            style="@style/FootnotePrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/grid_1"
+            tools:text="Somebody once told me that" />
+
+          <TextView
+            android:id="@+id/message_thread_unread_count_text_view"
+            style="@style/Caption1Primary"
+            android:textColor="@color/ksr_text_green_700"
+            android:textStyle="bold"
+            android:layout_weight="0"
+            android:layout_marginEnd="@dimen/grid_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="(2)"/>
+
+        </LinearLayout>
 
         <TextView
-          android:id="@+id/message_body_text_view"
-          style="@style/BodySecondary"
+          android:id="@+id/message_thread_body_text_view"
+          style="@style/FootnoteSecondary"
           android:lines="2"
           android:ellipsize="end"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:importantForAccessibility="no"
           tools:text="Thanks for backing our project!" />
 
       </LinearLayout>
@@ -85,12 +102,12 @@
 
   <ImageView
     android:id="@+id/unread_indicator_image_view"
-    android:background="@color/blue"
+    android:background="@drawable/unread_message_indicator"
     android:foregroundGravity="center"
     android:translationZ="3dp"
-    android:layout_width="18dp"
-    android:layout_height="18dp"
-    android:layout_marginLeft="@dimen/grid_1"
+    android:layout_width="@dimen/grid_2"
+    android:layout_height="@dimen/grid_2"
+    android:layout_marginStart="@dimen/grid_1"
     android:layout_centerVertical="true"
     android:layout_alignParentStart="true"
     tools:ignore="ContentDescription,UnusedAttribute"/>

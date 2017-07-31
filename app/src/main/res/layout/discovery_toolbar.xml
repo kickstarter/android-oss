@@ -66,13 +66,17 @@
           android:paddingEnd="@dimen/grid_3_half"
           android:gravity="center_vertical"
           tools:text="Staff Picks" />
-
       </LinearLayout>
 
       <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="horizontal">
+
+        <com.kickstarter.ui.views.IconButton
+          style="@style/ToolbarIconDarkBackground"
+          android:id="@+id/creator_dashboard_button"
+          android:text="@string/play_circle_outline_icon" />
 
         <com.kickstarter.ui.views.IconButton
           style="@style/ToolbarIconDarkBackground"

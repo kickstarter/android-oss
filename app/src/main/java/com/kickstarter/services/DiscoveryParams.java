@@ -415,7 +415,11 @@ public abstract class DiscoveryParams implements Parcelable {
    * POTD comes back.
    */
   public boolean shouldIncludePotd() {
-    return isAllProjects() && page() != null && page() == 1 && (sort() == null || sort() == Sort.HOME);
+    return isAllProjects()
+      && page() != null
+      && page() == 1
+      && (sort() == null || sort() == Sort.HOME)
+      && (term() == null || term().isEmpty());
   }
 
   /**
@@ -423,7 +427,7 @@ public abstract class DiscoveryParams implements Parcelable {
    * featured project for the category comes back.
    */
   public boolean shouldIncludeFeatured() {
-    return category() != null && page() != null && page() == 1 && (sort() == null || sort() == Sort.HOME);
+    return category() != null && category().parent() == null && page() != null && page() == 1 && (sort() == null || sort() == Sort.HOME);
   }
 
   @Override

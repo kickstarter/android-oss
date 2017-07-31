@@ -52,7 +52,7 @@
         android:orientation="vertical">
 
         <TextView
-          style="@style/SubheadPrimary"
+          style="@style/CalloutPrimary"
           android:id="@+id/backed_project"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
             style="@style/FacebookButton"
             android:id="@+id/share_on_facebook_button"
             android:ellipsize="none"
-            android:layout_marginRight="@dimen/grid_3_half"
+            android:layout_marginEnd="@dimen/grid_3_half"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:text="@string/project_checkout_share_buttons_share"
@@ -95,7 +95,7 @@
           android:textAllCaps="false" />
 
         <TextView
-          style="@style/SubheadPrimary"
+          style="@style/CalloutPrimary"
           android:gravity="center_horizontal"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -110,7 +110,6 @@
         android:layout_height="@dimen/grid_15"
         android:layout_marginBottom="@dimen/grid_2"
         android:layout_marginTop="@dimen/grid_2"
-        android:layout_marginLeft="@dimen/grid_2"
         android:layout_marginStart="@dimen/grid_2"
         android:scrollbars="horizontal" />
 

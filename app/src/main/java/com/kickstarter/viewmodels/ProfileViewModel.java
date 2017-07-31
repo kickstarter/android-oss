@@ -5,9 +5,9 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
@@ -24,6 +24,8 @@ import java.util.List;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 
 public interface ProfileViewModel {
 
@@ -69,14 +71,14 @@ public interface ProfileViewModel {
     /** Emits a list of projects to display in the profile. */
     Observable<List<Project>> projects();
 
+    /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
+    Observable<Void> resumeDiscoveryActivity();
+
     /** Emits when we should start the {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
     Observable<Void> startMessageThreadsActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Project> startProjectActivity();
-
-    /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
-    Observable<Void> resumeDiscoveryActivity();
 
     /** Emits the user name to be displayed. */
     Observable<String> userNameTextViewText();
@@ -84,17 +86,19 @@ public interface ProfileViewModel {
 
   final class ViewModel extends ActivityViewModel<ProfileActivity> implements ProfileAdapter.Delegate, Inputs, Outputs {
     private final ApiClientType client;
+    private final CurrentConfigType currentConfig;
     private final CurrentUserType currentUser;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.client = environment.apiClient();
+      this.currentConfig = environment.currentConfig();
       this.currentUser = environment.currentUser();
 
       final Observable<User> freshUser = this.client.fetchCurrentUser()
         .retry(2)
-        .compose(Transformers.neverError());
+        .compose(neverError());
       freshUser.subscribe(this.currentUser::refresh);
 
       final DiscoveryParams params = DiscoveryParams.builder()

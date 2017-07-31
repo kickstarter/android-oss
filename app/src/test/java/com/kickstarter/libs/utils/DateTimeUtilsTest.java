@@ -34,6 +34,12 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testLongDate() {
+    assertEquals("December 17, 2015", DateTimeUtils.longDate(DateTime.parse("2015-12-17T18:35:05Z")));
+    assertEquals("17 décembre 2015", DateTimeUtils.longDate(DateTime.parse("2015-12-17T18:35:05Z"), Locale.FRENCH));
+  }
+
+  @Test
   public void testMediumDate() {
     assertEquals("Dec 17, 2015", DateTimeUtils.mediumDate(DateTime.parse("2015-12-17T18:35:05Z")));
     assertEquals("17 déc. 2015", DateTimeUtils.mediumDate(DateTime.parse("2015-12-17T18:35:05Z"), Locale.FRENCH));
@@ -150,5 +156,11 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
     assertEquals("Dec 17, 2015 6:35 PM", DateTimeUtils.mediumDateShortTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.UTC));
     assertEquals("Dec 17, 2015 1:35 PM", DateTimeUtils.mediumDateShortTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.forID("EST")));
     assertEquals("17 déc. 2015 18:35", DateTimeUtils.mediumDateShortTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.UTC, Locale.FRENCH));
+  }
+
+  @Test
+  public void testShortTime() {
+    assertEquals("6:35 PM", DateTimeUtils.shortTime(DateTime.parse("2015-12-17T18:35:05Z")));
+    assertEquals("18:35", DateTimeUtils.shortTime(DateTime.parse("2015-12-17T18:35:05Z"), Locale.FRENCH));
   }
 }

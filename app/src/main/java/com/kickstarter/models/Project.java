@@ -14,7 +14,7 @@ import org.joda.time.DateTime;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import auto.parcel.AutoParcel;
@@ -52,7 +52,7 @@ public abstract class Project implements Parcelable {
   public abstract @Nullable Float staticUsdRate();
   public abstract @Nullable Integer updatesCount();
   public abstract @Nullable List<Reward> rewards();
-  public abstract DateTime updatedAt();
+  public abstract @Nullable DateTime updatedAt();
   public abstract Urls urls();
   public abstract @Nullable Video video();
 
@@ -98,7 +98,7 @@ public abstract class Project implements Parcelable {
     return new AutoParcel_Project.Builder()
       .isBacking(false)
       .isStarred(false)
-      .rewards(new ArrayList<>());
+      .rewards(Collections.emptyList());
   }
 
   public abstract Builder toBuilder();

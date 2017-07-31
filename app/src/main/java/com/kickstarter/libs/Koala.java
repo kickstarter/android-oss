@@ -10,7 +10,9 @@ import com.kickstarter.models.Update;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.data.LoginReason;
+import com.kickstarter.ui.data.Mailbox;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +55,11 @@ public final class Koala {
 
   public void trackAndroidPayCanceled() {
     client.track("Android Pay Canceled");
+  }
+
+  // BACKING
+  public void trackViewedPledgeInfo(final @NonNull Project project) {
+    this.client.track(KoalaEvent.VIEWED_PLEDGE_INFO, KoalaUtils.projectProperties(project));
   }
 
   // DISCOVERY
@@ -180,24 +187,36 @@ public final class Koala {
 
   // SEARCH
   public void trackSearchView() {
-    client.track("Discover Search");
+    client.track(KoalaEvent.VIEWED_SEARCH);
+    // deprecated
+    client.track(KoalaEvent.DISCOVER_SEARCH_LEGACY);
   }
 
   public void trackSearchResults(final @NonNull String query, final int pageCount) {
     if (pageCount == 1) {
-      client.track("Discover Search Results", new HashMap<String, Object>() {
+      final Map<String, Object> params = new HashMap<String, Object>() {
         {
           put("search_term", query);
         }
-      });
+      };
+      client.track(KoalaEvent.LOADED_SEARCH_RESULTS, params);
+      // deprecated
+      client.track(KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY, params);
     } else {
-      client.track("Discover Search Results Load More", new HashMap<String, Object>() {
+      final Map<String, Object> params = new HashMap<String, Object>() {
         {
           put("search_term", query);
           put("page_count", pageCount);
         }
-      });
+      };
+      client.track(KoalaEvent.LOADED_MORE_SEARCH_RESULTS, params);
+      // deprecated
+      client.track(KoalaEvent.DISCOVER_SEARCH_RESULTS_LOAD_MORE_LEGACY, params);
     }
+  }
+
+  public void trackClearedSearchTerm() {
+    client.track(KoalaEvent.CLEARED_SEARCH_TERM);
   }
 
   public void trackActivityTapped(final @NonNull Activity activity) {
@@ -381,6 +400,31 @@ public final class Koala {
         put("share_type", "twitter");
       }
     });
+  }
+
+  // MESSAGES
+  public void trackSentMessage(final @NonNull Project project, final @NonNull KoalaContext.Message context) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(project);
+    props.put("context", context.getTrackingString());
+
+    this.client.track(KoalaEvent.SENT_MESSAGE, props);
+  }
+
+  public void trackViewedMailbox(final @NonNull Mailbox mailbox, final @Nullable Project project) {
+    final Map<String, Object> props = project == null ? Collections.emptyMap() : KoalaUtils.projectProperties(project);
+
+    switch (mailbox) {
+      case INBOX:
+        this.client.track(KoalaEvent.VIEWED_MESSAGE_INBOX, props);
+        break;
+      case SENT:
+        this.client.track(KoalaEvent.VIEWED_SENT_MESSAGES, props);
+        break;
+    }
+  }
+
+  public void trackViewedMessageThread(final @NonNull Project project) {
+    this.client.track(KoalaEvent.VIEWED_MESSAGE_THREAD, KoalaUtils.projectProperties(project));
   }
 
   // PROFILE

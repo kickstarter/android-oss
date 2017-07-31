@@ -199,6 +199,12 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
       .subscribe(titleTextViewIsHidden);
 
     reward
+      .map(Reward::description)
+      .map(String::isEmpty)
+      .compose(bindToLifecycle())
+      .subscribe(rewardDescriptionIsHidden);
+
+    reward
       .map(Reward::title)
       .filter(ObjectUtils::isNotNull)
       .compose(bindToLifecycle())
@@ -267,6 +273,7 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
   private final BehaviorSubject<String> usdConversionTextViewText = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> usdConversionTextViewIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> whiteOverlayIsHidden = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> rewardDescriptionIsHidden = BehaviorSubject.create();
 
   public final RewardViewModelInputs inputs = this;
   public final RewardViewModelOutputs outputs = this;
@@ -377,5 +384,9 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
 
   @Override public @NonNull Observable<Boolean> whiteOverlayIsHidden() {
     return whiteOverlayIsHidden;
+  }
+
+  @Override public @NonNull Observable<Boolean> rewardDescriptionIsHidden() {
+    return rewardDescriptionIsHidden;
   }
 }

@@ -73,7 +73,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-          style="@style/CaptionPrimary"
+          style="@style/Caption1Primary"
           android:id="@+id/update_sequence"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
           tools:text="Update #" />
 
         <TextView
-          style="@style/CaptionSecondary"
+          style="@style/Caption1Secondary"
           android:id="@+id/timestamp"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

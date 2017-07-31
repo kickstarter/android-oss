@@ -41,7 +41,6 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
   @Bind(R.id.disclaimer) TextView disclaimerTextView;
 
   @BindString(R.string.signup_button) String signUpString;
-  @BindString(R.string.signup_error_title) String errorTitleString;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -74,7 +73,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
     viewModel.errors.signupError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
+      .subscribe(e -> ViewUtils.showDialog(this, null, e));
 
     RxView.clicks(newsletterSwitch)
       .skip(1)

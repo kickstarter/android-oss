@@ -9,7 +9,7 @@
   android:layout_marginRight="@dimen/form_margin_x">
 
   <TextView
-    style="@style/EditorialSubhead"
+    style="@style/Title3"
     android:gravity="center_horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

@@ -69,6 +69,18 @@
     </activity>
 
     <activity
+      android:name=".ui.activities.CreatorDashboardActivity"
+      android:parentActivityName=".ui.activities.DiscoveryActivity"
+      android:theme="@style/ProjectActivity">
+
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".ui.activities.DiscoveryActivity"
+        />
+
+    </activity>
+
+    <activity
       android:name=".ui.activities.DiscoveryActivity"
       android:label="@string/app_name"
       android:launchMode="singleTop"
@@ -220,12 +232,23 @@
     </activity>
 
     <activity
+      android:name=".ui.activities.MessagesActivity"
+      android:windowSoftInputMode="adjustResize"
+      android:parentActivityName=".ui.activities.MessageThreadsActivity">
+
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".ui.activities.MessageThreadsActivity" />
+
+    </activity>
+
+    <activity
       android:name=".ui.activities.MessageThreadsActivity"
       android:parentActivityName=".ui.activities.ProfileActivity">
 
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.MessageThreadsActivity" />
+        android:value=".ui.activities.ProfileActivity" />
 
     </activity>
 
@@ -368,9 +391,9 @@
     </activity>
 
     <activity
-      android:name=".ui.activities.ViewPledgeActivity"
+      android:name=".ui.activities.BackingActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
-      android:theme="@style/ViewPledgeActivity">
+      android:theme="@style/BackingActivity">
 
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"

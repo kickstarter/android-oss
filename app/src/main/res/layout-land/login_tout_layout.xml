@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"/>
 
       <TextView
-        style="@style/CaptionSecondary"
+        style="@style/Caption1Secondary"
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
         android:layout_marginStart="@dimen/grid_2"
         android:layout_marginEnd="@dimen/grid_2"
         android:layout_marginRight="@dimen/grid_2"
-        android:textAppearance="@style/CaptionPrimary"
+        android:textAppearance="@style/Caption1Primary"
         android:textColor="@color/dark_gray"
         android:text="@string/login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" />
 

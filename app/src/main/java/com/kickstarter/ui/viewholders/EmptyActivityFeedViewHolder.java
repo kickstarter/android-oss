@@ -17,14 +17,14 @@ public final class EmptyActivityFeedViewHolder extends KSViewHolder {
   protected @Bind(R.id.discover_projects_button) Button discoverProjectsButton;
   protected @Bind(R.id.login_button) Button loginButton;
 
-  private final Delegate delegate;
+  private final @Nullable Delegate delegate;
 
   public interface Delegate {
     void emptyActivityFeedDiscoverProjectsClicked(EmptyActivityFeedViewHolder viewHolder);
     void emptyActivityFeedLoginClicked(EmptyActivityFeedViewHolder viewHolder);
   }
 
-  public EmptyActivityFeedViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
+  public EmptyActivityFeedViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ButterKnife.bind(this, view);
@@ -48,11 +48,15 @@ public final class EmptyActivityFeedViewHolder extends KSViewHolder {
 
   @OnClick(R.id.discover_projects_button)
   public void discoverProjectsOnClick() {
-    delegate.emptyActivityFeedDiscoverProjectsClicked(this);
+    if (this.delegate != null) {
+      this.delegate.emptyActivityFeedDiscoverProjectsClicked(this);
+    }
   }
 
   @OnClick(R.id.login_button)
   public void loginOnClick() {
-    delegate.emptyActivityFeedLoginClicked(this);
+    if (this.delegate != null) {
+      this.delegate.emptyActivityFeedLoginClicked(this);
+    }
   }
 }

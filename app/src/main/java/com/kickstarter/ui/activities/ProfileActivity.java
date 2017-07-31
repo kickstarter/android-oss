@@ -31,7 +31,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.android.schedulers.AndroidSchedulers;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
 @RequiresActivityViewModel(ProfileViewModel.ViewModel.class)
 public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewModel> {
@@ -39,13 +40,13 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
   private RecyclerViewPaginator paginator;
 
   protected @Bind(R.id.avatar_image_view) ImageView avatarImageView;
-  protected @Bind(R.id.user_name_text_view) TextView userNameTextView;
-  protected @Bind(R.id.created_count_text_view) TextView createdCountTextView;
   protected @Bind(R.id.backed_count_text_view) TextView backedCountTextView;
-  protected @Bind(R.id.created_text_view) TextView createdTextView;
   protected @Bind(R.id.backed_text_view) TextView backedTextView;
+  protected @Bind(R.id.created_count_text_view) TextView createdCountTextView;
+  protected @Bind(R.id.created_text_view) TextView createdTextView;
   protected @Bind(R.id.divider_view) View dividerView;
   protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.user_name_text_view) TextView userNameTextView;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -53,107 +54,110 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
     setContentView(R.layout.profile_layout);
     ButterKnife.bind(this);
 
-    adapter = new ProfileAdapter(viewModel);
+    this.adapter = new ProfileAdapter(viewModel);
     final int spanCount = ViewUtils.isLandscape(this) ? 3 : 2;
-    recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
-    recyclerView.setAdapter(adapter);
+    this.recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
+    this.recyclerView.setAdapter(this.adapter);
 
-    paginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
+    this.paginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage);
 
-    viewModel.outputs.avatarImageViewUrl()
+    this.viewModel.outputs.avatarImageViewUrl()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(url -> Picasso.with(this).load(url).transform(new CircleTransformation()).into(avatarImageView));
+      .compose(observeForUI())
+      .subscribe(url -> Picasso.with(this).load(url).transform(new CircleTransformation()).into(this.avatarImageView));
 
-    viewModel.outputs.backedCountTextViewHidden()
+    this.viewModel.outputs.backedCountTextViewHidden()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.backedCountTextView));
 
-    viewModel.outputs.backedCountTextViewText()
+    this.viewModel.outputs.backedCountTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this.backedCountTextView::setText);
 
-    viewModel.outputs.backedTextViewHidden()
+    this.viewModel.outputs.backedTextViewHidden()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.backedTextView));
 
-    viewModel.outputs.createdCountTextViewHidden()
+    this.viewModel.outputs.createdCountTextViewHidden()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.createdCountTextView));
 
-    viewModel.outputs.createdCountTextViewText()
+    this.viewModel.outputs.createdCountTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this.createdCountTextView::setText);
 
-    viewModel.outputs.createdTextViewHidden()
+    this.viewModel.outputs.createdTextViewHidden()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.createdTextView));
 
-    viewModel.outputs.dividerViewHidden()
+    this.viewModel.outputs.dividerViewHidden()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.dividerView));
 
-    viewModel.outputs.projects()
+    this.viewModel.outputs.projects()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this::loadProjects);
 
-    viewModel.outputs.resumeDiscoveryActivity()
+    this.viewModel.outputs.resumeDiscoveryActivity()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(__ -> resumeDiscoveryActivity());
 
-    viewModel.outputs.startMessageThreadsActivity()
+    this.viewModel.outputs.startMessageThreadsActivity()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(__ -> this.startMessageThreadsActivity());
 
-    viewModel.outputs.startProjectActivity()
+    this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this::startProjectActivity);
 
-    viewModel.outputs.userNameTextViewText()
+    this.viewModel.outputs.userNameTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this.userNameTextView::setText);
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    paginator.stop();
-    recyclerView.setAdapter(null);
+    this.paginator.stop();
+    this.recyclerView.setAdapter(null);
   }
 
   @OnClick(R.id.messages_button)
   public void messagesButtonClicked() {
-    viewModel.inputs.messsagesButtonClicked();
+    this.viewModel.inputs.messsagesButtonClicked();
   }
 
   private void loadProjects(final @NonNull List<Project> projects) {
     if (projects.size() == 0) {
-      recyclerView.setLayoutManager(new LinearLayoutManager(this));
-      recyclerView.setPadding(0, recyclerView.getPaddingTop(), recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
+      this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+      this.recyclerView.setPadding(
+        0, this.recyclerView.getPaddingTop(), this.recyclerView.getPaddingRight(), this.recyclerView.getPaddingBottom()
+      );
+
       if (ViewUtils.isPortrait(this)) {
         disableNestedScrolling();
       }
     }
 
-    adapter.takeProjects(projects);
+    this.adapter.takeProjects(projects);
   }
 
   @TargetApi(21)
   private void disableNestedScrolling() {
     if (ApiCapabilities.canSetNestingScrollingEnabled()) {
-      recyclerView.setNestedScrollingEnabled(false);
+      this.recyclerView.setNestedScrollingEnabled(false);
     }
   }
 

@@ -71,7 +71,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="2"
-          style="@style/EditorialHeadline"
+          style="@style/Title2"
           android:textColor="@color/white"
           android:paddingBottom="@dimen/grid_1_half"
           tools:ignore="InconsistentLayout"
@@ -112,7 +112,7 @@
             app:iconType="ss_kickstarter"
             android:id="@+id/backer_badge"
             android:layout_gravity="center_vertical"
-            android:textSize="@dimen/caption"
+            android:textSize="@dimen/caption_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
@@ -136,7 +136,7 @@
 
       <TextView
         android:id="@+id/blurb"
-        style="@style/SubheadPrimary"
+        style="@style/CalloutPrimary"
         android:textColor="@color/white"
         android:focusable="true"
         android:maxLines="3"

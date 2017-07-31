@@ -17,7 +17,7 @@
     android:contentDescription="@string/general_accessibility_kickstarter" />
 
   <TextView
-    style="@style/EditorialSubhead"
+    style="@style/Title3"
     android:gravity="center_horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

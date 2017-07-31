@@ -49,14 +49,14 @@ public final class DateTimeUtils {
   }
 
   /**
-   * e.g.: Dec 17, 2015.
+   * e.g.: Tuesday, June 20, 2017
    */
   public static @NonNull String fullDate(final @NonNull DateTime dateTime) {
     return fullDate(dateTime, Locale.getDefault());
   }
 
   /**
-   * e.g.: Dec 17, 2015.
+   * e.g.: Tuesday, June 20, 2017
    */
   public static @NonNull String fullDate(final @NonNull DateTime dateTime, final @NonNull Locale locale) {
     try {
@@ -66,6 +66,20 @@ public final class DateTimeUtils {
       // Instead just return a medium date.
       return mediumDate(dateTime, locale);
     }
+  }
+
+  /**
+   * e.g.: June 20, 2017
+   */
+  public static @NonNull String longDate(final @NonNull DateTime dateTime) {
+    return longDate(dateTime, Locale.getDefault());
+  }
+
+  /**
+   * e.g.: June 20, 2017
+   */
+  public static @NonNull String longDate(final @NonNull DateTime dateTime, final @NonNull Locale locale) {
+    return dateTime.toString(DateTimeFormat.longDate().withLocale(locale).withZoneUTC());
   }
 
   /**
@@ -192,6 +206,20 @@ public final class DateTimeUtils {
 
     return ksString.format(baseKeyPath.toString(), difference,
       "time_count", NumberUtils.format(difference, NumberOptions.builder().build()));
+  }
+
+  /**
+   * e.g.: 4:20 PM
+   */
+  public static @NonNull String shortTime(final @NonNull DateTime dateTime) {
+    return shortTime(dateTime, Locale.getDefault());
+  }
+
+  /**
+   * e.g.: 4:20 PM
+   */
+  public static @NonNull String shortTime(final @NonNull DateTime dateTime, final @NonNull Locale locale) {
+    return dateTime.toString(DateTimeFormat.shortTime().withLocale(locale).withZoneUTC());
   }
 
   /**

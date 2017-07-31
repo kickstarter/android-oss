@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/creator_dashboard_funding_view"
+  android:layout_height="wrap_content"
+  android:layout_width="match_parent"
+  android:orientation="vertical"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <TextView
+    android:id="@+id/creator_dashboard_project_name"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/grid_2"
+    android:paddingStart="@dimen/grid_2"
+    android:paddingEnd="@dimen/grid_2"
+    style="@style/Title3"
+    tools:text="ayyyy it's shrek" />
+
+  <TextView
+    android:id="@+id/creator_dashboard_amount_raised"
+    style="@style/Title1"
+    android:layout_marginTop="@dimen/grid_3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textColor="@color/blue"
+    android:gravity="center_horizontal"
+    tools:text="$12,000" />
+
+  <TextView
+    android:id="@+id/creator_dashboard_funding_text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:layout_marginBottom="@dimen/grid_3"
+    style="@style/BodyPrimary"
+    tools:text="pledged of $12,000"/>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/grid_5"
+    android:paddingEnd="@dimen/grid_5">
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:paddingStart="@dimen/grid_7"
+      android:paddingEnd="@dimen/grid_7">
+
+      <TextView
+        android:id="@+id/creator_dashboard_percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/BodyPrimary"
+        tools:text="100%"/>
+
+      <TextView
+        android:id="@+id/creator_dashboard_percent_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/discovery_baseball_card_stats_funded"
+        tools:text="funded"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <TextView
+        android:id="@+id/creator_dashboard_backer_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/BodyPrimary"
+        tools:text="100"/>
+
+      <TextView
+        android:id="@+id/creator_dashboard_backer_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/BodySecondary"
+        android:layout_marginEnd="@dimen/grid_4"
+        android:text="@string/discovery_baseball_card_stats_backers"
+        tools:text="backers"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <TextView
+        android:id="@+id/creator_dashboard_time_remaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/BodyPrimary"
+        tools:text="3"/>
+
+      <TextView
+        android:id="@+id/creator_dashboard_time_remaining_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="secs to go"/>
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+
+  <Button
+    android:id="@+id/creator_view_project_button"
+    style="@style/BlueRoundedButton"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/grid_7"
+    android:layout_marginTop="@dimen/grid_2"
+    android:layout_marginEnd="@dimen/grid_5"
+    android:layout_marginStart="@dimen/grid_5"
+    android:text="@string/View"
+    tools:text="Go to project" />
+</LinearLayout>
+

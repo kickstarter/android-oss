@@ -34,7 +34,7 @@ public interface ProfileViewModel {
     void exploreProjectsButtonClicked();
 
     /** Call when the messages button has been clicked. */
-    void messsagesButtonClicked();
+    void messagesButtonClicked();
 
     /** Call when the next page has been invoked. */
     void nextPage();
@@ -148,14 +148,14 @@ public interface ProfileViewModel {
       this.projects = paginator.paginatedData();
       this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked;
       this.startProjectActivity = this.projectCardClicked;
-      this.startMessageThreadsActivity = this.messsagesButtonClicked;
+      this.startMessageThreadsActivity = this.messagesButtonClicked;
       this.userNameTextViewText = loggedInUser.map(User::name);
 
       this.koala.trackProfileView();
     }
 
     private final PublishSubject<Void> exploreProjectsButtonClicked = PublishSubject.create();
-    private final PublishSubject<Void> messsagesButtonClicked = PublishSubject.create();
+    private final PublishSubject<Void> messagesButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
 
@@ -182,8 +182,8 @@ public interface ProfileViewModel {
     @Override public void exploreProjectsButtonClicked() {
       this.exploreProjectsButtonClicked.onNext(null);
     }
-    @Override public void messsagesButtonClicked() {
-      this.messsagesButtonClicked.onNext(null);
+    @Override public void messagesButtonClicked() {
+      this.messagesButtonClicked.onNext(null);
     }
     @Override public void nextPage() {
       this.nextPage.onNext(null);

@@ -51,8 +51,9 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.backing_amount_text_view) TextView backingAmountTextViewText;
   protected @Bind(R.id.backing_info_view) View backingInfoView;
   protected @Bind(R.id.messages_toolbar_close_button) IconButton closeButton;
-  protected @Bind(R.id.messages_participant_name_text_view) TextView participantNameTextView;
+  protected @Bind(R.id.messages_loading_indicator) View loadingIndicatorView;
   protected @Bind(R.id.message_edit_text) EditText messageEditText;
+  protected @Bind(R.id.messages_participant_name_text_view) TextView participantNameTextView;
   protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
   protected @Bind(R.id.messages_project_name_collapsed_text_view) TextView projectNameToolbarTextView;
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
@@ -115,6 +116,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> back());
+
+    this.viewModel.outputs.loadingIndicatorViewIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.loadingIndicatorView));
 
     this.viewModel.outputs.messageEditTextHint()
       .compose(bindToLifecycle())

@@ -77,6 +77,13 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:ignore="RtlSymmetry" />
 
+  <ProgressBar
+    android:id="@+id/messages_loading_indicator"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_anchor="@id/messages_recycler_view"
+    app:layout_anchorGravity="center"/>
+
   <include
     android:id="@+id/message_reply_layout"
     layout="@layout/message_reply_layout" />

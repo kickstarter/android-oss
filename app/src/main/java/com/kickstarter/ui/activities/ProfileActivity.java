@@ -136,7 +136,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
 
   @OnClick(R.id.messages_button)
   public void messagesButtonClicked() {
-    this.viewModel.inputs.messsagesButtonClicked();
+    this.viewModel.inputs.messagesButtonClicked();
   }
 
   private void loadProjects(final @NonNull List<Project> projects) {

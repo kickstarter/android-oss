@@ -191,7 +191,7 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
   public void testProfileViewModel_StartMessageThreadsActivity() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.messsagesButtonClicked();
+    this.vm.inputs.messagesButtonClicked();
     this.startMessageThreadsActivity.assertValueCount(1);
   }
 

@@ -123,9 +123,12 @@ public interface MessageThreadsViewModel {
 
       paginator.paginatedData()
         .compose(bindToLifecycle())
-        .subscribe(this.messageThreads);
+        .subscribe(m -> {
+          this.messageThreads.onNext(m);
+          this.isFetchingMessageThreads.onNext(false);
+        });
 
-      this.loadingIndicatorViewIsGone = paginator.isFetching()
+      this.loadingIndicatorViewIsGone = this.isFetchingMessageThreads
         .map(BooleanUtils::negate);
 
       this.hasNoMessages = unreadMessagesCount.map(ObjectUtils::isNull);

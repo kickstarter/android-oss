@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical"
+  android:layout_marginTop="@dimen/grid_new_4">
+
+  <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/dashboard_graphs_rewards_title_rewards"
+    style="@style/Headline"
+    android:layout_marginLeft="@dimen/grid_new_2" />
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="3"
+    android:layout_marginTop="@dimen/grid_new_1">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
+
+      <TextView
+        android:text="@string/dashboard_graphs_rewards_top_rewards"
+        android:gravity="left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/grid_new_4"
+        android:paddingEnd="@dimen/grid_new_4"
+        android:layout_weight="1"/>
+      <TextView
+        android:text="@string/dashboard_graphs_funding_pledged"
+        android:gravity="left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/grid_new_1_half"
+        android:layout_weight="1"/>
+      <TextView
+        android:text="@string/dashboard_graphs_funding_backers"
+        android:gravity="left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/grid_new_4"
+        android:paddingEnd="@dimen/grid_new_4"
+        android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/dashboard_reward_stats_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
+
+  </LinearLayout>
+
+</LinearLayout>

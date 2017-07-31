@@ -13,6 +13,9 @@ import com.kickstarter.services.MockWebClient;
 
 import junit.framework.TestCase;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
@@ -36,6 +39,7 @@ public abstract class KSRobolectricTestCase extends TestCase {
     final MockTrackingClient testTrackingClient = new MockTrackingClient();
     koalaTest = new TestSubscriber<>();
     testTrackingClient.eventNames.subscribe(koalaTest);
+    DateTimeUtils.setCurrentMillisFixed(new DateTime().getMillis());
 
     environment = application().component().environment().toBuilder()
       .apiClient(new MockApiClient())
@@ -52,6 +56,13 @@ public abstract class KSRobolectricTestCase extends TestCase {
 
     application = (TestKSApplication) RuntimeEnvironment.application;
     return application;
+  }
+
+  @Override
+  @After
+  public void tearDown() throws Exception {
+    super.tearDown();
+    DateTimeUtils.setCurrentMillisSystem();
   }
 
   protected @NonNull Context context() {

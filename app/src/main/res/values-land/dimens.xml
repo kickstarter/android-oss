@@ -10,7 +10,7 @@
   <dimen name="project_padding_x">@dimen/grid_5</dimen>
   <dimen name="project_social_photo_height">@dimen/grid_8</dimen>
   <dimen name="settings_icon_margin_x">@dimen/grid_9</dimen>
-  <dimen name="profile_empty_padding_y">@dimen/grid_6</dimen>
+  <dimen name="profile_empty_padding_y">@dimen/grid_3</dimen>
 
   <!-- Popup menus -->
   <dimen name="popup_menu_vertical_offset">-38dp</dimen>

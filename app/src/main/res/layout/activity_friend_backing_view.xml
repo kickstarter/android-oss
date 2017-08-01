@@ -60,8 +60,8 @@
     <View
       android:layout_width="fill_parent"
       android:layout_height="1dp"
-      android:layout_marginTop="@dimen/grid_5_half"
-      android:layout_marginBottom="@dimen/grid_5_half"
+      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginBottom="@dimen/grid_3"
       android:background="@color/black_alpha_10" />
 
     <LinearLayout
@@ -73,7 +73,6 @@
       <ImageView
         android:id="@+id/avatar"
         android:adjustViewBounds="true"
-        android:layout_marginRight="@dimen/grid_1"
         android:layout_marginEnd="@dimen/grid_2"
         android:layout_width="30dp"
         android:layout_height="30dp"
@@ -84,7 +83,6 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/grid_1"
         android:layout_marginStart="@dimen/grid_2"
         tools:text="Friend Name backed a Category project" />
 

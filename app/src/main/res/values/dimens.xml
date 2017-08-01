@@ -26,6 +26,8 @@
   <dimen name="grid_33">198dp</dimen>
   <dimen name="grid_35">210dp</dimen>
   <dimen name="grid_40">240dp</dimen>
+  <dimen name="grid_41">246dp</dimen>
+  <dimen name="grid_46">276dp</dimen>
 
   <!-- Typography-->
   <dimen name="caption_2">11sp</dimen>
@@ -65,7 +67,7 @@
 
   <!-- Layout padding -->
   <dimen name="activity_padding_x">0dp</dimen>
-  <dimen name="comment_body_padding_x">@dimen/grid_7</dimen>
+  <dimen name="comment_body_padding_x">@dimen/grid_9</dimen>
   <dimen name="feed_padding_y">@dimen/grid_3</dimen>
   <dimen name="feed_padding_x">@dimen/grid_2</dimen>
   <dimen name="search_padding_y">@dimen/grid_2</dimen>

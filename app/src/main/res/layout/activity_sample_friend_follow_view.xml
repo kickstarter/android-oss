@@ -12,9 +12,9 @@
       android:background="@color/white"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_5_half"
-      android:layout_marginLeft="@dimen/grid_3"
-      android:layout_marginRight="@dimen/grid_3"
+      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginLeft="@dimen/grid_4"
+      android:layout_marginRight="@dimen/grid_4"
       android:orientation="vertical">
 
       <TextView
@@ -35,8 +35,8 @@
           android:id="@+id/activity_image"
           android:background="@color/transparent"
           android:layout_gravity="top"
-          android:layout_width="@dimen/grid_4"
-          android:layout_height="@dimen/grid_4"
+          android:layout_width="@dimen/grid_5"
+          android:layout_height="@dimen/grid_5"
           android:scaleType="centerCrop"
           tools:ignore="ContentDescription" />
 
@@ -44,7 +44,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="-3dp"
-          android:layout_marginLeft="@dimen/grid_3_half"
+          android:layout_marginStart="@dimen/grid_2"
           android:orientation="vertical">
 
           <TextView
@@ -52,7 +52,7 @@
             android:id="@+id/activity_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp" />
+            android:layout_marginTop="@dimen/grid_1_half" />
 
           <TextView
             style="@style/BodyPrimary"

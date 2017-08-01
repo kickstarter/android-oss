@@ -58,29 +58,34 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
+
             <TextView
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               style="@style/Headline"
               android:text="@string/project_checkout_android_pay_payment_method"/>
+
             <LinearLayout
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginTop="@dimen/grid_1_half"
               android:orientation="horizontal">
+
               <ImageView
-                android:layout_width="@dimen/grid_4"
-                android:layout_height="@dimen/grid_4"
+                android:layout_width="@dimen/grid_5"
+                android:layout_height="@dimen/grid_5"
                 android:scaleType="centerInside"
                 android:layout_marginEnd="@dimen/grid_1"
                 android:src="@drawable/android_pay_logo"
                 tools:ignore="ContentDescription"/>
+
               <TextView
                 android:id="@+id/android_pay_instrument_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 style="@style/CalloutPrimary" />
+
             </LinearLayout>
 
             <TextView
@@ -94,7 +99,7 @@
           <Button
             android:id="@+id/android_pay_change"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/grid_4"
+            android:layout_height="@dimen/grid_5"
             android:paddingLeft="0dp"
             android:paddingRight="0dp"
             style="@style/BorderButton"
@@ -126,7 +131,7 @@
           android:layout_height="wrap_content"
           android:gravity="center"
           android:layout_marginTop="@dimen/grid_1"
-          android:layout_marginBottom="@dimen/grid_4"
+          android:layout_marginBottom="@dimen/grid_5"
           android:background="@drawable/click_indicator_light_masked"
           style="@style/Caption1Secondary" />
 
@@ -136,9 +141,9 @@
           android:id="@+id/backer_101"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_4"
+          android:layout_marginTop="@dimen/grid_5"
           android:gravity="center"
-          android:layout_marginBottom="@dimen/grid_8"
+          android:layout_marginBottom="@dimen/grid_10"
           android:background="@drawable/click_indicator_dark_masked"
           style="@style/Caption1Secondary" />
 

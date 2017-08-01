@@ -17,10 +17,12 @@
   <dimen name="grid_9">54dp</dimen>
   <dimen name="grid_10">60dp</dimen>
   <dimen name="grid_12">72dp</dimen>
+  <dimen name="grid_13">78dp</dimen>
   <dimen name="grid_14">84dp</dimen>
   <dimen name="grid_15">90dp</dimen>
   <dimen name="grid_16">96dp</dimen>
   <dimen name="grid_20">120dp</dimen>
+  <dimen name="grid_21">126dp</dimen>
   <dimen name="grid_33">198dp</dimen>
   <dimen name="grid_35">210dp</dimen>
   <dimen name="grid_40">240dp</dimen>
@@ -80,35 +82,35 @@
   <!-- button_icon_fixed_width is useful when we want to place several icons next to each
   other where they all take up the same width. This helps with UI effects like ripples that
   use the button size to calculate the ripple radius. -->
-  <dimen name="button_icon_fixed_width">48dp</dimen>
-  <dimen name="settings_icon_fixed_width">@dimen/grid_6</dimen>
+  <dimen name="button_icon_fixed_width">@dimen/grid_8</dimen>
+  <dimen name="settings_icon_fixed_width">@dimen/grid_8</dimen>
   <dimen name="button_corner_radius">@dimen/grid_1_half</dimen>
   <dimen name="button_stroke_width">1dp</dimen>
-  <dimen name="progress_bar_min_height">3dp</dimen>
-  <dimen name="progress_bar_height">3dp</dimen>
-  <dimen name="project_action_button_height">60dp</dimen>
+  <dimen name="progress_bar_min_height">@dimen/grid_1_half</dimen>
+  <dimen name="progress_bar_height">@dimen/grid_1_half</dimen>
+  <dimen name="project_action_button_height">@dimen/grid_10</dimen>
 
   <!-- Photos -->
   <dimen name="discovery_activity_photo_width">64dp</dimen>
-  <dimen name="discovery_activity_photo_height">36dp</dimen>
-  <dimen name="activity_feed_avatar_width">60dp</dimen>
-  <dimen name="activity_feed_avatar_height">60dp</dimen>
-  <dimen name="activity_feed_backing_photo_width">@dimen/grid_12</dimen>
-  <dimen name="activity_feed_backing_photo_height">54dp</dimen>
+  <dimen name="discovery_activity_photo_height">@dimen/grid_6</dimen>
+  <dimen name="activity_feed_avatar_width">@dimen/grid_10</dimen>
+  <dimen name="activity_feed_avatar_height">@dimen/grid_10</dimen>
+  <dimen name="activity_feed_backing_photo_width">@dimen/grid_16</dimen>
+  <dimen name="activity_feed_backing_photo_height">@dimen/grid_9</dimen>
   <dimen name="activity_feed_update_photo_width">@dimen/grid_16</dimen>
   <dimen name="activity_feed_update_photo_height">@dimen/grid_9</dimen>
-  <dimen name="comments_feed_avatar_width">@dimen/grid_11_half</dimen>
-  <dimen name="comments_feed_avatar_height">@dimen/grid_11_half</dimen>
+  <dimen name="comments_feed_avatar_width">44dp</dimen>
+  <dimen name="comments_feed_avatar_height">44dp</dimen>
   <dimen name="message_avatar_border_width">2dp</dimen>
   <dimen name="profile_avatar_width">100dp</dimen>
   <dimen name="profile_avatar_height">@dimen/profile_avatar_width</dimen>
   <dimen name="profile_card_photo_height">90dp</dimen>
-  <dimen name="profile_card_photo_width">@dimen/grid_20</dimen>
-  <dimen name="project_avatar_width">@dimen/grid_8</dimen>
-  <dimen name="project_avatar_height">@dimen/grid_8</dimen>
+  <dimen name="profile_card_photo_width">160dp</dimen>
+  <dimen name="project_avatar_width">64dp</dimen>
+  <dimen name="project_avatar_height">64dp</dimen>
   <dimen name="project_card_photo_landscape_height">135dp</dimen>
   <dimen name="project_card_photo_landscape_width">240dp</dimen>
-  <dimen name="project_social_photo_height">@dimen/grid_4</dimen>
+  <dimen name="project_social_photo_height">@dimen/grid_5</dimen>
   <dimen name="search_result_photo_width">80dp</dimen>
   <dimen name="search_result_photo_height">45dp</dimen>
   <dimen name="search_result_featured_photo_height">@dimen/grid_33</dimen>
@@ -124,7 +126,7 @@
 
   <!-- Activity feed view -->
   <dimen name="activity_feed_view_margin_top">0dp</dimen>
-  <dimen name="activity_feed_view_margin_bottom">@dimen/grid_3_half</dimen>
+  <dimen name="activity_feed_view_margin_bottom">@dimen/grid_2</dimen>
 
   <!-- Messages -->
   <dimen name="message_reply_layout_height">@dimen/grid_10</dimen>

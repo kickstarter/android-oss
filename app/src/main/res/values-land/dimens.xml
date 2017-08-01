@@ -2,15 +2,15 @@
 <resources>
   <dimen name="activity_feed_view_margin_top">@dimen/grid_2</dimen>
   <dimen name="activity_feed_view_margin_bottom">@dimen/grid_1</dimen>
-  <dimen name="activity_padding_x">@dimen/grid_9</dimen>
-  <dimen name="comment_body_padding_x">@dimen/grid_10</dimen>
-  <dimen name="feed_padding_x">@dimen/grid_9</dimen>
-  <dimen name="form_margin_x">@dimen/grid_9</dimen>
-  <dimen name="project_action_button_height">60dp</dimen>
-  <dimen name="project_padding_x">@dimen/grid_4</dimen>
-  <dimen name="project_social_photo_height">@dimen/grid_6</dimen>
-  <dimen name="settings_icon_margin_x">@dimen/grid_7</dimen>
-  <dimen name="profile_empty_padding_y">@dimen/grid_5_half</dimen>
+  <dimen name="activity_padding_x">@dimen/grid_12</dimen>
+  <dimen name="comment_body_padding_x">@dimen/grid_13</dimen>
+  <dimen name="feed_padding_x">@dimen/grid_12</dimen>
+  <dimen name="form_margin_x">@dimen/grid_12</dimen>
+  <dimen name="project_action_button_height">@dimen/grid_10</dimen>
+  <dimen name="project_padding_x">@dimen/grid_5</dimen>
+  <dimen name="project_social_photo_height">@dimen/grid_8</dimen>
+  <dimen name="settings_icon_margin_x">@dimen/grid_9</dimen>
+  <dimen name="profile_empty_padding_y">@dimen/grid_6</dimen>
 
   <!-- Popup menus -->
   <dimen name="popup_menu_vertical_offset">-38dp</dimen>

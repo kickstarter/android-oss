@@ -12,7 +12,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingEnd="@dimen/grid_2"
-    android:paddingRight="@dimen/grid_2"
     tools:ignore="RtlSymmetry">
 
     <TextView
@@ -34,7 +33,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingEnd="@dimen/grid_2"
-    android:paddingRight="@dimen/grid_2"
     tools:ignore="RtlSymmetry">
 
     <TextView
@@ -49,6 +47,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/Caption1Secondary" />
+
   </LinearLayout>
 
   <LinearLayout
@@ -56,7 +55,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingEnd="@dimen/grid_1_half"
-    android:paddingRight="@dimen/grid_1_half"
     tools:ignore="RtlSymmetry">
 
     <TextView

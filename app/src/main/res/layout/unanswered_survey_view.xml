@@ -63,14 +63,14 @@
       android:layout_margin="@dimen/grid_2"
       android:text="@string/discovery_survey_button_respond_now"
       android:textAlignment="center"
-      android:textColor="@color/green" />
+      android:textColor="@color/ksr_text_green_700" />
     
     <ImageView
       android:layout_width="17dp"
       android:layout_height="17dp"
       android:layout_alignTop="@id/respond_button"
       android:layout_toStartOf="@id/respond_button"
-      android:tint="@color/green"
+      android:tint="@color/ksr_text_green_700"
       android:src="@drawable/ic_survey_respond_icon"
       tools:ignore="ContentDescription" />
 

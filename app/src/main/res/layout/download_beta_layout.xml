@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_margin="@dimen/grid_3">
+  android:layout_margin="@dimen/grid_4">
 
   <LinearLayout
     android:orientation="vertical"
@@ -30,7 +31,7 @@
       style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginTop="@dimen/grid_4"
       android:layout_marginBottom="@dimen/grid_1"
       android:text="@string/Changelog" />
 
@@ -45,7 +46,7 @@
       style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginTop="@dimen/grid_4"
       android:layout_marginBottom="@dimen/grid_1"
       android:text="@string/Instructions" />
 
@@ -60,10 +61,10 @@
       android:id="@+id/open_downloads_button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginTop="@dimen/grid_4"
       android:layout_gravity="center_horizontal"
-      android:paddingTop="12dp"
-      android:paddingBottom="12dp"
+      android:paddingTop="@dimen/grid_2"
+      android:paddingBottom="@dimen/grid_2"
       android:text="@string/Open_downloads_folder" />
 
   </LinearLayout>

@@ -56,7 +56,7 @@
           android:background="@drawable/button_selector"
           android:ellipsize="end"
           android:textColor="@color/white"
-          android:layout_width="fill_parent"
+          android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:maxLines="1"
           android:paddingStart="@dimen/grid_2"

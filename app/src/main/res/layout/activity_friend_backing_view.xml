@@ -39,7 +39,7 @@
         <TextView
           style="@style/Headline"
           android:id="@+id/project_name"
-          android:layout_width="fill_parent"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginBottom="@dimen/grid_1_half"
           android:maxLines="3"
@@ -48,7 +48,7 @@
         <TextView
           style="@style/Caption1Secondary"
           android:id="@+id/creator_name"
-          android:layout_width="fill_parent"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginBottom="@dimen/grid_1_half"
           android:maxLines="2"
@@ -58,7 +58,7 @@
     </LinearLayout>
 
     <View
-      android:layout_width="fill_parent"
+      android:layout_width="match_parent"
       android:layout_height="1dp"
       android:layout_marginTop="@dimen/grid_3"
       android:layout_marginBottom="@dimen/grid_3"

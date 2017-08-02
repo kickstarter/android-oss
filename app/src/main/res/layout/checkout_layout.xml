@@ -13,8 +13,8 @@
 
   <com.kickstarter.ui.views.KSWebView
     android:id="@+id/web_view"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_below="@id/checkout_toolbar" />
 
   <ScrollView

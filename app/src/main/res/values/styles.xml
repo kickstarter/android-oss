@@ -173,7 +173,7 @@
   </style>
 
   <style name="ProjectActionButton" parent="Button">
-    <item name="android:layout_width">fill_parent</item>
+    <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">@dimen/project_action_button_height</item>
     <item name="android:textSize">@dimen/callout</item>
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>

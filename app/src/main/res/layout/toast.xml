@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:orientation="vertical"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:paddingLeft="@dimen/grid_2"
-  android:paddingRight="@dimen/grid_2"
-  android:paddingTop="@dimen/grid_3_half"
-  android:paddingBottom="@dimen/grid_3_half"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:padding="@dimen/grid_2"
   android:background="@drawable/toast_background">
 
   <TextView
@@ -17,5 +15,7 @@
     android:layout_height="0dp"
     android:layout_weight="1"
     android:layout_gravity="center_horizontal"
-    android:textColor="@color/white" />
+    android:textColor="@color/white"
+    tools:text="Toast message here!"/>
+
 </LinearLayout>

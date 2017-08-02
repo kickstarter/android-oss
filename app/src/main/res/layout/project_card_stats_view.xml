@@ -12,7 +12,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginEnd="@dimen/grid_5">
+    android:layout_marginEnd="@dimen/grid_6">
 
     <TextView
       android:id="@+id/percent"
@@ -35,7 +35,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginEnd="@dimen/grid_5">
+    android:layout_marginEnd="@dimen/grid_6">
 
     <TextView
       android:id="@+id/backers_count"

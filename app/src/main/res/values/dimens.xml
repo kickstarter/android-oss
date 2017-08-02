@@ -54,7 +54,7 @@
   <dimen name="settings_icon">20sp</dimen>
 
   <!-- Cards -->
-  <dimen name="card_corner_radius">4dp</dimen>
+  <dimen name="card_corner_radius">0dp</dimen>
   <dimen name="card_elevation">2dp</dimen>
   <dimen name="card_no_elevation">0dp</dimen>
   <dimen name="card_margin_x">@dimen/grid_2</dimen>

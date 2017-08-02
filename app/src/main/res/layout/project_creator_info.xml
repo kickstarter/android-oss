@@ -11,8 +11,6 @@
     android:id="@+id/creator_info"
     android:focusable="true"
     android:paddingStart="@dimen/project_padding_x"
-    android:paddingLeft="@dimen/project_padding_x"
-    android:paddingRight="@dimen/project_padding_x"
     android:paddingEnd="@dimen/project_padding_x"
     android:background="@drawable/click_indicator_light_masked"
     android:layout_width="match_parent"

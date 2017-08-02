@@ -10,8 +10,7 @@
   <LinearLayout
     android:id="@+id/reward_estimated_delivery_date_section"
     android:orientation="horizontal"
-    android:paddingEnd="@dimen/grid_3"
-    android:paddingRight="@dimen/grid_3"
+    android:paddingEnd="@dimen/grid_4"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -19,7 +18,6 @@
       style="@style/BodySecondary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:paddingRight="@dimen/grid_1"
       android:paddingEnd="@dimen/grid_1"
       android:text="@string/rewards_info_estimated_delivery" />
 
@@ -42,7 +40,6 @@
       style="@style/BodySecondary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:paddingRight="@dimen/grid_1"
       android:paddingEnd="@dimen/grid_1"
       android:text="@string/rewards_info_ships_to" />
 
@@ -56,4 +53,3 @@
   </LinearLayout>
 
 </LinearLayout>
-

@@ -35,8 +35,8 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/grid_2"
-        android:paddingRight="@dimen/grid_2"
+        android:paddingStart="@dimen/grid_2"
+        android:paddingEnd="@dimen/grid_2"
         android:layout_marginTop="@dimen/grid_2"
         android:orientation="vertical" >
 

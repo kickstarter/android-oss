@@ -29,6 +29,7 @@
   <dimen name="grid_40">240dp</dimen>
   <dimen name="grid_41">246dp</dimen>
   <dimen name="grid_46">276dp</dimen>
+  <dimen name="grid_53">318dp</dimen>
 
   <!-- Typography-->
   <dimen name="caption_2">11sp</dimen>

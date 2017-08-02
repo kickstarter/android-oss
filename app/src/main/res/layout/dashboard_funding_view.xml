@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/creator_dashboard_funding_view"
   android:layout_height="wrap_content"
   android:layout_width="match_parent"
-  android:orientation="vertical"
-  xmlns:tools="http://schemas.android.com/tools">
+  android:orientation="vertical">
 
   <TextView
     android:id="@+id/creator_dashboard_project_name"
@@ -110,7 +111,6 @@
 
   </LinearLayout>
 
-
   <Button
     android:id="@+id/creator_view_project_button"
     style="@style/BlueRoundedButton"
@@ -121,5 +121,6 @@
     android:layout_marginStart="@dimen/grid_5"
     android:text="@string/View"
     tools:text="Go to project" />
+
 </LinearLayout>
 

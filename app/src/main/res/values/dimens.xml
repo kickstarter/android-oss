@@ -23,6 +23,7 @@
   <dimen name="grid_16">96dp</dimen>
   <dimen name="grid_20">120dp</dimen>
   <dimen name="grid_21">126dp</dimen>
+  <dimen name="grid_27">162dp</dimen>
   <dimen name="grid_33">198dp</dimen>
   <dimen name="grid_35">210dp</dimen>
   <dimen name="grid_40">240dp</dimen>

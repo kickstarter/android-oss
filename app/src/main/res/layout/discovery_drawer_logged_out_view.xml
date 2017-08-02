@@ -11,7 +11,7 @@
 
   <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_7"
+    android:layout_height="@dimen/grid_9"
     android:paddingTop="@dimen/grid_1"
     android:paddingBottom="@dimen/grid_1"
     android:background="@color/discovery_drawer_header"
@@ -46,7 +46,6 @@
         style="@style/BodyPrimaryMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/grid_1"
         android:layout_marginStart="@dimen/grid_1"
         android:text="@string/tabbar_login"
         android:textColor="@color/black" />
@@ -69,4 +68,3 @@
   <include layout="@layout/horizontal_line_0_5dp_view" />
 
 </LinearLayout>
-

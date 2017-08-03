@@ -1,130 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/creator_dashboard"
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_height="match_parent"
-  android:layout_width="match_parent"
-  android:orientation="vertical"
-  xmlns:tools="http://schemas.android.com/tools">
+  android:layout_width="match_parent">
 
-  <include layout="@layout/creator_dashboard_toolbar"/>
+  <include layout="@layout/creator_dashboard_toolbar"
+    android:id="@+id/creator_dashboard_toolbar"/>
 
-  <RelativeLayout
-    android:id="@+id/creator_dashboard_project_context_view"
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/creator_dashboard_recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:background="@color/ksr_grey_200"
-    android:paddingStart="@dimen/grid_new_2"
-    android:paddingEnd="@dimen/grid_new_2">
+    android:layout_height="match_parent"
+    android:layout_below="@id/creator_dashboard_toolbar"/>
 
-    <TextView
-      android:id="@+id/creator_dashboard_project_name"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:textColor="@color/ksr_text_navy_800"
-      style="@style/Headline"
-      android:gravity="center_vertical"
-      tools:text="Somebody Once Told Me"/>
-
-    <Button
-      android:id="@+id/creator_view_project_button"
-      android:layout_width="wrap_content"
-      android:layout_height="@dimen/grid_new_5"
-      android:padding="0dp"
-      android:background="@drawable/button_white_border_gray_500"
-      android:text="@string/View"
-      style="@style/BorderButton"
-      tools:text="View"
-      tools:ignore="RelativeOverlap"
-      android:layout_alignParentEnd="true" />
-
-  </RelativeLayout>
-
-  <TextView
-    android:id="@+id/creator_dashboard_progress_text"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/grid_new_2"
-    android:layout_marginTop="@dimen/grid_new_2"
-    android:paddingStart="@dimen/grid_new_2"
-    android:paddingEnd="@dimen/grid_new_2"
-    android:text="@string/dashboard_graphs_funding_title_funding_progress"
-    tools:text="Progress"
-    style="@style/Title3Navy" />
-
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:orientation="horizontal"
-    android:paddingStart="@dimen/grid_new_2"
-    android:paddingEnd="@dimen/grid_new_2">
-
-    <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:orientation="vertical">
-
-      <TextView
-        android:id="@+id/creator_dashboard_amount_raised"
-        style="@style/BodyPrimary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/ksr_text_green_700"
-        tools:text="$12,000" />
-
-      <TextView
-        android:id="@+id/creator_dashboard_funding_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/BodySecondary"
-        android:layout_marginEnd="@dimen/grid_new_4"
-        tools:text="pledged of $22000 goal"/>
-
-      </LinearLayout>
-
-    <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:orientation="vertical">
-
-      <TextView
-        android:id="@+id/creator_dashboard_backer_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/BodyPrimary"
-        tools:text="365"/>
-
-      <TextView
-        android:id="@+id/creator_dashboard_backer_text"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        style="@style/BodySecondary"
-        android:layout_marginEnd="@dimen/grid_new_4"
-        android:text="@string/discovery_baseball_card_stats_backers"
-        tools:text="backers"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:orientation="vertical">
-
-      <TextView
-        android:id="@+id/creator_dashboard_time_remaining"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/BodyPrimary"
-        tools:text="3"/>
-
-      <TextView
-        android:id="@+id/creator_dashboard_time_remaining_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/BodySecondary"
-        tools:text="days to go"/>
-
-    </LinearLayout>
-
-  </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

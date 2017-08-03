@@ -130,6 +130,7 @@ backers</string>
   <string name="Funding_successful" formatted="false">Funding successful</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Get notified about this creator’s live streams</string>
   <string name="Go_to_project_page" formatted="false">Go to project page</string>
+  <string name="Got_it" formatted="false">Got it.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Got it! Your survey response has been submitted.</string>
   <string name="Home" formatted="false">Home</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">I’d just like to support the project.</string>
@@ -167,6 +168,7 @@ with friends.</string>
   <string name="Manage_your_reward" formatted="false">Manage your reward</string>
   <string name="Message_backer" formatted="false">Message backer</string>
   <string name="Message_creator" formatted="false">Message creator</string>
+  <string name="Message_user_name" formatted="false">Message %{user_name}…</string>
   <string name="No_Results" formatted="false">No Results</string>
   <string name="No_comments_yet" formatted="false">No comments yet.</string>
   <string name="No_messages" formatted="false">No messages</string>
@@ -276,6 +278,8 @@ catch your eye?</string>
   <string name="Subscribed" formatted="false">Subscribed</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Subscribes to upcoming live streams.</string>
   <string name="Survey" formatted="false">Survey</string>
+  <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Tap the heart icon on a project to get notified 48 hours before it ends.</string>
+  <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Tap the heart on each project page to save it. We’ll remind you 48 hours before the project ends.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Tap the star icon on a project to get notified 48 hours before it ends.</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Tap the star on each project page to save it. We’ll remind you 48 hours before the project ends.</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Thank you for supporting this project.</string>
@@ -290,9 +294,11 @@ catch your eye?</string>
   <string name="Time_left_left" formatted="false">%{time_left} left</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">To access all your favorite categories, tap the explore dropdown at the top of the app.</string>
   <string name="To_read_this_project_update_you_must_be_a_backer" formatted="false">To read this project update, you must be a backer. Please log in or sign up to continue.</string>
+  <string name="Toggle_saving_this_project" formatted="false">Toggle saving this project</string>
   <string name="Total_pledged" formatted="false">Total pledged</string>
   <string name="Unfollow_friend_name" formatted="false">Unfollow %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Unfollows %{friend_name}.</string>
+  <string name="Unsaved" formatted="false">Unsaved</string>
   <string name="Unsaves_project" formatted="false">Unsaves project.</string>
   <string name="Unsubscribe" formatted="false">Unsubscribe</string>
   <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">Unsubscribes from upcoming live streams.</string>

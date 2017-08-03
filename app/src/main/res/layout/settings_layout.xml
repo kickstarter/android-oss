@@ -18,25 +18,23 @@
     <LinearLayout
       android:orientation="vertical"
       android:layout_marginStart="@dimen/form_margin_x"
-      android:layout_marginLeft="@dimen/form_margin_x"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
       <TextView
         style="@style/SettingsSectionTitle"
         android:text="@string/profile_settings_backer_title"
-        android:layout_marginTop="@dimen/grid_4"
+        android:layout_marginTop="@dimen/grid_5"
         android:layout_marginBottom="@dimen/grid_2"/>
 
       <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
       <LinearLayout
         android:layout_marginEnd="@dimen/settings_icon_margin_x"
-        android:layout_marginRight="@dimen/settings_icon_margin_x"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_8">
+        android:layout_height="@dimen/grid_10">
 
         <TextView
           style="@style/SettingsSectionLabel"
@@ -59,12 +57,11 @@
         android:id="@+id/manage_project_notifications"
         android:orientation="horizontal"
         android:layout_marginEnd="@dimen/settings_icon_margin_x"
-        android:layout_marginRight="@dimen/settings_icon_margin_x"
         android:focusable="true"
         android:gravity="center_vertical"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_8">
+        android:layout_height="@dimen/grid_10">
 
         <TextView
           style="@style/SettingsSectionLabel"
@@ -97,10 +94,9 @@
 
       <LinearLayout
         android:layout_marginEnd="@dimen/settings_icon_margin_x"
-        android:layout_marginRight="@dimen/settings_icon_margin_x"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_8">
+        android:layout_height="@dimen/grid_10">
 
         <TextView
           style="@style/SettingsSectionLabel"
@@ -123,9 +119,8 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:layout_marginEnd="@dimen/settings_icon_margin_x"
-        android:layout_marginRight="@dimen/settings_icon_margin_x"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_8">
+        android:layout_height="@dimen/grid_10">
 
         <TextView
           style="@style/SettingsSectionLabel"
@@ -146,7 +141,6 @@
 
       <LinearLayout
         android:orientation="vertical"
-        android:layout_marginRight="@dimen/form_margin_x"
         android:layout_marginEnd="@dimen/form_margin_x"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -161,7 +155,7 @@
           android:orientation="horizontal"
           android:gravity="center_vertical"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_8">
+          android:layout_height="@dimen/grid_10">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -179,7 +173,7 @@
           android:orientation="horizontal"
           android:gravity="center_vertical"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_8">
+          android:layout_height="@dimen/grid_10">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -197,7 +191,7 @@
           android:orientation="horizontal"
           android:gravity="center_vertical"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_8">
+          android:layout_height="@dimen/grid_10">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -215,7 +209,7 @@
           android:orientation="horizontal"
           android:gravity="center_vertical"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_8">
+          android:layout_height="@dimen/grid_10">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -366,8 +360,8 @@
           android:text="@string/profile_settings_log_out_button"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_4"
-          android:layout_marginBottom="@dimen/grid_3"/>
+          android:layout_marginTop="@dimen/grid_5"
+          android:layout_marginBottom="@dimen/grid_4"/>
 
       </LinearLayout>
 

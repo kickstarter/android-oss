@@ -146,6 +146,7 @@
       "Funding_successful": "Funding successful",
       "Get_notified_about_this_creators_live_streams": "Get notified about this creator’s live streams",
       "Go_to_project_page": "Go to project page",
+      "Got_it": "Got it.",
       "Got_it_your_survey_response_has_been_submitted": "Got it! Your survey response has been submitted.",
       "Home": "Home",
       "hours": {
@@ -192,6 +193,7 @@
       "Manage_your_reward": "Manage your reward",
       "Message_backer": "Message backer",
       "Message_creator": "Message creator",
+      "Message_user_name": "Message %{user_name}…",
       "minutes": {
         "zero": "minutes",
         "one": "minute",
@@ -337,6 +339,8 @@
       "Subscribed": "Subscribed",
       "Subscribes_to_upcoming_lives_streams": "Subscribes to upcoming live streams.",
       "Survey": "Survey",
+      "Tap_the_heart_on_a_project_to_get_notified": "Tap the heart icon on a project to get notified 48 hours before it ends.",
+      "Tap_the_heart_on_each_project_page_to_save_it": "Tap the heart on each project page to save it. We’ll remind you 48 hours before the project ends.",
       "Tap_the_star_on_a_project_to_get_notified": "Tap the star icon on a project to get notified 48 hours before it ends.",
       "Tap_the_star_on_each_project_page_to_save_it": "Tap the star on each project page to save it. We’ll remind you 48 hours before the project ends.",
       "Thank_you_for_supporting_this_project": "Thank you for supporting this project.",
@@ -350,6 +354,7 @@
       "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "This Facebook account is already linked to another Kickstarter user.",
       "Time_left_left": "%{time_left} left",
       "To_access_all_your_favorite_categories_tap_the_explore_dropdown": "To access all your favorite categories, tap the explore dropdown at the top of the app.",
+      "Toggle_saving_this_project": "Toggle saving this project",
       "To_read_this_project_update_you_must_be_a_backer": "To read this project update, you must be a backer. Please log in or sign up to continue.",
       "Total_pledged": "Total pledged",
       "updates_count_updates": {
@@ -359,6 +364,7 @@
         "few": "%{updates_count} updates",
         "many": "%{updates_count} updates"
       },
+      "Unsaved": "Unsaved",
       "Unsaves_project": "Unsaves project.",
       "Unfollow_friend_name": "Unfollow %{friend_name}",
       "Unfollows_friend_name": "Unfollows %{friend_name}.",
@@ -2044,6 +2050,7 @@
       "Funding_successful": "Finanzierung erfolgreich",
       "Get_notified_about_this_creators_live_streams": "Benachrichtigungen zu den Live-Streams dieses Projektgründers erhalten.",
       "Go_to_project_page": "Zu Projektseite",
+      "Got_it": "Alles klar!",
       "Got_it_your_survey_response_has_been_submitted": "Alles klar! Deine Antwort auf die Befragung wurde übermittelt.",
       "Home": "Home",
       "hours": {
@@ -2090,6 +2097,7 @@
       "Manage_your_reward": "Belohnung verwalten",
       "Message_backer": "Nachricht an Unterstützer senden",
       "Message_creator": "Nachricht an Projektgründer senden",
+      "Message_user_name": "Nachricht senden an %{user_name}…",
       "minutes": {
         "zero": "Min",
         "one": "Min",
@@ -2235,6 +2243,8 @@
       "Subscribed": "Abo aktiviert",
       "Subscribes_to_upcoming_lives_streams": "Zukünftige Live-Streams abonnieren.",
       "Survey": "Befragung",
+      "Tap_the_heart_on_a_project_to_get_notified": "Tippe auf das Herz neben einem Projekt und wir benachrichtigen dich 48 Stunden, bevor es abläuft.",
+      "Tap_the_heart_on_each_project_page_to_save_it": "Klicke einfach auf das Herz auf der Projektseite, um dieses Projekt zu speichern. Wir werden dir 48 Stunden vor Ablauf eine Benachrichtigung schicken.",
       "Tap_the_star_on_a_project_to_get_notified": "Tippe auf den Stern neben einem Projekt und wir benachrichtigen dich 48 Stunden, bevor es abläuft.",
       "Tap_the_star_on_each_project_page_to_save_it": "Klicke einfach auf den Stern auf der Projektseite, um ein Projekt zu speichern. Wir werden dir 48 Stunden vor Ablauf eine Benachrichtigung schicken.",
       "Thank_you_for_supporting_this_project": "Vielen Dank für deine Unterstützung dieses Projekts.",
@@ -2248,6 +2258,7 @@
       "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "Dieses Facebook-Konto ist bereits einem anderen Kickstarter-Nutzer zugeordnet.",
       "Time_left_left": "%{time_left} übrig",
       "To_access_all_your_favorite_categories_tap_the_explore_dropdown": "Für schnellen Zugriff auf deine meist besuchten Kategorien, tippe auf das Dropdown-Menü oben.",
+      "Toggle_saving_this_project": "Umschalten zu Projekt speichern",
       "To_read_this_project_update_you_must_be_a_backer": "Um diesen Update zum Projekt lesen zu können, musst du ein Unterstützer dieses Projekts sein. Bitte melde dich an oder registriere dich.",
       "Total_pledged": "Anzahl der Beiträge insgesamt",
       "updates_count_updates": {
@@ -2257,6 +2268,7 @@
         "few": "%{updates_count} Updates",
         "many": "%{updates_count} Updates"
       },
+      "Unsaved": "Speichern wurde rückgängig gemacht",
       "Unsaves_project": "Macht Speichern dieses Projektes rückgängig.",
       "Unfollow_friend_name": "%{friend_name} nicht mehr folgen",
       "Unfollows_friend_name": "%{friend_name} nicht mehr folgen.",
@@ -3942,6 +3954,7 @@
       "Funding_successful": "Financiado con éxito",
       "Get_notified_about_this_creators_live_streams": "Recibe notificaciones sobre los Live Streams de este creador",
       "Go_to_project_page": "Ir a la página de proyecto",
+      "Got_it": "¡Listo!",
       "Got_it_your_survey_response_has_been_submitted": "¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.",
       "Home": "Inicio",
       "hours": {
@@ -3988,6 +4001,7 @@
       "Manage_your_reward": "Administra tu recompensa",
       "Message_backer": "Enviar mensaje a patrocinador",
       "Message_creator": "Enviar mensaje al creador",
+      "Message_user_name": "Mensaje a %{user_name}…",
       "minutes": {
         "zero": "minutos",
         "one": "minuto",
@@ -4133,6 +4147,8 @@
       "Subscribed": "Suscripción activa",
       "Subscribes_to_upcoming_lives_streams": "Activa subscripción a futuros Live-Streams.",
       "Survey": "Cuestionario",
+      "Tap_the_heart_on_a_project_to_get_notified": "Haz clic en el icono de corazón de un proyecto para recibir una notificación 48 horas antes de que finalice.",
+      "Tap_the_heart_on_each_project_page_to_save_it": "Haz clic en el corazón en la página de cada proyecto para guardarlo. Te recordaremos 48 horas antes de que finalice el proyecto.",
       "Tap_the_star_on_a_project_to_get_notified": "Toca el icono de estrella de un proyecto para recibir una notificación 48 horas antes de que finalice.",
       "Tap_the_star_on_each_project_page_to_save_it": "Toca la estrella en cada página del proyecto para guardarlo. Te recordaremos 48 horas antes de que finalice el proyecto.",
       "Thank_you_for_supporting_this_project": "Gracias por apoyar este proyecto.",
@@ -4146,6 +4162,7 @@
       "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "Esta cuenta de Facebook ya está asociada a otro usuario de Kickstarter.",
       "Time_left_left": "%{time_left} restantes",
       "To_access_all_your_favorite_categories_tap_the_explore_dropdown": "Accede a tus categorías favoritas en el menú en la parte superior de la app.",
+      "Toggle_saving_this_project": "Guardar/No guardar este proyecto",
       "To_read_this_project_update_you_must_be_a_backer": "Sólo los patrocinadores pueden leer esta actualización, por favor inicia sesión o regístrate para continuar.",
       "Total_pledged": "Contribuciones en total",
       "updates_count_updates": {
@@ -4155,6 +4172,7 @@
         "few": "%{updates_count} actualizaciones",
         "many": "%{updates_count} actualizaciones"
       },
+      "Unsaved": "Sin guardar",
       "Unsaves_project": "Deshacer \"guardar proyecto\".",
       "Unfollow_friend_name": "Dejar de seguir a %{friend_name}",
       "Unfollows_friend_name": "Dejar de seguir a %{friend_name}.",
@@ -5840,6 +5858,7 @@
       "Funding_successful": "Intégralement financé",
       "Get_notified_about_this_creators_live_streams": "Envoyez-moi des notifications au sujet des diffusions en direct de ce créateur.",
       "Go_to_project_page": "Accéder à la page de projet",
+      "Got_it": "Super.",
       "Got_it_your_survey_response_has_been_submitted": "Merci ! Vos réponses au questionnaire ont bien été envoyées.",
       "Home": "Accueil",
       "hours": {
@@ -5886,6 +5905,7 @@
       "Manage_your_reward": "Gérer votre récompense",
       "Message_backer": "Envoyer un message au contributeur",
       "Message_creator": "Envoyer un message au créateur",
+      "Message_user_name": "Envoyer un message à %{user_name}",
       "minutes": {
         "zero": "minutes",
         "one": "minute",
@@ -6031,6 +6051,8 @@
       "Subscribed": "Abonné ",
       "Subscribes_to_upcoming_lives_streams": "Abonnement aux diffusions en direct à venir.",
       "Survey": "Questionnaire",
+      "Tap_the_heart_on_a_project_to_get_notified": "Cliquez sur l'icône en forme de cœur située à côté du projet pour recevoir une notification 48 avant la fin de la campagne.",
+      "Tap_the_heart_on_each_project_page_to_save_it": "Cliquez sur le cœur qui apparaît sur la page du projet pour l'ajouter à vos favoris. Nous vous enverrons un petit rappel 48 heures avant la fin de la campagne.",
       "Tap_the_star_on_a_project_to_get_notified": "Cliquez sur l'icône en forme d'étoile située à côté du projet pour recevoir une notification 48 avant la fin de sa campagne.",
       "Tap_the_star_on_each_project_page_to_save_it": "Cliquez sur l'étoile qui apparaît sur la page du projet pour l'ajouter à vos favoris. Nous vous enverrons un petit rappel 48 heures avant la fin de la campagne.",
       "Thank_you_for_supporting_this_project": "Merci pour votre soutien.",
@@ -6044,6 +6066,7 @@
       "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "Ce compte Facebook est déjà relié à un autre utilisateur Kickstarter.",
       "Time_left_left": "Plus que %{time_left}",
       "To_access_all_your_favorite_categories_tap_the_explore_dropdown": "Pour retrouver toutes vos catégories préférées, cliquez sur le menu déroulant Découvrir dans l'application.",
+      "Toggle_saving_this_project": "Enregistrer / ne pas enregistrer ce projet",
       "To_read_this_project_update_you_must_be_a_backer": "Seuls les contributeurs ont accès à cette actu de projet. Connectez-vous ou inscrivez-vous pour continuer.",
       "Total_pledged": "Total engagé",
       "updates_count_updates": {
@@ -6053,6 +6076,7 @@
         "few": "%{updates_count} actus",
         "many": "%{updates_count} actus"
       },
+      "Unsaved": "Non enregistré",
       "Unsaves_project": "Annule l'enregistrement du projet.",
       "Unfollow_friend_name": "Ne plus suivre %{friend_name}",
       "Unfollows_friend_name": "Désabonnement des actus de %{friend_name}.",
@@ -7810,11 +7834,14 @@
     }
   ],
   "ab_experiments": {
-    "koala_alt_frontend_tracking": "control",
+    "koala_alt_frontend_tracking": "experimental",
     "project_build": "control",
     "react_guest_pledging": "control",
     "react_payment_sources_form": "control",
-    "social_icons_bucket": "experimental"
+    "favorites_recs": "experimental",
+    "thanks_page_better_recs": "control",
+    "social_icons_bucket": "control",
+    "guided_search": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

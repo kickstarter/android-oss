@@ -5,8 +5,8 @@
   android:layout_height="match_parent"
   android:paddingTop="@dimen/grid_2"
   android:paddingBottom="@dimen/grid_3"
-  android:paddingLeft="@dimen/grid_3"
-  android:paddingRight="@dimen/grid_3">
+  android:paddingStart="@dimen/grid_3"
+  android:paddingEnd="@dimen/grid_3">
 
   <LinearLayout
     android:orientation="vertical"
@@ -50,6 +50,15 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_2"
       android:text="@string/debug_push_notifications_simulate_notifications" />
+
+    <Button
+      android:id="@+id/simulate_message_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/debug_push_notifications_message"
+      style="@style/BorderButton" />
 
     <Button
       android:id="@+id/simulate_project_launch_button"

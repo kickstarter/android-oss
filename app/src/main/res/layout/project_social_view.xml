@@ -3,8 +3,6 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:orientation="vertical"
   android:layout_marginStart="@dimen/feed_padding_x"
-  android:layout_marginRight="@dimen/feed_padding_x"
-  android:layout_marginLeft="@dimen/feed_padding_x"
   android:layout_marginEnd="@dimen/feed_padding_x"
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
@@ -20,17 +18,18 @@
 
     <ImageView
       android:id="@+id/friend_image"
-      android:layout_marginRight="@dimen/grid_3"
-      android:layout_marginEnd="@dimen/grid_3"
+      android:layout_marginEnd="@dimen/grid_4"
       android:layout_width="@dimen/comments_feed_avatar_width"
       android:layout_height="@dimen/comments_feed_avatar_height"
+      tools:background="@color/blue"
       tools:ignore="ContentDescription" />
 
     <TextView
       android:id="@+id/friend_name"
       style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
+      android:layout_height="wrap_content"
+      tools:text="MyBest Friend"/>
 
   </LinearLayout>
 

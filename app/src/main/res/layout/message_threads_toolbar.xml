@@ -7,7 +7,6 @@
   android:background="@color/white"
   android:id="@+id/message_threads_toolbar"
   android:elevation="0dp"
-  android:animateLayoutChanges="true"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   app:layout_collapseMode="pin"
@@ -28,8 +27,7 @@
       android:gravity="center"
       android:layout_centerVertical="true"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:animateLayoutChanges="true">
+      android:layout_height="match_parent">
 
       <TextView
         style="@style/Subheadline"
@@ -42,8 +40,8 @@
         style="@style/FootnotePrimaryMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/grid_new_1"
-        android:layout_marginStart="@dimen/grid_new_1"
+        android:layout_marginEnd="@dimen/grid_1"
+        android:layout_marginStart="@dimen/grid_1"
         android:textColor="@color/ksr_text_green_700"
         tools:text="(3)" />
 

@@ -33,6 +33,7 @@ import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
@@ -93,12 +94,14 @@ public interface ApiService {
   @GET("/v1/message_threads/{message_thread_id}/messages")
   Observable<Response<MessageThreadEnvelope>> messagesForThread(@Path("message_thread_id") long messageThreadId);
 
-  // Todo: replace "inbox" with Mailbox "inbox" or "sent" value
-  @GET("/v1/message_threads/inbox")
-  Observable<Response<MessageThreadsEnvelope>> messageThreads();
+  @GET("/v1/message_threads/{mailbox}")
+  Observable<Response<MessageThreadsEnvelope>> messageThreads(@Path("mailbox") String mailbox);
 
-  @GET("/v1/projects/{project_id}/message_threads/inbox")
-  Observable<Response<MessageThreadsEnvelope>> messageThreads(@Path("project_id") long projectId);
+  @GET("/v1/projects/{project_id}/message_threads/{mailbox}")
+  Observable<Response<MessageThreadsEnvelope>> messageThreads(
+    @Path("project_id") long projectId,
+    @Path("mailbox") String mailbox
+  );
 
   @GET
   Observable<Response<CommentsEnvelope>> paginatedProjectComments(@Url String paginationPath);
@@ -136,6 +139,9 @@ public interface ApiService {
 
   @GET
   Observable<Response<DiscoverEnvelope>> projects(@Url String paginationUrl);
+
+  @GET("/v1/projects/{project_param}/stats")
+  Observable<Response<ProjectStatsEnvelope>> projectStats(@Path("project_param") String projectParam);
 
   @POST("/v1/users/self/push_tokens")
   Observable<Response<Empty>> registerPushToken(@Body PushTokenBody body);

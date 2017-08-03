@@ -38,8 +38,11 @@ import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
+import com.kickstarter.ui.data.Mailbox;
+import com.kickstarter.ui.data.MessageSubject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -181,6 +184,14 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project) {
+    return service
+      .projectStats(project.param())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
   public @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user) {
     return service
       .projectBacking(project.param(), user.param())
@@ -229,15 +240,25 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads() {
-    return fetchMessageThreads(null);
+  public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull Long messageThreadId) {
+    return service
+      .messagesForThread(messageThreadId)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   @Override
-  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project) {
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @NonNull Mailbox mailbox) {
+    return this.fetchMessageThreads(null, mailbox);
+  }
+
+  @Override
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project,
+    final @NonNull Mailbox mailbox) {
+
     final Observable<Response<MessageThreadsEnvelope>> apiResponse = project == null
-      ? service.messageThreads()
-      : service.messageThreads(project.id());
+      ? this.service.messageThreads(mailbox.getType())
+      : this.service.messageThreads(project.id(), mailbox.getType());
 
     return apiResponse
       .lift(apiErrorOperator())
@@ -378,17 +399,18 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Message> sendMessageToBacking(final @NonNull Backing backing, final @NonNull String body) {
-    return service
-      .sendMessageToBacking(backing.projectId(), backing.backerId(), MessageBody.builder().body(body).build())
-      .lift(apiErrorOperator())
-      .subscribeOn(Schedulers.io());
-  }
+  public @NonNull Observable<Message> sendMessage(final @NonNull MessageSubject messageSubject, final @NonNull String body) {
+    final MessageBody messageBody = MessageBody.builder().body(body).build();
 
-  @Override
-  public @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread messageThread, final @NonNull String body) {
-    return service
-      .sendMessageToThread(messageThread.id(), MessageBody.builder().body(body).build())
+    return messageSubject
+      .value(
+        backing -> this.service
+          .sendMessageToBacking(backing.projectId(), backing.backerId(), messageBody),
+        messageThread -> this.service
+          .sendMessageToThread(messageThread.id(), messageBody),
+        project -> this.service
+          .sendMessageToProject(project.id(), messageBody)
+      )
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

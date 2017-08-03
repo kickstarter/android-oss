@@ -3,9 +3,9 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  tools:showIn="@layout/view_pledge_layout"
+  tools:showIn="@layout/backing_layout"
   style="@style/Toolbar"
-  android:id="@+id/view_pledge_toolbar"
+  android:id="@+id/backing_toolbar"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
 

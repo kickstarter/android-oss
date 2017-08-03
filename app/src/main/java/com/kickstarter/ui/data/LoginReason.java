@@ -33,5 +33,4 @@ public enum LoginReason {
         return "generic";
     }
   }
-};
-
+}

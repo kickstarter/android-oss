@@ -1,43 +1,35 @@
 <resources>
-  <!-- Kickstarter eight-point grid keylines -->
-  <dimen name="grid_1_half">4dp</dimen>
-  <dimen name="grid_1">8dp</dimen>
-  <dimen name="grid_3_half">12dp</dimen>
-  <dimen name="grid_2">16dp</dimen>
-  <dimen name="grid_5_half">20dp</dimen>
-  <dimen name="grid_3">24dp</dimen>
-  <dimen name="grid_7_half">28dp</dimen>
-  <dimen name="grid_4">32dp</dimen>
-  <dimen name="grid_9_half">36dp</dimen>
-  <dimen name="grid_5">40dp</dimen>
-  <dimen name="grid_11_half">44dp</dimen>
-  <dimen name="grid_6">48dp</dimen>
-  <dimen name="grid_7">56dp</dimen>
-  <dimen name="grid_8">64dp</dimen>
-  <dimen name="grid_9">72dp</dimen>
-  <dimen name="grid_10">80dp</dimen>
-  <dimen name="grid_12">96dp</dimen>
-  <dimen name="grid_14">112dp</dimen>
-  <dimen name="grid_15">120dp</dimen>
-  <dimen name="grid_16">128dp</dimen>
-  <dimen name="grid_20">160dp</dimen>
-  <dimen name="grid_35">280dp</dimen>
-  <dimen name="grid_40">320dp</dimen>
-
-  <!-- Kickstarter six-point grid keylines -->
-  <dimen name="grid_new_1_half">3dp</dimen>
-  <dimen name="grid_new_1">6dp</dimen>
-  <dimen name="grid_new_2">12dp</dimen>
-  <dimen name="grid_new_3">18dp</dimen>
-  <dimen name="grid_new_4">24dp</dimen>
-  <dimen name="grid_new_5">30dp</dimen>
-  <dimen name="grid_new_6">36dp</dimen>
-  <dimen name="grid_new_7">42dp</dimen>
-  <dimen name="grid_new_8">48dp</dimen>
-  <dimen name="grid_new_9">54dp</dimen>
-  <dimen name="grid_new_10">60dp</dimen>
-  <dimen name="grid_new_20">120dp</dimen>
-  <dimen name="grid_new_33">198dp</dimen>
+  <!-- Kickstarter six-point grid keylines-->
+  <dimen name="grid_1_half">3dp</dimen>
+  <dimen name="grid_1">6dp</dimen>
+  <dimen name="grid_3_half">9dp</dimen>
+  <dimen name="grid_2">12dp</dimen>
+  <dimen name="grid_5_half">15dp</dimen>
+  <dimen name="grid_3">18dp</dimen>
+  <dimen name="grid_7_half">21dp</dimen>
+  <dimen name="grid_4">24dp</dimen>
+  <dimen name="grid_9_half">27dp</dimen>
+  <dimen name="grid_5">30dp</dimen>
+  <dimen name="grid_11_half">33dp</dimen>
+  <dimen name="grid_6">36dp</dimen>
+  <dimen name="grid_7">42dp</dimen>
+  <dimen name="grid_8">48dp</dimen>
+  <dimen name="grid_9">54dp</dimen>
+  <dimen name="grid_10">60dp</dimen>
+  <dimen name="grid_12">72dp</dimen>
+  <dimen name="grid_13">78dp</dimen>
+  <dimen name="grid_14">84dp</dimen>
+  <dimen name="grid_15">90dp</dimen>
+  <dimen name="grid_16">96dp</dimen>
+  <dimen name="grid_20">120dp</dimen>
+  <dimen name="grid_21">126dp</dimen>
+  <dimen name="grid_27">162dp</dimen>
+  <dimen name="grid_33">198dp</dimen>
+  <dimen name="grid_35">210dp</dimen>
+  <dimen name="grid_40">240dp</dimen>
+  <dimen name="grid_41">246dp</dimen>
+  <dimen name="grid_46">276dp</dimen>
+  <dimen name="grid_53">318dp</dimen>
 
   <!-- Typography-->
   <dimen name="caption_2">11sp</dimen>
@@ -62,12 +54,12 @@
   <dimen name="settings_icon">20sp</dimen>
 
   <!-- Cards -->
-  <dimen name="card_corner_radius">4dp</dimen>
+  <dimen name="card_corner_radius">0dp</dimen>
   <dimen name="card_elevation">2dp</dimen>
   <dimen name="card_no_elevation">0dp</dimen>
-  <dimen name="card_margin_x">@dimen/grid_new_2</dimen>
-  <dimen name="project_card_margin_top">@dimen/grid_new_4</dimen>
-  <dimen name="project_card_margin_bottom">@dimen/grid_new_1</dimen>
+  <dimen name="card_margin_x">@dimen/grid_2</dimen>
+  <dimen name="project_card_margin_top">@dimen/grid_4</dimen>
+  <dimen name="project_card_margin_bottom">@dimen/grid_1</dimen>
   <dimen name="profile_card_height">178dp</dimen>
 
   <!-- Discovery drawer -->
@@ -77,54 +69,55 @@
 
   <!-- Layout padding -->
   <dimen name="activity_padding_x">0dp</dimen>
-  <dimen name="comment_body_padding_x">@dimen/grid_7</dimen>
-  <dimen name="feed_padding_y">@dimen/grid_new_3</dimen>
-  <dimen name="feed_padding_x">@dimen/grid_new_2</dimen>
-  <dimen name="search_padding_y">@dimen/grid_new_2</dimen>
-  <dimen name="search_padding_x">@dimen/grid_new_2</dimen>
-  <dimen name="form_margin_x">@dimen/grid_2</dimen>
+  <dimen name="comment_body_padding_x">@dimen/grid_9</dimen>
+  <dimen name="feed_padding_y">@dimen/grid_3</dimen>
+  <dimen name="feed_padding_x">@dimen/grid_2</dimen>
+  <dimen name="search_padding_y">@dimen/grid_2</dimen>
+  <dimen name="search_padding_x">@dimen/grid_2</dimen>
+  <dimen name="form_margin_x">@dimen/grid_3</dimen>
   <dimen name="project_padding_x">@dimen/grid_2</dimen>
   <dimen name="settings_icon_margin_x">@dimen/grid_1_half</dimen>
   <dimen name="profile_empty_padding_y">@dimen/grid_8</dimen>
 
   <!-- Metadata labels -->
-  <dimen name="metadata_label_height">@dimen/grid_4</dimen>
+  <dimen name="metadata_label_height">@dimen/grid_5</dimen>
 
   <!-- Buttons -->
   <!-- button_icon_fixed_width is useful when we want to place several icons next to each
   other where they all take up the same width. This helps with UI effects like ripples that
   use the button size to calculate the ripple radius. -->
-  <dimen name="button_icon_fixed_width">48dp</dimen>
-  <dimen name="settings_icon_fixed_width">@dimen/grid_6</dimen>
+  <dimen name="button_icon_fixed_width">@dimen/grid_8</dimen>
+  <dimen name="settings_icon_fixed_width">@dimen/grid_8</dimen>
   <dimen name="button_corner_radius">@dimen/grid_1_half</dimen>
   <dimen name="button_stroke_width">1dp</dimen>
-  <dimen name="progress_bar_min_height">3dp</dimen>
-  <dimen name="progress_bar_height">3dp</dimen>
-  <dimen name="project_action_button_height">60dp</dimen>
+  <dimen name="progress_bar_min_height">@dimen/grid_1_half</dimen>
+  <dimen name="progress_bar_height">@dimen/grid_1_half</dimen>
+  <dimen name="project_action_button_height">@dimen/grid_10</dimen>
 
   <!-- Photos -->
   <dimen name="discovery_activity_photo_width">64dp</dimen>
-  <dimen name="discovery_activity_photo_height">36dp</dimen>
-  <dimen name="activity_feed_avatar_width">60dp</dimen>
-  <dimen name="activity_feed_avatar_height">60dp</dimen>
-  <dimen name="activity_feed_backing_photo_width">@dimen/grid_12</dimen>
-  <dimen name="activity_feed_backing_photo_height">54dp</dimen>
+  <dimen name="discovery_activity_photo_height">@dimen/grid_6</dimen>
+  <dimen name="activity_feed_avatar_width">@dimen/grid_10</dimen>
+  <dimen name="activity_feed_avatar_height">@dimen/grid_10</dimen>
+  <dimen name="activity_feed_backing_photo_width">@dimen/grid_16</dimen>
+  <dimen name="activity_feed_backing_photo_height">@dimen/grid_9</dimen>
   <dimen name="activity_feed_update_photo_width">@dimen/grid_16</dimen>
   <dimen name="activity_feed_update_photo_height">@dimen/grid_9</dimen>
-  <dimen name="comments_feed_avatar_width">@dimen/grid_11_half</dimen>
-  <dimen name="comments_feed_avatar_height">@dimen/grid_11_half</dimen>
+  <dimen name="comments_feed_avatar_width">44dp</dimen>
+  <dimen name="comments_feed_avatar_height">44dp</dimen>
+  <dimen name="message_avatar_border_width">2dp</dimen>
   <dimen name="profile_avatar_width">100dp</dimen>
   <dimen name="profile_avatar_height">@dimen/profile_avatar_width</dimen>
   <dimen name="profile_card_photo_height">90dp</dimen>
-  <dimen name="profile_card_photo_width">@dimen/grid_20</dimen>
-  <dimen name="project_avatar_width">@dimen/grid_8</dimen>
-  <dimen name="project_avatar_height">@dimen/grid_8</dimen>
+  <dimen name="profile_card_photo_width">160dp</dimen>
+  <dimen name="project_avatar_width">64dp</dimen>
+  <dimen name="project_avatar_height">64dp</dimen>
   <dimen name="project_card_photo_landscape_height">135dp</dimen>
   <dimen name="project_card_photo_landscape_width">240dp</dimen>
-  <dimen name="project_social_photo_height">@dimen/grid_4</dimen>
+  <dimen name="project_social_photo_height">@dimen/grid_5</dimen>
   <dimen name="search_result_photo_width">80dp</dimen>
   <dimen name="search_result_photo_height">45dp</dimen>
-  <dimen name="search_result_featured_photo_height">@dimen/grid_new_33</dimen>
+  <dimen name="search_result_featured_photo_height">@dimen/grid_33</dimen>
 
   <dimen name="thanks_project_photo_width">208dp</dimen>
   <dimen name="thanks_project_photo_height">117dp</dimen>
@@ -137,7 +130,10 @@
 
   <!-- Activity feed view -->
   <dimen name="activity_feed_view_margin_top">0dp</dimen>
-  <dimen name="activity_feed_view_margin_bottom">@dimen/grid_3_half</dimen>
+  <dimen name="activity_feed_view_margin_bottom">@dimen/grid_2</dimen>
+
+  <!-- Messages -->
+  <dimen name="message_reply_layout_height">@dimen/grid_10</dimen>
 
   <!-- Popup menus -->
   <dimen name="popup_menu_horizontal_offset">-151dp</dimen>

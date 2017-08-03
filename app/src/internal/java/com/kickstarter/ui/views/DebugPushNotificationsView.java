@@ -23,6 +23,7 @@ public final class DebugPushNotificationsView extends ScrollView {
   protected @Inject DeviceRegistrarType deviceRegistrar;
   protected @Inject PushNotifications pushNotifications;
 
+  private static final Long MESSAGE_THREAD_ID = 17848074L;
   private static final String PROJECT_PHOTO = "https://ksr-ugc.imgix.net/projects/1176555/photo-original.png?v=1407175667&w=120&h=120&fit=crop&auto=format&q=92&s=2065d33620d4fef280c4c2d451c2fa93";
   private static final String USER_PHOTO = "https://ksr-ugc.imgix.net/avatars/1583412/portrait.original.png?v=1330782076&w=120&h=120&fit=crop&auto=format&q=92&s=a9029da56a3deab8c4b87818433e3430";
   private static final Long PROJECT_ID = 1761344210L;
@@ -76,7 +77,7 @@ public final class DebugPushNotificationsView extends ScrollView {
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
-    pushNotifications.add(envelope);
+    this.pushNotifications.add(envelope);
   }
 
   @OnClick(R.id.simulate_friend_follow_button)
@@ -93,7 +94,22 @@ public final class DebugPushNotificationsView extends ScrollView {
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
-    pushNotifications.add(envelope);
+    this.pushNotifications.add(envelope);
+  }
+
+  @OnClick(R.id.simulate_message_button)
+  public void simulateMessageButtonClick() {
+    final GCM gcm = GCM.builder()
+      .title("New message")
+      .alert("Native Squad sent you a message about Help Me Transform This Pile of Wood.")
+      .build();
+
+    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
+      .gcm(gcm)
+      .message(PushNotificationEnvelope.Message.builder().messageThreadId(MESSAGE_THREAD_ID).projectId(PROJECT_ID).build())
+      .build();
+
+    this.pushNotifications.add(envelope);
   }
 
   @OnClick(R.id.simulate_project_cancellation_button)
@@ -111,7 +127,7 @@ public final class DebugPushNotificationsView extends ScrollView {
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
-    pushNotifications.add(envelope);
+    this.pushNotifications.add(envelope);
   }
 
   @OnClick(R.id.simulate_project_failure_button)
@@ -129,7 +145,7 @@ public final class DebugPushNotificationsView extends ScrollView {
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
-    pushNotifications.add(envelope);
+    this.pushNotifications.add(envelope);
   }
 
   @OnClick(R.id.simulate_project_launch_button)
@@ -146,7 +162,7 @@ public final class DebugPushNotificationsView extends ScrollView {
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
-    pushNotifications.add(envelope);
+    this.pushNotifications.add(envelope);
   }
 
   @OnClick(R.id.simulate_project_reminder_button)
@@ -160,12 +176,12 @@ public final class DebugPushNotificationsView extends ScrollView {
       .gcm(gcm)
       .project(PushNotificationEnvelope.Project.builder().id(PROJECT_ID).photo(PROJECT_PHOTO).build())
       .build();
-    pushNotifications.add(envelope);
+    this.pushNotifications.add(envelope);
   }
 
   @OnClick(R.id.simulate_project_success_button)
   public void simulateProjectSuccessButtonClick() {
-    pushNotifications.add(projectSuccessEnvelope());
+    this.pushNotifications.add(projectSuccessEnvelope());
   }
 
   @OnClick(R.id.simulate_project_update_button)
@@ -184,7 +200,7 @@ public final class DebugPushNotificationsView extends ScrollView {
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
-    pushNotifications.add(envelope);
+    this.pushNotifications.add(envelope);
   }
 
   @OnClick(R.id.simulate_burst_button)
@@ -193,7 +209,7 @@ public final class DebugPushNotificationsView extends ScrollView {
     for (int i = 0; i < 100; i++) {
       // Create a different signature for each push notification
       final GCM gcm = baseEnvelope.gcm().toBuilder().alert(Integer.toString(i)).build();
-      pushNotifications.add(baseEnvelope.toBuilder().gcm(gcm).build());
+      this.pushNotifications.add(baseEnvelope.toBuilder().gcm(gcm).build());
     }
   }
 

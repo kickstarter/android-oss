@@ -42,7 +42,6 @@
         android:gravity="center_vertical"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:paddingRight="@dimen/grid_2"
         android:paddingEnd="@dimen/grid_2"
         tools:ignore="RtlSymmetry">
 
@@ -57,15 +56,14 @@
           android:background="@drawable/button_selector"
           android:ellipsize="end"
           android:textColor="@color/white"
-          android:layout_width="fill_parent"
+          android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:maxLines="1"
-          android:paddingLeft="@dimen/grid_3_half"
-          android:paddingStart="@dimen/grid_3_half"
-          android:paddingRight="@dimen/grid_3_half"
-          android:paddingEnd="@dimen/grid_3_half"
+          android:paddingStart="@dimen/grid_2"
+          android:paddingEnd="@dimen/grid_2"
           android:gravity="center_vertical"
           tools:text="Staff Picks" />
+
       </LinearLayout>
 
       <LinearLayout

@@ -3,6 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/messages_coordinator_layout"
   android:fitsSystemWindows="true"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
@@ -16,17 +17,17 @@
     <android.support.design.widget.CollapsingToolbarLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:elevation="@dimen/toolbar_elevation"
       android:background="@color/white"
+      android:elevation="@dimen/toolbar_elevation"
       app:contentScrim="@color/white"
       app:layout_scrollFlags="scroll|exitUntilCollapsed"
       tools:ignore="UnusedAttribute">
 
       <LinearLayout
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/grid_new_10"
-        android:layout_marginStart="@dimen/grid_new_8"
-        android:layout_marginEnd="@dimen/grid_new_8"
+        android:layout_marginTop="@dimen/grid_10"
+        android:layout_marginStart="@dimen/grid_8"
+        android:layout_marginEnd="@dimen/grid_8"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,14 +39,14 @@
           android:fontFamily="@string/font_family_maison_neue_book"
           android:ellipsize="end"
           android:gravity="center"
-          android:layout_marginBottom="@dimen/grid_new_2"
+          android:layout_marginBottom="@dimen/grid_2"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           tools:text="This Cool Project I Backed"/>
 
         <TextView
           android:id="@+id/messages_participant_name_text_view"
-          android:layout_marginBottom="@dimen/grid_new_5"
+          android:layout_marginBottom="@dimen/grid_5"
           style="@style/FootnotePrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -57,72 +58,34 @@
 
     </android.support.design.widget.CollapsingToolbarLayout>
 
-    <android.support.design.widget.CollapsingToolbarLayout
-      android:id="@+id/backing_info_view"
-      android:layout_gravity="center_vertical"
-      android:layout_width="match_parent"
+    <View
       android:background="@color/white"
-      android:layout_height="@dimen/grid_new_10"
-      app:elevation="0dp"
-      app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-      <RelativeLayout
-        android:paddingStart="@dimen/grid_new_3"
-        android:paddingEnd="0dp"
-        android:gravity="center_vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <Button
-          android:id="@+id/messages_view_pledge_button"
-          android:textSize="@dimen/footnote"
-          android:background="@drawable/click_indicator_light_masked"
-          android:textColor="@color/ksr_text_green_700"
-          android:textStyle="bold"
-          android:layout_height="match_parent"
-          android:layout_width="wrap_content"
-          android:paddingStart="@dimen/grid_new_3"
-          android:paddingEnd="@dimen/grid_new_3"
-          android:layout_alignParentEnd="true"
-          tools:text="View pledge"/>
-
-        <TextView
-          android:id="@+id/backing_amount_text_view"
-          style="@style/FootnotePrimary"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignBaseline="@+id/messages_view_pledge_button"
-          android:layout_alignBottom="@+id/messages_view_pledge_button"
-          android:layout_alignParentStart="true"
-          android:layout_toStartOf="@+id/messages_view_pledge_button"
-          tools:text="$42 pledged on June 9, 2017"/>
-
-      </RelativeLayout>
-
-    </android.support.design.widget.CollapsingToolbarLayout>
-
-    <include
-      layout="@layout/horizontal_line_0_5dp_view"
-      android:layout_height="wrap_content"
       android:layout_width="match_parent"
-      app:layout_scrollFlags="scroll|enterAlways" />
+      android:layout_height="@dimen/grid_1"/>
 
-    </android.support.design.widget.AppBarLayout>
+    <include layout="@layout/messages_backing_info_view"/>
 
-    <android.support.v7.widget.RecyclerView
-      android:id="@+id/messages_recycler_view"
-      android:background="@color/white"
-      android:clipChildren="false"
-      android:clipToPadding="false"
-      android:scrollbars="vertical"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_new_10"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior"
-      tools:ignore="RtlSymmetry" />
+  </android.support.design.widget.AppBarLayout>
 
-    <include
-      android:id="@+id/message_reply_layout"
-      layout="@layout/message_reply_layout" />
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/messages_recycler_view"
+    android:background="@color/white"
+    android:scrollbars="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:ignore="RtlSymmetry" />
+
+  <ProgressBar
+    android:id="@+id/messages_loading_indicator"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_anchor="@id/messages_recycler_view"
+    app:layout_anchorGravity="center"/>
+
+  <include
+    android:id="@+id/message_reply_layout"
+    layout="@layout/message_reply_layout" />
 
 </android.support.design.widget.CoordinatorLayout>

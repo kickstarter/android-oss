@@ -10,7 +10,9 @@ import com.kickstarter.models.Update;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.data.LoginReason;
+import com.kickstarter.ui.data.Mailbox;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -406,6 +408,19 @@ public final class Koala {
     props.put("context", context.getTrackingString());
 
     this.client.track(KoalaEvent.SENT_MESSAGE, props);
+  }
+
+  public void trackViewedMailbox(final @NonNull Mailbox mailbox, final @Nullable Project project) {
+    final Map<String, Object> props = project == null ? Collections.emptyMap() : KoalaUtils.projectProperties(project);
+
+    switch (mailbox) {
+      case INBOX:
+        this.client.track(KoalaEvent.VIEWED_MESSAGE_INBOX, props);
+        break;
+      case SENT:
+        this.client.track(KoalaEvent.VIEWED_SENT_MESSAGES, props);
+        break;
+    }
   }
 
   public void trackViewedMessageThread(final @NonNull Project project) {

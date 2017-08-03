@@ -73,10 +73,10 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @BindColor(R.color.ksr_text_navy_500) int ksrTextNavy500;
   protected @BindColor(R.color.ksr_text_navy_700) int ksrTextNavy700;
 
-  protected @BindDimen(R.dimen.grid_new_1) int gridNew1Dimen;
-  protected @BindDimen(R.dimen.grid_new_2) int gridNew2Dimen;
-  protected @BindDimen(R.dimen.grid_new_3) int gridNew3Dimen;
-  protected @BindDimen(R.dimen.grid_new_4) int gridNew4Dimen;
+  protected @BindDimen(R.dimen.grid_1) int gridNew1Dimen;
+  protected @BindDimen(R.dimen.grid_2) int gridNew2Dimen;
+  protected @BindDimen(R.dimen.grid_3) int gridNew3Dimen;
+  protected @BindDimen(R.dimen.grid_4) int gridNew4Dimen;
 
   protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
 

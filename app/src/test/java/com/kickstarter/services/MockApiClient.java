@@ -11,7 +11,6 @@ import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.CommentFactory;
 import com.kickstarter.factories.CommentsEnvelopeFactory;
 import com.kickstarter.factories.LocationFactory;
-import com.kickstarter.factories.MessageFactory;
 import com.kickstarter.factories.MessageThreadEnvelopeFactory;
 import com.kickstarter.factories.MessageThreadsEnvelopeFactory;
 import com.kickstarter.factories.ProjectFactory;
@@ -37,7 +36,10 @@ import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
+import com.kickstarter.ui.data.Mailbox;
+import com.kickstarter.ui.data.MessageSubject;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -156,6 +158,11 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project) {
+    return Observable.empty();
+  }
+
+  @Override
   public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Project project) {
     return Observable.just(CommentsEnvelopeFactory.commentsEnvelope());
   }
@@ -181,12 +188,17 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads() {
+  public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull Long messageThreadId) {
+    return Observable.empty();
+  }
+
+  @Override
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @NonNull Mailbox mailbox) {
     return Observable.just(MessageThreadsEnvelopeFactory.messageThreadsEnvelope());
   }
 
   @Override
-  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project) {
+  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project, final @NonNull Mailbox mailbox) {
     return Observable.just(MessageThreadsEnvelopeFactory.messageThreadsEnvelope());
   }
 
@@ -318,13 +330,8 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Message> sendMessageToBacking(final @NonNull Backing backing, final @NonNull String body) {
+  public @NonNull Observable<Message> sendMessage(final @NonNull MessageSubject messageSubject, final @NonNull String body) {
     return Observable.empty();
-  }
-
-  @Override
-  public @NonNull Observable<Message> sendMessageToThread(final @NonNull MessageThread thread, final @NonNull String body) {
-    return Observable.just(MessageFactory.message());
   }
 
   @Override

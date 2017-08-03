@@ -13,7 +13,7 @@
     android:layout_above="@+id/project_action_buttons"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray"/>
+    android:background="@color/white"/>
 
   <RelativeLayout
     android:id="@+id/project_action_buttons"

@@ -34,7 +34,8 @@
         android:adjustViewBounds="true"
         android:layout_width="@dimen/grid_5"
         android:layout_height="@dimen/grid_5"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        tools:background="@color/blue"/>
 
       <TextView
         style="@style/BodyPrimaryMedium"
@@ -42,7 +43,8 @@
         android:layout_marginStart="@dimen/grid_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black" />
+        android:textColor="@color/ksr_soft_black"
+        tools:text="Lisa Luo"/>
 
     </LinearLayout>
 
@@ -61,7 +63,7 @@
         android:layout_width="@dimen/grid_8"
         android:gravity="center"
         android:textSize="@dimen/icon"
-        android:textColor="@color/black"
+        android:textColor="@color/ksr_soft_black"
         android:text="@string/settings_icon" />
 
     </LinearLayout>

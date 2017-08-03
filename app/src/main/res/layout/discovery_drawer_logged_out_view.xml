@@ -34,7 +34,7 @@
         android:id="@+id/logged_out_icon_button"
         android:gravity="center"
         android:text="@string/account_circle"
-        android:textColor="@color/black"
+        android:textColor="@color/ksr_soft_black"
         android:textSize="30sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/grid_1"
         android:text="@string/tabbar_login"
-        android:textColor="@color/black" />
+        android:textColor="@color/ksr_soft_black" />
 
     </LinearLayout>
 

@@ -12,7 +12,7 @@
     android:pivotX="35"
     android:pivotY="10">
     <path
-      android:fillColor="@color/light_gray"
+      android:fillColor="@color/white"
       android:pathData="M 20 -5 h 30 v 30 h -30 v 0 Z" />
   </group>
   <group

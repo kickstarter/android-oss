@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:focusable="true"
   android:layout_width="match_parent"
@@ -16,7 +17,7 @@
 
   <View
     android:alpha="0.6"
-    android:background="@color/black"
+    android:background="@color/ksr_soft_black"
     android:layout_width="match_parent"
     android:layout_height="@dimen/grid_16" />
 

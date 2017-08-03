@@ -71,7 +71,7 @@
 
   <style name="VideoPlayerBase" parent="KSTheme">
     <item name="android:windowNoTitle">true</item>
-    <item name="android:windowBackground">@color/black</item>
+    <item name="android:windowBackground">@color/ksr_soft_black</item>
   </style>
 
   <style name="VideoPlayerActivity" parent="VideoPlayerBase" />
@@ -114,7 +114,7 @@
   <style name="BorderButton" parent="Base.Widget.AppCompat.Button.Borderless">
     <item name="android:background">@drawable/button_white_border_dark_gray</item>
     <item name="android:layout_width">wrap_content</item>
-    <item name="android:textColor">@color/black</item>
+    <item name="android:textColor">@color/ksr_soft_black</item>
     <item name="android:layout_centerInParent">true</item>
     <item name="android:singleLine">true</item>
     <item name="android:layout_height">wrap_content</item>
@@ -277,7 +277,7 @@
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_centerVertical">true</item>
-    <item name="android:color">@color/black</item>
+    <item name="android:color">@color/ksr_soft_black</item>
     <item name="android:textColorHint">@color/dark_gray</item>
     <item name="android:layout_marginStart">@dimen/grid_12</item>
   </style>

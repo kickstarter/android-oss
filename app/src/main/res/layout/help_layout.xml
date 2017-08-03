@@ -12,8 +12,8 @@
   <com.kickstarter.ui.views.KSWebView
     android:id="@+id/kickstarter_web_view"
     android:layout_below="@id/help_toolbar"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" />
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
 
   <RelativeLayout
     android:id="@+id/loading_indicator_view"

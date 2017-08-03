@@ -16,16 +16,16 @@
       android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingLeft="@dimen/form_margin_x"
-      android:paddingRight="@dimen/form_margin_x" >
+      android:paddingStart="@dimen/form_margin_x"
+      android:paddingEnd="@dimen/form_margin_x" >
 
       <TextView
         style="@style/BodySecondary"
         android:text="@string/facebook_confirmation_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_3"
-        android:layout_marginBottom="@dimen/grid_3"/>
+        android:layout_marginTop="@dimen/grid_4"
+        android:layout_marginBottom="@dimen/grid_4"/>
 
       <TextView
         android:id="@+id/email"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:switchPadding="@dimen/grid_1"
         style="@style/BodySecondary"
-        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_4"
         android:layout_marginBottom="@dimen/grid_2"
         android:text="@string/signup_newsletter_full"/>
 
@@ -59,7 +59,7 @@
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_6"/>
+        android:layout_marginBottom="@dimen/grid_8"/>
 
       <TextView
         android:text="@string/facebook_confirmation_wrong_account_title"

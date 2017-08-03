@@ -4,8 +4,8 @@
   android:shape="oval">
 
   <size
-    android:width="@dimen/grid_new_2"
-    android:height="@dimen/grid_new_2"/>
+    android:width="@dimen/grid_2"
+    android:height="@dimen/grid_2"/>
 
   <solid
     android:color="@color/ksr_green_500"/>

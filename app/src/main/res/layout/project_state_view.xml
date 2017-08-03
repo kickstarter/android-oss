@@ -8,13 +8,14 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   tools:showIn="@layout/project_card_view"
-  android:paddingBottom="@dimen/grid_new_4">
+  android:paddingBottom="@dimen/grid_4">
 
   <LinearLayout
     android:id="@+id/funding_successful_view_group"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
+
     <TextView
       android:id="@+id/funding_successful_text_view"
       style="@style/BodyPrimaryMedium"
@@ -22,13 +23,15 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/Funding_successful"
-      android:layout_marginEnd="@dimen/grid_new_4"/>
+      android:layout_marginEnd="@dimen/grid_4"/>
+
     <TextView
       android:id="@+id/funding_successful_date_text_view"
       style="@style/Caption1Secondary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       tools:text="Mar 31, 2015"/>
+
   </LinearLayout>
 
   <LinearLayout
@@ -36,20 +39,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
+
     <TextView
       android:id="@+id/funding_unsuccessful_text_view"
       style="@style/BodyPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       tools:text="Funding unsuccessful"
-      android:layout_marginEnd="@dimen/grid_new_2"/>
+      android:layout_marginEnd="@dimen/grid_2"/>
+
     <TextView
       android:id="@+id/funding_unsuccessful_date_text_view"
       style="@style/Caption1Secondary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       tools:text="Mar 31, 2015"/>
-  </LinearLayout>
 
+  </LinearLayout>
 
 </LinearLayout>

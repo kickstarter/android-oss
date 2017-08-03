@@ -9,7 +9,7 @@
   android:background="@color/light_gray"
   android:elevation="0dp"
   android:gravity="top"
-  android:layout_height="@dimen/grid_10"
+  android:layout_height="@dimen/grid_12"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   app:layout_collapseMode="pin"
@@ -30,8 +30,8 @@
       android:drawableTint="@color/black"
       android:id="@+id/messages_button"
       android:focusable="true"
-      android:paddingStart="@dimen/grid_new_2"
-      android:paddingEnd="@dimen/grid_new_2"
+      android:paddingStart="@dimen/grid_2"
+      android:paddingEnd="@dimen/grid_2"
       android:layout_alignParentEnd="true"
       android:contentDescription="@string/accessibility_dashboard_buttons_messages" />
 

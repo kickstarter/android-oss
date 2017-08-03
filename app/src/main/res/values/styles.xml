@@ -107,8 +107,8 @@
     <item name="android:singleLine">true</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:paddingLeft">@dimen/grid_3</item>
-    <item name="android:paddingRight">@dimen/grid_3</item>
+    <item name="android:paddingStart">@dimen/grid_4</item>
+    <item name="android:paddingEnd">@dimen/grid_4</item>
   </style>
 
   <style name="BorderButton" parent="Base.Widget.AppCompat.Button.Borderless">
@@ -118,13 +118,13 @@
     <item name="android:layout_centerInParent">true</item>
     <item name="android:singleLine">true</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:paddingLeft">@dimen/grid_3</item>
-    <item name="android:paddingRight">@dimen/grid_3</item>
+    <item name="android:paddingStart">@dimen/grid_4</item>
+    <item name="android:paddingEnd">@dimen/grid_4</item>
   </style>
 
   <style name="RoundedButtonBase" parent="Button">
-    <item name="android:paddingLeft">@dimen/grid_5</item>
-    <item name="android:paddingRight">@dimen/grid_5</item>
+    <item name="android:paddingStart">@dimen/grid_6</item>
+    <item name="android:paddingEnd">@dimen/grid_6</item>
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
@@ -138,8 +138,8 @@
     <item name="android:layout_centerInParent">true</item>
     <item name="android:singleLine">true</item>
     <item name="android:text">@string/login_tout_buttons_log_in_with_facebook</item>
-    <item name="android:paddingLeft">@dimen/grid_1</item>
-    <item name="android:paddingRight">@dimen/grid_3</item>
+    <item name="android:paddingStart">@dimen/grid_1</item>
+    <item name="android:paddingEnd">@dimen/grid_4</item>
     <item name="android:drawableStart">@drawable/ic_social_facebook</item>
   </style>
 
@@ -167,13 +167,13 @@
     <item name="android:textColor">@color/white</item>
     <item name="android:layout_centerInParent">true</item>
     <item name="android:singleLine">true</item>
-    <item name="android:paddingLeft">@dimen/grid_1</item>
-    <item name="android:paddingRight">@dimen/grid_3</item>
+    <item name="android:paddingStart">@dimen/grid_1</item>
+    <item name="android:paddingEnd">@dimen/grid_4</item>
     <item name="android:drawableStart">@drawable/ic_social_twitter</item>
   </style>
 
   <style name="ProjectActionButton" parent="Button">
-    <item name="android:layout_width">fill_parent</item>
+    <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">@dimen/project_action_button_height</item>
     <item name="android:textSize">@dimen/callout</item>
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
@@ -181,8 +181,8 @@
 
   <style name="ActivitySampleSeeAllButton" parent="BorderButton">
     <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_marginTop">@dimen/grid_5_half</item>
-    <item name="android:layout_marginBottom">@dimen/grid_3</item>
+    <item name="android:layout_marginTop">@dimen/grid_3</item>
+    <item name="android:layout_marginBottom">@dimen/grid_4</item>
     <item name="android:text">@string/discovery_activity_sample_button_see_all_activity</item>
   </style>
 
@@ -194,7 +194,7 @@
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_width">@dimen/settings_icon_fixed_width</item>
     <item name="android:gravity">center</item>
-    <item name="android:paddingTop">3dp</item>
+    <item name="android:paddingTop">@dimen/grid_1_half</item>
     <item name="android:background">@drawable/click_indicator_light</item>
   </style>
 
@@ -224,7 +224,7 @@
     <item name="android:focusable">true</item>
     <item name="android:background">@drawable/click_indicator_light_masked</item>
     <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">@dimen/grid_8</item>
+    <item name="android:layout_height">@dimen/grid_10</item>
   </style>
 
   <style name="SettingsSectionLabel" parent="CalloutPrimary">
@@ -234,7 +234,7 @@
   </style>
 
   <style name="SettingsSectionTitle" parent="BodySecondary">
-    <item name="android:layout_marginTop">@dimen/grid_11_half</item>
+    <item name="android:layout_marginTop">@dimen/grid_7</item>
     <item name="android:layout_marginBottom">@dimen/grid_2</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
@@ -261,7 +261,7 @@
   </style>
 
   <style name="ToolbarIconBackButton" parent="ToolbarIcon">
-    <item name="android:paddingLeft">@dimen/grid_new_2</item>
+    <item name="android:paddingStart">@dimen/grid_2</item>
     <item name="android:drawableStart">@drawable/ic_action_icon__arrow_left</item>
     <item name="android:focusable">true</item>
     <item name="android:contentDescription">@string/general_navigation_accessibility_button_navigate_back_label</item>
@@ -279,7 +279,7 @@
     <item name="android:layout_centerVertical">true</item>
     <item name="android:color">@color/black</item>
     <item name="android:textColorHint">@color/dark_gray</item>
-    <item name="android:layout_marginLeft">@dimen/grid_9</item>
+    <item name="android:layout_marginStart">@dimen/grid_12</item>
   </style>
 
   <style name="ToolbarTitle" parent="ToolbarTitleBase" />
@@ -418,8 +418,8 @@
     <item name="cardBackgroundColor">@color/white</item>
     <item name="cardCornerRadius">0dp</item>
     <item name="cardElevation">0dp</item>
-    <item name="android:layout_marginLeft">@dimen/activity_padding_x</item>
-    <item name="android:layout_marginRight">@dimen/activity_padding_x</item>
+    <item name="android:layout_marginStart">@dimen/activity_padding_x</item>
+    <item name="android:layout_marginEnd">@dimen/activity_padding_x</item>
   </style>
 
   <style name="ActivityFeedCard" parent="ActivityFeedCardBase" />
@@ -427,14 +427,13 @@
   <style name="ActivitySampleCardBase">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="cardCornerRadius">4dp</item>
     <item name="cardBackgroundColor">@color/white</item>
     <item name="cardElevation">@dimen/card_elevation</item>
     <item name="android:focusable">true</item>
     <item name="android:layout_marginBottom">@dimen/grid_1</item>
-    <item name="android:layout_marginTop">@dimen/grid_3</item>
-    <item name="android:layout_marginLeft">@dimen/card_margin_x</item>
-    <item name="android:layout_marginRight">@dimen/card_margin_x</item>
+    <item name="android:layout_marginTop">@dimen/grid_5</item>
+    <item name="android:layout_marginStart">@dimen/card_margin_x</item>
+    <item name="android:layout_marginEnd">@dimen/card_margin_x</item>
   </style>
 
   <style name="ActivitySampleCard" parent="ActivitySampleCardBase" />

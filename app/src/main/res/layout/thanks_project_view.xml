@@ -10,8 +10,8 @@
   card_view:cardElevation="0dp"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
   card_view:cardBackgroundColor="@android:color/transparent"
-  android:layout_marginLeft="@dimen/grid_1"
-  android:layout_marginRight="@dimen/grid_1">
+  android:layout_marginStart="@dimen/grid_1"
+  android:layout_marginEnd="@dimen/grid_1">
 
   <RelativeLayout
     android:layout_width="wrap_content"
@@ -29,12 +29,11 @@
       android:id="@+id/time_to_go_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginLeft="@dimen/grid_1"
       android:layout_marginStart="@dimen/grid_1"
       android:paddingTop="1dp"
       android:paddingBottom="1dp"
-      android:paddingLeft="@dimen/grid_1"
-      android:paddingRight="@dimen/grid_1"
+      android:paddingStart="@dimen/grid_1"
+      android:paddingEnd="@dimen/grid_1"
       android:background="@color/yellow"
       android:gravity="center"
       android:textColor="@color/text_dark"
@@ -43,8 +42,7 @@
     <RelativeLayout
       android:id="@+id/photo_gradient"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/grid_7"
-      android:layout_alignLeft="@+id/photo"
+      android:layout_height="@dimen/grid_9"
       android:layout_alignStart="@+id/photo"
       android:layout_alignBottom="@+id/photo"
       android:background="@drawable/photo_gradient">
@@ -52,10 +50,9 @@
       <TextView
         android:id="@+id/name"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="@dimen/grid_1"
-        android:layout_marginRight="@dimen/grid_1"
+        android:layout_marginStart="@dimen/grid_1"
+        android:layout_marginEnd="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

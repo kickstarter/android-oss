@@ -8,8 +8,6 @@
   android:foreground="@drawable/click_indicator_light"
   android:layout_marginTop="@dimen/grid_1"
   android:layout_marginStart="@dimen/project_padding_x"
-  android:layout_marginLeft="@dimen/project_padding_x"
-  android:layout_marginRight="@dimen/project_padding_x"
   android:layout_marginEnd="@dimen/project_padding_x"
   android:layout_marginBottom="@dimen/grid_2"
   android:layout_height="wrap_content"
@@ -31,12 +29,10 @@
       <LinearLayout
         android:id="@+id/reward_selected_header"
         android:gravity="center_vertical"
-        android:paddingLeft="@dimen/grid_2"
         android:paddingStart="@dimen/grid_2"
-        android:paddingRight="@dimen/grid_2"
         android:paddingEnd="@dimen/grid_2"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_7_half"
+        android:layout_height="@dimen/grid_5"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -47,8 +43,8 @@
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
           android:gravity="center"
-          android:paddingLeft="@dimen/grid_3_half"
-          android:paddingRight="@dimen/grid_3_half"
+          android:paddingStart="@dimen/grid_2"
+          android:paddingEnd="@dimen/grid_2"
           android:text="@string/rewards_selected_label_you_selected" />
 
       </LinearLayout>
@@ -93,7 +89,6 @@
             android:id="@+id/reward_title_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="@dimen/grid_2"
             android:paddingEnd="@dimen/grid_2"
             android:paddingTop="@dimen/grid_1"
             android:maxLines="2"
@@ -156,10 +151,8 @@
           <TextView
             style="@style/BodyPrimaryMedium"
             android:id="@+id/reward_limit_and_backers_separator_text_view"
-            android:paddingLeft="@dimen/grid_1"
             android:paddingStart="@dimen/grid_1"
             android:paddingEnd="@dimen/grid_1"
-            android:paddingRight="@dimen/grid_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"

@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/creator_dashboard_funding_view"
   android:layout_height="wrap_content"
   android:layout_width="match_parent"
-  android:orientation="vertical"
-  xmlns:tools="http://schemas.android.com/tools">
+  android:orientation="vertical">
 
   <TextView
     android:id="@+id/creator_dashboard_project_name"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/grid_new_2"
-    android:paddingStart="@dimen/grid_new_2"
-    android:paddingEnd="@dimen/grid_new_2"
+    android:paddingTop="@dimen/grid_2"
+    android:paddingStart="@dimen/grid_2"
+    android:paddingEnd="@dimen/grid_2"
     style="@style/Title3"
     tools:text="ayyyy it's shrek" />
 
   <TextView
     android:id="@+id/creator_dashboard_amount_raised"
     style="@style/Title1"
-    android:layout_marginTop="@dimen/grid_new_3"
+    android:layout_marginTop="@dimen/grid_3"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:textColor="@color/blue"
@@ -31,7 +32,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    android:layout_marginBottom="@dimen/grid_new_3"
+    android:layout_marginBottom="@dimen/grid_3"
     style="@style/BodyPrimary"
     tools:text="pledged of $12,000"/>
 
@@ -39,8 +40,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingStart="@dimen/grid_new_5"
-    android:paddingEnd="@dimen/grid_new_5">
+    android:paddingStart="@dimen/grid_5"
+    android:paddingEnd="@dimen/grid_5">
 
     <LinearLayout
       android:layout_width="wrap_content"
@@ -82,7 +83,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/BodySecondary"
-        android:layout_marginEnd="@dimen/grid_new_4"
+        android:layout_marginEnd="@dimen/grid_4"
         android:text="@string/discovery_baseball_card_stats_backers"
         tools:text="backers"/>
 
@@ -110,16 +111,16 @@
 
   </LinearLayout>
 
-
   <Button
     android:id="@+id/creator_view_project_button"
     style="@style/BlueRoundedButton"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_new_7"
-    android:layout_marginTop="@dimen/grid_new_2"
-    android:layout_marginEnd="@dimen/grid_new_5"
-    android:layout_marginStart="@dimen/grid_new_5"
+    android:layout_height="@dimen/grid_7"
+    android:layout_marginTop="@dimen/grid_2"
+    android:layout_marginEnd="@dimen/grid_5"
+    android:layout_marginStart="@dimen/grid_5"
     android:text="@string/View"
     tools:text="Go to project" />
+
 </LinearLayout>
 

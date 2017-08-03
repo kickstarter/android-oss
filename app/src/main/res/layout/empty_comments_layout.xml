@@ -4,7 +4,7 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:paddingTop="@dimen/grid_8"
+  android:paddingTop="@dimen/grid_10"
   android:gravity="center">
 
   <com.kickstarter.ui.views.IconButton
@@ -31,8 +31,8 @@
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/grid_2"
-    android:paddingRight="@dimen/grid_2"
+    android:paddingStart="@dimen/grid_2"
+    android:paddingEnd="@dimen/grid_2"
     android:paddingBottom="@dimen/grid_2"/>
 
   <Button

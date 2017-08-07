@@ -7,10 +7,8 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:paddingTop="@dimen/feed_padding_y"
-  android:paddingLeft="@dimen/feed_padding_x"
   android:paddingStart="@dimen/feed_padding_x"
-  android:paddingEnd="@dimen/feed_padding_x"
-  android:paddingRight="@dimen/feed_padding_x">
+  android:paddingEnd="@dimen/feed_padding_x">
 
   <RelativeLayout
     android:layout_width="wrap_content"
@@ -20,15 +18,14 @@
     <ImageView
       android:id="@+id/avatar"
       android:layout_alignParentStart="true"
-      android:layout_alignParentLeft="true"
       android:layout_width="@dimen/comments_feed_avatar_width"
       android:layout_height="@dimen/comments_feed_avatar_height"
-      tools:ignore="ContentDescription" />
+      tools:ignore="ContentDescription"
+      tools:background="@color/blue"/>
 
     <LinearLayout
       android:id="@+id/author"
       android:orientation="vertical"
-      android:layout_marginLeft="@dimen/comment_body_padding_x"
       android:layout_marginStart="@dimen/comment_body_padding_x"
       android:layout_marginBottom="@dimen/grid_1"
       android:layout_width="wrap_content"
@@ -39,7 +36,8 @@
         android:ellipsize="end"
         style="@style/CalloutPrimaryMedium"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="Hello Name"/>
 
       <TextView
         android:id="@+id/creator_label"
@@ -50,9 +48,7 @@
         android:background="@drawable/text_view_green_background"
         android:text="@string/update_comments_creator"
         android:paddingStart="@dimen/grid_1_half"
-        android:paddingLeft="@dimen/grid_1_half"
         android:paddingEnd="@dimen/grid_1_half"
-        android:paddingRight="@dimen/grid_1_half"
         android:layout_marginTop="@dimen/grid_1_half"
         android:layout_marginBottom="@dimen/grid_1_half"
         android:layout_width="wrap_content"
@@ -64,9 +60,7 @@
         android:gravity="center"
         style="@style/Caption1Primary"
         android:paddingStart="@dimen/grid_1_half"
-        android:paddingLeft="@dimen/grid_1_half"
         android:paddingEnd="@dimen/grid_1_half"
-        android:paddingRight="@dimen/grid_1_half"
         android:layout_marginTop="@dimen/grid_1_half"
         android:layout_marginBottom="@dimen/grid_1"
         android:textColor="@color/white"
@@ -79,14 +73,16 @@
         android:id="@+id/post_date"
         style="@style/Caption1Secondary"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="January 1, 1970"/>
 
       <TextView
         android:id="@+id/comment_body"
         android:layout_marginTop="@dimen/grid_2"
         style="@style/BodyPrimary"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        tools:text="somebody once told me"/>
 
     </LinearLayout>
 

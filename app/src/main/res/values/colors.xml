@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <!-- Theme colors -->
-  <color name="primary">@color/light_gray</color>
-  <color name="primary_dark">@color/black</color>
+  <color name="primary">@color/white</color>
+  <color name="primary_dark">@color/ksr_soft_black</color>
   <color name="accent">@color/green</color>
   <color name="text_primary">@color/ksr_text_navy_700</color>
   <color name="text_secondary">@color/ksr_text_navy_500</color>
@@ -25,13 +25,11 @@
   <color name="ksr_text_navy_800">#062340</color>
 
   <!-- Legacy Kickstarter colors. NB: we should be moving away from this color palette. -->
-  <color name="black">#000000</color>
   <color name="blue">#00a0ff</color>
   <color name="dark_blue">#081245</color>
   <color name="dark_gray">#828587</color>
   <color name="green">#2bde73</color>
   <color name="light_blue">#e8f6ff</color>
-  <color name="light_gray">#f7fafa</color>
   <color name="light_green">#def7e0</color>
   <color name="gray">#d9d9de</color>
   <color name="gray_black">#ff464646</color>
@@ -105,21 +103,21 @@
   <color name="ripple_light">#1f000000</color>
 
   <!-- Activity colors -->
-  <color name="activity_feed_background">#EAEAF0</color>
+  <color name="activity_feed_background">@color/ksr_grey_200</color>
 
   <!-- Debug colors -->
-  <color name="debug_background">#EE222222</color>
+  <color name="debug_background">@color/white</color>
 
   <!-- Discovery colors -->
   <color name="dark_blue_gradient_start">#081245</color>
   <color name="dark_blue_gradient_end">#062e6a</color>
   <color name="discovery_primary">@color/dark_blue</color>
   <color name="discovery_secondary">@color/discovery_status_bar</color>
-  <color name="discovery_background">@color/light_gray</color>
+  <color name="discovery_background">@color/white</color>
   <color name="discovery_toolbar">@color/dark_blue</color>
-  <color name="discovery_status_bar">@color/black</color>
+  <color name="discovery_status_bar">@color/ksr_soft_black</color>
   <color name="discovery_drawer_item_selected">#ffededed</color>
-  <color name="discovery_drawer_header">@color/light_gray</color>
+  <color name="discovery_drawer_header">@color/white</color>
 
   <!-- Rewards colors -->
   <color name="reward_orange">#edaa39</color>

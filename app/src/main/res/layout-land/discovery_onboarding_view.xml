@@ -2,15 +2,15 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
-  android:background="@color/light_gray"
+  android:background="@color/white"
   android:gravity="center_horizontal"
-  android:layout_marginBottom="@dimen/grid_3_half"
+  android:layout_marginBottom="@dimen/grid_2"
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
 
   <ImageView
     android:id="@+id/logo"
-    android:layout_marginTop="@dimen/grid_3"
+    android:layout_marginTop="@dimen/grid_4"
     android:layout_width="130dp"
     android:layout_height="15dp"
     android:src="@drawable/logo"
@@ -22,17 +22,17 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_1"
-    android:paddingLeft="@dimen/grid_4"
-    android:paddingRight="@dimen/grid_4"
+    android:paddingStart="@dimen/grid_5"
+    android:paddingEnd="@dimen/grid_5"
     android:text="@string/discovery_onboarding_title_bring_creative_projects_to_life" />
 
   <Button
     style="@style/BorderButton"
     android:id="@+id/login_tout_button"
     android:layout_width="match_parent"
-    android:layout_marginLeft="@dimen/grid_16"
-    android:layout_marginRight="@dimen/grid_16"
-    android:layout_marginTop="18dp"
+    android:layout_marginStart="@dimen/grid_21"
+    android:layout_marginEnd="@dimen/grid_21"
+    android:layout_marginTop="@dimen/grid_3"
     android:text="@string/discovery_onboarding_buttons_signup_or_login" />
 
 </LinearLayout>

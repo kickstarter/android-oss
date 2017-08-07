@@ -25,9 +25,9 @@
 
       <LinearLayout
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/grid_new_10"
-        android:layout_marginStart="@dimen/grid_new_8"
-        android:layout_marginEnd="@dimen/grid_new_8"
+        android:layout_marginTop="@dimen/grid_10"
+        android:layout_marginStart="@dimen/grid_8"
+        android:layout_marginEnd="@dimen/grid_8"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,14 +39,14 @@
           android:fontFamily="@string/font_family_maison_neue_book"
           android:ellipsize="end"
           android:gravity="center"
-          android:layout_marginBottom="@dimen/grid_new_2"
+          android:layout_marginBottom="@dimen/grid_2"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           tools:text="This Cool Project I Backed"/>
 
         <TextView
           android:id="@+id/messages_participant_name_text_view"
-          android:layout_marginBottom="@dimen/grid_new_5"
+          android:layout_marginBottom="@dimen/grid_5"
           style="@style/FootnotePrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
     <View
       android:background="@color/white"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/grid_new_1"/>
+      android:layout_height="@dimen/grid_1"/>
 
     <include layout="@layout/messages_backing_info_view"/>
 
@@ -76,6 +76,13 @@
     android:clipToPadding="false"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:ignore="RtlSymmetry" />
+
+  <ProgressBar
+    android:id="@+id/messages_loading_indicator"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_anchor="@id/messages_recycler_view"
+    app:layout_anchorGravity="center"/>
 
   <include
     android:id="@+id/message_reply_layout"

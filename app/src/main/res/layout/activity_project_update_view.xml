@@ -23,7 +23,6 @@
       <ImageView
         android:id="@+id/project_photo"
         android:background="@drawable/gray_gradient"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:adjustViewBounds="true"
         android:layout_width="@dimen/activity_feed_update_photo_width"
@@ -34,11 +33,9 @@
       <TextView
         style="@style/BodyPrimary"
         android:id="@+id/project_name"
-        android:layout_marginLeft="@dimen/grid_2"
+        android:layout_marginStart="@dimen/grid_2"
         android:layout_marginEnd="@dimen/grid_2"
-        android:layout_marginRight="@dimen/grid_2"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/project_photo"
         android:layout_toEndOf="@id/project_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,12 +45,10 @@
     </RelativeLayout>
 
     <View
-      android:layout_width="fill_parent"
+      android:layout_width="match_parent"
       android:layout_height="1dp"
       android:layout_marginStart="@dimen/grid_2"
       android:layout_marginEnd="@dimen/grid_2"
-      android:layout_marginLeft="@dimen/grid_2"
-      android:layout_marginRight="@dimen/grid_2"
       android:background="@color/black_alpha_10" />
 
     <LinearLayout
@@ -78,7 +73,6 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginEnd="@dimen/grid_2"
-          android:layout_marginRight="@dimen/grid_2"
           android:textColor="@color/green"
           tools:text="Update #" />
 
@@ -88,6 +82,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           tools:text="Timestamp" />
+
       </LinearLayout>
 
       <TextView

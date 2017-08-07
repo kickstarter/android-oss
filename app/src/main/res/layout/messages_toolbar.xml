@@ -45,7 +45,7 @@
       android:layout_centerVertical="true"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/grid_new_4"
+      android:layout_marginEnd="@dimen/grid_4"
       android:maxLines="1"
       android:ellipsize="end"
       tools:text="This Cool Project I Backed With A Very Long Name Yay"/>

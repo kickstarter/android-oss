@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<View xmlns:android="http://schemas.android.com/apk/res/android"
+<View
+  xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:visibility="gone"
   android:layout_width="0dp"
-  android:layout_height="0dp">
-</View>
+  android:layout_height="0dp"/>

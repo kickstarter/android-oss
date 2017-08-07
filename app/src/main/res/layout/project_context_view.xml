@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:focusable="true"
   android:layout_width="match_parent"
-  android:layout_height="@dimen/grid_10"
+  android:layout_height="@dimen/grid_13"
   android:id="@+id/project_context_view"
   android:clickable="true">
 
@@ -11,14 +12,14 @@
     android:id="@+id/project_context_image_view"
     android:scaleType="centerCrop"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_12"
+    android:layout_height="@dimen/grid_16"
     tools:ignore="ContentDescription" />
 
   <View
     android:alpha="0.6"
-    android:background="@color/black"
+    android:background="@color/ksr_soft_black"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_12" />
+    android:layout_height="@dimen/grid_16" />
 
   <RelativeLayout
     android:padding="@dimen/grid_1"
@@ -45,6 +46,7 @@
       android:layout_height="wrap_content"
       android:textColor="@color/white"
       tools:text="Taylor Moore" />
+
   </RelativeLayout>
 
 </RelativeLayout>

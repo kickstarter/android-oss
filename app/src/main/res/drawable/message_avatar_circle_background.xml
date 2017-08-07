@@ -10,8 +10,8 @@
     android:bottom="@dimen/message_avatar_border_width"/>
 
   <size
-    android:height="@dimen/grid_new_4"
-    android:width="@dimen/grid_new_4"/>
+    android:height="@dimen/grid_4"
+    android:width="@dimen/grid_4"/>
 
   <solid android:color="@color/white"/>
 

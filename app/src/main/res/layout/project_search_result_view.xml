@@ -10,25 +10,21 @@
   android:foreground="@drawable/click_indicator_light"
   android:orientation="vertical"
   android:paddingTop="@dimen/search_padding_y"
-  android:paddingLeft="@dimen/search_padding_x"
   android:paddingStart="@dimen/search_padding_x"
-  android:paddingRight="@dimen/search_padding_x"
   android:paddingEnd="@dimen/search_padding_x">
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginEnd="@dimen/grid_new_1"
-    android:layout_marginStart="@dimen/grid_new_1"
-    android:layout_marginLeft="@dimen/grid_new_1"
-    android:layout_marginRight="@dimen/grid_new_1"
+    android:layout_marginEnd="@dimen/grid_1"
+    android:layout_marginStart="@dimen/grid_1"
     android:orientation="horizontal">
 
     <ImageView
       android:id="@+id/project_image_view"
       android:layout_width="@dimen/search_result_photo_width"
       android:layout_height="@dimen/search_result_photo_height"
-      android:layout_marginEnd="@dimen/grid_new_2"
+      android:layout_marginEnd="@dimen/grid_2"
       android:adjustViewBounds="true"
       android:background="@drawable/gray_gradient"
       android:scaleType="centerCrop"
@@ -47,7 +43,7 @@
         android:layout_height="match_parent"
         android:maxLines="2"
         android:ellipsize="end"
-        android:layout_marginBottom="@dimen/grid_new_2"
+        android:layout_marginBottom="@dimen/grid_2"
         tools:text="Somebody Once Told Me"/>
 
       <LinearLayout
@@ -63,8 +59,7 @@
           android:layout_height="wrap_content"
           android:textColor="@color/ksr_text_green_700"
           android:textStyle="bold"
-          android:layout_marginRight="@dimen/grid_new_1_half"
-          android:layout_marginEnd="@dimen/grid_new_1_half"
+          android:layout_marginEnd="@dimen/grid_1_half"
           tools:text="10,000%"/>
 
         <TextView
@@ -72,8 +67,7 @@
           style="@style/Caption1Secondary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginRight="@dimen/grid_new_2"
-          android:layout_marginEnd="@dimen/grid_new_2"
+          android:layout_marginEnd="@dimen/grid_2"
           tools:text="funded"/>
 
         <TextView
@@ -81,8 +75,7 @@
           style="@style/Caption1PrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginRight="@dimen/grid_new_1_half"
-          android:layout_marginEnd="@dimen/grid_new_1_half"
+          android:layout_marginEnd="@dimen/grid_1_half"
           tools:text="25"/>
 
         <TextView
@@ -101,9 +94,9 @@
   </LinearLayout>
 
   <View
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="1dp"
-    android:layout_marginTop="@dimen/grid_new_2"
+    android:layout_marginTop="@dimen/grid_2"
     android:background="@color/ksr_navy_300" />
 
 </LinearLayout>

@@ -14,8 +14,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_2"
-    android:layout_marginLeft="@dimen/grid_3"
-    android:layout_marginRight="@dimen/grid_3"
+    android:layout_marginStart="@dimen/grid_4"
+    android:layout_marginEnd="@dimen/grid_4"
     android:text="@string/profile_settings_rating_option_title_show_us_some_love" />
 
   <TextView
@@ -26,8 +26,8 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_2"
     android:layout_marginBottom="@dimen/grid_2"
-    android:layout_marginLeft="@dimen/grid_7"
-    android:layout_marginRight="@dimen/grid_7"
+    android:layout_marginStart="@dimen/grid_9"
+    android:layout_marginEnd="@dimen/grid_9"
     android:text="@string/profile_settings_rating_option_message_if_you_enjoy_using_Kickstarter"
     android:textColor="@color/text_secondary" />
 
@@ -36,8 +36,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/grid_2"
-    android:layout_marginLeft="@dimen/grid_3"
-    android:layout_marginRight="@dimen/grid_3"
+    android:layout_marginStart="@dimen/grid_4"
+    android:layout_marginEnd="@dimen/grid_4"
     android:orientation="horizontal">
 
     <Button
@@ -45,7 +45,7 @@
       android:id="@+id/rate_button"
       android:layout_weight="1"
       android:layout_width="0dp"
-      android:layout_marginRight="@dimen/grid_2"
+      android:layout_marginEnd="@dimen/grid_2"
       android:text="@string/profile_settings_rating_option_rate_now" />
 
     <Button
@@ -53,7 +53,7 @@
       android:id="@+id/remind_button"
       android:layout_weight="1"
       android:layout_width="0dp"
-      android:layout_marginRight="@dimen/grid_2"
+      android:layout_marginEnd="@dimen/grid_2"
       android:text="@string/profile_settings_rating_option_remind_later" />
 
     <Button

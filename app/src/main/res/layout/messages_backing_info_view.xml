@@ -11,11 +11,11 @@
 
   <RelativeLayout
     android:background="@color/white"
-    android:paddingStart="@dimen/grid_new_3"
+    android:paddingStart="@dimen/grid_3"
     android:paddingEnd="0dp"
     android:gravity="center_vertical"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_new_10">
+    android:layout_height="@dimen/grid_10">
 
     <Button
       android:id="@+id/messages_view_pledge_button"
@@ -25,8 +25,8 @@
       android:textStyle="bold"
       android:layout_height="match_parent"
       android:layout_width="wrap_content"
-      android:paddingStart="@dimen/grid_new_3"
-      android:paddingEnd="@dimen/grid_new_3"
+      android:paddingStart="@dimen/grid_3"
+      android:paddingEnd="@dimen/grid_3"
       android:layout_alignParentEnd="true"
       tools:text="View pledge"/>
 

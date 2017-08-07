@@ -8,6 +8,6 @@
     android:layout_width="match_parent"
     android:layout_height="1dp"
     android:background="@color/gray"
-    android:layout_marginEnd="@dimen/form_margin_x"
-    android:layout_marginRight="@dimen/form_margin_x"/>
+    android:layout_marginEnd="@dimen/form_margin_x"/>
+
 </LinearLayout>

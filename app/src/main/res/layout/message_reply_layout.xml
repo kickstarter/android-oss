@@ -16,7 +16,7 @@
 
   <RelativeLayout
     android:layout_below="@id/divider_view"
-    android:layout_marginStart="@dimen/grid_new_4"
+    android:layout_marginStart="@dimen/grid_4"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 

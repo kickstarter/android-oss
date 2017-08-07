@@ -7661,7 +7661,8 @@
     "ref_banner_ads": true,
     "react_discovery_cards": true,
     "react_guest_pledging": true,
-    "kickstarter_gold": true
+    "kickstarter_gold": true,
+    "projects_of_earth": true
   },
   "launched_countries": [
     {
@@ -7838,7 +7839,7 @@
     "project_build": "control",
     "react_guest_pledging": "control",
     "react_payment_sources_form": "control",
-    "favorites_recs": "experimental",
+    "favorites_recs": "control",
     "thanks_page_better_recs": "control",
     "social_icons_bucket": "control",
     "guided_search": "control"

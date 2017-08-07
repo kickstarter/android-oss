@@ -13,29 +13,30 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class UnansweredSurveyHeaderViewHolder extends KSViewHolder {
-
   private final KSString ksString;
 
-  @Bind(R.id.heading) TextView headingTextView;
+  @Bind(R.id.unanswered_survey_header_text_view) TextView headerTextView;
 
   public UnansweredSurveyHeaderViewHolder(final @NonNull View view) {
     super(view);
     ButterKnife.bind(this, view);
-
-    ksString = environment().ksString();
+    this.ksString = environment().ksString();
   }
+
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    final int unansweredSurveyCount = ObjectUtils.requireNonNull(
-      (int) data
-    );
+    final int unansweredSurveyCount = ObjectUtils.requireNonNull((int) data);
+
     if (unansweredSurveyCount > 0) {
-      headingTextView.setText(
-        ksString.format(
+      this.headerTextView.setText(
+        this.ksString.format(
           "Reward_Surveys",
           unansweredSurveyCount,
           "reward_survey_count",
-          String.valueOf(unansweredSurveyCount)));
+          String.valueOf(unansweredSurveyCount
+          )
+        )
+      );
     }
   }
 }

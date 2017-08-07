@@ -13,7 +13,6 @@ import org.junit.Test;
 import rx.observers.TestSubscriber;
 
 public class UnansweredSurveyHolderViewModelTest extends KSRobolectricTestCase {
-
   private UnansweredSurveyHolderViewModel.ViewModel vm;
   private final TestSubscriber<String> creatorAvatarImage = new TestSubscriber<>();
   private final TestSubscriber<String> creatorName = new TestSubscriber<>();
@@ -30,28 +29,31 @@ public class UnansweredSurveyHolderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void creatorAvatarImage() throws Exception {
+  public void creatorAvatarImage() {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
     creatorAvatarImage.assertValues(surveyResponse.project().creator().avatar().small());
   }
+
   @Test
-  public void creatorName() throws Exception {
+  public void creatorName() {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
     creatorName.assertValues(surveyResponse.project().creator().name());
   }
+
   @Test
-  public void surveyDescription() throws Exception {
+  public void surveyDescription() {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
     projectForSurveyDescription.assertValues(surveyResponse.project());
   }
+
   @Test
-  public void clickingSurveyEmitsUrl() throws Exception {
+  public void clickingSurveyEmitsUrl() {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);

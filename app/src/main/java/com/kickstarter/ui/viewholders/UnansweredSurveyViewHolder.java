@@ -23,18 +23,16 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class UnansweredSurveyViewHolder extends KSViewHolder {
-
   private final @Nullable Delegate delegate;
   private final KSString ksString;
   private SurveyResponse survey;
   private final UnansweredSurveyHolderViewModel.ViewModel viewModel;
 
   @Bind(R.id.survey_avatar_image) ImageView creatorAvatarImageView;
-  @Bind(R.id.survey_title) TextView surveyTitleTextView;
   @Bind(R.id.survey_text) TextView surveyTextView;
+  @Bind(R.id.survey_title) TextView surveyTitleTextView;
 
   @BindString(R.string.Creator_name_needs_some_information_to_deliver_your_reward_for_project_name) String surveyDescriptionString;
-
 
   public interface Delegate {
     void surveyClicked(UnansweredSurveyViewHolder viewHolder, SurveyResponse surveyResponse);
@@ -42,11 +40,11 @@ public final class UnansweredSurveyViewHolder extends KSViewHolder {
 
   public UnansweredSurveyViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
     super(view);
+    ButterKnife.bind(this, view);
+
     this.delegate = delegate;
     this.viewModel = new UnansweredSurveyHolderViewModel.ViewModel(environment());
     this.ksString = environment().ksString();
-
-    ButterKnife.bind(this, view);
 
     this.viewModel.outputs.creatorAvatarImage()
       .compose(bindToLifecycle())
@@ -66,8 +64,8 @@ public final class UnansweredSurveyViewHolder extends KSViewHolder {
 
   private void setSurveyDescription(final @NonNull Project projectForSurveyDescription) {
     this.surveyTextView.setText(Html.fromHtml(
-      ksString.format(
-        surveyDescriptionString,
+      this.ksString.format(
+        this.surveyDescriptionString,
         "creator_name", projectForSurveyDescription.creator().name(),
         "project_name", projectForSurveyDescription.name()
       )));
@@ -78,18 +76,22 @@ public final class UnansweredSurveyViewHolder extends KSViewHolder {
     final SurveyResponse configData = requireNonNull(
       (SurveyResponse) data
     );
+
     this.survey = configData;
     this.viewModel.inputs.configureWith(configData);
   }
 
   private void setCreatorAvatarImage(final @NonNull String creatorAvatarImage) {
-    Picasso.with(context()).load(creatorAvatarImage).transform(new CircleTransformation()).into(this.creatorAvatarImageView);
+    Picasso.with(context())
+      .load(creatorAvatarImage)
+      .transform(new CircleTransformation())
+      .into(this.creatorAvatarImageView);
   }
 
   @Override
   public void onClick(final @NonNull View view) {
-    if (delegate != null) {
-      delegate.surveyClicked(this, this.survey);
+    if (this.delegate != null) {
+      this.delegate.surveyClicked(this, this.survey);
     }
   }
 }

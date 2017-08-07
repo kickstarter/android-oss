@@ -30,15 +30,14 @@ public interface UnansweredSurveyHolderViewModel {
     /** Emits the creator name */
     Observable<String> creatorName();
 
-    /** Emits the project from survey */
-    Observable<Project> projectForSurveyDescription();
-
     /** Emits the survey url */
     Observable<SurveyResponse> loadSurvey();
+
+    /** Emits the project from survey */
+    Observable<Project> projectForSurveyDescription();
   }
 
-  final class ViewModel extends ActivityViewModel<UnansweredSurveyViewHolder>
-    implements Inputs, Outputs {
+  final class ViewModel extends ActivityViewModel<UnansweredSurveyViewHolder> implements Inputs, Outputs {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -50,7 +49,7 @@ public interface UnansweredSurveyHolderViewModel {
         .map(sr -> sr.project().creator().name());
 
       this.projectForSurveyDescription = this.configData
-        .map(ViewModel::getProjectFromSurvey);
+        .map(SurveyResponse::project);
 
       this.goToSurvey = this.configData
         .compose(takeWhen(this.surveyClicked));
@@ -80,16 +79,11 @@ public interface UnansweredSurveyHolderViewModel {
     @Override public @NonNull Observable<String> creatorName() {
       return this.creatorName;
     }
-    @Override public @NonNull Observable<Project> projectForSurveyDescription() {
-      return this.projectForSurveyDescription;
-    }
     @Override public @NonNull Observable<SurveyResponse> loadSurvey() {
       return this.configData;
     }
-
-    private static Project getProjectFromSurvey(final @NonNull SurveyResponse surveyResponse) {
-      return surveyResponse.project();
+    @Override public @NonNull Observable<Project> projectForSurveyDescription() {
+      return this.projectForSurveyDescription;
     }
   }
-
 }

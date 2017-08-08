@@ -16,11 +16,11 @@ public final class RequestHandler {
   }
 
   public boolean matches(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return matcher.call(uri, webEndpoint);
+    return this.matcher.call(uri, webEndpoint);
   }
 
   public boolean action(final @NonNull Request request, final @NonNull WebView webView) {
-    return action.call(request, webView);
+    return this.action.call(request, webView);
   }
 
   public interface Matcher {

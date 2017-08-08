@@ -55,7 +55,7 @@ public final class ProjectAdapter extends KSAdapter {
 
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.project_main_layout) {
-      return new ProjectViewHolder(view, delegate);
+      return new ProjectViewHolder(view, this.delegate);
     }
     return new RewardViewHolder(view);
   }

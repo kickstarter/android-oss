@@ -63,9 +63,9 @@ public final class CommentsAdapter extends KSAdapter {
 
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.project_context_view) {
-      return new ProjectContextViewHolder(view, delegate);
+      return new ProjectContextViewHolder(view, this.delegate);
     } else if (layout == R.layout.empty_comments_layout) {
-      return new EmptyCommentsViewHolder(view, delegate);
+      return new EmptyCommentsViewHolder(view, this.delegate);
     } else {
       return new CommentViewHolder(view);
     }

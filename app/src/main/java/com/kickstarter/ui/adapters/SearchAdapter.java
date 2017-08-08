@@ -91,9 +91,9 @@ public final class SearchAdapter extends KSAdapter {
       case R.layout.search_popular_title_view:
         return new PopularSearchTitleViewHolder(view);
       case R.layout.featured_search_result_view:
-        return new ProjectSearchResultViewHolder(view, delegate);
+        return new ProjectSearchResultViewHolder(view, this.delegate);
       case R.layout.project_search_result_view:
-        return new ProjectSearchResultViewHolder(view, delegate);
+        return new ProjectSearchResultViewHolder(view, this.delegate);
       default:
         throw new IllegalStateException("Invalid layout");
     }

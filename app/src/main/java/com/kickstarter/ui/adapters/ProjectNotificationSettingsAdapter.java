@@ -12,7 +12,6 @@ import com.kickstarter.ui.viewholders.ProjectNotificationViewHolder;
 import java.util.List;
 
 public final class ProjectNotificationSettingsAdapter extends KSAdapter {
-
   /**
    * Binds project notifications to the adapter.
    */

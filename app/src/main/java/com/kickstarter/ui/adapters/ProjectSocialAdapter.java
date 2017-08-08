@@ -40,7 +40,7 @@ public final class ProjectSocialAdapter extends KSAdapter {
   @Override
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.project_context_view) {
-      return new ProjectContextViewHolder(view, delegate);
+      return new ProjectContextViewHolder(view, this.delegate);
     } else {
       return new ProjectSocialViewHolder(view);
     }

@@ -45,22 +45,22 @@ public class AppRatingDialog extends AppCompatDialog {
 
   @OnClick(R.id.rate_button)
   protected void rateButtonClick() {
-    koala.trackAppRatingNow();
-    hasSeenAppRatingPreference.set(true);
+    this.koala.trackAppRatingNow();
+    this.hasSeenAppRatingPreference.set(true);
     dismiss();
     ViewUtils.openStoreRating(getContext(), getContext().getPackageName());
   }
 
   @OnClick(R.id.remind_button)
   protected void remindButtonClick() {
-    koala.trackAppRatingRemindLater();
+    this.koala.trackAppRatingRemindLater();
     dismiss();
   }
 
   @OnClick(R.id.no_thanks_button)
   protected void noThanksButtonClick() {
-    koala.trackAppRatingNoThanks();
-    hasSeenAppRatingPreference.set(true);
+    this.koala.trackAppRatingNoThanks();
+    this.hasSeenAppRatingPreference.set(true);
     dismiss();
   }
 }

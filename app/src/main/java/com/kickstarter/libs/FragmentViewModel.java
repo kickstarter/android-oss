@@ -19,13 +19,13 @@ import timber.log.Timber;
 public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
 
   private final PublishSubject<ViewType> viewChange = PublishSubject.create();
-  private final Observable<ViewType> view = viewChange.filter(ObjectUtils::isNotNull);
+  private final Observable<ViewType> view = this.viewChange.filter(ObjectUtils::isNotNull);
 
   private final PublishSubject<Bundle> arguments = PublishSubject.create();
   protected final Koala koala;
 
   public FragmentViewModel(final @NonNull Environment environment) {
-    koala = environment.koala();
+    this.koala = environment.koala();
   }
 
   @CallSuper
@@ -42,7 +42,7 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
   }
 
   protected @NonNull Observable<Bundle> arguments() {
-    return arguments;
+    return this.arguments;
   }
 
   @CallSuper
@@ -66,21 +66,21 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
   @CallSuper
   protected void onDetach() {
     Timber.d("onDetach %s", this.toString());
-    viewChange.onCompleted();
+    this.viewChange.onCompleted();
   }
 
   private void onTakeView(final @NonNull ViewType view) {
     Timber.d("onTakeView %s %s", this.toString(), view.toString());
-    viewChange.onNext(view);
+    this.viewChange.onNext(view);
   }
 
   private void dropView() {
     Timber.d("dropView %s", this.toString());
-    viewChange.onNext(null);
+    this.viewChange.onNext(null);
   }
 
   protected final @NonNull Observable<ViewType> view() {
-    return view;
+    return this.view;
   }
 
   /**
@@ -92,7 +92,7 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
    */
   public @NonNull <T> Observable.Transformer<T, T> bindToLifecycle() {
     return source -> source.takeUntil(
-      view.switchMap(FragmentLifecycleType::lifecycle)
+      this.view.switchMap(FragmentLifecycleType::lifecycle)
         .filter(FragmentEvent.DETACH::equals)
     );
   }

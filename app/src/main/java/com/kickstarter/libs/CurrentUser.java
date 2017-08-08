@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.kickstarter.libs.preferences.StringPreferenceType;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.User;
 
 import rx.Observable;
@@ -26,17 +27,17 @@ public class CurrentUser extends CurrentUserType {
     this.deviceRegistrar = deviceRegistrar;
     this.userPreference = userPreference;
 
-    user
+    this.user
       .skip(1)
-      .filter(user -> user != null)
-      .subscribe(user -> userPreference.set(gson.toJson(user, User.class)));
+      .filter(ObjectUtils::isNotNull)
+      .subscribe(u -> userPreference.set(gson.toJson(u, User.class)));
 
-    user.onNext(gson.fromJson(userPreference.get(), User.class));
+    this.user.onNext(gson.fromJson(userPreference.get(), User.class));
   }
 
   @Override
   public @Nullable User getUser() {
-    return user.getValue();
+    return this.user.getValue();
   }
 
   @Override
@@ -45,35 +46,35 @@ public class CurrentUser extends CurrentUserType {
   }
 
   public String getAccessToken() {
-    return accessTokenPreference.get();
+    return this.accessTokenPreference.get();
   }
 
   @Override
   public void login(final @NonNull User newUser, final @NonNull String accessToken) {
     Timber.d("Login user %s", newUser.name());
 
-    accessTokenPreference.set(accessToken);
-    user.onNext(newUser);
-    deviceRegistrar.registerDevice();
+    this.accessTokenPreference.set(accessToken);
+    this.user.onNext(newUser);
+    this.deviceRegistrar.registerDevice();
   }
 
   @Override
   public void logout() {
     Timber.d("Logout current user");
 
-    userPreference.delete();
-    accessTokenPreference.delete();
-    user.onNext(null);
-    deviceRegistrar.unregisterDevice();
+    this.userPreference.delete();
+    this.accessTokenPreference.delete();
+    this.user.onNext(null);
+    this.deviceRegistrar.unregisterDevice();
   }
 
   @Override
   public void refresh(final @NonNull User freshUser) {
-    user.onNext(freshUser);
+    this.user.onNext(freshUser);
   }
 
   @Override
   public @NonNull Observable<User> observable() {
-    return user;
+    return this.user;
   }
 }

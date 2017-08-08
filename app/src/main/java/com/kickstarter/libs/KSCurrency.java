@@ -74,7 +74,7 @@ public final class KSCurrency {
   private @NonNull CurrencyOptions currencyOptions(final float value, final @NonNull Project project,
     final boolean preferUSD) {
 
-    final Config config = currentConfig.getConfig();
+    final Config config = this.currentConfig.getConfig();
     final Float staticUsdRate = project.staticUsdRate();
     if (preferUSD && config.countryCode().equals("US") && staticUsdRate != null) {
       return CurrencyOptions.builder()
@@ -102,7 +102,7 @@ public final class KSCurrency {
       return false;
     }
 
-    final Config config = currentConfig.getConfig();
+    final Config config = this.currentConfig.getConfig();
     final boolean currencyIsDupe = config.currencyNeedsCode(currencyOptions.currencySymbol());
     final boolean userIsUS = config.countryCode().equals("US");
     final boolean projectIsUS = currencyOptions.country().equals("US");

@@ -58,7 +58,7 @@ public class MockApiClient implements ApiClientType {
    * name of the method, and the value is a map of argument names/values.
    */
   public @NonNull Observable<Pair<String, Map<String, Object>>> observable() {
-    return observable;
+    return this.observable;
   }
 
   @Override
@@ -377,7 +377,7 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<User> updateUserSettings(final @NonNull User user) {
-    observable.onNext(
+    this.observable.onNext(
       Pair.create("update_user_settings", new HashMap<String, Object>() {
         {
           put("user", user);

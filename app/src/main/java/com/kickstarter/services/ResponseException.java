@@ -13,6 +13,6 @@ public class ResponseException extends RuntimeException {
   }
 
   public @NonNull retrofit2.Response response() {
-    return response;
+    return this.response;
   }
 }

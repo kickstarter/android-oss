@@ -21,6 +21,9 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+
 public class SettingsViewModel extends ActivityViewModel<SettingsActivity> implements SettingsViewModelInputs,
   SettingsViewModelErrors, SettingsViewModelOutputs {
 
@@ -29,44 +32,44 @@ public class SettingsViewModel extends ActivityViewModel<SettingsActivity> imple
   private final PublishSubject<Pair<Boolean, Newsletter>> newsletterInput = PublishSubject.create();
   private final PublishSubject<User> userInput = PublishSubject.create();
   public void logoutClicked() {
-    showConfirmLogoutPrompt.onNext(true);
+    this.showConfirmLogoutPrompt.onNext(true);
   }
   public void closeLogoutConfirmationClicked() {
-    showConfirmLogoutPrompt.onNext(false);
+    this.showConfirmLogoutPrompt.onNext(false);
   }
   private final PublishSubject<Void> confirmLogoutClicked = PublishSubject.create();
   @Override
   public void confirmLogoutClicked() {
-    confirmLogoutClicked.onNext(null);
+    this.confirmLogoutClicked.onNext(null);
   }
 
   // OUTPUTS
   private final PublishSubject<Newsletter> showOptInPrompt = PublishSubject.create();
   public @NonNull Observable<Newsletter> showOptInPrompt() {
-    return showOptInPrompt;
+    return this.showOptInPrompt;
   }
   private final PublishSubject<Void> updateSuccess = PublishSubject.create();
   public @NonNull final Observable<Void> updateSuccess() {
-    return updateSuccess;
+    return this.updateSuccess;
   }
   private final BehaviorSubject<User> userOutput = BehaviorSubject.create();
   public @NonNull Observable<User> user() {
-    return userOutput;
+    return this.userOutput;
   }
   private final BehaviorSubject<Boolean> showConfirmLogoutPrompt = BehaviorSubject.create();
   public @NonNull Observable<Boolean> showConfirmLogoutPrompt() {
-    return showConfirmLogoutPrompt;
+    return this.showConfirmLogoutPrompt;
   }
   private final BehaviorSubject<Void> logout = BehaviorSubject.create();
   @Override
   public @NonNull Observable<Void> logout() {
-    return logout;
+    return this.logout;
   }
   // ERRORS
   private final PublishSubject<Throwable> unableToSavePreferenceError = PublishSubject.create();
   public @NonNull final Observable<String> unableToSavePreferenceError() {
-    return unableToSavePreferenceError
-      .takeUntil(updateSuccess)
+    return this.unableToSavePreferenceError
+      .takeUntil(this.updateSuccess)
       .map(__ -> null);
   }
 
@@ -84,116 +87,116 @@ public class SettingsViewModel extends ActivityViewModel<SettingsActivity> imple
 
   @Override
   public void notifyMobileOfFollower(final boolean b) {
-    userInput.onNext(userOutput.getValue().toBuilder().notifyMobileOfFollower(b).build());
+    this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyMobileOfFollower(b).build());
   }
 
   @Override
   public void notifyMobileOfFriendActivity(final boolean b) {
-    userInput.onNext(userOutput.getValue().toBuilder().notifyMobileOfFriendActivity(b).build());
+    this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyMobileOfFriendActivity(b).build());
   }
 
   @Override
   public void notifyMobileOfUpdates(final boolean b) {
-    userInput.onNext(userOutput.getValue().toBuilder().notifyMobileOfUpdates(b).build());
+    this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyMobileOfUpdates(b).build());
   }
 
   @Override
   public void notifyOfFollower(final boolean b) {
-    userInput.onNext(userOutput.getValue().toBuilder().notifyOfFollower(b).build());
+    this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyOfFollower(b).build());
   }
 
   @Override
   public void notifyOfFriendActivity(final boolean b) {
-    userInput.onNext(userOutput.getValue().toBuilder().notifyOfFriendActivity(b).build());
+    this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyOfFriendActivity(b).build());
   }
 
   @Override
   public void notifyOfUpdates(final boolean b) {
-    userInput.onNext(userOutput.getValue().toBuilder().notifyOfUpdates(b).build());
+    this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyOfUpdates(b).build());
   }
 
   @Override
   public void sendGamesNewsletter(final boolean checked) {
-    userInput.onNext(userOutput.getValue().toBuilder().gamesNewsletter(checked).build());
-    newsletterInput.onNext(new Pair<>(checked, Newsletter.GAMES));
+    this.userInput.onNext(this.userOutput.getValue().toBuilder().gamesNewsletter(checked).build());
+    this.newsletterInput.onNext(new Pair<>(checked, Newsletter.GAMES));
   }
 
   @Override
   public void sendHappeningNewsletter(final boolean checked) {
-    userInput.onNext(userOutput.getValue().toBuilder().happeningNewsletter(checked).build());
-    newsletterInput.onNext(new Pair<>(checked, Newsletter.HAPPENING));
+    this.userInput.onNext(this.userOutput.getValue().toBuilder().happeningNewsletter(checked).build());
+    this.newsletterInput.onNext(new Pair<>(checked, Newsletter.HAPPENING));
   }
 
   @Override
   public void sendPromoNewsletter(final boolean checked) {
-    userInput.onNext(userOutput.getValue().toBuilder().promoNewsletter(checked).build());
-    newsletterInput.onNext(new Pair<>(checked, Newsletter.PROMO));
+    this.userInput.onNext(this.userOutput.getValue().toBuilder().promoNewsletter(checked).build());
+    this.newsletterInput.onNext(new Pair<>(checked, Newsletter.PROMO));
   }
 
   @Override
   public void sendWeeklyNewsletter(final boolean checked) {
-    userInput.onNext(userOutput.getValue().toBuilder().weeklyNewsletter(checked).build());
-    newsletterInput.onNext(new Pair<>(checked, Newsletter.WEEKLY));
+    this.userInput.onNext(this.userOutput.getValue().toBuilder().weeklyNewsletter(checked).build());
+    this.newsletterInput.onNext(new Pair<>(checked, Newsletter.WEEKLY));
   }
 
   public SettingsViewModel(final @NonNull Environment environment) {
     super(environment);
 
-    client = environment.apiClient();
-    currentUser = environment.currentUser();
+    this.client = environment.apiClient();
+    this.currentUser = environment.currentUser();
 
-    client.fetchCurrentUser()
+    this.client.fetchCurrentUser()
       .retry(2)
       .compose(Transformers.neverError())
       .compose(bindToLifecycle())
-      .subscribe(currentUser::refresh);
+      .subscribe(this.currentUser::refresh);
 
-    currentUser.observable()
+    this.currentUser.observable()
       .take(1)
       .compose(bindToLifecycle())
-      .subscribe(userOutput::onNext);
+      .subscribe(this.userOutput::onNext);
 
-    userInput
+    this.userInput
       .concatMap(this::updateSettings)
       .compose(bindToLifecycle())
       .subscribe(this::success);
 
-    userInput
+    this.userInput
       .compose(bindToLifecycle())
-      .subscribe(userOutput);
+      .subscribe(this.userOutput);
 
-    userOutput
+    this.userOutput
       .window(2, 1)
       .flatMap(Observable::toList)
       .map(ListUtils::first)
-      .compose(Transformers.takeWhen(unableToSavePreferenceError))
+      .compose(takeWhen(this.unableToSavePreferenceError))
       .compose(bindToLifecycle())
-      .subscribe(userOutput);
+      .subscribe(this.userOutput);
 
-    currentUser.observable()
-      .compose(Transformers.takePairWhen(newsletterInput))
+    this.currentUser.observable()
+      .compose(takePairWhen(this.newsletterInput))
       .filter(us -> requiresDoubleOptIn(us.first, us.second.first))
       .map(us -> us.second.second)
       .compose(bindToLifecycle())
-      .subscribe(showOptInPrompt);
+      .subscribe(this.showOptInPrompt);
 
-    contactEmailClicked
+    this.contactEmailClicked
       .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackContactEmailClicked());
+      .subscribe(__ -> this.koala.trackContactEmailClicked());
 
-    newsletterInput
+    this.newsletterInput
       .map(bs -> bs.first)
       .compose(bindToLifecycle())
-      .subscribe(koala::trackNewsletterToggle);
+      .subscribe(this.koala::trackNewsletterToggle);
 
-    confirmLogoutClicked
+    this.confirmLogoutClicked
       .compose(bindToLifecycle())
       .subscribe(__ -> {
-        koala.trackLogout();
-        logout.onNext(null);
+        this.koala.trackLogout();
+        this.logout.onNext(null);
       });
 
-    koala.trackSettingsView();
+    this.koala.trackSettingsView();
   }
 
   private boolean requiresDoubleOptIn(final @NonNull User user, final boolean checked) {
@@ -201,12 +204,12 @@ public class SettingsViewModel extends ActivityViewModel<SettingsActivity> imple
   }
 
   private void success(final @NonNull User user) {
-    currentUser.refresh(user);
+    this.currentUser.refresh(user);
     this.updateSuccess.onNext(null);
   }
 
   private @NonNull Observable<User> updateSettings(final @NonNull User user) {
-    return client.updateUserSettings(user)
-      .compose(Transformers.pipeErrorsTo(unableToSavePreferenceError));
+    return this.client.updateUserSettings(user)
+      .compose(Transformers.pipeErrorsTo(this.unableToSavePreferenceError));
   }
 }

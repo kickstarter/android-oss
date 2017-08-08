@@ -50,13 +50,13 @@ public final class WebRequestInterceptor implements Interceptor {
     final Request.Builder requestBuilder = initialRequest.newBuilder()
       .header("User-Agent", userAgent());
 
-    final String basicAuthorizationHeader = internalTools.basicAuthorizationHeader();
-    if (currentUser.exists()) {
-      requestBuilder.addHeader("Authorization", "token " + currentUser.getAccessToken());
+    final String basicAuthorizationHeader = this.internalTools.basicAuthorizationHeader();
+    if (this.currentUser.exists()) {
+      requestBuilder.addHeader("Authorization", "token " + this.currentUser.getAccessToken());
     } else if (shouldAddBasicAuthorizationHeader(initialRequest) && isNotNull(basicAuthorizationHeader)) {
       requestBuilder.addHeader("Authorization", basicAuthorizationHeader);
     }
-    if (androidPayCapability.isCapable()) {
+    if (this.androidPayCapability.isCapable()) {
       requestBuilder.addHeader("Kickstarter-Android-Pay", "1");
     }
 
@@ -64,26 +64,26 @@ public final class WebRequestInterceptor implements Interceptor {
   }
 
   private boolean shouldIntercept(final @NonNull Request request) {
-    return KSUri.isWebUri(Uri.parse(request.url().toString()), endpoint);
+    return KSUri.isWebUri(Uri.parse(request.url().toString()), this.endpoint);
   }
 
   private boolean shouldAddBasicAuthorizationHeader(final @NonNull Request request) {
-    if (currentUser.exists()) {
+    if (this.currentUser.exists()) {
       return false;
     }
     final Uri initialRequestUri = Uri.parse(request.url().toString());
-    return KSUri.isHivequeenUri(initialRequestUri, endpoint) || KSUri.isStagingUri(initialRequestUri, endpoint);
+    return KSUri.isHivequeenUri(initialRequestUri, this.endpoint) || KSUri.isStagingUri(initialRequestUri, this.endpoint);
   }
 
   private @NonNull String userAgent() {
     // TODO: Check whether device is mobile or tablet, append to user agent
     return new StringBuilder()
       .append("Kickstarter Android Mobile Variant/")
-      .append(build.variant())
+      .append(this.build.variant())
       .append(" Code/")
-      .append(build.versionCode())
+      .append(this.build.versionCode())
       .append(" Version/")
-      .append(build.versionName())
+      .append(this.build.versionName())
       .toString();
   }
 }

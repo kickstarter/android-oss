@@ -19,10 +19,10 @@ public final class MockTrackingClient extends TrackingClientType {
   }
 
   public final @NonNull PublishSubject<Event> events = PublishSubject.create();
-  public final @NonNull Observable<String> eventNames = events.map(e -> e.name);
+  public final @NonNull Observable<String> eventNames = this.events.map(e -> e.name);
 
   @Override
   public void track(final @NonNull String eventName, final @NonNull Map<String, Object> properties) {
-    events.onNext(new Event(eventName, properties));
+    this.events.onNext(new Event(eventName, properties));
   }
 }

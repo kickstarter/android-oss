@@ -35,7 +35,6 @@ import rx.observers.TestSubscriber;
 import rx.schedulers.TestScheduler;
 
 public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
-
   private ViewModel vm;
 
   final TestSubscriber<List<Activity>> activities = new TestSubscriber<>();

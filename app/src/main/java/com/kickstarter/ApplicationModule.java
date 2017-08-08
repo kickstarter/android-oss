@@ -287,7 +287,7 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   Application provideApplication() {
-    return application;
+    return this.application;
   }
 
   @Provides
@@ -307,13 +307,13 @@ public final class ApplicationModule {
   @Singleton
   @ApplicationContext
   Context provideApplicationContext() {
-    return application;
+    return this.application;
   }
 
   @Provides
   @Singleton
   AssetManager provideAssetManager() {
-    return application.getAssets();
+    return this.application.getAssets();
   }
 
   @Provides
@@ -425,7 +425,7 @@ public final class ApplicationModule {
   @Singleton
   PackageInfo providePackageInfo(final @NonNull Application application) {
     try {
-      return application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
+      return this.application.getPackageManager().getPackageInfo(this.application.getPackageName(), 0);
     } catch (PackageManager.NameNotFoundException e) {
       e.printStackTrace();
       throw new RuntimeException();
@@ -436,7 +436,7 @@ public final class ApplicationModule {
   @Singleton
   @PackageNameString
   String providePackageName(final @NonNull Application application) {
-    return application.getPackageName();
+    return this.application.getPackageName();
   }
 
   @Provides
@@ -448,7 +448,7 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   SharedPreferences provideSharedPreferences() {
-    return PreferenceManager.getDefaultSharedPreferences(application);
+    return PreferenceManager.getDefaultSharedPreferences(this.application);
   }
 
   @Provides

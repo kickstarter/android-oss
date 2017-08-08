@@ -18,7 +18,7 @@ public final class Build {
   }
 
   public @NonNull String applicationId() {
-    return packageInfo.packageName;
+    return this.packageInfo.packageName;
   }
 
   public DateTime dateTime() {
@@ -52,11 +52,11 @@ public final class Build {
   }
 
   public Integer versionCode() {
-    return packageInfo.versionCode;
+    return this.packageInfo.versionCode;
   }
 
   public String versionName() {
-    return packageInfo.versionName;
+    return this.packageInfo.versionName;
   }
 
   public String variant() {

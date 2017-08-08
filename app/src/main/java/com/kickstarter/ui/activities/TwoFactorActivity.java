@@ -43,19 +43,19 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
 
     setContentView(R.layout.two_factor_layout);
     ButterKnife.bind(this);
-    loginToolbar.setTitle(verifyString);
+    this.loginToolbar.setTitle(this.verifyString);
 
-    viewModel.outputs.tfaSuccess()
+    this.viewModel.outputs.tfaSuccess()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> onSuccess());
 
-    viewModel.outputs.formSubmitting()
+    this.viewModel.outputs.formSubmitting()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::setFormDisabled);
 
-    viewModel.outputs.formIsValid()
+    this.viewModel.outputs.formIsValid()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::setFormEnabled);
@@ -63,27 +63,27 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
     errorMessages()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
+      .subscribe(e -> ViewUtils.showDialog(this, this.errorTitleString, e));
   }
 
   private Observable<String> errorMessages() {
-    return viewModel.errors.tfaCodeMismatchError().map(__ -> codeMismatchString)
-      .mergeWith(viewModel.errors.genericTfaError().map(__ -> unableToLoginString));
+    return this.viewModel.errors.tfaCodeMismatchError().map(__ -> this.codeMismatchString)
+      .mergeWith(this.viewModel.errors.genericTfaError().map(__ -> this.unableToLoginString));
   }
 
   @OnTextChanged(R.id.code)
   public void codeEditTextOnTextChanged(final @NonNull CharSequence code) {
-    viewModel.inputs.code(code.toString());
+    this.viewModel.inputs.code(code.toString());
   }
 
   @OnClick(R.id.resend_button)
   public void resendButtonOnClick() {
-    viewModel.inputs.resendClick();
+    this.viewModel.inputs.resendClick();
   }
 
   @OnClick(R.id.login_button)
   public void loginButtonOnClick() {
-    viewModel.inputs.loginClick();
+    this.viewModel.inputs.loginClick();
   }
 
   public void onSuccess() {
@@ -92,7 +92,7 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
   }
 
   public void setFormEnabled(final boolean enabled) {
-    loginButton.setEnabled(enabled);
+    this.loginButton.setEnabled(enabled);
   }
 
   public void setFormDisabled(final boolean disabled) {

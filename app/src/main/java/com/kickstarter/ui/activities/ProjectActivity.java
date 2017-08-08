@@ -70,11 +70,11 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
     ((KSApplication) getApplication()).component().inject(this);
 
     final int bottomButtonVisibility = ViewUtils.isLandscape(this) ? View.GONE : View.VISIBLE;
-    projectActionButtonsViewGroup.setVisibility(bottomButtonVisibility);
+    this.projectActionButtonsViewGroup.setVisibility(bottomButtonVisibility);
 
-    adapter = new ProjectAdapter(viewModel);
-    projectRecyclerView.setAdapter(adapter);
-    projectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    this.adapter = new ProjectAdapter(this.viewModel);
+    this.projectRecyclerView.setAdapter(this.adapter);
+    this.projectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     this.viewModel.outputs.projectAndUserCountry()
       .compose(bindToLifecycle())
@@ -140,50 +140,51 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    projectRecyclerView.setAdapter(null);
+    this.projectRecyclerView.setAdapter(null);
   }
+
   private void renderProject(final @NonNull Project project, final @NonNull String configCountry) {
-    adapter.takeProject(project, configCountry);
-    ProjectUtils.setActionButton(project, backProjectButton, managePledgeButton, viewPledgeButton);
+    this.adapter.takeProject(project, configCountry);
+    ProjectUtils.setActionButton(project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton);
     renderStar(project);
   }
 
   private void renderStar(final @NonNull Project project) {
-    final int starColor = (project.isStarred()) ? green : textPrimary;
-    starButton.setTextColor(starColor);
+    final int starColor = (project.isStarred()) ? this.green : this.textPrimary;
+    this.starButton.setTextColor(starColor);
   }
 
   @OnClick(R.id.back_project_button)
   public void backProjectButtonOnClick() {
-    viewModel.inputs.backProjectButtonClicked();
+    this.viewModel.inputs.backProjectButtonClicked();
   }
 
   @OnClick(R.id.manage_pledge_button)
   public void managePledgeOnClick() {
-    viewModel.inputs.managePledgeButtonClicked();
+    this.viewModel.inputs.managePledgeButtonClicked();
   }
 
   @OnClick(R.id.view_pledge_button)
   public void viewPledgeOnClick() {
-    viewModel.inputs.viewPledgeButtonClicked();
+    this.viewModel.inputs.viewPledgeButtonClicked();
   }
 
   @OnClick(R.id.star_icon)
   public void starProjectClick() {
-    viewModel.inputs.starButtonClicked();
+    this.viewModel.inputs.starButtonClicked();
   }
 
   @OnClick(R.id.share_icon)
   public void shareProjectClick() {
-    viewModel.inputs.shareButtonClicked();
+    this.viewModel.inputs.shareButtonClicked();
   }
 
   private void startCampaignWebViewActivity(final @NonNull Project project) {
-    startWebViewActivity(campaignString, project.descriptionUrl());
+    startWebViewActivity(this.campaignString, project.descriptionUrl());
   }
 
   private void startCreatorBioWebViewActivity(final @NonNull Project project) {
-    startWebViewActivity(creatorString, project.creatorBioUrl());
+    startWebViewActivity(this.creatorString, project.creatorBioUrl());
   }
 
   private void startProjectUpdatesActivity(final @NonNull Project project) {
@@ -193,7 +194,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
   }
 
   private void showStarToast() {
-    ViewUtils.showToastFromTop(this, projectStarConfirmationString, 0, grid8Dimen);
+    ViewUtils.showToastFromTop(this, this.projectStarConfirmationString, 0, this.grid8Dimen);
   }
 
   private void startCheckoutActivity(final @NonNull Project project) {
@@ -208,7 +209,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
     final Intent intent = new Intent(this, CheckoutActivity.class)
       .putExtra(IntentKey.PROJECT, project)
       .putExtra(IntentKey.URL, project.editPledgeUrl())
-      .putExtra(IntentKey.TOOLBAR_TITLE, managePledgeString);
+      .putExtra(IntentKey.TOOLBAR_TITLE, this.managePledgeString);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
@@ -220,7 +221,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
 
   // todo: limit the apps you can share to
   private void startShareIntent(final @NonNull Project project) {
-    final String shareMessage = ksString.format(projectShareString, "project_title", project.name());
+    final String shareMessage = this.ksString.format(this.projectShareString, "project_title", project.name());
 
     final Intent intent = new Intent(Intent.ACTION_SEND)
       .setType("text/plain")

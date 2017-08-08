@@ -96,38 +96,38 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
 
-    viewModel.outputs.user()
+    this.viewModel.outputs.user()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::displayPreferences);
 
-    viewModel.outputs.showOptInPrompt()
+    this.viewModel.outputs.showOptInPrompt()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showOptInPrompt);
 
-    viewModel.errors.unableToSavePreferenceError()
+    this.viewModel.errors.unableToSavePreferenceError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> ViewUtils.showToast(this, unableToSaveString));
+      .subscribe(__ -> ViewUtils.showToast(this, this.unableToSaveString));
 
-    RxView.clicks(gamesNewsletterSwitch)
+    RxView.clicks(this.gamesNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendGamesNewsletter(gamesNewsletterSwitch.isChecked()));
+      .subscribe(__ -> this.viewModel.inputs.sendGamesNewsletter(this.gamesNewsletterSwitch.isChecked()));
 
-    RxView.clicks(happeningNewsletterSwitch)
+    RxView.clicks(this.happeningNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendHappeningNewsletter(happeningNewsletterSwitch.isChecked()));
+      .subscribe(__ -> this.viewModel.inputs.sendHappeningNewsletter(this.happeningNewsletterSwitch.isChecked()));
 
-    RxView.clicks(promoNewsletterSwitch)
+    RxView.clicks(this.promoNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendPromoNewsletter(promoNewsletterSwitch.isChecked()));
+      .subscribe(__ -> this.viewModel.inputs.sendPromoNewsletter(this.promoNewsletterSwitch.isChecked()));
 
-    RxView.clicks(weeklyNewsletterSwitch)
+    RxView.clicks(this.weeklyNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendWeeklyNewsletter(weeklyNewsletterSwitch.isChecked()));
+      .subscribe(__ -> this.viewModel.inputs.sendWeeklyNewsletter(this.weeklyNewsletterSwitch.isChecked()));
 
-    viewModel.outputs.showConfirmLogoutPrompt()
+    this.viewModel.outputs.showConfirmLogoutPrompt()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(show -> {
@@ -138,7 +138,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
         }
       });
 
-    viewModel.outputs.logout()
+    this.viewModel.outputs.logout()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> logout());
@@ -146,9 +146,9 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   @OnClick(R.id.contact)
   public void contactClick() {
-    viewModel.inputs.contactEmailClicked();
+    this.viewModel.inputs.contactEmailClicked();
 
-    currentUser.observable()
+    this.currentUser.observable()
       .take(1)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::composeContactEmail);
@@ -171,7 +171,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   @OnClick(R.id.log_out_button)
   public void logoutClick() {
-    viewModel.inputs.logoutClicked();
+    this.viewModel.inputs.logoutClicked();
   }
 
   @OnClick(R.id.manage_project_notifications)
@@ -192,32 +192,32 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   @OnClick(R.id.friend_activity_mail_icon)
   public void toggleNotifyOfFriendActivity() {
-    viewModel.inputs.notifyOfFriendActivity(!notifyOfFriendActivity);
+    this.viewModel.inputs.notifyOfFriendActivity(!this.notifyOfFriendActivity);
   }
 
   @OnClick(R.id.friend_activity_phone_icon)
   public void toggleNotifyMobileOfFriendActivity() {
-    viewModel.inputs.notifyMobileOfFriendActivity(!notifyMobileOfFriendActivity);
+    this.viewModel.inputs.notifyMobileOfFriendActivity(!this.notifyMobileOfFriendActivity);
   }
 
   @OnClick(R.id.new_followers_mail_icon)
   public void toggleNotifyOfNewFollowers() {
-    viewModel.inputs.notifyOfFollower(!notifyOfFollower);
+    this.viewModel.inputs.notifyOfFollower(!this.notifyOfFollower);
   }
 
   @OnClick(R.id.new_followers_phone_icon)
   public void toggleNotifyMobileOfNewFollowers() {
-    viewModel.inputs.notifyMobileOfFollower(!notifyMobileOfFollower);
+    this.viewModel.inputs.notifyMobileOfFollower(!this.notifyMobileOfFollower);
   }
 
   @OnClick(R.id.project_updates_mail_icon)
   public void toggleNotifyOfUpdates() {
-    viewModel.inputs.notifyOfUpdates(!notifyOfUpdates);
+    this.viewModel.inputs.notifyOfUpdates(!this.notifyOfUpdates);
   }
 
   @OnClick(R.id.project_updates_phone_icon)
   public void toggleNotifyMobileOfUpdates() {
-    viewModel.inputs.notifyMobileOfUpdates(!notifyMobileOfUpdates);
+    this.viewModel.inputs.notifyMobileOfUpdates(!this.notifyMobileOfUpdates);
   }
 
   @OnClick(R.id.terms_of_use)
@@ -232,85 +232,86 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   private void composeContactEmail(final @Nullable User user) {
     final List<String> debugInfo = Arrays.asList(
-      user != null ? String.valueOf(user.id()) : loggedOutString,
-      build.versionName(),
+      user != null ? String.valueOf(user.id()) : this.loggedOutString,
+      this.build.versionName(),
       android.os.Build.VERSION.RELEASE + " (SDK " + Integer.toString(android.os.Build.VERSION.SDK_INT) + ")",
       android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL
     );
 
     final String body = new StringBuilder()
-      .append(supportEmailBodyString)
+      .append(this.supportEmailBodyString)
       .append(TextUtils.join(" | ", debugInfo))
       .toString();
 
     final Intent intent = new Intent(Intent.ACTION_SENDTO)
-      .setData(Uri.parse(mailtoString))
-      .putExtra(Intent.EXTRA_SUBJECT, "[Android] " + supportEmailSubjectString)
+      .setData(Uri.parse(this.mailtoString))
+      .putExtra(Intent.EXTRA_SUBJECT, "[Android] " + this.supportEmailSubjectString)
       .putExtra(Intent.EXTRA_TEXT, body)
-      .putExtra(Intent.EXTRA_EMAIL, new String[]{supportEmailString});
+      .putExtra(Intent.EXTRA_EMAIL, new String[] { this.supportEmailString } );
+
     if (intent.resolveActivity(getPackageManager()) != null) {
       startActivity(Intent.createChooser(intent, getString(R.string.support_email_chooser)));
     }
   }
 
   private void displayPreferences(final @NonNull User user) {
-    projectNotificationsCountTextView.setText(String.valueOf(intValueOrZero(user.backedProjectsCount())));
+    this.projectNotificationsCountTextView.setText(String.valueOf(intValueOrZero(user.backedProjectsCount())));
 
-    notifyMobileOfFriendActivity = isTrue(user.notifyMobileOfFriendActivity());
-    notifyOfFriendActivity = isTrue(user.notifyOfFriendActivity());
-    notifyMobileOfFollower = isTrue(user.notifyMobileOfFollower());
-    notifyOfFollower = isTrue(user.notifyOfFollower());
-    notifyMobileOfUpdates = isTrue(user.notifyMobileOfUpdates());
-    notifyOfUpdates = isTrue(user.notifyOfUpdates());
+    this.notifyMobileOfFriendActivity = isTrue(user.notifyMobileOfFriendActivity());
+    this.notifyOfFriendActivity = isTrue(user.notifyOfFriendActivity());
+    this.notifyMobileOfFollower = isTrue(user.notifyMobileOfFollower());
+    this.notifyOfFollower = isTrue(user.notifyOfFollower());
+    this.notifyMobileOfUpdates = isTrue(user.notifyMobileOfUpdates());
+    this.notifyOfUpdates = isTrue(user.notifyOfUpdates());
 
-    toggleIconColor(friendActivityMailIconTextView, false, notifyOfFriendActivity);
-    toggleIconColor(friendActivityPhoneIconTextView, true, notifyMobileOfFriendActivity);
-    toggleIconColor(newFollowersMailIconTextView, false, notifyOfFollower);
-    toggleIconColor(newFollowersPhoneIconTextView, true, notifyMobileOfFollower);
-    toggleIconColor(projectUpdatesMailIconTextView, false, notifyOfUpdates);
-    toggleIconColor(projectUpdatesPhoneIconTextView, true, notifyMobileOfUpdates);
+    toggleIconColor(this.friendActivityMailIconTextView, false, this.notifyOfFriendActivity);
+    toggleIconColor(this.friendActivityPhoneIconTextView, true, this.notifyMobileOfFriendActivity);
+    toggleIconColor(this.newFollowersMailIconTextView, false, this.notifyOfFollower);
+    toggleIconColor(this.newFollowersPhoneIconTextView, true, this.notifyMobileOfFollower);
+    toggleIconColor(this.projectUpdatesMailIconTextView, false, this.notifyOfUpdates);
+    toggleIconColor(this.projectUpdatesPhoneIconTextView, true, this.notifyMobileOfUpdates);
 
-    SwitchCompatUtils.setCheckedWithoutAnimation(gamesNewsletterSwitch, isTrue(user.gamesNewsletter()));
-    SwitchCompatUtils.setCheckedWithoutAnimation(happeningNewsletterSwitch, isTrue(user.happeningNewsletter()));
-    SwitchCompatUtils.setCheckedWithoutAnimation(promoNewsletterSwitch, isTrue(user.promoNewsletter()));
-    SwitchCompatUtils.setCheckedWithoutAnimation(weeklyNewsletterSwitch, isTrue(user.weeklyNewsletter()));
+    SwitchCompatUtils.setCheckedWithoutAnimation(this.gamesNewsletterSwitch, isTrue(user.gamesNewsletter()));
+    SwitchCompatUtils.setCheckedWithoutAnimation(this.happeningNewsletterSwitch, isTrue(user.happeningNewsletter()));
+    SwitchCompatUtils.setCheckedWithoutAnimation(this.promoNewsletterSwitch, isTrue(user.promoNewsletter()));
+    SwitchCompatUtils.setCheckedWithoutAnimation(this.weeklyNewsletterSwitch, isTrue(user.weeklyNewsletter()));
   }
 
   /**
    * Lazily creates a logout confirmation dialog and stores it in an instance variable.
    */
   private @NonNull AlertDialog lazyLogoutConfirmationDialog() {
-    if (logoutConfirmationDialog == null) {
-      logoutConfirmationDialog = new AlertDialog.Builder(this)
+    if (this.logoutConfirmationDialog == null) {
+      this.logoutConfirmationDialog = new AlertDialog.Builder(this)
         .setTitle(getString(R.string.profile_settings_logout_alert_title))
         .setMessage(getString(R.string.profile_settings_logout_alert_message))
         .setPositiveButton(getString(R.string.profile_settings_logout_alert_confirm_button), (__, ___) -> {
-          viewModel.inputs.confirmLogoutClicked();
+          this.viewModel.inputs.confirmLogoutClicked();
         })
         .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button), (__, ___) -> {
-          viewModel.inputs.closeLogoutConfirmationClicked();
+          this.viewModel.inputs.closeLogoutConfirmationClicked();
         })
-        .setOnCancelListener(__ -> viewModel.inputs.closeLogoutConfirmationClicked())
+        .setOnCancelListener(__ -> this.viewModel.inputs.closeLogoutConfirmationClicked())
         .create();
     }
-    return logoutConfirmationDialog;
+    return this.logoutConfirmationDialog;
   }
 
   private void logout() {
-    logout.execute();
+    this.logout.execute();
     ApplicationUtils.startNewDiscoveryActivity(this);
   }
 
   private @Nullable String newsletterString(final @NonNull Newsletter newsletter) {
     switch (newsletter) {
       case GAMES:
-        return gamesNewsletterString;
+        return this.gamesNewsletterString;
       case HAPPENING:
-        return happeningNewsletterString;
+        return this.happeningNewsletterString;
       case PROMO:
-        return promoNewsletterString;
+        return this.promoNewsletterString;
       case WEEKLY:
-        return weeklyNewsletterString;
+        return this.weeklyNewsletterString;
       default:
         return null;
     }
@@ -322,26 +323,26 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       return;
     }
 
-    final String optInDialogMessageString = ksString.format(optInMessageString, "newsletter", string);
-    ViewUtils.showDialog(this, optInTitleString, optInDialogMessageString);
+    final String optInDialogMessageString = this.ksString.format(this.optInMessageString, "newsletter", string);
+    ViewUtils.showDialog(this, this.optInTitleString, optInDialogMessageString);
   }
 
   private void toggleIconColor(final @NonNull TextView iconTextView, final boolean typeMobile, final boolean enabled) {
-    final int color = enabled ? green : gray;
+    final int color = enabled ? this.green : this.gray;
     iconTextView.setTextColor(color);
 
     String contentDescription = "";
     if (typeMobile && enabled) {
-      contentDescription = unsubscribeMobileString;
+      contentDescription = this.unsubscribeMobileString;
     }
     if (typeMobile && !enabled) {
-      contentDescription = subscribeMobileString;
+      contentDescription = this.subscribeMobileString;
     }
     if (!typeMobile && enabled) {
-      contentDescription = unsubscribeString;
+      contentDescription = this.unsubscribeString;
     }
     if (!typeMobile && !enabled) {
-      contentDescription = subscribeString;
+      contentDescription = this.subscribeString;
     }
     iconTextView.setContentDescription(contentDescription);
   }

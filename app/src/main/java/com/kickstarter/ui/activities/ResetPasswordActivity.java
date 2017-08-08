@@ -41,37 +41,37 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
 
     setContentView(R.layout.reset_password_layout);
     ButterKnife.bind(this);
-    loginToolbar.setTitle(forgotPasswordString);
+    this.loginToolbar.setTitle(forgotPasswordString);
 
-    viewModel.outputs.resetSuccess()
+    this.viewModel.outputs.resetSuccess()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> onResetSuccess());
 
-    viewModel.outputs.isFormSubmitting()
+    this.viewModel.outputs.isFormSubmitting()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::setFormDisabled);
 
-    viewModel.outputs.isFormValid()
+    this.viewModel.outputs.isFormValid()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::setFormEnabled);
 
-    viewModel.errors.resetError()
+    this.viewModel.errors.resetError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> ViewUtils.showDialog(this, errorTitleString, errorMessageString));
+      .subscribe(__ -> ViewUtils.showDialog(this, this.errorTitleString, this.errorMessageString));
   }
 
   @OnTextChanged(R.id.email)
   void onEmailTextChanged(final @NonNull CharSequence email) {
-    viewModel.inputs.email(email.toString());
+    this.viewModel.inputs.email(email.toString());
   }
 
   @OnClick(R.id.reset_password_button)
   public void resetButtonOnClick() {
-    viewModel.inputs.resetPasswordClick();
+    this.viewModel.inputs.resetPasswordClick();
   }
 
   @Override
@@ -82,7 +82,7 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
   private void onResetSuccess() {
     setFormEnabled(false);
     final Intent intent = new Intent(this, LoginActivity.class)
-      .putExtra(IntentKey.EMAIL, email.getText().toString());
+      .putExtra(IntentKey.EMAIL, this.email.getText().toString());
     startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 

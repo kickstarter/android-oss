@@ -54,7 +54,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
     setContentView(R.layout.profile_layout);
     ButterKnife.bind(this);
 
-    this.adapter = new ProfileAdapter(viewModel);
+    this.adapter = new ProfileAdapter(this.viewModel);
     final int spanCount = ViewUtils.isLandscape(this) ? 3 : 2;
     this.recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
     this.recyclerView.setAdapter(this.adapter);

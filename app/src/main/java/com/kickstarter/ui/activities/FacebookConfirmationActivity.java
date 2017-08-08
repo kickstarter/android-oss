@@ -46,41 +46,41 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
 
     setContentView(R.layout.facebook_confirmation_layout);
     ButterKnife.bind(this);
-    signUpWithFacebookToolbar.setTitle(signUpWithFacebookString);
+    this.signUpWithFacebookToolbar.setTitle(this.signUpWithFacebookString);
 
-    viewModel.outputs.prefillEmail()
+    this.viewModel.outputs.prefillEmail()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::prefillEmail);
 
-    viewModel.outputs.signupSuccess()
+    this.viewModel.outputs.signupSuccess()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> onSuccess());
 
-    viewModel.outputs.sendNewslettersIsChecked()
+    this.viewModel.outputs.sendNewslettersIsChecked()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(b -> SwitchCompatUtils.setCheckedWithoutAnimation(newsletterSwitch, b));
+      .subscribe(b -> SwitchCompatUtils.setCheckedWithoutAnimation(this.newsletterSwitch, b));
 
-    viewModel.errors.signupError()
+    this.viewModel.errors.signupError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
+      .subscribe(e -> ViewUtils.showDialog(this, this.errorTitleString, e));
 
-    RxView.clicks(newsletterSwitch)
+    RxView.clicks(this.newsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendNewslettersClick(newsletterSwitch.isChecked()));
+      .subscribe(__ -> this.viewModel.inputs.sendNewslettersClick(this.newsletterSwitch.isChecked()));
   }
 
   @OnClick(R.id.create_new_account_button)
   public void createNewAccountClick() {
-    viewModel.inputs.createNewAccountClick();
+    this.viewModel.inputs.createNewAccountClick();
   }
 
   @OnClick(R.id.disclaimer)
   public void disclaimerClick() {
-    new LoginPopupMenu(this, helpButton).show();
+    new LoginPopupMenu(this, this.helpButton).show();
   }
 
   @OnClick(R.id.login_button)
@@ -101,6 +101,6 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
   }
 
   private void prefillEmail(final @NonNull String email) {
-    emailTextView.setText(email);
+    this.emailTextView.setText(email);
   }
 }

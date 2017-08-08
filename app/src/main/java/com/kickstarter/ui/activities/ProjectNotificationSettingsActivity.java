@@ -33,25 +33,25 @@ public final class ProjectNotificationSettingsActivity extends BaseActivity<Proj
     ButterKnife.bind(this);
 
     final ProjectNotificationSettingsAdapter adapter = new ProjectNotificationSettingsAdapter();
-    recyclerView.setAdapter(adapter);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    this.recyclerView.setAdapter(adapter);
+    this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    viewModel.outputs.projectNotifications()
+    this.viewModel.outputs.projectNotifications()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::projectNotifications);
 
-    viewModel.errors.unableToFetchProjectNotificationsError()
+    this.viewModel.errors.unableToFetchProjectNotificationsError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .map(__ -> generalErrorString)
+      .map(__ -> this.generalErrorString)
       .subscribe(ViewUtils.showToast(this));
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    recyclerView.setAdapter(null);
+    this.recyclerView.setAdapter(null);
   }
 
   @Override

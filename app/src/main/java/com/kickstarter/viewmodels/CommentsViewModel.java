@@ -69,7 +69,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .flatMap(pOrU ->
         pOrU.either(
           Observable::just,
-          u -> client.fetchProject(String.valueOf(u.projectId())).compose(neverError())
+          u -> this.client.fetchProject(String.valueOf(u.projectId())).compose(neverError())
         )
       )
       .share();
@@ -77,12 +77,12 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
     final Observable<Project> project = Observable.merge(
       initialProject,
       initialProject
-        .compose(takeWhen(loginSuccess))
-        .flatMap(p -> client.fetchProject(p).compose(neverError()))
+        .compose(takeWhen(this.loginSuccess))
+        .flatMap(p -> this.client.fetchProject(p).compose(neverError()))
     )
       .share();
 
-    final Observable<Boolean> commentHasBody = commentBodyChanged
+    final Observable<Boolean> commentHasBody = this.commentBodyChanged
       .map(StringUtils::isPresent);
 
     final Observable<Notification<Comment>> commentNotification = projectOrUpdate
@@ -90,8 +90,8 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .compose(takeWhen(this.postCommentClicked))
       .switchMap(projectOrUpdateAndBody ->
         this.postComment(projectOrUpdateAndBody.first, projectOrUpdateAndBody.second)
-          .doOnSubscribe(() -> commentIsPosting.onNext(true))
-          .doAfterTerminate(() -> commentIsPosting.onNext(false))
+          .doOnSubscribe(() -> this.commentIsPosting.onNext(true))
+          .doAfterTerminate(() -> this.commentIsPosting.onNext(false))
           .materialize()
       )
       .share();
@@ -101,18 +101,18 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
 
     final Observable<Either<Project, Update>> startOverWith = Observable.merge(
       projectOrUpdate,
-      projectOrUpdate.compose(takeWhen(refresh))
+      projectOrUpdate.compose(takeWhen(this.refresh))
     );
 
     final ApiPaginator<Comment, CommentsEnvelope, Either<Project, Update>> paginator =
       ApiPaginator.<Comment, CommentsEnvelope, Either<Project, Update>>builder()
-        .nextPage(nextPage)
+        .nextPage(this.nextPage)
         .distinctUntilChanged(true)
         .startOverWith(startOverWith)
         .envelopeToListOfData(CommentsEnvelope::comments)
         .envelopeToMoreUrl(env -> env.urls().api().moreComments())
-        .loadWithParams(pu -> pu.either(client::fetchComments, client::fetchComments))
-        .loadWithPaginationPath(client::fetchComments)
+        .loadWithParams(pu -> pu.either(this.client::fetchComments, this.client::fetchComments))
+        .loadWithPaginationPath(this.client::fetchComments)
         .build();
 
     final Observable<List<Comment>> comments = paginator.paginatedData().share();
@@ -139,30 +139,30 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
     commentNotification
       .compose(errors())
       .map(ErrorEnvelope::fromThrowable)
-      .subscribe(showPostCommentErrorToast::onNext);
+      .subscribe(this.showPostCommentErrorToast::onNext);
 
     commentableProject
-      .compose(takeWhen(loginSuccess))
+      .compose(takeWhen(this.loginSuccess))
       .take(1)
       .compose(bindToLifecycle())
-      .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
+      .subscribe(p -> this.showCommentDialog.onNext(Pair.create(p, true)));
 
     commentableProject
-      .compose(takeWhen(commentButtonClicked))
+      .compose(takeWhen(this.commentButtonClicked))
       .compose(bindToLifecycle())
-      .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
+      .subscribe(p -> this.showCommentDialog.onNext(Pair.create(p, true)));
 
-    commentDialogDismissed
+    this.commentDialogDismissed
       .compose(bindToLifecycle())
       .subscribe(__ -> {
-        showCommentDialog.onNext(null);
-        dismissCommentDialog.onNext(null);
+        this.showCommentDialog.onNext(null);
+        this.dismissCommentDialog.onNext(null);
       });
 
     // Seed comment body with user input.
-    commentBodyChanged
+    this.commentBodyChanged
       .compose(bindToLifecycle())
-      .subscribe(currentCommentBody::onNext);
+      .subscribe(this.currentCommentBody::onNext);
 
     Observable.combineLatest(
       project,
@@ -171,57 +171,57 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       CommentsData::deriveData
     )
       .compose(bindToLifecycle())
-      .subscribe(commentsData::onNext);
+      .subscribe(this.commentsData::onNext);
 
     userCanComment
       .map(BooleanUtils::negate)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(commentButtonHidden::onNext);
+      .subscribe(this.commentButtonHidden::onNext);
 
     postedComment
       .compose(ignoreValues())
       .compose(bindToLifecycle())
-      .subscribe(refresh::onNext);
+      .subscribe(this.refresh::onNext);
 
     commentHasBody
       .compose(bindToLifecycle())
-      .subscribe(enablePostButton::onNext);
+      .subscribe(this.enablePostButton::onNext);
 
-    commentIsPosting
+    this.commentIsPosting
       .map(b -> !b)
       .compose(bindToLifecycle())
-      .subscribe(enablePostButton::onNext);
+      .subscribe(this.enablePostButton::onNext);
 
     postedComment
       .compose(bindToLifecycle())
       .subscribe(__ -> {
-        commentDialogDismissed.onNext(null);
-        showCommentPostedToast.onNext(null);
+        this.commentDialogDismissed.onNext(null);
+        this.showCommentPostedToast.onNext(null);
       });
 
     postedComment
       .map(__ -> "")
       .compose(bindToLifecycle())
-      .subscribe(commentBodyChanged::onNext);
+      .subscribe(this.commentBodyChanged::onNext);
 
     paginator.isFetching()
       .compose(bindToLifecycle())
-      .subscribe(isFetchingComments);
+      .subscribe(this.isFetchingComments);
 
     project
       .take(1)
       .compose(bindToLifecycle())
-      .subscribe(__ -> refresh.onNext(null));
+      .subscribe(__ -> this.refresh.onNext(null));
 
     final Observable<Update> update = projectOrUpdate.map(Either::right);
 
     // TODO: add a pageCount to RecyclerViewPaginator to track loading newer comments.
     Observable.combineLatest(project, update, Pair::create)
-      .compose(takeWhen(nextPage))
+      .compose(takeWhen(this.nextPage))
       .compose(bindToLifecycle())
       .subscribe(pu ->
-        koala.trackLoadedOlderComments(
+        this.koala.trackLoadedOlderComments(
           pu.first, pu.second, pu.second == null ? KoalaContext.Comments.PROJECT : KoalaContext.Comments.UPDATE
         )
       );
@@ -230,7 +230,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .take(1)
       .compose(bindToLifecycle())
       .subscribe(pu ->
-        koala.trackViewedComments(
+        this.koala.trackViewedComments(
           pu.first, pu.second, pu.second == null ? KoalaContext.Comments.PROJECT : KoalaContext.Comments.UPDATE
         )
       );
@@ -239,7 +239,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .compose(takeWhen(postedComment))
       .compose(bindToLifecycle())
       .subscribe(pu ->
-        koala.trackPostedComment(
+        this.koala.trackPostedComment(
           pu.first,
           pu.second,
           pu.second == null ? KoalaContext.CommentDialog.PROJECT_COMMENTS : KoalaContext.CommentDialog.UPDATE_COMMENTS
@@ -249,28 +249,28 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
     projectOrUpdate
       .filter(Either::isLeft)
       .map(Either::left)
-      .compose(takeWhen(nextPage))
+      .compose(takeWhen(this.nextPage))
       .compose(bindToLifecycle())
-      .subscribe(koala::trackLoadedOlderProjectComments);
+      .subscribe(this.koala::trackLoadedOlderProjectComments);
 
     projectOrUpdate
       .filter(Either::isLeft)
       .map(Either::left)
       .compose(bindToLifecycle())
-      .subscribe(koala::trackProjectCommentsView);
+      .subscribe(this.koala::trackProjectCommentsView);
 
     projectOrUpdate
       .filter(Either::isLeft)
       .map(Either::left)
       .compose(takeWhen(postedComment))
       .compose(bindToLifecycle())
-      .subscribe(koala::trackProjectCommentCreate);
+      .subscribe(this.koala::trackProjectCommentCreate);
   }
 
   private @NonNull Observable<Comment> postComment(final @NonNull Either<Project, Update> projectOrUpdate, final @NonNull String body) {
     return projectOrUpdate.either(
-      p -> client.postComment(p, body),
-      u -> client.postComment(u, body)
+      p -> this.client.postComment(p, body),
+      u -> this.client.postComment(u, body)
     );
   }
 
@@ -297,53 +297,53 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
   public final CommentsViewModelOutputs outputs = this;
 
   @Override public void commentBodyChanged(final @NonNull String string) {
-    commentBodyChanged.onNext(string);
+    this.commentBodyChanged.onNext(string);
   }
   @Override public void commentButtonClicked() {
-    commentButtonClicked.onNext(null);
+    this.commentButtonClicked.onNext(null);
   }
   @Override public void commentDialogDismissed() {
-    commentDialogDismissed.onNext(null);
+    this.commentDialogDismissed.onNext(null);
   }
   @Override public void loginSuccess() {
-    loginSuccess.onNext(null);
+    this.loginSuccess.onNext(null);
   }
   @Override public void nextPage() {
-    nextPage.onNext(null);
+    this.nextPage.onNext(null);
   }
   @Override public void postCommentClicked() {
-    postCommentClicked.onNext(null);
+    this.postCommentClicked.onNext(null);
   }
   @Override public void refresh() {
-    refresh.onNext(null);
+    this.refresh.onNext(null);
   }
 
   @Override public @NonNull Observable<CommentsData> commentsData() {
-    return commentsData;
+    return this.commentsData;
   }
   @Override public @NonNull Observable<String> currentCommentBody() {
-    return currentCommentBody;
+    return this.currentCommentBody;
   }
   @Override public @NonNull Observable<Void> dismissCommentDialog() {
-    return dismissCommentDialog;
+    return this.dismissCommentDialog;
   }
   @Override public @NonNull Observable<Boolean> enablePostButton() {
-    return enablePostButton;
+    return this.enablePostButton;
   }
   @Override public @NonNull Observable<Boolean> isFetchingComments() {
-    return isFetchingComments;
+    return this.isFetchingComments;
   }
   @Override public @NonNull Observable<Boolean> commentButtonHidden() {
-    return commentButtonHidden;
+    return this.commentButtonHidden;
   }
   @Override public @NonNull Observable<Pair<Project, Boolean>> showCommentDialog() {
-    return showCommentDialog;
+    return this.showCommentDialog;
   }
   @Override public @NonNull Observable<Void> showCommentPostedToast() {
-    return showCommentPostedToast;
+    return this.showCommentPostedToast;
   }
   @Override public @NonNull Observable<String> showPostCommentErrorToast() {
-    return showPostCommentErrorToast
+    return this.showPostCommentErrorToast
       .map(ErrorEnvelope::errorMessage);
   }
 }

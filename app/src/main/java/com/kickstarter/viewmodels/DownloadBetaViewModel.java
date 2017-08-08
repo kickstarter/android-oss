@@ -19,7 +19,7 @@ public final class DownloadBetaViewModel extends ActivityViewModel<DownloadBetaA
   private final BehaviorSubject<InternalBuildEnvelope> internalBuildEnvelope = BehaviorSubject.create();
   @Override
   public Observable<InternalBuildEnvelope> internalBuildEnvelope() {
-    return internalBuildEnvelope;
+    return this.internalBuildEnvelope;
   }
 
   public final DownloadBetaViewModelOutputs outputs = this;
@@ -31,6 +31,6 @@ public final class DownloadBetaViewModel extends ActivityViewModel<DownloadBetaA
       .map(i -> i.getParcelableExtra(IntentKey.INTERNAL_BUILD_ENVELOPE))
       .ofType(InternalBuildEnvelope.class)
       .compose(bindToLifecycle())
-      .subscribe(internalBuildEnvelope);
+      .subscribe(this.internalBuildEnvelope);
   }
 }

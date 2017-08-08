@@ -288,7 +288,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
     return this.navigationDrawerData;
   }
   @Override public @NonNull Observable<Pair<List<Category>, Integer>> rootCategoriesAndPosition() {
-    return rootCategoriesAndPosition;
+    return this.rootCategoriesAndPosition;
   }
   @Override public @NonNull Observable<InternalBuildEnvelope> showBuildCheckAlert() {
     return this.showBuildCheckAlert;

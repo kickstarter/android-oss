@@ -152,7 +152,7 @@ public final class SignupViewModel extends ActivityViewModel<SignupActivity> imp
 
   private Observable<AccessTokenEnvelope> submit(final @NonNull SignupData data) {
     return this.client.signup(data.fullName, data.email, data.password, data.password, data.sendNewsletters)
-      .compose(Transformers.pipeApiErrorsTo(signupError))
+      .compose(Transformers.pipeApiErrorsTo(this.signupError))
       .compose(Transformers.neverError())
       .doOnSubscribe(() -> this.formSubmitting.onNext(true))
       .doAfterTerminate(() -> this.formSubmitting.onNext(false));

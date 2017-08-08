@@ -54,7 +54,7 @@ public final class LoginViewModel extends ActivityViewModel<LoginActivity> imple
       .subscribe(this.prefillEmailFromPasswordReset);
 
     emailFromIntent
-      .map(email -> Pair.create(true, email))
+      .map(e -> Pair.create(true, e))
       .compose(bindToLifecycle())
       .subscribe(this.showResetPasswordSuccessDialog);
 

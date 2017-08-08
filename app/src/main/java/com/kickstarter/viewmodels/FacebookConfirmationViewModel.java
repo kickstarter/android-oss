@@ -84,7 +84,7 @@ public class FacebookConfirmationViewModel extends ActivityViewModel<FacebookCon
       .ofType(String.class);
 
     final Observable<Pair<String, Boolean>> tokenAndNewsletter = facebookAccessToken
-      .compose(combineLatestPair(sendNewslettersIsChecked));
+      .compose(combineLatestPair(this.sendNewslettersIsChecked));
 
     intent()
       .map(i -> i.getParcelableExtra(IntentKey.FACEBOOK_USER))

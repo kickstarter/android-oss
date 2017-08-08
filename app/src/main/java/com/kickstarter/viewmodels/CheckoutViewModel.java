@@ -66,7 +66,7 @@ public final class CheckoutViewModel extends ActivityViewModel<CheckoutActivity>
   private BehaviorSubject<String> url = BehaviorSubject.create();
   @Override
   public @NonNull Observable<String> url() {
-    return url;
+    return this.url;
   }
   private BehaviorSubject<Boolean> displayAndroidPayConfirmation = BehaviorSubject.create();
   public Observable<Boolean> displayAndroidPayConfirmation() {
@@ -116,7 +116,7 @@ public final class CheckoutViewModel extends ActivityViewModel<CheckoutActivity>
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
       .ofType(Project.class)
       .compose(bindToLifecycle())
-      .subscribe(project::onNext);
+      .subscribe(this.project::onNext);
 
     intent()
       .map(i -> i.getStringExtra(IntentKey.TOOLBAR_TITLE))

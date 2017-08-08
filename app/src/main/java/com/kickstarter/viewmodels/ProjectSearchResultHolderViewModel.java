@@ -7,6 +7,7 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
@@ -52,28 +53,24 @@ public interface ProjectSearchResultHolderViewModel {
       super(environment);
 
       this.deadlineCountdownValueTextViewText = this.projectAndIsFeatured
-        .map(projectAndIsFeatured ->
-          NumberUtils.format(ProjectUtils.deadlineCountdownValue(projectAndIsFeatured.first))
-        );
+        .map(pb -> NumberUtils.format(ProjectUtils.deadlineCountdownValue(pb.first)));
 
       this.percentFundedTextViewText = this.projectAndIsFeatured
-        .map(projectAndIsFeatured -> NumberUtils.flooredPercentage(projectAndIsFeatured.first.percentageFunded()));
+        .map(pb -> NumberUtils.flooredPercentage(pb.first.percentageFunded()));
 
       this.projectForDeadlineCountdownDetail = this.projectAndIsFeatured
-        .map(projectAndIsFeatured -> projectAndIsFeatured.first);
+        .map(pb -> pb.first);
 
       this.projectPhotoUrl = this.projectAndIsFeatured
-        .map(projectAndIsFeatured -> Pair.create(projectAndIsFeatured.first.photo(), projectAndIsFeatured.second))
-        .filter(photoAndIsFeatured -> ObjectUtils.isNotNull(photoAndIsFeatured.first))
-        .map(photoAndIsFeatured ->
-          photoAndIsFeatured.second ? photoAndIsFeatured.first.full() : photoAndIsFeatured.first.med()
-        );
+        .map(pb -> Pair.create(pb.first.photo(), pb.second))
+        .filter(pb -> ObjectUtils.isNotNull(pb.first))
+        .map(pb -> pb.second ? pb.first.full() : pb.first.med());
 
       this.projectNameTextViewText = this.projectAndIsFeatured
-        .map(projectAndIsFeatured -> projectAndIsFeatured.first.name());
+        .map(pb -> pb.first.name());
 
       this.notifyDelegateOfResultClick = this.projectAndIsFeatured
-        .map(projectAndIsFeatured -> projectAndIsFeatured.first)
+        .map(PairUtils::first)
         .compose(takeWhen(this.projectClicked));
     }
 

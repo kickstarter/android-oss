@@ -9,35 +9,35 @@ public final class MockIntPreference implements IntPreferenceType {
   private final List<Integer> values = new ArrayList<Integer>();
 
   public MockIntPreference() {
-    values.add(null);
+    this.values.add(null);
   }
 
   public MockIntPreference(final int value) {
-    values.add(value);
+    this.values.add(value);
   }
 
   @Override
   public int get() {
-    return values.get(values.size() - 1);
+    return this.values.get(this.values.size() - 1);
   }
 
   @Override
   public boolean isSet() {
-    return values.get(values.size() - 1) != null;
+    return this.values.get(this.values.size() - 1) != null;
   }
 
   @Override
   public void set(final int value) {
-    values.add(value);
+    this.values.add(value);
   }
 
   @Override
   public void delete() {
-    values.add(null);
+    this.values.add(null);
   }
 
   public @NonNull List<Integer> values() {
-    return values;
+    return this.values;
   }
 }
 

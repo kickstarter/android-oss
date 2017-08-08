@@ -51,29 +51,29 @@ public class ActivitySampleFriendFollowViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    activity = ObjectUtils.requireNonNull((Activity) data, Activity.class);
+    this.activity = ObjectUtils.requireNonNull((Activity) data, Activity.class);
   }
 
   public void onBind() {
     final Context context = context();
 
-    final User user = activity.user();
+    final User user = this.activity.user();
     if (user != null) {
       Picasso.with(context).load(user.avatar()
         .small())
         .transform(new CircleTransformation())
-        .into(activityImageView);
+        .into(this.activityImageView);
 
-      activityTitleTextView.setText(ksString.format(categoryFollowingString, "user_name", user.name()));
-      activitySubtitleTextView.setText(categoryFollowBackString);
+      this.activityTitleTextView.setText(this.ksString.format(this.categoryFollowingString, "user_name", user.name()));
+      this.activitySubtitleTextView.setText(this.categoryFollowBackString);
 
       // temp until followable :
-      activitySubtitleTextView.setVisibility(View.GONE);
+      this.activitySubtitleTextView.setVisibility(View.GONE);
     }
   }
 
   @OnClick(R.id.see_activity_button)
   protected void seeActivityOnClick() {
-    delegate.activitySampleFriendFollowViewHolderSeeActivityClicked(this);
+    this.delegate.activitySampleFriendFollowViewHolderSeeActivityClicked(this);
   }
 }

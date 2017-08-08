@@ -48,16 +48,16 @@ public class EnumAdapter<T extends Enum<T>> extends BindableAdapter<T> {
 
   @Override
   public final int getCount() {
-    return enumConstants.length + nullOffset;
+    return this.enumConstants.length + this.nullOffset;
   }
 
   @Override
   public final T getItem(final int position) {
-    if (showNull && position == 0) {
+    if (this.showNull && position == 0) {
       return null;
     }
 
-    return enumConstants[position - nullOffset];
+    return this.enumConstants[position - this.nullOffset];
   }
 
   @Override
@@ -67,7 +67,7 @@ public class EnumAdapter<T extends Enum<T>> extends BindableAdapter<T> {
 
   @Override
   public View newView(final @NonNull LayoutInflater inflater, final int position, final @Nullable ViewGroup container) {
-    return inflater.inflate(spinnerItemResource, container, false);
+    return inflater.inflate(this.spinnerItemResource, container, false);
   }
 
   @Override

@@ -145,7 +145,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.delegate = delegate;
     this.context = view.getContext();
 
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
+    ((KSApplication) this.context.getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
@@ -153,67 +153,67 @@ public final class ProjectViewHolder extends KSViewHolder {
   public void bindData(final @Nullable Object data) throws Exception {
     @SuppressWarnings("unchecked")
     final Pair<Project, String> projectAndCountry = requireNonNull((Pair<Project, String>) data);
-    project = requireNonNull(projectAndCountry.first, Project.class);
-    configCountry = requireNonNull(projectAndCountry.second, String.class);
+    this.project = requireNonNull(projectAndCountry.first, Project.class);
+    this.configCountry = requireNonNull(projectAndCountry.second, String.class);
   }
 
   public void onBind() {
-    final Photo photo = project.photo();
+    final Photo photo = this.project.photo();
     if (photo != null) {
-      final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context));
+      final int targetImageWidth = (int) (getScreenWidthDp(this.context) * getScreenDensity(this.context));
       final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
-      photoImageView.setMaxHeight(targetImageHeight);
+      this.photoImageView.setMaxHeight(targetImageHeight);
 
-      Picasso.with(context)
+      Picasso.with(this.context)
         .load(photo.full())
         .resize(targetImageWidth, targetImageHeight)
         .centerCrop()
-        .placeholder(grayGradientDrawable)
-        .into(photoImageView);
+        .placeholder(this.grayGradientDrawable)
+        .into(this.photoImageView);
     }
 
-    if (project.hasVideo()) {
-      playButton.setVisibility(View.VISIBLE);
+    if (this.project.hasVideo()) {
+      this.playButton.setVisibility(View.VISIBLE);
     } else {
-      playButton.setVisibility(View.GONE);
+      this.playButton.setVisibility(View.GONE);
     }
 
     /* Project */
-    blurbTextView.setText(Html.fromHtml(ksString.format(blurbReadMoreString,
-      "blurb", TextUtils.htmlEncode(project.blurb()),
+    this.blurbTextView.setText(Html.fromHtml(this.ksString.format(this.blurbReadMoreString,
+      "blurb", TextUtils.htmlEncode(this.project.blurb()),
       "space", "\u00A0"
     )));
-    creatorNameTextView.setText(Html.fromHtml(ksString.format(byCreatorString,
-      "creator_name", TextUtils.htmlEncode(project.creator().name()))));
-    if (project.isBacking()) {
-      backerLabelLinearLayout.setVisibility(View.VISIBLE);
+    this.creatorNameTextView.setText(Html.fromHtml(this.ksString.format(this.byCreatorString,
+      "creator_name", TextUtils.htmlEncode(this.project.creator().name()))));
+    if (this.project.isBacking()) {
+      this.backerLabelLinearLayout.setVisibility(View.VISIBLE);
     } else {
-      backerLabelLinearLayout.setVisibility(View.GONE);
+      this.backerLabelLinearLayout.setVisibility(View.GONE);
     }
-    projectNameTextView.setText(project.name());
-    final Category category = project.category();
+    this.projectNameTextView.setText(this.project.name());
+    final Category category = this.project.category();
     if (category != null) {
       categoryTextView.setText(category.name());
     }
-    final Location location = project.location();
+    final Location location = this.project.location();
     if (location != null) {
-      locationTextView.setText(location.displayableName());
+      this.locationTextView.setText(location.displayableName());
     }
-    percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(project.percentageFunded()));
-    deadlineCountdownTextView.setText(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
-    deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, context, ksString));
-    backersCountTextView.setText(NumberUtils.format(project.backersCount()));
+    this.percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(this.project.percentageFunded()));
+    this.deadlineCountdownTextView.setText(NumberUtils.format(ProjectUtils.deadlineCountdownValue(this.project)));
+    this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(this.project, this.context, this.ksString));
+    this.backersCountTextView.setText(NumberUtils.format(this.project.backersCount()));
 
     /* Creator */
-    Picasso.with(context).load(project.creator().avatar()
+    Picasso.with(this.context).load(this.project.creator().avatar()
       .medium())
       .transform(new CircleTransformation())
-      .into(avatarImageView);
-    avatarNameTextView.setText(project.creator().name());
-    final Integer updatesCount = project.updatesCount();
-    updatesCountTextView.setText(updatesCount != null ? NumberUtils.format(updatesCount) : null);
-    final Integer commentsCount = project.commentsCount();
-    commentsCountTextView.setText(commentsCount != null ? NumberUtils.format(commentsCount) : null);
+      .into(this.avatarImageView);
+    this.avatarNameTextView.setText(this.project.creator().name());
+    final Integer updatesCount = this.project.updatesCount();
+    this.updatesCountTextView.setText(updatesCount != null ? NumberUtils.format(updatesCount) : null);
+    final Integer commentsCount = this.project.commentsCount();
+    this.commentsCountTextView.setText(commentsCount != null ? NumberUtils.format(commentsCount) : null);
 
     setConvertedUsdView();
     setLandscapeActionButton();
@@ -228,51 +228,51 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   @Nullable @OnClick(R.id.back_project_button)
   public void backProjectButtonOnClick() {
-    delegate.projectViewHolderBackProjectClicked(this);
+    this.delegate.projectViewHolderBackProjectClicked(this);
   }
 
   @OnClick({R.id.blurb, R.id.campaign})
   public void blurbClick() {
-    delegate.projectViewHolderBlurbClicked(this);
+    this.delegate.projectViewHolderBlurbClicked(this);
   }
 
   @OnClick(R.id.comments)
   public void commentsClick() {
-    delegate.projectViewHolderCommentsClicked(this);
+    this.delegate.projectViewHolderCommentsClicked(this);
   }
 
   @OnClick({R.id.creator_name, R.id.creator_info})
   public void creatorNameClick() {
-    delegate.projectViewHolderCreatorClicked(this);
+    this.delegate.projectViewHolderCreatorClicked(this);
   }
 
   @Nullable @OnClick(R.id.manage_pledge_button)
   public void managePledgeOnClick() {
-    delegate.projectViewHolderManagePledgeClicked(this);
+    this.delegate.projectViewHolderManagePledgeClicked(this);
   }
 
   @OnClick(R.id.play_button_overlay)
   public void playButtonClick() {
-    delegate.projectViewHolderVideoStarted(this);
+    this.delegate.projectViewHolderVideoStarted(this);
   }
 
   @Nullable @OnClick(R.id.view_pledge_button)
   public void viewPledgeOnClick() {
-    delegate.projectViewHolderViewPledgeClicked(this);
+    this.delegate.projectViewHolderViewPledgeClicked(this);
   }
 
   public void setConvertedUsdView() {
-    if (I18nUtils.isCountryUS(configCountry) && !I18nUtils.isCountryUS(project.country())) {
-      usdConversionTextView.setVisibility(View.VISIBLE);
-      usdConversionTextView.setText(ksString.format(
-        convertedFromString,
+    if (I18nUtils.isCountryUS(this.configCountry) && !I18nUtils.isCountryUS(this.project.country())) {
+      this.usdConversionTextView.setVisibility(View.VISIBLE);
+      this.usdConversionTextView.setText(this.ksString.format(
+        this.convertedFromString,
         "pledged",
-        ksCurrency.format(project.pledged(), project),
+        this.ksCurrency.format(this.project.pledged(), this.project),
         "goal",
-        ksCurrency.format(project.goal(), project)
+        this.ksCurrency.format(this.project.goal(), this.project)
       ));
     } else {
-      usdConversionTextView.setVisibility(View.GONE);
+      this.usdConversionTextView.setVisibility(View.GONE);
     }
   }
 
@@ -280,8 +280,8 @@ public final class ProjectViewHolder extends KSViewHolder {
    * Set landscape project action buttons in the ViewHolder rather than Activity.
    */
   public void setLandscapeActionButton() {
-    if (backProjectButton != null && managePledgeButton != null && viewPledgeButton != null) {
-      ProjectUtils.setActionButton(project, backProjectButton, managePledgeButton, viewPledgeButton);
+    if (this.backProjectButton != null && this.managePledgeButton != null && this.viewPledgeButton != null) {
+      ProjectUtils.setActionButton(this.project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton);
     }
   }
 
@@ -289,50 +289,51 @@ public final class ProjectViewHolder extends KSViewHolder {
    * Set top margin of overlay text based on landscape screen height, scaled by screen density.
    */
   public void setLandscapeOverlayText() {
-    if (landOverlayTextViewGroup != null && nameCreatorViewGroup != null) {
-      final int screenHeight = getScreenHeightDp(context);
-      final float densityOffset = context.getResources().getDisplayMetrics().density;
-      final float topMargin = ((screenHeight / 3 * 2) * densityOffset) - grid4Dimen;  // offset for toolbar
-      ViewUtils.setRelativeViewGroupMargins(landOverlayTextViewGroup, grid4Dimen, (int) topMargin, grid4Dimen, 0);
+    if (this.landOverlayTextViewGroup != null && this.nameCreatorViewGroup != null) {
+      final int screenHeight = getScreenHeightDp(this.context);
+      final float densityOffset = this.context.getResources().getDisplayMetrics().density;
+      final float topMargin = ((screenHeight / 3 * 2) * densityOffset) - this.grid4Dimen;  // offset for toolbar
+      ViewUtils.setRelativeViewGroupMargins(this.landOverlayTextViewGroup, this.grid4Dimen, (int) topMargin, this.grid4Dimen, 0);
 
-      if (!project.hasVideo()) {
-        ViewUtils.setRelativeViewGroupMargins(nameCreatorViewGroup, 0, 0, 0, grid2Dimen);
+      if (!this.project.hasVideo()) {
+        ViewUtils.setRelativeViewGroupMargins(this.nameCreatorViewGroup, 0, 0, 0, this.grid2Dimen);
       } else {
-        ViewUtils.setRelativeViewGroupMargins(nameCreatorViewGroup, 0, 0, 0, grid1Dimen);
+        ViewUtils.setRelativeViewGroupMargins(this.nameCreatorViewGroup, 0, 0, 0, this.grid1Dimen);
       }
     }
   }
 
   public void setPledgedOfGoalView() {
-    pledgedTextView.setText(ksCurrency.format(project.pledged(), project, false, true, RoundingMode.DOWN));
+    this.pledgedTextView.setText(this.ksCurrency.format(this.project.pledged(), this.project, false, true, RoundingMode.DOWN));
 
     /* a11y */
-    final String goalString = ksCurrency.format(project.goal(), project, false, true, RoundingMode.DOWN);
-    final String goalText = ViewUtils.isFontScaleLarge(context) ?
-      ksString.format(ofGoalString, "goal", goalString) : ksString.format(pledgedOfGoalString, "goal", goalString);
-    goalTextView.setText(goalText);
+    final String goalString = this.ksCurrency.format(this.project.goal(), this.project, false, true, RoundingMode.DOWN);
+    final String goalText = ViewUtils.isFontScaleLarge(this.context)
+      ? this.ksString.format(this.ofGoalString, "goal", goalString)
+      : this.ksString.format(this.pledgedOfGoalString, "goal", goalString);
+    this.goalTextView.setText(goalText);
   }
 
   public void setProjectDisclaimerView() {
-    final DateTime deadline = project.deadline();
+    final DateTime deadline = this.project.deadline();
 
     if (deadline == null) {
-      projectDisclaimerTextView.setVisibility(View.GONE);
-    } else if (!project.isLive()) {
-      projectDisclaimerTextView.setVisibility(View.GONE);
-    } else if (project.isFunded()) {
-      projectDisclaimerTextView.setVisibility(View.VISIBLE);
-      projectDisclaimerTextView.setText(ksString.format(
-        projectDisclaimerGoalReachedString,
+      this.projectDisclaimerTextView.setVisibility(View.GONE);
+    } else if (!this.project.isLive()) {
+      this.projectDisclaimerTextView.setVisibility(View.GONE);
+    } else if (this.project.isFunded()) {
+      this.projectDisclaimerTextView.setVisibility(View.VISIBLE);
+      this.projectDisclaimerTextView.setText(this.ksString.format(
+        this.projectDisclaimerGoalReachedString,
         "deadline",
         mediumDateShortTime(deadline)
       ));
     } else {
-      projectDisclaimerTextView.setVisibility(View.VISIBLE);
-      projectDisclaimerTextView.setText(ksString.format(
-        projectDisclaimerGoalNotReachedString,
+      this.projectDisclaimerTextView.setVisibility(View.VISIBLE);
+      this.projectDisclaimerTextView.setText(this.ksString.format(
+        this.projectDisclaimerGoalNotReachedString,
         "goal_currency",
-        ksCurrency.format(project.goal(), project, true),
+        this.ksCurrency.format(this.project.goal(), this.project, true),
         "deadline",
         mediumDateShortTime(deadline)
       ));
@@ -340,13 +341,13 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void setProjectSocialClick() {
-    if (project.isFriendBacking()) {
-      if (project.friends().size() > 2) {
-        projectSocialViewGroup.setBackground(clickIndicatorLightMaskedDrawable);
-        projectSocialViewGroup.setOnClickListener(view -> {
-          final BaseActivity activity = (BaseActivity) context;
+    if (this.project.isFriendBacking()) {
+      if (this.project.friends().size() > 2) {
+        this.projectSocialViewGroup.setBackground(this.clickIndicatorLightMaskedDrawable);
+        this.projectSocialViewGroup.setOnClickListener(view -> {
+          final BaseActivity activity = (BaseActivity) this.context;
           final Intent intent = new Intent(activity, ProjectSocialActivity.class)
-            .putExtra(IntentKey.PROJECT, project);
+            .putExtra(IntentKey.PROJECT, this.project);
           activity.startActivity(intent);
           activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
         });
@@ -355,83 +356,83 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void setProjectStateView() {
-    final DateTime stateChangedAt = coalesce(project.stateChangedAt(), new DateTime());
+    final DateTime stateChangedAt = coalesce(this.project.stateChangedAt(), new DateTime());
 
-    switch(project.state()) {
+    switch(this.project.state()) {
       case Project.STATE_SUCCESSFUL:
-        percentageFundedProgressBar.setVisibility(View.GONE);
-        projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateViewGroup.setBackgroundColor(greenAlpha50Color);
+        this.percentageFundedProgressBar.setVisibility(View.GONE);
+        this.projectStateViewGroup.setVisibility(View.VISIBLE);
+        this.projectStateViewGroup.setBackgroundColor(this.greenAlpha50Color);
 
-        projectStateHeaderTextView.setText(fundedString);
-        projectStateSubheadTextView.setText(ksString.format(successfullyFundedOnDeadlineString,
-          "deadline", mediumDate(stateChangedAt)
-        ));
+        this.projectStateHeaderTextView.setText(this.fundedString);
+        this.projectStateSubheadTextView.setText(
+          this.ksString.format(this.successfullyFundedOnDeadlineString, "deadline", mediumDate(stateChangedAt))
+        );
         break;
       case Project.STATE_CANCELED:
-        percentageFundedProgressBar.setVisibility(View.GONE);
-        projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateViewGroup.setBackgroundColor(mediumGrayColor);
+        this.percentageFundedProgressBar.setVisibility(View.GONE);
+        this.projectStateViewGroup.setVisibility(View.VISIBLE);
+        this.projectStateViewGroup.setBackgroundColor(this.mediumGrayColor);
 
-        projectStateHeaderTextView.setText(fundingCanceledString);
-        projectStateSubheadTextView.setText(fundingCanceledByCreatorString);
+        this.projectStateHeaderTextView.setText(this.fundingCanceledString);
+        this.projectStateSubheadTextView.setText(this.fundingCanceledByCreatorString);
         break;
       case Project.STATE_FAILED:
-        percentageFundedProgressBar.setVisibility(View.GONE);
-        projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateViewGroup.setBackgroundColor(mediumGrayColor);
+        this.percentageFundedProgressBar.setVisibility(View.GONE);
+        this.projectStateViewGroup.setVisibility(View.VISIBLE);
+        this.projectStateViewGroup.setBackgroundColor(this.mediumGrayColor);
 
-        projectStateHeaderTextView.setText(fundingUnsuccessfulString);
-        projectStateSubheadTextView.setText(ksString.format(fundingGoalNotReachedString,
-          "deadline", mediumDate(stateChangedAt)
-        ));
+        this.projectStateHeaderTextView.setText(this.fundingUnsuccessfulString);
+        this.projectStateSubheadTextView.setText(
+          this.ksString.format(this.fundingGoalNotReachedString, "deadline", mediumDate(stateChangedAt))
+        );
         break;
       case Project.STATE_SUSPENDED:
-        percentageFundedProgressBar.setVisibility(View.GONE);
-        projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateViewGroup.setBackgroundColor(mediumGrayColor);
+        this.percentageFundedProgressBar.setVisibility(View.GONE);
+        this.projectStateViewGroup.setVisibility(View.VISIBLE);
+        this.projectStateViewGroup.setBackgroundColor(this.mediumGrayColor);
 
-        projectStateHeaderTextView.setText(fundingSuspendedString);
-        projectStateSubheadTextView.setText(fundingProjectSuspendedString);
+        this.projectStateHeaderTextView.setText(this.fundingSuspendedString);
+        this.projectStateSubheadTextView.setText(this.fundingProjectSuspendedString);
         break;
       default:
-        percentageFundedProgressBar.setVisibility(View.VISIBLE);
-        projectStateViewGroup.setVisibility(View.GONE);
+        this.percentageFundedProgressBar.setVisibility(View.VISIBLE);
+        this.projectStateViewGroup.setVisibility(View.GONE);
         break;
     }
   }
 
   public void setSocialView() {
-    if (project.isFriendBacking()) {
-      projectSocialViewGroup.setVisibility(View.VISIBLE);
-      ViewUtils.setLinearViewGroupMargins(projectStatsViewGroup, 0, grid3Dimen, 0, grid2Dimen);
+    if (this.project.isFriendBacking()) {
+      this.projectSocialViewGroup.setVisibility(View.VISIBLE);
+      ViewUtils.setLinearViewGroupMargins(this.projectStatsViewGroup, 0, this.grid3Dimen, 0, this.grid2Dimen);
 
-      projectSocialImageView.setVisibility(View.VISIBLE);
-      Picasso.with(context).load(project.friends().get(0).avatar()
+      this.projectSocialImageView.setVisibility(View.VISIBLE);
+      Picasso.with(this.context).load(this.project.friends().get(0).avatar()
         .small())
         .transform(new CircleTransformation())
-        .into(projectSocialImageView);
+        .into(this.projectSocialImageView);
 
-      projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(project.friends(), ksString));
+      this.projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(this.project.friends(), this.ksString));
 
     } else {
-      projectSocialViewGroup.setVisibility(View.GONE);
-      ViewUtils.setLinearViewGroupMargins(projectStatsViewGroup, 0, grid3Dimen, 0, grid4Dimen);
+      this.projectSocialViewGroup.setVisibility(View.GONE);
+      ViewUtils.setLinearViewGroupMargins(this.projectStatsViewGroup, 0, this.grid3Dimen, 0, this.grid4Dimen);
     }
   }
 
   public void setStatsContentDescription() {
-    final String backersCountContentDescription = NumberUtils.format(project.backersCount()) + " " +  backersString;
-    final String pledgedContentDescription = pledgedTextView.getText() + " " + goalTextView.getText();
-    final String deadlineCountdownContentDescription = deadlineCountdownTextView.getText() + " " + deadlineCountdownUnitTextView.getText();
+    final String backersCountContentDescription = NumberUtils.format(this.project.backersCount()) + " " +  this.backersString;
+    final String pledgedContentDescription = this.pledgedTextView.getText() + " " + this.goalTextView.getText();
+    final String deadlineCountdownContentDescription = this.deadlineCountdownTextView.getText() + " " + this.deadlineCountdownUnitTextView.getText();
 
-    backersCountTextView.setContentDescription(backersCountContentDescription);
-    pledgedTextView.setContentDescription(pledgedContentDescription);
-    deadlineCountdownTextView.setContentDescription(deadlineCountdownContentDescription);
+    this.backersCountTextView.setContentDescription(backersCountContentDescription);
+    this.pledgedTextView.setContentDescription(pledgedContentDescription);
+    this.deadlineCountdownTextView.setContentDescription(deadlineCountdownContentDescription);
   }
 
   @OnClick(R.id.updates)
   public void updatesClick() {
-    delegate.projectViewHolderUpdatesClicked(this);
+    this.delegate.projectViewHolderUpdatesClicked(this);
   }
 }

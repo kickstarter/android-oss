@@ -54,37 +54,38 @@ public final class CommentViewHolder extends KSViewHolder {
   public void bindData(final @Nullable Object data) throws Exception {
     @SuppressWarnings("unchecked")
     final Pair<Project, Comment> projectAndComment = requireNonNull((Pair<Project, Comment>) data);
-    project = requireNonNull(projectAndComment.first, Project.class);
-    comment = requireNonNull(projectAndComment.second, Comment.class);
+    this.project = requireNonNull(projectAndComment.first, Project.class);
+    this.comment = requireNonNull(projectAndComment.second, Comment.class);
   }
 
   public void onBind() {
     final Context context = context();
 
-    creatorLabelTextView.setVisibility(View.GONE);
-    userLabelTextView.setVisibility(View.GONE);
+    this.creatorLabelTextView.setVisibility(View.GONE);
+    this.userLabelTextView.setVisibility(View.GONE);
 
-    if (CommentUtils.isUserAuthor(comment, project.creator())) {
-      creatorLabelTextView.setVisibility(View.VISIBLE);
-    } else if (CommentUtils.isUserAuthor(comment, currentUser.getUser())) {
-      userLabelTextView.setVisibility(View.VISIBLE);
+    if (CommentUtils.isUserAuthor(this.comment, this.project.creator())) {
+      this.creatorLabelTextView.setVisibility(View.VISIBLE);
+    } else if (CommentUtils.isUserAuthor(this.comment, this.currentUser.getUser())) {
+      this.userLabelTextView.setVisibility(View.VISIBLE);
     }
 
-    Picasso.with(context).load(comment.author()
+    Picasso.with(context).load(this.comment.author()
       .avatar()
       .small())
       .transform(new CircleTransformation())
-      .into(avatarImageView);
-    nameTextView.setText(comment.author().name());
-    postDateTextView.setText(DateTimeUtils.relative(context, ksString, comment.createdAt()));
+      .into(this.avatarImageView);
 
-    if (CommentUtils.isDeleted(comment)) {
-      commentBodyTextView.setTextColor(textSecondaryColor);
-      commentBodyTextView.setTypeface(commentBodyTextView.getTypeface(), Typeface.ITALIC);
+    this.nameTextView.setText(this.comment.author().name());
+    this.postDateTextView.setText(DateTimeUtils.relative(context, this.ksString, this.comment.createdAt()));
+
+    if (CommentUtils.isDeleted(this.comment)) {
+      this.commentBodyTextView.setTextColor(this.textSecondaryColor);
+      this.commentBodyTextView.setTypeface(this.commentBodyTextView.getTypeface(), Typeface.ITALIC);
     } else {
-      commentBodyTextView.setTextColor(textPrimaryColor);
-      commentBodyTextView.setTypeface(commentBodyTextView.getTypeface(), Typeface.NORMAL);
+      this.commentBodyTextView.setTextColor(this.textPrimaryColor);
+      this.commentBodyTextView.setTypeface(this.commentBodyTextView.getTypeface(), Typeface.NORMAL);
     }
-    commentBodyTextView.setText(comment.body());
+    this.commentBodyTextView.setText(this.comment.body());
   }
 }

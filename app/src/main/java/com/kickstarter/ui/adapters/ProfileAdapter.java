@@ -51,9 +51,9 @@ public final class ProfileAdapter extends KSAdapter {
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch(layout) {
       case R.layout.profile_empty_state_view:
-        return new EmptyProfileViewHolder(view, delegate);
+        return new EmptyProfileViewHolder(view, this.delegate);
       case R.layout.profile_card_view:
-        return new ProfileCardViewHolder(view, delegate);
+        return new ProfileCardViewHolder(view, this.delegate);
       default:
         return new EmptyViewHolder(view);
     }

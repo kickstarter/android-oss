@@ -46,7 +46,7 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
     setContentView(R.layout.web_view_layout);
     ButterKnife.bind(this);
 
-    this.webViewToolbar.setTitle(updatesTitleString);
+    this.webViewToolbar.setTitle(this.updatesTitleString);
 
     this.ksWebView.client().setDelegate(this);
     this.ksWebView.client().registerRequestHandlers(

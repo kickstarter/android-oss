@@ -35,7 +35,7 @@ public class KSWebView extends WebView {
     }
 
     ((KSApplication) context.getApplicationContext()).component().inject(this);
-    setWebViewClient(client);
+    setWebViewClient(this.client);
     setWebChromeClient(new WebChromeClient());
     getSettings().setJavaScriptEnabled(true);
     getSettings().setAllowFileAccess(false);
@@ -45,7 +45,7 @@ public class KSWebView extends WebView {
   }
 
   public KSWebViewClient client() {
-    return client;
+    return this.client;
   }
 
   @TargetApi(19)

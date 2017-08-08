@@ -55,78 +55,78 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
 
     setContentView(R.layout.login_tout_layout);
     ButterKnife.bind(this);
-    loginToolbar.setTitle(loginOrSignUpString);
+    this.loginToolbar.setTitle(this.loginOrSignUpString);
 
-    viewModel.outputs.finishWithSuccessfulResult()
+    this.viewModel.outputs.finishWithSuccessfulResult()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> finishWithSuccessfulResult());
 
-    viewModel.outputs.startLoginActivity()
+    this.viewModel.outputs.startLoginActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> startLogin());
 
-    viewModel.outputs.startSignupActivity()
+    this.viewModel.outputs.startSignupActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> startSignup());
 
-    viewModel.outputs.startFacebookConfirmationActivity()
+    this.viewModel.outputs.startFacebookConfirmationActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ua -> startFacebookConfirmationActivity(ua.first, ua.second));
 
-    viewModel.outputs.showFacebookAuthorizationErrorDialog()
+    this.viewModel.outputs.showFacebookAuthorizationErrorDialog()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> ViewUtils.showDialog(this, errorTitleString, troubleLoggingInString, tryAgainString));
+      .subscribe(__ -> ViewUtils.showDialog(this, this.errorTitleString, this.troubleLoggingInString, this.tryAgainString));
 
     showErrorMessageToasts()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ViewUtils.showToast(this));
 
-    viewModel.outputs.startTwoFactorChallenge()
+    this.viewModel.outputs.startTwoFactorChallenge()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> startTwoFactorFacebookChallenge());
 
-    viewModel.outputs.showUnauthorizedErrorDialog()
+    this.viewModel.outputs.showUnauthorizedErrorDialog()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(errorMessage -> ViewUtils.showDialog(this, loginErrorTitleString, errorMessage));
+      .subscribe(errorMessage -> ViewUtils.showDialog(this, this.loginErrorTitleString, errorMessage));
   }
 
   private @NonNull Observable<String> showErrorMessageToasts() {
-    return viewModel.outputs.showMissingFacebookEmailErrorToast()
-      .map(ObjectUtils.coalesceWith(unableToLoginString))
+    return this.viewModel.outputs.showMissingFacebookEmailErrorToast()
+      .map(ObjectUtils.coalesceWith(this.unableToLoginString))
       .mergeWith(
-        viewModel.outputs.showFacebookInvalidAccessTokenErrorToast()
-          .map(ObjectUtils.coalesceWith(unableToLoginString))
+        this.viewModel.outputs.showFacebookInvalidAccessTokenErrorToast()
+          .map(ObjectUtils.coalesceWith(this.unableToLoginString))
       );
   }
 
   @OnClick(R.id.disclaimer_text_view)
   public void disclaimerTextViewClick() {
-    new LoginPopupMenu(this, helpButton).show();
+    new LoginPopupMenu(this, this.helpButton).show();
   }
 
   @OnClick(R.id.facebook_login_button)
   public void facebookLoginClick() {
-    viewModel.inputs.facebookLoginClick(this,
+    this.viewModel.inputs.facebookLoginClick(this,
       Arrays.asList(getResources().getStringArray(R.array.facebook_permissions_array))
     );
   }
 
   @OnClick(R.id.login_button)
   public void loginButtonClick() {
-    viewModel.inputs.loginClick();
+    this.viewModel.inputs.loginClick();
   }
 
   @OnClick(R.id.sign_up_button)
   public void signupButtonClick() {
-    viewModel.inputs.signupClick();
+    this.viewModel.inputs.signupClick();
   }
 
   private void finishWithSuccessfulResult() {

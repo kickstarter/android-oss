@@ -42,34 +42,34 @@ public final class ProjectContextViewHolder extends KSViewHolder {
     this.delegate = delegate;
     this.context = view.getContext();
     ButterKnife.bind(this, view);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
+    ((KSApplication) this.context.getApplicationContext()).component().inject(this);
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    project = ObjectUtils.requireNonNull((Project) data, Project.class);
+    this.project = ObjectUtils.requireNonNull((Project) data, Project.class);
   }
 
   public void onBind() {
-    final Photo photo = project.photo();
+    final Photo photo = this.project.photo();
 
     if (photo != null) {
-      projectContextImageView.setVisibility(View.VISIBLE);
-      Picasso.with(context).load(photo.full()).into(projectContextImageView);
+      this.projectContextImageView.setVisibility(View.VISIBLE);
+      Picasso.with(this.context).load(photo.full()).into(this.projectContextImageView);
     } else {
-      projectContextImageView.setVisibility(View.INVISIBLE);
+      this.projectContextImageView.setVisibility(View.INVISIBLE);
     }
 
-    projectNameTextView.setText(project.name());
-    creatorNameTextView.setText(ksString.format(
-      projectCreatorByCreatorString,
+    this.projectNameTextView.setText(this.project.name());
+    this.creatorNameTextView.setText(this.ksString.format(
+      this.projectCreatorByCreatorString,
       "creator_name",
-      project.creator().name()
+      this.project.creator().name()
     ));
   }
 
   @Override
   public void onClick(final @NonNull View view) {
-    delegate.projectContextClicked(this);
+    this.delegate.projectContextClicked(this);
   }
 }

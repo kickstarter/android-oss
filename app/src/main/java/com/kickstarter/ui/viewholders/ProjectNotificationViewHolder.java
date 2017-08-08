@@ -34,26 +34,26 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
     super(view);
     ButterKnife.bind(this, view);
 
-    viewModel = new ProjectNotificationViewModel(environment());
+    this.viewModel = new ProjectNotificationViewModel(environment());
 
-    RxView.clicks(enabledSwitch)
-      .map(__ -> enabledSwitch.isChecked())
+    RxView.clicks(this.enabledSwitch)
+      .map(__ -> this.enabledSwitch.isChecked())
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(viewModel.inputs::enabledSwitchClick);
+      .subscribe(this.viewModel.inputs::enabledSwitchClick);
 
-    viewModel.outputs.projectName()
+    this.viewModel.outputs.projectName()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(projectNameTextView::setText);
+      .subscribe(this.projectNameTextView::setText);
 
-    viewModel.outputs.enabledSwitch()
+    this.viewModel.outputs.enabledSwitch()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(SwitchCompatUtils.setCheckedWithoutAnimation(enabledSwitch));
+      .subscribe(SwitchCompatUtils.setCheckedWithoutAnimation(this.enabledSwitch));
 
-    viewModel.errors.showUnableToSaveProjectNotificationError()
-      .map(__ -> unableToSaveString)
+    this.viewModel.errors.showUnableToSaveProjectNotificationError()
+      .map(__ -> this.unableToSaveString)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ViewUtils.showToast(context()));
@@ -62,6 +62,6 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
     final ProjectNotification projectNotification = requireNonNull((ProjectNotification) data, ProjectNotification.class);
-    viewModel.projectNotification(projectNotification);
+    this.viewModel.projectNotification(projectNotification);
   }
 }

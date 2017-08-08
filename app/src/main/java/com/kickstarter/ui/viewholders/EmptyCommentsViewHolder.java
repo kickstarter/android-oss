@@ -38,26 +38,26 @@ public final class EmptyCommentsViewHolder extends KSViewHolder {
   public void bindData(final @Nullable Object data) throws Exception {
     @SuppressWarnings("unchecked")
     final Pair<Project, User> projectAndUser = requireNonNull((Pair<Project, User>) data);
-    project = requireNonNull(projectAndUser.first, Project.class);
-    user = projectAndUser.second;
+    this.project = requireNonNull(projectAndUser.first, Project.class);
+    this.user = projectAndUser.second;
   }
 
   public void onBind() {
-    if (user == null) {
-      commentsLoginButton.setVisibility(View.VISIBLE);
-      noCommentsMessageTextView.setText(R.string.project_comments_empty_state_logged_out_message_log_in);
-    } else if (project.isBacking()) {
-      commentsLoginButton.setVisibility(View.GONE);
-      noCommentsMessageTextView.setText(R.string.project_comments_empty_state_backer_message);
+    if (this.user == null) {
+      this.commentsLoginButton.setVisibility(View.VISIBLE);
+      this.noCommentsMessageTextView.setText(R.string.project_comments_empty_state_logged_out_message_log_in);
+    } else if (this.project.isBacking()) {
+      this.commentsLoginButton.setVisibility(View.GONE);
+      this.noCommentsMessageTextView.setText(R.string.project_comments_empty_state_backer_message);
     } else {
-      commentsLoginButton.setVisibility(View.GONE);
-      noCommentsMessageTextView.setText(R.string.update_comments_empty_state_non_backer_message);
+      this.commentsLoginButton.setVisibility(View.GONE);
+      this.noCommentsMessageTextView.setText(R.string.update_comments_empty_state_non_backer_message);
     }
   }
 
   @Nullable
   @OnClick(R.id.comments_login_button)
   public void emptyCommentsLogin() {
-    delegate.emptyCommentsLoginClicked(this);
+    this.delegate.emptyCommentsLoginClicked(this);
   }
 }

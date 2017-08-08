@@ -23,7 +23,6 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class UnansweredSurveyViewHolder extends KSViewHolder {
-
   private final @Nullable Delegate delegate;
   private final KSString ksString;
   private SurveyResponse survey;
@@ -66,8 +65,8 @@ public final class UnansweredSurveyViewHolder extends KSViewHolder {
 
   private void setSurveyDescription(final @NonNull Project projectForSurveyDescription) {
     this.surveyTextView.setText(Html.fromHtml(
-      ksString.format(
-        surveyDescriptionString,
+      this.ksString.format(
+        this.surveyDescriptionString,
         "creator_name", projectForSurveyDescription.creator().name(),
         "project_name", projectForSurveyDescription.name()
       )));
@@ -88,8 +87,8 @@ public final class UnansweredSurveyViewHolder extends KSViewHolder {
 
   @Override
   public void onClick(final @NonNull View view) {
-    if (delegate != null) {
-      delegate.surveyClicked(this, this.survey);
+    if (this.delegate != null) {
+      this.delegate.surveyClicked(this, this.survey);
     }
   }
 }

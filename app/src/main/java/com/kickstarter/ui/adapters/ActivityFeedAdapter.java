@@ -117,19 +117,19 @@ public final class ActivityFeedAdapter extends KSAdapter {
       case R.layout.unanswered_surveys_header_view:
         return new UnansweredSurveyHeaderViewHolder(view);
       case R.layout.unanswered_survey_view:
-        return new UnansweredSurveyViewHolder(view, delegate);
+        return new UnansweredSurveyViewHolder(view, this.delegate);
       case R.layout.activity_friend_backing_view:
-        return new FriendBackingViewHolder(view, delegate);
+        return new FriendBackingViewHolder(view, this.delegate);
       case R.layout.activity_friend_follow_view:
         return new FriendFollowViewHolder(view);
       case R.layout.activity_project_state_changed_view:
-        return new ProjectStateChangedViewHolder(view, delegate);
+        return new ProjectStateChangedViewHolder(view, this.delegate);
       case R.layout.activity_project_state_changed_positive_view:
-        return new ProjectStateChangedPositiveViewHolder(view, delegate);
+        return new ProjectStateChangedPositiveViewHolder(view, this.delegate);
       case R.layout.activity_project_update_view:
-        return new ProjectUpdateViewHolder(view, delegate);
+        return new ProjectUpdateViewHolder(view, this.delegate);
       case R.layout.empty_activity_feed_view:
-        return new EmptyActivityFeedViewHolder(view, delegate);
+        return new EmptyActivityFeedViewHolder(view, this.delegate);
       default:
         return new EmptyViewHolder(view);
     }

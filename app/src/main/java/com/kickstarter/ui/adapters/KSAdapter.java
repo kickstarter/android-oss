@@ -21,15 +21,15 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   private List<List<Object>> sections = new ArrayList<>();
 
   public List<List<Object>> sections() {
-    return sections;
+    return this.sections;
   }
 
   public void clearSections() {
-    sections.clear();
+    this.sections.clear();
   }
 
   public <T> void addSection(final @NonNull List<T> section) {
-    sections.add(new ArrayList<>(section));
+    this.sections.add(new ArrayList<>(section));
   }
 
   public <T> void addSections(final @NonNull List<List<T>> sections) {
@@ -39,11 +39,11 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   }
 
   public <T> void setSection(final int location, final @NonNull List<T> section) {
-    sections.set(location, new ArrayList<>(section));
+    this.sections.set(location, new ArrayList<>(section));
   }
 
   public <T> void insertSection(final int location, final @NonNull List<T> section) {
-    sections.add(location, new ArrayList<>(section));
+    this.sections.add(location, new ArrayList<>(section));
   }
 
   /**
@@ -114,7 +114,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   @Override
   public final int getItemCount() {
     int itemCount = 0;
-    for (final List<?> section : sections) {
+    for (final List<?> section : this.sections) {
       itemCount += section.size();
     }
 
@@ -125,7 +125,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
    * Gets the data object associated with a sectionRow.
    */
   protected Object objectFromSectionRow(final @NonNull SectionRow sectionRow) {
-    return sections.get(sectionRow.section()).get(sectionRow.row());
+    return this.sections.get(sectionRow.section()).get(sectionRow.row());
   }
 
   protected int sectionCount(final int section) {
@@ -145,7 +145,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   private @NonNull SectionRow sectionRowFromPosition(final int position) {
     final SectionRow sectionRow = new SectionRow();
     int cursor = 0;
-    for (final List<?> section : sections) {
+    for (final List<?> section : this.sections) {
       for (final Object __ : section) {
         if (cursor == position) {
           return sectionRow;
@@ -172,8 +172,8 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
     private int row;
 
     public SectionRow() {
-      section = 0;
-      row = 0;
+      this.section = 0;
+      this.row = 0;
     }
 
     public SectionRow(final int section, final int row) {
@@ -182,20 +182,20 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
     }
 
     public int section() {
-      return section;
+      return this.section;
     }
 
     public int row() {
-      return row;
+      return this.row;
     }
 
     protected void nextRow() {
-      row++;
+      this.row++;
     }
 
     protected void nextSection() {
-      section++;
-      row = 0;
+      this.section++;
+      this.row = 0;
     }
   }
 }

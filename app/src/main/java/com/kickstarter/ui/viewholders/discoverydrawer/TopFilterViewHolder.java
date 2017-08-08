@@ -38,22 +38,22 @@ public final class TopFilterViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    item = requireNonNull((NavigationDrawerData.Section.Row) data, NavigationDrawerData.Section.Row.class);
+    this.item = requireNonNull((NavigationDrawerData.Section.Row) data, NavigationDrawerData.Section.Row.class);
   }
 
   @Override
   public void onBind() {
     final Context context = context();
 
-    filterTextView.setText(item.params().filterString(context, environment().ksString()));
-    filterTextView.setTextAppearance(context, item.selected() ? R.style.CalloutPrimaryMedium : R.style.CalloutPrimary);
+    this.filterTextView.setText(this.item.params().filterString(context, environment().ksString()));
+    this.filterTextView.setTextAppearance(context, this.item.selected() ? R.style.CalloutPrimaryMedium : R.style.CalloutPrimary);
 
-    filterView.setBackgroundColor(item.selected() ? filterSelectedColor : filterUnselectedColor);
+    this.filterView.setBackgroundColor(this.item.selected() ? this.filterSelectedColor : this.filterUnselectedColor);
   }
 
   @OnClick(R.id.filter_text_view)
   protected void textViewClick() {
-    delegate.topFilterViewHolderRowClick(this, item);
+    this.delegate.topFilterViewHolderRowClick(this, this.item);
   }
 }
 

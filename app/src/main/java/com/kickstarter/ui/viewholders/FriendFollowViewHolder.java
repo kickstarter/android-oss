@@ -20,7 +20,6 @@ public final class FriendFollowViewHolder extends ActivityListViewHolder {
   protected @Bind(R.id.title) TextView titleTextView;
   
   protected @BindString(R.string.activity_friend_follow_is_following_you) String isFollowingYouString;
-  protected @BindString(R.string.Not_implemented_yet) String notImplementedYetString;
 
   public FriendFollowViewHolder(final @NonNull View view) {
     super(view);
@@ -39,13 +38,13 @@ public final class FriendFollowViewHolder extends ActivityListViewHolder {
     Picasso.with(context)
       .load(friend.avatar().small())
       .transform(new CircleTransformation())
-      .into(avatarImageView);
+      .into(this.avatarImageView);
 
     // TODO: bold username
-    titleTextView.setText(
+    this.titleTextView.setText(
       new StringBuilder(friend.name())
         .append(" ")
-        .append(isFollowingYouString)
+        .append(this.isFollowingYouString)
     );
   }
 }

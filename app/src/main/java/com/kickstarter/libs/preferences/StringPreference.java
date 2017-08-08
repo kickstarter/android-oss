@@ -43,21 +43,21 @@ public final class StringPreference implements StringPreferenceType {
 
   @Override
   public String get() {
-    return sharedPreferences.getString(key, defaultValue);
+    return this.sharedPreferences.getString(this.key, this.defaultValue);
   }
 
   @Override
   public boolean isSet() {
-    return sharedPreferences.contains(key);
+    return this.sharedPreferences.contains(this.key);
   }
 
   @Override
   public void set(final @NonNull String value) {
-    sharedPreferences.edit().putString(key, value).apply();
+    this.sharedPreferences.edit().putString(this.key, value).apply();
   }
 
   @Override
   public void delete() {
-    sharedPreferences.edit().remove(key).apply();
+    this.sharedPreferences.edit().remove(this.key).apply();
   }
 }

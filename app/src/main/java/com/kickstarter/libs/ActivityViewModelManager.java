@@ -30,7 +30,7 @@ public class ActivityViewModelManager {
   public <T extends ActivityViewModel> T fetch(final @NonNull Context context, final @NonNull Class<T> viewModelClass,
     final @Nullable Bundle savedInstanceState) {
     final String id = fetchId(savedInstanceState);
-    ActivityViewModel activityViewModel = viewModels.get(id);
+    ActivityViewModel activityViewModel = this.viewModels.get(id);
 
     if (activityViewModel == null) {
       activityViewModel = create(context, viewModelClass, savedInstanceState, id);
@@ -42,7 +42,7 @@ public class ActivityViewModelManager {
   public void destroy(final @NonNull ActivityViewModel activityViewModel) {
     activityViewModel.onDestroy();
 
-    final Iterator<Map.Entry<String, ActivityViewModel>> iterator = viewModels.entrySet().iterator();
+    final Iterator<Map.Entry<String, ActivityViewModel>> iterator = this.viewModels.entrySet().iterator();
     while (iterator.hasNext()) {
       final Map.Entry<String, ActivityViewModel> entry = iterator.next();
       if (activityViewModel.equals(entry.getValue())) {
@@ -81,7 +81,7 @@ public class ActivityViewModelManager {
       throw new RuntimeException(exception);
     }
 
-    viewModels.put(id, activityViewModel);
+    this.viewModels.put(id, activityViewModel);
     activityViewModel.onCreate(context, BundleUtils.maybeGetBundle(savedInstanceState, VIEW_MODEL_STATE_KEY));
 
     return activityViewModel;
@@ -94,7 +94,7 @@ public class ActivityViewModelManager {
   }
 
   private String findIdForViewModel(final @NonNull ActivityViewModel activityViewModel) {
-    for (final Map.Entry<String, ActivityViewModel> entry : viewModels.entrySet()) {
+    for (final Map.Entry<String, ActivityViewModel> entry : this.viewModels.entrySet()) {
       if (activityViewModel.equals(entry.getValue())) {
         return entry.getKey();
       }

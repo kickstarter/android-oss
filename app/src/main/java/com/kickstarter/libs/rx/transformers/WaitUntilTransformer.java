@@ -13,6 +13,6 @@ public final class WaitUntilTransformer<T, R> implements Observable.Transformer<
 
   @Override
   public Observable<T> call(final @NonNull Observable<T> source) {
-    return until.take(1).flatMap(__ -> source);
+    return this.until.take(1).flatMap(__ -> source);
   }
 }

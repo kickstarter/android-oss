@@ -43,8 +43,8 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
 
   @Override
   public void onActivityResumed(final @NonNull Activity activity) {
-    if(isInBackground){
-      koala.trackAppOpen();
+    if(this.isInBackground){
+      this.koala.trackAppOpen();
 
       // Facebook: logs 'install' and 'app activate' App Events.
       AppEventsLogger.activateApp(activity);
@@ -55,7 +55,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
         .compose(Transformers.neverError())
         .subscribe(this.config::config);
 
-      isInBackground = false;
+      this.isInBackground = false;
     }
   }
 
@@ -66,7 +66,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
    */
   private void handleConfigApiError(final @NonNull ErrorEnvelope error) {
     if (error.httpCode() == 401) {
-      logout.execute();
+      this.logout.execute();
       ApplicationUtils.startNewDiscoveryActivity(this.application);
     }
   }
@@ -95,7 +95,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
 
   @Override
   public void onLowMemory() {
-    koala.trackMemoryWarning();
+    this.koala.trackMemoryWarning();
   }
 
   /**
@@ -106,8 +106,8 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   @Override
   public void onTrimMemory(final int i) {
     if(i == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
-      koala.trackAppClose();
-      isInBackground = true;
+      this.koala.trackAppClose();
+      this.isInBackground = true;
     }
   }
 }

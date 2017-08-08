@@ -41,15 +41,15 @@ public final class ApiPaginator<Data, Envelope, Params> {
 
   // Outputs
   public @NonNull Observable<List<Data>> paginatedData() {
-    return paginatedData;
+    return this.paginatedData;
   }
   private final @NonNull Observable<List<Data>> paginatedData;
   public @NonNull Observable<Boolean> isFetching() {
-    return isFetching;
+    return this.isFetching;
   }
-  private final @NonNull Observable<Boolean> isFetching = _isFetching;
+  private final @NonNull Observable<Boolean> isFetching = this._isFetching;
   public @NonNull Observable<Integer> loadingPage() {
-    return loadingPage;
+    return this.loadingPage;
   }
   private final @NonNull Observable<Integer> loadingPage;
 
@@ -176,36 +176,36 @@ public final class ApiPaginator<Data, Envelope, Params> {
 
     public @NonNull ApiPaginator<Data, Envelope, Params> build() throws RuntimeException {
       // Early error when required field is not set
-      if (nextPage == null) {
+      if (this.nextPage == null) {
         throw new RuntimeException("`nextPage` is required");
       }
-      if (envelopeToListOfData == null) {
+      if (this.envelopeToListOfData == null) {
         throw new RuntimeException("`envelopeToListOfData` is required");
       }
-      if (loadWithParams == null) {
+      if (this.loadWithParams == null) {
         throw new RuntimeException("`loadWithParams` is required");
       }
-      if (loadWithPaginationPath == null) {
+      if (this.loadWithPaginationPath == null) {
         throw new RuntimeException("`loadWithPaginationPath` is required");
       }
-      if (envelopeToMoreUrl == null) {
+      if (this.envelopeToMoreUrl == null) {
         throw new RuntimeException("`envelopeToMoreUrl` is required");
       }
 
       // Default params for optional fields
-      if (startOverWith == null) {
-        startOverWith = Observable.just(null);
+      if (this.startOverWith == null) {
+        this.startOverWith = Observable.just(null);
       }
-      if (pageTransformation == null) {
-        pageTransformation = x -> x;
+      if (this.pageTransformation == null) {
+        this.pageTransformation = x -> x;
       }
-      if (concater == null) {
-        concater = ListUtils::concat;
+      if (this.concater == null) {
+        this.concater = ListUtils::concat;
       }
 
-      return new ApiPaginator<>(nextPage, startOverWith, envelopeToListOfData, loadWithParams,
-        loadWithPaginationPath, envelopeToMoreUrl, pageTransformation, clearWhenStartingOver, concater,
-        distinctUntilChanged);
+      return new ApiPaginator<>(this.nextPage, this.startOverWith, this.envelopeToListOfData, this.loadWithParams,
+        this.loadWithPaginationPath, this.envelopeToMoreUrl, this.pageTransformation, this.clearWhenStartingOver, this.concater,
+        this.distinctUntilChanged);
     }
   }
 
@@ -221,11 +221,11 @@ public final class ApiPaginator<Data, Envelope, Params> {
       .concatMap(this::fetchData)
       .takeUntil(List::isEmpty);
 
-    final Observable<List<Data>> paginatedData = clearWhenStartingOver
-      ? data.scan(new ArrayList<>(), concater)
-      : data.scan(concater);
+    final Observable<List<Data>> paginatedData = this.clearWhenStartingOver
+      ? data.scan(new ArrayList<>(), this.concater)
+      : data.scan(this.concater);
 
-    return distinctUntilChanged ? paginatedData.distinctUntilChanged() : paginatedData;
+    return this.distinctUntilChanged ? paginatedData.distinctUntilChanged() : paginatedData;
   }
 
   /**
@@ -233,28 +233,30 @@ public final class ApiPaginator<Data, Envelope, Params> {
    */
   private @NonNull Observable<Pair<Params, String>> paramsAndMoreUrlWithPagination(final @NonNull Params firstPageParams) {
 
-    return _morePath
+    return this._morePath
       .map(path -> new Pair<Params, String>(null, path))
-      .compose(Transformers.takeWhen(nextPage))
+      .compose(Transformers.takeWhen(this.nextPage))
       .startWith(new Pair<>(firstPageParams, null));
   }
 
   private @NonNull Observable<List<Data>> fetchData(final @NonNull Pair<Params, String> paginatingData) {
 
-    return (paginatingData.second != null ? loadWithPaginationPath.call(paginatingData.second) : loadWithParams.call(paginatingData.first))
-      .retry(2)
-      .compose(Transformers.neverError())
-      .doOnNext(this::keepMorePath)
-      .map(envelopeToListOfData)
-      .map(pageTransformation)
-      .doOnSubscribe(() -> _isFetching.onNext(true))
-      .doAfterTerminate(() -> _isFetching.onNext(false));
+    return (paginatingData.second != null
+      ? this.loadWithPaginationPath.call(paginatingData.second)
+      : this.loadWithParams.call(paginatingData.first))
+        .retry(2)
+        .compose(Transformers.neverError())
+        .doOnNext(this::keepMorePath)
+        .map(this.envelopeToListOfData)
+        .map(this.pageTransformation)
+        .doOnSubscribe(() -> this._isFetching.onNext(true))
+        .doAfterTerminate(() -> this._isFetching.onNext(false));
   }
 
   private void keepMorePath(final @NonNull Envelope envelope) {
     try {
-      final URL url = new URL(envelopeToMoreUrl.call(envelope));
-      _morePath.onNext(pathAndQueryFromURL(url));
+      final URL url = new URL(this.envelopeToMoreUrl.call(envelope));
+      this._morePath.onNext(pathAndQueryFromURL(url));
     } catch (MalformedURLException ignored) {}
   }
 
@@ -262,4 +264,3 @@ public final class ApiPaginator<Data, Envelope, Params> {
     return url.getPath() + "?" + url.getQuery();
   }
 }
-

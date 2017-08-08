@@ -136,8 +136,8 @@ public final class KSString {
   private @NonNull String stringFromKeyPath(final @NonNull String... keyPathComponents) {
     final String keyPath = TextUtils.join("_", keyPathComponents);
     try {
-      final int resourceId = resources.getIdentifier(keyPath, "string", packageName);
-      return resources.getString(resourceId);
+      final int resourceId = this.resources.getIdentifier(keyPath, "string", this.packageName);
+      return this.resources.getString(resourceId);
     } catch (final @NonNull Resources.NotFoundException e) {
       return "";
     }

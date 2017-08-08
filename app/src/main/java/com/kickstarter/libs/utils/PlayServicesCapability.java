@@ -17,11 +17,11 @@ public final class PlayServicesCapability {
   public PlayServicesCapability(final @NonNull Context context) {
     final KSApplication application = (KSApplication) context.getApplicationContext();
     if (application.isInUnitTests()) {
-      isCapable = false;
+      this.isCapable = false;
     } else {
       final GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
       final int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
-      isCapable = resultCode == ConnectionResult.SUCCESS;
+      this.isCapable = resultCode == ConnectionResult.SUCCESS;
     }
   }
 
@@ -29,6 +29,6 @@ public final class PlayServicesCapability {
    * Check the device to make sure it has the Google Play Services APK.
    */
   public boolean isCapable() {
-    return isCapable;
+    return this.isCapable;
   }
 }

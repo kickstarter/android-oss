@@ -18,22 +18,22 @@ public final class Range {
 
   @Override
   public String toString() {
-    return "[start: " + start + ", length: " + length + "]";
+    return "[start: " + this.start + ", length: " + this.length + "]";
   }
 
   @Override
   public boolean equals(final @Nullable Object o) {
     if (o instanceof Range) {
       final Range other = (Range) o;
-      return start == other.start && length == other.length;
+      return this.start == other.start && this.length == other.length;
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    int result = start;
-    result = 31 * result + length;
+    int result = this.start;
+    result = 31 * result + this.length;
     return result;
   }
 }

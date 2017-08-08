@@ -25,15 +25,15 @@ public final class AndroidPayCapability {
 
       googleApiClient.connect();
       Wallet.Payments.isReadyToPay(googleApiClient).setResultCallback(result -> {
-        isCapable = result.getStatus().isSuccess() && result.getValue();
+        this.isCapable = result.getStatus().isSuccess() && result.getValue();
         googleApiClient.disconnect();
       });
     } else {
-      isCapable = false;
+      this.isCapable = false;
     }
   }
 
   public boolean isCapable() {
-    return isCapable;
+    return this.isCapable;
   }
 }

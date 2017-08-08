@@ -40,7 +40,7 @@ public class CircleTransformation implements Transformation {
     this.x = (source.getWidth() - size) / 2;
     this.y = (source.getHeight() - size) / 2;
 
-    final Bitmap squaredBitmap = Bitmap.createBitmap(source, x, y, size, size);
+    final Bitmap squaredBitmap = Bitmap.createBitmap(source, this.x, this.y, size, size);
     if (squaredBitmap != source) {
       source.recycle();
     }
@@ -63,6 +63,6 @@ public class CircleTransformation implements Transformation {
 
   @Override
   public String key() {
-    return "circle(x=" + x + ",y=" + y + ")";
+    return "circle(x=" + this.x + ",y=" + this.y + ")";
   }
 }

@@ -15,6 +15,6 @@ public final class TakePairWhenTransformer<S, T> implements Observable.Transform
   @Override
   @NonNull
   public Observable<Pair<S, T>> call(final @NonNull Observable<S> source) {
-    return when.withLatestFrom(source, (x, y) -> new Pair<>(y, x));
+    return this.when.withLatestFrom(source, (x, y) -> new Pair<>(y, x));
   }
 }

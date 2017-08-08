@@ -114,26 +114,26 @@ public class TweetComposer {
 
       final StringBuilder builder = new StringBuilder();
 
-      if (!TextUtils.isEmpty(text)) {
-        builder.append(text);
+      if (!TextUtils.isEmpty(this.text)) {
+        builder.append(this.text);
       }
 
-      if (uri != null) {
+      if (this.uri != null) {
         if (builder.length() > 0) {
           builder.append(' ');
         }
-        builder.append(uri.toString());
+        builder.append(this.uri.toString());
       }
 
       intent.putExtra(Intent.EXTRA_TEXT, builder.toString());
       intent.setType(MIME_TYPE_PLAIN_TEXT);
 
-      if (imageUri != null) {
-        intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+      if (this.imageUri != null) {
+        intent.putExtra(Intent.EXTRA_STREAM, this.imageUri);
         intent.setType(MIME_TYPE_JPEG);
       }
 
-      final PackageManager packManager = context.getPackageManager();
+      final PackageManager packManager = this.context.getPackageManager();
       final List<ResolveInfo> resolvedInfoList = packManager.queryIntentActivities(intent,
         PackageManager.MATCH_DEFAULT_ONLY);
 
@@ -153,7 +153,7 @@ public class TweetComposer {
 
 
       final String tweetUrl =
-        String.format(WEB_INTENT, Uri.encode(text), uri);
+        String.format(WEB_INTENT, Uri.encode(this.text), uri);
       return new Intent(Intent.ACTION_VIEW, Uri.parse(tweetUrl));
     }
 
@@ -162,7 +162,7 @@ public class TweetComposer {
      */
     public void show() {
       final Intent intent = createIntent();
-      context.startActivity(intent);
+      this.context.startActivity(intent);
     }
   }
 }

@@ -49,12 +49,12 @@ public final class SearchToolbar extends KSToolbar {
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
 
-    final Observable<CharSequence> text = RxTextView.textChanges(searchEditText);
+    final Observable<CharSequence> text = RxTextView.textChanges(this.searchEditText);
     final Observable<Boolean> clearable = text.map(t -> t.length() > 0);
 
     addSubscription(clearable
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(c -> clearButton.setVisibility(c ? View.VISIBLE : View.INVISIBLE)));
+      .subscribe(c -> this.clearButton.setVisibility(c ? View.VISIBLE : View.INVISIBLE)));
 
     addSubscription(text
       .observeOn(AndroidSchedulers.mainThread())
@@ -63,6 +63,6 @@ public final class SearchToolbar extends KSToolbar {
 
   @OnClick(R.id.clear_button)
   public void clearButtonClick() {
-    searchEditText.setText(null);
+    this.searchEditText.setText(null);
   }
 }

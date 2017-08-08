@@ -41,7 +41,7 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
 
     setContentView(R.layout.reset_password_layout);
     ButterKnife.bind(this);
-    this.loginToolbar.setTitle(forgotPasswordString);
+    this.loginToolbar.setTitle(this.forgotPasswordString);
 
     this.viewModel.outputs.resetSuccess()
       .compose(bindToLifecycle())
@@ -87,7 +87,7 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
   }
 
   private void setFormEnabled(final boolean isEnabled) {
-    resetPasswordButton.setEnabled(isEnabled);
+    this.resetPasswordButton.setEnabled(isEnabled);
   }
 
   private void setFormDisabled(final boolean isDisabled) {

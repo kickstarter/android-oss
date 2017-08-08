@@ -247,7 +247,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .setData(Uri.parse(this.mailtoString))
       .putExtra(Intent.EXTRA_SUBJECT, "[Android] " + this.supportEmailSubjectString)
       .putExtra(Intent.EXTRA_TEXT, body)
-      .putExtra(Intent.EXTRA_EMAIL, new String[] { this.supportEmailString } );
+      .putExtra(Intent.EXTRA_EMAIL, new String[]{this.supportEmailString});
 
     if (intent.resolveActivity(getPackageManager()) != null) {
       startActivity(Intent.createChooser(intent, getString(R.string.support_email_chooser)));

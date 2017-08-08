@@ -106,7 +106,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
     final String goalString = this.ksCurrency.format(currentProject.pledged(), currentProject, false, true, RoundingMode.DOWN);
     this.amountRaisedTextView.setText(goalString);
 
-    final String goalText = ksString.format(this.pledgedOfGoalString, "goal", goalString);
+    final String goalText = this.ksString.format(this.pledgedOfGoalString, "goal", goalString);
     this.fundingTextTextView.setText(goalText);
   }
 

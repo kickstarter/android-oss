@@ -117,7 +117,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
       this.confirmResetPasswordSuccessDialog
         .setOnCancelListener(__ -> this.viewModel.inputs.resetPasswordConfirmationDialogDismissed());
     }
-    return confirmResetPasswordSuccessDialog;
+    return this.confirmResetPasswordSuccessDialog;
   }
 
   private Observable<String> errorMessages() {

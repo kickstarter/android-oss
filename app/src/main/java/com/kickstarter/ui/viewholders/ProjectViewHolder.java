@@ -366,8 +366,8 @@ public final class ProjectViewHolder extends KSViewHolder {
 
         this.projectStateHeaderTextView.setText(this.fundedString);
         this.projectStateSubheadTextView.setText(
-          this.ksString.format(this.successfullyFundedOnDeadlineString, "deadline", mediumDate(stateChangedAt)))
-        ;
+          this.ksString.format(this.successfullyFundedOnDeadlineString, "deadline", mediumDate(stateChangedAt))
+        );
         break;
       case Project.STATE_CANCELED:
         this.percentageFundedProgressBar.setVisibility(View.GONE);

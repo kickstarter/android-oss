@@ -78,24 +78,22 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
     Picasso.with(context)
       .load(activityUser.avatar().small())
       .transform(new CircleTransformation())
-      .into(avatarImageView);
+      .into(this.avatarImageView);
 
-    creatorNameTextView.setText(ksString.format(
-      projectByCreatorString,
-      "creator_name",
-      projectCreator.name()
-    ));
+    this.creatorNameTextView.setText(
+      this.ksString.format(this.projectByCreatorString, "creator_name", projectCreator.name())
+    );
 
-    projectNameTextView.setText(activityProject.name());
+    this.projectNameTextView.setText(activityProject.name());
 
     Picasso.with(context)
       .load(projectPhoto.little())
-      .into(projectPhotoImageView);
+      .into(this.projectPhotoImageView);
 
-    titleTextView.setText(SocialUtils.friendBackingActivityTitle(context,
+    this.titleTextView.setText(SocialUtils.friendBackingActivityTitle(context,
       activityUser.name(),
       projectCategory.rootId(),
-      ksString
+      this.ksString
     ));
   }
 

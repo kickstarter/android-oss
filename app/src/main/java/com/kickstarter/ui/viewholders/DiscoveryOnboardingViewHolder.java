@@ -22,7 +22,6 @@ public final class DiscoveryOnboardingViewHolder extends KSViewHolder {
   public DiscoveryOnboardingViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
-
     ButterKnife.bind(this, view);
   }
 
@@ -33,6 +32,6 @@ public final class DiscoveryOnboardingViewHolder extends KSViewHolder {
 
   @OnClick(R.id.login_tout_button)
   protected void loginToutClick() {
-    delegate.discoveryOnboardingViewHolderLoginToutClick(this);
+    this.delegate.discoveryOnboardingViewHolderLoginToutClick(this);
   }
 }

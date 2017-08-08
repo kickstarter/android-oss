@@ -55,37 +55,43 @@ public class ActivitySampleFriendBackingViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    activity = ObjectUtils.requireNonNull((Activity) data, Activity.class);
+    this.activity = ObjectUtils.requireNonNull((Activity) data, Activity.class);
   }
 
   public void onBind() {
     final Context context = context();
 
-    final User user = activity.user();
-    final Project project = activity.project();
+    final User user = this.activity.user();
+    final Project project = this.activity.project();
 
     if (user != null && project != null) {
-      activityTitleTextView.setVisibility(View.GONE);
+      this.activityTitleTextView.setVisibility(View.GONE);
 
       Picasso.with(context).load(user.avatar()
         .small())
         .transform(new CircleTransformation())
-        .into(activityImageView);
+        .into(this.activityImageView);
 
-      activitySubtitleTextView.setText(Html.fromHtml(ksString.format(categoryBackingString,
-        "friend_name", user.name(),
-        "project_name", project.name(),
-        "creator_name", project.creator().name())));
+      this.activitySubtitleTextView.setText(
+        Html.fromHtml(
+          this.ksString.format(
+            this.categoryBackingString,
+            "friend_name", user.name(),
+            "project_name", project.name(),
+            "creator_name", project.creator().name()
+          )
+        )
+      );
     }
   }
 
   @OnClick(R.id.see_activity_button)
   protected void seeActivityOnClick() {
-    delegate.activitySampleFriendBackingViewHolderSeeActivityClicked(this);
+    this.delegate.activitySampleFriendBackingViewHolderSeeActivityClicked(this);
   }
 
   @OnClick(R.id.activity_click_area)
   protected void activityProjectOnClick() {
-    delegate.activitySampleFriendBackingViewHolderProjectClicked(this, activity.project());
+    this.delegate.activitySampleFriendBackingViewHolderProjectClicked(this, this.activity.project());
   }
 }

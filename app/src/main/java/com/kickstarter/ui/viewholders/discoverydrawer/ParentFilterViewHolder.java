@@ -36,27 +36,27 @@ public final class ParentFilterViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    item = requireNonNull((NavigationDrawerData.Section.Row) data, NavigationDrawerData.Section.Row.class);
+    this.item = requireNonNull((NavigationDrawerData.Section.Row) data, NavigationDrawerData.Section.Row.class);
   }
 
   @Override
   public void onBind() {
     final Context context = context();
 
-    filterTextView.setText(item.params().filterString(context, environment().ksString(), false, true));
+    this.filterTextView.setText(this.item.params().filterString(context, environment().ksString(), false, true));
 
-    if (item.rootIsExpanded()) {
-      expandButton.setVisibility(View.GONE);
-      collapseButton.setVisibility(View.VISIBLE);
+    if (this.item.rootIsExpanded()) {
+      this.expandButton.setVisibility(View.GONE);
+      this.collapseButton.setVisibility(View.VISIBLE);
     } else {
-      expandButton.setVisibility(View.VISIBLE);
-      collapseButton.setVisibility(View.GONE);
+      this.expandButton.setVisibility(View.VISIBLE);
+      this.collapseButton.setVisibility(View.GONE);
     }
   }
 
   @OnClick(R.id.filter_text_view)
   protected void textViewClick() {
-    delegate.parentFilterViewHolderRowClick(this, item);
+    this.delegate.parentFilterViewHolderRowClick(this, this.item);
   }
 }
 

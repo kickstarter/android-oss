@@ -60,11 +60,13 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
     final Pair<Project, ProjectStatsEnvelope.RewardStats> projectAndRewardStats = requireNonNull((Pair<Project, ProjectStatsEnvelope.RewardStats>) data);
-    viewModel.inputs.projectAndRewardStats(projectAndRewardStats);
+    this.viewModel.inputs.projectAndRewardStats(projectAndRewardStats);
   }
 
   private void setPledgedColumnValue(final @NonNull Pair<Project, Float> projectAndPledgedForReward) {
-    final String goalString = ksCurrency.format(projectAndPledgedForReward.second, projectAndPledgedForReward.first, false, true, RoundingMode.DOWN);
-    amountForRewardPledgedTextView.setText(goalString);
+    final String goalString = this.ksCurrency.format(
+      projectAndPledgedForReward.second, projectAndPledgedForReward.first, false, true, RoundingMode.DOWN
+    );
+    this.amountForRewardPledgedTextView.setText(goalString);
   }
 }

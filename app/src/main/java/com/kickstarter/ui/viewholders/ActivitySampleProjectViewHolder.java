@@ -60,46 +60,52 @@ public class ActivitySampleProjectViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    activity = ObjectUtils.requireNonNull((Activity) data, Activity.class);
+    this.activity = ObjectUtils.requireNonNull((Activity) data, Activity.class);
   }
 
   public void onBind() {
     final Context context = context();
 
-    final Project project = activity.project();
+    final Project project = this.activity.project();
     if (project != null) {
 
       final Photo photo = project.photo();
       if (photo != null) {
         Picasso.with(context)
           .load(photo.little())
-          .into(activityImageView);
+          .into(this.activityImageView);
       }
 
-      activityTitleTextView.setText(project.name());
+      this.activityTitleTextView.setText(project.name());
 
-      switch(activity.category()) {
+      switch(this.activity.category()) {
         case Activity.CATEGORY_FAILURE:
-          activitySubtitleTextView.setText(categoryFailureString);
+          this.activitySubtitleTextView.setText(this.categoryFailureString);
           break;
         case Activity.CATEGORY_CANCELLATION:
-          activitySubtitleTextView.setText(categoryCancellationString);
+          this.activitySubtitleTextView.setText(this.categoryCancellationString);
           break;
         case Activity.CATEGORY_LAUNCH:
           final User user = activity.user();
           if (user != null) {
-            activitySubtitleTextView.setText(ksString.format(categoryLaunchString, "user_name", user.name()));
+            this.activitySubtitleTextView.setText(
+              this.ksString.format(this.categoryLaunchString, "user_name", user.name())
+            );
           }
           break;
         case Activity.CATEGORY_SUCCESS:
-          activitySubtitleTextView.setText(categorySuccessString);
+          this.activitySubtitleTextView.setText(this.categorySuccessString);
           break;
         case Activity.CATEGORY_UPDATE:
           final Update update = activity.update();
           if (update != null) {
-            activitySubtitleTextView.setText(ksString.format(categoryUpdateString,
-              "update_number", String.valueOf(update.sequence()),
-              "update_title", update.title()));
+            this.activitySubtitleTextView.setText(
+              this.ksString.format(
+                this.categoryUpdateString,
+                "update_number", String.valueOf(update.sequence()),
+                "update_title", update.title()
+              )
+            );
           }
           break;
         default:
@@ -110,15 +116,15 @@ public class ActivitySampleProjectViewHolder extends KSViewHolder {
 
   @OnClick(R.id.see_activity_button)
   protected void seeActivityOnClick() {
-    delegate.activitySampleProjectViewHolderSeeActivityClicked(this);
+    this.delegate.activitySampleProjectViewHolderSeeActivityClicked(this);
   }
 
   @OnClick(R.id.activity_click_area)
   protected void activityProjectOnClick() {
-    if (activity.category().equals(Activity.CATEGORY_UPDATE)) {
-      delegate.activitySampleProjectViewHolderUpdateClicked(this, activity);
+    if (this.activity.category().equals(Activity.CATEGORY_UPDATE)) {
+      this.delegate.activitySampleProjectViewHolderUpdateClicked(this, this.activity);
     } else {
-      delegate.activitySampleProjectViewHolderProjectClicked(this, activity.project());
+      this.delegate.activitySampleProjectViewHolderProjectClicked(this, this.activity.project());
     }
   }
 }

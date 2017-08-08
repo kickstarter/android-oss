@@ -43,40 +43,40 @@ public final class ThanksProjectViewHolder extends KSViewHolder {
     super(view);
     this.delegate = delegate;
     this.context = view.getContext();
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
+    ((KSApplication) this.context.getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    project = requireNonNull((Project) data, Project.class);
+    this.project = requireNonNull((Project) data, Project.class);
   }
 
   public void onBind() {
-    nameTextView.setText(project.name());
+    this.nameTextView.setText(this.project.name());
 
-    if (project.isLive()) {
-      timeToGoTextView.setText(ksString.format(
-        timeLeftToGoString,
+    if (this.project.isLive()) {
+      this.timeToGoTextView.setText(this.ksString.format(
+        this.timeLeftToGoString,
         "time_left",
-        ProjectUtils.deadlineCountdown(project, context)
+        ProjectUtils.deadlineCountdown(this.project, this.context)
       ));
-      timeToGoTextView.setVisibility(View.VISIBLE);
+      this.timeToGoTextView.setVisibility(View.VISIBLE);
     } else {
-      timeToGoTextView.setVisibility(View.GONE);
+      this.timeToGoTextView.setVisibility(View.GONE);
     }
 
     final Photo photo = project.photo();
     if (photo != null) {
-      photoImageView.setVisibility(View.VISIBLE);
-      Picasso.with(context).load(photo.med()).into(photoImageView);
+      this.photoImageView.setVisibility(View.VISIBLE);
+      Picasso.with(context).load(photo.med()).into(this.photoImageView);
     } else {
-      photoImageView.setVisibility(View.INVISIBLE);
+      this.photoImageView.setVisibility(View.INVISIBLE);
     }
   }
 
   @Override
   public void onClick(final @NonNull View view) {
-    delegate.projectClick(this, project);
+    this.delegate.projectClick(this, this.project);
   }
 }

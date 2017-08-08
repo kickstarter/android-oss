@@ -56,7 +56,7 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
 
   @Override
   public @NonNull Observable<ActivityEvent> lifecycle() {
-    return lifecycle;
+    return this.lifecycle;
   }
 
   /**
@@ -64,7 +64,7 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
    * of its lifecycle.
    */
   public void lifecycleEvent(final @NonNull ActivityEvent event) {
-    lifecycle.onNext(event);
+    this.lifecycle.onNext(event);
 
     if (ActivityEvent.DESTROY.equals(event)) {
       destroy();
@@ -75,7 +75,7 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
    * Completes an observable when an {@link ActivityEvent} occurs in the activity's lifecycle.
    */
   public final @NonNull <T> Observable.Transformer<T, T> bindUntilEvent(final @NonNull ActivityEvent event) {
-    return RxLifecycle.bindUntilActivityEvent(lifecycle, event);
+    return RxLifecycle.bindUntilActivityEvent(this.lifecycle, event);
   }
 
   /**
@@ -84,7 +84,7 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
    * in {@link ActivityEvent#DESTROY}.
    */
   public final @NonNull <T> Observable.Transformer<T, T> bindToLifecycle() {
-    return RxLifecycle.bindActivity(lifecycle);
+    return RxLifecycle.bindActivity(this.lifecycle);
   }
 
   /**
@@ -94,11 +94,11 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
   protected void destroy() {}
 
   protected @NonNull View view() {
-    return view;
+    return this.view;
   }
 
   protected @NonNull Context context() {
-    return view.getContext();
+    return this.view.getContext();
   }
 
   protected @NonNull Environment environment() {

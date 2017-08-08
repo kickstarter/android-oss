@@ -70,8 +70,8 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
     private final Observable<Pair<Project, Float>> projectAndPledgedForReferrer;
     private final Observable<String> referrerBackerCount;
     private final Observable<String> referrerSourceName;
-    @Override
-    public void projectAndReferrerStatsInput(final @NonNull Pair<Project, ProjectStatsEnvelope.ReferrerStats> projectAndReferrerStats) {
+
+    @Override public void projectAndReferrerStatsInput(final @NonNull Pair<Project, ProjectStatsEnvelope.ReferrerStats> projectAndReferrerStats) {
       this.projectAndReferrerStats.onNext(projectAndReferrerStats);
     }
 
@@ -88,5 +88,4 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
       return this.referrerSourceName;
     }
   }
-
 }

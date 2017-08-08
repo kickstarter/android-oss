@@ -14,16 +14,11 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class ProjectStatsEnvelope implements Parcelable {
 
-//  public enum ReferrerType {
-//    CUSTOM, EXTERNAL, INTERNAL, UNKNOWN
-//  }
-
   public abstract CumulativeStats cumulativeStats();
   public abstract FundingDateStats fundingDateStats();
   public abstract List<ReferrerStats> referralDistribution();
   public abstract List<RewardStats> rewardDistribution();
   public abstract VideoStats videoStats();
-
 
   @AutoParcel.Builder
   public abstract static class Builder {

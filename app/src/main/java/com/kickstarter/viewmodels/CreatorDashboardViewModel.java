@@ -61,7 +61,6 @@ public interface CreatorDashboardViewModel {
 
       final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = latestProject
         .switchMap(this.client::fetchProjectStats)
-        .map(x -> x)
         .share()
         .materialize();
 

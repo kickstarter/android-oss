@@ -11,7 +11,7 @@ import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
-import com.kickstarter.ui.viewholders.CreatorDashboardRewardStatsViewHolder;
+import com.kickstarter.ui.viewholders.CreatorDashboardReferrerStatsViewHolder;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -32,10 +32,10 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
     Observable<String> referrerBackerCount();
 
     /* name of the source of referrals */
-    Observable<String> referrerCode();
+    Observable<String> referrerSourceName();
   }
 
-  final class ViewModel extends ActivityViewModel<CreatorDashboardRewardStatsViewHolder> implements Inputs, Outputs {
+  final class ViewModel extends ActivityViewModel<CreatorDashboardReferrerStatsViewHolder> implements Inputs, Outputs {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -51,9 +51,9 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
       this.projectAndPledgedForReferrer = projectAndReferrerStats
         .map(pr -> Pair.create(pr.first, (float) pr.second.pledged()));
 
-      this.referrerCode = projectAndReferrerStats
+      this.referrerSourceName = projectAndReferrerStats
         .map(PairUtils::second)
-        .map(ProjectStatsEnvelope.ReferrerStats::code);
+        .map(ProjectStatsEnvelope.ReferrerStats::referrerName);
 
       this.referrerBackerCount = projectAndReferrerStats
         .map(PairUtils::second)
@@ -69,16 +69,24 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
     private final Observable<String> percentageOfTotalPledged;
     private final Observable<Pair<Project, Float>> projectAndPledgedForReferrer;
     private final Observable<String> referrerBackerCount;
-    private final Observable<String> referrerCode;
+    private final Observable<String> referrerSourceName;
     @Override
     public void projectAndReferrerStatsInput(final @NonNull Pair<Project, ProjectStatsEnvelope.ReferrerStats> projectAndReferrerStats) {
       this.projectAndReferrerStats.onNext(projectAndReferrerStats);
     }
 
-    @Override public @NonNull Observable<String> percentageOfTotalPledged() { return this.percentageOfTotalPledged; }
-    @Override public @NonNull Observable<Pair<Project, Float>> projectAndPledgedForReferrer() { return this.projectAndPledgedForReferrer; }
-    @Override public @NonNull Observable<String> referrerBackerCount() { return this.referrerBackerCount; }
-    @Override public @NonNull Observable<String> referrerCode() { return this.referrerCode; }
+    @Override public @NonNull Observable<String> percentageOfTotalPledged() {
+      return this.percentageOfTotalPledged;
+    }
+    @Override public @NonNull Observable<Pair<Project, Float>> projectAndPledgedForReferrer() {
+      return this.projectAndPledgedForReferrer;
+    }
+    @Override public @NonNull Observable<String> referrerBackerCount() {
+      return this.referrerBackerCount;
+    }
+    @Override public @NonNull Observable<String> referrerSourceName() {
+      return this.referrerSourceName;
+    }
   }
 
 }

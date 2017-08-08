@@ -52,10 +52,10 @@ public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHold
       .compose(observeForUI())
       .subscribe(referrerBackerCountTextView::setText);
 
-    this.viewModel.outputs.referrerCode()
+    this.viewModel.outputs.referrerSourceName()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(x -> referrerSourceTextView.setText(x));
+      .subscribe(referrerSourceTextView::setText);
   }
 
   @Override
@@ -64,8 +64,8 @@ public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHold
     this.viewModel.inputs.projectAndReferrerStatsInput(projectAndReferrerStats);
   }
 
-  private void setPledgedColumnValue(final @NonNull Pair<Project, Float> projectAndPledgedForReward) {
-    final String goalString = ksCurrency.format(projectAndPledgedForReward.second, projectAndPledgedForReward.first, false, true, RoundingMode.DOWN);
+  private void setPledgedColumnValue(final @NonNull Pair<Project, Float> projectAndPledgedForReferrer) {
+    final String goalString = ksCurrency.format(projectAndPledgedForReferrer.second, projectAndPledgedForReferrer.first, false, true, RoundingMode.DOWN);
     amountPledgedForReferrerTextView.setText(goalString);
   }
 }

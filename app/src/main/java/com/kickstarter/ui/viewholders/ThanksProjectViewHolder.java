@@ -66,10 +66,10 @@ public final class ThanksProjectViewHolder extends KSViewHolder {
       this.timeToGoTextView.setVisibility(View.GONE);
     }
 
-    final Photo photo = project.photo();
+    final Photo photo = this.project.photo();
     if (photo != null) {
       this.photoImageView.setVisibility(View.VISIBLE);
-      Picasso.with(context).load(photo.med()).into(this.photoImageView);
+      Picasso.with(this.context).load(photo.med()).into(this.photoImageView);
     } else {
       this.photoImageView.setVisibility(View.INVISIBLE);
     }

@@ -201,7 +201,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
     final Intent intent = new Intent(this, CheckoutActivity.class)
       .putExtra(IntentKey.PROJECT, project)
       .putExtra(IntentKey.URL, project.newPledgeUrl())
-      .putExtra(IntentKey.TOOLBAR_TITLE, projectBackButtonString);
+      .putExtra(IntentKey.TOOLBAR_TITLE, this.projectBackButtonString);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 

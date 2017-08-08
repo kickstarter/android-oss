@@ -66,7 +66,7 @@ public final class CommentViewHolder extends KSViewHolder {
 
     if (CommentUtils.isUserAuthor(this.comment, this.project.creator())) {
       this.creatorLabelTextView.setVisibility(View.VISIBLE);
-    } else if (CommentUtils.isUserAuthor(comment, this.currentUser.getUser())) {
+    } else if (CommentUtils.isUserAuthor(this.comment, this.currentUser.getUser())) {
       this.userLabelTextView.setVisibility(View.VISIBLE);
     }
 

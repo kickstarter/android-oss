@@ -53,7 +53,7 @@ public final class DownloadBetaActivity extends BaseActivity<DownloadBetaViewMod
       .map(InternalBuildEnvelope::changelog)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(changelogTextView::setText);
+      .subscribe(this.changelogTextView::setText);
   }
 
   @OnClick(R.id.open_downloads_button)

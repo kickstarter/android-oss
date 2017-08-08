@@ -39,7 +39,7 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
     this.viewModel.outputs.percentageOfTotalPledged()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(percentagePledgedForRewardTextView::setText);
+      .subscribe(this.percentagePledgedForRewardTextView::setText);
 
     this.viewModel.outputs.projectAndPledgedForReward()
       .compose(bindToLifecycle())
@@ -49,12 +49,12 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
     this.viewModel.outputs.rewardBackerCount()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(rewardBackerCountTextView::setText);
+      .subscribe(this.rewardBackerCountTextView::setText);
 
     this.viewModel.outputs.rewardMinimum()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(rewardMinimumTextView::setText);
+      .subscribe(this.rewardMinimumTextView::setText);
   }
 
   @Override

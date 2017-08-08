@@ -86,7 +86,7 @@ public class ActivitySampleProjectViewHolder extends KSViewHolder {
           this.activitySubtitleTextView.setText(this.categoryCancellationString);
           break;
         case Activity.CATEGORY_LAUNCH:
-          final User user = activity.user();
+          final User user = this.activity.user();
           if (user != null) {
             this.activitySubtitleTextView.setText(
               this.ksString.format(this.categoryLaunchString, "user_name", user.name())
@@ -97,7 +97,7 @@ public class ActivitySampleProjectViewHolder extends KSViewHolder {
           this.activitySubtitleTextView.setText(this.categorySuccessString);
           break;
         case Activity.CATEGORY_UPDATE:
-          final Update update = activity.update();
+          final Update update = this.activity.update();
           if (update != null) {
             this.activitySubtitleTextView.setText(
               this.ksString.format(

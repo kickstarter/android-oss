@@ -128,7 +128,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
     this.viewModel.outputs.project()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(project -> this.project = project);
+      .subscribe(p -> this.project = p);
 
     this.viewModel.outputs.title()
       .compose(bindToLifecycle())
@@ -212,7 +212,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
 
   private boolean handleCheckoutThanksUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     final Intent intent = new Intent(this, ThanksActivity.class)
-      .putExtra(IntentKey.PROJECT, project);
+      .putExtra(IntentKey.PROJECT, this.project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
     return true;
   }
@@ -250,7 +250,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
    */
   private void prepareWalletFragment() {
     final WalletFragmentOptions walletFragmentOptions = WalletFragmentOptions.newBuilder()
-      .setEnvironment(AndroidPayUtils.environment(build))
+      .setEnvironment(AndroidPayUtils.environment(this.build))
       .setTheme(WalletConstants.THEME_LIGHT)
       .setMode(WalletFragmentMode.BUY_BUTTON)
       .build();

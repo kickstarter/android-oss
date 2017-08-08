@@ -11,7 +11,7 @@
     android:layout_width="match_parent"
     android:gravity="center"
     android:textSize="@dimen/icon"
-    android:textColor="@color/black"
+    android:textColor="@color/ksr_soft_black"
     android:text="@string/bug_report_icon" />
 
 </LinearLayout>

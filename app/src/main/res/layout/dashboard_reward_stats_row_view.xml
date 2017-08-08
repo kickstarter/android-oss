@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
  <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
+  android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_weight="3"
   android:orientation="horizontal">
@@ -12,8 +12,8 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:layout_weight="1"
-    android:paddingTop="@dimen/grid_new_2"
-    android:paddingBottom="@dimen/grid_new_2"
+    android:paddingTop="@dimen/grid_2"
+    android:paddingBottom="@dimen/grid_2"
     android:background="@drawable/table_cell_rectangle" />
 
   <LinearLayout
@@ -21,8 +21,8 @@
     android:layout_height="wrap_content"
     android:layout_weight="1"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/grid_new_2"
-    android:paddingBottom="@dimen/grid_new_2"
+    android:paddingTop="@dimen/grid_2"
+    android:paddingBottom="@dimen/grid_2"
     android:background="@drawable/table_cell_rectangle"
     android:gravity="center_horizontal" >
 
@@ -31,7 +31,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
     <TextView
-      android:id="@+id/percentage_pledged_for_reward_text_view"
+      android:id="@+id/percentage_pledged_for_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -43,8 +43,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:layout_weight="1"
-    android:paddingTop="@dimen/grid_new_2"
-    android:paddingBottom="@dimen/grid_new_2"
+    android:paddingTop="@dimen/grid_2"
+    android:paddingBottom="@dimen/grid_2"
     android:background="@drawable/table_cell_rectangle" />
 
 </LinearLayout>

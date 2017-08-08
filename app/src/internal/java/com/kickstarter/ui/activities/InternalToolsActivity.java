@@ -46,9 +46,10 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(InternalToolsViewModel.class)
 public final class InternalToolsActivity extends BaseActivity<InternalToolsViewModel> {
+  private CurrentUserType currentUser;
+
   @Inject @ApiEndpointPreference StringPreferenceType apiEndpointPreference;
   @Inject Build build;
-  @Inject CurrentUserType currentUser;
   @Inject Logout logout;
 
   @Bind(R.id.build_date) TextView buildDate;
@@ -66,7 +67,15 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
     ((KSApplication) getApplicationContext()).component().inject(this);
 
+    this.currentUser = environment().currentUser();
+
     setupBuildInformationSection();
+  }
+
+  @OnClick(R.id.playground_button)
+  public void playgroundButtonClicked() {
+    final Intent intent = new Intent(this, PlaygroundActivity.class);
+    startActivity(intent);
   }
 
   @OnClick(R.id.push_notifications_button)
@@ -109,10 +118,10 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
     final List<String> debugInfo = Arrays.asList(
       user != null ? user.name() : "Logged Out",
-      build.variant(),
-      build.versionName(),
-      build.versionCode().toString(),
-      build.sha(),
+      this.build.variant(),
+      this.build.versionName(),
+      this.build.versionCode().toString(),
+      this.build.sha(),
       Integer.toString(android.os.Build.VERSION.SDK_INT),
       android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL,
       Locale.getDefault().getLanguage()
@@ -149,7 +158,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
       .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
         dialog.cancel();
       })
-      .setIcon(icDialogAlertDrawable)
+      .setIcon(this.icDialogAlertDrawable)
       .show();
   }
 
@@ -169,22 +178,22 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
       .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
         dialog.cancel();
       })
-      .setIcon(icDialogAlertDrawable)
+      .setIcon(this.icDialogAlertDrawable)
       .show();
   }
 
   @SuppressLint("SetTextI18n")
   private void setupBuildInformationSection() {
-    buildDate.setText(build.dateTime().toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss aa zzz")));
-    sha.setText(build.sha());
-    variant.setText(build.variant());
-    versionCode.setText(build.versionCode().toString());
-    versionName.setText(build.versionName());
+    this.buildDate.setText(this.build.dateTime().toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss aa zzz")));
+    this.sha.setText(this.build.sha());
+    this.variant.setText(this.build.variant());
+    this.versionCode.setText(this.build.versionCode().toString());
+    this.versionName.setText(this.build.versionName());
   }
 
   private void setEndpointAndRelaunch(final @NonNull ApiEndpoint apiEndpoint) {
-    apiEndpointPreference.set(apiEndpoint.url());
-    logout.execute();
+    this.apiEndpointPreference.set(apiEndpoint.url());
+    this.logout.execute();
     ProcessPhoenix.triggerRebirth(this);
   }
 

@@ -3,15 +3,11 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.DiscoverEnvelopeFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
-import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KoalaEvent;
-import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -39,7 +35,6 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> createdCountTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> createdTextViewHidden = new TestSubscriber<>();
   private final TestSubscriber<Boolean> dividerViewHidden = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> messagesButtonHidden= new TestSubscriber<>();
   private final TestSubscriber<List<Project>> projects = new TestSubscriber<>();
   private final TestSubscriber<Void> resumeDiscoveryActivity = new TestSubscriber<>();
   private final TestSubscriber<Void> startMessageThreadsActivity = new TestSubscriber<>();
@@ -57,7 +52,6 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.createdCountTextViewText().subscribe(this.createdCountTextViewText);
     this.vm.outputs.createdTextViewHidden().subscribe(this.createdTextViewHidden);
     this.vm.outputs.dividerViewHidden().subscribe(this.dividerViewHidden);
-    this.vm.outputs.messagesButtonHidden().subscribe(this.messagesButtonHidden);
     this.vm.outputs.projects().subscribe(this.projects);
     this.vm.outputs.resumeDiscoveryActivity().subscribe(this.resumeDiscoveryActivity);
     this.vm.outputs.startMessageThreadsActivity().subscribe(this.startMessageThreadsActivity);
@@ -186,38 +180,6 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testProfileViewModel_MessagesButton_EnabledFeature() {
-    final Config config = ConfigFactory.config()
-      .toBuilder()
-      .features(Collections.singletonMap(FeatureKey.ANDROID_MESSAGES, true))
-      .build();
-
-    final MockCurrentConfig currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
-    setUpEnvironment(environment().toBuilder().currentConfig(currentConfig).build());
-
-    // Messages button shown for config with enabled feature flag.
-    this.messagesButtonHidden.assertValues(false);
-  }
-
-  @Test
-  public void testProfileViewModel_MessagesButton_NullFeature() {
-    final Config config = ConfigFactory.config()
-      .toBuilder()
-      .features(Collections.emptyMap())
-      .build();
-
-    final MockCurrentConfig currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
-    setUpEnvironment(environment().toBuilder().currentConfig(currentConfig).build());
-
-    // Messages button hidden for config with missing feature flag.
-    this.messagesButtonHidden.assertValues(true);
-  }
-
-  @Test
   public void testProfileViewModel_ResumeDiscoveryActivity() {
     setUpEnvironment(environment());
 
@@ -229,7 +191,7 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
   public void testProfileViewModel_StartMessageThreadsActivity() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.messsagesButtonClicked();
+    this.vm.inputs.messagesButtonClicked();
     this.startMessageThreadsActivity.assertValueCount(1);
   }
 

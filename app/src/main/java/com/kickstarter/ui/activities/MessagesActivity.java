@@ -22,7 +22,6 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.DateTimeUtils;
-import com.kickstarter.libs.utils.ToolbarUtils;
 import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Backing;
@@ -52,8 +51,9 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.backing_amount_text_view) TextView backingAmountTextViewText;
   protected @Bind(R.id.backing_info_view) View backingInfoView;
   protected @Bind(R.id.messages_toolbar_close_button) IconButton closeButton;
-  protected @Bind(R.id.messages_participant_name_text_view) TextView participantNameTextView;
+  protected @Bind(R.id.messages_loading_indicator) View loadingIndicatorView;
   protected @Bind(R.id.message_edit_text) EditText messageEditText;
+  protected @Bind(R.id.messages_participant_name_text_view) TextView participantNameTextView;
   protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
   protected @Bind(R.id.messages_project_name_collapsed_text_view) TextView projectNameToolbarTextView;
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
@@ -85,17 +85,12 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
 
     this.viewPledgeButton.setText(this.viewPledgeString);
 
-    ToolbarUtils.INSTANCE.fadeToolbarTitleOnExpand(this.appBarLayout, this.projectNameToolbarTextView);
+    setAppBarOffsetChangedListener(this.appBarLayout);
 
     RxView.focusChanges(this.messageEditText)
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.viewModel.inputs::messageEditTextIsFocused);
-
-    this.appBarLayout.addOnOffsetChangedListener((layout, offset) -> {
-      this.viewModel.inputs.appBarTotalScrollRange(layout.getTotalScrollRange());
-      this.viewModel.inputs.appBarOffset(offset);
-    });
 
     this.viewModel.outputs.backButtonIsGone()
       .compose(bindToLifecycle())
@@ -121,6 +116,11 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> back());
+
+    this.viewModel.outputs.loadingIndicatorViewIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.loadingIndicatorView));
 
     this.viewModel.outputs.messageEditTextHint()
       .compose(bindToLifecycle())
@@ -234,6 +234,20 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   private void requestFocusAndOpenKeyboard() {
     this.messageEditText.requestFocus();
     this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+  }
+
+  /**
+   * Sets an OffsetChangedListener for the view's AppBarLayout to:
+   * 1. determine the toolbar's alpha based on scroll range
+   * 2. adjust the view's bottom padding via inputs
+   */
+  private void setAppBarOffsetChangedListener(final @NonNull AppBarLayout appBarLayout) {
+    appBarLayout.addOnOffsetChangedListener((layout, offset) -> {
+      this.projectNameToolbarTextView.setAlpha(Math.abs(offset) / layout.getTotalScrollRange());
+
+      this.viewModel.inputs.appBarTotalScrollRange(layout.getTotalScrollRange());
+      this.viewModel.inputs.appBarOffset(offset);
+    });
   }
 
   private void setBackingInfoView(final @NonNull Pair<Backing, Project> backingAndProject) {

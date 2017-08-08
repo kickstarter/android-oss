@@ -19,14 +19,14 @@
   <View
     android:background="@drawable/project_photo_gradient"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_16"
+    android:layout_height="@dimen/grid_21"
     android:layout_alignParentBottom="true"/>
 
   <View
     android:id="@+id/photo_gradient"
     android:background="@drawable/project_photo_gradient"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_40"
+    android:layout_height="@dimen/grid_53"
     android:layout_alignParentBottom="true" />
 
   <RelativeLayout
@@ -50,8 +50,7 @@
         android:focusable="true"
         android:visibility="visible"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/grid_3"
-        android:layout_marginEnd="@dimen/grid_3"
+        android:layout_marginEnd="@dimen/grid_4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="14dp"
@@ -62,7 +61,6 @@
       <RelativeLayout
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/play_button_overlay"
-        android:layout_toRightOf="@id/play_button_overlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -93,7 +91,6 @@
           android:id="@+id/backer_label"
           android:visibility="visible"
           android:layout_toEndOf="@id/creator_name"
-          android:layout_toRightOf="@id/creator_name"
           android:layout_alignTop="@id/creator_name"
           android:orientation="horizontal"
           android:layout_width="wrap_content"
@@ -103,7 +100,7 @@
           <TextView
             android:text="@string/project_creator_youre_a_backer"
             style="@style/BodyWhite"
-            android:layout_marginLeft="@dimen/grid_1_half"
+            android:layout_marginStart="@dimen/grid_1_half"
             android:maxLines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -117,7 +114,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
             android:layout_marginStart="@dimen/grid_1_half"
-            android:layout_marginLeft="@dimen/grid_1_half"
             android:text="@string/backer_icon"
             android:textColor="@color/white" />
         </LinearLayout>
@@ -129,7 +125,7 @@
     <LinearLayout
       android:id="@+id/blurb_category_location_view"
       android:layout_below="@id/name_creator_view"
-      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginTop="@dimen/grid_4"
       android:orientation="vertical"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
@@ -148,9 +144,9 @@
         tools:text="Description about this project." />
 
       <LinearLayout
-        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_4"
         android:orientation="horizontal"
-        android:layout_marginBottom="@dimen/grid_3"
+        android:layout_marginBottom="@dimen/grid_4"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -167,8 +163,8 @@
           android:id="@+id/category"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:paddingLeft="@dimen/grid_1_half"
-          android:paddingRight="@dimen/grid_2"
+          android:paddingStart="@dimen/grid_1_half"
+          android:paddingEnd="@dimen/grid_2"
           style="@style/BodyWhite"
           tools:ignore="InconsistentLayout"
           tools:text="Category name" />
@@ -187,10 +183,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="1"
-          android:paddingLeft="@dimen/grid_1_half"
-          android:paddingRight="@dimen/grid_1_half"
-          android:paddingStart="@dimen/grid_1_half"
-          android:paddingEnd="@dimen/grid_1_half"
+          android:padding="@dimen/grid_1_half"
           style="@style/BodyWhite"
           tools:text="Location"
           tools:ignore="InconsistentLayout" />

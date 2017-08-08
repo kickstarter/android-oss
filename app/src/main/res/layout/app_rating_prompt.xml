@@ -2,7 +2,7 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:background="@drawable/dialog_alert_rounded"
-  android:layout_width="@dimen/grid_35"
+  android:layout_width="@dimen/grid_46"
   android:layout_height="wrap_content"
   android:layout_gravity="center"
   android:orientation="vertical">
@@ -13,9 +13,9 @@
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_3"
-    android:layout_marginLeft="@dimen/grid_2"
-    android:layout_marginRight="@dimen/grid_2"
+    android:layout_marginTop="@dimen/grid_4"
+    android:layout_marginStart="@dimen/grid_2"
+    android:layout_marginEnd="@dimen/grid_2"
     android:text="@string/profile_settings_rating_option_title_show_us_some_love" />
 
   <TextView
@@ -34,8 +34,8 @@
     android:layout_width="match_parent"
     android:layout_marginTop="@dimen/grid_1"
     android:layout_marginBottom="@dimen/grid_2"
-    android:layout_marginLeft="@dimen/grid_2"
-    android:layout_marginRight="@dimen/grid_2"
+    android:layout_marginStart="@dimen/grid_2"
+    android:layout_marginEnd="@dimen/grid_2"
     android:text="@string/profile_settings_rating_option_rate_now" />
 
   <Button
@@ -43,17 +43,17 @@
     android:id="@+id/remind_button"
     android:layout_width="match_parent"
     android:layout_marginBottom="@dimen/grid_2"
-    android:layout_marginLeft="@dimen/grid_2"
-    android:layout_marginRight="@dimen/grid_2"
+    android:layout_marginStart="@dimen/grid_2"
+    android:layout_marginEnd="@dimen/grid_2"
     android:text="@string/profile_settings_rating_option_remind_later" />
 
   <Button
     style="@style/BorderButton"
     android:id="@+id/no_thanks_button"
     android:layout_width="match_parent"
-    android:layout_marginBottom="@dimen/grid_3"
-    android:layout_marginLeft="@dimen/grid_2"
-    android:layout_marginRight="@dimen/grid_2"
+    android:layout_marginBottom="@dimen/grid_4"
+    android:layout_marginStart="@dimen/grid_2"
+    android:layout_marginEnd="@dimen/grid_2"
     android:text="@string/profile_settings_rating_option_no_thanks" />
 
 </LinearLayout>

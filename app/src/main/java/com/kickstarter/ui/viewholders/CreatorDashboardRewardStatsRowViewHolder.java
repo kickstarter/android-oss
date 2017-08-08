@@ -25,7 +25,7 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
   private final DashboardRewardStatsRowHolderViewModel.ViewModel viewModel;
   protected @Bind(R.id.reward_minimum_text_view) TextView rewardMinimumTextView;
   protected @Bind(R.id.amount_pledged_for_reward_text_view) TextView amountForRewardPledgedTextView;
-  protected @Bind(R.id.percentage_pledged_for_reward_text_view) TextView percentagePledgedForRewardTextView;
+  protected @Bind(R.id.percentage_pledged_for_text_view) TextView percentagePledgedForRewardTextView;
   protected @Bind(R.id.reward_backer_count_text_view) TextView rewardBackerCountTextView;
 
   private KSCurrency ksCurrency;

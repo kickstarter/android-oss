@@ -12,7 +12,7 @@
     android:id="@+id/project_photo"
     android:alpha="0.2"
     android:layout_width="match_parent"
-    android:layout_height="246dp"
+    android:layout_height="@dimen/grid_41"
     android:layout_margin="0dp"
     android:cropToPadding="false"
     android:scaleType="centerCrop"

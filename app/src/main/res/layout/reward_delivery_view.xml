@@ -10,8 +10,7 @@
   <LinearLayout
     android:id="@+id/reward_estimated_delivery_date_section"
     android:orientation="vertical"
-    android:paddingEnd="@dimen/grid_3"
-    android:paddingRight="@dimen/grid_3"
+    android:paddingEnd="@dimen/grid_4"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -52,4 +51,3 @@
   </LinearLayout>
 
 </LinearLayout>
-

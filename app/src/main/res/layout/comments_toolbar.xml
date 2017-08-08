@@ -30,7 +30,8 @@
       android:focusable="true"
       android:visibility="invisible"
       android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
       android:text="@string/forum_icon" />
+
   </RelativeLayout>
+
 </com.kickstarter.ui.toolbars.KSToolbar>

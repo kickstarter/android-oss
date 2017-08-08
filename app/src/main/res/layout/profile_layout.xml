@@ -3,12 +3,12 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:background="@color/light_gray"
+  android:background="@color/ksr_grey_200"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
   <android.support.design.widget.AppBarLayout
-    android:background="@color/light_gray"
+    android:background="@color/ksr_grey_200"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -42,16 +42,16 @@
           android:gravity="center_horizontal"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:paddingLeft="@dimen/grid_3"
-          android:paddingRight="@dimen/grid_3"
+          android:paddingStart="@dimen/grid_4"
+          android:paddingEnd="@dimen/grid_4"
           android:text="@string/update_comments_you" />
 
         <LinearLayout
           android:gravity="center_horizontal"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:paddingLeft="@dimen/grid_1"
-          android:paddingRight="@dimen/grid_1"
+          android:paddingStart="@dimen/grid_1"
+          android:paddingEnd="@dimen/grid_1"
           android:orientation="horizontal">
 
           <TextView
@@ -59,9 +59,7 @@
             android:id="@+id/created_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/grid_1_half"
             android:paddingStart="@dimen/grid_1_half"
-            android:paddingRight="@dimen/grid_1_half"
             android:paddingEnd="@dimen/grid_1_half"
             android:text="@string/profile_projects_created_projects"
             android:textColor="@color/text_secondary" />
@@ -72,7 +70,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/grid_1_half"
-            android:layout_marginRight="@dimen/grid_1_half"
             tools:text="0" />
 
           <View
@@ -80,9 +77,7 @@
             android:background="@color/black_alpha_10"
             android:layout_width="1dp"
             android:layout_height="@dimen/grid_2"
-            android:layout_marginLeft="@dimen/grid_1"
             android:layout_marginStart="@dimen/grid_1"
-            android:layout_marginRight="@dimen/grid_1"
             android:layout_marginEnd="@dimen/grid_1"
             android:layout_marginTop="3dp"/>
 
@@ -91,10 +86,8 @@
             android:id="@+id/backed_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/grid_1_half"
             android:paddingStart="@dimen/grid_1_half"
             android:paddingEnd="@dimen/grid_1_half"
-            android:paddingRight="@dimen/grid_1_half"
             android:text="@string/profile_projects_backed_projects"
             android:textColor="@color/text_secondary" />
 
@@ -115,11 +108,11 @@
 
   <android.support.v7.widget.RecyclerView
     android:id="@+id/recycler_view"
+    android:background="@color/ksr_grey_200"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingStart="@dimen/grid_2"
-    android:paddingLeft="@dimen/grid_2"
-    android:paddingBottom="@dimen/grid_3"
+    android:paddingBottom="@dimen/grid_4"
     android:clipChildren="false"
     android:clipToPadding="false"
     android:scrollbars="vertical"

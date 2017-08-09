@@ -8,7 +8,7 @@ public final class UpdateFactory {
 
   public static Update update() {
     final Project project = ProjectFactory.project();
-    final String updatesUrl = "https://www.kck.str/projectList/" + project.creator().param() + "/" + project.param() + "/posts";
+    final String updatesUrl = "https://www.kck.str/projects/" + project.creator().param() + "/" + project.param() + "/posts";
 
     final Update.Urls.Web web = Update.Urls.Web.builder()
       .update(updatesUrl + "id")

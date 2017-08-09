@@ -296,7 +296,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Start the view model with a backing and a project.
     this.vm.intent(backerModalContextIntent(backing, project));
 
-    // All data except for messageList should emit.
+    // All data except for messages should emit.
     this.messageList.assertNoValues();
     this.participantNameTextViewText.assertValues(project.creator().name());
     this.backingAndProject.assertValues(Pair.create(backing, project));
@@ -382,7 +382,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Start the view model with a message thread.
     this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
 
-    // Initial messageList emit.
+    // Initial messages emit.
     this.messageList.assertValueCount(1);
 
     // Send a message successfully.
@@ -493,7 +493,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(backerModalContextIntent(backing, ProjectFactory.project()));
     this.vm.inputs.messageEditTextIsFocused(true);
 
-    // Toolbar stays expanded when keyboard opens and no messageList.
+    // Toolbar stays expanded when keyboard opens and no messages.
     this.toolbarIsExpanded.assertNoValues();
   }
 
@@ -520,7 +520,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(backerModalContextIntent(backing, ProjectFactory.project()));
     this.vm.inputs.messageEditTextIsFocused(true);
 
-    // Toolbar collapsed when keyboard opens and there are messageList.
+    // Toolbar collapsed when keyboard opens and there are messages.
     this.toolbarIsExpanded.assertValues(false);
   }
 

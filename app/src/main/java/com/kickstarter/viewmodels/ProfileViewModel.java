@@ -5,7 +5,6 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.IntegerUtils;
@@ -47,28 +46,28 @@ public interface ProfileViewModel {
     /** Emits the user avatar image to be displayed. */
     Observable<String> avatarImageViewUrl();
 
-    /** Emits when the backed projectList count should be hidden. */
+    /** Emits when the backed projects count should be hidden. */
     Observable<Boolean> backedCountTextViewHidden();
 
-    /** Emits the backed projectList count to be displayed. */
+    /** Emits the backed projects count to be displayed. */
     Observable<String> backedCountTextViewText();
 
-    /** Emits when the backed projectList text view should be hidden. */
+    /** Emits when the backed projects text view should be hidden. */
     Observable<Boolean> backedTextViewHidden();
 
-    /** Emits when the created projectList count should be hidden. */
+    /** Emits when the created projects count should be hidden. */
     Observable<Boolean> createdCountTextViewHidden();
 
-    /** Emits the created projectList count to be displayed. */
+    /** Emits the created projects count to be displayed. */
     Observable<String> createdCountTextViewText();
 
-    /** Emits when the created projectList text view should be hidden. */
+    /** Emits when the created projects text view should be hidden. */
     Observable<Boolean> createdTextViewHidden();
 
     /** Emits when the divider view should be hidden. */
     Observable<Boolean> dividerViewHidden();
 
-    /** Emits a list of projectList to display in the profile. */
+    /** Emits a list of projects to display in the profile. */
     Observable<List<Project>> projectList();
 
     /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
@@ -86,14 +85,12 @@ public interface ProfileViewModel {
 
   final class ViewModel extends ActivityViewModel<ProfileActivity> implements ProfileAdapter.Delegate, Inputs, Outputs {
     private final ApiClientType client;
-    private final CurrentConfigType currentConfig;
     private final CurrentUserType currentUser;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.client = environment.apiClient();
-      this.currentConfig = environment.currentConfig();
       this.currentUser = environment.currentUser();
 
       final Observable<User> freshUser = this.client.fetchCurrentUser()

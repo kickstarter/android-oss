@@ -92,7 +92,7 @@ public interface MessageThreadsViewModel {
         .map(User::unreadMessagesCount)
         .distinctUntilChanged();
 
-      // Ping swipeRefresh on initial load to trigger paginator
+      // Ping refresh on initial load to trigger paginator
       intent()
         .take(1)
         .compose(bindToLifecycle())

@@ -293,7 +293,7 @@ public final class ThanksViewModel extends ActivityViewModel<ThanksActivity> imp
   }
 
   /**
-   * Returns a shuffled list of 3 recommended projectList, with fallbacks to similar and staff picked projectList
+   * Returns a shuffled list of 3 recommended projects, with fallbacks to similar and staff picked projects
    * for users with fewer than 3 recommendations.
    */
   private @NonNull Observable<List<Project>> relatedProjects(final @NonNull Project project) {

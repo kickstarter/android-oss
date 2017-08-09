@@ -15,7 +15,7 @@ public final class ProjectFactory {
   public static @NonNull Project project() {
     final User creator = UserFactory.creator();
     final String slug = "slug-1";
-    final String projectUrl = "https://www.kickstarter.com/projectList/" + String.valueOf(creator.id()) + "/" + slug;
+    final String projectUrl = "https://www.kickstarter.com/projects/" + String.valueOf(creator.id()) + "/" + slug;
 
     final Project.Urls.Web web = Project.Urls.Web.builder()
       .project(projectUrl)

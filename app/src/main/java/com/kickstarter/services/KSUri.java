@@ -87,27 +87,27 @@ public final class KSUri {
   // /discover/places/param
   private static final Pattern DISCOVER_PLACES_PATTERN = Pattern.compile("\\A\\/discover\\/places\\/[a-zA-Z0-9-_]+\\z");
 
-  // /projectList/:creator_param/:project_param
+  // /projects/:creator_param/:project_param
   private static final Pattern PROJECT_PATTERN = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/?\\z"
   );
 
-  // /projectList/:creator_param/:project_param/posts/:update_param/comments
+  // /projects/:creator_param/:project_param/posts/:update_param/comments
   private static final Pattern PROJECT_UPDATE_COMMENTS_PATTERN = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/posts\\/[a-zA-Z0-9-_]+\\/comments\\z"
   );
 
-  // /projectList/:creator_param/:project_param/posts/:update_param
+  // /projects/:creator_param/:project_param/posts/:update_param
   private static final Pattern PROJECT_UPDATE_PATTERN = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/posts\\/[a-zA-Z0-9-_]+\\z"
   );
 
-  // /projectList/:creator_param/:project_param/posts
+  // /projects/:creator_param/:project_param/posts
   private static final Pattern PROJECT_UPDATES_PATTERN = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/posts\\z"
   );
 
-  // /projectList/:creator_param/:project_param/checkouts/1/thanks
+  // /projects/:creator_param/:project_param/checkouts/1/thanks
   private static final Pattern CHECKOUT_THANKS_PATTERN = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/checkouts\\/\\d+\\/thanks\\z"
   );

@@ -11,9 +11,9 @@ public final class KSUriTest extends KSRobolectricTestCase {
   private final Uri discoverScopeUri = Uri.parse("https://www.kickstarter.com/discover/ending-soon");
   private final Uri discoverPlacesUri = Uri.parse("https://www.ksr.com/discover/places/newest");
   private final String webEndpoint = "https://www.ksr.com";
-  private final Uri projectUri = Uri.parse("https://www.ksr.com/projectList/creator/project");
-  private final Uri updatesUri = Uri.parse("https://www.ksr.com/projectList/creator/project/posts");
-  private final Uri updateUri = Uri.parse("https://www.ksr.com/projectList/creator/project/posts/id");
+  private final Uri projectUri = Uri.parse("https://www.ksr.com/projects/creator/project");
+  private final Uri updatesUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts");
+  private final Uri updateUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts/id");
 
   @Test
   public void testKSUri_isDiscoverCategoriesPath() {
@@ -51,7 +51,7 @@ public final class KSUriTest extends KSRobolectricTestCase {
 
   @Test
   public void testKSUri_isProjectUpdateCommentsUri() {
-    final Uri updateCommentsUri = Uri.parse("https://www.ksr.com/projectList/creator/project/posts/id/comments");
+    final Uri updateCommentsUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts/id/comments");
 
     assertTrue(KSUri.isProjectUpdateCommentsUri(updateCommentsUri, this.webEndpoint));
     assertFalse(KSUri.isProjectUpdateCommentsUri(this.updatesUri, this.webEndpoint));

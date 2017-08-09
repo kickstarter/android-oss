@@ -50,7 +50,7 @@ public class RegisterService extends IntentService {
       sendTokenToApi(token);
       subscribeToGlobalTopic(token);
     } catch (final Exception e) {
-      Timber.e("Failed to complete token swipeRefresh: %s", e);
+      Timber.e("Failed to complete token refresh: %s", e);
     }
   }
 

@@ -63,7 +63,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   }
 
   /**
-   * Passes along root categories to its fragment position to help fetch appropriate projectList.
+   * Passes along root categories to its fragment position to help fetch appropriate projects.
    */
   public void takeCategoriesForPosition(final @NonNull List<Category> categories, final int position) {
     Observable.from(this.fragments)

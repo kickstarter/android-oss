@@ -52,7 +52,7 @@ import retrofit2.http.Url;
 import rx.Observable;
 
 public interface ApiService {
-  @GET("/v1/activityList")
+  @GET("/v1/activities")
   Observable<Response<ActivityEnvelope>> activities(@NonNull @Query("categories[]") List<String> categories,
     @Nullable @Query("count") Integer count);
 
@@ -86,7 +86,7 @@ public interface ApiService {
   @PUT("/v1/message_threads/{message_thread_id}/read")
   Observable<Response<MessageThread>> markAsRead(@Path("message_thread_id") long messageThreadId);
 
-  @GET("/v1/projectList/{project_id}/backers/{backer_id}/messages")
+  @GET("/v1/projects/{project_id}/backers/{backer_id}/messages")
   Observable<Response<MessageThreadEnvelope>> messagesForBacking(
     @Path("project_id") long projectId, @Path("backer_id") long backerId
   );
@@ -97,7 +97,7 @@ public interface ApiService {
   @GET("/v1/message_threads/{mailbox}")
   Observable<Response<MessageThreadsEnvelope>> messageThreads(@Path("mailbox") String mailbox);
 
-  @GET("/v1/projectList/{project_id}/message_threads/{mailbox}")
+  @GET("/v1/projects/{project_id}/message_threads/{mailbox}")
   Observable<Response<MessageThreadsEnvelope>> messageThreads(
     @Path("project_id") long projectId,
     @Path("mailbox") String mailbox
@@ -109,29 +109,29 @@ public interface ApiService {
   @GET
   Observable<Response<MessageThreadsEnvelope>> paginatedMessageThreads(@Url String paginationPath);
 
-  @POST("/v1/projectList/{param}/comments/")
+  @POST("/v1/projects/{param}/comments/")
   Observable<Response<Comment>> postProjectComment(@Path("param") String param, @Body CommentBody body);
 
-  @POST("/v1/projectList/{project_id}/updates/{update_id}/comments")
+  @POST("/v1/projects/{project_id}/updates/{update_id}/comments")
   Observable<Response<Comment>> postUpdateComment(@Path("project_id") long projectId, @Path("update_id") long updateId,
     @Body CommentBody body);
 
-  @GET("/v1/projectList/{project_param}/backers/{user_param}")
+  @GET("/v1/projects/{project_param}/backers/{user_param}")
   Observable<Response<Backing>> projectBacking(
     @Path("project_param") String projectParam,
     @Path("user_param") String userParam
   );
 
-  @GET("/v1/projectList/{param}")
+  @GET("/v1/projects/{param}")
   Observable<Response<Project>> project(@Path("param") String param);
 
-  @GET("/v1/projectList/{project_param}/comments")
+  @GET("/v1/projects/{project_param}/comments")
   Observable<Response<CommentsEnvelope>> projectComments(@Path("project_param") String projectParam);
 
   @GET("/v1/users/self/notifications")
   Observable<Response<List<ProjectNotification>>> projectNotifications();
 
-  @GET("/v1/users/self/projectList")
+  @GET("/v1/users/self/projects")
   Observable<Response<ProjectsEnvelope>> projects(@Query("member") int isMember);
 
   @GET("/v1/discover")
@@ -140,7 +140,7 @@ public interface ApiService {
   @GET
   Observable<Response<DiscoverEnvelope>> projects(@Url String paginationUrl);
 
-  @GET("/v1/projectList/{project_param}/stats")
+  @GET("/v1/projects/{project_param}/stats")
   Observable<Response<ProjectStatsEnvelope>> projectStats(@Path("project_param") String projectParam);
 
   @POST("/v1/users/self/push_tokens")
@@ -152,33 +152,33 @@ public interface ApiService {
   @POST("/v1/message_threads/{message_thread_id}/messages")
   Observable<Response<Message>> sendMessageToThread(@Path("message_thread_id") long messageThreadId, @Body MessageBody body);
 
-  @POST("/v1/projectList/{project_id}/backers/{backer_id}/messages")
+  @POST("/v1/projects/{project_id}/backers/{backer_id}/messages")
   Observable<Response<Message>> sendMessageToBacking(
     @Path("project_id") long projectId, @Path("backer_id") long backerId, @Body MessageBody body
   );
 
-  @POST("/v1/projectList/{project_id}/messages")
+  @POST("/v1/projects/{project_id}/messages")
   Observable<Response<Message>> sendMessageToProject(@Path("project_id") long projectId, @Body MessageBody body);
 
   @POST("/v1/users")
   Observable<Response<AccessTokenEnvelope>> signup(@Body SignupBody body);
 
-  @PUT("/v1/projectList/{param}/star")
+  @PUT("/v1/projects/{param}/star")
   Observable<Response<StarEnvelope>> starProject(@Path("param") String param);
 
   @GET("/v1/users/self/surveys/{survey_response_id}")
   Observable<Response<SurveyResponse>> surveyResponse(@Path("surveyResponseId") int surveyResponseId);
 
-  @POST("/v1/projectList/{param}/star/toggle")
+  @POST("/v1/projects/{param}/star/toggle")
   Observable<Response<StarEnvelope>> toggleProjectStar(@Path("param") String param);
 
   @GET("/v1/users/self/surveys/unanswered")
   Observable<Response<List<SurveyResponse>>> unansweredSurveys();
 
-  @GET("/v1/projectList/{project_param}/updates/{update_param}")
+  @GET("/v1/projects/{project_param}/updates/{update_param}")
   Observable<Response<Update>> update(@Path("project_param") String projectParam, @Path("update_param") String updateParam);
 
-  @GET("/v1/projectList/{project_id}/updates/{update_id}/comments")
+  @GET("/v1/projects/{project_id}/updates/{update_id}/comments")
   Observable<Response<CommentsEnvelope>> updateComments(@Path("project_id") long projectId, @Path("update_id") long updateId);
 
   @PUT("/v1/users/self/notifications/{id}")

@@ -21,11 +21,11 @@ import rx.Observable;
 public final class ProjectIntentMapper {
   private ProjectIntentMapper() {}
 
-  // /projectList/param-1/param-2*
+  // /projects/param-1/param-2*
   final static Pattern PROJECT_PATTERN = Pattern.compile("\\A\\/projects\\/([a-zA-Z0-9_-]+)(\\/([a-zA-Z0-9_-]+)).*");
 
   /**
-   * Returns an observable of projectList retrieved from intent data. May hit the API if the intent only contains a project
+   * Returns an observable of projects retrieved from intent data. May hit the API if the intent only contains a project
    * param rather than a parceled project.
    */
   public static @NonNull Observable<Project> project(final @NonNull Intent intent, final @NonNull ApiClientType client) {
@@ -82,7 +82,7 @@ public final class ProjectIntentMapper {
 
 
   /**
-   * Extract the project param from a uri. e.g.: A uri like `ksr://www.kickstarter.com/projectList/1186238668/skull-graphic-tee`
+   * Extract the project param from a uri. e.g.: A uri like `ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee`
    * returns `skull-graphic-tee`.
    */
   private static @Nullable String paramFromUri(final @Nullable Uri uri) {

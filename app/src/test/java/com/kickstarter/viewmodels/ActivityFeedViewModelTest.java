@@ -135,7 +135,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.goToLogin.assertValueCount(1);
     currentUser.refresh(UserFactory.user());
 
-    // Empty states are not shown when activityList emit on successful login.
+    // Empty states are not shown when activities emit on successful login.
     this.activityList.assertValueCount(1);
     this.loggedOutEmptyStateIsVisible.assertValues(true, false);
     this.loggedInEmptyStateIsVisible.assertValue(false);

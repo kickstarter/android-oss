@@ -48,8 +48,8 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> implem
 
   @Override
   public void back() {
-    // This logic is sound only for web view activityList without RequestHandlers.
-    // TODO: Refactor the client to update web history properly for activityList with RequestHandlers.
+    // This logic is sound only for web view activities without RequestHandlers.
+    // TODO: Refactor the client to update web history properly for activities with RequestHandlers.
     if (this.webView.canGoBack()) {
       this.webView.goBack();
     } else {

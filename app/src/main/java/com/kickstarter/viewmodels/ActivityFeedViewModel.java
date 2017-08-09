@@ -52,7 +52,7 @@ public interface ActivityFeedViewModel {
   }
 
   interface Outputs {
-    /** Emits a list of activityList representing the user's activity feed. */
+    /** Emits a list of activities representing the user's activity feed. */
     Observable<List<Activity>> activityList();
 
     /** Emits when view should be returned to Discovery projectList. */
@@ -70,13 +70,13 @@ public interface ActivityFeedViewModel {
     /** Emits a SurveyResponse when it should be shown. */
     Observable<SurveyResponse> goToSurvey();
 
-    /** Emits a boolean indicating whether activityList are being fetched from the API. */
+    /** Emits a boolean indicating whether activities are being fetched from the API. */
     Observable<Boolean> isFetchingActivities();
 
     /** Emits a boolean that determines if a logged-out, empty state should be displayed. */
     Observable<Boolean> loggedOutEmptyStateIsVisible();
 
-    /** Emits a logged-in user with zero activityList in order to display an empty state. */
+    /** Emits a logged-in user with zero activities in order to display an empty state. */
     Observable<Boolean> loggedInEmptyStateIsVisible();
 
     /** Emits a list of unanswered surveys to be shown in the user's activity feed */

@@ -167,7 +167,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
 
   /**
    * Converts a pair (params, project) into a (project, refTag) pair that does some extra logic around POTD and
-   * featured projectList..
+   * featured projects.
    */
   private static @NonNull Pair<Project, RefTag> projectAndRefTagFromParamsAndProject(final @NonNull DiscoveryParams params,
     final @NonNull Project project) {

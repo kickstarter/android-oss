@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class ProjectTest extends KSRobolectricTestCase {
   Project projectWithSecureUrl() {
-    final String projectUrl = "https://www.kickstarter.com/projectList/foo/bar";
+    final String projectUrl = "https://www.kickstarter.com/projects/foo/bar";
     final Project.Urls urls = Project.Urls.builder()
       .web(Project.Urls.Web.builder().project(projectUrl).rewards(projectUrl + "/rewards").build())
       .build();
@@ -19,7 +19,7 @@ public class ProjectTest extends KSRobolectricTestCase {
 
   @Test
   public void testSecureWebProjectUrl() {
-    final String projectUrl = "http://www.kickstarter.com/projectList/foo/bar";
+    final String projectUrl = "http://www.kickstarter.com/projects/foo/bar";
 
     final Project.Urls urls = Project.Urls.builder()
       .web(Project.Urls.Web.builder().project(projectUrl).rewards(projectUrl + "/rewards").build())
@@ -27,17 +27,17 @@ public class ProjectTest extends KSRobolectricTestCase {
 
     final Project project = ProjectFactory.project().toBuilder().urls(urls).build();
 
-    assertEquals("https://www.kickstarter.com/projectList/foo/bar", project.secureWebProjectUrl());
+    assertEquals("https://www.kickstarter.com/projects/foo/bar", project.secureWebProjectUrl());
   }
 
   @Test
   public void testNewPledgeUrl() {
-    assertEquals("https://www.kickstarter.com/projectList/foo/bar/pledge/new", projectWithSecureUrl().newPledgeUrl());
+    assertEquals("https://www.kickstarter.com/projects/foo/bar/pledge/new", projectWithSecureUrl().newPledgeUrl());
   }
 
   @Test
   public void testEditPledgeUrl() {
-    assertEquals("https://www.kickstarter.com/projectList/foo/bar/pledge/edit", projectWithSecureUrl().editPledgeUrl());
+    assertEquals("https://www.kickstarter.com/projects/foo/bar/pledge/edit", projectWithSecureUrl().editPledgeUrl());
   }
 
   @Test

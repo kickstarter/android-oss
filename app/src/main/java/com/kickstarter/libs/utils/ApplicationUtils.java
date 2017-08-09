@@ -11,7 +11,7 @@ public final class ApplicationUtils {
 
   /**
    *
-   * Starts the main activity at the top of a task stack, clearing all previous activityList.
+   * Starts the main activity at the top of a task stack, clearing all previous activities.
    *
    * `ACTION_MAIN` does not expect to receive any data in the intent, it should be the same intent as if a user had
    * just launched the app.
@@ -25,7 +25,7 @@ public final class ApplicationUtils {
   }
 
   /**
-   * Clears all activityList from the task stack except discovery.
+   * Clears all activities from the task stack except discovery.
    */
   public static void resumeDiscoveryActivity(final @NonNull Context context) {
     final Intent intent = new Intent(context, DiscoveryActivity.class)

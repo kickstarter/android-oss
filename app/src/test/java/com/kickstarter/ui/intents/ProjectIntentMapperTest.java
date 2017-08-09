@@ -43,7 +43,7 @@ public final class ProjectIntentMapperTest extends KSRobolectricTestCase {
 
   @Test
   public void testProject_emitsFromKsrProjectUri() {
-    final Uri uri = Uri.parse("ksr://www.kickstarter.com/projectList/1186238668/skull-graphic-tee");
+    final Uri uri = Uri.parse("ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee");
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
     final TestSubscriber<Project> resultTest = TestSubscriber.create();
@@ -55,7 +55,7 @@ public final class ProjectIntentMapperTest extends KSRobolectricTestCase {
 
   @Test
   public void testProject_doesNotEmitFromHttpsProjectUri() {
-    final Uri uri = Uri.parse("https://www.kickstarter.com/projectList/1186238668/skull-graphic-tee");
+    final Uri uri = Uri.parse("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee");
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
     final TestSubscriber<Project> resultTest = TestSubscriber.create();

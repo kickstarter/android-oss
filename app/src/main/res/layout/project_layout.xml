@@ -25,7 +25,7 @@
     <Button
       style="@style/ProjectActionButton"
       android:id="@+id/back_project_button"
-      android:visibility="visible"
+      android:visibility="gone"
       android:background="@drawable/button_green"
       android:text="@string/project_back_button" />
 

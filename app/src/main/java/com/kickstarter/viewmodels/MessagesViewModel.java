@@ -329,7 +329,7 @@ public interface MessagesViewModel {
       this.sendMessageButtonIsEnabled = Observable.merge(messageHasBody, messageIsSending.map(BooleanUtils::negate));
       this.setMessageEditText = messageSent.map(__ -> "");
 
-      this.toolbarIsExpanded = this.messages
+      this.toolbarIsExpanded = this.messageList
         .compose(takePairWhen(this.messageEditTextIsFocused))
         .map(PairUtils::second)
         .map(BooleanUtils::negate);

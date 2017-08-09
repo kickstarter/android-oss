@@ -133,6 +133,7 @@
   <dimen name="activity_feed_view_margin_bottom">@dimen/grid_2</dimen>
 
   <!-- Messages -->
+  <dimen name="message_card_view_corner_radius">4dp</dimen>
   <dimen name="message_reply_layout_height">@dimen/grid_10</dimen>
 
   <!-- Popup menus -->

@@ -72,9 +72,9 @@
           android:background="@drawable/text_view_rounded_background"
           android:textColor="@color/white"
           android:textSize="@dimen/caption_1"
-          android:padding="@dimen/grid_1_half"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
+          android:layout_height="wrap_content"
+          tools:text="3"/>
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/manage_notifications_chevron_icon"

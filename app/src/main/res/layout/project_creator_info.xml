@@ -116,7 +116,6 @@
       <TextView
         android:id="@+id/updates_count"
         android:background="@drawable/text_view_rounded_background"
-        android:padding="@dimen/grid_1"
         android:gravity="center"
         android:layout_centerVertical="true"
         android:textSize="@dimen/body"
@@ -154,7 +153,6 @@
       <TextView
         android:id="@+id/comments_count"
         android:background="@drawable/text_view_rounded_background"
-        android:padding="@dimen/grid_1"
         android:gravity="center"
         android:layout_centerVertical="true"
         android:textSize="@dimen/body"

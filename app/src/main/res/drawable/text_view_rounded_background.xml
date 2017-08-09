@@ -4,4 +4,9 @@
     android:color="@color/ksr_soft_black"/>
   <corners
     android:radius="3dp"/>
+  <padding
+    android:bottom="@dimen/grid_1_half"
+    android:top="@dimen/grid_1_half"
+    android:left="@dimen/grid_1"
+    android:right="@dimen/grid_1"/>
 </shape>

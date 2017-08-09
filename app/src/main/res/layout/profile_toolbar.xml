@@ -9,7 +9,7 @@
   android:background="@color/ksr_grey_200"
   android:elevation="0dp"
   android:gravity="top"
-  android:layout_height="@dimen/grid_12"
+  android:layout_height="@dimen/grid_13"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   app:layout_collapseMode="pin"

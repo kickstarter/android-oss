@@ -32,7 +32,7 @@
           android:layout_width="@dimen/profile_avatar_width"
           android:layout_height="@dimen/profile_avatar_height"
           android:layout_marginTop="@dimen/grid_2"
-          android:layout_marginBottom="@dimen/grid_1"
+          android:layout_marginBottom="@dimen/grid_2"
           android:scaleType="centerCrop"
           tools:ignore="ContentDescription" />
 
@@ -76,7 +76,7 @@
             android:id="@+id/divider_view"
             android:background="@color/black_alpha_10"
             android:layout_width="1dp"
-            android:layout_height="@dimen/grid_2"
+            android:layout_height="@dimen/grid_3"
             android:layout_marginStart="@dimen/grid_1"
             android:layout_marginEnd="@dimen/grid_1"
             android:layout_marginTop="3dp"/>

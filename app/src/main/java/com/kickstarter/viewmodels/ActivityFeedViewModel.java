@@ -55,7 +55,7 @@ public interface ActivityFeedViewModel {
     /** Emits a list of activities representing the user's activity feed. */
     Observable<List<Activity>> activityList();
 
-    /** Emits when view should be returned to Discovery projectList. */
+    /** Emits when view should be returned to Discovery projects. */
     Observable<Void> goToDiscovery();
 
     /** Emits when login tout should be shown. */

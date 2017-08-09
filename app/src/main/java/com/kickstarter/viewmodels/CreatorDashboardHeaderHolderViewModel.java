@@ -27,7 +27,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
   }
 
   interface Outputs {
-    /* string number with the percentage of a projectList funding */
+    /* string number with the percentage of a projects funding */
     Observable<String> percentageFunded();
 
     /* localized count of number of backers */

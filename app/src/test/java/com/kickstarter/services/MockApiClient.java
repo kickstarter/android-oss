@@ -138,7 +138,7 @@ public class MockApiClient implements ApiClientType {
             .api(
               DiscoverEnvelope.UrlsEnvelope.ApiEnvelope
                 .builder()
-                .moreProjects("http://more.projectList.please")
+                .moreProjects("http://more.projects.please")
                 .build()
             )
             .build()

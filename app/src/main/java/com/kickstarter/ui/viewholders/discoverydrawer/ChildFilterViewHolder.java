@@ -25,7 +25,7 @@ public final class ChildFilterViewHolder extends KSViewHolder {
   protected @Bind(R.id.filter_view) LinearLayout filterView;
   protected @Bind(R.id.filter_text_view) TextView filterTextView;
   protected @BindColor(R.color.ksr_soft_black) int ksrSoftBlackColor;
-  protected @BindColor(R.color.dark_gray) int darkGrayColor;
+  protected @BindColor(R.color.ksr_dark_grey_400) int darkGrayColor;
   protected @BindColor(R.color.discovery_drawer_item_selected) int filterSelectedColor;
   protected @BindColor(R.color.transparent) int filterUnselectedColor;
 
@@ -62,7 +62,7 @@ public final class ChildFilterViewHolder extends KSViewHolder {
     }
     if (this.item.selected()) {
       this.filterTextView.setTextAppearance(context, R.style.CalloutPrimaryMedium);
-      this.filterTextView.setTextColor(ksrSoftBlackColor);
+      this.filterTextView.setTextColor(this.ksrSoftBlackColor);
     } else {
       this.filterTextView.setTextAppearance(context, R.style.CalloutPrimary);
       this.filterTextView.setTextColor(this.darkGrayColor);

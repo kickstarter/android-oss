@@ -49,7 +49,7 @@ public final class CurrentConfig implements CurrentConfigType {
     // Cache any new values to preferences
     this.config.skip(1)
       .filter(ObjectUtils::isNotNull)
-      .subscribe(config -> configPreference.set(gson.toJson(config, Config.class)));
+      .subscribe(c -> configPreference.set(gson.toJson(c, Config.class)));
   }
 
   /**

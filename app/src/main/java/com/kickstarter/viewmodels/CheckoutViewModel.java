@@ -37,11 +37,11 @@ public final class CheckoutViewModel extends ActivityViewModel<CheckoutActivity>
   private PublishSubject<String> pageIntercepted = PublishSubject.create();
   @Override
   public void pageIntercepted(final @NonNull String str) {
-    pageIntercepted.onNext(str);
+    this.pageIntercepted.onNext(str);
   }
   private PublishSubject<Void> backButtonClicked = PublishSubject.create();
   public void backButtonClicked() {
-    backButtonClicked.onNext(null);
+    this.backButtonClicked.onNext(null);
   }
   private PublishSubject<String> payloadString = PublishSubject.create();
   public void takePayloadString(final @Nullable String payloadString) {
@@ -49,51 +49,51 @@ public final class CheckoutViewModel extends ActivityViewModel<CheckoutActivity>
   }
   private PublishSubject<Void> confirmAndroidPayClicked = PublishSubject.create();
   public void confirmAndroidPayClicked() {
-    confirmAndroidPayClicked.onNext(null);
+    this.confirmAndroidPayClicked.onNext(null);
   }
 
   // OUTPUTS
   private BehaviorSubject<Project> project = BehaviorSubject.create();
   @Override
   public @NonNull Observable<Project> project() {
-    return project;
+    return this.project;
   }
   private BehaviorSubject<String> title = BehaviorSubject.create();
   @Override
   public @NonNull Observable<String> title() {
-    return title;
+    return this.title;
   }
   private BehaviorSubject<String> url = BehaviorSubject.create();
   @Override
   public @NonNull Observable<String> url() {
-    return url;
+    return this.url;
   }
   private BehaviorSubject<Boolean> displayAndroidPayConfirmation = BehaviorSubject.create();
   public Observable<Boolean> displayAndroidPayConfirmation() {
-    return displayAndroidPayConfirmation;
+    return this.displayAndroidPayConfirmation;
   }
   private BehaviorSubject<Pair<MaskedWallet, AndroidPayPayload>> updateAndroidPayConfirmation = BehaviorSubject.create();
   public Observable<Pair<MaskedWallet, AndroidPayPayload>> updateAndroidPayConfirmation() {
-    return updateAndroidPayConfirmation;
+    return this.updateAndroidPayConfirmation;
   }
   private BehaviorSubject<AndroidPayPayload> showAndroidPaySheet = BehaviorSubject.create();
   public Observable<AndroidPayPayload> showAndroidPaySheet() {
-    return showAndroidPaySheet;
+    return this.showAndroidPaySheet;
   }
   public Observable<Boolean> isAndroidPayAvailable() {
-    return Observable.just(androidPayCapability.isCapable());
+    return Observable.just(this.androidPayCapability.isCapable());
   }
   private BehaviorSubject<Void> popActivityOffStack = BehaviorSubject.create();
   public Observable<Void> popActivityOffStack() {
-    return popActivityOffStack;
+    return this.popActivityOffStack;
   }
   private BehaviorSubject<Pair<MaskedWallet, AndroidPayPayload>> attemptAndroidPayConfirmation = BehaviorSubject.create();
   public Observable<Pair<MaskedWallet, AndroidPayPayload>> attemptAndroidPayConfirmation() {
-    return attemptAndroidPayConfirmation;
+    return this.attemptAndroidPayConfirmation;
   }
   private BehaviorSubject<FullWallet> completeAndroidPay = BehaviorSubject.create();
   public Observable<FullWallet> completeAndroidPay() {
-    return completeAndroidPay;
+    return this.completeAndroidPay;
   }
 
   // ERRORS
@@ -109,28 +109,28 @@ public final class CheckoutViewModel extends ActivityViewModel<CheckoutActivity>
   public CheckoutViewModel(final @NonNull Environment environment) {
     super(environment);
 
-    androidPayCapability = environment.androidPayCapability();
-    gson = environment.gson();
+    this.androidPayCapability = environment.androidPayCapability();
+    this.gson = environment.gson();
 
     intent()
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
       .ofType(Project.class)
       .compose(bindToLifecycle())
-      .subscribe(project::onNext);
+      .subscribe(this.project::onNext);
 
     intent()
       .map(i -> i.getStringExtra(IntentKey.TOOLBAR_TITLE))
       .ofType(String.class)
       .compose(bindToLifecycle())
-      .subscribe(title::onNext);
+      .subscribe(this.title::onNext);
 
     intent()
       .map(i -> i.getStringExtra(IntentKey.URL))
       .ofType(String.class)
       .take(1)
-      .mergeWith(pageIntercepted)
+      .mergeWith(this.pageIntercepted)
       .compose(bindToLifecycle())
-      .subscribe(url::onNext);
+      .subscribe(this.url::onNext);
 
     final Observable<MaskedWallet> maskedWallet = activityResult()
       .filter(AndroidPayUtils::isMaskedWalletRequest)
@@ -148,55 +148,55 @@ public final class CheckoutViewModel extends ActivityViewModel<CheckoutActivity>
       .map(AndroidPayUtils::walletRequestError)
       .filter(ObjectUtils::isNotNull);
 
-    final Observable<AndroidPayPayload> payload = payloadString
-      .map(str -> AndroidPayUtils.payloadFromString(str, gson))
+    final Observable<AndroidPayPayload> payload = this.payloadString
+      .map(str -> AndroidPayUtils.payloadFromString(str, this.gson))
       .ofType(AndroidPayPayload.class);
 
-    final Observable<Boolean> confirmationVisibilityOnBack = displayAndroidPayConfirmation
-      .compose(Transformers.takeWhen(backButtonClicked));
+    final Observable<Boolean> confirmationVisibilityOnBack = this.displayAndroidPayConfirmation
+      .compose(Transformers.takeWhen(this.backButtonClicked));
 
     payload
       .compose(bindToLifecycle())
-      .subscribe(showAndroidPaySheet::onNext);
+      .subscribe(this.showAndroidPaySheet::onNext);
 
     confirmationVisibilityOnBack
       .filter(BooleanUtils::isFalse)
       .compose(bindToLifecycle())
-      .subscribe(__ -> popActivityOffStack.onNext(null));
+      .subscribe(__ -> this.popActivityOffStack.onNext(null));
 
     confirmationVisibilityOnBack
       .filter(BooleanUtils::isTrue)
       .map(__ -> false)
       .mergeWith(maskedWallet.map(__ -> true))
       .compose(bindToLifecycle())
-      .subscribe(displayAndroidPayConfirmation::onNext);
+      .subscribe(this.displayAndroidPayConfirmation::onNext);
 
     maskedWallet
       .compose(Transformers.combineLatestPair(payload))
       .filter(wp -> wp.first != null && wp.second != null)
       .compose(bindToLifecycle())
-      .subscribe(updateAndroidPayConfirmation::onNext);
+      .subscribe(this.updateAndroidPayConfirmation::onNext);
 
     maskedWallet
       .compose(Transformers.combineLatestPair(payload))
-      .compose(Transformers.takeWhen(confirmAndroidPayClicked))
+      .compose(Transformers.takeWhen(this.confirmAndroidPayClicked))
       .filter(wp -> wp.second != null)
       .compose(bindToLifecycle())
-      .subscribe(attemptAndroidPayConfirmation::onNext);
+      .subscribe(this.attemptAndroidPayConfirmation::onNext);
 
     fullWallet
       .compose(bindToLifecycle())
-      .subscribe(completeAndroidPay::onNext);
+      .subscribe(this.completeAndroidPay::onNext);
 
-    showAndroidPaySheet
+    this.showAndroidPaySheet
       .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackShowAndroidPaySheet());
+      .subscribe(__ -> this.koala.trackShowAndroidPaySheet());
 
-    completeAndroidPay
+    this.completeAndroidPay
       .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackAndroidPayFinished());
+      .subscribe(__ -> this.koala.trackAndroidPayFinished());
 
     // Start by not showing the confirmation page.
-    displayAndroidPayConfirmation.onNext(false);
+    this.displayAndroidPayConfirmation.onNext(false);
   }
 }

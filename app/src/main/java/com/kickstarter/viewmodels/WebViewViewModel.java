@@ -23,13 +23,13 @@ public final class WebViewViewModel extends ActivityViewModel<WebViewActivity> i
   private final BehaviorSubject<String> toolbarTitle = BehaviorSubject.create();
   @Override
   public @NonNull Observable<String> toolbarTitle() {
-    return toolbarTitle;
+    return this.toolbarTitle;
   }
 
   private final BehaviorSubject<String> url = BehaviorSubject.create();
   @Override
   public @NonNull Observable<String> url() {
-    return url;
+    return this.url;
   }
 
   public final WebViewViewModelOutputs outputs = this;
@@ -46,24 +46,24 @@ public final class WebViewViewModel extends ActivityViewModel<WebViewActivity> i
       .map(i -> i.getStringExtra(IntentKey.TOOLBAR_TITLE))
       .ofType(String.class)
       .compose(bindToLifecycle())
-      .subscribe(toolbarTitle::onNext);
+      .subscribe(this.toolbarTitle::onNext);
 
     intent()
       .map(i -> i.getStringExtra(IntentKey.URL))
       .ofType(String.class)
       .compose(bindToLifecycle())
-      .subscribe(url::onNext);
+      .subscribe(this.url::onNext);
 
     intent()
       .map(i -> i.getParcelableExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE))
       .ofType(PushNotificationEnvelope.class)
       .compose(bindToLifecycle())
-      .subscribe(pushNotificationEnvelope::onNext);
+      .subscribe(this.pushNotificationEnvelope::onNext);
 
-    pushNotificationEnvelope
+    this.pushNotificationEnvelope
       .filter(ObjectUtils::isNotNull)
       .take(1)
       .compose(bindToLifecycle())
-      .subscribe(koala::trackPushNotification);
+      .subscribe(this.koala::trackPushNotification);
   }
 }

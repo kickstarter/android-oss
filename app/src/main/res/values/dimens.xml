@@ -75,7 +75,7 @@
   <dimen name="search_padding_y">@dimen/grid_2</dimen>
   <dimen name="search_padding_x">@dimen/grid_2</dimen>
   <dimen name="form_margin_x">@dimen/grid_3</dimen>
-  <dimen name="project_padding_x">@dimen/grid_2</dimen>
+  <dimen name="project_padding_x">@dimen/grid_3</dimen>
   <dimen name="settings_icon_margin_x">@dimen/grid_1_half</dimen>
   <dimen name="profile_empty_padding_y">@dimen/grid_8</dimen>
 
@@ -133,6 +133,7 @@
   <dimen name="activity_feed_view_margin_bottom">@dimen/grid_2</dimen>
 
   <!-- Messages -->
+  <dimen name="message_card_view_corner_radius">4dp</dimen>
   <dimen name="message_reply_layout_height">@dimen/grid_10</dimen>
 
   <!-- Popup menus -->

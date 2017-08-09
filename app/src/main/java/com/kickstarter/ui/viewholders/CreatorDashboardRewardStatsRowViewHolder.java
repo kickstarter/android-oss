@@ -39,7 +39,7 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
     this.viewModel.outputs.percentageOfTotalPledged()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(percentagePledgedForRewardTextView::setText);
+      .subscribe(this.percentagePledgedForRewardTextView::setText);
 
     this.viewModel.outputs.projectAndPledgedForReward()
       .compose(bindToLifecycle())
@@ -49,22 +49,24 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
     this.viewModel.outputs.rewardBackerCount()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(rewardBackerCountTextView::setText);
+      .subscribe(this.rewardBackerCountTextView::setText);
 
     this.viewModel.outputs.rewardMinimum()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(rewardMinimumTextView::setText);
+      .subscribe(this.rewardMinimumTextView::setText);
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
     final Pair<Project, ProjectStatsEnvelope.RewardStats> projectAndRewardStats = requireNonNull((Pair<Project, ProjectStatsEnvelope.RewardStats>) data);
-    viewModel.inputs.projectAndRewardStats(projectAndRewardStats);
+    this.viewModel.inputs.projectAndRewardStats(projectAndRewardStats);
   }
 
   private void setPledgedColumnValue(final @NonNull Pair<Project, Float> projectAndPledgedForReward) {
-    final String goalString = ksCurrency.format(projectAndPledgedForReward.second, projectAndPledgedForReward.first, false, true, RoundingMode.DOWN);
-    amountForRewardPledgedTextView.setText(goalString);
+    final String goalString = this.ksCurrency.format(
+      projectAndPledgedForReward.second, projectAndPledgedForReward.first, false, true, RoundingMode.DOWN
+    );
+    this.amountForRewardPledgedTextView.setText(goalString);
   }
 }

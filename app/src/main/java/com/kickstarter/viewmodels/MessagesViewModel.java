@@ -467,7 +467,7 @@ public interface MessagesViewModel {
       return this.messageEditTextHint;
     }
     @Override public @NonNull Observable<Void> messageEditTextShouldRequestFocus() {
-      return messageEditTextShouldRequestFocus;
+      return this.messageEditTextShouldRequestFocus;
     }
     @Override public @NonNull Observable<List<Message>> messages() {
       return this.messages;

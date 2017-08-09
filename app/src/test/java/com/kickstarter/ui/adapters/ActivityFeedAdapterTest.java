@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class ActivityFeedAdapterTest extends KSRobolectricTestCase {
-
   private ActivityFeedAdapter adapter = new ActivityFeedAdapter(null);
 
   @Test
@@ -23,7 +22,7 @@ public class ActivityFeedAdapterTest extends KSRobolectricTestCase {
     final Activity activity1 = ActivityFactory.friendBackingActivity();
     final Activity activity2 = ActivityFactory.projectStateChangedActivity();
 
-    adapter.takeActivities(Arrays.asList(activity0, activity1, activity2));
+    this.adapter.takeActivities(Arrays.asList(activity0, activity1, activity2));
 
     final List<List<Activity>> data = Arrays.asList(
       Collections.emptyList(),
@@ -37,7 +36,7 @@ public class ActivityFeedAdapterTest extends KSRobolectricTestCase {
       )
     );
 
-    Assert.assertEquals(data, adapter.sections());
+    Assert.assertEquals(data, this.adapter.sections());
   }
 
   @Test
@@ -46,8 +45,8 @@ public class ActivityFeedAdapterTest extends KSRobolectricTestCase {
     final Activity activity1 = ActivityFactory.friendBackingActivity();
     final Activity activity2 = ActivityFactory.projectStateChangedActivity();
 
-    adapter.takeActivities(Arrays.asList(activity0, activity1, activity2));
-    adapter.showLoggedInEmptyState(true);
+    this.adapter.takeActivities(Arrays.asList(activity0, activity1, activity2));
+    this.adapter.showLoggedInEmptyState(true);
 
     final List<List<Object>> data = Arrays.asList(
       Collections.singletonList(true),
@@ -61,7 +60,7 @@ public class ActivityFeedAdapterTest extends KSRobolectricTestCase {
       )
     );
 
-    Assert.assertEquals(data, adapter.sections());
+    Assert.assertEquals(data, this.adapter.sections());
   }
 
   @Test
@@ -70,8 +69,8 @@ public class ActivityFeedAdapterTest extends KSRobolectricTestCase {
     final Activity activity1 = ActivityFactory.friendBackingActivity();
     final Activity activity2 = ActivityFactory.projectStateChangedActivity();
 
-    adapter.takeActivities(Arrays.asList(activity0, activity1, activity2));
-    adapter.showLoggedOutEmptyState(true);
+    this.adapter.takeActivities(Arrays.asList(activity0, activity1, activity2));
+    this.adapter.showLoggedOutEmptyState(true);
 
     final List<List<Object>> data = Arrays.asList(
       Collections.emptyList(),
@@ -85,7 +84,7 @@ public class ActivityFeedAdapterTest extends KSRobolectricTestCase {
       )
     );
 
-    Assert.assertEquals(data, adapter.sections());
+    Assert.assertEquals(data, this.adapter.sections());
   }
 
   @Test
@@ -96,9 +95,9 @@ public class ActivityFeedAdapterTest extends KSRobolectricTestCase {
     final SurveyResponse surveyResponse0 = SurveyResponseFactory.surveyResponse();
     final SurveyResponse surveyResponse1 = SurveyResponseFactory.surveyResponse();
 
-    adapter.takeActivities(Arrays.asList(activity0, activity1, activity2));
-    adapter.takeSurveys(Arrays.asList(surveyResponse0, surveyResponse1));
-    adapter.showLoggedInEmptyState(true);
+    this.adapter.takeActivities(Arrays.asList(activity0, activity1, activity2));
+    this.adapter.takeSurveys(Arrays.asList(surveyResponse0, surveyResponse1));
+    this.adapter.showLoggedInEmptyState(true);
 
     final List<List<Object>> data = Arrays.asList(
       Collections.singletonList(true),
@@ -115,6 +114,6 @@ public class ActivityFeedAdapterTest extends KSRobolectricTestCase {
       )
     );
 
-    Assert.assertEquals(data, adapter.sections());
+    Assert.assertEquals(data, this.adapter.sections());
   }
 }

@@ -21,6 +21,8 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+
 public final class SignupViewModel extends ActivityViewModel<SignupActivity> implements SignupViewModelInputs, SignupViewModelOutputs,
   SignupViewModelErrors {
   private final ApiClientType client;
@@ -42,55 +44,55 @@ public final class SignupViewModel extends ActivityViewModel<SignupActivity> imp
     }
 
     protected boolean isValid() {
-      return fullName.length() > 0 && StringUtils.isEmail(email) && password.length() >= 6;
+      return this.fullName.length() > 0 && StringUtils.isEmail(this.email) && this.password.length() >= 6;
     }
   }
 
   // INPUTS
   private final PublishSubject<String> fullName = PublishSubject.create();
   public void fullName(final @NonNull String s) {
-    fullName.onNext(s);
+    this.fullName.onNext(s);
   }
   private final PublishSubject<String> email = PublishSubject.create();
   public void email(final @NonNull String s) {
-    email.onNext(s);
+    this.email.onNext(s);
   }
   private final PublishSubject<String> password = PublishSubject.create();
   public void password(final @NonNull String s) {
-    password.onNext(s);
+    this.password.onNext(s);
   }
   private final PublishSubject<Boolean> sendNewslettersClick = PublishSubject.create();
   public void sendNewslettersClick(final boolean b) {
-    sendNewslettersClick.onNext(b);
+    this.sendNewslettersClick.onNext(b);
   }
   private final PublishSubject<Void> signupClick = PublishSubject.create();
   public void signupClick() {
-    signupClick.onNext(null);
+    this.signupClick.onNext(null);
   }
 
   // OUTPUTS
   private final PublishSubject<Void> signupSuccess = PublishSubject.create();
   public Observable<Void> signupSuccess() {
-    return signupSuccess.asObservable();
+    return this.signupSuccess.asObservable();
   }
   private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
   public Observable<Boolean> formSubmitting() {
-    return formSubmitting.asObservable();
+    return this.formSubmitting.asObservable();
   }
   private final PublishSubject<Boolean> formIsValid = PublishSubject.create();
   public Observable<Boolean> formIsValid() {
-    return formIsValid.asObservable();
+    return this.formIsValid.asObservable();
   }
   private final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
   public Observable<Boolean> sendNewslettersIsChecked() {
-    return sendNewslettersIsChecked;
+    return this.sendNewslettersIsChecked;
   }
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> signupError = PublishSubject.create();
   public Observable<String> signupError() {
-    return signupError
-      .takeUntil(signupSuccess)
+    return this.signupError
+      .takeUntil(this.signupSuccess)
       .map(ErrorEnvelope::errorMessage);
   }
 
@@ -101,64 +103,63 @@ public final class SignupViewModel extends ActivityViewModel<SignupActivity> imp
   public SignupViewModel(final @NonNull Environment environment) {
     super(environment);
 
-    client = environment.apiClient();
-    currentConfig = environment.currentConfig();
-    currentUser = environment.currentUser();
+    this.client = environment.apiClient();
+    this.currentConfig = environment.currentConfig();
+    this.currentUser = environment.currentUser();
 
     final Observable<SignupData> signupData = Observable.combineLatest(
-      fullName, email, password, sendNewslettersIsChecked,
-      SignupData::new);
+      this.fullName, this.email, this.password, this.sendNewslettersIsChecked, SignupData::new
+    );
 
-
-    sendNewslettersClick
+    this.sendNewslettersClick
       .compose(bindToLifecycle())
-      .subscribe(sendNewslettersIsChecked::onNext);
+      .subscribe(this.sendNewslettersIsChecked::onNext);
 
     signupData
       .map(SignupData::isValid)
       .compose(bindToLifecycle())
-      .subscribe(formIsValid);
+      .subscribe(this.formIsValid);
 
     signupData
-      .compose(Transformers.takeWhen(signupClick))
+      .compose(takeWhen(this.signupClick))
       .flatMap(this::submit)
       .compose(bindToLifecycle())
       .subscribe(this::success);
 
-    currentConfig.observable()
+    this.currentConfig.observable()
       .take(1)
       .map(config -> I18nUtils.isCountryUS(config.countryCode()))
       .compose(bindToLifecycle())
-      .subscribe(sendNewslettersIsChecked::onNext);
+      .subscribe(this.sendNewslettersIsChecked::onNext);
 
-    signupError
+    this.signupError
       .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackRegisterError());
+      .subscribe(__ -> this.koala.trackRegisterError());
 
-    sendNewslettersClick
+    this.sendNewslettersClick
       .compose(bindToLifecycle())
-      .subscribe(koala::trackSignupNewsletterToggle);
+      .subscribe(this.koala::trackSignupNewsletterToggle);
 
-    signupSuccess
+    this.signupSuccess
       .compose(bindToLifecycle())
       .subscribe(__ -> {
-        koala.trackLoginSuccess();
-        koala.trackRegisterSuccess();
+        this.koala.trackLoginSuccess();
+        this.koala.trackRegisterSuccess();
       });
 
-    koala.trackRegisterFormView();
+    this.koala.trackRegisterFormView();
   }
 
   private Observable<AccessTokenEnvelope> submit(final @NonNull SignupData data) {
-    return client.signup(data.fullName, data.email, data.password, data.password, data.sendNewsletters)
-      .compose(Transformers.pipeApiErrorsTo(signupError))
+    return this.client.signup(data.fullName, data.email, data.password, data.password, data.sendNewsletters)
+      .compose(Transformers.pipeApiErrorsTo(this.signupError))
       .compose(Transformers.neverError())
-      .doOnSubscribe(() -> formSubmitting.onNext(true))
-      .doAfterTerminate(() -> formSubmitting.onNext(false));
+      .doOnSubscribe(() -> this.formSubmitting.onNext(true))
+      .doAfterTerminate(() -> this.formSubmitting.onNext(false));
   }
 
   private void success(final @NonNull AccessTokenEnvelope envelope) {
-    currentUser.login(envelope.user(), envelope.accessToken());
-    signupSuccess.onNext(null);
+    this.currentUser.login(envelope.user(), envelope.accessToken());
+    this.signupSuccess.onNext(null);
   }
 }

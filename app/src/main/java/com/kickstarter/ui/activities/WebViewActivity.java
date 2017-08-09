@@ -33,25 +33,25 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> implem
     setContentView(R.layout.web_view_layout);
     ButterKnife.bind(this);
 
-    webView.client().setDelegate(this);
+    this.webView.client().setDelegate(this);
 
-    viewModel.outputs.toolbarTitle()
+    this.viewModel.outputs.toolbarTitle()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(toolbar::setTitle);
+      .subscribe(this.toolbar::setTitle);
 
-    viewModel.outputs.url()
+    this.viewModel.outputs.url()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(webView::loadUrl);
+      .subscribe(this.webView::loadUrl);
   }
 
   @Override
   public void back() {
     // This logic is sound only for web view activities without RequestHandlers.
     // TODO: Refactor the client to update web history properly for activities with RequestHandlers.
-    if (webView.canGoBack()) {
-      webView.goBack();
+    if (this.webView.canGoBack()) {
+      this.webView.goBack();
     } else {
       super.back();
     }
@@ -62,12 +62,12 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> implem
 
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
+    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
   }
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
+    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
   }
 
   @Override

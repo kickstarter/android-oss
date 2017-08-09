@@ -23,21 +23,21 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
    * If Play Services is available on this device, start a service to register it with Google Cloud Messaging.
    */
   public void registerDevice() {
-    if (!playServicesCapability.isCapable()) {
+    if (!this.playServicesCapability.isCapable()) {
       return;
     }
 
-    context.startService(new Intent(context, RegisterService.class));
+    this.context.startService(new Intent(this.context, RegisterService.class));
   }
 
   /**
    * If Play Services is available on this device, start a service to unregister it with Google Cloud Messaging.
    */
   public void unregisterDevice() {
-    if (!playServicesCapability.isCapable()) {
+    if (!this.playServicesCapability.isCapable()) {
       return;
     }
 
-    context.startService(new Intent(context, UnregisterService.class));
+    this.context.startService(new Intent(this.context, UnregisterService.class));
   }
 }

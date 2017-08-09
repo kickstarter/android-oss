@@ -54,12 +54,12 @@ public final class DebugPushNotificationsView extends ScrollView {
 
   @OnClick(R.id.register_device_button)
   public void registerDeviceButtonClick() {
-    deviceRegistrar.registerDevice();
+    this.deviceRegistrar.registerDevice();
   }
 
   @OnClick(R.id.unregister_device_button)
   public void unregisterDeviceButtonClick() {
-    deviceRegistrar.unregisterDevice();
+    this.deviceRegistrar.unregisterDevice();
   }
 
   @OnClick(R.id.simulate_friend_backing_button)

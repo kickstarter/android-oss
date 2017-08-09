@@ -56,61 +56,61 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     final @Nullable Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
 
-    recyclerView = (RecyclerView) inflater.inflate(R.layout.discovery_recycler_view, container, false);
-    final DiscoveryAdapter adapter = new DiscoveryAdapter(viewModel.inputs);
-    recyclerView.setAdapter(adapter);
-    final LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
-    recyclerView.setLayoutManager(layoutManager);
-    recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
+    this.recyclerView = (RecyclerView) inflater.inflate(R.layout.discovery_recycler_view, container, false);
+    final DiscoveryAdapter adapter = new DiscoveryAdapter(this.viewModel.inputs);
+    this.recyclerView.setAdapter(adapter);
+    final LinearLayoutManager layoutManager = new LinearLayoutManager(this.recyclerView.getContext());
+    this.recyclerView.setLayoutManager(layoutManager);
+    this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage);
 
-    viewModel.outputs.activity()
+    this.viewModel.outputs.activity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(adapter::takeActivity);
 
-    viewModel.outputs.projects()
+    this.viewModel.outputs.projects()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(adapter::takeProjects);
 
-    viewModel.outputs.shouldShowOnboardingView()
+    this.viewModel.outputs.shouldShowOnboardingView()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(adapter::setShouldShowOnboardingView);
 
-    viewModel.outputs.showActivityFeed()
+    this.viewModel.outputs.showActivityFeed()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> startActivityFeedActivity());
 
-    viewModel.outputs.showActivityUpdate()
+    this.viewModel.outputs.showActivityUpdate()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::startActivityUpdateActivity);
 
-    viewModel.outputs.showProject()
+    this.viewModel.outputs.showProject()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
 
-    viewModel.outputs.showLoginTout()
+    this.viewModel.outputs.showLoginTout()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> this.startLoginToutActivity());
 
-    return recyclerView;
+    return this.recyclerView;
   }
 
   @Override
   public void onDetach() {
     super.onDetach();
 
-    if (recyclerView != null) {
-      recyclerView.setAdapter(null);
+    if (this.recyclerView != null) {
+      this.recyclerView.setAdapter(null);
     }
 
-    if (recyclerViewPaginator != null) {
-      recyclerViewPaginator.stop();
+    if (this.recyclerViewPaginator != null) {
+      this.recyclerViewPaginator.stop();
     }
   }
 
@@ -145,14 +145,14 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
   }
 
   public void takeCategories(final @NonNull List<Category> categories) {
-    viewModel.inputs.rootCategories(categories);
+    this.viewModel.inputs.rootCategories(categories);
   }
 
   public void updateParams(final @NonNull DiscoveryParams params) {
-    viewModel.inputs.paramsFromActivity(params);
+    this.viewModel.inputs.paramsFromActivity(params);
   }
 
   public void clearPage() {
-    viewModel.inputs.clearPage();
+    this.viewModel.inputs.clearPage();
   }
 }

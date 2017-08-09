@@ -8,7 +8,7 @@ public final class IncrementalCountTransformer<T> implements Observable.Transfor
   final int firstPage;
 
   public IncrementalCountTransformer() {
-    firstPage = 1;
+    this.firstPage = 1;
   }
 
   public IncrementalCountTransformer(final int firstPage) {
@@ -17,6 +17,6 @@ public final class IncrementalCountTransformer<T> implements Observable.Transfor
 
   @Override
   public Observable<Integer> call(final @NonNull Observable<T> source) {
-    return source.scan(firstPage-1, (accum, __) -> accum + 1).skip(1);
+    return source.scan(this.firstPage-1, (accum, __) -> accum + 1).skip(1);
   }
 }

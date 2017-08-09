@@ -27,7 +27,7 @@
     android:textSize="@dimen/icon"
     android:layout_centerVertical="true"
     android:layout_alignParentEnd="true"
-    android:textColor="@color/dark_gray"
+    android:textColor="@color/ksr_dark_grey_400"
     android:text="@string/keyboard_arrow_down_icon" />
 
   <com.kickstarter.ui.views.IconButton
@@ -39,7 +39,7 @@
     android:textSize="@dimen/icon"
     android:layout_centerVertical="true"
     android:layout_alignParentEnd="true"
-    android:textColor="@color/dark_gray"
+    android:textColor="@color/ksr_dark_grey_400"
     android:text="@string/keyboard_arrow_up_icon" />
 
 </RelativeLayout>

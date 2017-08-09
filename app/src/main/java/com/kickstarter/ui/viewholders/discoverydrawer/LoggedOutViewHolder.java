@@ -34,11 +34,11 @@ public final class LoggedOutViewHolder extends KSViewHolder {
 
   @Nullable @OnClick(R.id.internal_tools_icon_button)
   public void internalToolsClick() {
-    delegate.loggedOutViewHolderInternalToolsClick(this);
+    this.delegate.loggedOutViewHolderInternalToolsClick(this);
   }
 
   @OnClick(R.id.logged_out_container)
   public void loginToutClick() {
-    delegate.loggedOutViewHolderLoginToutClick(this);
+    this.delegate.loggedOutViewHolderLoginToutClick(this);
   }
 }

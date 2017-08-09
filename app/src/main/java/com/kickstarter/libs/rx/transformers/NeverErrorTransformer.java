@@ -21,8 +21,8 @@ public final class NeverErrorTransformer<T> implements Observable.Transformer<T,
   @NonNull public Observable<T> call(final @NonNull Observable<T> source) {
     return source
       .doOnError(e -> {
-        if (errorAction != null) {
-          errorAction.call(e);
+        if (this.errorAction != null) {
+          this.errorAction.call(e);
         }
       })
       .onErrorResumeNext(Observable.empty());

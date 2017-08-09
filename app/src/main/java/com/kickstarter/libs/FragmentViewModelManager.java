@@ -30,7 +30,7 @@ public final class FragmentViewModelManager {
   public <T extends FragmentViewModel> T fetch(final @NonNull Context context, final @NonNull Class<T> viewModelClass,
     final @Nullable Bundle savedInstanceState) {
     final String id = fetchId(savedInstanceState);
-    FragmentViewModel viewModel = viewModels.get(id);
+    FragmentViewModel viewModel = this.viewModels.get(id);
 
     if (viewModel == null) {
       viewModel = create(context, viewModelClass, savedInstanceState, id);
@@ -42,7 +42,7 @@ public final class FragmentViewModelManager {
   public void destroy(final @NonNull FragmentViewModel viewModel) {
     viewModel.onDestroy();
 
-    final Iterator<Map.Entry<String, FragmentViewModel>> iterator = viewModels.entrySet().iterator();
+    final Iterator<Map.Entry<String, FragmentViewModel>> iterator = this.viewModels.entrySet().iterator();
     while (iterator.hasNext()) {
       final Map.Entry<String, FragmentViewModel> entry = iterator.next();
       if (viewModel.equals(entry.getValue())) {
@@ -80,7 +80,7 @@ public final class FragmentViewModelManager {
       throw new RuntimeException(exception);
     }
 
-    viewModels.put(id, viewModel);
+    this.viewModels.put(id, viewModel);
     viewModel.onCreate(context, BundleUtils.maybeGetBundle(savedInstanceState, VIEW_MODEL_STATE_KEY));
 
     return viewModel;
@@ -93,7 +93,7 @@ public final class FragmentViewModelManager {
   }
 
   private String findIdForViewModel(final @NonNull FragmentViewModel viewModel) {
-    for (final Map.Entry<String, FragmentViewModel> entry : viewModels.entrySet()) {
+    for (final Map.Entry<String, FragmentViewModel> entry : this.viewModels.entrySet()) {
       if (viewModel.equals(entry.getValue())) {
         return entry.getKey();
       }

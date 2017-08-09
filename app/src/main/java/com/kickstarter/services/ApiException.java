@@ -16,6 +16,6 @@ public final class ApiException extends ResponseException {
   }
 
   public @NonNull ErrorEnvelope errorEnvelope() {
-    return errorEnvelope;
+    return this.errorEnvelope;
   }
 }

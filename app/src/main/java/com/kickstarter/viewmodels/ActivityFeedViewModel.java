@@ -115,7 +115,7 @@ public interface ActivityFeedViewModel {
         .map(f -> coalesce(f.get(FeatureKey.ANDROID_SURVEYS), false));
 
       Observable.combineLatest(
-          resume,
+          this.resume,
           this.currentUser.isLoggedIn(),
           Pair::create
         )

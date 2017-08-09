@@ -41,32 +41,32 @@ public final class LoggedInViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    user = requireNonNull((User) data, User.class);
+    this.user = requireNonNull((User) data, User.class);
   }
 
   @Override
   public void onBind() {
     final Context context = context();
 
-    userNameTextView.setText(user.name());
+    this.userNameTextView.setText(this.user.name());
     Picasso.with(context)
-      .load(user.avatar().medium())
+      .load(this.user.avatar().medium())
       .transform(new CircleTransformation())
-      .into(userImageView);
+      .into(this.userImageView);
   }
 
   @OnClick(R.id.user_container)
   public void userClick() {
-    delegate.loggedInViewHolderProfileClick(this, user);
+    this.delegate.loggedInViewHolderProfileClick(this, this.user);
   }
 
   @Nullable @OnClick(R.id.internal_tools_icon_button)
   public void internalToolsClick() {
-    delegate.loggedInViewHolderInternalToolsClick(this);
+    this.delegate.loggedInViewHolderInternalToolsClick(this);
   }
 
   @OnClick(R.id.settings_icon_button)
   public void settingsClick() {
-    delegate.loggedInViewHolderSettingsClick(this, user);
+    this.delegate.loggedInViewHolderSettingsClick(this, this.user);
   }
 }

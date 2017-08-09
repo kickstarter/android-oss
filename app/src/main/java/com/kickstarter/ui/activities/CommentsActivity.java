@@ -41,6 +41,8 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(CommentsViewModel.class)
@@ -64,76 +66,78 @@ public final class CommentsActivity extends BaseActivity<CommentsViewModel> impl
     setContentView(R.layout.comments_layout);
     ButterKnife.bind(this);
 
-    adapter = new CommentsAdapter(this);
-    recyclerView.setAdapter(adapter);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    this.adapter = new CommentsAdapter(this);
+    this.recyclerView.setAdapter(this.adapter);
+    this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
-    swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, viewModel.inputs::refresh, viewModel.outputs::isFetchingComments);
+    this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage);
+    this.swipeRefresher = new SwipeRefresher(
+      this, this.swipeRefreshLayout, this.viewModel.inputs::refresh, this.viewModel.outputs::isFetchingComments
+    );
 
-    final Observable<TextView> commentBodyEditText = alertDialog
+    final Observable<TextView> commentBodyEditText = this.alertDialog
       .map(a -> ButterKnife.findById(a, R.id.comment_body));
 
-    final Observable<TextView> postCommentButton = alertDialog
+    final Observable<TextView> postCommentButton = this.alertDialog
       .map(a -> ButterKnife.findById(a, R.id.post_button));
 
-    final Observable<TextView> cancelButton = alertDialog
+    final Observable<TextView> cancelButton = this.alertDialog
       .map(a -> ButterKnife.findById(a, R.id.cancel_button));
 
     cancelButton
       .switchMap(RxView::clicks)
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.commentDialogDismissed());
+      .subscribe(__ -> this.viewModel.inputs.commentDialogDismissed());
 
     postCommentButton
       .switchMap(RxView::clicks)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.postCommentClicked());
+      .subscribe(__ -> this.viewModel.inputs.postCommentClicked());
 
     commentBodyEditText
       .switchMap(t -> RxTextView.textChanges(t).skip(1))
       .map(CharSequence::toString)
       .compose(bindToLifecycle())
-      .subscribe(viewModel.inputs::commentBodyChanged);
+      .subscribe(this.viewModel.inputs::commentBodyChanged);
 
-    viewModel.outputs.currentCommentBody()
+    this.viewModel.outputs.currentCommentBody()
       .compose(Transformers.takePairWhen(commentBodyEditText))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(ce -> ce.second.append(ce.first));
 
-    viewModel.outputs.commentsData()
+    this.viewModel.outputs.commentsData()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(adapter::takeData);
+      .subscribe(this.adapter::takeData);
 
-    viewModel.outputs.enablePostButton()
-      .compose(Transformers.combineLatestPair(postCommentButton))
+    this.viewModel.outputs.enablePostButton()
+      .compose(combineLatestPair(postCommentButton))
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(bb -> setPostButtonEnabled(bb.second, bb.first));
 
-    viewModel.outputs.commentButtonHidden()
+    this.viewModel.outputs.commentButtonHidden()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ViewUtils.setGone(this.commentButtonTextView));
 
-    viewModel.outputs.showCommentDialog()
+    this.viewModel.outputs.showCommentDialog()
       .filter(projectAndShow -> projectAndShow != null)
       .map(projectAndShow -> projectAndShow.first)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showCommentDialog);
 
-    alertDialog
-      .compose(Transformers.takeWhen(viewModel.outputs.dismissCommentDialog()))
+    this.alertDialog
+      .compose(takeWhen(this.viewModel.outputs.dismissCommentDialog()))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(this::dismissCommentDialog);
 
     lifecycle()
-      .compose(Transformers.combineLatestPair(alertDialog))
+      .compose(combineLatestPair(this.alertDialog))
       .filter(ad -> ad.first == ActivityEvent.DESTROY)
       .map(ad -> ad.second)
       .observeOn(AndroidSchedulers.mainThread())
@@ -152,8 +156,8 @@ public final class CommentsActivity extends BaseActivity<CommentsViewModel> impl
   protected void onDestroy() {
     super.onDestroy();
 
-    recyclerViewPaginator.stop();
-    recyclerView.setAdapter(null);
+    this.recyclerViewPaginator.stop();
+    this.recyclerView.setAdapter(null);
   }
 
   @Nullable
@@ -170,7 +174,7 @@ public final class CommentsActivity extends BaseActivity<CommentsViewModel> impl
 
   @OnClick(R.id.comment_button)
   protected void commentButtonClicked() {
-    viewModel.inputs.commentButtonClicked();
+    this.viewModel.inputs.commentButtonClicked();
   }
 
   public void dismissCommentDialog(final @Nullable AlertDialog dialog) {
@@ -192,10 +196,10 @@ public final class CommentsActivity extends BaseActivity<CommentsViewModel> impl
 
     // Handle cancel-click region outside of dialog modal.
     commentDialog.setOnCancelListener((final @NonNull DialogInterface dialogInterface) -> {
-      viewModel.inputs.commentDialogDismissed();
+      this.viewModel.inputs.commentDialogDismissed();
     });
 
-    alertDialog.onNext(commentDialog);
+    this.alertDialog.onNext(commentDialog);
   }
 
   public void setPostButtonEnabled(final @Nullable TextView postCommentButton, final boolean enabled) {
@@ -234,7 +238,7 @@ public final class CommentsActivity extends BaseActivity<CommentsViewModel> impl
 
   private Observable<String> toastMessages() {
     return viewModel.outputs.showPostCommentErrorToast()
-      .map(ObjectUtils.coalesceWith(postCommentErrorString))
-      .mergeWith(viewModel.outputs.showCommentPostedToast().map(__ -> commentPostedString));
+      .map(ObjectUtils.coalesceWith(this.postCommentErrorString))
+      .mergeWith(this.viewModel.outputs.showCommentPostedToast().map(__ -> this.commentPostedString));
   }
 }

@@ -24,12 +24,11 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
     Observable<Pair<Project, List<ProjectStatsEnvelope.RewardStats>>> projectAndRewardStats();
   }
 
-  final class ViewModel extends ActivityViewModel<CreatorDashboardRewardStatsViewHolder> implements
-    Inputs, Outputs {
+  final class ViewModel extends ActivityViewModel<CreatorDashboardRewardStatsViewHolder> implements Inputs, Outputs {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
-      this.projectAndRewardStats = projectAndRewardStatsInput;
+      this.projectAndRewardStats = this.projectAndRewardStatsInput;
     }
 
     public final Inputs inputs = this;

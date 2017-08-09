@@ -40,9 +40,9 @@ public final class KoalaTrackingClient extends TrackingClientType {
     this.androidPayCapability = androidPayCapability;
 
     // Cache the most recent logged in user for default Koala properties.
-    this.currentUser.observable().subscribe(u -> loggedInUser = u);
+    this.currentUser.observable().subscribe(u -> this.loggedInUser = u);
 
-    mixpanel = MixpanelAPI.getInstance(context, "koala");
+    this.mixpanel = MixpanelAPI.getInstance(context, "koala");
   }
 
   @Override
@@ -50,7 +50,7 @@ public final class KoalaTrackingClient extends TrackingClientType {
     final Map<String, Object> newProperties = new HashMap<>(properties);
     newProperties.putAll(defaultProperties());
 
-    mixpanel.trackMap(eventName, MapUtils.compact(newProperties));
+    this.mixpanel.trackMap(eventName, MapUtils.compact(newProperties));
   }
 
   @NonNull
@@ -80,23 +80,23 @@ public final class KoalaTrackingClient extends TrackingClientType {
    * Derives the device's orientation (portrait/landscape) from the `context`.
    */
   private @NonNull String deviceOrientation() {
-    if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+    if (this.context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
       return "landscape";
     }
     return "portrait";
   }
 
   private @NonNull String deviceFormat() {
-    return context.getResources().getBoolean(R.bool.isTablet) ? "tablet" : "phone";
+    return this.context.getResources().getBoolean(R.bool.isTablet) ? "tablet" : "phone";
   }
 
   /**
    * Derives the availability of google play services from the `context`.
    */
   private boolean isGooglePlayServicesAvailable() {
-    if (isGooglePlayServicesAvailable == null) {
-      isGooglePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.context.getApplicationContext()) != ConnectionResult.SUCCESS;
+    if (this.isGooglePlayServicesAvailable == null) {
+      this.isGooglePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.context.getApplicationContext()) != ConnectionResult.SUCCESS;
     }
-    return isGooglePlayServicesAvailable;
+    return this.isGooglePlayServicesAvailable;
   }
 }

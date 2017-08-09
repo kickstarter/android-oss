@@ -67,22 +67,22 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
     this.viewModel.outputs.percentageFunded()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(percentTextView::setText);
+      .subscribe(this.percentTextView::setText);
 
     this.viewModel.outputs.projectBackersCountText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(backerCountTextView::setText);
+      .subscribe(this.backerCountTextView::setText);
 
     this.viewModel.outputs.projectNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(projectNameTextView::setText);
+      .subscribe(this.projectNameTextView::setText);
 
     this.viewModel.outputs.timeRemainingText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(timeRemainingTextView::setText);
+      .subscribe(this.timeRemainingTextView::setText);
 
     this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
@@ -103,15 +103,15 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   }
 
   private void setPledgedOfGoalString(final @NonNull Project currentProject) {
-    final String goalString = ksCurrency.format(currentProject.pledged(), currentProject, false, true, RoundingMode.DOWN);
+    final String goalString = this.ksCurrency.format(currentProject.pledged(), currentProject, false, true, RoundingMode.DOWN);
     this.amountRaisedTextView.setText(goalString);
 
-    final String goalText = ksString.format(this.pledgedOfGoalString, "goal", goalString);
+    final String goalText = this.ksString.format(this.pledgedOfGoalString, "goal", goalString);
     this.fundingTextTextView.setText(goalText);
   }
 
   private void setTimeRemainingTextTextView(final @NonNull Project currentProject) {
-    this.timeRemainingTextTextView.setText(ProjectUtils.deadlineCountdownDetail(currentProject, this.context(), ksString));
+    this.timeRemainingTextTextView.setText(ProjectUtils.deadlineCountdownDetail(currentProject, this.context(), this.ksString));
   }
 
   private void startProjectActivity(final @NonNull Project project, final @NonNull RefTag refTag) {

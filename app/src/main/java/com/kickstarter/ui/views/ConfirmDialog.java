@@ -51,23 +51,23 @@ public class ConfirmDialog extends AppCompatDialog {
     setContentView(R.layout.generic_dialog_alert);
     ButterKnife.bind(this);
 
-    if (title != null) {
-      setTitleText(title);
+    if (this.title != null) {
+      setTitleText(this.title);
     } else {
-      titleTextView.setVisibility(View.GONE);
+      this.titleTextView.setVisibility(View.GONE);
     }
 
-    if (buttonText != null) {
-      setButtonText(buttonText);
+    if (this.buttonText != null) {
+      setButtonText(this.buttonText);
     } else {
-      setButtonText(okString);
+      setButtonText(this.okString);
     }
 
-    setMessage(message);
+    setMessage(this.message);
   }
 
   public void setButtonText(final @NonNull String buttonText) {
-    okButton.setText(buttonText);
+    this.okButton.setText(buttonText);
   }
 
   /**
@@ -75,19 +75,19 @@ public class ConfirmDialog extends AppCompatDialog {
    * Note, default visibility is GONE since we may not always want a title.
    */
   public void setTitleText(final @NonNull String title) {
-    titleTextView.setText(title);
-    titleTextView.setVisibility(TextView.VISIBLE);
+    this.titleTextView.setText(title);
+    this.titleTextView.setVisibility(TextView.VISIBLE);
 
-    final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) messageTextView.getLayoutParams();
+    final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) this.messageTextView.getLayoutParams();
     params.topMargin = (int) getContext().getResources().getDimension(R.dimen.grid_1);
-    messageTextView.setLayoutParams(params);
+    this.messageTextView.setLayoutParams(params);
   }
 
   /**
    * Set the message on the TextView with id message_text_view.
    */
   public void setMessage(final @NonNull String message) {
-    messageTextView.setText(message);
+    this.messageTextView.setText(message);
   }
 
   /**

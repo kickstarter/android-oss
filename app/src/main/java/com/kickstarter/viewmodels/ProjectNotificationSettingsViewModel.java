@@ -24,8 +24,8 @@ public final class ProjectNotificationSettingsViewModel extends ActivityViewMode
 
     final ApiClientType client = environment.apiClient();
 
-    projectNotifications = client.fetchProjectNotifications()
-      .compose(Transformers.pipeErrorsTo(unableToFetchProjectNotificationsError));
+    this.projectNotifications = client.fetchProjectNotifications()
+      .compose(Transformers.pipeErrorsTo(this.unableToFetchProjectNotificationsError));
   }
 
   private Observable<List<ProjectNotification>> projectNotifications;
@@ -36,11 +36,11 @@ public final class ProjectNotificationSettingsViewModel extends ActivityViewMode
   public final ProjectNotificationSettingsViewModelErrors errors = this;
 
   public Observable<List<ProjectNotification>> projectNotifications() {
-    return projectNotifications;
+    return this.projectNotifications;
   }
 
   public Observable<Void> unableToFetchProjectNotificationsError() {
-    return unableToFetchProjectNotificationsError
+    return this.unableToFetchProjectNotificationsError
       .map(__ -> null);
   }
 }

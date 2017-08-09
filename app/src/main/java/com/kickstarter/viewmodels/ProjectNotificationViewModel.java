@@ -28,8 +28,8 @@ public class ProjectNotificationViewModel extends ActivityViewModel<ProjectNotif
     final ApiClientType client = environment.apiClient();
 
     // When the enable switch is clicked, update the project notification.
-    final Observable<Notification<ProjectNotification>> updateNotification = projectNotification
-      .compose(takePairWhen(enabledSwitchClick))
+    final Observable<Notification<ProjectNotification>> updateNotification = this.projectNotification
+      .compose(takePairWhen(this.enabledSwitchClick))
       .switchMap(ne ->
         client
           .updateProjectNotifications(ne.first, ne.second)
@@ -40,24 +40,24 @@ public class ProjectNotificationViewModel extends ActivityViewModel<ProjectNotif
     updateNotification
       .compose(values())
       .compose(bindToLifecycle())
-      .subscribe(projectNotification::onNext);
+      .subscribe(this.projectNotification::onNext);
 
     updateNotification
       .compose(errors())
       .compose(bindToLifecycle())
-      .subscribe(__ -> showUnableToSaveProjectNotificationError.onNext(null));
+      .subscribe(__ -> this.showUnableToSaveProjectNotificationError.onNext(null));
 
     // Update the project name when a project notification emits.
-    projectNotification
+    this.projectNotification
       .map(n -> n.project().name())
       .compose(bindToLifecycle())
-      .subscribe(projectName::onNext);
+      .subscribe(this.projectName::onNext);
 
     // Update the enabled switch when a project notification emits.
-    projectNotification
+    this.projectNotification
       .map(n -> n.email() && n.mobile())
       .compose(bindToLifecycle())
-      .subscribe(enabledSwitch::onNext);
+      .subscribe(this.enabledSwitch::onNext);
   }
 
   private PublishSubject<Boolean> enabledSwitchClick = PublishSubject.create();
@@ -74,7 +74,7 @@ public class ProjectNotificationViewModel extends ActivityViewModel<ProjectNotif
 
   @Override
   public void enabledSwitchClick(final boolean enabled) {
-    enabledSwitchClick.onNext(enabled);
+    this.enabledSwitchClick.onNext(enabled);
   }
 
   @Override
@@ -84,16 +84,16 @@ public class ProjectNotificationViewModel extends ActivityViewModel<ProjectNotif
 
   @Override
   public @NonNull Observable<String> projectName() {
-    return projectName;
+    return this.projectName;
   }
 
   @Override
   public @NonNull Observable<Boolean> enabledSwitch() {
-    return enabledSwitch;
+    return this.enabledSwitch;
   }
 
   @Override
   public @NonNull Observable<Void> showUnableToSaveProjectNotificationError() {
-    return showUnableToSaveProjectNotificationError;
+    return this.showUnableToSaveProjectNotificationError;
   }
 }

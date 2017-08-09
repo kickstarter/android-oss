@@ -39,21 +39,21 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
    * Get viewModel.
    */
   public ViewModelType viewModel() {
-    return viewModel;
+    return this.viewModel;
   }
 
   /**
    * Returns an observable of the activity's lifecycle events.
    */
   public final Observable<ActivityEvent> lifecycle() {
-    return lifecycle.asObservable();
+    return this.lifecycle.asObservable();
   }
 
   /**
    * Completes an observable when an {@link ActivityEvent} occurs in the activity's lifecycle.
    */
   public final <T> Observable.Transformer<T, T> bindUntilEvent(final ActivityEvent event) {
-    return RxLifecycle.bindUntilActivityEvent(lifecycle, event);
+    return RxLifecycle.bindUntilActivityEvent(this.lifecycle, event);
   }
 
   /**
@@ -62,7 +62,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
    * in {@link ActivityEvent#DESTROY}.
    */
   public final <T> Observable.Transformer<T, T> bindToLifecycle() {
-    return RxLifecycle.bindActivity(lifecycle);
+    return RxLifecycle.bindActivity(this.lifecycle);
   }
 
   /**
@@ -72,7 +72,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
     super.onActivityResult(requestCode, resultCode, intent);
-    viewModel.activityResult(ActivityResult.create(requestCode, resultCode, intent));
+    this.viewModel.activityResult(ActivityResult.create(requestCode, resultCode, intent));
   }
 
   @CallSuper
@@ -81,11 +81,11 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     super.onCreate(savedInstanceState);
     Timber.d("onCreate %s", this.toString());
 
-    lifecycle.onNext(ActivityEvent.CREATE);
+    this.lifecycle.onNext(ActivityEvent.CREATE);
 
     assignViewModel(savedInstanceState);
 
-    viewModel.intent(getIntent());
+    this.viewModel.intent(getIntent());
   }
 
   /**
@@ -95,7 +95,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   @Override
   protected void onNewIntent(final Intent intent) {
     super.onNewIntent(intent);
-    viewModel.intent(intent);
+    this.viewModel.intent(intent);
   }
 
   @CallSuper
@@ -103,9 +103,9 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   protected void onStart() {
     super.onStart();
     Timber.d("onStart %s", this.toString());
-    lifecycle.onNext(ActivityEvent.START);
+    this.lifecycle.onNext(ActivityEvent.START);
 
-    back
+    this.back
       .compose(bindUntilEvent(ActivityEvent.STOP))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> goBack());
@@ -116,30 +116,30 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   protected void onResume() {
     super.onResume();
     Timber.d("onResume %s", this.toString());
-    lifecycle.onNext(ActivityEvent.RESUME);
+    this.lifecycle.onNext(ActivityEvent.RESUME);
 
     assignViewModel(null);
-    if (viewModel != null) {
-      viewModel.onResume(this);
+    if (this.viewModel != null) {
+      this.viewModel.onResume(this);
     }
   }
 
   @CallSuper
   @Override
   protected void onPause() {
-    lifecycle.onNext(ActivityEvent.PAUSE);
+    this.lifecycle.onNext(ActivityEvent.PAUSE);
     super.onPause();
     Timber.d("onPause %s", this.toString());
 
-    if (viewModel != null) {
-      viewModel.onPause();
+    if (this.viewModel != null) {
+      this.viewModel.onPause();
     }
   }
 
   @CallSuper
   @Override
   protected void onStop() {
-    lifecycle.onNext(ActivityEvent.STOP);
+    this.lifecycle.onNext(ActivityEvent.STOP);
     super.onStop();
     Timber.d("onStop %s", this.toString());
   }
@@ -147,16 +147,16 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   @CallSuper
   @Override
   protected void onDestroy() {
-    lifecycle.onNext(ActivityEvent.DESTROY);
+    this.lifecycle.onNext(ActivityEvent.DESTROY);
     super.onDestroy();
     Timber.d("onDestroy %s", this.toString());
 
-    subscriptions.clear();
+    this.subscriptions.clear();
 
     if (isFinishing()) {
-      if (viewModel != null) {
-        ActivityViewModelManager.getInstance().destroy(viewModel);
-        viewModel = null;
+      if (this.viewModel != null) {
+        ActivityViewModelManager.getInstance().destroy(this.viewModel);
+        this.viewModel = null;
       }
     }
   }
@@ -185,7 +185,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
    * Call when the user wants triggers a back event, e.g. clicking back in a toolbar or pressing the device back button.
    */
   public void back() {
-    back.onNext(null);
+    this.back.onNext(null);
   }
 
   /**
@@ -203,8 +203,8 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     Timber.d("onSaveInstanceState %s", this.toString());
 
     final Bundle viewModelEnvelope = new Bundle();
-    if (viewModel != null) {
-      ActivityViewModelManager.getInstance().save(viewModel, viewModelEnvelope);
+    if (this.viewModel != null) {
+      ActivityViewModelManager.getInstance().save(this.viewModel, viewModelEnvelope);
     }
 
     outState.putBundle(VIEW_MODEL_KEY, viewModelEnvelope);
@@ -242,7 +242,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
    */
   @Deprecated
   protected final void addSubscription(final @NonNull Subscription subscription) {
-    subscriptions.add(subscription);
+    this.subscriptions.add(subscription);
   }
 
   /**
@@ -258,11 +258,11 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   }
 
   private void assignViewModel(final @Nullable Bundle viewModelEnvelope) {
-    if (viewModel == null) {
+    if (this.viewModel == null) {
       final RequiresActivityViewModel annotation = getClass().getAnnotation(RequiresActivityViewModel.class);
       final Class<ViewModelType> viewModelClass = annotation == null ? null : (Class<ViewModelType>) annotation.value();
       if (viewModelClass != null) {
-        viewModel = ActivityViewModelManager.getInstance().fetch(this,
+        this.viewModel = ActivityViewModelManager.getInstance().fetch(this,
           viewModelClass,
           BundleUtils.maybeGetBundle(viewModelEnvelope, VIEW_MODEL_KEY));
       }

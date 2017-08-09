@@ -60,7 +60,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     setUpEnvironment(env);
 
-    // Popular projects emit immediately.
+    // Popular projectList emit immediately.
     this.popularProjectsPresent.assertValues(true);
     this.searchProjectsPresent.assertNoValues();
     this.koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
@@ -100,7 +100,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY
     );
 
-    // Clearing search terms brings back popular projects.
+    // Clearing search terms brings back popular projectList.
     this.vm.inputs.search("");
     this.searchProjectsPresent.assertValues(false, true, false, true, false);
     this.popularProjectsPresent.assertValues(true, false, true);

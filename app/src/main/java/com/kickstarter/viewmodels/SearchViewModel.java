@@ -39,10 +39,10 @@ public interface SearchViewModel {
   }
 
   interface Outputs {
-    /** Emits list of popular projects. */
+    /** Emits list of popular projectList. */
     Observable<List<Project>> popularProjects();
 
-    /** Emits list of projects matching criteria. */
+    /** Emits list of projectList matching criteria. */
     Observable<List<Project>> searchProjects();
 
     /** Emits a project and ref tag when we should start a project activity. */
@@ -129,10 +129,10 @@ public interface SearchViewModel {
     private static final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(defaultSort).build();
 
     /**
-     * Returns a project and its appropriate ref tag given its location in a list of popular projects or search results.
+     * Returns a project and its appropriate ref tag given its location in a list of popular projectList or search results.
      *
      * @param searchTerm        The search term entered to determine list of search results.
-     * @param projects          The list of popular or search result projects.
+     * @param projects          The list of popular or search result projectList.
      * @param selectedProject   The project selected by the user.
      * @return                  The project and its appropriate ref tag.
      */

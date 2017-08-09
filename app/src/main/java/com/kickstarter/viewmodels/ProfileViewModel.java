@@ -47,29 +47,29 @@ public interface ProfileViewModel {
     /** Emits the user avatar image to be displayed. */
     Observable<String> avatarImageViewUrl();
 
-    /** Emits when the backed projects count should be hidden. */
+    /** Emits when the backed projectList count should be hidden. */
     Observable<Boolean> backedCountTextViewHidden();
 
-    /** Emits the backed projects count to be displayed. */
+    /** Emits the backed projectList count to be displayed. */
     Observable<String> backedCountTextViewText();
 
-    /** Emits when the backed projects text view should be hidden. */
+    /** Emits when the backed projectList text view should be hidden. */
     Observable<Boolean> backedTextViewHidden();
 
-    /** Emits when the created projects count should be hidden. */
+    /** Emits when the created projectList count should be hidden. */
     Observable<Boolean> createdCountTextViewHidden();
 
-    /** Emits the created projects count to be displayed. */
+    /** Emits the created projectList count to be displayed. */
     Observable<String> createdCountTextViewText();
 
-    /** Emits when the created projects text view should be hidden. */
+    /** Emits when the created projectList text view should be hidden. */
     Observable<Boolean> createdTextViewHidden();
 
     /** Emits when the divider view should be hidden. */
     Observable<Boolean> dividerViewHidden();
 
-    /** Emits a list of projects to display in the profile. */
-    Observable<List<Project>> projects();
+    /** Emits a list of projectList to display in the profile. */
+    Observable<List<Project>> projectList();
 
     /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
     Observable<Void> resumeDiscoveryActivity();
@@ -145,7 +145,7 @@ public interface ProfileViewModel {
       )
         .map(p -> p.first || p.second);
 
-      this.projects = paginator.paginatedData();
+      this.projectList = paginator.paginatedData();
       this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked;
       this.startProjectActivity = this.projectCardClicked;
       this.startMessageThreadsActivity = this.messagesButtonClicked;
@@ -167,7 +167,7 @@ public interface ProfileViewModel {
     private final Observable<String> createdCountTextViewText;
     private final Observable<Boolean> createdTextViewHidden;
     private final Observable<Boolean> dividerViewHidden;
-    private final Observable<List<Project>> projects;
+    private final Observable<List<Project>> projectList;
     private final Observable<Void> resumeDiscoveryActivity;
     private final Observable<Project> startProjectActivity;
     private final Observable<Void> startMessageThreadsActivity;
@@ -219,8 +219,8 @@ public interface ProfileViewModel {
     @Override public @NonNull Observable<Boolean> dividerViewHidden() {
       return this.dividerViewHidden;
     }
-    @Override public @NonNull Observable<List<Project>> projects() {
-      return this.projects;
+    @Override public @NonNull Observable<List<Project>> projectList() {
+      return this.projectList;
     }
     @Override public @NonNull Observable<Void> resumeDiscoveryActivity() {
       return this.resumeDiscoveryActivity;

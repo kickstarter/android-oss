@@ -97,7 +97,7 @@ public final class DiscoveryParamsTest extends KSRobolectricTestCase {
     assertEquals(recentlyLaunchedParams, DiscoveryParams.fromUri(recentlyLaunchedUri));
 
     final DiscoveryParams smallProjectsParams = DiscoveryParams.builder().pledged(0).build();
-    final Uri smallProjectsUri = Uri.parse("https://www.kickstarter.com/discover/small-projects");
+    final Uri smallProjectsUri = Uri.parse("https://www.kickstarter.com/discover/small-projectList");
     assertEquals(smallProjectsParams, DiscoveryParams.fromUri(smallProjectsUri));
 
     final DiscoveryParams socialParams = DiscoveryParams.builder().social(0).build();
@@ -132,7 +132,7 @@ public final class DiscoveryParamsTest extends KSRobolectricTestCase {
     final Uri advancedUri = Uri.parse("https://www.kickstarter.com/discover/advanced?term=skull+graphic+tee");
     assertEquals(params, DiscoveryParams.fromUri(advancedUri));
 
-    final Uri searchUri = Uri.parse("https://www.kickstarter.com/projects/search?term=skull+graphic+tee");
+    final Uri searchUri = Uri.parse("https://www.kickstarter.com/projectList/search?term=skull+graphic+tee");
     assertEquals(params, DiscoveryParams.fromUri(searchUri));
   }
 

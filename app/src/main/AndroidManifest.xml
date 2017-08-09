@@ -7,7 +7,7 @@
   <!-- PERMISSIONS -->
 
   <uses-permission android:name="android.permission.INTERNET" />
-  <!-- We need coarse location to find projects near a user. Could also see people being uncomfortable with providing
+  <!-- We need coarse location to find projectList near a user. Could also see people being uncomfortable with providing
     this permission though, since location is not core to the app. -->
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
   <!-- WAKE_LOCK keeps the processor from sleeping when a GCM message is received -->
@@ -440,7 +440,7 @@
       </intent-filter>
     </service>
 
-    <!-- Processes token refresh events from GCM (e.g. token expired). Registers a new token. -->
+    <!-- Processes token swipeRefresh events from GCM (e.g. token expired). Registers a new token. -->
     <service
       android:name=".services.gcm.TokenListenerService"
       android:exported="false">

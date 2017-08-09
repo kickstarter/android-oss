@@ -91,7 +91,7 @@ public interface RewardViewModelOutputs {
   /**
    * Show the rewards items.
    */
-  Observable<List<RewardsItem>> rewardsItems();
+  Observable<List<RewardsItem>> rewardsItemList();
 
   /**
    * Returns `true` if the items section should be hidden, `false` otherwise.

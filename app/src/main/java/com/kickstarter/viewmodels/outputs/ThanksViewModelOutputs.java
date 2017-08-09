@@ -32,7 +32,7 @@ public interface ThanksViewModelOutputs {
   Observable<Void> showRatingDialog();
 
   /**
-   * Show recommended projects and a category tout.
+   * Show recommended projectList and a category tout.
    */
   Observable<Pair<List<Project>, Category>> showRecommendations();
 

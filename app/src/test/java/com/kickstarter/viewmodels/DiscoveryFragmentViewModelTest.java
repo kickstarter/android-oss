@@ -38,13 +38,13 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment());
 
     final TestSubscriber<Boolean> hasProjects = new TestSubscriber<>();
-    vm.outputs.projects().map(ListUtils::nonEmpty).subscribe(hasProjects);
+    vm.outputs.projectList().map(ListUtils::nonEmpty).subscribe(hasProjects);
 
     // Load initial params and root categories from activity.
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
     vm.inputs.rootCategories(CategoryFactory.rootCategories());
 
-    // Should emit current fragment's projects.
+    // Should emit current fragment's projectList.
     hasProjects.assertValues(true);
     koalaTest.assertValues("Discover List View");
 
@@ -56,7 +56,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
         .build()
     );
 
-    // Projects are cleared, new projects load.
+    // Projects are cleared, new projectList load.
     hasProjects.assertValues(true, false, true);
     koalaTest.assertValues("Discover List View", "Discover List View");
 
@@ -69,7 +69,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment());
 
     final TestSubscriber<List<Project>> projects = new TestSubscriber<>();
-    vm.outputs.projects().filter(ListUtils::nonEmpty).subscribe(projects);
+    vm.outputs.projectList().filter(ListUtils::nonEmpty).subscribe(projects);
 
     // Initial load.
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
@@ -95,7 +95,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment);
 
     final TestSubscriber<List<Project>> projects = new TestSubscriber<>();
-    vm.outputs.projects().filter(ListUtils::nonEmpty).subscribe(projects);
+    vm.outputs.projectList().filter(ListUtils::nonEmpty).subscribe(projects);
 
     // Initial load.
     vm.inputs.rootCategories(CategoryFactory.rootCategories());
@@ -139,7 +139,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> shouldShowOnboardingViewTest = new TestSubscriber<>();
     vm.outputs.shouldShowOnboardingView().subscribe(shouldShowOnboardingViewTest);
 
-    // Initial home all projects params.
+    // Initial home all projectList params.
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
     vm.inputs.rootCategories(CategoryFactory.rootCategories());
 
@@ -200,7 +200,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     vm.inputs.discoveryOnboardingViewHolderLoginToutClick(null);
     showLoginTout.assertValue(true);
 
-    // Pass in params and sort to fetch projects.
+    // Pass in params and sort to fetch projectList.
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
 
     // Clicking on a project card should show project activity.

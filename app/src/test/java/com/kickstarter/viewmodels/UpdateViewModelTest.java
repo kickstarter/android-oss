@@ -42,7 +42,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
     final Update update = UpdateFactory.update();
 
-    final String anotherUpdateUrl = "https://kck.str/projects/param/param/posts/next-id";
+    final String anotherUpdateUrl = "https://kck.str/projectList/param/param/posts/next-id";
 
     final Request anotherUpdateRequest = new Request.Builder()
       .url(anotherUpdateUrl)
@@ -70,7 +70,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final Update update = UpdateFactory.update();
 
     final Request commentsRequest = new Request.Builder()
-      .url("https://kck.str/projects/param/param/posts/id/comments")
+      .url("https://kck.str/projectList/param/param/posts/id/comments")
       .build();
 
     final TestSubscriber<Update> startCommentsActivity = new TestSubscriber<>();
@@ -99,7 +99,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
       .build();
 
     final Request projectRequest = new Request.Builder()
-      .url("https://kck.str/projects/param/param")
+      .url("https://kck.str/projectList/param/param")
       .build();
 
     final ApiClientType apiClient = new MockApiClient() {
@@ -151,7 +151,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final Update anotherUpdate = UpdateFactory.update().toBuilder().sequence(2).build();
 
     final Request anotherUpdateRequest = new Request.Builder()
-      .url("https://kck.str/projects/param/param/posts/id")
+      .url("https://kck.str/projectList/param/param/posts/id")
       .build();
 
     final ApiClientType apiClient = new MockApiClient() {

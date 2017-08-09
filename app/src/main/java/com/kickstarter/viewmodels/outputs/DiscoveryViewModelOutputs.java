@@ -33,7 +33,7 @@ public interface DiscoveryViewModelOutputs {
 
   /**
    * Emits when the params of a particular page should be updated. The page will be responsible for
-   * taking those params and creating paginating projects from it.
+   * taking those params and creating paginating projectList from it.
    */
   Observable<DiscoveryParams> updateParamsForPage();
 

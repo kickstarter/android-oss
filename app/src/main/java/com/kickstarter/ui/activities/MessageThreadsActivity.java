@@ -70,7 +70,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
 
     this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage);
     this.swipeRefresher = new SwipeRefresher(
-      this, this.swipeRefreshLayout, this.viewModel.inputs::refresh, this.viewModel.outputs::isFetchingMessageThreads
+      this, this.swipeRefreshLayout, this.viewModel.inputs::swipeRefresh, this.viewModel.outputs::isFetchingMessageThreads
     );
 
     this.mailboxTextView.setText(this.inboxString);  // todo: Sent mailbox logic enum
@@ -87,7 +87,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
       .compose(observeForUI())
       .subscribe(__ -> this.unreadCountTextView.setText(this.noUnreadMessagesString));
 
-    this.viewModel.outputs.messageThreads()
+    this.viewModel.outputs.messageThreadList()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.adapter::messageThreads);

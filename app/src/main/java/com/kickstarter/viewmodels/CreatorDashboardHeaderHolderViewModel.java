@@ -27,7 +27,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
   }
 
   interface Outputs {
-    /* string number with the percentage of a projects funding */
+    /* string number with the percentage of a projectList funding */
     Observable<String> percentageFunded();
 
     /* localized count of number of backers */
@@ -56,9 +56,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
 
       this.percentageFunded = this.projectAndStats
         .map(PairUtils::first)
-        .map(Project::percentageFunded)
-        .map(NumberUtils::flooredPercentage)
-        .compose(bindToLifecycle());
+        .map(p -> NumberUtils.flooredPercentage(p.percentageFunded()));
 
       this.projectBackersCountText = this.projectAndStats
         .map(PairUtils::first)

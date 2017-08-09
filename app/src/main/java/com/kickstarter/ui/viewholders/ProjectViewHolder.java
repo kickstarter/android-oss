@@ -193,7 +193,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.projectNameTextView.setText(this.project.name());
     final Category category = this.project.category();
     if (category != null) {
-      categoryTextView.setText(category.name());
+      this.categoryTextView.setText(category.name());
     }
     final Location location = this.project.location();
     if (location != null) {

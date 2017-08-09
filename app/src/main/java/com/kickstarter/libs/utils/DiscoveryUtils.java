@@ -75,14 +75,14 @@ public final class DiscoveryUtils {
   }
 
   /**
-   * Given a list of projects and root categories this will determine if the first project is featured
+   * Given a list of projectList and root categories this will determine if the first project is featured
    * and is in need of its root category. If that is the case we will find its root and fill in that
-   * data and return a new list of projects.
+   * data and return a new list of projectList.
    */
   public static List<Project> fillRootCategoryForFeaturedProjects(final @NonNull List<Project> projects,
     final @NonNull List<Category> rootCategories) {
 
-    // Guard against no projects
+    // Guard against no projectList
     if (projects.size() == 0) {
       return ListUtils.empty();
     }

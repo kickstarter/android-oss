@@ -143,7 +143,7 @@ public final class MessageThreadViewHolder extends KSViewHolder {
   }
 
   private void setDateTextView(final @NonNull DateTime date) {
-    this.dateTextView.setText(DateTimeUtils.relative(context(), ksString, date));
+    this.dateTextView.setText(DateTimeUtils.relative(context(), this.ksString, date));
   }
 
   private void setDateTextViewFontFamily(final boolean isMediumWeight) {

@@ -43,7 +43,7 @@ public final class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
     final ProjectUpdatesViewModel.ViewModel vm = new ProjectUpdatesViewModel.ViewModel(environment());
     final Project project = ProjectFactory.project();
 
-    final String anotherIndexUrl = "https://kck.str/projects/param/param/posts?page=another";
+    final String anotherIndexUrl = "https://kck.str/projectList/param/param/posts?page=another";
 
     final Request anotherIndexRequest = new Request.Builder()
       .url(anotherIndexUrl)
@@ -73,7 +73,7 @@ public final class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
     final Project project = ProjectFactory.project();
 
     final Request commentsRequest = new Request.Builder()
-      .url("https://kck.str/projects/param/param/posts/id/comments")
+      .url("https://kck.str/projectList/param/param/posts/id/comments")
       .build();
 
     final TestSubscriber<Update> startCommentsActivity = new TestSubscriber<>();
@@ -91,7 +91,7 @@ public final class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
     final Project project = ProjectFactory.project();
 
     final Request updateRequest = new Request.Builder()
-      .url("https://kck.str/projects/param/param/posts/id")
+      .url("https://kck.str/projectList/param/param/posts/id")
       .build();
 
     final TestSubscriber<Pair<Project, Update>> startUpdateActivity = new TestSubscriber<>();

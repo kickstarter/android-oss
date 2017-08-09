@@ -95,7 +95,7 @@ public interface MessagesViewModel {
     Observable<Void> messageEditTextShouldRequestFocus();
 
     /** Emits a list of messages to be displayed. */
-    Observable<List<Message>> messages();
+    Observable<List<Message>> messageList();
 
     /** Emits the participant name to be displayed. */
     Observable<String> participantNameTextViewText();
@@ -284,11 +284,11 @@ public interface MessagesViewModel {
         .filter(ObjectUtils::isNotNull)
         .take(1)
         .compose(bindToLifecycle())
-        .subscribe(this.messages::onNext);
+        .subscribe(this.messageList::onNext);
 
       updatedMessages
         .compose(bindToLifecycle())
-        .subscribe(this.messages::onNext);
+        .subscribe(this.messageList::onNext);
 
       participant
         .map(User::name)
@@ -405,7 +405,7 @@ public interface MessagesViewModel {
     private final Observable<Boolean> loadingIndicatorViewIsGone;
     private final Observable<String> messageEditTextHint;
     private final PublishSubject<Void> messageEditTextShouldRequestFocus = PublishSubject.create();
-    private final BehaviorSubject<List<Message>> messages = BehaviorSubject.create();
+    private final BehaviorSubject<List<Message>> messageList = BehaviorSubject.create();
     private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final Observable<String> projectNameToolbarTextViewText;
@@ -469,8 +469,8 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<Void> messageEditTextShouldRequestFocus() {
       return this.messageEditTextShouldRequestFocus;
     }
-    @Override public @NonNull Observable<List<Message>> messages() {
-      return this.messages;
+    @Override public @NonNull Observable<List<Message>> messageList() {
+      return this.messageList;
     }
     @Override public @NonNull Observable<String> participantNameTextViewText() {
       return this.participantNameTextViewText;

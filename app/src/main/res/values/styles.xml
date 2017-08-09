@@ -149,7 +149,7 @@
 
   <style name="GrayRoundedButton" parent="RoundedButton">
     <item name="android:background">@drawable/button_gray_rounded</item>
-    <item name="android:textColor">@color/dark_gray</item>
+    <item name="android:textColor">@color/ksr_dark_grey_400</item>
   </style>
 
   <style name="GreenRoundedButton" parent="RoundedButton">
@@ -278,7 +278,7 @@
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_centerVertical">true</item>
     <item name="android:color">@color/ksr_soft_black</item>
-    <item name="android:textColorHint">@color/dark_gray</item>
+    <item name="android:textColorHint">@color/ksr_dark_grey_400</item>
     <item name="android:layout_marginStart">@dimen/grid_12</item>
   </style>
 

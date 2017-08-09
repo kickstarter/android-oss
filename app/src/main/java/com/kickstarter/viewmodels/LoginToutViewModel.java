@@ -112,11 +112,15 @@ public final class LoginToutViewModel extends ActivityViewModel<LoginToutActivit
   }
 
   private void registerFacebookCallback() {
+    final PublishSubject<String> fbAccessToken = this.facebookAccessToken;
+    final BehaviorSubject<FacebookException> fbAuthError = this.facebookAuthorizationError;
+
     this.callbackManager = CallbackManager.Factory.create();
+
     LoginManager.getInstance().registerCallback(this.callbackManager, new FacebookCallback<LoginResult>() {
       @Override
       public void onSuccess(final @NonNull LoginResult result) {
-        facebookAccessToken.onNext(result.getAccessToken().getToken());
+        fbAccessToken.onNext(result.getAccessToken().getToken());
       }
 
       @Override
@@ -127,7 +131,7 @@ public final class LoginToutViewModel extends ActivityViewModel<LoginToutActivit
       @Override
       public void onError(final @NonNull FacebookException error) {
         if (error instanceof FacebookAuthorizationException) {
-          facebookAuthorizationError.onNext(error);
+          fbAuthError.onNext(error);
         }
       }
     });

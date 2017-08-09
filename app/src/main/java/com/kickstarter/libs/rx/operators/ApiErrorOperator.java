@@ -31,6 +31,8 @@ public final class ApiErrorOperator<T> implements Observable.Operator<T, retrofi
 
   @Override
   public Subscriber<? super Response<T>> call(final @NonNull Subscriber<? super T> subscriber) {
+    final Gson gson = this.gson;
+
     return new Subscriber<retrofit2.Response<T>>() {
       @Override
       public void onCompleted() {

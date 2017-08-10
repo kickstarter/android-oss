@@ -27,7 +27,7 @@ import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
-import com.kickstarter.ui.viewholders.UnansweredSurveyViewHolder;
+import com.kickstarter.ui.viewholders.SurveyViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -249,7 +249,7 @@ public interface ActivityFeedViewModel {
       this.projectUpdateProjectClick.onNext(activity);
     }
 
-    @Override public void surveyClicked(final @NonNull UnansweredSurveyViewHolder viewHolder, final @NonNull SurveyResponse surveyResponse) {
+    @Override public void surveyClicked(final @NonNull SurveyViewHolder viewHolder, final @NonNull SurveyResponse surveyResponse) {
       this.surveyClick.onNext(surveyResponse);
     }
 

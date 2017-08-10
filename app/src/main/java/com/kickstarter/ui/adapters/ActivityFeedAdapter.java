@@ -17,8 +17,8 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
-import com.kickstarter.ui.viewholders.UnansweredSurveyHeaderViewHolder;
-import com.kickstarter.ui.viewholders.UnansweredSurveyViewHolder;
+import com.kickstarter.ui.viewholders.SurveyViewHolder;
+import com.kickstarter.ui.viewholders.SurveyHeaderViewHolder;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +34,7 @@ public final class ActivityFeedAdapter extends KSAdapter {
 
   public interface Delegate extends FriendBackingViewHolder.Delegate, ProjectStateChangedPositiveViewHolder.Delegate,
     ProjectStateChangedViewHolder.Delegate, ProjectUpdateViewHolder.Delegate, EmptyActivityFeedViewHolder.Delegate,
-    UnansweredSurveyViewHolder.Delegate {}
+    SurveyViewHolder.Delegate {}
 
   public ActivityFeedAdapter(final @Nullable Delegate delegate) {
     this.delegate = delegate;
@@ -80,9 +80,9 @@ public final class ActivityFeedAdapter extends KSAdapter {
       case SECTION_LOGGED_OUT_EMPTY_VIEW:
         return R.layout.empty_activity_feed_view;
       case SECTION_SURVEYS_HEADER_VIEW:
-        return R.layout.unanswered_surveys_header_view;
+        return R.layout.activity_survey_header_view;
       case SECTION_SURVEYS_VIEW:
-        return R.layout.unanswered_survey_view;
+        return R.layout.activity_survey_view;
       case SECTION_ACTIVITIES_VIEW:
         return getActivityLayoutId(sectionRow);
     }
@@ -114,10 +114,10 @@ public final class ActivityFeedAdapter extends KSAdapter {
   @Override
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch (layout) {
-      case R.layout.unanswered_surveys_header_view:
-        return new UnansweredSurveyHeaderViewHolder(view);
-      case R.layout.unanswered_survey_view:
-        return new UnansweredSurveyViewHolder(view, this.delegate);
+      case R.layout.activity_survey_header_view:
+        return new SurveyHeaderViewHolder(view);
+      case R.layout.activity_survey_view:
+        return new SurveyViewHolder(view, this.delegate);
       case R.layout.activity_friend_backing_view:
         return new FriendBackingViewHolder(view, this.delegate);
       case R.layout.activity_friend_follow_view:

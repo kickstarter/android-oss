@@ -6,14 +6,14 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
-import com.kickstarter.ui.viewholders.UnansweredSurveyViewHolder;
+import com.kickstarter.ui.viewholders.SurveyViewHolder;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
-public interface UnansweredSurveyHolderViewModel {
+public interface SurveyHolderViewModel {
 
   interface Inputs {
     /** Call to configure the view model with a survey */
@@ -37,7 +37,7 @@ public interface UnansweredSurveyHolderViewModel {
     Observable<Project> projectForSurveyDescription();
   }
 
-  final class ViewModel extends ActivityViewModel<UnansweredSurveyViewHolder> implements Inputs, Outputs {
+  final class ViewModel extends ActivityViewModel<SurveyViewHolder> implements Inputs, Outputs {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);

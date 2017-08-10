@@ -17,15 +17,16 @@
 
     <ImageView
       android:id="@+id/survey_avatar_image"
-      android:layout_width="@dimen/discovery_activity_photo_width"
-      android:layout_height="@dimen/discovery_activity_photo_height"
+      android:layout_width="@dimen/activity_feed_avatar_width"
+      android:layout_height="@dimen/activity_feed_avatar_height"
       android:layout_alignParentStart="true"
       android:layout_margin="@dimen/grid_2"
+      tools:background="@color/blue"
       tools:ignore="ContentDescription" />
 
     <TextView
       android:id="@+id/survey_title"
-      style="@style/CalloutPrimary"
+      style="@style/Subheadline"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignTop="@id/survey_avatar_image"
@@ -33,16 +34,17 @@
       android:layout_toEndOf="@id/survey_avatar_image"
       android:gravity="center_vertical"
       android:paddingTop="@dimen/activity_padding_x"
-      android:text="@string/Survey"
-      android:textAlignment="gravity" />
+      android:textAlignment="gravity"
+      tools:text="Wild Canadian Chickens" />
 
     <TextView
       android:id="@+id/survey_text"
-      style="@style/Headline"
+      style="@style/BodyPrimary"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/survey_avatar_image"
-      android:layout_margin="@dimen/grid_2" />
+      android:layout_margin="@dimen/grid_2"
+      tools:text="Wild Canadian Chickens needs some information to deliver your reward for Somebody once told me"/>
 
     <include
       android:id="@+id/separator"

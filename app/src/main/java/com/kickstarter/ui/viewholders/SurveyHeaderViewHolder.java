@@ -12,12 +12,11 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class UnansweredSurveyHeaderViewHolder extends KSViewHolder {
+public class SurveyHeaderViewHolder extends KSViewHolder {
   private final KSString ksString;
+  @Bind(R.id.activity_survey_header_text_view) TextView headerTextView;
 
-  @Bind(R.id.unanswered_survey_header_text_view) TextView headerTextView;
-
-  public UnansweredSurveyHeaderViewHolder(final @NonNull View view) {
+  public SurveyHeaderViewHolder(final @NonNull View view) {
     super(view);
     ButterKnife.bind(this, view);
     this.ksString = environment().ksString();

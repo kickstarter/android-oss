@@ -12,15 +12,15 @@ import org.junit.Test;
 
 import rx.observers.TestSubscriber;
 
-public class UnansweredSurveyHolderViewModelTest extends KSRobolectricTestCase {
-  private UnansweredSurveyHolderViewModel.ViewModel vm;
+public class SurveyHolderViewModelTest extends KSRobolectricTestCase {
+  private SurveyHolderViewModel.ViewModel vm;
   private final TestSubscriber<String> creatorAvatarImage = new TestSubscriber<>();
   private final TestSubscriber<String> creatorName = new TestSubscriber<>();
   private final TestSubscriber<SurveyResponse> loadSurvey = new TestSubscriber<>();
   private final TestSubscriber<Project> projectForSurveyDescription = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new UnansweredSurveyHolderViewModel.ViewModel(environment);
+    this.vm = new SurveyHolderViewModel.ViewModel(environment);
 
     this.vm.outputs.creatorAvatarImage().subscribe(this.creatorAvatarImage);
     this.vm.outputs.creatorName().subscribe(this.creatorName);

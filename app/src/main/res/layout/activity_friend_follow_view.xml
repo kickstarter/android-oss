@@ -20,7 +20,8 @@
       android:layout_marginEnd="@dimen/grid_2"
       android:layout_width="@dimen/activity_feed_avatar_width"
       android:layout_height="@dimen/activity_feed_avatar_height"
-      tools:ignore="ContentDescription" />
+      tools:ignore="ContentDescription"
+      tools:background="@color/blue"/>
 
     <TextView
       style="@style/CalloutPrimary"

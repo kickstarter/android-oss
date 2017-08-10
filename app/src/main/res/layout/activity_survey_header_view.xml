@@ -8,4 +8,5 @@
   android:layout_height="wrap_content"
   android:layout_margin="@dimen/grid_2"
   android:textColor="@color/ksr_text_green_700"
-  tools:text="@string/Survey" />
+  android:textStyle="bold"
+  tools:text="2 Reward Surveys" />

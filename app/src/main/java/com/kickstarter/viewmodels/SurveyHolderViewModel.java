@@ -33,8 +33,8 @@ public interface SurveyHolderViewModel {
     /** Emits the project from survey */
     Observable<Project> projectForSurveyDescription();
 
-    /** Emits when we should start the */
-    Observable<SurveyResponse> startSurveyWebViewActivity();
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.SurveyResponseActivity}. */
+    Observable<SurveyResponse> startSurveyResponseActivity();
   }
 
   final class ViewModel extends ActivityViewModel<SurveyViewHolder> implements Inputs, Outputs {
@@ -53,7 +53,7 @@ public interface SurveyHolderViewModel {
       this.projectForSurveyDescription = this.surveyResponse
         .map(SurveyResponse::project);
 
-      this.startSurveyWebViewActivity = this.surveyResponse
+      this.startSurveyResponseActivity = this.surveyResponse
         .compose(takeWhen(this.surveyClicked));
     }
 
@@ -63,7 +63,7 @@ public interface SurveyHolderViewModel {
     private final Observable<String> creatorAvatarImageUrl;
     private final Observable<String> creatorNameTextViewText;
     private final Observable<Project> projectForSurveyDescription;
-    private final Observable<SurveyResponse> startSurveyWebViewActivity;
+    private final Observable<SurveyResponse> startSurveyResponseActivity;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -84,8 +84,8 @@ public interface SurveyHolderViewModel {
     @Override public @NonNull Observable<Project> projectForSurveyDescription() {
       return this.projectForSurveyDescription;
     }
-    @Override public @NonNull Observable<SurveyResponse> startSurveyWebViewActivity() {
-      return this.startSurveyWebViewActivity;
+    @Override public @NonNull Observable<SurveyResponse> startSurveyResponseActivity() {
+      return this.startSurveyResponseActivity;
     }
   }
 }

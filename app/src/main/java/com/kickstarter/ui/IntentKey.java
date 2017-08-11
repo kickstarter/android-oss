@@ -17,14 +17,15 @@ public final class IntentKey {
   public static final String IS_FROM_MESSAGES_ACTIVITY = "com.kickstarter.kickstarter.intent_is_from_messages_activity";
   public static final String KOALA_CONTEXT = "com.kickstarter.kickstarter.intent_koala_context";
   public static final String LOGIN_REASON = "com.kickstarter.kickstarter.intent_login_reason";
+  public static final String MASKED_WALLET = "com.kickstarter.kickstarter.masked_wallet";
   public static final String MESSAGE_THREAD = "com.kickstarter.kickstarter.intent_message_thread";
   public static final String PASSWORD = "com.kickstarter.kickstarter.intent_password";
   public static final String PROJECT = "com.kickstarter.kickstarter.intent_project";
   public static final String PROJECT_PARAM = "com.kickstarter.kickstarter.intent_project_param";
+  public static final String REF_TAG = "com.kickstarter.kickstarter.ref_tag";
+  public static final String SURVEY_RESPONSE = "com.kickstarter.kickstarter.survey_response";
   public static final String TOOLBAR_TITLE = "com.kickstarter.kickstarter.intent_toolbar_title";
   public static final String UPDATE = "com.kickstarter.kickstarter.intent_update";
   public static final String URL = "com.kickstarter.kickstarter.intent_url";
-  public static final String REF_TAG = "com.kickstarter.kickstarter.ref_tag";
-  public static final String MASKED_WALLET = "com.kickstarter.kickstarter.masked_wallet";
   public static final String PUSH_NOTIFICATION_ENVELOPE = "com.kickstarter.kickstarter.push_notification_envelope";
 }

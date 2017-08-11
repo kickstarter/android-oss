@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
@@ -12,6 +13,8 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
+import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.activities.SurveyResponseActivity;
 import com.kickstarter.viewmodels.SurveyHolderViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -23,9 +26,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class SurveyViewHolder extends KSViewHolder {
-  private final @Nullable Delegate delegate;
   private final KSString ksString;
-  private SurveyResponse survey;
   private final SurveyHolderViewModel.ViewModel viewModel;
 
   @Bind(R.id.survey_avatar_image) ImageView creatorAvatarImageView;
@@ -34,15 +35,10 @@ public final class SurveyViewHolder extends KSViewHolder {
 
   @BindString(R.string.Creator_name_needs_some_information_to_deliver_your_reward_for_project_name) String surveyDescriptionString;
 
-  public interface Delegate {
-    void surveyClicked(SurveyViewHolder viewHolder, SurveyResponse surveyResponse);
-  }
-
-  public SurveyViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
+  public SurveyViewHolder(final @NonNull View view) {
     super(view);
     ButterKnife.bind(this, view);
 
-    this.delegate = delegate;
     this.viewModel = new SurveyHolderViewModel.ViewModel(environment());
     this.ksString = environment().ksString();
 
@@ -61,10 +57,10 @@ public final class SurveyViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::setSurveyDescription);
 
-    this.viewModel.outputs.startSurveyWebViewActivity()
+    this.viewModel.outputs.startSurveyResponseActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::startSurveyWebViewActivity);
+      .subscribe(this::startSurveyResponseActivity);
   }
 
   private void setSurveyDescription(final @NonNull Project projectForSurveyDescription) {
@@ -81,19 +77,13 @@ public final class SurveyViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    final SurveyResponse configData = requireNonNull(
-      (SurveyResponse) data
-    );
-
-    this.survey = configData;
-    this.viewModel.inputs.configureWith(configData);
+    final SurveyResponse surveyResponse = requireNonNull((SurveyResponse) data);
+    this.viewModel.inputs.configureWith(surveyResponse);
   }
 
   @Override
   public void onClick(final @NonNull View view) {
-    if (this.delegate != null) {
-      this.delegate.surveyClicked(this, this.survey);
-    }
+    this.viewModel.inputs.surveyClicked();
   }
 
   private void setCreatorAvatarImage(final @NonNull String creatorAvatarImage) {
@@ -103,7 +93,9 @@ public final class SurveyViewHolder extends KSViewHolder {
       .into(this.creatorAvatarImageView);
   }
 
-  private void startSurveyWebViewActivity(final @NonNull SurveyResponse surveyResponse) {
-
+  private void startSurveyResponseActivity(final @NonNull SurveyResponse surveyResponse) {
+    final Intent intent = new Intent(context(), SurveyResponseActivity.class)
+      .putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse);
+    context().startActivity(intent);
   }
 }

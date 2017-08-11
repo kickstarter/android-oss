@@ -16,20 +16,20 @@ public class SurveyHolderViewModelTest extends KSRobolectricTestCase {
   private SurveyHolderViewModel.ViewModel vm;
   private final TestSubscriber<String> creatorAvatarImage = new TestSubscriber<>();
   private final TestSubscriber<String> creatorName = new TestSubscriber<>();
-  private final TestSubscriber<SurveyResponse> loadSurvey = new TestSubscriber<>();
   private final TestSubscriber<Project> projectForSurveyDescription = new TestSubscriber<>();
+  private final TestSubscriber<SurveyResponse> startSurveyWebViewActivity = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new SurveyHolderViewModel.ViewModel(environment);
 
-    this.vm.outputs.creatorAvatarImage().subscribe(this.creatorAvatarImage);
-    this.vm.outputs.creatorName().subscribe(this.creatorName);
-    this.vm.outputs.loadSurvey().subscribe(this.loadSurvey);
+    this.vm.outputs.creatorAvatarImageUrl().subscribe(this.creatorAvatarImage);
+    this.vm.outputs.creatorNameTextViewText().subscribe(this.creatorName);
     this.vm.outputs.projectForSurveyDescription().subscribe(this.projectForSurveyDescription);
+    this.vm.outputs.startSurveyWebViewActivity().subscribe(this.startSurveyWebViewActivity);
   }
 
   @Test
-  public void creatorAvatarImage() {
+  public void testCreatorAvatarImageUrl() {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
@@ -37,7 +37,7 @@ public class SurveyHolderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void creatorName() {
+  public void testCreatorNameEmits() {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
@@ -45,7 +45,7 @@ public class SurveyHolderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void surveyDescription() {
+  public void testSurveyDescription() {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
@@ -53,10 +53,10 @@ public class SurveyHolderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void clickingSurveyEmitsUrl() {
+  public void testClickingSurveyEmitsUrl() {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
-    this.loadSurvey.assertValue(surveyResponse);
+    this.startSurveyWebViewActivity.assertValue(surveyResponse);
   }
 }

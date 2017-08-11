@@ -46,12 +46,12 @@ public final class SurveyViewHolder extends KSViewHolder {
     this.viewModel = new SurveyHolderViewModel.ViewModel(environment());
     this.ksString = environment().ksString();
 
-    this.viewModel.outputs.creatorAvatarImage()
+    this.viewModel.outputs.creatorAvatarImageUrl()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setCreatorAvatarImage);
 
-    this.viewModel.outputs.creatorName()
+    this.viewModel.outputs.creatorNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.surveyTitleTextView::setText);
@@ -60,15 +60,23 @@ public final class SurveyViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setSurveyDescription);
+
+    this.viewModel.outputs.startSurveyWebViewActivity()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startSurveyWebViewActivity);
   }
 
   private void setSurveyDescription(final @NonNull Project projectForSurveyDescription) {
-    this.surveyTextView.setText(Html.fromHtml(
-      this.ksString.format(
-        this.surveyDescriptionString,
-        "creator_name", projectForSurveyDescription.creator().name(),
-        "project_name", projectForSurveyDescription.name()
-      )));
+    this.surveyTextView.setText(
+      Html.fromHtml(
+        this.ksString.format(
+          this.surveyDescriptionString,
+          "creator_name", projectForSurveyDescription.creator().name(),
+          "project_name", projectForSurveyDescription.name()
+        )
+      )
+    );
   }
 
   @Override
@@ -81,6 +89,13 @@ public final class SurveyViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(configData);
   }
 
+  @Override
+  public void onClick(final @NonNull View view) {
+    if (this.delegate != null) {
+      this.delegate.surveyClicked(this, this.survey);
+    }
+  }
+
   private void setCreatorAvatarImage(final @NonNull String creatorAvatarImage) {
     Picasso.with(context())
       .load(creatorAvatarImage)
@@ -88,10 +103,7 @@ public final class SurveyViewHolder extends KSViewHolder {
       .into(this.creatorAvatarImageView);
   }
 
-  @Override
-  public void onClick(final @NonNull View view) {
-    if (this.delegate != null) {
-      this.delegate.surveyClicked(this, this.survey);
-    }
+  private void startSurveyWebViewActivity(final @NonNull SurveyResponse surveyResponse) {
+
   }
 }

@@ -19,22 +19,22 @@ public interface SurveyHolderViewModel {
     /** Call to configure the view model with a survey */
     void configureWith(SurveyResponse surveyResponse);
 
-    /** Call when card is surveyClicked */
+    /** Call when card is clicked. */
     void surveyClicked();
   }
 
   interface Outputs {
     /** Emits creator avatar image */
-    Observable<String> creatorAvatarImage();
+    Observable<String> creatorAvatarImageUrl();
 
     /** Emits the creator name */
-    Observable<String> creatorName();
-
-    /** Emits the survey url */
-    Observable<SurveyResponse> loadSurvey();
+    Observable<String> creatorNameTextViewText();
 
     /** Emits the project from survey */
     Observable<Project> projectForSurveyDescription();
+
+    /** Emits when we should start the */
+    Observable<SurveyResponse> startSurveyWebViewActivity();
   }
 
   final class ViewModel extends ActivityViewModel<SurveyViewHolder> implements Inputs, Outputs {
@@ -42,48 +42,50 @@ public interface SurveyHolderViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.creatorAvatarImage = this.configData
-        .map(sr -> sr.project().creator().avatar().small());
+      this.creatorAvatarImageUrl = this.surveyResponse
+        .map(SurveyResponse::project)
+        .map(p -> p.creator().avatar().small());
 
-      this.creatorName = this.configData
-        .map(sr -> sr.project().creator().name());
+      this.creatorNameTextViewText = this.surveyResponse
+        .map(SurveyResponse::project)
+        .map(p -> p.creator().name());
 
-      this.projectForSurveyDescription = this.configData
+      this.projectForSurveyDescription = this.surveyResponse
         .map(SurveyResponse::project);
 
-      this.goToSurvey = this.configData
+      this.startSurveyWebViewActivity = this.surveyResponse
         .compose(takeWhen(this.surveyClicked));
     }
 
-    private final PublishSubject<SurveyResponse> configData = PublishSubject.create();
+    private final PublishSubject<SurveyResponse> surveyResponse = PublishSubject.create();
     private final PublishSubject<Void> surveyClicked = PublishSubject.create();
 
-    private final Observable<String> creatorAvatarImage;
-    private final Observable<String> creatorName;
+    private final Observable<String> creatorAvatarImageUrl;
+    private final Observable<String> creatorNameTextViewText;
     private final Observable<Project> projectForSurveyDescription;
-    private final Observable<SurveyResponse> goToSurvey;
+    private final Observable<SurveyResponse> startSurveyWebViewActivity;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
     @Override public void configureWith(final @NonNull SurveyResponse surveyResponse) {
-      this.configData.onNext(surveyResponse);
+      this.surveyResponse.onNext(surveyResponse);
     }
     @Override public void surveyClicked() {
       this.surveyClicked.onNext(null);
     }
 
-    @Override public @NonNull Observable<String> creatorAvatarImage() {
-      return this.creatorAvatarImage;
+    @Override public @NonNull Observable<String> creatorAvatarImageUrl() {
+      return this.creatorAvatarImageUrl;
     }
-    @Override public @NonNull Observable<String> creatorName() {
-      return this.creatorName;
-    }
-    @Override public @NonNull Observable<SurveyResponse> loadSurvey() {
-      return this.configData;
+    @Override public @NonNull Observable<String> creatorNameTextViewText() {
+      return this.creatorNameTextViewText;
     }
     @Override public @NonNull Observable<Project> projectForSurveyDescription() {
       return this.projectForSurveyDescription;
+    }
+    @Override public @NonNull Observable<SurveyResponse> startSurveyWebViewActivity() {
+      return this.startSurveyWebViewActivity;
     }
   }
 }

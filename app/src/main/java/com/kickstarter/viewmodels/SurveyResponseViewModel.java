@@ -23,6 +23,9 @@ public interface SurveyResponseViewModel {
   }
 
   interface Outputs {
+    /** Emits when we should show a confirmation dialog. */
+    Observable<Void> showConfirmationDialog();
+
     /** Emits a project and a ref tag to start the {@link com.kickstarter.ui.activities.ProjectActivity} with. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
 
@@ -47,6 +50,7 @@ public interface SurveyResponseViewModel {
     private final PublishSubject<Void> closeButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> okButtonClicked = PublishSubject.create();
 
+    private final PublishSubject<Void> showConfirmationDialog = PublishSubject.create();
     private final PublishSubject<Pair<Project, RefTag>> startProjectActivity = PublishSubject.create();
     private final BehaviorSubject<String> webViewUrl = BehaviorSubject.create();
 
@@ -60,6 +64,9 @@ public interface SurveyResponseViewModel {
       this.okButtonClicked.onNext(null);
     }
 
+    @Override public @NonNull Observable<Void> showConfirmationDialog() {
+      return this.showConfirmationDialog;
+    }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
     }

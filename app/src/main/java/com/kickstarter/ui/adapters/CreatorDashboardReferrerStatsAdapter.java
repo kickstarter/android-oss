@@ -31,5 +31,7 @@ public class CreatorDashboardReferrerStatsAdapter extends KSAdapter {
     addSection(Observable.from(projectAndReferrerStats.second)
       .map(referrerStats -> Pair.create(projectAndReferrerStats.first, referrerStats))
       .toList().toBlocking().single());
+
+    notifyDataSetChanged();
   }
 }

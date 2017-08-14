@@ -2,6 +2,7 @@ package com.kickstarter.services.apiresponses;
 
 import android.os.Parcelable;
 
+import com.kickstarter.libs.ReferrerType;
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import org.joda.time.DateTime;
@@ -96,7 +97,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
     public abstract double percentageOfDollars();
     public abstract int pledged();
     public abstract String referrerName();
-    public abstract String referrerType();
+    public abstract ReferrerType referrerType();
 
     @AutoParcel.Builder
     public abstract static class Builder {
@@ -105,7 +106,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
       public abstract Builder percentageOfDollars(double __);
       public abstract Builder pledged(int __);
       public abstract Builder referrerName(String __);
-      public abstract Builder referrerType(String __);
+      public abstract Builder referrerType(ReferrerType __);
       public abstract ReferrerStats build();
     }
 

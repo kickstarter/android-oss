@@ -18,7 +18,6 @@
       android:layout_width="match_parent"
       android:layout_height="0dp"
       android:orientation="horizontal"
-      android:layout_weight="3"
       android:layout_marginTop="@dimen/grid_1">
 
       <TextView

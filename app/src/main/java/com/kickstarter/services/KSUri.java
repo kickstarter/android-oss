@@ -63,7 +63,7 @@ public final class KSUri {
   }
 
   public static boolean isProjectSurveyUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return true;
+    return isKickstarterUri(uri, webEndpoint) && PROJECT_SURVEY.matcher(uri.getPath()).matches();
   }
 
   public static boolean isProjectUpdateCommentsUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
@@ -79,12 +79,17 @@ public final class KSUri {
   }
 
   public static boolean isUserSurveyUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return true;
+    return isKickstarterUri(uri, webEndpoint) && USER_SURVEY.matcher(uri.getPath()).matches();
   }
 
   public static boolean isWebUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && !isApiUri(uri, webEndpoint);
   }
+
+  // /projects/:creator_param/:project_param/checkouts/1/thanks
+  private static final Pattern CHECKOUT_THANKS_PATTERN = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/checkouts\\/\\d+\\/thanks\\z"
+  );
 
   // /discover/categories/param
   private static final Pattern DISCOVER_CATEGORIES_PATTERN = Pattern.compile("\\A\\/discover\\/categories\\/.*");
@@ -98,6 +103,11 @@ public final class KSUri {
   // /projects/:creator_param/:project_param
   private static final Pattern PROJECT_PATTERN = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/?\\z"
+  );
+
+  //  /projects/:creator_param/:project_param/surveys/:survey_param
+  private static final Pattern PROJECT_SURVEY = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/surveys\\/[a-zA-Z0-9-_]+\\z"
   );
 
   // /projects/:creator_param/:project_param/posts/:update_param/comments
@@ -115,8 +125,8 @@ public final class KSUri {
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/posts\\z"
   );
 
-  // /projects/:creator_param/:project_param/checkouts/1/thanks
-  private static final Pattern CHECKOUT_THANKS_PATTERN = Pattern.compile(
-    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/checkouts\\/\\d+\\/thanks\\z"
+  // /users/:user_param/surveys/:survey_response_id": userSurvey
+  private static final Pattern USER_SURVEY = Pattern.compile(
+    "\\A\\/users(\\/[a-zA-Z0-9_-]+)?\\/surveys\\/[a-zA-Z0-9-_]+\\z"
   );
 }

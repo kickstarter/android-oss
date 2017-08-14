@@ -63,9 +63,7 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
       .subscribe(this.ksWebView::loadUrl);
   }
 
-  // todo: user vs project survey ?
-//  "/projects/:creator_param/:project_param/surveys/:survey_param": projectSurvey,
-//  "/users/:user_param/surveys/:survey_response_id": userSurvey
+  // todo: user vs project survey ? == FOR DEEPLINKING
 
   @Override
   public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {

@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
+  <include
+    layout="@layout/survey_response_toolbar"
+    android:id="@+id/survey_response_toolbar"/>
+
   <com.kickstarter.ui.views.KSWebView
     android:id="@+id/survey_response_web_view"
+    android:layout_below="@id/survey_response_toolbar"
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>
 
-</LinearLayout>
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_alpha_60"/>
+
+  <ProgressBar
+    android:id="@+id/survey_response_loading_indicator_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerVertical="true"
+    android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>

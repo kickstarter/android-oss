@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.webkit.WebView;
+import android.widget.ProgressBar;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.AnimationUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.KSWebViewClient;
@@ -27,6 +29,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 @RequiresActivityViewModel(SurveyResponseViewModel.ViewModel.class)
 public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel.ViewModel> implements KSWebViewClient.Delegate {
   protected @Bind(R.id.survey_response_web_view) KSWebView ksWebView;
+  protected @Bind(R.id.survey_response_loading_indicator_view) ProgressBar loadingIndicatorView;
 
   protected @BindString(R.string.Got_it_your_survey_response_has_been_submitted) String surveyResponseSubmittedString;
 
@@ -66,18 +69,16 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
   // todo: user vs project survey ? == FOR DEEPLINKING
 
   @Override
-  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {
-
-  }
+  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-
+    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
   }
 
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-
+    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
   }
 
   @Override

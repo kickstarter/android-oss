@@ -158,7 +158,7 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
       .map(Reward::rewardsItems)
       .compose(coalesce(new ArrayList<RewardsItem>()))
       .compose(bindToLifecycle())
-      .subscribe(this.rewardsItems);
+      .subscribe(this.rewardsItemList);
 
     reward
       .map(RewardUtils::isItemized)
@@ -262,7 +262,7 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
   private final BehaviorSubject<Pair<String, String>> limitAndRemainingTextViewText = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> limitHeaderIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<String> minimumTextViewText = BehaviorSubject.create();
-  private final BehaviorSubject<List<RewardsItem>> rewardsItems = BehaviorSubject.create();
+  private final BehaviorSubject<List<RewardsItem>> rewardsItemList = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> rewardsItemsAreHidden = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> titleTextViewIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<String> titleTextViewText = BehaviorSubject.create();
@@ -342,8 +342,8 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
     return this.minimumTextViewText;
   }
 
-  @Override public @NonNull Observable<List<RewardsItem>> rewardsItems() {
-    return this.rewardsItems;
+  @Override public @NonNull Observable<List<RewardsItem>> rewardsItemList() {
+    return this.rewardsItemList;
   }
 
   @Override public @NonNull Observable<Boolean> rewardsItemsAreHidden() {

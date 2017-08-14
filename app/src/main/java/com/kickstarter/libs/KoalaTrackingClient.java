@@ -56,24 +56,23 @@ public final class KoalaTrackingClient extends TrackingClientType {
   @NonNull
   @Override
   public Map<String, Object> defaultProperties() {
+    final Map<String, Object> hashMap = new HashMap<>();
 
-    return new HashMap<String, Object>() {
-      {
-        if (loggedInUser != null) {
-          putAll(KoalaUtils.userProperties(loggedInUser));
-        }
-        put("user_logged_in", loggedInUser != null);
+    if (this.loggedInUser != null) {
+      hashMap.putAll(KoalaUtils.userProperties(this.loggedInUser));
+    }
 
-        put("client_type", "native");
-        put("android_play_services_available", isGooglePlayServicesAvailable());
-        put("client_platform", "android");
-        put("device_orientation", deviceOrientation());
-        put("device_format", deviceFormat());
-        put("device_fingerprint", mixpanel.getDistinctId());
-        put("android_uuid", mixpanel.getDistinctId());
-        put("android_pay_capable", androidPayCapability.isCapable());
-      }
-    };
+    hashMap.put("user_logged_in", this.loggedInUser != null);
+    hashMap.put("client_type", "native");
+    hashMap.put("android_play_services_available", isGooglePlayServicesAvailable());
+    hashMap.put("client_platform", "android");
+    hashMap.put("device_orientation", deviceOrientation());
+    hashMap.put("device_format", deviceFormat());
+    hashMap.put("device_fingerprint", this.mixpanel.getDistinctId());
+    hashMap.put("android_uuid", this.mixpanel.getDistinctId());
+    hashMap.put("android_pay_capable", this.androidPayCapability.isCapable());
+
+    return hashMap;
   }
 
   /**

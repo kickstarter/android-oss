@@ -47,7 +47,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> loadProjectPhoto = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Pair<String, String>> rewardMinimumAndDescriptionTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<List<RewardsItem>> rewardsItems = new TestSubscriber<>();
+  private final TestSubscriber<List<RewardsItem>> rewardsItemList = new TestSubscriber<>();
   private final TestSubscriber<Boolean> rewardsItemsAreGone = new TestSubscriber<>();
   private final TestSubscriber<String> shippingAmountTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> shippingLocationTextViewText = new TestSubscriber<>();
@@ -70,7 +70,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.loadProjectPhoto().subscribe(this.loadProjectPhoto);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.rewardMinimumAndDescriptionTextViewText().subscribe(this.rewardMinimumAndDescriptionTextViewText);
-    this.vm.outputs.rewardsItems().subscribe(this.rewardsItems);
+    this.vm.outputs.rewardsItemList().subscribe(this.rewardsItemList);
     this.vm.outputs.rewardsItemsAreGone().subscribe(this.rewardsItemsAreGone);
     this.vm.outputs.shippingAmountTextViewText().subscribe(this.shippingAmountTextViewText);
     this.vm.outputs.shippingLocationTextViewText().subscribe(this.shippingLocationTextViewText);
@@ -238,7 +238,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(envWithBacking(backing));
 
     this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
-    this.rewardsItems.assertValues(emptyList());
+    this.rewardsItemList.assertValues(emptyList());
     this.rewardsItemsAreGone.assertValues(true);
   }
 
@@ -251,7 +251,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(envWithBacking(backing));
 
     this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
-    this.rewardsItems.assertValues(reward.rewardsItems());
+    this.rewardsItemList.assertValues(reward.rewardsItems());
     this.rewardsItemsAreGone.assertValues(false);
   }
 

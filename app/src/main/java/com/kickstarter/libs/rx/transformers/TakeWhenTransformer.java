@@ -14,6 +14,6 @@ public final class TakeWhenTransformer<S, T> implements Observable.Transformer<S
   @Override
   @NonNull
   public Observable<S> call(final @NonNull Observable<S> source) {
-    return when.withLatestFrom(source, (__, x) -> x);
+    return this.when.withLatestFrom(source, (__, x) -> x);
   }
 }

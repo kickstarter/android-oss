@@ -53,7 +53,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
       this.client.config()
         .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
         .compose(Transformers.neverError())
-        .subscribe(this.config::config);
+        .subscribe(c -> this.config.config(c));
 
       this.isInBackground = false;
     }

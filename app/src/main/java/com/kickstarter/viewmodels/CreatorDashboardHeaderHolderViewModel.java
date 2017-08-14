@@ -56,9 +56,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
 
       this.percentageFunded = this.projectAndStats
         .map(PairUtils::first)
-        .map(Project::percentageFunded)
-        .map(NumberUtils::flooredPercentage)
-        .compose(bindToLifecycle());
+        .map(p -> NumberUtils.flooredPercentage(p.percentageFunded()));
 
       this.projectBackersCountText = this.projectAndStats
         .map(PairUtils::first)

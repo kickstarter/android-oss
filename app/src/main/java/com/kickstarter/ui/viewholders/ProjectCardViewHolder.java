@@ -133,7 +133,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(friends ->
-        this.friendBackingMessageTextView.setText(SocialUtils.projectCardFriendNamepile(friends, ksString))
+        this.friendBackingMessageTextView.setText(SocialUtils.projectCardFriendNamepile(friends, this.ksString))
       );
 
     this.viewModel.outputs.fundingUnsuccessfulViewGroupIsGone()
@@ -291,7 +291,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   private void setFriendAvatarUrl(final @NonNull String avatarUrl) {
     Picasso.with(context()).load(avatarUrl)
       .transform(new CircleTransformation())
-      .into(friendBackingAvatarImageView);
+      .into(this.friendBackingAvatarImageView);
   }
 
   private void setDefaultTopPadding(final boolean setDefaultPadding) {

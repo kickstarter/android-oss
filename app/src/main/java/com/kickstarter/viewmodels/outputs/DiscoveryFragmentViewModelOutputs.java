@@ -14,7 +14,7 @@ public interface DiscoveryFragmentViewModelOutputs {
   /**
    * Emits a list of projects to display
    */
-  Observable<List<Project>> projects();
+  Observable<List<Project>> projectList();
 
   /**
    * Emits when the activity feed should be shown

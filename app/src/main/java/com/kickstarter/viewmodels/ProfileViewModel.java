@@ -5,7 +5,6 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.IntegerUtils;
@@ -69,7 +68,7 @@ public interface ProfileViewModel {
     Observable<Boolean> dividerViewHidden();
 
     /** Emits a list of projects to display in the profile. */
-    Observable<List<Project>> projects();
+    Observable<List<Project>> projectList();
 
     /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
     Observable<Void> resumeDiscoveryActivity();
@@ -86,14 +85,12 @@ public interface ProfileViewModel {
 
   final class ViewModel extends ActivityViewModel<ProfileActivity> implements ProfileAdapter.Delegate, Inputs, Outputs {
     private final ApiClientType client;
-    private final CurrentConfigType currentConfig;
     private final CurrentUserType currentUser;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.client = environment.apiClient();
-      this.currentConfig = environment.currentConfig();
       this.currentUser = environment.currentUser();
 
       final Observable<User> freshUser = this.client.fetchCurrentUser()
@@ -145,7 +142,7 @@ public interface ProfileViewModel {
       )
         .map(p -> p.first || p.second);
 
-      this.projects = paginator.paginatedData();
+      this.projectList = paginator.paginatedData();
       this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked;
       this.startProjectActivity = this.projectCardClicked;
       this.startMessageThreadsActivity = this.messagesButtonClicked;
@@ -167,7 +164,7 @@ public interface ProfileViewModel {
     private final Observable<String> createdCountTextViewText;
     private final Observable<Boolean> createdTextViewHidden;
     private final Observable<Boolean> dividerViewHidden;
-    private final Observable<List<Project>> projects;
+    private final Observable<List<Project>> projectList;
     private final Observable<Void> resumeDiscoveryActivity;
     private final Observable<Project> startProjectActivity;
     private final Observable<Void> startMessageThreadsActivity;
@@ -219,8 +216,8 @@ public interface ProfileViewModel {
     @Override public @NonNull Observable<Boolean> dividerViewHidden() {
       return this.dividerViewHidden;
     }
-    @Override public @NonNull Observable<List<Project>> projects() {
-      return this.projects;
+    @Override public @NonNull Observable<List<Project>> projectList() {
+      return this.projectList;
     }
     @Override public @NonNull Observable<Void> resumeDiscoveryActivity() {
       return this.resumeDiscoveryActivity;

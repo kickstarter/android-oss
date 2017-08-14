@@ -37,7 +37,7 @@ import rx.schedulers.TestScheduler;
 public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   private ViewModel vm;
 
-  final TestSubscriber<List<Activity>> activities = new TestSubscriber<>();
+  final TestSubscriber<List<Activity>> activityList = new TestSubscriber<>();
   final TestSubscriber<Void> goToDiscovery = new TestSubscriber<>();
   final TestSubscriber<Void> goToLogin = new TestSubscriber<>();
   final TestSubscriber<Project> goToProject = new TestSubscriber<>();
@@ -50,7 +50,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ViewModel(environment);
 
-    this.vm.outputs.activities().subscribe(this.activities);
+    this.vm.outputs.activityList().subscribe(this.activityList);
     this.vm.outputs.goToDiscovery().subscribe(this.goToDiscovery);
     this.vm.outputs.goToLogin().subscribe(this.goToLogin);
     this.vm.outputs.goToProject().subscribe(this.goToProject);
@@ -69,12 +69,12 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.refresh();
 
     // Activities should emit.
-    this.activities.assertValueCount(1);
+    this.activityList.assertValueCount(1);
     this.koalaTest.assertValue(KoalaEvent.ACTIVITY_VIEW);
 
     // Paginate.
     this.vm.inputs.nextPage();
-    this.activities.assertValueCount(1);
+    this.activityList.assertValueCount(1);
     this.koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW, KoalaEvent.ACTIVITY_LOAD_MORE);
   }
 
@@ -136,7 +136,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     currentUser.refresh(UserFactory.user());
 
     // Empty states are not shown when activities emit on successful login.
-    this.activities.assertValueCount(1);
+    this.activityList.assertValueCount(1);
     this.loggedOutEmptyStateIsVisible.assertValues(true, false);
     this.loggedInEmptyStateIsVisible.assertValue(false);
   }

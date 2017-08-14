@@ -30,7 +30,7 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
   private MessageThreadsViewModel.ViewModel vm;
   private final TestSubscriber<Boolean> hasNoMessages = new TestSubscriber<>();
   private final TestSubscriber<Boolean> hasNoUnreadMessages = new TestSubscriber<>();
-  private final TestSubscriber<List<MessageThread>> messageThreads = new TestSubscriber<>();
+  private final TestSubscriber<List<MessageThread>> messageThreadList = new TestSubscriber<>();
   private final TestSubscriber<Integer> unreadCountTextViewColorInt = new TestSubscriber<>();
   private final TestSubscriber<Integer> unreadCountTextViewTypefaceInt = new TestSubscriber<>();
   private final TestSubscriber<Boolean> unreadCountToolbarTextViewIsGone = new TestSubscriber<>();
@@ -40,7 +40,7 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     this.vm = new MessageThreadsViewModel.ViewModel(env);
     this.vm.outputs.hasNoMessages().subscribe(this.hasNoMessages);
     this.vm.outputs.hasNoUnreadMessages().subscribe(this.hasNoUnreadMessages);
-    this.vm.outputs.messageThreads().subscribe(this.messageThreads);
+    this.vm.outputs.messageThreadList().subscribe(this.messageThreadList);
     this.vm.outputs.unreadCountTextViewColorInt().subscribe(this.unreadCountTextViewColorInt);
     this.vm.outputs.unreadCountTextViewTypefaceInt().subscribe(this.unreadCountTextViewTypefaceInt);
     this.vm.outputs.unreadCountToolbarTextViewIsGone().subscribe(this.unreadCountToolbarTextViewIsGone);
@@ -63,11 +63,11 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
     this.vm.intent(new Intent());
-    this.messageThreads.assertValueCount(1);
+    this.messageThreadList.assertValueCount(1);
 
     // Same message threads should not emit again.
     this.vm.inputs.onResume();
-    this.messageThreads.assertValueCount(1);
+    this.messageThreadList.assertValueCount(1);
 
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_INBOX);
   }

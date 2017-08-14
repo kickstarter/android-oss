@@ -101,7 +101,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.dividerView));
 
-    this.viewModel.outputs.projects()
+    this.viewModel.outputs.projectList()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::loadProjects);

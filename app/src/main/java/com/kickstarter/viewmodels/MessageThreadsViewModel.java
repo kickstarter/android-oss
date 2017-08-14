@@ -39,7 +39,7 @@ public interface MessageThreadsViewModel {
     void onResume();
 
     /** Call when the swipe refresher is invoked. */
-    void refresh();
+    void swipeRefresh();
   }
 
   interface Outputs {
@@ -53,7 +53,7 @@ public interface MessageThreadsViewModel {
     Observable<Boolean> isFetchingMessageThreads();
 
     /** Emits a list of message threads to be displayed. */
-    Observable<List<MessageThread>> messageThreads();
+    Observable<List<MessageThread>> messageThreadList();
 
     /** Emits a color integer to set the unread count text view to. */
     Observable<Integer> unreadCountTextViewColorInt();
@@ -78,7 +78,7 @@ public interface MessageThreadsViewModel {
       this.client = environment.apiClient();
       this.currentUser = environment.currentUser();
 
-      final Observable<Void> refreshUser = Observable.merge(this.onResume, this.refresh);
+      final Observable<Void> refreshUser = Observable.merge(this.onResume, this.swipeRefresh);
 
       final Observable<User> freshUser = intent()
         .compose(takeWhen(refreshUser))
@@ -96,11 +96,11 @@ public interface MessageThreadsViewModel {
       intent()
         .take(1)
         .compose(bindToLifecycle())
-        .subscribe(__ -> this.refresh());
+        .subscribe(__ -> this.swipeRefresh());
 
       final Observable<Void> startOverWith = Observable.merge(
         unreadMessagesCount.compose(ignoreValues()),
-        this.refresh
+        this.swipeRefresh
       );
 
       final ApiPaginator<MessageThread, MessageThreadsEnvelope, Void> paginator =
@@ -119,7 +119,7 @@ public interface MessageThreadsViewModel {
 
       paginator.paginatedData()
         .compose(bindToLifecycle())
-        .subscribe(this.messageThreads);
+        .subscribe(this.messageThreadList);
 
       this.hasNoMessages = unreadMessagesCount.map(ObjectUtils::isNull);
       this.hasNoUnreadMessages = unreadMessagesCount.map(IntegerUtils::isZero);
@@ -149,12 +149,12 @@ public interface MessageThreadsViewModel {
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Void> onResume = PublishSubject.create();
-    private final PublishSubject<Void> refresh = PublishSubject.create();
+    private final PublishSubject<Void> swipeRefresh = PublishSubject.create();
 
     private final Observable<Boolean> hasNoMessages;
     private final Observable<Boolean> hasNoUnreadMessages;
     private final BehaviorSubject<Boolean> isFetchingMessageThreads = BehaviorSubject.create();
-    private final BehaviorSubject<List<MessageThread>> messageThreads = BehaviorSubject.create();
+    private final BehaviorSubject<List<MessageThread>> messageThreadList = BehaviorSubject.create();
     private final Observable<Integer> unreadCountTextViewColorInt;
     private final Observable<Integer> unreadCountTextViewTypefaceInt;
     private final Observable<Boolean> unreadCountToolbarTextViewIsGone;
@@ -169,8 +169,8 @@ public interface MessageThreadsViewModel {
     @Override public void onResume() {
       this.onResume.onNext(null);
     }
-    @Override public void refresh() {
-      this.refresh.onNext(null);
+    @Override public void swipeRefresh() {
+      this.swipeRefresh.onNext(null);
     }
 
     @Override public @NonNull Observable<Boolean> hasNoMessages() {
@@ -182,8 +182,8 @@ public interface MessageThreadsViewModel {
     @Override public @NonNull Observable<Boolean> isFetchingMessageThreads() {
       return this.isFetchingMessageThreads;
     }
-    @Override public @NonNull Observable<List<MessageThread>> messageThreads() {
-      return this.messageThreads;
+    @Override public @NonNull Observable<List<MessageThread>> messageThreadList() {
+      return this.messageThreadList;
     }
     @Override public @NonNull Observable<Integer> unreadCountTextViewColorInt() {
       return this.unreadCountTextViewColorInt;

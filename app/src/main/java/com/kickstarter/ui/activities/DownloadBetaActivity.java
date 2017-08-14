@@ -34,7 +34,7 @@ public final class DownloadBetaActivity extends BaseActivity<DownloadBetaViewMod
     setContentView(R.layout.download_beta_layout);
     ButterKnife.bind(this);
 
-    final Observable<String> build = viewModel.outputs.internalBuildEnvelope()
+    final Observable<String> build = this.viewModel.outputs.internalBuildEnvelope()
       .map(InternalBuildEnvelope::build)
       .filter(ObjectUtils::isNotNull)
       .map(Object::toString);
@@ -42,18 +42,18 @@ public final class DownloadBetaActivity extends BaseActivity<DownloadBetaViewMod
     build
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(buildTextView::setText);
+      .subscribe(this.buildTextView::setText);
 
     build
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::requestDownload);
 
-    viewModel.outputs.internalBuildEnvelope()
+    this.viewModel.outputs.internalBuildEnvelope()
       .map(InternalBuildEnvelope::changelog)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(changelogTextView::setText);
+      .subscribe(this.changelogTextView::setText);
   }
 
   @OnClick(R.id.open_downloads_button)

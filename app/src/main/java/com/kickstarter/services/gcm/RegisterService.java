@@ -60,11 +60,11 @@ public class RegisterService extends IntentService {
    * @param token The new token.
    */
   private void sendTokenToApi(final @NonNull String token) {
-    currentUser.observable()
+    this.currentUser.observable()
       .take(1)
       .filter(ObjectUtils::isNotNull)
       .subscribe(__ ->
-        apiClient.registerPushToken(token)
+        this.apiClient.registerPushToken(token)
           .compose(Transformers.neverError())
           .first().toBlocking().single()
       );

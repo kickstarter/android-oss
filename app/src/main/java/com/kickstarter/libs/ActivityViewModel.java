@@ -19,7 +19,7 @@ import timber.log.Timber;
 public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
 
   private final PublishSubject<ViewType> viewChange = PublishSubject.create();
-  private final Observable<ViewType> view = viewChange.filter(v -> v != null);
+  private final Observable<ViewType> view = this.viewChange.filter(v -> v != null);
   private final CompositeSubscription subscriptions = new CompositeSubscription();
 
   private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
@@ -28,7 +28,7 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
   protected final Koala koala;
 
   public ActivityViewModel(final @NonNull Environment environment) {
-    koala = environment.koala();
+    this.koala = environment.koala();
   }
 
   /**
@@ -67,26 +67,26 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
   protected void onDestroy() {
     Timber.d("onDestroy %s", this.toString());
 
-    subscriptions.clear();
-    viewChange.onCompleted();
+    this.subscriptions.clear();
+    this.viewChange.onCompleted();
   }
 
   private void onTakeView(final @NonNull ViewType view) {
     Timber.d("onTakeView %s %s", this.toString(), view.toString());
-    viewChange.onNext(view);
+    this.viewChange.onNext(view);
   }
 
   private void dropView() {
     Timber.d("dropView %s", this.toString());
-    viewChange.onNext(null);
+    this.viewChange.onNext(null);
   }
 
   protected @NonNull Observable<ActivityResult> activityResult() {
-    return activityResult;
+    return this.activityResult;
   }
 
   protected @NonNull Observable<Intent> intent() {
-    return intent;
+    return this.intent;
   }
 
   /**
@@ -98,7 +98,7 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
    */
   public @NonNull <T> Observable.Transformer<T, T> bindToLifecycle() {
     return source -> source.takeUntil(
-      view.switchMap(v -> v.lifecycle().map(e -> Pair.create(v, e)))
+      this.view.switchMap(v -> v.lifecycle().map(e -> Pair.create(v, e)))
         .filter(ve -> isFinished(ve.first, ve.second))
     );
   }

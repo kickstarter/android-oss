@@ -7,7 +7,6 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
@@ -17,6 +16,8 @@ import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface CreatorDashboardHeaderHolderViewModel {
 
@@ -45,40 +46,37 @@ public interface CreatorDashboardHeaderHolderViewModel {
     Observable<Pair<Project, RefTag>> startProjectActivity();
   }
 
-  final class ViewModel extends ActivityViewModel<CreatorDashboardHeaderViewHolder> implements
-    Inputs, Outputs {
+  final class ViewModel extends ActivityViewModel<CreatorDashboardHeaderViewHolder> implements Inputs, Outputs {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.currentProject =  projectAndStats
+      this.currentProject = this.projectAndStats
         .map(PairUtils::first);
 
-      this.percentageFunded = projectAndStats
+      this.percentageFunded = this.projectAndStats
         .map(PairUtils::first)
-        .map(Project::percentageFunded)
-        .map(NumberUtils::flooredPercentage)
-        .compose(bindToLifecycle());
+        .map(p -> NumberUtils.flooredPercentage(p.percentageFunded()));
 
-      this.projectBackersCountText = projectAndStats
+      this.projectBackersCountText = this.projectAndStats
         .map(PairUtils::first)
         .map(Project::backersCount)
         .map(NumberUtils::format)
         .compose(bindToLifecycle());
 
-      this.projectNameTextViewText = projectAndStats
+      this.projectNameTextViewText = this.projectAndStats
         .map(PairUtils::first)
         .map(Project::name)
         .distinctUntilChanged()
         .compose(bindToLifecycle());
 
-      this.timeRemainingText = projectAndStats
+      this.timeRemainingText = this.projectAndStats
         .map(PairUtils::first)
         .map(ProjectUtils::deadlineCountdownValue)
         .map(NumberUtils::format);
 
       this.startProjectActivity = this.currentProject()
-        .compose(Transformers.takeWhen(projectViewClicked))
+        .compose(takeWhen(this.projectViewClicked))
         .map(p -> Pair.create(p, RefTag.dashboard()));
     }
 

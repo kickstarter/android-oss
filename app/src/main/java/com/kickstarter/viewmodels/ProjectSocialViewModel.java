@@ -17,7 +17,7 @@ public final class ProjectSocialViewModel extends ActivityViewModel<ProjectSocia
   private final BehaviorSubject<Project> project = BehaviorSubject.create();
   @Override
   public Observable<Project> project() {
-    return project;
+    return this.project;
   }
 
   public final ProjectSocialViewModelOutputs outputs = this;
@@ -29,6 +29,6 @@ public final class ProjectSocialViewModel extends ActivityViewModel<ProjectSocia
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
       .ofType(Project.class)
       .compose(bindToLifecycle())
-      .subscribe(project);
+      .subscribe(this.project);
   }
 }

@@ -45,38 +45,38 @@ public final class ThanksCategoryViewHolder extends KSViewHolder {
     this.delegate = delegate;
     this.context = view.getContext();
 
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
+    ((KSApplication) this.context.getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    category = requireNonNull((Category) data, Category.class);
+    this.category = requireNonNull((Category) data, Category.class);
   }
 
   public void onBind() {
-    cardView.setCardBackgroundColor(category.colorWithAlpha());
-    final @ColorInt int categoryTextColor = category.overlayTextColor(context);
-    exploreTextView.setTextColor(categoryTextColor);
-    exploreTextView.setText(ksString.format(exploreCategoryString, "category_name", category.name()));
+    this.cardView.setCardBackgroundColor(this.category.colorWithAlpha());
+    final @ColorInt int categoryTextColor = this.category.overlayTextColor(this.context);
+    this.exploreTextView.setTextColor(categoryTextColor);
+    this.exploreTextView.setText(this.ksString.format(this.exploreCategoryString, "category_name", this.category.name()));
 
-    final Integer projectsCount = category.projectsCount();
+    final Integer projectsCount = this.category.projectsCount();
     if (projectsCount != null) {
-      liveProjectsTextView.setVisibility(View.VISIBLE);
-      liveProjectsTextView.setText(ksString.format(
-        countLiveProjectsString,
+      this.liveProjectsTextView.setVisibility(View.VISIBLE);
+      this.liveProjectsTextView.setText(this.ksString.format(
+        this.countLiveProjectsString,
         "project_count",
         NumberUtils.format(projectsCount)
       ));
     } else {
-      liveProjectsTextView.setVisibility(View.GONE);
+      this.liveProjectsTextView.setVisibility(View.GONE);
     }
 
-    liveProjectsTextView.setTextColor(categoryTextColor);
+    this.liveProjectsTextView.setTextColor(categoryTextColor);
   }
 
   @Override
   public void onClick(final @NonNull View view) {
-    delegate.categoryClick(this, category);
+    this.delegate.categoryClick(this, this.category);
   }
 }

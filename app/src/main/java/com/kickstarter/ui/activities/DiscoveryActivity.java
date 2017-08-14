@@ -80,92 +80,92 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
     ((KSApplication) getApplication()).component().inject(this);
 
-    drawerLayoutManager = new LinearLayoutManager(this);
-    drawerRecyclerView.setLayoutManager(drawerLayoutManager);
-    drawerAdapter = new DiscoveryDrawerAdapter(viewModel.inputs);
-    drawerRecyclerView.setAdapter(drawerAdapter);
+    this.drawerLayoutManager = new LinearLayoutManager(this);
+    this.drawerRecyclerView.setLayoutManager(this.drawerLayoutManager);
+    this.drawerAdapter = new DiscoveryDrawerAdapter(this.viewModel.inputs);
+    this.drawerRecyclerView.setAdapter(this.drawerAdapter);
 
     final List<String> viewPagerTitles = Arrays.asList(
-      homeString, popularString, newestString, endingSoonString, mostFundedString
+      this.homeString, this.popularString, this.newestString, this.endingSoonString, this.mostFundedString
     );
 
-    pagerAdapter = new DiscoveryPagerAdapter(
-      getSupportFragmentManager(), createFragments(viewPagerTitles.size()), viewPagerTitles, viewModel.inputs
+    this.pagerAdapter = new DiscoveryPagerAdapter(
+      getSupportFragmentManager(), createFragments(viewPagerTitles.size()), viewPagerTitles, this.viewModel.inputs
     );
 
-    sortViewPager.setAdapter(pagerAdapter);
-    sortTabLayout.setupWithViewPager(sortViewPager);
+    this.sortViewPager.setAdapter(this.pagerAdapter);
+    this.sortTabLayout.setupWithViewPager(this.sortViewPager);
 
-    viewModel.outputs.creatorDashboardButtonIsGone()
+    this.viewModel.outputs.creatorDashboardButtonIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.creatorDashboardButton));
 
-    viewModel.outputs.expandSortTabLayout()
+    this.viewModel.outputs.expandSortTabLayout()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(sortAppBarLayout::setExpanded);
+      .subscribe(this.sortAppBarLayout::setExpanded);
 
-    viewModel.outputs.updateToolbarWithParams()
+    this.viewModel.outputs.updateToolbarWithParams()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(discoveryToolbar::loadParams);
+      .subscribe(this.discoveryToolbar::loadParams);
 
-    viewModel.outputs.updateParamsForPage()
+    this.viewModel.outputs.updateParamsForPage()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(pagerAdapter::takeParams);
+      .subscribe(this.pagerAdapter::takeParams);
 
-    viewModel.outputs.clearPages()
+    this.viewModel.outputs.clearPages()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(pagerAdapter::clearPages);
+      .subscribe(this.pagerAdapter::clearPages);
 
-    viewModel.outputs.rootCategoriesAndPosition()
+    this.viewModel.outputs.rootCategoriesAndPosition()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(cp -> pagerAdapter.takeCategoriesForPosition(cp.first, cp.second));
+      .subscribe(cp -> this.pagerAdapter.takeCategoriesForPosition(cp.first, cp.second));
 
-    viewModel.outputs.showBuildCheckAlert()
+    this.viewModel.outputs.showBuildCheckAlert()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::showBuildAlert);
 
-    viewModel.outputs.showInternalTools()
+    this.viewModel.outputs.showInternalTools()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(__ -> internalTools.maybeStartInternalToolsActivity(this));
+      .subscribe(__ -> this.internalTools.maybeStartInternalToolsActivity(this));
 
-    viewModel.outputs.showLoginTout()
+    this.viewModel.outputs.showLoginTout()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> this.startLoginToutActivity());
 
-    viewModel.outputs.showProfile()
+    this.viewModel.outputs.showProfile()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> this.startProfileActivity());
 
-    viewModel.outputs.showSettings()
+    this.viewModel.outputs.showSettings()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> this.startSettingsActivity());
 
-    viewModel.outputs.navigationDrawerData()
+    this.viewModel.outputs.navigationDrawerData()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(drawerAdapter::takeData);
+      .subscribe(this.drawerAdapter::takeData);
 
-    viewModel.outputs.drawerIsOpen()
+    this.viewModel.outputs.drawerIsOpen()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(RxDrawerLayout.open(discoveryLayout, GravityCompat.START));
+      .subscribe(RxDrawerLayout.open(this.discoveryLayout, GravityCompat.START));
 
-    RxDrawerLayout.drawerOpen(discoveryLayout, GravityCompat.START)
+    RxDrawerLayout.drawerOpen(this.discoveryLayout, GravityCompat.START)
       .skip(1)
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(viewModel.inputs::openDrawer);
+      .subscribe(this.viewModel.inputs::openDrawer);
   }
 
   private static @NonNull List<DiscoveryFragment> createFragments(final int pages) {
@@ -177,7 +177,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   }
 
   public @NonNull DrawerLayout discoveryLayout() {
-    return discoveryLayout;
+    return this.discoveryLayout;
   }
 
   private void startLoginToutActivity() {
@@ -201,8 +201,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
   private void showBuildAlert(final @NonNull InternalBuildEnvelope envelope) {
     new AlertDialog.Builder(this)
-      .setTitle(upgradeAppString)
-      .setMessage(aNewerBuildIsAvailableString)
+      .setTitle(this.upgradeAppString)
+      .setMessage(this.aNewerBuildIsAvailableString)
       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
         final Intent intent = new Intent(this, DownloadBetaActivity.class)
           .putExtra(IntentKey.INTERNAL_BUILD_ENVELOPE, envelope);

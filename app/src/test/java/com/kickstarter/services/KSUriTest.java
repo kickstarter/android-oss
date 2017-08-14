@@ -17,19 +17,19 @@ public final class KSUriTest extends KSRobolectricTestCase {
 
   @Test
   public void testKSUri_isDiscoverCategoriesPath() {
-    assertTrue(KSUri.isDiscoverCategoriesPath(discoverCategoriesUri.getPath()));
-    assertFalse(KSUri.isDiscoverCategoriesPath(discoverPlacesUri.getPath()));
+    assertTrue(KSUri.isDiscoverCategoriesPath(this.discoverCategoriesUri.getPath()));
+    assertFalse(KSUri.isDiscoverCategoriesPath(this.discoverPlacesUri.getPath()));
   }
 
   @Test
   public void testKSUri_isDiscoverPlacesPath() {
-    assertTrue(KSUri.isDiscoverPlacesPath(discoverPlacesUri.getPath()));
-    assertFalse(KSUri.isDiscoverPlacesPath(discoverCategoriesUri.getPath()));
+    assertTrue(KSUri.isDiscoverPlacesPath(this.discoverPlacesUri.getPath()));
+    assertFalse(KSUri.isDiscoverPlacesPath(this.discoverCategoriesUri.getPath()));
   }
 
   @Test
   public void testKSUri_isDiscoverScopePath() {
-    assertTrue(KSUri.isDiscoverScopePath(discoverScopeUri.getPath(), "ending-soon"));
+    assertTrue(KSUri.isDiscoverScopePath(this.discoverScopeUri.getPath(), "ending-soon"));
   }
 
   @Test
@@ -37,41 +37,41 @@ public final class KSUriTest extends KSRobolectricTestCase {
     final Uri ksrUri = Uri.parse("https://www.ksr.com/discover");
     final Uri uri = Uri.parse("https://www.hello-world.org/goodbye");
 
-    assertTrue(KSUri.isKickstarterUri(ksrUri, webEndpoint));
-    assertFalse(KSUri.isKickstarterUri(uri, webEndpoint));
+    assertTrue(KSUri.isKickstarterUri(ksrUri, this.webEndpoint));
+    assertFalse(KSUri.isKickstarterUri(uri, this.webEndpoint));
   }
 
   @Test
   public void testKSUri_isModalUri() {
     final Uri modalUri = Uri.parse("https://www.ksr.com/project?modal=true");
 
-    assertTrue(KSUri.isModalUri(modalUri, webEndpoint));
-    assertFalse(KSUri.isModalUri(projectUri, webEndpoint));
+    assertTrue(KSUri.isModalUri(modalUri, this.webEndpoint));
+    assertFalse(KSUri.isModalUri(this.projectUri, this.webEndpoint));
   }
 
   @Test
   public void testKSUri_isProjectUpdateCommentsUri() {
     final Uri updateCommentsUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts/id/comments");
 
-    assertTrue(KSUri.isProjectUpdateCommentsUri(updateCommentsUri, webEndpoint));
-    assertFalse(KSUri.isProjectUpdateCommentsUri(updatesUri, webEndpoint));
+    assertTrue(KSUri.isProjectUpdateCommentsUri(updateCommentsUri, this.webEndpoint));
+    assertFalse(KSUri.isProjectUpdateCommentsUri(this.updatesUri, this.webEndpoint));
   }
 
   @Test
   public void testKSUri_isProjectUpdateUri() {
-    assertTrue(KSUri.isProjectUpdateUri(updateUri, webEndpoint));
-    assertFalse(KSUri.isProjectUpdateUri(updatesUri, webEndpoint));
+    assertTrue(KSUri.isProjectUpdateUri(this.updateUri, this.webEndpoint));
+    assertFalse(KSUri.isProjectUpdateUri(this.updatesUri, this.webEndpoint));
   }
 
   @Test
   public void testKSUri_isProjectUpdatesUri() {
-    assertTrue(KSUri.isProjectUpdatesUri(updatesUri, webEndpoint));
-    assertFalse(KSUri.isProjectUpdatesUri(updateUri, webEndpoint));
+    assertTrue(KSUri.isProjectUpdatesUri(this.updatesUri, this.webEndpoint));
+    assertFalse(KSUri.isProjectUpdatesUri(this.updateUri, this.webEndpoint));
   }
 
   @Test
   public void testKSUri_isProjectUri() {
-    assertTrue(KSUri.isProjectUri(projectUri, webEndpoint));
-    assertFalse(KSUri.isProjectUri(updateUri, webEndpoint));
+    assertTrue(KSUri.isProjectUri(this.projectUri, this.webEndpoint));
+    assertFalse(KSUri.isProjectUri(this.updateUri, this.webEndpoint));
   }
 }

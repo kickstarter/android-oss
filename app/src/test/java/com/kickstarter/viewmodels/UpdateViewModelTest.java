@@ -31,10 +31,10 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
 
     // Start the intent with a project and update.
-    vm.intent(defaultIntent);
+    vm.intent(this.defaultIntent);
     vm.inputs.externalLinkActivated();
 
-    koalaTest.assertValues(KoalaEvent.OPENED_EXTERNAL_LINK);
+    this.koalaTest.assertValues(KoalaEvent.OPENED_EXTERNAL_LINK);
   }
 
   @Test
@@ -52,7 +52,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     vm.outputs.webViewUrl().subscribe(webViewUrl);
 
     // Start the intent with a project and update.
-    vm.intent(defaultIntent);
+    vm.intent(this.defaultIntent);
 
     // Initial update's url emits.
     webViewUrl.assertValues(update.urls().web().update());

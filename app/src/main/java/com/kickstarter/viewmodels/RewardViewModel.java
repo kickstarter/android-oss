@@ -45,19 +45,19 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
     final CurrentConfigType currentConfig = environment.currentConfig();
     final KSCurrency ksCurrency = environment.ksCurrency();
 
-    final Observable<String> formattedMinimum = projectAndReward
+    final Observable<String> formattedMinimum = this.projectAndReward
       .map(pr -> ksCurrency.format(pr.second.minimum(), pr.first));
 
-    final Observable<Boolean> isSelectable = projectAndReward
+    final Observable<Boolean> isSelectable = this.projectAndReward
       .map(pr -> isSelectable(pr.first, pr.second));
 
-    final Observable<Project> project = projectAndReward
+    final Observable<Project> project = this.projectAndReward
       .map(pr -> pr.first);
 
-    final Observable<Reward> reward = projectAndReward
+    final Observable<Reward> reward = this.projectAndReward
       .map(pr -> pr.second);
 
-    final Observable<Boolean> rewardIsSelected = projectAndReward
+    final Observable<Boolean> rewardIsSelected = this.projectAndReward
       .map(pr -> BackingUtils.isBacked(pr.first, pr.second));
 
     final Observable<Boolean> shouldDisplayUsdConversion = currentConfig.observable()
@@ -67,170 +67,170 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
         ProjectUtils.isUSUserViewingNonUSProject(configCountryAndProjectCountry.first, configCountryAndProjectCountry.second));
 
     // Hide 'all gone' header if limit has not been reached, or reward has been backed by user.
-    projectAndReward
+    this.projectAndReward
       .map(pr -> !RewardUtils.isLimitReached(pr.second) || BackingUtils.isBacked(pr.first, pr.second))
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(allGoneTextViewIsHidden);
+      .subscribe(this.allGoneTextViewIsHidden);
 
     reward
       .map(r -> RewardUtils.isNoReward(r) || !RewardUtils.hasBackers(r))
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(backersTextViewIsHidden);
+      .subscribe(this.backersTextViewIsHidden);
 
     reward
       .filter(r -> RewardUtils.isReward(r) || RewardUtils.hasBackers(r))
       .map(Reward::backersCount)
       .filter(ObjectUtils::isNotNull)
       .compose(bindToLifecycle())
-      .subscribe(backersTextViewText);
+      .subscribe(this.backersTextViewText);
 
     reward
       .map(Reward::description)
       .compose(bindToLifecycle())
-      .subscribe(descriptionTextViewText);
+      .subscribe(this.descriptionTextViewText);
 
     reward
       .map(Reward::estimatedDeliveryOn)
       .filter(ObjectUtils::isNotNull)
       .compose(bindToLifecycle())
-      .subscribe(estimatedDeliveryDateTextViewText);
+      .subscribe(this.estimatedDeliveryDateTextViewText);
 
     reward
       .map(Reward::estimatedDeliveryOn)
       .map(ObjectUtils::isNull)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(estimatedDeliveryDateSectionIsHidden);
+      .subscribe(this.estimatedDeliveryDateSectionIsHidden);
 
     isSelectable
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(isClickable);
+      .subscribe(this.isClickable);
 
-    projectAndReward
+    this.projectAndReward
       .filter(pr -> isSelectable(pr.first, pr.second) && pr.first.isLive())
-      .compose(takeWhen(rewardClicked))
+      .compose(takeWhen(this.rewardClicked))
       .compose(bindToLifecycle())
-      .subscribe(goToCheckout);
+      .subscribe(this.goToCheckout);
 
-    projectAndReward
-      .compose(takeWhen(rewardClicked))
+    this.projectAndReward
+      .compose(takeWhen(this.rewardClicked))
       .filter(pr -> ProjectUtils.isCompleted(pr.first) && BackingUtils.isBacked(pr.first, pr.second))
       .map(pr -> pr.first)
       .compose(bindToLifecycle())
-      .subscribe(goToViewPledge);
+      .subscribe(this.goToViewPledge);
 
     reward
       .map(r -> IntegerUtils.isNonZero(r.limit()) && IntegerUtils.isNonZero(r.backersCount()))
       .map(BooleanUtils::negate)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(limitAndBackersSeparatorIsHidden);
+      .subscribe(this.limitAndBackersSeparatorIsHidden);
 
     reward
       .map(RewardUtils::isLimited)
       .map(BooleanUtils::negate)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(limitAndRemainingTextViewIsHidden);
+      .subscribe(this.limitAndRemainingTextViewIsHidden);
 
     reward
       .map(r -> Pair.create(r.limit(), r.remaining()))
       .filter(lr -> lr.first != null && lr.second != null)
       .map(rr -> Pair.create(NumberUtils.format(rr.first), NumberUtils.format(rr.second)))
       .compose(bindToLifecycle())
-      .subscribe(limitAndRemainingTextViewText);
+      .subscribe(this.limitAndRemainingTextViewText);
 
     // Hide limit header if reward is not limited, or reward has been backed by user.
-    projectAndReward
+    this.projectAndReward
       .map(pr -> !RewardUtils.isLimited(pr.second) || BackingUtils.isBacked(pr.first, pr.second))
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(limitHeaderIsHidden);
+      .subscribe(this.limitHeaderIsHidden);
 
     formattedMinimum
       .compose(bindToLifecycle())
-      .subscribe(minimumTextViewText);
+      .subscribe(this.minimumTextViewText);
 
     reward
       .map(Reward::rewardsItems)
       .compose(coalesce(new ArrayList<RewardsItem>()))
       .compose(bindToLifecycle())
-      .subscribe(rewardsItems);
+      .subscribe(this.rewardsItemList);
 
     reward
       .map(RewardUtils::isItemized)
       .map(BooleanUtils::negate)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(rewardsItemsAreHidden);
+      .subscribe(this.rewardsItemsAreHidden);
 
     rewardIsSelected
       .map(BooleanUtils::negate)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(selectedHeaderIsHidden);
+      .subscribe(this.selectedHeaderIsHidden);
 
     rewardIsSelected
       .map(BooleanUtils::negate)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(selectedOverlayIsHidden);
+      .subscribe(this.selectedOverlayIsHidden);
 
     reward
       .filter(RewardUtils::isShippable)
       .map(Reward::shippingSummary)
       .compose(bindToLifecycle())
-      .subscribe(shippingSummaryTextViewText);
+      .subscribe(this.shippingSummaryTextViewText);
 
     reward
       .map(RewardUtils::isShippable)
       .map(BooleanUtils::negate)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(shippingSummarySectionIsHidden);
+      .subscribe(this.shippingSummarySectionIsHidden);
 
     reward
       .map(Reward::title)
       .map(ObjectUtils::isNull)
       .compose(bindToLifecycle())
-      .subscribe(titleTextViewIsHidden);
+      .subscribe(this.titleTextViewIsHidden);
 
     reward
       .map(Reward::description)
       .map(String::isEmpty)
       .compose(bindToLifecycle())
-      .subscribe(rewardDescriptionIsHidden);
+      .subscribe(this.rewardDescriptionIsHidden);
 
     reward
       .map(Reward::title)
       .filter(ObjectUtils::isNotNull)
       .compose(bindToLifecycle())
-      .subscribe(titleTextViewText);
+      .subscribe(this.titleTextViewText);
 
     shouldDisplayUsdConversion
       .map(BooleanUtils::negate)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(usdConversionTextViewIsHidden);
+      .subscribe(this.usdConversionTextViewIsHidden);
 
-    projectAndReward
+    this.projectAndReward
       .map(pr -> ksCurrency.format(pr.second.minimum(), pr.first, true, true, RoundingMode.UP))
       .compose(takeWhen(
         shouldDisplayUsdConversion
           .filter(BooleanUtils::isTrue)
       ))
       .compose(bindToLifecycle())
-      .subscribe(usdConversionTextViewText);
+      .subscribe(this.usdConversionTextViewText);
 
-    projectAndReward
+    this.projectAndReward
       .map(pr -> RewardUtils.isLimitReached(pr.second) && !BackingUtils.isBacked(pr.first, pr.second))
       .map(BooleanUtils::negate)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(whiteOverlayIsHidden);
+      .subscribe(this.whiteOverlayIsHidden);
   }
 
   private static boolean isSelectable(final @NonNull Project project, final @NonNull Reward reward) {
@@ -262,7 +262,7 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
   private final BehaviorSubject<Pair<String, String>> limitAndRemainingTextViewText = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> limitHeaderIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<String> minimumTextViewText = BehaviorSubject.create();
-  private final BehaviorSubject<List<RewardsItem>> rewardsItems = BehaviorSubject.create();
+  private final BehaviorSubject<List<RewardsItem>> rewardsItemList = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> rewardsItemsAreHidden = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> titleTextViewIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<String> titleTextViewText = BehaviorSubject.create();
@@ -283,110 +283,110 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
   }
 
   @Override public void rewardClicked() {
-    rewardClicked.onNext(null);
+    this.rewardClicked.onNext(null);
   }
 
   @Override public @NonNull Observable<Boolean> allGoneTextViewIsHidden() {
-    return allGoneTextViewIsHidden;
+    return this.allGoneTextViewIsHidden;
   }
 
   @Override public @NonNull Observable<Boolean> backersTextViewIsHidden() {
-    return backersTextViewIsHidden;
+    return this.backersTextViewIsHidden;
   }
 
   @Override public @NonNull Observable<Integer> backersTextViewText() {
-    return backersTextViewText;
+    return this.backersTextViewText;
   }
 
   @Override public @NonNull Observable<Boolean> isClickable() {
-    return isClickable;
+    return this.isClickable;
   }
 
   @Override public @NonNull Observable<String> descriptionTextViewText() {
-    return descriptionTextViewText;
+    return this.descriptionTextViewText;
   }
 
   @Override public @NonNull Observable<DateTime> estimatedDeliveryDateTextViewText() {
-    return estimatedDeliveryDateTextViewText;
+    return this.estimatedDeliveryDateTextViewText;
   }
 
   @Override public @NonNull Observable<Boolean> estimatedDeliveryDateSectionIsHidden() {
-    return estimatedDeliveryDateSectionIsHidden;
+    return this.estimatedDeliveryDateSectionIsHidden;
   }
 
   @Override public @NonNull Observable<Pair<Project, Reward>> goToCheckout() {
-    return goToCheckout;
+    return this.goToCheckout;
   }
 
   @Override public @NonNull Observable<Project> goToViewPledge() {
-    return goToViewPledge;
+    return this.goToViewPledge;
   }
 
   @Override public @NonNull Observable<Boolean> limitAndBackersSeparatorIsHidden() {
-    return limitAndBackersSeparatorIsHidden;
+    return this.limitAndBackersSeparatorIsHidden;
   }
 
   @Override public @NonNull Observable<Boolean> limitAndRemainingTextViewIsHidden() {
-    return limitAndRemainingTextViewIsHidden;
+    return this.limitAndRemainingTextViewIsHidden;
   }
 
   @Override public @NonNull Observable<Pair<String, String>> limitAndRemainingTextViewText() {
-    return limitAndRemainingTextViewText;
+    return this.limitAndRemainingTextViewText;
   }
 
   @Override public @NonNull Observable<Boolean> limitHeaderIsHidden() {
-    return limitHeaderIsHidden;
+    return this.limitHeaderIsHidden;
   }
 
   @Override public @NonNull Observable<String> minimumTextViewText() {
-    return minimumTextViewText;
+    return this.minimumTextViewText;
   }
 
-  @Override public @NonNull Observable<List<RewardsItem>> rewardsItems() {
-    return rewardsItems;
+  @Override public @NonNull Observable<List<RewardsItem>> rewardsItemList() {
+    return this.rewardsItemList;
   }
 
   @Override public @NonNull Observable<Boolean> rewardsItemsAreHidden() {
-    return rewardsItemsAreHidden;
+    return this.rewardsItemsAreHidden;
   }
 
   @Override public @NonNull Observable<Boolean> selectedHeaderIsHidden() {
-    return selectedHeaderIsHidden;
+    return this.selectedHeaderIsHidden;
   }
 
   @Override public @NonNull Observable<Boolean> selectedOverlayIsHidden() {
-    return selectedOverlayIsHidden;
+    return this.selectedOverlayIsHidden;
   }
 
   @Override public @NonNull Observable<Boolean> shippingSummarySectionIsHidden() {
-    return shippingSummarySectionIsHidden;
+    return this.shippingSummarySectionIsHidden;
   }
 
   @Override public @NonNull Observable<String> shippingSummaryTextViewText() {
-    return shippingSummaryTextViewText;
+    return this.shippingSummaryTextViewText;
   }
 
   @Override public @NonNull Observable<Boolean> titleTextViewIsHidden() {
-    return titleTextViewIsHidden;
+    return this.titleTextViewIsHidden;
   }
 
   @Override public @NonNull Observable<String> titleTextViewText() {
-    return titleTextViewText;
+    return this.titleTextViewText;
   }
 
   @Override public @NonNull Observable<Boolean> usdConversionTextViewIsHidden() {
-    return usdConversionTextViewIsHidden;
+    return this.usdConversionTextViewIsHidden;
   }
 
   @Override public @NonNull Observable<String> usdConversionTextViewText() {
-    return usdConversionTextViewText;
+    return this.usdConversionTextViewText;
   }
 
   @Override public @NonNull Observable<Boolean> whiteOverlayIsHidden() {
-    return whiteOverlayIsHidden;
+    return this.whiteOverlayIsHidden;
   }
 
   @Override public @NonNull Observable<Boolean> rewardDescriptionIsHidden() {
-    return rewardDescriptionIsHidden;
+    return this.rewardDescriptionIsHidden;
   }
 }

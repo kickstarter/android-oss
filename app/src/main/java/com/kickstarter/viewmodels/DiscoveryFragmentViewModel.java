@@ -52,30 +52,30 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
   public DiscoveryFragmentViewModel(final @NonNull Environment environment) {
     super(environment);
 
-    apiClient = environment.apiClient();
-    activitySamplePreference = environment.activitySamplePreference();
-    currentUser = environment.currentUser();
+    this.apiClient = environment.apiClient();
+    this.activitySamplePreference = environment.activitySamplePreference();
+    this.currentUser = environment.currentUser();
 
     final Observable<DiscoveryParams> selectedParams = Observable.combineLatest(
-      currentUser.observable(),
-      paramsFromActivity.distinctUntilChanged(),
+      this.currentUser.observable(),
+      this.paramsFromActivity.distinctUntilChanged(),
       (__, params) -> params
     );
 
     final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
       ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
-        .nextPage(nextPage)
+        .nextPage(this.nextPage)
         .startOverWith(selectedParams)
         .envelopeToListOfData(DiscoverEnvelope::projects)
         .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
-        .loadWithParams(apiClient::fetchProjects)
-        .loadWithPaginationPath(apiClient::fetchProjects)
+        .loadWithParams(this.apiClient::fetchProjects)
+        .loadWithPaginationPath(this.apiClient::fetchProjects)
         .clearWhenStartingOver(true)
         .concater(ListUtils::concatDistinct)
         .build();
 
-    final Observable<Pair<Project, RefTag>> projectCardClick = paramsFromActivity
-      .compose(takePairWhen(clickProject))
+    final Observable<Pair<Project, RefTag>> projectCardClick = this.paramsFromActivity
+      .compose(takePairWhen(this.clickProject))
       .map(pp -> DiscoveryFragmentViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second));
 
     final Observable<Pair<Project, RefTag>> activitySampleProjectClick = this.activitySampleProjectClick
@@ -83,76 +83,76 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
 
     Observable.combineLatest(
       paginator.paginatedData(),
-      rootCategories,
+      this.rootCategories,
       DiscoveryUtils::fillRootCategoryForFeaturedProjects
     )
       .compose(bindToLifecycle())
-      .subscribe(projects);
+      .subscribe(this.projectList);
 
-    showActivityFeed = activityClick;
-    showActivityUpdate = activityUpdateClick;
-    showLoginTout = discoveryOnboardingLoginToutClick;
+    this.showActivityFeed = this.activityClick;
+    this.showActivityUpdate = this.activityUpdateClick;
+    this.showLoginTout = this.discoveryOnboardingLoginToutClick;
 
     Observable.merge(
       projectCardClick,
       activitySampleProjectClick
     )
       .compose(bindToLifecycle())
-      .subscribe(showProject);
+      .subscribe(this.showProject);
 
-    clearPage
+    this.clearPage
       .compose(bindToLifecycle())
       .subscribe(__ -> {
-        shouldShowOnboardingView.onNext(false);
-        activity.onNext(null);
-        projects.onNext(new ArrayList<>());
+        this.shouldShowOnboardingView.onNext(false);
+        this.activity.onNext(null);
+        this.projectList.onNext(new ArrayList<>());
       });
 
-    paramsFromActivity
-      .compose(combineLatestPair(currentUser.isLoggedIn()))
+    this.paramsFromActivity
+      .compose(combineLatestPair(this.currentUser.isLoggedIn()))
       .map(pu -> isOnboardingVisible(pu.first, pu.second))
       .compose(bindToLifecycle())
-      .subscribe(shouldShowOnboardingView);
+      .subscribe(this.shouldShowOnboardingView);
 
-    currentUser.loggedInUser()
-      .compose(combineLatestPair(paramsFromActivity))
+    this.currentUser.loggedInUser()
+      .compose(combineLatestPair(this.paramsFromActivity))
       .flatMap(__ -> this.fetchActivity())
       .filter(this::activityHasNotBeenSeen)
       .doOnNext(this::saveLastSeenActivityId)
       .compose(bindToLifecycle())
-      .subscribe(activity);
+      .subscribe(this.activity);
 
     // Clear activity sample when params change
-    paramsFromActivity
+    this.paramsFromActivity
       .map(__ -> (Activity) null)
       .compose(bindToLifecycle())
-      .subscribe(activity);
+      .subscribe(this.activity);
 
-    paramsFromActivity
+    this.paramsFromActivity
       .compose(combineLatestPair(paginator.loadingPage().distinctUntilChanged()))
       .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
-      .compose(combineLatestPair(currentUser.isLoggedIn()))
+      .compose(combineLatestPair(this.currentUser.isLoggedIn()))
       .compose(bindToLifecycle())
       .subscribe(paramsAndLoggedIn -> {
-        koala.trackDiscovery(
+        this.koala.trackDiscovery(
           paramsAndLoggedIn.first,
           isOnboardingVisible(paramsAndLoggedIn.first, paramsAndLoggedIn.second)
         );
       });
 
-    showActivityUpdate
+    this.showActivityUpdate
       .map(Activity::project)
       .filter(ObjectUtils::isNotNull)
       .compose(bindToLifecycle())
-      .subscribe(p -> koala.trackViewedUpdate(p, KoalaContext.Update.ACTIVITY_SAMPLE));
+      .subscribe(p -> this.koala.trackViewedUpdate(p, KoalaContext.Update.ACTIVITY_SAMPLE));
   }
 
   private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {
-    return activity != null && activity.id() != activitySamplePreference.get();
+    return activity != null && activity.id() != this.activitySamplePreference.get();
   }
 
   private Observable<Activity> fetchActivity() {
-    return apiClient.fetchActivities(1)
+    return this.apiClient.fetchActivities(1)
       .map(ActivityEnvelope::activities)
       .map(ListUtils::first)
       .filter(ObjectUtils::isNotNull)
@@ -167,7 +167,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
 
   /**
    * Converts a pair (params, project) into a (project, refTag) pair that does some extra logic around POTD and
-   * featured projects..
+   * featured projects.
    */
   private static @NonNull Pair<Project, RefTag> projectAndRefTagFromParamsAndProject(final @NonNull DiscoveryParams params,
     final @NonNull Project project) {
@@ -185,7 +185,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
 
   private void saveLastSeenActivityId(final @Nullable Activity activity) {
     if (activity != null) {
-      activitySamplePreference.set((int) activity.id());
+      this.activitySamplePreference.set((int) activity.id());
     }
   }
 
@@ -200,7 +200,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
   private final PublishSubject<List<Category>> rootCategories = PublishSubject.create();
 
   private final BehaviorSubject<Activity> activity = BehaviorSubject.create();
-  private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
+  private final BehaviorSubject<List<Project>> projectList = BehaviorSubject.create();
   private final Observable<Boolean> showActivityFeed;
   private final Observable<Activity> showActivityUpdate;
   private final Observable<Boolean> showLoginTout;
@@ -212,63 +212,63 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
 
   @Override public void activitySampleFriendBackingViewHolderProjectClicked(final @NonNull ActivitySampleFriendBackingViewHolder viewHolder,
     final @NonNull Project project) {
-    activitySampleProjectClick.onNext(project);
+    this.activitySampleProjectClick.onNext(project);
   }
   @Override public void activitySampleFriendBackingViewHolderSeeActivityClicked(final @NonNull ActivitySampleFriendBackingViewHolder viewHolder) {
-    activityClick.onNext(true);
+    this.activityClick.onNext(true);
   }
   @Override public void activitySampleFriendFollowViewHolderSeeActivityClicked(final @NonNull ActivitySampleFriendFollowViewHolder viewHolder) {
-    activityClick.onNext(true);
+    this.activityClick.onNext(true);
   }
   @Override public void activitySampleProjectViewHolderProjectClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder,
     final @NonNull Project project) {
-    activitySampleProjectClick.onNext(project);
+    this.activitySampleProjectClick.onNext(project);
   }
   @Override public void activitySampleProjectViewHolderSeeActivityClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder) {
-    activityClick.onNext(true);
+    this.activityClick.onNext(true);
   }
   @Override public void activitySampleProjectViewHolderUpdateClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder,
     final @NonNull Activity activity) {
-    activityUpdateClick.onNext(activity);
+    this.activityUpdateClick.onNext(activity);
   }
   @Override public void rootCategories(final @NonNull List<Category> rootCategories) {
     this.rootCategories.onNext(rootCategories);
   }
   @Override public void clearPage() {
-    clearPage.onNext(null);
+    this.clearPage.onNext(null);
   }
   @Override public void discoveryOnboardingViewHolderLoginToutClick(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
-    discoveryOnboardingLoginToutClick.onNext(true);
+    this.discoveryOnboardingLoginToutClick.onNext(true);
   }
   @Override public void nextPage() {
-    nextPage.onNext(null);
+    this.nextPage.onNext(null);
   }
   @Override public void paramsFromActivity(final @NonNull DiscoveryParams params) {
-    paramsFromActivity.onNext(params);
+    this.paramsFromActivity.onNext(params);
   }
   @Override public void projectCardViewHolderClick(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
-    clickProject.onNext(project);
+    this.clickProject.onNext(project);
   }
 
   @Override public @NonNull Observable<Activity> activity() {
-    return activity;
+    return this.activity;
   }
-  @Override public @NonNull Observable<List<Project>> projects() {
-    return projects;
+  @Override public @NonNull Observable<List<Project>> projectList() {
+    return this.projectList;
   }
   @Override public @NonNull Observable<Boolean> showActivityFeed() {
-    return showActivityFeed;
+    return this.showActivityFeed;
   }
   @Override public @NonNull Observable<Activity> showActivityUpdate() {
-    return showActivityUpdate;
+    return this.showActivityUpdate;
   }
   @Override public @NonNull Observable<Boolean> showLoginTout() {
-    return showLoginTout;
+    return this.showLoginTout;
   }
   @Override public @NonNull Observable<Pair<Project, RefTag>> showProject() {
-    return showProject;
+    return this.showProject;
   }
   @Override public @NonNull Observable<Boolean> shouldShowOnboardingView() {
-    return shouldShowOnboardingView;
+    return this.shouldShowOnboardingView;
   }
 }

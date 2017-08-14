@@ -16,8 +16,8 @@ public class Logout {
   }
 
   public void execute() {
-    currentUser.logout();
-    cookieManager.getCookieStore().removeAll();
+    this.currentUser.logout();
+    this.cookieManager.getCookieStore().removeAll();
     LoginManager.getInstance().logOut();
   }
 }

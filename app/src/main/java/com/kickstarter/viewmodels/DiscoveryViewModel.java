@@ -55,20 +55,20 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   public DiscoveryViewModel(final @NonNull Environment environment) {
     super(environment);
 
-    apiClient = environment.apiClient();
-    buildCheck = environment.buildCheck();
-    currentUser = environment.currentUser();
-    webClient = environment.webClient();
+    this.apiClient = environment.apiClient();
+    this.buildCheck = environment.buildCheck();
+    this.currentUser = environment.currentUser();
+    this.webClient = environment.webClient();
 
-    buildCheck.bind(this, webClient);
+    this.buildCheck.bind(this, this.webClient);
 
-    showBuildCheckAlert = newerBuildIsAvailable;
-    showInternalTools = internalToolsClick;
-    showLoginTout = loggedOutLoginToutClick;
-    showProfile = profileClick;
-    showSettings = settingsClick;
+    this.showBuildCheckAlert = this.newerBuildIsAvailable;
+    this.showInternalTools = this.internalToolsClick;
+    this.showLoginTout = this.loggedOutLoginToutClick;
+    this.showProfile = this.profileClick;
+    this.showSettings = this.settingsClick;
 
-    final Observable<Boolean> userIsCreator = currentUser.observable()
+    final Observable<Boolean> userIsCreator = this.currentUser.observable()
       .map(u -> u != null && IntegerUtils.isNonZero(u.createdProjectsCount()));
 
     final Observable<Boolean> creatorViewFeatureFlagIsEnabled = environment.currentConfig().observable()
@@ -92,10 +92,10 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       .share();
 
     final Observable<DiscoveryParams> paramsFromIntent = intent()
-      .flatMap(i -> DiscoveryIntentMapper.params(i, apiClient));
+      .flatMap(i -> DiscoveryIntentMapper.params(i, this.apiClient));
 
-    final Observable<DiscoveryParams> drawerParamsClicked = childFilterRowClick
-      .mergeWith(topFilterRowClick)
+    final Observable<DiscoveryParams> drawerParamsClicked = this.childFilterRowClick
+      .mergeWith(this.topFilterRowClick)
       .map(NavigationDrawerData.Section.Row::params);
 
     // Merge various param data sources.
@@ -105,7 +105,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       drawerParamsClicked
     );
 
-    final Observable<Integer> pagerSelectedPage = pagerSetPrimaryPage.distinctUntilChanged();
+    final Observable<Integer> pagerSelectedPage = this.pagerSetPrimaryPage.distinctUntilChanged();
 
     // Combine params with the selected sort position.
     Observable.combineLatest(
@@ -114,9 +114,9 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       (p, s) -> p.toBuilder().sort(s).build()
     )
       .compose(bindToLifecycle())
-      .subscribe(updateParamsForPage);
+      .subscribe(this.updateParamsForPage);
 
-    final Observable<List<Category>> categories = apiClient.fetchCategories()
+    final Observable<List<Category>> categories = this.apiClient.fetchCategories()
       .compose(neverError())
       .flatMap(Observable::from)
       .toSortedList()
@@ -132,14 +132,14 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       Pair::create
     )
       .compose(bindToLifecycle())
-      .subscribe(rootCategoriesAndPosition);
+      .subscribe(this.rootCategoriesAndPosition);
 
-    final Observable<Category> drawerClickedParentCategory = parentFilterRowClick
+    final Observable<Category> drawerClickedParentCategory = this.parentFilterRowClick
       .map(NavigationDrawerData.Section.Row::params)
       .map(DiscoveryParams::category);
 
     final Observable<Category> expandedCategory = Observable.merge(
-        topFilterRowClick.map(__ -> (Category) null),
+      this.topFilterRowClick.map(__ -> (Category) null),
         drawerClickedParentCategory
       )
       .scan(null, (previous, next) -> {
@@ -153,7 +153,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
     // to avoid displaying old data.
     pagerSelectedPage
       .compose(takeWhen(params))
-      .compose(combineLatestPair(currentUser.observable()))
+      .compose(combineLatestPair(this.currentUser.observable()))
       .map(pageAndUser -> pageAndUser.first)
       .flatMap(currentPage -> Observable.from(DiscoveryParams.Sort.values())
         .map(DiscoveryUtils::positionFromSort)
@@ -161,53 +161,53 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
         .toList()
       )
       .compose(bindToLifecycle())
-      .subscribe(clearPages);
+      .subscribe(this.clearPages);
 
     params.distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(updateToolbarWithParams);
+      .subscribe(this.updateToolbarWithParams);
 
-    updateParamsForPage.map(__ -> true)
+    this.updateParamsForPage.map(__ -> true)
       .compose(bindToLifecycle())
-      .subscribe(expandSortTabLayout);
+      .subscribe(this.expandSortTabLayout);
 
     Observable.combineLatest(
       categories,
       params,
       expandedCategory,
-      currentUser.observable(),
+      this.currentUser.observable(),
       DiscoveryDrawerUtils::deriveNavigationDrawerData
     )
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(navigationDrawerData);
+      .subscribe(this.navigationDrawerData);
 
     drawerParamsClicked
       .compose(bindToLifecycle())
-      .subscribe(koala::trackDiscoveryFilterSelected);
+      .subscribe(this.koala::trackDiscoveryFilterSelected);
 
     Observable.merge(
-      openDrawer,
-      childFilterRowClick.map(__ -> false),
-      topFilterRowClick.map(__ -> false),
-      internalToolsClick.map(__ -> false),
-      loggedOutLoginToutClick.map(__ -> false),
-      profileClick.map(__ -> false),
-      settingsClick.map(__ -> false)
+      this.openDrawer,
+      this.childFilterRowClick.map(__ -> false),
+      this.topFilterRowClick.map(__ -> false),
+      this.internalToolsClick.map(__ -> false),
+      this.loggedOutLoginToutClick.map(__ -> false),
+      this.profileClick.map(__ -> false),
+      this.settingsClick.map(__ -> false)
     )
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(drawerIsOpen);
+      .subscribe(this.drawerIsOpen);
 
-    openDrawer
+    this.openDrawer
       .filter(BooleanUtils::isTrue)
       .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackDiscoveryFilters());
+      .subscribe(__ -> this.koala.trackDiscoveryFilters());
 
     intent()
       .filter(IntentMapper::appBannerIsSet)
       .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackOpenedAppBanner());
+      .subscribe(__ -> this.koala.trackOpenedAppBanner());
   }
 
   private final PublishSubject<NavigationDrawerData.Section.Row> childFilterRowClick = PublishSubject.create();
@@ -239,76 +239,76 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   public final DiscoveryViewModelOutputs outputs = this;
 
   @Override public void childFilterViewHolderRowClick(final @NonNull ChildFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
-    childFilterRowClick.onNext(row);
+    this.childFilterRowClick.onNext(row);
   }
   @Override public void discoveryPagerAdapterSetPrimaryPage(final @NonNull DiscoveryPagerAdapter adapter, final int position) {
-    pagerSetPrimaryPage.onNext(position);
+    this.pagerSetPrimaryPage.onNext(position);
   }
   @Override public void loggedInViewHolderInternalToolsClick(final @NonNull LoggedInViewHolder viewHolder) {
-    internalToolsClick.onNext(null);
+    this.internalToolsClick.onNext(null);
   }
   @Override public void loggedInViewHolderProfileClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
-    profileClick.onNext(null);
+    this.profileClick.onNext(null);
   }
   @Override public void loggedInViewHolderSettingsClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
-    settingsClick.onNext(null);
+    this.settingsClick.onNext(null);
   }
   @Override public void loggedOutViewHolderInternalToolsClick(final @NonNull LoggedOutViewHolder viewHolder) {
-    internalToolsClick.onNext(null);
+    this.internalToolsClick.onNext(null);
   }
   @Override public void loggedOutViewHolderLoginToutClick(final @NonNull LoggedOutViewHolder viewHolder) {
-    loggedOutLoginToutClick.onNext(null);
+    this.loggedOutLoginToutClick.onNext(null);
   }
   @Override public void newerBuildIsAvailable(final @NonNull InternalBuildEnvelope envelope) {
-    newerBuildIsAvailable.onNext(envelope);
+    this.newerBuildIsAvailable.onNext(envelope);
   }
   @Override public void openDrawer(final boolean open) {
-    openDrawer.onNext(open);
+    this.openDrawer.onNext(open);
   }
   @Override public void parentFilterViewHolderRowClick(final @NonNull ParentFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
-    parentFilterRowClick.onNext(row);
+    this.parentFilterRowClick.onNext(row);
   }
   @Override public void topFilterViewHolderRowClick(final @NonNull TopFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
-    topFilterRowClick.onNext(row);
+    this.topFilterRowClick.onNext(row);
   }
 
   @Override public @NonNull Observable<List<Integer>> clearPages() {
-    return clearPages;
+    return this.clearPages;
   }
   @Override public @NonNull Observable<Boolean> creatorDashboardButtonIsGone() {
-    return creatorDashboardButtonIsGone;
+    return this.creatorDashboardButtonIsGone;
   }
   @Override public @NonNull Observable<Boolean> drawerIsOpen() {
-    return drawerIsOpen;
+    return this.drawerIsOpen;
   }
   @Override public @NonNull Observable<Boolean> expandSortTabLayout() {
-    return expandSortTabLayout;
+    return this.expandSortTabLayout;
   }
   @Override public @NonNull Observable<NavigationDrawerData> navigationDrawerData() {
-    return navigationDrawerData;
+    return this.navigationDrawerData;
   }
   @Override public @NonNull Observable<Pair<List<Category>, Integer>> rootCategoriesAndPosition() {
-    return rootCategoriesAndPosition;
+    return this.rootCategoriesAndPosition;
   }
   @Override public @NonNull Observable<InternalBuildEnvelope> showBuildCheckAlert() {
-    return showBuildCheckAlert;
+    return this.showBuildCheckAlert;
   }
   @Override public @NonNull Observable<Void> showInternalTools() {
-    return showInternalTools;
+    return this.showInternalTools;
   }
   @Override public @NonNull Observable<Void> showLoginTout() {
-    return showLoginTout;
+    return this.showLoginTout;
   }
   @Override public @NonNull Observable<Void> showProfile() {
-    return showProfile;
+    return this.showProfile;
   }
   @Override public @NonNull Observable<Void> showSettings() {
-    return showSettings;
+    return this.showSettings;
   }
   @Override public @NonNull Observable<DiscoveryParams> updateParamsForPage() {
-    return updateParamsForPage;
+    return this.updateParamsForPage;
   }
   @Override public @NonNull Observable<DiscoveryParams> updateToolbarWithParams() {
-    return updateToolbarWithParams;
+    return this.updateToolbarWithParams;
   }
 }

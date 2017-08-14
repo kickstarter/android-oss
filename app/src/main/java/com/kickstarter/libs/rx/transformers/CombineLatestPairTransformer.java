@@ -14,6 +14,6 @@ public final class CombineLatestPairTransformer<S, T> implements Observable.Tran
 
   @Override
   @NonNull public Observable<Pair<S, T>> call(final @NonNull Observable<S> first) {
-    return Observable.combineLatest(first, second, Pair::new);
+    return Observable.combineLatest(first, this.second, Pair::new);
   }
 }

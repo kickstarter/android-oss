@@ -80,15 +80,15 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
     final NavigationDrawerData.Section.Row row = (NavigationDrawerData.Section.Row) object;
 
     final boolean expanded;
-    if (row.params().category() == null || drawerData.expandedCategory() == null) {
+    if (row.params().category() == null || this.drawerData.expandedCategory() == null) {
       expanded = false;
     } else {
-      expanded = row.params().category().rootId() == drawerData.expandedCategory().rootId();
+      expanded = row.params().category().rootId() == this.drawerData.expandedCategory().rootId();
     }
 
     return row
       .toBuilder()
-      .selected(row.params().equals(drawerData.selectedParams()))
+      .selected(row.params().equals(this.drawerData.selectedParams()))
       .rootIsExpanded(expanded)
       .build();
   }
@@ -97,15 +97,15 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch (layout) {
       case R.layout.discovery_drawer_logged_in_view:
-        return new LoggedInViewHolder(view, delegate);
+        return new LoggedInViewHolder(view, this.delegate);
       case R.layout.discovery_drawer_logged_out_view:
-        return new LoggedOutViewHolder(view, delegate);
+        return new LoggedOutViewHolder(view, this.delegate);
       case R.layout.discovery_drawer_parent_filter_view:
-        return new ParentFilterViewHolder(view, delegate);
+        return new ParentFilterViewHolder(view, this.delegate);
       case R.layout.discovery_drawer_top_filter_view:
-        return new TopFilterViewHolder(view, delegate);
+        return new TopFilterViewHolder(view, this.delegate);
       case R.layout.discovery_drawer_child_filter_view:
-        return new ChildFilterViewHolder(view, delegate);
+        return new ChildFilterViewHolder(view, this.delegate);
       case R.layout.discovery_drawer_divider_view:
       default:
         return new EmptyViewHolder(view);
@@ -113,7 +113,7 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
   }
 
   public void takeData(final @NonNull NavigationDrawerData data) {
-    drawerData = data;
+    this.drawerData = data;
     this.sections().clear();
     this.sections().addAll(sectionsFromData(data));
     notifyDataSetChanged();

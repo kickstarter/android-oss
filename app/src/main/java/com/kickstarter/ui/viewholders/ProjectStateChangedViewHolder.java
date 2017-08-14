@@ -61,20 +61,20 @@ public final class ProjectStateChangedViewHolder extends ActivityListViewHolder 
 
     Picasso.with(context())
       .load(photo.little())
-      .into(projectPhotoImageView);
+      .into(this.projectPhotoImageView);
 
     switch (activity().category()) {
       case Activity.CATEGORY_FAILURE:
-        titleTextView.setText(ksString.format(projectNotSuccessfullyFundedString, "project_name", project.name()));
+        this.titleTextView.setText(this.ksString.format(this.projectNotSuccessfullyFundedString, "project_name", project.name()));
         break;
       case Activity.CATEGORY_CANCELLATION:
-        titleTextView.setText(ksString.format(projectCanceledByCreatorString, "project_name", project.name()));
+        this.titleTextView.setText(this.ksString.format(this.projectCanceledByCreatorString, "project_name", project.name()));
         break;
       case Activity.CATEGORY_SUSPENSION:
-        titleTextView.setText(ksString.format(projectSuspendedString, "project_name", project.name()));
+        this.titleTextView.setText(this.ksString.format(this.projectSuspendedString, "project_name", project.name()));
         break;
       default:
-        titleTextView.setText("");
+        this.titleTextView.setText("");
     }
   }
 

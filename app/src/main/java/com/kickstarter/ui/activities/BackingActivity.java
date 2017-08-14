@@ -139,7 +139,7 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
       .compose(observeForUI())
       .subscribe(this.projectContextProjectNameTextView::setText);
 
-    this.viewModel.outputs.rewardsItems()
+    this.viewModel.outputs.rewardsItemList()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(rewardsItemAdapter::rewardsItems);
@@ -220,19 +220,19 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
     final String str;
     switch (status) {
       case Backing.STATUS_CANCELED:
-        str = statusCanceled;
+        str = this.statusCanceled;
         break;
       case Backing.STATUS_COLLECTED:
-        str = statusCollected;
+        str = this.statusCollected;
         break;
       case Backing.STATUS_DROPPED:
-        str = statusDropped;
+        str = this.statusDropped;
         break;
       case Backing.STATUS_ERRORED:
-        str = statusErrored;
+        str = this.statusErrored;
         break;
       case Backing.STATUS_PLEDGED:
-        str = statusPledged;
+        str = this.statusPledged;
         break;
       default:
         str = "";

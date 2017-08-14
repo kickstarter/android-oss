@@ -43,15 +43,15 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
     setContentView(R.layout.video_player_layout);
     ButterKnife.bind(this);
 
-    viewModel.outputs.preparePlayerWithUrl()
+    this.viewModel.outputs.preparePlayerWithUrl()
       .compose(Transformers.takeWhen(lifecycle().filter(ActivityEvent.RESUME::equals)))
       .compose(bindToLifecycle())
       .subscribe(this::preparePlayer);
 
-    mediaController = new MediaController(this);
-    mediaController.setAnchorView(rootView);
+    this.mediaController = new MediaController(this);
+    this.mediaController.setAnchorView(this.rootView);
 
-    RxView.clicks(rootView)
+    RxView.clicks(this.rootView)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> toggleControlsVisibility());
@@ -76,9 +76,9 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
     }
 
     if (playbackState == ExoPlayer.STATE_BUFFERING) {
-      loadingIndicatorProgressBar.setVisibility(View.VISIBLE);
+      this.loadingIndicatorProgressBar.setVisibility(View.VISIBLE);
     } else {
-      loadingIndicatorProgressBar.setVisibility(View.GONE);
+      this.loadingIndicatorProgressBar.setVisibility(View.GONE);
     }
   }
 
@@ -87,7 +87,7 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
     super.onWindowFocusChanged(hasFocus);
 
     if (hasFocus) {
-      rootView.setSystemUiVisibility(systemUIFlags());
+      this.rootView.setSystemUiVisibility(systemUIFlags());
     }
   }
 
@@ -103,31 +103,31 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
   }
 
   private void releasePlayer() {
-    if (player != null) {
-      playerPosition = player.getCurrentPosition();
-      player.release();
-      player = null;
+    if (this.player != null) {
+      this.playerPosition = this.player.getCurrentPosition();
+      this.player.release();
+      this.player = null;
     }
   }
 
   public void preparePlayer(final @NonNull String videoUrl) {
     // Create player
-    player = new KSVideoPlayer(new KSRendererBuilder(this, videoUrl));
-    player.setListener(this);
-    player.seekTo(playerPosition);  // todo: will be used for inline video playing
+    this.player = new KSVideoPlayer(new KSRendererBuilder(this, videoUrl));
+    this.player.setListener(this);
+    this.player.seekTo(this.playerPosition);  // todo: will be used for inline video playing
 
     // Set media controller
-    mediaController.setMediaPlayer(player.getPlayerControl());
-    mediaController.setEnabled(true);
+    this.mediaController.setMediaPlayer(this.player.getPlayerControl());
+    this.mediaController.setEnabled(true);
 
-    player.prepare();
-    player.setSurface(surfaceView.getHolder().getSurface());
-    player.setPlayWhenReady(true);
+    this.player.prepare();
+    this.player.setSurface(this.surfaceView.getHolder().getSurface());
+    this.player.setPlayWhenReady(true);
   }
 
   public void toggleControlsVisibility() {
-    if (mediaController.isShowing()) {
-      mediaController.hide();
+    if (this.mediaController.isShowing()) {
+      this.mediaController.hide();
     } else {
       if (isMediaControllerAttachedToWindow()) {
         // Attempt fix for crash reports from Remix Mini / 5.1 where the media controller is attached to a window
@@ -135,12 +135,12 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
         return;
       }
 
-      mediaController.show();
+      this.mediaController.show();
     }
   }
 
   @TargetApi(19)
   private boolean isMediaControllerAttachedToWindow() {
-    return ApiCapabilities.canCheckMediaControllerIsAttachedToWindow() && mediaController.isAttachedToWindow();
+    return ApiCapabilities.canCheckMediaControllerIsAttachedToWindow() && this.mediaController.isAttachedToWindow();
   }
 }

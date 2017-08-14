@@ -7657,7 +7657,6 @@
     "ksr_live_homepage": true,
     "message_spam": true,
     "new_message_inbox": true,
-    "sticky_nav": true,
     "ref_banner_ads": true,
     "react_discovery_cards": true,
     "react_guest_pledging": true,
@@ -7839,9 +7838,9 @@
     "project_build": "control",
     "react_guest_pledging": "control",
     "react_payment_sources_form": "control",
-    "favorites_recs": "control",
+    "favorites_recs": "experimental",
     "thanks_page_better_recs": "control",
-    "social_icons_bucket": "control",
+    "social_icons_bucket": "experimental",
     "guided_search": "control"
   },
   "stripe": {

@@ -87,10 +87,10 @@ public final class DiscoveryToolbar extends KSToolbar {
   public void loadParams(final @NonNull DiscoveryParams params) {
     final DiscoveryActivity activity = (DiscoveryActivity) getContext();
 
-    filterTextView.setText(params.filterString(activity, ksString, true, false));
+    this.filterTextView.setText(params.filterString(activity, this.ksString, true, false));
 
     if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
-      discoveryStatusBar.setBackgroundColor(DiscoveryUtils.secondaryColor(activity, params.category()));
+      this.discoveryStatusBar.setBackgroundColor(DiscoveryUtils.secondaryColor(activity, params.category()));
       if (DiscoveryUtils.overlayShouldBeLight(params.category())) {
         StatusBarUtils.setLightStatusBarIcons(activity);
       } else {
@@ -100,10 +100,12 @@ public final class DiscoveryToolbar extends KSToolbar {
 
     this.setBackgroundColor(DiscoveryUtils.primaryColor(activity, params.category()));
 
-    final Observable<TextView> views = Observable.just(activityFeedButton,
-      filterTextView,
-      menuButton,
-      searchButton);
+    final Observable<TextView> views = Observable.just(
+      this.activityFeedButton,
+      this.filterTextView,
+      this.menuButton,
+      this.searchButton
+    );
 
     final @ColorInt int overlayTextColor = DiscoveryUtils.overlayTextColor(activity, params.category());
 
@@ -111,7 +113,7 @@ public final class DiscoveryToolbar extends KSToolbar {
   }
 
   @OnClick(R.id.search_button)
-  public void searchButtonClick(final @NonNull View view) {
+  public void searchButtonClick() {
     final Context context = getContext();
     context.startActivity(new Intent(context, SearchActivity.class));
   }

@@ -34,27 +34,27 @@ public class UnansweredSurveyHolderViewModelTest extends KSRobolectricTestCase {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
-    creatorAvatarImage.assertValues(surveyResponse.project().creator().avatar().small());
+    this.creatorAvatarImage.assertValues(surveyResponse.project().creator().avatar().small());
   }
   @Test
   public void creatorName() throws Exception {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
-    creatorName.assertValues(surveyResponse.project().creator().name());
+    this.creatorName.assertValues(surveyResponse.project().creator().name());
   }
   @Test
   public void surveyDescription() throws Exception {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
-    projectForSurveyDescription.assertValues(surveyResponse.project());
+    this.projectForSurveyDescription.assertValues(surveyResponse.project());
   }
   @Test
   public void clickingSurveyEmitsUrl() throws Exception {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
-    loadSurvey.assertValue(surveyResponse);
+    this.loadSurvey.assertValue(surveyResponse);
   }
 }

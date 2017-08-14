@@ -37,12 +37,12 @@ public final class EmptyActivityFeedViewHolder extends KSViewHolder {
 
   @Override
   public void onBind() {
-    if (isLoggedIn) {
-      discoverProjectsButton.setVisibility(View.VISIBLE);
-      loginButton.setVisibility(View.GONE);
+    if (this.isLoggedIn) {
+      this.discoverProjectsButton.setVisibility(View.VISIBLE);
+      this.loginButton.setVisibility(View.GONE);
     } else  {
-      discoverProjectsButton.setVisibility(View.GONE);
-      loginButton.setVisibility(View.VISIBLE);
+      this.discoverProjectsButton.setVisibility(View.GONE);
+      this.loginButton.setVisibility(View.VISIBLE);
     }
   }
 

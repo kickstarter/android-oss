@@ -40,9 +40,9 @@ public final class KoalaTrackingClient extends TrackingClientType {
     this.androidPayCapability = androidPayCapability;
 
     // Cache the most recent logged in user for default Koala properties.
-    this.currentUser.observable().subscribe(u -> loggedInUser = u);
+    this.currentUser.observable().subscribe(u -> this.loggedInUser = u);
 
-    mixpanel = MixpanelAPI.getInstance(context, "koala");
+    this.mixpanel = MixpanelAPI.getInstance(context, "koala");
   }
 
   @Override
@@ -50,53 +50,52 @@ public final class KoalaTrackingClient extends TrackingClientType {
     final Map<String, Object> newProperties = new HashMap<>(properties);
     newProperties.putAll(defaultProperties());
 
-    mixpanel.trackMap(eventName, MapUtils.compact(newProperties));
+    this.mixpanel.trackMap(eventName, MapUtils.compact(newProperties));
   }
 
   @NonNull
   @Override
   public Map<String, Object> defaultProperties() {
+    final Map<String, Object> hashMap = new HashMap<>();
 
-    return new HashMap<String, Object>() {
-      {
-        if (loggedInUser != null) {
-          putAll(KoalaUtils.userProperties(loggedInUser));
-        }
-        put("user_logged_in", loggedInUser != null);
+    if (this.loggedInUser != null) {
+      hashMap.putAll(KoalaUtils.userProperties(this.loggedInUser));
+    }
 
-        put("client_type", "native");
-        put("android_play_services_available", isGooglePlayServicesAvailable());
-        put("client_platform", "android");
-        put("device_orientation", deviceOrientation());
-        put("device_format", deviceFormat());
-        put("device_fingerprint", mixpanel.getDistinctId());
-        put("android_uuid", mixpanel.getDistinctId());
-        put("android_pay_capable", androidPayCapability.isCapable());
-      }
-    };
+    hashMap.put("user_logged_in", this.loggedInUser != null);
+    hashMap.put("client_type", "native");
+    hashMap.put("android_play_services_available", isGooglePlayServicesAvailable());
+    hashMap.put("client_platform", "android");
+    hashMap.put("device_orientation", deviceOrientation());
+    hashMap.put("device_format", deviceFormat());
+    hashMap.put("device_fingerprint", this.mixpanel.getDistinctId());
+    hashMap.put("android_uuid", this.mixpanel.getDistinctId());
+    hashMap.put("android_pay_capable", this.androidPayCapability.isCapable());
+
+    return hashMap;
   }
 
   /**
    * Derives the device's orientation (portrait/landscape) from the `context`.
    */
   private @NonNull String deviceOrientation() {
-    if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+    if (this.context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
       return "landscape";
     }
     return "portrait";
   }
 
   private @NonNull String deviceFormat() {
-    return context.getResources().getBoolean(R.bool.isTablet) ? "tablet" : "phone";
+    return this.context.getResources().getBoolean(R.bool.isTablet) ? "tablet" : "phone";
   }
 
   /**
    * Derives the availability of google play services from the `context`.
    */
   private boolean isGooglePlayServicesAvailable() {
-    if (isGooglePlayServicesAvailable == null) {
-      isGooglePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.context.getApplicationContext()) != ConnectionResult.SUCCESS;
+    if (this.isGooglePlayServicesAvailable == null) {
+      this.isGooglePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.context.getApplicationContext()) != ConnectionResult.SUCCESS;
     }
-    return isGooglePlayServicesAvailable;
+    return this.isGooglePlayServicesAvailable;
   }
 }

@@ -9,7 +9,6 @@ import com.kickstarter.ui.intentmappers.IntentMapper;
 import org.junit.Test;
 
 public class IntentMapperTest extends KSRobolectricTestCase {
-
   @Test
   public void testIntentMapper_EmitsFromAppBanner() {
     final Uri uri = Uri.parse("https://www.kickstarter.com/discover");

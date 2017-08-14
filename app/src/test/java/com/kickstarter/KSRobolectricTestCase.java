@@ -37,11 +37,11 @@ public abstract class KSRobolectricTestCase extends TestCase {
     super.setUp();
 
     final MockTrackingClient testTrackingClient = new MockTrackingClient();
-    koalaTest = new TestSubscriber<>();
-    testTrackingClient.eventNames.subscribe(koalaTest);
+    this.koalaTest = new TestSubscriber<>();
+    testTrackingClient.eventNames.subscribe(this.koalaTest);
     DateTimeUtils.setCurrentMillisFixed(new DateTime().getMillis());
 
-    environment = application().component().environment().toBuilder()
+    this.environment = application().component().environment().toBuilder()
       .apiClient(new MockApiClient())
       .currentConfig(new MockCurrentConfig())
       .webClient(new MockWebClient())
@@ -50,12 +50,12 @@ public abstract class KSRobolectricTestCase extends TestCase {
   }
 
   protected @NonNull TestKSApplication application() {
-    if (application != null) {
-      return application;
+    if (this.application != null) {
+      return this.application;
     }
 
-    application = (TestKSApplication) RuntimeEnvironment.application;
-    return application;
+    this.application = (TestKSApplication) RuntimeEnvironment.application;
+    return this.application;
   }
 
   @Override
@@ -70,7 +70,7 @@ public abstract class KSRobolectricTestCase extends TestCase {
   }
 
   protected @NonNull Environment environment() {
-    return environment;
+    return this.environment;
   }
 
   protected @NonNull KSString ksString() {

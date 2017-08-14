@@ -40,6 +40,9 @@
     <module name="NoFinalizer" />
     <module name="OneStatementPerLine" />
     <module name="ParameterAssignment" />
+    <module name="RequireThisCheck">
+      <property name="checkMethods" value="false"/>
+    </module>
     <module name="SimplifyBooleanExpression" />
     <module name="SimplifyBooleanReturn" />
     <module name="StringLiteralEquality" />

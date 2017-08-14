@@ -22,7 +22,7 @@ public final class RewardsItemViewHolder extends KSViewHolder {
 
   public RewardsItemViewHolder(final @NonNull View view) {
     super(view);
-    ksString = environment().ksString();
+    this.ksString = environment().ksString();
     ButterKnife.bind(this, view);
   }
 
@@ -30,10 +30,11 @@ public final class RewardsItemViewHolder extends KSViewHolder {
   public void bindData(final @Nullable Object data) throws Exception {
     final RewardsItem rewardsItem = requireNonNull((RewardsItem) data);
 
-    final String title = ksString.format("rewards_info_item_quantity_title", rewardsItem.quantity(),
+    final String title = this.ksString.format("rewards_info_item_quantity_title", rewardsItem.quantity(),
       "quantity", ObjectUtils.toString(rewardsItem.quantity()),
       "title", rewardsItem.item().name()
     );
-    titleTextView.setText(title);
+
+    this.titleTextView.setText(title);
   }
 }

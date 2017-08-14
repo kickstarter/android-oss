@@ -133,7 +133,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(friends ->
-        this.friendBackingMessageTextView.setText(SocialUtils.projectCardFriendNamepile(friends, ksString))
+        this.friendBackingMessageTextView.setText(SocialUtils.projectCardFriendNamepile(friends, this.ksString))
       );
 
     this.viewModel.outputs.fundingUnsuccessfulViewGroupIsGone()
@@ -272,35 +272,35 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   }
 
   private void resizeProjectImage(final @Nullable String avatarUrl) {
-    final int targetImageWidth = (int) (getScreenWidthDp(context()) * getScreenDensity(context()) - gridNew4Dimen);
+    final int targetImageWidth = (int) (getScreenWidthDp(context()) * getScreenDensity(context()) - this.gridNew4Dimen);
     final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
-    photoImageView.setMaxHeight(targetImageHeight);
+    this.photoImageView.setMaxHeight(targetImageHeight);
 
     Picasso.with(this.context())
       .load(avatarUrl)
       .resize(targetImageWidth, targetImageHeight)  // required to fit properly into apis < 18
       .centerCrop()
-      .placeholder(grayGradientDrawable)
-      .into(photoImageView);
+      .placeholder(this.grayGradientDrawable)
+      .into(this.photoImageView);
   }
 
   private void setDeadlineCountdownText(final @NonNull Project project) {
-    deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, context(), ksString));
+    this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, context(), this.ksString));
   }
 
   private void setFriendAvatarUrl(final @NonNull String avatarUrl) {
     Picasso.with(context()).load(avatarUrl)
       .transform(new CircleTransformation())
-      .into(friendBackingAvatarImageView);
+      .into(this.friendBackingAvatarImageView);
   }
 
   private void setDefaultTopPadding(final boolean setDefaultPadding) {
     if (setDefaultPadding) {
-      adjustLandscapeTopPadding(landCardViewGroup, gridNew2Dimen, gridNew2Dimen, gridNew2Dimen, gridNew2Dimen);
-      adjustViewGroupTopMargin(projectCardViewGroup, 0);
+      adjustLandscapeTopPadding(this.landCardViewGroup, this.gridNew2Dimen, this.gridNew2Dimen, this.gridNew2Dimen, this.gridNew2Dimen);
+      adjustViewGroupTopMargin(this.projectCardViewGroup, 0);
     } else {
-      adjustLandscapeTopPadding(landCardViewGroup, gridNew2Dimen, gridNew3Dimen, gridNew2Dimen, gridNew2Dimen);
-      adjustViewGroupTopMargin(projectCardViewGroup, gridNew1Dimen);
+      adjustLandscapeTopPadding(this.landCardViewGroup, this.gridNew2Dimen, this.gridNew3Dimen, this.gridNew2Dimen, this.gridNew2Dimen);
+      adjustViewGroupTopMargin(this.projectCardViewGroup, this.gridNew1Dimen);
     }
   }
 
@@ -332,21 +332,21 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   }
 
   private void setCanceledTextView(final @NonNull DateTime projectCanceledAt) {
-    this.fundingUnsuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), ksString, projectCanceledAt));
+    this.fundingUnsuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), this.ksString, projectCanceledAt));
     this.fundingUnsuccessfulTextView.setText(this.fundingCanceledString);
   }
 
   private void setSuccessfullyFundedDateTextView(final @NonNull DateTime projectSuccessfulAt) {
-    this.fundingSuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), ksString, projectSuccessfulAt));
+    this.fundingSuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), this.ksString, projectSuccessfulAt));
   }
 
   private void setFailedAtTextView(final @NonNull DateTime projectFailedAt) {
-    this.fundingUnsuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), ksString, projectFailedAt));
+    this.fundingUnsuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), this.ksString, projectFailedAt));
     this.fundingUnsuccessfulTextView.setText(this.fundingUnsuccessfulString);
 
   }
 
   private void setSuspendedAtTextView(final @NonNull DateTime projectSuspendedAt) {
-    this.fundingUnsuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), ksString, projectSuspendedAt));
+    this.fundingUnsuccessfulTextViewDate.setText(DateTimeUtils.relative(context(), this.ksString, projectSuspendedAt));
   }
 }

@@ -53,7 +53,7 @@ public interface ActivityFeedViewModel {
 
   interface Outputs {
     /** Emits a list of activities representing the user's activity feed. */
-    Observable<List<Activity>> activities();
+    Observable<List<Activity>> activityList();
 
     /** Emits when view should be returned to Discovery projects. */
     Observable<Void> goToDiscovery();
@@ -115,7 +115,7 @@ public interface ActivityFeedViewModel {
         .map(f -> coalesce(f.get(FeatureKey.ANDROID_SURVEYS), false));
 
       Observable.combineLatest(
-          resume,
+          this.resume,
           this.currentUser.isLoggedIn(),
           Pair::create
         )
@@ -141,7 +141,7 @@ public interface ActivityFeedViewModel {
 
       paginator.paginatedData()
         .compose(this.bindToLifecycle())
-        .subscribe(this.activities);
+        .subscribe(this.activityList);
 
       paginator.isFetching()
         .compose(this.bindToLifecycle())
@@ -158,7 +158,7 @@ public interface ActivityFeedViewModel {
         .subscribe(this.loggedOutEmptyStateIsVisible);
 
       this.currentUser.observable()
-        .compose(Transformers.takePairWhen(this.activities))
+        .compose(Transformers.takePairWhen(this.activityList))
         .map(ua -> ua.first != null && ua.second.size() == 0)
         .compose(this.bindToLifecycle())
         .subscribe(this.loggedInEmptyStateIsVisible);
@@ -199,7 +199,7 @@ public interface ActivityFeedViewModel {
     private final PublishSubject<Void> refresh = PublishSubject.create();
     private final PublishSubject<SurveyResponse> surveyClick = PublishSubject.create();
 
-    private final BehaviorSubject<List<Activity>> activities = BehaviorSubject.create();
+    private final BehaviorSubject<List<Activity>> activityList = BehaviorSubject.create();
     private final Observable<Void> goToDiscovery;
     private final Observable<Void> goToLogin;
     private final Observable<Project> goToProject;
@@ -261,8 +261,8 @@ public interface ActivityFeedViewModel {
       this.resume.onNext(null);
     }
 
-    @Override @NonNull public Observable<List<Activity>> activities() {
-      return this.activities;
+    @Override @NonNull public Observable<List<Activity>> activityList() {
+      return this.activityList;
     }
 
     @Override @NonNull public Observable<Void> goToDiscovery() {

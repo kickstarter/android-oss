@@ -14,15 +14,15 @@ public class FormContents {
     this.encodingType = encodingType;
   }
   public final @NonNull String encodingType() {
-    return encodingType;
+    return this.encodingType;
   }
 
   public final @NonNull String method() {
-    return method;
+    return this.method;
   }
 
   public final @NonNull String serialized() {
-    return serialized;
+    return this.serialized;
   }
 }
 

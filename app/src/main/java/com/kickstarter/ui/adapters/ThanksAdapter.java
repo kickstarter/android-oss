@@ -33,9 +33,9 @@ public final class ThanksAdapter extends KSAdapter {
 
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.thanks_project_view) {
-      return new ThanksProjectViewHolder(view, delegate);
+      return new ThanksProjectViewHolder(view, this.delegate);
     }
-    return new ThanksCategoryViewHolder(view, delegate);
+    return new ThanksCategoryViewHolder(view, this.delegate);
   }
 
   public void data(final @NonNull List<Project> projects, final @NonNull Category category) {

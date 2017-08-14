@@ -42,8 +42,8 @@ public class KSToolbar extends Toolbar {
    * If the toolbar has a textview with id title_text_view, set its title.
    */
   public void setTitle(final @NonNull String title) {
-    if (titleTextView != null) {
-      titleTextView.setText(title);
+    if (this.titleTextView != null) {
+      this.titleTextView.setText(title);
     }
   }
 
@@ -65,10 +65,10 @@ public class KSToolbar extends Toolbar {
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
 
-    subscriptions.clear();
+    this.subscriptions.clear();
   }
 
   protected final void addSubscription(final @NonNull Subscription subscription) {
-    subscriptions.add(subscription);
+    this.subscriptions.add(subscription);
   }
 }

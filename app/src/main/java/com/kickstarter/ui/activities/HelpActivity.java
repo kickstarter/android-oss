@@ -87,12 +87,12 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
     ButterKnife.bind(this);
 
     final String url = getUrlForHelpType(this.helpType);
-    kickstarterWebView.loadUrl(url);
-    kickstarterWebView.client().setDelegate(this);
+    this.kickstarterWebView.loadUrl(url);
+    this.kickstarterWebView.client().setDelegate(this);
   }
 
   protected String getUrlForHelpType(final @HelpType int helpType) {
-    final Uri.Builder builder = Uri.parse(webEndpoint).buildUpon();
+    final Uri.Builder builder = Uri.parse(this.webEndpoint).buildUpon();
     switch (helpType) {
       case HELP_TYPE_TERMS:
         builder.appendEncodedPath("terms-of-use");
@@ -118,12 +118,12 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
 
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
+    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
   }
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
+    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
   }
 
   @Override

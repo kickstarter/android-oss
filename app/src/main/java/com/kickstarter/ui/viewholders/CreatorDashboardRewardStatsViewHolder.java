@@ -22,7 +22,6 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
-
   private final CreatorDashboardRewardStatsHolderViewModel.ViewModel viewModel;
   protected @Bind(R.id.dashboard_reward_stats_recycler_view) RecyclerView rewardStatsRecyclerView;
 
@@ -32,9 +31,9 @@ public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
 
     final CreatorDashboardRewardStatsAdapter rewardStatsAdapter = new CreatorDashboardRewardStatsAdapter();
-    rewardStatsRecyclerView.setAdapter(rewardStatsAdapter);
+    this.rewardStatsRecyclerView.setAdapter(rewardStatsAdapter);
     final LinearLayoutManager layoutManager = new LinearLayoutManager(context());
-    rewardStatsRecyclerView.setLayoutManager(layoutManager);
+    this.rewardStatsRecyclerView.setLayoutManager(layoutManager);
 
     this.viewModel.outputs.projectAndRewardStats()
       .compose(bindToLifecycle())

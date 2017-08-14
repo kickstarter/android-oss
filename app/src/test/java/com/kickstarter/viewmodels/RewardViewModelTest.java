@@ -352,7 +352,7 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> rewardsItemsAreHiddenTest = TestSubscriber.create();
     vm.outputs.rewardsItemsAreHidden().subscribe(rewardsItemsAreHiddenTest);
     final TestSubscriber<List<RewardsItem>> rewardsItemsTest = TestSubscriber.create();
-    vm.outputs.rewardsItems().subscribe(rewardsItemsTest);
+    vm.outputs.rewardsItemList().subscribe(rewardsItemsTest);
 
     // Items section should be hidden when there are no items.
     vm.inputs.projectAndReward(project, RewardFactory.reward());

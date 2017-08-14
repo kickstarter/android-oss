@@ -51,66 +51,66 @@ public final class ProfileCardViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    project = ObjectUtils.requireNonNull((Project) data, Project.class);
+    this.project = ObjectUtils.requireNonNull((Project) data, Project.class);
   }
 
   @Override
   public void onBind() {
-    final Photo photo = project.photo();
+    final Photo photo = this.project.photo();
 
     if (photo != null) {
-      profileCardImageView.setVisibility(View.VISIBLE);
+      this.profileCardImageView.setVisibility(View.VISIBLE);
       Picasso.with(context()).load(photo.med())
-        .placeholder(grayGradientDrawable)
-        .into(profileCardImageView);
+        .placeholder(this.grayGradientDrawable)
+        .into(this.profileCardImageView);
     } else {
-      profileCardImageView.setVisibility(View.INVISIBLE);
+      this.profileCardImageView.setVisibility(View.INVISIBLE);
     }
 
-    profileCardNameTextView.setText(project.name());
-    percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(project.percentageFunded()));
+    this.profileCardNameTextView.setText(this.project.name());
+    this.percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(this.project.percentageFunded()));
 
     setProjectStateView();
   }
 
   @Override
   public void onClick(final @NonNull View view) {
-    delegate.profileCardViewHolderClicked(this, project);
+    this.delegate.profileCardViewHolderClicked(this, this.project);
   }
 
   public void setProjectStateView() {
-    switch(project.state()) {
+    switch(this.project.state()) {
       case Project.STATE_SUCCESSFUL:
-        percentageFundedProgressBar.setVisibility(View.GONE);
-        projectStateViewGroup.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setVisibility(View.GONE);
-        successfullyFundedTextView.setVisibility(View.VISIBLE);
-        successfullyFundedTextView.setText(successfulString);
+        this.percentageFundedProgressBar.setVisibility(View.GONE);
+        this.projectStateViewGroup.setVisibility(View.VISIBLE);
+        this.fundingUnsuccessfulTextView.setVisibility(View.GONE);
+        this.successfullyFundedTextView.setVisibility(View.VISIBLE);
+        this.successfullyFundedTextView.setText(this.successfulString);
         break;
       case Project.STATE_CANCELED:
-        percentageFundedProgressBar.setVisibility(View.GONE);
-        projectStateViewGroup.setVisibility(View.VISIBLE);
-        successfullyFundedTextView.setVisibility(View.GONE);
-        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setText(cancelledString);
+        this.percentageFundedProgressBar.setVisibility(View.GONE);
+        this.projectStateViewGroup.setVisibility(View.VISIBLE);
+        this.successfullyFundedTextView.setVisibility(View.GONE);
+        this.fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
+        this.fundingUnsuccessfulTextView.setText(this.cancelledString);
         break;
       case Project.STATE_FAILED:
-        percentageFundedProgressBar.setVisibility(View.GONE);
-        projectStateViewGroup.setVisibility(View.VISIBLE);
-        successfullyFundedTextView.setVisibility(View.GONE);
-        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setText(unsuccessfulString);
+        this.percentageFundedProgressBar.setVisibility(View.GONE);
+        this.projectStateViewGroup.setVisibility(View.VISIBLE);
+        this.successfullyFundedTextView.setVisibility(View.GONE);
+        this.fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
+        this.fundingUnsuccessfulTextView.setText(this.unsuccessfulString);
         break;
       case Project.STATE_SUSPENDED:
-        percentageFundedProgressBar.setVisibility(View.GONE);
-        projectStateViewGroup.setVisibility(View.VISIBLE);
-        successfullyFundedTextView.setVisibility(View.GONE);
-        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setText(suspendedString);
+        this.percentageFundedProgressBar.setVisibility(View.GONE);
+        this.projectStateViewGroup.setVisibility(View.VISIBLE);
+        this.successfullyFundedTextView.setVisibility(View.GONE);
+        this.fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
+        this.fundingUnsuccessfulTextView.setText(this.suspendedString);
         break;
       default:
-        percentageFundedProgressBar.setVisibility(View.VISIBLE);
-        projectStateViewGroup.setVisibility(View.GONE);
+        this.percentageFundedProgressBar.setVisibility(View.VISIBLE);
+        this.projectStateViewGroup.setVisibility(View.GONE);
         break;
     }
   }

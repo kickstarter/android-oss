@@ -11,12 +11,12 @@ public final class MockCurrentConfig implements CurrentConfigType {
 
   @Override
   public @NonNull Observable<Config> observable() {
-    return config;
+    return this.config;
   }
 
   @Override
   public @NonNull Config getConfig() {
-    return config.getValue();
+    return this.config.getValue();
   }
 
   @Override

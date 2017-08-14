@@ -29,9 +29,9 @@ public final class RecyclerViewPaginator {
   public void start() {
     stop();
 
-    subscription = RxRecyclerView.scrollEvents(recyclerView)
-      .filter(__ -> recyclerView.canScrollVertically(DIRECTION_DOWN))
-      .map(__ -> recyclerView.getLayoutManager())
+    this.subscription = RxRecyclerView.scrollEvents(this.recyclerView)
+      .filter(__ -> this.recyclerView.canScrollVertically(DIRECTION_DOWN))
+      .map(__ -> this.recyclerView.getLayoutManager())
       .ofType(LinearLayoutManager.class)
       .map(this::displayedItemFromLinearLayout)
       .filter(item -> item.second != 0)
@@ -41,7 +41,7 @@ public final class RecyclerViewPaginator {
       // If it continues to happen we can also try `debounce`.
       .onBackpressureDrop()
       .distinctUntilChanged()
-      .subscribe(__ -> nextPage.call());
+      .subscribe(__ -> this.nextPage.call());
   }
 
   /**
@@ -50,9 +50,9 @@ public final class RecyclerViewPaginator {
    * created `this` is released.
    */
   public void stop() {
-    if (subscription != null) {
-      subscription.unsubscribe();
-      subscription = null;
+    if (this.subscription != null) {
+      this.subscription.unsubscribe();
+      this.subscription = null;
     }
   }
 

@@ -35,7 +35,7 @@ import com.google.android.exoplayer.util.PlayerControl;
  * ExoPlayer wrapper that provides higher level interface.
  */
 public final class KSVideoPlayer implements ExoPlayer.Listener {
-  private final int TRACK_RENDERER_COUNT = 3; // audio, video, text
+  private static final int TRACK_RENDERER_COUNT = 3; // audio, video, text
   private boolean lastReportedPlayWhenReady;
   private int lastReportedPlaybackState;
   private final ExoPlayer player;
@@ -56,8 +56,8 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
   public KSVideoPlayer(final @NonNull RendererBuilder rendererBuilder) {
     this.player = ExoPlayer.Factory.newInstance(TRACK_RENDERER_COUNT);
     this.rendererBuilder = rendererBuilder;
-    playerControl = new PlayerControl(player);
-    player.addListener(this);
+    this.playerControl = new PlayerControl(this.player);
+    this.player.addListener(this);
   }
 
   @Override
@@ -73,64 +73,64 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
 
   /* ExoPlayer helpers */
   public long getCurrentPosition() {
-    return player.getCurrentPosition();
+    return this.player.getCurrentPosition();
   }
 
   public long getDuration() {
-    return player.getDuration();
+    return this.player.getDuration();
   }
 
   public int getPlaybackState() {
-    return player.getPlaybackState();
+    return this.player.getPlaybackState();
   }
 
   public PlayerControl getPlayerControl() {
-    return playerControl;
+    return this.playerControl;
   }
 
   public void pushSurface(final boolean blockForSurfacePush) {
-    if (videoRenderer == null) {
+    if (this.videoRenderer == null) {
       return;
     }
     if (blockForSurfacePush) {
-      player.blockingSendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
+      this.player.blockingSendMessage(this.videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, this.surface);
     } else {
-      player.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
+      this.player.sendMessage(this.videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, this.surface);
     }
   }
 
   public void prepare() {
-    videoRenderer = null;
+    this.videoRenderer = null;
     reportPlayerState();
-    rendererBuilder.buildRenderers(this);
+    this.rendererBuilder.buildRenderers(this);
   }
 
   public void prepareRenderers(final @NonNull MediaCodecVideoTrackRenderer videoRenderer,
     final @NonNull MediaCodecAudioTrackRenderer audioTrackRenderer) {
     this.videoRenderer = videoRenderer;
-    player.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
-    player.prepare(videoRenderer, audioTrackRenderer);
+    this.player.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, this.surface);
+    this.player.prepare(videoRenderer, audioTrackRenderer);
   }
 
   public void release() {
-    surface = null;
-    player.release();
+    this.surface = null;
+    this.player.release();
   }
 
   public void reportPlayerState() {
-    final boolean playWhenReady = player.getPlayWhenReady();
-    final int playbackState = player.getPlaybackState();
+    final boolean playWhenReady = this.player.getPlayWhenReady();
+    final int playbackState = this.player.getPlaybackState();
 
-    if (lastReportedPlayWhenReady != playWhenReady || lastReportedPlaybackState != playbackState) {
-      listener.onStateChanged(playWhenReady, playbackState);
+    if (this.lastReportedPlayWhenReady != playWhenReady || this.lastReportedPlaybackState != playbackState) {
+      this.listener.onStateChanged(playWhenReady, playbackState);
     }
 
-    lastReportedPlaybackState = playbackState;
-    lastReportedPlayWhenReady = playWhenReady;
+    this.lastReportedPlaybackState = playbackState;
+    this.lastReportedPlayWhenReady = playWhenReady;
   }
 
   public void seekTo(final long position) {
-    player.seekTo(position);
+    this.player.seekTo(position);
   }
 
   public void setListener(final @NonNull Listener listener) {
@@ -138,7 +138,7 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
   }
 
   public void setPlayWhenReady(final boolean playWhenReady) {
-    player.setPlayWhenReady(playWhenReady);
+    this.player.setPlayWhenReady(playWhenReady);
   }
 
   public void setSurface(final @NonNull Surface surface) {

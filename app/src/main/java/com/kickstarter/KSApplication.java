@@ -50,21 +50,21 @@ public class KSApplication extends MultiDexApplication {
     }
 
     if (!isInUnitTests() && ApiCapabilities.canDetectMemoryLeaks()) {
-      refWatcher = LeakCanary.install(this);
+      this.refWatcher = LeakCanary.install(this);
     }
 
     JodaTimeAndroid.init(this);
 
-    component = DaggerApplicationComponent.builder()
+    this.component = DaggerApplicationComponent.builder()
       .applicationModule(new ApplicationModule(this))
       .build();
     component().inject(this);
 
-    CookieHandler.setDefault(cookieManager);
+    CookieHandler.setDefault(this.cookieManager);
 
     FacebookSdk.sdkInitialize(this);
 
-    pushNotifications.initialize();
+    this.pushNotifications.initialize();
 
     final ApplicationLifecycleUtil appUtil = new ApplicationLifecycleUtil(this);
     registerActivityLifecycleCallbacks(appUtil);
@@ -72,7 +72,7 @@ public class KSApplication extends MultiDexApplication {
   }
 
   public ApplicationComponent component() {
-    return component;
+    return this.component;
   }
 
   public static RefWatcher getRefWatcher(final @NonNull Context context) {

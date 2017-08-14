@@ -76,23 +76,23 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
     }
     final DateTime publishedAt = ObjectUtils.coalesce(update.publishedAt(), new DateTime());
 
-    projectNameTextView.setText(project.name());
+    this.projectNameTextView.setText(project.name());
 
     Picasso.with(context)
       .load(photo.little())
-      .into(projectPhotoImageView);
+      .into(this.projectPhotoImageView);
 
-    timestampTextView.setText(DateTimeUtils.relative(context, ksString, publishedAt));
+    this.timestampTextView.setText(DateTimeUtils.relative(context, this.ksString, publishedAt));
 
-    updateBodyTextView.setText(update.truncatedBody());
+    this.updateBodyTextView.setText(update.truncatedBody());
 
-    updateSequenceTextView.setText(ksString.format(
-      projectUpdateCountString,
+    this.updateSequenceTextView.setText(this.ksString.format(
+      this.projectUpdateCountString,
       "update_count",
       String.valueOf(update.sequence())
     ));
 
-    updateTitleTextView.setText(update.title());
+    this.updateTitleTextView.setText(update.title());
   }
 
   @OnClick(R.id.project_info)

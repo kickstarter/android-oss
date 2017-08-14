@@ -139,7 +139,7 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
       .compose(observeForUI())
       .subscribe(this.projectContextProjectNameTextView::setText);
 
-    this.viewModel.outputs.rewardsItems()
+    this.viewModel.outputs.rewardsItemList()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(rewardsItemAdapter::rewardsItems);

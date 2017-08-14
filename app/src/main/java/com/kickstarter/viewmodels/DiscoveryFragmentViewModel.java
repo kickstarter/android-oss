@@ -87,7 +87,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
       DiscoveryUtils::fillRootCategoryForFeaturedProjects
     )
       .compose(bindToLifecycle())
-      .subscribe(this.projects);
+      .subscribe(this.projectList);
 
     this.showActivityFeed = this.activityClick;
     this.showActivityUpdate = this.activityUpdateClick;
@@ -105,7 +105,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
       .subscribe(__ -> {
         this.shouldShowOnboardingView.onNext(false);
         this.activity.onNext(null);
-        this.projects.onNext(new ArrayList<>());
+        this.projectList.onNext(new ArrayList<>());
       });
 
     this.paramsFromActivity
@@ -167,7 +167,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
 
   /**
    * Converts a pair (params, project) into a (project, refTag) pair that does some extra logic around POTD and
-   * featured projects..
+   * featured projects.
    */
   private static @NonNull Pair<Project, RefTag> projectAndRefTagFromParamsAndProject(final @NonNull DiscoveryParams params,
     final @NonNull Project project) {
@@ -200,7 +200,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
   private final PublishSubject<List<Category>> rootCategories = PublishSubject.create();
 
   private final BehaviorSubject<Activity> activity = BehaviorSubject.create();
-  private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
+  private final BehaviorSubject<List<Project>> projectList = BehaviorSubject.create();
   private final Observable<Boolean> showActivityFeed;
   private final Observable<Activity> showActivityUpdate;
   private final Observable<Boolean> showLoginTout;
@@ -253,8 +253,8 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
   @Override public @NonNull Observable<Activity> activity() {
     return this.activity;
   }
-  @Override public @NonNull Observable<List<Project>> projects() {
-    return this.projects;
+  @Override public @NonNull Observable<List<Project>> projectList() {
+    return this.projectList;
   }
   @Override public @NonNull Observable<Boolean> showActivityFeed() {
     return this.showActivityFeed;

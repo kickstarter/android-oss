@@ -132,7 +132,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(__ -> this.requestFocusAndOpenKeyboard());
 
-    this.viewModel.outputs.messages()
+    this.viewModel.outputs.messageList()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.adapter::messages);

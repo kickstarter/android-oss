@@ -154,7 +154,7 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::setMinimumTextView);
 
-    this.viewModel.outputs.rewardsItems()
+    this.viewModel.outputs.rewardsItemList()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(rewardsItemAdapter::rewardsItems);

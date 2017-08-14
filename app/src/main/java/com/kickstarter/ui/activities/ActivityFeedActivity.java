@@ -70,7 +70,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
       .compose(observeForUI())
       .subscribe(this.swipeRefreshLayout::setEnabled);
 
-    this.viewModel.outputs.activities()
+    this.viewModel.outputs.activityList()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::showActivities);

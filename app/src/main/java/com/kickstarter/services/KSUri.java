@@ -62,6 +62,10 @@ public final class KSUri {
     return isKickstarterUri(uri, webEndpoint) && uri.getQueryParameter("modal") != null && uri.getQueryParameter("modal").equals("true");
   }
 
+  public static boolean isProjectSurveyUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
+    return true;
+  }
+
   public static boolean isProjectUpdateCommentsUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && PROJECT_UPDATE_COMMENTS_PATTERN.matcher(uri.getPath()).matches();
   }
@@ -72,6 +76,10 @@ public final class KSUri {
 
   public static boolean isProjectUpdatesUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && PROJECT_UPDATES_PATTERN.matcher(uri.getPath()).matches();
+  }
+
+  public static boolean isUserSurveyUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
+    return true;
   }
 
   public static boolean isWebUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {

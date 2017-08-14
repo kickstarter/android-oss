@@ -27,7 +27,6 @@ import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
-import com.kickstarter.ui.viewholders.SurveyViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -247,10 +246,6 @@ public interface ActivityFeedViewModel {
     @Override public void projectUpdateProjectClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
       final @NonNull Activity activity) {
       this.projectUpdateProjectClick.onNext(activity);
-    }
-
-    @Override public void surveyClicked(final @NonNull SurveyViewHolder viewHolder, final @NonNull SurveyResponse surveyResponse) {
-      this.surveyClick.onNext(surveyResponse);
     }
 
     @Override public void refresh() {

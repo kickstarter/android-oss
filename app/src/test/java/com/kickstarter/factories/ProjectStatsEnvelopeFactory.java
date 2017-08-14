@@ -2,6 +2,7 @@ package com.kickstarter.factories;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.ReferrerType;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 
 import org.joda.time.DateTime;
@@ -88,7 +89,7 @@ public final class ProjectStatsEnvelopeFactory {
         .percentageOfDollars(50.0)
         .pledged(500)
         .referrerName("Important Referrer")
-        .referrerType("external")
+        .referrerType(ReferrerType.EXTERNAL)
         .build();
     }
   }

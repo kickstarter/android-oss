@@ -6,11 +6,18 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.ComparatorUtils;
+import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardReferrerStatsViewHolder;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -28,7 +35,29 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
-      this.projectAndReferrerStats = projectAndReferrerStatsInput;
+
+      Observable<List<ProjectStatsEnvelope.ReferrerStats>> sortedReferrerStats = this.projectAndReferrerStatsInput
+        .map(PairUtils::second)
+        .map(this::sortReferrerStats);
+
+      this.projectAndReferrerStats = projectAndReferrerStatsInput
+      .map(PairUtils::first)
+      .compose(Transformers.combineLatestPair(sortedReferrerStats));
+    }
+
+    final private class OrderByBackersReferrerStatsComparator implements Comparator<ProjectStatsEnvelope.ReferrerStats> {
+      @Override
+      public int compare(final ProjectStatsEnvelope.ReferrerStats o1, final ProjectStatsEnvelope.ReferrerStats o2) {
+        return new ComparatorUtils.IntegerComparator().compare(o1.pledged(), o2.pledged());
+      }
+    }
+
+    private @NonNull List<ProjectStatsEnvelope.ReferrerStats> sortReferrerStats(final @NonNull List<ProjectStatsEnvelope.ReferrerStats> referrerStatsList) {
+      final OrderByBackersReferrerStatsComparator referrerStatsComparator = new OrderByBackersReferrerStatsComparator();
+      final Set<ProjectStatsEnvelope.ReferrerStats> referrerStatsTreeSet = new TreeSet<>(referrerStatsComparator);
+      referrerStatsTreeSet.addAll(referrerStatsList);
+
+      return new ArrayList<>(referrerStatsTreeSet);
     }
 
     public final Inputs inputs = this;

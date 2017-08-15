@@ -1,13 +1,14 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
+import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.SurveyResponseActivity;
 
@@ -15,6 +16,8 @@ import okhttp3.Request;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 
 public interface SurveyResponseViewModel {
 
@@ -43,21 +46,33 @@ public interface SurveyResponseViewModel {
   }
 
   final class ViewModel extends ActivityViewModel<SurveyResponseActivity> implements Inputs, Outputs {
+    private final ApiClientType client;
+
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
+
+      this.client = environment.apiClient();
 
       final Observable<SurveyResponse> surveyResponse = intent()
         .map(i -> i.getParcelableExtra(IntentKey.SURVEY_RESPONSE))
         .ofType(SurveyResponse.class);
 
       surveyResponse
-        .map(s -> s.urls().web().toString())
+        .map(s -> s.urls().web().survey())
         .compose(bindToLifecycle())
         .subscribe(this.webViewUrl);
 
+      final Observable<Project> project = this.goToProjectRequest
+        .map(this::extractProjectParams)
+        .switchMap(this.client::fetchProject)
+        .compose(neverError())
+        .share();
+
       this.goBack = this.okButtonClicked;
 
-      // todo: start project activity via fetching params from request
+      project
+        .compose(bindToLifecycle())
+        .subscribe(p -> this.startProjectActivity.onNext(Pair.create(p, RefTag.activity()))); // todo: survey reftag?
 
       // todo: show dialog when should redirect
 //      let redirectAfterPostRequest = self.shouldStartLoadProperty.signal.skipNil()
@@ -78,6 +93,13 @@ public interface SurveyResponseViewModel {
     private boolean isUnpreparedSurvey(final @NonNull Request request) {
 
       return false;
+    }
+
+    /**
+     * Parses a project request for project params.
+     */
+    private @NonNull String extractProjectParams(final @NonNull Request request) {
+      return request.url().encodedPathSegments().get(2);
     }
 
     private final PublishSubject<Request> goToProjectRequest = PublishSubject.create();

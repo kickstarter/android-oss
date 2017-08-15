@@ -1,19 +1,24 @@
 package com.kickstarter.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.util.Pair;
+import android.view.View;
 import android.webkit.WebView;
-import android.widget.ProgressBar;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.AnimationUtils;
+import com.kickstarter.models.Project;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.RequestHandler;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.SurveyResponseViewModel;
 
@@ -31,7 +36,7 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
   private AlertDialog confirmationDialog;
 
   protected @Bind(R.id.survey_response_web_view) KSWebView ksWebView;
-  protected @Bind(R.id.survey_response_loading_indicator_view) ProgressBar loadingIndicatorView;
+  protected @Bind(R.id.survey_response_loading_indicator_view) View loadingIndicatorView;
 
   protected @BindString(R.string.general_alert_buttons_ok) String okString;
   protected @BindString(R.string.Got_it_your_survey_response_has_been_submitted) String surveyResponseSubmittedString;
@@ -59,6 +64,11 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> lazyConfirmationDialog().show());
+
+    this.viewModel.outputs.startProjectActivity()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startProjectActivity);
   }
 
   private boolean handleProjectUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
@@ -67,8 +77,7 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
   }
 
   private boolean handleProjectSurveyUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
-    // do we need to intercept?
-
+    // do we need to intercept this?
     return true;
   }
 
@@ -82,6 +91,13 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
         .create();
     }
     return this.confirmationDialog;
+  }
+
+  private void startProjectActivity(final @NonNull Pair<Project, RefTag> projectAndRefTag) {
+    final Intent intent = new Intent(this, ProjectActivity.class)
+      .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
+      .putExtra(IntentKey.REF_TAG, projectAndRefTag.second);
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   @Override

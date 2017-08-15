@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
@@ -10,14 +11,13 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.AnimationUtils;
-import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.SurveyResponseViewModel;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -28,9 +28,12 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
 @RequiresActivityViewModel(SurveyResponseViewModel.ViewModel.class)
 public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel.ViewModel> implements KSWebViewClient.Delegate {
+  private AlertDialog confirmationDialog;
+
   protected @Bind(R.id.survey_response_web_view) KSWebView ksWebView;
   protected @Bind(R.id.survey_response_loading_indicator_view) ProgressBar loadingIndicatorView;
 
+  protected @BindString(R.string.general_alert_buttons_ok) String okString;
   protected @BindString(R.string.Got_it_your_survey_response_has_been_submitted) String surveyResponseSubmittedString;
 
   @Override
@@ -41,18 +44,44 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
 
     this.ksWebView.client().setDelegate(this);
     this.ksWebView.client().registerRequestHandlers(
-      Collections.singletonList(new RequestHandler(KSUri::isProjectSurveyUri, this::handleProjectSurveyUri))
+      Arrays.asList(
+        new RequestHandler(KSUri::isProjectSurveyUri, this::handleProjectSurveyUriRequest),
+        new RequestHandler(KSUri::isProjectUri, this::handleProjectUriRequest)
+      )
     );
+
+    this.viewModel.outputs.goBack()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> back());
 
     this.viewModel.outputs.showConfirmationDialog()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(__ -> ViewUtils.showDialog(this, null, this.surveyResponseSubmittedString));
+      .subscribe(__ -> lazyConfirmationDialog().show());
   }
 
-  private boolean handleProjectSurveyUri(final @NonNull Request request, final @NonNull WebView webView) {
-    // inputs
+  private boolean handleProjectUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
+    this.viewModel.inputs.goToProjectRequest(request);
     return true;
+  }
+
+  private boolean handleProjectSurveyUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
+    // do we need to intercept?
+
+    return true;
+  }
+
+  private @NonNull AlertDialog lazyConfirmationDialog() {
+    if (this.confirmationDialog == null) {
+      this.confirmationDialog = new AlertDialog.Builder(this)
+        .setMessage(this.surveyResponseSubmittedString)
+        .setPositiveButton(this.okString, (__, ___) ->
+          this.viewModel.inputs.okButtonClicked()
+        )
+        .create();
+    }
+    return this.confirmationDialog;
   }
 
   @Override
@@ -65,8 +94,6 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
       .compose(observeForUI())
       .subscribe(this.ksWebView::loadUrl);
   }
-
-  // todo: user vs project survey ? == FOR DEEPLINKING
 
   @Override
   public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}

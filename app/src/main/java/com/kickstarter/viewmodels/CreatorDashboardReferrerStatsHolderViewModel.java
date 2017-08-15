@@ -27,6 +27,7 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
   interface Inputs {
     void projectAndReferrerStatsInput(Pair<Project, List<ProjectStatsEnvelope.ReferrerStats>> projectAndReferrerStats);
   }
+
   interface Outputs {
     Observable<Pair<Project, List<ProjectStatsEnvelope.ReferrerStats>>> projectAndReferrerStats();
   }
@@ -41,8 +42,8 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
         .map(this::sortReferrerStats);
 
       this.projectAndReferrerStats = this.projectAndReferrerStatsInput
-      .map(PairUtils::first)
-      .compose(Transformers.combineLatestPair(sortedReferrerStats));
+        .map(PairUtils::first)
+        .compose(Transformers.combineLatestPair(sortedReferrerStats));
     }
 
     final private class OrderByBackersReferrerStatsComparator implements Comparator<ProjectStatsEnvelope.ReferrerStats> {

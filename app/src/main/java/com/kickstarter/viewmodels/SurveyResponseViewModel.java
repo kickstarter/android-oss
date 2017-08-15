@@ -75,23 +75,12 @@ public interface SurveyResponseViewModel {
         .subscribe(p -> this.startProjectActivity.onNext(Pair.create(p, RefTag.activity()))); // todo: survey reftag?
 
       // todo: show dialog when should redirect
-//      let redirectAfterPostRequest = self.shouldStartLoadProperty.signal.skipNil()
-//        .filter { request, navigationType in
-//        isUnpreparedSurvey(request: request) && navigationType == .other
-//      }
-//      .map { request, _ in request }
-
-      Observable<Request> redirectAfterPostRequest = this.projectSurveyUriRequest
+      final Observable<Request> redirectAfterPostRequest = this.projectSurveyUriRequest
         .filter(this::isUnpreparedSurvey);
     }
 
     // todo: filter out unprepared survey requests
-//    public func isPrepared(request: URLRequest) -> Bool {
-//      return request.value(forHTTPHeaderField: "Authorization") == authorizationHeader
-//        && request.value(forHTTPHeaderField: "Kickstarter-iOS-App") != nil
-//    }
     private boolean isUnpreparedSurvey(final @NonNull Request request) {
-
       return false;
     }
 

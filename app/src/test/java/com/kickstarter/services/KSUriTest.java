@@ -53,7 +53,7 @@ public final class KSUriTest extends KSRobolectricTestCase {
 
   @Test
   public void testKSuri_isProjectSurveyUri() {
-    assertTrue((KSUri.isProjectSurveyUri(this.projectSurveyUri, this.webEndpoint)));
+    assertTrue(KSUri.isProjectSurveyUri(this.projectSurveyUri, this.webEndpoint));
     assertFalse(KSUri.isProjectSurveyUri(this.userSurveyUri, this.webEndpoint));
   }
 
@@ -85,7 +85,7 @@ public final class KSUriTest extends KSRobolectricTestCase {
 
   @Test
   public void testKSuri_isUserSurveyUri() {
-    assertTrue((KSUri.isUserSurveyUri(this.userSurveyUri, this.webEndpoint)));
+    assertTrue(KSUri.isUserSurveyUri(this.userSurveyUri, this.webEndpoint));
     assertFalse(KSUri.isUserSurveyUri(this.projectSurveyUri, this.webEndpoint));
   }
 }

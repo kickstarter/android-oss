@@ -40,22 +40,22 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.percentageOfTotalPledged = projectAndReferrerStats
-        .map(projectAndReferrerStats -> {
-          final Project p = projectAndReferrerStats.first;
-          final ProjectStatsEnvelope.ReferrerStats rs = projectAndReferrerStats.second;
+      this.percentageOfTotalPledged = this.projectAndReferrerStats
+        .map(pAndrs -> {
+          final Project p = pAndrs.first;
+          final ProjectStatsEnvelope.ReferrerStats rs = pAndrs.second;
           return NumberUtils.flooredPercentage((rs.pledged() / p.pledged()) * 100);
         })
         .map(StringUtils::wrapInParentheses);
 
-      this.projectAndPledgedForReferrer = projectAndReferrerStats
+      this.projectAndPledgedForReferrer = this.projectAndReferrerStats
         .map(pr -> Pair.create(pr.first, (float) pr.second.pledged()));
 
-      this.referrerSourceName = projectAndReferrerStats
+      this.referrerSourceName = this.projectAndReferrerStats
         .map(PairUtils::second)
         .map(ProjectStatsEnvelope.ReferrerStats::referrerName);
 
-      this.referrerBackerCount = projectAndReferrerStats
+      this.referrerBackerCount = this.projectAndReferrerStats
         .map(PairUtils::second)
         .map(ProjectStatsEnvelope.ReferrerStats::backersCount)
         .map(NumberUtils::format);

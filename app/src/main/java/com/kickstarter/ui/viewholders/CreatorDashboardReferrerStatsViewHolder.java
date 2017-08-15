@@ -32,9 +32,9 @@ public class CreatorDashboardReferrerStatsViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
 
     final CreatorDashboardReferrerStatsAdapter referrerStatsAdapter = new CreatorDashboardReferrerStatsAdapter();
-    referrerStatsRecyclerView.setAdapter(referrerStatsAdapter);
+    this.referrerStatsRecyclerView.setAdapter(referrerStatsAdapter);
     final LinearLayoutManager layoutManager = new LinearLayoutManager(context());
-    referrerStatsRecyclerView.setLayoutManager(layoutManager);
+    this.referrerStatsRecyclerView.setLayoutManager(layoutManager);
 
     this.viewModel.outputs.projectAndReferrerStats()
       .compose(bindToLifecycle())

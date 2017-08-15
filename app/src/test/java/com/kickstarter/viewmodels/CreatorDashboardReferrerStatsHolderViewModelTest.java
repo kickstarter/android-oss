@@ -26,8 +26,8 @@ public class CreatorDashboardReferrerStatsHolderViewModelTest extends KSRobolect
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardReferrerStatsHolderViewModel.ViewModel(environment);
-    this.vm.outputs.projectAndReferrerStats().map(PairUtils::first).subscribe(projectOutput);
-    this.vm.outputs.projectAndReferrerStats().map(PairUtils::second).subscribe(referrerStatsOutput);
+    this.vm.outputs.projectAndReferrerStats().map(PairUtils::first).subscribe(this.projectOutput);
+    this.vm.outputs.projectAndReferrerStats().map(PairUtils::second).subscribe(this.referrerStatsOutput);
   }
 
   @Test

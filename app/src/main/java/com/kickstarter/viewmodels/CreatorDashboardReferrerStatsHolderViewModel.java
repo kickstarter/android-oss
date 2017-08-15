@@ -36,11 +36,11 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      Observable<List<ProjectStatsEnvelope.ReferrerStats>> sortedReferrerStats = this.projectAndReferrerStatsInput
+      final Observable<List<ProjectStatsEnvelope.ReferrerStats>> sortedReferrerStats = this.projectAndReferrerStatsInput
         .map(PairUtils::second)
         .map(this::sortReferrerStats);
 
-      this.projectAndReferrerStats = projectAndReferrerStatsInput
+      this.projectAndReferrerStats = this.projectAndReferrerStatsInput
       .map(PairUtils::first)
       .compose(Transformers.combineLatestPair(sortedReferrerStats));
     }
@@ -68,7 +68,7 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
 
     @Override
     public void projectAndReferrerStatsInput(final @NonNull Pair<Project, List<ProjectStatsEnvelope.ReferrerStats>> projectAndReferrerStats) {
-      projectAndReferrerStatsInput.onNext(projectAndReferrerStats);
+      this.projectAndReferrerStatsInput.onNext(projectAndReferrerStats);
     }
     @Override public @NonNull Observable<Pair<Project, List<ProjectStatsEnvelope.ReferrerStats>>> projectAndReferrerStats() {
       return this.projectAndReferrerStats;

@@ -12,7 +12,7 @@ public final class ComparatorUtils {
     * IMPORTANT: this sorts in descending order.
      */
     @Override
-    public int compare(final @NonNull Integer x,final @NonNull Integer y) {
+    public int compare(final @NonNull Integer x, final @NonNull Integer y) {
       return (x < y) ? 1 : ((x.intValue() == y.intValue()) ? 0 : -1);
     }
   }

@@ -40,7 +40,7 @@ public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHold
     this.viewModel.outputs.percentageOfTotalPledged()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(percentagePledgedForReferrerTextView::setText);
+      .subscribe(this.percentagePledgedForReferrerTextView::setText);
 
     this.viewModel.outputs.projectAndPledgedForReferrer()
       .compose(bindToLifecycle())
@@ -50,12 +50,12 @@ public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHold
     this.viewModel.outputs.referrerBackerCount()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(referrerBackerCountTextView::setText);
+      .subscribe(this.referrerBackerCountTextView::setText);
 
     this.viewModel.outputs.referrerSourceName()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(referrerSourceTextView::setText);
+      .subscribe(this.referrerSourceTextView::setText);
   }
 
   @Override
@@ -65,7 +65,7 @@ public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHold
   }
 
   private void setPledgedColumnValue(final @NonNull Pair<Project, Float> projectAndPledgedForReferrer) {
-    final String goalString = ksCurrency.format(projectAndPledgedForReferrer.second, projectAndPledgedForReferrer.first, false, true, RoundingMode.DOWN);
-    amountPledgedForReferrerTextView.setText(goalString);
+    final String goalString = this.ksCurrency.format(projectAndPledgedForReferrer.second, projectAndPledgedForReferrer.first, false, true, RoundingMode.DOWN);
+    this.amountPledgedForReferrerTextView.setText(goalString);
   }
 }

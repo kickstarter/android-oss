@@ -38,7 +38,7 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      Observable<List<ProjectStatsEnvelope.RewardStats>> sortedRewardStats = this.projectAndRewardStatsInput
+      final Observable<List<ProjectStatsEnvelope.RewardStats>> sortedRewardStats = this.projectAndRewardStatsInput
         .map(PairUtils::second)
         .map(this::sortRewardStats);
 

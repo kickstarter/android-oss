@@ -7,7 +7,7 @@ import java.util.Comparator;
 
 public final class ComparatorUtils {
 
-  public static final class IntegerComparator implements Comparator<Integer> {
+  public static final class DescendingOrderIntegerComparator implements Comparator<Integer> {
     /*
     * IMPORTANT: this sorts in descending order.
      */

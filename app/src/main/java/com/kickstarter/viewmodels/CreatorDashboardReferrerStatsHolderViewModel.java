@@ -48,7 +48,7 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
     final private class OrderByBackersReferrerStatsComparator implements Comparator<ProjectStatsEnvelope.ReferrerStats> {
       @Override
       public int compare(final ProjectStatsEnvelope.ReferrerStats o1, final ProjectStatsEnvelope.ReferrerStats o2) {
-        return new ComparatorUtils.IntegerComparator().compare(o1.pledged(), o2.pledged());
+        return new ComparatorUtils.DescendingOrderIntegerComparator().compare(o1.pledged(), o2.pledged());
       }
     }
 

@@ -50,7 +50,7 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
     final private class OrderByBackersRewardStatsComparator implements Comparator<ProjectStatsEnvelope.RewardStats> {
       @Override
       public int compare(final ProjectStatsEnvelope.RewardStats o1, final ProjectStatsEnvelope.RewardStats o2) {
-        return new ComparatorUtils.IntegerComparator().compare(o1.backersCount(), o2.backersCount());
+        return new ComparatorUtils.DescendingOrderIntegerComparator().compare(o1.backersCount(), o2.backersCount());
       }
     }
 

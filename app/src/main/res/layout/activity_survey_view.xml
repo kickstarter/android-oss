@@ -12,41 +12,51 @@
   card_view:cardCornerRadius="0dp"
   card_view:cardUseCompatPadding="true">
 
+  <View
+    android:background="@color/ksr_green_500"
+    android:layout_width="match_parent"
+    android:layout_height="2dp"/>
+
   <RelativeLayout
-    android:layout_marginTop="@dimen/grid_2"
+    android:paddingTop="@dimen/grid_3"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-      android:id="@+id/survey_avatar_image"
-      android:layout_width="@dimen/activity_feed_avatar_width"
-      android:layout_height="@dimen/activity_feed_avatar_height"
-      android:layout_alignParentStart="true"
-      android:layout_marginStart="@dimen/grid_2"
-      android:layout_marginEnd="@dimen/grid_2"
-      tools:background="@color/blue"
-      tools:ignore="ContentDescription" />
+    <LinearLayout
+      android:id="@+id/survey_creator_view"
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
 
-    <TextView
-      android:id="@+id/survey_title"
-      style="@style/CalloutPrimary"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignTop="@id/survey_avatar_image"
-      android:layout_toEndOf="@id/survey_avatar_image"
-      android:layout_marginTop="@dimen/grid_1"
-      tools:text="Wild Canadian Chickens" />
+      <ImageView
+        android:id="@+id/survey_avatar_image"
+        android:layout_width="@dimen/activity_feed_survey_photo_width"
+        android:layout_height="@dimen/activity_feed_survey_photo_height"
+        android:layout_marginStart="@dimen/grid_2"
+        android:layout_marginEnd="@dimen/grid_1"
+        tools:background="@color/blue"
+        tools:ignore="ContentDescription" />
+
+      <TextView
+        android:id="@+id/survey_title"
+        style="@style/FootnotePrimaryMedium"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_height="wrap_content"
+        tools:text="Wild Canadian Chickens" />
+
+    </LinearLayout>
 
     <TextView
       android:id="@+id/survey_text"
-      style="@style/Subheadline"
+      style="@style/BodyPrimary"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@id/survey_avatar_image"
+      android:layout_below="@id/survey_creator_view"
       android:layout_marginStart="@dimen/grid_2"
       android:layout_marginEnd="@dimen/grid_2"
-      android:layout_marginTop="@dimen/grid_3"
-      android:layout_marginBottom="@dimen/grid_3"
+      android:layout_marginTop="@dimen/grid_4"
+      android:layout_marginBottom="@dimen/grid_4"
       tools:text="Wild Canadian Chickens needs some information to deliver your reward for Somebody once told me"/>
 
     <include
@@ -61,21 +71,23 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:gravity="center"
+      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginBottom="@dimen/grid_3"
       android:orientation="horizontal">
 
       <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/grid_2"
+        android:layout_height="11dp"
         android:tint="@color/ksr_text_green_700"
         android:src="@drawable/ic_survey_respond_icon"
         tools:ignore="ContentDescription" />
 
       <TextView
         android:id="@+id/respond_now_text_view"
-        style="@style/BodyPrimary"
+        style="@style/Caption1PrimaryMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/grid_2"
+        android:layout_marginStart="@dimen/grid_1"
         android:text="@string/discovery_survey_button_respond_now"
         android:textAlignment="center"
         android:textColor="@color/ksr_text_green_700" />

@@ -25,7 +25,8 @@ public interface SurveyResponseViewModel {
     /** Call when a project uri request has been made. */
     void goToProjectRequest(Request request);
 
-    void pojectSurveyUriRequest(Request request);
+    /** Call when a project survey uri request has been made. */
+    void projectSurveyUriRequest(Request request);
 
     /** Call when the dialog's OK button has been clicked. */
     void okButtonClicked();
@@ -72,7 +73,7 @@ public interface SurveyResponseViewModel {
 
       project
         .compose(bindToLifecycle())
-        .subscribe(p -> this.startProjectActivity.onNext(Pair.create(p, RefTag.activity()))); // todo: survey reftag?
+        .subscribe(p -> this.startProjectActivity.onNext(Pair.create(p, RefTag.survey())));
 
       // todo: show dialog when should redirect
       final Observable<Request> redirectAfterPostRequest = this.projectSurveyUriRequest
@@ -106,7 +107,7 @@ public interface SurveyResponseViewModel {
     @Override public void goToProjectRequest(final @NonNull Request request) {
       this.goToProjectRequest.onNext(request);
     }
-    @Override public void pojectSurveyUriRequest(final @NonNull Request request) {
+    @Override public void projectSurveyUriRequest(final @NonNull Request request) {
       this.projectSurveyUriRequest.onNext(request);
     }
     @Override public void okButtonClicked() {

@@ -77,7 +77,7 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
   }
 
   private boolean handleProjectSurveyUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
-    // do we need to intercept this?
+    this.viewModel.inputs.projectSurveyUriRequest(request);
     return true;
   }
 

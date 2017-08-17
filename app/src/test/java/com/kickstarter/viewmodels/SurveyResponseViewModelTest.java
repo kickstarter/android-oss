@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
@@ -19,10 +20,12 @@ import rx.observers.TestSubscriber;
 public class SurveyResponseViewModelTest extends KSRobolectricTestCase {
   private SurveyResponseViewModel.ViewModel vm;
   private final TestSubscriber<Project> project = new TestSubscriber<>();
+  private final TestSubscriber<RefTag> refTag = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new SurveyResponseViewModel.ViewModel(environment);
     this.vm.outputs.startProjectActivity().map(PairUtils::first).subscribe(this.project);
+    this.vm.outputs.startProjectActivity().map(PairUtils::second).subscribe(this.refTag);
   }
 
   @Test
@@ -43,5 +46,6 @@ public class SurveyResponseViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.goToProjectRequest(projectRequest);
 
     this.project.assertValues(project);
+    this.refTag.assertValues(RefTag.survey());
   }
 }

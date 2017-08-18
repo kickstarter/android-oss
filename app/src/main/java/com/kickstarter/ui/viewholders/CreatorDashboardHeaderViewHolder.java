@@ -30,22 +30,28 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
-
   private final CreatorDashboardHeaderHolderViewModel.ViewModel viewModel;
 
   protected @Bind(R.id.creator_dashboard_amount_raised) TextView amountRaisedTextView;
   protected @Bind(R.id.creator_dashboard_backer_count) TextView backerCountTextView;
   protected @Bind(R.id.creator_dashboard_funding_text) TextView fundingTextTextView;
   protected @Bind(R.id.creator_dashboard_percent) TextView percentTextView;
+  protected @Bind(R.id.creator_dashboard_project_blurb) TextView projectBlurbTextView;
   protected @Bind(R.id.creator_dashboard_project_name) TextView projectNameTextView;
   protected @Bind(R.id.creator_dashboard_time_remaining) TextView timeRemainingTextView;
   protected @Bind(R.id.creator_dashboard_time_remaining_text) TextView timeRemainingTextTextView;
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 
+  private final @Nullable Delegate delegate;
+
   private KSString ksString;
   private KSCurrency ksCurrency;
 
-  public CreatorDashboardHeaderViewHolder(final @NonNull View view) {
+  public interface Delegate {
+    void projectsMenuClicked(CreatorDashboardHeaderViewHolder viewHolder);
+  }
+
+  public CreatorDashboardHeaderViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
     super(view);
 
     this.viewModel = new CreatorDashboardHeaderHolderViewModel.ViewModel(environment());
@@ -53,6 +59,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
 
     this.ksCurrency = this.environment().ksCurrency();
     this.ksString = this.environment().ksString();
+    this.delegate = delegate;
 
     this.viewModel.outputs.currentProject()
       .compose(bindToLifecycle())
@@ -74,6 +81,11 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.backerCountTextView::setText);
 
+    this.viewModel.outputs.projectBlurbTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.projectBlurbTextView::setText);
+
     this.viewModel.outputs.projectNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -88,6 +100,11 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
+  }
+
+  @OnClick(R.id.project_name_blurb_arrow_view)
+  protected void dashboardShowProjectMenuClicked() {
+    this.delegate.projectsMenuClicked(this);
   }
 
   @OnClick(R.id.creator_view_project_button)

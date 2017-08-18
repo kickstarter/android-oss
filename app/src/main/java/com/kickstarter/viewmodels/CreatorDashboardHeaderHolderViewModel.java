@@ -27,17 +27,20 @@ public interface CreatorDashboardHeaderHolderViewModel {
   }
 
   interface Outputs {
+    /* project that is currently being viewed */
+    Observable<Project> currentProject();
+
     /* string number with the percentage of a projects funding */
     Observable<String> percentageFunded();
 
     /* localized count of number of backers */
     Observable<String> projectBackersCountText();
 
+    /* current projects blurb */
+    Observable<String> projectBlurbTextViewText();
+
     /* current project's name */
     Observable<String> projectNameTextViewText();
-
-    /* project that is currently being viewed */
-    Observable<Project> currentProject();
 
     /* time remaining for latest project (no units) */
     Observable<String> timeRemainingText();
@@ -57,6 +60,11 @@ public interface CreatorDashboardHeaderHolderViewModel {
       this.percentageFunded = this.projectAndStats
         .map(PairUtils::first)
         .map(p -> NumberUtils.flooredPercentage(p.percentageFunded()));
+
+      this.projectBlurbTextViewText = this.projectAndStats
+        .map(PairUtils::first)
+        .map(Project::blurb)
+        .compose(bindToLifecycle());
 
       this.projectBackersCountText = this.projectAndStats
         .map(PairUtils::first)
@@ -90,6 +98,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     private final Observable<String> percentageFunded;
     private final Observable<Project> currentProject;
     private final Observable<String> projectBackersCountText;
+    private final Observable<String> projectBlurbTextViewText;
     private final Observable<String> projectNameTextViewText;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
     private final Observable<String> timeRemainingText;
@@ -98,11 +107,11 @@ public interface CreatorDashboardHeaderHolderViewModel {
     public void projectViewClicked() {
       this.projectViewClicked.onNext(null);
     }
-
     @Override
     public void projectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope) {
       this.projectAndStats.onNext(projectAndProjectStatsEnvelope);
     }
+
 
     @Override public @NonNull Observable<String> percentageFunded() {
       return this.percentageFunded;
@@ -112,6 +121,9 @@ public interface CreatorDashboardHeaderHolderViewModel {
     }
     @Override public @NonNull Observable<String> projectBackersCountText() {
       return this.projectBackersCountText;
+    }
+    @Override public @NonNull Observable<String> projectBlurbTextViewText() {
+      return this.projectBlurbTextViewText;
     }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;

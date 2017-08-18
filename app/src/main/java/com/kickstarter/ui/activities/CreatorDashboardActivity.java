@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
@@ -16,7 +17,10 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.CreatorDashboardAdapter;
+import com.kickstarter.ui.adapters.CreatorDashboardBottomSheetAdapter;
 import com.kickstarter.viewmodels.CreatorDashboardViewModel;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,8 +30,11 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 @RequiresActivityViewModel(CreatorDashboardViewModel.ViewModel.class)
 public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboardViewModel.ViewModel> {
   private CreatorDashboardAdapter adapter;
+  private CreatorDashboardBottomSheetAdapter bottomSheetAdapter;
+  private BottomSheetBehavior bottomSheetBehavior;
 
   protected @Bind(R.id.creator_dashboard_recycler_view) RecyclerView creatorDashboardRecyclerView;
+  protected @Bind(R.id.creator_dashboard_bottom_sheet_recycler_view) RecyclerView bottomSheetRecyclerView;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -35,14 +42,30 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     setContentView(R.layout.creator_dashboard_layout);
     ButterKnife.bind(this);
 
-    this.adapter = new CreatorDashboardAdapter();
+    this.adapter = new CreatorDashboardAdapter(this.viewModel.inputs);
     this.creatorDashboardRecyclerView.setAdapter(this.adapter);
     this.creatorDashboardRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    // Set up the bottom sheet recycler view.
+    this.bottomSheetAdapter = new CreatorDashboardBottomSheetAdapter();
+    this.bottomSheetRecyclerView.setAdapter(this.bottomSheetAdapter);
+    this.bottomSheetRecyclerView.setLayoutManager(new LinearLayoutManager(this)); // todo: reuse LayoutManager?
+    this.bottomSheetBehavior = BottomSheetBehavior.from(this.bottomSheetRecyclerView);
 
     this.viewModel.outputs.projectAndStats()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::renderProjectAndStats);
+
+    this.viewModel.outputs.projectsForBottomSheet()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setProjectsForDropdown);
+
+    this.viewModel.outputs.toggleBottomSheet()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.toggleBottomSheet());
 
     this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
@@ -61,9 +84,18 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.adapter.takeProjectAndStats(projectAndStats);
   }
 
+  private void setProjectsForDropdown(List<Project> projects) {
+    this.bottomSheetAdapter.takeProjects(projects);
+  }
+
+  private void toggleBottomSheet() {
+    this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+  }
+
   @Override
   protected void onDestroy() {
     super.onDestroy();
     this.creatorDashboardRecyclerView.setAdapter(null);
+    this.bottomSheetRecyclerView.setAdapter(null);
   }
 }

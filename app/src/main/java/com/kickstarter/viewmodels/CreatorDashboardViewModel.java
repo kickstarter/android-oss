@@ -8,10 +8,12 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.ui.activities.CreatorDashboardActivity;
+import com.kickstarter.ui.adapters.CreatorDashboardAdapter;
+import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 
 import java.util.List;
 
@@ -20,13 +22,16 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-import static com.kickstarter.libs.rx.transformers.Transformers.values;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 
 public interface CreatorDashboardViewModel {
-  interface Inputs {
+  interface Inputs extends CreatorDashboardAdapter.Delegate {
     void projectViewClicked();
+
+    /* project menu clicked */
+    void projectsMenuClicked(CreatorDashboardHeaderViewHolder viewHolder);
   }
 
   interface Outputs {
@@ -36,8 +41,14 @@ public interface CreatorDashboardViewModel {
     /* project and associated stats object */
     Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats();
 
+    /* emits when project dropdown should be shown */
+    Observable<List<Project>> projectsForBottomSheet();
+
     /* call when button is clicked to view individual project page */
     Observable<Pair<Project, RefTag>> startProjectActivity();
+
+    // something
+    Observable<Void> toggleBottomSheet();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardActivity> implements Inputs, Outputs {
@@ -67,6 +78,10 @@ public interface CreatorDashboardViewModel {
       final Observable<ProjectStatsEnvelope> projectStatsEnvelope = projectStatsEnvelopeNotification
         .compose(values());
 
+      this.projectsForBottomSheet = projects;
+
+      this.toggleBottomSheet = this.projectsMenuClick;
+
       this.latestProject = latestProject;
 
       this.projectAndStats = latestProject
@@ -78,14 +93,21 @@ public interface CreatorDashboardViewModel {
     }
 
     private final PublishSubject<Void> projectViewClicked = PublishSubject.create();
+    private final PublishSubject<Void> projectsMenuClick = PublishSubject.create();
 
     private final Observable<Project> latestProject;
     private final Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats;
+    private final Observable<List<Project>> projectsForBottomSheet;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
+    private final Observable<Void> toggleBottomSheet;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
+    @Override
+    public void projectsMenuClicked(final @NonNull CreatorDashboardHeaderViewHolder viewHolder) {
+      this.projectsMenuClick.onNext(null);
+    }
     @Override
     public void projectViewClicked() {
       this.projectViewClicked.onNext(null);
@@ -97,8 +119,14 @@ public interface CreatorDashboardViewModel {
     @Override public @NonNull Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats() {
       return this.projectAndStats;
     }
+    @Override public @NonNull Observable<List<Project>> projectsForBottomSheet() {
+      return this.projectsForBottomSheet;
+    }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
+    }
+    @Override public @NonNull Observable<Void> toggleBottomSheet() {
+      return this.toggleBottomSheet;
     }
   }
 }

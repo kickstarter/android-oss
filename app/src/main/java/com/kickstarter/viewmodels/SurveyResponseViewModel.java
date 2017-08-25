@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Project;
@@ -17,7 +16,6 @@ import okhttp3.Request;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
@@ -54,56 +52,31 @@ public interface SurveyResponseViewModel {
 
   final class ViewModel extends ActivityViewModel<SurveyResponseActivity> implements Inputs, Outputs {
     private final ApiClientType client;
-    private final CurrentUserType currentUser;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.client = environment.apiClient();
-      this.currentUser = environment.currentUser();
 
       final Observable<SurveyResponse> surveyResponse = intent()
         .map(i -> i.getParcelableExtra(IntentKey.SURVEY_RESPONSE))
         .ofType(SurveyResponse.class);
 
-      final Observable<Request> initialRequest = surveyResponse
-        .map(s -> s.urls().web().survey())
-        .map(url -> new Request.Builder().url(url).build());
-
-      final Observable<Request> shouldLoadSurveyRequest = this.projectSurveyUriRequest
-        .filter(r -> isPrepared(r, this.currentUser))
-        .distinctUntilChanged();
-
-      final Observable<Request> postRequest = shouldLoadSurveyRequest
-        .filter(request -> "POST".equals(request.method()))
-        .filter(r ->
-          isUnpreparedSurvey(r, this.currentUser)
-        ); // && navigationType == .formSubmitted
-
-      // todo: the problem is the redirect is a survey request w a diff nav type
-      final Observable<Request> redirectAfterPostRequest = this.projectSurveyUriRequest
-        .filter(r ->
-          isUnpreparedSurvey(r, this.currentUser)
-        );  // && navigationType == .other
-
-      final Observable<Request> surveyRequest = Observable.merge(
-        initialRequest,
-        postRequest
-      );
-
-      surveyRequest
-        .map(r -> r.url().toString())
+      surveyResponse
+        .map(r -> r.urls().web().survey())
         .compose(bindToLifecycle())
         .subscribe(this.webViewUrl);
 
-      this.showConfirmationDialog = redirectAfterPostRequest
-        .compose(ignoreValues());
-
       final Observable<Project> project = this.projectUriRequest
+        .filter(this::requestTagIsNull)
         .map(this::extractProjectParams)
         .switchMap(this.client::fetchProject)
         .compose(neverError())
         .share();
+
+      this.showConfirmationDialog = this.projectUriRequest
+        .filter(r -> !requestTagIsNull(r))
+        .compose(ignoreValues());
 
       project
         .compose(bindToLifecycle())
@@ -119,14 +92,8 @@ public interface SurveyResponseViewModel {
       return request.url().encodedPathSegments().get(2);
     }
 
-    private boolean isUnpreparedSurvey(final @NonNull Request surveyRequest, final @NonNull CurrentUserType currentUser) {
-      return !isPrepared(surveyRequest, currentUser);
-    }
-
-    private boolean isPrepared(final @NonNull Request request, final @NonNull CurrentUserType currentUser) {
-      final boolean isAuthorized = ("token " + currentUser.getAccessToken()).equals(request.header("Authorization"));
-      final boolean isFromApp = request.header("Kickstarter-Android-App") != null;
-      return isAuthorized && isFromApp;
+    private boolean requestTagIsNull(final @NonNull Request request) {
+      return ((Request) request.tag()).body() == null;
     }
 
     private final PublishSubject<Request> projectUriRequest = PublishSubject.create();

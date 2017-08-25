@@ -43,7 +43,7 @@ public class SurveyResponseViewModelTest extends KSRobolectricTestCase {
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.inputs.goToProjectRequest(projectRequest);
+    this.vm.inputs.projectUriRequest(projectRequest);
 
     this.project.assertValues(project);
     this.refTag.assertValues(RefTag.survey());

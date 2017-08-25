@@ -72,7 +72,7 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
   }
 
   private boolean handleProjectUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
-    this.viewModel.inputs.goToProjectRequest(request);
+    this.viewModel.inputs.projectUriRequest(request);
     return true;
   }
 
@@ -126,6 +126,6 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
 
   @Override
   public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {
-
+    this.viewModel.inputs.webViewPageIntercepted(url);
   }
 }

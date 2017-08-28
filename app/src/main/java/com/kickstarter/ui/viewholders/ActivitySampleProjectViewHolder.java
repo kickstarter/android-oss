@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -20,15 +19,14 @@ import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
-import javax.inject.Inject;
-
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ActivitySampleProjectViewHolder extends KSViewHolder {
-  @Inject KSString ksString;
+  private Activity activity;
+  private final KSString ksString;
 
   protected @Bind(R.id.activity_click_area) LinearLayout activityClickArea;
   protected @Bind(R.id.activity_image) ImageView activityImageView;
@@ -41,8 +39,6 @@ public class ActivitySampleProjectViewHolder extends KSViewHolder {
   protected @BindString(R.string.activity_funding_canceled) String categoryCancellationString;
   protected @BindString(R.string.activity_posted_update_number_title) String categoryUpdateString;
 
-  private Activity activity;
-
   private final Delegate delegate;
   public interface Delegate {
     void activitySampleProjectViewHolderSeeActivityClicked(ActivitySampleProjectViewHolder viewHolder);
@@ -53,8 +49,7 @@ public class ActivitySampleProjectViewHolder extends KSViewHolder {
   public ActivitySampleProjectViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
-
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
+    this.ksString = environment().ksString();
     ButterKnife.bind(this, view);
   }
 

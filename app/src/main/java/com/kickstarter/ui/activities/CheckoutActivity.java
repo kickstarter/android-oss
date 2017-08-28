@@ -99,10 +99,10 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
 
   protected @BindColor(R.color.white) int whiteColor;
 
-  protected @Inject KSCurrency ksCurrency;
-  protected @Inject KSString ksString;
-  protected @Inject Gson gson;
-  protected @Inject AndroidPayCapability androidPayCapability;
+  private KSCurrency ksCurrency;
+  private KSString ksString;
+  private Gson gson;
+  private AndroidPayCapability androidPayCapability;
   protected @Inject Build build;
 
   private @Nullable SupportWalletFragment walletFragment;
@@ -115,6 +115,11 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
     super.onCreate(savedInstanceState);
     setContentView(R.layout.checkout_layout);
     ButterKnife.bind(this);
+
+    this.androidPayCapability = environment().androidPayCapability();
+    this.ksCurrency = environment().ksCurrency();
+    this.ksString = environment().ksString();
+    this.gson = environment().gson();
 
     ((KSApplication) getApplication()).component().inject(this);
 

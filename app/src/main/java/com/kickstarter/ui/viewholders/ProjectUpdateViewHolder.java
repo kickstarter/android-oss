@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.DateTimeUtils;
@@ -20,8 +19,6 @@ import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -39,8 +36,7 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
   protected @BindString(R.string.activity_project_update_update_count) String projectUpdateCountString;
 
   private final @Nullable Delegate delegate;
-
-  protected @Inject KSString ksString;
+  private final KSString ksString;
 
   public interface Delegate {
     void projectUpdateProjectClicked(ProjectUpdateViewHolder viewHolder, Activity activity);
@@ -50,7 +46,7 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
   public ProjectUpdateViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
     super(view);
     this.delegate = delegate;
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
+    this.ksString = environment().ksString();
     ButterKnife.bind(this, view);
   }
 

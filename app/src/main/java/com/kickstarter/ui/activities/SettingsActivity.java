@@ -76,8 +76,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_mobile_notifications) String unsubscribeMobileString;
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_notifications) String unsubscribeString;
 
-  @Inject CurrentUserType currentUser;
-  @Inject KSString ksString;
+  private CurrentUserType currentUser;
+  private KSString ksString;
   @Inject Logout logout;
   @Inject Build build;
 
@@ -94,6 +94,10 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.settings_layout);
     ButterKnife.bind(this);
+
+    this.currentUser = environment().currentUser();
+    this.ksString = environment().ksString();
+
     ((KSApplication) getApplication()).component().inject(this);
 
     this.viewModel.outputs.user()

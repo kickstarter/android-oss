@@ -8,7 +8,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -29,8 +28,6 @@ import com.kickstarter.viewmodels.ActivityFeedViewModel;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -39,20 +36,19 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 @RequiresActivityViewModel(ActivityFeedViewModel.ViewModel.class)
 public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewModel.ViewModel> {
   private ActivityFeedAdapter adapter;
-  protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
-  protected @Bind(R.id.activity_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-
-  @Inject CurrentUserType currentUser;
-
+  private CurrentUserType currentUser;
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
+
+  protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.activity_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    ((KSApplication) getApplication()).component().inject(this);
     setContentView(R.layout.activity_feed_layout);
     ButterKnife.bind(this);
+    this.currentUser = environment().currentUser();
 
     this.adapter = new ActivityFeedAdapter(this.viewModel.inputs);
     this.recyclerView.setAdapter(this.adapter);

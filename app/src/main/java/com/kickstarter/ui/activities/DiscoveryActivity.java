@@ -53,7 +53,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   private LinearLayoutManager drawerLayoutManager;
   private DiscoveryPagerAdapter pagerAdapter;
 
-  protected @Inject ApiClientType client;
   protected @Inject InternalToolsType internalTools;
 
   protected @Bind(R.id.creator_dashboard_button) IconButton creatorDashboardButton;

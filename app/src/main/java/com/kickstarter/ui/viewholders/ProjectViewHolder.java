@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
@@ -41,8 +40,6 @@ import org.joda.time.DateTime;
 
 import java.math.RoundingMode;
 
-import javax.inject.Inject;
-
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.BindDimen;
@@ -60,10 +57,12 @@ import static com.kickstarter.libs.utils.ViewUtils.getScreenHeightDp;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 
 public final class ProjectViewHolder extends KSViewHolder {
-  private Project project;
   private String configCountry;
-  private Context context;
+  private final Context context;
   private final Delegate delegate;
+  private final KSCurrency ksCurrency;
+  private final KSString ksString;
+  private Project project;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
   protected @Bind(R.id.avatar_name) TextView avatarNameTextView;
@@ -126,9 +125,6 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal_short) String ofGoalString;
   protected @BindString(R.string.discovery_baseball_card_stats_backers) String backersString;
 
-  protected @Inject KSCurrency ksCurrency;
-  protected @Inject KSString ksString;
-
   public interface Delegate {
     void projectViewHolderBackProjectClicked(ProjectViewHolder viewHolder);
     void projectViewHolderBlurbClicked(ProjectViewHolder viewHolder);
@@ -144,8 +140,9 @@ public final class ProjectViewHolder extends KSViewHolder {
     super(view);
     this.delegate = delegate;
     this.context = view.getContext();
+    this.ksCurrency = environment().ksCurrency();
+    this.ksString = environment().ksString();
 
-    ((KSApplication) this.context.getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 

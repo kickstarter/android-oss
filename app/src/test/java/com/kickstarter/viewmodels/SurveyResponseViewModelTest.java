@@ -73,8 +73,8 @@ public class SurveyResponseViewModelTest extends KSRobolectricTestCase {
   public void testSubmitSuccessful_Redirect_ShowConfirmationDialog() {
     final String surveyUrl = "https://kck.str/projects/param/heyo/surveys/123";
 
-    final SurveyResponse.UrlsEnvelope urlsEnvelope = SurveyResponse.UrlsEnvelope.builder()
-      .web(SurveyResponse.UrlsEnvelope.WebEnvelope.builder().survey(surveyUrl).build())
+    final SurveyResponse.Urls urlsEnvelope = SurveyResponse.Urls.builder()
+      .web(SurveyResponse.Urls.Web.builder().survey(surveyUrl).build())
       .build();
 
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse()

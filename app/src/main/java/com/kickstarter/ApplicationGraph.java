@@ -7,10 +7,8 @@ import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.services.gcm.MessageService;
 import com.kickstarter.services.gcm.RegisterService;
-import com.kickstarter.ui.activities.CheckoutActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.HelpActivity;
-import com.kickstarter.ui.activities.SettingsActivity;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.IconTextView;
@@ -20,7 +18,6 @@ public interface ApplicationGraph {
   Environment environment();
   void inject(ApplicationLifecycleUtil __);
   void inject(AppRatingDialog __);
-  void inject(CheckoutActivity __);
   void inject(Koala __);
   void inject(DiscoveryActivity __);
   void inject(DiscoveryToolbar __);
@@ -32,5 +29,4 @@ public interface ApplicationGraph {
   void inject(MessageService __);
   void inject(KSCurrency __);
   void inject(RegisterService __);
-  void inject(SettingsActivity __);
 }

@@ -96,6 +96,7 @@ public final class ApplicationModule {
   Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
     final @NonNull AndroidPayCapability androidPayCapability,
     final @NonNull ApiClientType apiClient,
+    final @NonNull Build build,
     final @NonNull BuildCheck buildCheck,
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfigType currentConfig,
@@ -106,6 +107,7 @@ public final class ApplicationModule {
     final @NonNull Koala koala,
     final @NonNull KSCurrency ksCurrency,
     final @NonNull KSString ksString,
+    final @NonNull Logout logout,
     final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
     final @NonNull SharedPreferences sharedPreferences,
@@ -115,6 +117,7 @@ public final class ApplicationModule {
       .activitySamplePreference(activitySamplePreference)
       .androidPayCapability(androidPayCapability)
       .apiClient(apiClient)
+      .build(build)
       .buildCheck(buildCheck)
       .cookieManager(cookieManager)
       .currentConfig(currentConfig)
@@ -125,6 +128,7 @@ public final class ApplicationModule {
       .koala(koala)
       .ksCurrency(ksCurrency)
       .ksString(ksString)
+      .logout(logout)
       .playServicesCapability(playServicesCapability)
       .scheduler(scheduler)
       .sharedPreferences(sharedPreferences)

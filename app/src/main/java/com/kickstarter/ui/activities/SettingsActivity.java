@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Build;
@@ -29,8 +28,6 @@ import com.kickstarter.viewmodels.SettingsViewModel;
 
 import java.util.Arrays;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -77,9 +74,9 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_notifications) String unsubscribeString;
 
   private CurrentUserType currentUser;
+  private Build build;
   private KSString ksString;
-  @Inject Logout logout;
-  @Inject Build build;
+  private Logout logout;
 
   private boolean notifyMobileOfFollower;
   private boolean notifyMobileOfFriendActivity;
@@ -95,10 +92,10 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     setContentView(R.layout.settings_layout);
     ButterKnife.bind(this);
 
+    this.build = environment().build();
     this.currentUser = environment().currentUser();
     this.ksString = environment().ksString();
-
-    ((KSApplication) getApplication()).component().inject(this);
+    this.logout = environment().logout();
 
     this.viewModel.outputs.user()
       .compose(bindToLifecycle())

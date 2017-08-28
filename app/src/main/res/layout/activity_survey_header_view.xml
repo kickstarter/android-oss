@@ -8,7 +8,7 @@
   android:layout_height="wrap_content"
   android:layout_marginStart="@dimen/feed_padding_x"
   android:layout_marginEnd="@dimen/feed_padding_x"
-  android:layout_marginTop="@dimen/activity_feed_view_margin_top"
+  android:layout_marginTop="@dimen/grid_2"
   android:layout_marginBottom="@dimen/grid_2"
   android:textColor="@color/ksr_text_green_700"
   tools:text="2 Reward Surveys" />

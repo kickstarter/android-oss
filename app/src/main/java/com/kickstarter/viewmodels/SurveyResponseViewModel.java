@@ -6,6 +6,7 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.services.ApiClientType;
@@ -62,21 +63,32 @@ public interface SurveyResponseViewModel {
         .map(i -> i.getParcelableExtra(IntentKey.SURVEY_RESPONSE))
         .ofType(SurveyResponse.class);
 
-      surveyResponse
-        .map(r -> r.urls().web().survey())
+      final Observable<String> surveyWebUrl = surveyResponse
+        .map(r -> r.urls().web().survey());
+
+      surveyWebUrl
         .compose(bindToLifecycle())
         .subscribe(this.webViewUrl);
 
-      final Observable<Project> project = this.projectUriRequest
-        .filter(this::requestTagIsNull)
+      final Observable<Pair<Request, String>> projectRequestAndSurveyUrl = Observable.zip(
+        this.projectUriRequest,
+        surveyWebUrl,
+        Pair::create
+      );
+
+      final Observable<Project> project = projectRequestAndSurveyUrl
+        .filter(requestAndUrl -> !requestTagUrlIsSurveyUrl(requestAndUrl))
+        .map(PairUtils::first)
         .map(this::extractProjectParams)
         .switchMap(this.client::fetchProject)
         .compose(neverError())
         .share();
 
-      this.showConfirmationDialog = this.projectUriRequest
-        .filter(r -> !requestTagIsNull(r))
-        .compose(ignoreValues());
+      projectRequestAndSurveyUrl
+        .filter(this::requestTagUrlIsSurveyUrl)
+        .compose(ignoreValues())
+        .compose(bindToLifecycle())
+        .subscribe(this.showConfirmationDialog);
 
       project
         .compose(bindToLifecycle())
@@ -92,8 +104,13 @@ public interface SurveyResponseViewModel {
       return request.url().encodedPathSegments().get(2);
     }
 
-    private boolean requestTagIsNull(final @NonNull Request request) {
-      return ((Request) request.tag()).body() == null;
+    /**
+     * Returns if a project request tag's url is a survey url,
+     * which indicates a redirect from a successful submit.
+     */
+    private boolean requestTagUrlIsSurveyUrl(final @NonNull Pair<Request, String> projectRequestAndSurveyUrl) {
+      return ((Request) projectRequestAndSurveyUrl.first.tag()).url().toString()
+        .equals(projectRequestAndSurveyUrl.second);
     }
 
     private final PublishSubject<Request> projectUriRequest = PublishSubject.create();
@@ -102,7 +119,7 @@ public interface SurveyResponseViewModel {
     private final PublishSubject<String> webViewPageIntercepted = PublishSubject.create();
 
     private final Observable<Void> goBack;
-    private final Observable<Void> showConfirmationDialog;
+    private final PublishSubject<Void> showConfirmationDialog = PublishSubject.create();
     private final PublishSubject<Pair<Project, RefTag>> startProjectActivity = PublishSubject.create();
     private final BehaviorSubject<String> webViewUrl = BehaviorSubject.create();
 

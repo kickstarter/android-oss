@@ -112,12 +112,7 @@ public interface ActivityFeedViewModel {
         .filter(ObjectUtils::isNotNull)
         .map(f -> coalesce(f.get(FeatureKey.ANDROID_SURVEYS), false));
 
-      final Observable<Void> refreshSurvey = Observable.merge(this.refresh, this.resume);
-
-      this.currentUser.loggedInUser()
-        .take(1)
-        .compose(this.bindToLifecycle())
-        .subscribe(__ -> this.refresh());
+      final Observable<Void> refreshSurvey = Observable.merge(this.refresh, this.resume).share();
 
       final Observable<Boolean> shouldFetchSurveys = Observable.combineLatest(
         this.currentUser.observable(),
@@ -150,6 +145,11 @@ public interface ActivityFeedViewModel {
       paginator.isFetching()
         .compose(this.bindToLifecycle())
         .subscribe(this.isFetchingActivities);
+
+      this.currentUser.loggedInUser()
+        .take(1)
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.refresh());
 
       this.currentUser.isLoggedIn()
         .map(loggedIn -> !loggedIn)
@@ -190,12 +190,12 @@ public interface ActivityFeedViewModel {
     private final PublishSubject<Activity> friendBackingClick = PublishSubject.create();
     private final PublishSubject<Void> loginClick = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
-    private final PublishSubject<Void> resume = PublishSubject.create();
     private final PublishSubject<Activity> projectStateChangedClick = PublishSubject.create();
     private final PublishSubject<Activity> projectStateChangedPositiveClick = PublishSubject.create();
     private final PublishSubject<Activity> projectUpdateClick = PublishSubject.create();
     private final PublishSubject<Activity> projectUpdateProjectClick = PublishSubject.create();
     private final PublishSubject<Void> refresh = PublishSubject.create();
+    private final PublishSubject<Void> resume = PublishSubject.create();
     private final PublishSubject<SurveyResponse> surveyClick = PublishSubject.create();
 
     private final BehaviorSubject<List<Activity>> activityList = BehaviorSubject.create();
@@ -215,85 +215,66 @@ public interface ActivityFeedViewModel {
     @Override public void emptyActivityFeedDiscoverProjectsClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
       this.discoverProjectsClick.onNext(null);
     }
-
     @Override public void emptyActivityFeedLoginClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
       this.loginClick.onNext(null);
     }
-
     @Override public void friendBackingClicked(final @NonNull FriendBackingViewHolder viewHolder, final @NonNull Activity activity) {
       this.friendBackingClick.onNext(activity);
     }
-
     @Override public void nextPage() {
       this.nextPage.onNext(null);
     }
-
     @Override public void projectStateChangedClicked(final @NonNull ProjectStateChangedViewHolder viewHolder,
       final @NonNull Activity activity) {
       this.projectStateChangedClick.onNext(activity);
     }
-
     @Override public void projectStateChangedPositiveClicked(final @NonNull ProjectStateChangedPositiveViewHolder viewHolder,
       final @NonNull Activity activity) {
       this.projectStateChangedPositiveClick.onNext(activity);
     }
-
     @Override public void projectUpdateClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
       final @NonNull Activity activity) {
       this.projectUpdateClick.onNext(activity);
     }
-
     @Override public void projectUpdateProjectClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
       final @NonNull Activity activity) {
       this.projectUpdateProjectClick.onNext(activity);
     }
-
     @Override public void refresh() {
       this.refresh.onNext(null);
     }
-
     @Override public void resume() {
       this.resume.onNext(null);
     }
 
-    @Override @NonNull public Observable<List<Activity>> activityList() {
+    @Override public @NonNull Observable<List<Activity>> activityList() {
       return this.activityList;
     }
-
-    @Override @NonNull public Observable<Void> goToDiscovery() {
+    @Override public @NonNull Observable<Void> goToDiscovery() {
       return this.goToDiscovery;
     }
-
-    @Override @NonNull public Observable<Void> goToLogin() {
+    @Override public @NonNull Observable<Void> goToLogin() {
       return this.goToLogin;
     }
-
-    @Override @NonNull public Observable<Project> goToProject() {
+    @Override public @NonNull Observable<Project> goToProject() {
       return this.goToProject;
     }
-
-    @Override @NonNull public Observable<Activity> goToProjectUpdate() {
+    @Override public @NonNull Observable<Activity> goToProjectUpdate() {
       return this.goToProjectUpdate;
     }
-
-    @Override @NonNull public Observable<SurveyResponse> goToSurvey() {
+    @Override public @NonNull Observable<SurveyResponse> goToSurvey() {
       return this.goToSurvey;
     }
-
-    @Override @NonNull  public Observable<Boolean> isFetchingActivities() {
+    @Override public @NonNull Observable<Boolean> isFetchingActivities() {
       return this.isFetchingActivities;
     }
-
-    @Override @NonNull  public Observable<Boolean> loggedInEmptyStateIsVisible() {
+    @Override public @NonNull Observable<Boolean> loggedInEmptyStateIsVisible() {
       return this.loggedInEmptyStateIsVisible;
     }
-
-    @NonNull
-    @Override public Observable<Boolean> loggedOutEmptyStateIsVisible() {
+    @Override public @NonNull Observable<Boolean> loggedOutEmptyStateIsVisible() {
       return this.loggedOutEmptyStateIsVisible;
     }
-
-    @Override public Observable<List<SurveyResponse>> surveys() {
+    @Override public @NonNull Observable<List<SurveyResponse>> surveys() {
       return this.surveys;
     }
   }

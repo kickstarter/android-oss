@@ -37,6 +37,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
 public final class RewardViewHolder extends KSViewHolder {
   private final RewardViewModel viewModel;
+  private final KSString ksString;
 
   protected @Bind(R.id.reward_all_gone_text_view) TextView allGoneTextView;
   protected @Bind(R.id.reward_backers_text_view) TextView backersTextView;
@@ -63,8 +64,6 @@ public final class RewardViewHolder extends KSViewHolder {
   protected @BindString(R.string.rewards_title_pledge_reward_currency_or_more) String pledgeRewardCurrencyOrMoreString;
   protected @BindString(R.string.project_back_button) String projectBackButtonString;
   protected @BindString(R.string.rewards_title_about_amount_usd) String usdConversionString;
-
-  private final KSString ksString;
 
   public RewardViewHolder(final @NonNull View view) {
     super(view);

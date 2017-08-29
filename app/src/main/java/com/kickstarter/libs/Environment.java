@@ -20,6 +20,7 @@ public abstract class Environment implements Parcelable {
   public abstract IntPreferenceType activitySamplePreference();
   public abstract AndroidPayCapability androidPayCapability();
   public abstract ApiClientType apiClient();
+  public abstract Build build();
   public abstract BuildCheck buildCheck();
   public abstract CookieManager cookieManager();
   public abstract CurrentConfigType currentConfig();
@@ -30,6 +31,7 @@ public abstract class Environment implements Parcelable {
   public abstract Koala koala();
   public abstract KSCurrency ksCurrency();
   public abstract KSString ksString();
+  public abstract Logout logout();
   public abstract PlayServicesCapability playServicesCapability();
   public abstract Scheduler scheduler();
   public abstract SharedPreferences sharedPreferences();
@@ -40,6 +42,7 @@ public abstract class Environment implements Parcelable {
     public abstract Builder activitySamplePreference(IntPreferenceType __);
     public abstract Builder androidPayCapability(AndroidPayCapability __);
     public abstract Builder apiClient(ApiClientType __);
+    public abstract Builder build(Build __);
     public abstract Builder buildCheck(BuildCheck __);
     public abstract Builder cookieManager(CookieManager __);
     public abstract Builder currentConfig(CurrentConfigType __);
@@ -50,6 +53,7 @@ public abstract class Environment implements Parcelable {
     public abstract Builder koala(Koala __);
     public abstract Builder ksCurrency(KSCurrency __);
     public abstract Builder ksString(KSString __);
+    public abstract Builder logout(Logout __);
     public abstract Builder playServicesCapability(PlayServicesCapability __);
     public abstract Builder scheduler(Scheduler __);
     public abstract Builder sharedPreferences(SharedPreferences __);

@@ -26,7 +26,6 @@ import com.google.android.gms.wallet.fragment.WalletFragmentInitParams;
 import com.google.android.gms.wallet.fragment.WalletFragmentMode;
 import com.google.android.gms.wallet.fragment.WalletFragmentOptions;
 import com.google.gson.Gson;
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.AndroidPayCapability;
@@ -54,8 +53,6 @@ import com.kickstarter.viewmodels.CheckoutViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -99,11 +96,11 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
 
   protected @BindColor(R.color.white) int whiteColor;
 
-  protected @Inject KSCurrency ksCurrency;
-  protected @Inject KSString ksString;
-  protected @Inject Gson gson;
-  protected @Inject AndroidPayCapability androidPayCapability;
-  protected @Inject Build build;
+  private KSCurrency ksCurrency;
+  private KSString ksString;
+  private Gson gson;
+  private AndroidPayCapability androidPayCapability;
+  private Build build;
 
   private @Nullable SupportWalletFragment walletFragment;
   private @Nullable SupportWalletFragment confirmationWalletFragment;
@@ -116,7 +113,11 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
     setContentView(R.layout.checkout_layout);
     ButterKnife.bind(this);
 
-    ((KSApplication) getApplication()).component().inject(this);
+    this.androidPayCapability = environment().androidPayCapability();
+    this.build = environment().build();
+    this.ksCurrency = environment().ksCurrency();
+    this.ksString = environment().ksString();
+    this.gson = environment().gson();
 
     this.webView.client().setDelegate(this);
 

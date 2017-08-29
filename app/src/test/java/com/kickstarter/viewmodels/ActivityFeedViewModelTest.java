@@ -32,24 +32,21 @@ import java.util.Map;
 
 import rx.Observable;
 import rx.observers.TestSubscriber;
-import rx.schedulers.TestScheduler;
 
 public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   private ViewModel vm;
-
-  final TestSubscriber<List<Activity>> activityList = new TestSubscriber<>();
-  final TestSubscriber<Void> goToDiscovery = new TestSubscriber<>();
-  final TestSubscriber<Void> goToLogin = new TestSubscriber<>();
-  final TestSubscriber<Project> goToProject = new TestSubscriber<>();
-  final TestSubscriber<Activity> goToProjectUpdate = new TestSubscriber<>();
-  final TestSubscriber<SurveyResponse> goToSurvey = new TestSubscriber<>();
-  final TestSubscriber<Boolean> loggedOutEmptyStateIsVisible = new TestSubscriber<>();
-  final TestSubscriber<Boolean> loggedInEmptyStateIsVisible = new TestSubscriber<>();
-  final TestSubscriber<List<SurveyResponse>> surveys = new TestSubscriber<>();
+  private final TestSubscriber<List<Activity>> activityList = new TestSubscriber<>();
+  private final TestSubscriber<Void> goToDiscovery = new TestSubscriber<>();
+  private final TestSubscriber<Void> goToLogin = new TestSubscriber<>();
+  private final TestSubscriber<Project> goToProject = new TestSubscriber<>();
+  private final TestSubscriber<Activity> goToProjectUpdate = new TestSubscriber<>();
+  private final TestSubscriber<SurveyResponse> goToSurvey = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> loggedOutEmptyStateIsVisible = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> loggedInEmptyStateIsVisible = new TestSubscriber<>();
+  private final TestSubscriber<List<SurveyResponse>> surveys = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ViewModel(environment);
-
     this.vm.outputs.activityList().subscribe(this.activityList);
     this.vm.outputs.goToDiscovery().subscribe(this.goToDiscovery);
     this.vm.outputs.goToLogin().subscribe(this.goToLogin);
@@ -65,7 +62,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   public void testActivitiesEmit() {
     setUpEnvironment(environment());
 
-    // Initialize the paginator.
+    // Swipe refresh.
     this.vm.inputs.refresh();
 
     // Activities should emit.
@@ -157,8 +154,10 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     final CurrentUserType currentUser = new MockCurrentUser();
     currentUser.login(UserFactory.user(), "deadbeef");
 
-    final Config config = ConfigFactory.config().toBuilder()
-      .features(Collections.EMPTY_MAP).build();
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.emptyMap())
+      .build();
 
     final CurrentConfigType currentConfig = new MockCurrentConfig();
     currentConfig.config(config);
@@ -172,13 +171,11 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment);
     this.vm.inputs.resume();
 
-    this.surveys.assertValue(Collections.emptyList());
+    this.surveys.assertNoValues();
   }
 
   @Test
   public void testSurveyFeatureFlagFalse() {
-    final TestScheduler scheduler = new TestScheduler();
-
     final List<SurveyResponse> surveyResponses = Arrays.asList(
       SurveyResponseFactory.surveyResponse(),
       SurveyResponseFactory.surveyResponse()
@@ -204,7 +201,6 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     currentConfig.config(config);
 
     final Environment environment = this.environment().toBuilder()
-      .scheduler(scheduler)
       .apiClient(apiClient)
       .currentUser(currentUser)
       .currentConfig(currentConfig)
@@ -213,13 +209,11 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment);
     this.vm.inputs.resume();
 
-    this.surveys.assertValues(Collections.emptyList());
+    this.surveys.assertNoValues();
   }
 
   @Test
   public void testSurveyFeatureFlagTrue() {
-    final TestScheduler scheduler = new TestScheduler();
-
     final List<SurveyResponse> surveyResponses = Arrays.asList(
       SurveyResponseFactory.surveyResponse(),
       SurveyResponseFactory.surveyResponse()
@@ -245,7 +239,6 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     currentConfig.config(config);
 
     final Environment environment = this.environment().toBuilder()
-      .scheduler(scheduler)
       .apiClient(apiClient)
       .currentUser(currentUser)
       .currentConfig(currentConfig)
@@ -258,9 +251,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testSurveyFeatureFlagUserLoggedOut() {
-    final TestScheduler scheduler = new TestScheduler();
-
+  public void testSurveyFeatureFlag_UserLoggedOut() {
     final List<SurveyResponse> surveyResponses = Arrays.asList(
       SurveyResponseFactory.surveyResponse(),
       SurveyResponseFactory.surveyResponse()
@@ -286,7 +277,6 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     currentConfig.config(config);
 
     final Environment environment = this.environment().toBuilder()
-      .scheduler(scheduler)
       .apiClient(apiClient)
       .currentUser(currentUser)
       .currentConfig(currentConfig)
@@ -299,21 +289,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testSurveyFeatureFlagTrueLoggedInButNotResumed() {
-    final TestScheduler scheduler = new TestScheduler();
-
-    final List<SurveyResponse> surveyResponses = Arrays.asList(
-      SurveyResponseFactory.surveyResponse(),
-      SurveyResponseFactory.surveyResponse()
-    );
-
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override
-      public @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
-        return Observable.just(surveyResponses);
-      }
-    };
-
+  public void testSurveyFeatureFlagTrue_LoggedIn_SwipeRefreshed() {
     final CurrentUserType currentUser = new MockCurrentUser();
     currentUser.login(UserFactory.user(), "deadbeef");
 
@@ -327,14 +303,13 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     currentConfig.config(config);
 
     final Environment environment = this.environment().toBuilder()
-      .scheduler(scheduler)
-      .apiClient(apiClient)
       .currentUser(currentUser)
       .currentConfig(currentConfig)
       .build();
 
     setUpEnvironment(environment);
 
-    this.surveys.assertNoValues();
+    this.vm.inputs.refresh();
+    this.surveys.assertValueCount(1);
   }
 }

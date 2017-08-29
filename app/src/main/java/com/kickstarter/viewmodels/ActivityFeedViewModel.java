@@ -11,10 +11,8 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KoalaContext.Update;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
@@ -29,13 +27,16 @@ import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 import com.kickstarter.ui.viewholders.UnansweredSurveyViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.incrementalCount;
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 
 public interface ActivityFeedViewModel {
@@ -83,9 +84,7 @@ public interface ActivityFeedViewModel {
     Observable<List<SurveyResponse>> surveys();
   }
 
-  final class ViewModel extends ActivityViewModel<ActivityFeedActivity> implements
-    Inputs, Outputs {
-
+  final class ViewModel extends ActivityViewModel<ActivityFeedActivity> implements Inputs, Outputs {
     private final ApiClientType client;
     private final CurrentConfigType currentConfig;
     private final CurrentUserType currentUser;
@@ -114,21 +113,27 @@ public interface ActivityFeedViewModel {
         .filter(ObjectUtils::isNotNull)
         .map(f -> coalesce(f.get(FeatureKey.ANDROID_SURVEYS), false));
 
-      Observable.combineLatest(
-          this.resume,
-          this.currentUser.isLoggedIn(),
-          Pair::create
-        )
-        .map(PairUtils::second)
-        .filter(BooleanUtils::isTrue)
-        .compose(Transformers.combineLatestPair(surveyFeatureEnabled))
-        .switchMap(loggedInAndEnabled ->
-          loggedInAndEnabled.second
-            ? this.client.fetchUnansweredSurveys()
-            : Observable.just(new ArrayList<SurveyResponse>())
-        )
+      final Observable<Void> refreshSurvey = Observable.merge(this.refresh, this.resume);
+
+      this.currentUser.loggedInUser()
+        .take(1)
         .compose(this.bindToLifecycle())
-        .subscribe(this.surveys::onNext);
+        .subscribe(__ -> this.refresh());
+
+      final Observable<Boolean> shouldFetchSurveys = Observable.combineLatest(
+        this.currentUser.observable(),
+        surveyFeatureEnabled,
+        Pair::create
+      )
+        .map(userAndEnabled -> userAndEnabled.first != null && userAndEnabled.second)
+        .distinctUntilChanged();
+
+      shouldFetchSurveys
+        .filter(BooleanUtils::isTrue)
+        .compose(takeWhen(refreshSurvey))
+        .switchMap(__ -> this.client.fetchUnansweredSurveys().compose(neverError()).share())
+        .compose(bindToLifecycle())
+        .subscribe(this.surveys);
 
       final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
         .nextPage(this.nextPage)
@@ -147,25 +152,20 @@ public interface ActivityFeedViewModel {
         .compose(this.bindToLifecycle())
         .subscribe(this.isFetchingActivities);
 
-      this.currentUser.loggedInUser()
-        .take(1)
-        .compose(this.bindToLifecycle())
-        .subscribe(__ -> this.refresh());
-
       this.currentUser.isLoggedIn()
         .map(loggedIn -> !loggedIn)
         .compose(this.bindToLifecycle())
         .subscribe(this.loggedOutEmptyStateIsVisible);
 
       this.currentUser.observable()
-        .compose(Transformers.takePairWhen(this.activityList))
+        .compose(takePairWhen(this.activityList))
         .map(ua -> ua.first != null && ua.second.size() == 0)
         .compose(this.bindToLifecycle())
         .subscribe(this.loggedInEmptyStateIsVisible);
 
       // Track viewing and paginating activity.
       this.nextPage
-        .compose(Transformers.incrementalCount())
+        .compose(incrementalCount())
         .startWith(0)
         .compose(this.bindToLifecycle())
         .subscribe(this.koala::trackActivityView);

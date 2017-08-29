@@ -20,7 +20,6 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
@@ -53,7 +52,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   private LinearLayoutManager drawerLayoutManager;
   private DiscoveryPagerAdapter pagerAdapter;
 
-  protected @Inject ApiClientType client;
   protected @Inject InternalToolsType internalTools;
 
   protected @Bind(R.id.creator_dashboard_button) IconButton creatorDashboardButton;

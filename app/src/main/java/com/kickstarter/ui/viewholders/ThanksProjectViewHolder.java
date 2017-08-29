@@ -7,15 +7,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -24,16 +21,16 @@ import butterknife.ButterKnife;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class ThanksProjectViewHolder extends KSViewHolder {
-  private Project project;
   private final Context context;
   private final Delegate delegate;
+  private Project project;
 
   protected @Bind(R.id.time_to_go_text_view) TextView timeToGoTextView;
   protected @Bind(R.id.name) TextView nameTextView;
   protected @Bind(R.id.photo) ImageView photoImageView;
   protected @BindString(R.string.discovery_baseball_card_time_left_to_go) String timeLeftToGoString;
 
-  protected @Inject KSString ksString;
+  private KSString ksString;
 
   public interface Delegate {
     void projectClick(ThanksProjectViewHolder viewHolder, Project project);
@@ -41,9 +38,9 @@ public final class ThanksProjectViewHolder extends KSViewHolder {
 
   public ThanksProjectViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
-    this.delegate = delegate;
     this.context = view.getContext();
-    ((KSApplication) this.context.getApplicationContext()).component().inject(this);
+    this.delegate = delegate;
+    this.ksString = environment().ksString();
     ButterKnife.bind(this, view);
   }
 

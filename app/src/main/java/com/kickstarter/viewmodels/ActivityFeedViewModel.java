@@ -82,8 +82,7 @@ public interface ActivityFeedViewModel {
     Observable<List<SurveyResponse>> surveys();
   }
 
-  final class ViewModel extends ActivityViewModel<ActivityFeedActivity> implements
-    Inputs, Outputs {
+  final class ViewModel extends ActivityViewModel<ActivityFeedActivity> implements Inputs, Outputs {
 
     private final ApiClientType client;
     private final CurrentConfigType currentConfig;

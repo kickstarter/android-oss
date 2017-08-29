@@ -12,8 +12,10 @@ public final class KSUriTest extends KSRobolectricTestCase {
   private final Uri discoverPlacesUri = Uri.parse("https://www.ksr.com/discover/places/newest");
   private final String webEndpoint = "https://www.ksr.com";
   private final Uri projectUri = Uri.parse("https://www.ksr.com/projects/creator/project");
+  private final Uri projectSurveyUri = Uri.parse("https://www.ksr.com/projects/creator/project/surveys/survey-param");
   private final Uri updatesUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts");
   private final Uri updateUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts/id");
+  private final Uri userSurveyUri = Uri.parse("https://www.ksr.com/users/user-param/surveys/survey-id");
 
   @Test
   public void testKSUri_isDiscoverCategoriesPath() {
@@ -50,6 +52,12 @@ public final class KSUriTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testKSuri_isProjectSurveyUri() {
+    assertTrue(KSUri.isProjectSurveyUri(this.projectSurveyUri, this.webEndpoint));
+    assertFalse(KSUri.isProjectSurveyUri(this.userSurveyUri, this.webEndpoint));
+  }
+
+  @Test
   public void testKSUri_isProjectUpdateCommentsUri() {
     final Uri updateCommentsUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts/id/comments");
 
@@ -73,5 +81,11 @@ public final class KSUriTest extends KSRobolectricTestCase {
   public void testKSUri_isProjectUri() {
     assertTrue(KSUri.isProjectUri(this.projectUri, this.webEndpoint));
     assertFalse(KSUri.isProjectUri(this.updateUri, this.webEndpoint));
+  }
+
+  @Test
+  public void testKSuri_isUserSurveyUri() {
+    assertTrue(KSUri.isUserSurveyUri(this.userSurveyUri, this.webEndpoint));
+    assertFalse(KSUri.isUserSurveyUri(this.projectSurveyUri, this.webEndpoint));
   }
 }

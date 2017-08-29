@@ -341,6 +341,16 @@
 
     </activity>
 
+    <activity
+      android:name=".ui.activities.SurveyResponseActivity"
+      android:parentActivityName=".ui.activities.ActivityFeedActivity">
+
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".ui.activities.ActivityFeedActivity" />
+
+    </activity>
+
     <!-- TODO: Maybe the parent should be the project? -->
     <activity
       android:name=".ui.activities.ThanksActivity"

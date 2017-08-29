@@ -15,47 +15,47 @@ public abstract class SurveyResponse implements Parcelable {
   public abstract @Nullable DateTime answeredAt();
   public abstract int id();
   public abstract @Nullable Project project();
-  public abstract UrlsEnvelope urls();
-
-  @AutoGson
-  @AutoParcel
-  public abstract static class UrlsEnvelope implements Parcelable {
-    public abstract WebEnvelope web();
-
-    @AutoGson
-    @AutoParcel
-    public abstract static class WebEnvelope implements Parcelable {
-      public abstract String survey();
-
-      @AutoParcel.Builder
-      public abstract static class Builder {
-        public abstract SurveyResponse.UrlsEnvelope.WebEnvelope.Builder survey(String __);
-        public abstract SurveyResponse.UrlsEnvelope.WebEnvelope build();
-      }
-
-      public static Builder builder() {
-        return new AutoParcel_SurveyResponse_UrlsEnvelope_WebEnvelope.Builder();
-      }
-    }
-
-    @AutoParcel.Builder
-    public abstract static class Builder {
-      public abstract SurveyResponse.UrlsEnvelope.Builder web(SurveyResponse.UrlsEnvelope.WebEnvelope __);
-      public abstract SurveyResponse.UrlsEnvelope build();
-    }
-
-    public static SurveyResponse.UrlsEnvelope.Builder builder() {
-      return new AutoParcel_SurveyResponse_UrlsEnvelope.Builder();
-    }
-  }
+  public abstract Urls urls();
 
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder answeredAt(DateTime __);
     public abstract Builder id(int __);
     public abstract Builder project(Project __);
-    public abstract Builder urls(UrlsEnvelope __);
+    public abstract Builder urls(Urls __);
     public abstract SurveyResponse build();
+  }
+
+  @AutoGson
+  @AutoParcel
+  public abstract static class Urls implements Parcelable {
+    public abstract Web web();
+
+    @AutoGson
+    @AutoParcel
+    public abstract static class Web implements Parcelable {
+      public abstract String survey();
+
+      @AutoParcel.Builder
+      public abstract static class Builder {
+        public abstract SurveyResponse.Urls.Web.Builder survey(String __);
+        public abstract SurveyResponse.Urls.Web build();
+      }
+
+      public static Builder builder() {
+        return new AutoParcel_SurveyResponse_Urls_Web.Builder();
+      }
+    }
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract SurveyResponse.Urls.Builder web(SurveyResponse.Urls.Web __);
+      public abstract SurveyResponse.Urls build();
+    }
+
+    public static SurveyResponse.Urls.Builder builder() {
+      return new AutoParcel_SurveyResponse_Urls.Builder();
+    }
   }
 
   public static Builder builder() {

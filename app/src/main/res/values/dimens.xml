@@ -101,6 +101,8 @@
   <dimen name="activity_feed_avatar_height">@dimen/grid_10</dimen>
   <dimen name="activity_feed_backing_photo_width">@dimen/grid_16</dimen>
   <dimen name="activity_feed_backing_photo_height">@dimen/grid_9</dimen>
+  <dimen name="activity_feed_survey_photo_width">@dimen/grid_4</dimen>
+  <dimen name="activity_feed_survey_photo_height">@dimen/grid_4</dimen>
   <dimen name="activity_feed_update_photo_width">@dimen/grid_16</dimen>
   <dimen name="activity_feed_update_photo_height">@dimen/grid_9</dimen>
   <dimen name="comments_feed_avatar_width">44dp</dimen>
@@ -118,7 +120,6 @@
   <dimen name="search_result_photo_width">80dp</dimen>
   <dimen name="search_result_photo_height">45dp</dimen>
   <dimen name="search_result_featured_photo_height">@dimen/grid_33</dimen>
-
   <dimen name="thanks_project_photo_width">208dp</dimen>
   <dimen name="thanks_project_photo_height">117dp</dimen>
 

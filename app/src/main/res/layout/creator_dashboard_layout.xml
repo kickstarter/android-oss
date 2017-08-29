@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/creator_dashboard_coordinator_view"
   android:layout_height="match_parent"
   android:layout_width="match_parent"
   xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -20,13 +21,6 @@
     </android.support.design.widget.CollapsingToolbarLayout>
 
   </android.support.design.widget.AppBarLayout>
-
-  <android.support.v7.widget.RecyclerView
-    android:id="@+id/creator_dashboard_recycler_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@id/creator_dashboard_toolbar"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
   <android.support.v7.widget.RecyclerView
     android:id="@+id/creator_dashboard_bottom_sheet_recycler_view"

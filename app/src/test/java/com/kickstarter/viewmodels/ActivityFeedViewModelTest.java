@@ -139,16 +139,6 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testSurveyClick() {
-    final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
-
-    setUpEnvironment(environment());
-
-    this.vm.inputs.surveyClicked(null, surveyResponse);
-    this.goToSurvey.assertValue(surveyResponse);
-  }
-
-  @Test
   public void testNoSurveyFeatureFlag() {
     final ApiClientType apiClient = new MockApiClient();
     final CurrentUserType currentUser = new MockCurrentUser();

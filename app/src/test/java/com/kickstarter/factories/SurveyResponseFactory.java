@@ -3,8 +3,6 @@ package com.kickstarter.factories;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.models.SurveyResponse;
-import com.kickstarter.models.SurveyResponse.UrlsEnvelope;
-import com.kickstarter.models.SurveyResponse.UrlsEnvelope.WebEnvelope;
 
 import org.joda.time.DateTime;
 
@@ -14,12 +12,12 @@ public final class SurveyResponseFactory {
   public static @NonNull SurveyResponse surveyResponse() {
     final String surveyUrl = "https://www.kickstarter.com/surveys/" + IdFactory.id();
 
-    final WebEnvelope webEnvelope = WebEnvelope.builder()
+    final SurveyResponse.Urls.Web web = SurveyResponse.Urls.Web.builder()
       .survey(surveyUrl)
       .build();
 
-    final UrlsEnvelope urlsEnvelope = UrlsEnvelope.builder()
-      .web(webEnvelope)
+    final SurveyResponse.Urls urlsEnvelope = SurveyResponse.Urls.builder()
+      .web(web)
       .build();
 
     return SurveyResponse.builder()

@@ -72,7 +72,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
   @Override
   public void toggleBottomSheetClick() {
     this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-    this.bottomSheetBehavior.set
+//    this.bottomSheetBehavior.set
   }
 
   @Override

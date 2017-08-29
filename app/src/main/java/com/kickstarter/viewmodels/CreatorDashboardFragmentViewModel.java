@@ -70,6 +70,7 @@ public interface CreatorDashboardFragmentViewModel {
     @Override public @NonNull Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats() {
       return this.projectAndStats;
     }
+
     @Override public @NonNull Observable<Void> toggleBottomSheet() {
       return this.toggleBottomSheet;
     }

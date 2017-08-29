@@ -107,6 +107,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     public void projectViewClicked() {
       this.projectViewClicked.onNext(null);
     }
+
     @Override
     public void projectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope) {
       this.projectAndStats.onNext(projectAndProjectStatsEnvelope);

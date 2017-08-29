@@ -57,7 +57,6 @@ public final class CreatorDashboardFragment extends BaseFragment<CreatorDashboar
     this.viewModel.outputs.projectAndStats()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .map(x -> x)
       .subscribe(this::renderProjectAndStats);
 
     this.viewModel.outputs.toggleBottomSheet()
@@ -74,6 +73,7 @@ public final class CreatorDashboardFragment extends BaseFragment<CreatorDashboar
   private void renderProjectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStats) {
     this.adapter.takeProjectAndStats(projectAndStats);
   }
+
 
   @Override
   public void onDestroy() {

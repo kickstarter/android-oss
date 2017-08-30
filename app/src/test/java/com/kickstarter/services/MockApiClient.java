@@ -356,7 +356,7 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<SurveyResponse> fetchSurveyResponse(final int surveyResponseId) {
+  public @NonNull Observable<SurveyResponse> fetchSurveyResponse(final long surveyResponseId) {
     return Observable.just(SurveyResponseFactory.surveyResponse().toBuilder().id(surveyResponseId).build());
   }
 

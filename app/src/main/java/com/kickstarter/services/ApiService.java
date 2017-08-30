@@ -167,7 +167,7 @@ public interface ApiService {
   Observable<Response<StarEnvelope>> starProject(@Path("param") String param);
 
   @GET("/v1/users/self/surveys/{survey_response_id}")
-  Observable<Response<SurveyResponse>> surveyResponse(@Path("surveyResponseId") int surveyResponseId);
+  Observable<Response<SurveyResponse>> surveyResponse(@Path("survey_response_id") long surveyResponseId);
 
   @POST("/v1/projects/{param}/star/toggle")
   Observable<Response<StarEnvelope>> toggleProjectStar(@Path("param") String param);

@@ -13,14 +13,14 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class SurveyResponse implements Parcelable {
   public abstract @Nullable DateTime answeredAt();
-  public abstract int id();
+  public abstract long id();
   public abstract @Nullable Project project();
   public abstract Urls urls();
 
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder answeredAt(DateTime __);
-    public abstract Builder id(int __);
+    public abstract Builder id(long __);
     public abstract Builder project(Project __);
     public abstract Builder urls(Urls __);
     public abstract SurveyResponse build();

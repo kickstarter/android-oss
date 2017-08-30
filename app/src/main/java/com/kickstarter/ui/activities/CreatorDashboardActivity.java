@@ -45,7 +45,6 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.bottomSheetRecyclerView.setLayoutManager(new LinearLayoutManager(this)); // todo: reuse LayoutManager?
     this.bottomSheetBehavior = BottomSheetBehavior.from(this.bottomSheetRecyclerView);
 
-    // set up dat frag
     this.viewModel.outputs.projectAndStats()
       .compose(bindToLifecycle())
       .compose(observeForUI())

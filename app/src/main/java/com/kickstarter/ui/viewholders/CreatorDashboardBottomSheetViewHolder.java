@@ -25,7 +25,7 @@ public final class CreatorDashboardBottomSheetViewHolder extends KSViewHolder {
     this.viewModel = new CreatorDashboardBottomSheetHolderViewModel.ViewModel(environment());
     ButterKnife.bind(this, view);
 
-    this.viewModel.outputs.projectName()
+    this.viewModel.outputs.projectNameText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(projectNameTextView::setText);

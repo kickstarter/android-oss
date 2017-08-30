@@ -10,7 +10,6 @@ import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.ArgumentsKey;
 import com.kickstarter.ui.adapters.CreatorDashboardAdapter;
 import com.kickstarter.ui.fragments.CreatorDashboardFragment;
-import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -21,7 +20,8 @@ public interface CreatorDashboardFragmentViewModel {
 
   interface Inputs extends CreatorDashboardAdapter.Delegate {
     /* project menu clicked */
-    void projectsMenuClicked(CreatorDashboardHeaderViewHolder viewHolder);
+//    void projectsMenuClicked(CreatorDashboardHeaderViewHolder viewHolder);
+    void projectsMenuClicked();
   }
 
   interface Outputs {
@@ -34,8 +34,7 @@ public interface CreatorDashboardFragmentViewModel {
       super(environment);
 
       final Observable<Project> project = arguments()
-          .map(x -> x)
-          .map(args -> args.getParcelable(ArgumentsKey.CREATOR_DASHBOARD_PROJECT))
+        .map(args -> args.getParcelable(ArgumentsKey.CREATOR_DASHBOARD_PROJECT))
         .ofType(Project.class);
 
       final Observable<ProjectStatsEnvelope> projectStatsEnvelope = arguments()
@@ -62,8 +61,13 @@ public interface CreatorDashboardFragmentViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
+//    @Override
+//    public void projectsMenuClicked(final @NonNull CreatorDashboardHeaderViewHolder viewHolder) {
+//      this.projectsMenuClick.onNext(null);
+//    }
+
     @Override
-    public void projectsMenuClicked(final @NonNull CreatorDashboardHeaderViewHolder viewHolder) {
+    public void projectsMenuClicked() {
       this.projectsMenuClick.onNext(null);
     }
 

@@ -48,7 +48,8 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   private KSCurrency ksCurrency;
 
   public interface Delegate {
-    void projectsMenuClicked(CreatorDashboardHeaderViewHolder viewHolder);
+//    void projectsMenuClicked(CreatorDashboardHeaderViewHolder viewHolder);
+    void projectsMenuClicked();
   }
 
   public CreatorDashboardHeaderViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
@@ -102,9 +103,14 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
   }
 
+//  @OnClick(R.id.project_name_blurb_arrow_view)
+//  protected void dashboardShowProjectMenuClicked() {
+//    this.delegate.projectsMenuClicked(this);
+//  }
+
   @OnClick(R.id.project_name_blurb_arrow_view)
   protected void dashboardShowProjectMenuClicked() {
-    this.delegate.projectsMenuClicked(this);
+    this.delegate.projectsMenuClicked();
   }
 
   @OnClick(R.id.creator_view_project_button)

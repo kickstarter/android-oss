@@ -16,7 +16,7 @@ public interface CreatorDashboardBottomSheetHolderViewModel {
     void projectInput(Project project);
   }
   interface Outputs {
-    Observable<String> projectName();
+    Observable<String> projectNameText();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardBottomSheetViewHolder> implements Inputs, Outputs {
@@ -24,7 +24,7 @@ public interface CreatorDashboardBottomSheetHolderViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.projectName = this.currentProject
+      this.projectNameText = this.currentProject
       .map(Project::name);
     }
 
@@ -33,7 +33,7 @@ public interface CreatorDashboardBottomSheetHolderViewModel {
 
     private final PublishSubject<Project> currentProject = PublishSubject.create();
 
-    private final Observable<String> projectName;
+    private final Observable<String> projectNameText;
 
     @Override
     public void projectInput(Project project) {
@@ -41,6 +41,6 @@ public interface CreatorDashboardBottomSheetHolderViewModel {
     }
 
     @Override
-    public @NonNull Observable<String> projectName() { return this.projectName; }
+    public @NonNull Observable<String> projectNameText() { return this.projectNameText; }
   }
 }

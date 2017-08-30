@@ -16,11 +16,11 @@ import java.util.Map;
 import java.util.UUID;
 
 public final class FragmentViewModelManager {
-  private static final String VIEW_MODEL_ID_KEY = "fragment_view_model_id";
+  public static final String VIEW_MODEL_ID_KEY = "fragment_view_model_id";
   private static final String VIEW_MODEL_STATE_KEY = "fragment_view_model_state";
 
   private static final FragmentViewModelManager instance = new FragmentViewModelManager();
-  private Map<String, FragmentViewModel> viewModels = new HashMap<>();
+  public Map<String, FragmentViewModel> viewModels = new HashMap<>();
 
   public static @NonNull FragmentViewModelManager getInstance() {
     return instance;

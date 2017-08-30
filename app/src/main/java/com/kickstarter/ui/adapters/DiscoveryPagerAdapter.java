@@ -1,8 +1,8 @@
 package com.kickstarter.ui.adapters;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
@@ -15,7 +15,6 @@ import com.kickstarter.ui.fragments.DiscoveryFragment;
 import java.util.List;
 
 import rx.Observable;
-
 
 public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   private final Delegate delegate;

@@ -27,11 +27,7 @@ public final class CreatorDashboardFragment extends BaseFragment<CreatorDashboar
   private CreatorDashboardAdapter adapter;
   private RecyclerView creatorDashboardRecyclerView;
 
-  public interface toggleBottomSheetListener {
-    public void toggleBottomSheetClick();
-  }
-
-  public CreatorDashboardFragment() {};
+  public CreatorDashboardFragment() {}
 
   public static @NonNull CreatorDashboardFragment newInstance(final Pair<Project, ProjectStatsEnvelope> projectAndStats) {
     final CreatorDashboardFragment fragment = new CreatorDashboardFragment();

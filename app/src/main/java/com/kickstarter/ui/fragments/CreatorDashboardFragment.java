@@ -45,7 +45,6 @@ public final class CreatorDashboardFragment extends BaseFragment<CreatorDashboar
   @Override
   public @Nullable View onCreateView(final @NonNull LayoutInflater inflater, final @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
-//    ButterKnife.bind(this, this.creatorDashboardRecyclerView);
 
     this.creatorDashboardRecyclerView = (RecyclerView) inflater.inflate(R.layout.creator_dashboard_recycler_layout, container, false);
 

@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
 @RequiresActivityViewModel(CreatorDashboardViewModel.ViewModel.class)
-public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboardViewModel.ViewModel> implements CreatorDashboardFragment.toggleBottomSheetListener{
+public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboardViewModel.ViewModel> {
 
   private CreatorDashboardBottomSheetAdapter bottomSheetAdapter;
   private BottomSheetBehavior bottomSheetBehavior;
@@ -67,12 +67,11 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     CreatorDashboardFragment fragment = CreatorDashboardFragment.newInstance(projectAndStats);
     fragmentTransaction.add(R.id.creator_dashboard_coordinator_view, fragment);
     fragmentTransaction.commit();
-
   }
-  @Override
+
   public void toggleBottomSheetClick() {
     this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-//    this.bottomSheetBehavior.set
+    this.bottomSheetRecyclerView.bringToFront();
   }
 
   @Override

@@ -1,7 +1,6 @@
 package com.kickstarter.services.apiresponses;
 
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.ReferrerType;
 import com.kickstarter.libs.qualifiers.AutoGson;
@@ -98,7 +97,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
     public abstract double percentageOfDollars();
     public abstract int pledged();
     public abstract String referrerName();
-    public abstract @Nullable ReferrerType referrerType();
+    public abstract ReferrerType referrerType();
 
     @AutoParcel.Builder
     public abstract static class Builder {

@@ -235,8 +235,6 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment);
-    this.vm.inputs.resume();
-
     this.surveys.assertValues(surveyResponses);
   }
 
@@ -298,8 +296,9 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment);
+    this.surveys.assertValueCount(1);
 
     this.vm.inputs.refresh();
-    this.surveys.assertValueCount(1);
+    this.surveys.assertValueCount(2);
   }
 }

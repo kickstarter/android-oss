@@ -184,6 +184,26 @@ public final class DebugPushNotificationsView extends ScrollView {
     this.pushNotifications.add(projectSuccessEnvelope());
   }
 
+  @OnClick(R.id.simulate_project_survey_button)
+  public void simulateProjectSurveyButtonClick() {
+    final GCM gcm = GCM.builder()
+      .title("Backer survey")
+      .alert("Response needed! Get your reward for backing bugs in the office.")
+      .build();
+
+    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
+      .gcm(gcm)
+      .survey(
+        PushNotificationEnvelope.Survey.builder()
+          .id(18249859L)
+          .projectId(PROJECT_ID)
+          .build()
+      )
+      .build();
+
+    this.pushNotifications.add(envelope);
+  }
+
   @OnClick(R.id.simulate_project_update_button)
   public void simulateProjectUpdateButtonClick() {
     final GCM gcm = GCM.builder()

@@ -115,7 +115,7 @@ public interface ApiClientType {
 
   @NonNull Observable<Project> starProject(final @NonNull Project project);
 
-  @NonNull Observable<SurveyResponse> fetchSurveyResponse(final int surveyResponseId);
+  @NonNull Observable<SurveyResponse> fetchSurveyResponse(final long surveyResponseId);
 
   @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project);
 

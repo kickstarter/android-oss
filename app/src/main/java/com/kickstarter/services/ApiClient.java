@@ -274,7 +274,7 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<SurveyResponse> fetchSurveyResponse(final int surveyResponseId) {
+  public @NonNull Observable<SurveyResponse> fetchSurveyResponse(final long surveyResponseId) {
     return this.service
       .surveyResponse(surveyResponseId)
       .lift(apiErrorOperator())

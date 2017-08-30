@@ -52,30 +52,30 @@
       android:text="@string/debug_push_notifications_simulate_notifications" />
 
     <Button
+      android:id="@+id/simulate_friend_backing_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/debug_push_notifications_friend_backing"
+      style="@style/BorderButton" />
+
+    <Button
+      android:id="@+id/simulate_friend_follow_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/debug_push_notifications_friend_follow"
+      style="@style/BorderButton" />
+
+    <Button
       android:id="@+id/simulate_message_button"
       android:layout_marginTop="@dimen/grid_1_half"
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/debug_push_notifications_message"
-      style="@style/BorderButton" />
-
-    <Button
-      android:id="@+id/simulate_project_launch_button"
-      android:layout_marginTop="@dimen/grid_1_half"
-      android:layout_marginBottom="@dimen/grid_1_half"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/debug_push_notifications_project_launch"
-      style="@style/BorderButton" />
-
-    <Button
-      android:id="@+id/simulate_project_success_button"
-      android:layout_marginTop="@dimen/grid_1_half"
-      android:layout_marginBottom="@dimen/grid_1_half"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/debug_push_notifications_project_success"
       style="@style/BorderButton" />
 
     <Button
@@ -97,21 +97,12 @@
       style="@style/BorderButton" />
 
     <Button
-      android:id="@+id/simulate_friend_backing_button"
+      android:id="@+id/simulate_project_launch_button"
       android:layout_marginTop="@dimen/grid_1_half"
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/debug_push_notifications_friend_backing"
-      style="@style/BorderButton" />
-
-    <Button
-      android:id="@+id/simulate_friend_follow_button"
-      android:layout_marginTop="@dimen/grid_1_half"
-      android:layout_marginBottom="@dimen/grid_1_half"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/debug_push_notifications_friend_follow"
+      android:text="@string/debug_push_notifications_project_launch"
       style="@style/BorderButton" />
 
     <Button
@@ -121,6 +112,24 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/debug_push_notifications_project_reminder"
+      style="@style/BorderButton" />
+
+    <Button
+      android:id="@+id/simulate_project_success_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/debug_push_notifications_project_success"
+      style="@style/BorderButton" />
+
+    <Button
+      android:id="@+id/simulate_project_survey_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/debug_push_notifications_project_survey"
       style="@style/BorderButton" />
 
     <Button

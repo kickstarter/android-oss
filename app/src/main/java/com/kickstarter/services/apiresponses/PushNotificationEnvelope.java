@@ -19,6 +19,7 @@ public abstract class PushNotificationEnvelope implements Parcelable {
   public abstract GCM gcm();
   public abstract @Nullable Message message();
   public abstract @Nullable Project project();
+  public abstract @Nullable Survey survey();
 
   private final static List<String> PROJECT_NOTIFICATION_CATEGORIES = Arrays.asList(
     com.kickstarter.models.Activity.CATEGORY_BACKING,
@@ -34,6 +35,7 @@ public abstract class PushNotificationEnvelope implements Parcelable {
     public abstract Builder gcm(GCM __);
     public abstract Builder message(Message __);
     public abstract Builder project(Project __);
+    public abstract Builder survey(Survey __);
     public abstract PushNotificationEnvelope build();
   }
 
@@ -64,6 +66,10 @@ public abstract class PushNotificationEnvelope implements Parcelable {
 
   public boolean isProjectUpdateActivity() {
     return activity() != null && activity().category().equals(com.kickstarter.models.Activity.CATEGORY_UPDATE);
+  }
+
+  public boolean isSurvey() {
+    return survey() != null;
   }
 
   public int signature() {
@@ -108,6 +114,24 @@ public abstract class PushNotificationEnvelope implements Parcelable {
 
     public static Builder builder() {
       return new AutoParcel_PushNotificationEnvelope_Project.Builder();
+    }
+  }
+
+  @AutoGson
+  @AutoParcel
+  public abstract static class Survey implements Parcelable {
+    public abstract Long id();
+    public abstract Long projectId();
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder id(Long __);
+      public abstract Builder projectId(Long __);
+      public abstract Survey build();
+    }
+
+    public static Builder builder() {
+      return new AutoParcel_PushNotificationEnvelope_Survey.Builder();
     }
   }
 

@@ -20,7 +20,6 @@ public interface CreatorDashboardFragmentViewModel {
 
   interface Inputs extends CreatorDashboardAdapter.Delegate {
     /* project menu clicked */
-//    void projectsMenuClicked(CreatorDashboardHeaderViewHolder viewHolder);
     void projectsMenuClicked();
   }
 
@@ -47,7 +46,6 @@ public interface CreatorDashboardFragmentViewModel {
         Pair::create
       )
         .compose(bindToLifecycle())
-        .map(x -> x)
         .subscribe(this.projectAndStats);
 
       this.toggleBottomSheet = this.projectsMenuClick;
@@ -60,11 +58,6 @@ public interface CreatorDashboardFragmentViewModel {
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
-
-//    @Override
-//    public void projectsMenuClicked(final @NonNull CreatorDashboardHeaderViewHolder viewHolder) {
-//      this.projectsMenuClick.onNext(null);
-//    }
 
     @Override
     public void projectsMenuClicked() {

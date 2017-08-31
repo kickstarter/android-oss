@@ -30,12 +30,14 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Project> latestProject = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, ProjectStatsEnvelope>> projectAndStats = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
+  private final TestSubscriber<List<Project>> projectsForBottomSheet = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardViewModel.ViewModel(environment);
     this.vm.outputs.latestProject().subscribe(this.latestProject);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.projectAndStats().subscribe(this.projectAndStats);
+    this.vm.outputs.projectsForBottomSheet().subscribe(this.projectsForBottomSheet);
   }
 
   @Test
@@ -76,5 +78,21 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     this.latestProject.assertValues(ListUtils.first(projects));
     final Pair<Project, ProjectStatsEnvelope> outputPair = Pair.create(ListUtils.first(projects), ProjectStatsEnvelope);
     this.projectAndStats.assertValues(outputPair);
+  }
+
+  @Test
+  public void testProjectsForBottomSheet() {
+    final List<Project> projects = Arrays.asList(
+      ProjectFactory.project()
+    );
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override public @NonNull
+      Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
+        return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects));
+      }
+    };
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    this.projectsForBottomSheet.assertValues(projects);
+
   }
 }

@@ -29,8 +29,8 @@ public class CreatorDashboardFragmentViewModelTest extends KSRobolectricTestCase
     final Bundle bundle = new Bundle();
     bundle.putParcelable(ArgumentsKey.CREATOR_DASHBOARD_PROJECT, project);
     bundle.putParcelable(ArgumentsKey.CREATOR_DASHBOARD_PROJECT_STATS, projectStats);
-    FragmentViewModelManager fragManager = FragmentViewModelManager.getInstance();
-    this.vm = fragManager.fetch(context(), CreatorDashboardFragmentViewModel.ViewModel.class , bundle);
+    final FragmentViewModelManager fragManager = FragmentViewModelManager.getInstance();
+    this.vm = fragManager.fetch(context(), CreatorDashboardFragmentViewModel.ViewModel.class, bundle);
     this.vm.outputs.projectAndStats().subscribe(this.projectAndStats);
     bundle.putString(FragmentViewModelManager.VIEW_MODEL_ID_KEY, "test_vm_id");
     fragManager.viewModels.put("test_vm_id", this.vm);

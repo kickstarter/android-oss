@@ -28,7 +28,7 @@ public final class CreatorDashboardBottomSheetViewHolder extends KSViewHolder {
     this.viewModel.outputs.projectNameText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(projectNameTextView::setText);
+      .subscribe(this.projectNameTextView::setText);
   }
 
   @Override

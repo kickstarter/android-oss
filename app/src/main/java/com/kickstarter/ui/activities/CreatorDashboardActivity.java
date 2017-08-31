@@ -56,14 +56,14 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
       .subscribe(this::setProjectsForDropdown);
   }
 
-  private void setProjectsForDropdown(List<Project> projects) {
+  private void setProjectsForDropdown(final List<Project> projects) {
     this.bottomSheetAdapter.takeProjects(projects);
   }
 
-  private void createFragments(Pair<Project, ProjectStatsEnvelope> projectAndStats) {
-    FragmentManager fragmentManager = getSupportFragmentManager();
-    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    CreatorDashboardFragment fragment = CreatorDashboardFragment.newInstance(projectAndStats);
+  private void createFragments(final Pair<Project, ProjectStatsEnvelope> projectAndStats) {
+    final FragmentManager fragmentManager = getSupportFragmentManager();
+    final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    final CreatorDashboardFragment fragment = CreatorDashboardFragment.newInstance(projectAndStats);
     fragmentTransaction.add(R.id.creator_dashboard_coordinator_view, fragment);
     fragmentTransaction.commit();
   }

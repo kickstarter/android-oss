@@ -36,11 +36,13 @@ public interface CreatorDashboardBottomSheetHolderViewModel {
     private final Observable<String> projectNameText;
 
     @Override
-    public void projectInput(Project project) {
+    public void projectInput(final Project project) {
       this.currentProject.onNext(project);
     }
 
     @Override
-    public @NonNull Observable<String> projectNameText() { return this.projectNameText; }
+    public @NonNull Observable<String> projectNameText() {
+      return this.projectNameText;
+    }
   }
 }

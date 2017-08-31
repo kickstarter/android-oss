@@ -42,21 +42,21 @@ public final class IntPreference implements IntPreferenceType {
 
   @Override
   public int get() {
-    return sharedPreferences.getInt(key, defaultValue);
+    return this.sharedPreferences.getInt(this.key, this.defaultValue);
   }
 
   @Override
   public boolean isSet() {
-    return sharedPreferences.contains(key);
+    return this.sharedPreferences.contains(this.key);
   }
 
   @Override
   public void set(final int value) {
-    sharedPreferences.edit().putInt(key, value).apply();
+    this.sharedPreferences.edit().putInt(this.key, value).apply();
   }
 
   @Override
   public void delete() {
-    sharedPreferences.edit().remove(key).apply();
+    this.sharedPreferences.edit().remove(this.key).apply();
   }
 }

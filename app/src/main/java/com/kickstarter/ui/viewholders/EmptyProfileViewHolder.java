@@ -34,6 +34,6 @@ public final class EmptyProfileViewHolder extends KSViewHolder {
 
   @OnClick(R.id.explore_projects_button)
   public void exploreProjectsClicked() {
-    delegate.emptyProfileViewHolderExploreProjectsClicked(this);
+    this.delegate.emptyProfileViewHolderExploreProjectsClicked(this);
   }
 }

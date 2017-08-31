@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
+import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
@@ -17,13 +18,15 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
-
   private final CreatorDashboardRewardStatsHolderViewModel.ViewModel viewModel;
+
+  protected @Bind(R.id.dashboard_reward_stats_pledged_text_view) TextView pledgedTextView;
   protected @Bind(R.id.dashboard_reward_stats_recycler_view) RecyclerView rewardStatsRecyclerView;
 
   public CreatorDashboardRewardStatsViewHolder(final @NonNull View view) {
@@ -32,14 +35,19 @@ public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
 
     final CreatorDashboardRewardStatsAdapter rewardStatsAdapter = new CreatorDashboardRewardStatsAdapter();
-    rewardStatsRecyclerView.setAdapter(rewardStatsAdapter);
+    this.rewardStatsRecyclerView.setAdapter(rewardStatsAdapter);
     final LinearLayoutManager layoutManager = new LinearLayoutManager(context());
-    rewardStatsRecyclerView.setLayoutManager(layoutManager);
+    this.rewardStatsRecyclerView.setLayoutManager(layoutManager);
 
     this.viewModel.outputs.projectAndRewardStats()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(rewardStatsAdapter::takeProjectAndStats);
+  }
+
+  @OnClick(R.id.dashboard_reward_stats_pledged_text_view)
+  public void pledgedColumnTitleClicked() {
+    this.viewModel.inputs.pledgedColumnTitleClicked();
   }
 
   @Override

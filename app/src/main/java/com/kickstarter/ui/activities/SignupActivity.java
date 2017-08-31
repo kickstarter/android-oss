@@ -48,62 +48,62 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
 
     setContentView(R.layout.signup_layout);
     ButterKnife.bind(this);
-    loginToolbar.setTitle(signUpString);
+    this.loginToolbar.setTitle(this.signUpString);
 
-    viewModel.outputs.signupSuccess()
+    this.viewModel.outputs.signupSuccess()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> onSuccess());
 
-    viewModel.outputs.formSubmitting()
+    this.viewModel.outputs.formSubmitting()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::setFormDisabled);
 
-    viewModel.outputs.formIsValid()
+    this.viewModel.outputs.formIsValid()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::setFormEnabled);
 
-    viewModel.outputs.sendNewslettersIsChecked()
+    this.viewModel.outputs.sendNewslettersIsChecked()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(b -> SwitchCompatUtils.setCheckedWithoutAnimation(newsletterSwitch, b));
+      .subscribe(b -> SwitchCompatUtils.setCheckedWithoutAnimation(this.newsletterSwitch, b));
 
-    viewModel.errors.signupError()
+    this.viewModel.errors.signupError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(e -> ViewUtils.showDialog(this, null, e));
 
-    RxView.clicks(newsletterSwitch)
+    RxView.clicks(this.newsletterSwitch)
       .skip(1)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendNewslettersClick(newsletterSwitch.isChecked()));
+      .subscribe(__ -> this.viewModel.inputs.sendNewslettersClick(this.newsletterSwitch.isChecked()));
   }
 
   @OnClick(R.id.disclaimer)
   public void disclaimerClick() {
-    new LoginPopupMenu(this, helpButton).show();
+    new LoginPopupMenu(this, this.helpButton).show();
   }
 
   @OnTextChanged(R.id.full_name)
   void onNameTextChanged(final @NonNull CharSequence fullName) {
-    viewModel.inputs.fullName(fullName.toString());
+    this.viewModel.inputs.fullName(fullName.toString());
   }
 
   @OnTextChanged(R.id.email)
   void onEmailTextChanged(final @NonNull CharSequence email) {
-    viewModel.inputs.email(email.toString());
+    this.viewModel.inputs.email(email.toString());
   }
 
   @OnTextChanged(R.id.password)
   void onPasswordTextChange(final @NonNull CharSequence password) {
-    viewModel.inputs.password(password.toString());
+    this.viewModel.inputs.password(password.toString());
   }
 
   @OnClick(R.id.signup_button)
   public void signupButtonOnClick() {
-    viewModel.inputs.signupClick();
+    this.viewModel.inputs.signupClick();
   }
 
   public void onSuccess() {
@@ -112,7 +112,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
   }
 
   public void setFormEnabled(final boolean enabled) {
-    signupButton.setEnabled(enabled);
+    this.signupButton.setEnabled(enabled);
   }
 
   public void setFormDisabled(final boolean disabled) {

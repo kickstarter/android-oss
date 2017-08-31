@@ -28,17 +28,15 @@ public class ProjectSocialViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    user = requireNonNull((User) data, User.class);
+    this.user = requireNonNull((User) data, User.class);
   }
 
   @Override
   public void onBind() {
-    Picasso.with(context()).load(user
-      .avatar()
-      .small())
+    Picasso.with(context()).load(this.user.avatar().small())
     .transform(new CircleTransformation())
-    .into(friendImageView);
+    .into(this.friendImageView);
 
-    friendNameTextView.setText(user.name());
+    this.friendNameTextView.setText(this.user.name());
   }
 }

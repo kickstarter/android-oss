@@ -32,10 +32,10 @@ public final class ProjectSocialActivity extends BaseActivity<ProjectSocialViewM
 
     final ProjectSocialAdapter adapter = new ProjectSocialAdapter(this);
 
-    recyclerView.setAdapter(adapter);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    this.recyclerView.setAdapter(adapter);
+    this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    viewModel.outputs.project()
+    this.viewModel.outputs.project()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::takeProject);
@@ -44,7 +44,7 @@ public final class ProjectSocialActivity extends BaseActivity<ProjectSocialViewM
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    recyclerView.setAdapter(null);
+    this.recyclerView.setAdapter(null);
   }
 
   @Override

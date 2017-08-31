@@ -20,11 +20,11 @@ public enum ApiEndpoint {
   }
 
   public @NonNull String url() {
-    return url;
+    return this.url;
   }
 
   @Override public String toString() {
-    return name;
+    return this.name;
   }
 
   public static ApiEndpoint from(final @NonNull String url) {

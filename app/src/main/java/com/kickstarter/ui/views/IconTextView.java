@@ -41,7 +41,7 @@ public class IconTextView extends AppCompatTextView {
   protected void initialize(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr,
     final int defStyleRes) {
     final TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.IconTextView, defStyleAttr, defStyleRes);
-    iconType = attributes.getInt(R.styleable.IconTextView_iconType, DEFAULT_ICON_TYPE);
+    this.iconType = attributes.getInt(R.styleable.IconTextView_iconType, DEFAULT_ICON_TYPE);
     attributes.recycle();
   }
 
@@ -55,12 +55,12 @@ public class IconTextView extends AppCompatTextView {
 
     ((KSApplication) getContext().getApplicationContext()).component().inject(this);
 
-    switch (iconType) {
+    switch (this.iconType) {
       case MATERIAL:
-        setTypeface(font.materialIconsTypeface());
+        setTypeface(this.font.materialIconsTypeface());
         break;
       case SS_KICKSTARTER:
-        setTypeface(font.ssKickstarterTypeface());
+        setTypeface(this.font.ssKickstarterTypeface());
         break;
     }
   }

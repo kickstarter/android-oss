@@ -26,7 +26,6 @@ import com.google.android.gms.wallet.fragment.WalletFragmentInitParams;
 import com.google.android.gms.wallet.fragment.WalletFragmentMode;
 import com.google.android.gms.wallet.fragment.WalletFragmentOptions;
 import com.google.gson.Gson;
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.AndroidPayCapability;
@@ -54,8 +53,6 @@ import com.kickstarter.viewmodels.CheckoutViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -99,11 +96,11 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
 
   protected @BindColor(R.color.white) int whiteColor;
 
-  protected @Inject KSCurrency ksCurrency;
-  protected @Inject KSString ksString;
-  protected @Inject Gson gson;
-  protected @Inject AndroidPayCapability androidPayCapability;
-  protected @Inject Build build;
+  private KSCurrency ksCurrency;
+  private KSString ksString;
+  private Gson gson;
+  private AndroidPayCapability androidPayCapability;
+  private Build build;
 
   private @Nullable SupportWalletFragment walletFragment;
   private @Nullable SupportWalletFragment confirmationWalletFragment;
@@ -116,67 +113,71 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
     setContentView(R.layout.checkout_layout);
     ButterKnife.bind(this);
 
-    ((KSApplication) getApplication()).component().inject(this);
+    this.androidPayCapability = environment().androidPayCapability();
+    this.build = environment().build();
+    this.ksCurrency = environment().ksCurrency();
+    this.ksString = environment().ksString();
+    this.gson = environment().gson();
 
-    webView.client().setDelegate(this);
+    this.webView.client().setDelegate(this);
 
-    webView.client().registerRequestHandlers(Arrays.asList(
+    this.webView.client().registerRequestHandlers(Arrays.asList(
       new RequestHandler(KSUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),
       new RequestHandler(KSUri::isSignupUri, this::handleSignupUriRequest)
     ));
 
-    viewModel.outputs.project()
+    this.viewModel.outputs.project()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(project -> this.project = project);
+      .subscribe(p -> this.project = p);
 
-    viewModel.outputs.title()
+    this.viewModel.outputs.title()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(checkoutToolbar::setTitle);
+      .subscribe(this.checkoutToolbar::setTitle);
 
-    viewModel.outputs.isAndroidPayAvailable()
+    this.viewModel.outputs.isAndroidPayAvailable()
       .filter(BooleanUtils::isTrue)
       .take(1)
       .subscribe(__ -> setGoogleApiClient());
 
-    viewModel.outputs.isAndroidPayAvailable()
+    this.viewModel.outputs.isAndroidPayAvailable()
       .filter(BooleanUtils::isTrue)
       .take(1)
       .subscribe(__ -> this.prepareWalletFragment());
 
-    viewModel.outputs.showAndroidPaySheet()
+    this.viewModel.outputs.showAndroidPaySheet()
       .filter(ObjectUtils::isNotNull)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showAndroidPaySheet);
 
-    viewModel.outputs.displayAndroidPayConfirmation()
+    this.viewModel.outputs.displayAndroidPayConfirmation()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showOrHideAndroidPayConfirmation);
 
-    viewModel.outputs.updateAndroidPayConfirmation()
+    this.viewModel.outputs.updateAndroidPayConfirmation()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(wp -> updateAndroidPayConfirmation(wp.first, wp.second));
 
-    viewModel.outputs.popActivityOffStack()
+    this.viewModel.outputs.popActivityOffStack()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> this.popActivity());
 
-    viewModel.outputs.attemptAndroidPayConfirmation()
+    this.viewModel.outputs.attemptAndroidPayConfirmation()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(wp -> this.attemptAndroidPayConfirmation(wp.first, wp.second));
 
-    viewModel.outputs.completeAndroidPay()
+    this.viewModel.outputs.completeAndroidPay()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::androidPayComplete);
 
-    viewModel.errors.androidPayError()
+    this.viewModel.errors.androidPayError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showAndroidPayError);
@@ -186,16 +187,16 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   protected void onResume() {
     super.onResume();
 
-    viewModel.outputs.url()
+    this.viewModel.outputs.url()
       .take(1)
-      .filter(__ -> !isInAndroidPayFlow)
-      .subscribe(webView::loadUrl);
+      .filter(__ -> !this.isInAndroidPayFlow)
+      .subscribe(this.webView::loadUrl);
   }
 
   @Override
   public void back() {
-    isInAndroidPayFlow = false;
-    viewModel.inputs.backButtonClicked();
+    this.isInAndroidPayFlow = false;
+    this.viewModel.inputs.backButtonClicked();
   }
 
   private void popActivity() {
@@ -207,12 +208,12 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
    * payload has been obtained from the webview.
    */
   public void takeAndroidPayPayloadString(final @Nullable String payloadString) {
-    viewModel.inputs.takePayloadString(payloadString);
+    this.viewModel.inputs.takePayloadString(payloadString);
   }
 
   private boolean handleCheckoutThanksUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     final Intent intent = new Intent(this, ThanksActivity.class)
-      .putExtra(IntentKey.PROJECT, project);
+      .putExtra(IntentKey.PROJECT, this.project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
     return true;
   }
@@ -228,21 +229,21 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
    * Call when the android pay sheet should be shown.
    */
   private void showAndroidPaySheet(final @NonNull AndroidPayPayload payload) {
-    if (walletFragment == null) {
+    if (this.walletFragment == null) {
       return;
     }
 
-    isInAndroidPayFlow = true;
+    this.isInAndroidPayFlow = true;
 
     final MaskedWalletRequest request = AndroidPayUtils.createMaskedWalletRequest(payload);
-    walletFragment.initialize(
+    this.walletFragment.initialize(
       WalletFragmentInitParams.newBuilder()
         .setMaskedWalletRequest(request)
         .setMaskedWalletRequestCode(ActivityRequestCodes.CHECKOUT_ACTIVITY_WALLET_REQUEST)
         .build()
     );
 
-    AndroidPayUtils.triggerAndroidPaySheet(walletFragment);
+    AndroidPayUtils.triggerAndroidPaySheet(this.walletFragment);
   }
 
   /**
@@ -250,23 +251,23 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
    */
   private void prepareWalletFragment() {
     final WalletFragmentOptions walletFragmentOptions = WalletFragmentOptions.newBuilder()
-      .setEnvironment(AndroidPayUtils.environment(build))
+      .setEnvironment(AndroidPayUtils.environment(this.build))
       .setTheme(WalletConstants.THEME_LIGHT)
       .setMode(WalletFragmentMode.BUY_BUTTON)
       .build();
 
-    walletFragment = SupportWalletFragment.newInstance(walletFragmentOptions);
+    this.walletFragment = SupportWalletFragment.newInstance(walletFragmentOptions);
 
     getSupportFragmentManager().beginTransaction()
-      .replace(R.id.masked_wallet_fragment, walletFragment)
+      .replace(R.id.masked_wallet_fragment, this.walletFragment)
       .commit();
   }
 
   private void setGoogleApiClient() {
-    googleApiClient = new GoogleApiClient.Builder(this)
+    this.googleApiClient = new GoogleApiClient.Builder(this)
       .enableAutoManage(this, null)
       .addApi(Wallet.API, new Wallet.WalletOptions.Builder()
-        .setEnvironment(AndroidPayUtils.environment(build))
+        .setEnvironment(AndroidPayUtils.environment(this.build))
         .setTheme(WalletConstants.THEME_LIGHT)
         .build())
       .build();
@@ -274,11 +275,11 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
 
   private void showOrHideAndroidPayConfirmation(final boolean visible) {
     if (visible) {
-      webView.setVisibility(View.GONE);
-      confirmationGroup.setVisibility(View.VISIBLE);
+      this.webView.setVisibility(View.GONE);
+      this.confirmationGroup.setVisibility(View.VISIBLE);
     } else {
-      webView.setVisibility(View.VISIBLE);
-      confirmationGroup.setVisibility(View.GONE);
+      this.webView.setVisibility(View.VISIBLE);
+      this.confirmationGroup.setVisibility(View.GONE);
     }
   }
 
@@ -288,42 +289,41 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   private void updateAndroidPayConfirmation(final @NonNull MaskedWallet maskedWallet,
     final @NonNull AndroidPayPayload payload) {
 
-    Picasso.with(this).load(project.photo().full()).into(contextPhotoImageView);
-    projectNameTextView.setText(project.name());
-    creatorNameTextView.setText(ksString.format(
-      projectCreatorByCreatorString,
+    Picasso.with(this).load(this.project.photo().full()).into(this.contextPhotoImageView);
+    this.projectNameTextView.setText(this.project.name());
+    this.creatorNameTextView.setText(this.ksString.format(
+      this.projectCreatorByCreatorString,
       "creator_name",
-      project.creator().name()
+      this.project.creator().name()
     ));
 
-    termsAndPrivacyTextView.setText(Html.fromHtml(termsAndPrivacyString));
-    backer101TextView.setText(Html.fromHtml(backer101String));
+    this.termsAndPrivacyTextView.setText(Html.fromHtml(this.termsAndPrivacyString));
+    this.backer101TextView.setText(Html.fromHtml(this.backer101String));
     if (maskedWallet != null) {
-      androidPayEmailTextView.setText(maskedWallet.getEmail());
+      this.androidPayEmailTextView.setText(maskedWallet.getEmail());
       final String[] paymentDescriptions = maskedWallet.getPaymentDescriptions();
       if (paymentDescriptions.length > 0) {
-        androidPayInstrumentDescriptionTextView.setText(paymentDescriptions[0]);
+        this.androidPayInstrumentDescriptionTextView.setText(paymentDescriptions[0]);
       }
     }
 
-    pledgeDisclaimerTextView.setText(Html.fromHtml(
-      ksString.format(pledgeDisclaimerString,
-        "charge_amount", ksCurrency.format(
-          Float.valueOf(payload.cart().totalPrice()),
-          project
-        )
+    this.pledgeDisclaimerTextView.setText(Html.fromHtml(
+      this.ksString.format(
+        this.pledgeDisclaimerString,
+        "charge_amount",
+        this.ksCurrency.format(Float.valueOf(payload.cart().totalPrice()), this.project)
       )
     ));
 
-    confirmationWalletFragment = SupportWalletFragment.newInstance(
+    this.confirmationWalletFragment = SupportWalletFragment.newInstance(
       WalletFragmentOptions.newBuilder()
-        .setEnvironment(AndroidPayUtils.environment(build))
+        .setEnvironment(AndroidPayUtils.environment(this.build))
         .setTheme(WalletConstants.THEME_LIGHT)
         .setMode(WalletFragmentMode.SELECTION_DETAILS)
         .build()
     );
 
-    confirmationWalletFragment.initialize(
+    this.confirmationWalletFragment.initialize(
       WalletFragmentInitParams.newBuilder()
         .setMaskedWallet(maskedWallet)
         .setMaskedWalletRequestCode(ActivityRequestCodes.CHECKOUT_ACTIVITY_WALLET_CHANGE_REQUEST)
@@ -331,7 +331,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
     );
 
     getSupportFragmentManager().beginTransaction()
-      .replace(R.id.confirmation_masked_wallet_fragment, confirmationWalletFragment)
+      .replace(R.id.confirmation_masked_wallet_fragment, this.confirmationWalletFragment)
       .commit();
   }
 
@@ -343,52 +343,54 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
       payload
     );
 
-    Wallet.Payments.loadFullWallet(googleApiClient, fullWalletRequest,
+    Wallet.Payments.loadFullWallet(this.googleApiClient, fullWalletRequest,
       ActivityRequestCodes.CHECKOUT_ACTIVITY_WALLET_OBTAINED_FULL);
   }
 
   @SuppressLint("NewApi")
   private void androidPayComplete(final @NonNull FullWallet fullWallet) {
-    final AndroidPayAuthorizedPayload authorizedPayload = AndroidPayUtils.authorizedPayloadFromFullWallet(fullWallet, gson);
+    final AndroidPayAuthorizedPayload authorizedPayload = AndroidPayUtils
+      .authorizedPayloadFromFullWallet(fullWallet, this.gson);
 
-    final String json = gson.toJson(authorizedPayload, AndroidPayAuthorizedPayload.class);
+    final String json = this.gson.toJson(authorizedPayload, AndroidPayAuthorizedPayload.class);
 
     // TODO: is this an injection problem?
     final String javascript = String.format("checkout_android_pay_next(%s);", json);
-    webView.evaluateJavascript(javascript, null);
+    this.webView.evaluateJavascript(javascript, null);
   }
 
   private void showAndroidPayError(final @NonNull Integer error) {
     final ConfirmDialog dialog = new ConfirmDialog(this,
-      androidPayErrorTitleString + " (" + error.toString() + ")",
-      androidPayErrorMessageString);
+      this.androidPayErrorTitleString + " (" + error.toString() + ")",
+      this.androidPayErrorMessageString);
     dialog.setOnDismissListener(d -> this.back());
     dialog.show();
   }
 
   @OnClick(R.id.back_button)
   protected void toolbarBackButtonClicked() {
-    viewModel.inputs.backButtonClicked();
+    this.viewModel.inputs.backButtonClicked();
   }
 
   @OnClick(R.id.android_pay_confirmation_button)
   protected void androidPayConfirmationClicked() {
-    viewModel.inputs.confirmAndroidPayClicked();
+    this.viewModel.inputs.confirmAndroidPayClicked();
   }
 
   @OnClick(R.id.android_pay_change)
   protected void androidPayChangeClicked() {
-    if (confirmationWalletFragment != null) {
-      AndroidPayUtils.triggerAndroidPaySheet(confirmationWalletFragment);
+    if (this.confirmationWalletFragment != null) {
+      AndroidPayUtils.triggerAndroidPaySheet(this.confirmationWalletFragment);
     }
   }
 
   @OnClick(R.id.terms_and_privacy)
   protected void termsAndPrivacyClicked() {
     final CharSequence[] items = new CharSequence[] {
-      termsOfUseString,
-      privacyPolicyString
+      this.termsOfUseString,
+      this.privacyPolicyString
     };
+
     new AlertDialog.Builder(this)
       .setItems(items, (__, which) -> {
         final Intent intent;
@@ -406,12 +408,13 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   @OnClick(R.id.backer_101)
   protected void backer101Clicked() {
     final Intent intent = new Intent(this, WebViewActivity.class);
-    intent.putExtra(IntentKey.URL, Uri.parse(project.webProjectUrl())
+    intent.putExtra(IntentKey.URL, Uri.parse(this.project.webProjectUrl())
       .buildUpon()
       .appendEncodedPath("pledge/big_print")
       .build()
       .toString()
     );
+
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
@@ -420,17 +423,17 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
 
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
+    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
   }
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
+    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
   }
 
   @Override
   public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {
-    viewModel.inputs.pageIntercepted(url);
+    this.viewModel.inputs.pageIntercepted(url);
   }
 
   @Override

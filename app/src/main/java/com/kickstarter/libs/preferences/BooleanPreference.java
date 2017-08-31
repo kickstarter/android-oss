@@ -42,21 +42,21 @@ public final class BooleanPreference implements BooleanPreferenceType {
 
   @Override
   public boolean get() {
-    return sharedPreferences.getBoolean(key, defaultValue);
+    return this.sharedPreferences.getBoolean(this.key, this.defaultValue);
   }
 
   @Override
   public boolean isSet() {
-    return sharedPreferences.contains(key);
+    return this.sharedPreferences.contains(this.key);
   }
 
   @Override
   public void set(final boolean value) {
-    sharedPreferences.edit().putBoolean(key, value).apply();
+    this.sharedPreferences.edit().putBoolean(this.key, value).apply();
   }
 
   @Override
   public void delete() {
-    sharedPreferences.edit().remove(key).apply();
+    this.sharedPreferences.edit().remove(this.key).apply();
   }
 }

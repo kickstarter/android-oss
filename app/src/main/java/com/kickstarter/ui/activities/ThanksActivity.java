@@ -22,7 +22,6 @@ import com.facebook.share.model.ShareOpenGraphContent;
 import com.facebook.share.model.ShareOpenGraphObject;
 import com.facebook.share.widget.ShareDialog;
 import com.jakewharton.rxbinding.view.RxView;
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
@@ -42,8 +41,6 @@ import com.kickstarter.viewmodels.ThanksViewModel;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -56,7 +53,9 @@ import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 
 @RequiresActivityViewModel(ThanksViewModel.class)
 public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
-  protected @Inject KSString ksString;
+  private ThanksAdapter adapter;
+  private ShareDialog shareDialog;
+  private KSString ksString;
 
   protected @Bind(R.id.backed_project) TextView backedProjectTextView;
   protected @Bind(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
@@ -76,24 +75,21 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   protected @BindString(R.string.profile_settings_newsletter_opt_in_title) String optInTitleString;
   protected @BindString(R.string.project_checkout_share_you_just_backed_project_share_this_project_html) String youJustBackedString;
 
-  private ThanksAdapter adapter;
-  private ShareDialog shareDialog;
-
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.thanks_layout);
     ButterKnife.bind(this);
-    ((KSApplication) getApplication()).component().inject(this);
 
-    shareDialog = new ShareDialog(this);
+    this.ksString = environment().ksString();
+    this.shareDialog = new ShareDialog(this);
 
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-    recommendedProjectsRecyclerView.setLayoutManager(layoutManager);
+    this.recommendedProjectsRecyclerView.setLayoutManager(layoutManager);
 
-    adapter = new ThanksAdapter(viewModel);
-    recommendedProjectsRecyclerView.setAdapter(adapter);
+    this.adapter = new ThanksAdapter(this.viewModel);
+    this.recommendedProjectsRecyclerView.setAdapter(this.adapter);
 
     Observable.timer(500L, TimeUnit.MILLISECONDS, Schedulers.newThread())
       .compose(ignoreValues())
@@ -101,71 +97,71 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> animateBackground());
 
-    RxView.clicks(shareButton)
+    RxView.clicks(this.shareButton)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> viewModel.inputs.shareClick());
+      .subscribe(__ -> this.viewModel.inputs.shareClick());
 
-    RxView.clicks(shareOnFacebookButton)
+    RxView.clicks(this.shareOnFacebookButton)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> viewModel.inputs.shareOnFacebookClick());
+      .subscribe(__ -> this.viewModel.inputs.shareOnFacebookClick());
 
-    RxView.clicks(shareOnTwitterButton)
+    RxView.clicks(this.shareOnTwitterButton)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> viewModel.inputs.shareOnTwitterClick());
+      .subscribe(__ -> this.viewModel.inputs.shareOnTwitterClick());
 
-    viewModel.outputs.projectName()
+    this.viewModel.outputs.projectName()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showBackedProject);
 
-    viewModel.outputs.showConfirmGamesNewsletterDialog()
+    this.viewModel.outputs.showConfirmGamesNewsletterDialog()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> showConfirmGamesNewsletterDialog());
 
-    viewModel.outputs.showGamesNewsletterDialog()
+    this.viewModel.outputs.showGamesNewsletterDialog()
       .compose(bindToLifecycle())
       .take(1)
       .delay(700L, TimeUnit.MILLISECONDS)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> showGamesNewsletterDialog());
 
-    viewModel.outputs.showRatingDialog()
+    this.viewModel.outputs.showRatingDialog()
       .compose(bindToLifecycle())
       .take(1)
       .delay(700L, TimeUnit.MILLISECONDS)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> showRatingDialog());
 
-    viewModel.outputs.showRecommendations()
+    this.viewModel.outputs.showRecommendations()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showRecommendations);
 
-    viewModel.outputs.startDiscovery()
+    this.viewModel.outputs.startDiscovery()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startDiscovery);
 
-    viewModel.outputs.startProject()
+    this.viewModel.outputs.startProject()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startProject);
 
-    viewModel.outputs.startShare()
+    this.viewModel.outputs.startShare()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startShare);
 
-    viewModel.outputs.startShareOnFacebook()
+    this.viewModel.outputs.startShareOnFacebook()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startShareOnFacebook);
 
-    viewModel.outputs.startShareOnTwitter()
+    this.viewModel.outputs.startShareOnTwitter()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startShareOnTwitter);
@@ -174,7 +170,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    recommendedProjectsRecyclerView.setAdapter(null);
+    this.recommendedProjectsRecyclerView.setAdapter(null);
   }
 
   @OnClick(R.id.close_button)
@@ -183,39 +179,43 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   private void animateBackground() {
-    woohooBackgroundImageView.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
-    final Drawable drawable = woohooBackgroundImageView.getDrawable();
+    this.woohooBackgroundImageView.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
+    final Drawable drawable = this.woohooBackgroundImageView.getDrawable();
     if (drawable instanceof Animatable) {
       ((Animatable) drawable).start();
     }
   }
 
   private String shareString(final @NonNull Project project) {
-    return ksString.format(iJustBackedString, "project_name", project.name());
+    return this.ksString.format(this.iJustBackedString, "project_name", project.name());
   }
 
   private void showBackedProject(final @NonNull String projectName) {
-    backedProjectTextView.setText(Html.fromHtml(ksString.format(youJustBackedString, "project_name", projectName)));
+    this.backedProjectTextView.setText(
+      Html.fromHtml(this.ksString.format(this.youJustBackedString, "project_name", projectName))
+    );
   }
 
   private void showConfirmGamesNewsletterDialog() {
-    final String optInDialogMessageString = ksString.format(optInMessageString, "newsletter", newsletterGamesString);
+    final String optInDialogMessageString = this.ksString.format(
+      this.optInMessageString, "newsletter", this.newsletterGamesString
+    );
 
     final AlertDialog.Builder builder = new AlertDialog.Builder(this)
       .setMessage(optInDialogMessageString)
-      .setTitle(optInTitleString)
-      .setPositiveButton(okString, (__, ___) -> {});
+      .setTitle(this.optInTitleString)
+      .setPositiveButton(this.okString, (__, ___) -> {});
 
     builder.show();
   }
 
   private void showGamesNewsletterDialog() {
     final AlertDialog.Builder builder = new AlertDialog.Builder(this)
-      .setMessage(gamesAlertMessage)
-      .setPositiveButton(gamesAlertYes, (__, ___) -> {
-        viewModel.inputs.signupToGamesNewsletterClick();
+      .setMessage(this.gamesAlertMessage)
+      .setPositiveButton(this.gamesAlertYes, (__, ___) -> {
+        this.viewModel.inputs.signupToGamesNewsletterClick();
       })
-      .setNegativeButton(gamesAlertNo, (__, ___) -> {
+      .setNegativeButton(this.gamesAlertNo, (__, ___) -> {
         // Nothing to do!
       });
 
@@ -227,7 +227,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   private void showRecommendations(final @NonNull Pair<List<Project>, Category> projectsAndRootCategory) {
-    adapter.data(projectsAndRootCategory.first, projectsAndRootCategory.second);
+    this.adapter.data(projectsAndRootCategory.first, projectsAndRootCategory.second);
   }
 
   private void startDiscovery(final @NonNull DiscoveryParams params) {
@@ -250,7 +250,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
       .putExtra(Intent.EXTRA_TEXT, shareString(project) + " " + project.webProjectUrl());
 
-    startActivity(Intent.createChooser(intent, shareThisProjectString));
+    startActivity(Intent.createChooser(intent, this.shareThisProjectString));
   }
 
   private void startShareOnFacebook(final @NonNull Project project) {
@@ -277,7 +277,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       .setAction(action)
       .build();
 
-    shareDialog.show(content);
+    this.shareDialog.show(content);
   }
 
   private void startShareOnTwitter(final @NonNull Project project) {

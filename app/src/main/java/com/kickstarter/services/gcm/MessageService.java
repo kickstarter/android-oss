@@ -45,6 +45,7 @@ public class MessageService extends GcmListenerService {
       .gcm(this.gson.fromJson(data.getString("gcm"), GCM.class))
       .message(this.gson.fromJson(data.getString("message"), PushNotificationEnvelope.Message.class))
       .project(this.gson.fromJson(data.getString("project"), PushNotificationEnvelope.Project.class))
+      .survey(this.gson.fromJson(data.getString("survey"), PushNotificationEnvelope.Survey.class))
       .build();
 
     if (envelope == null) {

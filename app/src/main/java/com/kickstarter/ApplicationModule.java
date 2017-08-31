@@ -96,6 +96,7 @@ public final class ApplicationModule {
   Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
     final @NonNull AndroidPayCapability androidPayCapability,
     final @NonNull ApiClientType apiClient,
+    final @NonNull Build build,
     final @NonNull BuildCheck buildCheck,
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfigType currentConfig,
@@ -106,6 +107,7 @@ public final class ApplicationModule {
     final @NonNull Koala koala,
     final @NonNull KSCurrency ksCurrency,
     final @NonNull KSString ksString,
+    final @NonNull Logout logout,
     final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
     final @NonNull SharedPreferences sharedPreferences,
@@ -115,6 +117,7 @@ public final class ApplicationModule {
       .activitySamplePreference(activitySamplePreference)
       .androidPayCapability(androidPayCapability)
       .apiClient(apiClient)
+      .build(build)
       .buildCheck(buildCheck)
       .cookieManager(cookieManager)
       .currentConfig(currentConfig)
@@ -125,6 +128,7 @@ public final class ApplicationModule {
       .koala(koala)
       .ksCurrency(ksCurrency)
       .ksString(ksString)
+      .logout(logout)
       .playServicesCapability(playServicesCapability)
       .scheduler(scheduler)
       .sharedPreferences(sharedPreferences)
@@ -287,7 +291,7 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   Application provideApplication() {
-    return application;
+    return this.application;
   }
 
   @Provides
@@ -307,13 +311,13 @@ public final class ApplicationModule {
   @Singleton
   @ApplicationContext
   Context provideApplicationContext() {
-    return application;
+    return this.application;
   }
 
   @Provides
   @Singleton
   AssetManager provideAssetManager() {
-    return application.getAssets();
+    return this.application.getAssets();
   }
 
   @Provides
@@ -425,7 +429,7 @@ public final class ApplicationModule {
   @Singleton
   PackageInfo providePackageInfo(final @NonNull Application application) {
     try {
-      return application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
+      return this.application.getPackageManager().getPackageInfo(this.application.getPackageName(), 0);
     } catch (PackageManager.NameNotFoundException e) {
       e.printStackTrace();
       throw new RuntimeException();
@@ -436,7 +440,7 @@ public final class ApplicationModule {
   @Singleton
   @PackageNameString
   String providePackageName(final @NonNull Application application) {
-    return application.getPackageName();
+    return this.application.getPackageName();
   }
 
   @Provides
@@ -448,7 +452,7 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   SharedPreferences provideSharedPreferences() {
-    return PreferenceManager.getDefaultSharedPreferences(application);
+    return PreferenceManager.getDefaultSharedPreferences(this.application);
   }
 
   @Provides

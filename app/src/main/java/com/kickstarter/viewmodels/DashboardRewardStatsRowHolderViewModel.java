@@ -35,19 +35,18 @@ public interface DashboardRewardStatsRowHolderViewModel {
     Observable<String> rewardMinimum();
   }
 
-  final class ViewModel extends ActivityViewModel<CreatorDashboardRewardStatsRowViewHolder> implements
-    Inputs, Outputs {
+  final class ViewModel extends ActivityViewModel<CreatorDashboardRewardStatsRowViewHolder> implements Inputs, Outputs {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      final Observable<ProjectStatsEnvelope.RewardStats> rewardStats = projectAndRewardStats
+      final Observable<ProjectStatsEnvelope.RewardStats> rewardStats = this.projectAndRewardStats
         .map(PairUtils::second);
 
       this.rewardBackerCount = rewardStats
         .map(ProjectStatsEnvelope.RewardStats::backersCount)
         .map(NumberUtils::format);
 
-      this.projectAndPledgedForReward = projectAndRewardStats
+      this.projectAndPledgedForReward = this.projectAndRewardStats
         .map(pr -> Pair.create(pr.first, (float) (pr.second.pledged())));
 
       this.rewardMinimum = rewardStats

@@ -25,10 +25,9 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
 @RequiresActivityViewModel(CreatorDashboardViewModel.ViewModel.class)
 public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboardViewModel.ViewModel> {
+  private CreatorDashboardAdapter adapter;
 
   protected @Bind(R.id.creator_dashboard_recycler_view) RecyclerView creatorDashboardRecyclerView;
-
-  private CreatorDashboardAdapter adapter;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -39,7 +38,6 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.adapter = new CreatorDashboardAdapter();
     this.creatorDashboardRecyclerView.setAdapter(this.adapter);
     this.creatorDashboardRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
 
     this.viewModel.outputs.projectAndStats()
       .compose(bindToLifecycle())

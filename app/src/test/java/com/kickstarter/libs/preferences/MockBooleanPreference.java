@@ -9,34 +9,34 @@ public final class MockBooleanPreference implements BooleanPreferenceType {
   private final @NonNull List<Boolean> values = new ArrayList<Boolean>();
 
   public MockBooleanPreference() {
-    values.add(null);
+    this.values.add(null);
   }
 
   public MockBooleanPreference(final boolean value) {
-    values.add(value);
+    this.values.add(value);
   }
 
   @Override
   public boolean get() {
-    return values.get(values.size() -1);
+    return this.values.get(this.values.size() -1);
   }
 
   @Override
   public boolean isSet() {
-    return values.get(values.size() -1) != null;
+    return this.values.get(this.values.size() -1) != null;
   }
 
   @Override
   public void set(final boolean value) {
-    values.add(value);
+    this.values.add(value);
   }
 
   @Override
   public void delete() {
-    values.add(null);
+    this.values.add(null);
   }
 
   public @NonNull List<Boolean> values() {
-    return values;
+    return this.values;
   }
 }

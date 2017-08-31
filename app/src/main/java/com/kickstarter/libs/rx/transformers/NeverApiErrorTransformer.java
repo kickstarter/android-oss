@@ -24,8 +24,8 @@ final class NeverApiErrorTransformer<T> implements Observable.Transformer<T, T> 
     return source
       .doOnError(e -> {
         final ErrorEnvelope env = ErrorEnvelope.fromThrowable(e);
-        if (env != null && errorAction != null) {
-          errorAction.call(env);
+        if (env != null && this.errorAction != null) {
+          this.errorAction.call(env);
         }
       })
       .onErrorResumeNext(e -> {

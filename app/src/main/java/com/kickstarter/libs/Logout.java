@@ -6,7 +6,7 @@ import com.facebook.login.LoginManager;
 
 import java.net.CookieManager;
 
-public class Logout {
+public final class Logout {
   private final CookieManager cookieManager;
   private final CurrentUserType currentUser;
 
@@ -16,8 +16,8 @@ public class Logout {
   }
 
   public void execute() {
-    currentUser.logout();
-    cookieManager.getCookieStore().removeAll();
+    this.currentUser.logout();
+    this.cookieManager.getCookieStore().removeAll();
     LoginManager.getInstance().logOut();
   }
 }

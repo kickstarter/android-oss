@@ -64,7 +64,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Config> config() {
-    return service
+    return this.service
       .config()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -87,7 +87,7 @@ public final class ApiClient implements ApiClientType {
       Activity.CATEGORY_FOLLOW
     );
 
-    return service
+    return this.service
       .activities(categories, count)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -95,7 +95,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<ActivityEnvelope> fetchActivitiesWithPaginationPath(final @NonNull String paginationPath) {
-    return service
+    return this.service
       .activities(paginationPath)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -103,7 +103,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<List<Category>> fetchCategories() {
-    return service
+    return this.service
       .categories()
       .lift(apiErrorOperator())
       .map(CategoriesEnvelope::categories)
@@ -112,7 +112,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Category> fetchCategory(final @NonNull String id) {
-    return service
+    return this.service
       .category(id)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -125,7 +125,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<User> fetchCurrentUser() {
-    return service
+    return this.service
       .currentUser()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -133,14 +133,14 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Location> fetchLocation(final @NonNull String param) {
-    return service.location(param)
+    return this.service.location(param)
       .subscribeOn(Schedulers.io())
       .lift(apiErrorOperator());
   }
 
   @Override
   public @NonNull Observable<List<ProjectNotification>> fetchProjectNotifications() {
-    return service
+    return this.service
       .projectNotifications()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -148,7 +148,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Project> fetchProject(final @NonNull String param) {
-    return service
+    return this.service
       .project(param)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -161,7 +161,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean isMember) {
-    return service
+    return this.service
       .projects(isMember ? 1 : 0)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -169,7 +169,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
-    return service
+    return this.service
       .projects(params.queryParams())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -177,7 +177,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull String paginationUrl) {
-    return service
+    return this.service
       .projects(paginationUrl)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -185,7 +185,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project) {
-    return service
+    return this.service
       .projectStats(project.param())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -193,7 +193,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user) {
-    return service
+    return this.service
       .projectBacking(project.param(), user.param())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -201,7 +201,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Project project) {
-    return service
+    return this.service
       .projectComments(project.param())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -209,7 +209,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update) {
-    return service
+    return this.service
       .updateComments(update.projectId(), update.id())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -217,7 +217,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
-    return service
+    return this.service
       .paginatedProjectComments(paginationPath)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -225,7 +225,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
-    return service
+    return this.service
       .messagesForBacking(backing.projectId(), backing.backerId())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -233,7 +233,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread) {
-    return service
+    return this.service
       .messagesForThread(messageThread.id())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -241,7 +241,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull Long messageThreadId) {
-    return service
+    return this.service
       .messagesForThread(messageThreadId)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -267,15 +267,15 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreadsWithPaginationPath(final @NonNull String paginationPath) {
-    return service
+    return this.service
       .paginatedMessageThreads(paginationPath)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   @Override
-  public @NonNull Observable<SurveyResponse> fetchSurveyResponse(final int surveyResponseId) {
-    return service
+  public @NonNull Observable<SurveyResponse> fetchSurveyResponse(final long surveyResponseId) {
+    return this.service
       .surveyResponse(surveyResponseId)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -283,7 +283,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
-    return service
+    return this.service
       .unansweredSurveys()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -291,7 +291,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam) {
-    return service
+    return this.service
       .update(projectParam, updateParam)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -308,7 +308,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken) {
-    return service
+    return this.service
       .login(LoginWithFacebookBody.builder().accessToken(accessToken).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -316,7 +316,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken, final @NonNull String code) {
-    return service
+    return this.service
       .login(LoginWithFacebookBody.builder().accessToken(fbAccessToken).code(code).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -324,7 +324,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password) {
-    return service
+    return this.service
       .login(XauthBody.builder()
         .email(email)
         .password(password)
@@ -336,7 +336,7 @@ public final class ApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
     final @NonNull String code) {
-    return service
+    return this.service
       .login(XauthBody.builder()
         .email(email)
         .password(password)
@@ -356,7 +356,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
-    return service
+    return this.service
       .postProjectComment(project.param(), CommentBody.builder().body(body).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -364,7 +364,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Comment> postComment(final @NonNull Update update, final @NonNull String body) {
-    return service
+    return this.service
       .postUpdateComment(update.projectId(), update.id(), CommentBody.builder().body(body).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -372,7 +372,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Empty> registerPushToken(final @NonNull String token) {
-    return service
+    return this.service
       .registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -380,7 +380,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken, final boolean sendNewsletters) {
-    return service
+    return this.service
       .login(RegisterWithFacebookBody.builder()
         .accessToken(fbAccessToken)
         .sendNewsletters(sendNewsletters)
@@ -392,7 +392,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<User> resetPassword(final @NonNull String email) {
-    return service
+    return this.service
       .resetPassword(ResetPasswordBody.builder().email(email).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -419,7 +419,7 @@ public final class ApiClient implements ApiClientType {
   public @NonNull Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email,
     final @NonNull String password, final @NonNull String passwordConfirmation,
     final boolean sendNewsletters) {
-    return service
+    return this.service
       .signup(
         SignupBody.builder()
           .name(name)
@@ -435,7 +435,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Project> starProject(final @NonNull Project project) {
-    return service
+    return this.service
       .starProject(project.param())
       .lift(apiErrorOperator())
       .map(StarEnvelope::project)
@@ -444,7 +444,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project) {
-    return service
+    return this.service
       .toggleProjectStar(project.param())
       .lift(apiErrorOperator())
       .map(StarEnvelope::project)
@@ -453,7 +453,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<ProjectNotification> updateProjectNotifications(final @NonNull ProjectNotification projectNotification, final boolean checked) {
-    return service
+    return this.service
       .updateProjectNotifications(projectNotification.id(),
         ProjectNotificationBody.builder()
           .email(checked)
@@ -465,7 +465,7 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<User> updateUserSettings(final @NonNull User user) {
-    return service
+    return this.service
       .updateUserSettings(
         SettingsBody.builder()
           .notifyMobileOfFollower(isTrue(user.notifyMobileOfFollower()))
@@ -487,6 +487,6 @@ public final class ApiClient implements ApiClientType {
    * Utility to create a new {@link ApiErrorOperator}, saves us from littering references to gson throughout the client.
    */
   private @NonNull <T> ApiErrorOperator<T> apiErrorOperator() {
-    return Operators.apiError(gson);
+    return Operators.apiError(this.gson);
   }
 }

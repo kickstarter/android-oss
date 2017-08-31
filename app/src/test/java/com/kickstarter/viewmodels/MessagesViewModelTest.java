@@ -43,7 +43,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> goBack = new TestSubscriber<>();
   private final TestSubscriber<String> messageEditTextHint = new TestSubscriber<>();
   private final TestSubscriber<Void> messageEditTextShouldRequestFocus = new TestSubscriber<>();
-  private final TestSubscriber<List<Message>> messages = new TestSubscriber<>();
+  private final TestSubscriber<List<Message>> messageList = new TestSubscriber<>();
   private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameToolbarTextViewText = new TestSubscriber<>();
@@ -67,7 +67,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.goBack().subscribe(this.goBack);
     this.vm.outputs.messageEditTextHint().subscribe(this.messageEditTextHint);
     this.vm.outputs.messageEditTextShouldRequestFocus().subscribe(this.messageEditTextShouldRequestFocus);
-    this.vm.outputs.messages().subscribe(this.messages);
+    this.vm.outputs.messageList().subscribe(this.messageList);
     this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.projectNameToolbarTextViewText().subscribe(this.projectNameToolbarTextViewText);
@@ -182,7 +182,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(messagesContextIntent(messageThread));
 
     this.backingAndProject.assertValueCount(1);
-    this.messages.assertValueCount(1);
+    this.messageList.assertValueCount(1);
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
   }
 
@@ -196,7 +196,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(backerModalContextIntent(backing, project));
 
     this.backingAndProject.assertValueCount(1);
-    this.messages.assertValueCount(1);
+    this.messageList.assertValueCount(1);
     this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
   }
 
@@ -273,7 +273,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
 
     // Messages emit, keyboard not shown.
-    this.messages.assertValueCount(1);
+    this.messageList.assertValueCount(1);
     this.messageEditTextShouldRequestFocus.assertNoValues();
   }
 
@@ -297,7 +297,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(backerModalContextIntent(backing, project));
 
     // All data except for messages should emit.
-    this.messages.assertNoValues();
+    this.messageList.assertNoValues();
     this.participantNameTextViewText.assertValues(project.creator().name());
     this.backingAndProject.assertValues(Pair.create(backing, project));
   }
@@ -383,14 +383,14 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
 
     // Initial messages emit.
-    this.messages.assertValueCount(1);
+    this.messageList.assertValueCount(1);
 
     // Send a message successfully.
     this.vm.inputs.messageEditTextChanged("Salutations friend!");
     this.vm.inputs.sendMessageButtonClicked();
 
     // New message list emits.
-    this.messages.assertValueCount(2);
+    this.messageList.assertValueCount(2);
 
     // Reply edit text should be cleared and view should be scrolled to new message.
     this.setMessageEditText.assertValues("");

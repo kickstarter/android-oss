@@ -26,7 +26,6 @@ import rx.observers.TestSubscriber;
 
 public class ProfileViewModelTest extends KSRobolectricTestCase {
   private ProfileViewModel.ViewModel vm;
-
   private final TestSubscriber<String> avatarImageViewUrl = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backedCountTextViewHidden = new TestSubscriber<>();
   private final TestSubscriber<String> backedCountTextViewText = new TestSubscriber<>();
@@ -35,7 +34,7 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> createdCountTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> createdTextViewHidden = new TestSubscriber<>();
   private final TestSubscriber<Boolean> dividerViewHidden = new TestSubscriber<>();
-  private final TestSubscriber<List<Project>> projects = new TestSubscriber<>();
+  private final TestSubscriber<List<Project>> projectList = new TestSubscriber<>();
   private final TestSubscriber<Void> resumeDiscoveryActivity = new TestSubscriber<>();
   private final TestSubscriber<Void> startMessageThreadsActivity = new TestSubscriber<>();
   private final TestSubscriber<Project> startProjectActivity = new TestSubscriber<>();
@@ -52,7 +51,7 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.createdCountTextViewText().subscribe(this.createdCountTextViewText);
     this.vm.outputs.createdTextViewHidden().subscribe(this.createdTextViewHidden);
     this.vm.outputs.dividerViewHidden().subscribe(this.dividerViewHidden);
-    this.vm.outputs.projects().subscribe(this.projects);
+    this.vm.outputs.projectList().subscribe(this.projectList);
     this.vm.outputs.resumeDiscoveryActivity().subscribe(this.resumeDiscoveryActivity);
     this.vm.outputs.startMessageThreadsActivity().subscribe(this.startMessageThreadsActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
@@ -160,7 +159,7 @@ public class ProfileViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
     this.koalaTest.assertValues(KoalaEvent.PROFILE_VIEW_MY, KoalaEvent.VIEWED_PROFILE);
-    this.projects.assertValueCount(1);
+    this.projectList.assertValueCount(1);
   }
 
   @Test

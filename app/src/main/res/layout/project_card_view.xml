@@ -98,17 +98,19 @@
     <ImageView
       android:id="@+id/friend_backing_avatar"
       android:layout_gravity="center_vertical"
-      android:layout_marginEnd="@dimen/grid_1_half"
+      android:layout_marginEnd="@dimen/grid_1"
       android:layout_width="@dimen/grid_4"
       android:layout_height="@dimen/grid_4"
-      tools:ignore="ContentDescription" />
+      tools:ignore="ContentDescription"
+      tools:background="@color/blue"/>
 
     <TextView
       android:id="@+id/friend_backing_message"
       style="@style/Caption1PrimaryMedium"
       android:layout_gravity="center_vertical"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
+      android:layout_height="wrap_content"
+      tools:text="Dancing Hot Dog, Frank, and 1 more are backers."/>
 
   </LinearLayout>
 

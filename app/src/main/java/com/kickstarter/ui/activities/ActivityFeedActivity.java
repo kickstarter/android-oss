@@ -8,7 +8,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -29,8 +28,6 @@ import com.kickstarter.viewmodels.ActivityFeedViewModel;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -39,71 +36,72 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 @RequiresActivityViewModel(ActivityFeedViewModel.ViewModel.class)
 public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewModel.ViewModel> {
   private ActivityFeedAdapter adapter;
-  protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
-  protected @Bind(R.id.activity_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-
-  @Inject CurrentUserType currentUser;
-
+  private CurrentUserType currentUser;
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
+
+  protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.activity_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    ((KSApplication) getApplication()).component().inject(this);
     setContentView(R.layout.activity_feed_layout);
     ButterKnife.bind(this);
+    this.currentUser = environment().currentUser();
 
-    adapter = new ActivityFeedAdapter(viewModel.inputs);
-    recyclerView.setAdapter(adapter);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    this.adapter = new ActivityFeedAdapter(this.viewModel.inputs);
+    this.recyclerView.setAdapter(this.adapter);
+    this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
-    swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, viewModel.inputs::refresh, viewModel.outputs::isFetchingActivities);
+    this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage);
+    this.swipeRefresher = new SwipeRefresher(
+      this, this.swipeRefreshLayout, this.viewModel.inputs::refresh, this.viewModel.outputs::isFetchingActivities
+    );
 
     // Only allow refreshing if there's a current user
-    currentUser.observable()
+    this.currentUser.observable()
       .map(ObjectUtils::isNotNull)
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(swipeRefreshLayout::setEnabled);
+      .subscribe(this.swipeRefreshLayout::setEnabled);
 
-    viewModel.outputs.activities()
+    this.viewModel.outputs.activityList()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::showActivities);
 
-    viewModel.outputs.goToDiscovery()
+    this.viewModel.outputs.goToDiscovery()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> resumeDiscoveryActivity());
 
-    viewModel.outputs.goToLogin()
+    this.viewModel.outputs.goToLogin()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> startActivityFeedLogin());
 
-    viewModel.outputs.goToProject()
+    this.viewModel.outputs.goToProject()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::startProjectActivity);
 
-    viewModel.outputs.goToProjectUpdate()
+    this.viewModel.outputs.goToProjectUpdate()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::startProjectUpdateActivity);
 
-    viewModel.outputs.loggedOutEmptyStateIsVisible()
+    this.viewModel.outputs.loggedOutEmptyStateIsVisible()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(adapter::showLoggedOutEmptyState);
+      .subscribe(this.adapter::showLoggedOutEmptyState);
 
-    viewModel.outputs.loggedInEmptyStateIsVisible()
+    this.viewModel.outputs.loggedInEmptyStateIsVisible()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(adapter::showLoggedInEmptyState);
+      .subscribe(this.adapter::showLoggedInEmptyState);
 
-    viewModel.outputs.surveys()
+    this.viewModel.outputs.surveys()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::showSurveys);
@@ -112,22 +110,22 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   @Override
   protected void onResume() {
     super.onResume();
-    viewModel.inputs.resume();
+    this.viewModel.inputs.resume();
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    recyclerViewPaginator.stop();
-    recyclerView.setAdapter(null);
+    this.recyclerViewPaginator.stop();
+    this.recyclerView.setAdapter(null);
   }
 
   private void showActivities(final @NonNull List<Activity> activities) {
-    adapter.takeActivities(activities);
+    this.adapter.takeActivities(activities);
   }
 
   private void showSurveys(final @NonNull List<SurveyResponse> surveyResponses) {
-    adapter.takeSurveys(surveyResponses);
+    this.adapter.takeSurveys(surveyResponses);
   }
 
   private void resumeDiscoveryActivity() {

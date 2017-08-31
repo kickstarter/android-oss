@@ -89,7 +89,7 @@ public interface BackingViewModel {
     Observable<Pair<String, String>> rewardMinimumAndDescriptionTextViewText();
 
     /** Show the rewards items. */
-    Observable<List<RewardsItem>> rewardsItems();
+    Observable<List<RewardsItem>> rewardsItemList();
 
     /** Returns `true` if the items section should be gone, `false` otherwise. */
     Observable<Boolean> rewardsItemsAreGone();
@@ -228,7 +228,7 @@ public interface BackingViewModel {
         .map(Reward::rewardsItems)
         .compose(Transformers.coalesce(new ArrayList<RewardsItem>()))
         .compose(bindToLifecycle())
-        .subscribe(this.rewardsItems);
+        .subscribe(this.rewardsItemList);
 
       reward
         .map(RewardUtils::isItemized)
@@ -309,7 +309,7 @@ public interface BackingViewModel {
     private final BehaviorSubject<String> loadProjectPhoto = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<Pair<String, String>> rewardMinimumAndDescriptionTextViewText = BehaviorSubject.create();
-    private final BehaviorSubject<List<RewardsItem>> rewardsItems = BehaviorSubject.create();
+    private final BehaviorSubject<List<RewardsItem>> rewardsItemList = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> rewardsItemsAreGone = BehaviorSubject.create();
     private final BehaviorSubject<String> shippingAmountTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> shippingLocationTextViewText = BehaviorSubject.create();
@@ -364,8 +364,8 @@ public interface BackingViewModel {
     @Override public @NonNull Observable<Pair<String, String>> rewardMinimumAndDescriptionTextViewText() {
       return this.rewardMinimumAndDescriptionTextViewText;
     }
-    @Override public @NonNull Observable<List<RewardsItem>> rewardsItems() {
-      return this.rewardsItems;
+    @Override public @NonNull Observable<List<RewardsItem>> rewardsItemList() {
+      return this.rewardsItemList;
     }
     @Override public @NonNull Observable<Boolean> rewardsItemsAreGone() {
       return this.rewardsItemsAreGone;

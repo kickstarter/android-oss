@@ -12,49 +12,54 @@ import org.junit.Test;
 
 import rx.observers.TestSubscriber;
 
-public class UnansweredSurveyHolderViewModelTest extends KSRobolectricTestCase {
-
-  private UnansweredSurveyHolderViewModel.ViewModel vm;
-  private final TestSubscriber<String> creatorAvatarImage = new TestSubscriber<>();
-  private final TestSubscriber<String> creatorName = new TestSubscriber<>();
-  private final TestSubscriber<SurveyResponse> loadSurvey = new TestSubscriber<>();
+public class SurveyHolderViewModelTest extends KSRobolectricTestCase {
+  private SurveyHolderViewModel.ViewModel vm;
+  private final TestSubscriber<String> creatorAvatarImageUrl = new TestSubscriber<>();
+  private final TestSubscriber<String> creatorNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Project> projectForSurveyDescription = new TestSubscriber<>();
+  private final TestSubscriber<SurveyResponse> startSurveyResponseActivity = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new UnansweredSurveyHolderViewModel.ViewModel(environment);
+    this.vm = new SurveyHolderViewModel.ViewModel(environment);
 
-    this.vm.outputs.creatorAvatarImage().subscribe(this.creatorAvatarImage);
-    this.vm.outputs.creatorName().subscribe(this.creatorName);
-    this.vm.outputs.loadSurvey().subscribe(this.loadSurvey);
+    this.vm.outputs.creatorAvatarImageUrl().subscribe(this.creatorAvatarImageUrl);
+    this.vm.outputs.creatorNameTextViewText().subscribe(this.creatorNameTextViewText);
     this.vm.outputs.projectForSurveyDescription().subscribe(this.projectForSurveyDescription);
+    this.vm.outputs.startSurveyResponseActivity().subscribe(this.startSurveyResponseActivity);
   }
 
   @Test
-  public void creatorAvatarImage() throws Exception {
+  public void testCreatorAvatarImageUrl() {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
-    creatorAvatarImage.assertValues(surveyResponse.project().creator().avatar().small());
+    this.creatorAvatarImageUrl.assertValues(surveyResponse.project().creator().avatar().small());
   }
+
   @Test
-  public void creatorName() throws Exception {
+  public void testCreatorNameEmits() {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
-    creatorName.assertValues(surveyResponse.project().creator().name());
+    this.creatorNameTextViewText.assertValues(surveyResponse.project().creator().name());
   }
+
   @Test
-  public void surveyDescription() throws Exception {
+  public void testSurveyDescription() {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(surveyResponse);
-    projectForSurveyDescription.assertValues(surveyResponse.project());
+    this.projectForSurveyDescription.assertValues(surveyResponse.project());
   }
+
   @Test
-  public void clickingSurveyEmitsUrl() throws Exception {
+  public void testStartSurveyResponseActivity() {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
     setUpEnvironment(environment());
+
     this.vm.inputs.configureWith(surveyResponse);
-    loadSurvey.assertValue(surveyResponse);
+    this.vm.inputs.surveyClicked();
+
+    this.startSurveyResponseActivity.assertValue(surveyResponse);
   }
 }

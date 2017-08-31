@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -23,8 +22,6 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.ConfirmDialog;
 import com.kickstarter.viewmodels.LoginViewModel;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -38,6 +35,9 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(LoginViewModel.class)
 public final class LoginActivity extends BaseActivity<LoginViewModel> {
+  private ConfirmDialog confirmResetPasswordSuccessDialog;
+  private KSString ksString;
+
   protected @Bind(R.id.email) EditText emailEditText;
   protected @Bind(R.id.forgot_your_password_text_view) TextView forgotPasswordTextView;
   protected @Bind(R.id.login_button) Button loginButton;
@@ -51,41 +51,37 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
   protected @BindString(R.string.login_buttons_log_in) String loginString;
   protected @BindString(R.string.login_errors_title) String errorTitleString;
 
-  private ConfirmDialog confirmResetPasswordSuccessDialog;
-
-  @Inject KSString ksString;
-
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
     setContentView(R.layout.login_layout);
-    ((KSApplication) getApplication()).component().inject(this);
     ButterKnife.bind(this);
-    loginToolbar.setTitle(loginString);
-    forgotPasswordTextView.setText(Html.fromHtml(forgotPasswordString));
+
+    this.ksString = environment().ksString();
+    this.loginToolbar.setTitle(this.loginString);
+    this.forgotPasswordTextView.setText(Html.fromHtml(this.forgotPasswordString));
 
     errorMessages()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
+      .subscribe(e -> ViewUtils.showDialog(this, this.errorTitleString, e));
 
-    viewModel.errors.tfaChallenge()
+    this.viewModel.errors.tfaChallenge()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> startTwoFactorActivity());
 
-    viewModel.outputs.loginSuccess()
+    this.viewModel.outputs.loginSuccess()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> onSuccess());
 
-    viewModel.outputs.prefillEmailFromPasswordReset()
+    this.viewModel.outputs.prefillEmailFromPasswordReset()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(emailEditText::setText);
+      .subscribe(this.emailEditText::setText);
 
-    viewModel.outputs.showResetPasswordSuccessDialog()
+    this.viewModel.outputs.showResetPasswordSuccessDialog()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(showAndEmail -> {
@@ -98,7 +94,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
         }
       });
 
-    viewModel.outputs.setLoginButtonIsEnabled()
+    this.viewModel.outputs.setLoginButtonIsEnabled()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setLoginButtonEnabled);
@@ -108,23 +104,23 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
    * Lazily creates a reset password success confirmation dialog and stores it in an instance variable.
    */
   private @NonNull ConfirmDialog resetPasswordSuccessDialog(final @NonNull String email) {
-    if (confirmResetPasswordSuccessDialog == null) {
-      final String message = ksString.format(forgotPasswordSentEmailString, "email", email);
-      confirmResetPasswordSuccessDialog = new ConfirmDialog(this, null, message);
+    if (this.confirmResetPasswordSuccessDialog == null) {
+      final String message = this.ksString.format(this.forgotPasswordSentEmailString, "email", email);
+      this.confirmResetPasswordSuccessDialog = new ConfirmDialog(this, null, message);
 
-      confirmResetPasswordSuccessDialog
-        .setOnDismissListener(__ -> viewModel.inputs.resetPasswordConfirmationDialogDismissed());
-      confirmResetPasswordSuccessDialog
-        .setOnCancelListener(__ -> viewModel.inputs.resetPasswordConfirmationDialogDismissed());
+      this.confirmResetPasswordSuccessDialog
+        .setOnDismissListener(__ -> this.viewModel.inputs.resetPasswordConfirmationDialogDismissed());
+      this.confirmResetPasswordSuccessDialog
+        .setOnCancelListener(__ -> this.viewModel.inputs.resetPasswordConfirmationDialogDismissed());
     }
-    return confirmResetPasswordSuccessDialog;
+    return this.confirmResetPasswordSuccessDialog;
   }
 
   private Observable<String> errorMessages() {
-    return viewModel.errors.invalidLoginError()
-      .map(ObjectUtils.coalesceWith(loginDoesNotMatchString))
-      .mergeWith(viewModel.errors.genericLoginError()
-        .map(ObjectUtils.coalesceWith(unableToLoginString))
+    return this.viewModel.errors.invalidLoginError()
+      .map(ObjectUtils.coalesceWith(this.loginDoesNotMatchString))
+      .mergeWith(this.viewModel.errors.genericLoginError()
+        .map(ObjectUtils.coalesceWith(this.unableToLoginString))
       );
   }
 
@@ -142,12 +138,12 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
 
   @OnTextChanged(R.id.email)
   void onEmailTextChanged(final @NonNull CharSequence email) {
-    viewModel.inputs.email(email.toString());
+    this.viewModel.inputs.email(email.toString());
   }
 
   @OnTextChanged(R.id.password)
   void onPasswordTextChanged(final @NonNull CharSequence password) {
-    viewModel.inputs.password(password.toString());
+    this.viewModel.inputs.password(password.toString());
   }
 
   @OnClick(R.id.forgot_your_password_text_view)
@@ -158,7 +154,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
 
   @OnClick(R.id.login_button)
   public void loginButtonOnClick() {
-    viewModel.inputs.loginClick();
+    this.viewModel.inputs.loginClick();
   }
 
   public void onSuccess() {
@@ -167,13 +163,13 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
   }
 
   public void setLoginButtonEnabled(final boolean enabled) {
-    loginButton.setEnabled(enabled);
+    this.loginButton.setEnabled(enabled);
   }
 
   public void startTwoFactorActivity() {
     final Intent intent = new Intent(this, TwoFactorActivity.class)
-      .putExtra(IntentKey.EMAIL, emailEditText.getText().toString())
-      .putExtra(IntentKey.PASSWORD, passwordEditText.getText().toString());
+      .putExtra(IntentKey.EMAIL, this.emailEditText.getText().toString())
+      .putExtra(IntentKey.PASSWORD, this.passwordEditText.getText().toString());
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

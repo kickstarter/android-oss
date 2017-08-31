@@ -115,14 +115,15 @@
 
       <TextView
         android:id="@+id/updates_count"
-        android:background="@drawable/text_view_circle_background"
+        android:background="@drawable/text_view_rounded_background"
         android:gravity="center"
         android:layout_centerVertical="true"
         android:textSize="@dimen/body"
         android:textColor="@color/white"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="45"/>
 
     </RelativeLayout>
 
@@ -151,14 +152,15 @@
 
       <TextView
         android:id="@+id/comments_count"
-        android:background="@drawable/text_view_circle_background"
+        android:background="@drawable/text_view_rounded_background"
         android:gravity="center"
         android:layout_centerVertical="true"
         android:textSize="@dimen/body"
         android:textColor="@color/white"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="1,000"/>
 
     </RelativeLayout>
 

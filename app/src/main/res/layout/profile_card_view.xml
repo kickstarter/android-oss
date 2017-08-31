@@ -72,7 +72,7 @@
         android:layout_marginTop="@dimen/grid_1"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_3">
+        android:layout_height="@dimen/grid_4">
 
         <TextView
           android:id="@+id/successfully_funded_text_view"
@@ -83,18 +83,20 @@
           android:gravity="center"
           android:maxLines="1"
           android:layout_width="match_parent"
-          android:layout_height="match_parent"/>
+          android:layout_height="match_parent"
+          tools:text="Successful"/>
 
         <TextView
           android:id="@+id/funding_unsuccessful_text_view"
           android:visibility="gone"
           style="@style/Caption1PrimaryMedium"
           android:textColor="@color/white"
-          android:background="@color/dark_gray"
+          android:background="@color/ksr_dark_grey_400"
           android:gravity="center"
           android:maxLines="1"
           android:layout_width="match_parent"
-          android:layout_height="match_parent"/>
+          android:layout_height="match_parent"
+          tools:text="Unsuccessful"/>
 
       </LinearLayout>
 

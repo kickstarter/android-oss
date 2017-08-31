@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
@@ -20,8 +19,6 @@ import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -50,9 +47,8 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
   protected @BindString(R.string.project_status_funded) String fundedString;
   protected @BindString(R.string.activity_project_state_change_project_was_successfully_funded) String projectSuccessfullyFundedString;
 
-  @Inject KSCurrency ksCurrency;
-  @Inject KSString ksString;
-
+  private final KSCurrency ksCurrency;
+  private final KSString ksString;
   private final @Nullable Delegate delegate;
 
   public interface Delegate {
@@ -62,8 +58,9 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
   public ProjectStateChangedPositiveViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
     super(view);
     this.delegate = delegate;
+    this.ksCurrency = environment().ksCurrency();
+    this.ksString = environment().ksString();
     ButterKnife.bind(this, view);
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
   }
 
   @Override
@@ -86,13 +83,13 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
     switch (activity().category()) {
       case Activity.CATEGORY_LAUNCH:
         final DateTime launchedAt = coalesce(project.launchedAt(), new DateTime());
-        cardView.setCardBackgroundColor(blueDarken10Color);
-        leftStatFirstTextView.setText(ksCurrency.format(project.goal(), project));
-        leftStatSecondTextView.setText(goalString);
-        rightStatFirstTextView.setText(launchedString);
-        rightStatSecondTextView.setText(DateTimeUtils.mediumDate(launchedAt));
-        titleTextView.setText(ksString.format(
-          creatorLaunchedProjectString,
+        this.cardView.setCardBackgroundColor(this.blueDarken10Color);
+        this.leftStatFirstTextView.setText(this.ksCurrency.format(project.goal(), project));
+        this.leftStatSecondTextView.setText(this.goalString);
+        this.rightStatFirstTextView.setText(this.launchedString);
+        this.rightStatSecondTextView.setText(DateTimeUtils.mediumDate(launchedAt));
+        this.titleTextView.setText(this.ksString.format(
+          this.creatorLaunchedProjectString,
           "creator_name",
           user.name(),
           "project_name",
@@ -100,35 +97,35 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
         ));
         break;
       case Activity.CATEGORY_SUCCESS:
-        cardView.setCardBackgroundColor(greenDarken10Color);
-        leftStatFirstTextView.setText(ksCurrency.format(project.pledged(), project));
-        leftStatSecondTextView.setText(ksString.format(
-          pledgedOfGoalString,
+        this.cardView.setCardBackgroundColor(this.greenDarken10Color);
+        this.leftStatFirstTextView.setText(this.ksCurrency.format(project.pledged(), project));
+        this.leftStatSecondTextView.setText(this.ksString.format(
+          this.pledgedOfGoalString,
           "goal",
-          ksCurrency.format(project.goal(), project, true)
+          this.ksCurrency.format(project.goal(), project, true)
         ));
-        rightStatFirstTextView.setText(fundedString);
-        rightStatSecondTextView.setText(DateTimeUtils.mediumDate(activity().createdAt()));
-        titleTextView.setText(ksString.format(
-          projectSuccessfullyFundedString,
+        this.rightStatFirstTextView.setText(this.fundedString);
+        this.rightStatSecondTextView.setText(DateTimeUtils.mediumDate(activity().createdAt()));
+        this.titleTextView.setText(this.ksString.format(
+          this.projectSuccessfullyFundedString,
           "project_name",
           project.name()
         ));
         break;
       default:
-        cardView.setCardBackgroundColor(greenDarken10Color);
-        leftStatFirstTextView.setText("");
-        leftStatSecondTextView.setText("");
-        rightStatFirstTextView.setText("");
-        rightStatSecondTextView.setText("");
-        titleTextView.setText("");
+        this.cardView.setCardBackgroundColor(this.greenDarken10Color);
+        this.leftStatFirstTextView.setText("");
+        this.leftStatSecondTextView.setText("");
+        this.rightStatFirstTextView.setText("");
+        this.rightStatSecondTextView.setText("");
+        this.titleTextView.setText("");
     }
     // TODO: Switch to "You launched a project" if current user launched
     //return context.getString(R.string.creator_launched_a_project, activity.user().name(), activity.project().name());
 
     Picasso.with(context)
       .load(photo.full())
-      .into(projectPhotoImageView);
+      .into(this.projectPhotoImageView);
   }
 
   @OnClick(R.id.card_view)

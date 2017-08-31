@@ -10,6 +10,7 @@ import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
+import com.kickstarter.ui.viewholders.CreatorDashboardReferrerStatsViewHolder;
 import com.kickstarter.ui.viewholders.CreatorDashboardRewardStatsViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 
@@ -20,16 +21,20 @@ public class CreatorDashboardAdapter extends KSAdapter {
   protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
     if (sectionRow.section() == 0) {
       return R.layout.dashboard_funding_view;
-    } else {
+    } else if (sectionRow.section() == 1) {
       return R.layout.dashboard_reward_stats_view;
+    } else {
+      return R.layout.dashboard_referrer_stats_view;
     }
   }
 
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.dashboard_funding_view) {
       return new CreatorDashboardHeaderViewHolder(view);
-    } else {
+    } else if (layout == R.layout.dashboard_reward_stats_view) {
       return new CreatorDashboardRewardStatsViewHolder(view);
+    } else {
+      return new CreatorDashboardReferrerStatsViewHolder(view);
     }
   }
 
@@ -37,11 +42,19 @@ public class CreatorDashboardAdapter extends KSAdapter {
     sections().clear();
     sections().add(Collections.singletonList(projectAndStatsEnvelope));
 
+    // add reward stats sections
     sections().add(
       Collections.singletonList(
         Pair.create(projectAndStatsEnvelope.first, projectAndStatsEnvelope.second.rewardDistribution())
       )
     );
+    // add referral stats sections
+    sections().add(
+      Collections.singletonList(
+        Pair.create(projectAndStatsEnvelope.first, projectAndStatsEnvelope.second.referralDistribution())
+      )
+    );
+
     notifyDataSetChanged();
   }
 }

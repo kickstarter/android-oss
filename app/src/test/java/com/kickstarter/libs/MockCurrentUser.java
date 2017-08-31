@@ -13,43 +13,43 @@ public class MockCurrentUser extends CurrentUserType {
   private @Nullable String accessToken;
 
   public MockCurrentUser() {
-    user.onNext(null);
+    this.user.onNext(null);
   }
 
   public MockCurrentUser(final @NonNull User initialUser) {
-    user.onNext(initialUser);
+    this.user.onNext(initialUser);
   }
 
   @Override
   public void login(final @NonNull User newUser, final @NonNull String accessToken) {
-    user.onNext(newUser);
+    this.user.onNext(newUser);
     this.accessToken = accessToken;
   }
 
   @Override
   public void logout() {
-    user.onNext(null);
-    accessToken = null;
+    this.user.onNext(null);
+    this.accessToken = null;
   }
 
   @Override
   public @Nullable String getAccessToken() {
-    return accessToken;
+    return this.accessToken;
   }
 
   @Override
   public void refresh(final @NonNull User freshUser) {
-    user.onNext(freshUser);
+    this.user.onNext(freshUser);
   }
 
   @Override
   public Observable<User> observable() {
-    return user;
+    return this.user;
   }
 
   @Nullable
   @Override
   public User getUser() {
-    return user.getValue();
+    return this.user.getValue();
   }
 }

@@ -110,7 +110,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
   @OnClick(R.id.submit_bug_report_button)
   public void submitBugReportButtonClick() {
-    currentUser.observable().take(1).subscribe(this::submitBugReport);
+    this.currentUser.observable().take(1).subscribe(this::submitBugReport);
   }
 
   private void submitBugReport(final @Nullable User user) {

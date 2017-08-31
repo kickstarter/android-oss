@@ -112,7 +112,7 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
   }
 
   private void setToolbarTitle(final @NonNull String updateSequence) {
-    this.toolbar.setTitle(ksString.format(updateNumberString, "update_number", updateSequence));
+    this.toolbar.setTitle(this.ksString.format(this.updateNumberString, "update_number", updateSequence));
   }
 
   private void startCommentsActivity(final @NonNull Update update) {
@@ -129,7 +129,7 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
   }
 
   private void startShareIntent(final @NonNull Update update) {
-    final String shareMessage = ksString.format(shareUpdateCountString, "update_count", NumberUtils.format(update.sequence()))
+    final String shareMessage = this.ksString.format(this.shareUpdateCountString, "update_count", NumberUtils.format(update.sequence()))
       + ": " + update.title();
 
     final Intent intent = new Intent(Intent.ACTION_SEND)

@@ -40,7 +40,7 @@ public abstract class BindableAdapter<T> extends BaseAdapter {
   }
 
   public Context getContext() {
-    return context;
+    return this.context;
   }
 
   @Override public abstract T getItem(final int position);
@@ -48,7 +48,7 @@ public abstract class BindableAdapter<T> extends BaseAdapter {
   @Override public final View getView(final int position, final @Nullable View initialView, final ViewGroup container) {
     View view = initialView;
     if (view == null) {
-      view = newView(inflater, position, container);
+      view = newView(this.inflater, position, container);
       if (view == null) {
         throw new IllegalStateException("newView result must not be null.");
       }
@@ -66,7 +66,7 @@ public abstract class BindableAdapter<T> extends BaseAdapter {
   @Override public final View getDropDownView(final int position, final View initialView, final @Nullable ViewGroup container) {
     View view = initialView;
     if (view == null) {
-      view = newDropDownView(inflater, position, container);
+      view = newDropDownView(this.inflater, position, container);
       if (view == null) {
         throw new IllegalStateException("newDropDownView result must not be null.");
       }

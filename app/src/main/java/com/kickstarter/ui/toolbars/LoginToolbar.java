@@ -36,6 +36,6 @@ public class LoginToolbar extends KSToolbar {
 
   @OnClick(R.id.help_button)
   protected void helpButtonClick() {
-    new LoginPopupMenu(getContext(), helpButton).show();
+    new LoginPopupMenu(getContext(), this.helpButton).show();
   }
 }

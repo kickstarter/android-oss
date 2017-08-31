@@ -43,15 +43,15 @@ public final class ApiRequestInterceptor implements Interceptor {
 
   private HttpUrl url(final @NonNull HttpUrl initialHttpUrl) {
     final HttpUrl.Builder builder = initialHttpUrl.newBuilder()
-      .setQueryParameter("client_id", clientId);
-    if (currentUser.exists()) {
-      builder.setQueryParameter("oauth_token", currentUser.getAccessToken());
+      .setQueryParameter("client_id", this.clientId);
+    if (this.currentUser.exists()) {
+      builder.setQueryParameter("oauth_token", this.currentUser.getAccessToken());
     }
 
     return builder.build();
   }
 
   private boolean shouldIntercept(final @NonNull Request request) {
-    return KSUri.isApiUri(Uri.parse(request.url().toString()), endpoint);
+    return KSUri.isApiUri(Uri.parse(request.url().toString()), this.endpoint);
   }
 }

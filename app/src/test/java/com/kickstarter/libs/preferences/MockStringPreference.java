@@ -6,38 +6,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class MockStringPreference implements StringPreferenceType {
-  private final List<String> values = new ArrayList<String>();
+  private final List<String> values = new ArrayList<>();
 
   public MockStringPreference() {
-    values.add(null);
+    this.values.add(null);
   }
 
   public MockStringPreference(final String value) {
-    values.add(value);
+    this.values.add(value);
   }
 
   @Override
   public String get() {
-    return values.get(values.size() - 1);
+    return this.values.get(this.values.size() - 1);
   }
 
   @Override
   public boolean isSet() {
-    return values.get(values.size() - 1) != null;
+    return this.values.get(this.values.size() - 1) != null;
   }
 
   @Override
   public void set(final String value) {
-    values.add(value);
+    this.values.add(value);
   }
 
   @Override
   public void delete() {
-    values.add(null);
+    this.values.add(null);
   }
 
   public @NonNull List<String> values() {
-    return values;
+    return this.values;
   }
 }
 

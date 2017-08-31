@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
@@ -19,14 +18,15 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
-import javax.inject.Inject;
-
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class FriendBackingViewHolder extends ActivityListViewHolder {
+  private final @Nullable Delegate delegate;
+  private final KSString ksString;
+
   protected @Bind(R.id.avatar) ImageView avatarImageView;
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
@@ -35,10 +35,6 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
 
   protected @BindString(R.string.project_creator_by_creator) String projectByCreatorString;
 
-  @Inject KSString ksString;
-
-  private final @Nullable Delegate delegate;
-
   public interface Delegate {
     void friendBackingClicked(FriendBackingViewHolder viewHolder, Activity activity);
   }
@@ -46,7 +42,7 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
   public FriendBackingViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
     super(view);
     this.delegate = delegate;
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
+    this.ksString = environment().ksString();
     ButterKnife.bind(this, view);
   }
 
@@ -78,24 +74,22 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
     Picasso.with(context)
       .load(activityUser.avatar().small())
       .transform(new CircleTransformation())
-      .into(avatarImageView);
+      .into(this.avatarImageView);
 
-    creatorNameTextView.setText(ksString.format(
-      projectByCreatorString,
-      "creator_name",
-      projectCreator.name()
-    ));
+    this.creatorNameTextView.setText(
+      this.ksString.format(this.projectByCreatorString, "creator_name", projectCreator.name())
+    );
 
-    projectNameTextView.setText(activityProject.name());
+    this.projectNameTextView.setText(activityProject.name());
 
     Picasso.with(context)
       .load(projectPhoto.little())
-      .into(projectPhotoImageView);
+      .into(this.projectPhotoImageView);
 
-    titleTextView.setText(SocialUtils.friendBackingActivityTitle(context,
+    this.titleTextView.setText(SocialUtils.friendBackingActivityTitle(context,
       activityUser.name(),
       projectCategory.rootId(),
-      ksString
+      this.ksString
     ));
   }
 

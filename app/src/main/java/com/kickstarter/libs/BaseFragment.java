@@ -32,7 +32,7 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
    */
   @Override
   public final @NonNull Observable<FragmentEvent> lifecycle() {
-    return lifecycle.asObservable();
+    return this.lifecycle.asObservable();
   }
 
   /**
@@ -40,7 +40,7 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
    */
   @Override
   public final @NonNull <T> Observable.Transformer<T, T> bindUntilEvent(final @NonNull FragmentEvent event) {
-    return RxLifecycle.bindUntilFragmentEvent(lifecycle, event);
+    return RxLifecycle.bindUntilFragmentEvent(this.lifecycle, event);
   }
 
   /**
@@ -50,7 +50,7 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
    */
   @Override
   public final @NonNull <T> Observable.Transformer<T, T> bindToLifecycle() {
-    return RxLifecycle.bindFragment(lifecycle);
+    return RxLifecycle.bindFragment(this.lifecycle);
   }
 
   /**
@@ -61,7 +61,7 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
   public void onAttach(final @NonNull Context context) {
     super.onAttach(context);
     Timber.d("onAttach %s", this.toString());
-    lifecycle.onNext(FragmentEvent.ATTACH);
+    this.lifecycle.onNext(FragmentEvent.ATTACH);
   }
 
   @CallSuper
@@ -70,11 +70,11 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
     super.onCreate(savedInstanceState);
     Timber.d("onCreate %s", this.toString());
 
-    lifecycle.onNext(FragmentEvent.CREATE);
+    this.lifecycle.onNext(FragmentEvent.CREATE);
 
     assignViewModel(savedInstanceState);
 
-    viewModel.arguments(getArguments());
+    this.viewModel.arguments(getArguments());
   }
 
   /**
@@ -87,7 +87,7 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
     final @Nullable Bundle savedInstanceState) {
     final View view = super.onCreateView(inflater, container, savedInstanceState);
     Timber.d("onCreateView %s", this.toString());
-    lifecycle.onNext(FragmentEvent.CREATE_VIEW);
+    this.lifecycle.onNext(FragmentEvent.CREATE_VIEW);
     return view;
   }
 
@@ -96,7 +96,7 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
   public void onStart() {
     super.onStart();
     Timber.d("onStart %s", this.toString());
-    lifecycle.onNext(FragmentEvent.START);
+    this.lifecycle.onNext(FragmentEvent.START);
   }
 
   @CallSuper
@@ -104,30 +104,30 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
   public void onResume() {
     super.onResume();
     Timber.d("onResume %s", this.toString());
-    lifecycle.onNext(FragmentEvent.RESUME);
+    this.lifecycle.onNext(FragmentEvent.RESUME);
 
     assignViewModel(null);
-    if (viewModel != null) {
-      viewModel.onResume(this);
+    if (this.viewModel != null) {
+      this.viewModel.onResume(this);
     }
   }
 
   @CallSuper
   @Override
   public void onPause() {
-    lifecycle.onNext(FragmentEvent.PAUSE);
+    this.lifecycle.onNext(FragmentEvent.PAUSE);
     super.onPause();
     Timber.d("onPause %s", this.toString());
 
-    if (viewModel != null) {
-      viewModel.onPause();
+    if (this.viewModel != null) {
+      this.viewModel.onPause();
     }
   }
 
   @CallSuper
   @Override
   public void onStop() {
-    lifecycle.onNext(FragmentEvent.STOP);
+    this.lifecycle.onNext(FragmentEvent.STOP);
     super.onStop();
     Timber.d("onStop %s", this.toString());
   }
@@ -139,19 +139,19 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
   @CallSuper
   @Override
   public void onDestroyView() {
-    lifecycle.onNext(FragmentEvent.DESTROY_VIEW);
+    this.lifecycle.onNext(FragmentEvent.DESTROY_VIEW);
     super.onDestroyView();
   }
 
   @CallSuper
   @Override
   public void onDestroy() {
-    lifecycle.onNext(FragmentEvent.DESTROY);
+    this.lifecycle.onNext(FragmentEvent.DESTROY);
     super.onDestroy();
     Timber.d("onDestroy %s", this.toString());
 
-    if (viewModel != null) {
-      viewModel.onDestroy();
+    if (this.viewModel != null) {
+      this.viewModel.onDestroy();
     }
   }
 
@@ -165,14 +165,14 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
     super.onDetach();
 
     if (getActivity().isFinishing()) {
-      if (viewModel != null) {
+      if (this.viewModel != null) {
         // Order of the next two lines is important: the lifecycle should update before we
         // complete the view publish subject in the view model.
-        lifecycle.onNext(FragmentEvent.DETACH);
-        viewModel.onDetach();
+        this.lifecycle.onNext(FragmentEvent.DETACH);
+        this.viewModel.onDetach();
 
-        FragmentViewModelManager.getInstance().destroy(viewModel);
-        viewModel = null;
+        FragmentViewModelManager.getInstance().destroy(this.viewModel);
+        this.viewModel = null;
       }
     }
   }
@@ -183,19 +183,19 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
     super.onSaveInstanceState(outState);
 
     final Bundle viewModelEnvelope = new Bundle();
-    if (viewModel != null) {
-      FragmentViewModelManager.getInstance().save(viewModel, viewModelEnvelope);
+    if (this.viewModel != null) {
+      FragmentViewModelManager.getInstance().save(this.viewModel, viewModelEnvelope);
     }
 
     outState.putBundle(VIEW_MODEL_KEY, viewModelEnvelope);
   }
 
   private void assignViewModel(final @Nullable Bundle viewModelEnvelope) {
-    if (viewModel == null) {
+    if (this.viewModel == null) {
       final RequiresFragmentViewModel annotation = getClass().getAnnotation(RequiresFragmentViewModel.class);
       final Class<ViewModelType> viewModelClass = annotation == null ? null : (Class<ViewModelType>) annotation.value();
       if (viewModelClass != null) {
-        viewModel = FragmentViewModelManager.getInstance().fetch(getContext(),
+        this.viewModel = FragmentViewModelManager.getInstance().fetch(getContext(),
           viewModelClass,
           BundleUtils.maybeGetBundle(viewModelEnvelope, VIEW_MODEL_KEY));
       }

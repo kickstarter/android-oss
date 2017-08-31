@@ -26,7 +26,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 public interface CreatorDashboardViewModel {
   interface Inputs {
-    void projectViewClicked();  // maybe this is duplicate
+    void projectViewClicked();
   }
 
   interface Outputs {

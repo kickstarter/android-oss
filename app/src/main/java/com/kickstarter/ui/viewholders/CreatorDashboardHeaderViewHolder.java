@@ -48,7 +48,6 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   private KSCurrency ksCurrency;
 
   public interface Delegate {
-//    void projectsMenuClicked(CreatorDashboardHeaderViewHolder viewHolder);
     void projectsMenuClicked();
   }
 
@@ -103,11 +102,6 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
   }
 
-//  @OnClick(R.id.project_name_blurb_arrow_view)
-//  protected void dashboardShowProjectMenuClicked() {
-//    this.delegate.projectsMenuClicked(this);
-//  }
-
   @OnClick(R.id.project_name_blurb_arrow_view)
   protected void dashboardShowProjectMenuClicked() {
     this.delegate.projectsMenuClicked();
@@ -120,7 +114,6 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    // coerce to projectstats and project
     final Pair<Project, ProjectStatsEnvelope> projectAndProjectStats = requireNonNull((Pair<Project, ProjectStatsEnvelope>) data);
     this.viewModel.inputs.projectAndStats(projectAndProjectStats);
   }

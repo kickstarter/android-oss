@@ -69,7 +69,6 @@ public final class CreatorDashboardFragment extends BaseFragment<CreatorDashboar
     this.adapter.takeProjectAndStats(projectAndStats);
   }
 
-
   @Override
   public void onDestroy() {
     super.onDestroy();

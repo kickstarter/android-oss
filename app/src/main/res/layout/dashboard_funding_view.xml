@@ -58,7 +58,6 @@
     <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
       android:drawableStart="@drawable/ic_action_icon__mail"
-      android:drawableTint="@color/ksr_soft_black"
       android:id="@+id/creator_dashboard_messages_button"
       android:focusable="true"
       android:layout_weight="2"

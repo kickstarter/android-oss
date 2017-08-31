@@ -57,29 +57,24 @@ public interface CreatorDashboardHeaderHolderViewModel {
       this.currentProject = this.projectAndStats
         .map(PairUtils::first);
 
-      this.percentageFunded = this.projectAndStats
-        .map(PairUtils::first)
+      this.percentageFunded = this.currentProject
         .map(p -> NumberUtils.flooredPercentage(p.percentageFunded()));
 
-      this.projectBlurbTextViewText = this.projectAndStats
-        .map(PairUtils::first)
+      this.projectBlurbTextViewText = this.currentProject
         .map(Project::blurb)
         .compose(bindToLifecycle());
 
-      this.projectBackersCountText = this.projectAndStats
-        .map(PairUtils::first)
+      this.projectBackersCountText = this.currentProject
         .map(Project::backersCount)
         .map(NumberUtils::format)
         .compose(bindToLifecycle());
 
-      this.projectNameTextViewText = this.projectAndStats
-        .map(PairUtils::first)
+      this.projectNameTextViewText = this.currentProject
         .map(Project::name)
         .distinctUntilChanged()
         .compose(bindToLifecycle());
 
-      this.timeRemainingText = this.projectAndStats
-        .map(PairUtils::first)
+      this.timeRemainingText = this.currentProject
         .map(ProjectUtils::deadlineCountdownValue)
         .map(NumberUtils::format);
 

@@ -29,7 +29,7 @@ public final class CreatorDashboardFragment extends BaseFragment<CreatorDashboar
 
   public CreatorDashboardFragment() {}
 
-  public static @NonNull CreatorDashboardFragment newInstance(final Pair<Project, ProjectStatsEnvelope> projectAndStats) {
+  public static @NonNull CreatorDashboardFragment newInstance(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStats) {
     final CreatorDashboardFragment fragment = new CreatorDashboardFragment();
     final Bundle bundle = new Bundle();
     bundle.putParcelable(ArgumentsKey.CREATOR_DASHBOARD_PROJECT, projectAndStats.first);

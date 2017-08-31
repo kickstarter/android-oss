@@ -24,8 +24,7 @@ public interface CreatorDashboardBottomSheetHolderViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.projectNameText = this.currentProject
-      .map(Project::name);
+      this.projectNameText = this.currentProject.map(Project::name);
     }
 
     public final Inputs inputs = this;
@@ -36,7 +35,7 @@ public interface CreatorDashboardBottomSheetHolderViewModel {
     private final Observable<String> projectNameText;
 
     @Override
-    public void projectInput(final Project project) {
+    public void projectInput(final @NonNull Project project) {
       this.currentProject.onNext(project);
     }
 

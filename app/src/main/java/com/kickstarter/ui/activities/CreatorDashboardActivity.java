@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentManager;
@@ -48,7 +49,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.viewModel.outputs.projectAndStats()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::createFragments);
+      .subscribe(this::createProjectDashboardFragments);
 
     this.viewModel.outputs.projectsForBottomSheet()
       .compose(bindToLifecycle())
@@ -56,11 +57,11 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
       .subscribe(this::setProjectsForDropdown);
   }
 
-  private void setProjectsForDropdown(final List<Project> projects) {
+  private void setProjectsForDropdown(final @NonNull List<Project> projects) {
     this.bottomSheetAdapter.takeProjects(projects);
   }
 
-  private void createFragments(final Pair<Project, ProjectStatsEnvelope> projectAndStats) {
+  private void createProjectDashboardFragments(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStats) {
     final FragmentManager fragmentManager = getSupportFragmentManager();
     final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
     final CreatorDashboardFragment fragment = CreatorDashboardFragment.newInstance(projectAndStats);

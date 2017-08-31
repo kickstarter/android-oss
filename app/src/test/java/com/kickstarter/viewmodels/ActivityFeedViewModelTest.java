@@ -4,16 +4,11 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ActivityFactory;
-import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.SurveyResponseFactory;
 import com.kickstarter.factories.UserFactory;
-import com.kickstarter.libs.Config;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KoalaEvent;
-import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -25,10 +20,7 @@ import com.kickstarter.viewmodels.ActivityFeedViewModel.ViewModel;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -139,107 +131,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testNoSurveyFeatureFlag() {
-    final ApiClientType apiClient = new MockApiClient();
-    final CurrentUserType currentUser = new MockCurrentUser();
-    currentUser.login(UserFactory.user(), "deadbeef");
-
-    final Config config = ConfigFactory.config()
-      .toBuilder()
-      .features(Collections.emptyMap())
-      .build();
-
-    final CurrentConfigType currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
-    final Environment environment = this.environment().toBuilder()
-      .apiClient(apiClient)
-      .currentUser(currentUser)
-      .currentConfig(currentConfig)
-      .build();
-
-    setUpEnvironment(environment);
-    this.vm.inputs.resume();
-
-    this.surveys.assertNoValues();
-  }
-
-  @Test
-  public void testSurveyFeatureFlagFalse() {
-    final List<SurveyResponse> surveyResponses = Arrays.asList(
-      SurveyResponseFactory.surveyResponse(),
-      SurveyResponseFactory.surveyResponse()
-    );
-
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override
-      public @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
-        return Observable.just(surveyResponses);
-      }
-    };
-
-    final CurrentUserType currentUser = new MockCurrentUser();
-    currentUser.login(UserFactory.user(), "deadbeef");
-
-    final Map<String, Boolean> featureMap = new HashMap<>();
-    featureMap.put(FeatureKey.ANDROID_SURVEYS, false);
-
-    final Config config = ConfigFactory.config().toBuilder()
-      .features(featureMap).build();
-
-    final CurrentConfigType currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
-    final Environment environment = this.environment().toBuilder()
-      .apiClient(apiClient)
-      .currentUser(currentUser)
-      .currentConfig(currentConfig)
-      .build();
-
-    setUpEnvironment(environment);
-    this.vm.inputs.resume();
-
-    this.surveys.assertNoValues();
-  }
-
-  @Test
-  public void testSurveyFeatureFlagTrue() {
-    final List<SurveyResponse> surveyResponses = Arrays.asList(
-      SurveyResponseFactory.surveyResponse(),
-      SurveyResponseFactory.surveyResponse()
-    );
-
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override
-      public @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys() {
-        return Observable.just(surveyResponses);
-      }
-    };
-
-    final CurrentUserType currentUser = new MockCurrentUser();
-    currentUser.login(UserFactory.user(), "deadbeef");
-
-    final Map<String, Boolean> featureMap = new HashMap<>();
-    featureMap.put(FeatureKey.ANDROID_SURVEYS, true);
-
-    final Config config = ConfigFactory.config().toBuilder()
-      .features(featureMap).build();
-
-    final CurrentConfigType currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
-    final Environment environment = this.environment().toBuilder()
-      .apiClient(apiClient)
-      .currentUser(currentUser)
-      .currentConfig(currentConfig)
-      .build();
-
-    setUpEnvironment(environment);
-    this.surveys.assertValues(surveyResponses);
-  }
-
-  @Test
-  public void testSurveyFeatureFlag_UserLoggedOut() {
+  public void testSurveys_LoggedOut() {
     final List<SurveyResponse> surveyResponses = Arrays.asList(
       SurveyResponseFactory.surveyResponse(),
       SurveyResponseFactory.surveyResponse()
@@ -255,19 +147,9 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     final CurrentUserType currentUser = new MockCurrentUser();
     currentUser.logout();
 
-    final Map<String, Boolean> featureMap = new HashMap<>();
-    featureMap.put(FeatureKey.ANDROID_SURVEYS, true);
-
-    final Config config = ConfigFactory.config().toBuilder()
-      .features(featureMap).build();
-
-    final CurrentConfigType currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
     final Environment environment = this.environment().toBuilder()
       .apiClient(apiClient)
       .currentUser(currentUser)
-      .currentConfig(currentConfig)
       .build();
 
     setUpEnvironment(environment);
@@ -277,22 +159,12 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testSurveyFeatureFlagTrue_LoggedIn_SwipeRefreshed() {
+  public void testSurveys_LoggedIn_SwipeRefreshed() {
     final CurrentUserType currentUser = new MockCurrentUser();
     currentUser.login(UserFactory.user(), "deadbeef");
 
-    final Map<String, Boolean> featureMap = new HashMap<>();
-    featureMap.put(FeatureKey.ANDROID_SURVEYS, true);
-
-    final Config config = ConfigFactory.config().toBuilder()
-      .features(featureMap).build();
-
-    final CurrentConfigType currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
     final Environment environment = this.environment().toBuilder()
       .currentUser(currentUser)
-      .currentConfig(currentConfig)
       .build();
 
     setUpEnvironment(environment);

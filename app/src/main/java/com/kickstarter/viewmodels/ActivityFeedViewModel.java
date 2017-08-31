@@ -1,17 +1,13 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
-import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
-import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KoalaContext.Update;
-import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -36,7 +32,6 @@ import static com.kickstarter.libs.rx.transformers.Transformers.incrementalCount
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 
 public interface ActivityFeedViewModel {
 
@@ -107,23 +102,9 @@ public interface ActivityFeedViewModel {
       )
         .map(Activity::project);
 
-      final Observable<Boolean> surveyFeatureEnabled = this.currentConfig.observable()
-        .map(Config::features)
-        .filter(ObjectUtils::isNotNull)
-        .map(f -> coalesce(f.get(FeatureKey.ANDROID_SURVEYS), false));
-
       final Observable<Void> refreshSurvey = Observable.merge(this.refresh, this.resume).share();
 
-      final Observable<Boolean> shouldFetchSurveys = Observable.combineLatest(
-        this.currentUser.observable(),
-        surveyFeatureEnabled,
-        Pair::create
-      )
-        .map(userAndEnabled -> userAndEnabled.first != null && userAndEnabled.second)
-        .distinctUntilChanged();
-
-      shouldFetchSurveys
-        .filter(BooleanUtils::isTrue)
+      this.currentUser.loggedInUser()
         .compose(takeWhen(refreshSurvey))
         .switchMap(__ -> this.client.fetchUnansweredSurveys().compose(neverError()).share())
         .compose(bindToLifecycle())

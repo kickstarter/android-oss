@@ -22,7 +22,6 @@ import com.facebook.share.model.ShareOpenGraphContent;
 import com.facebook.share.model.ShareOpenGraphObject;
 import com.facebook.share.widget.ShareDialog;
 import com.jakewharton.rxbinding.view.RxView;
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
@@ -42,8 +41,6 @@ import com.kickstarter.viewmodels.ThanksViewModel;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -56,7 +53,9 @@ import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 
 @RequiresActivityViewModel(ThanksViewModel.class)
 public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
-  protected @Inject KSString ksString;
+  private ThanksAdapter adapter;
+  private ShareDialog shareDialog;
+  private KSString ksString;
 
   protected @Bind(R.id.backed_project) TextView backedProjectTextView;
   protected @Bind(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
@@ -76,16 +75,13 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   protected @BindString(R.string.profile_settings_newsletter_opt_in_title) String optInTitleString;
   protected @BindString(R.string.project_checkout_share_you_just_backed_project_share_this_project_html) String youJustBackedString;
 
-  private ThanksAdapter adapter;
-  private ShareDialog shareDialog;
-
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.thanks_layout);
     ButterKnife.bind(this);
-    ((KSApplication) getApplication()).component().inject(this);
 
+    this.ksString = environment().ksString();
     this.shareDialog = new ShareDialog(this);
 
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);

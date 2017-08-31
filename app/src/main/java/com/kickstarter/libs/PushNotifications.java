@@ -19,6 +19,7 @@ import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.transformations.CropSquareTransformation;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.MessageThread;
+import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.pushdata.Activity;
 import com.kickstarter.models.pushdata.GCM;
@@ -26,8 +27,10 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.MessagesActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.ui.activities.SurveyResponseActivity;
 import com.kickstarter.ui.activities.WebViewActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -108,6 +111,21 @@ public final class PushNotifications {
         )
     );
 
+    this.subscriptions.add(
+      this.notifications
+        .onBackpressureBuffer()
+        .filter(PushNotificationEnvelope::isSurvey)
+        .flatMap(this::fetchSurveyResponseWithEnvelope)
+        .filter(ObjectUtils::isNotNull)
+        .observeOn(Schedulers.newThread())
+        .subscribe(envelopeAndSurveyResponse ->
+          this.displayNotificationFromSurveyResponseActivity(
+            envelopeAndSurveyResponse.first,
+            envelopeAndSurveyResponse.second
+          )
+        )
+    );
+
     this.deviceRegistrar.registerDevice();
   }
 
@@ -183,6 +201,22 @@ public final class PushNotifications {
       .setLargeIcon(fetchBitmap(project.photo(), false))
       .build();
 
+    notificationManager().notify(envelope.signature(), notification);
+  }
+
+  private void displayNotificationFromSurveyResponseActivity(final @NonNull PushNotificationEnvelope envelope,
+    final @NonNull SurveyResponse surveyResponse) {
+
+    final GCM gcm = envelope.gcm();
+
+    final PushNotificationEnvelope.Survey survey = envelope.survey();
+    if (survey == null) {
+      return;
+    }
+
+    final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
+      .setContentIntent(surveyResponseContentIntent(envelope, surveyResponse))
+      .build();
     notificationManager().notify(envelope.signature(), notification);
   }
 
@@ -268,6 +302,21 @@ public final class PushNotifications {
     return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
+  private @NonNull PendingIntent surveyResponseContentIntent(final @NonNull PushNotificationEnvelope envelope,
+    final @NonNull SurveyResponse surveyResponse) {
+
+    final Intent activityFeedIntent = new Intent(this.context, ActivityFeedActivity.class);
+
+    final Intent surveyResponseIntent = new Intent(this.context, SurveyResponseActivity.class)
+      .putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse);
+
+    final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
+      .addNextIntentWithParentStack(activityFeedIntent)
+      .addNextIntent(surveyResponseIntent);
+
+    return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT);
+  }
+
   private @Nullable Bitmap fetchBitmap(final @Nullable String url, final boolean transformIntoCircle) {
     if (url == null) {
       return null;
@@ -303,6 +352,21 @@ public final class PushNotifications {
 
     return Observable.just(envelope)
       .compose(combineLatestPair(messageThread));
+  }
+
+  private @Nullable Observable<Pair<PushNotificationEnvelope, SurveyResponse>> fetchSurveyResponseWithEnvelope(
+    final @NonNull PushNotificationEnvelope envelope) {
+
+    final PushNotificationEnvelope.Survey survey = envelope.survey();
+    if (survey == null) {
+      return null;
+    }
+
+    final Observable<SurveyResponse> surveyResponse = this.client.fetchSurveyResponse(survey.id())
+      .compose(neverError());
+
+    return Observable.just(envelope)
+      .compose(combineLatestPair(surveyResponse));
   }
 
   private @Nullable Observable<Pair<PushNotificationEnvelope, Update>> fetchUpdateWithEnvelope(

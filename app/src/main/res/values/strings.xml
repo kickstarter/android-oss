@@ -24,6 +24,7 @@
   <string name="debug_push_notifications_project_reminder">Project reminder</string>
   <string name="debug_push_notifications_project_update">Project update</string>
   <string name="debug_push_notifications_project_success">Project success</string>
+  <string name="debug_push_notifications_project_survey">Project survey</string>
   <string name="debug_push_notifications_simulate_burst">Simulate burst</string>
   <string name="debug_push_notifications_simulate_notifications">Simulate notifications</string>
   <string name="debug_push_notifications_unregister_device">Unregister device</string>

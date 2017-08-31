@@ -8,13 +8,10 @@ import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Category;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -26,6 +23,7 @@ public final class ThanksCategoryViewHolder extends KSViewHolder {
   private Category category;
   private final Context context;
   private final Delegate delegate;
+  private final KSString ksString;
 
   protected @Bind(R.id.thanks_category_view) CardView cardView;
   protected @Bind(R.id.explore_text_view) TextView exploreTextView;
@@ -33,8 +31,6 @@ public final class ThanksCategoryViewHolder extends KSViewHolder {
 
   protected @BindString(R.string.category_promo_explore_category) String exploreCategoryString;
   protected @BindString(R.string.category_promo_project_count_live_projects) String countLiveProjectsString;
-
-  protected @Inject KSString ksString;
 
   public interface Delegate {
     void categoryClick(ThanksCategoryViewHolder viewHolder, Category category);
@@ -44,8 +40,7 @@ public final class ThanksCategoryViewHolder extends KSViewHolder {
     super(view);
     this.delegate = delegate;
     this.context = view.getContext();
-
-    ((KSApplication) this.context.getApplicationContext()).component().inject(this);
+    this.ksString = environment().ksString();
     ButterKnife.bind(this, view);
   }
 

@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
@@ -20,8 +19,6 @@ import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -50,9 +47,8 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
   protected @BindString(R.string.project_status_funded) String fundedString;
   protected @BindString(R.string.activity_project_state_change_project_was_successfully_funded) String projectSuccessfullyFundedString;
 
-  @Inject KSCurrency ksCurrency;
-  @Inject KSString ksString;
-
+  private final KSCurrency ksCurrency;
+  private final KSString ksString;
   private final @Nullable Delegate delegate;
 
   public interface Delegate {
@@ -62,8 +58,9 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
   public ProjectStateChangedPositiveViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
     super(view);
     this.delegate = delegate;
+    this.ksCurrency = environment().ksCurrency();
+    this.ksString = environment().ksString();
     ButterKnife.bind(this, view);
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
   }
 
   @Override

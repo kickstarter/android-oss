@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -25,8 +24,6 @@ import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.ProjectViewModel;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -60,14 +57,14 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
   protected @BindString(R.string.project_subpages_menu_buttons_creator) String creatorString;
   protected @BindString(R.string.project_subpages_menu_buttons_updates) String updatesString;
 
-  protected @Inject KSString ksString;
+  private KSString ksString;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.project_layout);
     ButterKnife.bind(this);
-    ((KSApplication) getApplication()).component().inject(this);
+    this.ksString = environment().ksString();
 
     final int bottomButtonVisibility = ViewUtils.isLandscape(this) ? View.GONE : View.VISIBLE;
     this.projectActionButtonsViewGroup.setVisibility(bottomButtonVisibility);

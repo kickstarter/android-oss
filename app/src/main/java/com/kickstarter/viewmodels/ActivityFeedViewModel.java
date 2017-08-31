@@ -1,20 +1,14 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
-import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
-import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KoalaContext.Update;
-import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
@@ -27,16 +21,17 @@ import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
-import com.kickstarter.ui.viewholders.UnansweredSurveyViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
+import static com.kickstarter.libs.rx.transformers.Transformers.incrementalCount;
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface ActivityFeedViewModel {
 
@@ -83,9 +78,7 @@ public interface ActivityFeedViewModel {
     Observable<List<SurveyResponse>> surveys();
   }
 
-  final class ViewModel extends ActivityViewModel<ActivityFeedActivity> implements
-    Inputs, Outputs {
-
+  final class ViewModel extends ActivityViewModel<ActivityFeedActivity> implements Inputs, Outputs {
     private final ApiClientType client;
     private final CurrentConfigType currentConfig;
     private final CurrentUserType currentUser;
@@ -109,26 +102,13 @@ public interface ActivityFeedViewModel {
       )
         .map(Activity::project);
 
-      final Observable<Boolean> surveyFeatureEnabled = this.currentConfig.observable()
-        .map(Config::features)
-        .filter(ObjectUtils::isNotNull)
-        .map(f -> coalesce(f.get(FeatureKey.ANDROID_SURVEYS), false));
+      final Observable<Void> refreshSurvey = Observable.merge(this.refresh, this.resume).share();
 
-      Observable.combineLatest(
-          this.resume,
-          this.currentUser.isLoggedIn(),
-          Pair::create
-        )
-        .map(PairUtils::second)
-        .filter(BooleanUtils::isTrue)
-        .compose(Transformers.combineLatestPair(surveyFeatureEnabled))
-        .switchMap(loggedInAndEnabled ->
-          loggedInAndEnabled.second
-            ? this.client.fetchUnansweredSurveys()
-            : Observable.just(new ArrayList<SurveyResponse>())
-        )
-        .compose(this.bindToLifecycle())
-        .subscribe(this.surveys::onNext);
+      this.currentUser.loggedInUser()
+        .compose(takeWhen(refreshSurvey))
+        .switchMap(__ -> this.client.fetchUnansweredSurveys().compose(neverError()).share())
+        .compose(bindToLifecycle())
+        .subscribe(this.surveys);
 
       final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
         .nextPage(this.nextPage)
@@ -149,7 +129,7 @@ public interface ActivityFeedViewModel {
 
       this.currentUser.loggedInUser()
         .take(1)
-        .compose(this.bindToLifecycle())
+        .compose(bindToLifecycle())
         .subscribe(__ -> this.refresh());
 
       this.currentUser.isLoggedIn()
@@ -158,14 +138,14 @@ public interface ActivityFeedViewModel {
         .subscribe(this.loggedOutEmptyStateIsVisible);
 
       this.currentUser.observable()
-        .compose(Transformers.takePairWhen(this.activityList))
+        .compose(takePairWhen(this.activityList))
         .map(ua -> ua.first != null && ua.second.size() == 0)
         .compose(this.bindToLifecycle())
         .subscribe(this.loggedInEmptyStateIsVisible);
 
       // Track viewing and paginating activity.
       this.nextPage
-        .compose(Transformers.incrementalCount())
+        .compose(incrementalCount())
         .startWith(0)
         .compose(this.bindToLifecycle())
         .subscribe(this.koala::trackActivityView);
@@ -191,12 +171,12 @@ public interface ActivityFeedViewModel {
     private final PublishSubject<Activity> friendBackingClick = PublishSubject.create();
     private final PublishSubject<Void> loginClick = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
-    private final PublishSubject<Void> resume = PublishSubject.create();
     private final PublishSubject<Activity> projectStateChangedClick = PublishSubject.create();
     private final PublishSubject<Activity> projectStateChangedPositiveClick = PublishSubject.create();
     private final PublishSubject<Activity> projectUpdateClick = PublishSubject.create();
     private final PublishSubject<Activity> projectUpdateProjectClick = PublishSubject.create();
     private final PublishSubject<Void> refresh = PublishSubject.create();
+    private final PublishSubject<Void> resume = PublishSubject.create();
     private final PublishSubject<SurveyResponse> surveyClick = PublishSubject.create();
 
     private final BehaviorSubject<List<Activity>> activityList = BehaviorSubject.create();
@@ -216,89 +196,66 @@ public interface ActivityFeedViewModel {
     @Override public void emptyActivityFeedDiscoverProjectsClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
       this.discoverProjectsClick.onNext(null);
     }
-
     @Override public void emptyActivityFeedLoginClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
       this.loginClick.onNext(null);
     }
-
     @Override public void friendBackingClicked(final @NonNull FriendBackingViewHolder viewHolder, final @NonNull Activity activity) {
       this.friendBackingClick.onNext(activity);
     }
-
     @Override public void nextPage() {
       this.nextPage.onNext(null);
     }
-
     @Override public void projectStateChangedClicked(final @NonNull ProjectStateChangedViewHolder viewHolder,
       final @NonNull Activity activity) {
       this.projectStateChangedClick.onNext(activity);
     }
-
     @Override public void projectStateChangedPositiveClicked(final @NonNull ProjectStateChangedPositiveViewHolder viewHolder,
       final @NonNull Activity activity) {
       this.projectStateChangedPositiveClick.onNext(activity);
     }
-
     @Override public void projectUpdateClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
       final @NonNull Activity activity) {
       this.projectUpdateClick.onNext(activity);
     }
-
     @Override public void projectUpdateProjectClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
       final @NonNull Activity activity) {
       this.projectUpdateProjectClick.onNext(activity);
     }
-
-    @Override public void surveyClicked(final @NonNull UnansweredSurveyViewHolder viewHolder, final @NonNull SurveyResponse surveyResponse) {
-      this.surveyClick.onNext(surveyResponse);
-    }
-
     @Override public void refresh() {
       this.refresh.onNext(null);
     }
-
     @Override public void resume() {
       this.resume.onNext(null);
     }
 
-    @Override @NonNull public Observable<List<Activity>> activityList() {
+    @Override public @NonNull Observable<List<Activity>> activityList() {
       return this.activityList;
     }
-
-    @Override @NonNull public Observable<Void> goToDiscovery() {
+    @Override public @NonNull Observable<Void> goToDiscovery() {
       return this.goToDiscovery;
     }
-
-    @Override @NonNull public Observable<Void> goToLogin() {
+    @Override public @NonNull Observable<Void> goToLogin() {
       return this.goToLogin;
     }
-
-    @Override @NonNull public Observable<Project> goToProject() {
+    @Override public @NonNull Observable<Project> goToProject() {
       return this.goToProject;
     }
-
-    @Override @NonNull public Observable<Activity> goToProjectUpdate() {
+    @Override public @NonNull Observable<Activity> goToProjectUpdate() {
       return this.goToProjectUpdate;
     }
-
-    @Override @NonNull public Observable<SurveyResponse> goToSurvey() {
+    @Override public @NonNull Observable<SurveyResponse> goToSurvey() {
       return this.goToSurvey;
     }
-
-    @Override @NonNull  public Observable<Boolean> isFetchingActivities() {
+    @Override public @NonNull Observable<Boolean> isFetchingActivities() {
       return this.isFetchingActivities;
     }
-
-    @Override @NonNull  public Observable<Boolean> loggedInEmptyStateIsVisible() {
+    @Override public @NonNull Observable<Boolean> loggedInEmptyStateIsVisible() {
       return this.loggedInEmptyStateIsVisible;
     }
-
-    @NonNull
-    @Override public Observable<Boolean> loggedOutEmptyStateIsVisible() {
+    @Override public @NonNull Observable<Boolean> loggedOutEmptyStateIsVisible() {
       return this.loggedOutEmptyStateIsVisible;
     }
-
-    @Override public Observable<List<SurveyResponse>> surveys() {
+    @Override public @NonNull Observable<List<SurveyResponse>> surveys() {
       return this.surveys;
     }
   }

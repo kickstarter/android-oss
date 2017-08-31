@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -23,8 +22,6 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.ConfirmDialog;
 import com.kickstarter.viewmodels.LoginViewModel;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -39,6 +36,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 @RequiresActivityViewModel(LoginViewModel.class)
 public final class LoginActivity extends BaseActivity<LoginViewModel> {
   private ConfirmDialog confirmResetPasswordSuccessDialog;
+  private KSString ksString;
 
   protected @Bind(R.id.email) EditText emailEditText;
   protected @Bind(R.id.forgot_your_password_text_view) TextView forgotPasswordTextView;
@@ -53,15 +51,13 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
   protected @BindString(R.string.login_buttons_log_in) String loginString;
   protected @BindString(R.string.login_errors_title) String errorTitleString;
 
-  @Inject KSString ksString;
-
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
     setContentView(R.layout.login_layout);
-    ((KSApplication) getApplication()).component().inject(this);
     ButterKnife.bind(this);
+
+    this.ksString = environment().ksString();
     this.loginToolbar.setTitle(this.loginString);
     this.forgotPasswordTextView.setText(Html.fromHtml(this.forgotPasswordString));
 

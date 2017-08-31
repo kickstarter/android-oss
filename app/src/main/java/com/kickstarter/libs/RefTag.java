@@ -19,6 +19,14 @@ public abstract class RefTag implements Parcelable {
     return new AutoParcel_RefTag(tag);
   }
 
+  public static @NonNull RefTag activity() {
+    return new AutoParcel_RefTag("activity");
+  }
+
+  public static @NonNull RefTag activitySample() {
+    return new AutoParcel_RefTag("discovery_activity_sample");
+  }
+
   public static @NonNull RefTag category() {
     return new AutoParcel_RefTag("category");
   }
@@ -27,12 +35,24 @@ public abstract class RefTag implements Parcelable {
     return new AutoParcel_RefTag("category" + sort.refTagSuffix());
   }
 
+  public static @NonNull RefTag categoryFeatured() {
+    return new AutoParcel_RefTag("category_featured");
+  }
+
   public static @NonNull RefTag city() {
     return new AutoParcel_RefTag("city");
   }
 
   public static @NonNull RefTag dashboard() {
     return new AutoParcel_RefTag("dashboard");
+  }
+
+  public static @NonNull RefTag discovery() {
+    return new AutoParcel_RefTag("discovery");
+  }
+
+  public static @NonNull RefTag discoverPotd() {
+    return new AutoParcel_RefTag("discover_potd");
   }
 
   public static @NonNull RefTag pledgeInfo() {
@@ -45,10 +65,6 @@ public abstract class RefTag implements Parcelable {
 
   public static @NonNull RefTag recommended(final @NonNull DiscoveryParams.Sort sort) {
     return new AutoParcel_RefTag("recommended" + sort.refTagSuffix());
-  }
-
-  public static @NonNull RefTag social() {
-    return new AutoParcel_RefTag("social");
   }
 
   public static @NonNull RefTag search() {
@@ -67,28 +83,16 @@ public abstract class RefTag implements Parcelable {
     return new AutoParcel_RefTag("search_popular_featured");
   }
 
-  public static @NonNull RefTag discovery() {
-    return new AutoParcel_RefTag("discovery");
+  public static @NonNull RefTag social() {
+    return new AutoParcel_RefTag("social");
+  }
+
+  public static @NonNull RefTag survey() {
+    return new AutoParcel_RefTag("survey");
   }
 
   public static @NonNull RefTag thanks() {
     return new AutoParcel_RefTag("thanks");
-  }
-
-  public static @NonNull RefTag activity() {
-    return new AutoParcel_RefTag("activity");
-  }
-
-  public static @NonNull RefTag discoverPotd() {
-    return new AutoParcel_RefTag("discover_potd");
-  }
-
-  public static @NonNull RefTag categoryFeatured() {
-    return new AutoParcel_RefTag("category_featured");
-  }
-
-  public static @NonNull RefTag activitySample() {
-    return new AutoParcel_RefTag("discovery_activity_sample");
   }
 
   public static @NonNull RefTag update() {

@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.KSString;
@@ -20,8 +19,6 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
-import javax.inject.Inject;
-
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
@@ -29,8 +26,11 @@ import butterknife.ButterKnife;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class CommentViewHolder extends KSViewHolder {
-  private Project project;
   private Comment comment;
+  private final CurrentUserType currentUser;
+  private final KSString ksString;
+  private Project project;
+
   public @Bind(R.id.avatar) ImageView avatarImageView;
   public @Bind(R.id.creator_label) TextView creatorLabelTextView;
   public @Bind(R.id.user_label) TextView userLabelTextView;
@@ -41,13 +41,11 @@ public final class CommentViewHolder extends KSViewHolder {
   public @BindColor(R.color.text_secondary) int textSecondaryColor;
   public @BindColor(R.color.text_primary) int textPrimaryColor;
 
-  protected @Inject CurrentUserType currentUser;
-  protected @Inject KSString ksString;
-
   public CommentViewHolder(final @NonNull View view) {
     super(view);
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
+    this.currentUser = environment().currentUser();
+    this.ksString = environment().ksString();
   }
 
   @Override

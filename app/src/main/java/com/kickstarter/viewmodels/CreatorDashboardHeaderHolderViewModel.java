@@ -27,17 +27,20 @@ public interface CreatorDashboardHeaderHolderViewModel {
   }
 
   interface Outputs {
+    /* project that is currently being viewed */
+    Observable<Project> currentProject();
+
     /* string number with the percentage of a projects funding */
     Observable<String> percentageFunded();
 
     /* localized count of number of backers */
     Observable<String> projectBackersCountText();
 
+    /* current projects blurb */
+    Observable<String> projectBlurbTextViewText();
+
     /* current project's name */
     Observable<String> projectNameTextViewText();
-
-    /* project that is currently being viewed */
-    Observable<Project> currentProject();
 
     /* time remaining for latest project (no units) */
     Observable<String> timeRemainingText();
@@ -54,24 +57,24 @@ public interface CreatorDashboardHeaderHolderViewModel {
       this.currentProject = this.projectAndStats
         .map(PairUtils::first);
 
-      this.percentageFunded = this.projectAndStats
-        .map(PairUtils::first)
+      this.percentageFunded = this.currentProject
         .map(p -> NumberUtils.flooredPercentage(p.percentageFunded()));
 
-      this.projectBackersCountText = this.projectAndStats
-        .map(PairUtils::first)
+      this.projectBlurbTextViewText = this.currentProject
+        .map(Project::blurb)
+        .compose(bindToLifecycle());
+
+      this.projectBackersCountText = this.currentProject
         .map(Project::backersCount)
         .map(NumberUtils::format)
         .compose(bindToLifecycle());
 
-      this.projectNameTextViewText = this.projectAndStats
-        .map(PairUtils::first)
+      this.projectNameTextViewText = this.currentProject
         .map(Project::name)
         .distinctUntilChanged()
         .compose(bindToLifecycle());
 
-      this.timeRemainingText = this.projectAndStats
-        .map(PairUtils::first)
+      this.timeRemainingText = this.currentProject
         .map(ProjectUtils::deadlineCountdownValue)
         .map(NumberUtils::format);
 
@@ -90,6 +93,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     private final Observable<String> percentageFunded;
     private final Observable<Project> currentProject;
     private final Observable<String> projectBackersCountText;
+    private final Observable<String> projectBlurbTextViewText;
     private final Observable<String> projectNameTextViewText;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
     private final Observable<String> timeRemainingText;
@@ -104,6 +108,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
       this.projectAndStats.onNext(projectAndProjectStatsEnvelope);
     }
 
+
     @Override public @NonNull Observable<String> percentageFunded() {
       return this.percentageFunded;
     }
@@ -112,6 +117,9 @@ public interface CreatorDashboardHeaderHolderViewModel {
     }
     @Override public @NonNull Observable<String> projectBackersCountText() {
       return this.projectBackersCountText;
+    }
+    @Override public @NonNull Observable<String> projectBlurbTextViewText() {
+      return this.projectBlurbTextViewText;
     }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;

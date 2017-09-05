@@ -12,6 +12,7 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.ui.activities.CreatorDashboardActivity;
+import com.kickstarter.ui.adapters.CreatorDashboardBottomSheetAdapter;
 
 import java.util.List;
 
@@ -25,8 +26,10 @@ import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 
 public interface CreatorDashboardViewModel {
-  interface Inputs {
+  interface Inputs extends CreatorDashboardBottomSheetAdapter.Delegate {
     void projectViewClicked();
+    void projectSwitcherProjectClickInput(Project project);
+    void refreshProject(Project project);
   }
 
   interface Outputs {
@@ -38,6 +41,9 @@ public interface CreatorDashboardViewModel {
 
     /* emits when project dropdown should be shown */
     Observable<List<Project>> projectsForBottomSheet();
+
+    /* emits when a project is clicked in the project switcher */
+    Observable<Project> projectSwitcherProjectClickOutput();
 
     /* call when button is clicked to view individual project page */
     Observable<Pair<Project, RefTag>> startProjectActivity();
@@ -59,10 +65,12 @@ public interface CreatorDashboardViewModel {
       final Observable<List<Project>> projects = projectsEnvelope
         .map(ProjectsEnvelope::projects);
 
-      final Observable<Project> latestProject = projects
-        .map(ListUtils::first);
+//      final Observable<Project> latestProject = projects
+//        .map(ListUtils::first);
 
-      final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = latestProject
+      projects.map(ListUtils::first).subscribe(this.currentProject::onNext);
+
+      final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = currentProject
         .switchMap(this.client::fetchProjectStats)
         .share()
         .materialize();
@@ -72,21 +80,27 @@ public interface CreatorDashboardViewModel {
 
       this.projectsForBottomSheet = projects;
 
-      this.latestProject = latestProject;
+      this.latestProject = currentProject;
 
-      this.projectAndStats = latestProject
+      this.projectAndStats = currentProject
         .compose(combineLatestPair(projectStatsEnvelope));
 
-      this.startProjectActivity = latestProject
+      this.projectSwitcherProjectClickOutput = this.projectSwitcherClicked;
+
+
+      this.startProjectActivity = currentProject
         .compose(takeWhen(this.projectViewClicked))
         .map(p -> Pair.create(p, RefTag.dashboard()));
     }
 
     private final PublishSubject<Void> projectViewClicked = PublishSubject.create();
+    private final PublishSubject<Project> projectSwitcherClicked = PublishSubject.create();
+    private final PublishSubject<Project> currentProject = PublishSubject.create();
 
     private final Observable<Project> latestProject;
     private final Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats;
     private final Observable<List<Project>> projectsForBottomSheet;
+    private final Observable<Project> projectSwitcherProjectClickOutput;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
 
     public final Inputs inputs = this;
@@ -95,6 +109,16 @@ public interface CreatorDashboardViewModel {
     @Override
     public void projectViewClicked() {
       this.projectViewClicked.onNext(null);
+    }
+
+    @Override
+    public void projectSwitcherProjectClickInput(final @NonNull Project project) {
+      this.projectSwitcherClicked.onNext(project);
+    }
+
+    @Override
+    public void refreshProject(final @NonNull Project project) {
+      this.currentProject.onNext(project);
     }
 
     @Override public @NonNull Observable<Project> latestProject() {
@@ -106,6 +130,7 @@ public interface CreatorDashboardViewModel {
     @Override public @NonNull Observable<List<Project>> projectsForBottomSheet() {
       return this.projectsForBottomSheet;
     }
+    @Override public @NonNull Observable<Project> projectSwitcherProjectClickOutput() { return this.projectSwitcherProjectClickOutput; }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
     }

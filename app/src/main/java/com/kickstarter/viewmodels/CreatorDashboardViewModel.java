@@ -65,9 +65,6 @@ public interface CreatorDashboardViewModel {
       final Observable<List<Project>> projects = projectsEnvelope
         .map(ProjectsEnvelope::projects);
 
-//      final Observable<Project> latestProject = projects
-//        .map(ListUtils::first);
-
       projects.map(ListUtils::first).subscribe(this.currentProject::onNext);
 
       final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = currentProject

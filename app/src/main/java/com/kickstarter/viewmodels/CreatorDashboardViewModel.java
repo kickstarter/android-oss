@@ -18,6 +18,7 @@ import java.util.List;
 
 import rx.Notification;
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
@@ -33,9 +34,6 @@ public interface CreatorDashboardViewModel {
   }
 
   interface Outputs {
-    /* most recent project by the creator */
-    Observable<Project> latestProject();
-
     /* project and associated stats object */
     Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats();
 
@@ -65,8 +63,6 @@ public interface CreatorDashboardViewModel {
       final Observable<List<Project>> projects = projectsEnvelope
         .map(ProjectsEnvelope::projects);
 
-      projects.map(ListUtils::first).subscribe(this.currentProject::onNext);
-
       final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = currentProject
         .switchMap(this.client::fetchProjectStats)
         .share()
@@ -77,13 +73,12 @@ public interface CreatorDashboardViewModel {
 
       this.projectsForBottomSheet = projects;
 
-      this.latestProject = currentProject;
+      projects.map(ListUtils::first).subscribe(this.currentProject::onNext);
 
       this.projectAndStats = currentProject
         .compose(combineLatestPair(projectStatsEnvelope));
 
       this.projectSwitcherProjectClickOutput = this.projectSwitcherClicked;
-
 
       this.startProjectActivity = currentProject
         .compose(takeWhen(this.projectViewClicked))
@@ -92,9 +87,8 @@ public interface CreatorDashboardViewModel {
 
     private final PublishSubject<Void> projectViewClicked = PublishSubject.create();
     private final PublishSubject<Project> projectSwitcherClicked = PublishSubject.create();
-    private final PublishSubject<Project> currentProject = PublishSubject.create();
+    private final BehaviorSubject<Project> currentProject = BehaviorSubject.create();
 
-    private final Observable<Project> latestProject;
     private final Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats;
     private final Observable<List<Project>> projectsForBottomSheet;
     private final Observable<Project> projectSwitcherProjectClickOutput;
@@ -118,9 +112,6 @@ public interface CreatorDashboardViewModel {
       this.currentProject.onNext(project);
     }
 
-    @Override public @NonNull Observable<Project> latestProject() {
-      return this.latestProject;
-    }
     @Override public @NonNull Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats() {
       return this.projectAndStats;
     }

@@ -27,7 +27,6 @@ import rx.observers.TestSubscriber;
 public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
   private CreatorDashboardViewModel.ViewModel vm;
 
-  private final TestSubscriber<Project> latestProject = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, ProjectStatsEnvelope>> projectAndStats = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
   private final TestSubscriber<List<Project>> projectsForBottomSheet = new TestSubscriber<>();
@@ -35,7 +34,6 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardViewModel.ViewModel(environment);
-    this.vm.outputs.latestProject().subscribe(this.latestProject);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.projectAndStats().subscribe(this.projectAndStats);
     this.vm.outputs.projectsForBottomSheet().subscribe(this.projectsForBottomSheet);
@@ -60,7 +58,7 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testLatestProjectAndStats() {
+  public void testProjectAndStats() {
     final List<Project> projects = Arrays.asList(
       ProjectFactory.project()
     );
@@ -77,7 +75,6 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.latestProject.assertValues(ListUtils.first(projects));
     final Pair<Project, ProjectStatsEnvelope> outputPair = Pair.create(ListUtils.first(projects), ProjectStatsEnvelope);
     this.projectAndStats.assertValues(outputPair);
   }

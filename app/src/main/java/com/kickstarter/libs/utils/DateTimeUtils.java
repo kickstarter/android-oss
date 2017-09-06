@@ -32,7 +32,7 @@ public final class DateTimeUtils {
    * e.g.: December 2015.
    */
   public static @NonNull String estimatedDeliveryOn(final @NonNull DateTime dateTime, final @NonNull Locale locale) {
-    return dateTime.toString(DateTimeFormat.forPattern("MMMM yyyy").withLocale(locale).withZoneUTC());
+    return dateTime.toString(DateTimeFormat.forPattern(localePattern(locale)).withLocale(locale).withZoneUTC());
   }
 
   public static boolean isDateToday(final @NonNull DateTime dateTime) {
@@ -65,6 +65,26 @@ public final class DateTimeUtils {
       // JodaTime doesn't support the 'cccc' pattern, triggered by fullDate and fullDateTime. See: https://github.com/dlew/joda-time-android/issues/30
       // Instead just return a medium date.
       return mediumDate(dateTime, locale);
+    }
+  }
+
+  /**
+   * Returns the proper DateTime format pattern for supported locales.
+   */
+  private static @NonNull String localePattern(final @NonNull Locale locale) {
+    switch(locale.getLanguage()) {
+      case "de":
+        return "MMMM yyyy";
+      case "en":
+        return "MMMM yyyy";
+      case "es":
+        return "MMMM yyyy";
+      case "fr":
+        return "MMMM yyyy";
+      case "ja":
+        return "yyyy'年'MMMM"; // NB Japanese in general should show year before month
+      default:
+        return "MMMM yyyy";
     }
   }
 

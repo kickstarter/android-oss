@@ -6,7 +6,6 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.models.SurveyResponse;
-import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.SurveyResponseActivity;
 
@@ -20,11 +19,11 @@ import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 public interface SurveyResponseViewModel {
 
   interface Inputs {
-    /** Call when a project uri request has been made. */
-    void projectUriRequest(Request request);
-
     /** Call when the dialog's OK button has been clicked. */
     void okButtonClicked();
+
+    /** Call when a project uri request has been made. */
+    void projectUriRequest(Request request);
 
     /** Call when a project survey uri request has been made. */
     void projectSurveyUriRequest(Request request);
@@ -42,12 +41,9 @@ public interface SurveyResponseViewModel {
   }
 
   final class ViewModel extends ActivityViewModel<SurveyResponseActivity> implements Inputs, Outputs {
-    private final ApiClientType client;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
-
-      this.client = environment.apiClient();
 
       final Observable<SurveyResponse> surveyResponse = intent()
         .map(i -> i.getParcelableExtra(IntentKey.SURVEY_RESPONSE))
@@ -84,8 +80,8 @@ public interface SurveyResponseViewModel {
         .equals(projectRequestAndSurveyUrl.second);
     }
 
-    private final PublishSubject<Request> projectUriRequest = PublishSubject.create();
     private final PublishSubject<Void> okButtonClicked = PublishSubject.create();
+    private final PublishSubject<Request> projectUriRequest = PublishSubject.create();
     private final PublishSubject<Request> projectSurveyUriRequest = PublishSubject.create();
 
     private final Observable<Void> goBack;
@@ -95,11 +91,11 @@ public interface SurveyResponseViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override public void projectUriRequest(final @NonNull Request request) {
-      this.projectUriRequest.onNext(request);
-    }
     @Override public void okButtonClicked() {
       this.okButtonClicked.onNext(null);
+    }
+    @Override public void projectUriRequest(final @NonNull Request request) {
+      this.projectUriRequest.onNext(request);
     }
     @Override public void projectSurveyUriRequest(final @NonNull Request request) {
       this.projectSurveyUriRequest.onNext(request);

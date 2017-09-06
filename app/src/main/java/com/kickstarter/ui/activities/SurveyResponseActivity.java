@@ -58,10 +58,7 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
     this.viewModel.outputs.showConfirmationDialog()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(__ -> {
-        this.ksWebView.stopLoading(); // this kinda awkwardly stops...stop the next load
-        lazyConfirmationDialog().show();
-      });
+      .subscribe(__ -> lazyConfirmationDialog().show());
   }
 
   private boolean handleProjectUriRequest(final @NonNull Request request, final @NonNull WebView webView) {

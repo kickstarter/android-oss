@@ -1,16 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.design.widget.CoordinatorLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/creator_dashboard_coordinator_view"
   android:layout_height="match_parent"
-  android:layout_width="match_parent">
+  android:layout_width="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <include layout="@layout/creator_dashboard_toolbar"
-    android:id="@+id/creator_dashboard_toolbar"/>
+  <android.support.design.widget.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.design.widget.CollapsingToolbarLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <include
+        layout="@layout/creator_dashboard_toolbar"
+        android:id="@+id/creator_dashboard_toolbar"/>
+
+    </android.support.design.widget.CollapsingToolbarLayout>
+
+  </android.support.design.widget.AppBarLayout>
 
   <android.support.v7.widget.RecyclerView
-    android:id="@+id/creator_dashboard_recycler_view"
+    android:id="@+id/creator_dashboard_bottom_sheet_recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@id/creator_dashboard_toolbar"/>
+    android:layout_height="wrap_content"
+    android:background="@color/blue"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="0dp"
+    app:layout_behavior="@string/bottom_sheet_behavior"/>
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

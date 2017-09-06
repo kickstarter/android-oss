@@ -27,7 +27,7 @@
 
       <TextView
         android:text="@string/dashboard_graphs_rewards_top_rewards"
-        android:gravity="left"
+        android:gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/grid_4"
@@ -38,7 +38,7 @@
         android:id="@+id/dashboard_reward_stats_pledged_text_view"
         android:clickable="true"
         android:text="@string/dashboard_graphs_funding_pledged"
-        android:gravity="left"
+        android:gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/grid_1_half"
@@ -46,7 +46,7 @@
 
       <TextView
         android:text="@string/dashboard_graphs_funding_backers"
-        android:gravity="left"
+        android:gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/grid_4"

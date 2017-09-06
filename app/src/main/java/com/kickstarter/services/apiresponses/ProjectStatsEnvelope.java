@@ -65,7 +65,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
 
   @AutoParcel
   @AutoGson
-  public abstract static class FundingDateStats {
+  public abstract static class FundingDateStats implements Parcelable {
     public abstract int backersCount();
     public abstract int cumulativePledged();
     public abstract int cumulativeBackersCount();
@@ -91,7 +91,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
 
   @AutoParcel
   @AutoGson
-  public abstract static class ReferrerStats {
+  public abstract static class ReferrerStats implements Parcelable {
     public abstract int backersCount();
     public abstract String code();
     public abstract double percentageOfDollars();
@@ -119,7 +119,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
 
   @AutoParcel
   @AutoGson
-  public abstract static class RewardStats {
+  public abstract static class RewardStats implements Parcelable {
     public abstract int backersCount();
     public abstract int rewardId();
     public abstract int minimum();
@@ -143,7 +143,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
 
   @AutoParcel
   @AutoGson
-  public abstract static class VideoStats {
+  public abstract static class VideoStats implements Parcelable {
     public abstract int externalCompletions();
     public abstract int externalStarts();
     public abstract int internalCompletions();

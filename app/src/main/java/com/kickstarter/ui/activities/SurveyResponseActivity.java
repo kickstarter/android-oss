@@ -1,24 +1,19 @@
 package com.kickstarter.ui.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.util.Pair;
 import android.view.View;
 import android.webkit.WebView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.AnimationUtils;
-import com.kickstarter.models.Project;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.RequestHandler;
-import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.SurveyResponseViewModel;
 
@@ -63,17 +58,15 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
     this.viewModel.outputs.showConfirmationDialog()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(__ -> lazyConfirmationDialog().show());
-
-    this.viewModel.outputs.startProjectActivity()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::startProjectActivity);
+      .subscribe(__ -> {
+        this.ksWebView.stopLoading(); // this kinda awkwardly stops...stop the next load
+        lazyConfirmationDialog().show();
+      });
   }
 
   private boolean handleProjectUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     this.viewModel.inputs.projectUriRequest(request);
-    return true;
+    return false;
   }
 
   private boolean handleProjectSurveyUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
@@ -91,13 +84,6 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
         .create();
     }
     return this.confirmationDialog;
-  }
-
-  private void startProjectActivity(final @NonNull Pair<Project, RefTag> projectAndRefTag) {
-    final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
-      .putExtra(IntentKey.REF_TAG, projectAndRefTag.second);
-    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   @Override
@@ -125,7 +111,5 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
   }
 
   @Override
-  public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {
-    this.viewModel.inputs.webViewPageIntercepted(url);
-  }
+  public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
 }

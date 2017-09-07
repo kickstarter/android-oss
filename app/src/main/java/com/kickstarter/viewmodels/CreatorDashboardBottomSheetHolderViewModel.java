@@ -57,6 +57,8 @@ public interface CreatorDashboardBottomSheetHolderViewModel {
       return this.projectNameText;
     }
     @Override
-    public @NonNull Observable<Project> projectSwitcherProject() { return this.projectSwitcherProject; }
+    public @NonNull Observable<Project> projectSwitcherProject() {
+      return this.projectSwitcherProject;
+    }
   }
 }

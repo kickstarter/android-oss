@@ -63,7 +63,9 @@ public interface CreatorDashboardViewModel {
       final Observable<List<Project>> projects = projectsEnvelope
         .map(ProjectsEnvelope::projects);
 
-      final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = currentProject
+      projects.map(ListUtils::first).subscribe(this.projectSelected::onNext);
+
+      final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = this.projectSelected
         .switchMap(this.client::fetchProjectStats)
         .share()
         .materialize();
@@ -73,21 +75,19 @@ public interface CreatorDashboardViewModel {
 
       this.projectsForBottomSheet = projects;
 
-      projects.map(ListUtils::first).subscribe(this.currentProject::onNext);
-
-      this.projectAndStats = currentProject
+      this.projectAndStats = this.projectSelected
         .compose(combineLatestPair(projectStatsEnvelope));
 
       this.projectSwitcherProjectClickOutput = this.projectSwitcherClicked;
 
-      this.startProjectActivity = currentProject
+      this.startProjectActivity = this.projectSelected
         .compose(takeWhen(this.projectViewClicked))
         .map(p -> Pair.create(p, RefTag.dashboard()));
     }
 
     private final PublishSubject<Void> projectViewClicked = PublishSubject.create();
     private final PublishSubject<Project> projectSwitcherClicked = PublishSubject.create();
-    private final BehaviorSubject<Project> currentProject = BehaviorSubject.create();
+    private final BehaviorSubject<Project> projectSelected = BehaviorSubject.create();
 
     private final Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats;
     private final Observable<List<Project>> projectsForBottomSheet;
@@ -109,7 +109,7 @@ public interface CreatorDashboardViewModel {
 
     @Override
     public void refreshProject(final @NonNull Project project) {
-      this.currentProject.onNext(project);
+      this.projectSelected.onNext(project);
     }
 
     @Override public @NonNull Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats() {
@@ -118,7 +118,9 @@ public interface CreatorDashboardViewModel {
     @Override public @NonNull Observable<List<Project>> projectsForBottomSheet() {
       return this.projectsForBottomSheet;
     }
-    @Override public @NonNull Observable<Project> projectSwitcherProjectClickOutput() { return this.projectSwitcherProjectClickOutput; }
+    @Override public @NonNull Observable<Project> projectSwitcherProjectClickOutput() {
+      return this.projectSwitcherProjectClickOutput;
+    }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
     }

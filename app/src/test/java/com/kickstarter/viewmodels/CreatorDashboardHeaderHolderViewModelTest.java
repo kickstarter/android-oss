@@ -24,6 +24,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   private final TestSubscriber<String> projectBackersCountText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> timeRemainingText = new TestSubscriber<>();
+  private final TestSubscriber<Project> startMessagesActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
@@ -31,6 +32,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     this.vm.outputs.projectBackersCountText().subscribe(this.projectBackersCountText);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.percentageFunded().subscribe(this.percentageFunded);
+    this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.timeRemainingText().subscribe(this.timeRemainingText);
   }
@@ -38,7 +40,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   @Test
   public void testProjectBackersCountText() {
     final Project project = ProjectFactory.project().toBuilder().backersCount(10).build();
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
@@ -48,7 +50,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   @Test
   public void testProjectNameTextViewText() {
     final Project project = ProjectFactory.project().toBuilder().name("somebody once told me").build();
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
@@ -59,7 +61,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testPercentageFunded() {
     setUpEnvironment(environment());
     final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
     final String percentageFundedOutput = NumberUtils.flooredPercentage(project.percentageFunded());
@@ -67,13 +69,24 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   }
 
   @Test
+  public void testStartMessagesActivity() {
+    final Project project = ProjectFactory.project();
+
+    setUpEnvironment(environment());
+    this.vm.inputs.projectAndStats(Pair.create(project, ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
+
+    this.vm.inputs.messagesButtonClicked();
+    this.startMessagesActivity.assertValues(project);
+  }
+
+  @Test
   public void testStartProjectActivity() {
     final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
-    this.vm.inputs.projectViewClicked();
+    this.vm.inputs.viewProjectButtonClicked();
     this.startProjectActivity.assertValues(Pair.create(project, RefTag.dashboard()));
   }
 
@@ -81,7 +94,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testTimeRemainingText() {
     setUpEnvironment(environment());
     final Project project = ProjectFactory.project().toBuilder().deadline(new DateTime().plusDays(10)).build();
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
     final int deadlineVal = ProjectUtils.deadlineCountdownValue(project);
 
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));

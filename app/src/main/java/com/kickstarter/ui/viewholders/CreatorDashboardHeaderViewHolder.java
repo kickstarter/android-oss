@@ -16,7 +16,7 @@ import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.MessagesActivity;
+import com.kickstarter.ui.activities.MessageThreadsActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.viewmodels.CreatorDashboardHeaderHolderViewModel;
 
@@ -98,10 +98,10 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.timeRemainingTextView::setText);
 
-    this.viewModel.outputs.startMessagesActivity()
+    this.viewModel.outputs.startMessageThreadsActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::startMessagesActivity);
+      .subscribe(this::startMessageThreadsActivity);
 
     this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
@@ -142,8 +142,8 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
     this.timeRemainingTextTextView.setText(ProjectUtils.deadlineCountdownDetail(currentProject, this.context(), this.ksString));
   }
 
-  private void startMessagesActivity(final @NonNull Project project) {
-    final Intent intent = new Intent(this.context(), MessagesActivity.class)
+  private void startMessageThreadsActivity(final @NonNull Project project) {
+    final Intent intent = new Intent(this.context(), MessageThreadsActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     this.context().startActivity(intent);
   }

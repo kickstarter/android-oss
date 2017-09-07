@@ -24,7 +24,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   private final TestSubscriber<String> projectBackersCountText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> timeRemainingText = new TestSubscriber<>();
-  private final TestSubscriber<Project> startMessagesActivity = new TestSubscriber<>();
+  private final TestSubscriber<Project> startMessageThreadsActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
@@ -32,7 +32,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     this.vm.outputs.projectBackersCountText().subscribe(this.projectBackersCountText);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.percentageFunded().subscribe(this.percentageFunded);
-    this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity);
+    this.vm.outputs.startMessageThreadsActivity().subscribe(this.startMessageThreadsActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.timeRemainingText().subscribe(this.timeRemainingText);
   }
@@ -76,7 +76,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     this.vm.inputs.projectAndStats(Pair.create(project, ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
 
     this.vm.inputs.messagesButtonClicked();
-    this.startMessagesActivity.assertValues(project);
+    this.startMessageThreadsActivity.assertValues(project);
   }
 
   @Test

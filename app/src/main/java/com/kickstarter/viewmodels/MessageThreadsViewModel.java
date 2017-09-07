@@ -11,10 +11,13 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.MessageThread;
+import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.MessageThreadsActivity;
 import com.kickstarter.ui.data.Mailbox;
 
@@ -78,6 +81,9 @@ public interface MessageThreadsViewModel {
       this.client = environment.apiClient();
       this.currentUser = environment.currentUser();
 
+      final Observable<Project> project = intent()
+        .map(i -> i.getParcelableExtra(IntentKey.PROJECT));
+
       final Observable<Void> refreshUser = Observable.merge(this.onResume, this.swipeRefresh);
 
       final Observable<User> freshUser = intent()
@@ -92,24 +98,26 @@ public interface MessageThreadsViewModel {
         .map(User::unreadMessagesCount)
         .distinctUntilChanged();
 
-      // Ping refresh on initial load to trigger paginator
-      intent()
-        .take(1)
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.swipeRefresh());
-
-      final Observable<Void> startOverWith = Observable.merge(
+      // todo: MessageSubject switch will also trigger refresh
+      final Observable<Void> refresh = Observable.merge(
         unreadMessagesCount.compose(ignoreValues()),
         this.swipeRefresh
       );
 
-      final ApiPaginator<MessageThread, MessageThreadsEnvelope, Void> paginator =
-        ApiPaginator.<MessageThread, MessageThreadsEnvelope, Void>builder()
+      final Observable<Project> startOverWith = Observable.combineLatest(
+        project,
+        refresh,
+        Pair::create
+      )
+        .map(PairUtils::first);
+
+      final ApiPaginator<MessageThread, MessageThreadsEnvelope, Project> paginator =
+        ApiPaginator.<MessageThread, MessageThreadsEnvelope, Project>builder()
           .nextPage(this.nextPage)
           .startOverWith(startOverWith)
           .envelopeToListOfData(MessageThreadsEnvelope::messageThreads)
           .envelopeToMoreUrl(env -> env.urls().api().moreMessageThreads())
-          .loadWithParams(__ -> this.client.fetchMessageThreads(Mailbox.INBOX))
+          .loadWithParams(p -> this.client.fetchMessageThreads(p, Mailbox.INBOX))
           .loadWithPaginationPath(this.client::fetchMessageThreadsWithPaginationPath)
           .build();
 

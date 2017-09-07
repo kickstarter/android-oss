@@ -51,8 +51,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
     /** time remaining for latest project (no units) */
     Observable<String> timeRemainingText();
 
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.MessagesActivity}. */
-    Observable<Project> startMessagesActivity();
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
+    Observable<Project> startMessageThreadsActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
@@ -87,7 +87,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .map(ProjectUtils::deadlineCountdownValue)
         .map(NumberUtils::format);
 
-      this.startMessagesActivity = this.currentProject
+      this.startMessageThreadsActivity = this.currentProject
         .compose(takeWhen(this.messagesButtonClicked));
 
       this.startProjectActivity = this.currentProject
@@ -107,7 +107,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     private final Observable<String> projectBackersCountText;
     private final Observable<String> projectBlurbTextViewText;
     private final Observable<String> projectNameTextViewText;
-    private final Observable<Project> startMessagesActivity;
+    private final Observable<Project> startMessageThreadsActivity;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
     private final Observable<String> timeRemainingText;
 
@@ -136,8 +136,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
     }
-    @Override public @NonNull Observable<Project> startMessagesActivity() {
-      return this.startMessagesActivity;
+    @Override public @NonNull Observable<Project> startMessageThreadsActivity() {
+      return this.startMessageThreadsActivity;
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;

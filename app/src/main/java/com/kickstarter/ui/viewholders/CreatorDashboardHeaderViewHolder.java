@@ -48,7 +48,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   private KSCurrency ksCurrency;
 
   public interface Delegate {
-    void projectsMenuClicked();
+      void projectsMenuClicked();
   }
 
   public CreatorDashboardHeaderViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {

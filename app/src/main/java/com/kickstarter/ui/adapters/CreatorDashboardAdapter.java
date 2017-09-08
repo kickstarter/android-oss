@@ -11,6 +11,7 @@ import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
+import com.kickstarter.ui.viewholders.CreatorDashboardReferrerBreakDownViewHolder;
 import com.kickstarter.ui.viewholders.CreatorDashboardReferrerStatsViewHolder;
 import com.kickstarter.ui.viewholders.CreatorDashboardRewardStatsViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -32,6 +33,8 @@ public class CreatorDashboardAdapter extends KSAdapter {
       return R.layout.dashboard_funding_view;
     } else if (sectionRow.section() == 1) {
       return R.layout.dashboard_reward_stats_view;
+    } else if (sectionRow.section() == 2) {
+      return R.layout.dashboard_referrer_breakdown_view;
     } else {
       return R.layout.dashboard_referrer_stats_view;
     }
@@ -42,6 +45,8 @@ public class CreatorDashboardAdapter extends KSAdapter {
       return new CreatorDashboardHeaderViewHolder(view, this.delegate);
     } else if (layout == R.layout.dashboard_reward_stats_view) {
       return new CreatorDashboardRewardStatsViewHolder(view);
+    } else if (layout == R.layout.dashboard_referrer_breakdown_view) {
+      return new CreatorDashboardReferrerBreakDownViewHolder(view);
     } else {
       return new CreatorDashboardReferrerStatsViewHolder(view);
     }

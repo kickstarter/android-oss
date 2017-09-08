@@ -11,8 +11,10 @@ import com.kickstarter.factories.MessageThreadFactory;
 import com.kickstarter.factories.MessageThreadsEnvelopeFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
+import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
@@ -54,6 +56,9 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testMessageThreadsEmit_NoProjectIntent() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+    currentUser.login(UserFactory.user().toBuilder().unreadMessagesCount(0).build(), "beefbod5");
+
     final MessageThreadsEnvelope envelope = MessageThreadsEnvelopeFactory.messageThreadsEnvelope()
       .toBuilder()
       .messageThreads(Collections.singletonList(MessageThreadFactory.messageThread()))
@@ -66,7 +71,9 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
+    );
 
     this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, Empty.INSTANCE));
     this.messageThreadList.assertValueCount(1);
@@ -80,6 +87,9 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testMessageThreadsEmit_WithProjectIntent() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+    currentUser.login(UserFactory.user().toBuilder().unreadMessagesCount(0).build(), "beefbod5");
+
     final MessageThreadsEnvelope envelope = MessageThreadsEnvelopeFactory.messageThreadsEnvelope()
       .toBuilder()
       .messageThreads(Collections.singletonList(MessageThreadFactory.messageThread()))
@@ -92,7 +102,9 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
       }
     };
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
+    );
 
     this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
     this.messageThreadList.assertValueCount(1);

@@ -99,14 +99,14 @@ public interface MessageThreadsViewModel {
         .distinctUntilChanged();
 
       // todo: MessageSubject switch will also trigger refresh
-      final Observable<Void> refresh = Observable.merge(
+      final Observable<Void> refreshMessageThreads = Observable.merge(
         unreadMessagesCount.compose(ignoreValues()),
         this.swipeRefresh
       );
 
       final Observable<Project> startOverWith = Observable.combineLatest(
         project,
-        refresh,
+        refreshMessageThreads,
         Pair::create
       )
         .map(PairUtils::first);

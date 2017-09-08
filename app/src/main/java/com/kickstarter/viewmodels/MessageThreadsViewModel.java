@@ -94,8 +94,19 @@ public interface MessageThreadsViewModel {
 
       freshUser.subscribe(this.currentUser::refresh);
 
-      final Observable<Integer> unreadMessagesCount = this.currentUser.loggedInUser()
-        .map(User::unreadMessagesCount)
+      // Use project unread messages count if configured with a project,
+      // in the case of a creator viewing their project's messages.
+      // todo: audit marking as read
+      final Observable<Integer> unreadMessagesCount = Observable.zip(
+        project,
+        this.currentUser.loggedInUser(),
+        Pair::create
+      )
+        .map(projectAndUser ->
+          projectAndUser.first != null
+            ? projectAndUser.first.unreadMessagesCount()
+            : projectAndUser.second.unreadMessagesCount()
+        )
         .distinctUntilChanged();
 
       // todo: MessageSubject switch will also trigger refresh
@@ -129,14 +140,21 @@ public interface MessageThreadsViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.messageThreadList);
 
-      this.hasNoMessages = unreadMessagesCount.map(ObjectUtils::isNull);
-      this.hasNoUnreadMessages = unreadMessagesCount.map(IntegerUtils::isZero);
+      unreadMessagesCount
+        .map(ObjectUtils::isNull)
+        .subscribe(this.hasNoMessages);
 
-      this.unreadCountTextViewColorInt = unreadMessagesCount
-        .map(count -> intValueOrZero(count) > 0 ? R.color.ksr_text_green_700 : R.color.ksr_dark_grey_400);
+      unreadMessagesCount
+        .map(IntegerUtils::isZero)
+        .subscribe(this.hasNoUnreadMessages);
 
-      this.unreadCountTextViewTypefaceInt = unreadMessagesCount
-        .map(count -> intValueOrZero(count) > 0 ? Typeface.BOLD : Typeface.NORMAL);
+      unreadMessagesCount
+        .map(count -> intValueOrZero(count) > 0 ? R.color.ksr_text_green_700 : R.color.ksr_dark_grey_400)
+        .subscribe(this.unreadCountTextViewColorInt);
+
+      unreadMessagesCount
+        .map(count -> intValueOrZero(count) > 0 ? Typeface.BOLD : Typeface.NORMAL)
+        .subscribe(this.unreadCountTextViewTypefaceInt);
 
       this.unreadCountToolbarTextViewIsGone = Observable.zip(
         this.hasNoMessages,
@@ -145,9 +163,10 @@ public interface MessageThreadsViewModel {
       )
         .map(noMessagesAndNoUnread -> noMessagesAndNoUnread.first || noMessagesAndNoUnread.second);
 
-      this.unreadMessagesCount = unreadMessagesCount
+      unreadMessagesCount
         .filter(ObjectUtils::isNotNull)
-        .filter(IntegerUtils::isNonZero);
+        .filter(IntegerUtils::isNonZero)
+        .subscribe(this.unreadMessagesCount);
 
       intent()
         .take(1)
@@ -159,14 +178,14 @@ public interface MessageThreadsViewModel {
     private final PublishSubject<Void> onResume = PublishSubject.create();
     private final PublishSubject<Void> swipeRefresh = PublishSubject.create();
 
-    private final Observable<Boolean> hasNoMessages;
-    private final Observable<Boolean> hasNoUnreadMessages;
+    private final BehaviorSubject<Boolean> hasNoMessages = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> hasNoUnreadMessages = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> isFetchingMessageThreads = BehaviorSubject.create();
     private final BehaviorSubject<List<MessageThread>> messageThreadList = BehaviorSubject.create();
-    private final Observable<Integer> unreadCountTextViewColorInt;
-    private final Observable<Integer> unreadCountTextViewTypefaceInt;
+    private final BehaviorSubject<Integer> unreadCountTextViewColorInt = BehaviorSubject.create();
+    private final BehaviorSubject<Integer> unreadCountTextViewTypefaceInt = BehaviorSubject.create();
     private final Observable<Boolean> unreadCountToolbarTextViewIsGone;
-    private final Observable<Integer> unreadMessagesCount;
+    private final BehaviorSubject<Integer> unreadMessagesCount = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;

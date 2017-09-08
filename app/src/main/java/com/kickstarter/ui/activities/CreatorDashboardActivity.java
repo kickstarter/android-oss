@@ -6,9 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -41,7 +41,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     ButterKnife.bind(this);
 
     // Set up the bottom sheet recycler view.
-    this.bottomSheetAdapter = new CreatorDashboardBottomSheetAdapter();
+    this.bottomSheetAdapter = new CreatorDashboardBottomSheetAdapter(this.viewModel.inputs);
     this.bottomSheetRecyclerView.setAdapter(this.bottomSheetAdapter);
     this.bottomSheetRecyclerView.setLayoutManager(new LinearLayoutManager(this)); // todo: reuse LayoutManager?
     this.bottomSheetBehavior = BottomSheetBehavior.from(this.bottomSheetRecyclerView);
@@ -49,23 +49,33 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.viewModel.outputs.projectAndStats()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::createProjectDashboardFragments);
+      .subscribe(this::createProjectDashboardFragment);
 
     this.viewModel.outputs.projectsForBottomSheet()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setProjectsForDropdown);
+
+    this.viewModel.outputs.projectSwitcherProjectClickOutput()
+       .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::newProjectClicked);
   }
 
   private void setProjectsForDropdown(final @NonNull List<Project> projects) {
     this.bottomSheetAdapter.takeProjects(projects);
   }
 
-  private void createProjectDashboardFragments(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStats) {
+  private void newProjectClicked(final @NonNull Project project) {
+    this.viewModel.refreshProject(project);
+    this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+  }
+
+  private void createProjectDashboardFragment(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStats) {
     final FragmentManager fragmentManager = getSupportFragmentManager();
     final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
     final CreatorDashboardFragment fragment = CreatorDashboardFragment.newInstance(projectAndStats);
-    fragmentTransaction.add(R.id.creator_dashboard_coordinator_view, fragment);
+    fragmentTransaction.replace(R.id.creator_dashboard_coordinator_view, fragment);
     fragmentTransaction.commit();
   }
 

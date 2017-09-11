@@ -70,8 +70,11 @@ public final class CreatorDashboardFragment extends BaseFragment<CreatorDashboar
   }
 
   @Override
-  public void onDestroy() {
-    super.onDestroy();
-    this.creatorDashboardRecyclerView.setAdapter(null);
+  public void onDetach() {
+    super.onDetach();
+
+    if (this.creatorDashboardRecyclerView != null) {
+      this.creatorDashboardRecyclerView.setAdapter(null);
+    }
   }
 }

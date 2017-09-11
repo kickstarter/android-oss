@@ -13,11 +13,13 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.MessageThreadsActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.CreatorDashboardHeaderHolderViewModel;
 
 import java.math.RoundingMode;
@@ -36,6 +38,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   protected @Bind(R.id.creator_dashboard_amount_raised) TextView amountRaisedTextView;
   protected @Bind(R.id.creator_dashboard_backer_count) TextView backerCountTextView;
   protected @Bind(R.id.creator_dashboard_funding_text) TextView fundingTextTextView;
+  protected @Bind(R.id.creator_dashboard_messages_button) IconButton messagesButton;
   protected @Bind(R.id.creator_dashboard_percent) TextView percentTextView;
   protected @Bind(R.id.creator_dashboard_project_blurb) TextView projectBlurbTextView;
   protected @Bind(R.id.creator_dashboard_project_name) TextView projectNameTextView;
@@ -72,6 +75,11 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setPledgedOfGoalString);
+
+    this.viewModel.outputs.messagesButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.messagesButton));
 
     this.viewModel.outputs.percentageFunded()
       .compose(bindToLifecycle())

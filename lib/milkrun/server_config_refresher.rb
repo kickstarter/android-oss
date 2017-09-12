@@ -32,10 +32,22 @@ module Milkrun
 
     private
 
+    def client_id
+      local ? Secrets::Api::Client::LOCAL : Secrets::Api::Client::PRODUCTION
+    end
+
+    def host
+      local ? "http://api.ksr.dev/" : "https://#{Secrets::Api::Endpoint::PRODUCTION}"
+    end
+
+    def oauth_token
+      ENV["KICKSTARTER_API_ANDROID_OAUTH_TOKEN"]
+    end
+
     def url
-      local ?
-        URI.parse("http://api.ksr.dev/v1/app/android/config?client_id=#{Secrets::Api::Client::LOCAL}&all_locales=true") :
-        URI.parse("https://#{Secrets::Api::Endpoint::PRODUCTION}/v1/app/android/config?client_id=#{Secrets::Api::Client::PRODUCTION}&all_locales=true")
+      str = "#{host}/v1/app/android/config?all_locales=true&client_id=#{client_id}"
+      str += "&oauth_token=#{oauth_token}" unless oauth_token.nil?
+      URI.parse(str)
     end
   end
 end

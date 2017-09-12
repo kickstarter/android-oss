@@ -796,6 +796,8 @@
             "promo": "Kickstarter News and Events",
             "happening": "Happening Now",
             "games": "Kickstarter Loves Games",
+            "invent": "Invent",
+            "arts": "Arts & Culture News",
             "opt_in": {
               "title": "One final step!",
               "message": "We've sent a confirmation email to the address associated with your account! Please check your email in order to confirm that you'd like to subscribe to %{newsletter}."
@@ -2700,6 +2702,8 @@
             "promo": "Kickstarter Neuigkeiten und Events",
             "happening": "Happening Now",
             "games": "Wir lieben Spiele",
+            "invent": "Kreativ & Erfinderisch",
+            "arts": "Kunst & Kultur News",
             "opt_in": {
               "title": "Nur noch ein letzter Schritt!",
               "message": "Wir haben eine Bestätigung an die mit deinem Konto verbundene E-Mail-Adresse geschickt! Bitte sieh in deinem Posteingang nach und bestätige dein Abo von %{newsletter}."
@@ -4604,6 +4608,8 @@
             "promo": "Novedades y eventos de Kickstarter",
             "happening": "Eventos",
             "games": "Nos encantan los juegos",
+            "invent": "Invenciones",
+            "arts": "Novedades sobre Arte & Cultura",
             "opt_in": {
               "title": "¡Sólo un último paso!",
               "message": "Hemos enviado una confirmación a la dirección de correo electrónico asociada con tu cuenta. Por favor checa tu bandeja de entrada y confirma la subscripción a %{newsletter}."
@@ -6508,6 +6514,8 @@
             "promo": "Nouvelles et évènements Kickstarter",
             "happening": "Happening",
             "games": "Kickstarter aime les jeux",
+            "invent": "Invent",
+            "arts": "Arts & Culture News",
             "opt_in": {
               "title": "Dernière étape !",
               "message": "Nous vous avons envoyé un e-mail de confirmation à l'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}."
@@ -7659,6 +7667,7 @@
     "new_message_inbox": true,
     "ref_banner_ads": true,
     "react_discovery_cards": true,
+    "reactive_remind_me": true,
     "react_guest_pledging": true,
     "kickstarter_gold": true,
     "projects_of_earth": true
@@ -7838,9 +7847,10 @@
     "project_build": "control",
     "react_guest_pledging": "control",
     "react_payment_sources_form": "control",
-    "favorites_recs": "experimental",
+    "favorites_recs": "control",
     "thanks_page_better_recs": "control",
     "social_icons_bucket": "experimental",
+    "project_card_hearts": "control",
     "guided_search": "control"
   },
   "stripe": {

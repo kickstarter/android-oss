@@ -11,11 +11,16 @@ module Milkrun
           flatten(translations)
             .select { |k, _| default_keys.member?(k) } # Filter out strings in other locales but not default
             .sort
-            .map { |k, v| [ k, v.gsub(/'/) { "\\'" } # Escape single quotes
-                                .gsub(/&/) { "&amp;" } # Escape ampersands
-                                .gsub("\n") { "\\n\n" } # Add explicit new line
-                                .gsub(/\A([ ]+)/) { $1.gsub(" ", '\u0020') } # Replace leading spaces with hard-coded space
-                                .gsub("<") { "&lt;" } ] } # Escape '<' characters
+            .map { |k, v|
+              [k,
+               v.gsub(/'/) { "\\'" } # Escape single quotes
+                .gsub(/&/) { "&amp;" } # Escape ampersands
+                .gsub("\n") { "\\n\n" } # Add explicit new line
+                .gsub(/\A([ ]+)/) { $1.gsub(" ", '\u0020') } # Replace leading spaces with hard-coded space
+                .gsub(/\A@/, "\\@") # Escape leading @ symbol
+                .gsub("<") { "&lt;" } # Escape '<' characters
+              ]
+            }
             .map { |k, v| "  <string name=\"#{k}\" formatted=\"false\">#{v}</string>" }
             .each { |str| f.puts(str) }
           f.puts '</resources>'

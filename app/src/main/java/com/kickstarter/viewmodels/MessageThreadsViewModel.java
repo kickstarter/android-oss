@@ -81,23 +81,32 @@ public interface MessageThreadsViewModel {
       this.client = environment.apiClient();
       this.currentUser = environment.currentUser();
 
-      final Observable<Project> project = intent()
+      final Observable<Project> initialProject = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT));
 
-      final Observable<Void> refreshUser = Observable.merge(this.onResume, this.swipeRefresh);
+      final Observable<Void> refreshUserOrProject = Observable.merge(this.onResume, this.swipeRefresh);
 
       final Observable<User> freshUser = intent()
-        .compose(takeWhen(refreshUser))
+        .compose(takeWhen(refreshUserOrProject))
         .switchMap(__ -> this.client.fetchCurrentUser())
         .retry(2)
         .compose(neverError());
 
       freshUser.subscribe(this.currentUser::refresh);
 
+      final Observable<Project> project = Observable.merge(
+        initialProject,
+        initialProject
+          .compose(takeWhen(refreshUserOrProject))
+          .map(Project::param)
+          .switchMap(this.client::fetchProject)
+          .compose(neverError())
+          .share()
+      );
+
       // Use project unread messages count if configured with a project,
       // in the case of a creator viewing their project's messages.
-      // todo: audit marking as read
-      final Observable<Integer> unreadMessagesCount = Observable.zip(
+      final Observable<Integer> unreadMessagesCount = Observable.combineLatest(
         project,
         this.currentUser.loggedInUser(),
         Pair::create

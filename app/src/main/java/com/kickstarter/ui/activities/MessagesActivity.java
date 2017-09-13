@@ -26,6 +26,7 @@ import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.MessagesAdapter;
 import com.kickstarter.ui.views.IconButton;
@@ -276,9 +277,10 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.messageEditText.setHint(this.ksString.format(this.messageUserNameString, "user_name", name));
   }
 
-  private void startBackingActivity(final @NonNull Project project) {
+  private void startBackingActivity(final @NonNull Pair<Project, User> projectAndBacker) {
     final Intent intent = new Intent(this, BackingActivity.class)
-      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.PROJECT, projectAndBacker.first)
+      .putExtra(IntentKey.BACKER, projectAndBacker.second)
       .putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true);
 
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);

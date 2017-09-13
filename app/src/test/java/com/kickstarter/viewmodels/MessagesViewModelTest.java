@@ -54,7 +54,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> sendMessageButtonIsEnabled = new TestSubscriber<>();
   private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
   private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
-  private final TestSubscriber<Project> startViewPledgeActivity = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, User>> startBackingActivity = new TestSubscriber<>();
   private final TestSubscriber<Void> successfullyMarkedAsRead = new TestSubscriber<>();
   private final TestSubscriber<Boolean> toolbarIsExpanded = new TestSubscriber<>();
   private final TestSubscriber<Boolean> viewPledgeButtonIsGone = new TestSubscriber<>();
@@ -78,7 +78,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.sendMessageButtonIsEnabled().subscribe(this.sendMessageButtonIsEnabled);
     this.vm.outputs.setMessageEditText().subscribe(this.setMessageEditText);
     this.vm.outputs.showMessageErrorToast().subscribe(this.showMessageErrorToast);
-    this.vm.outputs.startBackingActivity().subscribe(this.startViewPledgeActivity);
+    this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity);
     this.vm.outputs.successfullyMarkedAsRead().subscribe(this.successfullyMarkedAsRead);
     this.vm.outputs.toolbarIsExpanded().subscribe(this.toolbarIsExpanded);
     this.vm.outputs.viewPledgeButtonIsGone().subscribe(this.viewPledgeButtonIsGone);
@@ -471,14 +471,65 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testStartViewPledgeActivity() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
+  public void testStartBackingActivity_AsBacker() {
+    final User user = UserFactory.user();
+    final Project project = ProjectFactory.project().toBuilder().isBacking(true).build();
+
+    final MessageThread messageThread = MessageThreadFactory.messageThread()
+      .toBuilder()
+      .project(project)
+      .build();
+
+    final MessageThreadEnvelope messageThreadEnvelope = MessageThreadEnvelopeFactory.messageThreadEnvelope()
+      .toBuilder()
+      .messageThread(messageThread)
+      .build();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
+        return Observable.just(messageThreadEnvelope);
+      }
+    };
+
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(user)).build());
 
     this.vm.intent(backerModalContextIntent(BackingFactory.backing(), project));
     this.vm.inputs.viewPledgeButtonClicked();
 
-    this.startViewPledgeActivity.assertValues(project);
+    this.startBackingActivity.assertValues(Pair.create(project, user));
+  }
+
+  @Test
+  public void testStartBackingActivity_AsCreator() {
+    final User backer = UserFactory.user().toBuilder().name("Vanessa").build();
+    final User creator = UserFactory.user().toBuilder().name("Jessica").build();
+    final Project project = ProjectFactory.project().toBuilder().creator(creator).build();
+
+    final MessageThread messageThread = MessageThreadFactory.messageThread()
+      .toBuilder()
+      .participant(backer)
+      .project(project)
+      .build();
+
+    final MessageThreadEnvelope messageThreadEnvelope = MessageThreadEnvelopeFactory.messageThreadEnvelope()
+      .toBuilder()
+      .messageThread(messageThread)
+      .build();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread) {
+        return Observable.just(messageThreadEnvelope);
+      }
+    };
+
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(creator)).build());
+
+    this.vm.intent(messagesContextIntent(messageThread));
+    this.vm.inputs.viewPledgeButtonClicked();
+
+    this.startBackingActivity.assertValues(Pair.create(project, backer));
   }
 
   @Test

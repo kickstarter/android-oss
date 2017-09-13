@@ -125,7 +125,7 @@ public interface MessagesViewModel {
     Observable<String> showMessageErrorToast();
 
     /** Emits when we should start the {@link BackingActivity}. */
-    Observable<Project> startBackingActivity();
+    Observable<Pair<Project, User>> startBackingActivity();
 
     /** Emits when the thread has been marked as read. */
     Observable<Void> successfullyMarkedAsRead();
@@ -353,8 +353,13 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.projectNameTextViewText::onNext);
 
-      project
+      Observable.combineLatest(messageThreadEnvelope, this.currentUser.observable(), Pair::create)
         .compose(takeWhen(this.viewPledgeButtonClicked))
+        .map(eu ->
+          eu.first.messageThread().project().isBacking()
+            ? Pair.create(eu.first.messageThread().project(), eu.second)
+            : Pair.create(eu.first.messageThread().project(), eu.first.messageThread().participant())
+        )
         .compose(bindToLifecycle())
         .subscribe(this.startBackingActivity::onNext);
 
@@ -423,7 +428,7 @@ public interface MessagesViewModel {
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<Boolean> sendMessageButtonIsEnabled;
     private final Observable<String> setMessageEditText;
-    private final PublishSubject<Project> startBackingActivity = PublishSubject.create();
+    private final PublishSubject<Pair<Project, User>> startBackingActivity = PublishSubject.create();
     private final BehaviorSubject<Void> successfullyMarkedAsRead = BehaviorSubject.create();
     private final Observable<Boolean> toolbarIsExpanded;
     private final BehaviorSubject<Boolean> viewPledgeButtonIsGone = BehaviorSubject.create();
@@ -507,7 +512,7 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<String> setMessageEditText() {
       return this.setMessageEditText;
     }
-    @Override public @NonNull Observable<Project> startBackingActivity() {
+    @Override public @NonNull Observable<Pair<Project, User>> startBackingActivity() {
       return this.startBackingActivity;
     }
     @Override public @NonNull Observable<Void> successfullyMarkedAsRead() {

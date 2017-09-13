@@ -1,16 +1,21 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
+import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
@@ -18,70 +23,101 @@ import org.junit.Test;
 import rx.observers.TestSubscriber;
 
 public class ProjectViewModelTest extends KSRobolectricTestCase {
+  private ProjectViewModel.ViewModel vm;
+  private final TestSubscriber<Project> projectTest = new TestSubscriber<>();
+  private final TestSubscriber<Project> showShareSheet = new TestSubscriber<>();
+  private final TestSubscriber<Void> showStarredPromptTest = new TestSubscriber<>();
+  private final TestSubscriber<Void> startLoginToutActivity = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, User>> startBackingActivity = new TestSubscriber<>();
+  private final TestSubscriber<Project> startCampaignWebViewActivity = new TestSubscriber<>();
+  private final TestSubscriber<Project> startCommentsActivity = new TestSubscriber<>();
+  private final TestSubscriber<Project> startCreatorBioWebViewActivity = new TestSubscriber<>();
+  private final TestSubscriber<Project> startManagePledgeActivity = new TestSubscriber<>();
+  private final TestSubscriber<Project> startProjectUpdatesActivity = new TestSubscriber<>();
+  private final TestSubscriber<Project> startVideoActivity = new TestSubscriber<>();
+
+  protected void setUpEnvironment(final @NonNull Environment environment) {
+    this.vm = new ProjectViewModel.ViewModel(environment);
+    this.vm.outputs.projectAndUserCountry().map(pc -> pc.first).subscribe(this.projectTest);
+    this.vm.outputs.showShareSheet().subscribe(this.showShareSheet);
+    this.vm.outputs.showStarredPrompt().subscribe(this.showStarredPromptTest);
+    this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity);
+    this.vm.outputs.projectAndUserCountry().map(pc -> pc.first.isStarred()).subscribe(this.starredTest);
+    this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity);
+    this.vm.outputs.startCampaignWebViewActivity().subscribe(this.startCampaignWebViewActivity);
+    this.vm.outputs.startCommentsActivity().subscribe(this.startCommentsActivity);
+    this.vm.outputs.startCreatorBioWebViewActivity().subscribe(this.startCreatorBioWebViewActivity);
+    this.vm.outputs.startManagePledgeActivity().subscribe(this.startManagePledgeActivity);
+    this.vm.outputs.startProjectUpdatesActivity().subscribe(this.startProjectUpdatesActivity);
+    this.vm.outputs.startVideoActivity().subscribe(this.startVideoActivity);
+  }
 
   @Test
   public void testProjectViewModel_EmitsProjectWithStandardSetUp() {
-    final Environment environment = environment();
-    environment.currentConfig().config(ConfigFactory.config());
-    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment);
-
-    final TestSubscriber<Project> projectTest = new TestSubscriber<>();
-    vm.outputs.projectAndUserCountry().map(pc -> pc.first).subscribe(projectTest);
-
     final Project project = ProjectFactory.project();
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    final CurrentConfigType currentConfig = new MockCurrentConfig();
+    currentConfig.config(ConfigFactory.config());
 
-    projectTest.assertValues(project, project);
+    setUpEnvironment(environment().toBuilder().currentConfig(currentConfig).build());
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
-    koalaTest.assertValues(KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE);
+    this.projectTest.assertValues(project, project);
+    this.koalaTest.assertValues(KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE);
   }
 
   @Test
   public void testProjectViewModel_LoggedOutStarProjectFlow() {
     final CurrentUserType currentUser = new MockCurrentUser();
-
     final Environment environment = environment().toBuilder()
       .currentUser(currentUser)
       .build();
     environment.currentConfig().config(ConfigFactory.config());
 
-    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment);
-
-    final TestSubscriber<Void> loginToutTest = new TestSubscriber<>();
-    vm.outputs.startLoginToutActivity().subscribe(loginToutTest);
-
-    final TestSubscriber<Void> showStarredPromptTest = new TestSubscriber<>();
-    vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
-
-    final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
-    vm.outputs.projectAndUserCountry().map(pc -> pc.first.isStarred()).subscribe(starredTest);
+    setUpEnvironment(environment);
 
     // Start the view model with a project
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.halfWayProject()));
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.halfWayProject()));
 
-    starredTest.assertValues(false, false);
+    this.starredTest.assertValues(false, false);
 
     // Try starring while logged out
-    vm.inputs.starButtonClicked();
+    this.vm.inputs.starButtonClicked();
 
     // The project shouldn't be starred, and a login prompt should be shown.
-    starredTest.assertValues(false, false);
-    showStarredPromptTest.assertValueCount(0);
-    loginToutTest.assertValueCount(1);
+    this.starredTest.assertValues(false, false);
+    this.showStarredPromptTest.assertValueCount(0);
+    this.startLoginToutActivity.assertValueCount(1);
 
     // A koala event for starring should NOT be tracked
-    koalaTest.assertValues(KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE);
+    this.koalaTest.assertValues(KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE);
 
     // Login
     currentUser.refresh(UserFactory.user());
 
     // The project should be starred, and a star prompt should be shown.
-    starredTest.assertValues(false, false, true);
-    showStarredPromptTest.assertValueCount(1);
+    this.starredTest.assertValues(false, false, true);
+    this.showStarredPromptTest.assertValueCount(1);
 
     // A koala event for starring should be tracked
-    koalaTest.assertValues(
+    this.koalaTest.assertValues(
       KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE, KoalaEvent.PROJECT_STAR, KoalaEvent.STARRED_PROJECT
+    );
+  }
+
+  @Test
+  public void testProjectViewModel_ShowShareSheet() {
+    final Project project = ProjectFactory.project();
+    final User user = UserFactory.user();
+
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(user)).build());
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    this.vm.inputs.shareButtonClicked();
+    this.showShareSheet.assertValues(project);
+    this.koalaTest.assertValues(
+      KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE,
+      KoalaEvent.PROJECT_SHOW_SHARE_SHEET_LEGACY, KoalaEvent.SHOWED_SHARE_SHEET
     );
   }
 
@@ -95,26 +131,20 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
       .build();
     environment.currentConfig().config(ConfigFactory.config());
 
-    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment);
-
-    final TestSubscriber<Void> showStarredPromptTest = new TestSubscriber<>();
-    vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
-
-    final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
-    vm.outputs.projectAndUserCountry().map(pc -> pc.first.isStarred()).subscribe(starredTest);
+    setUpEnvironment(environment);
 
     // Start the view model with an almost completed project
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     // Login
     currentUser.refresh(UserFactory.user());
 
     // Star the project
-    vm.inputs.starButtonClicked();
+    this.vm.inputs.starButtonClicked();
 
     // The project should be starred, and a star prompt should NOT be shown.
-    starredTest.assertValues(false, false, true);
-    showStarredPromptTest.assertValueCount(0);
+    this.starredTest.assertValues(false, false, true);
+    this.showStarredPromptTest.assertValueCount(0);
   }
 
   @Test
@@ -125,101 +155,105 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
       .build();
     environment.currentConfig().config(ConfigFactory.config());
 
-    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment);
-
-    final TestSubscriber<Void> showStarredPromptTest = new TestSubscriber<>();
-    vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
-
-    final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
-    vm.outputs.projectAndUserCountry().map(pc -> pc.first.isStarred()).subscribe(starredTest);
+    setUpEnvironment(environment);
 
     // Start the view model with a successful project
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()));
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()));
 
     // Login
     currentUser.refresh(UserFactory.user());
 
     // Star the project
-    vm.inputs.starButtonClicked();
+    this.vm.inputs.starButtonClicked();
 
     // The project should be starred, and a star prompt should NOT be shown.
-    starredTest.assertValues(false, false, true);
-    showStarredPromptTest.assertValueCount(0);
+    this.starredTest.assertValues(false, false, true);
+    this.showStarredPromptTest.assertValueCount(0);
+  }
+
+  @Test
+  public void testProjectViewModel_StartBackingActivity() {
+    final Project project = ProjectFactory.project();
+    final User user = UserFactory.user();
+
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(user)).build());
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    this.vm.inputs.viewPledgeButtonClicked();
+    this.startBackingActivity.assertValues(Pair.create(project, user));
   }
 
   @Test
   public void testProjectViewModel_StartCampaignWebViewActivity() {
-    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment());
     final Project project = ProjectFactory.project();
-
-    final TestSubscriber<Project> startCampaignWebViewActivity = new TestSubscriber<>();
-    vm.outputs.startCampaignWebViewActivity().subscribe(startCampaignWebViewActivity);
+    setUpEnvironment(environment());
 
     // Start the view model with a project.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
-    vm.inputs.blurbTextViewClicked();
-    startCampaignWebViewActivity.assertValues(project);
+    this.vm.inputs.blurbTextViewClicked();
+    this.startCampaignWebViewActivity.assertValues(project);
   }
 
   @Test
   public void testProjectViewModel_StartCreatorBioWebViewActivity() {
-    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment());
     final Project project = ProjectFactory.project();
-
-    final TestSubscriber<Project> startCreatorBioWebViewActivity = new TestSubscriber<>();
-    vm.outputs.startCreatorBioWebViewActivity().subscribe(startCreatorBioWebViewActivity);
+    setUpEnvironment(environment());
 
     // Start the view model with a project.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
-    vm.inputs.creatorNameTextViewClicked();
-    startCreatorBioWebViewActivity.assertValues(project);
+    this.vm.inputs.creatorNameTextViewClicked();
+    this.startCreatorBioWebViewActivity.assertValues(project);
   }
 
   @Test
   public void testProjectViewModel_StartCommentsActivity() {
-    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment());
     final Project project = ProjectFactory.project();
-
-    final TestSubscriber<Project> startCommentsActivity = new TestSubscriber<>();
-    vm.outputs.startCommentsActivity().subscribe(startCommentsActivity);
+    setUpEnvironment(environment());
 
     // Start the view model with a project.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
-    vm.inputs.commentsTextViewClicked();
-    startCommentsActivity.assertValues(project);
+    this.vm.inputs.commentsTextViewClicked();
+    this.startCommentsActivity.assertValues(project);
+  }
+
+  @Test
+  public void testProjectViewModel_StartManagePledgeActivity() {
+    final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
+
+    // Start the view model with a project.
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    // Click on Manage pledge button.
+    this.vm.inputs.managePledgeButtonClicked();
+    this.startManagePledgeActivity.assertValues(project);
   }
 
   @Test
   public void testProjectViewModel_StartProjectUpdatesActivity() {
-    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment());
     final Project project = ProjectFactory.project();
-
-    final TestSubscriber<Project> startProjectUpdatesActivity = new TestSubscriber<>();
-    vm.outputs.startProjectUpdatesActivity().subscribe(startProjectUpdatesActivity);
+    setUpEnvironment(environment());
 
     // Start the view model with a project.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     // Click on Updates button.
-    vm.inputs.updatesTextViewClicked();
-    startProjectUpdatesActivity.assertValues(project);
+    this.vm.inputs.updatesTextViewClicked();
+    this.startProjectUpdatesActivity.assertValues(project);
   }
 
   @Test
   public void testProjectViewModel_StartVideoActivity() {
-    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment());
     final Project project = ProjectFactory.project();
-
-    final TestSubscriber<Project> startVideoActivity = new TestSubscriber<>();
-    vm.outputs.startVideoActivity().subscribe(startVideoActivity);
+    setUpEnvironment(environment());
 
     // Start the view model with a project.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
-    vm.inputs.playVideoButtonClicked();
-    startVideoActivity.assertValues(project);
+    this.vm.inputs.playVideoButtonClicked();
+    this.startVideoActivity.assertValues(project);
   }
 }

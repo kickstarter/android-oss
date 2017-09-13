@@ -210,7 +210,13 @@ public interface MessagesViewModel {
           threadAndProject.first != null
             ? threadAndProject.first.participant()
             : threadAndProject.second.creator()
-        );
+        )
+        .take(1);
+
+      participant
+        .map(User::name)
+        .compose(bindToLifecycle())
+        .subscribe(this.messageEditTextHint);
 
       final Observable<MessagesData> messagesData = Observable.combineLatest(
         backingOrThread,
@@ -305,14 +311,15 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.messageEditTextShouldRequestFocus::onNext);
 
-      messagesData
-        .switchMap(data -> backingAndProjectFromData(data, this.client))
+      final Observable<Pair<Backing, Project>> backingAndProject = messagesData
+        .switchMap(data -> backingAndProjectFromData(data, this.client));
+
+      backingAndProject
         .filter(ObjectUtils::isNotNull)
         .compose(bindToLifecycle())
         .subscribe(this.backingAndProject::onNext);
 
-      messagesData
-        .switchMap(data -> backingAndProjectFromData(data, this.client))
+      backingAndProject
         .map(ObjectUtils::isNull)
         .compose(bindToLifecycle())
         .subscribe(this.backingInfoViewIsGone::onNext);
@@ -325,7 +332,6 @@ public interface MessagesViewModel {
       this.backButtonIsGone = this.viewPledgeButtonIsGone.map(BooleanUtils::negate);
       this.closeButtonIsGone = this.backButtonIsGone.map(BooleanUtils::negate);
       this.goBack = this.backOrCloseButtonClicked;
-      this.messageEditTextHint = participant.map(User::name);
       this.projectNameToolbarTextViewText = this.projectNameTextViewText;
       this.scrollRecyclerViewToBottom = updatedMessages.compose(ignoreValues());
       this.sendMessageButtonIsEnabled = Observable.merge(messageHasBody, messageIsSending.map(BooleanUtils::negate));
@@ -406,7 +412,7 @@ public interface MessagesViewModel {
     private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
     private final Observable<Void> goBack;
     private final Observable<Boolean> loadingIndicatorViewIsGone;
-    private final Observable<String> messageEditTextHint;
+    private final BehaviorSubject<String> messageEditTextHint = BehaviorSubject.create();
     private final PublishSubject<Void> messageEditTextShouldRequestFocus = PublishSubject.create();
     private final BehaviorSubject<List<Message>> messageList = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();

@@ -12,6 +12,7 @@ import com.kickstarter.factories.MessageThreadEnvelopeFactory;
 import com.kickstarter.factories.MessageThreadFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.KoalaEvent;
@@ -40,11 +41,11 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Pair<Backing, Project>> backingAndProject = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backingInfoViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> closeButtonIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> creatorNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Void> goBack = new TestSubscriber<>();
   private final TestSubscriber<String> messageEditTextHint = new TestSubscriber<>();
   private final TestSubscriber<Void> messageEditTextShouldRequestFocus = new TestSubscriber<>();
   private final TestSubscriber<List<Message>> messageList = new TestSubscriber<>();
-  private final TestSubscriber<String> participantNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameToolbarTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Void> recyclerViewDefaultBottomPadding = new TestSubscriber<>();
@@ -68,7 +69,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.messageEditTextHint().subscribe(this.messageEditTextHint);
     this.vm.outputs.messageEditTextShouldRequestFocus().subscribe(this.messageEditTextShouldRequestFocus);
     this.vm.outputs.messageList().subscribe(this.messageList);
-    this.vm.outputs.participantNameTextViewText().subscribe(this.participantNameTextViewText);
+    this.vm.outputs.creatorNameTextViewText().subscribe(this.creatorNameTextViewText);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.projectNameToolbarTextViewText().subscribe(this.projectNameToolbarTextViewText);
     this.vm.outputs.recyclerViewDefaultBottomPadding().subscribe(this.recyclerViewDefaultBottomPadding);
@@ -201,6 +202,38 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testCreatorViewingProjectMessages() {
+    final User creator = UserFactory.creator().toBuilder().name("Sharon").build();
+    final User participant = UserFactory.user().toBuilder().name("Timothy").build();
+    final CurrentUserType currentUser = new MockCurrentUser(creator);
+
+    final MessageThread messageThread = MessageThreadFactory.messageThread()
+      .toBuilder()
+      .project(ProjectFactory.project().toBuilder().creator(creator).build())
+      .participant(participant)
+      .build();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread thread) {
+        return Observable.just(
+          MessageThreadEnvelopeFactory.messageThreadEnvelope().toBuilder().messageThread(messageThread).build()
+        );
+      }
+    };
+
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
+    );
+
+    // Start the view model with a message thread.
+    this.vm.intent(messagesContextIntent(messageThread));
+
+    // Creator name is the project creator, edit text hint is always the participant.
+    this.creatorNameTextViewText.assertValues(creator.name());
+    this.messageEditTextHint.assertValues(participant.name());
+  }
+
+  @Test
   public void testGoBack() {
     setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
     this.vm.intent(messagesContextIntent(MessageThreadFactory.messageThread()));
@@ -209,7 +242,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testProjectData() {
+  public void testProjectData_ExistingMessages() {
     final MessageThread messageThread = MessageThreadFactory.messageThread();
 
     final MockApiClient apiClient = new MockApiClient() {
@@ -226,7 +259,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Start the view model with a message thread.
     this.vm.intent(messagesContextIntent(messageThread));
 
-    this.participantNameTextViewText.assertValues(messageThread.project().creator().name());
+    this.creatorNameTextViewText.assertValues(messageThread.project().creator().name());
     this.projectNameTextViewText.assertValues(messageThread.project().name());
     this.projectNameToolbarTextViewText.assertValues(messageThread.project().name());
   }
@@ -283,9 +316,8 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     final Project project = ProjectFactory.project();
 
     final MockApiClient apiClient = new MockApiClient() {
-      @Override
-      public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
-        return Observable.empty();
+      @Override public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
+        return Observable.just(MessageThreadEnvelopeFactory.empty());
       }
     };
 
@@ -298,7 +330,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     // All data except for messages should emit.
     this.messageList.assertNoValues();
-    this.participantNameTextViewText.assertValues(project.creator().name());
+    this.creatorNameTextViewText.assertValues(project.creator().name());
     this.backingAndProject.assertValues(Pair.create(backing, project));
   }
 

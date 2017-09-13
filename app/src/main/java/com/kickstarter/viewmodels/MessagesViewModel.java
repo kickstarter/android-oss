@@ -82,6 +82,9 @@ public interface MessagesViewModel {
     /** Emits a boolean that determines if the close button should be gone. */
     Observable<Boolean> closeButtonIsGone();
 
+    /** Emits the creator name to be displayed. */
+    Observable<String> creatorNameTextViewText();
+
     /** Emits when we should navigate back. */
     Observable<Void> goBack();
 
@@ -96,9 +99,6 @@ public interface MessagesViewModel {
 
     /** Emits a list of messages to be displayed. */
     Observable<List<Message>> messageList();
-
-    /** Emits the participant name to be displayed. */
-    Observable<String> participantNameTextViewText();
 
     /** Emits the project name to be displayed. */
     Observable<String> projectNameTextViewText();
@@ -201,14 +201,16 @@ public interface MessagesViewModel {
 
       // If view model was not initialized with a MessageThread, participant is
       // the project creator.
-      final Observable<User> participant = Observable.merge(
-        initialMessageThreadEnvelope
-          .map(MessageThreadEnvelope::messageThread)
-          .filter(ObjectUtils::isNotNull)
-          .map(MessageThread::participant),
-        project.map(Project::creator)
+      final Observable<User> participant = Observable.combineLatest(
+        initialMessageThreadEnvelope.map(MessageThreadEnvelope::messageThread),
+        project,
+        Pair::create
       )
-        .take(1);
+        .map(threadAndProject ->
+          threadAndProject.first != null
+            ? threadAndProject.first.participant()
+            : threadAndProject.second.creator()
+        );
 
       final Observable<MessagesData> messagesData = Observable.combineLatest(
         backingOrThread,
@@ -290,10 +292,10 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.messageList::onNext);
 
-      participant
-        .map(User::name)
+      project
+        .map(p -> p.creator().name())
         .compose(bindToLifecycle())
-        .subscribe(this.participantNameTextViewText::onNext);
+        .subscribe(this.creatorNameTextViewText::onNext);
 
       initialMessageThreadEnvelope
         .map(MessageThreadEnvelope::messages)
@@ -323,7 +325,7 @@ public interface MessagesViewModel {
       this.backButtonIsGone = this.viewPledgeButtonIsGone.map(BooleanUtils::negate);
       this.closeButtonIsGone = this.backButtonIsGone.map(BooleanUtils::negate);
       this.goBack = this.backOrCloseButtonClicked;
-      this.messageEditTextHint = this.participantNameTextViewText;
+      this.messageEditTextHint = participant.map(User::name);
       this.projectNameToolbarTextViewText = this.projectNameTextViewText;
       this.scrollRecyclerViewToBottom = updatedMessages.compose(ignoreValues());
       this.sendMessageButtonIsEnabled = Observable.merge(messageHasBody, messageIsSending.map(BooleanUtils::negate));
@@ -401,12 +403,12 @@ public interface MessagesViewModel {
     private final BehaviorSubject<Pair<Backing, Project>> backingAndProject = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> backingInfoViewIsGone = BehaviorSubject.create();
     private final Observable<Boolean> closeButtonIsGone;
+    private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
     private final Observable<Void> goBack;
     private final Observable<Boolean> loadingIndicatorViewIsGone;
     private final Observable<String> messageEditTextHint;
     private final PublishSubject<Void> messageEditTextShouldRequestFocus = PublishSubject.create();
     private final BehaviorSubject<List<Message>> messageList = BehaviorSubject.create();
-    private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final Observable<String> projectNameToolbarTextViewText;
     private final Observable<Void> recyclerViewDefaultBottomPadding;
@@ -472,8 +474,8 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<List<Message>> messageList() {
       return this.messageList;
     }
-    @Override public @NonNull Observable<String> participantNameTextViewText() {
-      return this.participantNameTextViewText;
+    @Override public @NonNull Observable<String> creatorNameTextViewText() {
+      return this.creatorNameTextViewText;
     }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;

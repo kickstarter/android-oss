@@ -45,7 +45,7 @@
           tools:text="This Cool Project I Backed"/>
 
         <TextView
-          android:id="@+id/messages_participant_name_text_view"
+          android:id="@+id/messages_creator_name_text_view"
           android:layout_marginBottom="@dimen/grid_5"
           style="@style/FootnotePrimary"
           android:layout_width="wrap_content"

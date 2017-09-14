@@ -2,12 +2,14 @@ package com.kickstarter.factories;
 
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
+import com.kickstarter.models.User;
 
 public final class UpdateFactory {
   private UpdateFactory() {}
 
   public static Update update() {
-    final Project project = ProjectFactory.project();
+    final User creator = UserFactory.creator().toBuilder().id(278438049).build();
+    final Project project = ProjectFactory.project().toBuilder().creator(creator).build();
     final String updatesUrl = "https://www.kck.str/projects/" + project.creator().param() + "/" + project.param() + "/posts";
 
     final Update.Urls.Web web = Update.Urls.Web.builder()

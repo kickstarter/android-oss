@@ -81,6 +81,7 @@ public interface MessageThreadsViewModel {
       this.client = environment.apiClient();
       this.currentUser = environment.currentUser();
 
+      // NB: project from intent can be null.
       final Observable<Project> initialProject = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT));
 
@@ -146,6 +147,7 @@ public interface MessageThreadsViewModel {
         .subscribe(this.isFetchingMessageThreads);
 
       paginator.paginatedData()
+        .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.messageThreadList);
 

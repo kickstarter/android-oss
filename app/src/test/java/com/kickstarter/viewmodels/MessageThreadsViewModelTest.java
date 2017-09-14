@@ -95,10 +95,15 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
       .messageThreads(Collections.singletonList(MessageThreadFactory.messageThread()))
       .build();
 
+    final Project project = ProjectFactory.project().toBuilder().unreadMessagesCount(5).build();
+
     final ApiClientType apiClient = new MockApiClient() {
       @Override public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project,
         final @NonNull Mailbox mailbox) {
         return Observable.just(envelope);
+      }
+      @Override public @NonNull Observable<Project> fetchProject(final @NonNull String param) {
+        return Observable.just(project);
       }
     };
 
@@ -106,7 +111,7 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
       environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
     );
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
     this.messageThreadList.assertValueCount(1);
 
     // Same message threads should not emit again.

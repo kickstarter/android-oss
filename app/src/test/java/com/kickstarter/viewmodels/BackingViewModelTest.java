@@ -85,7 +85,10 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing();
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.backerNameTextViewText.assertValues(backing.backer().name());
     this.koalaTest.assertValues(KoalaEvent.VIEWED_PLEDGE_INFO);
   }
@@ -95,7 +98,10 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing();
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.backerNumberTextViewText.assertValues(NumberUtils.format(backing.sequence()));
   }
 
@@ -104,9 +110,13 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing().toBuilder()
       .amount(50.0f)
       .build();
+
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.backingAmountAndDateTextViewText.assertValues(Pair.create("$50", DateTimeUtils.fullDate(backing.pledgedAt())));
   }
 
@@ -115,7 +125,10 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing();
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.backingStatusTextViewText.assertValue(backing.status());
   }
 
@@ -124,7 +137,10 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing();
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.creatorNameTextViewText.assertValues(backing.project().creator().name());
   }
 
@@ -133,12 +149,17 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Reward reward = RewardFactory.reward().toBuilder()
       .estimatedDeliveryOn(null)
       .build();
+
     final Backing backing = BackingFactory.backing().toBuilder()
       .reward(reward)
       .build();
+
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.estimatedDeliverySectionIsGone.assertValues(true);
   }
 
@@ -147,12 +168,17 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Reward reward = RewardFactory.reward().toBuilder()
       .estimatedDeliveryOn(new DateTime().now())
       .build();
+
     final Backing backing = BackingFactory.backing().toBuilder()
       .reward(reward)
       .build();
+
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.estimatedDeliverySectionIsGone.assertValues(false);
   }
 
@@ -162,12 +188,17 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Reward reward = RewardFactory.reward().toBuilder()
       .estimatedDeliveryOn(testDateTime)
       .build();
+
     final Backing backing = BackingFactory.backing().toBuilder()
       .reward(reward)
       .build();
+
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.estimatedDeliverySectionTextViewText.assertValues(DateTimeUtils.estimatedDeliveryOn(testDateTime));
   }
 
@@ -176,7 +207,10 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing();
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.goBack.assertNoValues();
 
     this.vm.inputs.projectClicked();
@@ -191,7 +225,10 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing();
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.loadBackerAvatar.assertValues(backing.backer().avatar().medium());
   }
 
@@ -200,7 +237,10 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing();
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.loadProjectPhoto.assertValues(backing.project().photo().full());
   }
 
@@ -209,7 +249,10 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing();
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.projectNameTextViewText.assertValues(backing.project().name());
   }
 
@@ -218,12 +261,17 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Reward reward = RewardFactory.reward().toBuilder()
       .minimum(100.0f)
       .build();
+
     final Backing backing = BackingFactory.backing().toBuilder()
       .reward(reward)
       .build();
+
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.rewardMinimumAndDescriptionTextViewText.assertValues(Pair.create("$100", backing.reward().description()));
   }
 
@@ -232,12 +280,17 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Reward reward = RewardFactory.reward().toBuilder()
       .rewardsItems(null)
       .build();
+
     final Backing backing = BackingFactory.backing().toBuilder()
       .reward(reward)
       .build();
+
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.rewardsItemList.assertValues(emptyList());
     this.rewardsItemsAreGone.assertValues(true);
   }
@@ -248,9 +301,13 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing().toBuilder()
       .reward(reward)
       .build();
+
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.rewardsItemList.assertValues(reward.rewardsItems());
     this.rewardsItemsAreGone.assertValues(false);
   }
@@ -260,7 +317,10 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing();
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.shippingLocationTextViewText.assertNoValues();
     this.shippingAmountTextViewText.assertNoValues();
     this.shippingSectionIsGone.assertValues(true);
@@ -278,7 +338,10 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
       .build();
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
+
     this.shippingLocationTextViewText.assertValues("Sydney, AU");
     this.shippingAmountTextViewText.assertValues("$5");
     this.shippingSectionIsGone.assertValues(false);
@@ -289,9 +352,11 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing();
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
-    this.vm.inputs.viewMessagesButtonClicked();
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
 
+    this.vm.inputs.viewMessagesButtonClicked();
     this.startMessagesActivity.assertValues(Pair.create(backing.project(), backing));
   }
 
@@ -301,7 +366,10 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(envWithBacking(BackingFactory.backing()));
 
     this.vm.intent(
-      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true)
+      new Intent()
+        .putExtra(IntentKey.BACKER, backing.backer())
+        .putExtra(IntentKey.PROJECT, backing.project())
+        .putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true)
     );
 
     this.vm.inputs.projectClicked();
@@ -315,7 +383,10 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(envWithBacking(backing));
 
     this.vm.intent(
-      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true)
+      new Intent()
+        .putExtra(IntentKey.BACKER, backing.backer())
+        .putExtra(IntentKey.PROJECT, backing.project())
+        .putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true)
     );
 
     this.viewMessagesButtonIsGone.assertValues(true);
@@ -326,7 +397,9 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing();
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, backing.project()));
+    this.vm.intent(
+      new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer())
+    );
 
     this.viewMessagesButtonIsGone.assertValues(false);
   }

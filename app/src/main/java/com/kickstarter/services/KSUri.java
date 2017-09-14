@@ -34,7 +34,6 @@ public final class KSUri {
     return DISCOVER_PLACES_PATTERN.matcher(path).matches();
   }
 
-
   public static boolean isHivequeenUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.HIVEQUEEN.matcher(uri.getHost()).matches();
   }

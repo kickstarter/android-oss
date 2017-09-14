@@ -123,6 +123,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
 
     this.webView.client().registerRequestHandlers(Arrays.asList(
       new RequestHandler(KSUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),
+      new RequestHandler(KSUri::isNewGuestCheckoutUri, this::handleSignupUriRequest),
       new RequestHandler(KSUri::isSignupUri, this::handleSignupUriRequest)
     ));
 

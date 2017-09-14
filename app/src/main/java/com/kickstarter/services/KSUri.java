@@ -34,12 +34,17 @@ public final class KSUri {
     return DISCOVER_PLACES_PATTERN.matcher(path).matches();
   }
 
+
   public static boolean isHivequeenUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.HIVEQUEEN.matcher(uri.getHost()).matches();
   }
 
   public static boolean isKickstarterUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return uri.getHost().equals(Uri.parse(webEndpoint).getHost());
+  }
+
+  public static boolean isNewGuestCheckoutUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
+    return isKickstarterUri(uri, webEndpoint) && NEW_GUEST_CHECKOUT_PATTERN.matcher(uri.getPath()).matches();
   }
 
   public static boolean isProjectUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
@@ -99,6 +104,11 @@ public final class KSUri {
 
   // /discover/places/param
   private static final Pattern DISCOVER_PLACES_PATTERN = Pattern.compile("\\A\\/discover\\/places\\/[a-zA-Z0-9-_]+\\z");
+
+  // /checkouts/:checkout_id/guest/new
+  private static final Pattern NEW_GUEST_CHECKOUT_PATTERN = Pattern.compile(
+    "\\A\\/checkouts\\/[a-zA-Z0-9-_]+\\/guest\\/new\\z"
+  );
 
   // /projects/:creator_param/:project_param
   private static final Pattern PROJECT_PATTERN = Pattern.compile(

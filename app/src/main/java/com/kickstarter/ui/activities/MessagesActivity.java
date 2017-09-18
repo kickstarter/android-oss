@@ -26,6 +26,7 @@ import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.MessagesAdapter;
 import com.kickstarter.ui.views.IconButton;
@@ -51,9 +52,9 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   protected @Bind(R.id.backing_amount_text_view) TextView backingAmountTextViewText;
   protected @Bind(R.id.backing_info_view) View backingInfoView;
   protected @Bind(R.id.messages_toolbar_close_button) IconButton closeButton;
+  protected @Bind(R.id.messages_creator_name_text_view) TextView creatorNameTextView;
   protected @Bind(R.id.messages_loading_indicator) View loadingIndicatorView;
   protected @Bind(R.id.message_edit_text) EditText messageEditText;
-  protected @Bind(R.id.messages_participant_name_text_view) TextView participantNameTextView;
   protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
   protected @Bind(R.id.messages_project_name_collapsed_text_view) TextView projectNameToolbarTextView;
   protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
@@ -112,6 +113,13 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.closeButton));
 
+    this.viewModel.outputs.creatorNameTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(name ->
+        this.creatorNameTextView.setText(this.ksString.format(this.byCreatorString, "creator_name", name))
+      );
+
     this.viewModel.outputs.goBack()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -136,13 +144,6 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.adapter::messages);
-
-    this.viewModel.outputs.participantNameTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(name ->
-        this.participantNameTextView.setText(this.ksString.format(this.byCreatorString, "creator_name", name))
-      );
 
     this.viewModel.outputs.projectNameTextViewText()
       .compose(bindToLifecycle())
@@ -276,9 +277,10 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.messageEditText.setHint(this.ksString.format(this.messageUserNameString, "user_name", name));
   }
 
-  private void startBackingActivity(final @NonNull Project project) {
+  private void startBackingActivity(final @NonNull Pair<Project, User> projectAndBacker) {
     final Intent intent = new Intent(this, BackingActivity.class)
-      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.PROJECT, projectAndBacker.first)
+      .putExtra(IntentKey.BACKER, projectAndBacker.second)
       .putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true);
 
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);

@@ -9,6 +9,13 @@ import java.util.Collections;
 public final class MessageThreadEnvelopeFactory {
   private MessageThreadEnvelopeFactory() {}
 
+  public static @NonNull MessageThreadEnvelope empty() {
+    return messageThreadEnvelope()
+      .toBuilder()
+      .messages(null)
+      .build();
+  }
+
   public static @NonNull MessageThreadEnvelope messageThreadEnvelope() {
     return MessageThreadEnvelope.builder()
       .messages(Collections.singletonList(MessageFactory.message()))

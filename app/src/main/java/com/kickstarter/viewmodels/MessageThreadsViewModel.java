@@ -11,10 +11,13 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.MessageThread;
+import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.MessageThreadsActivity;
 import com.kickstarter.ui.data.Mailbox;
 
@@ -78,38 +81,64 @@ public interface MessageThreadsViewModel {
       this.client = environment.apiClient();
       this.currentUser = environment.currentUser();
 
-      final Observable<Void> refreshUser = Observable.merge(this.onResume, this.swipeRefresh);
+      // NB: project from intent can be null.
+      final Observable<Project> initialProject = intent()
+        .map(i -> i.getParcelableExtra(IntentKey.PROJECT));
+
+      final Observable<Void> refreshUserOrProject = Observable.merge(this.onResume, this.swipeRefresh);
 
       final Observable<User> freshUser = intent()
-        .compose(takeWhen(refreshUser))
+        .compose(takeWhen(refreshUserOrProject))
         .switchMap(__ -> this.client.fetchCurrentUser())
         .retry(2)
         .compose(neverError());
 
       freshUser.subscribe(this.currentUser::refresh);
 
-      final Observable<Integer> unreadMessagesCount = this.currentUser.loggedInUser()
-        .map(User::unreadMessagesCount)
+      final Observable<Project> project = Observable.merge(
+        initialProject,
+        initialProject
+          .compose(takeWhen(refreshUserOrProject))
+          .map(Project::param)
+          .switchMap(this.client::fetchProject)
+          .compose(neverError())
+          .share()
+      );
+
+      // Use project unread messages count if configured with a project,
+      // in the case of a creator viewing their project's messages.
+      final Observable<Integer> unreadMessagesCount = Observable.combineLatest(
+        project,
+        this.currentUser.loggedInUser(),
+        Pair::create
+      )
+        .map(projectAndUser ->
+          projectAndUser.first != null
+            ? projectAndUser.first.unreadMessagesCount()
+            : projectAndUser.second.unreadMessagesCount()
+        )
         .distinctUntilChanged();
 
-      // Ping refresh on initial load to trigger paginator
-      intent()
-        .take(1)
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.swipeRefresh());
-
-      final Observable<Void> startOverWith = Observable.merge(
+      // todo: MessageSubject switch will also trigger refresh
+      final Observable<Void> refreshMessageThreads = Observable.merge(
         unreadMessagesCount.compose(ignoreValues()),
         this.swipeRefresh
       );
 
-      final ApiPaginator<MessageThread, MessageThreadsEnvelope, Void> paginator =
-        ApiPaginator.<MessageThread, MessageThreadsEnvelope, Void>builder()
+      final Observable<Project> startOverWith = Observable.combineLatest(
+        project,
+        refreshMessageThreads,
+        Pair::create
+      )
+        .map(PairUtils::first);
+
+      final ApiPaginator<MessageThread, MessageThreadsEnvelope, Project> paginator =
+        ApiPaginator.<MessageThread, MessageThreadsEnvelope, Project>builder()
           .nextPage(this.nextPage)
           .startOverWith(startOverWith)
           .envelopeToListOfData(MessageThreadsEnvelope::messageThreads)
           .envelopeToMoreUrl(env -> env.urls().api().moreMessageThreads())
-          .loadWithParams(__ -> this.client.fetchMessageThreads(Mailbox.INBOX))
+          .loadWithParams(p -> this.client.fetchMessageThreads(p, Mailbox.INBOX))
           .loadWithPaginationPath(this.client::fetchMessageThreadsWithPaginationPath)
           .build();
 
@@ -118,17 +147,25 @@ public interface MessageThreadsViewModel {
         .subscribe(this.isFetchingMessageThreads);
 
       paginator.paginatedData()
+        .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.messageThreadList);
 
-      this.hasNoMessages = unreadMessagesCount.map(ObjectUtils::isNull);
-      this.hasNoUnreadMessages = unreadMessagesCount.map(IntegerUtils::isZero);
+      unreadMessagesCount
+        .map(ObjectUtils::isNull)
+        .subscribe(this.hasNoMessages);
 
-      this.unreadCountTextViewColorInt = unreadMessagesCount
-        .map(count -> intValueOrZero(count) > 0 ? R.color.ksr_text_green_700 : R.color.ksr_dark_grey_400);
+      unreadMessagesCount
+        .map(IntegerUtils::isZero)
+        .subscribe(this.hasNoUnreadMessages);
 
-      this.unreadCountTextViewTypefaceInt = unreadMessagesCount
-        .map(count -> intValueOrZero(count) > 0 ? Typeface.BOLD : Typeface.NORMAL);
+      unreadMessagesCount
+        .map(count -> intValueOrZero(count) > 0 ? R.color.ksr_text_green_700 : R.color.ksr_dark_grey_400)
+        .subscribe(this.unreadCountTextViewColorInt);
+
+      unreadMessagesCount
+        .map(count -> intValueOrZero(count) > 0 ? Typeface.BOLD : Typeface.NORMAL)
+        .subscribe(this.unreadCountTextViewTypefaceInt);
 
       this.unreadCountToolbarTextViewIsGone = Observable.zip(
         this.hasNoMessages,
@@ -137,9 +174,10 @@ public interface MessageThreadsViewModel {
       )
         .map(noMessagesAndNoUnread -> noMessagesAndNoUnread.first || noMessagesAndNoUnread.second);
 
-      this.unreadMessagesCount = unreadMessagesCount
+      unreadMessagesCount
         .filter(ObjectUtils::isNotNull)
-        .filter(IntegerUtils::isNonZero);
+        .filter(IntegerUtils::isNonZero)
+        .subscribe(this.unreadMessagesCount);
 
       intent()
         .take(1)
@@ -151,14 +189,14 @@ public interface MessageThreadsViewModel {
     private final PublishSubject<Void> onResume = PublishSubject.create();
     private final PublishSubject<Void> swipeRefresh = PublishSubject.create();
 
-    private final Observable<Boolean> hasNoMessages;
-    private final Observable<Boolean> hasNoUnreadMessages;
+    private final BehaviorSubject<Boolean> hasNoMessages = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> hasNoUnreadMessages = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> isFetchingMessageThreads = BehaviorSubject.create();
     private final BehaviorSubject<List<MessageThread>> messageThreadList = BehaviorSubject.create();
-    private final Observable<Integer> unreadCountTextViewColorInt;
-    private final Observable<Integer> unreadCountTextViewTypefaceInt;
+    private final BehaviorSubject<Integer> unreadCountTextViewColorInt = BehaviorSubject.create();
+    private final BehaviorSubject<Integer> unreadCountTextViewTypefaceInt = BehaviorSubject.create();
     private final Observable<Boolean> unreadCountToolbarTextViewIsGone;
-    private final Observable<Integer> unreadMessagesCount;
+    private final BehaviorSubject<Integer> unreadMessagesCount = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;

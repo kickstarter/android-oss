@@ -78,8 +78,6 @@ public interface ApiClientType {
 
   @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull Long messageThreadId);
 
-  @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @NonNull Mailbox mailbox);
-
   @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project, final @NonNull Mailbox mailbox);
 
   @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreadsWithPaginationPath(final @NonNull String paginationPath);

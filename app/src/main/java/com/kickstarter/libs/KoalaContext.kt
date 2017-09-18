@@ -56,6 +56,25 @@ class KoalaContext {
   }
 
   /**
+   * Determines the place from which the share sheet was shown.
+   *
+   * CREATOR_DASHBOARD:   Sharing a creator's project from their dashboard.
+   * DISCOVERY:           Sharing a project from the discovery page.
+   * LIVE_STREAM:         Sharing a live stream from the countdown or stream itself.
+   * PROJECT:             Sharing a project from the project screen.
+   * THANKS:              Sharing a project from the checkout-thanks screen.
+   * UPDATE:              Sharing an update from the update screen.
+   */
+  enum class Share(val trackingString: String) {
+    CREATOR_DASHBOARD("creator_dashboard"),
+    DISCOVERY("discovery"),
+    LIVE_STREAM("live_stream"),
+    PROJECT("project"),
+    THANKS("thanks"),
+    UPDATE("update"),
+  }
+
+  /**
    * Determines the place from which the Update was presented.
    *
    * UPDATES:           The updates index.

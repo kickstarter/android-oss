@@ -13,10 +13,13 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.activities.MessageThreadsActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.CreatorDashboardHeaderHolderViewModel;
 
 import java.math.RoundingMode;
@@ -35,11 +38,13 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   protected @Bind(R.id.creator_dashboard_amount_raised) TextView amountRaisedTextView;
   protected @Bind(R.id.creator_dashboard_backer_count) TextView backerCountTextView;
   protected @Bind(R.id.creator_dashboard_funding_text) TextView fundingTextTextView;
+  protected @Bind(R.id.creator_dashboard_messages_button) IconButton messagesButton;
   protected @Bind(R.id.creator_dashboard_percent) TextView percentTextView;
   protected @Bind(R.id.creator_dashboard_project_blurb) TextView projectBlurbTextView;
   protected @Bind(R.id.creator_dashboard_project_name) TextView projectNameTextView;
   protected @Bind(R.id.creator_dashboard_time_remaining) TextView timeRemainingTextView;
   protected @Bind(R.id.creator_dashboard_time_remaining_text) TextView timeRemainingTextTextView;
+
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 
   private final @Nullable Delegate delegate;
@@ -48,7 +53,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   private KSCurrency ksCurrency;
 
   public interface Delegate {
-    void projectsMenuClicked();
+    void dashboardShowProjectMenuClicked();
   }
 
   public CreatorDashboardHeaderViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
@@ -70,6 +75,11 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setPledgedOfGoalString);
+
+    this.viewModel.outputs.messagesButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.messagesButton));
 
     this.viewModel.outputs.percentageFunded()
       .compose(bindToLifecycle())
@@ -96,6 +106,11 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.timeRemainingTextView::setText);
 
+    this.viewModel.outputs.startMessageThreadsActivity()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startMessageThreadsActivity);
+
     this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -104,12 +119,17 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
 
   @OnClick(R.id.project_name_blurb_arrow_view)
   protected void dashboardShowProjectMenuClicked() {
-    this.delegate.projectsMenuClicked();
+    this.delegate.dashboardShowProjectMenuClicked();
+  }
+
+  @OnClick(R.id.creator_dashboard_messages_button)
+  protected void dashbordMessagesButtonClick() {
+    this.viewModel.inputs.messagesButtonClicked();
   }
 
   @OnClick(R.id.creator_view_project_button)
   protected void viewProjectButtonClicked() {
-    this.viewModel.inputs.projectViewClicked();
+    this.viewModel.inputs.viewProjectButtonClicked();
   }
 
   @Override
@@ -128,6 +148,12 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
 
   private void setTimeRemainingTextTextView(final @NonNull Project currentProject) {
     this.timeRemainingTextTextView.setText(ProjectUtils.deadlineCountdownDetail(currentProject, this.context(), this.ksString));
+  }
+
+  private void startMessageThreadsActivity(final @NonNull Project project) {
+    final Intent intent = new Intent(this.context(), MessageThreadsActivity.class)
+      .putExtra(IntentKey.PROJECT, project);
+    this.context().startActivity(intent);
   }
 
   private void startProjectActivity(final @NonNull Project project, final @NonNull RefTag refTag) {

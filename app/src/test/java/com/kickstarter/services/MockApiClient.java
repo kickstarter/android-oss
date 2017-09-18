@@ -193,11 +193,6 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @NonNull Mailbox mailbox) {
-    return Observable.just(MessageThreadsEnvelopeFactory.messageThreadsEnvelope());
-  }
-
-  @Override
   public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project, final @NonNull Mailbox mailbox) {
     return Observable.just(MessageThreadsEnvelopeFactory.messageThreadsEnvelope());
   }

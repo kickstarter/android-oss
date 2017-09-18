@@ -248,11 +248,6 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @NonNull Mailbox mailbox) {
-    return this.fetchMessageThreads(null, mailbox);
-  }
-
-  @Override
   public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project,
     final @NonNull Mailbox mailbox) {
 

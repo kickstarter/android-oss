@@ -7,6 +7,7 @@ public final class IntentKey {
    * Names require package prefix:
    * http://developer.android.com/reference/android/content/Intent.html#putExtra%28java.lang.String,%20boolean%29
    */
+  public static final String BACKER = "com.kickstarter.kickstarter.intent_backer";
   public static final String BACKING = "com.kickstarter.kickstarter.intent_backing";
   public static final String DISCOVERY_PARAMS = "com.kickstarter.kickstarter.intent_discovery_params";
   public static final String EMAIL = "com.kickstarter.kickstarter.intent_email";

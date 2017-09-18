@@ -63,7 +63,7 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
       ProjectFactory.project()
     );
 
-    final ProjectStatsEnvelope ProjectStatsEnvelope = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
+    final ProjectStatsEnvelope ProjectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
     final MockApiClient apiClient = new MockApiClient() {
       @Override public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
         return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects));

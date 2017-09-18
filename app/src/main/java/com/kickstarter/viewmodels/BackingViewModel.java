@@ -35,7 +35,6 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
@@ -125,6 +124,10 @@ public interface BackingViewModel {
       this.currentUser = environment.currentUser();
       this.ksCurrency = environment.ksCurrency();
 
+      final Observable<User> backerFromIntent = intent()
+        .map(i -> i.getParcelableExtra(IntentKey.BACKER))
+        .ofType(User.class);
+
       final Observable<Project> project = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
         .ofType(Project.class);
@@ -133,13 +136,9 @@ public interface BackingViewModel {
         .map(i -> i.getBooleanExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, false))
         .ofType(Boolean.class);
 
-      final Observable<Backing> backing = project
-        .compose(combineLatestPair(this.currentUser.observable()))
-        .filter(pu -> pu.second != null)
-        .switchMap(pu -> this.client.fetchProjectBacking(pu.first, pu.second)
-          .retry(3)
-          .compose(neverError())
-        )
+      final Observable<Backing> backing = Observable.combineLatest(project, backerFromIntent, Pair::create)
+        .switchMap(pb -> this.client.fetchProjectBacking(pb.first, pb.second))
+        .compose(neverError())
         .share();
 
       final Observable<User> backer = backing

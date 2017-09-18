@@ -3,19 +3,26 @@ package com.kickstarter.viewmodels;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
 import com.kickstarter.factories.MessageThreadFactory;
 import com.kickstarter.factories.MessageThreadsEnvelopeFactory;
+import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
+import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.models.Empty;
 import com.kickstarter.models.MessageThread;
+import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.data.Mailbox;
 
 import org.junit.Test;
@@ -48,21 +55,63 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testMessageThreadsEmit() {
+  public void testMessageThreadsEmit_NoProjectIntent() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+    currentUser.login(UserFactory.user().toBuilder().unreadMessagesCount(0).build(), "beefbod5");
+
     final MessageThreadsEnvelope envelope = MessageThreadsEnvelopeFactory.messageThreadsEnvelope()
       .toBuilder()
       .messageThreads(Collections.singletonList(MessageThreadFactory.messageThread()))
       .build();
 
     final ApiClientType apiClient = new MockApiClient() {
-      @Override public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @NonNull Mailbox mailbox) {
+      @Override public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project,
+        final @NonNull Mailbox mailbox) {
         return Observable.just(envelope);
       }
     };
 
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
+    );
 
-    this.vm.intent(new Intent());
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, Empty.INSTANCE));
+    this.messageThreadList.assertValueCount(1);
+
+    // Same message threads should not emit again.
+    this.vm.inputs.onResume();
+    this.messageThreadList.assertValueCount(1);
+
+    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_INBOX);
+  }
+
+  @Test
+  public void testMessageThreadsEmit_WithProjectIntent() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+    currentUser.login(UserFactory.user().toBuilder().unreadMessagesCount(0).build(), "beefbod5");
+
+    final MessageThreadsEnvelope envelope = MessageThreadsEnvelopeFactory.messageThreadsEnvelope()
+      .toBuilder()
+      .messageThreads(Collections.singletonList(MessageThreadFactory.messageThread()))
+      .build();
+
+    final Project project = ProjectFactory.project().toBuilder().unreadMessagesCount(5).build();
+
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project,
+        final @NonNull Mailbox mailbox) {
+        return Observable.just(envelope);
+      }
+      @Override public @NonNull Observable<Project> fetchProject(final @NonNull String param) {
+        return Observable.just(project);
+      }
+    };
+
+    setUpEnvironment(
+      environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
+    );
+
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
     this.messageThreadList.assertValueCount(1);
 
     // Same message threads should not emit again.

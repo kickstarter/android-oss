@@ -20,9 +20,11 @@ public final class KoalaEvent {
   public static final String PROJECT_COMMENT_LOAD_OLDER = "Project Comment Load Older";
   public static final String PROJECT_COMMENT_VIEW = "Project Comment View";
   public static final String PROJECT_PAGE = "Project Page";
+  public static final String PROJECT_SHOW_SHARE_SHEET_LEGACY = "Project Show Share Sheet";
   public static final String PROJECT_STAR = "Project Star";
   public static final String PROJECT_UNSTAR = "Project Unstar";
   public static final String SENT_MESSAGE = "Sent Message";
+  public static final String SHOWED_SHARE_SHEET = "Showed Share Sheet";
   public static final String STARRED_PROJECT = "Starred Project";
   public static final String UNSTARRED_PROJECT = "Unstarred Project";
   public static final String VIEWED_COMMENTS = "Viewed Comments";

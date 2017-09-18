@@ -37,7 +37,9 @@ public interface CreatorDashboardFragmentViewModel {
         .ofType(Project.class);
 
       final Observable<ProjectStatsEnvelope> projectStatsEnvelope = arguments()
-        .map(args -> args.getParcelable(ArgumentsKey.CREATOR_DASHBOARD_PROJECT_STATS))
+        .map(
+          args -> args.getParcelable(ArgumentsKey.CREATOR_DASHBOARD_PROJECT_STATS)
+        )
         .ofType(ProjectStatsEnvelope.class);
 
       Observable.combineLatest(

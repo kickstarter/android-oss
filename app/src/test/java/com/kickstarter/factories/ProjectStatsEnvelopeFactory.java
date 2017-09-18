@@ -39,12 +39,13 @@ public final class ProjectStatsEnvelopeFactory {
       .toBuilder()
       .build();
 
+    final List<ProjectStatsEnvelope.FundingDateStats> fundingDateStatsList = Arrays.asList(fundingDateStats);
     final List<ProjectStatsEnvelope.RewardStats> rewardStatsList = Arrays.asList(rewardStats);
     final List<ProjectStatsEnvelope.ReferrerStats> referrerStatsList = Arrays.asList(referrerStats);
 
     return ProjectStatsEnvelope.builder()
-      .cumulativeStats(cumulativeStats)
-      .fundingDateStats(fundingDateStats)
+      .cumulative(cumulativeStats)
+      .fundingDistribution(fundingDateStatsList)
       .referralDistribution(referrerStatsList)
       .rewardDistribution(rewardStatsList)
       .videoStats(videoStats)
@@ -73,7 +74,7 @@ public final class ProjectStatsEnvelopeFactory {
         .backersCount(10)
         .cumulativePledged(500)
         .cumulativeBackersCount(10)
-        .timeInterval(new DateTime())
+        .date(new DateTime())
         .pledged(500)
         .build();
     }
@@ -86,10 +87,10 @@ public final class ProjectStatsEnvelopeFactory {
       return ProjectStatsEnvelope.ReferrerStats.builder()
         .backersCount(10)
         .code("wots_this")
-        .percentageOfDollars(50.0)
+        .percentageOfDollars(50)
         .pledged(500)
         .referrerName("Important Referrer")
-        .referrerType(ReferrerType.EXTERNAL)
+        .referrerType(ReferrerType.EXTERNAL.getReferrerType())
         .build();
     }
   }

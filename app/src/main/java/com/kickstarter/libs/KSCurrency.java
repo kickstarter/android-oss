@@ -69,7 +69,7 @@ public final class KSCurrency {
 
   /**
    * Build {@link CurrencyOptions} based on the project and whether we would prefer to show USD. Even if USD is preferred,
-   * we only show USD if the user is in the US.
+   * we only show USD if the user is in the US.w
    */
   private @NonNull CurrencyOptions currencyOptions(final float value, final @NonNull Project project,
     final boolean preferUSD) {

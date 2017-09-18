@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 
-function say {
+say () {
   str=$1
   ruby -e "print \"\033[0;32m$1\033[0m\n\""
 }
 
-function loudspeaker {
+loudspeaker () {
   str=$1
   ruby -e "print \"\n\033[0;31m📢  📢  📢  $1\033[0m\n\n\""
 }

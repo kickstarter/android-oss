@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
@@ -162,5 +164,10 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
 
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
     transition(this, slideInFromRight());
+  }
+
+  protected @Nullable
+  Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
   }
 }

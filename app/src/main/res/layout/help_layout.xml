@@ -19,12 +19,8 @@
     android:id="@+id/loading_indicator_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_below="@id/help_toolbar">
-
-    <View
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="@color/white_alpha_60"/>
+    android:layout_below="@id/help_toolbar"
+    android:background="@color/white_alpha_60">
 
     <ProgressBar
       android:id="@+id/loading_indicator"

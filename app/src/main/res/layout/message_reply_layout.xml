@@ -27,6 +27,7 @@
       android:textColor="@color/text_primary"
       android:textCursorDrawable="@null"
       android:background="@color/transparent"
+      android:inputType="textCapSentences"
       android:layout_toStartOf="@+id/send_message_button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

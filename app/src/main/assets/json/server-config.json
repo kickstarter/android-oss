@@ -76,6 +76,8 @@
       "Creator_name_live_streamed_time_ago": "<b>%{creator_name}</b> live streamed %{time_ago}",
       "Creator_name_was_streaming_live_on_Kickstarter": "%{creator_name} was streaming live on Kickstarter",
       "Creator_name_will_be_streaming_live_on_Kickstarter_in_duration": "%{creator_name} will be streaming live on Kickstarter %{in_duration}",
+      "Creator_tips": "Creator tips",
+      "Daily_digest": "Daily digest",
       "days": {
         "zero": "days",
         "one": "day",
@@ -90,6 +92,7 @@
       "Done": "Done",
       "Earth": "Earth",
       "Either_the_pledge_or_the_project_was_canceled": "Either the pledge or the project was canceled before the deadline.",
+      "Email_frequency": "Email frequency",
       "Email_notifications": "Email notifications",
       "Ending_soon": "Ending Soon",
       "Explore_creative_projects": "Explore creative projects",
@@ -158,6 +161,7 @@
       },
       "hours_plural": "hours",
       "Id_just_like_to_support_the_project": "I’d just like to support the project.",
+      "Individual_Emails": "Individual emails",
       "Info": "Info",
       "Its_a_way_to_bring_creative_projects_to_life": "It’s a way to bring creative projects to life.",
       "Its_better_with_friends": "It’s better\nwith friends.",
@@ -202,6 +206,7 @@
         "many": "minutes"
       },
       "minutes_plural": "minutes",
+      "New_pledge_activity": "New pledge activity",
       "No_comments_yet": "No comments yet.",
       "No_messages": "No messages",
       "No_one_has_posted_an_update_yet": "No one has posted an update yet.",
@@ -272,6 +277,7 @@
       "Project_saved": "Project saved.",
       "Project_Suspended": "Project Suspended.",
       "Projects_We_Love": "Projects We Love",
+      "Projects_youve_launched": "Projects you've launched",
       "Public_comment": "Public comment",
       "Pursue_daring_ideas": "Pursue\ndaring ideas.",
       "Push_notifications": "Push notifications",
@@ -1982,6 +1988,8 @@
       "Creator_name_live_streamed_time_ago": "<b>%{creator_name}</b> war vor %{time_ago} im Live-Stream",
       "Creator_name_was_streaming_live_on_Kickstarter": "Der Stream von %{creator_name} war gerade live auf Kickstarter",
       "Creator_name_will_be_streaming_live_on_Kickstarter_in_duration": "%{creator_name} wird in %{in_duration} live auf Kickstarter streamen",
+      "Creator_tips": "Creator tips",
+      "Daily_digest": "Daily digest",
       "days": {
         "zero": "Tg",
         "one": "Tag",
@@ -1996,6 +2004,7 @@
       "Done": "Fertig!",
       "Earth": "Erde",
       "Either_the_pledge_or_the_project_was_canceled": "Entweder der Finanzierungsbeitrag wurde zurückgezogen oder das Projekt wurde abgebrochen, bevor die Frist abgelaufen war.",
+      "Email_frequency": "Email frequency",
       "Email_notifications": "Benachrichtigung per E-Mail",
       "Ending_soon": "Endet bald",
       "Explore_creative_projects": "Erkunde kreative Projekte",
@@ -2064,6 +2073,7 @@
       },
       "hours_plural": "Std",
       "Id_just_like_to_support_the_project": "Ich möchte das Projekt einfach nur unterstützen.",
+      "Individual_Emails": "Individual emails",
       "Info": "Info",
       "Its_a_way_to_bring_creative_projects_to_life": "Es ist eine Plattform, um kreative Projekte ins Leben zu rufen.",
       "Its_better_with_friends": "Gemeinsam mehr erreichen",
@@ -2108,6 +2118,7 @@
         "many": "Min"
       },
       "minutes_plural": "Min",
+      "New_pledge_activity": "New pledge activity",
       "No_comments_yet": "Bisher noch keine Kommentare.",
       "No_messages": "Keine Nachrichten",
       "No_one_has_posted_an_update_yet": "Es wurden noch keine Updates gepostet.",
@@ -2178,6 +2189,7 @@
       "Project_saved": "Projekt gespeichert.",
       "Project_Suspended": "Projekt ausgesetzt.",
       "Projects_We_Love": "Team-Favoriten",
+      "Projects_youve_launched": "Projects you've launched",
       "Public_comment": "Öffentlicher Kommentar",
       "Pursue_daring_ideas": "Zündende Ideen.",
       "Push_notifications": "Push-Benachrichtigungen",
@@ -3888,6 +3900,8 @@
       "Creator_name_live_streamed_time_ago": "<b>%{creator_name}</b> transmitió en vivo hace %{time_ago}",
       "Creator_name_was_streaming_live_on_Kickstarter": "%{creator_name} estuvo transmitiendo en vivo en Kickstarter",
       "Creator_name_will_be_streaming_live_on_Kickstarter_in_duration": "%{creator_name} estará trasnmitiendo en vivo en Kickstarter %{in_duration}",
+      "Creator_tips": "Creator tips",
+      "Daily_digest": "Daily digest",
       "days": {
         "zero": "días",
         "one": "día",
@@ -3902,6 +3916,7 @@
       "Done": "Listo",
       "Earth": "Tierra",
       "Either_the_pledge_or_the_project_was_canceled": "Se canceló la contribución o el proyecto antes de que el plazo terminara.",
+      "Email_frequency": "Email frequency",
       "Email_notifications": "Notificaciones por correo electrónico",
       "Ending_soon": "Finaliza pronto",
       "Explore_creative_projects": "Explora proyectos creativos",
@@ -3970,6 +3985,7 @@
       },
       "hours_plural": "horas",
       "Id_just_like_to_support_the_project": "Sólo quiero apoyar este proyecto.",
+      "Individual_Emails": "Individual emails",
       "Info": "Información",
       "Its_a_way_to_bring_creative_projects_to_life": "Es una plataforma para dar vida a proyectos creativos.",
       "Its_better_with_friends": "Todo en la vida es mejor con amigos ...",
@@ -4014,6 +4030,7 @@
         "many": "minutos"
       },
       "minutes_plural": "minutos",
+      "New_pledge_activity": "New pledge activity",
       "No_comments_yet": "No hay comentarios todavia.",
       "No_messages": "No hay mensajes",
       "No_one_has_posted_an_update_yet": "Todavía no se han publicado actualizaciones.",
@@ -4084,6 +4101,7 @@
       "Project_saved": "Proyecto guardado.",
       "Project_Suspended": "Proyecto suspendido.",
       "Projects_We_Love": "Nuestros Favoritos",
+      "Projects_youve_launched": "Projects you've launched",
       "Public_comment": "Comentario público",
       "Pursue_daring_ideas": "Un universo de geniales ideas.",
       "Push_notifications": "Notificaciones Push",
@@ -5794,6 +5812,8 @@
       "Creator_name_live_streamed_time_ago": "<b>%{creator_name}</b> a fait une diffusion en direct %{time_ago}",
       "Creator_name_was_streaming_live_on_Kickstarter": "%{creator_name} était en direct sur Kickstarter",
       "Creator_name_will_be_streaming_live_on_Kickstarter_in_duration": "%{creator_name} sera en direct sur Kickstarter %{in_duration}",
+      "Creator_tips": "Astuces pour créateurs",
+      "Daily_digest": "Résumé quotidien",
       "days": {
         "zero": "jours",
         "one": "jour",
@@ -5808,6 +5828,7 @@
       "Done": "Terminé",
       "Earth": "Terre",
       "Either_the_pledge_or_the_project_was_canceled": "Soit l'engagement soit le projet a été annulé avant la date limite.",
+      "Email_frequency": "Fréquence d'envoi des e-mails",
       "Email_notifications": "Notifications par e-mail",
       "Ending_soon": "Campagnes bientôt terminées",
       "Explore_creative_projects": "Découvrez des projets créatifs",
@@ -5876,6 +5897,7 @@
       },
       "hours_plural": "heures",
       "Id_just_like_to_support_the_project": "Je souhaite simplement soutenir le projet.",
+      "Individual_Emails": "E-mails individuels",
       "Info": "Info",
       "Its_a_way_to_bring_creative_projects_to_life": "C'est un outil qui permet de donner vie à des projets créatifs.",
       "Its_better_with_friends": "On est mieux ensemble.",
@@ -5920,6 +5942,7 @@
         "many": "minutes"
       },
       "minutes_plural": "minutes",
+      "New_pledge_activity": "Nouveaux engagements",
       "No_comments_yet": "Pas de commentaires.",
       "No_messages": "Pas de messages",
       "No_one_has_posted_an_update_yet": "Pas d'actus publiées pour le moment.",
@@ -5990,6 +6013,7 @@
       "Project_saved": "Projet enregistré.",
       "Project_Suspended": "Projet suspendu.",
       "Projects_We_Love": "Nos coups de cœur",
+      "Projects_youve_launched": "Les projets que vous avez lancés",
       "Public_comment": "Commentaire public",
       "Pursue_daring_ideas": "Des idées audacieuses.",
       "Push_notifications": "Notifications push",
@@ -6514,8 +6538,8 @@
             "promo": "Nouvelles et évènements Kickstarter",
             "happening": "Happening",
             "games": "Kickstarter aime les jeux",
-            "invent": "Invent",
-            "arts": "Arts & Culture News",
+            "invent": "Inventions",
+            "arts": "Actualités art et culture",
             "opt_in": {
               "title": "Dernière étape !",
               "message": "Nous vous avons envoyé un e-mail de confirmation à l'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}."
@@ -7623,6 +7647,1918 @@
         "cancel": "Annuler",
         "upgrade": "Mise à jour"
       }
+    },
+    "ja": {
+      "About_reward_amount": "約 %{reward_amount}　",
+      "Add_attachments": "添付ファイルを追加...",
+      "All_Projects": "全てのプロジェクト",
+      "All_category_name_Projects": "%{category_name} の全プロジェクト",
+      "All_Art_Projects": "全てのアートプロジェクト",
+      "All_Comics_Projects": "全てのコミックプロジェクト",
+      "All_Crafts_Projects": "全ての工芸プロジェクト",
+      "All_Dance_Projects": "全てのダンスプロジェクト",
+      "All_Design_Projects": "全てのデザインプロジェクト",
+      "All_Fashion_Projects": "全てのファッションプロジェクト",
+      "All_Film_Projects": "全ての映画と動画プロジェクト",
+      "All_Food_Projects": "全てのフードプロジェクト",
+      "All_Games_Projects": "全てのゲームプロジェクト",
+      "All_gone": "終了",
+      "All_Journalism_Projects": "全てのジャーナリズムプロジェクト",
+      "All_Music_Projects": "全てのミュージックプロジェクト",
+      "All_Photography_Projects": "全てのフォトグラフィープロジェクト",
+      "All_Publishing_Projects": "全ての出版プロジェクト",
+      "All_Tech_Projects": "全てのテクノロジープロジェクト",
+      "All_Theater_Projects": "全ての演劇プロジェクト",
+      "Amount_previous_amount": "金額: %{amount}, 以前の金額: %{previous_amount}",
+      "Amount_reward": "金額：%{amount}、%{reward}",
+      "Ask_me_anything": "お問い合わせ",
+      "Available_to_watch_for_time_more_units": "さらに%{time} の%{units} を見ることができます",
+      "Back": "バック",
+      "Back_this_project_below": "このプロジェクトをバックする",
+      "Backed_by_Friends": "友達がバックしたプロジェクト",
+      "Backed_by_people_you_follow": "フォロー中の友達がバック",
+      "Backed_projects_projects_count": "%{project_count} 個のバックしたプロジェクト",
+      "Backer_has_pledged_to_this_project": "バッカーはこのプロジェクトにプレッジしました",
+      "Backers_count_separator_backers": {
+        "zero": "%{backers_count} バッカー",
+        "one": "%{backers_count}\nバッカー",
+        "two": "%{backers_count}\nバッカー",
+        "few": "%{backers_count}\nバッカー",
+        "many": "%{backers_count}\nバッカー"
+      },
+      "Become_a_backer_to_leave_a_comment": "コメントを残すためにバッカーになる。",
+      "Bring_creative_projects_to_life": "クリエイティブなプロジェクトに生命を。",
+      "Cancel_your_pledge": "プレッジを取り消す",
+      "category_name_saved": "%{category_name} を保存",
+      "Change_payment_method": "支払方法の変更",
+      "Chat": "チャット",
+      "Chooses_location_for_shipping": "配送先%{location} を選択",
+      "Closes_filters": "フィルターを閉じる",
+      "Close_live_stream": "ライブ動画を閉じる",
+      "Close_project": "プロジェクトを閉じる",
+      "Closes_live_stream": "ライブ動画を閉じる",
+      "Closes_project": "プロジェクトを閉じる",
+      "Collapses_subcategories": "サブカテゴリーを閉じる",
+      "Collections": "コレクション",
+      "comments_count_comments": {
+        "zero": "%{comments_count} のコメント",
+        "one": "%{comments_count} のコメント",
+        "two": "%{comments_count} のコメント",
+        "few": "%{comments_count} のコメント",
+        "many": "%{comments_count} のコメント"
+      },
+      "Complete_payment": "支払いを完了",
+      "Connect_with_Facebook_to_follow_friends_and_get_notified": "Facebookとリンクさせ、友達がプロジェクトを作成したりバックしたりした際に通知を受け取る",
+      "Contact_creator": "クリエイターに連絡",
+      "Continue_to_payment": "支払いを続ける",
+      "Continue_to_update_pledge": "プレッジをアップデート",
+      "Couldnt_add_attachment": "添付ファイルを追加できませんでした",
+      "Couldnt_open_live_stream_Try_again_later": "ライブを開けませんでした。後ほどもう一度お試しください。",
+      "Couldnt_remove_attachment": "添付ファイルを削除できませんでした",
+      "Created_projects_projects_count": "%{projects_count} のプロジェクト作成済",
+      "Creator": "クリエイター",
+      "Creator_name_was_live_time_ago": "<b>%{creator_name}</b>は%{time_ago} まで進行中でした",
+      "Creator_name_is_live_now": "<b>%{creator_name}</b>が進行中",
+      "Creator_name_is_streaming_live_on_Kickstarter": "%{creator_name} はKickstarterでプロジェクト進行中です",
+      "Creator_name_needs_some_information_to_deliver_your_reward_for_project_name": "<b>%{creator_name}</b>による<b>%{project_name}</b>のリワードを送るための情報が求められています。",
+      "Creator_name_live_streamed_time_ago": "<b>%{creator_name}</b>は%{time_ago} 前にライブ配信を行いました",
+      "Creator_name_was_streaming_live_on_Kickstarter": "%{creator_name} はライブ配信を行いました",
+      "Creator_name_will_be_streaming_live_on_Kickstarter_in_duration": "%{creator_name} は%{in_duration} にライブ配信を行います",
+      "Creator_tips": "Creator tips",
+      "Daily_digest": "Daily digest",
+      "days": {
+        "zero": "日",
+        "one": "日",
+        "two": "日",
+        "few": "日",
+        "many": "日"
+      },
+      "days_plural": "日",
+      "Delivered": "発送済",
+      "Discover_more_projects": "プロジェクトをさがす",
+      "Dismiss": "破棄",
+      "Done": "完了",
+      "Earth": "全世界",
+      "Either_the_pledge_or_the_project_was_canceled": "プレッジもプロジェクトも期限前にキャンセル済",
+      "Email_frequency": "Email frequency",
+      "Email_notifications": "メール通知設定",
+      "Ending_soon": "終了直前",
+      "Explore_creative_projects": "クリエイティブなプロジェクトをさがす",
+      "Explore_projects": "プロジェクトをさがす",
+      "ellipsis_more": "さらに表示",
+      "Estimated_delivery": "配達予定日：",
+      "Expands_subcategories": "サブカテゴリーを表示",
+      "Failed_to_retrieve_live_stream_event_details": "ライブストリームの詳細を取得できませんでした",
+      "Failed_to_update_subscription": "定期購読の更新に失敗しました",
+      "Filter_by_all_projects": "全てのプロジェクトに絞る",
+      "Filter_by_category_name": "%{category_name} に絞る",
+      "Filter_by_projects_backed_by_friends": "友達がバックしてるプロジェクトに絞る",
+      "Filter_by_projects_recommended_for_you": "オススメの人気プロジェクトに絞る",
+      "Filter_by_projects_we_love": "Project We Love に絞る",
+      "Filter_by_saved_projects": "保存済みプロジェクトで絞る",
+      "Filter_by_subcategory_name_in_category_name": "%{category_name} の%{subcategory_name} で絞る",
+      "Filter_name_project_count_live_projects": {
+        "zero": "%{filter_name}：%{project_count} の進行中プロジェクト",
+        "one": "%{filter_name}：%{project_count} の進行中プロジェクト",
+        "two": "%{filter_name}：%{project_count} の進行中プロジェクト",
+        "few": "%{filter_name}：%{project_count} の進行中プロジェクト",
+        "many": "%{filter_name}：%{project_count} の進行中プロジェクト"
+      },
+      "Filters_by_projects_with_upcoming_and_past_live_streams": "近日公開予定のライブと過去のライブを含むプロジェクトに絞る",
+      "Find_and_follow_friends": "友達を見つけてフォロー",
+      "Find_Facebook_Friends": "Facebook の友達を見つける",
+      "Find_projects_youll_love_and_help_bring": "お気に入りを見つけて、クリエイティブなプロジェクトに生命を吹き込もう。",
+      "Find_projects_youll_love_in_art_design_film": "お気に入りを見つけて、クリエイティブなプロジェクトに生命を吹き込もう。",
+      "First_created": "1つめのプロジェクト",
+      "Friend_backed_art_project": "<b>%{friend_name}</b> は<i>アート</i> プロジェクトをバックしています。",
+      "Friend_backed_comics_project": "<b>%{friend_name}</b> は<i>コミック</i> プロジェクトをバックしています。",
+      "Friend_backed_crafts_project": "<b>%{friend_name}</b>は<i>クラフト</i>のプロジェクトのバッカーです",
+      "Friend_backed_dance_project": "<b>%{friend_name}</b>は<i>ダンス</i>のプロジェクトのバッカーです",
+      "Friend_backed_design_project": "<b>%{friend_name}</b>は<i>デザイン</i>のプロジェクトのバッカーです",
+      "Friend_backed_fashion_project": "<b>%{friend_name}</b>は<i>ファッション</i>のプロジェクトのバッカーです",
+      "Friend_backed_film_project": "<b>%{friend_name}</b>は<i>映画と動画</i>のプロジェクトのバッカーです",
+      "Friend_backed_food_project": "<b>%{friend_name}</b>は<i>フード</i>のプロジェクトのバッカーです",
+      "Friend_backed_games_project": "<b>%{friend_name}</b>は<i>ゲーム</i>のプロジェクトのバッカーです",
+      "Friend_backed_journalism_project": "<b>%{friend_name}</b> は<i>ジャーナリズム</i> プロジェクトをバックしています。",
+      "Friend_backed_music_project": "<b>%{friend_name}</b>は<i>ミュージック</i>のプロジェクトのバッカーです",
+      "Friend_backed_photography_project": "<b>%{friend_name}</b> は<i>ミュージック</i> プロジェクトをバックしています。",
+      "Friend_backed_publishing_project": "<b>%{friend_name}</b> は<i>出版</i> プロジェクトをバックしています。",
+      "Friend_backed_tech_project": "<b>%{friend_name}</b> は<i>テクノロジー</i> プロジェクトをバックしています。",
+      "Friend_backed_theater_project": "<b>%{friend_name}</b> は<i>演劇</i> プロジェクトをバックしています。",
+      "Friend_name_launched_a_project": "%{friend_name} がプロジェクトを発表しました！",
+      "Follow_friend_name": "%{friend_name} をフォロー",
+      "Follow_friends": "友達をフォロー",
+      "Follows_friend_name": "%{friend_name} をフォロー",
+      "Follow_more_friends": "もっと友達をフォローする",
+      "Follow_your_Facebook_friends_and_get_notified": "Facebookの友達をフォローしよう！",
+      "Follow_your_Facebook_friends_and_keep_up_with_the_projects": "Facebookの友達をフォローしよう！",
+      "Followed": "フォロー中",
+      "Following": "フォロー中の友達",
+      "Funding_successful": "ファンディング成功",
+      "Get_notified_about_this_creators_live_streams": "このクリエイターのライブ配信通知を受け取る",
+      "Go_to_project_page": "プロジェクトページを見る",
+      "Got_it": "完了",
+      "Got_it_your_survey_response_has_been_submitted": "サーベイを送信しました！",
+      "Home": "ホーム",
+      "hours": {
+        "zero": "時間",
+        "one": "時間",
+        "two": "時間",
+        "few": "時間",
+        "many": "時間"
+      },
+      "hours_plural": "時間",
+      "Id_just_like_to_support_the_project": "プロジェクトをサポートしたい",
+      "Individual_Emails": "Individual emails",
+      "Info": "インフォメーション",
+      "Its_a_way_to_bring_creative_projects_to_life": "クリエイティブなプロジェクトに生命を。",
+      "Its_better_with_friends": "友達にとってより良い。",
+      "Joining_the_live_stream": "ライブ配信に参加",
+      "Just_for_you": "あなたのために。",
+      "Keep_reading": "続きを読む",
+      "Keep_up_with_future_live_streams": "ライブ配信を通知",
+      "Kickstarter_if_funded": "Kickstarter (達成した時)",
+      "Kickstarter_is_not_a_store": "Kickstarterはオンラインストアではありません。",
+      "Learn_more_about_accountability": "報告義務に関してさらに詳しく",
+      "Left_count_left": {
+        "zero": "残り%{left_count}",
+        "one": "残り%{left_count}",
+        "two": "残り%{left_count}",
+        "few": "残り%{left_count}",
+        "many": "残り%{left_count}"
+      },
+      "Live": "ライブ",
+      "Live_now": "ライブ配信中",
+      "Live_now_live_stream_event_name_by_creator_name": "%{creator_name} が%{live_stream_event_name} をライブ配信中",
+      "Live_Stream": "ライブ配信",
+      "Live_stream_countdown": "ライブ配信のカウントダウン",
+      "Live_stream_date": "%{date} 日にライブ配信",
+      "Live_streaming_now": "ライブ配信中",
+      "Live_with_creator_name": "<b>%{creator_name}</b>のライブ配信",
+      "Loading": "読み込み中",
+      "Log_in_or_sign_up_to_subscribe": "ログインかサインインしてください",
+      "Log_in_to_leave_a_comment": "ログインしてコメントを残す。",
+      "Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you": "ログインかサインインしてこのプロジェクトを保存してください。終了４８時間前にリマインドします。",
+      "Make_a_pledge_without_a_reward": "リワードなしでプレッジ",
+      "Manage_your_pledge": "プレッジを変更",
+      "Manage_your_pledge_below": "以下のプレッジを変更",
+      "Manage_your_reward": "リワードの管理",
+      "Message_backer": "バッカーにメッセージする",
+      "Message_creator": "クリエーターにメッセージする",
+      "Message_user_name": "%{user_name} にメッセージ",
+      "minutes": {
+        "zero": "分",
+        "one": "分",
+        "two": "分",
+        "few": "分",
+        "many": "分"
+      },
+      "minutes_plural": "分",
+      "New_pledge_activity": "New pledge activity",
+      "No_comments_yet": "まだコメントはありません。",
+      "No_messages": "メッセージがありません。",
+      "No_one_has_posted_an_update_yet": "まだアップデートの投稿はありません。",
+      "No_pledges_from_friends_yet": "友達からのプレッジはありません。",
+      "No_replay_is_available_for_this_live_stream": "このライブを再生することはできません",
+      "No_Results": "該当結果なし",
+      "No_unread_messages": "未読メッセージはありません",
+      "Not_followed": "フォローしてない",
+      "Not_delivered": "未配送",
+      "Once_you_back_a_project_well_share": "プロジェクトをバックするとこのスペースにあなたへのオススメを表示します",
+      "Only_amount_of_time_left_to_watch_this": "あと%{amount_of_time} のみ視聴可能",
+      "Opens_comments": "コメントをみる",
+      "Opens_creator_profile": "クリエイタープロフィールをみる",
+      "Opens_email_composer": "メールの送受信者をみる",
+      "Opens_help_sheet": "ヘルプシートを開く",
+      "Opens_filters": "フィルターをみる",
+      "Opens_message_composer": "メールの送受信者をみる",
+      "Opens_pledge_info": "プレッジ情報をみる",
+      "Opens_project": "プロジェクトをみる",
+      "Opens_rewards": "リワードをみる",
+      "Opens_shipping_options": "配送方法をみる",
+      "Opens_update": "アップデートをみる",
+      "Or_select_a_different_reward_below_colon": "別のリワードをみる：",
+      "Other_payment_methods": "その他の支払方法",
+      "percentage_funded": "%{percentage} 達成",
+      "Past_live_stream": "過去のプロジェクト",
+      "Payment_method_was_successfully_charged": "支払い方法が登録されました。",
+      "Please_enter_an_amount_of_amount_or_less": "%{amount} 以下の金額を入力してくだささい。",
+      "Please_enter_an_amount_of_amount_or_more": "%{amount} 以上の金額を入力してください。",
+      "Please_log_in_or_sign_up_to_back_this_project": "このプロジェクトにバックするにはログインまたはサインアップをお願いします",
+      "Please_log_in_or_sign_up_to_message_this_creator": "クリエーターにメッセージするにはログインかサインインしてください。",
+      "Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat": "チャットに参加するためにはログインかサインインしてください",
+      "Please_log_in_or_sign_up_to_subscribe_to_this_live_stream": "ログインかサインインをし、ライブを見よう！",
+      "Pledge": "プレッジする",
+      "pledge_amount_pledged_on_pledge_date": "%{pledge_date} に<b>%{pledge_amount}</b>のプレッジをしました",
+      "Pledge_any_amount_to_help_bring_this_project_to_life": "プレッジでプロジェクトに生命を。",
+      "Pledged_on_date": "%{pledge_date} に<b>プレッジ</b>",
+      "Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place": "プロジェクトを探す、プロジェクトにプレッジする、プロジェクトを保存する、全て一つの場所で。",
+      "Pledge_to_your_favorites_then_view_all_the_projects": "ここにバックした全プロジェクトが表示されます。",
+      "Pledge_was_dropped": "プレッジは取り消されました",
+      "Pledge_without_a_reward": "リワードなしでプレッジ",
+      "plus_shipping_cost": "+%{shipping_cost}",
+      "Popular": "人気",
+      "Popular_Projects": "人気のプロジェクト",
+      "Project_Cancelled": "プロジェクトが取り消されました。",
+      "Project_cancelled": "プロジェクトが取り消されました。",
+      "project_count_projects": {
+        "zero": "%{project_count} 個のプロジェクト",
+        "one": "%{project_count} 個のプロジェクト",
+        "two": "%{project_count} 個のプロジェクト",
+        "few": "%{project_count} 個のプロジェクト",
+        "many": "%{formatted_count} 個のプロジェクト"
+      },
+      "projects_count_newline_backed": {
+        "zero": "0\\n人のバッカー",
+        "one": "1\\n人のバッカー",
+        "two": "2\\n人のバッカー",
+        "few": "%{projects_count} \\n個のプロジェクトをバック",
+        "many": "%{projects_count}\\n個のプロジェクトをバック"
+      },
+      "projects_count_newline_saved": {
+        "zero": "0\\n個保存",
+        "one": "1\\n個保存",
+        "two": "2\\n個保存",
+        "few": "%{projects_count} \n保存済み",
+        "many": "%{projects_count} \n保存済み"
+      },
+      "Project_saved": "プロジェクトを保存しました。",
+      "Project_Suspended": "中止プロジェクト",
+      "Projects_We_Love": "Projects We Love",
+      "Projects_youve_launched": "Projects you've launched",
+      "Public_comment": "公開コメント",
+      "Pursue_daring_ideas": "大胆な\nアイディアを。",
+      "Push_notifications": "プッシュ通知設定",
+      "Rate_us_in_the_App_Store": "Appストアで評価する",
+      "Read_more_about_the_campaign_arrow": "キャンペーンの詳細をみる  →",
+      "Recent_live_stream": "最近のプロジェクト",
+      "Recommended": "おすすめ",
+      "Recommended_For_You": "あなたへのおすすめ",
+      "Recorded_live_with_creator_name": "配信された<b>%{creator_name}</b>のライブ",
+      "Recorded_Live": "配信済ライブ",
+      "Replay": "リプレイ",
+      "Replay_available_for_time_more_units": "あと%{time}%{units} リプレイ可能",
+      "Replay_live_stream_with_creator_name": "<b>%{creator_name}</b>のライブを再生",
+      "Replay_past_live_stream": "過去のライブをリプレイ",
+      "Replay_past_live_streams": "過去のライブをリプレイ",
+      "Reply_to_user_name": "%{user_nameに返信",
+      "Reward_estimated_for_delivery_in_date": "<b>リワード</b>の配達予定日は%{delivery_date}",
+      "Rewards_count_rewards": {
+        "zero": "%{rewards_count} 種類のリワード",
+        "one": "%{rewards_count} 種類のリワード",
+        "two": "%{rewards_count} 種類のリワード",
+        "few": "%{rewards_count} 種類のリワード",
+        "many": "%{rewards_count} 種類のリワード"
+      },
+      "Rewards_count_rewards_colon": {
+        "zero": "%{rewards_count} 種類のリワード",
+        "one": "%{rewards_count} 種類のリワード",
+        "two": "%{rewards_count} 種類のリワード",
+        "few": "%{rewards_count} 種類のリワード",
+        "many": "%{rewards_count} 種類のリワード"
+      },
+      "Reward_Surveys": {
+        "zero": "%{reward_survey_count} リワードのサーベイ",
+        "one": "リワードサーベイ",
+        "two": "%{reward_survey_count} リワードのサーベイ",
+        "few": "%{reward_survey_count} リワードのサーベイ",
+        "many": "%{reward_survey_count} リワードのサーベイ"
+      },
+      "Reward_selected": "選択中のリワード",
+      "Save": "救う",
+      "Save_this_project": "プロジェクトを保存",
+      "Saved": "保存済",
+      "Saved_projects": "プロジェクトを保存",
+      "Save_projects": "プロジェクトを保存",
+      "Saves_project": "プロジェクトを保存",
+      "Say_something_kind": "言葉に注意",
+      "seconds": "秒",
+      "Select_this_reward_instead": "このリワードを選択",
+      "Select_this_reward": "このリワードを選ぶ",
+      "Send": "送信",
+      "Share_an_update_about_your_project": "アップデートをシェアしよう",
+      "Share_this_live_stream": "有効なストリームをシェア。",
+      "Share_this_project_on_Facebook": "プロジェクトをフェースブックでシェアしましょう。",
+      "Share_this_project_on_Twitter": "プロジェクトをツイッターでシェアしましょう。",
+      "Share_update": "アップデートをシェアしましょう",
+      "Shipping": "配送",
+      "Ships_to": "配送先：",
+      "Shows_list_of_subcategories": "サブカテゴリーリストを見せる。",
+      "Signs_up_with_Email": "Eメールでサインアップする。",
+      "Something_catch_your_eye": "何か目にとまるものはありましたか？",
+      "Something_went_wrong_please_try_again": "なにかが間違っています。もう一度お試しください。",
+      "Starting_soon": "もう少しで始まります。",
+      "Status": "ステータス",
+      "Subscribe": "購読する",
+      "Subscribed": "購読済",
+      "Subscribes_to_upcoming_lives_streams": "ストリームを購読しています。",
+      "Survey": "サーベイ",
+      "Tap_the_heart_on_a_project_to_get_notified": "終了48時間前に知らせるにはハートのアイコンをタップ！",
+      "Tap_the_heart_on_each_project_page_to_save_it": "ハートのアイコンを押して保存しましょう。終了48時間前に通知が届きます。",
+      "Tap_the_star_on_a_project_to_get_notified": "星のマークを押すと、終了48時間前に通知が届きます。",
+      "Tap_the_star_on_each_project_page_to_save_it": "プロジェクトにスターを押して保存しましょう。プロジェクト終了４８時間前にリマインドします。",
+      "Thank_you_for_supporting_this_project": "サポートいただきありがとうございます。",
+      "The_email_associated_with_this_Facebook_account_is_already_registered": "このFacebookのメールアドレスは他のKickstarterユーザーが使用中",
+      "The_replay_will_start_soon": "リプレイが始まります",
+      "The_live_stream_failed_to_connect": "ライブストリームに接続できませんでした",
+      "The_live_stream_was_interrupted": "ライブストリームは妨害されました",
+      "The_live_stream_will_start_soon": "ライブストリームが開始されます",
+      "The_live_stream_will_start_time": "%{time} にライブストリームが開始されます。",
+      "There_was_a_problem_with_this_payment": "支払いに問題があります。",
+      "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "このFacebookアカウントはすでに他のKickstarterユーザーとつながっています",
+      "Time_left_left": "あと%{time_left}",
+      "To_access_all_your_favorite_categories_tap_the_explore_dropdown": "上部の「さがす」をタップし、お気に入りカテゴリにアクセス。",
+      "Toggle_saving_this_project": "プロジェクトを保存",
+      "To_read_this_project_update_you_must_be_a_backer": "アップデートを購読するにはバックしましょう。 ログインかサインアップを！",
+      "Total_pledged": "プレッジ総計",
+      "updates_count_updates": {
+        "zero": "%{updates_count} 件のアップデート",
+        "one": "%{updates_count} 件のアップデート",
+        "two": "%{updates_count} 件のアップデート",
+        "few": "%{updates_count} 件のアップデート",
+        "many": "%{updates_count} 件のアップデート"
+      },
+      "Unsaved": "未保存",
+      "Unsaves_project": "保存されていないプロジェクト。",
+      "Unfollow_friend_name": "%{friend_name} のフォロー解除",
+      "Unfollows_friend_name": "%{friend_name} のフォロー解除",
+      "unread_count_unread": "%{unread_count} 件の未読メッセージ",
+      "Unsubscribe": "購読キャンセル済み",
+      "Unsubscribes_from_upcoming_lives_streams": "ストリームを購読を停止しています。",
+      "Unsuccessfully_Funded": "資金調達失敗",
+      "Upcoming_live_stream": "ライブストリームが開始します",
+      "Upcoming_live_streams": "ライブストリームが開始します",
+      "Upcoming_with_creator_name": "<br/><b>%{creator_name}</b>が近日配信",
+      "Update_pledge": "プレッジをアップデートする",
+      "Video_disabled_until_the_internet_connection_improves": "インターネット通信状態が向上するまでビデオはご利用いいただけません。",
+      "View": "みる",
+      "View_your_pledge": "プレッジをみる",
+      "View_your_reward": "リワードをみる",
+      "Watch_live": "ライブをみる",
+      "We_couldnt_find_anything_for_search_term": "「%{search_term}」に一致するものがありませんでした。",
+      "Well_remind_you_forty_eight_hours_before_this_project_ends": "終了48時間前に通知が届きます。保存アイテムをみるにはプロフィールをご覧ください。",
+      "We_were_unable_to_connect_to_the_live_stream_chat": "ライブへの接続に失敗。",
+      "We_were_unable_to_load_the_shipping_destinations": "配送先の読込に失敗。\n再度お試しください。",
+      "When_you_save_a_project_we_ll_send_you_a_reminder": "プロジェクトを保存し、終了の48時間前にリマインドする。",
+      "You_backed_this_project": "バック済",
+      "You_Launched": "発表されました！",
+      "You_pledged_on_date": "%{pledge_date} に<b>プレッジ</b>",
+      "Youre_a_backer": "バッカーになりました！",
+      "Youre_about_to_create_a_new_Kickstarter_account": "Facebookのメールアドレスで新しいアカウントを作成しようとしています。再度確認してください。",
+      "Your_chat_message_wasnt_sent_successfully": "メッセージの送信に失敗。",
+      "Your_friends_havent_backed_any_projects_yet": "バックした友達はまだいませんが、今後こちらに表示されます。",
+      "Your_payment_method_was_successfully_charged": "支払方法の登録完了。",
+      "Your_pledge": "プレッジ",
+      "Your_pledge_amount": "プレッジ額：",
+      "Your_pledge_was_canceled_or_the_creator_canceled": "プレッジが取消されたか、クリエイターが締切前にプロジェクトを取消しました。",
+      "Your_pledge_was_dropped": "プレッジの取消済。",
+      "Your_reward": "リワード",
+      "Your_reward_estimated_for_delivery_in_date": "<b>リワード</b>の配送予定日は%{delivery_date}",
+      "Your_shipping_destination": "配送地域",
+      "You_saved_this_project": "保存済みです",
+      "Youve_pledged_to_support_this_project": "このプレッジ済のプロジェクトは、現在もファンド中",
+      "tabbar": {
+        "discover": "さがす",
+        "activity": "アクティビティ",
+        "profile": "プロフィール",
+        "login": "ログイン",
+        "dashboard": "ダッシュボード",
+        "search": "さがす",
+        "search_projects": "プロジェクトを探す",
+        "me": "Me"
+      },
+      "discovery": {
+        "accessibility": {
+          "buttons": {
+            "sort_hint": "並び変え",
+            "sort_label": "%{sort} で表示"
+          },
+          "live_project_count": "進行中プロジェクト",
+          "toolbar": {
+            "buttons": {
+              "filter_label": "カテゴリーで表示",
+              "activity_label": "アクティビティ",
+              "user_menu": "メニュー"
+            }
+          }
+        },
+        "recommended": "おすすめ",
+        "recommended_for_you": "おすすめ",
+        "popular": "人気",
+        "saved": "スター",
+        "friends": "友達",
+        "backing": "バック",
+        "everything": "すべて",
+        "category": "カテゴリー",
+        "friends_backed": "友人がバックしたもの",
+        "search_cancel": "キャンセル",
+        "nearby": "近くにいる人",
+        "sorted_by": "並び順",
+        "all_of_scope": "%{scope} の全て",
+        "sort_types": {
+          "magic": "マジック",
+          "popularity": "人気",
+          "newest": "最新",
+          "end_date": "終了日",
+          "most_funded": "達成額順",
+          "most_backed": "バッカー最多数"
+        },
+        "location": {
+          "disabled_state": {
+            "title": "位置情報サービスをオン",
+            "message": "この機能を使用するには、iPhoneの設定を開き、Kickstarterの位置情報サービスをオンにします"
+          }
+        },
+        "empty_states": {
+          "saved": {
+            "logged_in": {
+              "title": "お気に入り",
+              "message": "お気に入り登録で、終了４８時間前に通知が届きます。",
+              "button": "さがす"
+            },
+            "logged_out": {
+              "title": "お気に入り",
+              "message": "お気に入り登録で、終了４８時間前に通知が届きます。",
+              "button": "ログイン"
+            }
+          }
+        },
+        "baseball_card": {
+          "social": {
+            "friends_are_backers": {
+              "zero": "友達にバッカーはいません。",
+              "one": "%{friend_name} がバッカー",
+              "two": "%{friend_name} と%{second_friend_name} がバッカー",
+              "few": "%{friend_name} 、%{second_friend_name} 、他%{remaining_count} 人がバッカー",
+              "many": "%{friend_name} 、%{second_friend_name} 、他%{remaining_count} 人がバッカー"
+            }
+          },
+          "metadata": {
+            "potd": "今日のプロジェクト",
+            "project_of_the_Day": "今日のプロジェクト",
+            "starred": "お気に入り済",
+            "backer": "バッカーになりました！",
+            "featured_project": "%{category_name} を強調する"
+          },
+          "status_banner": {
+            "successful": "資金調達に成功",
+            "successful_date": "%{date} に目標達成",
+            "funding_unsuccessful_date": "%{date} にファンディング失敗",
+            "canceled": "募集停止",
+            "canceled_date": "%{date} に募集キャンセル",
+            "suspended": "%{date} に募集一時停止中",
+            "suspended_date": "%{date} に募集一時停止中"
+          },
+          "stats": {
+            "accessibility": {
+              "live_stat_value": {
+                "zero": "現在バッカー0人。%{percent_funded} 達成、%{time_left} で締切",
+                "one": "現在バッカー1人です。%{percent_funded} 達成、%{time_left} で締切",
+                "two": "現在バッカー2人。%{percent_funded} 達成、%{time_left} で締切",
+                "few": "現在バッカー%{backers_count} 人。%{percent_funded} 達成、%{time_left} で締切",
+                "many": "現在バッカー%{backers_count} 人。%{percent_funded} 達成、%{time_left} で締切"
+              },
+              "non_live_stat_value": {
+                "zero": "バッカー0人。%{percent_funded} 達成、%{time_left} で締切",
+                "one": "バッカー1人。%{percent_funded} 達成、%{time_left} で締切",
+                "two": "バッカーは2人です。%{percent_funded} 達成し、%{time_left} で締切",
+                "few": "バッカー%{backers_count} 人。%{percent_funded} 達成、%{time_left} で締切",
+                "many": "バッカー%{backers_count} 人、%{percent_funded} 達成、%{time_left} で締切"
+              }
+            },
+            "backers": "バッカー",
+            "funded": "達成",
+            "pledged_of_goal": "%{goal} 達成",
+            "pledged_of_goal_short": "%{goal} 達成",
+            "convert_from_pledged_of_goal": "%{goal}のゴールに対し%{pledged}達成"
+          },
+          "time_left_to_go": "%{time_left} で締切",
+          "deadline_units": {
+            "secs": "秒",
+            "mins": "分",
+            "hours": "時間",
+            "days": "日"
+          },
+          "button": {
+            "share": "シェア"
+          },
+          "read_more": "%{space}さらに%{space}読む",
+          "blurb_read_more": "%{blurb}%{space}<u>さらに%{space}読む</u>%{space}",
+          "accessibility": {
+            "category": {
+              "label": "カテゴリー"
+            },
+            "location": {
+              "label": "住所"
+            }
+          }
+        },
+        "filters": {
+          "favorites_title": "お気に入り",
+          "categories_title": "カテゴリー",
+          "all_of_category": "%{category_name} の全て"
+        },
+        "activity_sample": {
+          "title": {
+            "Since_your_last_visit": "最終アクセスから",
+            "since_youve_been_gone": "最後のアクセスから"
+          },
+          "button": {
+            "see_all_activity": "アクティビティをみる"
+          },
+          "alert": {
+            "follow_friend_name": "%{friend_name} をフォローしますか？",
+            "buttons": {
+              "cancel": "キャンセル",
+              "follow": "フォロー"
+            }
+          }
+        },
+        "find_friends_hero": {
+          "your_friends_are_here": "さらにさがす",
+          "follow_your_friends_and_we_will_notify_you": "Facebookの友達をフォローしよう！",
+          "button": {
+            "find_your_friends": "友達をさがす"
+          },
+          "accessibility": {
+            "button_close_find_friends_hero": {
+              "label": "ヒーローを見つける"
+            }
+          }
+        },
+        "facebook_connect_hero": {
+          "get_social_to_discover_more_projects": "さらにさがす",
+          "if_you_connect_with_facebook": "Facebookと繋げ、友達がプロジェクトを作成したりバックしたりした時に通知する",
+          "we_will_never_post_anything_on_facebook": "Facebook上に許可なく投稿することはありません。",
+          "accessibility": {
+            "button_close_facebook_connect_hero": {
+              "label": "閉じる"
+            }
+          }
+        },
+        "onboarding": {
+          "title": {
+            "bring_creative_projects_to_life": "クリエイティブなプロジェクトに生命を。"
+          },
+          "learn_login_conjunction_or": "か",
+          "buttons": {
+            "login": "ログイン",
+            "learn_more": "さらにみる",
+            "signup_or_login": "サインアップ or ログイン\n"
+          }
+        },
+        "survey": {
+          "button": {
+            "respond_now": "返信"
+          },
+          "reward_survey": "リワードサーベイ",
+          "creator_needs_some_info_to_deliver_reward_for_project": "%{creator_name} は%{project_name} のリワードの情報が必要です。"
+        },
+        "favorite_categories": {
+          "alert": {
+            "message": "お気に入りのカテゴリーに登録されました。",
+            "buttons": {
+              "got_it": "受取済"
+            }
+          },
+          "buttons": {
+            "favorite": {
+              "a11y_label": "お気に入りカテゴリーを追加"
+            },
+            "unfavorite": {
+              "a11y_label": "お気に入りカテゴリーを削除"
+            },
+            "done": "完了",
+            "edit": "編集"
+          }
+        }
+      },
+      "activity": {
+        "navigation": {
+          "title": {
+            "activity": "アクティビティ"
+          }
+        },
+        "empty_state": {
+          "logged_in": {
+            "title": "アクティビティ無",
+            "message": "バックしたり友人をフォローした際は、ここに表示されます。",
+            "button": "プロジェクトを探す"
+          },
+          "logged_out": {
+            "title": "アクティビティ無",
+            "message": "バックしたり友人をフォローした際、こちらに表示されます。",
+            "button": "プロジェクトを探す"
+          }
+        },
+        "by_creator": "by %{creator_name}",
+        "project_name_by_creator_name": "%{project_name} by %{creator_name}",
+        "friend_backed_art_project": "%{friend_name} はアートプロジェクトにバック。",
+        "friend_backed_comics_project": "%{friend_name} がコミックプロジェクトにバック",
+        "friend_backed_crafts_project": "%{friend_name} がクラフトプロジェクトにバック",
+        "friend_backed_dance_project": "%{friend_name} がダンスプロジェクトにバック",
+        "friend_backed_design_project": "%{friend_name} さんがデザインプロジェクトにバック",
+        "friend_backed_fashion_project": "%{friend_name} がファッションプロジェクトにバック",
+        "friend_backed_film_project": "%{friend_name} はフィルム＆ビデオプロジェクトにバック",
+        "friend_backed_food_project": "%{friend_name} がフードプロジェクトにバック",
+        "friend_backed_games_project": "%{friend_name} がゲームプロジェクトにバック",
+        "friend_backed_journalism_project": "%{friend_name} がジャーナリズムプロジェクトにバック",
+        "friend_backed_music_project": "%{friend_name} がミュージックプロジェクトにバック",
+        "friend_backed_photography_project": "%{friend_name} がフォトグラフィープロジェクトにバック",
+        "friend_backed_publishing_project": "%{friend_name} がパブリッシングプロジェクトにバック",
+        "friend_backed_tech_project": "%{friend_name} がテクノロジープロジェクトにバック",
+        "friend_backed_theater_project": "%{friend_name} さんがシアタープロジェクトにバック",
+        "friend_backed_project_name_by_creator_name": "<b>%{friend_name}</b> は%{project_name} by %{creator_name} をバック中",
+        "friend_follow": {
+          "is_following_you": "はあなたをフォロー中！",
+          "buttons": {
+            "follow": "フォロー",
+            "following": "フォロー中"
+          }
+        },
+        "user_name_is_now_following_you": "%{user_name} はあなたをフォロー中！",
+        "follow_back": "フォローバックしますか？",
+        "project_was_not_successfully_funded": "目標達成ならず。",
+        "user_name_launched_project": "%{user_name} がプロジェクトをローンチ！",
+        "successfully_funded": "資金調達に成功",
+        "funding_canceled": "募集キャンセル",
+        "posted_update_number_title": "アップデート投稿済＃%{update_number}：%{update_title}",
+        "project_state_change": {
+          "funded": "達成",
+          "goal": "目標金額",
+          "launched": "発表済み",
+          "pledged_of_goal": "達成額 (%{goal} 中)",
+          "project_was_successfully_funded": "%{project_name} はファンドを達成しました",
+          "you_launched_a_project": "あなたは%{project_name} を発表しました",
+          "creator_launched_a_project": "%{creator_name} さんは%{project_name} を発表しました",
+          "project_was_not_successfully_funded": "%{project_name} はファンドを達成できませんでした。",
+          "project_was_suspended": "%{project_name} は中断されました",
+          "project_was_cancelled_by_creator": "%{project_name} はクリエーターによりキャンセルされました。"
+        },
+        "project_update": {
+          "update_count": "アップデート #%{update_count}",
+          "update_count_backer_only": "#%{update_count} - バッカーのみ"
+        },
+        "creator": {
+          "navigation": {
+            "header": {
+              "activity": "アクティビティ"
+            }
+          },
+          "you": "あなた",
+          "reward": "リワード",
+          "buttons": {
+            "backing_info": "バッカー情報",
+            "comment": "コメント",
+            "send_message": "メッセージを送る"
+          },
+          "error_could_not_load_activity": "アクティビティの読込失敗",
+          "actions": {
+            "user_name_pledged": "%{user_name} のプレッジ：",
+            "user_name_adjusted_their_pledge": "%{user_name} はプレッジを変更済：",
+            "user_name_canceled_their_pledge": "%{user_name} がプレッジをキャンセル：",
+            "user_name_changed_their_reward": "%{user_name} がプレッジの変更をしました：",
+            "user_name_commented_on_your_project": "%{user_name} があなたのプロジェクトにコメントしました：",
+            "user_name_commented_on_update_number": "%{user_name} がアップデート＃%{update_number} にコメントしました：",
+            "user_name_posted_update_number": "%{user_name} がアップデート＃%{update_number} を投稿しました：",
+            "you_pledged": "プレッジ：",
+            "you_adjusted_your_pledge": "プレッジを変更しました：",
+            "you_canceled_your_pledge": "プレッジをキャンセルしました：",
+            "you_changed_your_reward": "リワードを変更：",
+            "you_commented_on_your_project": "プロジェクトにコメントしました：",
+            "you_commented_on_your_project_pronoun": "あなたは",
+            "you_commented_on_update_number": "＃%{update_number} にコメント済み：",
+            "you_commented_on_update_number_pronoun": "あなた",
+            "you_posted_update_number": "アップデート＃%{update_number} ：",
+            "you_posted_update_number_pronoun": "あなた"
+          }
+        }
+      },
+      "profile": {
+        "project_count_projects_backed": {
+          "zero": "0個のバック",
+          "one": "1個バック",
+          "two": "2個バック",
+          "few": "%{project_count} 個バック済",
+          "many": "%{project_count} 個バック済"
+        },
+        "category_count_categories_backed": {
+          "zero": "0 カテゴリーへバック",
+          "one": "1カテゴリーへバック",
+          "two": "2カテゴリーへバック",
+          "few": "%{category_count} カテゴリーへバック",
+          "many": "%{category_count} カテゴリーへバック"
+        },
+        "buttons": {
+          "settings": "設定",
+          "messages": "メッセージ"
+        },
+        "projects": {
+          "time_left_to_go": "%{time_left} で締切",
+          "created_projects": "作成したプロジェクト",
+          "backed_projects": "バック済プロジェクト",
+          "backed_project_count_projects": {
+            "zero": "0プロジェクトへバック",
+            "one": "1プロジェクトへバック",
+            "two": "2プロジェクトへバック",
+            "few": "%{project_count} プロジェクトへバック済",
+            "many": "%{project_count} プロジェクトへバック済"
+          },
+          "empty_state": {
+            "message": "まだバックしてません。\nバックしてみよう！",
+            "message_no_backed_projects_yet": "まだバックしていません",
+            "button": "プロジェクトを探す",
+            "button_explore_new_projects": "新プロジェクトをさがす"
+          },
+          "status": {
+            "canceled": "キャンセル済",
+            "successful": "成功",
+            "suspended": "停止中",
+            "unsuccessful": "失敗"
+          }
+        },
+        "settings": {
+          "accessibility": {
+            "subscribe_mobile_notifications": "購読する",
+            "subscribe_notifications": "購読",
+            "unsubscribe_mobile_notifications": "購読解除",
+            "unsubscribe_notifications": "購読解除"
+          },
+          "navbar_title": "設定",
+          "navbar_title_notifications": "通知設定",
+          "backer": {
+            "title": "バック済みプロジェクト",
+            "project_updates": "プロジェクトのアップデート",
+            "notifications": "プロジェクト通知"
+          },
+          "error": "保存不可",
+          "social": {
+            "title": "ソーシャル通知",
+            "followers": "Newフォロワー",
+            "friend_backs": "友人がバックしています",
+            "find_friends": "Facebook の友達をさがす"
+          },
+          "creator": {
+            "title": "クリエーター通知",
+            "pledges": "Newプレッジ",
+            "comments": "Newコメント",
+            "likes": "Newいいね"
+          },
+          "newsletter": {
+            "title": "ニュースレター",
+            "weekly": "Projects We Love",
+            "promo": "Kickstarterのニュースとイベント",
+            "happening": "出来事",
+            "games": "Kickstarterが選ぶゲーム",
+            "invent": "インベント",
+            "arts": "アート＆カルチャー",
+            "opt_in": {
+              "title": "あと少し！",
+              "message": "登録されているアドレス宛に認証メールを送信しました！%{newsletter} を購読するには、メールを確認してください。"
+            }
+          },
+          "about": {
+            "title": "ヘルプ",
+            "contact": "お問い合わせ",
+            "how_it_works": "Kickstarterの仕組",
+            "terms": "利用規約",
+            "privacy": "プライバシーポリシー",
+            "cookie": "クッキーポリシー",
+            "faq": "FAQ",
+            "faq_short": "FAQ"
+          },
+          "log_out_button": "ログアウト",
+          "logout_alert": {
+            "title": "ログアウト",
+            "message": "ログアウトしますか？",
+            "confirm_button": "ログアウト",
+            "cancel_button": "キャンセル"
+          },
+          "rating": {
+            "title": "ありがとうございます！",
+            "rate_us": "App Storeで評価してください！",
+            "rate_us_play_store": "Play Storeで評価してください！",
+            "message": "Kickstarterアプリの使い心地はいかがですか？\nぜひ評価をお聞かせください！",
+            "option": {
+              "rate_now": "評価する",
+              "remind_later": "あとでする",
+              "no_thanks": "評価しない",
+              "title_show_us_some_love": "愛を見せて",
+              "message_if_you_enjoy_using_Kickstarter": "Play storeでぜひ評価してください！"
+            }
+          },
+          "version_number": "Ver.%{version_number}"
+        },
+        "pie": {
+          "slice": {
+            "category_name_backed_projects_count": "%{category_name}（%{backed_projects_count}）"
+          }
+        }
+      },
+      "support_email": {
+        "to": "app@kickstarter.com",
+        "to_android": "android@kickstarter.com",
+        "subject": "ようこそ、Kickstarter App Supportへ",
+        "body": "どうされましたか？できるだけ詳細をお伝えください。\n",
+        "noemail": {
+          "title": "サポート",
+          "message": "メールアカウントをお持ちですか？ app@kickstarter.comまでご連絡ください。",
+          "message_android": "メールアカウントをお持ちですか？ app@kickstarter.comまでご連絡ください。"
+        },
+        "button": {
+          "ok": "OK"
+        },
+        "chooser": "メールアプリ選択："
+      },
+      "login_tout": {
+        "buttons": {
+          "log_in_with_facebook": "Facebookログイン"
+        },
+        "help_sheet": {
+          "how_it_works": "Kickstarterの仕組み",
+          "contact": "お問い合わせ",
+          "terms": "利用規約",
+          "privacy": "プライバシーポリシー",
+          "cancel": "キャンセル",
+          "cookie": "Cookieポリシー"
+        },
+        "default_intent": {
+          "title": "Facebookのアカウントかメールアドレスでサインアップまたはログインしてください。",
+          "traditional_title": "メールアドレスを使用：",
+          "traditional_login_button": "ログイン",
+          "traditional_signup_button": "サインアップ"
+        },
+        "save_intent": {
+          "title": "ログインしてお気に入り登録すると、終了期限を通知します",
+          "traditional_title": "メールアドレスを使用：",
+          "traditional_login_button": "ログイン",
+          "traditional_signup_button": "サインアップ"
+        },
+        "back_intent": {
+          "title": "続けるにはKickstarterアカウントが必要です",
+          "traditional_title": "メールアドレスを使用：",
+          "traditional_login_button": "ログイン",
+          "traditional_signup_button": "サインアップ"
+        },
+        "message_creator_intent": {
+          "title": "クリエイターにメッセージを送るには、ログインが必要です。",
+          "traditional_title": "メールアドレスを使用：",
+          "traditional_login_button": "ログイン",
+          "traditional_signup_button": "サインアップ"
+        },
+        "favorite_category_intent": {
+          "title": "ログインして、このカテゴリーをお気に入り登録しましょう",
+          "traditional_title": "メールアドレスを使用：",
+          "traditional_login_button": "ログイン",
+          "traditional_signup_button": "サインアップ"
+        },
+        "generic_intent": {
+          "title": "続行するにはアカウントにログインが必要です。 メールアドレス、Facebookアカウントで登録するか、ログインしてください。",
+          "traditional_title": "メールアドレスを使用：",
+          "traditional_login_button": "ログイン",
+          "traditional_signup_button": "サインアップ"
+        },
+        "errors": {
+          "facebook": {
+            "authorization_exception": {
+              "message": "ログイン時に問題が発生",
+              "button": "もう一度お試しください"
+            },
+            "settings_disabled": {
+              "title": "アクセス拒否",
+              "message": "Facebookアカウントへのアクセスを拒否されました。Facebookの設定をご確認ください。"
+            },
+            "generic_error": {
+              "title": "Facebookログイン",
+              "message": "Facebookアカウントでのログインに失敗"
+            },
+            "invalid_token": {
+              "title": "Facebookログイン",
+              "message": "Facebookログインで問題が発生しました。\n\niOSの場合、設定からFacebookのアクセスを許可してください。"
+            }
+          },
+          "button": {
+            "ok": "OK"
+          }
+        },
+        "disclaimer": {
+          "by_signing_up_you_agree_to_terms": "サインアップは、利用規約とプライバシーポリシー、Cookieポリシーへの同意とみなされます。",
+          "by_signing_up_you_agree_to_terms_html": "サインアップは、<u>利用方法</u>、<u>プライバシーポリシー</u>、<u>または<u>Cookieポリシーへの同意とみなします。</u>",
+          "we_never_post_anything_without_permission": "Kickstarterが勝手に投稿することはありません。",
+          "read_more": "さらに読む"
+        },
+        "navbar_title": "ログインかサインアップ"
+      },
+      "login": {
+        "navbar_title": "ログイン",
+        "title": "また会えましたね！",
+        "detail": "それらの新しい靴ですか？ 彼らが新しいものでなければ、彼らは本当に光沢があり、美しく見えます。",
+        "buttons": {
+          "log_in": "ログイン",
+          "log_in_email": "メールアドレスでログイン",
+          "forgot_password": "パスワードを忘れましたか？",
+          "forgot_password_html": "<u>パスワードを忘れましたか？</u>",
+          "one_password": "１パスワード"
+        },
+        "placeholder_email": "メールアドレス",
+        "placeholder_password": "パスワード",
+        "errors": {
+          "button": {
+            "ok": "OK"
+          },
+          "does_not_match": "ログインが記録と一致しません。",
+          "title": "ログインエラー",
+          "unable_to_log_in": "ログインに失敗"
+        }
+      },
+      "forgot_password": {
+        "title": "パスワードを忘れましたか？",
+        "detail": "メールアドレスを入力してください。",
+        "buttons": {
+          "reset_my_password": "パスワードをリセット",
+          "ok": "OK"
+        },
+        "we_sent_an_email_to_email_address_with_instructions_to_reset_your_password": "%{email} にメールを送信しました。パスワードのリセット法が書かれています。",
+        "error": "登録されていないメールアドレスです。再度ご確認ください。",
+        "placeholder_email": "メールアドレス"
+      },
+      "signup": {
+        "input_fields": {
+          "full_name": "フルネーム",
+          "email": "Eメール",
+          "password": "パスワード",
+          "password_min_characters": "パスワード(６文字以上)"
+        },
+        "navbar_title": "サインアップ",
+        "newsletter_full": "ニュースレターやアップデートを受け取ろう",
+        "button": "サインアップ",
+        "button_email": "Eメールでサインアップ",
+        "error": {
+          "something_wrong": "問題が発生しました。",
+          "title": "サインアップエラー"
+        }
+      },
+      "facebook_confirmation": {
+        "navbar_title": "サインアップ",
+        "title": "Kickstarterへようこそ",
+        "detail": "Newアカウント作成の前に、Facebookに登録済みのメールアドレスが使用可能か確認してください。",
+        "newsletter_bold": "プロジェクトをさがす",
+        "newsletter_normal": " 週報とともに",
+        "button": "Newアカウント作成",
+        "wrong_account_title": "すでにアカウントをお持ちですか？",
+        "wrong_account_button": "メールアドレスでログイン",
+        "could_not_log_in": "Facebookでのログインに失敗"
+      },
+      "two_factor": {
+        "title": "認証",
+        "message": "認証コードを入力して続けてください。",
+        "code_placeholder": "認証コードを入力",
+        "buttons": {
+          "submit": "提出する",
+          "resend": "再送する"
+        },
+        "error": {
+          "message": "認証高度が一致しません。"
+        }
+      },
+      "project": {
+        "backer_title": "バッカーになりました！",
+        "back_button": "バッカーになる",
+        "manage_button": "プレッジを管理",
+        "view_button": "プレッジ内容を見る",
+        "share": {
+          "twitter": {
+            "message": "@Kickstarter公式の%{project_title}"
+          }
+        },
+        "star": {
+          "confirmation": "プロジェクト終了48時間前に通知します！",
+          "ok": "OK"
+        },
+        "comments": {
+          "accessibility": {
+            "button_write": "コメントを残す"
+          },
+          "posted": "コメント投稿完了!",
+          "empty_state": {
+            "backer": {
+              "title": "コメント無し",
+              "message": "初めてのコメントを残しましょう。",
+              "button": "コメントする"
+            },
+            "non_backer": {
+              "title": "コメントなし",
+              "message": "コメントするためにバッカーになる。"
+            },
+            "logged_out": {
+              "title": "コメントなし",
+              "message": "コメントするためにバッカーになる。",
+              "message_log_in": "バックまたはコメントするためにはログインしてください。"
+            }
+          },
+          "error_posting": "申し訳ございません。コメントできませんでした。"
+        },
+        "updates": {
+          "empty_state": {
+            "backer": {
+              "title": "更新なし",
+              "message": "プロジェクトが更新されると、バッカーに通知されます。"
+            },
+            "non_backer": {
+              "title": "更新なし",
+              "message": "プロジェクトの更新がバッカーに通知されます。"
+            },
+            "logged_out": {
+              "title": "更新なし",
+              "message": "プロジェクトの更新がバッカーに通知されます。"
+            }
+          }
+        },
+        "checkout": {
+          "looking_for_more_projects_check_these_out": "まだお探しですか？ こちらもチェックしよう。",
+          "backing": {
+            "navbar_title": "バックする"
+          },
+          "manage": {
+            "navbar_title": "プレッジ管理"
+          },
+          "finalizing": {
+            "title": "処理中",
+            "we_are_finalizing_your_pledge_to_project": "%{project_name} へのプレッジを処理中です。",
+            "timeout": {
+              "message": "申し訳ございまません。通常より処理に時間がかかっています。プレッジが確定しましたら、メールを送信します。",
+              "button": "OK"
+            },
+            "failed": {
+              "button": "プロジェクトに戻る"
+            }
+          },
+          "share": {
+            "buttons": {
+              "share": "シェア",
+              "tweet": "ツイート",
+              "more": "More",
+              "more_share_options": "他のシェアを選択"
+            },
+            "twitter_via_kickstarter": "Kickstarterの%{project_or_update_title}",
+            "title_via_kickstarter": "Kickstarterの%{project_or_update_title}",
+            "exclamation": "ありがとうございます。",
+            "you_just_backed_project_share_this_project": "%{project_name} をバックしました。プロジェクトをシェアして友達に伝えよう！",
+            "you_just_backed_project_share_this_project_html": "<b>%{project_name}</b>にバックしました。プロジェクトをシェアして友達に伝えよう！",
+            "twitter": {
+              "I_just_backed_project_on_kickstarter": "@Kickstarterで%{project_name} をバックしました"
+            },
+            "link": {
+              "the_project_url_has_been_copied_to_your_clipboard": "プロジェクトのURLをコピーしました：\n\n%{project_url}",
+              "the_update_url_has_been_copied_to_your_clipboard": "更新したURLをコピーしました：\n\n%{update_url}",
+              "OK": "OK"
+            },
+            "alert": {
+              "this_device_not_capable_of_sending_email": "お使いの端末ではメールを送信できません。",
+              "button": {
+                "ok": "OK"
+              }
+            }
+          },
+          "navigation": {
+            "next": "次へ"
+          },
+          "apple_pay": {
+            "alert": {
+              "error": "エラー",
+              "button": {
+                "ok": "OK"
+              }
+            }
+          },
+          "android_pay": {
+            "pledge_disclaimer": "現時点で請求が発生することはありません。このプロジェクトが達成した場合のみ、カードに %{charge_amount} が請求されます。",
+            "terms_and_privacy": "プレッジはKickstarterの<u>terms of use</u>と<u>プライバシーポリシー</u>に同意したことになります。",
+            "backer_101": "<b>質問がありますか？</b><u>backer 101</u>をお読みください。",
+            "pledged_disclaimer": "現時点で請求が発生することはありません。目標額を達成した場合のみ、カードに %{charge_amount} が請求されます。",
+            "confirm": "確認",
+            "payment_method": "支払方法",
+            "change": "変更",
+            "error": {
+              "title": "Androidpayエラー",
+              "message": "申し訳ございませんが、Android Payでの処理ができませんでした。もう一度お試しください。"
+            }
+          },
+          "games_alert": {
+            "want_the_coolest_games_delivered_to_your_inbox": "ゲームチームのニュースレターを購読し、最新でクールな情報を手に入れましょう！",
+            "yes_please": "はい、お願いします！",
+            "no_thanks": "いいえ"
+          }
+        },
+        "disclaimer": {
+          "goal_reached": "%{deadline} までにファンド達成できるでしょう。",
+          "goal_not_reached": "このプロジェクトは少なくとも%{goal_currency} を%{deadline} までにプレッジできるでしょう。"
+        },
+        "friends_backing": {
+          "title": {
+            "friends": "友達"
+          }
+        },
+        "menu": {
+          "explore_this_project": "このプロジェクトをさらに知る",
+          "created_by": "製作者",
+          "buttons": {
+            "campaign": "キャンペーン",
+            "updates": "アップデート",
+            "comments": "コメント"
+          }
+        },
+        "status": {
+          "funded": "達成",
+          "funding_canceled": "ファンディングキャンセル済",
+          "funding_suspended": "ファンディング中断",
+          "funding_unsuccessful": "ファンディング失敗",
+          "funding_project_canceled_by_creator": "このファンドはキャンセルされました",
+          "funding_project_suspended": "このプロジェクトへのファンドは停止中です",
+          "project_was_successfully_funded_on_deadline": "%{deadline} にファンドに成功",
+          "project_funding_goal_not_reached": "%{deadline} までにプロジェクトのファンド目標に達しませんでした。",
+          "project_purged_only_visible_to_staff": "このプロジェクトは削除され、非公開になりました"
+        },
+        "creator": {
+          "by_creator": "by %{creator_name}",
+          "by_creator_html": "by <u>%{creator_name}</u>",
+          "youre_a_backer": " • あなたはバッカーです"
+        },
+        "subpages": {
+          "menu": {
+            "buttons": {
+              "comments": "コメント",
+              "campaign": "キャンペーン",
+              "creator": "クリエイター",
+              "rewards": "リワード設定",
+              "updates": "アップデート"
+            }
+          }
+        },
+        "social": {
+          "friend_is_backer": "%{friend_name} がバッカー",
+          "friend_and_friend_are_backers": "%{friend_name} と%{second_friend_name} がバッカー",
+          "friends_separator": "、 ",
+          "friends_are_backers_and_more_count": {
+            "zero": "%{friends} と%{friend_name} がバッカー",
+            "one": "%{friends} と他１人がバッカーになっています。",
+            "two": "%{friends} と他２人がバッカーになっています。",
+            "few": "%{friends} と他%{backer_count} 人がバッカー",
+            "many": "%{friends} と他%{backer_count} 人がバッカー"
+          },
+          "friends_are_backers_and_more_bold": {
+            "one": "１人以上",
+            "two": "２人以上",
+            "few": "%{backer_count} 人以上",
+            "many": "%{backer_count} 人以上"
+          }
+        },
+        "view_pledge": {
+          "includes": "その他特典",
+          "status": {
+            "canceled": "キャンセル済",
+            "collected": "に目標額に達成しました",
+            "dropped": "取消",
+            "errored": "エラー",
+            "pledged": "プレッジ済"
+          }
+        },
+        "accessibility": {
+          "button_share": {
+            "label": "このプロジェクトをシェア"
+          },
+          "button_star": {
+            "label": "お気に入り登録"
+          }
+        }
+      },
+      "backer_modal": {
+        "send_backer_message_button": "メッセージを送る",
+        "send_creator_message_button": "クリエイターに連絡",
+        "view_messages": "メッセージをみる",
+        "pledged_title": "プレッジ",
+        "reward_title": "リワード",
+        "shipping_title": "配送",
+        "missing_location_name": "N/A",
+        "backer_number": "バッカー数 %{backer_number}",
+        "pledge_amount_on_pledge_date": "%{pledge_date} に%{pledge_amount}",
+        "status_backing_status": "ステータス：%{backing_status}",
+        "reward_amount_reward_description": "%{reward_amount} - %{reward_description}",
+        "domestic": "国内",
+        "international": "全世界",
+        "not_available": "N/A"
+      },
+      "update": {
+        "comments": {
+          "creator": "クリエイター",
+          "you": "あなた",
+          "empty_state": {
+            "backer": {
+              "title": "コメントなし",
+              "message": "初めてのコメントを残しましょう。",
+              "button": "コメントを残す"
+            },
+            "non_backer": {
+              "title": "コメントなし",
+              "message": "バッカーになってコメントする",
+              "button": "コメントを残す"
+            },
+            "logged_out": {
+              "title": "コメントなし",
+              "message": "バッカーになってコメントする",
+              "button": "コメントを残す"
+            }
+          }
+        }
+      },
+      "rewards": {
+        "shipping_preferences": {
+          "location": {
+            "unrestricted": "世界各国に配送"
+          }
+        },
+        "select_label": {
+          "select": "選択"
+        },
+        "selected_label": {
+          "you_selected": "選択した"
+        },
+        "title": {
+          "pledge_reward_currency_or_more": "%{reward_currency} 以上のプレッジ",
+          "about_amount_usd": "約%{reward_amount} 米ドル"
+        },
+        "info": {
+          "backer_count_backers": {
+            "zero": "0バッカー",
+            "one": "1バッカー",
+            "two": "2バッカー",
+            "few": "%{backer_count} バッカー",
+            "many": "%{backer_count} バッカー"
+          },
+          "item_quantity_title": {
+            "zero": "%{title} (x%{quantity})",
+            "one": "%{title}",
+            "two": "%{title} (x%{quantity})",
+            "few": "%{title} (x%{quantity})",
+            "many": "%{title} (x%{quantity})"
+          },
+          "limited_rewards_remaining_left_of_reward_limit": "数量限定 (%{reward_limit} 中残り%{rewards_remaining}）",
+          "all_gone": "終了",
+          "estimated_delivery": "配達予定日",
+          "includes": "その他特典",
+          "shipping": "配送",
+          "shipping_destinations": "配送地域",
+          "ships_to": "配送先：",
+          "time_left": "あと%{time}"
+        }
+      },
+      "search": {
+        "by_creator": "by%{creator_name}",
+        "most_popular": "最も人気"
+      },
+      "messages": {
+        "navigation": {
+          "inbox": "メッセージボックス",
+          "sent": "送信済み",
+          "search": "探す"
+        },
+        "empty_state": {
+          "title": "メッセージがありません。",
+          "message_creator": "このバッカーにメッセージを送っていません",
+          "message_backer": "クリエーターにメッセージを送っていません。"
+        },
+        "sent_date": "%{sent_date} に送信",
+        "me": "Me",
+        "loading_more_messages": "メッセージをロード",
+        "could_not_load_messages": "メッセージの読み込み失敗",
+        "search": {
+          "placeholder_search_messages": "メッセージをさがす"
+        },
+        "dialog": {
+          "generic_error": "申し訳ありません。メッセージを配信できませんでした。"
+        }
+      },
+      "dashboard": {
+        "accessibility_label_share_project": "プロジェクトをシェア",
+        "activity": {
+          "backing_info": "バッカー情報",
+          "no_reward_selected": "選択中のリワードはありません",
+          "pledge_info": "プレッジ情報",
+          "project_name_launched": "%{launch_date} に<b>%{project_name}</b> が<b>%{goal}</b> を目標として発表されました。",
+          "project_name_was_canceled": "%{cancellation_date} に<b>%{project_name}</b> はキャンセルされました",
+          "project_name_was_suspended": "%{suspension_date} に<b>%{project_name}</b> は中断されました",
+          "project_name_was_unsuccessful": "%{unsuccessful_date} に<b>%{project_name}</b> は失敗しました",
+          "reply": "返信",
+          "reward_name": "<b>リワード</b>%{reward_name}",
+          "send_message": "メッセージを送る",
+          "successfully_raised_pledged": "%{deadline} までに<b>%{backers}</b>から<b>%{pledged}</b>のプレッジ達成",
+          "update_number_posted_time_count_days_ago": "<b>アップデート%{space}#%{update_number} </b>%{time_count_days_ago} 投稿",
+          "user_name_adjusted_their_pledge": "<b>%{user_name}</b> はプレッジの調整をしました",
+          "user_name_canceled_their_pledge": "<b>%{user_name}</b> はプレッジのキャンセルをしました",
+          "user_name_changed_their_reward": "<b>%{user_name}</b> はプレッジの変更をしました",
+          "user_name_commented_on_update_number": "<b>%{user_name}</b>が<b>アップデート%{space}#%{update_number}</b>にコメントしました",
+          "user_name_commented_on_your_project": "<b>%{user_name}</b> があなたのプロジェクトにコメントしました",
+          "user_name_pledged": "<b>%{user_name}</b> がプレッジしました",
+          "you_adjusted_your_pledge": "<b>あなたは</b>プレッジの調整をしました",
+          "you_canceled_your_pledge": "<b>あなたは</b>プレッジのキャンセルをしました",
+          "you_changed_your_reward": "<b>リワード</b>の変更をしました",
+          "you_commented_on_update_number": "<b>アップデート%{space}#%{update_number}</b>にコメント済",
+          "you_commented_on_your_project": "<b>あなた</b> が自身のプロジェクトにコメントしました",
+          "you_pledged": "<b>あなたが</b>プレッジしました"
+        },
+        "buttons": {
+          "messages": "メッセージ",
+          "activity": "アクティビティ",
+          "post_update": "アップデートを投稿",
+          "share": "シェア"
+        },
+        "creator_project": {
+          "currently_live": "現在のライブ",
+          "funded_on_deadline": "%{deadline} に達成",
+          "funding_canceled": "キャンセル",
+          "funding_suspended": "中断",
+          "funding_unsuccessful": "失敗"
+        },
+        "error": {
+          "could_not_load_projects": "プロジェクトを読み込めません"
+        },
+        "tout": {
+          "accessibility_hint_opens_project": "プロジェクトをみる",
+          "backers": "バッカー",
+          "pledged": "プレッジ",
+          "remaining": "で締切"
+        },
+        "graphs": {
+          "funding": {
+            "accessibility": {
+              "live_stat_value": {
+                "zero": "%{goal} のゴール中%{pledged} 、0人のバッカー、 %{time_left} 日に締切",
+                "one": "%{goal} のゴール中%{pledged} 、1人のバッカー、 %{time_left} 日締切",
+                "two": "%{goal} のゴール中%{pledged} 、3人のバッカー、 %{time_left} 日に締切",
+                "few": "%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切",
+                "many": "%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切"
+              },
+              "non_live_stat_value": {
+                "zero": "%{goal} のゴール中%{pledged} 、0人のバッカー、 %{time_left} 日に締切",
+                "one": "%{goal} のゴール中%{pledged} 、1人のバッカー、 %{time_left} 日締切",
+                "two": "%{goal} のゴール中%{pledged} 、2人のバッカー、 %{time_left} 日に締切",
+                "few": "%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切",
+                "many": "%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切"
+              }
+            },
+            "goal": "目標",
+            "title_funding_progress": "ファンディングの進捗",
+            "title": "動向",
+            "today": "今日",
+            "yesterday": "昨日",
+            "total": "合計",
+            "pledged": "プレッジ",
+            "backers": "バッカー",
+            "one_hundred_percent": "100%"
+          },
+          "rewards": {
+            "title_rewards": "リワード",
+            "title": "リワード",
+            "view_more_reward_stats": "詳細をみる",
+            "see_all": "全てみる",
+            "top_rewards": "トップリワード",
+            "pledged": "プレッジ",
+            "backers": "バッカー",
+            "percent": "パーセント",
+            "no_reward": "リワード無"
+          },
+          "referrers": {
+            "title_referrers": "リファラー",
+            "title": "リファラー",
+            "source": "ソース",
+            "backers": "バッカー",
+            "pledged": "プレッジされた金額",
+            "percent": "％",
+            "view_more_referrer_stats": "リファラーログをもっとみる",
+            "show_more": "参照元を表示",
+            "pledged_via_kickstarter": "Kickstarterでプレッジされた金額",
+            "pledged_via_external": "外部経由",
+            "pledged_via_custom": "カスタム経由",
+            "average_pledge_amount": "平均プレッジ額",
+            "percent_kickstarter": "%{percent_kickstarter}％はKickstarter",
+            "percent_external": "外部の%{percent_external}%人"
+          },
+          "video": {
+            "title_video_plays": "ビデオ再生",
+            "title": "ビデオ再生",
+            "stats": {
+              "on_kickstarter": "kickstarter上",
+              "off_site": "オフサイト",
+              "internal_start_count_on_kickstarter": "Kickstarterの%{internal_start_count} 人",
+              "external_start_count_off_site": "外部の%{external_start_count} 人",
+              "total_plays": "%{total_start_count} 人がプレイ",
+              "total_plays_count": {
+                "zero": "<b>O</b>人がプレイ",
+                "one": "<b>1</b>人がプレイ",
+                "two": "<b>2</b>人がプレイ",
+                "few": "<b>%{total_start_count}</b>人がプレイ",
+                "many": "<b>%{total_start_count}</b>人がプレイ"
+              },
+              "percent_plays_completed": "%{percent_plays_completed}％完遂"
+            }
+          }
+        },
+        "post_update_button": {
+          "subtitle": {
+            "you_have_not_posted_an_update_yet": "アップデート未投稿",
+            "last_updated_on_date_relative_date": "最終更新：%{date}（%{relative_date}）",
+            "last_updated_on_date": "最終更新：%{date}"
+          }
+        },
+        "post_update": {
+          "compose": {
+            "placeholder_title": "タイトル",
+            "public_label": "公開",
+            "private_label": "バッカーのみ",
+            "attachments_button": "添付",
+            "no_attachments_placeholder": "添付なし",
+            "new_media_button": "写真/ビデオを撮る",
+            "choose_media_button": "カメラロールから選択",
+            "update_number": "%{update_count} アップデート",
+            "loading": "読み込み中...",
+            "attachment": {
+              "buttons": {
+                "add_attachment": "添付ファイルを追加",
+                "cancel": "キャンセル",
+                "new_photo": "新しい写真",
+                "choose_from_camera_roll": "カメラロールから選択"
+              },
+              "alerts": {
+                "image": {
+                  "remove_image": "画像の削除",
+                  "are_you_sure_you_want_to_remove_image": "本当に画像を削除しますか？",
+                  "buttons": {
+                    "remove": "削除",
+                    "cancel": "キャンセル"
+                  }
+                }
+              },
+              "actionsheets": {
+                "video": {
+                  "remove_video": "ビデオを削除",
+                  "buttons": {
+                    "remove": "削除",
+                    "cancel": "キャンセル"
+                  }
+                },
+                "image": {
+                  "remove_image": "画像を削除",
+                  "buttons": {
+                    "remove": "削除",
+                    "cancel": "キャンセル"
+                  }
+                }
+              }
+            },
+            "error": {
+              "could_not_save_update": "更新失敗"
+            }
+          },
+          "preview": {
+            "confirmation_alert": {
+              "title": "準備OK?",
+              "this_will_notify_backers_that_a_new_update_is_available": {
+                "zero": "最新情報を0人のバッカーに通知します。投稿しますか？",
+                "one": "最新情報を1人のバッカーに通知します。投稿しますか？",
+                "two": "最新情報を%{backer_count} 人のバッカーに通知します。投稿しますか？",
+                "few": "最新情報を%{backer_count} 人のバッカーに通知します。投稿しますか？",
+                "many": "最新情報を%{backer_count} 人のバッカーに通知します。投稿しますか？"
+              },
+              "cancel_button": "キャンセル",
+              "confirm_button": "挑戦！",
+              "error": {
+                "something_wrong": "問題が発生しました。"
+              }
+            }
+          },
+          "privacy": {
+            "public": "公開",
+            "backers_only": "バッカーのみ"
+          }
+        },
+        "switcher": {
+          "accessibility_label_closes_list_of_projects": "リストを閉じる",
+          "accessibility_label_opens_list_of_projects": "リストを開く",
+          "project_number": "プロジェクト #%{current_project_index}"
+        }
+      },
+      "creator_project_preview": {
+        "subtitle": {
+          "days_to_go_percent_funded": "%{days_to_go} 日で締切、%{percent_funded} 達成",
+          "funding_canceled": "募集をキャンセル",
+          "funded_on_deadline": "%{deadline} に達成　",
+          "project_suspended": "停止中プロジェクト",
+          "funding_unsuccessful_on_deadline": "%{deadline} までに失敗"
+        }
+      },
+      "backing_info": {
+        "pledged_backing_amount": "プレッジ：%{backing_amount}",
+        "estimated_delivery_date": "配達予定日%{delivery_date}",
+        "info_button": "バッカー情報"
+      },
+      "category_promo": {
+        "explore_category": "%{category_name} をさがす",
+        "project_count_live_projects": "%{formatted_count} 個のプロジェクト"
+      },
+      "social": {
+        "public_comment": "公開コメント",
+        "private_message": "プライベートメッセージ",
+        "message_creator": "クリエイターに連絡",
+        "update_number": "%{update_count} アップデート",
+        "update_sequence_and_title": "アップデート＃%{update_number}：%{update_title}",
+        "update": "アップデート",
+        "buttons": {
+          "post": "投稿する",
+          "send": "送信",
+          "cancel": "キャンセル"
+        },
+        "error_could_not_post_try_again": "投稿に失敗しました。もう一度お試しください。",
+        "error_no_internet_connection": "接続不可。後ほどお試しください。",
+        "error_could_not_send_message_creator": "メッセージ送信失敗。もう一度お試しください。",
+        "error_could_not_send_message_backer": "メッセージ送信失敗。もう一度お試しください。"
+      },
+      "social_following": {
+        "navigation": {
+          "title": {
+            "follow_your_friends": "友達をフォロー"
+          }
+        },
+        "header": {
+          "connect_with_your_friends_to_find_projects": "Facebookの友達をフォローしよう！",
+          "friends_recommend_the_best_projects": "さらにプロジェクトをさがす",
+          "connect_with_facebook_to_follow": "Facebookとリンクさせ、Kickstarterでの友達の動向を知りましょう！",
+          "button": {
+            "find_your_friends": "友達をさがす"
+          },
+          "accessibility": {
+            "button_close_find_friends_header": {
+              "label": "閉じる"
+            },
+            "button_close_facebook_connect_header": {
+              "label": "閉じる"
+            }
+          }
+        },
+        "friend": {
+          "projects_count_backed": {
+            "zero": "バッカーがいません",
+            "one": "1バック済",
+            "two": "2バック済",
+            "few": "%{backed_count} バック済",
+            "many": "%{backed_count} バック済"
+          },
+          "projects_count_created": {
+            "zero": "0 プロジェクト",
+            "one": "1プロジェクト",
+            "two": "2プロジェクト",
+            "few": "%{created_count} プロジェクト",
+            "many": "%{created_count}プロジェクト"
+          },
+          "buttons": {
+            "following": "フォロー中",
+            "follow": "フォローする"
+          }
+        },
+        "stats": {
+          "friends": "友達",
+          "backed_projects": "バック済",
+          "button": {
+            "follow_all_friends": {
+              "two": "全員フォロー",
+              "few": "%{remote_friends_count} 人を全員フォロー",
+              "many": "%{remote_friends_count} 人を全員フォロー"
+            }
+          }
+        },
+        "nice_youre_about_to_follow_all_friends": "友達をフォローしましょう！",
+        "button": {
+          "check_out_some_projects": "プロジェクトを探す"
+        }
+      },
+      "push_notifications": {
+        "alert": {
+          "buttons": {
+            "close": "閉じる",
+            "view": "みる"
+          }
+        }
+      },
+      "general": {
+        "backer_count_backers": {
+          "zero": "0バッカー",
+          "one": "1バッカー",
+          "two": "2バッカー",
+          "few": "%{backer_count} バッカー",
+          "many": "%{backer_count} バッカー"
+        },
+        "navigation": {
+          "buttons": {
+            "cancel": "キャンセル",
+            "close": "閉じる",
+            "help": "ヘルプ",
+            "reply": "返信",
+            "comment": "コメント",
+            "skip": "スキップ",
+            "done": "完了",
+            "preview": "プレビュー",
+            "publish": "公開！",
+            "ok": "OK"
+          },
+          "accessibility": {
+            "button_navigate_back": {
+              "label": "戻る"
+            },
+            "button_close": {
+              "label": "閉じる"
+            },
+            "button_help_menu": {
+              "label": "ヘルプ"
+            },
+            "button_overflow_menu": {
+              "label": "詳細メニュー"
+            }
+          }
+        },
+        "social": {
+          "buttons": {
+            "connect_with_facebook": "Facebookと繋げる",
+            "connect_with_twitter": "Twitterと繋げる"
+          }
+        },
+        "loading": "読み込み中",
+        "switch_toggle_on": "ON",
+        "switch_toggle_off": "OFF",
+        "error": {
+          "oops": "おっと！",
+          "something_wrong": "問題が発生しました。"
+        },
+        "alert": {
+          "buttons": {
+            "ok": "OK"
+          }
+        },
+        "accessibility": {
+          "kickstarter": "Kickstarter"
+        }
+      },
+      "dates": {
+        "time_in_minutes_abbreviated": {
+          "zero": "あと0分",
+          "one": "あと1分",
+          "two": "あと2分",
+          "few": "あと%{time_count} 分",
+          "many": "あと%{time_count} 分"
+        },
+        "time_in_minutes": {
+          "zero": "あと0分",
+          "one": "あと1分",
+          "two": "あと2分",
+          "few": "あと%{time_count} 分",
+          "many": "あと%{time_count} 分"
+        },
+        "time_in_hours_abbreviated": {
+          "zero": "あと0時間",
+          "one": "あと1時間",
+          "two": "あと2時間",
+          "few": "あと%{time_count} 時間",
+          "many": "あと%{time_count} 時間"
+        },
+        "time_in_hours": {
+          "zero": "あと0時間",
+          "one": "あと1時間",
+          "two": "あと2時間",
+          "few": "あと%{time_count} 時間",
+          "many": "あと%{time_count} 時間"
+        },
+        "time_in_days_abbreviated": {
+          "zero": "あと0日",
+          "one": "あと1日",
+          "two": "あと2日",
+          "few": "あと%{time_count} 日",
+          "many": "あと%{time_count} 日"
+        },
+        "time_in_days": {
+          "zero": "あと0日",
+          "one": "あと1日",
+          "two": "あと2日",
+          "few": "あと%{time_count} 日",
+          "many": "あと%{time_count} 日"
+        },
+        "time_in_seconds_abbreviated": {
+          "zero": "あと0秒",
+          "one": "あと1秒",
+          "two": "あと2秒",
+          "few": "あと \"%{time_count} 秒\"",
+          "many": "あと \"%{time_count} 秒\""
+        },
+        "time_in_seconds": {
+          "zero": "あと0秒",
+          "one": "あと1秒",
+          "two": "あと2秒",
+          "few": "あと \"%{time_count} 秒\"",
+          "many": "あと \"%{time_count} 秒\""
+        },
+        "time_minutes_ago_abbreviated": {
+          "zero": "0分前",
+          "one": "1分前",
+          "two": "2分前",
+          "few": "%{time_count} 分前",
+          "many": "%{time_count} 分前"
+        },
+        "time_minutes_ago": {
+          "zero": "0分前",
+          "one": "1分前",
+          "two": "2分前",
+          "few": "%{time_count} 分前",
+          "many": "%{time_count} 分前"
+        },
+        "time_hours_ago_abbreviated": {
+          "zero": "0時間前",
+          "one": "1時間前",
+          "two": "2時間前",
+          "few": "%{time_count} 時間前",
+          "many": "%{time_count} 時間前"
+        },
+        "time_hours_ago": {
+          "zero": "0時間前",
+          "one": "1時間前",
+          "two": "2時間前",
+          "few": "%{time_count} 時間前",
+          "many": "%{time_count} 時間前"
+        },
+        "time_days_ago_abbreviated": {
+          "zero": "0日前",
+          "one": "1日前",
+          "two": "2日前",
+          "few": "%{time_count} 日前",
+          "many": "%{time_count} 日前"
+        },
+        "time_days_ago": {
+          "zero": "0日前",
+          "one": "1日前",
+          "two": "2日前",
+          "few": "%{time_count} 日前",
+          "many": "%{time_count} 日前"
+        },
+        "time_seconds_ago_abbreviated": {
+          "zero": "0秒前",
+          "one": "1秒前",
+          "two": "2秒前",
+          "few": "%{time_count} 秒前",
+          "many": "%{time_count} 秒前"
+        },
+        "time_seconds_ago": {
+          "zero": "0秒前",
+          "one": "1秒前",
+          "two": "2秒前",
+          "few": "%{time_count} 秒前",
+          "many": "%{time_count} 秒前"
+        },
+        "time_minutes_abbreviated": {
+          "zero": "0分",
+          "one": "1分",
+          "two": "2分",
+          "few": "%{time_count} 分",
+          "many": "%{time_count} 分"
+        },
+        "time_minutes": {
+          "zero": "0分",
+          "one": "1分",
+          "two": "2分",
+          "few": "%{time_count} 分",
+          "many": "%{time_count} 分"
+        },
+        "time_hours_abbreviated": {
+          "zero": "0 時間",
+          "one": "1時間",
+          "two": "2時間",
+          "few": "%{time_count} 時間",
+          "many": "%{time_count} 時間"
+        },
+        "time_hours": {
+          "zero": "0 時間",
+          "one": "1時間",
+          "two": "2時間",
+          "few": "%{time_count} 時間",
+          "many": "%{time_count} 時間"
+        },
+        "time_days_abbreviated": {
+          "zero": "0日",
+          "one": "1日",
+          "two": "2日",
+          "few": "%{time_count} 日",
+          "many": "%{time_count} 日"
+        },
+        "time_days": {
+          "zero": "0日",
+          "one": "1日",
+          "two": "2日",
+          "few": "%{time_count} 日",
+          "many": "%{time_count} 日"
+        },
+        "time_seconds_abbreviated": {
+          "zero": "0秒",
+          "one": "1秒",
+          "two": "2秒",
+          "few": "%{time_count} 秒",
+          "many": "%{time_count} 秒"
+        },
+        "time_seconds": {
+          "zero": "0秒",
+          "one": "1秒",
+          "two": "2秒",
+          "few": "%{time_count} 秒",
+          "many": "%{time_count} 秒"
+        },
+        "just_now": "今すぐ",
+        "right_now": "たった今",
+        "yesterday": "昨日"
+      },
+      "accessibility": {
+        "projects": {
+          "buttons": {
+            "close_video_player": "閉じる",
+            "pause_video": "一時停止",
+            "play_video": "再生",
+            "star": "お気に入り",
+            "star_hint_reminds_you": "プロジェクトが終了する48時間前に知らせる",
+            "star_hint_favorites_this_project": "このプロジェクトをお気に入り",
+            "close": "閉じる"
+          }
+        },
+        "dashboard": {
+          "buttons": {
+            "activity": "アクティビティ",
+            "activity_hint": "アクティビティをみる",
+            "messages": "メッセージ",
+            "messages_hint": "メッセージを開く",
+            "post_update_hint": "編集する"
+          }
+        },
+        "discovery": {
+          "buttons": {
+            "close": "閉じる",
+            "discovery": "さがす",
+            "discovery_hint_opens_projects": "リストを表示",
+            "search": "検索",
+            "activity": "アクティビティ",
+            "creator_dashboard": "クリエイターダッシュボード",
+            "log_in": "ログイン",
+            "user_profile": "プロフィール"
+          }
+        }
+      },
+      "invalid_api_client_alert": {
+        "title": "アップグレードしてください",
+        "message": "引き続き利用するにはApp Storeからアプリのバージョンを更新してください。",
+        "cancel": "キャンセル",
+        "upgrade": "アップグレード"
+      }
     }
   },
   "features": {
@@ -7646,6 +9582,7 @@
     "ios_live_stream_chat": true,
     "ios_backer_dashboard": true,
     "android_pay": true,
+    "apple_pay_jp": true,
     "i18n_discovery_touts": true,
     "i18n_start_tout": true,
     "invent_touts": true,
@@ -7659,6 +9596,7 @@
     "huzza": true,
     "view_prototype_gallery": true,
     "edit_prototype_gallery": true,
+    "fullstory": true,
     "huzza_creator_integration": true,
     "huzza_new_design": true,
     "sassy_classifier": true,
@@ -7666,11 +9604,14 @@
     "message_spam": true,
     "new_message_inbox": true,
     "ref_banner_ads": true,
-    "react_discovery_cards": true,
     "reactive_remind_me": true,
+    "JP": true,
+    "jp_can_launch_project": true,
     "react_guest_pledging": true,
     "kickstarter_gold": true,
-    "projects_of_earth": true
+    "projects_of_earth": true,
+    "native_japan": true,
+    "react_contact_form": true
   },
   "launched_countries": [
     {
@@ -7778,6 +9719,14 @@
       "trailing_code": false
     },
     {
+      "name": "JP",
+      "max_pledge": 1200000,
+      "min_pledge": 100,
+      "currency_code": "JPY",
+      "currency_symbol": "¥",
+      "trailing_code": false
+    },
+    {
       "name": "LU",
       "max_pledge": 8500,
       "min_pledge": 1,
@@ -7847,9 +9796,9 @@
     "project_build": "control",
     "react_guest_pledging": "control",
     "react_payment_sources_form": "control",
-    "favorites_recs": "control",
+    "favorites_recs": "experimental",
     "thanks_page_better_recs": "control",
-    "social_icons_bucket": "experimental",
+    "social_icons_bucket": "control",
     "project_card_hearts": "control",
     "guided_search": "control"
   },

@@ -71,12 +71,15 @@ contributeurs</string>
   <string name="Creator_name_was_live_time_ago" formatted="false">&lt;b>%{creator_name}&lt;/b> était en direct %{time_ago}</string>
   <string name="Creator_name_was_streaming_live_on_Kickstarter" formatted="false">%{creator_name} était en direct sur Kickstarter</string>
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} sera en direct sur Kickstarter %{in_duration}</string>
+  <string name="Creator_tips" formatted="false">Astuces pour créateurs</string>
+  <string name="Daily_digest" formatted="false">Résumé quotidien</string>
   <string name="Delivered" formatted="false">Distribué</string>
   <string name="Discover_more_projects" formatted="false">Découvrez plus de projets.</string>
   <string name="Dismiss" formatted="false">Ignorer</string>
   <string name="Done" formatted="false">Terminé</string>
   <string name="Earth" formatted="false">Terre</string>
   <string name="Either_the_pledge_or_the_project_was_canceled" formatted="false">Soit l\'engagement soit le projet a été annulé avant la date limite.</string>
+  <string name="Email_frequency" formatted="false">Fréquence d\'envoi des e-mails</string>
   <string name="Email_notifications" formatted="false">Notifications par e-mail</string>
   <string name="Ending_soon" formatted="false">Campagnes bientôt terminées</string>
   <string name="Estimated_delivery" formatted="false">Livraison prévue :</string>
@@ -134,6 +137,7 @@ contributeurs</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Merci ! Vos réponses au questionnaire ont bien été envoyées.</string>
   <string name="Home" formatted="false">Accueil</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Je souhaite simplement soutenir le projet.</string>
+  <string name="Individual_Emails" formatted="false">E-mails individuels</string>
   <string name="Info" formatted="false">Info</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">C\'est un outil qui permet de donner vie à des projets créatifs.</string>
   <string name="Its_better_with_friends" formatted="false">On est mieux ensemble.</string>
@@ -168,6 +172,7 @@ contributeurs</string>
   <string name="Message_backer" formatted="false">Envoyer un message au contributeur</string>
   <string name="Message_creator" formatted="false">Envoyer un message au créateur</string>
   <string name="Message_user_name" formatted="false">Envoyer un message à %{user_name}</string>
+  <string name="New_pledge_activity" formatted="false">Nouveaux engagements</string>
   <string name="No_Results" formatted="false">Pas de résultats</string>
   <string name="No_comments_yet" formatted="false">Pas de commentaires.</string>
   <string name="No_messages" formatted="false">Pas de messages</string>
@@ -215,6 +220,7 @@ n\'ont rien soutenu.</string>
   <string name="Project_cancelled" formatted="false">Projet annulé</string>
   <string name="Project_saved" formatted="false">Projet enregistré.</string>
   <string name="Projects_We_Love" formatted="false">Nos coups de cœur</string>
+  <string name="Projects_youve_launched" formatted="false">Les projets que vous avez lancés</string>
   <string name="Public_comment" formatted="false">Commentaire public</string>
   <string name="Pursue_daring_ideas" formatted="false">Des idées audacieuses.</string>
   <string name="Push_notifications" formatted="false">Notifications push</string>
@@ -1016,10 +1022,10 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_settings_logout_alert_title" formatted="false">Déconnexion</string>
   <string name="profile_settings_navbar_title" formatted="false">Paramètres</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notifications</string>
-  <string name="profile_settings_newsletter_arts" formatted="false">Arts &amp; Culture News</string>
+  <string name="profile_settings_newsletter_arts" formatted="false">Actualités art et culture</string>
   <string name="profile_settings_newsletter_games" formatted="false">Kickstarter aime les jeux</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening</string>
-  <string name="profile_settings_newsletter_invent" formatted="false">Invent</string>
+  <string name="profile_settings_newsletter_invent" formatted="false">Inventions</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">Nous vous avons envoyé un e-mail de confirmation à l\'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">Dernière étape !</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Nouvelles et évènements Kickstarter</string>

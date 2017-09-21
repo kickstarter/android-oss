@@ -162,7 +162,7 @@
   <string name="Live_with_creator_name" formatted="false">&lt;b>%{creator_name}&lt;/b>のライブ配信</string>
   <string name="Loading" formatted="false">読み込み中</string>
   <string name="Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you" formatted="false">ログインかサインインしてこのプロジェクトを保存してください。終了４８時間前にリマインドします。</string>
-  <string name="Log_in_or_sign_up_to_subscribe" formatted="false">ログインかサインインしてください</string>
+  <string name="Log_in_or_sign_up_to_subscribe" formatted="false">ログインまたはサインアップしてください</string>
   <string name="Log_in_to_leave_a_comment" formatted="false">ログインしてコメントを残す。</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">リワードなしでプレッジ</string>
   <string name="Manage_your_pledge" formatted="false">プレッジを変更</string>
@@ -201,9 +201,9 @@
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">%{amount} 以下の金額を入力してくだささい。</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">%{amount} 以上の金額を入力してください。</string>
   <string name="Please_log_in_or_sign_up_to_back_this_project" formatted="false">このプロジェクトにバックするにはログインまたはサインアップをお願いします</string>
-  <string name="Please_log_in_or_sign_up_to_message_this_creator" formatted="false">クリエーターにメッセージするにはログインかサインインしてください。</string>
-  <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">チャットに参加するためにはログインかサインインしてください</string>
-  <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">ログインかサインインをし、ライブを見よう！</string>
+  <string name="Please_log_in_or_sign_up_to_message_this_creator" formatted="false">クリエイターにメッセージするにはログインまたはサインアップしてください。</string>
+  <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">チャットに参加するためにはログインかサインアップしてください。</string>
+  <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">ログインまたはサインアップして、ライブを見よう！</string>
   <string name="Pledge" formatted="false">プレッジする</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">プレッジでプロジェクトに生命を。</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">プロジェクトを探す、プロジェクトにプレッジする、プロジェクトを保存する、全て一つの場所で。</string>
@@ -295,7 +295,7 @@
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">このFacebookアカウントはすでに他のKickstarterユーザーとつながっています</string>
   <string name="Time_left_left" formatted="false">あと%{time_left}</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">上部の「さがす」をタップし、お気に入りカテゴリにアクセス。</string>
-  <string name="To_read_this_project_update_you_must_be_a_backer" formatted="false">アップデートを購読するにはバックしましょう。 ログインかサインアップを！</string>
+  <string name="To_read_this_project_update_you_must_be_a_backer" formatted="false">このアップデートはバッカー専用です。 続行するにはログインまたはサインアップしてください。</string>
   <string name="Toggle_saving_this_project" formatted="false">プロジェクトを保存</string>
   <string name="Total_pledged" formatted="false">プレッジ総計</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} のフォロー解除</string>

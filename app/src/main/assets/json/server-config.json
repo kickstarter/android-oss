@@ -7836,7 +7836,7 @@
       "Live_streaming_now": "ライブ配信中",
       "Live_with_creator_name": "<b>%{creator_name}</b>のライブ配信",
       "Loading": "読み込み中",
-      "Log_in_or_sign_up_to_subscribe": "ログインかサインインしてください",
+      "Log_in_or_sign_up_to_subscribe": "ログインまたはサインアップしてください",
       "Log_in_to_leave_a_comment": "ログインしてコメントを残す。",
       "Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you": "ログインかサインインしてこのプロジェクトを保存してください。終了４８時間前にリマインドします。",
       "Make_a_pledge_without_a_reward": "リワードなしでプレッジ",
@@ -7885,9 +7885,9 @@
       "Please_enter_an_amount_of_amount_or_less": "%{amount} 以下の金額を入力してくだささい。",
       "Please_enter_an_amount_of_amount_or_more": "%{amount} 以上の金額を入力してください。",
       "Please_log_in_or_sign_up_to_back_this_project": "このプロジェクトにバックするにはログインまたはサインアップをお願いします",
-      "Please_log_in_or_sign_up_to_message_this_creator": "クリエーターにメッセージするにはログインかサインインしてください。",
-      "Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat": "チャットに参加するためにはログインかサインインしてください",
-      "Please_log_in_or_sign_up_to_subscribe_to_this_live_stream": "ログインかサインインをし、ライブを見よう！",
+      "Please_log_in_or_sign_up_to_message_this_creator": "クリエイターにメッセージするにはログインまたはサインアップしてください。",
+      "Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat": "チャットに参加するためにはログインかサインアップしてください。",
+      "Please_log_in_or_sign_up_to_subscribe_to_this_live_stream": "ログインまたはサインアップして、ライブを見よう！",
       "Pledge": "プレッジする",
       "pledge_amount_pledged_on_pledge_date": "%{pledge_date} に<b>%{pledge_amount}</b>のプレッジをしました",
       "Pledge_any_amount_to_help_bring_this_project_to_life": "プレッジでプロジェクトに生命を。",
@@ -8009,7 +8009,7 @@
       "Time_left_left": "あと%{time_left}",
       "To_access_all_your_favorite_categories_tap_the_explore_dropdown": "上部の「さがす」をタップし、お気に入りカテゴリにアクセス。",
       "Toggle_saving_this_project": "プロジェクトを保存",
-      "To_read_this_project_update_you_must_be_a_backer": "アップデートを購読するにはバックしましょう。 ログインかサインアップを！",
+      "To_read_this_project_update_you_must_be_a_backer": "このアップデートはバッカー専用です。 続行するにはログインまたはサインアップしてください。",
       "Total_pledged": "プレッジ総計",
       "updates_count_updates": {
         "zero": "%{updates_count} 件のアップデート",
@@ -9611,6 +9611,7 @@
     "kickstarter_gold": true,
     "projects_of_earth": true,
     "native_japan": true,
+    "configurable_collections": true,
     "react_contact_form": true
   },
   "launched_countries": [
@@ -9792,7 +9793,7 @@
     }
   ],
   "ab_experiments": {
-    "koala_alt_frontend_tracking": "experimental",
+    "koala_alt_frontend_tracking": "control",
     "project_build": "control",
     "react_guest_pledging": "control",
     "react_payment_sources_form": "control",

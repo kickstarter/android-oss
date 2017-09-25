@@ -36,7 +36,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
 public final class RewardViewHolder extends KSViewHolder {
-  private final RewardViewModel viewModel;
+  private final RewardViewModel.ViewModel viewModel;
   private final KSString ksString;
 
   protected @Bind(R.id.reward_all_gone_text_view) TextView allGoneTextView;
@@ -69,7 +69,7 @@ public final class RewardViewHolder extends KSViewHolder {
     super(view);
 
     this.ksString = environment().ksString();
-    this.viewModel = new RewardViewModel(environment());
+    this.viewModel = new RewardViewModel.ViewModel(environment());
 
     ButterKnife.bind(this, view);
     final RewardsItemAdapter rewardsItemAdapter = new RewardsItemAdapter();

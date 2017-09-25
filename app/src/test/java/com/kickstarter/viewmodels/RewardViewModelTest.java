@@ -24,7 +24,7 @@ import rx.observers.TestSubscriber;
 import static java.util.Collections.emptyList;
 
 public final class RewardViewModelTest extends KSRobolectricTestCase {
-  private RewardViewModel vm;
+  private RewardViewModel.ViewModel vm;
   private final TestSubscriber<Boolean> allGoneTextViewIsHidden = new TestSubscriber<>();
   private final TestSubscriber<Integer> backersTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backersTextViewIsHidden = new TestSubscriber<>();
@@ -53,7 +53,7 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> whiteOverlayIsHidden = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new RewardViewModel(environment);
+    this.vm = new RewardViewModel.ViewModel(environment);
     this.vm.outputs.allGoneTextViewIsHidden().subscribe(this.allGoneTextViewIsHidden);
     this.vm.outputs.backersTextViewIsHidden().subscribe(this.backersTextViewIsHidden);
     this.vm.outputs.backersTextViewText().subscribe(this.backersTextViewText);

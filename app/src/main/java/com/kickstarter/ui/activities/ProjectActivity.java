@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,7 +26,6 @@ import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.data.LoginReason;
-import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.ProjectViewModel;
 
 import butterknife.Bind;

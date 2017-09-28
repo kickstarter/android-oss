@@ -36,6 +36,7 @@
         android:background="@color/ksr_grey_400"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:autoLink="web"
         tools:text="Hey there!"/>
 
     </android.support.v7.widget.CardView>
@@ -71,6 +72,7 @@
       android:background="@color/ksr_soft_black"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:autoLink="web"
       tools:text="What's up?"/>
 
   </android.support.v7.widget.CardView>

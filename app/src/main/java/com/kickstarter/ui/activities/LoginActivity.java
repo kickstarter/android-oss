@@ -33,8 +33,8 @@ import rx.Observable;
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresActivityViewModel(LoginViewModel.class)
-public final class LoginActivity extends BaseActivity<LoginViewModel> {
+@RequiresActivityViewModel(LoginViewModel.ViewModel.class)
+public final class LoginActivity extends BaseActivity<LoginViewModel.ViewModel> {
   private ConfirmDialog confirmResetPasswordSuccessDialog;
   private KSString ksString;
 

@@ -58,6 +58,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel.ViewModel> 
     ButterKnife.bind(this);
 
     this.ksString = environment().ksString();
+    this.viewModel.inputs.toolbarTitleText(this.loginString);
     this.loginToolbar.setTitle(this.loginString);
     this.forgotPasswordTextView.setText(Html.fromHtml(this.forgotPasswordString));
 
@@ -66,7 +67,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel.ViewModel> 
       .compose(observeForUI())
       .subscribe(e -> ViewUtils.showDialog(this, this.errorTitleString, e));
 
-    this.viewModel.errors.tfaChallenge()
+    this.viewModel.outputs.tfaChallenge()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> startTwoFactorActivity());
@@ -76,7 +77,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel.ViewModel> 
       .compose(observeForUI())
       .subscribe(__ -> onSuccess());
 
-    this.viewModel.outputs.prefillEmailFromPasswordReset()
+    this.viewModel.outputs.preFillEmailFromPasswordReset()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.emailEditText::setText);
@@ -94,7 +95,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel.ViewModel> 
         }
       });
 
-    this.viewModel.outputs.setLoginButtonIsEnabled()
+    this.viewModel.outputs.logInButtonIsEnabled()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setLoginButtonEnabled);
@@ -117,9 +118,9 @@ public final class LoginActivity extends BaseActivity<LoginViewModel.ViewModel> 
   }
 
   private Observable<String> errorMessages() {
-    return this.viewModel.errors.invalidLoginError()
+    return this.viewModel.outputs.invalidLoginError()
       .map(ObjectUtils.coalesceWith(this.loginDoesNotMatchString))
-      .mergeWith(this.viewModel.errors.genericLoginError()
+      .mergeWith(this.viewModel.outputs.genericLoginError()
         .map(ObjectUtils.coalesceWith(this.unableToLoginString))
       );
   }
@@ -138,12 +139,12 @@ public final class LoginActivity extends BaseActivity<LoginViewModel.ViewModel> 
 
   @OnTextChanged(R.id.email)
   void onEmailTextChanged(final @NonNull CharSequence email) {
-    this.viewModel.inputs.email(email.toString());
+    this.viewModel.inputs.emailEditTextChanged(email.toString());
   }
 
   @OnTextChanged(R.id.password)
   void onPasswordTextChanged(final @NonNull CharSequence password) {
-    this.viewModel.inputs.password(password.toString());
+    this.viewModel.inputs.passwordEditTextChanged(password.toString());
   }
 
   @OnClick(R.id.forgot_your_password_text_view)
@@ -154,7 +155,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel.ViewModel> 
 
   @OnClick(R.id.login_button)
   public void loginButtonOnClick() {
-    this.viewModel.inputs.loginClick();
+    this.viewModel.inputs.logInButtonClicked();
   }
 
   public void onSuccess() {

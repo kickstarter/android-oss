@@ -25,6 +25,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface LoginViewModel {
 
+  // TODO: 10/4/17 finish adding javadoc
   interface Inputs {
 
     /** Call when the back or close button has been clicked. */
@@ -32,9 +33,6 @@ public interface LoginViewModel {
 
     /** Call when the email edit text changes. */
     void emailEditTextChanged(String email);
-
-//    /** Call when the forgot password button has been clicked. */
-//    void forgotPasswordButtonClicked();
 
     /** Call when the log in button has been clicked. */
     void logInButtonClicked();
@@ -52,8 +50,6 @@ public interface LoginViewModel {
     Observable<String> genericLoginError();
 
     Observable<String> invalidLoginError();
-
-    PublishSubject<ErrorEnvelope> loginError();
 
     /** Emits a boolean that determines if the log in button is enabled. */
     Observable<Boolean> logInButtonIsEnabled();
@@ -129,6 +125,10 @@ public interface LoginViewModel {
         .mergeWith(genericLoginError)
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackLoginError());
+
+      tfaChallenge = this.loginError
+        .filter(ErrorEnvelope::isTfaRequiredError)
+        .map(__ -> null);
     }
 
     private static boolean isValid(final @NonNull String email, final @NonNull String password) {
@@ -148,7 +148,6 @@ public interface LoginViewModel {
 
     private final PublishSubject<Void> backOrCloseButtonClicked = PublishSubject.create();
     private final PublishSubject<String> emailEditTextChanged = PublishSubject.create();
-//    private final PublishSubject<Void> forgotPasswordButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> logInButtonClicked = PublishSubject.create();
     private final PublishSubject<String> passwordEditTextChanged = PublishSubject.create();
     private final PublishSubject<Boolean> resetPasswordConfirmationDialogDismissed = PublishSubject.create();
@@ -160,7 +159,7 @@ public interface LoginViewModel {
     private final PublishSubject<Void> loginSuccess = PublishSubject.create();
     private final PublishSubject<String> preFillEmailFromPasswordReset = PublishSubject.create();
     private final BehaviorSubject<Pair<Boolean, String>> showResetPasswordSuccessDialog = BehaviorSubject.create();
-    private final PublishSubject<Void> tfaChallenge = PublishSubject.create();
+    private final Observable<Void> tfaChallenge;
 
     private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
 
@@ -173,9 +172,6 @@ public interface LoginViewModel {
     @Override public void emailEditTextChanged(String email) {
       this.emailEditTextChanged.onNext(email);
     }
-//    @Override public void forgotPasswordButtonClicked() {
-//      this.forgotPasswordButtonClicked.onNext(null);
-//    }
     @Override public void logInButtonClicked() {
       logInButtonClicked.onNext(null);
     }
@@ -183,7 +179,7 @@ public interface LoginViewModel {
       this.passwordEditTextChanged.onNext(password);
     }
     @Override public void resetPasswordConfirmationDialogDismissed() {
-      this.resetPasswordConfirmationDialogDismissed.onNext(null);
+      this.resetPasswordConfirmationDialogDismissed.onNext(true);
     }
     @Override public void toolbarTitleText(String title) {
       this.toolbarTitleText.onNext(title);
@@ -195,10 +191,6 @@ public interface LoginViewModel {
     }
     @Override public @NonNull Observable<String> invalidLoginError() {
       return this.invalidloginError;
-    }
-    @Override
-    public PublishSubject<ErrorEnvelope> loginError() {
-      return null;
     }
     @Override public Observable<Boolean> logInButtonIsEnabled() {
       return logInButtonIsEnabled;

@@ -58,7 +58,6 @@ public final class LoginActivity extends BaseActivity<LoginViewModel.ViewModel> 
     ButterKnife.bind(this);
 
     this.ksString = environment().ksString();
-    this.viewModel.inputs.toolbarTitleText(this.loginString);
     this.loginToolbar.setTitle(this.loginString);
     this.forgotPasswordTextView.setText(Html.fromHtml(this.forgotPasswordString));
 
@@ -77,7 +76,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel.ViewModel> 
       .compose(observeForUI())
       .subscribe(__ -> onSuccess());
 
-    this.viewModel.outputs.preFillEmailFromPasswordReset()
+    this.viewModel.outputs.prefillEmailFromPasswordReset()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.emailEditText::setText);
@@ -95,7 +94,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel.ViewModel> 
         }
       });
 
-    this.viewModel.outputs.logInButtonIsEnabled()
+    this.viewModel.outputs.loginButtonIsEnabled()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setLoginButtonEnabled);
@@ -139,12 +138,12 @@ public final class LoginActivity extends BaseActivity<LoginViewModel.ViewModel> 
 
   @OnTextChanged(R.id.email)
   void onEmailTextChanged(final @NonNull CharSequence email) {
-    this.viewModel.inputs.emailEditTextChanged(email.toString());
+    this.viewModel.inputs.email(email.toString());
   }
 
   @OnTextChanged(R.id.password)
   void onPasswordTextChanged(final @NonNull CharSequence password) {
-    this.viewModel.inputs.passwordEditTextChanged(password.toString());
+    this.viewModel.inputs.password(password.toString());
   }
 
   @OnClick(R.id.forgot_your_password_text_view)

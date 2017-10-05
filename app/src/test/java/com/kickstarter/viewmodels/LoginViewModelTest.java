@@ -26,16 +26,6 @@ public class LoginViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> showResetPasswordSuccessDialog = new TestSubscriber<>();
   private final TestSubscriber<Void> tfaChallenge = new TestSubscriber<>();
 
-  protected void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new LoginViewModel.ViewModel(environment);
-    this.vm.outputs.genericLoginError().subscribe(this.genericLoginError);
-    this.vm.outputs.invalidLoginError().subscribe(this.invalidLoginError);
-    this.vm.outputs.loginButtonIsEnabled().subscribe(this.logInButtonIsEnabled);
-    this.vm.outputs.loginSuccess().subscribe(this.loginSuccess);
-    this.vm.outputs.prefillEmailFromPasswordReset().subscribe(this.preFillEmailFromPasswordReset);
-    this.vm.outputs.showResetPasswordSuccessDialog().map(showAndEmail -> showAndEmail.first).subscribe(this.showResetPasswordSuccessDialog);
-    this.vm.outputs.tfaChallenge().subscribe(this.tfaChallenge);
-  }
   @Test
   public void testLoginButtonEnabled() {
     this.vm = new LoginViewModel.ViewModel(environment());
@@ -73,7 +63,7 @@ public class LoginViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.email("incorrect@kickstarter.com");
     this.vm.inputs.password("lisaiscool");
 
-    this.vm.inputs.logInButtonClicked();
+    this.vm.inputs.loginClick();
 
     this.loginSuccess.assertNoValues();
     this.genericLoginError.assertValueCount(1);
@@ -97,7 +87,7 @@ public class LoginViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.email("typo@kickstartr.com");
     this.vm.inputs.password("julieiscool");
 
-    this.vm.inputs.logInButtonClicked();
+    this.vm.inputs.loginClick();
 
     this.loginSuccess.assertNoValues();
     this.invalidLoginError.assertValueCount(1);
@@ -120,7 +110,7 @@ public class LoginViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.email("hello@kickstarter.com");
     this.vm.inputs.password("androidiscool");
 
-    this.vm.inputs.logInButtonClicked();
+    this.vm.inputs.loginClick();
 
     this.loginSuccess.assertNoValues();
     this.tfaChallenge.assertValueCount(1);
@@ -171,7 +161,7 @@ public class LoginViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.email("hello@kickstarter.com");
     this.vm.inputs.password("codeisawesome");
 
-    this.vm.inputs.logInButtonClicked();
+    this.vm.inputs.loginClick();
 
     this.loginSuccess.assertValueCount(1);
     this.koalaTest.assertValues("Login");

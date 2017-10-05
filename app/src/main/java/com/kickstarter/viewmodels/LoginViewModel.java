@@ -34,7 +34,7 @@ public interface LoginViewModel {
     void email(String email);
 
     /** Call when the log in button has been clicked. */
-    void logInButtonClicked();
+    void loginClick();
 
     /** Call when the password field changes. */
     void password(String password);
@@ -174,7 +174,7 @@ public interface LoginViewModel {
     @Override public void email(final String email) {
       this.emailEditTextChanged.onNext(email);
     }
-    @Override public void logInButtonClicked() {
+    @Override public void loginClick() {
       this.logInButtonClicked.onNext(null);
     }
     @Override public void password(final String password) {

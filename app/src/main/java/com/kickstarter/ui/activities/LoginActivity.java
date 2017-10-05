@@ -154,7 +154,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel.ViewModel> 
 
   @OnClick(R.id.login_button)
   public void loginButtonOnClick() {
-    this.viewModel.inputs.logInButtonClicked();
+    this.viewModel.inputs.loginClick();
   }
 
   public void onSuccess() {

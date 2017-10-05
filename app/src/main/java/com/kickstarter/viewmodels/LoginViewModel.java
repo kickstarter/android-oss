@@ -89,7 +89,7 @@ public interface LoginViewModel {
 
       emailFromIntent
         .compose(bindToLifecycle())
-        .subscribe(this.preFillEmailFromPasswordReset);
+        .subscribe(this.prefillEmailFromPasswordReset);
 
       emailFromIntent
         .map(e -> Pair.create(true, e))
@@ -159,7 +159,7 @@ public interface LoginViewModel {
     private final Observable<String> invalidloginError;
     private final BehaviorSubject<Boolean> logInButtonIsEnabled = BehaviorSubject.create();
     private final PublishSubject<Void> loginSuccess = PublishSubject.create();
-    private final BehaviorSubject<String> preFillEmailFromPasswordReset = BehaviorSubject.create();
+    private final BehaviorSubject<String> prefillEmailFromPasswordReset = BehaviorSubject.create();
     private final BehaviorSubject<Pair<Boolean, String>> showResetPasswordSuccessDialog = BehaviorSubject.create();
     private final Observable<Void> tfaChallenge;
 
@@ -198,7 +198,7 @@ public interface LoginViewModel {
       return this.loginSuccess;
     }
     @Override public @NonNull Observable<String> prefillEmailFromPasswordReset() {
-      return this.preFillEmailFromPasswordReset;
+      return this.prefillEmailFromPasswordReset;
     }
     @Override public @NonNull Observable<Pair<Boolean, String>> showResetPasswordSuccessDialog() {
       return this.showResetPasswordSuccessDialog;

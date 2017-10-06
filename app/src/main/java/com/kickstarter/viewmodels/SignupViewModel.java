@@ -177,7 +177,7 @@ public interface SignupViewModel {
     @Override public @NonNull PublishSubject<Void> signupSuccess() {
       return this.signupSuccess;
     }
-    
+
     final static class SignupData {
       final @NonNull String fullName;
       final @NonNull String email;

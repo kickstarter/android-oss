@@ -13,9 +13,6 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.SignupActivity;
-import com.kickstarter.viewmodels.errors.SignupViewModelErrors;
-import com.kickstarter.viewmodels.inputs.SignupViewModelInputs;
-import com.kickstarter.viewmodels.outputs.SignupViewModelOutputs;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -23,143 +20,181 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
-public final class SignupViewModel extends ActivityViewModel<SignupActivity> implements SignupViewModelInputs, SignupViewModelOutputs,
-  SignupViewModelErrors {
-  private final ApiClientType client;
-  private final CurrentUserType currentUser;
-  private final CurrentConfigType currentConfig;
+public interface SignupViewModel {
 
-  protected final static class SignupData {
-    final @NonNull String fullName;
-    final @NonNull String email;
-    final @NonNull String password;
-    final boolean sendNewsletters;
+  interface Inputs {
+    /** Call when the email field changes. */
+    void email(String email);
 
-    protected SignupData(final @NonNull String fullName, final @NonNull String email, final @NonNull String password,
-      final boolean sendNewsletters) {
-      this.fullName = fullName;
-      this.email = email;
-      this.password = password;
-      this.sendNewsletters = sendNewsletters;
+    /** Call when the name field changes. */
+    void fullName(String fullName);
+
+    /** Call when the password field changes. */
+    void password(String password);
+
+    /** Call when the send newsletter toggle changes. */
+    void sendNewslettersClick(boolean send);
+
+    /** Call when the signup button has been clicked. */
+    void signupClick();
+  }
+
+  interface Outputs {
+    /** Emits a string to display when signup fails. */
+    Observable<String> errorString();
+
+    /** Emits a boolean that determines if the sign up button is enabled. */
+    Observable<Boolean> formIsValid();
+
+    /** Emits a boolean that determines if the sign up button is disabled. */
+    Observable<Boolean> formSubmitting();
+
+    /** Emits a boolean that determines if the send newsletter toggle is checked. */
+    Observable<Boolean> sendNewslettersIsChecked();
+
+    /** Finish the activity with a successful result. */
+    Observable<Void> signupSuccess();
+  }
+
+  final class ViewModel extends ActivityViewModel<SignupActivity> implements Inputs, Outputs {
+    private final ApiClientType client;
+    private final CurrentUserType currentUser;
+    private final CurrentConfigType currentConfig;
+
+    public ViewModel(final @NonNull Environment environment) {
+      super(environment);
+
+      this.client = environment.apiClient();
+      this.currentConfig = environment.currentConfig();
+      this.currentUser = environment.currentUser();
+
+      final Observable<SignupData> signupData = Observable.combineLatest(
+        this.fullName, this.email, this.password, this.sendNewslettersIsChecked, SignupData::new
+      );
+
+      this.sendNewslettersClick
+        .compose(bindToLifecycle())
+        .subscribe(this.sendNewslettersIsChecked::onNext);
+
+      signupData
+        .map(SignupData::isValid)
+        .compose(bindToLifecycle())
+        .subscribe(this.formIsValid);
+
+      signupData
+        .compose(takeWhen(this.signupClick))
+        .flatMap(this::submit)
+        .compose(bindToLifecycle())
+        .subscribe(this::success);
+
+      this.currentConfig.observable()
+        .take(1)
+        .map(config -> I18nUtils.isCountryUS(config.countryCode()))
+        .compose(bindToLifecycle())
+        .subscribe(this.sendNewslettersIsChecked::onNext);
+
+      this.signupError
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.koala.trackRegisterError());
+
+      this.errorString = this.signupError
+        .takeUntil(this.signupSuccess)
+        .map(ErrorEnvelope::errorMessage);
+
+      this.sendNewslettersClick
+        .compose(bindToLifecycle())
+        .subscribe(this.koala::trackSignupNewsletterToggle);
+
+      this.signupSuccess
+        .compose(bindToLifecycle())
+        .subscribe(__ -> {
+          this.koala.trackLoginSuccess();
+          this.koala.trackRegisterSuccess();
+        });
+
+      this.koala.trackRegisterFormView();
     }
 
-    protected boolean isValid() {
-      return this.fullName.length() > 0 && StringUtils.isEmail(this.email) && this.password.length() >= 6;
+    private Observable<AccessTokenEnvelope> submit(final @NonNull SignupData data) {
+      return this.client.signup(data.fullName, data.email, data.password, data.password, data.sendNewsletters)
+        .compose(Transformers.pipeApiErrorsTo(this.signupError))
+        .compose(Transformers.neverError())
+        .doOnSubscribe(() -> this.formSubmitting.onNext(true))
+        .doAfterTerminate(() -> this.formSubmitting.onNext(false));
     }
-  }
 
-  // INPUTS
-  private final PublishSubject<String> fullName = PublishSubject.create();
-  public void fullName(final @NonNull String s) {
-    this.fullName.onNext(s);
-  }
-  private final PublishSubject<String> email = PublishSubject.create();
-  public void email(final @NonNull String s) {
-    this.email.onNext(s);
-  }
-  private final PublishSubject<String> password = PublishSubject.create();
-  public void password(final @NonNull String s) {
-    this.password.onNext(s);
-  }
-  private final PublishSubject<Boolean> sendNewslettersClick = PublishSubject.create();
-  public void sendNewslettersClick(final boolean b) {
-    this.sendNewslettersClick.onNext(b);
-  }
-  private final PublishSubject<Void> signupClick = PublishSubject.create();
-  public void signupClick() {
-    this.signupClick.onNext(null);
-  }
+    private void success(final @NonNull AccessTokenEnvelope envelope) {
+      this.currentUser.login(envelope.user(), envelope.accessToken());
+      this.signupSuccess.onNext(null);
+    }
 
-  // OUTPUTS
-  private final PublishSubject<Void> signupSuccess = PublishSubject.create();
-  public Observable<Void> signupSuccess() {
-    return this.signupSuccess.asObservable();
-  }
-  private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
-  public Observable<Boolean> formSubmitting() {
-    return this.formSubmitting.asObservable();
-  }
-  private final PublishSubject<Boolean> formIsValid = PublishSubject.create();
-  public Observable<Boolean> formIsValid() {
-    return this.formIsValid.asObservable();
-  }
-  private final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
-  public Observable<Boolean> sendNewslettersIsChecked() {
-    return this.sendNewslettersIsChecked;
-  }
+    private final PublishSubject<String> fullName = PublishSubject.create();
+    private final PublishSubject<String> email = PublishSubject.create();
+    private final PublishSubject<String> password = PublishSubject.create();
+    private final PublishSubject<Boolean> sendNewslettersClick = PublishSubject.create();
+    private final PublishSubject<Void> signupClick = PublishSubject.create();
 
-  // ERRORS
-  private final PublishSubject<ErrorEnvelope> signupError = PublishSubject.create();
-  public Observable<String> signupError() {
-    return this.signupError
-      .takeUntil(this.signupSuccess)
-      .map(ErrorEnvelope::errorMessage);
-  }
+    private final Observable<String> errorString;
+    private final PublishSubject<Void> signupSuccess = PublishSubject.create();
+    private final BehaviorSubject<Boolean> formSubmitting = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> formIsValid = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
 
-  public final SignupViewModelInputs inputs = this;
-  public final SignupViewModelOutputs outputs = this;
-  public final SignupViewModelErrors errors = this;
+    private final PublishSubject<ErrorEnvelope> signupError = PublishSubject.create();
 
-  public SignupViewModel(final @NonNull Environment environment) {
-    super(environment);
+    public final Inputs inputs = this;
+    public final Outputs outputs = this;
 
-    this.client = environment.apiClient();
-    this.currentConfig = environment.currentConfig();
-    this.currentUser = environment.currentUser();
+    @Override public void email(final String email) {
+      this.email.onNext(email);
+    }
+    @Override public void fullName(final String fullName) {
+      this.fullName.onNext(fullName);
+    }
+    @Override public void password(final String password) {
+      this.password.onNext(password);
+    }
+    @Override public void sendNewslettersClick(final boolean send) {
+      this.sendNewslettersClick.onNext(send);
+    }
+    @Override public void signupClick() {
+      this.signupClick.onNext(null);
+    }
 
-    final Observable<SignupData> signupData = Observable.combineLatest(
-      this.fullName, this.email, this.password, this.sendNewslettersIsChecked, SignupData::new
-    );
 
-    this.sendNewslettersClick
-      .compose(bindToLifecycle())
-      .subscribe(this.sendNewslettersIsChecked::onNext);
+    @Override public @NonNull Observable<String> errorString() {
+      return this.errorString;
+    }
+    @Override public @NonNull BehaviorSubject<Boolean> formIsValid() {
+      return this.formIsValid;
+    }
+    @Override public @NonNull BehaviorSubject<Boolean> formSubmitting() {
+      return this.formSubmitting;
+    }
+    @Override public @NonNull BehaviorSubject<Boolean> sendNewslettersIsChecked() {
+      return this.sendNewslettersIsChecked;
+    }
+    @Override public @NonNull PublishSubject<Void> signupSuccess() {
+      return this.signupSuccess;
+    }
+    
+    final static class SignupData {
+      final @NonNull String fullName;
+      final @NonNull String email;
+      final @NonNull String password;
+      final boolean sendNewsletters;
 
-    signupData
-      .map(SignupData::isValid)
-      .compose(bindToLifecycle())
-      .subscribe(this.formIsValid);
+      SignupData(final @NonNull String fullName, final @NonNull String email, final @NonNull String password,
+        final boolean sendNewsletters) {
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.sendNewsletters = sendNewsletters;
+      }
 
-    signupData
-      .compose(takeWhen(this.signupClick))
-      .flatMap(this::submit)
-      .compose(bindToLifecycle())
-      .subscribe(this::success);
-
-    this.currentConfig.observable()
-      .take(1)
-      .map(config -> I18nUtils.isCountryUS(config.countryCode()))
-      .compose(bindToLifecycle())
-      .subscribe(this.sendNewslettersIsChecked::onNext);
-
-    this.signupError
-      .compose(bindToLifecycle())
-      .subscribe(__ -> this.koala.trackRegisterError());
-
-    this.sendNewslettersClick
-      .compose(bindToLifecycle())
-      .subscribe(this.koala::trackSignupNewsletterToggle);
-
-    this.signupSuccess
-      .compose(bindToLifecycle())
-      .subscribe(__ -> {
-        this.koala.trackLoginSuccess();
-        this.koala.trackRegisterSuccess();
-      });
-
-    this.koala.trackRegisterFormView();
-  }
-
-  private Observable<AccessTokenEnvelope> submit(final @NonNull SignupData data) {
-    return this.client.signup(data.fullName, data.email, data.password, data.password, data.sendNewsletters)
-      .compose(Transformers.pipeApiErrorsTo(this.signupError))
-      .compose(Transformers.neverError())
-      .doOnSubscribe(() -> this.formSubmitting.onNext(true))
-      .doAfterTerminate(() -> this.formSubmitting.onNext(false));
-  }
-
-  private void success(final @NonNull AccessTokenEnvelope envelope) {
-    this.currentUser.login(envelope.user(), envelope.accessToken());
-    this.signupSuccess.onNext(null);
+      boolean isValid() {
+        return this.fullName.length() > 0 && StringUtils.isEmail(this.email) && this.password.length() >= 6;
+      }
+    }
   }
 }

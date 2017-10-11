@@ -20,7 +20,7 @@ public interface CreatorDashboardFragmentViewModel {
 
   interface Inputs extends CreatorDashboardAdapter.Delegate {
     /* project menu clicked */
-    void projectsMenuClicked();
+    void dashboardShowProjectMenuClicked();
   }
 
   interface Outputs {
@@ -62,7 +62,7 @@ public interface CreatorDashboardFragmentViewModel {
     public final Outputs outputs = this;
 
     @Override
-    public void projectsMenuClicked() {
+    public void dashboardShowProjectMenuClicked() {
       this.projectsMenuClick.onNext(null);
     }
 

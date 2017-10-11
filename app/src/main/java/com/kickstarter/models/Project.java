@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
+import com.kickstarter.libs.Permission;
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.IntegerUtils;
@@ -40,18 +41,22 @@ public abstract class Project implements Parcelable {
   public abstract long id(); // in the Kickstarter app, this is project.pid not project.id
   public abstract boolean isBacking();
   public abstract boolean isStarred();
+  public abstract @Nullable DateTime lastUpdatePublishedAt();
   public abstract @Nullable DateTime launchedAt();
   public abstract @Nullable Location location();
   public abstract String name();
+  public abstract @Nullable List<Permission> permissions();
   public abstract float pledged();
   public abstract @Nullable Photo photo();
   public abstract @Nullable DateTime potdAt();
+  public abstract @Nullable List<Reward> rewards();
   public abstract @Nullable String slug();
   public abstract @State String state();
   public abstract @Nullable DateTime stateChangedAt();
   public abstract @Nullable Float staticUsdRate();
+  public abstract @Nullable Integer unreadMessagesCount();
+  public abstract @Nullable Integer unseenActivityCount();
   public abstract @Nullable Integer updatesCount();
-  public abstract @Nullable List<Reward> rewards();
   public abstract @Nullable DateTime updatedAt();
   public abstract Urls urls();
   public abstract @Nullable Video video();
@@ -76,9 +81,11 @@ public abstract class Project implements Parcelable {
     public abstract Builder id(long __);
     public abstract Builder isBacking(boolean __);
     public abstract Builder isStarred(boolean __);
+    public abstract Builder lastUpdatePublishedAt(DateTime __);
     public abstract Builder launchedAt(DateTime __);
     public abstract Builder location(Location __);
     public abstract Builder name(String __);
+    public abstract Builder permissions(List<Permission> __);
     public abstract Builder pledged(float __);
     public abstract Builder photo(Photo __);
     public abstract Builder potdAt(DateTime __);
@@ -87,6 +94,8 @@ public abstract class Project implements Parcelable {
     public abstract Builder staticUsdRate(Float __);
     public abstract Builder state(@State String __);
     public abstract Builder stateChangedAt(DateTime __);
+    public abstract Builder unreadMessagesCount(Integer __);
+    public abstract Builder unseenActivityCount(Integer __);
     public abstract Builder updatedAt(DateTime __);
     public abstract Builder updatesCount(Integer __);
     public abstract Builder urls(Urls __);

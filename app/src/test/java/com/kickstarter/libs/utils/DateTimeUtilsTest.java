@@ -18,6 +18,7 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
   public void testEstimatedDeliveryOn() {
     assertEquals("December 2015", DateTimeUtils.estimatedDeliveryOn(DateTime.parse("2015-12-17T18:35:05Z")));
     assertEquals("décembre 2015", DateTimeUtils.estimatedDeliveryOn(DateTime.parse("2015-12-17T18:35:05Z"), Locale.FRENCH));
+    assertEquals("2015年12月", DateTimeUtils.estimatedDeliveryOn(DateTime.parse("2015-12-17T18:35:05Z"), Locale.JAPANESE));
   }
 
   @Test

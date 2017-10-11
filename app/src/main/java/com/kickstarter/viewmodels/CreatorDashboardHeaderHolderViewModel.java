@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
@@ -22,40 +23,58 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 public interface CreatorDashboardHeaderHolderViewModel {
 
   interface Inputs {
+    /** Call when the messages button is clicked. */
+    void messagesButtonClicked();
+
+    /** Call to configure the view model with Project and Stats. */
     void projectAndStats(Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope);
-    void projectViewClicked();
+
+    /** Call when the View project button is clicked. */
+    void viewProjectButtonClicked();
   }
 
   interface Outputs {
-    /* project that is currently being viewed */
+    /** project that is currently being viewed */
     Observable<Project> currentProject();
 
-    /* string number with the percentage of a projects funding */
+    /** Emits when the messages button should be gone. */
+    Observable<Boolean> messagesButtonIsGone();
+
+    /** string number with the percentage of a projects funding */
     Observable<String> percentageFunded();
 
-    /* localized count of number of backers */
+    /** localized count of number of backers */
     Observable<String> projectBackersCountText();
 
-    /* current projects blurb */
+    /** current projects blurb */
     Observable<String> projectBlurbTextViewText();
 
-    /* current project's name */
+    /** current project's name */
     Observable<String> projectNameTextViewText();
 
-    /* time remaining for latest project (no units) */
+    /** time remaining for latest project (no units) */
     Observable<String> timeRemainingText();
 
-    /* call when button is clicked to view individual project page */
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
+    Observable<Project> startMessageThreadsActivity();
+
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardHeaderViewHolder> implements Inputs, Outputs {
+    private final CurrentUserType currentUser;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
+      this.currentUser = environment.currentUser();
+
       this.currentProject = this.projectAndStats
         .map(PairUtils::first);
+
+      this.messagesButtonIsGone = Observable.zip(this.currentProject, this.currentUser.observable(), Pair::create)
+        .map(projectAndUser -> projectAndUser.first.creator().id() != projectAndUser.second.id());
 
       this.percentageFunded = this.currentProject
         .map(p -> NumberUtils.flooredPercentage(p.percentageFunded()));
@@ -78,42 +97,49 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .map(ProjectUtils::deadlineCountdownValue)
         .map(NumberUtils::format);
 
-      this.startProjectActivity = this.currentProject()
-        .compose(takeWhen(this.projectViewClicked))
+      this.startMessageThreadsActivity = this.currentProject
+        .compose(takeWhen(this.messagesButtonClicked));
+
+      this.startProjectActivity = this.currentProject
+        .compose(takeWhen(this.viewProjectButtonClicked))
         .map(p -> Pair.create(p, RefTag.dashboard()));
     }
-
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
+    private final PublishSubject<Void> messagesButtonClicked = PublishSubject.create();
     private final PublishSubject<Pair<Project, ProjectStatsEnvelope>> projectAndStats = PublishSubject.create();
-    private final PublishSubject<Void> projectViewClicked = PublishSubject.create();
+    private final PublishSubject<Void> viewProjectButtonClicked = PublishSubject.create();
 
-    private final Observable<String> percentageFunded;
     private final Observable<Project> currentProject;
+    private final Observable<Boolean> messagesButtonIsGone;
+    private final Observable<String> percentageFunded;
     private final Observable<String> projectBackersCountText;
     private final Observable<String> projectBlurbTextViewText;
     private final Observable<String> projectNameTextViewText;
+    private final Observable<Project> startMessageThreadsActivity;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
     private final Observable<String> timeRemainingText;
 
-    @Override
-    public void projectViewClicked() {
-      this.projectViewClicked.onNext(null);
+    @Override public void messagesButtonClicked() {
+      this.messagesButtonClicked.onNext(null);
     }
-
-    @Override
-    public void projectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope) {
+    @Override public void viewProjectButtonClicked() {
+      this.viewProjectButtonClicked.onNext(null);
+    }
+    @Override public void projectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope) {
       this.projectAndStats.onNext(projectAndProjectStatsEnvelope);
     }
 
-
-    @Override public @NonNull Observable<String> percentageFunded() {
-      return this.percentageFunded;
-    }
     @Override public @NonNull Observable<Project> currentProject() {
       return this.currentProject;
+    }
+    @Override public @NonNull Observable<Boolean> messagesButtonIsGone() {
+      return this.messagesButtonIsGone;
+    }
+    @Override public @NonNull Observable<String> percentageFunded() {
+      return this.percentageFunded;
     }
     @Override public @NonNull Observable<String> projectBackersCountText() {
       return this.projectBackersCountText;
@@ -123,6 +149,9 @@ public interface CreatorDashboardHeaderHolderViewModel {
     }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
+    }
+    @Override public @NonNull Observable<Project> startMessageThreadsActivity() {
+      return this.startMessageThreadsActivity;
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;

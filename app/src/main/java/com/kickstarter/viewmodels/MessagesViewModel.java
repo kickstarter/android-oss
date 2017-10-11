@@ -82,6 +82,9 @@ public interface MessagesViewModel {
     /** Emits a boolean that determines if the close button should be gone. */
     Observable<Boolean> closeButtonIsGone();
 
+    /** Emits the creator name to be displayed. */
+    Observable<String> creatorNameTextViewText();
+
     /** Emits when we should navigate back. */
     Observable<Void> goBack();
 
@@ -96,9 +99,6 @@ public interface MessagesViewModel {
 
     /** Emits a list of messages to be displayed. */
     Observable<List<Message>> messageList();
-
-    /** Emits the participant name to be displayed. */
-    Observable<String> participantNameTextViewText();
 
     /** Emits the project name to be displayed. */
     Observable<String> projectNameTextViewText();
@@ -125,7 +125,7 @@ public interface MessagesViewModel {
     Observable<String> showMessageErrorToast();
 
     /** Emits when we should start the {@link BackingActivity}. */
-    Observable<Project> startBackingActivity();
+    Observable<Pair<Project, User>> startBackingActivity();
 
     /** Emits when the thread has been marked as read. */
     Observable<Void> successfullyMarkedAsRead();
@@ -201,14 +201,22 @@ public interface MessagesViewModel {
 
       // If view model was not initialized with a MessageThread, participant is
       // the project creator.
-      final Observable<User> participant = Observable.merge(
-        initialMessageThreadEnvelope
-          .map(MessageThreadEnvelope::messageThread)
-          .filter(ObjectUtils::isNotNull)
-          .map(MessageThread::participant),
-        project.map(Project::creator)
+      final Observable<User> participant = Observable.combineLatest(
+        initialMessageThreadEnvelope.map(MessageThreadEnvelope::messageThread),
+        project,
+        Pair::create
       )
+        .map(threadAndProject ->
+          threadAndProject.first != null
+            ? threadAndProject.first.participant()
+            : threadAndProject.second.creator()
+        )
         .take(1);
+
+      participant
+        .map(User::name)
+        .compose(bindToLifecycle())
+        .subscribe(this.messageEditTextHint);
 
       final Observable<MessagesData> messagesData = Observable.combineLatest(
         backingOrThread,
@@ -290,10 +298,10 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.messageList::onNext);
 
-      participant
-        .map(User::name)
+      project
+        .map(p -> p.creator().name())
         .compose(bindToLifecycle())
-        .subscribe(this.participantNameTextViewText::onNext);
+        .subscribe(this.creatorNameTextViewText::onNext);
 
       initialMessageThreadEnvelope
         .map(MessageThreadEnvelope::messages)
@@ -303,14 +311,15 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.messageEditTextShouldRequestFocus::onNext);
 
-      messagesData
-        .switchMap(data -> backingAndProjectFromData(data, this.client))
+      final Observable<Pair<Backing, Project>> backingAndProject = messagesData
+        .switchMap(data -> backingAndProjectFromData(data, this.client));
+
+      backingAndProject
         .filter(ObjectUtils::isNotNull)
         .compose(bindToLifecycle())
         .subscribe(this.backingAndProject::onNext);
 
-      messagesData
-        .switchMap(data -> backingAndProjectFromData(data, this.client))
+      backingAndProject
         .map(ObjectUtils::isNull)
         .compose(bindToLifecycle())
         .subscribe(this.backingInfoViewIsGone::onNext);
@@ -323,7 +332,6 @@ public interface MessagesViewModel {
       this.backButtonIsGone = this.viewPledgeButtonIsGone.map(BooleanUtils::negate);
       this.closeButtonIsGone = this.backButtonIsGone.map(BooleanUtils::negate);
       this.goBack = this.backOrCloseButtonClicked;
-      this.messageEditTextHint = this.participantNameTextViewText;
       this.projectNameToolbarTextViewText = this.projectNameTextViewText;
       this.scrollRecyclerViewToBottom = updatedMessages.compose(ignoreValues());
       this.sendMessageButtonIsEnabled = Observable.merge(messageHasBody, messageIsSending.map(BooleanUtils::negate));
@@ -345,8 +353,13 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.projectNameTextViewText::onNext);
 
-      project
+      Observable.combineLatest(messageThreadEnvelope, this.currentUser.observable(), Pair::create)
         .compose(takeWhen(this.viewPledgeButtonClicked))
+        .map(eu ->
+          eu.first.messageThread().project().isBacking()
+            ? Pair.create(eu.first.messageThread().project(), eu.second)
+            : Pair.create(eu.first.messageThread().project(), eu.first.messageThread().participant())
+        )
         .compose(bindToLifecycle())
         .subscribe(this.startBackingActivity::onNext);
 
@@ -401,12 +414,12 @@ public interface MessagesViewModel {
     private final BehaviorSubject<Pair<Backing, Project>> backingAndProject = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> backingInfoViewIsGone = BehaviorSubject.create();
     private final Observable<Boolean> closeButtonIsGone;
+    private final BehaviorSubject<String> creatorNameTextViewText = BehaviorSubject.create();
     private final Observable<Void> goBack;
     private final Observable<Boolean> loadingIndicatorViewIsGone;
-    private final Observable<String> messageEditTextHint;
+    private final BehaviorSubject<String> messageEditTextHint = BehaviorSubject.create();
     private final PublishSubject<Void> messageEditTextShouldRequestFocus = PublishSubject.create();
     private final BehaviorSubject<List<Message>> messageList = BehaviorSubject.create();
-    private final BehaviorSubject<String> participantNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
     private final Observable<String> projectNameToolbarTextViewText;
     private final Observable<Void> recyclerViewDefaultBottomPadding;
@@ -415,7 +428,7 @@ public interface MessagesViewModel {
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<Boolean> sendMessageButtonIsEnabled;
     private final Observable<String> setMessageEditText;
-    private final PublishSubject<Project> startBackingActivity = PublishSubject.create();
+    private final PublishSubject<Pair<Project, User>> startBackingActivity = PublishSubject.create();
     private final BehaviorSubject<Void> successfullyMarkedAsRead = BehaviorSubject.create();
     private final Observable<Boolean> toolbarIsExpanded;
     private final BehaviorSubject<Boolean> viewPledgeButtonIsGone = BehaviorSubject.create();
@@ -472,8 +485,8 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<List<Message>> messageList() {
       return this.messageList;
     }
-    @Override public @NonNull Observable<String> participantNameTextViewText() {
-      return this.participantNameTextViewText;
+    @Override public @NonNull Observable<String> creatorNameTextViewText() {
+      return this.creatorNameTextViewText;
     }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
@@ -499,7 +512,7 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<String> setMessageEditText() {
       return this.setMessageEditText;
     }
-    @Override public @NonNull Observable<Project> startBackingActivity() {
+    @Override public @NonNull Observable<Pair<Project, User>> startBackingActivity() {
       return this.startBackingActivity;
     }
     @Override public @NonNull Observable<Void> successfullyMarkedAsRead() {

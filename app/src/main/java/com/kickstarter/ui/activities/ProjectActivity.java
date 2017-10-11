@@ -19,6 +19,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.data.LoginReason;
@@ -239,9 +240,10 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
   }
 
-  private void startBackingActivity(final @NonNull Project project) {
+  private void startBackingActivity(final @NonNull Pair<Project, User> projectAndBacker) {
     final Intent intent = new Intent(this, BackingActivity.class)
-      .putExtra(IntentKey.PROJECT, project);
+      .putExtra(IntentKey.PROJECT, projectAndBacker.first)
+      .putExtra(IntentKey.BACKER, projectAndBacker.second);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 

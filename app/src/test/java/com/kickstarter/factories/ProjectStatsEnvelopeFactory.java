@@ -13,7 +13,7 @@ import java.util.List;
 public final class ProjectStatsEnvelopeFactory {
   private ProjectStatsEnvelopeFactory() {}
 
-  public static @NonNull ProjectStatsEnvelope ProjectStatsEnvelope() {
+  public static @NonNull ProjectStatsEnvelope projectStatsEnvelope() {
     final ProjectStatsEnvelope.CumulativeStats cumulativeStats = CumulativeStatsFactory
       .cumulativeStats()
       .toBuilder()

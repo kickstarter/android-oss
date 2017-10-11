@@ -11,6 +11,7 @@ public final class KSUriTest extends KSRobolectricTestCase {
   private final Uri discoverScopeUri = Uri.parse("https://www.kickstarter.com/discover/ending-soon");
   private final Uri discoverPlacesUri = Uri.parse("https://www.ksr.com/discover/places/newest");
   private final String webEndpoint = "https://www.ksr.com";
+  private final Uri newGuestCheckoutUri = Uri.parse("https://www.ksr.com/checkouts/1/guest/new");
   private final Uri projectUri = Uri.parse("https://www.ksr.com/projects/creator/project");
   private final Uri projectSurveyUri = Uri.parse("https://www.ksr.com/projects/creator/project/surveys/survey-param");
   private final Uri updatesUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts");
@@ -52,7 +53,12 @@ public final class KSUriTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testKSuri_isProjectSurveyUri() {
+  public void testKSUri_isNewGuestCheckoutUri() {
+    assertTrue(KSUri.isNewGuestCheckoutUri(this.newGuestCheckoutUri, this.webEndpoint));
+  }
+
+  @Test
+  public void testKSUri_isProjectSurveyUri() {
     assertTrue(KSUri.isProjectSurveyUri(this.projectSurveyUri, this.webEndpoint));
     assertFalse(KSUri.isProjectSurveyUri(this.userSurveyUri, this.webEndpoint));
   }

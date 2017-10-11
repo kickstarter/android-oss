@@ -362,8 +362,14 @@ public final class Koala {
   }
 
   // SHARE
-  public void trackShowProjectShareSheet() {
-    this.client.track("Project Show Share Sheet");
+  public void trackShowProjectShareSheet(final @NonNull Project project) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(project);
+    props.put("context", KoalaContext.Share.PROJECT);
+
+    // deprecated
+    this.client.track(KoalaEvent.PROJECT_SHOW_SHARE_SHEET_LEGACY);
+
+    this.client.track(KoalaEvent.SHOWED_SHARE_SHEET, props);
   }
 
   public void trackCancelProjectShareSheet() {

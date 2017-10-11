@@ -32,7 +32,7 @@ public class CreatorDashboardFragmentViewModelTest extends KSRobolectricTestCase
   @Test
   public void testProjectAndStats() {
     final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope projectStats = ProjectStatsEnvelopeFactory.ProjectStatsEnvelope();
+    final ProjectStatsEnvelope projectStats = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
     setUpEnvironment(environment());
     final Bundle bundle = new Bundle();
@@ -46,7 +46,7 @@ public class CreatorDashboardFragmentViewModelTest extends KSRobolectricTestCase
   @Test
   public void testToggleBottomSheet() {
     setUpEnvironment(environment());
-    this.vm.inputs.projectsMenuClicked();
+    this.vm.inputs.dashboardShowProjectMenuClicked();
     this.toggleBottomSheet.assertValueCount(1);
   }
 }

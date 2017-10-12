@@ -141,13 +141,6 @@ public class CreatorDashboardReferrerBreakDownViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(pa -> this.setAmountPledgedTextViewText(pa, this.amountPledgedViaInternalTextView));
-
-    this.viewModel.outputs.unknownReferrerPercent()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(percent ->
-        this.referrerBreakdownView.setUnknownAngleAndColor(percent * 360d)
-      );
   }
 
   @Override

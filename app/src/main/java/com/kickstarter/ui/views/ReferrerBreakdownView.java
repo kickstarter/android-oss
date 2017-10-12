@@ -2,6 +2,7 @@ package com.kickstarter.ui.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
@@ -15,8 +16,8 @@ public class ReferrerBreakdownView extends View {
   private Double customSweepAngle;
   private Double externalSweepAngle;
   private Double internalSweepAngle;
-  private Double unknownSweepAngle;
-  private RectF rectF;
+  private RectF outerRectangle;
+  private RectF innerRectangle;
 
   public ReferrerBreakdownView(Context context) {
     super(context);
@@ -39,10 +40,6 @@ public class ReferrerBreakdownView extends View {
     this.internalSweepAngle = sweepAngle;
   }
 
-  public void setUnknownAngleAndColor(Double sweepAngle) {
-    this.unknownSweepAngle = sweepAngle;
-  }
-
   @Override
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
@@ -57,23 +54,23 @@ public class ReferrerBreakdownView extends View {
     float right = getWidth();
     float top = getY();
 
-    this.rectF = new RectF(left, top, right, bottom);
+    this.outerRectangle = new RectF(left, top, right, bottom);
+    this.innerRectangle = new RectF(left + 30, top + 30, right - 30, bottom - 30);
 
     Float offset = 0f;
 
     paint.setColor(ReferrerColor.CUSTOM.getReferrerColor());
-    this.canvas.drawArc(this.rectF, offset, this.customSweepAngle.floatValue(), true, paint);
+    this.canvas.drawArc(this.outerRectangle, offset, this.customSweepAngle.floatValue(), true, paint);
     offset = offset + customSweepAngle.floatValue();
 
     paint.setColor(ReferrerColor.EXTERNAL.getReferrerColor());
-    this.canvas.drawArc(this.rectF, offset, this.externalSweepAngle.floatValue(), true, paint);
+    this.canvas.drawArc(this.outerRectangle, offset, this.externalSweepAngle.floatValue(), true, paint);
     offset = offset + externalSweepAngle.floatValue();
 
     paint.setColor(ReferrerColor.INTERNAL.getReferrerColor());
-    this.canvas.drawArc(this.rectF, offset, this.internalSweepAngle.floatValue(), true, paint);
-    offset = offset + internalSweepAngle.floatValue();
+    this.canvas.drawArc(this.outerRectangle, offset, this.internalSweepAngle.floatValue(), true, paint);
 
-    paint.setColor(ReferrerColor.CAMPAIGN.getReferrerColor());
-    this.canvas.drawArc(this.rectF, offset, this.unknownSweepAngle.floatValue(), true, paint);
+    paint.setColor(Color.WHITE);
+    this.canvas.drawArc(this.innerRectangle, 0, 360f, true, paint);
   }
 }

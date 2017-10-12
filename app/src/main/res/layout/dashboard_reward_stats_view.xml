@@ -11,7 +11,7 @@
     android:layout_height="wrap_content"
     android:text="@string/dashboard_graphs_rewards_title_rewards"
     style="@style/Headline"
-    android:layout_marginLeft="@dimen/grid_2" />
+    android:layout_marginLeft="@dimen/grid_3" />
 
   <LinearLayout
     android:orientation="vertical"

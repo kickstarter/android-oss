@@ -86,29 +86,6 @@ public class CreatorDashboardAdapter extends KSAdapter {
       )
     );
 
-
-    ///// OLD
-//    sections().add(Collections.singletonList(projectAndStatsEnvelope));
-
-    // add reward stats sections
-//    sections().add(
-//      Collections.singletonList(
-//        Pair.create(projectAndStatsEnvelope.first, projectAndStatsEnvelope.second.rewardDistribution())
-//      )
-//    );
-//    // add referral stats sections
-//    sections().add(
-//      Collections.singletonList(
-//        Pair.create(projectAndStatsEnvelope.first, projectAndStatsEnvelope.second.referralDistribution())
-//      )
-//    );
-//    // add referral stats sections
-//    sections().add(
-//      Collections.singletonList(
-//        Pair.create(projectAndStatsEnvelope.first, projectAndStatsEnvelope.second.referralDistribution())
-//      )
-//    );
-
     notifyDataSetChanged();
   }
 }

@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext.Update;
@@ -59,9 +58,6 @@ public interface ActivityFeedViewModel {
     /** Emits a project when it should be shown. */
     Observable<Project> goToProject();
 
-    /** Emits an activity when project update should be shown. */
-    Observable<Activity> goToProjectUpdate();
-
     /** Emits a SurveyResponse when it should be shown. */
     Observable<SurveyResponse> goToSurvey();
 
@@ -74,26 +70,27 @@ public interface ActivityFeedViewModel {
     /** Emits a logged-in user with zero activities in order to display an empty state. */
     Observable<Boolean> loggedInEmptyStateIsVisible();
 
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.UpdateActivity}. */
+    Observable<Activity> startUpdateActivity();
+
     /** Emits a list of unanswered surveys to be shown in the user's activity feed */
     Observable<List<SurveyResponse>> surveys();
   }
 
   final class ViewModel extends ActivityViewModel<ActivityFeedActivity> implements Inputs, Outputs {
     private final ApiClientType client;
-    private final CurrentConfigType currentConfig;
     private final CurrentUserType currentUser;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.client = environment.apiClient();
-      this.currentConfig = environment.currentConfig();
       this.currentUser = environment.currentUser();
 
       this.goToDiscovery = this.discoverProjectsClick;
       this.goToLogin = this.loginClick;
-      this.goToProjectUpdate = this.projectUpdateClick;
       this.goToSurvey = this.surveyClick;
+
       this.goToProject = Observable.merge(
         this.friendBackingClick,
         this.projectStateChangedClick,
@@ -101,6 +98,8 @@ public interface ActivityFeedViewModel {
         this.projectUpdateProjectClick
       )
         .map(Activity::project);
+
+      this.startUpdateActivity = this.projectUpdateClick;
 
       final Observable<Void> refreshSurvey = Observable.merge(this.refresh, this.resume).share();
 
@@ -160,7 +159,7 @@ public interface ActivityFeedViewModel {
         .compose(this.bindToLifecycle())
         .subscribe(this.koala::trackActivityTapped);
 
-      this.goToProjectUpdate
+      this.startUpdateActivity
         .map(Activity::project)
         .filter(ObjectUtils::isNotNull)
         .compose(this.bindToLifecycle())
@@ -183,11 +182,11 @@ public interface ActivityFeedViewModel {
     private final Observable<Void> goToDiscovery;
     private final Observable<Void> goToLogin;
     private final Observable<Project> goToProject;
-    private final Observable<Activity> goToProjectUpdate;
     private final Observable<SurveyResponse> goToSurvey;
     private final BehaviorSubject<Boolean> isFetchingActivities= BehaviorSubject.create();
     private final BehaviorSubject<Boolean> loggedInEmptyStateIsVisible = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> loggedOutEmptyStateIsVisible = BehaviorSubject.create();
+    private final Observable<Activity> startUpdateActivity;
     private final BehaviorSubject<List<SurveyResponse>> surveys = BehaviorSubject.create();
 
     public final Inputs inputs = this;
@@ -240,9 +239,6 @@ public interface ActivityFeedViewModel {
     @Override public @NonNull Observable<Project> goToProject() {
       return this.goToProject;
     }
-    @Override public @NonNull Observable<Activity> goToProjectUpdate() {
-      return this.goToProjectUpdate;
-    }
     @Override public @NonNull Observable<SurveyResponse> goToSurvey() {
       return this.goToSurvey;
     }
@@ -254,6 +250,9 @@ public interface ActivityFeedViewModel {
     }
     @Override public @NonNull Observable<Boolean> loggedOutEmptyStateIsVisible() {
       return this.loggedOutEmptyStateIsVisible;
+    }
+    @Override public @NonNull Observable<Activity> startUpdateActivity() {
+      return this.startUpdateActivity;
     }
     @Override public @NonNull Observable<List<SurveyResponse>> surveys() {
       return this.surveys;

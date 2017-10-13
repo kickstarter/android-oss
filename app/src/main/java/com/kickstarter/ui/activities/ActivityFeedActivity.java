@@ -86,10 +86,10 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
       .compose(observeForUI())
       .subscribe(this::startProjectActivity);
 
-    this.viewModel.outputs.goToProjectUpdate()
+    this.viewModel.outputs.startUpdateActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::startProjectUpdateActivity);
+      .subscribe(this::startUpdateActivity);
 
     this.viewModel.outputs.loggedOutEmptyStateIsVisible()
       .compose(bindToLifecycle())
@@ -145,9 +145,10 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  private void startProjectUpdateActivity(final @NonNull Activity activity) {
-    final Intent intent = new Intent(this, WebViewActivity.class)
-      .putExtra(IntentKey.URL, activity.projectUpdateUrl());
+  private void startUpdateActivity(final @NonNull Activity activity) {
+    final Intent intent = new Intent(this, UpdateActivity.class)
+      .putExtra(IntentKey.PROJECT, activity.project())
+      .putExtra(IntentKey.UPDATE, activity.update());
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

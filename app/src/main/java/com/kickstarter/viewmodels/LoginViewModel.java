@@ -84,8 +84,7 @@ public interface LoginViewModel {
 
       final Observable<String> emailFromIntent = intent()
         .map(i -> i.getStringExtra(IntentKey.EMAIL))
-        .ofType(String.class)
-        .compose(bindToLifecycle());
+        .ofType(String.class);
 
       emailFromIntent
         .compose(bindToLifecycle())

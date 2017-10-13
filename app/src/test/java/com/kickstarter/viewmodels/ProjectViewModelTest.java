@@ -26,9 +26,9 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
   private ProjectViewModel.ViewModel vm;
   private final TestSubscriber<Project> projectTest = new TestSubscriber<>();
   private final TestSubscriber<Project> showShareSheet = new TestSubscriber<>();
-  private final TestSubscriber<Void> showStarredPromptTest = new TestSubscriber<>();
+  private final TestSubscriber<Void> showSavedPromptTest = new TestSubscriber<>();
   private final TestSubscriber<Void> startLoginToutActivity = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> savedTest = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, User>> startBackingActivity = new TestSubscriber<>();
   private final TestSubscriber<Project> startCampaignWebViewActivity = new TestSubscriber<>();
   private final TestSubscriber<Project> startCommentsActivity = new TestSubscriber<>();
@@ -41,9 +41,9 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     this.vm = new ProjectViewModel.ViewModel(environment);
     this.vm.outputs.projectAndUserCountry().map(pc -> pc.first).subscribe(this.projectTest);
     this.vm.outputs.showShareSheet().subscribe(this.showShareSheet);
-    this.vm.outputs.showStarredPrompt().subscribe(this.showStarredPromptTest);
+    this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest);
     this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity);
-    this.vm.outputs.projectAndUserCountry().map(pc -> pc.first.isStarred()).subscribe(this.starredTest);
+    this.vm.outputs.projectAndUserCountry().map(pc -> pc.first.isStarred()).subscribe(this.savedTest);
     this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity);
     this.vm.outputs.startCampaignWebViewActivity().subscribe(this.startCampaignWebViewActivity);
     this.vm.outputs.startCommentsActivity().subscribe(this.startCommentsActivity);
@@ -79,14 +79,14 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     // Start the view model with a project
     this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.halfWayProject()));
 
-    this.starredTest.assertValues(false, false);
+    this.savedTest.assertValues(false, false);
 
     // Try starring while logged out
-    this.vm.inputs.starButtonClicked();
+    this.vm.inputs.heartButtonClicked();
 
-    // The project shouldn't be starred, and a login prompt should be shown.
-    this.starredTest.assertValues(false, false);
-    this.showStarredPromptTest.assertValueCount(0);
+    // The project shouldn't be saved, and a login prompt should be shown.
+    this.savedTest.assertValues(false, false);
+    this.showSavedPromptTest.assertValueCount(0);
     this.startLoginToutActivity.assertValueCount(1);
 
     // A koala event for starring should NOT be tracked
@@ -95,9 +95,9 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     // Login
     currentUser.refresh(UserFactory.user());
 
-    // The project should be starred, and a star prompt should be shown.
-    this.starredTest.assertValues(false, false, true);
-    this.showStarredPromptTest.assertValueCount(1);
+    // The project should be saved, and a star prompt should be shown.
+    this.savedTest.assertValues(false, false, true);
+    this.showSavedPromptTest.assertValueCount(1);
 
     // A koala event for starring should be tracked
     this.koalaTest.assertValues(
@@ -140,15 +140,15 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     currentUser.refresh(UserFactory.user());
 
     // Star the project
-    this.vm.inputs.starButtonClicked();
+    this.vm.inputs.heartButtonClicked();
 
-    // The project should be starred, and a star prompt should NOT be shown.
-    this.starredTest.assertValues(false, false, true);
-    this.showStarredPromptTest.assertValueCount(0);
+    // The project should be saved, and a save prompt should NOT be shown.
+    this.savedTest.assertValues(false, false, true);
+    this.showSavedPromptTest.assertValueCount(0);
   }
 
   @Test
-  public void testProjectViewModel_StarProjectThatIsSuccessful() {
+  public void testProjectViewModel_SaveProjectThatIsSuccessful() {
     final CurrentUserType currentUser = new MockCurrentUser();
     final Environment environment = environment().toBuilder()
       .currentUser(currentUser)
@@ -164,11 +164,11 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     currentUser.refresh(UserFactory.user());
 
     // Star the project
-    this.vm.inputs.starButtonClicked();
+    this.vm.inputs.heartButtonClicked();
 
-    // The project should be starred, and a star prompt should NOT be shown.
-    this.starredTest.assertValues(false, false, true);
-    this.showStarredPromptTest.assertValueCount(0);
+    // The project should be saved, and a save prompt should NOT be shown.
+    this.savedTest.assertValues(false, false, true);
+    this.showSavedPromptTest.assertValueCount(0);
   }
 
   @Test

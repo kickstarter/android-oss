@@ -429,7 +429,7 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Project> starProject(final @NonNull Project project) {
+  public @NonNull Observable<Project> saveProject(final @NonNull Project project) {
     return this.service
       .starProject(project.param())
       .lift(apiErrorOperator())
@@ -438,7 +438,7 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project) {
+  public @NonNull Observable<Project> toggleProjectSave(final @NonNull Project project) {
     return this.service
       .toggleProjectStar(project.param())
       .lift(apiErrorOperator())

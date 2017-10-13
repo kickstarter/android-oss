@@ -284,6 +284,14 @@
 
   <style name="ToolbarTitle" parent="ToolbarTitleBase" />
 
+  <style name="ToolbarVectorIcon">
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_width">@dimen/button_icon_fixed_width</item>
+    <item name="android:background">@drawable/click_indicator_light</item>
+    <item name="android:gravity">center</item>
+    <item name="android:layout_centerVertical">true</item>
+  </style>
+
   <!-- Typography -->
   <style name="TextPrimary">
     <item name="android:textColor">@color/text_primary</item>

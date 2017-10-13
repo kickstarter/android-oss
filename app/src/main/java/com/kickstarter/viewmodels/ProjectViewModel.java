@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
+import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
@@ -57,8 +58,8 @@ public interface ProjectViewModel {
     /** Call when the play video button is clicked. */
     void playVideoButtonClicked();
 
-    /** Call when the star button is clicked. */
-    void starButtonClicked();
+    /** Call when the heart button is clicked. */
+    void heartButtonClicked();
 
     /** Call when the updates button is clicked. */
     void updatesTextViewClicked();
@@ -68,12 +69,15 @@ public interface ProjectViewModel {
   }
 
   interface Outputs {
+    /** Emits a color that corresponds to whether the project is saved.*/
+    Observable<Integer> heartColorInt();
+
     /** Emits a project and country when a new value is available. If the view model is created with a full project
      * model, this observable will emit that project immediately, and then again when it has updated from the api. */
     Observable<Pair<Project, String>> projectAndUserCountry();
 
-    /** Emits when the success prompt for starring should be displayed. */
-    Observable<Void> showStarredPrompt();
+    /** Emits when the success prompt for saving should be displayed. */
+    Observable<Void> showSavedPrompt();
 
     /** Emits when we should start {@link com.kickstarter.ui.activities.LoginToutActivity}. */
     Observable<Void> startLoginToutActivity();
@@ -137,36 +141,36 @@ public interface ProjectViewModel {
       final Observable<PushNotificationEnvelope> pushNotificationEnvelope = intent()
         .flatMap(ProjectIntentMapper::pushNotificationEnvelope);
 
-      final Observable<User> loggedInUserOnStarClick = this.currentUser.observable()
-        .compose(takeWhen(this.starButtonClicked))
+      final Observable<User> loggedInUserOnHeartClick = this.currentUser.observable()
+        .compose(takeWhen(this.heartButtonClicked))
         .filter(u -> u != null);
 
-      final Observable<User> loggedOutUserOnStarClick = this.currentUser.observable()
-        .compose(takeWhen(this.starButtonClicked))
+      final Observable<User> loggedOutUserOnHeartClick = this.currentUser.observable()
+        .compose(takeWhen(this.heartButtonClicked))
         .filter(u -> u == null);
 
-      final Observable<Project> projectOnUserChangeStar = initialProject
-        .compose(takeWhen(loggedInUserOnStarClick))
-        .switchMap(this::toggleProjectStar)
+      final Observable<Project> projectOnUserChangeSave = initialProject
+        .compose(takeWhen(loggedInUserOnHeartClick))
+        .switchMap(this::toggleProjectSave)
         .share();
 
-      this.startLoginToutActivity = loggedOutUserOnStarClick.compose(ignoreValues());
+      this.startLoginToutActivity = loggedOutUserOnHeartClick.compose(ignoreValues());
 
-      final Observable<Project> starredProjectOnLoginSuccess = this.startLoginToutActivity
+      final Observable<Project> savedProjectOnLoginSuccess = this.startLoginToutActivity
         .compose(combineLatestPair(this.currentUser.observable()))
         .filter(su -> su.second != null)
         .withLatestFrom(initialProject, (__, p) -> p)
         .take(1)
-        .switchMap(this::starProject)
+        .switchMap(this::saveProject)
         .share();
 
       final Observable<Project> currentProject = Observable.merge(
         initialProject,
-        projectOnUserChangeStar,
-        starredProjectOnLoginSuccess
+        projectOnUserChangeSave,
+        savedProjectOnLoginSuccess
       );
 
-      this.showStarredPrompt = projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
+      this.showSavedPrompt = projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
         .filter(p -> p.isStarred() && p.isLive() && !p.isApproachingDeadline())
         .compose(ignoreValues());
 
@@ -192,8 +196,10 @@ public interface ProjectViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackVideoStart);
 
-      projectOnUserChangeStar
-        .mergeWith(starredProjectOnLoginSuccess)
+      this.heartColorInt = currentProject.map(p -> p.isStarred() ? R.color.green : R.color.text_primary);
+
+      projectOnUserChangeSave
+        .mergeWith(savedProjectOnLoginSuccess)
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackProjectStar);
 
@@ -245,13 +251,13 @@ public interface ProjectViewModel {
       }
     }
 
-    public @NonNull Observable<Project> starProject(final @NonNull Project project) {
-      return this.client.starProject(project)
+    public @NonNull Observable<Project> saveProject(final @NonNull Project project) {
+      return this.client.saveProject(project)
         .compose(neverError());
     }
 
-    public @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project) {
-      return this.client.toggleProjectStar(project)
+    public @NonNull Observable<Project> toggleProjectSave(final @NonNull Project project) {
+      return this.client.toggleProjectSave(project)
         .compose(neverError());
     }
 
@@ -259,17 +265,18 @@ public interface ProjectViewModel {
     private final PublishSubject<Void> blurbTextViewClicked = PublishSubject.create();
     private final PublishSubject<Void> commentsTextViewClicked = PublishSubject.create();
     private final PublishSubject<Void> creatorNameTextViewClicked = PublishSubject.create();
+    private final PublishSubject<Void> heartButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> managePledgeButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> playVideoButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> shareButtonClicked = PublishSubject.create();
-    private final PublishSubject<Void> starButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> updatesTextViewClicked = PublishSubject.create();
     private final PublishSubject<Void> viewPledgeButtonClicked = PublishSubject.create();
 
+    private final Observable<Integer> heartColorInt;
     private final Observable<Pair<Project, String>> projectAndUserCountry;
     private final Observable<Void> startLoginToutActivity;
     private final Observable<Project> showShareSheet;
-    private final Observable<Void> showStarredPrompt;
+    private final Observable<Void> showSavedPrompt;
     private final Observable<Project> startCampaignWebViewActivity;
     private final Observable<Project> startCheckoutActivity;
     private final Observable<Project> startCommentsActivity;
@@ -293,6 +300,9 @@ public interface ProjectViewModel {
     }
     @Override public void creatorNameTextViewClicked() {
       this.creatorNameTextViewClicked.onNext(null);
+    }
+    @Override public void heartButtonClicked() {
+      this.heartButtonClicked.onNext(null);
     }
     @Override public void managePledgeButtonClicked() {
       this.managePledgeButtonClicked.onNext(null);
@@ -327,9 +337,6 @@ public interface ProjectViewModel {
     @Override public void shareButtonClicked() {
       this.shareButtonClicked.onNext(null);
     }
-    @Override public void starButtonClicked() {
-      this.starButtonClicked.onNext(null);
-    }
     @Override public void updatesTextViewClicked() {
       this.updatesTextViewClicked.onNext(null);
     }
@@ -339,6 +346,9 @@ public interface ProjectViewModel {
 
     @Override public @NonNull Observable<Project> startVideoActivity() {
       return this.startVideoActivity;
+    }
+    @Override public @NonNull Observable<Integer> heartColorInt() {
+      return this.heartColorInt;
     }
     @Override public @NonNull Observable<Pair<Project, String>> projectAndUserCountry() {
       return this.projectAndUserCountry;
@@ -358,8 +368,8 @@ public interface ProjectViewModel {
     @Override public @NonNull Observable<Project> showShareSheet() {
       return this.showShareSheet;
     }
-    @Override public @NonNull Observable<Void> showStarredPrompt() {
-      return this.showStarredPrompt;
+    @Override public @NonNull Observable<Void> showSavedPrompt() {
+      return this.showSavedPrompt;
     }
     @Override public @NonNull Observable<Project> startProjectUpdatesActivity() {
       return this.startProjectUpdatesActivity;

@@ -346,7 +346,7 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Project> starProject(final @NonNull Project project) {
+  public @NonNull Observable<Project> saveProject(final @NonNull Project project) {
     return Observable.just(project.toBuilder().isStarred(true).build());
   }
 
@@ -356,7 +356,7 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project) {
+  public @NonNull Observable<Project> toggleProjectSave(final @NonNull Project project) {
     return Observable.just(project.toBuilder().isStarred(!project.isStarred()).build());
   }
 

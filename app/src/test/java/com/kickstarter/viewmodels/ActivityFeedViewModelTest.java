@@ -31,10 +31,10 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> goToDiscovery = new TestSubscriber<>();
   private final TestSubscriber<Void> goToLogin = new TestSubscriber<>();
   private final TestSubscriber<Project> goToProject = new TestSubscriber<>();
-  private final TestSubscriber<Activity> goToProjectUpdate = new TestSubscriber<>();
   private final TestSubscriber<SurveyResponse> goToSurvey = new TestSubscriber<>();
   private final TestSubscriber<Boolean> loggedOutEmptyStateIsVisible = new TestSubscriber<>();
   private final TestSubscriber<Boolean> loggedInEmptyStateIsVisible = new TestSubscriber<>();
+  private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
   private final TestSubscriber<List<SurveyResponse>> surveys = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
@@ -43,10 +43,10 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.goToDiscovery().subscribe(this.goToDiscovery);
     this.vm.outputs.goToLogin().subscribe(this.goToLogin);
     this.vm.outputs.goToProject().subscribe(this.goToProject);
-    this.vm.outputs.goToProjectUpdate().subscribe(this.goToProjectUpdate);
     this.vm.outputs.goToSurvey().subscribe(this.goToSurvey);
     this.vm.outputs.loggedOutEmptyStateIsVisible().subscribe(this.loggedOutEmptyStateIsVisible);
     this.vm.outputs.loggedInEmptyStateIsVisible().subscribe(this.loggedInEmptyStateIsVisible);
+    this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
     this.vm.outputs.surveys().subscribe(this.surveys);
   }
 
@@ -74,7 +74,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.goToDiscovery.assertNoValues();
     this.goToLogin.assertNoValues();
     this.goToProject.assertNoValues();
-    this.goToProjectUpdate.assertNoValues();
+    this.startUpdateActivity.assertNoValues();
     this.koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW);
 
     // Empty activity feed clicks do not trigger events yet.
@@ -97,7 +97,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.projectUpdateClicked(null, ActivityFactory.activity());
 
-    this.goToProjectUpdate.assertValueCount(1);
+    this.startUpdateActivity.assertValueCount(1);
     this.koalaTest.assertValues(
       KoalaEvent.ACTIVITY_VIEW, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM,
       KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.VIEWED_UPDATE
@@ -156,6 +156,15 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.resume();
 
     this.surveys.assertNoValues();
+  }
+
+  @Test
+  public void testStartUpdateActivity() {
+    final Activity activity = ActivityFactory.updateActivity();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectUpdateClicked(null, activity);
+    this.startUpdateActivity.assertValues(activity);
   }
 
   @Test

@@ -265,10 +265,10 @@ public interface ProjectViewModel {
     private final PublishSubject<Void> blurbTextViewClicked = PublishSubject.create();
     private final PublishSubject<Void> commentsTextViewClicked = PublishSubject.create();
     private final PublishSubject<Void> creatorNameTextViewClicked = PublishSubject.create();
+    private final PublishSubject<Void> heartButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> managePledgeButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> playVideoButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> shareButtonClicked = PublishSubject.create();
-    private final PublishSubject<Void> heartButtonClicked = PublishSubject.create();
     private final PublishSubject<Void> updatesTextViewClicked = PublishSubject.create();
     private final PublishSubject<Void> viewPledgeButtonClicked = PublishSubject.create();
 
@@ -300,6 +300,9 @@ public interface ProjectViewModel {
     }
     @Override public void creatorNameTextViewClicked() {
       this.creatorNameTextViewClicked.onNext(null);
+    }
+    @Override public void heartButtonClicked() {
+      this.heartButtonClicked.onNext(null);
     }
     @Override public void managePledgeButtonClicked() {
       this.managePledgeButtonClicked.onNext(null);
@@ -333,9 +336,6 @@ public interface ProjectViewModel {
     }
     @Override public void shareButtonClicked() {
       this.shareButtonClicked.onNext(null);
-    }
-    @Override public void heartButtonClicked() {
-      this.heartButtonClicked.onNext(null);
     }
     @Override public void updatesTextViewClicked() {
       this.updatesTextViewClicked.onNext(null);

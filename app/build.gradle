@@ -105,7 +105,7 @@ android {
 
     // Fixes build error hitting GC overhead limit
     dexOptions {
-        javaMaxHeapSize "2560M"
+        javaMaxHeapSize "3072M"
     }
 
     lintOptions {

@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
 import android.util.Pair;
-import android.view.View;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
@@ -15,9 +14,6 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.LoginActivity;
-import com.kickstarter.viewmodels.errors.LoginViewModelErrors;
-import com.kickstarter.viewmodels.inputs.LoginViewModelInputs;
-import com.kickstarter.viewmodels.outputs.LoginViewModelOutputs;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -27,141 +23,187 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
-public final class LoginViewModel extends ActivityViewModel<LoginActivity> implements LoginViewModelInputs,
-  LoginViewModelOutputs, LoginViewModelErrors {
-  private final ApiClientType client;
-  private final CurrentUserType currentUser;
+public interface LoginViewModel {
 
-  public LoginViewModel(final @NonNull Environment environment) {
-    super(environment);
+  interface Inputs {
 
-    this.client = environment.apiClient();
-    this.currentUser = environment.currentUser();
+    /** Call when the back or close button has been clicked. */
+    void backOrCloseButtonClicked();
 
-    final Observable<Pair<String, String>> emailAndPassword = this.email
-      .compose(combineLatestPair(this.password));
+    /** Call when the email field changes. */
+    void email(String email);
 
-    final Observable<Boolean> isValid = emailAndPassword
-      .map(ep -> LoginViewModel.isValid(ep.first, ep.second));
+    /** Call when the log in button has been clicked. */
+    void loginClick();
 
-    final Observable<String> emailFromIntent = intent()
-      .map(i -> i.getStringExtra(IntentKey.EMAIL))
-      .ofType(String.class)
-      .compose(bindToLifecycle());
+    /** Call when the password field changes. */
+    void password(String password);
 
-    emailFromIntent
-      .compose(bindToLifecycle())
-      .subscribe(this.prefillEmailFromPasswordReset);
-
-    emailFromIntent
-      .map(e -> Pair.create(true, e))
-      .compose(bindToLifecycle())
-      .subscribe(this.showResetPasswordSuccessDialog);
-
-    this.resetPasswordConfirmationDialogDismissed
-      .map(BooleanUtils::negate)
-      .compose(combineLatestPair(emailFromIntent))
-      .compose(bindToLifecycle())
-      .subscribe(this.showResetPasswordSuccessDialog);
-
-    isValid
-      .compose(bindToLifecycle())
-      .subscribe(this.setLoginButtonIsEnabled);
-
-    emailAndPassword
-      .compose(takeWhen(this.loginClick))
-      .switchMap(ep -> submit(ep.first, ep.second))
-      .compose(bindToLifecycle())
-      .subscribe(this::success);
-
-    this.loginSuccess
-      .compose(bindToLifecycle())
-      .subscribe(__ -> this.koala.trackLoginSuccess());
-
-    invalidLoginError()
-      .mergeWith(genericLoginError())
-      .compose(bindToLifecycle())
-      .subscribe(__ -> this.koala.trackLoginError());
+    /** Call when the user cancels or dismisses the reset password success confirmation dialog. */
+    void resetPasswordConfirmationDialogDismissed();
   }
 
-  private static boolean isValid(final @NonNull String email, final @NonNull String password) {
-    return StringUtils.isEmail(email) && password.length() > 0;
+  interface Outputs {
+    /** Emits a string to display when log in fails. */
+    Observable<String> genericLoginError();
+
+    /** Emits a string to display when log in fails, specifically for invalid credentials. */
+    Observable<String> invalidLoginError();
+
+    /** Emits a boolean that determines if the log in button is enabled. */
+    Observable<Boolean> loginButtonIsEnabled();
+
+    /** Finish the activity with a successful result. */
+    Observable<Void> loginSuccess();
+
+    /** Fill the view's email address and show a dialog indicating the user's password has been reset. */
+    Observable<String> prefillEmailFromPasswordReset();
+
+    /** Emits a boolean to determine whether or not the login button should be enabled. */
+    Observable<Pair<Boolean, String>> showResetPasswordSuccessDialog();
+
+    /** Start two factor activity for result. */
+    Observable<Void> tfaChallenge();
   }
 
-  private Observable<AccessTokenEnvelope> submit(final @NonNull String email, final @NonNull String password) {
-    return this.client.login(email, password)
-      .compose(Transformers.pipeApiErrorsTo(this.loginError))
-      .compose(neverError());
-  }
+  final class ViewModel extends ActivityViewModel<LoginActivity> implements Inputs, Outputs {
+    private final ApiClientType client;
+    private final CurrentUserType currentUser;
 
-  private void success(final @NonNull AccessTokenEnvelope envelope) {
-    this.currentUser.login(envelope.user(), envelope.accessToken());
-    this.loginSuccess.onNext(null);
-  }
+    public ViewModel(final @NonNull Environment environment) {
+      super(environment);
 
-  private final PublishSubject<String> email = PublishSubject.create();
-  private final PublishSubject<View> loginClick = PublishSubject.create();
-  private final PublishSubject<String> password = PublishSubject.create();
-  private final PublishSubject<Boolean> resetPasswordConfirmationDialogDismissed = PublishSubject.create();
+      this.client = environment.apiClient();
+      this.currentUser = environment.currentUser();
 
-  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
-  private final BehaviorSubject<String> prefillEmailFromPasswordReset = BehaviorSubject.create();
-  private final BehaviorSubject<Boolean> setLoginButtonIsEnabled = BehaviorSubject.create();
-  private final BehaviorSubject<Pair<Boolean, String>> showResetPasswordSuccessDialog = BehaviorSubject.create();
+      final Observable<Pair<String, String>> emailAndPassword = this.emailEditTextChanged
+        .compose(combineLatestPair(this.passwordEditTextChanged));
 
-  private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
+      final Observable<Boolean> isValid = emailAndPassword
+        .map(ep -> isValid(ep.first, ep.second));
 
-  public final LoginViewModelInputs inputs = this;
-  public final LoginViewModelOutputs outputs = this;
-  public final LoginViewModelErrors errors = this;
+      final Observable<String> emailFromIntent = intent()
+        .map(i -> i.getStringExtra(IntentKey.EMAIL))
+        .ofType(String.class);
 
-  @Override public void email(final @NonNull String s) {
-    this.email.onNext(s);
-  }
+      emailFromIntent
+        .compose(bindToLifecycle())
+        .subscribe(this.prefillEmailFromPasswordReset);
 
-  @Override public void loginClick() {
-    this.loginClick.onNext(null);
-  }
+      emailFromIntent
+        .map(e -> Pair.create(true, e))
+        .compose(bindToLifecycle())
+        .subscribe(this.showResetPasswordSuccessDialog);
 
-  @Override public void password(final @NonNull String s) {
-    this.password.onNext(s);
-  }
+      this.resetPasswordConfirmationDialogDismissed
+        .map(BooleanUtils::negate)
+        .compose(combineLatestPair(emailFromIntent))
+        .compose(bindToLifecycle())
+        .subscribe(this.showResetPasswordSuccessDialog);
 
-  @Override public void resetPasswordConfirmationDialogDismissed() {
-    this.resetPasswordConfirmationDialogDismissed.onNext(true);
-  }
+      isValid
+        .compose(bindToLifecycle())
+        .subscribe(this.logInButtonIsEnabled);
 
-  @Override public @NonNull Observable<Void> loginSuccess() {
-    return this.loginSuccess.asObservable();
-  }
+      emailAndPassword
+        .compose(takeWhen(this.logInButtonClicked))
+        .switchMap(ep -> submit(ep.first, ep.second))
+        .compose(bindToLifecycle())
+        .subscribe(this::success);
 
-  @Override public @NonNull Observable<String> prefillEmailFromPasswordReset() {
-    return this.prefillEmailFromPasswordReset;
-  }
+      this.loginSuccess
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.koala.trackLoginSuccess());
 
-  @Override public Observable<Boolean> setLoginButtonIsEnabled() {
-    return this.setLoginButtonIsEnabled;
-  }
+      this.genericLoginError = this.loginError
+          .filter(ErrorEnvelope::isGenericLoginError)
+          .map(ErrorEnvelope::errorMessage);
 
-  @Override public Observable<Pair<Boolean, String>> showResetPasswordSuccessDialog() {
-    return this.showResetPasswordSuccessDialog;
-  }
+      this.invalidloginError = this.loginError
+        .filter(ErrorEnvelope::isInvalidLoginError)
+        .map(ErrorEnvelope::errorMessage);
 
-  @Override public Observable<String> invalidLoginError() {
-    return this.loginError
-      .filter(ErrorEnvelope::isInvalidLoginError)
-      .map(ErrorEnvelope::errorMessage);
-  }
+      this.invalidloginError
+        .mergeWith(this.genericLoginError)
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.koala.trackLoginError());
 
-  @Override public Observable<Void> tfaChallenge() {
-    return this.loginError
-      .filter(ErrorEnvelope::isTfaRequiredError)
-      .map(__ -> null);
-  }
+      this.tfaChallenge = this.loginError
+        .filter(ErrorEnvelope::isTfaRequiredError)
+        .map(__ -> null);
+    }
 
-  @Override public Observable<String> genericLoginError() {
-    return this.loginError
-      .filter(ErrorEnvelope::isGenericLoginError)
-      .map(ErrorEnvelope::errorMessage);
+    private static boolean isValid(final @NonNull String email, final @NonNull String password) {
+      return StringUtils.isEmail(email) && password.length() > 0;
+    }
+
+    private Observable<AccessTokenEnvelope> submit(final @NonNull String email, final @NonNull String password) {
+      return this.client.login(email, password)
+        .compose(Transformers.pipeApiErrorsTo(this.loginError))
+        .compose(neverError());
+    }
+
+    private void success(final @NonNull AccessTokenEnvelope envelope) {
+      this.currentUser.login(envelope.user(), envelope.accessToken());
+      this.loginSuccess.onNext(null);
+    }
+
+    private final PublishSubject<Void> backOrCloseButtonClicked = PublishSubject.create();
+    private final PublishSubject<String> emailEditTextChanged = PublishSubject.create();
+    private final PublishSubject<Void> logInButtonClicked = PublishSubject.create();
+    private final PublishSubject<String> passwordEditTextChanged = PublishSubject.create();
+    private final PublishSubject<Boolean> resetPasswordConfirmationDialogDismissed = PublishSubject.create();
+
+    private final Observable<String> genericLoginError;
+    private final Observable<String> invalidloginError;
+    private final BehaviorSubject<Boolean> logInButtonIsEnabled = BehaviorSubject.create();
+    private final PublishSubject<Void> loginSuccess = PublishSubject.create();
+    private final BehaviorSubject<String> prefillEmailFromPasswordReset = BehaviorSubject.create();
+    private final BehaviorSubject<Pair<Boolean, String>> showResetPasswordSuccessDialog = BehaviorSubject.create();
+    private final Observable<Void> tfaChallenge;
+
+    private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
+
+    public final Inputs inputs = this;
+    public final Outputs outputs = this;
+
+    @Override public void backOrCloseButtonClicked() {
+      this.backOrCloseButtonClicked.onNext(null);
+    }
+    @Override public void email(final String email) {
+      this.emailEditTextChanged.onNext(email);
+    }
+    @Override public void loginClick() {
+      this.logInButtonClicked.onNext(null);
+    }
+    @Override public void password(final String password) {
+      this.passwordEditTextChanged.onNext(password);
+    }
+    @Override public void resetPasswordConfirmationDialogDismissed() {
+      this.resetPasswordConfirmationDialogDismissed.onNext(true);
+    }
+
+    @Override
+    public Observable<String> genericLoginError() {
+      return this.genericLoginError;
+    }
+    @Override public @NonNull Observable<String> invalidLoginError() {
+      return this.invalidloginError;
+    }
+    @Override public @NonNull Observable<Boolean> loginButtonIsEnabled() {
+      return this.logInButtonIsEnabled;
+    }
+    @Override public @NonNull Observable<Void> loginSuccess() {
+      return this.loginSuccess;
+    }
+    @Override public @NonNull Observable<String> prefillEmailFromPasswordReset() {
+      return this.prefillEmailFromPasswordReset;
+    }
+    @Override public @NonNull Observable<Pair<Boolean, String>> showResetPasswordSuccessDialog() {
+      return this.showResetPasswordSuccessDialog;
+    }
+    @Override public @NonNull Observable<Void> tfaChallenge() {
+      return this.tfaChallenge;
+    }
   }
 }

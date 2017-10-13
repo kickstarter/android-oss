@@ -90,7 +90,8 @@ public final class ProjectIntentMapper {
       return null;
     }
 
-    if (!uri.getScheme().equals("ksr")) {
+    String scheme = uri.getScheme();
+    if (!(scheme.equals("ksr") || scheme.equals("https"))) {
       return null;
     }
 

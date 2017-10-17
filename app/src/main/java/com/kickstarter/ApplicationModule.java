@@ -53,6 +53,7 @@ import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.libs.utils.Secrets;
+import com.kickstarter.libs.utils.SocketUtils;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
@@ -240,7 +241,7 @@ public final class ApplicationModule {
 
   private @NonNull Retrofit createRetrofit(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
     return new Retrofit.Builder()
-      .client(okHttpClient)
+      .client(SocketUtils.enableTLS1_2OnPreLollipop(okHttpClient))
       .baseUrl(baseUrl)
       .addConverterFactory(GsonConverterFactory.create(gson))
       .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

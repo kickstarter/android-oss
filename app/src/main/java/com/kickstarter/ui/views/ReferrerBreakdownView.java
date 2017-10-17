@@ -18,59 +18,57 @@ public class ReferrerBreakdownView extends View {
   private Double internalSweepAngle;
   private RectF outerRectangle;
   private RectF innerRectangle;
+  private Paint paint;
 
-  public ReferrerBreakdownView(Context context) {
-    super(context);
-    setWillNotDraw(false);
-  }
-
-  public ReferrerBreakdownView(Context context, AttributeSet attributeSet) {
+  public ReferrerBreakdownView(final Context context, final AttributeSet attributeSet) {
     super(context, attributeSet);
+    this.paint = new Paint();
+    this.outerRectangle = new RectF(0, 0, 0, 0);
+    this.innerRectangle = new RectF(0, 0, 0, 0);
   }
 
-  public void setCustomAngleAndColor(Double sweepAngle) {
+  public void setCustomAngleAndColor(final Double sweepAngle) {
     this.customSweepAngle = sweepAngle;
   }
 
-  public void setExternalAngleAndColor(Double sweepAngle) {
+  public void setExternalAngleAndColor(final Double sweepAngle) {
     this.externalSweepAngle = sweepAngle;
   }
 
-  public void setInternalAngleAndColor(Double sweepAngle) {
+  public void setInternalAngleAndColor(final Double sweepAngle) {
     this.internalSweepAngle = sweepAngle;
   }
 
   @Override
-  protected void onDraw(Canvas canvas) {
+  protected void onDraw(final Canvas canvas) {
     super.onDraw(canvas);
     this.canvas = canvas;
 
-    final Paint paint = new Paint();
-    paint.setAntiAlias(true);
-    paint.setStyle(Paint.Style.FILL);
+    this.paint.setAntiAlias(true);
+    this.paint.setStyle(Paint.Style.FILL);
 
-    float bottom = getHeight();
-    float left = getX();
-    float right = getWidth();
-    float top = getY();
+    final float bottom = getHeight();
+    final float left = getX();
+    final float right = getWidth();
+    final float top = getY();
 
-    this.outerRectangle = new RectF(left, top, right, bottom);
-    this.innerRectangle = new RectF(left + 30, top + 30, right - 30, bottom - 30);
+    this.outerRectangle.set(left, top, right, bottom);
+    this.innerRectangle.set(left + 30, top + 30, right - 30, bottom - 30);
 
     Float offset = 0f;
 
-    paint.setColor(ReferrerColor.CUSTOM.getReferrerColor());
-    this.canvas.drawArc(this.outerRectangle, offset, this.customSweepAngle.floatValue(), true, paint);
-    offset = offset + customSweepAngle.floatValue();
+    this.paint.setColor(ReferrerColor.CUSTOM.getReferrerColor());
+    this.canvas.drawArc(this.outerRectangle, offset, this.customSweepAngle.floatValue(), true, this.paint);
+    offset = offset + this.customSweepAngle.floatValue();
 
-    paint.setColor(ReferrerColor.EXTERNAL.getReferrerColor());
-    this.canvas.drawArc(this.outerRectangle, offset, this.externalSweepAngle.floatValue(), true, paint);
-    offset = offset + externalSweepAngle.floatValue();
+    this.paint.setColor(ReferrerColor.EXTERNAL.getReferrerColor());
+    this.canvas.drawArc(this.outerRectangle, offset, this.externalSweepAngle.floatValue(), true, this.paint);
+    offset = offset + this.externalSweepAngle.floatValue();
 
-    paint.setColor(ReferrerColor.INTERNAL.getReferrerColor());
-    this.canvas.drawArc(this.outerRectangle, offset, this.internalSweepAngle.floatValue(), true, paint);
+    this.paint.setColor(ReferrerColor.INTERNAL.getReferrerColor());
+    this.canvas.drawArc(this.outerRectangle, offset, this.internalSweepAngle.floatValue(), true, this.paint);
 
-    paint.setColor(Color.WHITE);
-    this.canvas.drawArc(this.innerRectangle, 0, 360f, true, paint);
+    this.paint.setColor(Color.WHITE);
+    this.canvas.drawArc(this.innerRectangle, 0, 360f, true, this.paint);
   }
 }

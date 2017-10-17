@@ -8,6 +8,7 @@ import com.kickstarter.libs.qualifiers.AutoGson;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Locale;
 
 import auto.parcel.AutoParcel;
 
@@ -112,7 +113,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
     // Deserialize the referrer type string names into the corresponding
     // enum type.
     public ReferrerType referrerTypeEnumType() {
-      switch (referrerType().toLowerCase()) {
+      switch (referrerType().toLowerCase(Locale.getDefault())) {
         case "campaign":
           return ReferrerType.CAMPAIGN;
         case "domain":

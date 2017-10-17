@@ -83,7 +83,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
         .compose(avg -> Observable.combineLatest(currentProject, avg, Pair::create));
 
       this.customReferrerColor = Observable.just(ReferrerColor.CUSTOM.getReferrerColor())
-        .compose(Transformers.takeWhen(projectAndProjectStatsInput));
+        .compose(Transformers.takeWhen(this.projectAndProjectStatsInput));
 
       this.customReferrerPercent = customReferrers
         .flatMap(rs ->
@@ -92,7 +92,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
         );
 
       this.customReferrerPercentText = this.customReferrerPercent
-        .map(percent -> NumberUtils.flooredPercentage((percent.floatValue() * 100f)));
+        .map(percent -> NumberUtils.flooredPercentage(percent.floatValue() * 100f));
 
       this.customReferrerPledgedAmount = customReferrers
         .flatMap(rs ->
@@ -107,7 +107,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       );
 
       this.externalReferrerColor = Observable.just(ReferrerColor.EXTERNAL.getReferrerColor())
-        .compose(Transformers.takeWhen(projectAndProjectStatsInput));
+        .compose(Transformers.takeWhen(this.projectAndProjectStatsInput));
 
       this.externalReferrerPercent = externalReferrers
         .flatMap(rs ->
@@ -115,8 +115,8 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
             .reduce(0f, (accum, stat) -> accum + stat.percentageOfDollars())
         );
 
-      this.externalReferrerPercentText = externalReferrerPercent
-        .map(percent -> NumberUtils.flooredPercentage((percent * 100f)));
+      this.externalReferrerPercentText = this.externalReferrerPercent
+        .map(percent -> NumberUtils.flooredPercentage(percent * 100f));
 
       this.externalReferrerPledgedAmount = customReferrers
         .flatMap(rs ->
@@ -131,7 +131,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       );
 
       this.internalReferrerColor = Observable.just(ReferrerColor.INTERNAL.getReferrerColor())
-        .compose(Transformers.takeWhen(projectAndProjectStatsInput));
+        .compose(Transformers.takeWhen(this.projectAndProjectStatsInput));
 
       this.internalReferrerPercent = internalReferrers
         .flatMap(rs ->
@@ -139,8 +139,8 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
             .reduce(0f, (accum, stat) -> accum + stat.percentageOfDollars())
         );
 
-      this.internalReferrerPercentText = internalReferrerPercent
-        .map(percent -> NumberUtils.flooredPercentage((percent.floatValue() * 100f)));
+      this.internalReferrerPercentText = this.internalReferrerPercent
+        .map(percent -> NumberUtils.flooredPercentage(percent.floatValue() * 100f));
 
       this.internalReferrerPledgedAmount = internalReferrers
         .flatMap(rs ->
@@ -170,7 +170,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    private final PublishSubject <Pair<Project, ProjectStatsEnvelope>> projectAndProjectStatsInput = PublishSubject.create();
+    private final PublishSubject<Pair<Project, ProjectStatsEnvelope>> projectAndProjectStatsInput = PublishSubject.create();
 
     private final Observable<Pair<Project, Integer>> projectAndAveragePledge;
     private final Observable<Integer> customReferrerColor;

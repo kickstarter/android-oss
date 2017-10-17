@@ -17,7 +17,7 @@ public final class WebClient implements WebClientType {
 
   public Observable<InternalBuildEnvelope> pingBeta() {
     return this.service.pingBeta()
-      .filter(Response::isSuccess)
+      .filter(Response::isSuccessful)
       .map(Response::body)
       .subscribeOn(Schedulers.io());
   }

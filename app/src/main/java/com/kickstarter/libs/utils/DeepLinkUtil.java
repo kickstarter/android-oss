@@ -1,65 +1,40 @@
-package com.kickstarter.ui.activities;
+package com.kickstarter.libs.utils;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 
-import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.viewmodels.DeepLinkViewModel;
+import com.kickstarter.ui.activities.DeepLinkActivity;
+import com.kickstarter.ui.activities.ProjectActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
+public class DeepLinkUtil {
 
-@RequiresActivityViewModel(DeepLinkViewModel.ViewModel.class)
-public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewModel> {
-  @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    this.viewModel.outputs.startDiscoveryActivity()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> startDiscoveryActivity());
-
-    this.viewModel.outputs.startProjectActivity()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::startProjectActivity);
-
-    this.viewModel.outputs.startBrowser()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::startBrowser);
+  public static void startDiscoveryActivity(DeepLinkActivity deepLinkActivity) {
+    ApplicationUtils.startNewDiscoveryActivity(deepLinkActivity);
+    deepLinkActivity.finish();
   }
 
-  private void startDiscoveryActivity() {
-    ApplicationUtils.startNewDiscoveryActivity(this);
-    finish();
-  }
-
-  private void startProjectActivity(String url) {
+  public static void startProjectActivity(DeepLinkActivity deepLinkActivity, String url) {
     Uri uri = Uri.parse(url);
-    final Intent projectIntent = new Intent(this, ProjectActivity.class)
+    final Intent projectIntent = new Intent(deepLinkActivity, ProjectActivity.class)
       .setData(uri);
     String ref = uri.getQueryParameter("ref");
     if(ref != null) {
       projectIntent.putExtra(IntentKey.REF_TAG, RefTag.from(ref));
     }
-    startActivity(projectIntent);
-    finish();
+    deepLinkActivity.startActivity(projectIntent);
+    deepLinkActivity.finish();
   }
 
-  private void startBrowser(String url) {
+
+  public static void startBrowser(DeepLinkActivity deepLinkActivity, String url) {
     Uri uri = Uri.parse(url);
 
     // We'll ask the system to open a generic URL, rather than the deep-link
@@ -67,7 +42,7 @@ public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewModel> 
     Uri fakeUri = Uri.parse("http://www.kickstarter.com");
 
     Intent browserIntent = new Intent(Intent.ACTION_VIEW, fakeUri);
-    PackageManager pm = getPackageManager();
+    PackageManager pm = deepLinkActivity.getPackageManager();
     List<ResolveInfo> activities = pm.queryIntentActivities(browserIntent, 0);
 
     // Loop through everything the system gives us, and remove the current
@@ -91,8 +66,8 @@ public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewModel> 
     Intent chooserIntent = Intent.createChooser(targetIntents.remove(0), "");
     chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,
       targetIntents.toArray(new Parcelable[targetIntents.size()]));
-    startActivity(chooserIntent);
+    deepLinkActivity.startActivity(chooserIntent);
 
-    finish();
+    deepLinkActivity.finish();
   }
 }

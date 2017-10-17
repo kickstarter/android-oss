@@ -22,11 +22,14 @@ import rx.subjects.BehaviorSubject;
 public interface DeepLinkViewModel {
 
   interface Outputs {
+    /** Emits when we should start an external browser because we don't want to deep link. */
+    Observable<String> startBrowser();
+
     /** Emits when we should start the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
     Observable<Void> startDiscoveryActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
-    Observable<Uri> startProjectActivity();
+    Observable<String> startProjectActivity();
   }
 
   final class ViewModel extends ActivityViewModel<DeepLinkActivity> implements Outputs {
@@ -58,7 +61,8 @@ public interface DeepLinkViewModel {
         })
         .compose(Transformers.neverError());
 
-      Observable<Uri> uriFromIntent = Observable.merge(kickstarterComUri, emailUri).filter(ObjectUtils::isNotNull);
+      Observable<Uri> uriFromIntent = Observable.merge(kickstarterComUri, emailUri)
+        .filter(ObjectUtils::isNotNull);
 
       uriFromIntent
         .filter(uri -> uri.getLastPathSegment().equals("projects"))
@@ -66,23 +70,42 @@ public interface DeepLinkViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.startDiscoveryActivity::onNext);
 
+      this.startDiscoveryActivity
+        .subscribe(__ -> koala.trackUserActivity());
+
       uriFromIntent
         .filter(uri -> KSUri.isProjectUri(uri, uri.toString()))
+        .map(Uri::toString)
         .compose(bindToLifecycle())
         .subscribe(this.startProjectActivity::onNext);
 
+      this.startProjectActivity
+        .subscribe(__ -> koala.trackUserActivity());
+
+      uriFromIntent
+        .filter(uri -> !uri.getLastPathSegment().equals("projects") && !KSUri.isProjectUri(uri, uri.toString()))
+        .map(Uri::toString)
+        .compose(bindToLifecycle())
+        .subscribe(this.startBrowser::onNext);
+
     }
+
+    private final BehaviorSubject<String> startBrowser = BehaviorSubject.create();
     private final BehaviorSubject<Void> startDiscoveryActivity = BehaviorSubject.create();
-    private final BehaviorSubject<Uri> startProjectActivity = BehaviorSubject.create();
+    private final BehaviorSubject<String> startProjectActivity = BehaviorSubject.create();
 
     public final Outputs outputs = this;
 
+    @Override
+    public Observable<String> startBrowser() {
+      return startBrowser;
+    }
     @Override
     public Observable<Void> startDiscoveryActivity() {
       return startDiscoveryActivity;
     }
     @Override
-    public Observable<Uri> startProjectActivity() {
+    public Observable<String> startProjectActivity() {
       return startProjectActivity;
     }
   }

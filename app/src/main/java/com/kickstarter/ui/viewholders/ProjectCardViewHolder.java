@@ -68,7 +68,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_card_stats_view_group) ViewGroup projectCardStatsViewGroup;
   protected @Bind(R.id.project_metadata_view_group) ViewGroup projectMetadataViewGroup;
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
-  protected @Bind(R.id.starred_view_group) ViewGroup starredViewGroup;
+  protected @Bind(R.id.saved_view_group) ViewGroup savedViewGroup;
 
   protected @BindColor(R.color.ksr_text_navy_500) int ksrTextNavy500;
   protected @BindColor(R.color.ksr_text_navy_700) int ksrTextNavy700;
@@ -231,7 +231,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.outputs.starredViewGroupIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.starredViewGroup));
+      .subscribe(ViewUtils.setGone(this.savedViewGroup));
 
     this.viewModel.outputs.fundingSuccessfulViewGroupIsGone()
       .compose(bindToLifecycle())

@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -14,12 +15,18 @@ import com.kickstarter.ui.activities.DeepLinkActivity;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 
 public interface DeepLinkViewModel {
+
+  interface Inputs {
+    /** Call when user clicks link that can't be deep linked. */
+    void packageManager(PackageManager packageManager);
+  }
 
   interface Outputs {
     /** Emits when we should start an external browser because we don't want to deep link. */
@@ -82,11 +89,15 @@ public interface DeepLinkViewModel {
       this.startProjectActivity
         .subscribe(__ -> koala.trackUserActivity());
 
-      uriFromIntent
+
+      Observable<String> nonDeepLink = uriFromIntent
         .filter(uri -> !uri.getLastPathSegment().equals("projects") && !KSUri.isProjectUri(uri, uri.toString()))
         .map(Uri::toString)
-        .compose(bindToLifecycle())
+        .compose(bindToLifecycle());
+      nonDeepLink
         .subscribe(this.startBrowser::onNext);
+
+      Observable<List<Intent>> targetIntents =
 
     }
 

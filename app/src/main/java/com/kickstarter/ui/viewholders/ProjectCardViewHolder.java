@@ -228,7 +228,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.projectMetadataViewGroup));
 
-    this.viewModel.outputs.starredViewGroupIsGone()
+    this.viewModel.outputs.savedViewGroupIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.savedViewGroup));

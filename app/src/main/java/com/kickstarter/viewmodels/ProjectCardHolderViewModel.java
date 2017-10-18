@@ -64,7 +64,7 @@ public interface ProjectCardHolderViewModel {
     Observable<DateTime> projectSuspendedAt();
     Observable<String> rootCategoryNameForFeatured();
     Observable<Boolean> setDefaultTopPadding();
-    Observable<Boolean> starredViewGroupIsGone();
+    Observable<Boolean> savedViewGroupIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectCardViewHolder> implements Inputs, Outputs {
@@ -179,8 +179,8 @@ public interface ProjectCardHolderViewModel {
 
       this.setDefaultTopPadding = this.metadataViewGroupIsGone;
 
-      this.starredViewGroupIsGone = this.project
-        .map(p -> metadataForProject(p) != Metadata.STARRING);
+      this.savedViewGroupIsGone = this.project
+        .map(p -> metadataForProject(p) != Metadata.SAVING);
     }
 
     private final PublishSubject<Project> project = PublishSubject.create();
@@ -214,7 +214,7 @@ public interface ProjectCardHolderViewModel {
     private final Observable<DateTime> projectSuspendedAt;
     private final Observable<String> rootCategoryNameForFeatured;
     private final Observable<Boolean> setDefaultTopPadding;
-    private final Observable<Boolean> starredViewGroupIsGone;
+    private final Observable<Boolean> savedViewGroupIsGone;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -313,22 +313,22 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<Boolean> setDefaultTopPadding() {
       return this.setDefaultTopPadding;
     }
-    @Override public @NonNull Observable<Boolean> starredViewGroupIsGone() {
-      return this.starredViewGroupIsGone;
+    @Override public @NonNull Observable<Boolean> savedViewGroupIsGone() {
+      return this.savedViewGroupIsGone;
     }
     @Override public @NonNull Observable<Boolean> fundingSuccessfulViewGroupIsGone() {
       return this.fundingSuccessfulViewGroupIsGone;
     }
 
     private enum Metadata {
-      BACKING, STARRING, POTD, CATEGORY_FEATURED
+      BACKING, SAVING, POTD, CATEGORY_FEATURED
     }
 
     private static @Nullable Metadata metadataForProject(final @NonNull Project project) {
       if (project.isBacking()) {
         return Metadata.BACKING;
       } else if (project.isStarred()) {
-        return Metadata.STARRING;
+        return Metadata.SAVING;
       } else if (project.isPotdToday()) {
         return Metadata.POTD;
       } else if (project.isFeaturedToday()) {

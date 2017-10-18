@@ -53,7 +53,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<DateTime> projectSuspendedAt = new TestSubscriber<>();
   private final TestSubscriber<String> rootCategoryNameForFeatured = new TestSubscriber<>();
   private final TestSubscriber<Boolean> setDefaultTopPadding = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> starredViewGroupIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> savedViewGroupIsGone = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ProjectCardHolderViewModel.ViewModel(environment);
@@ -83,7 +83,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.projectSuspendedAt().subscribe(this.projectSuspendedAt);
     this.vm.outputs.rootCategoryNameForFeatured().subscribe(this.rootCategoryNameForFeatured);
     this.vm.outputs.setDefaultTopPadding().subscribe(this.setDefaultTopPadding);
-    this.vm.outputs.starredViewGroupIsGone().subscribe(this.starredViewGroupIsGone);
+    this.vm.outputs.savedViewGroupIsGone().subscribe(this.savedViewGroupIsGone);
   }
 
   @Test
@@ -482,7 +482,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.starredViewGroupIsGone.assertValues(false);
+    this.savedViewGroupIsGone.assertValues(false);
   }
 
   @Test
@@ -491,6 +491,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.starredViewGroupIsGone.assertValues(true);
+    this.savedViewGroupIsGone.assertValues(true);
   }
 }

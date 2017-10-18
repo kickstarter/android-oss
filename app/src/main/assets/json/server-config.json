@@ -9799,7 +9799,7 @@
     "project_dashboard": "control",
     "react_guest_pledging": "control",
     "react_payment_sources_form": "control",
-    "favorites_recs": "control",
+    "favorites_recs": "experimental",
     "thanks_page_better_recs": "control",
     "project_card_hearts": "control",
     "guided_search": "control"

@@ -14,7 +14,7 @@ submodules:
 secrets:
 	# Copy java secrets over. Fallback to example secrets if they don't exist.
 	-@rm -rf vendor/native-secrets
-	-@git clone git@github.com:kickstarter/native-secrets.git vendor/native-secrets 2>/dev/null || echo '(Skipping secrets.)'
+	-@git clone https://github.com/kickstarter/native-secrets.git vendor/native-secrets 2>/dev/null || echo '(Skipping secrets.)'
 
 	cp vendor/native-secrets/android/Secrets.java app/src/main/java/com/kickstarter/libs/utils/Secrets.java \
 		|| cp app/src/main/java/com/kickstarter/libs/utils/Secrets.java.example app/src/main/java/com/kickstarter/libs/utils/Secrets.java
@@ -37,5 +37,10 @@ secrets:
 		|| cp -rf config/KSWebViewClient.java app/src/main/java/com/kickstarter/services/KSWebViewClient.java
 	mkdir -p app/src/main/assets/www/
 	cp vendor/native-secrets/android/WebViewJavascript.html app/src/main/assets/www/WebViewJavascript.html || true
+
+	# Copy TLS helpers over.
+	cp -rf vendor/native-secrets/android/SocketUtils.java app/src/main/java/com/kickstarter/libs/utils/SocketUtils.java \
+		|| cp -rf config/SocketUtils.java app/src/main/java/com/kickstarter/libs/utils/SocketUtils.java
+	cp -rf vendor/native-secrets/android/TLSSocketFactory.java app/src/main/java/com/kickstarter/libs/TLSSocketFactory.java || true
 
 .PHONY: bootstrap bootstrap-circle dependencies secrets

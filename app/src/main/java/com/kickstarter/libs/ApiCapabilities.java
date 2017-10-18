@@ -41,4 +41,8 @@ public final class ApiCapabilities {
   public static boolean canSetStatusBarColor() {
     return android.os.Build.VERSION.SDK_INT >= 21;
   }
+
+  public static boolean tls1_2IsEnabledByDefault() {
+    return android.os.Build.VERSION.SDK_INT > 19;
+  }
 }

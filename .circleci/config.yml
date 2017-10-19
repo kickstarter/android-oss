@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: kickstarter/android-ci:66082e1
+      - image: kickstarter/android-ci:9efe3a5
         auth:
           username: ksrci  # can specify string literal values
           password: $DOCKERHUB_PASSWORD

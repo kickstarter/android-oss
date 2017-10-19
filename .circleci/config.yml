@@ -24,7 +24,7 @@ jobs:
       - run: echo y | android update sdk --no-ui --all --filter extra-android-m2repository
       - run: echo y | android update sdk --no-ui --all --filter extra-google-m2repository
       - run: echo y | android update sdk --no-ui --all --filter extra-android-support
-      - run: ./gradlew dependencies
+      - run: ./gradlew -d dependencies
       - save_cache:
           key: v1-android-{{ .Branch }}
           paths:

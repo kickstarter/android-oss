@@ -1,0 +1,46 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: kickstarter/android-ci:66082e1
+        auth:
+          username: ksrci  # can specify string literal values
+          password: $DOCKERHUB_PASSWORD
+    environment:
+      ADB_INSTALL_TIMEOUT: 8
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx512m -XX:+HeapDumpOnOutOfMemoryError"'
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-android-{{ .Branch }}
+            - v1-android-d
+
+      - run: $ANDROID_HOME/tools/android list target
+      - run: make bootstrap-circle
+      - run: echo y | android update sdk --no-ui --all --filter android-25
+      - run: echo y | android update sdk --no-ui --all --filter build-tools-25.0.0
+      - run: echo y | android update sdk --no-ui --all --filter platform-tools
+      - run: echo y | android update sdk --no-ui --all --filter extra-android-m2repository
+      - run: echo y | android update sdk --no-ui --all --filter extra-google-m2repository
+      - run: echo y | android update sdk --no-ui --all --filter extra-android-support
+      - run: ./gradlew dependencies
+      - save_cache:
+          key: v1-android-{{ .Branch }}
+          paths:
+            - ~/.gradle
+            - ~/.android
+      - run: ./gradlew checkstyle
+      - run: ./gradlew lintExternalPre21Release
+      - run: ./gradlew assembleExternalPre21Release testExternalPre21Release -PdisablePreDex
+      - store_artifacts:
+          path: app/build/reports
+          destination: reports
+      - store_test_results:
+          path: app/build/outputs
+
+experimental:
+  notify:
+    branches:
+      only:
+        - master

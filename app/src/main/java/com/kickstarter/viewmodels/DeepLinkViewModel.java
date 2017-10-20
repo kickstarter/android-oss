@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
@@ -20,26 +21,37 @@ import java.util.List;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 public interface DeepLinkViewModel {
 
   interface Inputs {
-    /** Call when user clicks link that can't be deep linked. */
+    /**
+     * Call when user clicks link that can't be deep linked.
+     */
     void packageManager(PackageManager packageManager);
   }
 
   interface Outputs {
-    /** Emits when we should start an external browser because we don't want to deep link. */
-    Observable<String> startBrowser();
+    Observable<String> requestPackageManager();
 
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
+    /**
+     * Emits when we should start an external browser because we don't want to deep link.
+     */
+    Observable<List<Intent>> startBrowser();
+
+    /**
+     * Emits when we should start the {@link com.kickstarter.ui.activities.DiscoveryActivity}.
+     */
     Observable<Void> startDiscoveryActivity();
 
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
+    /**
+     * Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}.
+     */
     Observable<String> startProjectActivity();
   }
 
-  final class ViewModel extends ActivityViewModel<DeepLinkActivity> implements Outputs {
+  final class ViewModel extends ActivityViewModel<DeepLinkActivity> implements Outputs, Inputs {
     public ViewModel(@NonNull Environment environment) {
       super(environment);
 
@@ -90,34 +102,65 @@ public interface DeepLinkViewModel {
         .subscribe(__ -> koala.trackUserActivity());
 
 
-      Observable<String> nonDeepLink = uriFromIntent
-        .filter(uri -> !uri.getLastPathSegment().equals("projects") && !KSUri.isProjectUri(uri, uri.toString()))
-        .map(Uri::toString)
-        .compose(bindToLifecycle());
-      nonDeepLink
+      Observable<Pair<PackageManager, Uri>> packageManagerAndUri =
+        Observable.combineLatest(this.packageManager, uriFromIntent, Pair::create);
+
+      Observable<List<Intent>> targetIntents = packageManagerAndUri
+        .flatMap(pm -> {
+          Uri fakeUri = Uri.parse("http://www.kickstarter.com");
+          Intent browserIntent = new Intent(Intent.ACTION_VIEW, fakeUri);
+          return Observable.from(pm.first.queryIntentActivities(browserIntent, 0))
+            .filter(resolveInfo -> !resolveInfo.activityInfo.packageName.contains("com.kickstarter"))
+            .map(resolveInfo -> {
+              Intent intent = new Intent(Intent.ACTION_VIEW, pm.second);
+              intent.setPackage(resolveInfo.activityInfo.packageName);
+              intent.setData(pm.second);
+              return intent;
+            })
+            .toList();
+        });
+
+      targetIntents
+        .compose(bindToLifecycle())
         .subscribe(this.startBrowser::onNext);
 
-      Observable<List<Intent>> targetIntents =
+      uriFromIntent
+        .filter(uri -> !uri.getLastPathSegment().equals("projects") && !KSUri.isProjectUri(uri, uri.toString()))
+        .map(Uri::toString)
+        .compose(bindToLifecycle())
+        .subscribe(this.requestPackageManager::onNext);
 
     }
+    private final PublishSubject<PackageManager> packageManager = PublishSubject.create();
 
-    private final BehaviorSubject<String> startBrowser = BehaviorSubject.create();
+    private final BehaviorSubject<String> requestPackageManager = BehaviorSubject.create();
+    private final BehaviorSubject<List<Intent>> startBrowser = BehaviorSubject.create();
     private final BehaviorSubject<Void> startDiscoveryActivity = BehaviorSubject.create();
     private final BehaviorSubject<String> startProjectActivity = BehaviorSubject.create();
 
+    public final Inputs inputs = this;
     public final Outputs outputs = this;
 
     @Override
-    public Observable<String> startBrowser() {
-      return startBrowser;
+    public void packageManager(PackageManager packageManager) {
+      this.packageManager.onNext(packageManager);
+    }
+
+    @Override
+    public Observable<String> requestPackageManager() {
+      return this.requestPackageManager;
+    }
+    @Override
+    public Observable<List<Intent>> startBrowser() {
+      return this.startBrowser;
     }
     @Override
     public Observable<Void> startDiscoveryActivity() {
-      return startDiscoveryActivity;
+      return this.startDiscoveryActivity;
     }
     @Override
     public Observable<String> startProjectActivity() {
-      return startProjectActivity;
+      return this.startProjectActivity;
     }
   }
 }

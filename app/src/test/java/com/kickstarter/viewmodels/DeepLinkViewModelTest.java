@@ -8,16 +8,21 @@ import com.kickstarter.libs.KoalaEvent;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.observers.TestSubscriber;
 
 public class DeepLinkViewModelTest extends KSRobolectricTestCase {
   private DeepLinkViewModel.ViewModel vm;
-  private final TestSubscriber<String> startBrowser = new TestSubscriber<>();
+  private final TestSubscriber<String> requestPackageManager = new TestSubscriber<>();
+  private final TestSubscriber<List<Intent>> startBrowser = new TestSubscriber<>();
   private final TestSubscriber<Void> startDiscoveryActivity = new TestSubscriber<>();
   private final TestSubscriber<String> startProjectActivity = new TestSubscriber<>();
 
   protected void setUpEnvironment() {
     this.vm = new DeepLinkViewModel.ViewModel(environment());
+    this.vm.outputs.requestPackageManager().subscribe(this.requestPackageManager);
     this.vm.outputs.startBrowser().subscribe(this.startBrowser);
     this.vm.outputs.startDiscoveryActivity().subscribe(this.startDiscoveryActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
@@ -29,9 +34,11 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
 
     String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap/comments";
     this.vm.intent(uriIntent(url));
+    this.vm.packageManager(application().getPackageManager());
 
     // Back button is gone if navigating from non-backer modal view.
-    this.startBrowser.assertValue(url);
+    this.requestPackageManager.assertValue(url);
+    this.startBrowser.assertValue(new ArrayList<>());
     this.startDiscoveryActivity.assertNoValues();
     this.startProjectActivity.assertNoValues();
     this.koalaTest.assertNoValues();

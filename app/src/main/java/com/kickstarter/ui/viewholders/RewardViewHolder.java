@@ -36,7 +36,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
 public final class RewardViewHolder extends KSViewHolder {
-  private final RewardViewModel viewModel;
+  private final RewardViewModel.ViewModel viewModel;
   private final KSString ksString;
 
   protected @Bind(R.id.reward_all_gone_text_view) TextView allGoneTextView;
@@ -69,7 +69,7 @@ public final class RewardViewHolder extends KSViewHolder {
     super(view);
 
     this.ksString = environment().ksString();
-    this.viewModel = new RewardViewModel(environment());
+    this.viewModel = new RewardViewModel.ViewModel(environment());
 
     ButterKnife.bind(this, view);
     final RewardsItemAdapter rewardsItemAdapter = new RewardsItemAdapter();
@@ -82,12 +82,12 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(__ -> this.viewModel.inputs.rewardClicked());
 
-    this.viewModel.outputs.allGoneTextViewIsHidden()
+    this.viewModel.outputs.allGoneTextViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.allGoneTextView));
 
-    this.viewModel.outputs.backersTextViewIsHidden()
+    this.viewModel.outputs.backersTextViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.backersTextView));
@@ -97,7 +97,7 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::setBackersTextView);
 
-    this.viewModel.outputs.rewardDescriptionIsHidden()
+    this.viewModel.outputs.rewardDescriptionIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.descriptionTextView));
@@ -107,7 +107,7 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.descriptionTextView::setText);
 
-    this.viewModel.outputs.estimatedDeliveryDateSectionIsHidden()
+    this.viewModel.outputs.estimatedDeliveryDateSectionIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.estimatedDeliveryDateSection));
@@ -118,27 +118,27 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.estimatedDeliveryDateTextView::setText);
 
-    this.viewModel.outputs.goToCheckout()
+    this.viewModel.outputs.startCheckoutActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(pr -> goToCheckout(pr.first, pr.second));
+      .subscribe(pr -> startCheckoutActivity(pr.first, pr.second));
 
-    this.viewModel.outputs.goToViewPledge()
+    this.viewModel.outputs.startBackingActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::goToViewPledge);
+      .subscribe(this::startBackingActivity);
 
     this.viewModel.outputs.isClickable()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.rewardView::setClickable);
 
-    this.viewModel.outputs.limitAndBackersSeparatorIsHidden()
+    this.viewModel.outputs.limitAndBackersSeparatorIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.limitAndBackersSeparatorTextView));
 
-    this.viewModel.outputs.limitAndRemainingTextViewIsHidden()
+    this.viewModel.outputs.limitAndRemainingTextViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.limitAndRemainingTextView));
@@ -158,23 +158,23 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(rewardsItemAdapter::rewardsItems);
 
-    this.viewModel.outputs.rewardsItemsAreHidden()
+    this.viewModel.outputs.rewardsItemsAreGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.rewardsItemSection));
 
-    this.viewModel.outputs.selectedHeaderIsHidden()
+    this.viewModel.outputs.selectedHeaderIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.selectedHeader));
 
-    this.viewModel.outputs.selectedOverlayIsHidden()
+    this.viewModel.outputs.selectedOverlayIsGone()
       .map(hidden -> hidden ? this.whiteColor : this.lightGreenColor)
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.rewardView::setCardBackgroundColor);
 
-    this.viewModel.outputs.shippingSummarySectionIsHidden()
+    this.viewModel.outputs.shippingSummarySectionIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.shippingSection));
@@ -184,7 +184,7 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.shippingSummaryTextView::setText);
 
-    this.viewModel.outputs.titleTextViewIsHidden()
+    this.viewModel.outputs.titleTextViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.titleTextView));
@@ -194,7 +194,7 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.titleTextView::setText);
 
-    this.viewModel.outputs.usdConversionTextViewIsHidden()
+    this.viewModel.outputs.usdConversionTextViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.usdConversionTextView));
@@ -204,7 +204,7 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::setUsdConversionTextView);
 
-    this.viewModel.outputs.whiteOverlayIsHidden()
+    this.viewModel.outputs.whiteOverlayIsInvisible()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setInvisible(this.whiteOverlayView));
@@ -218,26 +218,6 @@ public final class RewardViewHolder extends KSViewHolder {
     final Reward reward = requireNonNull(projectAndReward.second, Reward.class);
 
     this.viewModel.inputs.projectAndReward(project, reward);
-  }
-
-  private void goToCheckout(final @NonNull Project project, final @NonNull Reward reward) {
-    final Context context = context();
-    final Intent intent = new Intent(context, CheckoutActivity.class)
-      .putExtra(IntentKey.PROJECT, project)
-      .putExtra(IntentKey.TOOLBAR_TITLE, this.projectBackButtonString)
-      .putExtra(IntentKey.URL, project.rewardSelectedUrl(reward));
-
-    context.startActivity(intent);
-    transition(context, slideInFromRight());
-  }
-
-  private void goToViewPledge(final @NonNull Project project) {
-    final Context context = context();
-    final Intent intent = new Intent(context, BackingActivity.class)
-      .putExtra(IntentKey.PROJECT, project);
-
-    context.startActivity(intent);
-    transition(context, slideInFromRight());
   }
 
   private void setBackersTextView(final int count) {
@@ -266,6 +246,26 @@ public final class RewardViewHolder extends KSViewHolder {
       this.usdConversionString,
       "reward_amount", amount
     ));
+  }
+
+  private void startBackingActivity(final @NonNull Project project) {
+    final Context context = context();
+    final Intent intent = new Intent(context, BackingActivity.class)
+      .putExtra(IntentKey.PROJECT, project);
+
+    context.startActivity(intent);
+    transition(context, slideInFromRight());
+  }
+
+  private void startCheckoutActivity(final @NonNull Project project, final @NonNull Reward reward) {
+    final Context context = context();
+    final Intent intent = new Intent(context, CheckoutActivity.class)
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.TOOLBAR_TITLE, this.projectBackButtonString)
+      .putExtra(IntentKey.URL, project.rewardSelectedUrl(reward));
+
+    context.startActivity(intent);
+    transition(context, slideInFromRight());
   }
 
   @Override

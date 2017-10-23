@@ -22,7 +22,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
   public void testSignupViewModel_FormValidation() {
     final Environment environment = environment();
     environment.currentConfig().config(ConfigFactory.config());
-    final SignupViewModel vm = new SignupViewModel(environment);
+    final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment);
 
     final TestSubscriber<Boolean> formIsValidTest = new TestSubscriber<>();
     vm.outputs.formIsValid().subscribe(formIsValidTest);
@@ -42,7 +42,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testSignupViewModel_SuccessfulSignup() {
-    final SignupViewModel vm = new SignupViewModel(environment());
+    final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment());
 
     final TestSubscriber<Void> signupSuccessTest = new TestSubscriber<>();
     vm.outputs.signupSuccess().subscribe(signupSuccessTest);
@@ -76,13 +76,13 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     };
 
     final Environment environment = environment().toBuilder().apiClient(apiClient).build();
-    final SignupViewModel vm = new SignupViewModel(environment);
+    final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment);
 
     final TestSubscriber<Void> signupSuccessTest = new TestSubscriber<>();
     vm.outputs.signupSuccess().subscribe(signupSuccessTest);
 
     final TestSubscriber<String> signupErrorTest = new TestSubscriber<>();
-    vm.errors.signupError().subscribe(signupErrorTest);
+    vm.outputs.errorString().subscribe(signupErrorTest);
 
     final TestSubscriber<Boolean> formSubmittingTest = new TestSubscriber<>();
     vm.outputs.formSubmitting().subscribe(formSubmittingTest);
@@ -112,13 +112,13 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     };
 
     final Environment environment = environment().toBuilder().apiClient(apiClient).build();
-    final SignupViewModel vm = new SignupViewModel(environment);
+    final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment);
 
     final TestSubscriber<Void> signupSuccessTest = new TestSubscriber<>();
     vm.outputs.signupSuccess().subscribe(signupSuccessTest);
 
     final TestSubscriber<String> signupErrorTest = new TestSubscriber<>();
-    vm.errors.signupError().subscribe(signupErrorTest);
+    vm.outputs.errorString().subscribe(signupErrorTest);
 
     final TestSubscriber<Boolean> formSubmittingTest = new TestSubscriber<>();
     vm.outputs.formSubmitting().subscribe(formSubmittingTest);

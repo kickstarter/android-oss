@@ -21,16 +21,16 @@
     <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIconBackButton"
       android:id="@+id/back_icon"
-      android:nextFocusRight="@+id/star_icon" />
+      android:nextFocusRight="@+id/heart_icon" />
 
-    <com.kickstarter.ui.views.IconButton
-      style="@style/ToolbarIcon"
-      android:id="@+id/star_icon"
+    <ImageButton
+      style="@style/ToolbarVectorIcon"
+      android:id="@+id/heart_icon"
       android:focusable="true"
       android:nextFocusRight="@+id/share_icon"
       android:contentDescription="@string/Save_this_project"
       android:layout_toStartOf="@+id/share_icon"
-      android:text="@string/star_icon" />
+      android:src="@drawable/ic_action_icon_heart" />
 
     <!-- Override the text size because this looks enormous compared to the back icon -->
     <com.kickstarter.ui.views.IconButton

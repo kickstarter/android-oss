@@ -33,8 +33,8 @@ import rx.Observable;
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresActivityViewModel(LoginViewModel.class)
-public final class LoginActivity extends BaseActivity<LoginViewModel> {
+@RequiresActivityViewModel(LoginViewModel.ViewModel.class)
+public final class LoginActivity extends BaseActivity<LoginViewModel.ViewModel> {
   private ConfirmDialog confirmResetPasswordSuccessDialog;
   private KSString ksString;
 
@@ -66,7 +66,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
       .compose(observeForUI())
       .subscribe(e -> ViewUtils.showDialog(this, this.errorTitleString, e));
 
-    this.viewModel.errors.tfaChallenge()
+    this.viewModel.outputs.tfaChallenge()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> startTwoFactorActivity());
@@ -94,7 +94,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
         }
       });
 
-    this.viewModel.outputs.setLoginButtonIsEnabled()
+    this.viewModel.outputs.loginButtonIsEnabled()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setLoginButtonEnabled);
@@ -117,9 +117,9 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
   }
 
   private Observable<String> errorMessages() {
-    return this.viewModel.errors.invalidLoginError()
+    return this.viewModel.outputs.invalidLoginError()
       .map(ObjectUtils.coalesceWith(this.loginDoesNotMatchString))
-      .mergeWith(this.viewModel.errors.genericLoginError()
+      .mergeWith(this.viewModel.outputs.genericLoginError()
         .map(ObjectUtils.coalesceWith(this.unableToLoginString))
       );
   }

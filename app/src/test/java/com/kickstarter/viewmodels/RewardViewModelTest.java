@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels;
 
+import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
@@ -23,415 +24,404 @@ import rx.observers.TestSubscriber;
 import static java.util.Collections.emptyList;
 
 public final class RewardViewModelTest extends KSRobolectricTestCase {
+  private RewardViewModel.ViewModel vm;
+  private final TestSubscriber<Boolean> allGoneTextViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Integer> backersTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> backersTextViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> descriptionTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> estimatedDeliveryDateSectionIsGone = new TestSubscriber<>();
+  private final TestSubscriber<DateTime> estimatedDeliveryDateTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> isClickable = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> limitAndBackersSeparatorIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> limitAndRemainingTextViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Pair<String, String>> limitAndRemainingTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> limitHeaderIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> minimumTextViewText= new TestSubscriber<>();
+  private final TestSubscriber<Boolean> rewardDescriptionIsGone= new TestSubscriber<>();
+  private final TestSubscriber<List<RewardsItem>> rewardsItemList= new TestSubscriber<>();
+  private final TestSubscriber<Boolean> rewardsItemsAreGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> selectedHeaderIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> selectedOverlayIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> shippingSummarySectionIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> shippingSummaryTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Project> startBackingActivity = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, Reward>> startCheckoutActivity = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> titleTextViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> titleTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<String> usdConversionTextViewText = TestSubscriber.create();
+  private final TestSubscriber<Boolean> usdConversionSectionIsGone = TestSubscriber.create();
+  private final TestSubscriber<Boolean> whiteOverlayIsInvisible = new TestSubscriber<>();
+
+  protected void setUpEnvironment(final @NonNull Environment environment) {
+    this.vm = new RewardViewModel.ViewModel(environment);
+    this.vm.outputs.allGoneTextViewIsGone().subscribe(this.allGoneTextViewIsGone);
+    this.vm.outputs.backersTextViewIsGone().subscribe(this.backersTextViewIsGone);
+    this.vm.outputs.backersTextViewText().subscribe(this.backersTextViewText);
+    this.vm.outputs.descriptionTextViewText().subscribe(this.descriptionTextViewText);
+    this.vm.outputs.estimatedDeliveryDateSectionIsGone().subscribe(this.estimatedDeliveryDateSectionIsGone);
+    this.vm.outputs.estimatedDeliveryDateTextViewText().subscribe(this.estimatedDeliveryDateTextViewText);
+    this.vm.outputs.isClickable().subscribe(this.isClickable);
+    this.vm.outputs.limitAndBackersSeparatorIsGone().subscribe(this.limitAndBackersSeparatorIsGone);
+    this.vm.outputs.limitAndRemainingTextViewText().subscribe(this.limitAndRemainingTextViewText);
+    this.vm.outputs.limitAndRemainingTextViewIsGone().subscribe(this.limitAndRemainingTextViewIsGone);
+    this.vm.outputs.limitHeaderIsGone().subscribe(this.limitHeaderIsGone);
+    this.vm.outputs.minimumTextViewText().subscribe(this.minimumTextViewText);
+    this.vm.outputs.rewardDescriptionIsGone().subscribe(this.rewardDescriptionIsGone);
+    this.vm.outputs.rewardsItemsAreGone().subscribe(this.rewardsItemsAreGone);
+    this.vm.outputs.rewardsItemList().subscribe(this.rewardsItemList);
+    this.vm.outputs.selectedHeaderIsGone().subscribe(this.selectedHeaderIsGone);
+    this.vm.outputs.selectedOverlayIsGone().subscribe(this.selectedOverlayIsGone);
+    this.vm.outputs.shippingSummarySectionIsGone().subscribe(this.shippingSummarySectionIsGone);
+    this.vm.outputs.shippingSummaryTextViewText().subscribe(this.shippingSummaryTextViewText);
+    this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity);
+    this.vm.outputs.startCheckoutActivity().subscribe(this.startCheckoutActivity);
+    this.vm.outputs.titleTextViewIsGone().subscribe(this.titleTextViewIsGone);
+    this.vm.outputs.titleTextViewText().subscribe(this.titleTextViewText);
+    this.vm.outputs.usdConversionTextViewText().subscribe(this.usdConversionTextViewText);
+    this.vm.outputs.usdConversionTextViewIsGone().subscribe(this.usdConversionSectionIsGone);
+    this.vm.outputs.whiteOverlayIsInvisible().subscribe(this.whiteOverlayIsInvisible);
+  }
 
   @Test
-  public void testAllGoneTextViewIsHidden() {
-    final RewardViewModel vm = new RewardViewModel(environment());
+  public void testAllGoneTextViewIsGone() {
     final Project project = ProjectFactory.backedProjectWithRewardLimitReached();
-
-    final TestSubscriber<Boolean> allGoneTextViewIsHidden = TestSubscriber.create();
-    vm.outputs.allGoneTextViewIsHidden().subscribe(allGoneTextViewIsHidden);
+    setUpEnvironment(environment());
 
     // When an unlimited reward is not backed, hide the 'all gone' header.
-    vm.inputs.projectAndReward(project, RewardFactory.reward());
-    allGoneTextViewIsHidden.assertValues(true);
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward());
+    this.allGoneTextViewIsGone.assertValues(true);
 
     // When an unlimited reward is backed, hide the 'all gone' header (distinct until changed).
     final Reward backedReward = project.backing().reward();
-    vm.inputs.projectAndReward(project, backedReward);
-    allGoneTextViewIsHidden.assertValues(true);
+    this.vm.inputs.projectAndReward(project, backedReward);
+    this.allGoneTextViewIsGone.assertValues(true);
 
     // When a backed reward's limit has been reached, hide the 'all gone' header – the selected banner will be shown instead.
     final Reward backedRewardWithLimitReached = backedReward.toBuilder()
       .limit(1)
       .remaining(0)
       .build();
-    vm.inputs.projectAndReward(project, backedRewardWithLimitReached);
-    allGoneTextViewIsHidden.assertValues(true);
+    this.vm.inputs.projectAndReward(project, backedRewardWithLimitReached);
+    this.allGoneTextViewIsGone.assertValues(true);
 
     // When a reward's limit has been reached and it has not been backed, show the 'all gone' header.
-    vm.inputs.projectAndReward(project, RewardFactory.limitReached());
-    allGoneTextViewIsHidden.assertValues(true, false);
+    this.vm.inputs.projectAndReward(project, RewardFactory.limitReached());
+    this.allGoneTextViewIsGone.assertValues(true, false);
   }
 
   @Test
-  public void testBackersTextViewIsHidden() {
-    final RewardViewModel vm = new RewardViewModel(environment());
+  public void testBackersTextViewIsGone() {
     final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
 
-    final TestSubscriber<Boolean> backersTextViewIsHiddenTest = TestSubscriber.create();
-    vm.outputs.backersTextViewIsHidden().subscribe(backersTextViewIsHiddenTest);
+    this.vm.inputs.projectAndReward(project, RewardFactory.noBackers());
+    this.backersTextViewIsGone.assertValues(true);
 
-    vm.inputs.projectAndReward(project, RewardFactory.noBackers());
-    backersTextViewIsHiddenTest.assertValues(true);
+    this.vm.inputs.projectAndReward(project, RewardFactory.noReward());
+    this.backersTextViewIsGone.assertValues(true);
 
-    vm.inputs.projectAndReward(project, RewardFactory.noReward());
-    backersTextViewIsHiddenTest.assertValues(true);
-
-    vm.inputs.projectAndReward(project, RewardFactory.backers());
-    backersTextViewIsHiddenTest.assertValues(true, false);
+    this.vm.inputs.projectAndReward(project, RewardFactory.backers());
+    this.backersTextViewIsGone.assertValues(true, false);
   }
 
   @Test
   public void testBackersTextView() {
-    final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.project();
     final Reward rewardWithBackers = RewardFactory.reward().toBuilder().backersCount(100).build();
-
-    final TestSubscriber<Integer> backersTextViewTextTest = TestSubscriber.create();
-    vm.outputs.backersTextViewText().subscribe(backersTextViewTextTest);
+    setUpEnvironment(environment());
 
     // Show reward backer count.
-    vm.inputs.projectAndReward(project, rewardWithBackers);
-
-    backersTextViewTextTest.assertValue(100);
+    this.vm.inputs.projectAndReward(project, rewardWithBackers);
+    this.backersTextViewText.assertValue(100);
   }
 
   @Test
   public void testDescriptionTextViewText() {
-    final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.project();
     final Reward reward = RewardFactory.reward();
+    setUpEnvironment(environment());
 
-    final TestSubscriber<String> descriptionTextViewTextTest = TestSubscriber.create();
-    vm.outputs.descriptionTextViewText().subscribe(descriptionTextViewTextTest);
-
-    vm.inputs.projectAndReward(project, reward);
-
-    descriptionTextViewTextTest.assertValue(reward.description());
+    this.vm.inputs.projectAndReward(project, reward);
+    this.descriptionTextViewText.assertValue(reward.description());
   }
 
   @Test
   public void testEstimatedDeliveryDateTextViewText() {
-    final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.project();
     final Reward reward = RewardFactory.reward().toBuilder()
       .estimatedDeliveryOn(null)
       .build();
+    setUpEnvironment(environment());
 
-    final TestSubscriber<DateTime> estimatedDeliveryDateTextViewTextTest = TestSubscriber.create();
-    vm.outputs.estimatedDeliveryDateTextViewText().subscribe(estimatedDeliveryDateTextViewTextTest);
 
-    vm.inputs.projectAndReward(project, reward);
+    this.vm.inputs.projectAndReward(project, reward);
 
     // If reward has no estimated delivery, no value should be emitted.
-    estimatedDeliveryDateTextViewTextTest.assertNoValues();
+    this.estimatedDeliveryDateTextViewText.assertNoValues();
 
     // Reward with estimated delivery should emit.
     final DateTime estimatedDelivery = DateTime.now();
-    vm.inputs.projectAndReward(project, reward.toBuilder().estimatedDeliveryOn(estimatedDelivery).build());
+    this.vm.inputs.projectAndReward(project, reward.toBuilder().estimatedDeliveryOn(estimatedDelivery).build());
 
-    estimatedDeliveryDateTextViewTextTest.assertValue(estimatedDelivery);
+    this.estimatedDeliveryDateTextViewText.assertValue(estimatedDelivery);
   }
 
   @Test
-  public void testEstimatedDeliveryDateSectionIsHidden() {
-    final RewardViewModel vm = new RewardViewModel(environment());
+  public void testEstimatedDeliveryDateSectionIsGone() {
     final Project project = ProjectFactory.project();
-
-    final TestSubscriber<Boolean> estimatedDeliveryDateSectionIsHiddenTest = TestSubscriber.create();
-    vm.outputs.estimatedDeliveryDateSectionIsHidden().subscribe(estimatedDeliveryDateSectionIsHiddenTest);
+    setUpEnvironment(environment());
 
     // Reward with no estimated delivery should not show estimated delivery label.
-    vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().estimatedDeliveryOn(null).build());
-    estimatedDeliveryDateSectionIsHiddenTest.assertValue(true);
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().estimatedDeliveryOn(null).build());
+    this.estimatedDeliveryDateSectionIsGone.assertValue(true);
 
     // Reward with estimated delivery should show estimated delivery label.
-    vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().estimatedDeliveryOn(DateTime.now()).build());
-    estimatedDeliveryDateSectionIsHiddenTest.assertValues(true, false);
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().estimatedDeliveryOn(DateTime.now()).build());
+    this.estimatedDeliveryDateSectionIsGone.assertValues(true, false);
   }
 
   @Test
   public void testGoToCheckoutWhenProjectIsSuccessful() {
-    final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.successfulProject();
     final Reward reward = RewardFactory.reward();
+    setUpEnvironment(environment());
 
-    final TestSubscriber<Pair<Project, Reward>> goToCheckoutTest = TestSubscriber.create();
-    vm.outputs.goToCheckout().subscribe(goToCheckoutTest);
+    this.vm.inputs.projectAndReward(project, reward);
+    this.startCheckoutActivity.assertNoValues();
 
-    vm.inputs.projectAndReward(project, reward);
-    goToCheckoutTest.assertNoValues();
-
-    vm.inputs.rewardClicked();
-    goToCheckoutTest.assertNoValues();
+    this.vm.inputs.rewardClicked();
+    this.startCheckoutActivity.assertNoValues();
   }
 
   @Test
   public void testGoToCheckoutWhenProjectIsSuccessfulAndHasBeenBacked() {
-    final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.backedProject().toBuilder()
       .state(Project.STATE_SUCCESSFUL)
       .build();
     final Reward reward = project.backing().reward();
+    setUpEnvironment(environment());
 
-    final TestSubscriber<Pair<Project, Reward>> goToCheckoutTest = TestSubscriber.create();
-    vm.outputs.goToCheckout().subscribe(goToCheckoutTest);
+    this.vm.inputs.projectAndReward(project, reward);
+    this.startCheckoutActivity.assertNoValues();
 
-    vm.inputs.projectAndReward(project, reward);
-    goToCheckoutTest.assertNoValues();
-
-    vm.inputs.rewardClicked();
-    goToCheckoutTest.assertNoValues();
+    this.vm.inputs.rewardClicked();
+    this.startCheckoutActivity.assertNoValues();
   }
 
   @Test
   public void testGoToCheckoutWhenProjectIsLive() {
-    final RewardViewModel vm = new RewardViewModel(environment());
     final Reward reward = RewardFactory.reward();
-
-    final TestSubscriber<Pair<Project, Reward>> startCheckoutTest = TestSubscriber.create();
-    vm.outputs.goToCheckout().subscribe(startCheckoutTest);
-
     final Project liveProject = ProjectFactory.project();
-    vm.inputs.projectAndReward(liveProject, reward);
-    startCheckoutTest.assertNoValues();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectAndReward(liveProject, reward);
+    this.startCheckoutActivity.assertNoValues();
 
     // When a reward from a live project is clicked, start checkout.
-    vm.inputs.rewardClicked();
-    startCheckoutTest.assertValue(Pair.create(liveProject, reward));
+    this.vm.inputs.rewardClicked();
+    this.startCheckoutActivity.assertValue(Pair.create(liveProject, reward));
   }
 
   @Test
   public void testGoToViewPledge() {
-    final RewardViewModel vm = new RewardViewModel(environment());
     final Project liveProject = ProjectFactory.backedProject();
     final Project successfulProject = ProjectFactory.backedProject().toBuilder()
       .state(Project.STATE_SUCCESSFUL)
       .build();
 
-    final TestSubscriber<Project> goToViewPledgeTest = TestSubscriber.create();
-    vm.outputs.goToViewPledge().subscribe(goToViewPledgeTest);
+    setUpEnvironment(environment());
 
-    vm.inputs.projectAndReward(liveProject, liveProject.backing().reward());
-    goToViewPledgeTest.assertNoValues();
+    this.vm.inputs.projectAndReward(liveProject, liveProject.backing().reward());
+    this.startBackingActivity.assertNoValues();
 
     // When the project is still live, don't go to 'view pledge'. Should go to checkout instead.
-    vm.inputs.rewardClicked();
-    goToViewPledgeTest.assertNoValues();
+    this.vm.inputs.rewardClicked();
+    this.startBackingActivity.assertNoValues();
 
     // When project is successful but not backed, don't go to view pledge.
-    vm.inputs.projectAndReward(successfulProject, RewardFactory.reward());
-    vm.inputs.rewardClicked();
-    goToViewPledgeTest.assertNoValues();
+    this.vm.inputs.projectAndReward(successfulProject, RewardFactory.reward());
+    this.vm.inputs.rewardClicked();
+    this.startBackingActivity.assertNoValues();
 
     // When project is successful and backed, go to view pledge.
-    vm.inputs.projectAndReward(successfulProject, successfulProject.backing().reward());
-    goToViewPledgeTest.assertNoValues();
-    vm.inputs.rewardClicked();
-    goToViewPledgeTest.assertValues(successfulProject);
+    this.vm.inputs.projectAndReward(successfulProject, successfulProject.backing().reward());
+    this.startBackingActivity.assertNoValues();
+    this.vm.inputs.rewardClicked();
+    this.startBackingActivity.assertValues(successfulProject);
   }
 
   @Test
   public void testIsClickable() {
-    final RewardViewModel vm = new RewardViewModel(environment());
-
-    final TestSubscriber<Boolean> isClickableTest = TestSubscriber.create();
-    vm.outputs.isClickable().subscribe(isClickableTest);
+    setUpEnvironment(environment());
 
     // A reward from a live project should be clickable.
-    vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.reward());
-    isClickableTest.assertValue(true);
+    this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.reward());
+    this.isClickable.assertValue(true);
 
     // A reward from a successful project should not be clickable.
-    vm.inputs.projectAndReward(ProjectFactory.successfulProject(), RewardFactory.reward());
-    isClickableTest.assertValues(true, false);
+    this.vm.inputs.projectAndReward(ProjectFactory.successfulProject(), RewardFactory.reward());
+    this.isClickable.assertValues(true, false);
     //
     // A backed reward from a live project should be clickable.
     final Project backedLiveProject = ProjectFactory.backedProject();
-    vm.inputs.projectAndReward(backedLiveProject, backedLiveProject.backing().reward());
-    isClickableTest.assertValues(true, false, true);
+    this.vm.inputs.projectAndReward(backedLiveProject, backedLiveProject.backing().reward());
+    this.isClickable.assertValues(true, false, true);
 
     // A backed reward from a finished project should be clickable (distinct until changed).
     final Project backedSuccessfulProject = ProjectFactory.backedProject().toBuilder()
       .state(Project.STATE_SUCCESSFUL)
       .build();
-    vm.inputs.projectAndReward(backedSuccessfulProject, backedSuccessfulProject.backing().reward());
-    isClickableTest.assertValues(true, false, true);
+    this.vm.inputs.projectAndReward(backedSuccessfulProject, backedSuccessfulProject.backing().reward());
+    this.isClickable.assertValues(true, false, true);
 
     // A reward with its limit reached should not be clickable.
-    vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.limitReached());
-    isClickableTest.assertValues(true, false, true, false);
+    this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.limitReached());
+    this.isClickable.assertValues(true, false, true, false);
   }
 
   @Test
-  public void testLimitAndBackersSeparatorIsHidden() {
-    final RewardViewModel vm = new RewardViewModel(environment());
+  public void testLimitAndBackersSeparatorIsGone() {
     final Project project = ProjectFactory.project();
-
-    final TestSubscriber<Boolean> limitAndBackersSeparatorIsHiddenTest = TestSubscriber.create();
-    vm.outputs.limitAndBackersSeparatorIsHidden().subscribe(limitAndBackersSeparatorIsHiddenTest);
+    setUpEnvironment(environment());
 
     // When reward has no limit or backers, separator should be hidden.
-    vm.inputs.projectAndReward(project, RewardFactory.noBackers());
-    limitAndBackersSeparatorIsHiddenTest.assertValues(true);
+    this.vm.inputs.projectAndReward(project, RewardFactory.noBackers());
+    this.limitAndBackersSeparatorIsGone.assertValues(true);
 
     // When reward has no limit and backers, separator should be hidden.
-    vm.inputs.projectAndReward(project, RewardFactory.reward());
-    limitAndBackersSeparatorIsHiddenTest.assertValues(true);
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward());
+    this.limitAndBackersSeparatorIsGone.assertValues(true);
 
     // When reward has limit and no backers, separator should be hidden.
-    vm.inputs.projectAndReward(project, RewardFactory.limited().toBuilder().backersCount(0).build());
-    limitAndBackersSeparatorIsHiddenTest.assertValues(true);
+    this.vm.inputs.projectAndReward(project, RewardFactory.limited().toBuilder().backersCount(0).build());
+    this.limitAndBackersSeparatorIsGone.assertValues(true);
 
     // When reward has limit and backers, separator should be visible.
-    vm.inputs.projectAndReward(project, RewardFactory.limited().toBuilder().build());
-    limitAndBackersSeparatorIsHiddenTest.assertValues(true, false);
+    this.vm.inputs.projectAndReward(project, RewardFactory.limited().toBuilder().build());
+    this.limitAndBackersSeparatorIsGone.assertValues(true, false);
   }
 
   @Test
   public void testLimitAndRemaining() {
-    final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.project();
-
-    final TestSubscriber<Pair<String, String>> limitAndRemainingTextViewTextTest = TestSubscriber.create();
-    vm.outputs.limitAndRemainingTextViewText().subscribe(limitAndRemainingTextViewTextTest);
-    final TestSubscriber<Boolean> limitAndRemainingTextViewIsHiddenTest = TestSubscriber.create();
-    vm.outputs.limitAndRemainingTextViewIsHidden().subscribe(limitAndRemainingTextViewIsHiddenTest);
+    setUpEnvironment(environment());
 
     // When reward is limited, quantity should be shown.
     final Reward limitedReward = RewardFactory.reward().toBuilder()
       .limit(10)
       .remaining(5)
       .build();
-    vm.inputs.projectAndReward(project, limitedReward);
-    limitAndRemainingTextViewTextTest.assertValue(Pair.create("10", "5"));
-    limitAndRemainingTextViewIsHiddenTest.assertValue(false);
+    this.vm.inputs.projectAndReward(project, limitedReward);
+    this.limitAndRemainingTextViewText.assertValue(Pair.create("10", "5"));
+    this.limitAndRemainingTextViewIsGone.assertValue(false);
 
     // When reward's limit has been reached, don't show quantity.
-    vm.inputs.projectAndReward(project, RewardFactory.limitReached());
-    limitAndRemainingTextViewIsHiddenTest.assertValues(false, true);
+    this.vm.inputs.projectAndReward(project, RewardFactory.limitReached());
+    this.limitAndRemainingTextViewIsGone.assertValues(false, true);
 
     // When reward has no limit, don't show quantity (distinct until changed).
-    vm.inputs.projectAndReward(project, RewardFactory.reward());
-    limitAndRemainingTextViewIsHiddenTest.assertValues(false, true);
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward());
+    this.limitAndRemainingTextViewIsGone.assertValues(false, true);
   }
 
   @Test
-  public void testLimitHeaderIsHidden() {
-    final RewardViewModel vm = new RewardViewModel(environment());
-
-    final TestSubscriber<Boolean> limitHeaderIsHiddenTest = TestSubscriber.create();
-    vm.outputs.limitHeaderIsHidden().subscribe(limitHeaderIsHiddenTest);
+  public void testLimitHeaderIsGone() {
+    setUpEnvironment(environment());
 
     // If the reward is limited and has not been backed, show the limit header.
     final Project backedProjectWithLimitedReward = ProjectFactory.backedProjectWithRewardLimited();
-    vm.inputs.projectAndReward(backedProjectWithLimitedReward, RewardFactory.limited());
-    limitHeaderIsHiddenTest.assertValues(false);
+    this.vm.inputs.projectAndReward(backedProjectWithLimitedReward, RewardFactory.limited());
+    this.limitHeaderIsGone.assertValues(false);
 
     // If the reward is limited and has been backed, don't show the limit header.
-    vm.inputs.projectAndReward(backedProjectWithLimitedReward, backedProjectWithLimitedReward.backing().reward());
-    limitHeaderIsHiddenTest.assertValues(false, true);
+    this.vm.inputs.projectAndReward(backedProjectWithLimitedReward, backedProjectWithLimitedReward.backing().reward());
+    this.limitHeaderIsGone.assertValues(false, true);
 
     // If the reward is not limited, don't show the limit header.
-    vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.reward());
-    limitHeaderIsHiddenTest.assertValues(false, true);
+    this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.reward());
+    this.limitHeaderIsGone.assertValues(false, true);
   }
 
   @Test
   public void testMinimumTextViewText() {
-    final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.project();
     final Reward reward = RewardFactory.reward().toBuilder()
       .minimum(10)
       .build();
+    setUpEnvironment(environment());
 
-    final TestSubscriber<String> minimumTextViewTextTest = TestSubscriber.create();
-    vm.outputs.minimumTextViewText().subscribe(minimumTextViewTextTest);
-
-    vm.inputs.projectAndReward(project, reward);
-
-    minimumTextViewTextTest.assertValue("$10");
+    this.vm.inputs.projectAndReward(project, reward);
+    this.minimumTextViewText.assertValue("$10");
   }
 
   @Test
   public void testRewardsItems() {
-    final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.project();
-
-    final TestSubscriber<Boolean> rewardsItemsAreHiddenTest = TestSubscriber.create();
-    vm.outputs.rewardsItemsAreHidden().subscribe(rewardsItemsAreHiddenTest);
-    final TestSubscriber<List<RewardsItem>> rewardsItemsTest = TestSubscriber.create();
-    vm.outputs.rewardsItemList().subscribe(rewardsItemsTest);
+    setUpEnvironment(environment());
 
     // Items section should be hidden when there are no items.
-    vm.inputs.projectAndReward(project, RewardFactory.reward());
-    rewardsItemsAreHiddenTest.assertValue(true);
-    rewardsItemsTest.assertValue(emptyList());
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward());
+    this.rewardsItemsAreGone.assertValue(true);
+    this.rewardsItemList.assertValue(emptyList());
 
     final Reward itemizedReward = RewardFactory.itemized();
-    vm.inputs.projectAndReward(project, itemizedReward);
-    rewardsItemsAreHiddenTest.assertValues(true, false);
-    rewardsItemsTest.assertValues(emptyList(), itemizedReward.rewardsItems());
+    this.vm.inputs.projectAndReward(project, itemizedReward);
+    this.rewardsItemsAreGone.assertValues(true, false);
+    this.rewardsItemList.assertValues(emptyList(), itemizedReward.rewardsItems());
   }
 
   @Test
   public void testTitleTextViewText() {
-    final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.project();
-
-    final TestSubscriber<Boolean> titleTextViewIsHidden = TestSubscriber.create();
-    vm.outputs.titleTextViewIsHidden().subscribe(titleTextViewIsHidden);
-    final TestSubscriber<String> titleTextViewTextTest = TestSubscriber.create();
-    vm.outputs.titleTextViewText().subscribe(titleTextViewTextTest);
+    setUpEnvironment(environment());
 
     // Reward with no title should be hidden.
     final Reward rewardWithNoTitle = RewardFactory.reward().toBuilder()
       .title(null)
       .build();
-    vm.inputs.projectAndReward(project, rewardWithNoTitle);
-    titleTextViewIsHidden.assertValues(true);
-    titleTextViewTextTest.assertNoValues();
+    this.vm.inputs.projectAndReward(project, rewardWithNoTitle);
+    this.titleTextViewIsGone.assertValues(true);
+    this.titleTextViewText.assertNoValues();
 
     // Reward with title should be visible.
     final String title = "Digital bundle";
     final Reward rewardWithTitle = RewardFactory.reward().toBuilder()
       .title(title)
       .build();
-    vm.inputs.projectAndReward(project, rewardWithTitle);
-    titleTextViewIsHidden.assertValues(true, false);
-    titleTextViewTextTest.assertValue(title);
+    this.vm.inputs.projectAndReward(project, rewardWithTitle);
+    this.titleTextViewIsGone.assertValues(true, false);
+    this.titleTextViewText.assertValue(title);
   }
 
   @Test
   public void testSelectedHeaderAndOverlay() {
-    final RewardViewModel vm = new RewardViewModel(environment());
-
-    final TestSubscriber<Boolean> selectedHeaderIsHidden = TestSubscriber.create();
-    vm.outputs.selectedHeaderIsHidden().subscribe(selectedHeaderIsHidden);
-    final TestSubscriber<Boolean> selectedOverlayIsHidden = TestSubscriber.create();
-    vm.outputs.selectedOverlayIsHidden().subscribe(selectedOverlayIsHidden);
-
     final Project backedProject = ProjectFactory.backedProject();
-    vm.inputs.projectAndReward(backedProject, backedProject.backing().reward());
-    selectedHeaderIsHidden.assertValue(false);
-    selectedOverlayIsHidden.assertValue(false);
+    setUpEnvironment(environment());
 
-    vm.inputs.projectAndReward(backedProject, RewardFactory.reward());
-    selectedHeaderIsHidden.assertValues(false, true);
-    selectedOverlayIsHidden.assertValues(false, true);
+    this.vm.inputs.projectAndReward(backedProject, backedProject.backing().reward());
+    this.selectedHeaderIsGone.assertValue(false);
+    this.selectedOverlayIsGone.assertValue(false);
+
+    this.vm.inputs.projectAndReward(backedProject, RewardFactory.reward());
+    this.selectedHeaderIsGone.assertValues(false, true);
+    this.selectedOverlayIsGone.assertValues(false, true);
   }
 
   @Test
   public void testShippingSummary() {
-    final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.project();
-
-    final TestSubscriber<String> shippingSummaryTextViewTextTest = TestSubscriber.create();
-    vm.outputs.shippingSummaryTextViewText().subscribe(shippingSummaryTextViewTextTest);
-    final TestSubscriber<Boolean> shippingSummarySectionIsHiddenTest = TestSubscriber.create();
-    vm.outputs.shippingSummarySectionIsHidden().subscribe(shippingSummarySectionIsHiddenTest);
+    setUpEnvironment(environment());
 
     // Reward with no shipping should hide shipping summary section and not emit a shipping summary string.
-    vm.inputs.projectAndReward(project, RewardFactory.reward());
-    shippingSummaryTextViewTextTest.assertNoValues();
-    shippingSummarySectionIsHiddenTest.assertValue(true);
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward());
+    this.shippingSummaryTextViewText.assertNoValues();
+    this.shippingSummarySectionIsGone.assertValue(true);
 
     // Reward with shipping should show shipping summary section and emit a shipping summary string.
     final Reward rewardWithShipping = RewardFactory.rewardWithShipping();
-    vm.inputs.projectAndReward(project, rewardWithShipping);
-    shippingSummaryTextViewTextTest.assertValue(rewardWithShipping.shippingSummary());
-    shippingSummarySectionIsHiddenTest.assertValues(true, false);
+    this.vm.inputs.projectAndReward(project, rewardWithShipping);
+    this.shippingSummaryTextViewText.assertValue(rewardWithShipping.shippingSummary());
+    this.shippingSummarySectionIsGone.assertValues(true, false);
   }
 
   @Test
@@ -441,28 +431,23 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     final Environment environment = environment();
     final CurrentConfigType currentConfig = environment.currentConfig();
     environment.currentConfig().config(config);
-    final RewardViewModel vm = new RewardViewModel(environment);
+    setUpEnvironment(environment);
 
     // Set project's country to CA.
     final Project project = ProjectFactory.caProject();
     final Reward reward = RewardFactory.reward();
 
-    final TestSubscriber<String> usdConversionTextViewText = TestSubscriber.create();
-    vm.outputs.usdConversionTextViewText().subscribe(usdConversionTextViewText);
-    final TestSubscriber<Boolean> usdConversionSectionIsHidden = TestSubscriber.create();
-    vm.outputs.usdConversionTextViewIsHidden().subscribe(usdConversionSectionIsHidden);
-
     // USD conversion should be shown.
-    vm.inputs.projectAndReward(project, reward);
-    usdConversionTextViewText.assertValueCount(1);
-    usdConversionSectionIsHidden.assertValue(false);
+    this.vm.inputs.projectAndReward(project, reward);
+    this.usdConversionTextViewText.assertValueCount(1);
+    this.usdConversionSectionIsGone.assertValue(false);
 
     // Set user's country to CA (any country except the US is fine).
     currentConfig.config(ConfigFactory.configForCAUser());
 
     // USD conversion should now be hidden.
-    usdConversionTextViewText.assertValueCount(1);
-    usdConversionSectionIsHidden.assertValues(false, true);
+    this.usdConversionTextViewText.assertValueCount(1);
+    this.usdConversionSectionIsGone.assertValues(false, true);
   }
 
   @Test
@@ -472,28 +457,23 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     final Environment environment = environment();
     final CurrentConfigType currentConfig = environment.currentConfig();
     environment.currentConfig().config(config);
-    final RewardViewModel vm = new RewardViewModel(environment);
+    setUpEnvironment(environment);
 
     // Set project's country to US.
     final Project project = ProjectFactory.project().toBuilder().country("US").build();
     final Reward reward = RewardFactory.reward();
 
-    final TestSubscriber<String> usdConversionTextViewText = TestSubscriber.create();
-    vm.outputs.usdConversionTextViewText().subscribe(usdConversionTextViewText);
-    final TestSubscriber<Boolean> usdConversionSectionIsHidden = TestSubscriber.create();
-    vm.outputs.usdConversionTextViewIsHidden().subscribe(usdConversionSectionIsHidden);
-
     // USD conversion should not be shown.
-    vm.inputs.projectAndReward(project, reward);
-    usdConversionTextViewText.assertNoValues();
-    usdConversionSectionIsHidden.assertValue(true);
+    this.vm.inputs.projectAndReward(project, reward);
+    this.usdConversionTextViewText.assertNoValues();
+    this.usdConversionSectionIsGone.assertValue(true);
 
     // Set user's country to CA.
     currentConfig.config(ConfigFactory.configForCAUser());
 
     // USD conversion should still not be shown (distinct until changed).
-    usdConversionTextViewText.assertNoValues();
-    usdConversionSectionIsHidden.assertValues(true);
+    this.usdConversionTextViewText.assertNoValues();
+    this.usdConversionSectionIsGone.assertValues(true);
   }
 
   @Test
@@ -502,60 +482,48 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     final Config config = ConfigFactory.configForUSUser();
     final Environment environment = environment();
     environment.currentConfig().config(config);
-    final RewardViewModel vm = new RewardViewModel(environment);
+    setUpEnvironment(environment);
 
     // Set project's country to CA and reward minimum to $0.30.
     final Project project = ProjectFactory.caProject();
     final Reward reward = RewardFactory.reward().toBuilder().minimum(0.3f).build();
 
-    final TestSubscriber<String> usdConversionTextViewText = TestSubscriber.create();
-    vm.outputs.usdConversionTextViewText().subscribe(usdConversionTextViewText);
-
     // USD conversion should be rounded up.
-    vm.inputs.projectAndReward(project, reward);
-    usdConversionTextViewText.assertValue("$1");
+    this.vm.inputs.projectAndReward(project, reward);
+    this.usdConversionTextViewText.assertValue("$1");
   }
 
   @Test
   public void testWhiteOverlayIsHidden() {
-    final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
 
-    final TestSubscriber<Boolean> whiteOverlayIsHiddenTest = TestSubscriber.create();
-    vm.outputs.whiteOverlayIsHidden().subscribe(whiteOverlayIsHiddenTest);
-
-    vm.inputs.projectAndReward(project, RewardFactory.reward());
-    whiteOverlayIsHiddenTest.assertValue(true);
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward());
+    this.whiteOverlayIsInvisible.assertValue(true);
 
     final Project backedProjectWithRewardLimitReached = ProjectFactory.backedProjectWithRewardLimitReached();
-    vm.inputs.projectAndReward(backedProjectWithRewardLimitReached, backedProjectWithRewardLimitReached.backing().reward());
-    whiteOverlayIsHiddenTest.assertValues(true);
+    this.vm.inputs.projectAndReward(backedProjectWithRewardLimitReached, backedProjectWithRewardLimitReached.backing().reward());
+    this.whiteOverlayIsInvisible.assertValues(true);
 
-    vm.inputs.projectAndReward(project, RewardFactory.limitReached());
-    whiteOverlayIsHiddenTest.assertValues(true, false);
+    this.vm.inputs.projectAndReward(project, RewardFactory.limitReached());
+    this.whiteOverlayIsInvisible.assertValues(true, false);
   }
 
   @Test
   public void testNonEmptyRewardsDescriptionAreShown() {
-    final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
 
-    final TestSubscriber<Boolean> hideRewardDescriptionTest = TestSubscriber.create();
-    vm.outputs.rewardDescriptionIsHidden().subscribe(hideRewardDescriptionTest);
-
-    vm.inputs.projectAndReward(project, RewardFactory.reward());
-    hideRewardDescriptionTest.assertValue(false);
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward());
+    this.rewardDescriptionIsGone.assertValue(false);
   }
 
   @Test
-  public void testEmptyRewardsDescriptionAreHidden() {
-    final RewardViewModel vm = new RewardViewModel(environment());
+  public void testEmptyRewardsDescriptionAreGone() {
     final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
 
-    final TestSubscriber<Boolean> hideRewardDescriptionTest = TestSubscriber.create();
-    vm.outputs.rewardDescriptionIsHidden().subscribe(hideRewardDescriptionTest);
-
-    vm.inputs.projectAndReward(project, RewardFactory.noDescription());
-    hideRewardDescriptionTest.assertValue(true);
+    this.vm.inputs.projectAndReward(project, RewardFactory.noDescription());
+    this.rewardDescriptionIsGone.assertValue(true);
   }
 }

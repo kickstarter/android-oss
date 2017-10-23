@@ -111,11 +111,11 @@ public interface ApiClientType {
   @NonNull Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email, final @NonNull String password,
     final @NonNull String passwordConfirmation, final boolean sendNewsletters);
 
-  @NonNull Observable<Project> starProject(final @NonNull Project project);
+  @NonNull Observable<Project> saveProject(final @NonNull Project project);
 
   @NonNull Observable<SurveyResponse> fetchSurveyResponse(final long surveyResponseId);
 
-  @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project);
+  @NonNull Observable<Project> toggleProjectSave(final @NonNull Project project);
 
   @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys();
 

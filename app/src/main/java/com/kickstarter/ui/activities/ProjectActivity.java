@@ -4,18 +4,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
@@ -23,7 +26,6 @@ import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.data.LoginReason;
-import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.ProjectViewModel;
 
 import butterknife.Bind;
@@ -39,7 +41,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
   private ProjectAdapter adapter;
 
   protected @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
-  protected @Bind(R.id.star_icon) IconButton starButton;
+  protected @Bind(R.id.heart_icon) ImageButton heartButton;
   protected @Bind(R.id.back_project_button) Button backProjectButton;
   protected @Bind(R.id.manage_pledge_button) Button managePledgeButton;
   protected @Bind(R.id.project_action_buttons) ViewGroup projectActionButtonsViewGroup;
@@ -73,6 +75,11 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
     this.adapter = new ProjectAdapter(this.viewModel);
     this.projectRecyclerView.setAdapter(this.adapter);
     this.projectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    this.viewModel.outputs.heartColorInt()
+      .compose(bindToLifecycle())
+      .compose(Transformers.observeForUI())
+      .subscribe(c -> this.heartButton.setColorFilter(ContextCompat.getColor(this, c)));
 
     this.viewModel.outputs.projectAndUserCountry()
       .compose(bindToLifecycle())
@@ -124,7 +131,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startBackingActivity);
 
-    this.viewModel.outputs.showStarredPrompt()
+    this.viewModel.outputs.showSavedPrompt()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> this.showStarToast());
@@ -144,12 +151,6 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
   private void renderProject(final @NonNull Project project, final @NonNull String configCountry) {
     this.adapter.takeProject(project, configCountry);
     ProjectUtils.setActionButton(project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton);
-    renderStar(project);
-  }
-
-  private void renderStar(final @NonNull Project project) {
-    final int starColor = (project.isStarred()) ? this.green : this.textPrimary;
-    this.starButton.setTextColor(starColor);
   }
 
   @OnClick(R.id.back_project_button)
@@ -167,9 +168,9 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
     this.viewModel.inputs.viewPledgeButtonClicked();
   }
 
-  @OnClick(R.id.star_icon)
+  @OnClick(R.id.heart_icon)
   public void starProjectClick() {
-    this.viewModel.inputs.starButtonClicked();
+    this.viewModel.inputs.heartButtonClicked();
   }
 
   @OnClick(R.id.share_icon)

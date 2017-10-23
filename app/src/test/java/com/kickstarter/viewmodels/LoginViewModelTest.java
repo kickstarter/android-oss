@@ -17,26 +17,32 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public class LoginViewModelTest extends KSRobolectricTestCase {
+  private LoginViewModel.ViewModel vm;
+  private final TestSubscriber<String> genericLoginError = new TestSubscriber<>();
+  private final TestSubscriber<String> invalidLoginError = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> logInButtonIsEnabled = new TestSubscriber<>();
+  private final TestSubscriber<Void> loginSuccess = new TestSubscriber<>();
+  private final TestSubscriber<String> preFillEmailFromPasswordReset = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> showResetPasswordSuccessDialog = new TestSubscriber<>();
+  private final TestSubscriber<Void> tfaChallenge = new TestSubscriber<>();
 
   @Test
   public void testLoginButtonEnabled() {
-    final LoginViewModel vm = new LoginViewModel(environment());
-
-    final TestSubscriber<Boolean> setLoginButtonIsEnabled = new TestSubscriber<>();
-    vm.outputs.setLoginButtonIsEnabled().subscribe(setLoginButtonIsEnabled);
+    this.vm = new LoginViewModel.ViewModel(environment());
+    this.vm.outputs.loginButtonIsEnabled().subscribe(this.logInButtonIsEnabled);
 
     // Button should not be enabled until both a valid email and password are entered.
-    vm.inputs.email("hello");
-    setLoginButtonIsEnabled.assertNoValues();
+    this.vm.inputs.email("hello");
+    this.logInButtonIsEnabled.assertNoValues();
 
-    vm.inputs.email("hello@kickstarter.com");
-    setLoginButtonIsEnabled.assertNoValues();
+    this.vm.inputs.email("hello@kickstarter.com");
+    this.logInButtonIsEnabled.assertNoValues();
 
-    vm.inputs.password("");
-    setLoginButtonIsEnabled.assertValues(false);
+    this.vm.inputs.password("");
+    this.logInButtonIsEnabled.assertValues(false);
 
-    vm.inputs.password("danisawesome");
-    setLoginButtonIsEnabled.assertValues(false, true);
+    this.vm.inputs.password("izzyiscool");
+    this.logInButtonIsEnabled.assertValues(false, true);
   }
 
   @Test
@@ -49,21 +55,18 @@ public class LoginViewModelTest extends KSRobolectricTestCase {
     };
 
     final Environment environment = environment().toBuilder().apiClient(apiClient).build();
-    final LoginViewModel vm = new LoginViewModel(environment);
+    this.vm = new LoginViewModel.ViewModel(environment);
 
-    final TestSubscriber<Void> loginSuccess = new TestSubscriber<>();
-    vm.outputs.loginSuccess().subscribe(loginSuccess);
-    
-    final TestSubscriber<String> genericLoginError = new TestSubscriber<>();
-    vm.errors.genericLoginError().subscribe(genericLoginError);
+    this.vm.outputs.loginSuccess().subscribe(this.loginSuccess);
+    this.vm.outputs.genericLoginError().subscribe(this.genericLoginError);
 
-    vm.inputs.email("incorrect@kickstarter.com");
-    vm.inputs.password("danisawesome");
+    this.vm.inputs.email("incorrect@kickstarter.com");
+    this.vm.inputs.password("lisaiscool");
 
-    vm.inputs.loginClick();
+    this.vm.inputs.loginClick();
 
-    loginSuccess.assertNoValues();
-    genericLoginError.assertValueCount(1);
+    this.loginSuccess.assertNoValues();
+    this.genericLoginError.assertValueCount(1);
   }
 
   @Test
@@ -76,21 +79,18 @@ public class LoginViewModelTest extends KSRobolectricTestCase {
     };
 
     final Environment environment = environment().toBuilder().apiClient(apiClient).build();
-    final LoginViewModel vm = new LoginViewModel(environment);
+    this.vm = new LoginViewModel.ViewModel(environment);
 
-    final TestSubscriber<String> invalidLoginError = new TestSubscriber<>();
-    vm.errors.invalidLoginError().subscribe(invalidLoginError);
+    this.vm.outputs.loginSuccess().subscribe(this.loginSuccess);
+    this.vm.outputs.invalidLoginError().subscribe(this.invalidLoginError);
 
-    final TestSubscriber<Void> loginSuccess = new TestSubscriber<>();
-    vm.outputs.loginSuccess().subscribe(loginSuccess);
+    this.vm.inputs.email("typo@kickstartr.com");
+    this.vm.inputs.password("julieiscool");
 
-    vm.inputs.email("typo@kickstartr.com");
-    vm.inputs.password("danisawesome");
+    this.vm.inputs.loginClick();
 
-    vm.inputs.loginClick();
-
-    loginSuccess.assertNoValues();
-    invalidLoginError.assertValueCount(1);
+    this.loginSuccess.assertNoValues();
+    this.invalidLoginError.assertValueCount(1);
   }
 
   @Test
@@ -103,75 +103,67 @@ public class LoginViewModelTest extends KSRobolectricTestCase {
     };
 
     final Environment environment = environment().toBuilder().apiClient(apiClient).build();
-    final LoginViewModel vm = new LoginViewModel(environment);
+    this.vm = new LoginViewModel.ViewModel(environment);
+    this.vm.outputs.loginSuccess().subscribe(this.loginSuccess);
+    this.vm.outputs.tfaChallenge().subscribe(this.tfaChallenge);
 
-    final TestSubscriber<Void> tfaChallenge = new TestSubscriber<>();
-    vm.errors.tfaChallenge().subscribe(tfaChallenge);
+    this.vm.inputs.email("hello@kickstarter.com");
+    this.vm.inputs.password("androidiscool");
 
-    final TestSubscriber<Void> loginSuccess = new TestSubscriber<>();
-    vm.outputs.loginSuccess().subscribe(loginSuccess);
+    this.vm.inputs.loginClick();
 
-    vm.inputs.email("hello@kickstarter.com");
-    vm.inputs.password("danisawesome");
-
-    vm.inputs.loginClick();
-
-    loginSuccess.assertNoValues();
-    tfaChallenge.assertValueCount(1);
+    this.loginSuccess.assertNoValues();
+    this.tfaChallenge.assertValueCount(1);
   }
 
   @Test
   public void testPrefillEmailAndDialog() {
     final String email = "hello@kickstarter.com";
 
-    final LoginViewModel vm = new LoginViewModel(environment());
-
-    final TestSubscriber<String> prefillEmailFromPasswordReset = new TestSubscriber<>();
-    vm.outputs.prefillEmailFromPasswordReset().subscribe(prefillEmailFromPasswordReset);
-
-    final TestSubscriber<Boolean> showResetPasswordSuccessDialog = new TestSubscriber<>();
-    vm.outputs.showResetPasswordSuccessDialog()
-      .map(showAndEmail -> showAndEmail.first)
-      .subscribe(showResetPasswordSuccessDialog);
-
-    prefillEmailFromPasswordReset.assertNoValues();
-    showResetPasswordSuccessDialog.assertNoValues();
-
     // Start the view model with an email to prefill.
-    vm.intent(new Intent().putExtra(IntentKey.EMAIL, email));
+    this.vm = new LoginViewModel.ViewModel(environment());
+    this.vm.intent(new Intent().putExtra(IntentKey.EMAIL, email));
+    this.vm.outputs.prefillEmailFromPasswordReset().subscribe(this.preFillEmailFromPasswordReset);
+    this.vm.outputs.showResetPasswordSuccessDialog()
+      .map(showAndEmail -> showAndEmail.first)
+      .subscribe(this.showResetPasswordSuccessDialog);
 
-    prefillEmailFromPasswordReset.assertValue(email);
-    showResetPasswordSuccessDialog.assertValue(true);
+    this.preFillEmailFromPasswordReset.assertValue(email);
+    this.showResetPasswordSuccessDialog.assertValue(true);
 
     // Dismiss the confirmation dialog.
-    vm.inputs.resetPasswordConfirmationDialogDismissed();
+    this.vm.inputs.resetPasswordConfirmationDialogDismissed();
+    this.showResetPasswordSuccessDialog.assertValues(true, false);
 
-    // Simulate rotating the device.
+    // Simulate rotating the device, first by sending a new intent (similar to what happens after rotation).
+    this.vm.intent(new Intent().putExtra(IntentKey.EMAIL, email));
+
+    // Create new test subscribers – this emulates a new activity subscribing to the vm's outputs.
     final TestSubscriber<String> rotatedPrefillEmailFromPasswordReset = new TestSubscriber<>();
-    vm.outputs.prefillEmailFromPasswordReset().subscribe(rotatedPrefillEmailFromPasswordReset);
+    this.vm.outputs.prefillEmailFromPasswordReset().subscribe(rotatedPrefillEmailFromPasswordReset);
     final TestSubscriber<Boolean> rotatedShowResetPasswordSuccessDialog = new TestSubscriber<>();
-    vm.outputs.showResetPasswordSuccessDialog()
+    this.vm.outputs.showResetPasswordSuccessDialog()
       .map(showAndEmail -> showAndEmail.first)
       .subscribe(rotatedShowResetPasswordSuccessDialog);
 
-    // Email should still be filled. Dialog should not be shown again.
+    // Email should still be pre-filled.
     rotatedPrefillEmailFromPasswordReset.assertValue(email);
+
+    // Dialog should not be shown again – the user has already dismissed it.
     rotatedShowResetPasswordSuccessDialog.assertValue(false);
   }
 
   @Test
   public void testSuccessfulLogin() {
-    final LoginViewModel vm = new LoginViewModel(environment());
+    this.vm = new LoginViewModel.ViewModel(environment());
+    this.vm.outputs.loginSuccess().subscribe(this.loginSuccess);
 
-    final TestSubscriber<Void> loginSuccess  = new TestSubscriber<>();
-    vm.outputs.loginSuccess().subscribe(loginSuccess);
+    this.vm.inputs.email("hello@kickstarter.com");
+    this.vm.inputs.password("codeisawesome");
 
-    vm.inputs.email("hello@kickstarter.com");
-    vm.inputs.password("danisawesome");
+    this.vm.inputs.loginClick();
 
-    vm.inputs.loginClick();
-
-    loginSuccess.assertValueCount(1);
-    koalaTest.assertValues("Login");
+    this.loginSuccess.assertValueCount(1);
+    this.koalaTest.assertValues("Login");
   }
 }

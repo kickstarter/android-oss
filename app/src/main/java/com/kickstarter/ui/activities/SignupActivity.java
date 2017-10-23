@@ -29,8 +29,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresActivityViewModel(SignupViewModel.class)
-public final class SignupActivity extends BaseActivity<SignupViewModel> {
+@RequiresActivityViewModel(SignupViewModel.ViewModel.class)
+public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel> {
   @Bind(R.id.full_name) EditText nameEditText;
   @Bind(R.id.email) EditText emailEditText;
   @Bind(R.id.help_button) TextView helpButton;
@@ -70,7 +70,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(b -> SwitchCompatUtils.setCheckedWithoutAnimation(this.newsletterSwitch, b));
 
-    this.viewModel.errors.signupError()
+    this.viewModel.outputs.errorString()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(e -> ViewUtils.showDialog(this, null, e));

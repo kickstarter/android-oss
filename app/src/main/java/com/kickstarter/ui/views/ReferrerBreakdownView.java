@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -19,6 +20,7 @@ public class ReferrerBreakdownView extends View {
   private RectF outerRectangle;
   private RectF innerRectangle;
   private Paint paint;
+  private static final int innerCircleOffset = 30;
 
   public ReferrerBreakdownView(final Context context, final AttributeSet attributeSet) {
     super(context, attributeSet);
@@ -27,15 +29,15 @@ public class ReferrerBreakdownView extends View {
     this.innerRectangle = new RectF(0, 0, 0, 0);
   }
 
-  public void setCustomAngleAndColor(final Double sweepAngle) {
+  public void setCustomAngleAndColor(final @NonNull Double sweepAngle) {
     this.customSweepAngle = sweepAngle;
   }
 
-  public void setExternalAngleAndColor(final Double sweepAngle) {
+  public void setExternalAngleAndColor(final @NonNull Double sweepAngle) {
     this.externalSweepAngle = sweepAngle;
   }
 
-  public void setInternalAngleAndColor(final Double sweepAngle) {
+  public void setInternalAngleAndColor(final @NonNull Double sweepAngle) {
     this.internalSweepAngle = sweepAngle;
   }
 
@@ -53,7 +55,7 @@ public class ReferrerBreakdownView extends View {
     final float top = getY();
 
     this.outerRectangle.set(left, top, right, bottom);
-    this.innerRectangle.set(left + 30, top + 30, right - 30, bottom - 30);
+    this.innerRectangle.set(left + innerCircleOffset, top + innerCircleOffset, right - innerCircleOffset, bottom - innerCircleOffset);
 
     Float offset = 0f;
 

@@ -11,7 +11,7 @@ import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
-import com.kickstarter.ui.viewholders.CreatorDashboardReferrerBreakDownViewHolder;
+import com.kickstarter.ui.viewholders.CreatorDashboardReferrerBreakdownViewHolder;
 import com.kickstarter.ui.viewholders.CreatorDashboardReferrerStatsViewHolder;
 import com.kickstarter.ui.viewholders.CreatorDashboardRewardStatsViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -55,7 +55,7 @@ public class CreatorDashboardAdapter extends KSAdapter {
     } else if (layout == R.layout.dashboard_reward_stats_view) {
       return new CreatorDashboardRewardStatsViewHolder(view);
     } else if (layout == R.layout.dashboard_referrer_breakdown_layout) {
-      return new CreatorDashboardReferrerBreakDownViewHolder(view);
+      return new CreatorDashboardReferrerBreakdownViewHolder(view);
     } else {
       return new CreatorDashboardReferrerStatsViewHolder(view);
     }

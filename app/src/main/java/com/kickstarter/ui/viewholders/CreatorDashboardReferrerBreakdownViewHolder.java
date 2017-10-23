@@ -23,11 +23,10 @@ import butterknife.ButterKnife;
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
-public class CreatorDashboardReferrerBreakDownViewHolder extends KSViewHolder {
+public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   private final CreatorDashboardReferrerBreakdownHolderViewModel.ViewModel viewModel;
 
   protected @Bind(R.id.average_pledge_amount_text_view) TextView averagePledgeAmountTextView;
-  protected @Bind(R.id.referrer_breakdown_chart_layout) LinearLayout referrerBreakdownLayout;
   protected @Bind(R.id.amount_pledged_via_kickstarter_text_view) TextView amountPledgedViaInternalTextView;
   protected @Bind(R.id.amount_pledged_via_external_text_view) TextView amountPledgedViaExternalTextView;
   protected @Bind(R.id.amount_pledged_via_custom_text_view) TextView amountPledgedViaCustomTextView;
@@ -40,12 +39,12 @@ public class CreatorDashboardReferrerBreakDownViewHolder extends KSViewHolder {
   protected @Bind(R.id.pledged_via_custom_layout) LinearLayout pledgedViaCustomLayout;
   protected @Bind(R.id.pledged_via_external_layout) LinearLayout pledgedViaExternalLayout;
   protected @Bind(R.id.pledged_via_kickstarter_layout) LinearLayout pledgedViaInternalLayout;
-
-  @Bind(R.id.referrer_breakdown_view) ReferrerBreakdownView referrerBreakdownView;
+  protected @Bind(R.id.referrer_breakdown_chart_layout) LinearLayout referrerBreakdownLayout;
+  protected @Bind(R.id.referrer_breakdown_view) ReferrerBreakdownView referrerBreakdownView;
 
   private KSCurrency ksCurrency;
 
-  public CreatorDashboardReferrerBreakDownViewHolder(final @NonNull View view) {
+  public CreatorDashboardReferrerBreakdownViewHolder(final @NonNull View view) {
     super(view);
     ButterKnife.bind(this, view);
     this.ksCurrency = this.environment().ksCurrency();
@@ -72,11 +71,6 @@ public class CreatorDashboardReferrerBreakDownViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.percentCustomTextView::setText);
 
-    this.viewModel.outputs.customReferrerPledgedAmount()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(amount -> this.amountPledgedViaCustomTextView.setText(String.valueOf(amount)));
-
     this.viewModel.outputs.externalReferrerColor()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -101,11 +95,6 @@ public class CreatorDashboardReferrerBreakDownViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(percent -> this.referrerBreakdownView.setInternalAngleAndColor(percent * 360d));
-
-    this.viewModel.outputs.internalReferrerPercent()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(percent -> this.percentInternalTextView.setText(String.valueOf(percent * 100d)));
 
     this.viewModel.outputs.internalReferrerPercentText()
       .compose(bindToLifecycle())
@@ -149,7 +138,7 @@ public class CreatorDashboardReferrerBreakDownViewHolder extends KSViewHolder {
     this.viewModel.inputs.projectAndStatsInput(projectAndStats);
   }
 
-  private void setAmountPledgedTextViewText(final Pair<Project, Float> projectAndAmount, final TextView textview) {
+  private void setAmountPledgedTextViewText(final @NonNull Pair<Project, Float> projectAndAmount, final TextView textview) {
     final String amountString = this.ksCurrency.format(projectAndAmount.second, projectAndAmount.first, false, true, RoundingMode.DOWN);
     textview.setText(amountString);
   }

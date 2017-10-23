@@ -33,6 +33,9 @@ public interface DeepLinkViewModel {
   }
 
   interface Outputs {
+    /**
+     * Emits when we need to get {@link PackageManager} to query for activities that can open a link.
+     */
     Observable<String> requestPackageManager();
 
     /**
@@ -52,7 +55,7 @@ public interface DeepLinkViewModel {
   }
 
   final class ViewModel extends ActivityViewModel<DeepLinkActivity> implements Outputs, Inputs {
-    public ViewModel(@NonNull Environment environment) {
+    public ViewModel(@NonNull final Environment environment) {
       super(environment);
 
       final Observable<Uri> kickstarterComUri = intent()
@@ -67,11 +70,11 @@ public interface DeepLinkViewModel {
         .filter(uri -> uri.getHost().equals("emails.kickstarter.com"))
         .map(uri -> {
           try {
-            URL originalUrl = new URL(uri.toString());
-            HttpURLConnection ucon = (HttpURLConnection) originalUrl.openConnection();
+            final URL originalUrl = new URL(uri.toString());
+            final HttpURLConnection ucon = (HttpURLConnection) originalUrl.openConnection();
             ucon.connect();
             ucon.getInputStream();
-            URL redirectUrl = ucon.getURL();
+            final URL redirectUrl = ucon.getURL();
             return Uri.parse(redirectUrl.toString());
           } catch (Exception e) {
             Log.e(DeepLinkViewModel.class.toString(), e.getLocalizedMessage());
@@ -80,7 +83,7 @@ public interface DeepLinkViewModel {
         })
         .compose(Transformers.neverError());
 
-      Observable<Uri> uriFromIntent = Observable.merge(kickstarterComUri, emailUri)
+      final Observable<Uri> uriFromIntent = Observable.merge(kickstarterComUri, emailUri)
         .filter(ObjectUtils::isNotNull);
 
       uriFromIntent
@@ -102,19 +105,19 @@ public interface DeepLinkViewModel {
         .subscribe(__ -> koala.trackUserActivity());
 
 
-      Observable<Pair<PackageManager, Uri>> packageManagerAndUri =
+      final Observable<Pair<PackageManager, Uri>> packageManagerAndUri =
         Observable.combineLatest(this.packageManager, uriFromIntent, Pair::create);
 
-      Observable<List<Intent>> targetIntents = packageManagerAndUri
-        .flatMap(pm -> {
-          Uri fakeUri = Uri.parse("http://www.kickstarter.com");
-          Intent browserIntent = new Intent(Intent.ACTION_VIEW, fakeUri);
-          return Observable.from(pm.first.queryIntentActivities(browserIntent, 0))
+      final Observable<List<Intent>> targetIntents = packageManagerAndUri
+        .flatMap(pair -> {
+          final Uri fakeUri = Uri.parse("http://www.kickstarter.com");
+          final Intent browserIntent = new Intent(Intent.ACTION_VIEW, fakeUri);
+          return Observable.from(pair.first.queryIntentActivities(browserIntent, 0))
             .filter(resolveInfo -> !resolveInfo.activityInfo.packageName.contains("com.kickstarter"))
             .map(resolveInfo -> {
-              Intent intent = new Intent(Intent.ACTION_VIEW, pm.second);
+              final Intent intent = new Intent(Intent.ACTION_VIEW, pair.second);
               intent.setPackage(resolveInfo.activityInfo.packageName);
-              intent.setData(pm.second);
+              intent.setData(pair.second);
               return intent;
             })
             .toList();
@@ -142,7 +145,7 @@ public interface DeepLinkViewModel {
     public final Outputs outputs = this;
 
     @Override
-    public void packageManager(PackageManager packageManager) {
+    public void packageManager(final PackageManager packageManager) {
       this.packageManager.onNext(packageManager);
     }
 

@@ -21,7 +21,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 @RequiresActivityViewModel(DeepLinkViewModel.ViewModel.class)
 public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewModel> {
   @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     this.viewModel.outputs.startDiscoveryActivity()
@@ -50,11 +50,11 @@ public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewModel> 
     finish();
   }
 
-  private void startProjectActivity(String url) {
-    Uri uri = Uri.parse(url);
+  private void startProjectActivity(final String url) {
+    final Uri uri = Uri.parse(url);
     final Intent projectIntent = new Intent(this, ProjectActivity.class)
       .setData(uri);
-    String ref = uri.getQueryParameter("ref");
+    final String ref = uri.getQueryParameter("ref");
     if (ref != null) {
       projectIntent.putExtra(IntentKey.REF_TAG, RefTag.from(ref));
     }
@@ -62,11 +62,8 @@ public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewModel> 
     finish();
   }
 
-  private void startBrowser(List<Intent> targetIntents) {
-    // Now present the user with the list of apps we have found (this chooser
-    // is smart enough to just open a single option directly, so we don't need
-    // to handle that case).
-    Intent chooserIntent = Intent.createChooser(targetIntents.remove(0), "");
+  private void startBrowser(final List<Intent> targetIntents) {
+    final Intent chooserIntent = Intent.createChooser(targetIntents.remove(0), "");
     chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,
       targetIntents.toArray(new Parcelable[targetIntents.size()]));
     startActivity(chooserIntent);
@@ -74,7 +71,7 @@ public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewModel> 
     finish();
   }
 
-  private void inputPackageManager(String url) {
+  private void inputPackageManager(final String url) {
     if (!TextUtils.isEmpty(url)) {
       this.viewModel.inputs.packageManager(getPackageManager());
     }

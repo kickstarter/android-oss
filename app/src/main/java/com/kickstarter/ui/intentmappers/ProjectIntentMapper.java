@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
 import rx.Observable;
 
 public final class ProjectIntentMapper {
+  public static final String SCHEME_KSR = "ksr";
+  public static final String SCHEME_HTTPS = "https";
   private ProjectIntentMapper() {}
 
   // /projects/param-1/param-2*
@@ -90,8 +92,8 @@ public final class ProjectIntentMapper {
       return null;
     }
 
-    String scheme = uri.getScheme();
-    if (!(scheme.equals("ksr") || scheme.equals("https"))) {
+    final String scheme = uri.getScheme();
+    if (!(scheme.equals(SCHEME_KSR) || scheme.equals(SCHEME_HTTPS))) {
       return null;
     }
 

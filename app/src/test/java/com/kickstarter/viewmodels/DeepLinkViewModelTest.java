@@ -8,7 +8,6 @@ import com.kickstarter.libs.KoalaEvent;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.observers.TestSubscriber;
@@ -32,13 +31,12 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
   public void testNonDeepLink_startsBrowser() {
     setUpEnvironment();
 
-    String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap/comments";
-    this.vm.intent(uriIntent(url));
+    final String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap/comments";
+    this.vm.intent(intentWithData(url));
     this.vm.packageManager(application().getPackageManager());
 
-    // Back button is gone if navigating from non-backer modal view.
     this.requestPackageManager.assertValue(url);
-    this.startBrowser.assertValue(new ArrayList<>());
+    this.startBrowser.assertValueCount(1);
     this.startDiscoveryActivity.assertNoValues();
     this.startProjectActivity.assertNoValues();
     this.koalaTest.assertNoValues();
@@ -48,12 +46,12 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
   public void testProjectDeepLink_startsProjectActivity() {
     setUpEnvironment();
 
-    String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap";
-    this.vm.intent(uriIntent(url));
+    final String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap";
+    this.vm.intent(intentWithData(url));
 
-    // Back button is gone if navigating from non-backer modal view.
     this.startProjectActivity.assertValue(url);
     this.startBrowser.assertNoValues();
+    this.requestPackageManager.assertNoValues();
     this.startDiscoveryActivity.assertNoValues();
     this.koalaTest.assertValues(KoalaEvent.CONTINUE_USER_ACTIVITY, KoalaEvent.OPENED_DEEP_LINK);
   }
@@ -62,17 +60,17 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
   public void testDiscoveryDeepLink_startsDiscoveryActivity() {
     setUpEnvironment();
 
-    String url = "https://www.kickstarter.com/projects";
-    this.vm.intent(uriIntent(url));
+    final String url = "https://www.kickstarter.com/projects";
+    this.vm.intent(intentWithData(url));
 
-    // Back button is gone if navigating from non-backer modal view.
     this.startDiscoveryActivity.assertValueCount(1);
     this.startBrowser.assertNoValues();
+    this.requestPackageManager.assertNoValues();
     this.startProjectActivity.assertNoValues();
     this.koalaTest.assertValues(KoalaEvent.CONTINUE_USER_ACTIVITY, KoalaEvent.OPENED_DEEP_LINK);
   }
 
-  private Intent uriIntent(String url) {
+  private Intent intentWithData(final String url) {
     return new Intent()
       .setData(Uri.parse(url));
   }

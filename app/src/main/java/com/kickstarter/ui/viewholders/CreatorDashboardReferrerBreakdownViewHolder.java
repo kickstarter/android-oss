@@ -1,8 +1,8 @@
 package com.kickstarter.ui.viewholders;
 
-import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
@@ -61,7 +61,7 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     this.viewModel.outputs.customReferrerColor()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(color -> setDrawableColor(this.percentCustomCircleTextView, color));
+      .subscribe(color -> DrawableCompat.setTint(this.percentCustomCircleTextView.getDrawable(), color));
 
     this.viewModel.outputs.customReferrerPercent()
       .compose(bindToLifecycle())
@@ -76,7 +76,7 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     this.viewModel.outputs.externalReferrerColor()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(color -> setDrawableColor(this.percentExternalCircleTextView, color));
+      .subscribe(color -> DrawableCompat.setTint(this.percentExternalCircleTextView.getDrawable(), color));
 
     this.viewModel.outputs.externalReferrerPercent()
       .compose(bindToLifecycle())
@@ -91,7 +91,7 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     this.viewModel.outputs.internalReferrerColor()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(color -> setDrawableColor(this.percentInternalCircleTextView, color));
+      .subscribe(color -> DrawableCompat.setTint(this.percentInternalCircleTextView.getDrawable(), color));
 
     this.viewModel.outputs.internalReferrerPercent()
       .compose(bindToLifecycle())
@@ -148,10 +148,5 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   private void setAveragePledgeTextViewText(final @NonNull Pair<Project, Integer> projectAndAveragePledge) {
     final String amountString = this.ksCurrency.format(projectAndAveragePledge.second, projectAndAveragePledge.first, true, true, RoundingMode.DOWN);
     this.averagePledgeAmountTextView.setText(amountString);
-  }
-
-  private void setDrawableColor(final @NonNull ImageView view, final @NonNull Integer color) {
-    final GradientDrawable bgShape = (GradientDrawable) view.getBackground();
-    bgShape.setColor(color);
   }
 }

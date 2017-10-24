@@ -38,7 +38,7 @@
         android:orientation="horizontal"
         android:layout_weight="1">
 
-        <TextView
+        <ImageView
           android:id="@+id/percent_via_kickstarter_circle_text_view"
           android:layout_width="6dp"
           android:layout_height="6dp"
@@ -81,7 +81,7 @@
         android:orientation="horizontal"
         android:layout_weight="1">
 
-        <TextView
+        <ImageView
           android:id="@+id/percent_via_external_circle_text_view"
           android:layout_width="6dp"
           android:layout_height="6dp"
@@ -125,7 +125,7 @@
         android:layout_weight="1">
 
 
-        <TextView
+        <ImageView
           android:id="@+id/percent_via_custom_circle_text_view"
           android:layout_width="6dp"
           android:layout_height="6dp"

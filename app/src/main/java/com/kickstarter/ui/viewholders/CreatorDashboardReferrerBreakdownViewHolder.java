@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,12 +32,12 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   protected @Bind(R.id.amount_pledged_via_kickstarter_text_view) TextView amountPledgedViaInternalTextView;
   protected @Bind(R.id.amount_pledged_via_external_text_view) TextView amountPledgedViaExternalTextView;
   protected @Bind(R.id.amount_pledged_via_custom_text_view) TextView amountPledgedViaCustomTextView;
-  protected @Bind(R.id.percent_via_custom_circle_text_view) TextView percentCustomCircleTextView;
+  protected @Bind(R.id.percent_via_custom_circle_text_view) ImageView percentCustomCircleTextView;
   protected @Bind(R.id.percent_via_custom_text_view) TextView percentCustomTextView;
   protected @Bind(R.id.percent_via_external_text_view) TextView percentExternalTextView;
-  protected @Bind(R.id.percent_via_external_circle_text_view) TextView percentExternalCircleTextView;
+  protected @Bind(R.id.percent_via_external_circle_text_view) ImageView percentExternalCircleTextView;
   protected @Bind(R.id.percent_via_kickstarter_text_view) TextView percentInternalTextView;
-  protected @Bind(R.id.percent_via_kickstarter_circle_text_view) TextView percentInternalCircleTextView;
+  protected @Bind(R.id.percent_via_kickstarter_circle_text_view) ImageView percentInternalCircleTextView;
   protected @Bind(R.id.pledged_via_custom_layout) LinearLayout pledgedViaCustomLayout;
   protected @Bind(R.id.pledged_via_external_layout) LinearLayout pledgedViaExternalLayout;
   protected @Bind(R.id.pledged_via_kickstarter_layout) LinearLayout pledgedViaInternalLayout;
@@ -61,7 +62,6 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(color -> setDrawableColor(this.percentCustomCircleTextView, color));
-
 
     this.viewModel.outputs.customReferrerPercent()
       .compose(bindToLifecycle())
@@ -150,7 +150,7 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     this.averagePledgeAmountTextView.setText(amountString);
   }
 
-  private void setDrawableColor(final @NonNull TextView view, final @NonNull Integer color) {
+  private void setDrawableColor(final @NonNull ImageView view, final @NonNull Integer color) {
     final GradientDrawable bgShape = (GradientDrawable) view.getBackground();
     bgShape.setColor(color);
   }

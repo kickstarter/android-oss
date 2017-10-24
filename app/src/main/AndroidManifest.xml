@@ -440,17 +440,6 @@
           android:scheme="https"
           android:pathPrefix="/projects" />
       </intent-filter>
-
-      <!--<intent-filter-->
-        <!--android:autoVerify="true"-->
-        <!--tools:ignore="UnusedAttribute">-->
-        <!--<action android:name="android.intent.action.VIEW" />-->
-        <!--<category android:name="android.intent.category.DEFAULT" />-->
-        <!--<category android:name="android.intent.category.BROWSABLE" />-->
-        <!--<data-->
-          <!--android:host="emails.kickstarter.com"-->
-          <!--android:scheme="https" />-->
-      <!--</intent-filter>-->
     </activity>
 
     <!-- SERVICES, PROVIDERS, RECEIVERS -->

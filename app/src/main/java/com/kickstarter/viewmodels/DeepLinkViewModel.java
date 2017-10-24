@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -14,12 +13,9 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.ui.activities.DeepLinkActivity;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
 import rx.Observable;
-import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -58,33 +54,10 @@ public interface DeepLinkViewModel {
     public ViewModel(@NonNull final Environment environment) {
       super(environment);
 
-      final Observable<Uri> kickstarterComUri = intent()
+      final Observable<Uri> uriFromIntent = intent()
         .map(Intent::getData)
         .filter(ObjectUtils::isNotNull)
         .ofType(Uri.class);
-
-      final Observable<Uri> emailUri = intent()
-        .observeOn(Schedulers.io())
-        .map(Intent::getData)
-        .filter(ObjectUtils::isNotNull)
-        .filter(uri -> uri.getHost().equals("emails.kickstarter.com"))
-        .map(uri -> {
-          try {
-            final URL originalUrl = new URL(uri.toString());
-            final HttpURLConnection ucon = (HttpURLConnection) originalUrl.openConnection();
-            ucon.connect();
-            ucon.getInputStream();
-            final URL redirectUrl = ucon.getURL();
-            return Uri.parse(redirectUrl.toString());
-          } catch (Exception e) {
-            Log.e(DeepLinkViewModel.class.toString(), e.getLocalizedMessage());
-            throw new RuntimeException(e);
-          }
-        })
-        .compose(Transformers.neverError());
-
-      final Observable<Uri> uriFromIntent = Observable.merge(kickstarterComUri, emailUri)
-        .filter(ObjectUtils::isNotNull);
 
       uriFromIntent
         .filter(uri -> uri.getLastPathSegment().equals("projects"))

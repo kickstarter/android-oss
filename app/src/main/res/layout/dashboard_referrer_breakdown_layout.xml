@@ -40,19 +40,17 @@
 
         <TextView
           android:id="@+id/percent_via_kickstarter_circle_text_view"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:gravity="top"
-          android:textSize="@dimen/title_1"
+          android:layout_width="6dp"
+          android:layout_height="6dp"
           android:layout_marginEnd="1dp"
-          android:text="•"/>
+          android:layout_gravity="center"
+          android:background="@drawable/creator_dashboard_circle"/>
 
         <TextView
           android:id="@+id/percent_via_kickstarter_text_view"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
-          android:gravity="top"
-          android:layout_marginTop="8dp"
+          android:gravity="center"
           tools:text="75%" />
 
         <LinearLayout
@@ -62,9 +60,10 @@
           android:paddingStart="@dimen/grid_2">
 
           <TextView
+            android:id="@+id/amount_pledged_via_kickstarter_text_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/amount_pledged_via_kickstarter_text_view"/>
+            tools:text="$1,000"/>
 
           <TextView
             android:layout_width="wrap_content"
@@ -84,20 +83,18 @@
 
         <TextView
           android:id="@+id/percent_via_external_circle_text_view"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:gravity="top"
-          android:textSize="@dimen/title_1"
+          android:layout_width="6dp"
+          android:layout_height="6dp"
+          android:layout_gravity="center"
           android:layout_marginEnd="1dp"
-          android:text="•"/>
+          android:background="@drawable/creator_dashboard_circle"/>
 
         <TextView
           android:id="@+id/percent_via_external_text_view"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
-          android:layout_marginTop="8dp"
           tools:text="75%"
-          android:gravity="top" />
+          android:gravity="center" />
 
         <LinearLayout
           android:layout_width="match_parent"
@@ -106,9 +103,10 @@
           android:paddingStart="@dimen/grid_2">
 
           <TextView
+            android:id="@+id/amount_pledged_via_external_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/amount_pledged_via_external_text_view"/>
+            tools:text="$22" />
 
           <TextView
             android:layout_width="wrap_content"
@@ -129,20 +127,18 @@
 
         <TextView
           android:id="@+id/percent_via_custom_circle_text_view"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:gravity="top"
-          android:textSize="@dimen/title_1"
+          android:layout_width="6dp"
+          android:layout_height="6dp"
           android:layout_marginEnd="1dp"
-          android:text="•"/>
+          android:layout_gravity="center"
+          android:background="@drawable/creator_dashboard_circle"/>
 
         <TextView
           android:id="@+id/percent_via_custom_text_view"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
-          android:layout_marginTop="8dp"
           tools:text="75%"
-          android:gravity="top" />
+          android:gravity="center" />
 
         <LinearLayout
           android:layout_width="match_parent"
@@ -151,9 +147,10 @@
           android:paddingStart="@dimen/grid_2">
 
           <TextView
+            android:id="@+id/amount_pledged_via_custom_text_view"
+            tools:text="$22,000"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/amount_pledged_via_custom_text_view"/>
+            android:layout_height="wrap_content" />
 
           <TextView
             android:layout_width="wrap_content"

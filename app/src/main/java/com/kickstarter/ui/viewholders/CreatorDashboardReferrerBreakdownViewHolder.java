@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
@@ -59,7 +60,8 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     this.viewModel.outputs.customReferrerColor()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this.percentCustomCircleTextView::setTextColor);
+      .subscribe(color -> setDrawableColor(this.percentCustomCircleTextView, color));
+
 
     this.viewModel.outputs.customReferrerPercent()
       .compose(bindToLifecycle())
@@ -74,7 +76,7 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     this.viewModel.outputs.externalReferrerColor()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this.percentExternalCircleTextView::setTextColor);
+      .subscribe(color -> setDrawableColor(this.percentExternalCircleTextView, color));
 
     this.viewModel.outputs.externalReferrerPercent()
       .compose(bindToLifecycle())
@@ -89,7 +91,7 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     this.viewModel.outputs.internalReferrerColor()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this.percentInternalCircleTextView::setTextColor);
+      .subscribe(color -> setDrawableColor(this.percentInternalCircleTextView, color));
 
     this.viewModel.outputs.internalReferrerPercent()
       .compose(bindToLifecycle())
@@ -146,5 +148,10 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   private void setAveragePledgeTextViewText(final @NonNull Pair<Project, Integer> projectAndAveragePledge) {
     final String amountString = this.ksCurrency.format(projectAndAveragePledge.second, projectAndAveragePledge.first, true, true, RoundingMode.DOWN);
     this.averagePledgeAmountTextView.setText(amountString);
+  }
+
+  private void setDrawableColor(final @NonNull TextView view, final @NonNull Integer color) {
+    final GradientDrawable bgShape = (GradientDrawable) view.getBackground();
+    bgShape.setColor(color);
   }
 }

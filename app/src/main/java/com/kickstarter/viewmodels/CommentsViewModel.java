@@ -22,7 +22,6 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.CommentsActivity;
 import com.kickstarter.ui.adapters.data.CommentsData;
-import com.kickstarter.ui.intentmappers.ProjectIntentMapper;
 import com.kickstarter.viewmodels.inputs.CommentsViewModelInputs;
 import com.kickstarter.viewmodels.outputs.CommentsViewModelOutputs;
 
@@ -66,11 +65,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       })
       .filter(ObjectUtils::isNotNull);
 
-    final Observable<Project> uriProject = intent()
-      .flatMap(i -> ProjectIntentMapper.project(i, this.client))
-      .ofType(Project.class);
-
-    final Observable<Project> intentExtraProject = projectOrUpdate
+    final Observable<Project> initialProject = projectOrUpdate
       .flatMap(pOrU ->
         pOrU.either(
           Observable::just,
@@ -78,11 +73,6 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
         )
       )
       .share();
-
-    final Observable<Project> initialProject = Observable.merge(
-      uriProject,
-      intentExtraProject
-    );
 
     final Observable<Project> project = Observable.merge(
       initialProject,

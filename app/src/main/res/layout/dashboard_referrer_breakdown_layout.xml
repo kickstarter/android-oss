@@ -40,7 +40,7 @@
 
         <ImageView
           android:id="@+id/percent_via_kickstarter_circle_text_view"
-          android:contentDescription="@string/dashboard_graphs_referrers_pledged_via_kickstarter"
+          tools:ignore="ContentDescription"
           android:layout_width="6dp"
           android:layout_height="6dp"
           android:layout_marginEnd="1dp"
@@ -84,7 +84,7 @@
 
         <ImageView
           android:id="@+id/percent_via_external_circle_text_view"
-          android:contentDescription="@string/dashboard_graphs_referrers_pledged_via_external"
+          tools:ignore="ContentDescription"
           android:layout_width="6dp"
           android:layout_height="6dp"
           android:layout_gravity="center"
@@ -129,7 +129,7 @@
 
         <ImageView
           android:id="@+id/percent_via_custom_circle_text_view"
-          android:contentDescription="@string/dashboard_graphs_referrers_pledged_via_custom"
+          tools:ignore="ContentDescription"
           android:layout_width="6dp"
           android:layout_height="6dp"
           android:layout_marginEnd="1dp"

@@ -90,7 +90,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
       .subscribe(this.projectList);
 
     this.showActivityFeed = this.activityClick;
-    this.showActivityUpdate = this.activityUpdateClick;
+    this.startUpdateActivity = this.activityUpdateClick;
     this.showLoginTout = this.discoveryOnboardingLoginToutClick;
 
     Observable.merge(
@@ -140,7 +140,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
         );
       });
 
-    this.showActivityUpdate
+    this.startUpdateActivity
       .map(Activity::project)
       .filter(ObjectUtils::isNotNull)
       .compose(bindToLifecycle())
@@ -202,10 +202,10 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
   private final BehaviorSubject<Activity> activity = BehaviorSubject.create();
   private final BehaviorSubject<List<Project>> projectList = BehaviorSubject.create();
   private final Observable<Boolean> showActivityFeed;
-  private final Observable<Activity> showActivityUpdate;
   private final Observable<Boolean> showLoginTout;
   private final PublishSubject<Pair<Project, RefTag>> showProject = PublishSubject.create();
   private final BehaviorSubject<Boolean> shouldShowOnboardingView = BehaviorSubject.create();
+  private final Observable<Activity> startUpdateActivity;
 
   public final DiscoveryFragmentViewModelInputs inputs = this;
   public final DiscoveryFragmentViewModelOutputs outputs = this;
@@ -259,9 +259,6 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
   @Override public @NonNull Observable<Boolean> showActivityFeed() {
     return this.showActivityFeed;
   }
-  @Override public @NonNull Observable<Activity> showActivityUpdate() {
-    return this.showActivityUpdate;
-  }
   @Override public @NonNull Observable<Boolean> showLoginTout() {
     return this.showLoginTout;
   }
@@ -270,5 +267,8 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
   }
   @Override public @NonNull Observable<Boolean> shouldShowOnboardingView() {
     return this.shouldShowOnboardingView;
+  }
+  @Override public @NonNull Observable<Activity> startUpdateActivity() {
+    return this.startUpdateActivity;
   }
 }

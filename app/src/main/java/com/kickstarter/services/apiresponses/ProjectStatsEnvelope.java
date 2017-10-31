@@ -116,10 +116,10 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
       switch (referrerType().toLowerCase(Locale.getDefault())) {
         case "campaign":
           return ReferrerType.CAMPAIGN;
-        case "domain":
-          return ReferrerType.DOMAIN;
         case "custom":
           return ReferrerType.CUSTOM;
+        case "domain":
+          return ReferrerType.DOMAIN;
         case "external":
           return ReferrerType.EXTERNAL;
         case "kickstarter":

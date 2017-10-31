@@ -11,7 +11,7 @@ import android.view.View;
 
 import com.kickstarter.libs.ReferrerColor;
 
-public class ReferrerBreakdownView extends View {
+public final class ReferrerBreakdownView extends View {
 
   public Canvas canvas;
   private Double customSweepAngle;
@@ -22,7 +22,7 @@ public class ReferrerBreakdownView extends View {
   private Paint paint;
   private static final int innerCircleOffset = 30;
 
-  public ReferrerBreakdownView(final Context context, final AttributeSet attributeSet) {
+  public ReferrerBreakdownView(final @NonNull Context context, final @NonNull AttributeSet attributeSet) {
     super(context, attributeSet);
     this.paint = new Paint();
     this.outerRectangle = new RectF(0, 0, 0, 0);
@@ -42,7 +42,7 @@ public class ReferrerBreakdownView extends View {
   }
 
   @Override
-  protected void onDraw(final Canvas canvas) {
+  protected void onDraw(final @NonNull Canvas canvas) {
     super.onDraw(canvas);
     this.canvas = canvas;
 

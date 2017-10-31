@@ -28,10 +28,24 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testUpdateViewModel_ExternalLinkActivated() {
-    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
+    final Project project = ProjectFactory.project().toBuilder().slug("meatballs").build();
+    final MockApiClient client = new MockApiClient() {
+      @Override public @NonNull Observable<Project> fetchProject(@NonNull String param) {
+        return Observable.just(project);
+      }
+    };
 
-    // Start the intent with a project and update.
-    vm.intent(this.defaultIntent);
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(
+      environment().toBuilder().apiClient(client).build()
+    );
+
+    // Start the intent with a project param and update.
+    vm.intent(
+      new Intent()
+        .putExtra(IntentKey.PROJECT_PARAM, "meatballs")
+        .putExtra(IntentKey.UPDATE, UpdateFactory.update())
+    );
+
     vm.inputs.externalLinkActivated();
 
     this.koalaTest.assertValues(KoalaEvent.OPENED_EXTERNAL_LINK);

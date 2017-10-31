@@ -73,8 +73,8 @@ public interface UpdateViewModel {
         .take(1);
 
       final Observable<Project> project = intent()
-        .map(i -> ProjectIntentMapper.project(i, this.client))
-        .ofType(Project.class);
+        .flatMap(i -> ProjectIntentMapper.project(i, this.client))
+        .share();
 
       final Observable<String> initialUpdateUrl = initialUpdate
         .map(u -> u.urls().web().update());

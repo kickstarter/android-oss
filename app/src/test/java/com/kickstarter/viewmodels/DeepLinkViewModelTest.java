@@ -14,10 +14,10 @@ import rx.observers.TestSubscriber;
 
 public class DeepLinkViewModelTest extends KSRobolectricTestCase {
   private DeepLinkViewModel.ViewModel vm;
-  private final TestSubscriber<String> requestPackageManager = new TestSubscriber<>();
+  private final TestSubscriber<Void> requestPackageManager = new TestSubscriber<>();
   private final TestSubscriber<List<Intent>> startBrowser = new TestSubscriber<>();
   private final TestSubscriber<Void> startDiscoveryActivity = new TestSubscriber<>();
-  private final TestSubscriber<String> startProjectActivity = new TestSubscriber<>();
+  private final TestSubscriber<Uri> startProjectActivity = new TestSubscriber<>();
 
   protected void setUpEnvironment() {
     this.vm = new DeepLinkViewModel.ViewModel(environment());
@@ -35,7 +35,7 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(intentWithData(url));
     this.vm.packageManager(application().getPackageManager());
 
-    this.requestPackageManager.assertValue(url);
+    this.requestPackageManager.assertValueCount(1);
     this.startBrowser.assertValueCount(1);
     this.startDiscoveryActivity.assertNoValues();
     this.startProjectActivity.assertNoValues();
@@ -49,7 +49,7 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     final String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap";
     this.vm.intent(intentWithData(url));
 
-    this.startProjectActivity.assertValue(url);
+    this.startProjectActivity.assertValue(Uri.parse(url));
     this.startBrowser.assertNoValues();
     this.requestPackageManager.assertNoValues();
     this.startDiscoveryActivity.assertNoValues();

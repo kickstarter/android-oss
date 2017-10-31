@@ -4,12 +4,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.ui.activities.DeepLinkActivity;
 
@@ -18,6 +17,8 @@ import java.util.List;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 
 public interface DeepLinkViewModel {
 
@@ -32,7 +33,7 @@ public interface DeepLinkViewModel {
     /**
      * Emits when we need to get {@link PackageManager} to query for activities that can open a link.
      */
-    Observable<String> requestPackageManager();
+    Observable<Void> requestPackageManager();
 
     /**
      * Emits when we should start an external browser because we don't want to deep link.
@@ -47,42 +48,41 @@ public interface DeepLinkViewModel {
     /**
      * Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}.
      */
-    Observable<String> startProjectActivity();
+    Observable<Uri> startProjectActivity();
   }
 
   final class ViewModel extends ActivityViewModel<DeepLinkActivity> implements Outputs, Inputs {
-    public ViewModel(@NonNull final Environment environment) {
+    public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       final Observable<Uri> uriFromIntent = intent()
         .map(Intent::getData)
-        .filter(ObjectUtils::isNotNull)
         .ofType(Uri.class);
 
       uriFromIntent
         .filter(uri -> uri.getLastPathSegment().equals("projects"))
-        .compose(Transformers.ignoreValues())
+        .compose(ignoreValues())
         .compose(bindToLifecycle())
         .subscribe(this.startDiscoveryActivity::onNext);
 
       this.startDiscoveryActivity
-        .subscribe(__ -> koala.trackUserActivity());
+        .subscribe(__ -> koala.trackContinueUserActivityAndOpenedDeepLink());
 
       uriFromIntent
         .filter(uri -> KSUri.isProjectUri(uri, uri.toString()))
-        .map(Uri::toString)
         .compose(bindToLifecycle())
         .subscribe(this.startProjectActivity::onNext);
 
       this.startProjectActivity
-        .subscribe(__ -> koala.trackUserActivity());
-
+        .subscribe(__ -> koala.trackContinueUserActivityAndOpenedDeepLink());
 
       final Observable<Pair<PackageManager, Uri>> packageManagerAndUri =
         Observable.combineLatest(this.packageManager, uriFromIntent, Pair::create);
 
       final Observable<List<Intent>> targetIntents = packageManagerAndUri
         .flatMap(pair -> {
+          /* We use a fake Uri because in Android 6.0 and above,
+          if a link is domain verified, only that app is returned. */
           final Uri fakeUri = Uri.parse("http://www.kickstarter.com");
           final Intent browserIntent = new Intent(Intent.ACTION_VIEW, fakeUri);
           return Observable.from(pair.first.queryIntentActivities(browserIntent, 0))
@@ -103,39 +103,36 @@ public interface DeepLinkViewModel {
       uriFromIntent
         .filter(uri -> !uri.getLastPathSegment().equals("projects") && !KSUri.isProjectUri(uri, uri.toString()))
         .map(Uri::toString)
+        .filter(url -> !TextUtils.isEmpty(url))
+        .compose(ignoreValues())
         .compose(bindToLifecycle())
         .subscribe(this.requestPackageManager::onNext);
-
     }
+
     private final PublishSubject<PackageManager> packageManager = PublishSubject.create();
 
-    private final BehaviorSubject<String> requestPackageManager = BehaviorSubject.create();
+    private final BehaviorSubject<Void> requestPackageManager = BehaviorSubject.create();
     private final BehaviorSubject<List<Intent>> startBrowser = BehaviorSubject.create();
     private final BehaviorSubject<Void> startDiscoveryActivity = BehaviorSubject.create();
-    private final BehaviorSubject<String> startProjectActivity = BehaviorSubject.create();
+    private final BehaviorSubject<Uri> startProjectActivity = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override
-    public void packageManager(final PackageManager packageManager) {
+    @Override public void packageManager(final PackageManager packageManager) {
       this.packageManager.onNext(packageManager);
     }
 
-    @Override
-    public Observable<String> requestPackageManager() {
+    @Override public @NonNull Observable<Void> requestPackageManager() {
       return this.requestPackageManager;
     }
-    @Override
-    public Observable<List<Intent>> startBrowser() {
+    @Override public @NonNull Observable<List<Intent>> startBrowser() {
       return this.startBrowser;
     }
-    @Override
-    public Observable<Void> startDiscoveryActivity() {
+    @Override public @NonNull Observable<Void> startDiscoveryActivity() {
       return this.startDiscoveryActivity;
     }
-    @Override
-    public Observable<String> startProjectActivity() {
+    @Override public @NonNull Observable<Uri> startProjectActivity() {
       return this.startProjectActivity;
     }
   }

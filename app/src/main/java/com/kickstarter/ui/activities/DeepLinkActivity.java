@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RefTag;
@@ -19,9 +19,9 @@ import java.util.List;
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
 @RequiresActivityViewModel(DeepLinkViewModel.ViewModel.class)
-public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewModel> {
+final public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewModel> {
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     this.viewModel.outputs.startDiscoveryActivity()
@@ -42,7 +42,7 @@ public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewModel> 
     this.viewModel.outputs.requestPackageManager()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::inputPackageManager);
+      .subscribe(__ -> inputPackageManager());
   }
 
   private void startDiscoveryActivity() {
@@ -50,8 +50,7 @@ public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewModel> 
     finish();
   }
 
-  private void startProjectActivity(final String url) {
-    final Uri uri = Uri.parse(url);
+  private void startProjectActivity(@NonNull Uri uri) {
     final Intent projectIntent = new Intent(this, ProjectActivity.class)
       .setData(uri);
     final String ref = uri.getQueryParameter("ref");
@@ -62,18 +61,19 @@ public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewModel> 
     finish();
   }
 
-  private void startBrowser(final List<Intent> targetIntents) {
-    final Intent chooserIntent = Intent.createChooser(targetIntents.remove(0), "");
-    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,
-      targetIntents.toArray(new Parcelable[targetIntents.size()]));
-    startActivity(chooserIntent);
-
+  private void startBrowser(final @NonNull List<Intent> targetIntents) {
+    if (!targetIntents.isEmpty()) {
+      /* We need to remove the first intent so it's not duplicated
+      when we add the EXTRA_INITIAL_INTENTS intents. */
+      final Intent chooserIntent = Intent.createChooser(targetIntents.remove(0), "");
+      chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,
+        targetIntents.toArray(new Parcelable[targetIntents.size()]));
+      startActivity(chooserIntent);
+    }
     finish();
   }
 
-  private void inputPackageManager(final String url) {
-    if (!TextUtils.isEmpty(url)) {
-      this.viewModel.inputs.packageManager(getPackageManager());
-    }
+  private void inputPackageManager() {
+    this.viewModel.inputs.packageManager(getPackageManager());
   }
 }

@@ -50,7 +50,7 @@ final public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewM
     finish();
   }
 
-  private void startProjectActivity(@NonNull Uri uri) {
+  private void startProjectActivity(final @NonNull Uri uri) {
     final Intent projectIntent = new Intent(this, ProjectActivity.class)
       .setData(uri);
     final String ref = uri.getQueryParameter("ref");

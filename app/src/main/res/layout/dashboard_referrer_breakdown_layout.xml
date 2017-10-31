@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:id="@+id/referrer_breakdown_section_layout">
+
+  <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/dashboard_graphs_referrers_title_referrers"
+    style="@style/Headline"
+    android:paddingStart="@dimen/grid_3" />
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/referrer_breakdown_chart_layout">
+
+    <com.kickstarter.ui.views.ReferrerBreakdownView
+      android:id="@+id/referrer_breakdown_view"
+      android:layout_margin="@dimen/grid_2"
+      android:layout_width="@dimen/grid_21"
+      android:layout_height="@dimen/grid_21" />
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_margin="@dimen/grid_2"
+      android:orientation="vertical">
+
+      <LinearLayout
+        android:id="@+id/pledged_via_kickstarter_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+
+        <ImageView
+          android:id="@+id/percent_via_kickstarter_circle_text_view"
+          tools:ignore="ContentDescription"
+          android:layout_width="6dp"
+          android:layout_height="6dp"
+          android:layout_marginEnd="1dp"
+          android:layout_gravity="center"
+          android:src="@drawable/creator_dashboard_circle"/>
+
+        <TextView
+          android:id="@+id/percent_via_kickstarter_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:gravity="center"
+          tools:text="75%" />
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:paddingStart="@dimen/grid_2">
+
+          <TextView
+            android:id="@+id/amount_pledged_via_kickstarter_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            tools:text="$1,000"/>
+
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/dashboard_graphs_referrers_pledged_via_kickstarter"/>
+
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/pledged_via_external_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+
+        <ImageView
+          android:id="@+id/percent_via_external_circle_text_view"
+          tools:ignore="ContentDescription"
+          android:layout_width="6dp"
+          android:layout_height="6dp"
+          android:layout_gravity="center"
+          android:layout_marginEnd="1dp"
+          android:src="@drawable/creator_dashboard_circle"/>
+
+        <TextView
+          android:id="@+id/percent_via_external_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          tools:text="75%"
+          android:gravity="center" />
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:paddingStart="@dimen/grid_2">
+
+          <TextView
+            android:id="@+id/amount_pledged_via_external_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="$22" />
+
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_graphs_referrers_pledged_via_external"/>
+
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/pledged_via_custom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+
+
+        <ImageView
+          android:id="@+id/percent_via_custom_circle_text_view"
+          tools:ignore="ContentDescription"
+          android:layout_width="6dp"
+          android:layout_height="6dp"
+          android:layout_marginEnd="1dp"
+          android:layout_gravity="center"
+          android:src="@drawable/creator_dashboard_circle"/>
+
+        <TextView
+          android:id="@+id/percent_via_custom_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          tools:text="75%"
+          android:gravity="center" />
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:paddingStart="@dimen/grid_2">
+
+          <TextView
+            android:id="@+id/amount_pledged_via_custom_text_view"
+            tools:text="$22,000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_graphs_referrers_pledged_via_custom"/>
+
+        </LinearLayout>
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/medium_gray"
+    android:paddingTop="@dimen/grid_2"
+    android:paddingBottom="@dimen/grid_2"
+    android:gravity="center"
+    style="Subheadline"
+    tools:text="Average pledge amount $54" >
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:gravity="right"
+      android:paddingEnd="@dimen/grid_1"
+      android:paddingTop="@dimen/grid_1"
+      style="Subheadline"
+      tools:text="Average pledge amount"
+      android:text="@string/dashboard_graphs_referrers_average_pledge_amount"/>
+
+    <TextView
+      android:id="@+id/average_pledge_amount_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:gravity="left"
+      android:paddingStart="@dimen/grid_1"
+      style="@style/Title2"
+      tools:text="$54" />
+
+  </LinearLayout>
+
+</LinearLayout>

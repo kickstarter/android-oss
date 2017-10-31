@@ -48,8 +48,8 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
 
     final private class OrderByBackersReferrerStatsComparator implements Comparator<ProjectStatsEnvelope.ReferrerStats> {
       @Override
-      public int compare(final ProjectStatsEnvelope.ReferrerStats o1, final ProjectStatsEnvelope.ReferrerStats o2) {
-        return new ComparatorUtils.DescendingOrderIntegerComparator().compare(o1.pledged(), o2.pledged());
+      public int compare(final @NonNull ProjectStatsEnvelope.ReferrerStats o1, final @NonNull ProjectStatsEnvelope.ReferrerStats o2) {
+        return new ComparatorUtils.DescendingOrderFloatComparator().compare(o1.pledged(), o2.pledged());
       }
     }
 

@@ -30,7 +30,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
   public void testUpdateViewModel_ExternalLinkActivated() {
     final Project project = ProjectFactory.project().toBuilder().slug("meatballs").build();
     final MockApiClient client = new MockApiClient() {
-      @Override public @NonNull Observable<Project> fetchProject(@NonNull String param) {
+      @Override public @NonNull Observable<Project> fetchProject(final @NonNull String param) {
         return Observable.just(project);
       }
     };

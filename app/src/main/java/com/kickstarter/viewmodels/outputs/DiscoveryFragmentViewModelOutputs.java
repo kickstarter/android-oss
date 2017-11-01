@@ -22,11 +22,6 @@ public interface DiscoveryFragmentViewModelOutputs {
   Observable<Boolean> showActivityFeed();
 
   /**
-   * Emits an activity when an update should be shown
-   */
-  Observable<Activity> showActivityUpdate();
-
-  /**
    * Emits an activity for the activity sample view
    */
   Observable<Activity> activity();
@@ -45,4 +40,9 @@ public interface DiscoveryFragmentViewModelOutputs {
    * Emits a pair containing a project and a ref tag when a project should be shown
    */
   Observable<Pair<Project, RefTag>> showProject();
+
+  /**
+   * Emits an activity when we should start the {@link com.kickstarter.ui.activities.UpdateActivity}.
+   */
+  Observable<Activity> startUpdateActivity();
 }

@@ -8,8 +8,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.Environment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,6 +47,11 @@ public class KSToolbar extends Toolbar {
     if (this.titleTextView != null) {
       this.titleTextView.setText(title);
     }
+  }
+
+  // something like this in UI base classes will give us access to dagger things!!!
+  public Environment environment() {
+    return ((KSApplication) getContext().getApplicationContext()).component().environment();
   }
 
   @CallSuper

@@ -62,7 +62,7 @@ public final class ProjectIntentMapperTest extends KSRobolectricTestCase {
     ProjectIntentMapper.project(intent, new MockApiClient())
       .subscribe(resultTest);
 
-    resultTest.assertNoValues();
+    resultTest.assertValueCount(1);
   }
 
   @Test

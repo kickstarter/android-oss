@@ -27,6 +27,7 @@ import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.DeviceRegistrarType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.Font;
+import com.kickstarter.libs.InternalTools;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
@@ -105,6 +106,7 @@ public final class ApplicationModule {
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
+    final @NonNull InternalToolsType internalToolsType,
     final @NonNull Koala koala,
     final @NonNull KSCurrency ksCurrency,
     final @NonNull KSString ksString,
@@ -126,6 +128,7 @@ public final class ApplicationModule {
       .gson(gson)
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+      .internalTools(internalToolsType)
       .koala(koala)
       .ksCurrency(ksCurrency)
       .ksString(ksString)

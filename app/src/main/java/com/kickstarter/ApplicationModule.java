@@ -27,7 +27,6 @@ import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.DeviceRegistrarType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.Font;
-import com.kickstarter.libs.InternalTools;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
@@ -114,7 +113,8 @@ public final class ApplicationModule {
     final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
     final @NonNull SharedPreferences sharedPreferences,
-    final @NonNull WebClientType webClient) {
+    final @NonNull WebClientType webClient,
+    final @NonNull String webEndpoint) {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
@@ -137,6 +137,7 @@ public final class ApplicationModule {
       .scheduler(scheduler)
       .sharedPreferences(sharedPreferences)
       .webClient(webClient)
+      .webEndpoint(webEndpoint)
       .build();
   }
 

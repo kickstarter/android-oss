@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
@@ -19,8 +18,6 @@ import com.kickstarter.viewmodels.HelpViewModel;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -42,7 +39,7 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
   protected @Bind(R.id.kickstarter_web_view) KSWebView kickstarterWebView;
   protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
 
-  @Inject @WebEndpoint String webEndpoint;
+  private @WebEndpoint String webEndpoint;
 
   protected void helpType(final @HelpType int helpType) {
     this.helpType = helpType;
@@ -81,10 +78,9 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    ((KSApplication) getApplicationContext()).component().inject(this);
     setContentView(R.layout.help_layout);
     ButterKnife.bind(this);
+    this.webEndpoint = environment().webEndpoint();
 
     final String url = getUrlForHelpType(this.helpType);
     this.kickstarterWebView.loadUrl(url);

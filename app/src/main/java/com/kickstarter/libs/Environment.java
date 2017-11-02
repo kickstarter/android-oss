@@ -37,6 +37,7 @@ public abstract class Environment implements Parcelable {
   public abstract Scheduler scheduler();
   public abstract SharedPreferences sharedPreferences();
   public abstract WebClientType webClient();
+  public abstract String webEndpoint();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -60,6 +61,7 @@ public abstract class Environment implements Parcelable {
     public abstract Builder scheduler(Scheduler __);
     public abstract Builder sharedPreferences(SharedPreferences __);
     public abstract Builder webClient(WebClientType __);
+    public abstract Builder webEndpoint(String __);
     public abstract Environment build();
   }
 

@@ -1,8 +1,6 @@
 package com.kickstarter;
 
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KSCurrency;
-import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.services.gcm.MessageService;
@@ -15,12 +13,10 @@ public interface ApplicationGraph {
   Environment environment();
   void inject(ApplicationLifecycleUtil __);
   void inject(AppRatingDialog __);
-  void inject(Koala __);
   void inject(IconTextView __);
   void inject(KoalaTrackingClient __);
   void inject(KSWebView __);
   void inject(KSApplication __);
   void inject(MessageService __);
-  void inject(KSCurrency __);
   void inject(RegisterService __);
 }

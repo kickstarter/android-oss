@@ -20,7 +20,7 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
 public class KSToolbar extends Toolbar {
-  @Nullable @Bind(R.id.title_text_view) TextView titleTextView;
+  protected @Nullable @Bind(R.id.title_text_view) TextView titleTextView;
   private final CompositeSubscription subscriptions = new CompositeSubscription();
 
   public KSToolbar(final @NonNull Context context) {
@@ -40,6 +40,10 @@ public class KSToolbar extends Toolbar {
     ((BaseActivity) getContext()).back();
   }
 
+  protected @NonNull Environment environment() {
+    return ((KSApplication) getContext().getApplicationContext()).component().environment();
+  }
+
   /**
    * If the toolbar has a textview with id title_text_view, set its title.
    */
@@ -47,11 +51,6 @@ public class KSToolbar extends Toolbar {
     if (this.titleTextView != null) {
       this.titleTextView.setText(title);
     }
-  }
-
-  // something like this in UI base classes will give us access to dagger things!!!
-  public Environment environment() {
-    return ((KSApplication) getContext().getApplicationContext()).component().environment();
   }
 
   @CallSuper

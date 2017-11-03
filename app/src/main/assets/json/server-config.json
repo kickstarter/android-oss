@@ -8200,7 +8200,7 @@
         },
         "activity_sample": {
           "title": {
-            "Since_your_last_visit": "最終アクセスから",
+            "Since_your_last_visit": "最終アクセス",
             "since_youve_been_gone": "最後のアクセスから"
           },
           "button": {
@@ -8318,7 +8318,7 @@
         },
         "user_name_is_now_following_you": "%{user_name} はあなたをフォロー中！",
         "follow_back": "フォローバックしますか？",
-        "project_was_not_successfully_funded": "目標達成ならず。",
+        "project_was_not_successfully_funded": "ファンディング失敗",
         "user_name_launched_project": "%{user_name} がプロジェクトをローンチ！",
         "successfully_funded": "資金調達に成功",
         "funding_canceled": "募集キャンセル",
@@ -9585,6 +9585,8 @@
     "android_pay": true,
     "apple_pay_ie": true,
     "apple_pay_it": true,
+    "apple_pay_se": true,
+    "apple_pay_dk": true,
     "i18n_discovery_touts": true,
     "i18n_start_tout": true,
     "invent_touts": true,
@@ -9794,12 +9796,12 @@
     }
   ],
   "ab_experiments": {
-    "koala_alt_frontend_tracking": "control",
+    "koala_alt_frontend_tracking": "experimental",
     "project_build": "control",
     "project_dashboard": "control",
     "react_guest_pledging": "control",
     "react_payment_sources_form": "control",
-    "favorites_recs": "experimental",
+    "favorites_recs": "control",
     "thanks_page_better_recs": "control",
     "project_card_hearts": "control",
     "guided_search": "control"

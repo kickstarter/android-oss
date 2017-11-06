@@ -3,6 +3,7 @@ package com.kickstarter.services.gcm;
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -35,7 +36,7 @@ public class RegisterService extends IntentService {
   }
 
   @Override
-  protected void onHandleIntent(final @NonNull Intent intent) {
+  protected void onHandleIntent(final @Nullable Intent intent) {
     Timber.d("onHandleIntent");
 
     try {

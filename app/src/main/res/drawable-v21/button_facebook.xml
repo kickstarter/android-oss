@@ -3,7 +3,6 @@
   android:color="@color/light_gray_click">
   <item>
     <shape>
-      <corners android:radius="@dimen/button_corner_radius"/>
       <solid android:color="@color/facebook_blue" />
     </shape>
   </item>

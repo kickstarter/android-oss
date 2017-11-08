@@ -6,12 +6,10 @@
   android:visibility="visible"
   android:clipToPadding="false"
   android:clipChildren="false"
-  android:elevation="@dimen/grid_1_half"
-  android:layout_marginTop="@dimen/grid_3_half"
   android:layout_marginStart="@dimen/grid_2"
   android:layout_marginEnd="@dimen/grid_5"
-  android:layout_alignStart="@+id/project_card_view"
-  android:background="@color/white"
+  android:layout_gravity="bottom"
+  android:background="@drawable/rect_white_grey_stroke"
   android:gravity="center_vertical"
   android:layout_width="wrap_content"
   android:layout_height="@dimen/metadata_label_height"
@@ -82,7 +80,8 @@
     android:paddingStart="@dimen/grid_1"
     android:paddingEnd="@dimen/grid_1"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:visibility="visible">
 
     <TextView
       android:id="@+id/potd"

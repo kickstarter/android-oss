@@ -49,11 +49,10 @@
           <com.kickstarter.ui.views.SortTabLayout
             android:id="@+id/discovery_tab_layout"
             app:tabMode="scrollable"
-            app:tabIndicatorColor="@color/green"
             app:tabTextAppearance="@style/TabTextAppearance"
             app:tabTextColor="@color/black_alpha_30"
             app:tabSelectedTextColor="@color/text_primary"
-            android:background="@drawable/click_indicator_light"
+            app:tabBackground="@drawable/click_indicator_light"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
@@ -71,7 +70,6 @@
       <android.support.v4.view.ViewPager
         android:id="@+id/discovery_view_pager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@color/discovery_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

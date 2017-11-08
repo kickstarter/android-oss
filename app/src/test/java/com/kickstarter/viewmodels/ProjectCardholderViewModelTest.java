@@ -37,7 +37,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> fundingUnsuccessfulViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> fundingSuccessfulViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> imageIsInvisible = new TestSubscriber<>();
-  private final TestSubscriber<Integer> metadataViewGroupBackgroundColor = new TestSubscriber<>();
+  private final TestSubscriber<Integer> metadataViewGroupBackgroundDrawable = new TestSubscriber<>();
   private final TestSubscriber<Boolean> metadataViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<Pair<String, String>> nameAndBlurbText = new TestSubscriber<>();
   private final TestSubscriber<Project> notifyDelegateOfProjectClick = new TestSubscriber<>();
@@ -67,7 +67,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.fundingUnsuccessfulViewGroupIsGone().subscribe(this.fundingUnsuccessfulViewGroupIsGone);
     this.vm.outputs.fundingSuccessfulViewGroupIsGone().subscribe(this.fundingSuccessfulViewGroupIsGone);
     this.vm.outputs.imageIsInvisible().subscribe(this.imageIsInvisible);
-    this.vm.outputs.metadataViewGroupBackgroundColor().subscribe(this.metadataViewGroupBackgroundColor);
+    this.vm.outputs.metadataViewGroupBackground().subscribe(this.metadataViewGroupBackgroundDrawable);
     this.vm.outputs.metadataViewGroupIsGone().subscribe(this.metadataViewGroupIsGone);
     this.vm.outputs.nameAndBlurbText().subscribe(this.nameAndBlurbText);
     this.vm.outputs.notifyDelegateOfProjectClick().subscribe(this.notifyDelegateOfProjectClick);
@@ -246,7 +246,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.metadataViewGroupBackgroundColor.assertValues(R.color.ksr_green_500);
+    this.metadataViewGroupBackgroundDrawable.assertValues(R.color.ksr_green_500);
   }
 
   @Test

@@ -78,18 +78,36 @@
 
     </LinearLayout>
 
-    <TextView
-      android:id="@+id/blurb"
-      style="@style/BodyPrimary"
-      android:focusable="true"
+    <LinearLayout
+      android:orientation="vertical"
+      android:id="@+id/blurb_view"
       android:background="@drawable/click_indicator_light_masked"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_2"
-      android:layout_marginBottom="@dimen/grid_2"
-      android:paddingBottom="@dimen/grid_1"
-      tools:ignore="InconsistentLayout"
-      tools:text="Description about this project." />
+      android:layout_height="wrap_content">
+
+      <TextView
+        android:id="@+id/blurb"
+        style="@style/BodyPrimary"
+        android:focusable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:paddingBottom="@dimen/grid_1"
+        android:textColor="@color/ksr_grey"
+        tools:text="Description about this project." />
+
+      <TextView
+        style="@style/BodyPrimaryMedium"
+        android:focusable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:paddingBottom="@dimen/grid_1"
+        android:text="@string/Read_more_about_the_campaign_arrow" />
+
+    </LinearLayout>
 
     <LinearLayout
       android:orientation="horizontal"

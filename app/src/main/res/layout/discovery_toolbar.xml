@@ -7,7 +7,6 @@
   android:layout_height="wrap_content"
   android:id="@+id/discovery_toolbar"
   tools:showIn="@layout/discovery_layout"
-  android:background="@color/discovery_toolbar"
   android:elevation="0dp"
   app:layout_scrollFlags="scroll|exitUntilCollapsed"
   app:contentInsetLeft="0dp"
@@ -20,13 +19,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-      android:orientation="vertical"
-      android:id="@+id/discovery_status_bar"
-      android:background="@color/discovery_status_bar"
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/discovery_drawer_status_bar_height" />
-
-    <LinearLayout
+      android:layout_marginTop="@dimen/discovery_drawer_status_bar_height"
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
       android:baselineAligned="false"
@@ -46,7 +39,7 @@
         tools:ignore="RtlSymmetry">
 
         <com.kickstarter.ui.views.IconButton
-          style="@style/ToolbarIconDarkBackground"
+          style="@style/ToolbarIcon"
           android:id="@+id/menu_button"
           android:text="@string/menu_icon" />
 
@@ -55,7 +48,6 @@
           style="@style/Headline"
           android:background="@drawable/button_selector"
           android:ellipsize="end"
-          android:textColor="@color/white"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:maxLines="1"
@@ -72,17 +64,17 @@
         android:orientation="horizontal">
 
         <com.kickstarter.ui.views.IconButton
-          style="@style/ToolbarIconDarkBackground"
+          style="@style/ToolbarIcon"
           android:id="@+id/creator_dashboard_button"
           android:text="@string/play_circle_outline_icon" />
 
         <com.kickstarter.ui.views.IconButton
-          style="@style/ToolbarIconDarkBackground"
+          style="@style/ToolbarIcon"
           android:id="@+id/activity_feed_button"
           android:text="@string/flash_on_icon" />
 
         <com.kickstarter.ui.views.IconButton
-          style="@style/ToolbarIconDarkBackground"
+          style="@style/ToolbarIcon"
           android:id="@+id/search_button"
           android:text="@string/search_icon" />
 

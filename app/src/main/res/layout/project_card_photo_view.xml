@@ -7,6 +7,7 @@
   android:background="@drawable/gray_gradient"
   android:id="@+id/project_card_photo"
   android:gravity="center"
+  android:layout_marginBottom="@dimen/grid_2"
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
 
@@ -16,6 +17,12 @@
     android:adjustViewBounds="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:src="@drawable/sample_project"
     tools:ignore="ContentDescription" />
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/ksr_grey_500"/>
 
 </LinearLayout>

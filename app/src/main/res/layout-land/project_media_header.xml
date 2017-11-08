@@ -14,19 +14,20 @@
     android:layout_height="wrap_content"
     android:background="@drawable/gray_gradient"
     android:adjustViewBounds="true"
-    tools:ignore="ContentDescription" />
+    tools:ignore="ContentDescription"
+    tools:src="@drawable/sample_project"/>
 
   <View
     android:background="@drawable/project_photo_gradient"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_21"
+    android:layout_height="@dimen/grid_57"
     android:layout_alignParentBottom="true"/>
 
   <View
     android:id="@+id/photo_gradient"
     android:background="@drawable/project_photo_gradient"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_53"
+    android:layout_height="@dimen/grid_57"
     android:layout_alignParentBottom="true" />
 
   <RelativeLayout
@@ -43,7 +44,7 @@
       android:layout_height="wrap_content"
       tools:ignore="InconsistentLayout">
 
-      <com.kickstarter.ui.views.IconButton
+      <ImageButton
         android:id="@+id/play_button_overlay"
         android:background="@drawable/video_button_background"
         android:contentDescription="@string/accessibility_projects_buttons_play_video"
@@ -53,10 +54,7 @@
         android:layout_marginEnd="@dimen/grid_4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="14dp"
-        android:textSize="40sp"
-        android:text="@string/play_arrow"
-        android:textColor="@color/white" />
+        android:src="@drawable/ic_play_icon" />
 
       <RelativeLayout
         android:layout_centerVertical="true"
@@ -130,18 +128,35 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
 
-      <TextView
-        android:id="@+id/blurb"
-        style="@style/CalloutPrimary"
-        android:textColor="@color/white"
-        android:focusable="true"
-        android:maxLines="3"
-        android:background="@drawable/click_indicator_light_masked"
-        android:layout_width="match_parent"
+      <LinearLayout
+        android:id="@+id/blurb_view"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/grid_1"
-        tools:ignore="InconsistentLayout"
-        tools:text="Description about this project." />
+        android:orientation="vertical">
+
+        <TextView
+          android:id="@+id/blurb"
+          style="@style/CalloutPrimary"
+          android:textColor="@color/white"
+          android:focusable="true"
+          android:maxLines="3"
+          android:background="@drawable/click_indicator_light_masked"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingBottom="@dimen/grid_1"
+          tools:ignore="InconsistentLayout"
+          tools:text="Description about this project." />
+
+        <TextView
+          style="@style/BodyPrimaryMedium"
+          android:textColor="@color/white"
+          android:focusable="true"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/grid_2"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:text="@string/Read_more_about_the_campaign_arrow" />
+      </LinearLayout>
 
       <LinearLayout
         android:layout_marginTop="@dimen/grid_4"

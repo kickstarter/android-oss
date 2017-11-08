@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-  android:shape="oval">
-  <solid android:color="@color/black_alpha_50" />
-  <stroke android:width="@dimen/grid_1_half" android:color="@color/white" />
-  <size
-    android:height="@dimen/grid_2"
-    android:width="@dimen/grid_2" />
+  android:shape="rectangle">
+  <solid android:color="@color/black" />
+  <stroke
+    android:width="1.3dp"
+    android:color="@color/white" />
+  <padding
+    android:bottom="@dimen/grid_5_half"
+    android:left="@dimen/grid_7_half"
+    android:right="@dimen/grid_7_half"
+    android:top="@dimen/grid_5_half" />
 </shape>

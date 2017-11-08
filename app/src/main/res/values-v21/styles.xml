@@ -2,6 +2,7 @@
 <resources>
   <style name="KSTheme" parent="KSThemeBase">
     <item name="android:colorControlHighlight">@color/accent_alpha_20</item>
+    <item name="android:statusBarColor">@color/status_bar</item>
 
     <item name="android:windowContentTransitions">true</item>
     <item name="android:windowAllowEnterTransitionOverlap">true</item>
@@ -13,18 +14,11 @@
   </style>
 
   <style name="DiscoveryActivity" parent="DiscoveryBase">
-    <item name="android:colorPrimaryDark">@color/discovery_status_bar</item>
-    <item name="android:statusBarColor">@android:color/transparent</item>
     <item name="android:windowDrawsSystemBarBackgrounds">true</item>
   </style>
 
   <style name="VideoPlayerActivity" parent="DiscoveryBase">
     <item name="android:statusBarColor">@color/transparent</item>
-  </style>
-
-  <style name="RoundedButton" parent="RoundedButtonBase">
-    <item name="android:paddingStart">@dimen/grid_5</item>
-    <item name="android:paddingEnd">@dimen/grid_5</item>
   </style>
 
   <style name="EndSettingsWidget" parent="EndSettingsWidgetBase">

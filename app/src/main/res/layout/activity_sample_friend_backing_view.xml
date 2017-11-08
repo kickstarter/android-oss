@@ -9,16 +9,18 @@
     style="@style/ActivitySampleCard">
 
     <LinearLayout
-      android:background="@color/white"
+      android:background="@drawable/rect_white_grey_stroke"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_3"
-      android:layout_marginLeft="@dimen/grid_4"
-      android:layout_marginRight="@dimen/grid_4"
+      android:paddingTop="@dimen/grid_3"
+      android:paddingLeft="@dimen/grid_4"
+      android:paddingRight="@dimen/grid_4"
       android:orientation="vertical">
 
       <TextView
-        style="@style/BodySecondary"
+        style="@style/TextPrimary"
+        android:textSize="@dimen/headline"
+        android:textColor="@color/ksr_green_700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_2"
@@ -40,6 +42,7 @@
           android:layout_width="@dimen/grid_5"
           android:layout_height="@dimen/grid_5"
           android:scaleType="centerCrop"
+          tools:src="@drawable/sample_project"
           tools:ignore="ContentDescription" />
 
         <LinearLayout
@@ -50,7 +53,7 @@
           android:orientation="vertical">
 
           <TextView
-            style="@style/BodyPrimaryMedium"
+            style="@style/BodyPrimary"
             android:id="@+id/activity_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,7 +65,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="3"
-            android:ellipsize="end" />
+            android:ellipsize="end"
+            android:textColor="@color/ksr_dark_grey_500"/>
 
         </LinearLayout>
 

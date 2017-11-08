@@ -2,20 +2,29 @@
 <resources>
   <!-- Theme colors -->
   <color name="primary">@color/white</color>
-  <color name="primary_dark">@color/ksr_soft_black</color>
-  <color name="accent">@color/green</color>
-  <color name="text_primary">@color/ksr_text_navy_700</color>
+  <color name="primary_dark">@color/black_alpha_17</color>
+  <color name="accent">@color/ksr_green_700</color>
+  <color name="text_primary">@color/ksr_soft_black</color>
   <color name="text_secondary">@color/ksr_text_navy_500</color>
   <color name="window_background">@color/white</color>
+  <color name="status_bar">@color/primary_dark</color>
 
   <!-- Kickstarter colors. NB: we should be transitioning to using this color palette. -->
+  <color name="black">@android:color/black</color>
+  <color name="ksr_blue">#4C6CF8</color>
   <color name="ksr_dark_grey_400">#9B9E9E</color>
-  <color name="ksr_dark_grey_500">#656868</color>
-  <color name="ksr_green_500">#25CB68</color>
+  <color name="ksr_dark_grey_500">#656969</color>
+  <color name="ksr_green_500">#009E74</color>
+  <color name="ksr_green_700">#037362</color>
+  <color name="ksr_green_800">#034752</color>
   <color name="ksr_grey_100">#FBFBFA</color>
   <color name="ksr_grey_200">#F7F7F6</color>
+  <color name="ksr_grey_300">#F0F0F0</color>
+  <color name="ksr_grey_350">#E8E8E8</color>
   <color name="ksr_grey_400">#EDEDED</color>
+  <color name="ksr_grey">#646969</color>
   <color name="ksr_grey_500">#DCDEDD</color>
+  <color name="ksr_orange">#FF4F00</color>
   <color name="ksr_navy_300">#EFEFF3</color>
   <color name="ksr_soft_black">#282828</color>
   <color name="ksr_text_green_700">#05AF3C</color>
@@ -23,6 +32,7 @@
   <color name="ksr_text_navy_500">#95959E</color>
   <color name="ksr_text_navy_700">#353535</color>
   <color name="ksr_text_navy_800">#062340</color>
+  <color name="white">@android:color/white</color>
 
   <!-- Legacy Kickstarter colors. NB: we should be moving away from this color palette. -->
   <color name="blue">#00a0ff</color>
@@ -39,7 +49,6 @@
   <color name="text_dark">#ff0f2105</color>
   <color name="text_light">#ffffffff</color>
   <color name="transparent">@android:color/transparent</color>
-  <color name="white">@android:color/white</color>
   <color name="yellow">#ffffc9</color>
   <color name="medium_gray">#ebebee</color>
 
@@ -77,20 +86,22 @@
 
   <!-- Colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->
-  <color name="accent_alpha_20">@color/blue_alpha_20</color>
+  <color name="accent_alpha_20">@color/green_alpha_20</color>
   <color name="black_alpha_5">#0d000000</color>
   <color name="black_alpha_10">#1a000000</color>
+  <color name="black_alpha_17">#2B000000</color>
   <color name="black_alpha_30">#4D000000</color>
   <color name="black_alpha_50">#88000000</color>
   <color name="blue_alpha_20">#3300a0ff</color>
-  <color name="blue_darken_10">#0087E6</color>
-  <color name="gray_alpha_50">#80d9d9de</color>
+  <color name="blue_darken_10">#3B55D5</color>
+  <color name="gray_alpha_50">#80E8E8E8</color>
   <color name="gray_darken_10">#C0C0C5</color>
-  <color name="green_alpha_20">#332bde73</color>
+  <color name="green_alpha_20">#33037362</color>
   <color name="green_alpha_50">#802bde73</color>
-  <color name="green_darken_10">#12C55A</color>
+  <color name="green_darken_10">#006150</color>
   <color name="green_darken_20">#00AB40</color>
   <color name="green_lighten_10">#45F88D</color>
+  <color name="soft_black_alpha_17">#2B282828</color>
   <color name="white_alpha_60">#99ffffff</color>
   <color name="white_alpha_95">#F2ffffff</color>
 
@@ -107,13 +118,6 @@
   <color name="debug_background">@color/white</color>
 
   <!-- Discovery colors -->
-  <color name="dark_blue_gradient_start">#081245</color>
-  <color name="dark_blue_gradient_end">#062e6a</color>
-  <color name="discovery_primary">@color/dark_blue</color>
-  <color name="discovery_secondary">@color/discovery_status_bar</color>
-  <color name="discovery_background">@color/white</color>
-  <color name="discovery_toolbar">@color/dark_blue</color>
-  <color name="discovery_status_bar">@color/ksr_soft_black</color>
   <color name="discovery_drawer_item_selected">#ffededed</color>
   <color name="discovery_drawer_header">@color/white</color>
 

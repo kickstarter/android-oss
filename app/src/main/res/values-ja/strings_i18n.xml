@@ -424,7 +424,7 @@
   <string name="activity_project_state_change_you_launched_a_project" formatted="false">あなたは%{project_name} を発表しました</string>
   <string name="activity_project_update_update_count" formatted="false">アップデート #%{update_count}</string>
   <string name="activity_project_update_update_count_backer_only" formatted="false">#%{update_count} - バッカーのみ</string>
-  <string name="activity_project_was_not_successfully_funded" formatted="false">目標達成ならず。</string>
+  <string name="activity_project_was_not_successfully_funded" formatted="false">ファンディング失敗</string>
   <string name="activity_successfully_funded" formatted="false">資金調達に成功</string>
   <string name="activity_user_name_is_now_following_you" formatted="false">%{user_name} はあなたをフォロー中！</string>
   <string name="activity_user_name_launched_project" formatted="false">%{user_name} がプロジェクトをローンチ！</string>
@@ -732,7 +732,7 @@
   <string name="discovery_activity_sample_alert_buttons_follow" formatted="false">フォロー</string>
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">%{friend_name} をフォローしますか？</string>
   <string name="discovery_activity_sample_button_see_all_activity" formatted="false">アクティビティをみる</string>
-  <string name="discovery_activity_sample_title_Since_your_last_visit" formatted="false">最終アクセスから</string>
+  <string name="discovery_activity_sample_title_Since_your_last_visit" formatted="false">最終アクセス</string>
   <string name="discovery_activity_sample_title_since_youve_been_gone" formatted="false">最後のアクセスから</string>
   <string name="discovery_all_of_scope" formatted="false">%{scope} の全て</string>
   <string name="discovery_backing" formatted="false">バック</string>

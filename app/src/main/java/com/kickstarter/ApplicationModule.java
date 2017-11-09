@@ -105,6 +105,7 @@ public final class ApplicationModule {
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
+    final @NonNull InternalToolsType internalToolsType,
     final @NonNull Koala koala,
     final @NonNull KSCurrency ksCurrency,
     final @NonNull KSString ksString,
@@ -112,7 +113,8 @@ public final class ApplicationModule {
     final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
     final @NonNull SharedPreferences sharedPreferences,
-    final @NonNull WebClientType webClient) {
+    final @NonNull WebClientType webClient,
+    final @NonNull String webEndpoint) {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
@@ -126,6 +128,7 @@ public final class ApplicationModule {
       .gson(gson)
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+      .internalTools(internalToolsType)
       .koala(koala)
       .ksCurrency(ksCurrency)
       .ksString(ksString)
@@ -134,6 +137,7 @@ public final class ApplicationModule {
       .scheduler(scheduler)
       .sharedPreferences(sharedPreferences)
       .webClient(webClient)
+      .webEndpoint(webEndpoint)
       .build();
   }
 

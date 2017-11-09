@@ -11,6 +11,7 @@ import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
+import com.kickstarter.ui.viewholders.CreatorDashboardReferrerBreakdownViewHolder;
 import com.kickstarter.ui.viewholders.CreatorDashboardReferrerStatsViewHolder;
 import com.kickstarter.ui.viewholders.CreatorDashboardRewardStatsViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -18,6 +19,10 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 import java.util.Collections;
 
 public class CreatorDashboardAdapter extends KSAdapter {
+  private static final int SECTION_FUNDING_VIEW = 0;
+  private static final int SECTION_REWARD_STATS_VIEW = 1;
+  private static final int SECTION_REFERRER_BREAKDOWN_LAYOUT = 2;
+  private static final int SECTION_REFERRER_STATS_VIEW = 3;
 
   private final @Nullable Delegate delegate;
 
@@ -25,13 +30,20 @@ public class CreatorDashboardAdapter extends KSAdapter {
 
   public CreatorDashboardAdapter(final @Nullable Delegate delegate) {
     this.delegate = delegate;
+
+    insertSection(SECTION_FUNDING_VIEW, Collections.emptyList());
+    insertSection(SECTION_REWARD_STATS_VIEW, Collections.emptyList());
+    insertSection(SECTION_REFERRER_BREAKDOWN_LAYOUT, Collections.emptyList());
+    insertSection(SECTION_REFERRER_STATS_VIEW, Collections.emptyList());
   }
 
   protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
-    if (sectionRow.section() == 0) {
+    if (sectionRow.section() == SECTION_FUNDING_VIEW) {
       return R.layout.dashboard_funding_view;
-    } else if (sectionRow.section() == 1) {
+    } else if (sectionRow.section() == SECTION_REWARD_STATS_VIEW) {
       return R.layout.dashboard_reward_stats_view;
+    } else if (sectionRow.section() == SECTION_REFERRER_BREAKDOWN_LAYOUT) {
+      return R.layout.dashboard_referrer_breakdown_layout;
     } else {
       return R.layout.dashboard_referrer_stats_view;
     }
@@ -42,23 +54,33 @@ public class CreatorDashboardAdapter extends KSAdapter {
       return new CreatorDashboardHeaderViewHolder(view, this.delegate);
     } else if (layout == R.layout.dashboard_reward_stats_view) {
       return new CreatorDashboardRewardStatsViewHolder(view);
+    } else if (layout == R.layout.dashboard_referrer_breakdown_layout) {
+      return new CreatorDashboardReferrerBreakdownViewHolder(view);
     } else {
       return new CreatorDashboardReferrerStatsViewHolder(view);
     }
   }
 
   public void takeProjectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStatsEnvelope) {
-    sections().clear();
-    sections().add(Collections.singletonList(projectAndStatsEnvelope));
+    setSection(SECTION_FUNDING_VIEW, Collections.singletonList(projectAndStatsEnvelope));
 
     // add reward stats sections
-    sections().add(
+    setSection(
+      SECTION_REWARD_STATS_VIEW,
       Collections.singletonList(
         Pair.create(projectAndStatsEnvelope.first, projectAndStatsEnvelope.second.rewardDistribution())
       )
     );
-    // add referral stats sections
-    sections().add(
+
+    setSection(
+      SECTION_REFERRER_BREAKDOWN_LAYOUT,
+      Collections.singletonList(
+        Pair.create(projectAndStatsEnvelope.first, projectAndStatsEnvelope.second)
+      )
+    );
+
+    setSection(
+      SECTION_REFERRER_STATS_VIEW,
       Collections.singletonList(
         Pair.create(projectAndStatsEnvelope.first, projectAndStatsEnvelope.second.referralDistribution())
       )

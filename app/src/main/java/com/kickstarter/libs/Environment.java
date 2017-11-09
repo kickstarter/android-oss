@@ -28,6 +28,7 @@ public abstract class Environment implements Parcelable {
   public abstract Gson gson();
   public abstract BooleanPreferenceType hasSeenAppRatingPreference();
   public abstract BooleanPreferenceType hasSeenGamesNewsletterPreference();
+  public abstract InternalToolsType internalTools();
   public abstract Koala koala();
   public abstract KSCurrency ksCurrency();
   public abstract KSString ksString();
@@ -36,6 +37,7 @@ public abstract class Environment implements Parcelable {
   public abstract Scheduler scheduler();
   public abstract SharedPreferences sharedPreferences();
   public abstract WebClientType webClient();
+  public abstract String webEndpoint();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -50,6 +52,7 @@ public abstract class Environment implements Parcelable {
     public abstract Builder gson(Gson __);
     public abstract Builder hasSeenAppRatingPreference(BooleanPreferenceType __);
     public abstract Builder hasSeenGamesNewsletterPreference(BooleanPreferenceType __);
+    public abstract Builder internalTools(InternalToolsType __);
     public abstract Builder koala(Koala __);
     public abstract Builder ksCurrency(KSCurrency __);
     public abstract Builder ksString(KSString __);
@@ -58,6 +61,7 @@ public abstract class Environment implements Parcelable {
     public abstract Builder scheduler(Scheduler __);
     public abstract Builder sharedPreferences(SharedPreferences __);
     public abstract Builder webClient(WebClientType __);
+    public abstract Builder webEndpoint(String __);
     public abstract Environment build();
   }
 

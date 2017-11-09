@@ -8,8 +8,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.Environment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -18,7 +20,7 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
 public class KSToolbar extends Toolbar {
-  @Nullable @Bind(R.id.title_text_view) TextView titleTextView;
+  protected @Nullable @Bind(R.id.title_text_view) TextView titleTextView;
   private final CompositeSubscription subscriptions = new CompositeSubscription();
 
   public KSToolbar(final @NonNull Context context) {
@@ -36,6 +38,10 @@ public class KSToolbar extends Toolbar {
   @Nullable @OnClick(R.id.back_button)
   protected void backButtonClick() {
     ((BaseActivity) getContext()).back();
+  }
+
+  protected @NonNull Environment environment() {
+    return ((KSApplication) getContext().getApplicationContext()).component().environment();
   }
 
   /**

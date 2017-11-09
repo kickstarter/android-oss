@@ -75,8 +75,10 @@ public interface CreatorDashboardViewModel {
 
       this.projectsForBottomSheet = projects;
 
-      this.projectAndStats = this.projectSelected
-        .compose(combineLatestPair(projectStatsEnvelope));
+      this.projectSelected
+        .compose(combineLatestPair(projectStatsEnvelope))
+        .compose(bindToLifecycle())
+        .subscribe(this.projectAndStats);
 
       this.projectSwitcherProjectClickOutput = this.projectSwitcherClicked;
 
@@ -89,7 +91,7 @@ public interface CreatorDashboardViewModel {
     private final PublishSubject<Project> projectSwitcherClicked = PublishSubject.create();
     private final BehaviorSubject<Project> projectSelected = BehaviorSubject.create();
 
-    private final Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats;
+    private final BehaviorSubject<Pair<Project, ProjectStatsEnvelope>> projectAndStats = BehaviorSubject.create();
     private final Observable<List<Project>> projectsForBottomSheet;
     private final Observable<Project> projectSwitcherProjectClickOutput;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;

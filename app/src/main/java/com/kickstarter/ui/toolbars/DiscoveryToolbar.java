@@ -8,18 +8,16 @@ import android.support.v4.view.GravityCompat;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.CurrentUserType;
+import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.Logout;
+import com.kickstarter.libs.utils.DiscoveryUtils;
+import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.CreatorDashboardActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.SearchActivity;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,9 +29,8 @@ public final class DiscoveryToolbar extends KSToolbar {
   @Bind(R.id.filter_text_view) TextView filterTextView;
   @Bind(R.id.menu_button) TextView menuButton;
   @Bind(R.id.search_button) TextView searchButton;
-  @Inject CurrentUserType currentUser;
-  @Inject KSString ksString;
-  @Inject Logout logout;
+
+  private KSString ksString;
 
   public DiscoveryToolbar(final @NonNull Context context) {
     super(context);
@@ -56,7 +53,7 @@ public final class DiscoveryToolbar extends KSToolbar {
     }
 
     ButterKnife.bind(this);
-    ((KSApplication) getContext().getApplicationContext()).component().inject(this);
+    this.ksString = environment().ksString();
   }
 
   @OnClick(R.id.activity_feed_button)

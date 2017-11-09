@@ -1,65 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:orientation="vertical"
-  android:layout_marginTop="@dimen/grid_4"
-  android:layout_marginBottom="@dimen/grid_4">
-
-  <TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/dashboard_graphs_referrers_title_referrers"
-    style="@style/Headline"
-    android:layout_marginLeft="@dimen/grid_2" />
+  android:layout_weight="3"
+  android:layout_marginTop="@dimen/grid_4">
 
   <LinearLayout
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="3"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:layout_marginTop="@dimen/grid_1">
 
-    <LinearLayout
-      android:layout_width="match_parent"
+    <TextView
+      android:text="@string/dashboard_graphs_referrers_source"
+      android:gravity="center"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:layout_marginTop="@dimen/grid_1">
+      android:paddingStart="@dimen/grid_4"
+      android:paddingEnd="@dimen/grid_4"
+      android:layout_weight="1"/>
 
-      <TextView
-        android:text="@string/dashboard_graphs_referrers_source"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/grid_4"
-        android:paddingEnd="@dimen/grid_4"
-        android:layout_weight="1"/>
+    <TextView
+      android:text="@string/dashboard_graphs_rewards_pledged"
+      android:gravity="center_horizontal"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:padding="@dimen/grid_1_half"
+      android:layout_weight="1"/>
 
-      <TextView
-        android:text="@string/dashboard_graphs_rewards_pledged"
-        android:gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/grid_1_half"
-        android:layout_weight="1"/>
+    <TextView
+      android:text="@string/dashboard_graphs_funding_backers"
+      android:gravity="center_horizontal"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:paddingStart="@dimen/grid_4"
+      android:paddingEnd="@dimen/grid_4"
+      android:layout_weight="1" />
 
-      <TextView
-        android:text="@string/dashboard_graphs_funding_backers"
-        android:gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/grid_4"
-        android:paddingEnd="@dimen/grid_4"
-        android:layout_weight="1" />
-
-    </LinearLayout>
+  </LinearLayout>
 
   <android.support.v7.widget.RecyclerView
     android:id="@+id/dashboard_referrer_stats_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />
 
-  </LinearLayout>
-
 </LinearLayout>
+

@@ -9,10 +9,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.utils.DiscoveryUtils;
-import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.CreatorDashboardActivity;

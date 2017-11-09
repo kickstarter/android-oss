@@ -13,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -35,8 +34,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -51,8 +48,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   private DiscoveryDrawerAdapter drawerAdapter;
   private LinearLayoutManager drawerLayoutManager;
   private DiscoveryPagerAdapter pagerAdapter;
-
-  protected @Inject InternalToolsType internalTools;
+  private InternalToolsType internalTools;
 
   protected @Bind(R.id.creator_dashboard_button) IconButton creatorDashboardButton;
   protected @Bind(R.id.discovery_layout) DrawerLayout discoveryLayout;
@@ -76,7 +72,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     setContentView(R.layout.discovery_layout);
     ButterKnife.bind(this);
 
-    ((KSApplication) getApplication()).component().inject(this);
+    this.internalTools = environment().internalTools();
 
     this.drawerLayoutManager = new LinearLayoutManager(this);
     this.drawerRecyclerView.setLayoutManager(this.drawerLayoutManager);

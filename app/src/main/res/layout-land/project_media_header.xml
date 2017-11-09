@@ -14,8 +14,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/gray_gradient"
     android:adjustViewBounds="true"
-    tools:ignore="ContentDescription"
-    tools:src="@drawable/sample_project"/>
+    tools:ignore="ContentDescription" />
 
   <View
     android:background="@drawable/project_photo_gradient"

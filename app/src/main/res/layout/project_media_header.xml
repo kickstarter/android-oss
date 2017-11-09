@@ -16,7 +16,6 @@
     android:layout_marginStart="@dimen/grid_2"
     android:layout_margin="@dimen/grid_2"
     android:adjustViewBounds="true"
-    tools:src="@drawable/sample_project"
     tools:ignore="ContentDescription" />
 
   <ImageButton

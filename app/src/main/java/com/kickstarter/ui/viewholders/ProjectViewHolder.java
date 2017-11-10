@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -13,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -65,9 +65,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   private Project project;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
-  protected @Bind(R.id.avatar_name) TextView avatarNameTextView;
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
-  protected @Bind(R.id.backer_label) LinearLayout backerLabelLinearLayout;
+  protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
   protected @Bind(R.id.back_project_button) @Nullable Button backProjectButton;
   protected @Bind(R.id.blurb_view) ViewGroup blurbViewGroup;
   protected @Bind(R.id.blurb) TextView blurbTextView;
@@ -76,6 +75,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
   protected @Bind(R.id.deadline_countdown_text_view) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit_text_view) TextView deadlineCountdownUnitTextView;
+  protected @Bind(R.id.featured) TextView featuredTextView;
+  protected @Bind(R.id.featured_group) ViewGroup featuredViewGroup;
   protected @Bind(R.id.project_disclaimer_text_view) TextView projectDisclaimerTextView;
   protected @Bind(R.id.goal) TextView goalTextView;
   protected @Bind(R.id.land_overlay_text) @Nullable ViewGroup landOverlayTextViewGroup;
@@ -86,7 +87,9 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_photo) ImageView photoImageView;
   protected @Bind(R.id.play_button_overlay) ImageButton playButton;
   protected @Bind(R.id.pledged) TextView pledgedTextView;
+  protected @Bind(R.id.project_metadata_view_group) ViewGroup projectMetadataViewGroup;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
+  protected @Bind(R.id.potd_view_group) ViewGroup potdViewGroup;
   protected @Bind(R.id.project_social_image) ImageView projectSocialImageView;
   protected @Bind(R.id.project_social_text) TextView projectSocialTextView;
   protected @Bind(R.id.project_stats_view) ViewGroup projectStatsViewGroup;
@@ -112,6 +115,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindString(R.string.project_creator_by_creator_html) String byCreatorString;
   protected @BindString(R.string.discovery_baseball_card_blurb_read_more) String blurbReadMoreString;
   protected @BindString(R.string.discovery_baseball_card_stats_convert_from_pledged_of_goal) String convertedFromString;
+  protected @BindString(R.string.discovery_baseball_card_metadata_featured_project) String featuredInString;
   protected @BindString(R.string.project_disclaimer_goal_not_reached) String projectDisclaimerGoalNotReachedString;
   protected @BindString(R.string.project_disclaimer_goal_reached) String projectDisclaimerGoalReachedString;
   protected @BindString(R.string.project_status_funding_canceled) String fundingCanceledString;
@@ -180,11 +184,6 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.blurbTextView.setText(Html.fromHtml(TextUtils.htmlEncode(this.project.blurb())));
     this.creatorNameTextView.setText(Html.fromHtml(this.ksString.format(this.byCreatorString,
       "creator_name", TextUtils.htmlEncode(this.project.creator().name()))));
-    if (this.project.isBacking()) {
-      this.backerLabelLinearLayout.setVisibility(View.VISIBLE);
-    } else {
-      this.backerLabelLinearLayout.setVisibility(View.GONE);
-    }
     this.projectNameTextView.setText(this.project.name());
     final Category category = this.project.category();
     if (category != null) {
@@ -204,7 +203,6 @@ public final class ProjectViewHolder extends KSViewHolder {
       .medium())
       .transform(new CircleTransformation())
       .into(this.avatarImageView);
-    this.avatarNameTextView.setText(this.project.creator().name());
     final Integer updatesCount = this.project.updatesCount();
     this.updatesCountTextView.setText(updatesCount != null ? NumberUtils.format(updatesCount) : null);
     final Integer commentsCount = this.project.commentsCount();
@@ -215,6 +213,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     setLandscapeOverlayText();
     setPledgedOfGoalView();
     setProjectDisclaimerView();
+    setProjectMetadataLozenge();
     setProjectSocialClick();
     setProjectStateView();
     setSocialView();
@@ -332,6 +331,25 @@ public final class ProjectViewHolder extends KSViewHolder {
         "deadline",
         mediumDateShortTime(deadline)
       ));
+    }
+  }
+
+  private void setProjectMetadataLozenge() {
+    final ProjectUtils.Metadata metadata = ProjectUtils.metadataForProject(this.project);
+    if (metadata == ProjectUtils.Metadata.BACKING) {
+      this.projectMetadataViewGroup.setBackground(ContextCompat.getDrawable(this.context, R.drawable.rect_green_grey_stroke));
+      this.backingViewGroup.setVisibility(View.VISIBLE);
+    } else if (metadata == ProjectUtils.Metadata.POTD) {
+      this.potdViewGroup.setVisibility(View.VISIBLE);
+    } else if (metadata == ProjectUtils.Metadata.CATEGORY_FEATURED) {
+      this.featuredViewGroup.setVisibility(View.VISIBLE);
+      final Category category = this.project.category();
+      if (category != null && category.root() != null) {
+        final String rootCategory = category.root().name();
+        this.featuredTextView.setText(this.ksString.format(this.featuredInString, "category_name", rootCategory));
+      }
+    } else {
+      this.projectMetadataViewGroup.setVisibility(View.GONE);
     }
   }
 

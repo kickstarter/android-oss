@@ -13,7 +13,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/gray_gradient"
-    android:layout_marginStart="@dimen/grid_2"
     android:layout_margin="@dimen/grid_2"
     android:adjustViewBounds="true"
     tools:ignore="ContentDescription" />

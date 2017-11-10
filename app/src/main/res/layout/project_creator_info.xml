@@ -6,51 +6,6 @@
   android:layout_height="match_parent"
   android:orientation="vertical">
 
-  <RelativeLayout
-    android:id="@+id/creator_info"
-    android:focusable="true"
-    android:paddingStart="@dimen/project_padding_x"
-    android:paddingEnd="@dimen/project_padding_x"
-    android:background="@drawable/click_indicator_light_masked"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/grid_4"
-    android:paddingTop="@dimen/grid_5">
-
-    <ImageView
-      android:id="@+id/avatar"
-      android:layout_width="@dimen/project_avatar_width"
-      android:layout_height="@dimen/project_avatar_height"
-      android:layout_alignParentStart="true"
-      android:scaleType="centerCrop"
-      tools:ignore="ContentDescription" />
-
-    <TextView
-      android:id="@+id/created_by"
-      android:text="@string/project_menu_created_by"
-      android:paddingStart="@dimen/grid_2"
-      android:paddingEnd="@dimen/grid_2"
-      android:layout_toEndOf="@id/avatar"
-      android:paddingTop="@dimen/grid_1"
-      style="@style/Caption1Secondary"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
-
-    <TextView
-      android:id="@+id/avatar_name"
-      android:maxLines="2"
-      android:paddingStart="@dimen/grid_2"
-      android:paddingEnd="@dimen/grid_4"
-      android:layout_toEndOf="@id/avatar"
-      android:ellipsize="marquee"
-      style="@style/CalloutPrimaryMedium"
-      android:layout_below="@id/created_by"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      tools:text="Creator Name" />
-
-  </RelativeLayout>
-
   <LinearLayout
     android:paddingStart="@dimen/project_padding_x"
     android:paddingEnd="@dimen/project_padding_x"
@@ -75,7 +30,7 @@
         android:layout_alignParentStart="true"
         android:gravity="center_vertical"
         android:textColor="@color/ksr_soft_black"
-        android:textSize="@dimen/callout"
+        android:textSize="@dimen/body"
         android:text="@string/project_menu_buttons_campaign" />
 
       <com.kickstarter.ui.views.IconButton
@@ -111,7 +66,7 @@
         android:gravity="center_vertical"
         android:layout_alignParentStart="true"
         android:textColor="@color/ksr_soft_black"
-        android:textSize="@dimen/callout"
+        android:textSize="@dimen/body"
         android:text="@string/project_menu_buttons_updates" />
 
       <TextView
@@ -149,7 +104,7 @@
         android:layout_alignParentStart="true"
         android:gravity="center_vertical"
         android:textColor="@color/ksr_soft_black"
-        android:textSize="@dimen/callout"
+        android:textSize="@dimen/body"
         android:text="@string/project_menu_buttons_comments" />
 
       <TextView

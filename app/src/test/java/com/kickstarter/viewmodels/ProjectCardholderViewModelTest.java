@@ -246,7 +246,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.metadataViewGroupBackgroundDrawable.assertValues(R.drawable.rect_green_700);
+    this.metadataViewGroupBackgroundDrawable.assertValues(R.drawable.rect_green_grey_stroke);
   }
 
   @Test

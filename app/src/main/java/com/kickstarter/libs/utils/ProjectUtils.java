@@ -2,6 +2,7 @@ package com.kickstarter.libs.utils;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 
@@ -97,6 +98,19 @@ public final class ProjectUtils {
     return lastChar.matches(".*\\p{Punct}");
   }
 
+  public static @Nullable Metadata metadataForProject(final @NonNull Project project) {
+    if (project.isBacking()) {
+      return Metadata.BACKING;
+    } else if (project.isStarred()) {
+      return Metadata.SAVING;
+    } else if (project.isPotdToday()) {
+      return Metadata.POTD;
+    } else if (project.isFeaturedToday()) {
+      return Metadata.CATEGORY_FEATURED;
+    }
+    return null;
+  }
+
   /**
    * Returns 16:9 height relative to input width.
    */
@@ -143,5 +157,9 @@ public final class ProjectUtils {
 
   public static boolean isUSUserViewingNonUSProject(final @NonNull String userCountry, final @NonNull String projectCountry) {
     return I18nUtils.isCountryUS(userCountry) && !I18nUtils.isCountryUS(projectCountry);
+  }
+
+  public enum Metadata {
+    BACKING, SAVING, POTD, CATEGORY_FEATURED
   }
 }

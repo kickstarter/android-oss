@@ -52,7 +52,7 @@
         android:id="@+id/project_card_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/grid_4"
+        android:paddingTop="@dimen/grid_2"
         android:paddingStart="@dimen/grid_4"
         android:paddingEnd="@dimen/grid_4"
         android:orientation="vertical">
@@ -81,7 +81,7 @@
       </LinearLayout>
 
       <include layout="@layout/project_state_view"
-        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_2"
         android:layout_marginStart="@dimen/grid_4"
         android:layout_marginEnd="@dimen/grid_4"
         android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
       <include layout="@layout/project_card_stats_view"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_2"
         android:layout_marginBottom="@dimen/grid_4"
         android:layout_marginStart="@dimen/grid_4"
         android:layout_marginEnd="@dimen/grid_4"/>

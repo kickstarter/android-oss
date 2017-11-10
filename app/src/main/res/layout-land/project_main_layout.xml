@@ -142,8 +142,6 @@
 
   </LinearLayout>
 
-  <include layout="@layout/horizontal_line_0_5dp_view" />
-
   <include layout="@layout/project_creator_info" />
 
 </LinearLayout>

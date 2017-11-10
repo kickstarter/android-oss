@@ -18,10 +18,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="ContentDescription" />
-  
-  <View
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:background="@color/ksr_grey_500"/>
+
+  <include layout="@layout/horizontal_line_1dp_view" />
 
 </LinearLayout>

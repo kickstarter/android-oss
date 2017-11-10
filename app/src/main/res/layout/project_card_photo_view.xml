@@ -18,9 +18,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="ContentDescription" />
-
-  <include layout="@layout/horizontal_line_1dp_view"/>
-
+  
   <View
     android:layout_width="match_parent"
     android:layout_height="1dp"

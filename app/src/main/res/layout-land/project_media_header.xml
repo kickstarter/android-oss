@@ -38,7 +38,7 @@
 
     <RelativeLayout
       android:id="@+id/name_creator_view"
-      android:layout_marginBottom="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_2"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       tools:ignore="InconsistentLayout">
@@ -72,49 +72,39 @@
           tools:ignore="InconsistentLayout"
           tools:text="Secret Bunnies" />
 
-        <TextView
-          android:id="@+id/creator_name"
+        <LinearLayout
+          android:id="@+id/creator_info"
           android:layout_below="@id/project_name"
           android:focusable="true"
-          android:maxLines="1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="@drawable/click_indicator_light_masked"
-          style="@style/BodyWhite"
-          tools:ignore="InconsistentLayout"
-          tools:text="by Beatrix Potter" />
-
-        <LinearLayout
-          android:id="@+id/backer_label"
-          android:visibility="visible"
-          android:layout_toEndOf="@id/creator_name"
-          android:layout_alignTop="@id/creator_name"
           android:orientation="horizontal"
-          android:layout_width="wrap_content"
+          android:background="@drawable/click_indicator_light_masked"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:gravity="center_vertical"
+          android:paddingBottom="@dimen/grid_1"
+          android:paddingTop="@dimen/grid_1"
           tools:ignore="InconsistentLayout">
 
-          <TextView
-            android:text="@string/project_creator_youre_a_backer"
-            style="@style/BodyWhite"
-            android:layout_marginStart="@dimen/grid_1_half"
-            android:maxLines="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+          <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="@dimen/project_avatar_width"
+            android:layout_height="@dimen/project_avatar_height"
+            android:scaleType="centerCrop"
+            android:layout_marginEnd="@dimen/grid_1"
+            tools:background="@color/ksr_green_700"
+            tools:ignore="ContentDescription" />
 
-          <com.kickstarter.ui.views.IconTextView
-            app:iconType="ss_kickstarter"
-            android:id="@+id/backer_badge"
-            android:layout_gravity="center_vertical"
-            android:textSize="@dimen/caption_1"
+          <TextView
+            android:id="@+id/creator_name"
+            android:maxLines="2"
+            android:ellipsize="marquee"
+            style="@style/Caption1Primary"
+            android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:layout_marginStart="@dimen/grid_1_half"
-            android:text="@string/backer_icon"
-            android:textColor="@color/white" />
-        </LinearLayout>
+            tools:text="Creator Name" />
 
+        </LinearLayout>
       </RelativeLayout>
 
     </RelativeLayout>
@@ -126,6 +116,12 @@
       android:orientation="vertical"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
+
+      <include
+        layout="@layout/project_metadata_view"
+        android:layout_marginBottom="@dimen/grid_4"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/metadata_label_height" />
 
       <LinearLayout
         android:id="@+id/blurb_view"
@@ -142,7 +138,6 @@
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:paddingBottom="@dimen/grid_1"
           tools:ignore="InconsistentLayout"
           tools:text="Description about this project." />
 
@@ -152,13 +147,12 @@
           android:focusable="true"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_2"
-          android:layout_marginBottom="@dimen/grid_2"
+          android:layout_marginTop="@dimen/grid_3"
+          android:layout_marginBottom="@dimen/grid_3"
           android:text="@string/Read_more_about_the_campaign_arrow" />
       </LinearLayout>
 
       <LinearLayout
-        android:layout_marginTop="@dimen/grid_4"
         android:orientation="horizontal"
         android:layout_marginBottom="@dimen/grid_4"
         android:gravity="center_vertical"
@@ -177,8 +171,8 @@
           android:id="@+id/category"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:paddingStart="@dimen/grid_1_half"
-          android:paddingEnd="@dimen/grid_2"
+          android:paddingStart="@dimen/grid_1"
+          android:paddingEnd="@dimen/grid_5"
           style="@style/BodyWhite"
           tools:ignore="InconsistentLayout"
           tools:text="Category name" />
@@ -197,7 +191,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="1"
-          android:padding="@dimen/grid_1_half"
+          android:padding="@dimen/grid_1"
           style="@style/BodyWhite"
           tools:text="Location"
           tools:ignore="InconsistentLayout" />

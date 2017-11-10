@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels;
 
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.R;
@@ -79,14 +78,14 @@ public interface ProjectCardHolderViewModel {
         .map(NumberUtils::format);
 
       this.backingViewGroupIsGone = this.project
-        .map(p -> metadataForProject(p) != Metadata.BACKING);
+        .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.BACKING);
 
       this.deadlineCountdownText = this.project
         .map(ProjectUtils::deadlineCountdownValue)
         .map(NumberUtils::format);
 
       this.featuredViewGroupIsGone = this.project
-        .map(p -> metadataForProject(p) != Metadata.CATEGORY_FEATURED);
+        .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.CATEGORY_FEATURED);
 
       this.friendAvatarUrl = this.project
         .filter(Project::isFriendBacking)
@@ -115,10 +114,10 @@ public interface ProjectCardHolderViewModel {
         .map(ObjectUtils::isNull);
 
       this.metadataViewGroupIsGone = this.project
-        .map(p -> metadataForProject(p) == null);
+        .map(p -> ProjectUtils.metadataForProject(p) == null);
 
       this.metadataViewGroupBackground = this.backingViewGroupIsGone
-        .map(gone -> gone ? R.drawable.rect_white_grey_stroke : R.drawable.rect_green_700);
+        .map(gone -> gone ? R.drawable.rect_white_grey_stroke : R.drawable.rect_green_grey_stroke);
 
       this.nameAndBlurbText = this.project
         .map(p -> Pair.create(p.name(), p.blurb()));
@@ -141,7 +140,7 @@ public interface ProjectCardHolderViewModel {
         .map(p -> p.photo() == null ? null : p.photo().full());
 
       this.potdViewGroupIsGone = this.project
-        .map(p -> metadataForProject(p) != Metadata.POTD);
+        .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.POTD);
 
       this.projectCanceledAt = this.project
         .filter(p -> p.state().equals(Project.STATE_CANCELED))
@@ -180,7 +179,7 @@ public interface ProjectCardHolderViewModel {
       this.setDefaultTopPadding = this.metadataViewGroupIsGone;
 
       this.savedViewGroupIsGone = this.project
-        .map(p -> metadataForProject(p) != Metadata.SAVING);
+        .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.SAVING);
     }
 
     private final PublishSubject<Project> project = PublishSubject.create();
@@ -318,23 +317,6 @@ public interface ProjectCardHolderViewModel {
     }
     @Override public @NonNull Observable<Boolean> fundingSuccessfulViewGroupIsGone() {
       return this.fundingSuccessfulViewGroupIsGone;
-    }
-
-    private enum Metadata {
-      BACKING, SAVING, POTD, CATEGORY_FEATURED
-    }
-
-    private static @Nullable Metadata metadataForProject(final @NonNull Project project) {
-      if (project.isBacking()) {
-        return Metadata.BACKING;
-      } else if (project.isStarred()) {
-        return Metadata.SAVING;
-      } else if (project.isPotdToday()) {
-        return Metadata.POTD;
-      } else if (project.isFeaturedToday()) {
-        return Metadata.CATEGORY_FEATURED;
-      }
-      return null;
     }
   }
 }

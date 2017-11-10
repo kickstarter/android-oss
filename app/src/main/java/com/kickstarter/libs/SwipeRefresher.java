@@ -25,7 +25,7 @@ public final class SwipeRefresher {
     final @NonNull Func0<Observable<Boolean>> isRefreshing) {
 
     // Iterate through colors in loading spinner while waiting for refresh
-    layout.setColorSchemeResources(R.color.green, R.color.green_darken_10, R.color.green_darken_20, R.color.green_darken_10);
+    layout.setColorSchemeResources(R.color.ksr_green_500, R.color.ksr_green_700, R.color.ksr_green_800);
 
     // Emits when user has signaled to refresh layout
     RxSwipeRefreshLayout.refreshes(layout)

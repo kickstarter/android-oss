@@ -13,16 +13,18 @@
     android:foreground="@drawable/message_thread_click_indicator"
     android:layout_marginStart="@dimen/grid_2"
     android:layout_marginEnd="@dimen/grid_2"
+    android:layout_marginTop="@dimen/grid_1"
     android:layout_marginBottom="@dimen/grid_1"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/white"
-    app:cardElevation="0dp"
+    app:cardElevation="@dimen/card_no_elevation"
     app:cardCornerRadius="@dimen/card_corner_radius">
 
     <RelativeLayout
       android:padding="@dimen/grid_2"
+      android:background="@drawable/rect_white_grey_stroke"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 

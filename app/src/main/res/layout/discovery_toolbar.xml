@@ -30,7 +30,6 @@
       android:focusable="true"
       android:gravity="center_vertical"
       android:orientation="horizontal"
-      android:paddingEnd="@dimen/grid_2"
       tools:ignore="RtlSymmetry">
 
       <com.kickstarter.ui.views.IconButton

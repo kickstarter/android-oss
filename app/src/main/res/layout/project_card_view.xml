@@ -40,8 +40,6 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="end"
-          android:minHeight="48dp"
-          android:minWidth="48dp"
           android:background="@drawable/circle_black_alpha"
           android:contentDescription="@string/Save_this_project"
           android:focusable="true"

@@ -11,6 +11,7 @@ import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -33,7 +34,6 @@ import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectSocialActivity;
-import com.kickstarter.ui.views.IconButton;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -69,6 +69,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backer_label) LinearLayout backerLabelLinearLayout;
   protected @Bind(R.id.back_project_button) @Nullable Button backProjectButton;
+  protected @Bind(R.id.blurb_view) ViewGroup blurbViewGroup;
   protected @Bind(R.id.blurb) TextView blurbTextView;
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.comments_count) TextView commentsCountTextView;
@@ -83,7 +84,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.name_creator_view) @Nullable ViewGroup nameCreatorViewGroup;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.project_photo) ImageView photoImageView;
-  protected @Bind(R.id.play_button_overlay) IconButton playButton;
+  protected @Bind(R.id.play_button_overlay) ImageButton playButton;
   protected @Bind(R.id.pledged) TextView pledgedTextView;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.project_social_image) ImageView projectSocialImageView;
@@ -176,10 +177,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     }
 
     /* Project */
-    this.blurbTextView.setText(Html.fromHtml(this.ksString.format(this.blurbReadMoreString,
-      "blurb", TextUtils.htmlEncode(this.project.blurb()),
-      "space", "\u00A0"
-    )));
+    this.blurbTextView.setText(Html.fromHtml(TextUtils.htmlEncode(this.project.blurb())));
     this.creatorNameTextView.setText(Html.fromHtml(this.ksString.format(this.byCreatorString,
       "creator_name", TextUtils.htmlEncode(this.project.creator().name()))));
     if (this.project.isBacking()) {
@@ -228,7 +226,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.delegate.projectViewHolderBackProjectClicked(this);
   }
 
-  @OnClick({R.id.blurb, R.id.campaign})
+  @OnClick({R.id.blurb_view, R.id.campaign})
   public void blurbClick() {
     this.delegate.projectViewHolderBlurbClicked(this);
   }

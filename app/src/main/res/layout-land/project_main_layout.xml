@@ -79,21 +79,21 @@
         tools:ignore="InconsistentLayout">
 
         <Button
-          style="@style/GreenRoundedButton"
+          style="@style/PrimaryButton"
           android:id="@+id/back_project_button"
           android:visibility="visible"
           android:text="@string/project_back_button"
           tools:ignore="InconsistentLayout" />
 
         <Button
-          style="@style/BlueRoundedButton"
+          style="@style/SecondaryButton"
           android:id="@+id/manage_pledge_button"
           android:visibility="gone"
           android:text="@string/project_manage_button"
           tools:ignore="InconsistentLayout" />
 
         <Button
-          style="@style/BlueRoundedButton"
+          style="@style/SecondaryButton"
           android:id="@+id/view_pledge_button"
           android:visibility="gone"
           android:text="@string/project_view_button"

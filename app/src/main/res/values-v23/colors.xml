@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="discovery_status_bar">#ff030821</color>
+  <color name="status_bar">@color/ksr_grey_300</color>
 </resources>

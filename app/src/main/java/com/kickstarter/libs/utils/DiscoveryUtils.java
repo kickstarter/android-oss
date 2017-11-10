@@ -1,13 +1,8 @@
 package com.kickstarter.libs.utils;
 
-import android.content.Context;
-import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 
-import com.kickstarter.R;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
@@ -47,31 +42,6 @@ public final class DiscoveryUtils {
    */
   public static @NonNull DiscoveryParams.Sort sortFromPosition(final int position) {
     return DiscoveryParams.Sort.values()[position];
-  }
-
-  public static @ColorInt int primaryColor(final @NonNull Context context, final @Nullable Category category) {
-    return category != null ?
-      category.colorWithAlpha() :
-      ContextCompat.getColor(context, R.color.discovery_primary);
-  }
-
-  public static @ColorInt int secondaryColor(final @NonNull Context context, final @Nullable Category category) {
-    return category != null ?
-      category.secondaryColor(context) :
-      ContextCompat.getColor(context, R.color.discovery_secondary);
-  }
-
-  public static boolean overlayShouldBeLight(final @Nullable Category category) {
-    return category == null || category.overlayShouldBeLight();
-  }
-
-  public static @ColorInt int overlayTextColor(final @NonNull Context context, final @Nullable Category category) {
-    return overlayTextColor(context, overlayShouldBeLight(category));
-  }
-
-  public static @ColorInt int overlayTextColor(final @NonNull Context context, final boolean light) {
-    final @ColorRes int color = light ? KSColorUtils.lightColorId() : KSColorUtils.darkColorId();
-    return ContextCompat.getColor(context, color);
   }
 
   /**

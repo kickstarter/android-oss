@@ -196,7 +196,7 @@ public interface ProjectViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackVideoStart);
 
-      this.heartColorInt = currentProject.map(p -> p.isStarred() ? R.color.green : R.color.text_primary);
+      this.heartColorInt = currentProject.map(p -> p.isStarred() ? R.color.ksr_green_700 : R.color.text_primary);
 
       projectOnUserChangeSave
         .mergeWith(savedProjectOnLoginSuccess)

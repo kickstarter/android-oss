@@ -4,7 +4,6 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_100"
   android:orientation="vertical">
 
   <RelativeLayout
@@ -65,6 +64,7 @@
     <RelativeLayout
       android:id="@+id/campaign"
       android:focusable="true"
+      android:background="@drawable/click_indicator_light_masked"
       android:layout_width="match_parent"
       android:layout_height="@dimen/grid_7" >
 
@@ -74,7 +74,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:gravity="center_vertical"
-        android:textColor="@color/green_state_pressed_color"
+        android:textColor="@color/ksr_soft_black"
         android:textSize="@dimen/callout"
         android:text="@string/project_menu_buttons_campaign" />
 
@@ -84,7 +84,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/chevron_right_icon"
-        android:textColor="@color/green_state_pressed_color"
+        android:textColor="@color/ksr_soft_black"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true" />
 
@@ -99,6 +99,7 @@
 
     <RelativeLayout
       android:id="@+id/updates"
+      android:background="@drawable/click_indicator_light_masked"
       android:focusable="true"
       android:layout_width="match_parent"
       android:layout_height="@dimen/grid_7" >
@@ -109,17 +110,17 @@
         android:layout_toStartOf="@+id/updates_count"
         android:gravity="center_vertical"
         android:layout_alignParentStart="true"
-        android:textColor="@color/green_state_pressed_color"
+        android:textColor="@color/ksr_soft_black"
         android:textSize="@dimen/callout"
         android:text="@string/project_menu_buttons_updates" />
 
       <TextView
         android:id="@+id/updates_count"
-        android:background="@drawable/text_view_rounded_background"
+        android:background="@drawable/text_view_rect_background"
         android:gravity="center"
         android:layout_centerVertical="true"
         android:textSize="@dimen/body"
-        android:textColor="@color/white"
+        android:textColor="@color/ksr_soft_black"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -136,6 +137,7 @@
 
     <RelativeLayout
       android:id="@+id/comments"
+      android:background="@drawable/click_indicator_light_masked"
       android:focusable="true"
       android:layout_width="match_parent"
       android:layout_height="@dimen/grid_7" >
@@ -146,17 +148,17 @@
         android:layout_toStartOf="@+id/comments_count"
         android:layout_alignParentStart="true"
         android:gravity="center_vertical"
-        android:textColor="@color/green_state_pressed_color"
+        android:textColor="@color/ksr_soft_black"
         android:textSize="@dimen/callout"
         android:text="@string/project_menu_buttons_comments" />
 
       <TextView
         android:id="@+id/comments_count"
-        android:background="@drawable/text_view_rounded_background"
+        android:background="@drawable/text_view_rect_background"
         android:gravity="center"
         android:layout_centerVertical="true"
         android:textSize="@dimen/body"
-        android:textColor="@color/white"
+        android:textColor="@color/ksr_soft_black"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -169,16 +171,18 @@
   <TextView
     android:id="@+id/project_disclaimer_text_view"
     style="@style/Caption1Secondary"
+    android:textColor="@color/ksr_grey"
     android:paddingStart="@dimen/project_padding_x"
     android:paddingEnd="@dimen/project_padding_x"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/grid_4" />
 
-  <include layout="@layout/horizontal_line_1dp_view"
-    android:layout_height="wrap_content"
+  <View
     android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_marginBottom="@dimen/grid_4"
     android:layout_marginTop="@dimen/grid_5"
-    android:layout_marginBottom="@dimen/grid_4"/>
+    android:background="@color/ksr_dark_grey_500" />
 
 </LinearLayout>

@@ -15,7 +15,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-      style="@style/BodySecondary"
+      style="@style/RewardHeadline"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:paddingEnd="@dimen/grid_1"
@@ -37,7 +37,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-      style="@style/BodySecondary"
+      style="@style/RewardHeadline"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:paddingEnd="@dimen/grid_1"

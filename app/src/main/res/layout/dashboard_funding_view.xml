@@ -164,7 +164,7 @@
 
   <Button
     android:id="@+id/creator_view_project_button"
-    style="@style/BlueRoundedButton"
+    style="@style/SecondaryButton"
     android:layout_width="match_parent"
     android:layout_height="@dimen/grid_7"
     android:layout_marginTop="@dimen/grid_2"

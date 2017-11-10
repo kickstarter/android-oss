@@ -126,7 +126,7 @@
   <TextView
     android:id="@+id/project_disclaimer_text_view"
     style="@style/Caption1Secondary"
-    android:textColor="@color/ksr_grey"
+    android:textColor="@color/ksr_dark_grey_500"
     android:paddingStart="@dimen/project_padding_x"
     android:paddingEnd="@dimen/project_padding_x"
     android:layout_width="match_parent"

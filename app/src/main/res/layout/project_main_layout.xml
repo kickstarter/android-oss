@@ -118,7 +118,7 @@
         android:focusable="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/ksr_grey"
+        android:textColor="@color/ksr_soft_black"
         tools:ignore="InconsistentLayout"
         tools:text="Description about this project." />
 

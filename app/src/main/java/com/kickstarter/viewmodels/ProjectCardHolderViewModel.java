@@ -47,7 +47,7 @@ public interface ProjectCardHolderViewModel {
     Observable<Boolean> fundingUnsuccessfulViewGroupIsGone();
     Observable<Boolean> fundingSuccessfulViewGroupIsGone();
     Observable<Boolean> metadataViewGroupIsGone();
-    Observable<Integer> metadataViewGroupBackgroundColor();
+    Observable<Integer> metadataViewGroupBackgroundDrawable();
     Observable<Project> projectForDeadlineCountdownDetail();
     Observable<Integer> percentageFundedForProgressBar();
     Observable<Boolean> percentageFundedProgressBarIsGone();
@@ -117,8 +117,8 @@ public interface ProjectCardHolderViewModel {
       this.metadataViewGroupIsGone = this.project
         .map(p -> metadataForProject(p) == null);
 
-      this.metadataViewGroupBackgroundColor = this.backingViewGroupIsGone
-        .map(gone -> gone ? R.color.white : R.color.ksr_green_500);
+      this.metadataViewGroupBackground = this.backingViewGroupIsGone
+        .map(gone -> gone ? R.drawable.rect_white_grey_stroke : R.drawable.rect_green_700);
 
       this.nameAndBlurbText = this.project
         .map(p -> Pair.create(p.name(), p.blurb()));
@@ -196,7 +196,7 @@ public interface ProjectCardHolderViewModel {
     private final Observable<Boolean> fundingSuccessfulViewGroupIsGone;
     private final Observable<Boolean> fundingUnsuccessfulViewGroupIsGone;
     private final Observable<Boolean> imageIsInvisible;
-    private final Observable<Integer> metadataViewGroupBackgroundColor;
+    private final Observable<Integer> metadataViewGroupBackground;
     private final Observable<Boolean> metadataViewGroupIsGone;
     private final Observable<Pair<String, String>> nameAndBlurbText;
     private final Observable<Project> notifyDelegateOfProjectClick;
@@ -257,8 +257,8 @@ public interface ProjectCardHolderViewModel {
       return this.imageIsInvisible;
     }
     @Override
-    public Observable<Integer> metadataViewGroupBackgroundColor() {
-      return this.metadataViewGroupBackgroundColor;
+    public Observable<Integer> metadataViewGroupBackgroundDrawable() {
+      return this.metadataViewGroupBackground;
     }
     @Override public @NonNull Observable<Boolean> metadataViewGroupIsGone() {
       return this.metadataViewGroupIsGone;

@@ -7,6 +7,7 @@
   android:background="@drawable/gray_gradient"
   android:id="@+id/project_card_photo"
   android:gravity="center"
+  android:layout_marginBottom="@dimen/grid_2"
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
 
@@ -17,5 +18,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="ContentDescription" />
+
+  <include layout="@layout/horizontal_line_1dp_view" />
 
 </LinearLayout>

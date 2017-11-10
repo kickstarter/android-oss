@@ -69,7 +69,7 @@
 
         <TextView
           android:id="@+id/project_notifications_count"
-          android:background="@drawable/text_view_rounded_background"
+          android:background="@drawable/text_view_rect_background"
           android:textColor="@color/white"
           android:textSize="@dimen/caption_1"
           android:layout_width="wrap_content"

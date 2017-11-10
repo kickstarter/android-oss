@@ -14,11 +14,12 @@
   android:layout_width="match_parent"
   app:cardBackgroundColor="@color/white"
   app:cardCornerRadius="@dimen/card_corner_radius"
-  app:cardElevation="1dp"
+  app:cardElevation="@dimen/card_no_elevation"
   app:cardPreventCornerOverlap="false">
 
   <FrameLayout
     android:layout_width="match_parent"
+    android:background="@drawable/rect_white_dark_grey_stroke"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -38,7 +39,7 @@
 
         <TextView
           style="@style/Caption1SecondaryMedium"
-          android:background="@color/green"
+          android:background="@color/ksr_green_700"
           android:textColor="@color/white"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
@@ -63,10 +64,11 @@
 
           <TextView
             style="@style/Title3"
+            android:textSize="@dimen/headline"
             android:id="@+id/reward_minimum_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/reward_blue"
+            android:textColor="@color/ksr_green_700"
             tools:text="$20 AUD" />
 
           <TextView
@@ -143,22 +145,15 @@
           <TextView
             style="@style/BodyPrimaryMedium"
             android:id="@+id/reward_limit_and_remaining_text_view"
-            android:textColor="@color/orange"
+            android:textColor="@color/ksr_orange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Limited (20 left of 30)" />
 
-          <TextView
-            style="@style/BodyPrimaryMedium"
-            android:id="@+id/reward_limit_and_backers_separator_text_view"
-            android:paddingStart="@dimen/grid_1"
-            android:paddingEnd="@dimen/grid_1"
-            android:layout_width="wrap_content"
+          <Space
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="•"
-            tools:ignore="HardcodedText"
-            tools:visibility="visible" />
+            android:layout_weight="1"/>
 
           <TextView
             style="@style/BodyPrimaryMedium"

@@ -44,7 +44,6 @@ public final class RewardViewHolder extends KSViewHolder {
   protected @Bind(R.id.reward_description_text_view) TextView descriptionTextView;
   protected @Bind(R.id.reward_estimated_delivery_date_section) View estimatedDeliveryDateSection;
   protected @Bind(R.id.reward_estimated_delivery_date_text_view) TextView estimatedDeliveryDateTextView;
-  protected @Bind(R.id.reward_limit_and_backers_separator_text_view) TextView limitAndBackersSeparatorTextView;
   protected @Bind(R.id.reward_limit_and_remaining_text_view) TextView limitAndRemainingTextView;
   protected @Bind(R.id.reward_minimum_text_view) TextView minimumTextView;
   protected @Bind(R.id.reward_rewards_item_recycler_view) RecyclerView rewardsItemRecyclerView;
@@ -132,11 +131,6 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.rewardView::setClickable);
-
-    this.viewModel.outputs.limitAndBackersSeparatorIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.limitAndBackersSeparatorTextView));
 
     this.viewModel.outputs.limitAndRemainingTextViewIsGone()
       .compose(bindToLifecycle())

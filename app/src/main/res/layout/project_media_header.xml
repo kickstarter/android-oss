@@ -13,10 +13,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/gray_gradient"
+    android:layout_marginStart="@dimen/grid_2"
+    android:layout_margin="@dimen/grid_2"
     android:adjustViewBounds="true"
     tools:ignore="ContentDescription" />
 
-  <com.kickstarter.ui.views.IconButton
+  <ImageButton
     android:id="@+id/play_button_overlay"
     android:background="@drawable/video_button_background"
     android:contentDescription="@string/accessibility_projects_buttons_play_video"
@@ -24,9 +26,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:padding="14dp"
-    android:textSize="40sp"
-    android:text="@string/play_arrow"
-    android:textColor="@color/white"
-    android:visibility="gone" />
+    android:visibility="gone"
+    android:src="@drawable/ic_play_icon"
+    tools:visibility="visible"/>
 </FrameLayout>

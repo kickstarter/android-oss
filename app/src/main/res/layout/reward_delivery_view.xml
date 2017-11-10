@@ -2,7 +2,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:paddingTop="@dimen/grid_2"
-  android:orientation="horizontal"
+  android:orientation="vertical"
   android:layout_width="wrap_content"
   android:layout_height="wrap_content"
   tools:showIn="@layout/reward_view">
@@ -10,12 +10,12 @@
   <LinearLayout
     android:id="@+id/reward_estimated_delivery_date_section"
     android:orientation="vertical"
-    android:paddingEnd="@dimen/grid_4"
+    android:paddingBottom="@dimen/grid_4"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <TextView
-      style="@style/BodySecondary"
+      style="@style/RewardHeadline"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/rewards_info_estimated_delivery" />
@@ -36,7 +36,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-      style="@style/BodySecondary"
+      style="@style/RewardHeadline"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/rewards_info_shipping" />

@@ -18,7 +18,6 @@
       android:orientation="vertical">
 
       <RelativeLayout
-        android:background="@color/dark_blue"
         android:focusableInTouchMode="true"
         android:focusable="true"
         android:layout_width="match_parent"
@@ -27,7 +26,6 @@
         <include layout="@layout/woohoo_background_view" />
 
         <TextView
-          android:background="@color/transparent"
           android:gravity="center"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -35,7 +33,7 @@
           android:layout_centerHorizontal="true"
           android:paddingTop="46dp"
           android:paddingBottom="46dp"
-          android:textColor="@color/white"
+          android:textColor="@color/ksr_soft_black"
           android:textSize="30sp"
           android:text="@string/project_checkout_share_exclamation" />
 
@@ -65,7 +63,7 @@
           android:orientation="horizontal">
 
           <Button
-            style="@style/FacebookButton"
+            style="@style/FacebookShareButton"
             android:id="@+id/share_on_facebook_button"
             android:ellipsize="none"
             android:layout_marginEnd="@dimen/grid_2"

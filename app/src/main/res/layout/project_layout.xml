@@ -12,8 +12,7 @@
     android:layout_below="@id/project_toolbar"
     android:layout_above="@+id/project_action_buttons"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/ksr_grey_100"/>
+    android:layout_height="match_parent" />
 
   <RelativeLayout
     android:id="@+id/project_action_buttons"

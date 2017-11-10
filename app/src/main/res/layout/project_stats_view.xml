@@ -15,6 +15,30 @@
     tools:ignore="RtlSymmetry">
 
     <TextView
+      android:id="@+id/pledged"
+      style="@style/CalloutPrimaryMedium"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="@color/ksr_green_700" />
+
+    <TextView
+      android:id="@+id/goal"
+      android:importantForAccessibility="no"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/Caption1Secondary"
+      android:textColor="@color/ksr_green_700" />
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingEnd="@dimen/grid_2"
+    tools:ignore="RtlSymmetry">
+
+    <TextView
       android:id="@+id/backers_count"
       style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
@@ -26,28 +50,6 @@
       android:layout_height="wrap_content"
       android:text="@string/discovery_baseball_card_stats_backers"
       style="@style/Caption1Secondary" />
-  </LinearLayout>
-
-  <LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingEnd="@dimen/grid_2"
-    tools:ignore="RtlSymmetry">
-
-    <TextView
-      android:id="@+id/pledged"
-      style="@style/CalloutPrimaryMedium"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
-
-    <TextView
-      android:id="@+id/goal"
-      android:importantForAccessibility="no"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      style="@style/Caption1Secondary" />
-
   </LinearLayout>
 
   <LinearLayout

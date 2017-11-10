@@ -67,7 +67,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.fundingUnsuccessfulViewGroupIsGone().subscribe(this.fundingUnsuccessfulViewGroupIsGone);
     this.vm.outputs.fundingSuccessfulViewGroupIsGone().subscribe(this.fundingSuccessfulViewGroupIsGone);
     this.vm.outputs.imageIsInvisible().subscribe(this.imageIsInvisible);
-    this.vm.outputs.metadataViewGroupBackground().subscribe(this.metadataViewGroupBackgroundDrawable);
+    this.vm.outputs.metadataViewGroupBackgroundDrawable().subscribe(this.metadataViewGroupBackgroundDrawable);
     this.vm.outputs.metadataViewGroupIsGone().subscribe(this.metadataViewGroupIsGone);
     this.vm.outputs.nameAndBlurbText().subscribe(this.nameAndBlurbText);
     this.vm.outputs.notifyDelegateOfProjectClick().subscribe(this.notifyDelegateOfProjectClick);

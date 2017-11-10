@@ -47,7 +47,7 @@ public interface ProjectCardHolderViewModel {
     Observable<Boolean> fundingUnsuccessfulViewGroupIsGone();
     Observable<Boolean> fundingSuccessfulViewGroupIsGone();
     Observable<Boolean> metadataViewGroupIsGone();
-    Observable<Integer> metadataViewGroupBackground();
+    Observable<Integer> metadataViewGroupBackgroundDrawable();
     Observable<Project> projectForDeadlineCountdownDetail();
     Observable<Integer> percentageFundedForProgressBar();
     Observable<Boolean> percentageFundedProgressBarIsGone();
@@ -257,7 +257,7 @@ public interface ProjectCardHolderViewModel {
       return this.imageIsInvisible;
     }
     @Override
-    public Observable<Integer> metadataViewGroupBackground() {
+    public Observable<Integer> metadataViewGroupBackgroundDrawable() {
       return this.metadataViewGroupBackground;
     }
     @Override public @NonNull Observable<Boolean> metadataViewGroupIsGone() {

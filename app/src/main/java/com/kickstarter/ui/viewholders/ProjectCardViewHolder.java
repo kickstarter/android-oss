@@ -218,7 +218,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         this.featuredTextView.setText(this.ksString.format(this.featuredInString, "category_name", rootCategory))
       );
 
-    this.viewModel.outputs.metadataViewGroupBackground()
+    this.viewModel.outputs.metadataViewGroupBackgroundDrawable()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(drawableRes -> this.projectMetadataViewGroup.setBackground(ContextCompat.getDrawable(this.context(), drawableRes)));

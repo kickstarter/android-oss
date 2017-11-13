@@ -107,8 +107,7 @@
     <item name="android:singleLine">true</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:paddingStart">@dimen/grid_4</item>
-    <item name="android:paddingEnd">@dimen/grid_4</item>
+    <item name="android:padding">@dimen/grid_3</item>
     <item name="android:textSize">@dimen/callout</item>
     <item name="android:fontFamily">@string/font_family_sans_serif</item>
   </style>
@@ -120,8 +119,7 @@
     <item name="android:layout_centerInParent">true</item>
     <item name="android:singleLine">true</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:paddingStart">@dimen/grid_4</item>
-    <item name="android:paddingEnd">@dimen/grid_4</item>
+    <item name="android:padding">@dimen/grid_3</item>
     <item name="android:textSize">@dimen/callout</item>
     <item name="android:fontFamily">@string/font_family_sans_serif</item>
   </style>

@@ -5,7 +5,7 @@
   <color name="primary_dark">@color/black_alpha_17</color>
   <color name="accent">@color/ksr_green_700</color>
   <color name="text_primary">@color/ksr_soft_black</color>
-  <color name="text_secondary">@color/ksr_text_navy_500</color>
+  <color name="text_secondary">@color/ksr_dark_grey_400</color>
   <color name="window_background">@color/white</color>
   <color name="status_bar">@color/primary_dark</color>
 

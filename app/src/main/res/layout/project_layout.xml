@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_height="match_parent"
-  android:layout_width="match_parent" >
+  android:layout_width="match_parent">
 
   <include layout="@layout/project_toolbar"
     android:id="@+id/project_toolbar" />
@@ -26,7 +27,8 @@
       android:id="@+id/back_project_button"
       android:visibility="gone"
       android:background="@drawable/button_green"
-      android:text="@string/project_back_button" />
+      android:text="@string/project_back_button"
+      tools:visibility="visible"/>
 
     <Button
       style="@style/ProjectActionButton"

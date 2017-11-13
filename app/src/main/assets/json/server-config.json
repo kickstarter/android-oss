@@ -9604,6 +9604,7 @@
     "huzza_new_design": true,
     "sassy_classifier": true,
     "ksr_live_homepage": true,
+    "react_cc_form": true,
     "message_spam": true,
     "new_message_inbox": true,
     "ref_banner_ads": true,
@@ -9801,7 +9802,7 @@
     "project_dashboard": "control",
     "react_guest_pledging": "control",
     "react_payment_sources_form": "control",
-    "favorites_recs": "control",
+    "favorites_recs": "experimental",
     "thanks_page_better_recs": "control",
     "project_card_hearts": "control",
     "guided_search": "control"

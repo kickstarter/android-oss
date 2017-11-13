@@ -45,7 +45,7 @@
         android:layout_marginStart="@dimen/grid_2"
         android:layout_marginEnd="@dimen/grid_2"
         android:textColor="@color/ksr_dark_grey_500"
-        android:text="@string/login_tout_disclaimer_we_never_post_anything_without_permission" />
+        android:text="@string/discovery_facebook_connect_hero_we_will_never_post_anything_on_facebook" />
 
       <Button
         style="@style/BorderButton"

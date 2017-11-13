@@ -178,7 +178,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     vm.outputs.showLoginTout().subscribe(showLoginTout);
 
     final TestSubscriber<Pair<Project, RefTag>> showProject = new TestSubscriber<>();
-    vm.outputs.showProject().subscribe(showProject);
+    vm.outputs.startProjectActivity().subscribe(showProject);
 
     // Clicking see activity feed button on sampler should show activity feed.
     showActivityFeed.assertNoValues();
@@ -205,7 +205,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     // Clicking on a project card should show project activity.
     showProject.assertNoValues();
-    vm.inputs.projectCardViewHolderClick(null, ProjectFactory.project());
+    vm.inputs.projectCardViewHolderClicked(ProjectFactory.project());
     showProject.assertValueCount(1);
   }
 }

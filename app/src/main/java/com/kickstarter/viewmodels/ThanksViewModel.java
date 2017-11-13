@@ -3,9 +3,10 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -18,8 +19,7 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ThanksActivity;
-import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
-import com.kickstarter.ui.viewholders.ThanksProjectViewHolder;
+import com.kickstarter.ui.adapters.data.ThanksData;
 import com.kickstarter.viewmodels.inputs.ThanksViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ThanksViewModelOutputs;
 
@@ -44,51 +44,32 @@ public final class ThanksViewModel extends ActivityViewModel<ThanksActivity> imp
   private final CurrentUserType currentUser;
 
   // INPUTS
-  private final PublishSubject<Void> shareClick = PublishSubject.create();
-  @Override
-  public void shareClick() {
-    this.shareClick.onNext(null);
-  }
-
-  private final PublishSubject<Void> shareOnFacebookClick = PublishSubject.create();
-  @Override
-  public void shareOnFacebookClick() {
-    this.shareOnFacebookClick.onNext(null);
-  }
-
-  private final PublishSubject<Void> shareOnTwitterClick = PublishSubject.create();
-  @Override
-  public void shareOnTwitterClick() {
-    this.shareOnTwitterClick.onNext(null);
-  }
-
   private final PublishSubject<Void> signupToGamesNewsletterClick = PublishSubject.create();
   @Override
   public void signupToGamesNewsletterClick() {
     this.signupToGamesNewsletterClick.onNext(null);
   }
 
-  // THANKS PROJECT VIEW HOLDER INPUT
-  private final PublishSubject<Project> projectClick = PublishSubject.create();
+  // PROJECT CARD VIEW HOLDER DELEGATE INPUT
+  private final PublishSubject<Project> projectCardViewHolderClicked  = PublishSubject.create();
   @Override
-  public void projectClick(final @NonNull ThanksProjectViewHolder viewHolder, final @NonNull Project project) {
-    this.projectClick.onNext(project);
+  public void projectCardViewHolderClicked(final @NonNull Project project) {
+    this.projectCardViewHolderClicked.onNext(project);
   }
 
-  // THANKS CATEGORY VIEW HOLDER INPUT
-  private final PublishSubject<Category> categoryClick = PublishSubject.create();
+  // THANKS CATEGORY VIEW HOLDER DELEGATE INPUT
+  private final PublishSubject<Category> categoryCardViewHolderClicked = PublishSubject.create();
   @Override
-  public void categoryClick(final @NonNull ThanksCategoryViewHolder viewHolder, final @NonNull Category category) {
-    this.categoryClick.onNext(category);
+  public void categoryViewHolderClicked(final @NonNull Category category) {
+    this.categoryCardViewHolderClicked.onNext(category);
   }
 
   // OUTPUTS
-  private final BehaviorSubject<String> projectName = BehaviorSubject.create();
+  private final BehaviorSubject<ThanksData> adapterData = BehaviorSubject.create();
   @Override
-  public @NonNull Observable<String> projectName() {
-    return this.projectName;
+  public Observable<ThanksData> adapterData() {
+    return this.adapterData;
   }
-
   private final PublishSubject<Void> showConfirmGamesNewsletterDialog = PublishSubject.create();
   @Override
   public @NonNull Observable<Void> showConfirmGamesNewsletterDialog() {
@@ -107,40 +88,22 @@ public final class ThanksViewModel extends ActivityViewModel<ThanksActivity> imp
     return this.showRatingDialog;
   }
 
-  private final BehaviorSubject<Pair<List<Project>, Category>> showRecommendations = BehaviorSubject.create();
+  private final BehaviorSubject<Pair<List<Project>, Category>> showRecommendedProjects = BehaviorSubject.create();
   @Override
-  public @NonNull Observable<Pair<List<Project>, Category>> showRecommendations() {
-    return this.showRecommendations;
+  public @NonNull Observable<Pair<List<Project>, Category>> showRecommendedProjects() {
+    return this.showRecommendedProjects;
   }
 
-  private final PublishSubject<DiscoveryParams> startDiscovery = PublishSubject.create();
+  private final PublishSubject<DiscoveryParams> startDiscoveryActivity = PublishSubject.create();
   @Override
-  public @NonNull Observable<DiscoveryParams> startDiscovery() {
-    return this.startDiscovery;
+  public @NonNull Observable<DiscoveryParams> startDiscoveryActivity() {
+    return this.startDiscoveryActivity;
   }
 
-  private final PublishSubject<Project> startProject = PublishSubject.create();
+  private final PublishSubject<Pair<Project, RefTag>> startProjectActivity = PublishSubject.create();
   @Override
-  public @NonNull Observable<Project> startProject() {
-    return this.startProject;
-  }
-
-  private final PublishSubject<Project> startShare = PublishSubject.create();
-  @Override
-  public @NonNull Observable<Project> startShare() {
-    return this.startShare;
-  }
-
-  private final PublishSubject<Project> startShareOnFacebook = PublishSubject.create();
-  @Override
-  public @NonNull Observable<Project> startShareOnFacebook() {
-    return this.startShareOnFacebook;
-  }
-
-  private final PublishSubject<Project> startShareOnTwitter = PublishSubject.create();
-  @Override
-  public @NonNull Observable<Project> startShareOnTwitter() {
-    return this.startShareOnTwitter;
+  public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
+    return this.startProjectActivity;
   }
 
   private final PublishSubject<User> signedUpToGamesNewsletter = PublishSubject.create();
@@ -163,10 +126,6 @@ public final class ThanksViewModel extends ActivityViewModel<ThanksActivity> imp
       .compose(bindToLifecycle());
 
     final Observable<Category> rootCategory = project.flatMap(this::rootCategory);
-    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = project
-      .flatMap(this::relatedProjects)
-      .compose(bindToLifecycle())
-      .compose(zipPair(rootCategory));
 
     final Observable<Boolean> isGamesCategory = rootCategory
       .map(c -> "games".equals(c.slug()));
@@ -182,40 +141,29 @@ public final class ThanksViewModel extends ActivityViewModel<ThanksActivity> imp
     )
       .take(1);
 
-    project
-      .map(Project::name)
-      .compose(bindToLifecycle())
-      .subscribe(this.projectName::onNext);
-
-    this.projectClick
-      .compose(bindToLifecycle())
-      .subscribe(this.startProject::onNext);
-
-    project
-      .compose(takeWhen(this.shareClick))
-      .compose(bindToLifecycle())
-      .subscribe(this.startShare::onNext);
-
-    project
-      .compose(takeWhen(this.shareOnFacebookClick))
-      .compose(bindToLifecycle())
-      .subscribe(this.startShareOnFacebook::onNext);
-
-    project
-      .compose(takeWhen(this.shareOnTwitterClick))
-      .compose(bindToLifecycle())
-      .subscribe(this.startShareOnTwitter::onNext);
-
-    this.categoryClick
+    this.categoryCardViewHolderClicked
       .map(c -> DiscoveryParams.builder().category(c).build())
       .compose(bindToLifecycle())
-      .subscribe(this.startDiscovery::onNext);
+      .subscribe(this.startDiscoveryActivity::onNext);
+
+    this.projectCardViewHolderClicked
+      .compose(bindToLifecycle())
+      .subscribe(p -> this.startProjectActivity.onNext(Pair.create(p, RefTag.thanks())));
+
+    Observable.combineLatest(
+      project,
+      rootCategory,
+      project.flatMap(this::relatedProjects),
+      ThanksData::new
+    )
+      .compose(bindToLifecycle())
+      .subscribe(this.adapterData::onNext);
 
     project
       .flatMap(this::relatedProjects)
       .compose(zipPair(rootCategory))
       .compose(bindToLifecycle())
-      .subscribe(this.showRecommendations::onNext);
+      .subscribe(this.showRecommendedProjects::onNext);
 
     Observable.just(this.hasSeenAppRatingPreference.get())
       .take(1)
@@ -249,25 +197,13 @@ public final class ThanksViewModel extends ActivityViewModel<ThanksActivity> imp
       .subscribe(__ -> this.showConfirmGamesNewsletterDialog.onNext(null));
 
     // Event tracking
-    this.categoryClick
+    this.categoryCardViewHolderClicked
       .compose(bindToLifecycle())
       .subscribe(__ -> this.koala.trackCheckoutFinishJumpToDiscovery());
 
-    this.projectClick
+    this.projectCardViewHolderClicked
       .compose(bindToLifecycle())
-      .subscribe(__ -> this.koala.trackCheckoutFinishJumpToProject());
-
-    this.shareClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> this.koala.trackCheckoutShowShareSheet());
-
-    this.shareOnFacebookClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> this.koala.trackCheckoutShowFacebookShareView());
-
-    this.shareOnTwitterClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> this.koala.trackCheckoutShowTwitterShareView());
+      .subscribe(this.koala::trackCheckoutFinishJumpToProject);
 
     this.signedUpToGamesNewsletter
       .compose(bindToLifecycle())

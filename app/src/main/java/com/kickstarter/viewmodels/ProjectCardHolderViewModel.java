@@ -30,8 +30,11 @@ import static com.kickstarter.libs.rx.transformers.Transformers.coalesce;
 public interface ProjectCardHolderViewModel {
 
   interface Inputs {
+    /** Call to configure view model with a project. */
     void configureWith(Project project);
-    void projectClicked();
+
+    /** Call when the project card has been clicked. */
+    void projectCardClicked();
   }
 
   interface Outputs {
@@ -62,8 +65,8 @@ public interface ProjectCardHolderViewModel {
     Observable<DateTime> projectSuccessfulAt();
     Observable<DateTime> projectSuspendedAt();
     Observable<String> rootCategoryNameForFeatured();
-    Observable<Boolean> setDefaultTopPadding();
     Observable<Boolean> savedViewGroupIsGone();
+    Observable<Boolean> setDefaultTopPadding();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectCardViewHolder> implements Inputs, Outputs {
@@ -123,7 +126,7 @@ public interface ProjectCardHolderViewModel {
         .map(p -> Pair.create(p.name(), p.blurb()));
 
       this.notifyDelegateOfProjectClick = this.project
-        .compose(Transformers.takeWhen(this.projectClicked));
+        .compose(Transformers.takeWhen(this.projectCardClicked));
 
       this.percentageFundedForProgressBar = this.project
         .map(p -> (p.state().equals(Project.STATE_LIVE) || p.state().equals(Project.STATE_SUCCESSFUL)) ? p.percentageFunded() : 0.0f)
@@ -176,14 +179,14 @@ public interface ProjectCardHolderViewModel {
         .filter(ObjectUtils::isNotNull)
         .map(Category::name);
 
-      this.setDefaultTopPadding = this.metadataViewGroupIsGone;
-
       this.savedViewGroupIsGone = this.project
         .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.SAVING);
+
+      this.setDefaultTopPadding = this.metadataViewGroupIsGone;
     }
 
     private final PublishSubject<Project> project = PublishSubject.create();
-    private final PublishSubject<Void> projectClicked = PublishSubject.create();
+    private final PublishSubject<Void> projectCardClicked = PublishSubject.create();
 
     private final Observable<String> backersCountTextViewText;
     private final Observable<Boolean> backingViewGroupIsGone;
@@ -212,20 +215,17 @@ public interface ProjectCardHolderViewModel {
     private final Observable<DateTime> projectSuccessfulAt;
     private final Observable<DateTime> projectSuspendedAt;
     private final Observable<String> rootCategoryNameForFeatured;
-    private final Observable<Boolean> setDefaultTopPadding;
     private final Observable<Boolean> savedViewGroupIsGone;
+    private final Observable<Boolean> setDefaultTopPadding;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override
-    public void configureWith(final @NonNull Project project) {
+    @Override public void configureWith(final @NonNull Project project) {
       this.project.onNext(project);
     }
-
-    @Override
-    public void projectClicked() {
-      this.projectClicked.onNext(null);
+    @Override public void projectCardClicked() {
+      this.projectCardClicked.onNext(null);
     }
 
     @Override public @NonNull Observable<String> backersCountTextViewText() {
@@ -248,6 +248,9 @@ public interface ProjectCardHolderViewModel {
     }
     @Override public @NonNull Observable<List<User>> friendsForNamepile() {
       return this.friendsForNamepile;
+    }
+    @Override public @NonNull Observable<Boolean> fundingSuccessfulViewGroupIsGone() {
+      return this.fundingSuccessfulViewGroupIsGone;
     }
     @Override public @NonNull Observable<Boolean> fundingUnsuccessfulViewGroupIsGone() {
       return this.fundingUnsuccessfulViewGroupIsGone;
@@ -287,7 +290,6 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<Boolean> projectCardStatsViewGroupIsGone() {
       return this.projectCardStatsViewGroupIsGone;
     }
-
     @Override public @NonNull Observable<Project> projectForDeadlineCountdownDetail() {
       return this.projectForDeadlineCountdownDetail;
     }
@@ -314,9 +316,6 @@ public interface ProjectCardHolderViewModel {
     }
     @Override public @NonNull Observable<Boolean> savedViewGroupIsGone() {
       return this.savedViewGroupIsGone;
-    }
-    @Override public @NonNull Observable<Boolean> fundingSuccessfulViewGroupIsGone() {
-      return this.fundingSuccessfulViewGroupIsGone;
     }
   }
 }

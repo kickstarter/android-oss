@@ -138,15 +138,19 @@
   </style>
 
   <style name="ShareButton" parent="TertiaryButton">
-    <!--O_< something about the drawable padding is off-->
+    <item name="android:ellipsize">none</item>
+    <item name="android:layout_gravity">center</item>
+    <item name="android:textAllCaps">false</item>
   </style>
 
   <style name="TwitterButton" parent="ShareButton">
     <item name="android:drawableStart">@drawable/ic_social_twitter</item>
+    <item name="android:text">@string/project_checkout_share_buttons_tweet</item>
   </style>
 
   <style name="FacebookShareButton" parent="ShareButton">
     <item name="android:drawableStart">@drawable/ic_social_facebook_share</item>
+    <item name="android:text">@string/project_checkout_share_buttons_share</item>
   </style>
 
   <style name="FacebookButton" parent="Button">

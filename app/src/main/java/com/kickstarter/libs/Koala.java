@@ -357,8 +357,9 @@ public final class Koala {
     this.client.track("Checkout Finished Discover More");
   }
 
-  public void trackCheckoutFinishJumpToProject() {
-    this.client.track("Checkout Finished Discover Open Project");
+  public void trackCheckoutFinishJumpToProject(final @NonNull Project project) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(project);
+    this.client.track("Checkout Finished Discover Open Project", props);
   }
 
   // SHARE

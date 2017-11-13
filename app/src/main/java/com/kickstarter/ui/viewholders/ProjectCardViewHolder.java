@@ -41,8 +41,8 @@ import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 
 public final class ProjectCardViewHolder extends KSViewHolder {
   private final ProjectCardHolderViewModel.ViewModel viewModel;
-  private final Delegate delegate;
   private final KSString ksString;
+  private final Delegate delegate;
 
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
@@ -88,7 +88,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 
   public interface Delegate {
-    void projectCardViewHolderClick(ProjectCardViewHolder viewHolder, Project project);
+    void projectCardViewHolderClicked(Project project);
   }
 
   public ProjectCardViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -154,7 +154,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.outputs.notifyDelegateOfProjectClick()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(p -> delegate.projectCardViewHolderClick(this, p));
+      .subscribe(delegate::projectCardViewHolderClicked);
 
     this.viewModel.outputs.percentageFundedTextViewText()
       .compose(bindToLifecycle())
@@ -306,7 +306,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
   @Override
   public void onClick(final @NonNull View view) {
-    this.viewModel.inputs.projectClicked();
+    this.viewModel.inputs.projectCardClicked();
   }
 
   /**

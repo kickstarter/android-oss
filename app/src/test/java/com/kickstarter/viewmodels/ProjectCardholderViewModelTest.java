@@ -274,7 +274,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.vm.inputs.projectClicked();
+    this.vm.inputs.projectCardClicked();
     this.notifyDelegateOfProjectClick.assertValues(project);
   }
 

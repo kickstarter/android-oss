@@ -42,4 +42,11 @@
     <item name="android:layout_marginStart">@dimen/grid_2</item>
     <item name="android:layout_marginEnd">@dimen/grid_2</item>
   </style>
+
+  <!-- Rewards -->
+  <style name="RewardHeadline" parent="Caption2Primary">
+    <item name="android:textColor">@color/ksr_dark_grey_400</item>
+    <item name="android:textAllCaps">true</item>
+    <item name="android:letterSpacing">.2</item>
+  </style>
 </resources>

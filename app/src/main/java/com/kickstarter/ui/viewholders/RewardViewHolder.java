@@ -20,13 +20,12 @@ import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.CheckoutActivity;
 import com.kickstarter.ui.activities.BackingActivity;
+import com.kickstarter.ui.activities.CheckoutActivity;
 import com.kickstarter.ui.adapters.RewardsItemAdapter;
 import com.kickstarter.viewmodels.RewardViewModel;
 
 import butterknife.Bind;
-import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
@@ -55,9 +54,6 @@ public final class RewardViewHolder extends KSViewHolder {
   protected @Bind(R.id.reward_view) CardView rewardView;
   protected @Bind(R.id.reward_usd_conversion_text_view) TextView usdConversionTextView;
   protected @Bind(R.id.reward_white_overlay_view) View whiteOverlayView;
-
-  protected @BindColor(R.color.light_green) int lightGreenColor;
-  protected @BindColor(R.color.white) int whiteColor;
 
   protected @BindString(R.string.rewards_info_limited_rewards_remaining_left_of_reward_limit) String limitedRewardsRemainingString;
   protected @BindString(R.string.rewards_title_pledge_reward_currency_or_more) String pledgeRewardCurrencyOrMoreString;
@@ -161,12 +157,6 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.selectedHeader));
-
-    this.viewModel.outputs.selectedOverlayIsGone()
-      .map(hidden -> hidden ? this.whiteColor : this.lightGreenColor)
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.rewardView::setCardBackgroundColor);
 
     this.viewModel.outputs.shippingSummarySectionIsGone()
       .compose(bindToLifecycle())

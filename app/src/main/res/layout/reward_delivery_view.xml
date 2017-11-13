@@ -1,7 +1,7 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  android:paddingTop="@dimen/grid_2"
+  android:paddingTop="@dimen/grid_4"
   android:orientation="vertical"
   android:layout_width="wrap_content"
   android:layout_height="wrap_content"
@@ -23,6 +23,7 @@
     <TextView
       style="@style/BodyPrimary"
       android:id="@+id/reward_estimated_delivery_date_text_view"
+      android:paddingTop="@dimen/grid_1"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       tools:text="September 2017" />
@@ -44,6 +45,7 @@
     <TextView
       style="@style/BodyPrimary"
       android:id="@+id/reward_shipping_summary_text_view"
+      android:paddingTop="@dimen/grid_1"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       tools:text="Anywhere" />

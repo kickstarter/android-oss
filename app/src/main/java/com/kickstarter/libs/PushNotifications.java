@@ -264,8 +264,8 @@ public final class PushNotifications {
     final @NonNull String text) {
 
     return new NotificationCompat.Builder(this.context)
-      .setSmallIcon(R.drawable.ic_kickstarter_k)
-      .setColor(ContextCompat.getColor(this.context, R.color.green))
+      .setSmallIcon(R.drawable.ic_kickstarter_micro_k)
+      .setColor(ContextCompat.getColor(this.context, R.color.ksr_green_800))
       .setContentText(text)
       .setContentTitle(title)
       .setStyle(new NotificationCompat.BigTextStyle().bigText(text))

@@ -1,42 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<Button
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:card_view="http://schemas.android.com/apk/res-auto"
-  android:id="@+id/thanks_category_view"
+  xmlns:tools="http://schemas.android.com/tools"
+  style="@style/BorderButton"
+  android:id="@+id/thanks_explore_category_button"
   android:focusable="true"
-  android:layout_width="@dimen/thanks_project_photo_width"
-  android:layout_height="@dimen/thanks_project_photo_height"
-  card_view:cardElevation="0dp"
-  card_view:cardCornerRadius="@dimen/card_corner_radius"
-  card_view:cardBackgroundColor="@color/blue"
-  android:layout_marginStart="@dimen/grid_1_half"
-  android:layout_marginEnd="@dimen/grid_1_half">
-
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
-
-    <TextView
-      android:id="@+id/explore_text_view"
-      android:layout_gravity="center"
-      android:gravity="center"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:paddingBottom="@dimen/grid_1_half"
-      android:textSize="18sp"
-      android:textColor="@color/white" />
-
-    <TextView
-      android:id="@+id/live_projects_text_view"
-      android:layout_gravity="center"
-      android:gravity="center"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:textSize="14sp"
-      android:textColor="@color/white" />
-
-  </LinearLayout>
-
-</android.support.v7.widget.CardView>
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginStart="@dimen/grid_2"
+  android:layout_marginEnd="@dimen/grid_2"
+  android:layout_marginTop="@dimen/grid_3"
+  android:layout_marginBottom="@dimen/grid_4"
+  tools:text="Explore Publishing"/>

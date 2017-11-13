@@ -88,7 +88,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
       .compose(observeForUI())
       .subscribe(this::startUpdateActivity);
 
-    this.viewModel.outputs.showProject()
+    this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));

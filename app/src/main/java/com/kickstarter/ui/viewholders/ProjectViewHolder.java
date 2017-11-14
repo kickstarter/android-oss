@@ -162,7 +162,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   public void onBind() {
     final Photo photo = this.project.photo();
     if (photo != null) {
-      final int targetImageWidth = (int) (getScreenWidthDp(this.context) * getScreenDensity(this.context));
+      // Account for the grid2 start and end margins.
+      final int targetImageWidth = (int) (getScreenWidthDp(this.context) * getScreenDensity(this.context)) - this.grid2Dimen * 2;
       final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
       this.photoImageView.setMaxHeight(targetImageHeight);
 

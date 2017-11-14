@@ -74,34 +74,6 @@
         android:layout_height="wrap_content"
         tools:text="Creator Name" />
 
-      <LinearLayout
-        android:id="@+id/backer_label"
-        android:visibility="gone"
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:ignore="InconsistentLayout">
-
-        <TextView
-          android:text="@string/project_creator_youre_a_backer"
-          android:maxLines="1"
-          style="@style/BodySecondary"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
-
-        <com.kickstarter.ui.views.IconTextView
-          app:iconType="ss_kickstarter"
-          android:id="@+id/backer_badge"
-          android:layout_gravity="center_vertical"
-          android:textSize="@dimen/caption_1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="1dp"
-          android:layout_marginStart="@dimen/grid_1_half"
-          android:text="@string/backer_icon"
-          android:textColor="@color/green"/>
-      </LinearLayout>
-
     </LinearLayout>
 
     <LinearLayout
@@ -122,14 +94,28 @@
         tools:ignore="InconsistentLayout"
         tools:text="Description about this project." />
 
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:orientation="horizontal">
+
         <TextView
           style="@style/BodyPrimaryMedium"
           android:focusable="true"
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_3"
-          android:layout_marginBottom="@dimen/grid_3"
-          android:text="@string/Read_more_about_the_campaign_arrow" />
+          android:layout_marginEnd="@dimen/grid_1"
+          android:text="@string/Read_more_about_the_campaign" />
+
+        <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/ic_arrow_right"
+          tools:ignore="ContentDescription" />
+      </LinearLayout>
 
     </LinearLayout>
 

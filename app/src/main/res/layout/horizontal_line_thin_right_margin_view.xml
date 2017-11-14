@@ -7,7 +7,7 @@
   <View
     android:layout_width="match_parent"
     android:layout_height="1dp"
-    android:background="@color/gray"
+    android:background="@color/ksr_grey_500"
     android:layout_marginEnd="@dimen/form_margin_x"/>
 
 </LinearLayout>

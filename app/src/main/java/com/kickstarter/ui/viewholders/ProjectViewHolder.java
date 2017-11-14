@@ -102,7 +102,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.usd_conversion_text_view) TextView usdConversionTextView;
 
   protected @BindColor(R.color.green_alpha_20) int greenAlpha50Color;
-  protected @BindColor(R.color.medium_gray) int mediumGrayColor;
+  protected @BindColor(R.color.ksr_grey_400) int ksrGrey400;
 
   protected @BindDimen(R.dimen.grid_1) int grid1Dimen;
   protected @BindDimen(R.dimen.grid_2) int grid2Dimen;
@@ -386,7 +386,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       case Project.STATE_CANCELED:
         this.percentageFundedProgressBar.setVisibility(View.GONE);
         this.projectStateViewGroup.setVisibility(View.VISIBLE);
-        this.projectStateViewGroup.setBackgroundColor(this.mediumGrayColor);
+        this.projectStateViewGroup.setBackgroundColor(this.ksrGrey400);
 
         this.projectStateHeaderTextView.setText(this.fundingCanceledString);
         this.projectStateSubheadTextView.setText(this.fundingCanceledByCreatorString);
@@ -394,7 +394,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       case Project.STATE_FAILED:
         this.percentageFundedProgressBar.setVisibility(View.GONE);
         this.projectStateViewGroup.setVisibility(View.VISIBLE);
-        this.projectStateViewGroup.setBackgroundColor(this.mediumGrayColor);
+        this.projectStateViewGroup.setBackgroundColor(this.ksrGrey400);
 
         this.projectStateHeaderTextView.setText(this.fundingUnsuccessfulString);
         this.projectStateSubheadTextView.setText(
@@ -404,7 +404,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       case Project.STATE_SUSPENDED:
         this.percentageFundedProgressBar.setVisibility(View.GONE);
         this.projectStateViewGroup.setVisibility(View.VISIBLE);
-        this.projectStateViewGroup.setBackgroundColor(this.mediumGrayColor);
+        this.projectStateViewGroup.setBackgroundColor(this.ksrGrey400);
 
         this.projectStateHeaderTextView.setText(this.fundingSuspendedString);
         this.projectStateSubheadTextView.setText(this.fundingProjectSuspendedString);

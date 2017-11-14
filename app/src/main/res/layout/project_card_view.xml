@@ -119,7 +119,7 @@
       android:layout_width="@dimen/grid_4"
       android:layout_height="@dimen/grid_4"
       tools:ignore="ContentDescription"
-      tools:background="@color/blue"/>
+      tools:background="@color/ksr_cobalt_500"/>
 
     <TextView
       android:id="@+id/friend_backing_message"

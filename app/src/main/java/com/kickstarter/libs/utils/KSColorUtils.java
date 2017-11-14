@@ -6,7 +6,6 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 
@@ -25,14 +24,6 @@ public final class KSColorUtils {
    */
   public static @ColorInt int setAlpha(final int color, @IntRange(from=0, to=255) final int alpha) {
     return (color & 0x00FFFFFF) | (alpha << 24);
-  }
-
-  public static @ColorInt int darkColor(final Context context) {
-    return ContextCompat.getColor(context, darkColorId());
-  }
-
-  public static @ColorRes int darkColorId() {
-    return R.color.text_dark;
   }
 
   /**
@@ -87,11 +78,6 @@ public final class KSColorUtils {
    */
   public static boolean isDark(@ColorInt final int color) {
     return !isLight(color);
-  }
-
-  public static @ColorInt int foregroundColor(final int backgroundColor, final @NonNull Context context) {
-    final @ColorRes int colorId = isLight(backgroundColor) ? darkColorId() : lightColorId();
-    return ContextCompat.getColor(context, colorId);
   }
 
   /*

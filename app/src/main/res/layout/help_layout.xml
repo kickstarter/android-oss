@@ -15,20 +15,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
 
-  <RelativeLayout
+  <include
     android:id="@+id/loading_indicator_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_below="@id/help_toolbar"
-    android:background="@color/white_alpha_60">
-
-    <ProgressBar
-      android:id="@+id/loading_indicator"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerVertical="true"
-      android:layout_centerHorizontal="true"/>
-
-  </RelativeLayout>
+    layout="@layout/loading_overlay" />
 
 </RelativeLayout>

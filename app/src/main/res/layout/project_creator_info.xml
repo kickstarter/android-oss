@@ -13,7 +13,7 @@
     android:id="@+id/creator_links"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:divider="@color/gray"
+    android:divider="@color/ksr_grey_500"
     android:dividerHeight="1dp" >
 
     <RelativeLayout

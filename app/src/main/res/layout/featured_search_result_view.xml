@@ -17,11 +17,12 @@
     android:adjustViewBounds="true"
     android:focusable="true"
     android:foreground="@drawable/click_indicator_light"
+    card_view:cardElevation="@dimen/card_no_elevation"
     card_view:cardBackgroundColor="@color/transparent"
-    card_view:cardCornerRadius="0dp"
-    card_view:elevation="@dimen/card_elevation">
+    card_view:cardCornerRadius="0dp">
 
     <RelativeLayout
+      android:background="@drawable/rect_white_grey_stroke"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
@@ -36,9 +37,11 @@
       <LinearLayout
         android:layout_alignBottom="@id/project_image_view"
         android:orientation="vertical"
-        android:background="@color/white_alpha_95"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <include layout="@layout/horizontal_line_1dp_view" />
 
         <TextView
           android:id="@+id/project_name_text_view"
@@ -100,10 +103,9 @@
 
   </android.support.v7.widget.CardView>
 
-  <View
+  <include layout="@layout/horizontal_line_1dp_view"
     android:layout_width="match_parent"
     android:layout_height="1dp"
-    android:layout_marginTop="@dimen/grid_3"
-    android:background="@color/ksr_navy_300" />
+    android:layout_marginTop="@dimen/grid_3" />
 
 </LinearLayout>

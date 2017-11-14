@@ -21,7 +21,7 @@
       android:layout_marginEnd="@dimen/grid_4"
       android:layout_width="@dimen/comments_feed_avatar_width"
       android:layout_height="@dimen/comments_feed_avatar_height"
-      tools:background="@color/blue"
+      tools:background="@color/ksr_cobalt_500"
       tools:ignore="ContentDescription" />
 
     <TextView

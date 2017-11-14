@@ -21,7 +21,7 @@
       android:layout_width="@dimen/activity_feed_avatar_width"
       android:layout_height="@dimen/activity_feed_avatar_height"
       tools:ignore="ContentDescription"
-      tools:background="@color/blue"/>
+      tools:background="@color/ksr_cobalt_500"/>
 
     <TextView
       style="@style/CalloutPrimary"

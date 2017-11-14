@@ -27,9 +27,7 @@
   </style>
 
   <!-- Activities -->
-  <style name="ActivityFeedActivity" parent="KSTheme">
-    <item name="android:windowBackground">@color/activity_feed_background</item>
-  </style>
+  <style name="ActivityFeedActivity" parent="KSTheme"/>
 
   <style name="CheckoutActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
@@ -111,6 +109,7 @@
     <item name="android:paddingEnd">@dimen/grid_3</item>
     <item name="android:textSize">@dimen/callout</item>
     <item name="android:fontFamily">@string/font_family_sans_serif</item>
+    <item name="android:minHeight">@dimen/grid_8</item>
   </style>
 
   <style name="BorderButton" parent="Base.Widget.AppCompat.Button.Borderless">
@@ -154,7 +153,8 @@
     <item name="android:text">@string/project_checkout_share_buttons_share</item>
   </style>
 
-  <style name="FacebookButton" parent="Button">
+  <style name="FacebookButton" parent="BorderButton">
+    <item name="android:textColor">@color/white</item>
     <item name="android:background">@drawable/button_facebook</item>
     <item name="android:drawableStart">@drawable/ic_social_facebook</item>
     <item name="android:text">@string/login_tout_buttons_log_in_with_facebook</item>
@@ -385,10 +385,6 @@
     <item name="android:textSize">@dimen/title_3</item>
   </style>
 
-  <style name="Title3Navy" parent="Title3">
-    <item name="android:textColor">@color/ksr_text_navy_800</item>
-  </style>
-
   <style name="Title3Medium" parent="TextPrimary">
     <item name="android:textSize">@dimen/title_3</item>
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
@@ -433,9 +429,6 @@
   <style name="RewardHeadline" parent="Caption2Primary">
     <item name="android:textColor">@color/ksr_dark_grey_500</item>
     <item name="android:textAllCaps">true</item>
-  </style>
-  <style name="RewardLimitedText" parent="Caption1PrimaryMedium">
-    <item name="android:textColor">@color/reward_orange_dark</item>
   </style>
 
 </resources>

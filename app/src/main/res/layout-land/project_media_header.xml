@@ -141,15 +141,33 @@
           tools:ignore="InconsistentLayout"
           tools:text="Description about this project." />
 
-        <TextView
-          style="@style/BodyPrimaryMedium"
-          android:textColor="@color/white"
-          android:focusable="true"
+        <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:gravity="center_vertical"
           android:layout_marginTop="@dimen/grid_3"
           android:layout_marginBottom="@dimen/grid_3"
-          android:text="@string/Read_more_about_the_campaign_arrow" />
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/BodyPrimaryMedium"
+            android:textColor="@color/white"
+            android:focusable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/grid_1"
+            android:text="@string/Read_more_about_the_campaign" />
+
+          <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="@color/white"
+            tools:ignore="ContentDescription" />
+
+        </LinearLayout>
+
+
       </LinearLayout>
 
       <LinearLayout

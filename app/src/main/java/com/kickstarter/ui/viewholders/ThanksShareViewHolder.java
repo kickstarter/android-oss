@@ -38,7 +38,7 @@ public final class ThanksShareViewHolder extends KSViewHolder {
 
   protected @BindString(R.string.project_checkout_share_twitter_I_just_backed_project_on_kickstarter) String iJustBackedString;
   protected @BindString(R.string.project_accessibility_button_share_label) String shareThisProjectString;
-  protected @BindString(R.string.project_checkout_share_you_just_backed_project_share_this_project_html) String youJustBackedString;
+  protected @BindString(R.string.You_have_successfully_backed_project_html) String youJustBackedString;
 
   public ThanksShareViewHolder(final @NonNull View view) {
     super(view);

@@ -5,13 +5,14 @@
   <color name="primary_dark">@color/black_alpha_17</color>
   <color name="accent">@color/ksr_green_700</color>
   <color name="text_primary">@color/ksr_soft_black</color>
-  <color name="text_secondary">@color/ksr_dark_grey_400</color>
+  <color name="text_secondary">@color/ksr_dark_grey_500</color>
   <color name="window_background">@color/white</color>
   <color name="status_bar">@color/primary_dark</color>
 
   <!-- Kickstarter colors. NB: we should be transitioning to using this color palette. -->
   <color name="black">@android:color/black</color>
-  <color name="ksr_blue">#4C6CF8</color>
+  <color name="ksr_cobalt_500">#4C6CF8</color>
+  <color name="ksr_cobalt_600">#395AEB</color>
   <color name="ksr_dark_grey_400">#9B9E9E</color>
   <color name="ksr_dark_grey_500">#656969</color>
   <color name="ksr_green_500">#009E74</color>
@@ -23,64 +24,10 @@
   <color name="ksr_grey_400">#E8E8E8</color>
   <color name="ksr_grey_500">#DCDEDD</color>
   <color name="ksr_orange">#FF4F00</color>
-  <color name="ksr_navy_300">#EFEFF3</color>
   <color name="ksr_soft_black">#282828</color>
   <color name="ksr_text_green_700">@color/ksr_green_700</color>
-  <color name="ksr_text_navy_600">#626369</color>
-  <color name="ksr_text_navy_500">#95959E</color>
-  <color name="ksr_text_navy_700">#353535</color>
-  <color name="ksr_text_navy_800">#062340</color>
   <color name="white">@android:color/white</color>
-
-  <!-- Legacy Kickstarter colors. NB: we should be moving away from this color palette. -->
-  <color name="blue">#00a0ff</color>
-  <color name="dark_blue">#081245</color>
-  <color name="green">#2bde73</color>
-  <color name="light_blue">#e8f6ff</color>
-  <color name="light_green">#def7e0</color>
-  <color name="gray">#d9d9de</color>
-  <color name="off_white">#fafafa</color>
-  <color name="orange">#f7aa1a</color>
-  <color name="mint">#ffe3fdf9</color>
-  <color name="pink">#ffecf0</color>
-  <color name="royal_blue">#ff2752ff</color>
-  <color name="text_dark">#ff0f2105</color>
-  <color name="text_light">#ffffffff</color>
   <color name="transparent">@android:color/transparent</color>
-  <color name="yellow">#ffffc9</color>
-  <color name="medium_gray">#ebebee</color>
-
-  <!-- Category colors -->
-  <color name="category_art">#ffffbdab</color>
-  <color name="category_comics">#fffffb78</color>
-  <color name="category_crafts">#ffff81ac</color>
-  <color name="category_dance">#ffa695f9</color>
-  <color name="category_design">#ff2752ff</color>
-  <color name="category_fashion">#ffff9fd6</color>
-  <color name="category_film">#ffff596e</color>
-  <color name="category_food">#ffff3642</color>
-  <color name="category_games">#ff00c9ab</color>
-  <color name="category_journalism">#ff12bcea</color>
-  <color name="category_music">#ffa5ffd3</color>
-  <color name="category_photography">#ff00e3e5</color>
-  <color name="category_publishing">#ffe2dcd0</color>
-  <color name="category_technology">#ff6396fc</color>
-  <color name="category_theater">#ffff7d5f</color>
-  <color name="category_secondary_art">#fff7aa94</color>
-  <color name="category_secondary_comics">#ffffe54f</color>
-  <color name="category_secondary_crafts">#ffe35f8c</color>
-  <color name="category_secondary_dance">#ff6556ac</color>
-  <color name="category_secondary_design">#ff1935a6</color>
-  <color name="category_secondary_fashion">#ff171717</color>
-  <color name="category_secondary_film">#ffcf3c4e</color>
-  <color name="category_secondary_food">#ffd12c36</color>
-  <color name="category_secondary_games">#ff00a68d</color>
-  <color name="category_secondary_journalism">#ff10a8d0</color>
-  <color name="category_secondary_music">#ff5ee5a3</color>
-  <color name="category_secondary_photography">#ff00d4d6</color>
-  <color name="category_secondary_publishing">#ffd1ccc0</color>
-  <color name="category_secondary_technology">#ff326bdb</color>
-  <color name="category_secondary_theater">#ffe8514b</color>
 
   <!-- Colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->
@@ -90,41 +37,28 @@
   <color name="black_alpha_17">#2B000000</color>
   <color name="black_alpha_30">#4D000000</color>
   <color name="black_alpha_50">#88000000</color>
-  <color name="blue_alpha_20">#3300a0ff</color>
-  <color name="blue_darken_10">#3B55D5</color>
-  <color name="gray_alpha_50">#80E8E8E8</color>
-  <color name="gray_darken_10">#C0C0C5</color>
+  <color name="blue_darken_10">@color/ksr_cobalt_600</color>
+  <color name="gray_alpha_50">@color/ksr_grey_300</color>
+  <color name="gray_darken_10">@color/ksr_grey_500</color>
   <color name="green_alpha_20">#33037362</color>
-  <color name="green_alpha_50">#802bde73</color>
-  <color name="green_darken_10">#006150</color>
-  <color name="green_darken_20">#00AB40</color>
-  <color name="green_lighten_10">#45F88D</color>
+  <color name="green_alpha_50">#80037362</color>
+  <color name="green_darken_10">@color/soft_black_alpha_17</color>
   <color name="soft_black_alpha_17">#2B282828</color>
   <color name="white_alpha_60">#99ffffff</color>
-  <color name="white_alpha_95">#F2ffffff</color>
 
   <!-- Click colors -->
-  <color name="dark_gray_click">#1f000000</color>
+  <color name="dark_gray_click">@color/ripple_light</color>
   <color name="light_gray_click">#42ffffff</color>
   <color name="ripple_dark">#33ffffff</color>
   <color name="ripple_light">#1f000000</color>
-
-  <!-- Activity colors -->
-  <color name="activity_feed_background">@color/ksr_grey_200</color>
 
   <!-- Debug colors -->
   <color name="debug_background">@color/white</color>
 
   <!-- Discovery colors -->
-  <color name="discovery_drawer_item_selected">#ffededed</color>
+  <color name="discovery_drawer_item_selected">@color/ksr_grey_400</color>
   <color name="discovery_drawer_header">@color/white</color>
-
-  <!-- Rewards colors -->
-  <color name="reward_orange">#edaa39</color>
-  <color name="reward_orange_dark">#493109</color>
-  <color name="reward_blue">#3936e0</color>
 
   <!-- Third-party colors -->
   <color name="facebook_blue">#3b5998</color>
-  <color name="twitter_blue">#00aced</color>
 </resources>

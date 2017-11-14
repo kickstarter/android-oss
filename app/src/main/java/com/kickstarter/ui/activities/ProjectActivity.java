@@ -29,7 +29,6 @@ import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.viewmodels.ProjectViewModel;
 
 import butterknife.Bind;
-import butterknife.BindColor;
 import butterknife.BindDimen;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -46,9 +45,6 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
   protected @Bind(R.id.manage_pledge_button) Button managePledgeButton;
   protected @Bind(R.id.project_action_buttons) ViewGroup projectActionButtonsViewGroup;
   protected @Bind(R.id.view_pledge_button) Button viewPledgeButton;
-
-  protected @BindColor(R.color.green) int green;
-  protected @BindColor(R.color.text_primary) int textPrimary;
 
   protected @BindDimen(R.dimen.grid_8) int grid8Dimen;
 

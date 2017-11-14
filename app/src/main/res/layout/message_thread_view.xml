@@ -32,7 +32,7 @@
         android:id="@+id/participant_avatar_image_view"
         android:layout_width="@dimen/grid_5"
         android:layout_height="@dimen/grid_5"
-        tools:background="@color/green"
+        tools:background="@color/ksr_green_700"
         tools:ignore="ContentDescription"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />

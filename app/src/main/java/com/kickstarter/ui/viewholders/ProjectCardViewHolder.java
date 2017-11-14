@@ -70,8 +70,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
   protected @Bind(R.id.saved_view_group) ViewGroup savedViewGroup;
 
-  protected @BindColor(R.color.ksr_text_navy_500) int ksrTextNavy500;
-  protected @BindColor(R.color.ksr_text_navy_700) int ksrTextNavy700;
+  protected @BindColor(R.color.ksr_dark_grey_400) int ksrDarkGrey400;
+  protected @BindColor(R.color.ksr_soft_black) int ksrSoftBlack;
 
   protected @BindDimen(R.dimen.grid_1) int gridNew1Dimen;
   protected @BindDimen(R.dimen.grid_2) int gridNew2Dimen;
@@ -259,10 +259,10 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
     final SpannableString styledString = new SpannableString(nameString + blurbString);
 
-    styledString.setSpan(new ForegroundColorSpan(this.ksrTextNavy700), 0, nameString.length(), 0);
+    styledString.setSpan(new ForegroundColorSpan(this.ksrSoftBlack), 0, nameString.length(), 0);
 
     styledString.setSpan(
-      new ForegroundColorSpan(this.ksrTextNavy500),
+      new ForegroundColorSpan(this.ksrDarkGrey400),
       nameString.length(),
       nameString.length() + blurbString.length(),
       0

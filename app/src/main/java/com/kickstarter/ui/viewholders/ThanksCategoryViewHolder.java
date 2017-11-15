@@ -13,10 +13,11 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class ThanksCategoryViewHolder extends KSViewHolder {
-  private Category category;
+  private final ThanksCategoryHolderViewModel.ViewModel viewModel;
   private final Delegate delegate;
   private final KSString ksString;
 
@@ -29,24 +30,36 @@ public final class ThanksCategoryViewHolder extends KSViewHolder {
 
   public ThanksCategoryViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
+    this.viewModel = new ThanksCategoryHolderViewModel.ViewModel(environment());
     this.delegate = delegate;
     this.ksString = environment().ksString();
     ButterKnife.bind(this, view);
+
+    this.viewModel.outputs.categoryName()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setCategoryButtonText);
+
+    this.viewModel.outputs.notifyDelegateOfCategoryClick()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.delegate::categoryViewHolderClicked);
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    this.category = requireNonNull((Category) data, Category.class);
+    final Category category = requireNonNull((Category) data, Category.class);
+    this.viewModel.inputs.configureWith(category);
   }
 
-  public void onBind() {
+  private void setCategoryButtonText(final @NonNull String categoryName) {
     this.exploreCategoryButton.setText(
-      this.ksString.format(this.exploreCategoryString, "category_name", this.category.name())
+      this.ksString.format(this.exploreCategoryString, "category_name", categoryName)
     );
   }
 
   @Override
   public void onClick(final @NonNull View view) {
-    this.delegate.categoryViewHolderClicked(this.category);
+    this.viewModel.inputs.categoryViewClicked();
   }
 }

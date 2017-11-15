@@ -19,8 +19,8 @@ public final class ThanksCategoryHolderViewModelTest extends KSRobolectricTestCa
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ThanksCategoryHolderViewModel.ViewModel(environment);
-    this.vm.outputs.categoryName().subscribe(this.categoryName);
-    this.vm.outputs.notifyDelegateOfCategoryClick().subscribe(this.notifyDelegateOfCategoryClick);
+    this.vm.getOutputs().categoryName().subscribe(this.categoryName);
+    this.vm.getOutputs().notifyDelegateOfCategoryClick().subscribe(this.notifyDelegateOfCategoryClick);
   }
 
   @Test
@@ -28,7 +28,7 @@ public final class ThanksCategoryHolderViewModelTest extends KSRobolectricTestCa
     final Category category = CategoryFactory.musicCategory();
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(category);
+    this.vm.getInputs().configureWith(category);
     this.categoryName.assertValues(category.name());
   }
 
@@ -37,8 +37,8 @@ public final class ThanksCategoryHolderViewModelTest extends KSRobolectricTestCa
     final Category category = CategoryFactory.bluesCategory();
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(category);
-    this.vm.inputs.categoryViewClicked();
+    this.vm.getInputs().configureWith(category);
+    this.vm.getInputs().categoryViewClicked();
     this.notifyDelegateOfCategoryClick.assertValues(category);
   }
 }

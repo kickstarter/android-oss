@@ -21,16 +21,12 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.transformations.CircleTransformation;
-import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Category;
-import com.kickstarter.models.Location;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
@@ -39,8 +35,6 @@ import com.kickstarter.viewmodels.ProjectHolderViewModel;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
-
-import java.math.RoundingMode;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -198,6 +192,11 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.deadlineCountdownTextView::setText);
 
+    this.viewModel.outputs.goalStringForTextView()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setGoalTextView);
+
     this.viewModel.outputs.locationTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -218,6 +217,11 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.playButton));
 
+    this.viewModel.outputs.pledgedTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.pledgedTextView::setText);
+
     this.viewModel.outputs.projectNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -228,10 +232,49 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::setProjectPhoto);
 
+    this.viewModel.outputs.projectSocialTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.projectSocialTextView::setText);
+
+    this.viewModel.outputs.projectSocialImageViewIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.projectSocialImageView));
+
+    this.viewModel.outputs.projectSocialImageViewUrl()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(url ->
+        Picasso.with(this.context).load(url)
+          .transform(new CircleTransformation())
+          .into(this.projectSocialImageView)
+      );
+
+    this.viewModel.outputs.projectSocialViewGroupIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.projectSocialViewGroup));
+
+    this.viewModel.outputs.shouldSetDefaultStatsMargins()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setStatsMargins);
+
     this.viewModel.outputs.updatesCountTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.updatesCountTextView::setText);
+
+    this.viewModel.outputs.usdConversionGoalAndPledgedText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setConvertedUsdView);
+
+    this.viewModel.outputs.usdConversionTextViewIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.usdConversionTextView));
   }
 
   @Override
@@ -242,16 +285,28 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void onBind() {
-    setConvertedUsdView();
     setLandscapeActionButton();
     setLandscapeOverlayText();
-    setPledgedOfGoalView();
     setProjectDisclaimerView();
     setProjectMetadataLozenge();
     setProjectSocialClick();
     setProjectStateView();
-    setSocialView();
     setStatsContentDescription();
+  }
+
+  private void setConvertedUsdView(final @NonNull Pair<String, String> goalAndPledged) {
+    this.usdConversionTextView.setText(
+      this.ksString.format(
+        this.convertedFromString,"pledged", goalAndPledged.second,"goal", goalAndPledged.first
+      )
+    );
+  };
+
+  private void setGoalTextView(final @NonNull String goalString) {
+    final String goalText = ViewUtils.isFontScaleLarge(this.context)
+      ? this.ksString.format(this.ofGoalString, "goal", goalString)
+      : this.ksString.format(this.pledgedOfGoalString, "goal", goalString);
+    this.goalTextView.setText(goalText);
   }
 
   private void setProjectPhoto(final @NonNull Photo photo) {
@@ -266,6 +321,14 @@ public final class ProjectViewHolder extends KSViewHolder {
       .centerCrop()
       .placeholder(this.grayGradientDrawable)
       .into(this.photoImageView);
+  }
+
+  private void setStatsMargins(final boolean shouldSetDefaultMargins) {
+    if (shouldSetDefaultMargins) {
+      ViewUtils.setLinearViewGroupMargins(this.projectStatsViewGroup, 0, this.grid3Dimen, 0, this.grid2Dimen);
+    } else {
+      ViewUtils.setLinearViewGroupMargins(this.projectStatsViewGroup, 0, this.grid3Dimen, 0, this.grid4Dimen);
+    }
   }
 
   @Nullable @OnClick(R.id.back_project_button)
@@ -303,27 +366,12 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.delegate.projectViewHolderViewPledgeClicked(this);
   }
 
-  public void setConvertedUsdView() {
-    if (I18nUtils.isCountryUS(this.configCountry) && !I18nUtils.isCountryUS(this.project.country())) {
-      this.usdConversionTextView.setVisibility(View.VISIBLE);
-      this.usdConversionTextView.setText(this.ksString.format(
-        this.convertedFromString,
-        "pledged",
-        this.ksCurrency.format(this.project.pledged(), this.project),
-        "goal",
-        this.ksCurrency.format(this.project.goal(), this.project)
-      ));
-    } else {
-      this.usdConversionTextView.setVisibility(View.GONE);
-    }
-  }
-
   /**
    * Set landscape project action buttons in the ViewHolder rather than Activity.
    */
-  public void setLandscapeActionButton() {
+  public void setLandscapeActionButton(final @NonNull Project project) {
     if (this.backProjectButton != null && this.managePledgeButton != null && this.viewPledgeButton != null) {
-      ProjectUtils.setActionButton(this.project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton);
+      ProjectUtils.setActionButton(project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton);
     }
   }
 
@@ -343,17 +391,6 @@ public final class ProjectViewHolder extends KSViewHolder {
         ViewUtils.setRelativeViewGroupMargins(this.nameCreatorViewGroup, 0, 0, 0, this.grid1Dimen);
       }
     }
-  }
-
-  public void setPledgedOfGoalView() {
-    this.pledgedTextView.setText(this.ksCurrency.format(this.project.pledged(), this.project, false, true, RoundingMode.DOWN));
-
-    /* a11y */
-    final String goalString = this.ksCurrency.format(this.project.goal(), this.project, false, true, RoundingMode.DOWN);
-    final String goalText = ViewUtils.isFontScaleLarge(this.context)
-      ? this.ksString.format(this.ofGoalString, "goal", goalString)
-      : this.ksString.format(this.pledgedOfGoalString, "goal", goalString);
-    this.goalTextView.setText(goalText);
   }
 
   public void setProjectDisclaimerView() {
@@ -463,27 +500,8 @@ public final class ProjectViewHolder extends KSViewHolder {
     }
   }
 
-  public void setSocialView() {
-    if (this.project.isFriendBacking()) {
-      this.projectSocialViewGroup.setVisibility(View.VISIBLE);
-      ViewUtils.setLinearViewGroupMargins(this.projectStatsViewGroup, 0, this.grid3Dimen, 0, this.grid2Dimen);
-
-      this.projectSocialImageView.setVisibility(View.VISIBLE);
-      Picasso.with(this.context).load(this.project.friends().get(0).avatar()
-        .small())
-        .transform(new CircleTransformation())
-        .into(this.projectSocialImageView);
-
-      this.projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(this.project.friends(), this.ksString));
-
-    } else {
-      this.projectSocialViewGroup.setVisibility(View.GONE);
-      ViewUtils.setLinearViewGroupMargins(this.projectStatsViewGroup, 0, this.grid3Dimen, 0, this.grid4Dimen);
-    }
-  }
-
-  public void setStatsContentDescription() {
-    final String backersCountContentDescription = NumberUtils.format(this.project.backersCount()) + " " +  this.backersString;
+  private void setStatsContentDescription(final @NonNull Project project) {
+    final String backersCountContentDescription = NumberUtils.format(project.backersCount()) + " " +  this.backersString;
     final String pledgedContentDescription = this.pledgedTextView.getText() + " " + this.goalTextView.getText();
     final String deadlineCountdownContentDescription = this.deadlineCountdownTextView.getText() + " " + this.deadlineCountdownUnitTextView.getText();
 

@@ -55,12 +55,10 @@ import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 
 public final class ProjectViewHolder extends KSViewHolder {
   private ProjectHolderViewModel.ViewModel viewModel;
-//  private String configCountry;
   private final Context context;
   private final Delegate delegate;
   private final KSCurrency ksCurrency;
   private final KSString ksString;
-//  private Project project;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
@@ -202,10 +200,14 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.locationTextView::setText);
 
+    // todo: break down
     this.viewModel.outputs.projectForDeadlineCountdownTextView()
-      .subscribe(p ->
-        this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(p, this.context, this.ksString))
-      );
+      .subscribe(p -> {
+        setLandscapeActionButton(p);
+        setStatsContentDescription(p);
+        this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(p, this.context, this.ksString));
+
+      });
 
     this.viewModel.outputs.percentageFundedProgress()
       .compose(bindToLifecycle())
@@ -221,6 +223,21 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.pledgedTextView::setText);
+
+    this.viewModel.outputs.projectDisclaimerGoalNotReachedString()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setProjectDisclaimerGoalNotReachedString);
+
+    this.viewModel.outputs.projectDisclaimerGoalReachedDateTime()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setProjectDisclaimerGoalReachedString);
+
+    this.viewModel.outputs.projectDisclaimerTextViewIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.projectDisclaimerTextView));
 
     this.viewModel.outputs.projectNameTextViewText()
       .compose(bindToLifecycle())
@@ -256,10 +273,20 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.projectSocialViewGroup));
 
+    this.viewModel.outputs.setProjectSocialClick()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.setProjectSocialClick());
+
     this.viewModel.outputs.shouldSetDefaultStatsMargins()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setStatsMargins);
+
+    this.viewModel.outputs.startProjectSocialActivity()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startProjectSocialActivity);
 
     this.viewModel.outputs.updatesCountTextViewText()
       .compose(bindToLifecycle())
@@ -285,13 +312,10 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void onBind() {
-    setLandscapeActionButton();
     setLandscapeOverlayText();
-    setProjectDisclaimerView();
     setProjectMetadataLozenge();
     setProjectSocialClick();
     setProjectStateView();
-    setStatsContentDescription();
   }
 
   private void setConvertedUsdView(final @NonNull Pair<String, String> goalAndPledged) {
@@ -323,12 +347,25 @@ public final class ProjectViewHolder extends KSViewHolder {
       .into(this.photoImageView);
   }
 
+  public void setProjectSocialClick() {
+    this.projectSocialViewGroup.setBackground(this.clickIndicatorLightMaskedDrawable);
+    this.projectSocialViewGroup.setOnClickListener(__ -> this.viewModel.inputs.projectSocialViewGroupClicked());
+  }
+
   private void setStatsMargins(final boolean shouldSetDefaultMargins) {
     if (shouldSetDefaultMargins) {
       ViewUtils.setLinearViewGroupMargins(this.projectStatsViewGroup, 0, this.grid3Dimen, 0, this.grid2Dimen);
     } else {
       ViewUtils.setLinearViewGroupMargins(this.projectStatsViewGroup, 0, this.grid3Dimen, 0, this.grid4Dimen);
     }
+  }
+
+  private void startProjectSocialActivity(final @NonNull Project project) {
+    final BaseActivity activity = (BaseActivity) this.context;
+    final Intent intent = new Intent(activity, ProjectSocialActivity.class)
+      .putExtra(IntentKey.PROJECT, project);
+    activity.startActivity(intent);
+    activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   @Nullable @OnClick(R.id.back_project_button)
@@ -393,30 +430,22 @@ public final class ProjectViewHolder extends KSViewHolder {
     }
   }
 
-  public void setProjectDisclaimerView() {
-    final DateTime deadline = this.project.deadline();
+  private void setProjectDisclaimerGoalReachedString(final @NonNull DateTime deadline) {
+    this.projectDisclaimerTextView.setText(this.ksString.format(
+      this.projectDisclaimerGoalReachedString,
+      "deadline",
+      mediumDateShortTime(deadline)
+    ));
+  }
 
-    if (deadline == null) {
-      this.projectDisclaimerTextView.setVisibility(View.GONE);
-    } else if (!this.project.isLive()) {
-      this.projectDisclaimerTextView.setVisibility(View.GONE);
-    } else if (this.project.isFunded()) {
-      this.projectDisclaimerTextView.setVisibility(View.VISIBLE);
-      this.projectDisclaimerTextView.setText(this.ksString.format(
-        this.projectDisclaimerGoalReachedString,
-        "deadline",
-        mediumDateShortTime(deadline)
-      ));
-    } else {
-      this.projectDisclaimerTextView.setVisibility(View.VISIBLE);
-      this.projectDisclaimerTextView.setText(this.ksString.format(
-        this.projectDisclaimerGoalNotReachedString,
-        "goal_currency",
-        this.ksCurrency.format(this.project.goal(), this.project, true),
-        "deadline",
-        mediumDateShortTime(deadline)
-      ));
-    }
+  private void setProjectDisclaimerGoalNotReachedString(final @NonNull Pair<String, DateTime> goalAndDeadline) {
+    this.projectDisclaimerTextView.setText(this.ksString.format(
+      this.projectDisclaimerGoalNotReachedString,
+      "goal_currency",
+      goalAndDeadline.first,
+      "deadline",
+      mediumDateShortTime(goalAndDeadline.second)
+    ));
   }
 
   private void setProjectMetadataLozenge() {
@@ -435,21 +464,6 @@ public final class ProjectViewHolder extends KSViewHolder {
       }
     } else {
       this.projectMetadataViewGroup.setVisibility(View.GONE);
-    }
-  }
-
-  public void setProjectSocialClick() {
-    if (this.project.isFriendBacking()) {
-      if (this.project.friends().size() > 2) {
-        this.projectSocialViewGroup.setBackground(this.clickIndicatorLightMaskedDrawable);
-        this.projectSocialViewGroup.setOnClickListener(view -> {
-          final BaseActivity activity = (BaseActivity) this.context;
-          final Intent intent = new Intent(activity, ProjectSocialActivity.class)
-            .putExtra(IntentKey.PROJECT, this.project);
-          activity.startActivity(intent);
-          activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-        });
-      }
     }
   }
 

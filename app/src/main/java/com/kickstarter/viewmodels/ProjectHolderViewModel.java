@@ -22,15 +22,21 @@ import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 
+import org.joda.time.DateTime;
+
 import java.math.RoundingMode;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+
 public interface ProjectHolderViewModel {
 
   interface Inputs {
     void configureWith(Pair<Project, String> projectAndCountry);
+    void projectSocialViewGroupClicked();
   }
 
   interface Outputs {
@@ -46,6 +52,9 @@ public interface ProjectHolderViewModel {
     Observable<Integer> percentageFundedProgress();
     Observable<Boolean> playButtonIsGone();
     Observable<String> pledgedTextViewText();
+    Observable<DateTime> projectDisclaimerGoalReachedDateTime();
+    Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString();
+    Observable<Boolean> projectDisclaimerTextViewIsGone();
     Observable<Project> projectForDeadlineCountdownTextView();
     Observable<String> projectNameTextViewText();
     Observable<Photo> projectPhoto();
@@ -54,6 +63,8 @@ public interface ProjectHolderViewModel {
     Observable<String> projectSocialTextViewText();
     Observable<Boolean> projectSocialViewGroupIsGone();
     Observable<Boolean> shouldSetDefaultStatsMargins();
+    Observable<Void> setProjectSocialClick();
+    Observable<Project> startProjectSocialActivity();
     Observable<String> updatesCountTextViewText();
     Observable<Pair<String, String>> usdConversionGoalAndPledgedText();
     Observable<Boolean> usdConversionTextViewIsGone();
@@ -89,6 +100,16 @@ public interface ProjectHolderViewModel {
       this.pledgedTextViewText = project
         .map(p -> this.ksCurrency.format(p.pledged(), p, false, true, RoundingMode.DOWN));
 
+      this.projectDisclaimerGoalReachedDateTime = project
+        .filter(Project::isFunded)
+        .map(Project::deadline);
+
+      this.projectDisclaimerGoalNotReachedString = project
+        .filter(p -> p.deadline() != null && p.isLive() && !p.isFunded())
+        .map(p -> Pair.create(this.ksCurrency.format(p.goal(), p, true), p.deadline()));
+
+      this.projectDisclaimerTextViewIsGone = project.map(p -> p.deadline() == null || !p.isLive());
+
       this.projectForDeadlineCountdownTextView = project;
       this.projectNameTextViewText = project.map(Project::name);
       this.projectPhoto = project.map(Project::photo);
@@ -107,7 +128,8 @@ public interface ProjectHolderViewModel {
       this.projectSocialViewGroupIsGone = project.map(Project::isFriendBacking).map(BooleanUtils::negate);
       this.projectSocialImageViewIsGone = this.projectSocialViewGroupIsGone;
       this.shouldSetDefaultStatsMargins = this.projectSocialViewGroupIsGone;
-
+      this.setProjectSocialClick = project.map(Project::friends).map(fs -> fs.size() > 2).compose(ignoreValues());
+      this.startProjectSocialActivity = project.compose(takeWhen(this.projectSocialViewGroupClicked));
       this.updatesCountTextViewText = project.map(Project::updatesCount).filter(ObjectUtils::isNotNull).map(NumberUtils::format);
 
       this.usdConversionTextViewIsGone = this.projectAndCountry
@@ -123,6 +145,7 @@ public interface ProjectHolderViewModel {
     }
 
     private final PublishSubject<Pair<Project, String>> projectAndCountry = PublishSubject.create();
+    private final PublishSubject<Void> projectSocialViewGroupClicked = PublishSubject.create();
 
     private final Observable<String> avatarPhotoUrl;
     private final Observable<String> backersCountTextViewText;
@@ -136,6 +159,9 @@ public interface ProjectHolderViewModel {
     private final Observable<Integer> percentageFundedProgress;
     private final Observable<Boolean> playButtonIsGone;
     private final Observable<String> pledgedTextViewText;
+    private final Observable<DateTime> projectDisclaimerGoalReachedDateTime;
+    private final Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString;
+    private final Observable<Boolean> projectDisclaimerTextViewIsGone;
     private final Observable<Project> projectForDeadlineCountdownTextView;
     private final Observable<String> projectNameTextViewText;
     private final Observable<Photo> projectPhoto;
@@ -143,6 +169,8 @@ public interface ProjectHolderViewModel {
     private final Observable<String> projectSocialImageViewUrl;
     private final Observable<String> projectSocialTextViewText;
     private final Observable<Boolean> projectSocialViewGroupIsGone;
+    private final Observable<Void> setProjectSocialClick;
+    private final Observable<Project> startProjectSocialActivity;
     private final Observable<Boolean> shouldSetDefaultStatsMargins;
     private final Observable<String> updatesCountTextViewText;
     private final Observable<Boolean> usdConversionTextViewIsGone;
@@ -153,6 +181,9 @@ public interface ProjectHolderViewModel {
 
     @Override public void configureWith(final @NonNull Pair<Project, String> projectAndCountry) {
       this.projectAndCountry.onNext(projectAndCountry);
+    }
+    @Override public void projectSocialViewGroupClicked() {
+      this.projectSocialViewGroupClicked.onNext(null);
     }
 
     @Override public @NonNull Observable<String> avatarPhotoUrl() {
@@ -191,6 +222,15 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<String> pledgedTextViewText() {
       return this.pledgedTextViewText;
     }
+    @Override public @NonNull Observable<DateTime> projectDisclaimerGoalReachedDateTime() {
+      return this.projectDisclaimerGoalReachedDateTime;
+    }
+    @Override public @NonNull Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString() {
+      return this.projectDisclaimerGoalNotReachedString;
+    }
+    @Override public @NonNull Observable<Boolean> projectDisclaimerTextViewIsGone() {
+      return this.projectDisclaimerTextViewIsGone;
+    }
     @Override public @NonNull Observable<Project> projectForDeadlineCountdownTextView() {
       return this.projectForDeadlineCountdownTextView;
     }
@@ -211,6 +251,12 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<Boolean> projectSocialViewGroupIsGone() {
       return this.projectSocialViewGroupIsGone;
+    }
+    @Override public @NonNull Observable<Project> startProjectSocialActivity() {
+      return this.startProjectSocialActivity;
+    }
+    @Override public @NonNull Observable<Void> setProjectSocialClick() {
+      return this.setProjectSocialClick;
     }
     @Override public @NonNull Observable<Boolean> shouldSetDefaultStatsMargins() {
       return this.shouldSetDefaultStatsMargins;

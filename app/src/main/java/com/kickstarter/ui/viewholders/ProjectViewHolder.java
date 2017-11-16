@@ -21,6 +21,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.NumberUtils;
@@ -34,6 +35,7 @@ import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectSocialActivity;
+import com.kickstarter.viewmodels.ProjectHolderViewModel;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -48,6 +50,7 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.DateTimeUtils.mediumDate;
 import static com.kickstarter.libs.utils.DateTimeUtils.mediumDateShortTime;
 import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
@@ -57,12 +60,13 @@ import static com.kickstarter.libs.utils.ViewUtils.getScreenHeightDp;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 
 public final class ProjectViewHolder extends KSViewHolder {
-  private String configCountry;
+  private ProjectHolderViewModel.ViewModel viewModel;
+//  private String configCountry;
   private final Context context;
   private final Delegate delegate;
   private final KSCurrency ksCurrency;
   private final KSString ksString;
-  private Project project;
+//  private Project project;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
@@ -143,72 +147,101 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   public ProjectViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
+    this.viewModel = new ProjectHolderViewModel.ViewModel(environment());
     this.delegate = delegate;
     this.context = view.getContext();
     this.ksCurrency = environment().ksCurrency();
     this.ksString = environment().ksString();
 
     ButterKnife.bind(this, view);
+
+    this.viewModel.outputs.avatarPhotoUrl()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(url ->
+        Picasso.with(this.context)
+          .load(url)
+          .transform(new CircleTransformation())
+          .into(this.avatarImageView)
+      );
+
+    this.viewModel.outputs.backersCountTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.backersCountTextView::setText);
+
+    this.viewModel.outputs.blurbTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(blurb -> this.blurbTextView.setText(Html.fromHtml(TextUtils.htmlEncode(blurb))));
+
+    this.viewModel.outputs.categoryTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.categoryTextView::setText);
+
+    this.viewModel.outputs.commentsCountTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.commentsCountTextView::setText);
+
+    this.viewModel.outputs.creatorNameTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(name ->
+        this.creatorNameTextView.setText(
+          Html.fromHtml(this.ksString.format(this.byCreatorString, "creator_name", TextUtils.htmlEncode(name))))
+      );
+
+    this.viewModel.outputs.deadlineCountdownTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.deadlineCountdownTextView::setText);
+
+    this.viewModel.outputs.locationTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.locationTextView::setText);
+
+    this.viewModel.outputs.projectForDeadlineCountdownTextView()
+      .subscribe(p ->
+        this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(p, this.context, this.ksString))
+      );
+
+    this.viewModel.outputs.percentageFundedProgress()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.percentageFundedProgressBar::setProgress);
+
+    this.viewModel.outputs.playButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.playButton));
+
+    this.viewModel.outputs.projectNameTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.projectNameTextView::setText);
+
+    this.viewModel.outputs.projectPhoto()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setProjectPhoto);
+
+    this.viewModel.outputs.updatesCountTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.updatesCountTextView::setText);
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
     @SuppressWarnings("unchecked")
     final Pair<Project, String> projectAndCountry = requireNonNull((Pair<Project, String>) data);
-    this.project = requireNonNull(projectAndCountry.first, Project.class);
-    this.configCountry = requireNonNull(projectAndCountry.second, String.class);
+    this.viewModel.inputs.configureWith(projectAndCountry);
   }
 
   public void onBind() {
-    final Photo photo = this.project.photo();
-    if (photo != null) {
-      // Account for the grid2 start and end margins.
-      final int targetImageWidth = (int) (getScreenWidthDp(this.context) * getScreenDensity(this.context)) - this.grid2Dimen * 2;
-      final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
-      this.photoImageView.setMaxHeight(targetImageHeight);
-
-      Picasso.with(this.context)
-        .load(photo.full())
-        .resize(targetImageWidth, targetImageHeight)
-        .centerCrop()
-        .placeholder(this.grayGradientDrawable)
-        .into(this.photoImageView);
-    }
-
-    if (this.project.hasVideo()) {
-      this.playButton.setVisibility(View.VISIBLE);
-    } else {
-      this.playButton.setVisibility(View.GONE);
-    }
-
-    /* Project */
-    this.blurbTextView.setText(Html.fromHtml(TextUtils.htmlEncode(this.project.blurb())));
-    this.creatorNameTextView.setText(Html.fromHtml(this.ksString.format(this.byCreatorString,
-      "creator_name", TextUtils.htmlEncode(this.project.creator().name()))));
-    this.projectNameTextView.setText(this.project.name());
-    final Category category = this.project.category();
-    if (category != null) {
-      this.categoryTextView.setText(category.name());
-    }
-    final Location location = this.project.location();
-    if (location != null) {
-      this.locationTextView.setText(location.displayableName());
-    }
-    this.percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(this.project.percentageFunded()));
-    this.deadlineCountdownTextView.setText(NumberUtils.format(ProjectUtils.deadlineCountdownValue(this.project)));
-    this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(this.project, this.context, this.ksString));
-    this.backersCountTextView.setText(NumberUtils.format(this.project.backersCount()));
-
-    /* Creator */
-    Picasso.with(this.context).load(this.project.creator().avatar()
-      .medium())
-      .transform(new CircleTransformation())
-      .into(this.avatarImageView);
-    final Integer updatesCount = this.project.updatesCount();
-    this.updatesCountTextView.setText(updatesCount != null ? NumberUtils.format(updatesCount) : null);
-    final Integer commentsCount = this.project.commentsCount();
-    this.commentsCountTextView.setText(commentsCount != null ? NumberUtils.format(commentsCount) : null);
-
     setConvertedUsdView();
     setLandscapeActionButton();
     setLandscapeOverlayText();
@@ -219,6 +252,20 @@ public final class ProjectViewHolder extends KSViewHolder {
     setProjectStateView();
     setSocialView();
     setStatsContentDescription();
+  }
+
+  private void setProjectPhoto(final @NonNull Photo photo) {
+    // Account for the grid2 start and end margins.
+    final int targetImageWidth = (int) (getScreenWidthDp(this.context) * getScreenDensity(this.context)) - this.grid2Dimen * 2;
+    final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
+    this.photoImageView.setMaxHeight(targetImageHeight);
+
+    Picasso.with(this.context)
+      .load(photo.full())
+      .resize(targetImageWidth, targetImageHeight)
+      .centerCrop()
+      .placeholder(this.grayGradientDrawable)
+      .into(this.photoImageView);
   }
 
   @Nullable @OnClick(R.id.back_project_button)

@@ -484,7 +484,10 @@ public final class Koala {
       }
     };
 
-    this.client.track("Notification Opened", properties);
+    // deprecated
+    this.client.track(KoalaEvent.NOTIFICATION_OPENED_LEGACY, properties);
+
+    this.client.track(KoalaEvent.OPENED_NOTIFICATION, properties);
   }
 
   // WEBVIEWS

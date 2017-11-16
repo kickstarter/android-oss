@@ -21,8 +21,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresActivityViewModel(WebViewViewModel.class)
-public final class WebViewActivity extends BaseActivity<WebViewViewModel> implements KSWebViewClient.Delegate {
+@RequiresActivityViewModel(WebViewViewModel.ViewModel.class)
+public final class WebViewActivity extends BaseActivity<WebViewViewModel.ViewModel> implements KSWebViewClient.Delegate {
   protected @Bind(R.id.web_view_toolbar) KSToolbar toolbar;
   protected @Bind(R.id.web_view) KSWebView webView;
   protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
@@ -74,7 +74,7 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> implem
   public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {}
 
   @Override
-  protected @Nullable Pair<Integer, Integer> exitTransition() {
+  protected @NonNull Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }
 }

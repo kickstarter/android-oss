@@ -50,7 +50,9 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
   protected @Bind(R.id.featured) TextView featuredTextView;
   protected @Bind(R.id.featured_group) ViewGroup featuredViewGroup;
-  protected @Bind(R.id.friend_backing_avatar) ImageView friendBackingAvatarImageView;
+  protected @Bind(R.id.friend_backing_avatar1) ImageView friendBackingAvatarImageView1;
+  protected @Bind(R.id.friend_backing_avatar2) ImageView friendBackingAvatarImageView2;
+  protected @Bind(R.id.friend_backing_avatar3) ImageView friendBackingAvatarImageView3;
   protected @Bind(R.id.friend_backing_message) TextView friendBackingMessageTextView;
   protected @Bind(R.id.friend_backing_group) ViewGroup friendBackingViewGroup;
   protected @Bind(R.id.funding_successful_date_text_view) TextView fundingSuccessfulTextViewDate;
@@ -119,10 +121,30 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.featuredViewGroup));
 
-    this.viewModel.outputs.friendAvatarUrl()
+    this.viewModel.outputs.friendAvatar2IsHidden()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::setFriendAvatarUrl);
+      .subscribe(hidden -> ViewUtils.setGone(friendBackingAvatarImageView2, hidden));
+
+    this.viewModel.outputs.friendAvatar3IsHidden()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(hidden -> ViewUtils.setGone(friendBackingAvatarImageView3, hidden));
+
+    this.viewModel.outputs.friendAvatarUrl1()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(url -> setFriendAvatarUrl(url, friendBackingAvatarImageView1));
+
+    this.viewModel.outputs.friendAvatarUrl2()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(url -> setFriendAvatarUrl(url, friendBackingAvatarImageView2));
+
+    this.viewModel.outputs.friendAvatarUrl3()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(url -> setFriendAvatarUrl(url, friendBackingAvatarImageView3));
 
     this.viewModel.outputs.friendBackingViewIsHidden()
       .compose(bindToLifecycle())
@@ -288,10 +310,10 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, context(), this.ksString));
   }
 
-  private void setFriendAvatarUrl(final @NonNull String avatarUrl) {
+  private void setFriendAvatarUrl(final @NonNull String avatarUrl, final @NonNull ImageView imageView) {
     Picasso.with(context()).load(avatarUrl)
       .transform(new CircleTransformation())
-      .into(this.friendBackingAvatarImageView);
+      .into(imageView);
   }
 
   private void setDefaultTopPadding(final boolean setDefaultPadding) {

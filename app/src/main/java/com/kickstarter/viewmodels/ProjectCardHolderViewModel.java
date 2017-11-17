@@ -43,7 +43,11 @@ public interface ProjectCardHolderViewModel {
     Observable<String> deadlineCountdownText();
     Observable<Boolean> featuredViewGroupIsGone();
     Observable<List<User>> friendsForNamepile();
-    Observable<String> friendAvatarUrl();
+    Observable<Boolean> friendAvatar2IsHidden();
+    Observable<Boolean> friendAvatar3IsHidden();
+    Observable<String> friendAvatarUrl1();
+    Observable<String> friendAvatarUrl2();
+    Observable<String> friendAvatarUrl3();
     Observable<Boolean> imageIsInvisible();
     Observable<Boolean> friendBackingViewIsHidden();
     Observable<Boolean> fundingUnsuccessfulViewGroupIsGone();
@@ -90,10 +94,32 @@ public interface ProjectCardHolderViewModel {
       this.featuredViewGroupIsGone = this.project
         .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.CATEGORY_FEATURED);
 
-      this.friendAvatarUrl = this.project
+      this.friendAvatarUrl1 = this.project
         .filter(Project::isFriendBacking)
         .map(Project::friends)
         .map(friends -> friends.get(0).avatar().small());
+
+      this.friendAvatarUrl2 = this.project
+        .filter(Project::isFriendBacking)
+        .map(Project::friends)
+        .filter(friends -> friends.size() > 1)
+        .map(friends -> friends.get(1).avatar().small());
+
+      this.friendAvatarUrl3 = this.project
+        .filter(Project::isFriendBacking)
+        .map(Project::friends)
+        .filter(friends -> friends.size() > 2)
+        .map(friends -> friends.get(2).avatar().small());
+
+      this.friendAvatar2IsHidden = this.project
+        .map(Project::friends)
+        .map(friends -> friends != null && friends.size() > 1)
+        .map(BooleanUtils::negate);
+
+      this.friendAvatar3IsHidden = this.project
+        .map(Project::friends)
+        .map(friends -> friends != null && friends.size() > 2)
+        .map(BooleanUtils::negate);
 
       this.friendBackingViewIsHidden = this.project
         .map(Project::isFriendBacking)
@@ -192,7 +218,11 @@ public interface ProjectCardHolderViewModel {
     private final Observable<Boolean> backingViewGroupIsGone;
     private final Observable<String> deadlineCountdownText;
     private final Observable<Boolean> featuredViewGroupIsGone;
-    private final Observable<String> friendAvatarUrl;
+    private final Observable<Boolean> friendAvatar2IsHidden;
+    private final Observable<Boolean> friendAvatar3IsHidden;
+    private final Observable<String> friendAvatarUrl1;
+    private final Observable<String> friendAvatarUrl2;
+    private final Observable<String> friendAvatarUrl3;
     private final Observable<Boolean> friendBackingViewIsHidden;
     private final Observable<List<User>> friendsForNamepile;
     private final Observable<Boolean> fundingSuccessfulViewGroupIsGone;
@@ -240,8 +270,20 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<Boolean> featuredViewGroupIsGone() {
       return this.featuredViewGroupIsGone;
     }
-    @Override public @NonNull Observable<String> friendAvatarUrl() {
-      return this.friendAvatarUrl;
+    @Override public @NonNull Observable<Boolean> friendAvatar2IsHidden() {
+      return friendAvatar2IsHidden;
+    }
+    @Override public @NonNull Observable<Boolean> friendAvatar3IsHidden() {
+      return friendAvatar3IsHidden;
+    }
+    @Override public @NonNull Observable<String> friendAvatarUrl1() {
+      return this.friendAvatarUrl1;
+    }
+    @Override public @NonNull Observable<String> friendAvatarUrl2() {
+      return this.friendAvatarUrl2;
+    }
+    @Override public @NonNull Observable<String> friendAvatarUrl3() {
+      return this.friendAvatarUrl3;
     }
     @Override public @NonNull Observable<Boolean> friendBackingViewIsHidden() {
       return this.friendBackingViewIsHidden;

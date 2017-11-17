@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/friend_backing_group"
+  android:visibility="visible"
+  android:paddingTop="@dimen/grid_1"
+  android:paddingBottom="@dimen/grid_1"
+  android:paddingStart="@dimen/grid_2"
+  android:paddingEnd="@dimen/grid_2"
+  android:orientation="horizontal"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content">
+
+  <FrameLayout
+    android:id="@+id/facepile_view_group"
+    android:layout_width="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:layout_height="wrap_content">
+
+    <ImageView
+      android:id="@+id/friend_backing_avatar3"
+      style="@style/FacepileImageView"
+      android:layout_marginStart="28dp"
+      tools:ignore="ContentDescription"
+      tools:background="@color/ksr_cobalt_500" />
+
+    <ImageView
+      android:id="@+id/friend_backing_avatar2"
+      style="@style/FacepileImageView"
+      android:layout_marginStart="14dp"
+      tools:ignore="ContentDescription"
+      tools:background="@color/ksr_green_700" />
+
+    <ImageView
+      android:id="@+id/friend_backing_avatar1"
+      style="@style/FacepileImageView"
+      tools:ignore="ContentDescription"
+      tools:background="@color/ksr_orange" />
+
+  </FrameLayout>
+
+  <TextView
+    android:id="@+id/friend_backing_message"
+    style="@style/Caption1Secondary"
+    android:layout_gravity="center_vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:text="Dancing Hot Dog, Frank, and 1 more are backers." />
+
+</LinearLayout>

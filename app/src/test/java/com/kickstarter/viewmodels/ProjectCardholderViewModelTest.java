@@ -19,6 +19,7 @@ import com.kickstarter.models.User;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,8 +32,12 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> backingViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> deadlineCountdownText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> featuredViewGroupIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> friendAvatar2IsHidden = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> friendAvatar3IsHidden = new TestSubscriber<>();
+  private final TestSubscriber<String> friendAvatarUrl1 = new TestSubscriber<>();
+  private final TestSubscriber<String> friendAvatarUrl2= new TestSubscriber<>();
+  private final TestSubscriber<String> friendAvatarUrl3 = new TestSubscriber<>();
   private final TestSubscriber<Boolean> friendBackingViewIsHidden = new TestSubscriber<>();
-  private final TestSubscriber<String> friendAvatarUrl = new TestSubscriber<>();
   private final TestSubscriber<List<User>> friendsForNamepile = new TestSubscriber<>();
   private final TestSubscriber<Boolean> fundingUnsuccessfulViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> fundingSuccessfulViewGroupIsGone = new TestSubscriber<>();
@@ -62,7 +67,11 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.deadlineCountdownText().subscribe(this.deadlineCountdownText);
     this.vm.outputs.featuredViewGroupIsGone().subscribe(this.featuredViewGroupIsGone);
     this.vm.outputs.friendBackingViewIsHidden().subscribe(this.friendBackingViewIsHidden);
-    this.vm.outputs.friendAvatarUrl().subscribe(this.friendAvatarUrl);
+    this.vm.outputs.friendAvatar2IsHidden().subscribe(this.friendAvatar2IsHidden);
+    this.vm.outputs.friendAvatar3IsHidden().subscribe(this.friendAvatar3IsHidden);
+    this.vm.outputs.friendAvatarUrl1().subscribe(this.friendAvatarUrl1);
+    this.vm.outputs.friendAvatarUrl2().subscribe(this.friendAvatarUrl2);
+    this.vm.outputs.friendAvatarUrl3().subscribe(this.friendAvatarUrl3);
     this.vm.outputs.friendsForNamepile().subscribe(this.friendsForNamepile);
     this.vm.outputs.fundingUnsuccessfulViewGroupIsGone().subscribe(this.fundingUnsuccessfulViewGroupIsGone);
     this.vm.outputs.fundingSuccessfulViewGroupIsGone().subscribe(this.fundingSuccessfulViewGroupIsGone);
@@ -149,7 +158,7 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testFriendAvatarUrl() {
+  public void testFriendAvatarUrl_withOneFriend() {
     final Project project = ProjectFactory.project()
       .toBuilder()
       .friends(Collections.singletonList(UserFactory.user()))
@@ -157,7 +166,43 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.configureWith(project);
-    this.friendAvatarUrl.assertValues(project.friends().get(0).avatar().small());
+    this.friendAvatarUrl1.assertValues(project.friends().get(0).avatar().small());
+    this.friendAvatarUrl2.assertNoValues();
+    this.friendAvatarUrl3.assertNoValues();
+    this.friendAvatar2IsHidden.assertValue(true);
+    this.friendAvatar3IsHidden.assertValue(true);
+  }
+
+  @Test
+  public void testFriendAvatarUrl_withTwoFriends() {
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .friends(Arrays.asList(UserFactory.user(), UserFactory.user()))
+      .build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(project);
+    this.friendAvatarUrl1.assertValues(project.friends().get(0).avatar().small());
+    this.friendAvatarUrl2.assertValues(project.friends().get(1).avatar().small());
+    this.friendAvatarUrl3.assertNoValues();
+    this.friendAvatar2IsHidden.assertValue(false);
+    this.friendAvatar3IsHidden.assertValue(true);
+  }
+
+  @Test
+  public void testFriendAvatarUrl_withThreeFriends() {
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .friends(Arrays.asList(UserFactory.user(), UserFactory.user(), UserFactory.user()))
+      .build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(project);
+    this.friendAvatarUrl1.assertValues(project.friends().get(0).avatar().small());
+    this.friendAvatarUrl2.assertValues(project.friends().get(1).avatar().small());
+    this.friendAvatarUrl3.assertValues(project.friends().get(2).avatar().small());
+    this.friendAvatar2IsHidden.assertValue(false);
+    this.friendAvatar3IsHidden.assertValue(false);
   }
 
   @Test

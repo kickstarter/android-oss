@@ -19,10 +19,20 @@ import java.util.List;
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
 @RequiresActivityViewModel(DeepLinkViewModel.ViewModel.class)
-final public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewModel> {
+public final class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewModel> {
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    
+    this.viewModel.outputs.requestPackageManager()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> inputPackageManager());
+
+    this.viewModel.outputs.startBrowser()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startBrowser);
 
     this.viewModel.outputs.startDiscoveryActivity()
       .compose(bindToLifecycle())
@@ -33,16 +43,6 @@ final public class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::startProjectActivity);
-
-    this.viewModel.outputs.startBrowser()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::startBrowser);
-
-    this.viewModel.outputs.requestPackageManager()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> inputPackageManager());
   }
 
   private void startDiscoveryActivity() {

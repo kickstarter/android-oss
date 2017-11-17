@@ -73,7 +73,6 @@
     <android.support.v7.widget.RecyclerView
       android:id="@+id/message_threads_recycler_view"
       android:scrollbars="vertical"
-      android:background="@color/white"
       android:layout_width="match_parent"
       android:layout_height="match_parent"/>
 

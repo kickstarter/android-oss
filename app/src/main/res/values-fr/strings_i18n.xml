@@ -198,6 +198,7 @@ n\'ont rien soutenu.</string>
   <string name="Opens_update" formatted="false">Ouvre l\'actu.</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">Ou sélectionner une autre récompense ci-dessous :</string>
   <string name="Other_payment_methods" formatted="false">Autres moyens de paiement</string>
+  <string name="Other_projects_you_might_like" formatted="false">Autre projets qui pourraient vous intéresser</string>
   <string name="Past_live_stream" formatted="false">Diffusion en direct passée</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Le moyen de paiement a bien été débité.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Veuillez saisir un montant de %{amount} ou moins.</string>
@@ -225,6 +226,7 @@ n\'ont rien soutenu.</string>
   <string name="Pursue_daring_ideas" formatted="false">Des idées audacieuses.</string>
   <string name="Push_notifications" formatted="false">Notifications push</string>
   <string name="Rate_us_in_the_App_Store" formatted="false">Évaluez-nous dans l\'App Store</string>
+  <string name="Read_more_about_the_campaign" formatted="false">En savoir plus sur la campagne</string>
   <string name="Read_more_about_the_campaign_arrow" formatted="false">En savoir plus sur la campagne →</string>
   <string name="Recent_live_stream" formatted="false">Diffusion en direct récente</string>
   <string name="Recommended" formatted="false">Rien que pour vous</string>
@@ -285,6 +287,7 @@ n\'ont rien soutenu.</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Cliquez sur le cœur qui apparaît sur la page du projet pour l\'ajouter à vos favoris. Nous vous enverrons un petit rappel 48 heures avant la fin de la campagne.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Cliquez sur l\'icône en forme d\'étoile située à côté du projet pour recevoir une notification 48 avant la fin de sa campagne.</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Cliquez sur l\'étoile qui apparaît sur la page du projet pour l\'ajouter à vos favoris. Nous vous enverrons un petit rappel 48 heures avant la fin de la campagne.</string>
+  <string name="Thank_you_exclamation" formatted="false">Merci !</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Merci pour votre soutien.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">L\'adresse e-mail associée à ce compte Facebook a déjà été enregistrée par un autre utilisateur Kickstarter.</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">Échec de connexion à la diffusion en direct</string>
@@ -323,6 +326,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Pour chaque projet que vous enregistrez, nous vous enverrons un rappel 48 heures avant la fin de sa campagne.</string>
   <string name="You_Launched" formatted="false">Projet lancé !</string>
   <string name="You_backed_this_project" formatted="false">Vous avez soutenu ce projet.</string>
+  <string name="You_have_successfully_backed_project_html" formatted="false">Vous vous êtes engagé à soutenir le projet &lt;b>%{project_name}&lt;/b>. Ce projet se rapproche tout doucement de son objectif grâce à vous. Parlez-en à votre entourage !</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Votre engagement&lt;/b> du %{pledge_date}</string>
   <string name="You_saved_this_project" formatted="false">Vous avez enregistré ce projet.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Votre message n\'a pas été envoyé.</string>

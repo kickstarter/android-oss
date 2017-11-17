@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels;
 
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.R;
@@ -31,8 +30,11 @@ import static com.kickstarter.libs.rx.transformers.Transformers.coalesce;
 public interface ProjectCardHolderViewModel {
 
   interface Inputs {
+    /** Call to configure view model with a project. */
     void configureWith(Project project);
-    void projectClicked();
+
+    /** Call when the project card has been clicked. */
+    void projectCardClicked();
   }
 
   interface Outputs {
@@ -47,7 +49,7 @@ public interface ProjectCardHolderViewModel {
     Observable<Boolean> fundingUnsuccessfulViewGroupIsGone();
     Observable<Boolean> fundingSuccessfulViewGroupIsGone();
     Observable<Boolean> metadataViewGroupIsGone();
-    Observable<Integer> metadataViewGroupBackgroundColor();
+    Observable<Integer> metadataViewGroupBackgroundDrawable();
     Observable<Project> projectForDeadlineCountdownDetail();
     Observable<Integer> percentageFundedForProgressBar();
     Observable<Boolean> percentageFundedProgressBarIsGone();
@@ -63,8 +65,8 @@ public interface ProjectCardHolderViewModel {
     Observable<DateTime> projectSuccessfulAt();
     Observable<DateTime> projectSuspendedAt();
     Observable<String> rootCategoryNameForFeatured();
-    Observable<Boolean> setDefaultTopPadding();
     Observable<Boolean> savedViewGroupIsGone();
+    Observable<Boolean> setDefaultTopPadding();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectCardViewHolder> implements Inputs, Outputs {
@@ -79,14 +81,14 @@ public interface ProjectCardHolderViewModel {
         .map(NumberUtils::format);
 
       this.backingViewGroupIsGone = this.project
-        .map(p -> metadataForProject(p) != Metadata.BACKING);
+        .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.BACKING);
 
       this.deadlineCountdownText = this.project
         .map(ProjectUtils::deadlineCountdownValue)
         .map(NumberUtils::format);
 
       this.featuredViewGroupIsGone = this.project
-        .map(p -> metadataForProject(p) != Metadata.CATEGORY_FEATURED);
+        .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.CATEGORY_FEATURED);
 
       this.friendAvatarUrl = this.project
         .filter(Project::isFriendBacking)
@@ -115,16 +117,16 @@ public interface ProjectCardHolderViewModel {
         .map(ObjectUtils::isNull);
 
       this.metadataViewGroupIsGone = this.project
-        .map(p -> metadataForProject(p) == null);
+        .map(p -> ProjectUtils.metadataForProject(p) == null);
 
-      this.metadataViewGroupBackgroundColor = this.backingViewGroupIsGone
-        .map(gone -> gone ? R.color.white : R.color.ksr_green_500);
+      this.metadataViewGroupBackground = this.backingViewGroupIsGone
+        .map(gone -> gone ? R.drawable.rect_white_grey_stroke : R.drawable.rect_green_grey_stroke);
 
       this.nameAndBlurbText = this.project
         .map(p -> Pair.create(p.name(), p.blurb()));
 
       this.notifyDelegateOfProjectClick = this.project
-        .compose(Transformers.takeWhen(this.projectClicked));
+        .compose(Transformers.takeWhen(this.projectCardClicked));
 
       this.percentageFundedForProgressBar = this.project
         .map(p -> (p.state().equals(Project.STATE_LIVE) || p.state().equals(Project.STATE_SUCCESSFUL)) ? p.percentageFunded() : 0.0f)
@@ -141,7 +143,7 @@ public interface ProjectCardHolderViewModel {
         .map(p -> p.photo() == null ? null : p.photo().full());
 
       this.potdViewGroupIsGone = this.project
-        .map(p -> metadataForProject(p) != Metadata.POTD);
+        .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.POTD);
 
       this.projectCanceledAt = this.project
         .filter(p -> p.state().equals(Project.STATE_CANCELED))
@@ -177,14 +179,14 @@ public interface ProjectCardHolderViewModel {
         .filter(ObjectUtils::isNotNull)
         .map(Category::name);
 
-      this.setDefaultTopPadding = this.metadataViewGroupIsGone;
-
       this.savedViewGroupIsGone = this.project
-        .map(p -> metadataForProject(p) != Metadata.SAVING);
+        .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.SAVING);
+
+      this.setDefaultTopPadding = this.metadataViewGroupIsGone;
     }
 
     private final PublishSubject<Project> project = PublishSubject.create();
-    private final PublishSubject<Void> projectClicked = PublishSubject.create();
+    private final PublishSubject<Void> projectCardClicked = PublishSubject.create();
 
     private final Observable<String> backersCountTextViewText;
     private final Observable<Boolean> backingViewGroupIsGone;
@@ -196,7 +198,7 @@ public interface ProjectCardHolderViewModel {
     private final Observable<Boolean> fundingSuccessfulViewGroupIsGone;
     private final Observable<Boolean> fundingUnsuccessfulViewGroupIsGone;
     private final Observable<Boolean> imageIsInvisible;
-    private final Observable<Integer> metadataViewGroupBackgroundColor;
+    private final Observable<Integer> metadataViewGroupBackground;
     private final Observable<Boolean> metadataViewGroupIsGone;
     private final Observable<Pair<String, String>> nameAndBlurbText;
     private final Observable<Project> notifyDelegateOfProjectClick;
@@ -213,20 +215,17 @@ public interface ProjectCardHolderViewModel {
     private final Observable<DateTime> projectSuccessfulAt;
     private final Observable<DateTime> projectSuspendedAt;
     private final Observable<String> rootCategoryNameForFeatured;
-    private final Observable<Boolean> setDefaultTopPadding;
     private final Observable<Boolean> savedViewGroupIsGone;
+    private final Observable<Boolean> setDefaultTopPadding;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override
-    public void configureWith(final @NonNull Project project) {
+    @Override public void configureWith(final @NonNull Project project) {
       this.project.onNext(project);
     }
-
-    @Override
-    public void projectClicked() {
-      this.projectClicked.onNext(null);
+    @Override public void projectCardClicked() {
+      this.projectCardClicked.onNext(null);
     }
 
     @Override public @NonNull Observable<String> backersCountTextViewText() {
@@ -250,6 +249,9 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<List<User>> friendsForNamepile() {
       return this.friendsForNamepile;
     }
+    @Override public @NonNull Observable<Boolean> fundingSuccessfulViewGroupIsGone() {
+      return this.fundingSuccessfulViewGroupIsGone;
+    }
     @Override public @NonNull Observable<Boolean> fundingUnsuccessfulViewGroupIsGone() {
       return this.fundingUnsuccessfulViewGroupIsGone;
     }
@@ -257,8 +259,8 @@ public interface ProjectCardHolderViewModel {
       return this.imageIsInvisible;
     }
     @Override
-    public Observable<Integer> metadataViewGroupBackgroundColor() {
-      return this.metadataViewGroupBackgroundColor;
+    public Observable<Integer> metadataViewGroupBackgroundDrawable() {
+      return this.metadataViewGroupBackground;
     }
     @Override public @NonNull Observable<Boolean> metadataViewGroupIsGone() {
       return this.metadataViewGroupIsGone;
@@ -288,7 +290,6 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<Boolean> projectCardStatsViewGroupIsGone() {
       return this.projectCardStatsViewGroupIsGone;
     }
-
     @Override public @NonNull Observable<Project> projectForDeadlineCountdownDetail() {
       return this.projectForDeadlineCountdownDetail;
     }
@@ -315,26 +316,6 @@ public interface ProjectCardHolderViewModel {
     }
     @Override public @NonNull Observable<Boolean> savedViewGroupIsGone() {
       return this.savedViewGroupIsGone;
-    }
-    @Override public @NonNull Observable<Boolean> fundingSuccessfulViewGroupIsGone() {
-      return this.fundingSuccessfulViewGroupIsGone;
-    }
-
-    private enum Metadata {
-      BACKING, SAVING, POTD, CATEGORY_FEATURED
-    }
-
-    private static @Nullable Metadata metadataForProject(final @NonNull Project project) {
-      if (project.isBacking()) {
-        return Metadata.BACKING;
-      } else if (project.isStarred()) {
-        return Metadata.SAVING;
-      } else if (project.isPotdToday()) {
-        return Metadata.POTD;
-      } else if (project.isFeaturedToday()) {
-        return Metadata.CATEGORY_FEATURED;
-      }
-      return null;
     }
   }
 }

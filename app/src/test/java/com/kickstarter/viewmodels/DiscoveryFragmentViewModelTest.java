@@ -171,14 +171,14 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> showActivityFeed = new TestSubscriber<>();
     vm.outputs.showActivityFeed().subscribe(showActivityFeed);
 
-    final TestSubscriber<Activity> showActivityUpdate = new TestSubscriber<>();
-    vm.outputs.showActivityUpdate().subscribe(showActivityUpdate);
+    final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
+    vm.outputs.startUpdateActivity().subscribe(startUpdateActivity);
 
     final TestSubscriber<Boolean> showLoginTout = new TestSubscriber<>();
     vm.outputs.showLoginTout().subscribe(showLoginTout);
 
     final TestSubscriber<Pair<Project, RefTag>> showProject = new TestSubscriber<>();
-    vm.outputs.showProject().subscribe(showProject);
+    vm.outputs.startProjectActivity().subscribe(showProject);
 
     // Clicking see activity feed button on sampler should show activity feed.
     showActivityFeed.assertNoValues();
@@ -190,9 +190,9 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     showActivityFeed.assertValues(true, true, true);
 
     // Clicking activity update on sampler should show activity update.
-    showActivityUpdate.assertNoValues();
+    startUpdateActivity.assertNoValues();
     vm.inputs.activitySampleProjectViewHolderUpdateClicked(null, ActivityFactory.updateActivity());
-    showActivityUpdate.assertValueCount(1);
+    startUpdateActivity.assertValueCount(1);
     koalaTest.assertValues(KoalaEvent.VIEWED_UPDATE);
 
     // Clicking login on onboarding view should show login tout.
@@ -205,7 +205,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     // Clicking on a project card should show project activity.
     showProject.assertNoValues();
-    vm.inputs.projectCardViewHolderClick(null, ProjectFactory.project());
+    vm.inputs.projectCardViewHolderClicked(ProjectFactory.project());
     showProject.assertValueCount(1);
   }
 }

@@ -7,21 +7,21 @@
   android:layout_gravity="center"
   android:layout_height="wrap_content"
   android:layout_width="wrap_content"
-  android:layout_marginTop="@dimen/grid_2"
-  android:layout_marginEnd="@dimen/card_margin_x">
+  android:background="@drawable/rect_white_grey_stroke"
+  android:layout_margin="@dimen/grid_2">
 
   <android.support.v7.widget.CardView
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     card_view:cardCornerRadius="@dimen/card_corner_radius"
     card_view:cardBackgroundColor="@color/white"
-    card_view:cardElevation="@dimen/card_elevation"
+    card_view:cardElevation="@dimen/card_no_elevation"
     android:foreground="@drawable/click_indicator_light"
     android:focusable="true"
-    android:layout_width="@dimen/profile_card_photo_width"
+    android:layout_width="wrap_content"
     android:layout_height="@dimen/profile_card_height" >
 
     <RelativeLayout
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="match_parent">
 
       <ImageView
@@ -32,6 +32,12 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/profile_card_photo_height"
         tools:ignore="ContentDescription" />
+
+      <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profile_card_image"
+        layout="@layout/horizontal_line_1dp_view" />
 
       <LinearLayout
         android:layout_below="@id/profile_card_image"
@@ -79,7 +85,7 @@
           android:visibility="gone"
           style="@style/Caption1PrimaryMedium"
           android:textColor="@color/white"
-          android:background="@color/green"
+          android:background="@color/ksr_green_700"
           android:gravity="center"
           android:maxLines="1"
           android:layout_width="match_parent"
@@ -91,7 +97,7 @@
           android:visibility="gone"
           style="@style/Caption1PrimaryMedium"
           android:textColor="@color/white"
-          android:background="@color/ksr_dark_grey_400"
+          android:background="@color/ksr_dark_grey_500"
           android:gravity="center"
           android:maxLines="1"
           android:layout_width="match_parent"

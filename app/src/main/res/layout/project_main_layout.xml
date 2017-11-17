@@ -9,13 +9,27 @@
   android:background="@color/white"
   android:layout_height="wrap_content">
 
-  <include layout="@layout/project_media_header"/>
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <include layout="@layout/project_media_header"/>
+
+    <FrameLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom"
+      android:layout_marginStart="@dimen/grid_1">
+      <include
+        layout="@layout/project_metadata_view" />
+    </FrameLayout>
+
+  </FrameLayout>
 
   <LinearLayout
     android:id="@+id/project_info"
     android:orientation="vertical"
     android:background="@color/white"
-    android:layout_marginTop="@dimen/grid_3"
+    android:layout_marginTop="@dimen/grid_2"
     android:layout_marginStart="@dimen/project_padding_x"
     android:layout_marginEnd="@dimen/project_padding_x"
     android:layout_width="match_parent"
@@ -31,65 +45,79 @@
       tools:text="Project name" />
 
     <LinearLayout
-      android:weightSum="3"
-      android:orientation="horizontal"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
-
-      <TextView
-        android:id="@+id/creator_name"
-        android:focusable="true"
-        android:layout_weight="3"
-        android:maxLines="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/click_indicator_light_masked"
-        style="@style/BodySecondary"
-        tools:ignore="InconsistentLayout"
-        tools:text="Creator name" />
-
-      <LinearLayout
-        android:id="@+id/backer_label"
-        android:visibility="gone"
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:ignore="InconsistentLayout">
-
-        <TextView
-          android:text="@string/project_creator_youre_a_backer"
-          android:maxLines="1"
-          style="@style/BodySecondary"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
-
-        <com.kickstarter.ui.views.IconTextView
-          app:iconType="ss_kickstarter"
-          android:id="@+id/backer_badge"
-          android:layout_gravity="center_vertical"
-          android:textSize="@dimen/caption_1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="1dp"
-          android:layout_marginStart="@dimen/grid_1_half"
-          android:text="@string/backer_icon"
-          android:textColor="@color/green"/>
-      </LinearLayout>
-
-    </LinearLayout>
-
-    <TextView
-      android:id="@+id/blurb"
-      style="@style/BodyPrimary"
+      android:id="@+id/creator_info"
       android:focusable="true"
+      android:orientation="horizontal"
       android:background="@drawable/click_indicator_light_masked"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_2"
-      android:layout_marginBottom="@dimen/grid_2"
-      android:paddingBottom="@dimen/grid_1"
-      tools:ignore="InconsistentLayout"
-      tools:text="Description about this project." />
+      android:gravity="center_vertical"
+      android:paddingBottom="@dimen/grid_3"
+      android:paddingTop="@dimen/grid_2"
+      tools:ignore="InconsistentLayout">
+
+      <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/project_avatar_width"
+        android:layout_height="@dimen/project_avatar_height"
+        android:scaleType="centerCrop"
+        android:layout_marginEnd="@dimen/grid_1"
+        tools:background="@color/ksr_green_700"
+        tools:ignore="ContentDescription" />
+
+      <TextView
+        android:id="@+id/creator_name"
+        android:maxLines="2"
+        android:ellipsize="marquee"
+        style="@style/Caption1Primary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Creator Name" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:orientation="vertical"
+      android:id="@+id/blurb_view"
+      android:background="@drawable/click_indicator_light_masked"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      tools:ignore="InconsistentLayout" >
+
+      <TextView
+        android:id="@+id/blurb"
+        style="@style/Subheadline"
+        android:focusable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/ksr_soft_black"
+        tools:ignore="InconsistentLayout"
+        tools:text="Description about this project." />
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:orientation="horizontal">
+
+        <TextView
+          style="@style/BodyPrimaryMedium"
+          android:focusable="true"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/grid_1"
+          android:text="@string/Read_more_about_the_campaign" />
+
+        <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:src="@drawable/ic_arrow_right"
+          tools:ignore="ContentDescription" />
+      </LinearLayout>
+
+    </LinearLayout>
 
     <LinearLayout
       android:orientation="horizontal"
@@ -103,15 +131,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/local_offer_icon"
-        style="@style/BodyPrimary"/>
+        android:textColor="@color/ksr_dark_grey_400"
+        style="@style/Caption1Primary"/>
 
       <TextView
         android:id="@+id/category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/grid_1_half"
-        android:paddingEnd="@dimen/grid_2"
-        style="@style/BodyPrimary"
+        android:paddingStart="@dimen/grid_1"
+        android:paddingEnd="@dimen/grid_5"
+        android:textColor="@color/ksr_dark_grey_500"
+        style="@style/Caption1Primary"
         tools:ignore="InconsistentLayout"
         tools:text="Category name" />
 
@@ -120,8 +150,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/location_on_icon"
+        android:textColor="@color/ksr_dark_grey_400"
         android:contentDescription="@string/discovery_baseball_card_accessibility_location_label"
-        style="@style/BodyPrimary" />
+        style="@style/Caption1Primary" />
 
       <TextView
         android:id="@+id/location"
@@ -129,9 +160,10 @@
         android:maxLines="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/grid_1_half"
+        android:paddingStart="@dimen/grid_1"
         android:paddingEnd="@dimen/grid_1_half"
-        style="@style/BodyPrimary"
+        android:textColor="@color/ksr_dark_grey_500"
+        style="@style/Caption1Primary"
         tools:text="Location"
         tools:ignore="InconsistentLayout" />
 
@@ -144,7 +176,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:minHeight="@dimen/progress_bar_min_height"
-      android:layout_marginTop="@dimen/grid_4"
+      android:layout_marginTop="@dimen/grid_5"
       android:progress="50" />
 
     <LinearLayout
@@ -226,8 +258,6 @@
     </LinearLayout>
 
   </LinearLayout>
-
-  <include layout="@layout/horizontal_line_1dp_view" />
 
   <include layout="@layout/project_creator_info" />
 

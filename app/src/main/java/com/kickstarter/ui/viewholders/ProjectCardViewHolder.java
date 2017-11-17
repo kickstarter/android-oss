@@ -41,8 +41,8 @@ import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 
 public final class ProjectCardViewHolder extends KSViewHolder {
   private final ProjectCardHolderViewModel.ViewModel viewModel;
-  private final Delegate delegate;
   private final KSString ksString;
+  private final Delegate delegate;
 
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
@@ -70,8 +70,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
   protected @Bind(R.id.saved_view_group) ViewGroup savedViewGroup;
 
-  protected @BindColor(R.color.ksr_text_navy_500) int ksrTextNavy500;
-  protected @BindColor(R.color.ksr_text_navy_700) int ksrTextNavy700;
+  protected @BindColor(R.color.ksr_dark_grey_400) int ksrDarkGrey400;
+  protected @BindColor(R.color.ksr_soft_black) int ksrSoftBlack;
 
   protected @BindDimen(R.dimen.grid_1) int gridNew1Dimen;
   protected @BindDimen(R.dimen.grid_2) int gridNew2Dimen;
@@ -88,7 +88,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 
   public interface Delegate {
-    void projectCardViewHolderClick(ProjectCardViewHolder viewHolder, Project project);
+    void projectCardViewHolderClicked(Project project);
   }
 
   public ProjectCardViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -154,7 +154,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.outputs.notifyDelegateOfProjectClick()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(p -> delegate.projectCardViewHolderClick(this, p));
+      .subscribe(delegate::projectCardViewHolderClicked);
 
     this.viewModel.outputs.percentageFundedTextViewText()
       .compose(bindToLifecycle())
@@ -218,10 +218,10 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         this.featuredTextView.setText(this.ksString.format(this.featuredInString, "category_name", rootCategory))
       );
 
-    this.viewModel.outputs.metadataViewGroupBackgroundColor()
+    this.viewModel.outputs.metadataViewGroupBackgroundDrawable()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(colorInt -> this.projectMetadataViewGroup.setBackgroundColor(ContextCompat.getColor(this.context(), colorInt)));
+      .subscribe(drawableRes -> this.projectMetadataViewGroup.setBackground(ContextCompat.getDrawable(this.context(), drawableRes)));
 
     this.viewModel.outputs.metadataViewGroupIsGone()
       .compose(bindToLifecycle())
@@ -259,10 +259,10 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
     final SpannableString styledString = new SpannableString(nameString + blurbString);
 
-    styledString.setSpan(new ForegroundColorSpan(this.ksrTextNavy700), 0, nameString.length(), 0);
+    styledString.setSpan(new ForegroundColorSpan(this.ksrSoftBlack), 0, nameString.length(), 0);
 
     styledString.setSpan(
-      new ForegroundColorSpan(this.ksrTextNavy500),
+      new ForegroundColorSpan(this.ksrDarkGrey400),
       nameString.length(),
       nameString.length() + blurbString.length(),
       0
@@ -306,7 +306,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
   @Override
   public void onClick(final @NonNull View view) {
-    this.viewModel.inputs.projectClicked();
+    this.viewModel.inputs.projectCardClicked();
   }
 
   /**

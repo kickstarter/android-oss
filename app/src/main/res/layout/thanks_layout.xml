@@ -1,120 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
   <include layout="@layout/thanks_toolbar" />
 
-  <ScrollView
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/thanks_recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical">
-
-      <RelativeLayout
-        android:background="@color/dark_blue"
-        android:focusableInTouchMode="true"
-        android:focusable="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <include layout="@layout/woohoo_background_view" />
-
-        <TextView
-          android:background="@color/transparent"
-          android:gravity="center"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_centerVertical="true"
-          android:layout_centerHorizontal="true"
-          android:paddingTop="46dp"
-          android:paddingBottom="46dp"
-          android:textColor="@color/white"
-          android:textSize="30sp"
-          android:text="@string/project_checkout_share_exclamation" />
-
-      </RelativeLayout>
-
-      <LinearLayout
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_1"
-        android:layout_marginStart="@dimen/grid_4"
-        android:layout_marginEnd="@dimen/grid_4"
-        android:layout_marginTop="@dimen/grid_4"
-        android:orientation="vertical">
-
-        <TextView
-          style="@style/CalloutPrimary"
-          android:id="@+id/backed_project"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          tools:text="You just backed a project. Share this project with friends to help it along!" />
-
-        <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:paddingTop="@dimen/grid_4"
-          android:orientation="horizontal">
-
-          <Button
-            style="@style/FacebookButton"
-            android:id="@+id/share_on_facebook_button"
-            android:ellipsize="none"
-            android:layout_marginEnd="@dimen/grid_2"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:text="@string/project_checkout_share_buttons_share"
-            android:textAllCaps="false" />
-
-          <Button
-            style="@style/TwitterButton"
-            android:id="@+id/share_on_twitter_button"
-            android:ellipsize="none"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:text="@string/project_checkout_share_buttons_tweet"
-            android:textAllCaps="false" />
-
-        </LinearLayout>
-
-        <Button
-          style="@style/BorderButton"
-          android:id="@+id/share_button"
-          android:layout_marginTop="@dimen/grid_2"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/project_checkout_share_buttons_more_share_options"
-          android:textAllCaps="false" />
-
-        <TextView
-          style="@style/CalloutPrimary"
-          android:gravity="center_horizontal"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_5"
-          android:text="@string/project_checkout_looking_for_more_projects_check_these_out" />
-
-      </LinearLayout>
-
-      <android.support.v7.widget.RecyclerView
-        android:id="@+id/recommended_projects_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_20"
-        android:layout_marginBottom="@dimen/grid_2"
-        android:layout_marginTop="@dimen/grid_2"
-        android:layout_marginStart="@dimen/grid_2"
-        android:scrollbars="horizontal" />
-
-    </LinearLayout>
-
-  </ScrollView>
+    android:layout_height="match_parent"/>
 
 </LinearLayout>

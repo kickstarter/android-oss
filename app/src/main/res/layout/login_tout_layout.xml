@@ -23,14 +23,12 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
-      <ImageView
-        android:id="@+id/logo"
-        android:layout_marginTop="@dimen/grid_10"
+      <include
+        layout="@layout/logo_call_to_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_8"
-        android:layout_width="170dp"
-        android:layout_height="20.06dp"
-        android:src="@drawable/logo"
-        android:contentDescription="@string/general_accessibility_kickstarter" />
+        android:layout_marginTop="@dimen/grid_10" />
 
       <Button
         android:id="@+id/facebook_login_button"
@@ -46,7 +44,8 @@
         android:layout_marginTop="@dimen/grid_1"
         android:layout_marginStart="@dimen/grid_2"
         android:layout_marginEnd="@dimen/grid_2"
-        android:text="@string/login_tout_disclaimer_we_never_post_anything_without_permission" />
+        android:textColor="@color/ksr_dark_grey_500"
+        android:text="@string/discovery_facebook_connect_hero_we_will_never_post_anything_on_facebook" />
 
       <Button
         style="@style/BorderButton"
@@ -78,6 +77,7 @@
         android:paddingEnd="@dimen/grid_1"
         android:paddingTop="@dimen/grid_1"
         android:paddingBottom="@dimen/grid_1"
+        android:textColor="@color/ksr_dark_grey_500"
         android:text="@string/login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" />
 
     </LinearLayout>

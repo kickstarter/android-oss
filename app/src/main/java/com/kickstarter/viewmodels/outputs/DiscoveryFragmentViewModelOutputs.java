@@ -11,20 +11,13 @@ import java.util.List;
 import rx.Observable;
 
 public interface DiscoveryFragmentViewModelOutputs {
-  /**
-   * Emits a list of projects to display
-   */
+  /** Emits a list of projects to display.*/
   Observable<List<Project>> projectList();
 
   /**
    * Emits when the activity feed should be shown
    */
   Observable<Boolean> showActivityFeed();
-
-  /**
-   * Emits an activity when an update should be shown
-   */
-  Observable<Activity> showActivityUpdate();
 
   /**
    * Emits an activity for the activity sample view
@@ -42,7 +35,12 @@ public interface DiscoveryFragmentViewModelOutputs {
   Observable<Boolean> shouldShowOnboardingView();
 
   /**
-   * Emits a pair containing a project and a ref tag when a project should be shown
+   * Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}.
    */
-  Observable<Pair<Project, RefTag>> showProject();
+  Observable<Pair<Project, RefTag>> startProjectActivity();
+
+  /**
+   * Emits an activity when we should start the {@link com.kickstarter.ui.activities.UpdateActivity}.
+   */
+  Observable<Activity> startUpdateActivity();
 }

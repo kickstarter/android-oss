@@ -31,7 +31,7 @@ import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.MessagesActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.activities.SurveyResponseActivity;
-import com.kickstarter.ui.activities.WebViewActivity;
+import com.kickstarter.ui.activities.UpdateActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
@@ -264,8 +264,8 @@ public final class PushNotifications {
     final @NonNull String text) {
 
     return new NotificationCompat.Builder(this.context)
-      .setSmallIcon(R.drawable.ic_kickstarter_k)
-      .setColor(ContextCompat.getColor(this.context, R.color.green))
+      .setSmallIcon(R.drawable.ic_kickstarter_micro_k)
+      .setColor(ContextCompat.getColor(this.context, R.color.ksr_green_800))
       .setContentText(text)
       .setContentTitle(title)
       .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
@@ -291,8 +291,9 @@ public final class PushNotifications {
     final Intent projectIntent = new Intent(this.context, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT_PARAM, projectParam);
 
-    final Intent updateIntent = new Intent(this.context, WebViewActivity.class)
-      .putExtra(IntentKey.URL, update.urls().web().update())
+    final Intent updateIntent = new Intent(this.context, UpdateActivity.class)
+      .putExtra(IntentKey.PROJECT_PARAM, projectParam)
+      .putExtra(IntentKey.UPDATE, update)
       .putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, envelope);
 
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)

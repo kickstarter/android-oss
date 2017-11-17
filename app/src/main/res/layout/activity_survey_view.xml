@@ -34,7 +34,7 @@
         android:layout_height="@dimen/activity_feed_survey_photo_height"
         android:layout_marginStart="@dimen/grid_2"
         android:layout_marginEnd="@dimen/grid_1"
-        tools:background="@color/blue"
+        tools:background="@color/ksr_cobalt_500"
         tools:ignore="ContentDescription" />
 
       <TextView

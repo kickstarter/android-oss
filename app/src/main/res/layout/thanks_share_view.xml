@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginBottom="@dimen/grid_2"
+  android:orientation="vertical">
+
+  <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingBottom="@dimen/grid_6"
+    android:paddingTop="@dimen/grid_8"
+    android:text="@string/Thank_you_exclamation"
+    android:textColor="@color/ksr_soft_black"
+    android:textSize="@dimen/title_thank_you" />
+
+  <LinearLayout
+    android:layout_gravity="center_horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/grid_1"
+    android:layout_marginStart="@dimen/grid_4"
+    android:layout_marginEnd="@dimen/grid_4"
+    android:orientation="vertical">
+
+    <TextView
+      style="@style/CalloutPrimary"
+      android:id="@+id/backed_project"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      tools:text="You just backed a project. Share this project with friends to help it along!" />
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:baselineAligned="false"
+      android:layout_marginTop="@dimen/grid_4"
+      android:weightSum="2"
+      android:orientation="horizontal">
+
+      <Button
+        android:id="@+id/thanks_facebook_share_button"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/grid_1"
+        style="@style/FacebookShareButton" />
+
+      <Button
+        android:id="@+id/thanks_twitter_share_button"
+        android:layout_weight="1"
+        style="@style/TwitterButton" />
+
+    </LinearLayout>
+
+    <Button
+      style="@style/BorderButton"
+      android:id="@+id/share_button"
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/project_checkout_share_buttons_more_share_options"
+      android:textAllCaps="false" />
+
+  </LinearLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/ksr_dark_grey_500"
+    android:layout_marginTop="@dimen/grid_8"
+    android:layout_marginBottom="@dimen/grid_7"/>
+
+  <TextView
+    style="@style/CalloutPrimary"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/Other_projects_you_might_like" />
+
+</LinearLayout>

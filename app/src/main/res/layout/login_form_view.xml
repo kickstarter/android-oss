@@ -43,7 +43,7 @@
 
   <Button
     android:id="@+id/login_button"
-    style="@style/GreenRoundedButton"
+    style="@style/PrimaryButton"
     android:enabled="false"
     android:layout_marginTop="@dimen/grid_2"
     android:layout_width="match_parent"

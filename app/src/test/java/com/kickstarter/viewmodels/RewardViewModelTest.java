@@ -41,7 +41,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<List<RewardsItem>> rewardsItemList= new TestSubscriber<>();
   private final TestSubscriber<Boolean> rewardsItemsAreGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> selectedHeaderIsGone = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> selectedOverlayIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> shippingSummarySectionIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> shippingSummaryTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Project> startBackingActivity = new TestSubscriber<>();
@@ -70,7 +69,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.rewardsItemsAreGone().subscribe(this.rewardsItemsAreGone);
     this.vm.outputs.rewardsItemList().subscribe(this.rewardsItemList);
     this.vm.outputs.selectedHeaderIsGone().subscribe(this.selectedHeaderIsGone);
-    this.vm.outputs.selectedOverlayIsGone().subscribe(this.selectedOverlayIsGone);
     this.vm.outputs.shippingSummarySectionIsGone().subscribe(this.shippingSummarySectionIsGone);
     this.vm.outputs.shippingSummaryTextViewText().subscribe(this.shippingSummaryTextViewText);
     this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity);
@@ -400,11 +398,9 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.projectAndReward(backedProject, backedProject.backing().reward());
     this.selectedHeaderIsGone.assertValue(false);
-    this.selectedOverlayIsGone.assertValue(false);
 
     this.vm.inputs.projectAndReward(backedProject, RewardFactory.reward());
     this.selectedHeaderIsGone.assertValues(false, true);
-    this.selectedOverlayIsGone.assertValues(false, true);
   }
 
   @Test

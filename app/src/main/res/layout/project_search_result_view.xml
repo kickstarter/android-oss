@@ -25,10 +25,10 @@
       android:layout_width="@dimen/search_result_photo_width"
       android:layout_height="@dimen/search_result_photo_height"
       android:layout_marginEnd="@dimen/grid_2"
+      android:layout_gravity="center_vertical"
       android:adjustViewBounds="true"
       android:background="@drawable/gray_gradient"
       android:scaleType="centerCrop"
-      android:elevation="3dp"
       tools:ignore="ContentDescription,UnusedAttribute" />
 
     <LinearLayout
@@ -93,10 +93,10 @@
 
   </LinearLayout>
 
-  <View
+  <include
+    layout="@layout/horizontal_line_1dp_view"
     android:layout_width="match_parent"
     android:layout_height="1dp"
-    android:layout_marginTop="@dimen/grid_2"
-    android:background="@color/ksr_navy_300" />
+    android:layout_marginTop="@dimen/grid_2" />
 
 </LinearLayout>

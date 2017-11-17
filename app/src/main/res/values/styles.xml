@@ -27,9 +27,7 @@
   </style>
 
   <!-- Activities -->
-  <style name="ActivityFeedActivity" parent="KSTheme">
-    <item name="android:windowBackground">@color/activity_feed_background</item>
-  </style>
+  <style name="ActivityFeedActivity" parent="KSTheme"/>
 
   <style name="CheckoutActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
@@ -40,7 +38,7 @@
   </style>
 
   <style name="DiscoveryBase" parent="KSTheme">
-    <item name="android:windowBackground">@color/discovery_background</item>
+    <item name="android:windowBackground">@color/white</item>
   </style>
 
   <style name="DiscoveryActivity" parent="DiscoveryBase" />
@@ -107,8 +105,11 @@
     <item name="android:singleLine">true</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:paddingStart">@dimen/grid_4</item>
-    <item name="android:paddingEnd">@dimen/grid_4</item>
+    <item name="android:paddingStart">@dimen/grid_3</item>
+    <item name="android:paddingEnd">@dimen/grid_3</item>
+    <item name="android:textSize">@dimen/callout</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif</item>
+    <item name="android:minHeight">@dimen/grid_8</item>
   </style>
 
   <style name="BorderButton" parent="Base.Widget.AppCompat.Button.Borderless">
@@ -118,65 +119,52 @@
     <item name="android:layout_centerInParent">true</item>
     <item name="android:singleLine">true</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:paddingStart">@dimen/grid_4</item>
-    <item name="android:paddingEnd">@dimen/grid_4</item>
+    <item name="android:padding">@dimen/grid_3</item>
+    <item name="android:textSize">@dimen/callout</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif</item>
   </style>
 
-  <style name="RoundedButtonBase" parent="Button">
-    <item name="android:paddingStart">@dimen/grid_6</item>
-    <item name="android:paddingEnd">@dimen/grid_6</item>
-    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  <style name="PrimaryButton" parent="Button">
+    <item name="android:background">@drawable/button_green</item>
   </style>
 
-  <style name="RoundedButton" parent="Button" />
-
-  <style name="FacebookButton" parent="Base.Widget.AppCompat.Button.Borderless">
-    <item name="android:background">@drawable/button_facebook</item>
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:layout_height">wrap_content</item>
-    <item name="android:textColor">@color/white</item>
-    <item name="android:layout_centerInParent">true</item>
-    <item name="android:singleLine">true</item>
-    <item name="android:text">@string/login_tout_buttons_log_in_with_facebook</item>
-    <item name="android:paddingStart">@dimen/grid_1</item>
-    <item name="android:paddingEnd">@dimen/grid_4</item>
-    <item name="android:drawableStart">@drawable/ic_social_facebook</item>
+  <style name="SecondaryButton" parent="Button">
+    <item name="android:background">@drawable/button_blue</item>
   </style>
 
-  <style name="BlueRoundedButton" parent="RoundedButton">
-    <item name="android:background">@drawable/button_blue_rounded</item>
+  <style name="TertiaryButton" parent="Button">
+    <item name="android:background">@drawable/button_gray</item>
+    <item name="android:textColor">@color/ksr_soft_black</item>
   </style>
 
-  <style name="GrayRoundedButton" parent="RoundedButton">
-    <item name="android:background">@drawable/button_gray_rounded</item>
-    <item name="android:textColor">@color/ksr_dark_grey_400</item>
+  <style name="ShareButton" parent="TertiaryButton">
+    <item name="android:ellipsize">none</item>
+    <item name="android:layout_gravity">center</item>
+    <item name="android:textAllCaps">false</item>
   </style>
 
-  <style name="GreenRoundedButton" parent="RoundedButton">
-    <item name="android:background">@drawable/button_green_rounded</item>
-  </style>
-
-  <style name="BlueRoundedButtonBase" parent="RoundedButton">
-    <item name="android:background">@drawable/button_blue_rounded</item>
-  </style>
-
-  <style name="TwitterButton" parent="Base.Widget.AppCompat.Button.Borderless">
-    <item name="android:background">@drawable/button_twitter</item>
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:layout_height">wrap_content</item>
-    <item name="android:textColor">@color/white</item>
-    <item name="android:layout_centerInParent">true</item>
-    <item name="android:singleLine">true</item>
-    <item name="android:paddingStart">@dimen/grid_1</item>
-    <item name="android:paddingEnd">@dimen/grid_4</item>
+  <style name="TwitterButton" parent="ShareButton">
     <item name="android:drawableStart">@drawable/ic_social_twitter</item>
+    <item name="android:text">@string/project_checkout_share_buttons_tweet</item>
+  </style>
+
+  <style name="FacebookShareButton" parent="ShareButton">
+    <item name="android:drawableStart">@drawable/ic_social_facebook_share</item>
+    <item name="android:text">@string/project_checkout_share_buttons_share</item>
+  </style>
+
+  <style name="FacebookButton" parent="BorderButton">
+    <item name="android:textColor">@color/white</item>
+    <item name="android:background">@drawable/button_facebook</item>
+    <item name="android:drawableStart">@drawable/ic_social_facebook</item>
+    <item name="android:text">@string/login_tout_buttons_log_in_with_facebook</item>
   </style>
 
   <style name="ProjectActionButton" parent="Button">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">@dimen/project_action_button_height</item>
     <item name="android:textSize">@dimen/callout</item>
-    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif</item>
   </style>
 
   <style name="ActivitySampleSeeAllButton" parent="BorderButton">
@@ -256,7 +244,7 @@
     <item name="android:layout_width">@dimen/button_icon_fixed_width</item>
     <item name="android:maxWidth">@dimen/button_icon_fixed_width</item>
     <item name="android:gravity">center</item>
-    <item name="android:textColor">@color/text_primary</item>
+    <item name="android:textColor">@color/ksr_soft_black</item>
     <item name="android:textSize">@dimen/icon</item>
   </style>
 
@@ -265,12 +253,6 @@
     <item name="android:drawableStart">@drawable/ic_action_icon__arrow_left</item>
     <item name="android:focusable">true</item>
     <item name="android:contentDescription">@string/general_navigation_accessibility_button_navigate_back_label</item>
-  </style>
-
-  <style name="ToolbarIconDarkBackground" parent="ToolbarIcon">
-    <item name="android:background">@drawable/button_selector</item>
-    <item name="android:focusable">true</item>
-    <item name="android:textColor">@color/white</item>
   </style>
 
   <style name="ToolbarTitleBase" parent="Headline">
@@ -289,6 +271,7 @@
     <item name="android:layout_width">@dimen/button_icon_fixed_width</item>
     <item name="android:background">@drawable/click_indicator_light</item>
     <item name="android:gravity">center</item>
+    <item name="android:tint">@color/ksr_soft_black</item>
     <item name="android:layout_centerVertical">true</item>
   </style>
 
@@ -402,10 +385,6 @@
     <item name="android:textSize">@dimen/title_3</item>
   </style>
 
-  <style name="Title3Navy" parent="Title3">
-    <item name="android:textColor">@color/ksr_text_navy_800</item>
-  </style>
-
   <style name="Title3Medium" parent="TextPrimary">
     <item name="android:textSize">@dimen/title_3</item>
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
@@ -436,7 +415,7 @@
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="cardBackgroundColor">@color/white</item>
-    <item name="cardElevation">@dimen/card_elevation</item>
+    <item name="cardElevation">@dimen/card_no_elevation</item>
     <item name="android:focusable">true</item>
     <item name="android:layout_marginBottom">@dimen/grid_1</item>
     <item name="android:layout_marginTop">@dimen/grid_5</item>
@@ -447,8 +426,9 @@
   <style name="ActivitySampleCard" parent="ActivitySampleCardBase" />
 
   <!-- Rewards -->
-  <style name="RewardLimitedText" parent="Caption1PrimaryMedium">
-    <item name="android:textColor">@color/reward_orange_dark</item>
+  <style name="RewardHeadline" parent="Caption2Primary">
+    <item name="android:textColor">@color/ksr_dark_grey_500</item>
+    <item name="android:textAllCaps">true</item>
   </style>
 
 </resources>

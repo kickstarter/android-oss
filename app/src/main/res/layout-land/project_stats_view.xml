@@ -15,18 +15,21 @@
     tools:ignore="RtlSymmetry">
 
     <TextView
-      android:id="@+id/backers_count"
+      android:id="@+id/pledged"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/Headline"
-      tools:text="47" />
+      android:textColor="@color/ksr_green_700"
+      tools:text="$10 USD" />
 
     <TextView
+      android:id="@+id/goal"
       android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@string/discovery_baseball_card_stats_backers"
-      style="@style/BodySecondary" />
+      style="@style/BodySecondary"
+      android:textColor="@color/ksr_green_700"
+      tools:text="pledged of $70 USD" />
 
   </LinearLayout>
 
@@ -38,19 +41,20 @@
     tools:ignore="RtlSymmetry">
 
     <TextView
-      android:id="@+id/pledged"
+      android:id="@+id/backers_count"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/Headline"
-      tools:text="$10 USD" />
+      android:textColor="@color/ksr_dark_grey_500"
+      tools:text="47" />
 
     <TextView
-      android:id="@+id/goal"
       android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      style="@style/BodySecondary"
-      tools:text="pledged of $70 USD" />
+      android:text="@string/discovery_baseball_card_stats_backers"
+      android:textColor="@color/ksr_dark_grey_500"
+      style="@style/BodySecondary" />
 
   </LinearLayout>
 
@@ -67,6 +71,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/Headline"
+      android:textColor="@color/ksr_dark_grey_500"
       tools:text="22" />
 
     <TextView
@@ -75,6 +80,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/BodySecondary"
+      android:textColor="@color/ksr_dark_grey_500"
       tools:text="days to go" />
 
   </LinearLayout>

@@ -53,8 +53,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @Bind(R.id.kickstarter_news_and_events_switch) SwitchCompat promoNewsletterSwitch;
   protected @Bind(R.id.projects_we_love_switch) SwitchCompat weeklyNewsletterSwitch;
 
-  protected @BindColor(R.color.green) int green;
-  protected @BindColor(R.color.gray) int gray;
+  protected @BindColor(R.color.ksr_green_700) int green;
+  protected @BindColor(R.color.ksr_dark_grey_400) int gray;
 
   protected @BindString(R.string.profile_settings_newsletter_games) String gamesNewsletterString;
   protected @BindString(R.string.profile_settings_newsletter_happening) String happeningNewsletterString;

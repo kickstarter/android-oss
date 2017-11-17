@@ -15,17 +15,20 @@
     tools:ignore="RtlSymmetry">
 
     <TextView
-      android:id="@+id/backers_count"
+      android:id="@+id/pledged"
       style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
+      android:layout_height="wrap_content"
+      android:textColor="@color/ksr_green_700" />
 
     <TextView
+      android:id="@+id/goal"
       android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@string/discovery_baseball_card_stats_backers"
-      style="@style/Caption1Secondary" />
+      style="@style/Caption1Secondary"
+      android:textColor="@color/ksr_green_700" />
+
   </LinearLayout>
 
   <LinearLayout
@@ -36,18 +39,19 @@
     tools:ignore="RtlSymmetry">
 
     <TextView
-      android:id="@+id/pledged"
+      android:id="@+id/backers_count"
       style="@style/CalloutPrimaryMedium"
+      android:textColor="@color/ksr_dark_grey_500"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
     <TextView
-      android:id="@+id/goal"
       android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:text="@string/discovery_baseball_card_stats_backers"
+      android:textColor="@color/ksr_dark_grey_500"
       style="@style/Caption1Secondary" />
-
   </LinearLayout>
 
   <LinearLayout
@@ -61,6 +65,7 @@
       android:id="@+id/deadline_countdown_text_view"
       android:maxLines="1"
       style="@style/CalloutPrimaryMedium"
+      android:textColor="@color/ksr_dark_grey_500"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -69,6 +74,7 @@
       android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:textColor="@color/ksr_dark_grey_500"
       style="@style/Caption1Secondary" />
 
   </LinearLayout>

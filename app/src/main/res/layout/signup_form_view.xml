@@ -69,7 +69,7 @@
 
   <Button
     android:id="@+id/signup_button"
-    style="@style/GreenRoundedButton"
+    style="@style/PrimaryButton"
     android:enabled="false"
     android:layout_marginTop="@dimen/grid_2"
     android:layout_marginBottom="@dimen/grid_2"

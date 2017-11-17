@@ -6,7 +6,6 @@
   tools:showIn="@layout/profile_layout"
   style="@style/Toolbar"
   android:id="@+id/profile_toolbar"
-  android:background="@color/ksr_grey_200"
   android:elevation="0dp"
   android:gravity="top"
   android:layout_height="@dimen/grid_13"

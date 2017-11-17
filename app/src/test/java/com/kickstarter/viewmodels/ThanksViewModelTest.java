@@ -11,6 +11,7 @@ import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
@@ -27,18 +28,6 @@ import java.util.List;
 import rx.observers.TestSubscriber;
 
 public final class ThanksViewModelTest extends KSRobolectricTestCase {
-  @Test
-  public void testThanksViewModel_projectName() {
-    final ThanksViewModel vm = new ThanksViewModel(environment());
-    final Project project = ProjectFactory.project();
-
-    final TestSubscriber<String> projectNameTest = new TestSubscriber<>();
-    vm.outputs.projectName().subscribe(projectNameTest);
-
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-
-    projectNameTest.assertValues(project.name());
-  }
 
   @Test
   public void testThanksViewModel_showRatingDialog() {
@@ -227,38 +216,11 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     final Project project = ProjectFactory.project();
 
     final TestSubscriber<Pair<List<Project>, Category>> showRecommendationsTest = new TestSubscriber<>();
-    vm.outputs.showRecommendations().subscribe(showRecommendationsTest);
+    vm.outputs.showRecommendedProjects().subscribe(showRecommendationsTest);
 
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     showRecommendationsTest.assertValueCount(1);
-  }
-
-  @Test
-  public void testThanksViewModel_share() {
-    final ThanksViewModel vm = new ThanksViewModel(environment());
-    final Project project = ProjectFactory.project();
-
-    final TestSubscriber<Project> startShareTest = new TestSubscriber<>();
-    vm.outputs.startShare().subscribe(startShareTest);
-    final TestSubscriber<Project> startShareOnFacebookTest = new TestSubscriber<>();
-    vm.outputs.startShareOnFacebook().subscribe(startShareOnFacebookTest);
-    final TestSubscriber<Project> startShareOnTwitterTest = new TestSubscriber<>();
-    vm.outputs.startShareOnTwitter().subscribe(startShareOnTwitterTest);
-
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-
-    vm.inputs.shareClick();
-    startShareTest.assertValues(project);
-    koalaTest.assertValues("Checkout Show Share Sheet");
-
-    vm.inputs.shareOnFacebookClick();
-    startShareOnFacebookTest.assertValues(project);
-    koalaTest.assertValues("Checkout Show Share Sheet", "Checkout Show Share");
-
-    vm.inputs.shareOnTwitterClick();
-    startShareOnTwitterTest.assertValues(project);
-    koalaTest.assertValues("Checkout Show Share Sheet", "Checkout Show Share", "Checkout Show Share");
   }
 
   @Test
@@ -323,9 +285,9 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     final Category category = CategoryFactory.category();
 
     final TestSubscriber<DiscoveryParams> startDiscoveryTest = new TestSubscriber<>();
-    vm.outputs.startDiscovery().subscribe(startDiscoveryTest);
+    vm.outputs.startDiscoveryActivity().subscribe(startDiscoveryTest);
 
-    vm.inputs.categoryClick(null, category);
+    vm.inputs.categoryViewHolderClicked(category);
     startDiscoveryTest.assertValues(DiscoveryParams.builder().category(category).build());
 
     koalaTest.assertValue("Checkout Finished Discover More");
@@ -336,11 +298,11 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     final ThanksViewModel vm = new ThanksViewModel(environment());
     final Project project = ProjectFactory.project();
 
-    final TestSubscriber<Project> startProjectTest = new TestSubscriber<>();
-    vm.outputs.startProject().subscribe(startProjectTest);
+    final TestSubscriber<Pair<Project, RefTag>> startProjectTest = new TestSubscriber<>();
+    vm.outputs.startProjectActivity().subscribe(startProjectTest);
 
-    vm.inputs.projectClick(null, project);
-    startProjectTest.assertValues(project);
+    vm.inputs.projectCardViewHolderClicked(project);
+    startProjectTest.assertValues(Pair.create(project, RefTag.thanks()));
 
     koalaTest.assertValue("Checkout Finished Discover Open Project");
   }

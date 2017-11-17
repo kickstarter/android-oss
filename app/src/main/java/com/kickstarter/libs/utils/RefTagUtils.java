@@ -3,9 +3,11 @@ package com.kickstarter.libs.utils;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.DiscoveryParams;
 
 import org.joda.time.DateTime;
 
@@ -99,6 +101,24 @@ public final class RefTagUtils {
     }
 
     return cookie;
+  }
+
+  /**
+   * Converts a pair (params, project) into a (project, refTag) pair that does some extra logic around POTD and
+   * featured projects.
+   */
+  public static @NonNull Pair<Project, RefTag> projectAndRefTagFromParamsAndProject(final @NonNull DiscoveryParams params,
+    final @NonNull Project project) {
+    final RefTag refTag;
+    if (project.isPotdToday()) {
+      refTag = RefTag.discoverPotd();
+    } else if (project.isFeaturedToday()) {
+      refTag = RefTag.categoryFeatured();
+    } else {
+      refTag = DiscoveryParamsUtils.refTag(params);
+    }
+
+    return new Pair<>(project, refTag);
   }
 
   /**

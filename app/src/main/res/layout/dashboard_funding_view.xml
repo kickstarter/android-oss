@@ -73,7 +73,7 @@
     android:layout_marginTop="@dimen/grid_3"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textColor="@color/blue"
+    android:textColor="@color/ksr_cobalt_500"
     android:gravity="center_horizontal"
     tools:text="$12,000" />
 
@@ -164,7 +164,7 @@
 
   <Button
     android:id="@+id/creator_view_project_button"
-    style="@style/BlueRoundedButton"
+    style="@style/SecondaryButton"
     android:layout_width="match_parent"
     android:layout_height="@dimen/grid_7"
     android:layout_marginTop="@dimen/grid_2"

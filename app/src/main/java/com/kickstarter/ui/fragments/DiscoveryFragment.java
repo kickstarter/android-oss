@@ -25,7 +25,7 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.LoginToutActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
-import com.kickstarter.ui.activities.WebViewActivity;
+import com.kickstarter.ui.activities.UpdateActivity;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.viewmodels.DiscoveryFragmentViewModel;
@@ -83,12 +83,12 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
       .compose(observeForUI())
       .subscribe(__ -> startActivityFeedActivity());
 
-    this.viewModel.outputs.showActivityUpdate()
+    this.viewModel.outputs.startUpdateActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::startActivityUpdateActivity);
+      .subscribe(this::startUpdateActivity);
 
-    this.viewModel.outputs.showProject()
+    this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
@@ -118,13 +118,6 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     return this.recyclerView != null;
   }
 
-  private void startActivityUpdateActivity(final @NonNull Activity activity) {
-    final Intent intent = new Intent(getActivity(), WebViewActivity.class)
-      .putExtra(IntentKey.URL, activity.projectUpdateUrl());
-    startActivity(intent);
-    transition(getActivity(), slideInFromRight());
-  }
-
   private void startActivityFeedActivity() {
     startActivity(new Intent(getActivity(), ActivityFeedActivity.class));
   }
@@ -140,6 +133,14 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     final Intent intent = new Intent(getActivity(), ProjectActivity.class)
       .putExtra(IntentKey.PROJECT, project)
       .putExtra(IntentKey.REF_TAG, refTag);
+    startActivity(intent);
+    transition(getActivity(), slideInFromRight());
+  }
+
+  private void startUpdateActivity(final @NonNull Activity activity) {
+    final Intent intent = new Intent(getActivity(), UpdateActivity.class)
+      .putExtra(IntentKey.PROJECT, activity.project())
+      .putExtra(IntentKey.UPDATE, activity.update());
     startActivity(intent);
     transition(getActivity(), slideInFromRight());
   }

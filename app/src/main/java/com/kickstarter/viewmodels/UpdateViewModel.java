@@ -13,6 +13,7 @@ import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.UpdateActivity;
+import com.kickstarter.ui.intentmappers.ProjectIntentMapper;
 
 import okhttp3.Request;
 import rx.Observable;
@@ -72,8 +73,8 @@ public interface UpdateViewModel {
         .take(1);
 
       final Observable<Project> project = intent()
-        .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
-        .ofType(Project.class);
+        .flatMap(i -> ProjectIntentMapper.project(i, this.client))
+        .share();
 
       final Observable<String> initialUpdateUrl = initialUpdate
         .map(u -> u.urls().web().update());

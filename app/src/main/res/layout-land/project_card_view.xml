@@ -13,7 +13,7 @@
     android:layout_height="wrap_content"
     card_view:cardBackgroundColor="@color/transparent"
     card_view:cardPreventCornerOverlap="false"
-    card_view:cardElevation="@dimen/card_elevation"
+    card_view:cardElevation="@dimen/card_no_elevation"
     card_view:cardUseCompatPadding="true"
     card_view:cardCornerRadius="0dp"
     android:foreground="@drawable/click_indicator_light"
@@ -25,19 +25,29 @@
 
     <LinearLayout
       android:id="@+id/land_card_view_group"
-      android:background="@color/white"
+      android:background="@drawable/rect_white_grey_stroke"
       android:orientation="horizontal"
       android:padding="@dimen/grid_5"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       tools:ignore="InconsistentLayout">
 
-      <include
-        layout="@layout/project_card_photo_view"
-        android:id="@+id/project_card_photo"
-        android:layout_marginTop="@dimen/grid_1"
-        android:layout_height="@dimen/project_card_photo_landscape_height"
-        android:layout_width="@dimen/project_card_photo_landscape_width"/>
+      <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <include
+          layout="@layout/project_card_photo_view"
+          android:id="@+id/project_card_photo"
+          android:layout_marginTop="@dimen/grid_1"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:layout_height="@dimen/project_card_photo_landscape_height"
+          android:layout_width="@dimen/project_card_photo_landscape_width"/>
+
+        <include
+          layout="@layout/project_metadata_view" />
+
+      </FrameLayout>
 
       <LinearLayout
         android:id="@+id/project_card_info"
@@ -83,13 +93,6 @@
 
   </android.support.v7.widget.CardView>
 
-  <include
-    layout="@layout/project_metadata_view"
-    android:layout_height="@dimen/metadata_label_height"
-    android:layout_width="wrap_content"
-    android:layout_marginTop="@dimen/grid_2"
-    android:layout_marginStart="@dimen/grid_4"/>
-
   <LinearLayout
     android:id="@+id/friend_backing_group"
     android:layout_below="@id/project_card_view"
@@ -108,7 +111,7 @@
       android:layout_width="@dimen/grid_4"
       android:layout_height="@dimen/grid_4"
       tools:ignore="ContentDescription"
-      tools:background="@color/blue"/>
+      tools:background="@color/ksr_cobalt_500"/>
 
     <TextView
       android:id="@+id/friend_backing_message"

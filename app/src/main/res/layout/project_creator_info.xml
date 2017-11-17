@@ -4,53 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_100"
   android:orientation="vertical">
-
-  <RelativeLayout
-    android:id="@+id/creator_info"
-    android:focusable="true"
-    android:paddingStart="@dimen/project_padding_x"
-    android:paddingEnd="@dimen/project_padding_x"
-    android:background="@drawable/click_indicator_light_masked"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/grid_4"
-    android:paddingTop="@dimen/grid_5">
-
-    <ImageView
-      android:id="@+id/avatar"
-      android:layout_width="@dimen/project_avatar_width"
-      android:layout_height="@dimen/project_avatar_height"
-      android:layout_alignParentStart="true"
-      android:scaleType="centerCrop"
-      tools:ignore="ContentDescription" />
-
-    <TextView
-      android:id="@+id/created_by"
-      android:text="@string/project_menu_created_by"
-      android:paddingStart="@dimen/grid_2"
-      android:paddingEnd="@dimen/grid_2"
-      android:layout_toEndOf="@id/avatar"
-      android:paddingTop="@dimen/grid_1"
-      style="@style/Caption1Secondary"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
-
-    <TextView
-      android:id="@+id/avatar_name"
-      android:maxLines="2"
-      android:paddingStart="@dimen/grid_2"
-      android:paddingEnd="@dimen/grid_4"
-      android:layout_toEndOf="@id/avatar"
-      android:ellipsize="marquee"
-      style="@style/CalloutPrimaryMedium"
-      android:layout_below="@id/created_by"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      tools:text="Creator Name" />
-
-  </RelativeLayout>
 
   <LinearLayout
     android:paddingStart="@dimen/project_padding_x"
@@ -59,12 +13,13 @@
     android:id="@+id/creator_links"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:divider="@color/gray"
+    android:divider="@color/ksr_grey_500"
     android:dividerHeight="1dp" >
 
     <RelativeLayout
       android:id="@+id/campaign"
       android:focusable="true"
+      android:background="@drawable/click_indicator_light_masked"
       android:layout_width="match_parent"
       android:layout_height="@dimen/grid_7" >
 
@@ -74,8 +29,8 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:gravity="center_vertical"
-        android:textColor="@color/green_state_pressed_color"
-        android:textSize="@dimen/callout"
+        android:textColor="@color/ksr_soft_black"
+        android:textSize="@dimen/body"
         android:text="@string/project_menu_buttons_campaign" />
 
       <com.kickstarter.ui.views.IconButton
@@ -84,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/chevron_right_icon"
-        android:textColor="@color/green_state_pressed_color"
+        android:textColor="@color/ksr_soft_black"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true" />
 
@@ -99,6 +54,7 @@
 
     <RelativeLayout
       android:id="@+id/updates"
+      android:background="@drawable/click_indicator_light_masked"
       android:focusable="true"
       android:layout_width="match_parent"
       android:layout_height="@dimen/grid_7" >
@@ -109,17 +65,17 @@
         android:layout_toStartOf="@+id/updates_count"
         android:gravity="center_vertical"
         android:layout_alignParentStart="true"
-        android:textColor="@color/green_state_pressed_color"
-        android:textSize="@dimen/callout"
+        android:textColor="@color/ksr_soft_black"
+        android:textSize="@dimen/body"
         android:text="@string/project_menu_buttons_updates" />
 
       <TextView
         android:id="@+id/updates_count"
-        android:background="@drawable/text_view_rounded_background"
+        android:background="@drawable/text_view_rect_background"
         android:gravity="center"
         android:layout_centerVertical="true"
         android:textSize="@dimen/body"
-        android:textColor="@color/white"
+        android:textColor="@color/ksr_soft_black"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -136,6 +92,7 @@
 
     <RelativeLayout
       android:id="@+id/comments"
+      android:background="@drawable/click_indicator_light_masked"
       android:focusable="true"
       android:layout_width="match_parent"
       android:layout_height="@dimen/grid_7" >
@@ -146,17 +103,17 @@
         android:layout_toStartOf="@+id/comments_count"
         android:layout_alignParentStart="true"
         android:gravity="center_vertical"
-        android:textColor="@color/green_state_pressed_color"
-        android:textSize="@dimen/callout"
+        android:textColor="@color/ksr_soft_black"
+        android:textSize="@dimen/body"
         android:text="@string/project_menu_buttons_comments" />
 
       <TextView
         android:id="@+id/comments_count"
-        android:background="@drawable/text_view_rounded_background"
+        android:background="@drawable/text_view_rect_background"
         android:gravity="center"
         android:layout_centerVertical="true"
         android:textSize="@dimen/body"
-        android:textColor="@color/white"
+        android:textColor="@color/ksr_soft_black"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -169,16 +126,18 @@
   <TextView
     android:id="@+id/project_disclaimer_text_view"
     style="@style/Caption1Secondary"
+    android:textColor="@color/ksr_dark_grey_500"
     android:paddingStart="@dimen/project_padding_x"
     android:paddingEnd="@dimen/project_padding_x"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/grid_4" />
 
-  <include layout="@layout/horizontal_line_1dp_view"
-    android:layout_height="wrap_content"
+  <View
     android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_marginBottom="@dimen/grid_4"
     android:layout_marginTop="@dimen/grid_5"
-    android:layout_marginBottom="@dimen/grid_4"/>
+    android:background="@color/ksr_dark_grey_500" />
 
 </LinearLayout>

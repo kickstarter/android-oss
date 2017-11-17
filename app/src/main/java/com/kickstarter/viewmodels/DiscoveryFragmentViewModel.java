@@ -11,10 +11,10 @@ import com.kickstarter.libs.FragmentViewModel;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.IntPreferenceType;
-import com.kickstarter.libs.utils.DiscoveryParamsUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.RefTagUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
@@ -27,11 +27,10 @@ import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
-import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.viewmodels.outputs.DiscoveryFragmentViewModelInputs;
 import com.kickstarter.viewmodels.outputs.DiscoveryFragmentViewModelOutputs;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -74,12 +73,12 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
         .concater(ListUtils::concatDistinct)
         .build();
 
-    final Observable<Pair<Project, RefTag>> projectCardClick = this.paramsFromActivity
-      .compose(takePairWhen(this.clickProject))
-      .map(pp -> DiscoveryFragmentViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second));
-
     final Observable<Pair<Project, RefTag>> activitySampleProjectClick = this.activitySampleProjectClick
       .map(p -> Pair.create(p, RefTag.activitySample()));
+
+    final Observable<Pair<Project, RefTag>> projectCardClick = this.paramsFromActivity
+        .compose(takePairWhen(this.projectCardClicked))
+        .map(pp -> RefTagUtils.projectAndRefTagFromParamsAndProject(pp.first, pp.second));
 
     Observable.combineLatest(
       paginator.paginatedData(),
@@ -90,22 +89,20 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
       .subscribe(this.projectList);
 
     this.showActivityFeed = this.activityClick;
-    this.showActivityUpdate = this.activityUpdateClick;
+    this.startUpdateActivity = this.activityUpdateClick;
     this.showLoginTout = this.discoveryOnboardingLoginToutClick;
 
-    Observable.merge(
-      projectCardClick,
-      activitySampleProjectClick
-    )
-      .compose(bindToLifecycle())
-      .subscribe(this.showProject);
+    this.startProjectActivity = Observable.merge(
+      activitySampleProjectClick,
+      projectCardClick
+    );
 
     this.clearPage
       .compose(bindToLifecycle())
       .subscribe(__ -> {
         this.shouldShowOnboardingView.onNext(false);
         this.activity.onNext(null);
-        this.projectList.onNext(new ArrayList<>());
+        this.projectList.onNext(Collections.emptyList());
       });
 
     this.paramsFromActivity
@@ -140,7 +137,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
         );
       });
 
-    this.showActivityUpdate
+    this.startUpdateActivity
       .map(Activity::project)
       .filter(ObjectUtils::isNotNull)
       .compose(bindToLifecycle())
@@ -165,24 +162,6 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
     return isTrue(params.isAllProjects()) && isSortHome && !isLoggedIn;
   }
 
-  /**
-   * Converts a pair (params, project) into a (project, refTag) pair that does some extra logic around POTD and
-   * featured projects.
-   */
-  private static @NonNull Pair<Project, RefTag> projectAndRefTagFromParamsAndProject(final @NonNull DiscoveryParams params,
-    final @NonNull Project project) {
-    final RefTag refTag;
-    if (project.isPotdToday()) {
-      refTag = RefTag.discoverPotd();
-    } else if (project.isFeaturedToday()) {
-      refTag = RefTag.categoryFeatured();
-    } else {
-      refTag = DiscoveryParamsUtils.refTag(params);
-    }
-
-    return new Pair<>(project, refTag);
-  }
-
   private void saveLastSeenActivityId(final @Nullable Activity activity) {
     if (activity != null) {
       this.activitySamplePreference.set((int) activity.id());
@@ -193,19 +172,19 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
   private final PublishSubject<Project> activitySampleProjectClick = PublishSubject.create();
   private final PublishSubject<Activity> activityUpdateClick = PublishSubject.create();
   private final PublishSubject<Void> clearPage = PublishSubject.create();
-  private final PublishSubject<Project> clickProject = PublishSubject.create();
   private final PublishSubject<Boolean> discoveryOnboardingLoginToutClick = PublishSubject.create();
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   private final PublishSubject<DiscoveryParams> paramsFromActivity = PublishSubject.create();
+  private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
   private final PublishSubject<List<Category>> rootCategories = PublishSubject.create();
 
   private final BehaviorSubject<Activity> activity = BehaviorSubject.create();
   private final BehaviorSubject<List<Project>> projectList = BehaviorSubject.create();
   private final Observable<Boolean> showActivityFeed;
-  private final Observable<Activity> showActivityUpdate;
   private final Observable<Boolean> showLoginTout;
-  private final PublishSubject<Pair<Project, RefTag>> showProject = PublishSubject.create();
   private final BehaviorSubject<Boolean> shouldShowOnboardingView = BehaviorSubject.create();
+  private final Observable<Pair<Project, RefTag>> startProjectActivity;
+  private final Observable<Activity> startUpdateActivity;
 
   public final DiscoveryFragmentViewModelInputs inputs = this;
   public final DiscoveryFragmentViewModelOutputs outputs = this;
@@ -231,6 +210,9 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
     final @NonNull Activity activity) {
     this.activityUpdateClick.onNext(activity);
   }
+  @Override public void projectCardViewHolderClicked(final @NonNull Project project) {
+    this.projectCardClicked.onNext(project);
+  }
   @Override public void rootCategories(final @NonNull List<Category> rootCategories) {
     this.rootCategories.onNext(rootCategories);
   }
@@ -246,9 +228,6 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
   @Override public void paramsFromActivity(final @NonNull DiscoveryParams params) {
     this.paramsFromActivity.onNext(params);
   }
-  @Override public void projectCardViewHolderClick(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
-    this.clickProject.onNext(project);
-  }
 
   @Override public @NonNull Observable<Activity> activity() {
     return this.activity;
@@ -259,16 +238,16 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
   @Override public @NonNull Observable<Boolean> showActivityFeed() {
     return this.showActivityFeed;
   }
-  @Override public @NonNull Observable<Activity> showActivityUpdate() {
-    return this.showActivityUpdate;
-  }
   @Override public @NonNull Observable<Boolean> showLoginTout() {
     return this.showLoginTout;
   }
-  @Override public @NonNull Observable<Pair<Project, RefTag>> showProject() {
-    return this.showProject;
+  @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
+    return this.startProjectActivity;
   }
   @Override public @NonNull Observable<Boolean> shouldShowOnboardingView() {
     return this.shouldShowOnboardingView;
+  }
+  @Override public @NonNull Observable<Activity> startUpdateActivity() {
+    return this.startUpdateActivity;
   }
 }

@@ -69,9 +69,10 @@
 
         <TextView
           android:id="@+id/project_notifications_count"
-          android:background="@drawable/text_view_rounded_background"
-          android:textColor="@color/white"
+          android:background="@drawable/text_view_rect_background"
+          android:textColor="@color/ksr_soft_black"
           android:textSize="@dimen/caption_1"
+          android:layout_margin="@dimen/grid_2"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           tools:text="3"/>

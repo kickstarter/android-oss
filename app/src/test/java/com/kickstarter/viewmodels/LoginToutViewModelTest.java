@@ -10,7 +10,7 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testLoginButtonClicked() {
-    final LoginToutViewModel vm = new LoginToutViewModel(environment());
+    final LoginToutViewModel.ViewModel vm = new LoginToutViewModel.ViewModel(environment());
 
     final TestSubscriber<Void> startLoginActivity = new TestSubscriber<>();
     vm.outputs.startLoginActivity().subscribe(startLoginActivity);
@@ -23,7 +23,7 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testSignupButtonClicked() {
-    final LoginToutViewModel vm = new LoginToutViewModel(environment());
+    final LoginToutViewModel.ViewModel vm = new LoginToutViewModel.ViewModel(environment());
 
     final TestSubscriber<Void> startSignupActivity = new TestSubscriber<>();
     vm.outputs.startSignupActivity().subscribe(startSignupActivity);

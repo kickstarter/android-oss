@@ -155,7 +155,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(friends ->
-        this.friendBackingMessageTextView.setText(SocialUtils.projectCardFriendNamepile(friends, this.ksString))
+        this.friendBackingMessageTextView.setText(SocialUtils.projectCardFriendNamepile(context(), friends, this.ksString))
       );
 
     this.viewModel.outputs.fundingUnsuccessfulViewGroupIsGone()

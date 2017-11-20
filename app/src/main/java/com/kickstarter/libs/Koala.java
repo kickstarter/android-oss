@@ -497,4 +497,11 @@ public final class Koala {
 
     this.client.track(KoalaEvent.OPENED_EXTERNAL_LINK, props);
   }
+
+  // DEEP LINK
+  public void trackContinueUserActivityAndOpenedDeepLink() {
+    this.client.track(KoalaEvent.CONTINUE_USER_ACTIVITY);
+
+    this.client.track(KoalaEvent.OPENED_DEEP_LINK);
+  }
 }

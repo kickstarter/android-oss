@@ -7,6 +7,7 @@ public final class KoalaEvent {
   public static final String ACTIVITY_VIEW = "Activity View";
   public static final String ACTIVITY_VIEW_ITEM = "Activity View Item";
   public static final String CLEARED_SEARCH_TERM = "Cleared Search Term";
+  public static final String CONTINUE_USER_ACTIVITY = "Continue User Activity";
   public static final String DISCOVER_SEARCH_LEGACY = "Discover Search";
   public static final String DISCOVER_SEARCH_RESULTS_LEGACY = "Discover Search Results";
   public static final String DISCOVER_SEARCH_RESULTS_LOAD_MORE_LEGACY = "Discover Search Results Load More";
@@ -14,6 +15,7 @@ public final class KoalaEvent {
   public static final String LOADED_OLDER_COMMENTS = "Loaded Older Comments";
   public static final String LOADED_SEARCH_RESULTS = "Loaded Search Results";
   public static final String NOTIFICATION_OPENED_LEGACY = "Notification Opened";
+  public static final String OPENED_DEEP_LINK = "Opened Deep Link";
   public static final String OPENED_EXTERNAL_LINK = "Opened External Link";
   public static final String OPENED_NOTIFICATION = "Opened Notification";
   public static final String POSTED_COMMENT = "Posted Comment";

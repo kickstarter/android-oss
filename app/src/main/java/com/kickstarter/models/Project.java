@@ -48,7 +48,6 @@ public abstract class Project implements Parcelable {
   public abstract @Nullable List<Permission> permissions();
   public abstract float pledged();
   public abstract @Nullable Photo photo();
-  public abstract @Nullable DateTime potdAt();
   public abstract @Nullable List<Reward> rewards();
   public abstract @Nullable String slug();
   public abstract @State String state();
@@ -88,7 +87,6 @@ public abstract class Project implements Parcelable {
     public abstract Builder permissions(List<Permission> __);
     public abstract Builder pledged(float __);
     public abstract Builder photo(Photo __);
-    public abstract Builder potdAt(DateTime __);
     public abstract Builder rewards(List<Reward> __);
     public abstract Builder slug(String __);
     public abstract Builder staticUsdRate(Float __);
@@ -266,14 +264,6 @@ public abstract class Project implements Parcelable {
 
   public boolean isFunded() {
     return isLive() && (percentageFunded() >= 100);
-  }
-
-  public boolean isPotdToday() {
-    if (potdAt() == null) {
-      return false;
-    }
-
-    return DateTimeUtils.isDateToday(potdAt());
   }
 
   /** Returns whether the project is in a purged state. */

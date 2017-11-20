@@ -11,40 +11,23 @@
   tools:context=".ui.activities.DiscoveryActivity">
 
   <RelativeLayout
-    android:layout_marginTop="@dimen/discovery_drawer_status_bar_height_negative"
-    android:paddingTop="@dimen/discovery_drawer_status_bar_height"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <android.support.design.widget.AppBarLayout
-      android:id="@+id/parent_app_bar"
-      android:fitsSystemWindows="true"
-      android:elevation="0dp"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      tools:ignore="UnusedAttribute">
-
-      <include layout="@layout/discovery_toolbar"/>
-
-    </android.support.design.widget.AppBarLayout>
-
     <android.support.design.widget.CoordinatorLayout
       android:elevation="4dp"
-      android:layout_below="@id/parent_app_bar"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       tools:ignore="UnusedAttribute">
 
       <android.support.design.widget.AppBarLayout
         android:id="@+id/discovery_sort_app_bar_layout"
+        app:elevation="@dimen/card_no_elevation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          app:layout_scrollFlags="scroll|enterAlways">
+          <include layout="@layout/discovery_toolbar"/>
 
           <com.kickstarter.ui.views.SortTabLayout
             android:id="@+id/discovery_tab_layout"
@@ -53,17 +36,16 @@
             app:tabTextColor="@color/black_alpha_30"
             app:tabSelectedTextColor="@color/text_primary"
             app:tabBackground="@drawable/click_indicator_light"
+            app:layout_collapseMode="pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        </android.support.design.widget.CollapsingToolbarLayout>
-
         <include
-          layout="@layout/horizontal_line_0_5dp_view"
+          layout="@layout/horizontal_line_1dp_view"
           android:layout_height="wrap_content"
           android:layout_width="match_parent"
           android:layout_marginTop="@dimen/sort_tab_divider_margin_top_negative"
-          app:layout_scrollFlags="scroll|enterAlways" />
+          app:layout_scrollFlags="scroll"/>
 
       </android.support.design.widget.AppBarLayout>
 

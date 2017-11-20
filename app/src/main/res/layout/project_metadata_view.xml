@@ -74,27 +74,6 @@
   </LinearLayout>
 
   <LinearLayout
-    android:id="@+id/potd_view_group"
-    android:orientation="horizontal"
-    android:visibility="gone"
-    android:paddingStart="@dimen/grid_1"
-    android:paddingEnd="@dimen/grid_1"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    tools:visibility="visible">
-
-    <TextView
-      android:id="@+id/potd"
-      android:includeFontPadding="false"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:gravity="center_vertical"
-      android:text="@string/discovery_baseball_card_metadata_project_of_the_Day"
-      style="@style/Caption1PrimaryMedium" />
-
-  </LinearLayout>
-
-  <LinearLayout
     android:id="@+id/featured_group"
     android:orientation="horizontal"
     android:visibility="gone"

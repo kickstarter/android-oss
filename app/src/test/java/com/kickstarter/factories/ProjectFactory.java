@@ -209,14 +209,6 @@ public final class ProjectFactory {
       .build();
   }
 
-  public static Project potd() {
-    return project()
-      .toBuilder()
-      .name("projectOfTheDay")
-      .potdAt(new DateTime())
-      .build();
-  }
-
   public static Project saved() {
     return project()
       .toBuilder()

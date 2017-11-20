@@ -399,27 +399,11 @@ public abstract class DiscoveryParams implements Parcelable {
           put("q", term());
         }
 
-        if (shouldIncludePotd()) {
-          put("include_potd", "true");
-        }
-
         if (shouldIncludeFeatured()) {
           put("include_featured", "true");
         }
       }
     });
-  }
-
-  /**
-   * Determines if the `include_potd` flag should be included in a discovery request so that we guarantee that the
-   * POTD comes back.
-   */
-  public boolean shouldIncludePotd() {
-    return isAllProjects()
-      && page() != null
-      && page() == 1
-      && (sort() == null || sort() == Sort.HOME)
-      && (term() == null || term().isEmpty());
   }
 
   /**

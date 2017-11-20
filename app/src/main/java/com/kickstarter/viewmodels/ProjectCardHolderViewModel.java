@@ -57,7 +57,6 @@ public interface ProjectCardHolderViewModel {
     Observable<String> photoUrl();
     Observable<Pair<String, String>> nameAndBlurbText();
     Observable<Project> notifyDelegateOfProjectClick();
-    Observable<Boolean> potdViewGroupIsGone();
     Observable<DateTime> projectCanceledAt();
     Observable<Boolean> projectCardStatsViewGroupIsGone();
     Observable<DateTime> projectFailedAt();
@@ -142,9 +141,6 @@ public interface ProjectCardHolderViewModel {
       this.photoUrl = this.project
         .map(p -> p.photo() == null ? null : p.photo().full());
 
-      this.potdViewGroupIsGone = this.project
-        .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.POTD);
-
       this.projectCanceledAt = this.project
         .filter(p -> p.state().equals(Project.STATE_CANCELED))
         .map(Project::stateChangedAt)
@@ -206,7 +202,6 @@ public interface ProjectCardHolderViewModel {
     private final Observable<Boolean> percentageFundedProgressBarIsGone;
     private final Observable<String> percentageFundedTextViewText;
     private final Observable<String> photoUrl;
-    private final Observable<Boolean> potdViewGroupIsGone;
     private final Observable<Project> projectForDeadlineCountdownDetail;
     private final Observable<Boolean> projectCardStatsViewGroupIsGone;
     private final Observable<Boolean> projectStateViewGroupIsGone;
@@ -283,9 +278,6 @@ public interface ProjectCardHolderViewModel {
     }
     @Override public @NonNull Observable<String> photoUrl() {
       return this.photoUrl;
-    }
-    @Override public @NonNull Observable<Boolean> potdViewGroupIsGone() {
-      return this.potdViewGroupIsGone;
     }
     @Override public @NonNull Observable<Boolean> projectCardStatsViewGroupIsGone() {
       return this.projectCardStatsViewGroupIsGone;

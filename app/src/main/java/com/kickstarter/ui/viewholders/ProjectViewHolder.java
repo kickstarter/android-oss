@@ -89,7 +89,6 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.pledged) TextView pledgedTextView;
   protected @Bind(R.id.project_metadata_view_group) ViewGroup projectMetadataViewGroup;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
-  protected @Bind(R.id.potd_view_group) ViewGroup potdViewGroup;
   protected @Bind(R.id.project_social_image) ImageView projectSocialImageView;
   protected @Bind(R.id.project_social_text) TextView projectSocialTextView;
   protected @Bind(R.id.project_stats_view) ViewGroup projectStatsViewGroup;
@@ -340,8 +339,6 @@ public final class ProjectViewHolder extends KSViewHolder {
     if (metadata == ProjectUtils.Metadata.BACKING) {
       this.projectMetadataViewGroup.setBackground(ContextCompat.getDrawable(this.context, R.drawable.rect_green_grey_stroke));
       this.backingViewGroup.setVisibility(View.VISIBLE);
-    } else if (metadata == ProjectUtils.Metadata.POTD) {
-      this.potdViewGroup.setVisibility(View.VISIBLE);
     } else if (metadata == ProjectUtils.Metadata.CATEGORY_FEATURED) {
       this.featuredViewGroup.setVisibility(View.VISIBLE);
       final Category category = this.project.category();

@@ -63,7 +63,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.percent) TextView percentTextView;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.photo) ImageView photoImageView;
-  protected @Bind(R.id.potd_view_group) ViewGroup potdViewGroup;
   protected @Bind(R.id.project_card_view_group) ViewGroup projectCardViewGroup;
   protected @Bind(R.id.project_card_stats_view_group) ViewGroup projectCardStatsViewGroup;
   protected @Bind(R.id.project_metadata_view_group) ViewGroup projectMetadataViewGroup;
@@ -160,11 +159,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.percentTextView::setText);
-
-    this.viewModel.outputs.potdViewGroupIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.potdViewGroup));
 
     this.viewModel.outputs.percentageFundedForProgressBar()
       .compose(bindToLifecycle())

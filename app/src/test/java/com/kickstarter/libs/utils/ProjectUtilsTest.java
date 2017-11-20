@@ -36,17 +36,14 @@ public final class ProjectUtilsTest extends KSRobolectricTestCase {
     assertEquals(null, ProjectUtils.metadataForProject(ProjectFactory.project()));
     assertEquals(ProjectUtils.Metadata.BACKING, ProjectUtils.metadataForProject(ProjectFactory.backedProject()));
     assertEquals(ProjectUtils.Metadata.CATEGORY_FEATURED, ProjectUtils.metadataForProject(ProjectFactory.featured()));
-    assertEquals(ProjectUtils.Metadata.POTD, ProjectUtils.metadataForProject(ProjectFactory.potd()));
     assertEquals(ProjectUtils.Metadata.SAVING, ProjectUtils.metadataForProject(ProjectFactory.saved()));
     final Project savedAndBacked = ProjectFactory.backedProject().toBuilder().isStarred(true).build();
     assertEquals(ProjectUtils.Metadata.BACKING, ProjectUtils.metadataForProject(savedAndBacked));
     final DateTime now = new DateTime();
-    final Project featuredAndPotd = ProjectFactory.potd().toBuilder().featuredAt(now).build();
-    assertEquals(ProjectUtils.Metadata.POTD, ProjectUtils.metadataForProject(featuredAndPotd));
     final Project savedAndFeatured = ProjectFactory.saved().toBuilder().featuredAt(now).build();
     assertEquals(ProjectUtils.Metadata.SAVING, ProjectUtils.metadataForProject(savedAndFeatured));
-    final Project savedBackedFeaturedPotd = ProjectFactory.backedProject().toBuilder().featuredAt(now).potdAt(now).isStarred(true).build();
-    assertEquals(ProjectUtils.Metadata.BACKING, ProjectUtils.metadataForProject(savedBackedFeaturedPotd));
+    final Project savedBackedFeatured = ProjectFactory.backedProject().toBuilder().featuredAt(now).isStarred(true).build();
+    assertEquals(ProjectUtils.Metadata.BACKING, ProjectUtils.metadataForProject(savedBackedFeatured));
   }
 
   @Test

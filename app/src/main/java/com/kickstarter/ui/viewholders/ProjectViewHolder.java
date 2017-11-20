@@ -203,6 +203,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     // todo: break down
     this.viewModel.outputs.projectForDeadlineCountdownTextView()
       .subscribe(p -> {
+        setLandscapeOverlayText();
         setLandscapeActionButton(p);
         setStatsContentDescription(p);
         this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(p, this.context, this.ksString));
@@ -312,7 +313,6 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void onBind() {
-    setLandscapeOverlayText();
     setProjectMetadataLozenge();
     setProjectSocialClick();
     setProjectStateView();
@@ -415,14 +415,14 @@ public final class ProjectViewHolder extends KSViewHolder {
   /**
    * Set top margin of overlay text based on landscape screen height, scaled by screen density.
    */
-  public void setLandscapeOverlayText() {
+  public void setLandscapeOverlayText(final @NonNull Project project) {
     if (this.landOverlayTextViewGroup != null && this.nameCreatorViewGroup != null) {
       final int screenHeight = getScreenHeightDp(this.context);
       final float densityOffset = this.context.getResources().getDisplayMetrics().density;
       final float topMargin = ((screenHeight / 3 * 2) * densityOffset) - this.grid4Dimen;  // offset for toolbar
       ViewUtils.setRelativeViewGroupMargins(this.landOverlayTextViewGroup, this.grid4Dimen, (int) topMargin, this.grid4Dimen, 0);
 
-      if (!this.project.hasVideo()) {
+      if (!project.hasVideo()) {
         ViewUtils.setRelativeViewGroupMargins(this.nameCreatorViewGroup, 0, 0, 0, this.grid2Dimen);
       } else {
         ViewUtils.setRelativeViewGroupMargins(this.nameCreatorViewGroup, 0, 0, 0, this.grid1Dimen);

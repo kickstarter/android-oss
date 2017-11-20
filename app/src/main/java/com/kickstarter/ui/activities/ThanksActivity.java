@@ -31,8 +31,8 @@ import butterknife.OnClick;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
-@RequiresActivityViewModel(ThanksViewModel.class)
-public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
+@RequiresActivityViewModel(ThanksViewModel.ViewModel.class)
+public final class ThanksActivity extends BaseActivity<ThanksViewModel.ViewModel> {
   private KSString ksString;
 
   protected @Bind(R.id.thanks_recycler_view) RecyclerView recyclerView;

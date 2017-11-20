@@ -426,6 +426,22 @@
 
     </activity>
 
+    <activity
+      android:name=".ui.activities.DeepLinkActivity">
+
+      <intent-filter
+        android:autoVerify="true"
+        tools:ignore="UnusedAttribute">
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data
+          android:host="www.kickstarter.com"
+          android:scheme="https"
+          android:pathPrefix="/projects" />
+      </intent-filter>
+    </activity>
+
     <!-- SERVICES, PROVIDERS, RECEIVERS -->
 
     <!-- Sets up the app to send, receive, register with GCM. -->

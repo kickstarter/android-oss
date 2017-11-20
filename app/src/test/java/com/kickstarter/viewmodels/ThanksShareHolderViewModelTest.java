@@ -1,7 +1,10 @@
 package com.kickstarter.viewmodels;
 
+import android.support.annotation.NonNull;
+
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.models.Project;
 
 import org.junit.Test;
@@ -9,43 +12,46 @@ import org.junit.Test;
 import rx.observers.TestSubscriber;
 
 public final class ThanksShareHolderViewModelTest extends KSRobolectricTestCase {
+  private ThanksShareHolderViewModel.ViewModel vm;
+  private final TestSubscriber<String> projectName = new TestSubscriber<>();
+  private final TestSubscriber<Project> startShare = new TestSubscriber<>();
+  private final TestSubscriber<Project> startShareOnFacebook = new TestSubscriber<>();
+  private final TestSubscriber<Project> startShareOnTwitter = new TestSubscriber<>();
+
+  protected void setUpEnvironment(final @NonNull Environment environment) {
+    this.vm = new ThanksShareHolderViewModel.ViewModel(environment);
+    this.vm.outputs.projectName().subscribe(this.projectName);
+    this.vm.outputs.startShare().subscribe(this.startShare);
+    this.vm.outputs.startShareOnFacebook().subscribe(this.startShareOnFacebook);
+    this.vm.outputs.startShareOnTwitter().subscribe(this.startShareOnTwitter);
+  }
 
   @Test
   public void testThanksShareHolderViewModel_projectName() {
-    final ThanksShareHolderViewModel.ViewModel vm = new ThanksShareHolderViewModel.ViewModel(environment());
     final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
 
-    final TestSubscriber<String> projectNameTest = new TestSubscriber<>();
-    vm.outputs.projectName().subscribe(projectNameTest);
-
-    vm.configureWith(project);
-    projectNameTest.assertValues(project.name());
+    this.vm.configureWith(project);
+    this.projectName.assertValues(project.name());
   }
 
   @Test
   public void testThanksShareHolderViewModel_share() {
-    final ThanksShareHolderViewModel.ViewModel vm = new ThanksShareHolderViewModel.ViewModel(environment());
     final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
 
-    final TestSubscriber<Project> startShareTest = new TestSubscriber<>();
-    vm.outputs.startShare().subscribe(startShareTest);
-    final TestSubscriber<Project> startShareOnFacebookTest = new TestSubscriber<>();
-    vm.outputs.startShareOnFacebook().subscribe(startShareOnFacebookTest);
-    final TestSubscriber<Project> startShareOnTwitterTest = new TestSubscriber<>();
-    vm.outputs.startShareOnTwitter().subscribe(startShareOnTwitterTest);
+    this.vm.configureWith(project);
 
-    vm.configureWith(project);
+    this.vm.inputs.shareClick();
+    this.startShare.assertValues(project);
+    this.koalaTest.assertValues("Checkout Show Share Sheet");
 
-    vm.inputs.shareClick();
-    startShareTest.assertValues(project);
-    koalaTest.assertValues("Checkout Show Share Sheet");
+    this.vm.inputs.shareOnFacebookClick();
+    this.startShareOnFacebook.assertValues(project);
+    this.koalaTest.assertValues("Checkout Show Share Sheet", "Checkout Show Share");
 
-    vm.inputs.shareOnFacebookClick();
-    startShareOnFacebookTest.assertValues(project);
-    koalaTest.assertValues("Checkout Show Share Sheet", "Checkout Show Share");
-
-    vm.inputs.shareOnTwitterClick();
-    startShareOnTwitterTest.assertValues(project);
-    koalaTest.assertValues("Checkout Show Share Sheet", "Checkout Show Share", "Checkout Show Share");
+    this.vm.inputs.shareOnTwitterClick();
+    this.startShareOnTwitter.assertValues(project);
+    this.koalaTest.assertValues("Checkout Show Share Sheet", "Checkout Show Share", "Checkout Show Share");
   }
 }

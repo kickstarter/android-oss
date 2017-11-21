@@ -10,94 +10,116 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.ResetPasswordActivity;
-import com.kickstarter.viewmodels.errors.ResetPasswordViewModelErrors;
-import com.kickstarter.viewmodels.inputs.ResetPasswordViewModelInputs;
-import com.kickstarter.viewmodels.outputs.ResetPasswordViewModelOutputs;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public final class ResetPasswordViewModel extends ActivityViewModel<ResetPasswordActivity> implements ResetPasswordViewModelInputs,
-  ResetPasswordViewModelOutputs, ResetPasswordViewModelErrors {
+public interface ResetPasswordViewModel {
 
-  // INPUTS
-  private final PublishSubject<String> email = PublishSubject.create();
-  private final PublishSubject<Void> resetPasswordClick = PublishSubject.create();
-
-  // OUTPUTS
-  private final PublishSubject<Void> resetSuccess = PublishSubject.create();
-  public Observable<Void> resetSuccess() {
-    return this.resetSuccess.asObservable();
-  }
-  private final PublishSubject<Boolean> isFormSubmitting = PublishSubject.create();
-  public Observable<Boolean> isFormSubmitting() {
-    return this.isFormSubmitting.asObservable();
-  }
-  private final PublishSubject<Boolean> isFormValid = PublishSubject.create();
-  public Observable<Boolean> isFormValid() {
-    return this.isFormValid.asObservable();
+  interface Inputs {
+    void email(String __);
+    void resetPasswordClick();
   }
 
-  // ERRORS
-  private final PublishSubject<ErrorEnvelope> resetError = PublishSubject.create();
-  public Observable<String> resetError() {
-    return this.resetError
-      .takeUntil(this.resetSuccess)
-      .map(ErrorEnvelope::errorMessage);
+  interface Outputs {
+    Observable<Boolean> isFormSubmitting();
+    Observable<Boolean> isFormValid();
+    Observable<Void> resetSuccess();
   }
 
-  private final ApiClientType client;
-
-  public final ResetPasswordViewModelInputs inputs = this;
-  public final ResetPasswordViewModelOutputs outputs = this;
-  public final ResetPasswordViewModelErrors errors = this;
-
-  @Override
-  public void email(final @NonNull String s) {
-    this.email.onNext(s);
+  interface Errors {
+    Observable<String> resetError();
   }
 
-  @Override
-  public void resetPasswordClick() {
-    this.resetPasswordClick.onNext(null);
-  }
+  final class ViewModel extends ActivityViewModel<ResetPasswordActivity> implements Inputs, Outputs, Errors {
 
-  public ResetPasswordViewModel(final @NonNull Environment environment) {
-    super(environment);
+    private final ApiClientType client;
 
-    this.client = environment.apiClient();
+    public ViewModel(final @NonNull Environment environment) {
+      super(environment);
 
-    this.email
-      .map(StringUtils::isEmail)
-      .compose(bindToLifecycle())
-      .subscribe(this.isFormValid);
+      this.client = environment.apiClient();
 
-    this.email
-      .compose(Transformers.takeWhen(this.resetPasswordClick))
-      .switchMap(this::submitEmail)
-      .compose(bindToLifecycle())
-      .subscribe(__ -> success());
+      this.email
+              .map(StringUtils::isEmail)
+              .compose(bindToLifecycle())
+              .subscribe(this.isFormValid);
 
-    this.resetError
-      .compose(bindToLifecycle())
-      .subscribe(__ -> this.koala.trackResetPasswordError());
+      this.email
+              .compose(Transformers.takeWhen(this.resetPasswordClick))
+              .switchMap(this::submitEmail)
+              .compose(bindToLifecycle())
+              .subscribe(__ -> success());
 
-    this.resetSuccess
-      .compose(bindToLifecycle())
-      .subscribe(__ -> this.koala.trackResetPasswordSuccess());
+      this.resetError
+              .compose(bindToLifecycle())
+              .subscribe(__ -> this.koala.trackResetPasswordError());
 
-    this.koala.trackResetPasswordFormView();
-  }
+      this.resetSuccess
+              .compose(bindToLifecycle())
+              .subscribe(__ -> this.koala.trackResetPasswordSuccess());
 
-  private Observable<User> submitEmail(final @NonNull String email) {
-    return this.client.resetPassword(email)
-      .compose(Transformers.pipeApiErrorsTo(this.resetError))
-      .compose(Transformers.neverError())
-      .doOnSubscribe(() -> this.isFormSubmitting.onNext(true))
-      .doAfterTerminate(() -> this.isFormSubmitting.onNext(false));
-  }
+      this.koala.trackResetPasswordFormView();
+    }
 
-  private void success() {
-    this.resetSuccess.onNext(null);
+    private void success() {
+      this.resetSuccess.onNext(null);
+    }
+
+    private Observable<User> submitEmail(final @NonNull String email) {
+      return this.client.resetPassword(email)
+              .compose(Transformers.pipeApiErrorsTo(this.resetError))
+              .compose(Transformers.neverError())
+              .doOnSubscribe(() -> this.isFormSubmitting.onNext(true))
+              .doAfterTerminate(() -> this.isFormSubmitting.onNext(false));
+    }
+
+    // INPUTS
+    private final PublishSubject<String> email = PublishSubject.create();
+    private final PublishSubject<Void> resetPasswordClick = PublishSubject.create();
+
+    // OUTPUTS
+    private final PublishSubject<Boolean> isFormSubmitting = PublishSubject.create();
+    private final PublishSubject<Boolean> isFormValid = PublishSubject.create();
+    private final PublishSubject<Void> resetSuccess = PublishSubject.create();
+
+    // ERRORS
+    private final PublishSubject<ErrorEnvelope> resetError = PublishSubject.create();
+
+    public final Inputs inputs = this;
+    public final Outputs outputs = this;
+    public final Errors errors = this;
+
+    @Override
+    public void email(final @NonNull String s) {
+      this.email.onNext(s);
+    }
+
+    @Override
+    public void resetPasswordClick() {
+      this.resetPasswordClick.onNext(null);
+    }
+
+    @Override
+    public Observable<Boolean> isFormSubmitting() {
+      return this.isFormSubmitting.asObservable();
+    }
+
+    @Override
+    public Observable<Boolean> isFormValid() {
+      return this.isFormValid.asObservable();
+    }
+
+    @Override
+    public Observable<Void> resetSuccess() {
+      return this.resetSuccess.asObservable();
+    }
+
+    @Override
+    public Observable<String> resetError() {
+      return this.resetError
+              .takeUntil(this.resetSuccess)
+              .map(ErrorEnvelope::errorMessage);
+    }
   }
 }

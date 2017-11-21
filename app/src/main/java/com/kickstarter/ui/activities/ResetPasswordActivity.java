@@ -25,8 +25,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresActivityViewModel(ResetPasswordViewModel.class)
-public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewModel> {
+@RequiresActivityViewModel(ResetPasswordViewModel.ViewModel.class)
+public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewModel.ViewModel> {
   @Bind (R.id.email) EditText email;
   @Bind (R.id.reset_password_button) Button resetPasswordButton;
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;

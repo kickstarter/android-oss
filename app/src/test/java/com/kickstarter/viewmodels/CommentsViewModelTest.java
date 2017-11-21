@@ -197,7 +197,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
   public void testCommentsViewModel_loggedOutShowDialogFlow() {
     final CurrentUserType currentUser = new MockCurrentUser(UserFactory.user());
     final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(
-            environment().toBuilder().currentUser(currentUser).build()
+      environment().toBuilder().currentUser(currentUser).build()
     );
 
     final Project project = ProjectFactory.backedProject();

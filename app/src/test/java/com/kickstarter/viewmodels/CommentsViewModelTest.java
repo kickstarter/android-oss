@@ -42,7 +42,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
     };
 
     final Environment env = environment().toBuilder().apiClient(apiClient).build();
-    final CommentsViewModel vm = new CommentsViewModel(env);
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(env);
 
     final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
     vm.outputs.commentsData().subscribe(commentsData);
@@ -58,7 +58,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_LoadMoreProjectComments() {
-    final CommentsViewModel vm = new CommentsViewModel(environment());
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(environment());
 
     // Start the view model with a project.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
@@ -76,7 +76,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_LoadMoreUpdateComments() {
-    final CommentsViewModel vm = new CommentsViewModel(environment());
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(environment());
 
     // Start the view model with an update.
     vm.intent(new Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()));
@@ -91,7 +91,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_ProjectCommentsEmit() {
-    final CommentsViewModel vm = new CommentsViewModel(environment());
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(environment());
 
     final TestSubscriber<List<Comment>> comments = new TestSubscriber<>();
     vm.outputs.commentsData().map(CommentsData::comments).subscribe(comments);
@@ -118,7 +118,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
     };
 
     final Environment env = environment().toBuilder().apiClient(apiClient).build();
-    final CommentsViewModel vm = new CommentsViewModel(env);
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(env);
 
     final TestSubscriber<String> showPostCommentErrorToast = new TestSubscriber<>();
     vm.outputs.showPostCommentErrorToast().subscribe(showPostCommentErrorToast);
@@ -141,7 +141,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_postCommentFlow() {
-    final CommentsViewModel vm = new CommentsViewModel(
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(
       environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build()
     );
 
@@ -196,7 +196,9 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testCommentsViewModel_loggedOutShowDialogFlow() {
     final CurrentUserType currentUser = new MockCurrentUser(UserFactory.user());
-    final CommentsViewModel vm = new CommentsViewModel(environment().toBuilder().currentUser(currentUser).build());
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(
+            environment().toBuilder().currentUser(currentUser).build()
+    );
 
     final Project project = ProjectFactory.backedProject();
 
@@ -219,7 +221,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_showCommentButton_isBacking() {
-    final CommentsViewModel vm = new CommentsViewModel(
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(
       environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build()
     );
 
@@ -243,7 +245,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
       .isBacking(false)
       .build();
 
-    final CommentsViewModel vm = new CommentsViewModel(
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(
       environment().toBuilder().currentUser(new MockCurrentUser(currentUser)).build()
     );
 
@@ -268,7 +270,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
       .isBacking(false)
       .build();
 
-    final CommentsViewModel vm = new CommentsViewModel(
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(
       environment().toBuilder().currentUser(new MockCurrentUser(currentUser)).build()
     );
 
@@ -284,7 +286,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_dismissCommentDialog() {
-    final CommentsViewModel vm = new CommentsViewModel(environment());
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(environment());
 
     final TestSubscriber<Void> dismissCommentDialogTest = new TestSubscriber<>();
     vm.outputs.dismissCommentDialog().subscribe(dismissCommentDialogTest);
@@ -311,7 +313,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_currentCommentBody() {
-    final CommentsViewModel vm = new CommentsViewModel(environment());
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(environment());
 
     final TestSubscriber<String> currentCommentBodyTest = new TestSubscriber<>();
     vm.outputs.currentCommentBody().subscribe(currentCommentBodyTest);
@@ -324,7 +326,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_showCommentDialog() {
-    final CommentsViewModel vm = new CommentsViewModel(environment());
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(environment());
 
     final TestSubscriber<Pair<Project, Boolean>> showCommentDialogTest = new TestSubscriber<>();
     vm.outputs.showCommentDialog().subscribe(showCommentDialogTest);
@@ -345,7 +347,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCommentsViewModel_UpdateCommentsEmit() {
-    final CommentsViewModel vm = new CommentsViewModel(environment());
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(environment());
 
     final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
     vm.outputs.commentsData().subscribe(commentsData);

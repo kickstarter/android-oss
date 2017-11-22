@@ -45,8 +45,8 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresActivityViewModel(CommentsViewModel.class)
-public final class CommentsActivity extends BaseActivity<CommentsViewModel> implements CommentsAdapter.Delegate {
+@RequiresActivityViewModel(CommentsViewModel.ViewModel.class)
+public final class CommentsActivity extends BaseActivity<CommentsViewModel.ViewModel> implements CommentsAdapter.Delegate {
   private CommentsAdapter adapter;
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;

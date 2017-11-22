@@ -196,7 +196,7 @@
   <string name="Opens_update" formatted="false">アップデートをみる</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">別のリワードをみる：</string>
   <string name="Other_payment_methods" formatted="false">その他の支払方法</string>
-  <string name="Other_projects_you_might_like" formatted="false">Other projects you might like.</string>
+  <string name="Other_projects_you_might_like" formatted="false">おすすめをさらに見る</string>
   <string name="Past_live_stream" formatted="false">過去のプロジェクト</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">支払い方法が登録されました。</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">%{amount} 以下の金額を入力してくだささい。</string>
@@ -225,7 +225,7 @@
 アイディアを。</string>
   <string name="Push_notifications" formatted="false">プッシュ通知設定</string>
   <string name="Rate_us_in_the_App_Store" formatted="false">Appストアで評価する</string>
-  <string name="Read_more_about_the_campaign" formatted="false">Read more about the campaign</string>
+  <string name="Read_more_about_the_campaign" formatted="false">キャンペーンの詳細をみる</string>
   <string name="Read_more_about_the_campaign_arrow" formatted="false">キャンペーンの詳細をみる  →</string>
   <string name="Recent_live_stream" formatted="false">最近のライブ配信</string>
   <string name="Recommended" formatted="false">おすすめ</string>
@@ -265,6 +265,7 @@
   <string name="Select_this_reward" formatted="false">このリワードを選ぶ</string>
   <string name="Select_this_reward_instead" formatted="false">このリワードを選択</string>
   <string name="Send" formatted="false">送信</string>
+  <string name="Share" formatted="false">シェア</string>
   <string name="Share_an_update_about_your_project" formatted="false">アップデートをシェアしよう</string>
   <string name="Share_this_live_stream" formatted="false">ライブ配信をシェアする</string>
   <string name="Share_this_project_on_Facebook" formatted="false">プロジェクトをフェースブックでシェアしましょう。</string>
@@ -286,7 +287,7 @@
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">ハートのアイコンを押して保存しましょう。終了48時間前に通知が届きます。</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">星のマークを押すと、終了48時間前に通知が届きます。</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">プロジェクトにスターを押して保存しましょう。プロジェクト終了４８時間前にリマインドします。</string>
-  <string name="Thank_you_exclamation" formatted="false">Thank you!</string>
+  <string name="Thank_you_exclamation" formatted="false">ありがとうございます！</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">サポートいただきありがとうございます。</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">このFacebookのメールアドレスは他のKickstarterユーザーが使用中</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">ライブ配信に接続できませんでした</string>
@@ -325,7 +326,7 @@
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">プロジェクトを保存し、終了の48時間前にリマインドする。</string>
   <string name="You_Launched" formatted="false">発表されました！</string>
   <string name="You_backed_this_project" formatted="false">バック済</string>
-  <string name="You_have_successfully_backed_project_html" formatted="false">You have successfully backed &lt;b>%{project_name}&lt;/b>. This project is now one step closer to a reality, thanks to you. Spread the word!</string>
+  <string name="You_have_successfully_backed_project_html" formatted="false">&lt;b>%{project_name}&lt;/b>へのバックが完了しました。このプロジェクトは、成功に一歩近づきました！ありがとうございます。</string>
   <string name="You_pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
   <string name="You_saved_this_project" formatted="false">保存済みです</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">メッセージの送信に失敗。</string>

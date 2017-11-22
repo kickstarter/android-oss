@@ -16,7 +16,6 @@
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.CoordinatorLayout
-      android:elevation="4dp"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       tools:ignore="UnusedAttribute">
@@ -40,13 +39,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <include
-          layout="@layout/horizontal_line_1dp_view"
-          android:layout_height="wrap_content"
-          android:layout_width="match_parent"
-          android:layout_marginTop="@dimen/sort_tab_divider_margin_top_negative"
-          app:layout_scrollFlags="scroll"/>
-
       </android.support.design.widget.AppBarLayout>
 
       <android.support.v4.view.ViewPager
@@ -54,6 +46,12 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+      <include
+      layout="@layout/horizontal_line_1dp_view"
+      android:layout_height="wrap_content"
+      android:layout_width="match_parent"
+        app:layout_behavior="com.kickstarter.ui.toolbars.AlphaBehavior"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

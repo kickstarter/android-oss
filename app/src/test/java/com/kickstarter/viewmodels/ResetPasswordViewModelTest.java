@@ -18,7 +18,7 @@ public final class ResetPasswordViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testResetPasswordViewModel_formValidation() {
-    final ResetPasswordViewModel vm = new ResetPasswordViewModel(environment());
+    final ResetPasswordViewModel.ViewModel vm = new ResetPasswordViewModel.ViewModel(environment());
     final TestSubscriber<Boolean> test = new TestSubscriber<>();
 
     koalaTest.assertValues("Forgot Password View");
@@ -36,7 +36,7 @@ public final class ResetPasswordViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testResetPasswordViewModel_resetSuccess() {
-    final ResetPasswordViewModel vm = new ResetPasswordViewModel(environment());
+    final ResetPasswordViewModel.ViewModel vm = new ResetPasswordViewModel.ViewModel(environment());
     final TestSubscriber<Void> test = new TestSubscriber<>();
 
     koalaTest.assertValues("Forgot Password View");
@@ -68,7 +68,7 @@ public final class ResetPasswordViewModelTest extends KSRobolectricTestCase {
       .apiClient(apiClient)
       .build();
 
-    final ResetPasswordViewModel vm = new ResetPasswordViewModel(environment);
+    final ResetPasswordViewModel.ViewModel vm = new ResetPasswordViewModel.ViewModel(environment);
     final TestSubscriber<String> errorTest = new TestSubscriber<>();
 
     koalaTest.assertValues("Forgot Password View");

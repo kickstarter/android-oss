@@ -138,7 +138,7 @@ public final class SocialUtils {
     if (friends.size() < 3) {
       friendName = friends.size() >= 1 ? friends.get(0).name() : "";
     } else {
-      String delimiter = context.getString(R.string.project_social_friends_separator);
+      String delimiter = context.getString(R.string.project_social_friends_separator).trim() + " ";
       String joinedFriends = TextUtils.join(delimiter, Arrays.asList(friends.get(0).name(), friends.get(1).name()));
       friendName = friends.size() == 3 ? joinedFriends.concat(delimiter.trim()) : joinedFriends;
     }

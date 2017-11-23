@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
- <resources>
+<resources>
   <!-- Theme colors -->
   <color name="primary">@color/white</color>
   <color name="primary_dark">@color/black_alpha_17</color>

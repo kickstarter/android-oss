@@ -138,13 +138,15 @@ public final class SocialUtils {
     if (friends.size() < 3) {
       friendName = friends.size() >= 1 ? friends.get(0).name() : "";
     } else {
-      friendName = TextUtils.join(context.getString(R.string.project_social_friends_separator) + " ", Arrays.asList(friends.get(0).name(), friends.get(1).name()));
+      String delimiter = context.getString(R.string.project_social_friends_separator);
+      String joinedFriends = TextUtils.join(delimiter, Arrays.asList(friends.get(0).name(), friends.get(1).name()));
+      friendName = friends.size() == 3 ? joinedFriends.concat(delimiter.trim()) : joinedFriends;
     }
+
     final String secondFriendName;
     if (friends.size() >= 2) {
       secondFriendName = friends.size() == 2 ? friends.get(1).name() : friends.get(2).name();
-    }
-    else {
+    } else {
       secondFriendName = "";
     }
     final String remainingCount = NumberUtils.format(Math.max(0, friends.size() - 3));

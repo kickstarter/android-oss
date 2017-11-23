@@ -103,8 +103,6 @@ public final class ProjectUtils {
       return Metadata.BACKING;
     } else if (project.isStarred()) {
       return Metadata.SAVING;
-    } else if (project.isPotdToday()) {
-      return Metadata.POTD;
     } else if (project.isFeaturedToday()) {
       return Metadata.CATEGORY_FEATURED;
     }
@@ -160,6 +158,6 @@ public final class ProjectUtils {
   }
 
   public enum Metadata {
-    BACKING, SAVING, POTD, CATEGORY_FEATURED
+    BACKING, SAVING, CATEGORY_FEATURED
   }
 }

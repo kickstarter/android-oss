@@ -26,7 +26,7 @@ import java.util.List;
 import rx.observers.TestSubscriber;
 
 
-public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
+public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
   private ProjectCardHolderViewModel.ViewModel vm;
   private final TestSubscriber<String> backersCountTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backingViewGroupIsGone = new TestSubscriber<>();
@@ -49,7 +49,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Integer> percentageFundedForProgressBar = new TestSubscriber<>();
   private final TestSubscriber<String> percentageFundedTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> photoUrl = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> potdViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<DateTime> projectCanceledAt = new TestSubscriber<>();
   private final TestSubscriber<Boolean> projectCardStatsViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<DateTime> projectFailedAt = new TestSubscriber<>();
@@ -83,7 +82,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.percentageFundedForProgressBar().subscribe(this.percentageFundedForProgressBar);
     this.vm.outputs.percentageFundedTextViewText().subscribe(this.percentageFundedTextViewText);
     this.vm.outputs.photoUrl().subscribe(this.photoUrl);
-    this.vm.outputs.potdViewGroupIsGone().subscribe(this.potdViewGroupIsGone);
     this.vm.outputs.projectCanceledAt().subscribe(this.projectCanceledAt);
     this.vm.outputs.projectCardStatsViewGroupIsGone().subscribe(this.projectCardStatsViewGroupIsGone);
     this.vm.outputs.projectFailedAt().subscribe(this.projectFailedAt);
@@ -119,7 +117,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .isBacking(false)
       .isStarred(false)
-      .potdAt(null)
       .featuredAt(null)
       .build();
     setUpEnvironment(environment());
@@ -360,29 +357,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testPotdViewGroupIsGone_isBacking() {
-    final Project project = ProjectFactory.project().toBuilder().isBacking(true).build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(project);
-    this.potdViewGroupIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testPotdViewGroupIsGone() {
-    final Project project = ProjectFactory.project().toBuilder()
-      .isBacking(false)
-      .isStarred(false)
-      .potdAt(DateTime.now())
-      .featuredAt(null)
-      .build();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(project);
-    this.potdViewGroupIsGone.assertValues(false);
-  }
-
-  @Test
   public void testProjectCanceledAt() {
     final Project project = ProjectFactory.project()
       .toBuilder()
@@ -495,7 +469,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .isBacking(false)
       .isStarred(false)
-      .potdAt(null)
       .featuredAt(null)
       .build();
 
@@ -511,7 +484,6 @@ public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .isBacking(true)
       .isStarred(false)
-      .potdAt(null)
       .featuredAt(null)
       .build();
 

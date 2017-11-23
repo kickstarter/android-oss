@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
@@ -19,15 +20,45 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.adapters.data.ThanksData;
 
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 import rx.observers.TestSubscriber;
 
 public final class ThanksViewModelTest extends KSRobolectricTestCase {
+  private ThanksViewModel.ViewModel vm;
+  private final TestSubscriber<ThanksData> adapterData = new TestSubscriber<>();
+  private final TestSubscriber<Void> showGamesNewsletterDialogTest = new TestSubscriber<>();
+  private final TestSubscriber<Void> showRatingDialogTest = new TestSubscriber<>();
+  private final TestSubscriber<Void> showConfirmGamesNewsletterDialogTest = TestSubscriber.create();
+  private final TestSubscriber<DiscoveryParams> startDiscoveryTest = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, RefTag>> startProjectTest = new TestSubscriber<>();
+
+  protected void setUpEnvironment(final @NonNull Environment environment) {
+    this.vm = new ThanksViewModel.ViewModel(environment);
+    this.vm.outputs.adapterData().subscribe(this.adapterData);
+    this.vm.outputs.showGamesNewsletterDialog().subscribe(this.showGamesNewsletterDialogTest);
+    this.vm.outputs.showRatingDialog().subscribe(this.showRatingDialogTest);
+    this.vm.outputs.showConfirmGamesNewsletterDialog().subscribe(this.showConfirmGamesNewsletterDialogTest);
+    this.vm.outputs.startDiscoveryActivity().subscribe(this.startDiscoveryTest);
+    this.vm.outputs.startProjectActivity().subscribe(this.startProjectTest);
+  }
+
+  @Test
+  public void testThanksViewModel_adapterData() {
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .category(CategoryFactory.artCategory())
+      .build();
+
+    setUpEnvironment(environment());
+
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.adapterData.assertValueCount(1);
+  }
 
   @Test
   public void testThanksViewModel_showRatingDialog() {
@@ -40,15 +71,9 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
       .build();
 
-    final ThanksViewModel vm = new ThanksViewModel(environment);
-
-    final TestSubscriber<Void> showRatingDialogTest = new TestSubscriber<>();
-    vm.outputs.showRatingDialog().subscribe(showRatingDialogTest);
-
-    final Project project = ProjectFactory.project();
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-
-    showRatingDialogTest.assertValueCount(1);
+    setUpEnvironment(environment);
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
+    this.showRatingDialogTest.assertValueCount(1);
   }
 
   @Test
@@ -62,15 +87,9 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
       .build();
 
-    final ThanksViewModel vm = new ThanksViewModel(environment);
-
-    final TestSubscriber<Void> showRatingDialogTest = new TestSubscriber<>();
-    vm.outputs.showRatingDialog().subscribe(showRatingDialogTest);
-
-    final Project project = ProjectFactory.project();
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-
-    showRatingDialogTest.assertValueCount(0);
+    setUpEnvironment(environment);
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
+    this.showRatingDialogTest.assertValueCount(0);
   }
 
   @Test
@@ -80,6 +99,10 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
     final CurrentUserType currentUser = new MockCurrentUser(user);
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .category(CategoryFactory.tabletopGamesCategory())
+      .build();
 
     final Environment environment = environment()
       .toBuilder()
@@ -88,18 +111,9 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
       .build();
 
-    final ThanksViewModel vm = new ThanksViewModel(environment);
-
-    final TestSubscriber<Void> showRatingDialogTest = new TestSubscriber<>();
-    vm.outputs.showRatingDialog().subscribe(showRatingDialogTest);
-
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .category(CategoryFactory.tabletopGamesCategory())
-      .build();
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-
-    showRatingDialogTest.assertValueCount(0);
+    setUpEnvironment(environment);
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.showRatingDialogTest.assertValueCount(0);
   }
 
   @Test
@@ -115,21 +129,18 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
       .build();
 
-    final ThanksViewModel vm = new ThanksViewModel(environment);
-
-    final TestSubscriber<Void> showGamesNewsletterDialogTest = new TestSubscriber<>();
-    vm.outputs.showGamesNewsletterDialog().subscribe(showGamesNewsletterDialogTest);
+    setUpEnvironment(environment);
 
     final Project project = ProjectFactory.project()
       .toBuilder()
       .category(CategoryFactory.tabletopGamesCategory())
       .build();
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
-    showGamesNewsletterDialogTest.assertValueCount(1);
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    this.showGamesNewsletterDialogTest.assertValueCount(1);
     assertEquals(Arrays.asList(false, true), hasSeenGamesNewsletterPreference.values());
-
-    koalaTest.assertValueCount(0);
+    this.koalaTest.assertValueCount(0);
   }
 
   @Test
@@ -144,18 +155,15 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
       .build();
 
-    final ThanksViewModel vm = new ThanksViewModel(environment);
-
-    final TestSubscriber<Void> showGamesNewsletterDialogTest = new TestSubscriber<>();
-    vm.outputs.showGamesNewsletterDialog().subscribe(showGamesNewsletterDialogTest);
+    setUpEnvironment(environment);
 
     final Project project = ProjectFactory.project()
       .toBuilder()
       .category(CategoryFactory.ceramicsCategory())
       .build();
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
-    showGamesNewsletterDialogTest.assertValueCount(0);
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.showGamesNewsletterDialogTest.assertValueCount(0);
   }
 
   @Test
@@ -170,18 +178,15 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
       .build();
 
-    final ThanksViewModel vm = new ThanksViewModel(environment);
-
-    final TestSubscriber<Void> showGamesNewsletterDialogTest = new TestSubscriber<>();
-    vm.outputs.showGamesNewsletterDialog().subscribe(showGamesNewsletterDialogTest);
+    setUpEnvironment(environment);
 
     final Project project = ProjectFactory.project()
       .toBuilder()
       .category(CategoryFactory.tabletopGamesCategory())
       .build();
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
-    showGamesNewsletterDialogTest.assertValueCount(0);
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.showGamesNewsletterDialogTest.assertValueCount(0);
   }
 
   @Test
@@ -196,31 +201,15 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
       .build();
 
-    final ThanksViewModel vm = new ThanksViewModel(environment);
-
-    final TestSubscriber<Void> showGamesNewsletterDialogTest = new TestSubscriber<>();
-    vm.outputs.showGamesNewsletterDialog().subscribe(showGamesNewsletterDialogTest);
+    setUpEnvironment(environment);
 
     final Project project = ProjectFactory.project()
       .toBuilder()
       .category(CategoryFactory.tabletopGamesCategory())
       .build();
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
-    showGamesNewsletterDialogTest.assertValueCount(0);
-  }
-
-  @Test
-  public void testThanksViewModel_showRecommendations() {
-    final ThanksViewModel vm = new ThanksViewModel(environment());
-    final Project project = ProjectFactory.project();
-
-    final TestSubscriber<Pair<List<Project>, Category>> showRecommendationsTest = new TestSubscriber<>();
-    vm.outputs.showRecommendedProjects().subscribe(showRecommendationsTest);
-
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-
-    showRecommendationsTest.assertValueCount(1);
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.showGamesNewsletterDialogTest.assertValueCount(0);
   }
 
   @Test
@@ -232,7 +221,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
       .currentUser(currentUser)
       .build();
 
-    final ThanksViewModel vm = new ThanksViewModel(environment);
+    setUpEnvironment(environment);
 
     final TestSubscriber<User> updateUserSettingsTest = new TestSubscriber<>();
     ((MockApiClient) environment.apiClient()).observable()
@@ -240,17 +229,17 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
       .map(e -> (User) e.second.get("user"))
       .subscribe(updateUserSettingsTest);
 
-    final TestSubscriber<Void> showConfirmGamesNewsletterDialogTest = TestSubscriber.create();
-    vm.outputs.showConfirmGamesNewsletterDialog().subscribe(showConfirmGamesNewsletterDialogTest);
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .category(CategoryFactory.tabletopGamesCategory())
+      .build();
 
-    final Project project = ProjectFactory.project().toBuilder().category(CategoryFactory.tabletopGamesCategory()).build();
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-
-    vm.signupToGamesNewsletterClick();
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.vm.signupToGamesNewsletterClick();
     updateUserSettingsTest.assertValues(user.toBuilder().gamesNewsletter(true).build());
-    showConfirmGamesNewsletterDialogTest.assertValueCount(0);
 
-    koalaTest.assertValues("Newsletter Subscribe");
+    this.showConfirmGamesNewsletterDialogTest.assertValueCount(0);
+    this.koalaTest.assertValues("Newsletter Subscribe");
   }
 
   @Test
@@ -265,45 +254,33 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
       .currentUser(currentUser)
       .build();
 
-    final ThanksViewModel vm = new ThanksViewModel(environment);
-
-    final TestSubscriber<Void> showConfirmGamesNewsletterDialogTest = TestSubscriber.create();
-    vm.outputs.showConfirmGamesNewsletterDialog().subscribe(showConfirmGamesNewsletterDialogTest);
+    setUpEnvironment(environment);
 
     final Project project = ProjectFactory.project().toBuilder().category(CategoryFactory.tabletopGamesCategory()).build();
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
-    vm.signupToGamesNewsletterClick();
-    showConfirmGamesNewsletterDialogTest.assertValueCount(1);
-
-    koalaTest.assertValues("Newsletter Subscribe");
+    this.vm.signupToGamesNewsletterClick();
+    this.showConfirmGamesNewsletterDialogTest.assertValueCount(1);
+    this.koalaTest.assertValues("Newsletter Subscribe");
   }
 
   @Test
   public void testThanksViewModel_startDiscovery() {
-    final ThanksViewModel vm = new ThanksViewModel(environment());
+    setUpEnvironment(environment());
     final Category category = CategoryFactory.category();
 
-    final TestSubscriber<DiscoveryParams> startDiscoveryTest = new TestSubscriber<>();
-    vm.outputs.startDiscoveryActivity().subscribe(startDiscoveryTest);
-
-    vm.inputs.categoryViewHolderClicked(category);
-    startDiscoveryTest.assertValues(DiscoveryParams.builder().category(category).build());
-
-    koalaTest.assertValue("Checkout Finished Discover More");
+    this.vm.inputs.categoryViewHolderClicked(category);
+    this.startDiscoveryTest.assertValues(DiscoveryParams.builder().category(category).build());
+    this.koalaTest.assertValue("Checkout Finished Discover More");
   }
 
   @Test
   public void testThanksViewModel_startProject() {
-    final ThanksViewModel vm = new ThanksViewModel(environment());
+    setUpEnvironment(environment());
     final Project project = ProjectFactory.project();
 
-    final TestSubscriber<Pair<Project, RefTag>> startProjectTest = new TestSubscriber<>();
-    vm.outputs.startProjectActivity().subscribe(startProjectTest);
-
-    vm.inputs.projectCardViewHolderClicked(project);
-    startProjectTest.assertValues(Pair.create(project, RefTag.thanks()));
-
-    koalaTest.assertValue("Checkout Finished Discover Open Project");
+    this.vm.inputs.projectCardViewHolderClicked(project);
+    this.startProjectTest.assertValues(Pair.create(project, RefTag.thanks()));
+    this.koalaTest.assertValue("Checkout Finished Discover Open Project");
   }
 }

@@ -123,27 +123,27 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.viewModel.outputs.friendAvatar2IsHidden()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(hidden -> ViewUtils.setGone(friendBackingAvatarImageView2, hidden));
+      .subscribe(hidden -> ViewUtils.setGone(this.friendBackingAvatarImageView2, hidden));
 
     this.viewModel.outputs.friendAvatar3IsHidden()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(hidden -> ViewUtils.setGone(friendBackingAvatarImageView3, hidden));
+      .subscribe(hidden -> ViewUtils.setGone(this.friendBackingAvatarImageView3, hidden));
 
     this.viewModel.outputs.friendAvatarUrl1()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(url -> setFriendAvatarUrl(url, friendBackingAvatarImageView1));
+      .subscribe(url -> setFriendAvatarUrl(url, this.friendBackingAvatarImageView1));
 
     this.viewModel.outputs.friendAvatarUrl2()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(url -> setFriendAvatarUrl(url, friendBackingAvatarImageView2));
+      .subscribe(url -> setFriendAvatarUrl(url, this.friendBackingAvatarImageView2));
 
     this.viewModel.outputs.friendAvatarUrl3()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(url -> setFriendAvatarUrl(url, friendBackingAvatarImageView3));
+      .subscribe(url -> setFriendAvatarUrl(url, this.friendBackingAvatarImageView3));
 
     this.viewModel.outputs.friendBackingViewIsHidden()
       .compose(bindToLifecycle())

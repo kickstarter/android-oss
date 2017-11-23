@@ -266,10 +266,10 @@ public interface ProjectCardHolderViewModel {
       return this.featuredViewGroupIsGone;
     }
     @Override public @NonNull Observable<Boolean> friendAvatar2IsHidden() {
-      return friendAvatar2IsHidden;
+      return this.friendAvatar2IsHidden;
     }
     @Override public @NonNull Observable<Boolean> friendAvatar3IsHidden() {
-      return friendAvatar3IsHidden;
+      return this.friendAvatar3IsHidden;
     }
     @Override public @NonNull Observable<String> friendAvatarUrl1() {
       return this.friendAvatarUrl1;

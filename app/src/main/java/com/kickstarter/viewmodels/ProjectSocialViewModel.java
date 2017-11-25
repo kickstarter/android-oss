@@ -7,28 +7,34 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectSocialActivity;
-import com.kickstarter.viewmodels.outputs.ProjectSocialViewModelOutputs;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
-public final class ProjectSocialViewModel extends ActivityViewModel<ProjectSocialActivity> implements ProjectSocialViewModelOutputs {
+public interface ProjectSocialViewModel {
 
-  private final BehaviorSubject<Project> project = BehaviorSubject.create();
-  @Override
-  public Observable<Project> project() {
-    return this.project;
+  interface Outputs {
+    Observable<Project> project();
   }
 
-  public final ProjectSocialViewModelOutputs outputs = this;
+  final class ViewModel extends ActivityViewModel<ProjectSocialActivity> implements Outputs {
 
-  public ProjectSocialViewModel(final @NonNull Environment environment) {
-    super(environment);
+    public ViewModel(final @NonNull Environment environment) {
+      super(environment);
 
-    intent()
-      .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
-      .ofType(Project.class)
-      .compose(bindToLifecycle())
-      .subscribe(this.project);
+      intent()
+        .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
+        .ofType(Project.class)
+        .compose(bindToLifecycle())
+        .subscribe(this.project);
+    }
+
+    private final BehaviorSubject<Project> project = BehaviorSubject.create();
+
+    public final Outputs outputs = this;
+
+    @Override public @NonNull Observable<Project> project() {
+      return this.project;
+    }
   }
 }

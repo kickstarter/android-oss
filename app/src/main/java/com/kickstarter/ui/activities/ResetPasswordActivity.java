@@ -25,8 +25,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresActivityViewModel(ResetPasswordViewModel.class)
-public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewModel> {
+@RequiresActivityViewModel(ResetPasswordViewModel.ViewModel.class)
+public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewModel.ViewModel> {
   @Bind (R.id.email) EditText email;
   @Bind (R.id.reset_password_button) Button resetPasswordButton;
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
@@ -43,22 +43,22 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
     ButterKnife.bind(this);
     this.loginToolbar.setTitle(this.forgotPasswordString);
 
-    this.viewModel.outputs.resetSuccess()
+    this.viewModel.getOutputs().resetSuccess()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> onResetSuccess());
 
-    this.viewModel.outputs.isFormSubmitting()
+    this.viewModel.getOutputs().isFormSubmitting()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::setFormDisabled);
 
-    this.viewModel.outputs.isFormValid()
+    this.viewModel.getOutputs().isFormValid()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::setFormEnabled);
 
-    this.viewModel.errors.resetError()
+    this.viewModel.getErrors().resetError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> ViewUtils.showDialog(this, this.errorTitleString, this.errorMessageString));
@@ -66,12 +66,12 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
 
   @OnTextChanged(R.id.email)
   void onEmailTextChanged(final @NonNull CharSequence email) {
-    this.viewModel.inputs.email(email.toString());
+    this.viewModel.getInputs().email(email.toString());
   }
 
   @OnClick(R.id.reset_password_button)
   public void resetButtonOnClick() {
-    this.viewModel.inputs.resetPasswordClick();
+    this.viewModel.getInputs().resetPasswordClick();
   }
 
   @Override

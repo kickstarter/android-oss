@@ -8,7 +8,7 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import rx.Observable;
 import rx.functions.Action1;
 
-final class NeverApiErrorTransformer<T> implements Observable.Transformer<T, T> {
+public final class NeverApiErrorTransformer<T> implements Observable.Transformer<T, T> {
   private final @Nullable Action1<ErrorEnvelope> errorAction;
 
   protected NeverApiErrorTransformer() {

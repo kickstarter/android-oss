@@ -11,9 +11,11 @@ public class AlphaBehavior<V extends View> extends CoordinatorLayout.Behavior<V>
 
   public AlphaBehavior() {
   }
+
   public AlphaBehavior(Context context, AttributeSet attrs) {
     super(context, attrs);
   }
+
   @Override
   public boolean layoutDependsOn(CoordinatorLayout parent, View child, View dependency) {
     return dependency instanceof AppBarLayout;
@@ -29,13 +31,5 @@ public class AlphaBehavior<V extends View> extends CoordinatorLayout.Behavior<V>
     child.setY(dependency.getBottom());
     child.setAlpha(percentComplete);
     return false;
-  }
-
-  @Override
-  public void onNestedScroll(CoordinatorLayout coordinatorLayout, V child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
-    super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
-
-    /* check if position 0 is visible, check its top compared to the view pagers top? also need top of parent !_!
-      * distance btween pager top and paremt top vs position 0 */
   }
 }

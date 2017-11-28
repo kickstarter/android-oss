@@ -23,10 +23,10 @@ public class AlphaBehavior<V extends View> extends CoordinatorLayout.Behavior<V>
 
   @Override
   public boolean onDependentViewChanged(final CoordinatorLayout parent, final View child, final View dependency) {
-    AppBarLayout appBarLayout = (AppBarLayout) dependency;
+    final AppBarLayout appBarLayout = (AppBarLayout) dependency;
 
-    float translationY = dependency.getY();
-    float percentComplete = -translationY / appBarLayout.getTotalScrollRange();
+    final float translationY = dependency.getY();
+    final float percentComplete = -translationY / appBarLayout.getTotalScrollRange();
 
     child.setY(dependency.getBottom());
     child.setAlpha(percentComplete);

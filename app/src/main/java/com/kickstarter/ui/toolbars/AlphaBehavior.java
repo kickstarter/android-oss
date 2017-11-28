@@ -12,17 +12,17 @@ public class AlphaBehavior<V extends View> extends CoordinatorLayout.Behavior<V>
   public AlphaBehavior() {
   }
 
-  public AlphaBehavior(Context context, AttributeSet attrs) {
+  public AlphaBehavior(final Context context, final AttributeSet attrs) {
     super(context, attrs);
   }
 
   @Override
-  public boolean layoutDependsOn(CoordinatorLayout parent, View child, View dependency) {
+  public boolean layoutDependsOn(final CoordinatorLayout parent, final View child, final View dependency) {
     return dependency instanceof AppBarLayout;
   }
 
   @Override
-  public boolean onDependentViewChanged(CoordinatorLayout parent, View child, View dependency) {
+  public boolean onDependentViewChanged(final CoordinatorLayout parent, final View child, final View dependency) {
     AppBarLayout appBarLayout = (AppBarLayout) dependency;
 
     float translationY = dependency.getY();

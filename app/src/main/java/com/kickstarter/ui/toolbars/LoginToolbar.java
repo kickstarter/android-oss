@@ -9,12 +9,12 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.ui.views.LoginPopupMenu;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class LoginToolbar extends KSToolbar {
-  @Bind(R.id.help_button) TextView helpButton;
+  @BindView(R.id.help_button) TextView helpButton;
 
   public LoginToolbar(final @NonNull Context context) {
     super(context);

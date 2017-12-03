@@ -7,12 +7,12 @@ import android.widget.Button;
 
 import com.kickstarter.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class EmptyProfileViewHolder extends KSViewHolder {
-  protected @Bind(R.id.explore_projects_button) Button exploreButton;
+  protected @BindView(R.id.explore_projects_button) Button exploreButton;
 
   private final Delegate delegate;
 

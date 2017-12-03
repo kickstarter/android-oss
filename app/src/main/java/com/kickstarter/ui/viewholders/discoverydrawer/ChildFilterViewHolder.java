@@ -13,7 +13,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -22,8 +22,8 @@ import timber.log.Timber;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class ChildFilterViewHolder extends KSViewHolder {
-  protected @Bind(R.id.filter_view) LinearLayout filterView;
-  protected @Bind(R.id.filter_text_view) TextView filterTextView;
+  protected @BindView(R.id.filter_view) LinearLayout filterView;
+  protected @BindView(R.id.filter_text_view) TextView filterTextView;
   protected @BindColor(R.color.ksr_soft_black) int ksrSoftBlackColor;
   protected @BindColor(R.color.ksr_dark_grey_400) int darkGrayColor;
   protected @BindColor(R.color.discovery_drawer_item_selected) int filterSelectedColor;

@@ -20,18 +20,18 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
-  protected @Bind(R.id.project_name) TextView projectNameTextView;
-  protected @Bind(R.id.project_photo) ImageView projectPhotoImageView;
-  protected @Bind(R.id.timestamp) TextView timestampTextView;
-  protected @Bind(R.id.update_body) TextView updateBodyTextView;
-  protected @Bind(R.id.update_sequence) TextView updateSequenceTextView;
-  protected @Bind(R.id.update_title) TextView updateTitleTextView;
+  protected @BindView(R.id.project_name) TextView projectNameTextView;
+  protected @BindView(R.id.project_photo) ImageView projectPhotoImageView;
+  protected @BindView(R.id.timestamp) TextView timestampTextView;
+  protected @BindView(R.id.update_body) TextView updateBodyTextView;
+  protected @BindView(R.id.update_sequence) TextView updateSequenceTextView;
+  protected @BindView(R.id.update_title) TextView updateTitleTextView;
 
   protected @BindString(R.string.activity_project_update_update_count) String projectUpdateCountString;
 

@@ -16,7 +16,7 @@ import com.kickstarter.viewmodels.CreatorDashboardRewardStatsHolderViewModel;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -26,8 +26,8 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
   private final CreatorDashboardRewardStatsHolderViewModel.ViewModel viewModel;
 
-  protected @Bind(R.id.dashboard_reward_stats_pledged_text_view) TextView pledgedTextView;
-  protected @Bind(R.id.dashboard_reward_stats_recycler_view) RecyclerView rewardStatsRecyclerView;
+  protected @BindView(R.id.dashboard_reward_stats_pledged_text_view) TextView pledgedTextView;
+  protected @BindView(R.id.dashboard_reward_stats_recycler_view) RecyclerView rewardStatsRecyclerView;
 
   public CreatorDashboardRewardStatsViewHolder(final @NonNull View view) {
     super(view);

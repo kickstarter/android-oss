@@ -28,7 +28,7 @@ import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.viewmodels.ProjectViewModel;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindDimen;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -39,12 +39,12 @@ import rx.android.schedulers.AndroidSchedulers;
 public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewModel> {
   private ProjectAdapter adapter;
 
-  protected @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
-  protected @Bind(R.id.heart_icon) ImageButton heartButton;
-  protected @Bind(R.id.back_project_button) Button backProjectButton;
-  protected @Bind(R.id.manage_pledge_button) Button managePledgeButton;
-  protected @Bind(R.id.project_action_buttons) ViewGroup projectActionButtonsViewGroup;
-  protected @Bind(R.id.view_pledge_button) Button viewPledgeButton;
+  protected @BindView(R.id.project_recycler_view) RecyclerView projectRecyclerView;
+  protected @BindView(R.id.heart_icon) ImageButton heartButton;
+  protected @BindView(R.id.back_project_button) Button backProjectButton;
+  protected @BindView(R.id.manage_pledge_button) Button managePledgeButton;
+  protected @BindView(R.id.project_action_buttons) ViewGroup projectActionButtonsViewGroup;
+  protected @BindView(R.id.view_pledge_button) Button viewPledgeButton;
 
   protected @BindDimen(R.dimen.grid_8) int grid8Dimen;
 

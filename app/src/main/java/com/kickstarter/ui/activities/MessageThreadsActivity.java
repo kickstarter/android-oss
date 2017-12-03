@@ -27,7 +27,7 @@ import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.adapters.MessageThreadsAdapter;
 import com.kickstarter.viewmodels.MessageThreadsViewModel;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
@@ -41,14 +41,14 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
 
-  protected @Bind(R.id.message_threads_app_bar_layout) AppBarLayout appBarLayout;
-  protected @Bind(R.id.message_threads_collapsed_toolbar_title) View collapsedToolbarTitle;
-  protected @Bind(R.id.message_threads_collapsing_toolbar_layout) CollapsingToolbarLayout collapsingToolbarLayout;
-  protected @Bind(R.id.mailbox_text_view) TextView mailboxTextView;
-  protected @Bind(R.id.message_threads_recycler_view) RecyclerView recyclerView;
-  protected @Bind(R.id.message_threads_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-  protected @Bind(R.id.unread_count_text_view) TextView unreadCountTextView;
-  protected @Bind(R.id.message_threads_toolbar_unread_count_text_view) TextView unreadCountToolbarTextView;
+  protected @BindView(R.id.message_threads_app_bar_layout) AppBarLayout appBarLayout;
+  protected @BindView(R.id.message_threads_collapsed_toolbar_title) View collapsedToolbarTitle;
+  protected @BindView(R.id.message_threads_collapsing_toolbar_layout) CollapsingToolbarLayout collapsingToolbarLayout;
+  protected @BindView(R.id.mailbox_text_view) TextView mailboxTextView;
+  protected @BindView(R.id.message_threads_recycler_view) RecyclerView recyclerView;
+  protected @BindView(R.id.message_threads_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+  protected @BindView(R.id.unread_count_text_view) TextView unreadCountTextView;
+  protected @BindView(R.id.message_threads_toolbar_unread_count_text_view) TextView unreadCountToolbarTextView;
 
   protected @BindString(R.string.messages_navigation_inbox) String inboxString;
   protected @BindString(R.string.No_messages) String noMessagesString;

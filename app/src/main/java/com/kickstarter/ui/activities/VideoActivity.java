@@ -22,7 +22,7 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.viewmodels.VideoViewModel;
 import com.trello.rxlifecycle.ActivityEvent;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -32,10 +32,10 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
   private KSVideoPlayer player;
   private long playerPosition;
 
-  protected @Bind(R.id.video_player_layout) View rootView;
-  protected @Bind(R.id.surface_view) SurfaceView surfaceView;
-  protected @Bind(R.id.loading_indicator) ProgressBar loadingIndicatorProgressBar;
-  protected @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
+  protected @BindView(R.id.video_player_layout) View rootView;
+  protected @BindView(R.id.surface_view) SurfaceView surfaceView;
+  protected @BindView(R.id.loading_indicator) ProgressBar loadingIndicatorProgressBar;
+  protected @BindView(R.id.video_frame) AspectRatioFrameLayout videoFrame;
 
   @Override
   public void onCreate(final @Nullable Bundle savedInstanceState) {

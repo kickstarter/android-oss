@@ -20,7 +20,7 @@ import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
 import com.kickstarter.viewmodels.SignupViewModel;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -31,14 +31,14 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(SignupViewModel.ViewModel.class)
 public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel> {
-  @Bind(R.id.full_name) EditText nameEditText;
-  @Bind(R.id.email) EditText emailEditText;
-  @Bind(R.id.help_button) TextView helpButton;
-  @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
-  @Bind(R.id.password) EditText passwordEditText;
-  @Bind(R.id.signup_button) Button signupButton;
-  @Bind(R.id.newsletter_switch) SwitchCompat newsletterSwitch;
-  @Bind(R.id.disclaimer) TextView disclaimerTextView;
+  @BindView(R.id.full_name) EditText nameEditText;
+  @BindView(R.id.email) EditText emailEditText;
+  @BindView(R.id.help_button) TextView helpButton;
+  @BindView(R.id.login_toolbar) LoginToolbar loginToolbar;
+  @BindView(R.id.password) EditText passwordEditText;
+  @BindView(R.id.signup_button) Button signupButton;
+  @BindView(R.id.newsletter_switch) SwitchCompat newsletterSwitch;
+  @BindView(R.id.disclaimer) TextView disclaimerTextView;
 
   @BindString(R.string.signup_button) String signUpString;
 

@@ -29,7 +29,7 @@ import com.kickstarter.viewmodels.SettingsViewModel;
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -41,17 +41,17 @@ import static com.kickstarter.libs.utils.IntegerUtils.intValueOrZero;
 
 @RequiresActivityViewModel(SettingsViewModel.class)
 public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
-  protected @Bind(R.id.games_switch) SwitchCompat gamesNewsletterSwitch;
-  protected @Bind(R.id.happening_now_switch) SwitchCompat happeningNewsletterSwitch;
-  protected @Bind(R.id.friend_activity_mail_icon) IconTextView friendActivityMailIconTextView;
-  protected @Bind(R.id.friend_activity_phone_icon) IconTextView friendActivityPhoneIconTextView;
-  protected @Bind(R.id.new_followers_mail_icon) IconTextView newFollowersMailIconTextView;
-  protected @Bind(R.id.new_followers_phone_icon) IconTextView newFollowersPhoneIconTextView;
-  protected @Bind(R.id.project_notifications_count) TextView projectNotificationsCountTextView;
-  protected @Bind(R.id.project_updates_mail_icon) IconTextView projectUpdatesMailIconTextView;
-  protected @Bind(R.id.project_updates_phone_icon) IconTextView projectUpdatesPhoneIconTextView;
-  protected @Bind(R.id.kickstarter_news_and_events_switch) SwitchCompat promoNewsletterSwitch;
-  protected @Bind(R.id.projects_we_love_switch) SwitchCompat weeklyNewsletterSwitch;
+  protected @BindView(R.id.games_switch) SwitchCompat gamesNewsletterSwitch;
+  protected @BindView(R.id.happening_now_switch) SwitchCompat happeningNewsletterSwitch;
+  protected @BindView(R.id.friend_activity_mail_icon) IconTextView friendActivityMailIconTextView;
+  protected @BindView(R.id.friend_activity_phone_icon) IconTextView friendActivityPhoneIconTextView;
+  protected @BindView(R.id.new_followers_mail_icon) IconTextView newFollowersMailIconTextView;
+  protected @BindView(R.id.new_followers_phone_icon) IconTextView newFollowersPhoneIconTextView;
+  protected @BindView(R.id.project_notifications_count) TextView projectNotificationsCountTextView;
+  protected @BindView(R.id.project_updates_mail_icon) IconTextView projectUpdatesMailIconTextView;
+  protected @BindView(R.id.project_updates_phone_icon) IconTextView projectUpdatesPhoneIconTextView;
+  protected @BindView(R.id.kickstarter_news_and_events_switch) SwitchCompat promoNewsletterSwitch;
+  protected @BindView(R.id.projects_we_love_switch) SwitchCompat weeklyNewsletterSwitch;
 
   protected @BindColor(R.color.ksr_green_700) int green;
   protected @BindColor(R.color.ksr_dark_grey_400) int gray;

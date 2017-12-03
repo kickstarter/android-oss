@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
@@ -50,13 +50,13 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   private DiscoveryPagerAdapter pagerAdapter;
   private InternalToolsType internalTools;
 
-  protected @Bind(R.id.creator_dashboard_button) IconButton creatorDashboardButton;
-  protected @Bind(R.id.discovery_layout) DrawerLayout discoveryLayout;
-  protected @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
-  protected @Bind(R.id.discovery_drawer_recycler_view) RecyclerView drawerRecyclerView;
-  protected @Bind(R.id.discovery_tab_layout) SortTabLayout sortTabLayout;
-  protected @Bind(R.id.discovery_view_pager) ViewPager sortViewPager;
-  protected @Bind(R.id.discovery_sort_app_bar_layout) AppBarLayout sortAppBarLayout;
+  protected @BindView(R.id.creator_dashboard_button) IconButton creatorDashboardButton;
+  protected @BindView(R.id.discovery_layout) DrawerLayout discoveryLayout;
+  protected @BindView(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
+  protected @BindView(R.id.discovery_drawer_recycler_view) RecyclerView drawerRecyclerView;
+  protected @BindView(R.id.discovery_tab_layout) SortTabLayout sortTabLayout;
+  protected @BindView(R.id.discovery_view_pager) ViewPager sortViewPager;
+  protected @BindView(R.id.discovery_sort_app_bar_layout) AppBarLayout sortAppBarLayout;
 
   protected @BindString(R.string.A_newer_build_is_available) String aNewerBuildIsAvailableString;
   protected @BindString(R.string.Upgrade_app) String upgradeAppString;

@@ -14,7 +14,7 @@ import com.kickstarter.ui.adapters.ProjectSocialAdapter;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import com.kickstarter.viewmodels.ProjectSocialViewModel;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -22,7 +22,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(ProjectSocialViewModel.class)
 public final class ProjectSocialActivity extends BaseActivity<ProjectSocialViewModel> implements ProjectSocialAdapter.Delegate {
-  protected @Bind(R.id.project_social_recycler_view) RecyclerView recyclerView;
+  protected @BindView(R.id.project_social_recycler_view) RecyclerView recyclerView;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {

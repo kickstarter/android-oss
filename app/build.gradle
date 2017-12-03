@@ -20,7 +20,7 @@ if (file('signing.gradle').exists()) {
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.kickstarter"
@@ -146,7 +146,8 @@ dependencies {
     compile 'com.google.android.exoplayer:exoplayer:r1.5.5'
     compile 'com.google.dagger:dagger:2.0'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.0'
-    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'com.jakewharton:process-phoenix:1.0.2'
     compile 'com.jakewharton.timber:timber:3.0.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -220,7 +221,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:3.4.0'
+//        classpath "me.tatarka:gradle-retrolambda:3.7.0"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -240,6 +241,6 @@ gradle.taskGraph.beforeTask { Task task ->
     }
 }
 
-apply plugin: 'me.tatarka.retrolambda'
+//apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'

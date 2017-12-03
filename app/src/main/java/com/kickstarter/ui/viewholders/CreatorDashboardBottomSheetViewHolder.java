@@ -9,7 +9,7 @@ import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.CreatorDashboardBottomSheetHolderViewModel;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -19,7 +19,7 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public final class CreatorDashboardBottomSheetViewHolder extends KSViewHolder {
   private final CreatorDashboardBottomSheetHolderViewModel.ViewModel viewModel;
 
-  protected @Bind(R.id.creator_dashboard_project_switcher_text_view) TextView projectNameTextView;
+  protected @BindView(R.id.creator_dashboard_project_switcher_text_view) TextView projectNameTextView;
 
   private final @Nullable Delegate delegate;
 

@@ -37,7 +37,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -52,11 +52,11 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   @Inject Build build;
   @Inject Logout logout;
 
-  @Bind(R.id.build_date) TextView buildDate;
-  @Bind(R.id.sha) TextView sha;
-  @Bind(R.id.variant) TextView variant;
-  @Bind(R.id.version_code) TextView versionCode;
-  @Bind(R.id.version_name) TextView versionName;
+  @BindView(R.id.build_date) TextView buildDate;
+  @BindView(R.id.sha) TextView sha;
+  @BindView(R.id.variant) TextView variant;
+  @BindView(R.id.version_code) TextView versionCode;
+  @BindView(R.id.version_name) TextView versionName;
   @BindDrawable(android.R.drawable.ic_dialog_alert) Drawable icDialogAlertDrawable;
 
   @Override

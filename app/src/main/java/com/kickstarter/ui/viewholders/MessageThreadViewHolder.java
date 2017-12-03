@@ -26,7 +26,7 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindDimen;
 import butterknife.BindDrawable;
 import butterknife.BindString;
@@ -38,13 +38,13 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public final class MessageThreadViewHolder extends KSViewHolder {
   private final MessageThreadHolderViewModel.ViewModel viewModel;
 
-  protected @Bind(R.id.message_thread_date_text_view) TextView dateTextView;
-  protected @Bind(R.id.message_thread_body_text_view) TextView messageBodyTextView;
-  protected @Bind(R.id.message_thread_card_view) CardView messageThreadCardView;
-  protected @Bind(R.id.message_thread_unread_count_text_view) TextView unreadCountTextView;
-  protected @Bind(R.id.participant_avatar_image_view) ImageView participantAvatarImageView;
-  protected @Bind(R.id.participant_name_text_view) TextView participantNameTextView;
-  protected @Bind(R.id.unread_indicator_image_view) ImageView unreadIndicatorImageView;
+  protected @BindView(R.id.message_thread_date_text_view) TextView dateTextView;
+  protected @BindView(R.id.message_thread_body_text_view) TextView messageBodyTextView;
+  protected @BindView(R.id.message_thread_card_view) CardView messageThreadCardView;
+  protected @BindView(R.id.message_thread_unread_count_text_view) TextView unreadCountTextView;
+  protected @BindView(R.id.participant_avatar_image_view) ImageView participantAvatarImageView;
+  protected @BindView(R.id.participant_name_text_view) TextView participantNameTextView;
+  protected @BindView(R.id.unread_indicator_image_view) ImageView unreadIndicatorImageView;
 
   protected @BindDimen(R.dimen.card_elevation) int cardElevationDimen;
   protected @BindDimen(R.dimen.card_no_elevation) int cardNoElevationDimen;

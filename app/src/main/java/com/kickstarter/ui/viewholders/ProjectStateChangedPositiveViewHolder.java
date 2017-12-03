@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -29,13 +29,13 @@ import butterknife.OnClick;
 import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 
 public final class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolder {
-  protected @Bind(R.id.card_view) CardView cardView;
-  protected @Bind(R.id.left_stat_first) TextView leftStatFirstTextView;
-  protected @Bind(R.id.left_stat_second) TextView leftStatSecondTextView;
-  protected @Bind(R.id.project_photo) ImageView projectPhotoImageView;
-  protected @Bind(R.id.right_stat_first) TextView rightStatFirstTextView;
-  protected @Bind(R.id.right_stat_second) TextView rightStatSecondTextView;
-  protected @Bind(R.id.title) TextView titleTextView;
+  protected @BindView(R.id.card_view) CardView cardView;
+  protected @BindView(R.id.left_stat_first) TextView leftStatFirstTextView;
+  protected @BindView(R.id.left_stat_second) TextView leftStatSecondTextView;
+  protected @BindView(R.id.project_photo) ImageView projectPhotoImageView;
+  protected @BindView(R.id.right_stat_first) TextView rightStatFirstTextView;
+  protected @BindView(R.id.right_stat_second) TextView rightStatSecondTextView;
+  protected @BindView(R.id.title) TextView titleTextView;
 
   protected @BindColor(R.color.blue_darken_10) int blueDarken10Color;
   protected @BindColor(R.color.green_darken_10) int greenDarken10Color;

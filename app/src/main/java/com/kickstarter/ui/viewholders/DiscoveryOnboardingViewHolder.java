@@ -7,12 +7,12 @@ import android.widget.Button;
 
 import com.kickstarter.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class DiscoveryOnboardingViewHolder extends KSViewHolder {
-  protected @Bind(R.id.login_tout_button) Button lgoinToutButton;
+  protected @BindView(R.id.login_tout_button) Button lgoinToutButton;
 
   private final Delegate delegate;
   public interface Delegate {

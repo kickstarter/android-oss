@@ -10,7 +10,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.models.Category;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
@@ -22,7 +22,7 @@ public final class ThanksCategoryViewHolder extends KSViewHolder {
   private final Delegate delegate;
   private final KSString ksString;
 
-  protected @Bind(R.id.thanks_explore_category_button) Button exploreCategoryButton;
+  protected @BindView(R.id.thanks_explore_category_button) Button exploreCategoryButton;
   protected @BindString(R.string.category_promo_explore_category) String exploreCategoryString;
 
   public interface Delegate {

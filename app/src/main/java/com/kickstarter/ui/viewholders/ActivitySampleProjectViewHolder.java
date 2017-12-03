@@ -19,7 +19,7 @@ import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -28,11 +28,11 @@ public class ActivitySampleProjectViewHolder extends KSViewHolder {
   private Activity activity;
   private final KSString ksString;
 
-  protected @Bind(R.id.activity_click_area) LinearLayout activityClickArea;
-  protected @Bind(R.id.activity_image) ImageView activityImageView;
-  protected @Bind(R.id.activity_title) TextView activityTitleTextView;
-  protected @Bind(R.id.activity_subtitle) TextView activitySubtitleTextView;
-  protected @Bind(R.id.see_activity_button) Button seeActivityButton;
+  protected @BindView(R.id.activity_click_area) LinearLayout activityClickArea;
+  protected @BindView(R.id.activity_image) ImageView activityImageView;
+  protected @BindView(R.id.activity_title) TextView activityTitleTextView;
+  protected @BindView(R.id.activity_subtitle) TextView activitySubtitleTextView;
+  protected @BindView(R.id.see_activity_button) Button seeActivityButton;
   protected @BindString(R.string.activity_project_was_not_successfully_funded) String categoryFailureString;
   protected @BindString(R.string.activity_user_name_launched_project) String categoryLaunchString;
   protected @BindString(R.string.activity_successfully_funded) String categorySuccessString;

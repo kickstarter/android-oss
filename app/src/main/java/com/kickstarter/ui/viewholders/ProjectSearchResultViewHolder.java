@@ -15,7 +15,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel;
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
@@ -26,12 +26,12 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
   private final KSString ksString;
   private final ProjectSearchResultHolderViewModel.ViewModel viewModel;
 
-  @Bind(R.id.search_result_deadline_countdown_text_view) TextView deadlineCountdownValueTextView;
-  @Bind(R.id.search_result_deadline_unit_text_view) TextView deadlineCountdownUnitTextView;
-  @Bind(R.id.project_name_text_view) TextView projectNameTextView;
-  @Bind(R.id.project_image_view) ImageView projectImageView;
-  @Bind(R.id.search_result_percent_funded_text_view) TextView percentFundedTextView;
-  @Bind(R.id.search_result_funded_text_view) TextView fundedTextView;
+  @BindView(R.id.search_result_deadline_countdown_text_view) TextView deadlineCountdownValueTextView;
+  @BindView(R.id.search_result_deadline_unit_text_view) TextView deadlineCountdownUnitTextView;
+  @BindView(R.id.project_name_text_view) TextView projectNameTextView;
+  @BindView(R.id.project_image_view) ImageView projectImageView;
+  @BindView(R.id.search_result_percent_funded_text_view) TextView percentFundedTextView;
+  @BindView(R.id.search_result_funded_text_view) TextView fundedTextView;
 
   @BindString(R.string.discovery_baseball_card_stats_funded) String fundedString;
   @BindString(R.string.discovery_baseball_card_time_left_to_go) String toGoString;

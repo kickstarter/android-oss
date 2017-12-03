@@ -28,7 +28,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -39,14 +39,14 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel.ViewMod
   private ProfileAdapter adapter;
   private RecyclerViewPaginator paginator;
 
-  protected @Bind(R.id.avatar_image_view) ImageView avatarImageView;
-  protected @Bind(R.id.backed_count_text_view) TextView backedCountTextView;
-  protected @Bind(R.id.backed_text_view) TextView backedTextView;
-  protected @Bind(R.id.created_count_text_view) TextView createdCountTextView;
-  protected @Bind(R.id.created_text_view) TextView createdTextView;
-  protected @Bind(R.id.divider_view) View dividerView;
-  protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
-  protected @Bind(R.id.user_name_text_view) TextView userNameTextView;
+  protected @BindView(R.id.avatar_image_view) ImageView avatarImageView;
+  protected @BindView(R.id.backed_count_text_view) TextView backedCountTextView;
+  protected @BindView(R.id.backed_text_view) TextView backedTextView;
+  protected @BindView(R.id.created_count_text_view) TextView createdCountTextView;
+  protected @BindView(R.id.created_text_view) TextView createdTextView;
+  protected @BindView(R.id.divider_view) View dividerView;
+  protected @BindView(R.id.recycler_view) RecyclerView recyclerView;
+  protected @BindView(R.id.user_name_text_view) TextView userNameTextView;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {

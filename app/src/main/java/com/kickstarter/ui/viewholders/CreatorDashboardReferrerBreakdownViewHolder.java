@@ -19,7 +19,7 @@ import com.kickstarter.viewmodels.CreatorDashboardReferrerBreakdownHolderViewMod
 
 import java.math.RoundingMode;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -28,21 +28,21 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   private final CreatorDashboardReferrerBreakdownHolderViewModel.ViewModel viewModel;
 
-  protected @Bind(R.id.average_pledge_amount_text_view) TextView averagePledgeAmountTextView;
-  protected @Bind(R.id.amount_pledged_via_kickstarter_text_view) TextView amountPledgedViaInternalTextView;
-  protected @Bind(R.id.amount_pledged_via_external_text_view) TextView amountPledgedViaExternalTextView;
-  protected @Bind(R.id.amount_pledged_via_custom_text_view) TextView amountPledgedViaCustomTextView;
-  protected @Bind(R.id.percent_via_custom_circle_text_view) ImageView percentCustomCircleTextView;
-  protected @Bind(R.id.percent_via_custom_text_view) TextView percentCustomTextView;
-  protected @Bind(R.id.percent_via_external_text_view) TextView percentExternalTextView;
-  protected @Bind(R.id.percent_via_external_circle_text_view) ImageView percentExternalCircleTextView;
-  protected @Bind(R.id.percent_via_kickstarter_text_view) TextView percentInternalTextView;
-  protected @Bind(R.id.percent_via_kickstarter_circle_text_view) ImageView percentInternalCircleTextView;
-  protected @Bind(R.id.pledged_via_custom_layout) LinearLayout pledgedViaCustomLayout;
-  protected @Bind(R.id.pledged_via_external_layout) LinearLayout pledgedViaExternalLayout;
-  protected @Bind(R.id.pledged_via_kickstarter_layout) LinearLayout pledgedViaInternalLayout;
-  protected @Bind(R.id.referrer_breakdown_chart_layout) LinearLayout referrerBreakdownLayout;
-  protected @Bind(R.id.referrer_breakdown_view) ReferrerBreakdownView referrerBreakdownView;
+  protected @BindView(R.id.average_pledge_amount_text_view) TextView averagePledgeAmountTextView;
+  protected @BindView(R.id.amount_pledged_via_kickstarter_text_view) TextView amountPledgedViaInternalTextView;
+  protected @BindView(R.id.amount_pledged_via_external_text_view) TextView amountPledgedViaExternalTextView;
+  protected @BindView(R.id.amount_pledged_via_custom_text_view) TextView amountPledgedViaCustomTextView;
+  protected @BindView(R.id.percent_via_custom_circle_text_view) ImageView percentCustomCircleTextView;
+  protected @BindView(R.id.percent_via_custom_text_view) TextView percentCustomTextView;
+  protected @BindView(R.id.percent_via_external_text_view) TextView percentExternalTextView;
+  protected @BindView(R.id.percent_via_external_circle_text_view) ImageView percentExternalCircleTextView;
+  protected @BindView(R.id.percent_via_kickstarter_text_view) TextView percentInternalTextView;
+  protected @BindView(R.id.percent_via_kickstarter_circle_text_view) ImageView percentInternalCircleTextView;
+  protected @BindView(R.id.pledged_via_custom_layout) LinearLayout pledgedViaCustomLayout;
+  protected @BindView(R.id.pledged_via_external_layout) LinearLayout pledgedViaExternalLayout;
+  protected @BindView(R.id.pledged_via_kickstarter_layout) LinearLayout pledgedViaInternalLayout;
+  protected @BindView(R.id.referrer_breakdown_chart_layout) LinearLayout referrerBreakdownLayout;
+  protected @BindView(R.id.referrer_breakdown_view) ReferrerBreakdownView referrerBreakdownView;
 
   private KSCurrency ksCurrency;
 

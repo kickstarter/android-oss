@@ -19,7 +19,7 @@ import com.kickstarter.viewmodels.SurveyResponseViewModel;
 
 import java.util.Arrays;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import okhttp3.Request;
@@ -30,8 +30,8 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel.ViewModel> implements KSWebViewClient.Delegate {
   private AlertDialog confirmationDialog;
 
-  protected @Bind(R.id.survey_response_web_view) KSWebView ksWebView;
-  protected @Bind(R.id.survey_response_loading_indicator_view) View loadingIndicatorView;
+  protected @BindView(R.id.survey_response_web_view) KSWebView ksWebView;
+  protected @BindView(R.id.survey_response_loading_indicator_view) View loadingIndicatorView;
 
   protected @BindString(R.string.general_alert_buttons_ok) String okString;
   protected @BindString(R.string.Got_it_your_survey_response_has_been_submitted) String surveyResponseSubmittedString;

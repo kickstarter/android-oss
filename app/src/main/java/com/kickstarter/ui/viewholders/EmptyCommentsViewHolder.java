@@ -11,7 +11,7 @@ import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -21,8 +21,8 @@ public final class EmptyCommentsViewHolder extends KSViewHolder {
   private Project project;
   private User user;
   private final Delegate delegate;
-  protected @Bind(R.id.comments_login_button) Button commentsLoginButton;
-  protected @Bind(R.id.no_comments_message) TextView noCommentsMessageTextView;
+  protected @BindView(R.id.comments_login_button) Button commentsLoginButton;
+  protected @BindView(R.id.no_comments_message) TextView noCommentsMessageTextView;
 
   public interface Delegate {
     void emptyCommentsLoginClicked(EmptyCommentsViewHolder viewHolder);

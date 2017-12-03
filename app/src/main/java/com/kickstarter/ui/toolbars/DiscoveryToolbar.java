@@ -16,16 +16,16 @@ import com.kickstarter.ui.activities.CreatorDashboardActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.SearchActivity;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class DiscoveryToolbar extends KSToolbar {
-  @Bind(R.id.activity_feed_button) TextView activityFeedButton;
-  @Bind(R.id.creator_dashboard_button) TextView creatorDashboardButton;
-  @Bind(R.id.filter_text_view) TextView filterTextView;
-  @Bind(R.id.menu_button) TextView menuButton;
-  @Bind(R.id.search_button) TextView searchButton;
+  @BindView(R.id.activity_feed_button) TextView activityFeedButton;
+  @BindView(R.id.creator_dashboard_button) TextView creatorDashboardButton;
+  @BindView(R.id.filter_text_view) TextView filterTextView;
+  @BindView(R.id.menu_button) TextView menuButton;
+  @BindView(R.id.search_button) TextView searchButton;
 
   private KSString ksString;
 

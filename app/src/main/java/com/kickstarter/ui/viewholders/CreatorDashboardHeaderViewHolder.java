@@ -24,7 +24,7 @@ import com.kickstarter.viewmodels.CreatorDashboardHeaderHolderViewModel;
 
 import java.math.RoundingMode;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,15 +35,15 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   private final CreatorDashboardHeaderHolderViewModel.ViewModel viewModel;
 
-  protected @Bind(R.id.creator_dashboard_amount_raised) TextView amountRaisedTextView;
-  protected @Bind(R.id.creator_dashboard_backer_count) TextView backerCountTextView;
-  protected @Bind(R.id.creator_dashboard_funding_text) TextView fundingTextTextView;
-  protected @Bind(R.id.creator_dashboard_messages_button) IconButton messagesButton;
-  protected @Bind(R.id.creator_dashboard_percent) TextView percentTextView;
-  protected @Bind(R.id.creator_dashboard_project_blurb) TextView projectBlurbTextView;
-  protected @Bind(R.id.creator_dashboard_project_name) TextView projectNameTextView;
-  protected @Bind(R.id.creator_dashboard_time_remaining) TextView timeRemainingTextView;
-  protected @Bind(R.id.creator_dashboard_time_remaining_text) TextView timeRemainingTextTextView;
+  protected @BindView(R.id.creator_dashboard_amount_raised) TextView amountRaisedTextView;
+  protected @BindView(R.id.creator_dashboard_backer_count) TextView backerCountTextView;
+  protected @BindView(R.id.creator_dashboard_funding_text) TextView fundingTextTextView;
+  protected @BindView(R.id.creator_dashboard_messages_button) IconButton messagesButton;
+  protected @BindView(R.id.creator_dashboard_percent) TextView percentTextView;
+  protected @BindView(R.id.creator_dashboard_project_blurb) TextView projectBlurbTextView;
+  protected @BindView(R.id.creator_dashboard_project_name) TextView projectNameTextView;
+  protected @BindView(R.id.creator_dashboard_time_remaining) TextView timeRemainingTextView;
+  protected @BindView(R.id.creator_dashboard_time_remaining_text) TextView timeRemainingTextTextView;
 
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 

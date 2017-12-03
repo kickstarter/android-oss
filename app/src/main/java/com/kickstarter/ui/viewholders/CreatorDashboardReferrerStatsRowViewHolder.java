@@ -15,7 +15,7 @@ import com.kickstarter.viewmodels.CreatorDashboardReferrerStatsRowHolderViewMode
 
 import java.math.RoundingMode;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -24,10 +24,10 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHolder {
 
   private final CreatorDashboardReferrerStatsRowHolderViewModel.ViewModel viewModel;
-  protected @Bind(R.id.amount_pledged_for_referrer_text_view) TextView amountPledgedForReferrerTextView;
-  protected @Bind(R.id.percentage_pledged_for_referrer_text_view) TextView percentagePledgedForReferrerTextView;
-  protected @Bind(R.id.referrer_source_text_view) TextView referrerSourceTextView;
-  protected @Bind(R.id.referrer_backer_count_text_view) TextView referrerBackerCountTextView;
+  protected @BindView(R.id.amount_pledged_for_referrer_text_view) TextView amountPledgedForReferrerTextView;
+  protected @BindView(R.id.percentage_pledged_for_referrer_text_view) TextView percentagePledgedForReferrerTextView;
+  protected @BindView(R.id.referrer_source_text_view) TextView referrerSourceTextView;
+  protected @BindView(R.id.referrer_backer_count_text_view) TextView referrerBackerCountTextView;
 
   private KSCurrency ksCurrency;
 

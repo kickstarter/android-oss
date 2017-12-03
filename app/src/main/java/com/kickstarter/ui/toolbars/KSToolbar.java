@@ -13,14 +13,14 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Environment;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
 public class KSToolbar extends Toolbar {
-  protected @Nullable @Bind(R.id.title_text_view) TextView titleTextView;
+  protected @Nullable @BindView(R.id.title_text_view) TextView titleTextView;
   private final CompositeSubscription subscriptions = new CompositeSubscription();
 
   public KSToolbar(final @NonNull Context context) {

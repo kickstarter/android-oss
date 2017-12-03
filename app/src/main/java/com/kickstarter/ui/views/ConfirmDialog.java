@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -23,9 +23,9 @@ public class ConfirmDialog extends AppCompatDialog {
   private final @NonNull String message;
   private final @Nullable String buttonText;
 
-  protected @Bind(R.id.title_text_view) TextView titleTextView;
-  protected @Bind(R.id.message_text_view) TextView messageTextView;
-  protected @Bind(R.id.ok_button) Button okButton;
+  protected @BindView(R.id.title_text_view) TextView titleTextView;
+  protected @BindView(R.id.message_text_view) TextView messageTextView;
+  protected @BindView(R.id.ok_button) Button okButton;
 
   protected @BindString(R.string.general_alert_buttons_ok) String okString;
 

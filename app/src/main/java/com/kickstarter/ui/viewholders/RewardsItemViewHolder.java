@@ -10,7 +10,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.RewardsItem;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
@@ -18,7 +18,7 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public final class RewardsItemViewHolder extends KSViewHolder {
   private final KSString ksString;
 
-  protected @Bind(R.id.rewards_item_title) TextView titleTextView;
+  protected @BindView(R.id.rewards_item_title) TextView titleTextView;
 
   public RewardsItemViewHolder(final @NonNull View view) {
     super(view);

@@ -23,7 +23,7 @@ import com.kickstarter.viewmodels.LoginToutViewModel;
 
 import java.util.Arrays;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,12 +35,12 @@ import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
 @RequiresActivityViewModel(LoginToutViewModel.ViewModel.class)
 public final class LoginToutActivity extends BaseActivity<LoginToutViewModel.ViewModel> {
-  @Bind(R.id.disclaimer_text_view) TextView disclaimerTextView;
-  @Bind(R.id.login_button) Button loginButton;
-  @Bind(R.id.facebook_login_button) Button facebookButton;
-  @Bind(R.id.sign_up_button) Button signupButton;
-  @Bind(R.id.help_button) TextView helpButton;
-  @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
+  @BindView(R.id.disclaimer_text_view) TextView disclaimerTextView;
+  @BindView(R.id.login_button) Button loginButton;
+  @BindView(R.id.facebook_login_button) Button facebookButton;
+  @BindView(R.id.sign_up_button) Button signupButton;
+  @BindView(R.id.help_button) TextView helpButton;
+  @BindView(R.id.login_toolbar) LoginToolbar loginToolbar;
 
   @BindString(R.string.login_tout_navbar_title) String loginOrSignUpString;
   @BindString(R.string.login_errors_title) String loginErrorTitleString;

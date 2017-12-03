@@ -33,7 +33,7 @@ import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import com.kickstarter.viewmodels.CommentsViewModel;
 import com.trello.rxlifecycle.ActivityEvent;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -53,9 +53,9 @@ public final class CommentsActivity extends BaseActivity<CommentsViewModel.ViewM
 
   private @NonNull PublishSubject<AlertDialog> alertDialog = PublishSubject.create();
 
-  protected @Bind(R.id.comment_button) TextView commentButtonTextView;
-  protected @Bind(R.id.comments_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-  protected @Bind(R.id.comments_recycler_view) RecyclerView recyclerView;
+  protected @BindView(R.id.comment_button) TextView commentButtonTextView;
+  protected @BindView(R.id.comments_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+  protected @BindView(R.id.comments_recycler_view) RecyclerView recyclerView;
 
   protected @BindString(R.string.social_error_could_not_post_try_again) String postCommentErrorString;
   protected @BindString(R.string.project_comments_posted) String commentPostedString;

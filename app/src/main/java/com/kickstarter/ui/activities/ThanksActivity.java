@@ -24,7 +24,7 @@ import com.kickstarter.viewmodels.ThanksViewModel;
 
 import java.util.concurrent.TimeUnit;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,7 +35,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 public final class ThanksActivity extends BaseActivity<ThanksViewModel.ViewModel> {
   private KSString ksString;
 
-  protected @Bind(R.id.thanks_recycler_view) RecyclerView recyclerView;
+  protected @BindView(R.id.thanks_recycler_view) RecyclerView recyclerView;
 
   protected @BindString(R.string.project_checkout_games_alert_want_the_coolest_games_delivered_to_your_inbox) String gamesAlertMessage;
   protected @BindString(R.string.project_checkout_games_alert_no_thanks) String gamesAlertNo;

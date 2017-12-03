@@ -25,7 +25,7 @@ import com.kickstarter.ui.activities.CheckoutActivity;
 import com.kickstarter.ui.adapters.RewardsItemAdapter;
 import com.kickstarter.viewmodels.RewardViewModel;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
@@ -38,22 +38,22 @@ public final class RewardViewHolder extends KSViewHolder {
   private final RewardViewModel.ViewModel viewModel;
   private final KSString ksString;
 
-  protected @Bind(R.id.reward_all_gone_text_view) TextView allGoneTextView;
-  protected @Bind(R.id.reward_backers_text_view) TextView backersTextView;
-  protected @Bind(R.id.reward_description_text_view) TextView descriptionTextView;
-  protected @Bind(R.id.reward_estimated_delivery_date_section) View estimatedDeliveryDateSection;
-  protected @Bind(R.id.reward_estimated_delivery_date_text_view) TextView estimatedDeliveryDateTextView;
-  protected @Bind(R.id.reward_limit_and_remaining_text_view) TextView limitAndRemainingTextView;
-  protected @Bind(R.id.reward_minimum_text_view) TextView minimumTextView;
-  protected @Bind(R.id.reward_rewards_item_recycler_view) RecyclerView rewardsItemRecyclerView;
-  protected @Bind(R.id.reward_rewards_item_section) View rewardsItemSection;
-  protected @Bind(R.id.reward_selected_header) View selectedHeader;
-  protected @Bind(R.id.reward_shipping_section) View shippingSection;
-  protected @Bind(R.id.reward_shipping_summary_text_view) TextView shippingSummaryTextView;
-  protected @Bind(R.id.reward_title_text_view) TextView titleTextView;
-  protected @Bind(R.id.reward_view) CardView rewardView;
-  protected @Bind(R.id.reward_usd_conversion_text_view) TextView usdConversionTextView;
-  protected @Bind(R.id.reward_white_overlay_view) View whiteOverlayView;
+  protected @BindView(R.id.reward_all_gone_text_view) TextView allGoneTextView;
+  protected @BindView(R.id.reward_backers_text_view) TextView backersTextView;
+  protected @BindView(R.id.reward_description_text_view) TextView descriptionTextView;
+  protected @BindView(R.id.reward_estimated_delivery_date_section) View estimatedDeliveryDateSection;
+  protected @BindView(R.id.reward_estimated_delivery_date_text_view) TextView estimatedDeliveryDateTextView;
+  protected @BindView(R.id.reward_limit_and_remaining_text_view) TextView limitAndRemainingTextView;
+  protected @BindView(R.id.reward_minimum_text_view) TextView minimumTextView;
+  protected @BindView(R.id.reward_rewards_item_recycler_view) RecyclerView rewardsItemRecyclerView;
+  protected @BindView(R.id.reward_rewards_item_section) View rewardsItemSection;
+  protected @BindView(R.id.reward_selected_header) View selectedHeader;
+  protected @BindView(R.id.reward_shipping_section) View shippingSection;
+  protected @BindView(R.id.reward_shipping_summary_text_view) TextView shippingSummaryTextView;
+  protected @BindView(R.id.reward_title_text_view) TextView titleTextView;
+  protected @BindView(R.id.reward_view) CardView rewardView;
+  protected @BindView(R.id.reward_usd_conversion_text_view) TextView usdConversionTextView;
+  protected @BindView(R.id.reward_white_overlay_view) View whiteOverlayView;
 
   protected @BindString(R.string.rewards_info_limited_rewards_remaining_left_of_reward_limit) String limitedRewardsRemainingString;
   protected @BindString(R.string.rewards_title_pledge_reward_currency_or_more) String pledgeRewardCurrencyOrMoreString;

@@ -12,15 +12,15 @@ import com.kickstarter.R;
 import com.kickstarter.ui.activities.SearchActivity;
 import com.kickstarter.ui.views.IconButton;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 public final class SearchToolbar extends KSToolbar {
-  public @Bind(R.id.clear_button) IconButton clearButton;
-  public @Bind(R.id.search_edit_text) EditText searchEditText;
+  public @BindView(R.id.clear_button) IconButton clearButton;
+  public @BindView(R.id.search_edit_text) EditText searchEditText;
 
   public SearchToolbar(final @NonNull Context context) {
     super(context);

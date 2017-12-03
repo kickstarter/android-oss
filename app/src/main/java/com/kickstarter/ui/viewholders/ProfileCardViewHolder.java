@@ -16,7 +16,7 @@ import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -25,12 +25,12 @@ public final class ProfileCardViewHolder extends KSViewHolder {
   private final Delegate delegate;
   private Project project;
 
-  protected @Bind(R.id.funding_unsuccessful_text_view) TextView fundingUnsuccessfulTextView;
-  protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
-  protected @Bind(R.id.profile_card_image) ImageView profileCardImageView;
-  protected @Bind(R.id.profile_card_name) TextView profileCardNameTextView;
-  protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
-  protected @Bind(R.id.successfully_funded_text_view) TextView successfullyFundedTextView;
+  protected @BindView(R.id.funding_unsuccessful_text_view) TextView fundingUnsuccessfulTextView;
+  protected @BindView(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
+  protected @BindView(R.id.profile_card_image) ImageView profileCardImageView;
+  protected @BindView(R.id.profile_card_name) TextView profileCardNameTextView;
+  protected @BindView(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
+  protected @BindView(R.id.successfully_funded_text_view) TextView successfullyFundedTextView;
 
   protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
 

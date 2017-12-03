@@ -19,7 +19,7 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
 
@@ -31,12 +31,12 @@ public final class CommentViewHolder extends KSViewHolder {
   private final KSString ksString;
   private Project project;
 
-  public @Bind(R.id.avatar) ImageView avatarImageView;
-  public @Bind(R.id.creator_label) TextView creatorLabelTextView;
-  public @Bind(R.id.user_label) TextView userLabelTextView;
-  public @Bind(R.id.name) TextView nameTextView;
-  public @Bind(R.id.post_date) TextView postDateTextView;
-  public @Bind(R.id.comment_body) TextView commentBodyTextView;
+  public @BindView(R.id.avatar) ImageView avatarImageView;
+  public @BindView(R.id.creator_label) TextView creatorLabelTextView;
+  public @BindView(R.id.user_label) TextView userLabelTextView;
+  public @BindView(R.id.name) TextView nameTextView;
+  public @BindView(R.id.post_date) TextView postDateTextView;
+  public @BindView(R.id.comment_body) TextView commentBodyTextView;
 
   public @BindColor(R.color.text_secondary) int textSecondaryColor;
   public @BindColor(R.color.text_primary) int textPrimaryColor;

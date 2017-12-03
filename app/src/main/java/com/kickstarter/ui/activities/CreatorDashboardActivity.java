@@ -21,7 +21,7 @@ import com.kickstarter.viewmodels.CreatorDashboardViewModel;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -32,7 +32,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
   private CreatorDashboardBottomSheetAdapter bottomSheetAdapter;
   private BottomSheetBehavior bottomSheetBehavior;
 
-  protected @Bind(R.id.creator_dashboard_bottom_sheet_recycler_view) RecyclerView bottomSheetRecyclerView;
+  protected @BindView(R.id.creator_dashboard_bottom_sheet_recycler_view) RecyclerView bottomSheetRecyclerView;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {

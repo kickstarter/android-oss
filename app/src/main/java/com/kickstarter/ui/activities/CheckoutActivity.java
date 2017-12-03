@@ -54,7 +54,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -68,22 +68,22 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> implements KSWebViewClient.Delegate {
   private @Nullable Project project;
 
-  protected @Bind(R.id.checkout_toolbar) KSToolbar checkoutToolbar;
-  protected @Bind(R.id.web_view) KSWebView webView;
-  protected @Bind(R.id.checkout_loading_indicator) View loadingIndicatorView;
-  protected @Bind(R.id.confirmation_group) View confirmationGroup;
-  protected @Bind(R.id.pledge_disclaimer) TextView pledgeDisclaimerTextView;
-  protected @Bind(R.id.terms_and_privacy) TextView termsAndPrivacyTextView;
-  protected @Bind(R.id.backer_101) TextView backer101TextView;
+  protected @BindView(R.id.checkout_toolbar) KSToolbar checkoutToolbar;
+  protected @BindView(R.id.web_view) KSWebView webView;
+  protected @BindView(R.id.checkout_loading_indicator) View loadingIndicatorView;
+  protected @BindView(R.id.confirmation_group) View confirmationGroup;
+  protected @BindView(R.id.pledge_disclaimer) TextView pledgeDisclaimerTextView;
+  protected @BindView(R.id.terms_and_privacy) TextView termsAndPrivacyTextView;
+  protected @BindView(R.id.backer_101) TextView backer101TextView;
 
   // Android pay summary bindings
-  protected @Bind(R.id.android_pay_instrument_description) TextView androidPayInstrumentDescriptionTextView;
-  protected @Bind(R.id.android_pay_email) TextView androidPayEmailTextView;
+  protected @BindView(R.id.android_pay_instrument_description) TextView androidPayInstrumentDescriptionTextView;
+  protected @BindView(R.id.android_pay_email) TextView androidPayEmailTextView;
 
   // Project context view bindings
-  protected @Bind(R.id.project_context_image_view) ImageView contextPhotoImageView;
-  protected @Bind(R.id.project_context_creator_name) TextView creatorNameTextView;
-  protected @Bind(R.id.project_context_project_name) TextView projectNameTextView;
+  protected @BindView(R.id.project_context_image_view) ImageView contextPhotoImageView;
+  protected @BindView(R.id.project_context_creator_name) TextView creatorNameTextView;
+  protected @BindView(R.id.project_context_project_name) TextView projectNameTextView;
 
   protected @BindString(R.string.profile_settings_about_terms) String termsOfUseString;
   protected @BindString(R.string.profile_settings_about_privacy) String privacyPolicyString;

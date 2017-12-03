@@ -28,7 +28,7 @@ import com.kickstarter.ui.adapters.RewardsItemAdapter;
 import com.kickstarter.viewmodels.BackingViewModel;
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -38,24 +38,24 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(BackingViewModel.ViewModel.class)
 public final class BackingActivity extends BaseActivity<BackingViewModel.ViewModel> {
-  protected @Bind(R.id.backing_avatar_image_view) ImageView avatarImageView;
-  protected @Bind(R.id.backing_backer_name) TextView backerNameTextView;
-  protected @Bind(R.id.backing_backer_number) TextView backerNumberTextView;
-  protected @Bind(R.id.backing_amount_and_date_text_view) TextView backingAmountAndDateTextView;
-  protected @Bind(R.id.backing_status) TextView backingStatusTextView;
-  protected @Bind(R.id.backing_estimated_delivery_section) View pledgeEstimatedDeliverySection;
-  protected @Bind(R.id.project_context_creator_name) TextView projectContextCreatorNameTextView;
-  protected @Bind(R.id.project_context_image_view) ImageView projectContextPhotoImageView;
-  protected @Bind(R.id.project_context_project_name) TextView projectContextProjectNameTextView;
-  protected @Bind(R.id.project_context_view) View projectContextView;
-  protected @Bind(R.id.backing_estimated_delivery) TextView pledgeEstimatedDeliveryTextView;
-  protected @Bind(R.id.backing_reward_minimum_and_description) TextView rewardMinimumAndDescriptionTextView;
-  protected @Bind(R.id.backing_rewards_item_recycler_view) RecyclerView rewardsItemRecyclerView;
-  protected @Bind(R.id.backing_rewards_item_section) View rewardsItemSection;
-  protected @Bind(R.id.backing_shipping_amount) TextView shippingAmountTextView;
-  protected @Bind(R.id.backing_shipping_location) TextView shippingLocationTextView;
-  protected @Bind(R.id.backing_shipping_section) View shippingSection;
-  protected @Bind(R.id.backing_view_messages_button) Button viewMessagesButton;
+  protected @BindView(R.id.backing_avatar_image_view) ImageView avatarImageView;
+  protected @BindView(R.id.backing_backer_name) TextView backerNameTextView;
+  protected @BindView(R.id.backing_backer_number) TextView backerNumberTextView;
+  protected @BindView(R.id.backing_amount_and_date_text_view) TextView backingAmountAndDateTextView;
+  protected @BindView(R.id.backing_status) TextView backingStatusTextView;
+  protected @BindView(R.id.backing_estimated_delivery_section) View pledgeEstimatedDeliverySection;
+  protected @BindView(R.id.project_context_creator_name) TextView projectContextCreatorNameTextView;
+  protected @BindView(R.id.project_context_image_view) ImageView projectContextPhotoImageView;
+  protected @BindView(R.id.project_context_project_name) TextView projectContextProjectNameTextView;
+  protected @BindView(R.id.project_context_view) View projectContextView;
+  protected @BindView(R.id.backing_estimated_delivery) TextView pledgeEstimatedDeliveryTextView;
+  protected @BindView(R.id.backing_reward_minimum_and_description) TextView rewardMinimumAndDescriptionTextView;
+  protected @BindView(R.id.backing_rewards_item_recycler_view) RecyclerView rewardsItemRecyclerView;
+  protected @BindView(R.id.backing_rewards_item_section) View rewardsItemSection;
+  protected @BindView(R.id.backing_shipping_amount) TextView shippingAmountTextView;
+  protected @BindView(R.id.backing_shipping_location) TextView shippingLocationTextView;
+  protected @BindView(R.id.backing_shipping_section) View shippingSection;
+  protected @BindView(R.id.backing_view_messages_button) Button viewMessagesButton;
 
   protected @BindString(R.string.backer_modal_backer_number) String backerNumberString;
   protected @BindString(R.string.backer_modal_status_backing_status) String backingStatusString;

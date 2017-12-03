@@ -18,7 +18,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -27,11 +27,11 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
   private final @Nullable Delegate delegate;
   private final KSString ksString;
 
-  protected @Bind(R.id.avatar) ImageView avatarImageView;
-  protected @Bind(R.id.creator_name) TextView creatorNameTextView;
-  protected @Bind(R.id.project_name) TextView projectNameTextView;
-  protected @Bind(R.id.project_photo) ImageView projectPhotoImageView;
-  protected @Bind(R.id.title) TextView titleTextView;
+  protected @BindView(R.id.avatar) ImageView avatarImageView;
+  protected @BindView(R.id.creator_name) TextView creatorNameTextView;
+  protected @BindView(R.id.project_name) TextView projectNameTextView;
+  protected @BindView(R.id.project_photo) ImageView projectPhotoImageView;
+  protected @BindView(R.id.title) TextView titleTextView;
 
   protected @BindString(R.string.project_creator_by_creator) String projectByCreatorString;
 

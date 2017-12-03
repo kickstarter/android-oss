@@ -27,7 +27,7 @@ import com.kickstarter.viewmodels.UpdateViewModel;
 
 import java.util.Arrays;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -38,9 +38,9 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(UpdateViewModel.ViewModel.class)
 public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> implements KSWebViewClient.Delegate {
-  protected @Bind(R.id.update_web_view) KSWebView ksWebView;
-  protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
-  protected @Bind(R.id.update_toolbar) KSToolbar toolbar;
+  protected @BindView(R.id.update_web_view) KSWebView ksWebView;
+  protected @BindView(R.id.loading_indicator_view) View loadingIndicatorView;
+  protected @BindView(R.id.update_toolbar) KSToolbar toolbar;
 
   protected @BindString(R.string.social_update_number) String updateNumberString;
   protected @BindString(R.string.activity_project_update_update_count) String shareUpdateCountString;

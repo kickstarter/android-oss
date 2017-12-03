@@ -11,16 +11,16 @@ import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.views.IconButton;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class ParentFilterViewHolder extends KSViewHolder {
-  protected @Bind(R.id.filter_text_view) TextView filterTextView;
-  protected @Bind(R.id.expand_button) IconButton expandButton;
-  protected @Bind(R.id.collapse_button) IconButton collapseButton;
+  protected @BindView(R.id.filter_text_view) TextView filterTextView;
+  protected @BindView(R.id.expand_button) IconButton expandButton;
+  protected @BindView(R.id.collapse_button) IconButton collapseButton;
   private NavigationDrawerData.Section.Row item;
   private Delegate delegate;
 

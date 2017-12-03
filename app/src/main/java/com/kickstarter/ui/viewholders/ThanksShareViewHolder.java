@@ -21,7 +21,7 @@ import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.ThanksShareHolderViewModel;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,7 +34,7 @@ public final class ThanksShareViewHolder extends KSViewHolder {
   private KSString ksString;
   private ShareDialog shareDialog;
 
-  protected @Bind(R.id.backed_project) TextView backedProjectTextView;
+  protected @BindView(R.id.backed_project) TextView backedProjectTextView;
 
   protected @BindString(R.string.project_checkout_share_twitter_I_just_backed_project_on_kickstarter) String iJustBackedString;
   protected @BindString(R.string.project_accessibility_button_share_label) String shareThisProjectString;

@@ -9,12 +9,12 @@ import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.ObjectUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SurveyHeaderViewHolder extends KSViewHolder {
   private final KSString ksString;
-  @Bind(R.id.activity_survey_header_text_view) TextView headerTextView;
+  @BindView(R.id.activity_survey_header_text_view) TextView headerTextView;
 
   public SurveyHeaderViewHolder(final @NonNull View view) {
     super(view);

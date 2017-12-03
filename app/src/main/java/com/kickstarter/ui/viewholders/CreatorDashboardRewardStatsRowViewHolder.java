@@ -14,7 +14,7 @@ import com.kickstarter.viewmodels.DashboardRewardStatsRowHolderViewModel;
 
 import java.math.RoundingMode;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -23,10 +23,10 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
 
   private final DashboardRewardStatsRowHolderViewModel.ViewModel viewModel;
-  protected @Bind(R.id.reward_minimum_text_view) TextView rewardMinimumTextView;
-  protected @Bind(R.id.amount_pledged_for_reward_text_view) TextView amountForRewardPledgedTextView;
-  protected @Bind(R.id.percentage_pledged_for_text_view) TextView percentagePledgedForRewardTextView;
-  protected @Bind(R.id.reward_backer_count_text_view) TextView rewardBackerCountTextView;
+  protected @BindView(R.id.reward_minimum_text_view) TextView rewardMinimumTextView;
+  protected @BindView(R.id.amount_pledged_for_reward_text_view) TextView amountForRewardPledgedTextView;
+  protected @BindView(R.id.percentage_pledged_for_text_view) TextView percentagePledgedForRewardTextView;
+  protected @BindView(R.id.reward_backer_count_text_view) TextView rewardBackerCountTextView;
 
   private KSCurrency ksCurrency;
 

@@ -7,12 +7,12 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
 public class PopularSearchTitleViewHolder extends KSViewHolder {
-  @Bind(R.id.heading) TextView termTextView;
+  @BindView(R.id.heading) TextView termTextView;
   @BindString(R.string.Popular_Projects) String popularProjectsString;
 
   public PopularSearchTitleViewHolder(final @NonNull View view) {

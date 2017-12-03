@@ -14,14 +14,14 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class ProjectStateChangedViewHolder extends ActivityListViewHolder {
-  protected @Bind(R.id.title) TextView titleTextView;
-  protected @Bind(R.id.project_photo) ImageView projectPhotoImageView;
+  protected @BindView(R.id.title) TextView titleTextView;
+  protected @BindView(R.id.project_photo) ImageView projectPhotoImageView;
   protected @BindString(R.string.activity_project_state_change_project_was_not_successfully_funded) String projectNotSuccessfullyFundedString;
   protected @BindString(R.string.activity_project_state_change_project_was_cancelled_by_creator) String projectCanceledByCreatorString;
   protected @BindString(R.string.activity_project_state_change_project_was_suspended) String projectSuspendedString;

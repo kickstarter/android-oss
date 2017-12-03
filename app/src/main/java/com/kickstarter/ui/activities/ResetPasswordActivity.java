@@ -16,7 +16,7 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.ResetPasswordViewModel;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -27,9 +27,9 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(ResetPasswordViewModel.class)
 public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewModel> {
-  @Bind (R.id.email) EditText email;
-  @Bind (R.id.reset_password_button) Button resetPasswordButton;
-  @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
+  @BindView (R.id.email) EditText email;
+  @BindView (R.id.reset_password_button) Button resetPasswordButton;
+  @BindView(R.id.login_toolbar) LoginToolbar loginToolbar;
 
   @BindString(R.string.forgot_password_title) String forgotPasswordString;
   @BindString(R.string.forgot_password_error) String errorMessageString;

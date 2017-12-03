@@ -17,7 +17,7 @@ import com.kickstarter.libs.utils.ViewUtils;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -25,9 +25,9 @@ public class AppRatingDialog extends AppCompatDialog {
   protected @Inject @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference;
   protected @Inject Koala koala;
 
-  protected @Bind(R.id.no_thanks_button) Button noThanksButton;
-  protected @Bind(R.id.remind_button) Button remindButton;
-  protected @Bind(R.id.rate_button) Button rateButton;
+  protected @BindView(R.id.no_thanks_button) Button noThanksButton;
+  protected @BindView(R.id.remind_button) Button remindButton;
+  protected @BindView(R.id.rate_button) Button rateButton;
 
   public AppRatingDialog(final @NonNull Context context) {
     super(context);

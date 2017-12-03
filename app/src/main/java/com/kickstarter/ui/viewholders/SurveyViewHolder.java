@@ -18,7 +18,7 @@ import com.kickstarter.ui.activities.SurveyResponseActivity;
 import com.kickstarter.viewmodels.SurveyHolderViewModel;
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
@@ -29,9 +29,9 @@ public final class SurveyViewHolder extends KSViewHolder {
   private final KSString ksString;
   private final SurveyHolderViewModel.ViewModel viewModel;
 
-  @Bind(R.id.survey_avatar_image) ImageView creatorAvatarImageView;
-  @Bind(R.id.survey_text) TextView surveyTextView;
-  @Bind(R.id.survey_title) TextView surveyTitleTextView;
+  @BindView(R.id.survey_avatar_image) ImageView creatorAvatarImageView;
+  @BindView(R.id.survey_text) TextView surveyTextView;
+  @BindView(R.id.survey_title) TextView surveyTitleTextView;
 
   @BindString(R.string.Creator_name_needs_some_information_to_deliver_your_reward_for_project_name) String surveyDescriptionString;
 

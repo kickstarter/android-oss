@@ -32,7 +32,7 @@ import com.kickstarter.ui.adapters.MessagesAdapter;
 import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.MessagesViewModel;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindDimen;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -47,19 +47,19 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   private KSString ksString;
   private MessagesAdapter adapter;
 
-  protected @Bind(R.id.messages_app_bar_layout) AppBarLayout appBarLayout;
-  protected @Bind(R.id.messages_toolbar_back_button) IconButton backButton;
-  protected @Bind(R.id.backing_amount_text_view) TextView backingAmountTextViewText;
-  protected @Bind(R.id.backing_info_view) View backingInfoView;
-  protected @Bind(R.id.messages_toolbar_close_button) IconButton closeButton;
-  protected @Bind(R.id.messages_creator_name_text_view) TextView creatorNameTextView;
-  protected @Bind(R.id.messages_loading_indicator) View loadingIndicatorView;
-  protected @Bind(R.id.message_edit_text) EditText messageEditText;
-  protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
-  protected @Bind(R.id.messages_project_name_collapsed_text_view) TextView projectNameToolbarTextView;
-  protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
-  protected @Bind(R.id.send_message_button) Button sendMessageButton;
-  protected @Bind(R.id.messages_view_pledge_button) Button viewPledgeButton;
+  protected @BindView(R.id.messages_app_bar_layout) AppBarLayout appBarLayout;
+  protected @BindView(R.id.messages_toolbar_back_button) IconButton backButton;
+  protected @BindView(R.id.backing_amount_text_view) TextView backingAmountTextViewText;
+  protected @BindView(R.id.backing_info_view) View backingInfoView;
+  protected @BindView(R.id.messages_toolbar_close_button) IconButton closeButton;
+  protected @BindView(R.id.messages_creator_name_text_view) TextView creatorNameTextView;
+  protected @BindView(R.id.messages_loading_indicator) View loadingIndicatorView;
+  protected @BindView(R.id.message_edit_text) EditText messageEditText;
+  protected @BindView(R.id.messages_project_name_text_view) TextView projectNameTextView;
+  protected @BindView(R.id.messages_project_name_collapsed_text_view) TextView projectNameToolbarTextView;
+  protected @BindView(R.id.messages_recycler_view) RecyclerView recyclerView;
+  protected @BindView(R.id.send_message_button) Button sendMessageButton;
+  protected @BindView(R.id.messages_view_pledge_button) Button viewPledgeButton;
 
   protected @BindDimen(R.dimen.message_reply_layout_height) int messageReplyLayoutHeightDimen;
 

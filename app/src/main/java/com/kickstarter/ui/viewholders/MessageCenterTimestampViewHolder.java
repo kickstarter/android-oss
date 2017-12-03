@@ -11,11 +11,11 @@ import com.kickstarter.libs.utils.ObjectUtils;
 
 import org.joda.time.DateTime;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public final class MessageCenterTimestampViewHolder extends KSViewHolder {
-  protected @Bind(R.id.message_center_timestamp_text_view) TextView centerTimestampTextView;
+  protected @BindView(R.id.message_center_timestamp_text_view) TextView centerTimestampTextView;
 
   public MessageCenterTimestampViewHolder(final @NonNull View view) {
     super(view);

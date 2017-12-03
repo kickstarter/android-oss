@@ -14,7 +14,7 @@ import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.viewmodels.ProjectNotificationViewModel;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
@@ -25,8 +25,8 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public final class ProjectNotificationViewHolder extends KSViewHolder {
   private final ProjectNotificationViewModel viewModel;
 
-  protected @Bind(R.id.enabled_switch) SwitchCompat enabledSwitch;
-  protected @Bind(R.id.project_name) TextView projectNameTextView;
+  protected @BindView(R.id.enabled_switch) SwitchCompat enabledSwitch;
+  protected @BindView(R.id.project_name) TextView projectNameTextView;
 
   protected @BindString(R.string.profile_settings_error) String unableToSaveString;
 

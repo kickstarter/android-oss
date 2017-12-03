@@ -8,14 +8,14 @@ import android.widget.Button;
 import com.kickstarter.R;
 import com.kickstarter.libs.utils.BooleanUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class EmptyActivityFeedViewHolder extends KSViewHolder {
   private boolean isLoggedIn;
-  protected @Bind(R.id.discover_projects_button) Button discoverProjectsButton;
-  protected @Bind(R.id.login_button) Button loginButton;
+  protected @BindView(R.id.discover_projects_button) Button discoverProjectsButton;
+  protected @BindView(R.id.login_button) Button loginButton;
 
   private final @Nullable Delegate delegate;
 

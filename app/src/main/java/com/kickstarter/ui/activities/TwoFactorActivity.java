@@ -15,7 +15,7 @@ import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.viewmodels.TwoFactorViewModel;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -27,10 +27,10 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(TwoFactorViewModel.class)
 public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
-  public @Bind(R.id.code) EditText codeEditText;
-  public @Bind(R.id.resend_button) Button resendButton;
-  public @Bind(R.id.login_button) Button loginButton;
-  public @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
+  public @BindView(R.id.code) EditText codeEditText;
+  public @BindView(R.id.resend_button) Button resendButton;
+  public @BindView(R.id.login_button) Button loginButton;
+  public @BindView(R.id.login_toolbar) LoginToolbar loginToolbar;
 
   @BindString(R.string.two_factor_error_message) String codeMismatchString;
   @BindString(R.string.login_errors_unable_to_log_in) String unableToLoginString;

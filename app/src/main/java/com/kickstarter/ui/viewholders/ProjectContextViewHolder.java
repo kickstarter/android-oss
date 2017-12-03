@@ -14,7 +14,7 @@ import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
@@ -24,9 +24,9 @@ public final class ProjectContextViewHolder extends KSViewHolder {
   private final KSString ksString;
   private Project project;
 
-  protected @Bind(R.id.project_context_image_view) ImageView projectContextImageView;
-  protected @Bind(R.id.project_context_project_name) TextView projectNameTextView;
-  protected @Bind(R.id.project_context_creator_name) TextView creatorNameTextView;
+  protected @BindView(R.id.project_context_image_view) ImageView projectContextImageView;
+  protected @BindView(R.id.project_context_project_name) TextView projectNameTextView;
+  protected @BindView(R.id.project_context_creator_name) TextView creatorNameTextView;
   protected @BindString(R.string.project_creator_by_creator) String projectCreatorByCreatorString;
 
   public interface Delegate {

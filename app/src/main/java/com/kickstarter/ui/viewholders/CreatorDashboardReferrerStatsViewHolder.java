@@ -15,7 +15,7 @@ import com.kickstarter.viewmodels.CreatorDashboardReferrerStatsHolderViewModel;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -24,7 +24,7 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public class CreatorDashboardReferrerStatsViewHolder extends KSViewHolder {
 
   private final CreatorDashboardReferrerStatsHolderViewModel.ViewModel viewModel;
-  protected @Bind(R.id.dashboard_referrer_stats_recycler_view) RecyclerView referrerStatsRecyclerView;
+  protected @BindView(R.id.dashboard_referrer_stats_recycler_view) RecyclerView referrerStatsRecyclerView;
 
   public CreatorDashboardReferrerStatsViewHolder(final @NonNull View view) {
     super(view);

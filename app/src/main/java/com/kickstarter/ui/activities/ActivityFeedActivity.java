@@ -28,7 +28,7 @@ import com.kickstarter.viewmodels.ActivityFeedViewModel;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -40,8 +40,8 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
 
-  protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
-  protected @Bind(R.id.activity_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+  protected @BindView(R.id.recycler_view) RecyclerView recyclerView;
+  protected @BindView(R.id.activity_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {

@@ -20,8 +20,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresActivityViewModel(ProjectSocialViewModel.class)
-public final class ProjectSocialActivity extends BaseActivity<ProjectSocialViewModel> implements ProjectSocialAdapter.Delegate {
+@RequiresActivityViewModel(ProjectSocialViewModel.ViewModel.class)
+public final class ProjectSocialActivity extends BaseActivity<ProjectSocialViewModel.ViewModel> implements ProjectSocialAdapter.Delegate {
   protected @Bind(R.id.project_social_recycler_view) RecyclerView recyclerView;
 
   @Override

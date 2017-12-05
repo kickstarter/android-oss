@@ -12,7 +12,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.AndroidPayCapability;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.models.AndroidPayPayload;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.AndroidPayUtils;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -24,6 +23,9 @@ import com.kickstarter.ui.data.ActivityResult;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface CheckoutViewModel {
 
@@ -46,38 +48,38 @@ public interface CheckoutViewModel {
     /** Emits when we should show an Android Pay error. */
     Observable<Integer> androidPayError();
 
-    /** The project associated with the current checkout. */
-    Observable<Project> project();
-
-    /** The title to display to the user. */
-    Observable<String> title();
-
-    /** The URL the web view should load, if its state has been destroyed. */
-    Observable<String> url();
-
-    /** Emits a boolean that determines if the android pay confirmation should be shown or not. */
-    Observable<Boolean> displayAndroidPayConfirmation();
-
-    /** Emits a masked wallet and payload when the confirmation view should be updated with the newest data. */
-    Observable<Pair<MaskedWallet, AndroidPayPayload>> updateAndroidPayConfirmation();
-
-    /** Emits when the activity should pop itself off the navigation stack. */
-    Observable<Void> popActivityOffStack();
-
-    /** Emits a payload whenever an android pay sheet should be displayed.
-     * Can emit `null`, which means a prompt should not be displayed. */
-    Observable<AndroidPayPayload> showAndroidPaySheet();
+    /** Emits the masked wallet and android pay payload when it is time to attempt to convert the masked
+     * wallet into a full wallet. */
+    Observable<Pair<MaskedWallet, AndroidPayPayload>> attemptAndroidPayConfirmation();
 
     /** Emits a full wallet when android pay has been completely confirmed, and we are now ready to interact
      * with our payment processor. */
     Observable<FullWallet> completeAndroidPay();
 
+    /** Emits a boolean that determines if the android pay confirmation should be shown or not. */
+    Observable<Boolean> displayAndroidPayConfirmation();
+
     /** Emits a boolean if this device is capable of android pay. */
     Observable<Boolean> isAndroidPayAvailable();
 
-    /** Emits the masked wallet and android pay payload when it is time to attempt to convert the masked
-     * wallet into a full wallet. */
-    Observable<Pair<MaskedWallet, AndroidPayPayload>> attemptAndroidPayConfirmation();
+    /** Emits when the activity should pop itself off the navigation stack. */
+    Observable<Void> popActivityOffStack();
+
+    /** The project associated with the current checkout. */
+    Observable<Project> project();
+
+    /** Emits a payload whenever an android pay sheet should be displayed.
+     * Can emit `null`, which means a prompt should not be displayed. */
+    Observable<AndroidPayPayload> showAndroidPaySheet();
+
+    /** The title to display to the user. */
+    Observable<String> title();
+
+    /** Emits a masked wallet and payload when the confirmation view should be updated with the newest data. */
+    Observable<Pair<MaskedWallet, AndroidPayPayload>> updateAndroidPayConfirmation();
+
+    /** The URL the web view should load, if its state has been destroyed. */
+    Observable<String> url();
   }
 
   final class ViewModel extends ActivityViewModel<CheckoutActivity> implements Inputs, Outputs {
@@ -131,7 +133,7 @@ public interface CheckoutViewModel {
         .ofType(AndroidPayPayload.class);
 
       final Observable<Boolean> confirmationVisibilityOnBack = this.displayAndroidPayConfirmation
-        .compose(Transformers.takeWhen(this.backButtonClicked));
+        .compose(takeWhen(this.backButtonClicked));
 
       payload
         .compose(bindToLifecycle())
@@ -150,14 +152,14 @@ public interface CheckoutViewModel {
         .subscribe(this.displayAndroidPayConfirmation::onNext);
 
       maskedWallet
-        .compose(Transformers.combineLatestPair(payload))
+        .compose(combineLatestPair(payload))
         .filter(wp -> wp.first != null && wp.second != null)
         .compose(bindToLifecycle())
         .subscribe(this.updateAndroidPayConfirmation::onNext);
 
       maskedWallet
-        .compose(Transformers.combineLatestPair(payload))
-        .compose(Transformers.takeWhen(this.confirmAndroidPayClicked))
+        .compose(combineLatestPair(payload))
+        .compose(takeWhen(this.confirmAndroidPayClicked))
         .filter(wp -> wp.second != null)
         .compose(bindToLifecycle())
         .subscribe(this.attemptAndroidPayConfirmation::onNext);

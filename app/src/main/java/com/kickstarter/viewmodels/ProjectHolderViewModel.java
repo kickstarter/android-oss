@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
+import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
@@ -50,6 +51,7 @@ public interface ProjectHolderViewModel {
     Observable<String> goalStringForTextView();
     Observable<String> locationTextViewText();
     Observable<Integer> percentageFundedProgress();
+    Observable<Boolean> percentageFundedProgressBarIsGone();
     Observable<Boolean> playButtonIsGone();
     Observable<String> pledgedTextViewText();
     Observable<DateTime> projectDisclaimerGoalReachedDateTime();
@@ -62,8 +64,14 @@ public interface ProjectHolderViewModel {
     Observable<String> projectSocialImageViewUrl();
     Observable<String> projectSocialTextViewText();
     Observable<Boolean> projectSocialViewGroupIsGone();
+    Observable<Integer> projectStateViewGroupBackgroundColorInt();
+    Observable<Boolean> projectStateViewGroupIsGone();
     Observable<Boolean> shouldSetDefaultStatsMargins();
+    Observable<Void> setCanceledProjectStateView();
     Observable<Void> setProjectSocialClick();
+    Observable<DateTime> setSuccessfulProjectStateView();
+    Observable<Void> setSuspendedProjectStateView();
+    Observable<DateTime> setUnsuccessfulProjectStateView();
     Observable<Project> startProjectSocialActivity();
     Observable<String> updatesCountTextViewText();
     Observable<Pair<String, String>> usdConversionGoalAndPledgedText();
@@ -95,6 +103,11 @@ public interface ProjectHolderViewModel {
 
       this.locationTextViewText = project.map(Project::location).filter(ObjectUtils::isNotNull).map(Location::displayableName);
       this.percentageFundedProgress = project.map(Project::percentageFunded).map(ProgressBarUtils::progress);
+
+      // todo: simplify to if project is not live?
+      this.percentageFundedProgressBarIsGone = project
+        .map(p -> p.isSuccessful() || p.isCanceled() || p.isFailed() || p.isSuspended());
+
       this.playButtonIsGone = project.map(Project::hasVideo).map(BooleanUtils::negate);
 
       this.pledgedTextViewText = project
@@ -126,11 +139,35 @@ public interface ProjectHolderViewModel {
         .map(f -> SocialUtils.projectCardFriendNamepile(f, this.ksString));
 
       this.projectSocialViewGroupIsGone = project.map(Project::isFriendBacking).map(BooleanUtils::negate);
+
+      this.projectStateViewGroupBackgroundColorInt = project
+        .map(p -> p.state().equals(Project.STATE_SUCCESSFUL) ? R.color.green_alpha_50 : R.color.ksr_grey_400);
+
+      // todo: negate percentageFundedProgressBarIsGone?
+      this.projectStateViewGroupIsGone = project
+        .map(p -> !p.isSuccessful() || !p.isCanceled() || !p.isFailed() || !p.isSuspended());
+
       this.projectSocialImageViewIsGone = this.projectSocialViewGroupIsGone;
       this.shouldSetDefaultStatsMargins = this.projectSocialViewGroupIsGone;
+      this.setCanceledProjectStateView = project.filter(Project::isCanceled).compose(ignoreValues());
       this.setProjectSocialClick = project.map(Project::friends).map(fs -> fs.size() > 2).compose(ignoreValues());
+
+      this.setSuccessfulProjectStateView = project
+        .filter(Project::isSuccessful)
+        .map(p -> ObjectUtils.coalesce(p.stateChangedAt(), new DateTime()));
+
+      this.setSuspendedProjectStateView = project.filter(Project::isSuspended).compose(ignoreValues());
+
+      this.setUnsuccessfulProjectStateView = project
+        .filter(Project::isFailed)
+        .map(p -> ObjectUtils.coalesce(p.stateChangedAt(), new DateTime()));
+
       this.startProjectSocialActivity = project.compose(takeWhen(this.projectSocialViewGroupClicked));
-      this.updatesCountTextViewText = project.map(Project::updatesCount).filter(ObjectUtils::isNotNull).map(NumberUtils::format);
+
+      this.updatesCountTextViewText = project
+        .map(Project::updatesCount)
+        .filter(ObjectUtils::isNotNull)
+        .map(NumberUtils::format);
 
       this.usdConversionTextViewIsGone = this.projectAndCountry
         .map(pc -> I18nUtils.isCountryUS(pc.second) && !I18nUtils.isCountryUS(pc.first.country()))
@@ -157,6 +194,7 @@ public interface ProjectHolderViewModel {
     private final Observable<String> goalStringForTextView;
     private final Observable<String> locationTextViewText;
     private final Observable<Integer> percentageFundedProgress;
+    private final Observable<Boolean> percentageFundedProgressBarIsGone;
     private final Observable<Boolean> playButtonIsGone;
     private final Observable<String> pledgedTextViewText;
     private final Observable<DateTime> projectDisclaimerGoalReachedDateTime;
@@ -169,7 +207,13 @@ public interface ProjectHolderViewModel {
     private final Observable<String> projectSocialImageViewUrl;
     private final Observable<String> projectSocialTextViewText;
     private final Observable<Boolean> projectSocialViewGroupIsGone;
+    private final Observable<Integer> projectStateViewGroupBackgroundColorInt;
+    private final Observable<Boolean> projectStateViewGroupIsGone;
+    private final Observable<Void> setCanceledProjectStateView;
     private final Observable<Void> setProjectSocialClick;
+    private final Observable<DateTime> setSuccessfulProjectStateView;
+    private final Observable<Void> setSuspendedProjectStateView;
+    private final Observable<DateTime> setUnsuccessfulProjectStateView;
     private final Observable<Project> startProjectSocialActivity;
     private final Observable<Boolean> shouldSetDefaultStatsMargins;
     private final Observable<String> updatesCountTextViewText;
@@ -216,6 +260,9 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<Integer> percentageFundedProgress() {
       return this.percentageFundedProgress;
     }
+    @Override public @NonNull Observable<Boolean> percentageFundedProgressBarIsGone() {
+      return this.percentageFundedProgressBarIsGone;
+    }
     @Override public @NonNull Observable<Boolean> playButtonIsGone() {
       return this.playButtonIsGone;
     }
@@ -252,11 +299,29 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<Boolean> projectSocialViewGroupIsGone() {
       return this.projectSocialViewGroupIsGone;
     }
+    @Override public @NonNull Observable<Integer> projectStateViewGroupBackgroundColorInt() {
+      return this.projectStateViewGroupBackgroundColorInt;
+    }
+    @Override public @NonNull Observable<Boolean> projectStateViewGroupIsGone() {
+      return this.projectStateViewGroupIsGone;
+    }
     @Override public @NonNull Observable<Project> startProjectSocialActivity() {
       return this.startProjectSocialActivity;
     }
+    @Override public @NonNull Observable<Void> setCanceledProjectStateView() {
+      return this.setCanceledProjectStateView;
+    }
     @Override public @NonNull Observable<Void> setProjectSocialClick() {
       return this.setProjectSocialClick;
+    }
+    @Override public @NonNull Observable<DateTime> setSuccessfulProjectStateView() {
+      return this.setSuccessfulProjectStateView;
+    }
+    @Override public @NonNull Observable<Void> setSuspendedProjectStateView() {
+      return this.setSuspendedProjectStateView;
+    }
+    @Override public @NonNull Observable<DateTime> setUnsuccessfulProjectStateView() {
+      return this.setUnsuccessfulProjectStateView;
     }
     @Override public @NonNull Observable<Boolean> shouldSetDefaultStatsMargins() {
       return this.shouldSetDefaultStatsMargins;

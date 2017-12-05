@@ -55,7 +55,6 @@ import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 
 public final class ProjectViewHolder extends KSViewHolder {
   private ProjectHolderViewModel.ViewModel viewModel;
-  private final Context context;
   private final Delegate delegate;
   private final KSCurrency ksCurrency;
   private final KSString ksString;
@@ -141,7 +140,6 @@ public final class ProjectViewHolder extends KSViewHolder {
     super(view);
     this.viewModel = new ProjectHolderViewModel.ViewModel(environment());
     this.delegate = delegate;
-    this.context = view.getContext();
     this.ksCurrency = environment().ksCurrency();
     this.ksString = environment().ksString();
 
@@ -151,7 +149,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(url ->
-        Picasso.with(this.context)
+        Picasso.with(context())
           .load(url)
           .transform(new CircleTransformation())
           .into(this.avatarImageView)
@@ -203,10 +201,10 @@ public final class ProjectViewHolder extends KSViewHolder {
     // todo: break down
     this.viewModel.outputs.projectForDeadlineCountdownTextView()
       .subscribe(p -> {
-        setLandscapeOverlayText();
+        setLandscapeOverlayText(p);
         setLandscapeActionButton(p);
         setStatsContentDescription(p);
-        this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(p, this.context, this.ksString));
+        this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(p, context(), this.ksString));
 
       });
 
@@ -214,6 +212,11 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.percentageFundedProgressBar::setProgress);
+
+    this.viewModel.outputs.percentageFundedProgressBarIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.percentageFundedProgressBar));
 
     this.viewModel.outputs.playButtonIsGone()
       .compose(bindToLifecycle())
@@ -264,7 +267,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(url ->
-        Picasso.with(this.context).load(url)
+        Picasso.with(context()).load(url)
           .transform(new CircleTransformation())
           .into(this.projectSocialImageView)
       );
@@ -274,10 +277,40 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.projectSocialViewGroup));
 
+    this.viewModel.outputs.projectStateViewGroupBackgroundColorInt()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(c -> this.projectStateViewGroup.setBackgroundColor(ContextCompat.getColor(context(), c)));
+
+    this.viewModel.outputs.projectStateViewGroupIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.projectStateViewGroup));
+
+    this.viewModel.outputs.setCanceledProjectStateView()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.setCanceledProjectStateView());
+
     this.viewModel.outputs.setProjectSocialClick()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> this.setProjectSocialClick());
+
+    this.viewModel.outputs.setSuccessfulProjectStateView()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setSuccessfulProjectStateView);
+
+    this.viewModel.outputs.setSuspendedProjectStateView()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.setSuspendedProjectStateView());
+
+    this.viewModel.outputs.setUnsuccessfulProjectStateView()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setUnsuccessfulProjectStateView);
 
     this.viewModel.outputs.shouldSetDefaultStatsMargins()
       .compose(bindToLifecycle())
@@ -315,7 +348,6 @@ public final class ProjectViewHolder extends KSViewHolder {
   public void onBind() {
     setProjectMetadataLozenge();
     setProjectSocialClick();
-    setProjectStateView();
   }
 
   private void setConvertedUsdView(final @NonNull Pair<String, String> goalAndPledged) {
@@ -327,7 +359,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   };
 
   private void setGoalTextView(final @NonNull String goalString) {
-    final String goalText = ViewUtils.isFontScaleLarge(this.context)
+    final String goalText = ViewUtils.isFontScaleLarge(context())
       ? this.ksString.format(this.ofGoalString, "goal", goalString)
       : this.ksString.format(this.pledgedOfGoalString, "goal", goalString);
     this.goalTextView.setText(goalText);
@@ -335,11 +367,11 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   private void setProjectPhoto(final @NonNull Photo photo) {
     // Account for the grid2 start and end margins.
-    final int targetImageWidth = (int) (getScreenWidthDp(this.context) * getScreenDensity(this.context)) - this.grid2Dimen * 2;
+    final int targetImageWidth = (int) (getScreenWidthDp(context()) * getScreenDensity(context())) - this.grid2Dimen * 2;
     final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
     this.photoImageView.setMaxHeight(targetImageHeight);
 
-    Picasso.with(this.context)
+    Picasso.with(context())
       .load(photo.full())
       .resize(targetImageWidth, targetImageHeight)
       .centerCrop()
@@ -347,9 +379,33 @@ public final class ProjectViewHolder extends KSViewHolder {
       .into(this.photoImageView);
   }
 
+  private void setCanceledProjectStateView() {
+    this.projectStateHeaderTextView.setText(this.fundingCanceledString);
+    this.projectStateSubheadTextView.setText(this.fundingCanceledByCreatorString);
+  }
+
   public void setProjectSocialClick() {
     this.projectSocialViewGroup.setBackground(this.clickIndicatorLightMaskedDrawable);
     this.projectSocialViewGroup.setOnClickListener(__ -> this.viewModel.inputs.projectSocialViewGroupClicked());
+  }
+
+  private void setSuccessfulProjectStateView(final @NonNull DateTime stateChangedAt) {
+    this.projectStateHeaderTextView.setText(this.fundedString);
+    this.projectStateSubheadTextView.setText(
+      this.ksString.format(this.successfullyFundedOnDeadlineString, "deadline", mediumDate(stateChangedAt))
+    );
+  }
+
+  private void setSuspendedProjectStateView() {
+    this.projectStateHeaderTextView.setText(this.fundingSuspendedString);
+    this.projectStateSubheadTextView.setText(this.fundingProjectSuspendedString);
+  }
+
+  private void setUnsuccessfulProjectStateView(final @NonNull DateTime stateChangedAt) {
+    this.projectStateHeaderTextView.setText(this.fundingUnsuccessfulString);
+    this.projectStateSubheadTextView.setText(
+      this.ksString.format(this.fundingGoalNotReachedString, "deadline", mediumDate(stateChangedAt))
+    );
   }
 
   private void setStatsMargins(final boolean shouldSetDefaultMargins) {
@@ -361,8 +417,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   private void startProjectSocialActivity(final @NonNull Project project) {
-    final BaseActivity activity = (BaseActivity) this.context;
-    final Intent intent = new Intent(activity, ProjectSocialActivity.class)
+    final BaseActivity activity = (BaseActivity) context();
+    final Intent intent = new Intent(context(), ProjectSocialActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     activity.startActivity(intent);
     activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
@@ -417,8 +473,8 @@ public final class ProjectViewHolder extends KSViewHolder {
    */
   public void setLandscapeOverlayText(final @NonNull Project project) {
     if (this.landOverlayTextViewGroup != null && this.nameCreatorViewGroup != null) {
-      final int screenHeight = getScreenHeightDp(this.context);
-      final float densityOffset = this.context.getResources().getDisplayMetrics().density;
+      final int screenHeight = getScreenHeightDp(context());
+      final float densityOffset = context().getResources().getDisplayMetrics().density;
       final float topMargin = ((screenHeight / 3 * 2) * densityOffset) - this.grid4Dimen;  // offset for toolbar
       ViewUtils.setRelativeViewGroupMargins(this.landOverlayTextViewGroup, this.grid4Dimen, (int) topMargin, this.grid4Dimen, 0);
 
@@ -451,7 +507,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   private void setProjectMetadataLozenge() {
     final ProjectUtils.Metadata metadata = ProjectUtils.metadataForProject(this.project);
     if (metadata == ProjectUtils.Metadata.BACKING) {
-      this.projectMetadataViewGroup.setBackground(ContextCompat.getDrawable(this.context, R.drawable.rect_green_grey_stroke));
+      this.projectMetadataViewGroup.setBackground(ContextCompat.getDrawable(context(), R.drawable.rect_green_grey_stroke));
       this.backingViewGroup.setVisibility(View.VISIBLE);
     } else if (metadata == ProjectUtils.Metadata.POTD) {
       this.potdViewGroup.setVisibility(View.VISIBLE);
@@ -464,53 +520,6 @@ public final class ProjectViewHolder extends KSViewHolder {
       }
     } else {
       this.projectMetadataViewGroup.setVisibility(View.GONE);
-    }
-  }
-
-  public void setProjectStateView() {
-    final DateTime stateChangedAt = coalesce(this.project.stateChangedAt(), new DateTime());
-
-    switch(this.project.state()) {
-      case Project.STATE_SUCCESSFUL:
-        this.percentageFundedProgressBar.setVisibility(View.GONE);
-        this.projectStateViewGroup.setVisibility(View.VISIBLE);
-        this.projectStateViewGroup.setBackgroundColor(this.greenAlpha50Color);
-
-        this.projectStateHeaderTextView.setText(this.fundedString);
-        this.projectStateSubheadTextView.setText(
-          this.ksString.format(this.successfullyFundedOnDeadlineString, "deadline", mediumDate(stateChangedAt))
-        );
-        break;
-      case Project.STATE_CANCELED:
-        this.percentageFundedProgressBar.setVisibility(View.GONE);
-        this.projectStateViewGroup.setVisibility(View.VISIBLE);
-        this.projectStateViewGroup.setBackgroundColor(this.ksrGrey400);
-
-        this.projectStateHeaderTextView.setText(this.fundingCanceledString);
-        this.projectStateSubheadTextView.setText(this.fundingCanceledByCreatorString);
-        break;
-      case Project.STATE_FAILED:
-        this.percentageFundedProgressBar.setVisibility(View.GONE);
-        this.projectStateViewGroup.setVisibility(View.VISIBLE);
-        this.projectStateViewGroup.setBackgroundColor(this.ksrGrey400);
-
-        this.projectStateHeaderTextView.setText(this.fundingUnsuccessfulString);
-        this.projectStateSubheadTextView.setText(
-          this.ksString.format(this.fundingGoalNotReachedString, "deadline", mediumDate(stateChangedAt))
-        );
-        break;
-      case Project.STATE_SUSPENDED:
-        this.percentageFundedProgressBar.setVisibility(View.GONE);
-        this.projectStateViewGroup.setVisibility(View.VISIBLE);
-        this.projectStateViewGroup.setBackgroundColor(this.ksrGrey400);
-
-        this.projectStateHeaderTextView.setText(this.fundingSuspendedString);
-        this.projectStateSubheadTextView.setText(this.fundingProjectSuspendedString);
-        break;
-      default:
-        this.percentageFundedProgressBar.setVisibility(View.VISIBLE);
-        this.projectStateViewGroup.setVisibility(View.GONE);
-        break;
     }
   }
 

@@ -62,10 +62,10 @@ public interface ProjectHolderViewModel {
     Observable<DateTime> projectDisclaimerGoalReachedDateTime();
     Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString();
     Observable<Boolean> projectDisclaimerTextViewIsGone();
-    Observable<Project> projectForDeadlineCountdownTextView();
     Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt();
     Observable<Boolean> projectMetadataViewGroupIsGone();
     Observable<String> projectNameTextViewText();
+    Observable<Project> projectOutput();
     Observable<Photo> projectPhoto();
     Observable<Boolean> projectSocialImageViewIsGone();
     Observable<String> projectSocialImageViewUrl();
@@ -154,8 +154,6 @@ public interface ProjectHolderViewModel {
 
       this.projectDisclaimerTextViewIsGone = project.map(p -> p.deadline() == null || !p.isLive());
 
-      this.projectForDeadlineCountdownTextView = project;
-
       this.projectMetadataViewGroupBackgroundDrawableInt = projectMetadata
         .filter(ProjectUtils.Metadata.BACKING::equals)
         .map(__ -> R.drawable.rect_green_grey_stroke);
@@ -164,6 +162,7 @@ public interface ProjectHolderViewModel {
       this.projectMetadataViewGroupIsGone = projectMetadata.isEmpty();
 
       this.projectNameTextViewText = project.map(Project::name);
+      this.projectOutput = project;
       this.projectPhoto = project.map(Project::photo);
 
       this.projectSocialImageViewUrl = project
@@ -243,10 +242,10 @@ public interface ProjectHolderViewModel {
     private final Observable<DateTime> projectDisclaimerGoalReachedDateTime;
     private final Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString;
     private final Observable<Boolean> projectDisclaimerTextViewIsGone;
-    private final Observable<Project> projectForDeadlineCountdownTextView;
     private final Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt;
     private final Observable<Boolean> projectMetadataViewGroupIsGone;
     private final Observable<String> projectNameTextViewText;
+    private final Observable<Project> projectOutput;
     private final Observable<Photo> projectPhoto;
     private final Observable<Boolean> projectSocialImageViewIsGone;
     private final Observable<String> projectSocialImageViewUrl;
@@ -335,9 +334,6 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<Boolean> projectDisclaimerTextViewIsGone() {
       return this.projectDisclaimerTextViewIsGone;
     }
-    @Override public @NonNull Observable<Project> projectForDeadlineCountdownTextView() {
-      return this.projectForDeadlineCountdownTextView;
-    }
     @Override public @NonNull Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt() {
       return this.projectMetadataViewGroupBackgroundDrawableInt;
     }
@@ -347,8 +343,8 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
     }
-    @Override public @NonNull Observable<String> projectSocialTextViewText() {
-      return this.projectSocialTextViewText;
+    @Override public @NonNull Observable<Project> projectOutput() {
+      return this.projectOutput;
     }
     @Override public @NonNull Observable<Photo> projectPhoto() {
       return this.projectPhoto;
@@ -358,6 +354,9 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<String> projectSocialImageViewUrl() {
       return this.projectSocialImageViewUrl;
+    }
+    @Override public @NonNull Observable<String> projectSocialTextViewText() {
+      return this.projectSocialTextViewText;
     }
     @Override public @NonNull Observable<Boolean> projectSocialViewGroupIsGone() {
       return this.projectSocialViewGroupIsGone;

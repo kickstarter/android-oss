@@ -211,14 +211,13 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.locationTextView::setText);
 
-    // todo: break down
-    this.viewModel.outputs.projectForDeadlineCountdownTextView()
+    this.viewModel.outputs.projectOutput()
       .subscribe(p -> {
+        // todo: break down these helpers
         setLandscapeOverlayText(p);
         setLandscapeActionButton(p);
         setStatsContentDescription(p);
         this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(p, context(), this.ksString));
-
       });
 
     this.viewModel.outputs.percentageFundedProgress()
@@ -373,10 +372,6 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(projectAndCountry);
   }
 
-  public void onBind() {
-    setProjectSocialClick();
-  }
-
   private void setConvertedUsdView(final @NonNull Pair<String, String> goalAndPledged) {
     this.usdConversionTextView.setText(
       this.ksString.format(
@@ -504,10 +499,15 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.delegate.projectViewHolderViewPledgeClicked(this);
   }
 
+  @OnClick(R.id.updates)
+  public void updatesClick() {
+    this.delegate.projectViewHolderUpdatesClicked(this);
+  }
+
   /**
    * Set landscape project action buttons in the ViewHolder rather than Activity.
    */
-  public void setLandscapeActionButton(final @NonNull Project project) {
+  private void setLandscapeActionButton(final @NonNull Project project) {
     if (this.backProjectButton != null && this.managePledgeButton != null && this.viewPledgeButton != null) {
       ProjectUtils.setActionButton(project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton);
     }
@@ -516,7 +516,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   /**
    * Set top margin of overlay text based on landscape screen height, scaled by screen density.
    */
-  public void setLandscapeOverlayText(final @NonNull Project project) {
+  private void setLandscapeOverlayText(final @NonNull Project project) {
     if (this.landOverlayTextViewGroup != null && this.nameCreatorViewGroup != null) {
       final int screenHeight = getScreenHeightDp(context());
       final float densityOffset = context().getResources().getDisplayMetrics().density;
@@ -539,10 +539,5 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.backersCountTextView.setContentDescription(backersCountContentDescription);
     this.pledgedTextView.setContentDescription(pledgedContentDescription);
     this.deadlineCountdownTextView.setContentDescription(deadlineCountdownContentDescription);
-  }
-
-  @OnClick(R.id.updates)
-  public void updatesClick() {
-    this.delegate.projectViewHolderUpdatesClicked(this);
   }
 }

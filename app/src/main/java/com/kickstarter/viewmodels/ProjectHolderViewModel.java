@@ -45,127 +45,127 @@ public interface ProjectHolderViewModel {
   }
 
   interface Outputs {
-    /** Emits the creator's avatar photo url. */
+    /** Emits the creator's avatar photo url for display. */
     Observable<String> avatarPhotoUrl();
 
-    /** Emits the backers count string. */
+    /** Emits the backers count string for display. */
     Observable<String> backersCountTextViewText();
 
     /** Emits when the backing view group should be gone. */
     Observable<Boolean> backingViewGroupIsGone();
 
-    /** */
+    /** Emits the project blurb for display. */
     Observable<String> blurbTextViewText();
 
-    /** */
+    /** Emits the project category for display. */
     Observable<String> categoryTextViewText();
 
-    /** */
+    /** Emits teh comments count for display. */
     Observable<String> commentsCountTextViewText();
 
-    /** */
+    /** Emits the project creator's name for display. */
     Observable<String> creatorNameTextViewText();
 
-    /** */
+    /** Emits the deadline countdown text for display. */
     Observable<String> deadlineCountdownTextViewText();
 
-    /** */
+    /** Emits root category to display in the featured metadata. */
     Observable<String> featuredTextViewRootCategory();
 
-    /** */
+    /** Emits the featured view group should be gone. */
     Observable<Boolean> featuredViewGroupIsGone();
 
-    /** */
+    /** Emits the goal string for display. */
     Observable<String> goalStringForTextView();
 
-    /** */
+    /** Emits the location for display. */
     Observable<String> locationTextViewText();
 
-    /** */
+    /** Emits the percentage funded amount for display in the progress bar. */
     Observable<Integer> percentageFundedProgress();
 
-    /** */
+    /** Emits when the progress bar should be gone. */
     Observable<Boolean> percentageFundedProgressBarIsGone();
 
-    /** */
+    /** Emits when the play button should be gone. */
     Observable<Boolean> playButtonIsGone();
 
-    /** */
+    /** Emits the pledged amount for display. */
     Observable<String> pledgedTextViewText();
 
-    /** */
+    /** Emits when the POTD view group should be gone. */
     Observable<Boolean> potdViewGroupIsGone();
 
-    /** */
+    /** Emits the date time to be displayed in the disclaimer. */
     Observable<DateTime> projectDisclaimerGoalReachedDateTime();
 
-    /** */
+    /** Emits a string and date time for an unsuccessful project disclaimer. */
     Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString();
 
-    /** */
+    /** Emits when the disclaimer view should be gone. */
     Observable<Boolean> projectDisclaimerTextViewIsGone();
 
-    /** */
+    /** Emits the background drawable for the metadata view group. */
     Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt();
 
-    /** */
+    /** Emits when the metadata view group should be gone. */
     Observable<Boolean> projectMetadataViewGroupIsGone();
 
-    /** */
+    /** Emits the project name for display. */
     Observable<String> projectNameTextViewText();
 
-    /** */
+    /** Emits the project for display. */
     Observable<Project> projectOutput();
 
-    /** */
+    /** Emits the project photo for display. */
     Observable<Photo> projectPhoto();
 
-    /** */
+    /** Emits when the social image view should be gone. */
     Observable<Boolean> projectSocialImageViewIsGone();
 
-    /** */
+    /** Emits the social image view url for display. */
     Observable<String> projectSocialImageViewUrl();
 
-    /** */
+    /** Emits the social text for display. */
     Observable<String> projectSocialTextViewText();
 
-    /** */
+    /**  Emits when the social view group should be gone. */
     Observable<Boolean> projectSocialViewGroupIsGone();
 
-    /** */
+    /** Emits the state background color int for display. */
     Observable<Integer> projectStateViewGroupBackgroundColorInt();
 
-    /** */
+    /** Emits when the project state view group should be gone. */
     Observable<Boolean> projectStateViewGroupIsGone();
 
-    /** */
+    /** Emits when we should set default stats margins. */
     Observable<Boolean> shouldSetDefaultStatsMargins();
 
-    /** */
+    /** Emits when we should set the canceled state view. */
     Observable<Void> setCanceledProjectStateView();
 
-    /** */
+    /** Emits when we should set an on click listener to the social view. */
     Observable<Void> setProjectSocialClickListener();
 
-    /** */
+    /** Emits when we should set the successful state view. */
     Observable<DateTime> setSuccessfulProjectStateView();
 
-    /** */
+    /** Emits when we should set the suspended state view. */
     Observable<Void> setSuspendedProjectStateView();
 
-    /** */
+    /** Emits when we should set the unsuccessful state view. */
     Observable<DateTime> setUnsuccessfulProjectStateView();
 
-    /** */
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectSocialActivity}. */
     Observable<Project> startProjectSocialActivity();
 
-    /** */
+    /** Emits the updates count for display. s*/
     Observable<String> updatesCountTextViewText();
 
-    /** */
+    /** Emits the usd conversion text for display. */
     Observable<Pair<String, String>> usdConversionGoalAndPledgedText();
 
-    /** */
+    /** Emits when the usd conversion view should be gone. */
     Observable<Boolean> usdConversionTextViewIsGone();
   }
 

@@ -12,7 +12,6 @@ import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.factories.VideoFactory;
 import com.kickstarter.libs.Config;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
@@ -520,51 +519,26 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testUsdConversionForNonUSProject() {
-    // Set user's country to US.
-    final Config config = ConfigFactory.configForUSUser();
-    final Environment environment = environment();
-    final CurrentConfigType currentConfig = environment.currentConfig();
-    environment.currentConfig().config(config);
-    setUpEnvironment(environment);
-
-    // Set project's country to CA.
     final Project project = ProjectFactory.caProject();
+    setUpEnvironment(environment());
+    this.vm.inputs.configureWith(Pair.create(project, "US"));
 
-    // USD conversion should be shown.
-    this.vm.inputs.configureWith(Pair.create(project, config.countryCode()));
+    // USD conversion shown for non US project.
     this.usdConversionGoalAndPledgedText.assertValueCount(1);
     this.usdConversionTextViewIsGone.assertValue(false);
-
-    // Set user's country to CA (any country except the US is fine).
-    currentConfig.config(ConfigFactory.configForCAUser());
-
-    // USD conversion should now be hidden.
-    this.usdConversionGoalAndPledgedText.assertValueCount(1);
-    this.usdConversionTextViewIsGone.assertValues(false, true);
   }
 
   @Test
   public void testUsdConversionNotShownForUSProject() {
-    // Set user's country to US.
-    final Config config = ConfigFactory.configForUSUser();
-    final Environment environment = environment();
-    final CurrentConfigType currentConfig = environment.currentConfig();
-    environment.currentConfig().config(config);
-    setUpEnvironment(environment);
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .country("US")
+      .build();
+    setUpEnvironment(environment());
+    this.vm.inputs.configureWith(Pair.create(project, "US"));
 
-    // Set project's country to US.
-    final Project project = ProjectFactory.project().toBuilder().country("US").build();
-
-    // USD conversion should not be shown.
-    this.vm.inputs.configureWith(Pair.create(project, config.countryCode()));
+    // USD conversion not shown for US project.
     this.usdConversionGoalAndPledgedText.assertNoValues();
     this.usdConversionTextViewIsGone.assertValue(true);
-
-    // Set user's country to CA.
-    currentConfig.config(ConfigFactory.configForCAUser());
-
-    // USD conversion should still not be shown (distinct until changed).
-    this.usdConversionGoalAndPledgedText.assertNoValues();
-    this.usdConversionTextViewIsGone.assertValues(true);
   }
 }

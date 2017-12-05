@@ -30,6 +30,7 @@ import java.math.RoundingMode;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
@@ -43,21 +44,27 @@ public interface ProjectHolderViewModel {
   interface Outputs {
     Observable<String> avatarPhotoUrl();
     Observable<String> backersCountTextViewText();
+    Observable<Boolean> backingViewGroupIsGone();
     Observable<String> blurbTextViewText();
     Observable<String> categoryTextViewText();
     Observable<String> commentsCountTextViewText();
     Observable<String> creatorNameTextViewText();
     Observable<String> deadlineCountdownTextViewText();
+    Observable<String> featuredTextViewRootCategory();
+    Observable<Boolean> featuredViewGroupIsGone();
     Observable<String> goalStringForTextView();
     Observable<String> locationTextViewText();
     Observable<Integer> percentageFundedProgress();
     Observable<Boolean> percentageFundedProgressBarIsGone();
     Observable<Boolean> playButtonIsGone();
     Observable<String> pledgedTextViewText();
+    Observable<Boolean> potdViewGroupIsGone();
     Observable<DateTime> projectDisclaimerGoalReachedDateTime();
     Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString();
     Observable<Boolean> projectDisclaimerTextViewIsGone();
     Observable<Project> projectForDeadlineCountdownTextView();
+    Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt();
+    Observable<Boolean> projectMetadataViewGroupIsGone();
     Observable<String> projectNameTextViewText();
     Observable<Photo> projectPhoto();
     Observable<Boolean> projectSocialImageViewIsGone();
@@ -89,14 +96,35 @@ public interface ProjectHolderViewModel {
 
       final Observable<Project> project = this.projectAndCountry.map(PairUtils::first);
       final Observable<String> country = this.projectAndCountry.map(PairUtils::second);
+      final Observable<ProjectUtils.Metadata> projectMetadata = project.map(ProjectUtils::metadataForProject);
 
       this.avatarPhotoUrl = project.map(p -> p.creator().avatar().medium());
       this.backersCountTextViewText = project.map(Project::backersCount).map(NumberUtils::format);
+
+      this.backingViewGroupIsGone = projectMetadata
+        .map(ProjectUtils.Metadata.BACKING::equals)
+        .map(BooleanUtils::negate);
+
       this.blurbTextViewText = project.map(Project::blurb);
       this.categoryTextViewText = project.map(Project::category).filter(ObjectUtils::isNotNull).map(Category::name);
       this.commentsCountTextViewText = project.map(Project::commentsCount).filter(ObjectUtils::isNotNull).map(NumberUtils::format);
       this.creatorNameTextViewText = project.map(p -> p.creator().name());
       this.deadlineCountdownTextViewText = project.map(ProjectUtils::deadlineCountdownValue).map(NumberUtils::format);
+
+      this.featuredViewGroupIsGone = projectMetadata
+        .map(m -> m == ProjectUtils.Metadata.BACKING
+          || m == ProjectUtils.Metadata.POTD
+          || m != ProjectUtils.Metadata.CATEGORY_FEATURED
+        );
+
+      this.featuredTextViewRootCategory = this.featuredViewGroupIsGone
+        .filter(BooleanUtils::isFalse)
+        .compose(combineLatestPair(project))
+        .map(bp -> bp.second.category())
+        .filter(ObjectUtils::isNotNull)
+        .map(Category::root)
+        .filter(ObjectUtils::isNotNull)
+        .map(Category::name);
 
       this.goalStringForTextView = project
         .map(p -> this.ksCurrency.format(p.goal(), p, false, true, RoundingMode.DOWN));
@@ -113,6 +141,9 @@ public interface ProjectHolderViewModel {
       this.pledgedTextViewText = project
         .map(p -> this.ksCurrency.format(p.pledged(), p, false, true, RoundingMode.DOWN));
 
+      this.potdViewGroupIsGone = projectMetadata
+        .map(m -> m == ProjectUtils.Metadata.BACKING || m != ProjectUtils.Metadata.POTD);
+
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)
         .map(Project::deadline);
@@ -124,6 +155,14 @@ public interface ProjectHolderViewModel {
       this.projectDisclaimerTextViewIsGone = project.map(p -> p.deadline() == null || !p.isLive());
 
       this.projectForDeadlineCountdownTextView = project;
+
+      this.projectMetadataViewGroupBackgroundDrawableInt = projectMetadata
+        .filter(ProjectUtils.Metadata.BACKING::equals)
+        .map(__ -> R.drawable.rect_green_grey_stroke);
+
+      // todo: is this a legit operator
+      this.projectMetadataViewGroupIsGone = projectMetadata.isEmpty();
+
       this.projectNameTextViewText = project.map(Project::name);
       this.projectPhoto = project.map(Project::photo);
 
@@ -186,21 +225,27 @@ public interface ProjectHolderViewModel {
 
     private final Observable<String> avatarPhotoUrl;
     private final Observable<String> backersCountTextViewText;
+    private final Observable<Boolean> backingViewGroupIsGone;
     private final Observable<String> blurbTextViewText;
     private final Observable<String> categoryTextViewText;
     private final Observable<String> commentsCountTextViewText;
     private final Observable<String> creatorNameTextViewText;
     private final Observable<String> deadlineCountdownTextViewText;
+    private final Observable<String> featuredTextViewRootCategory;
+    private final Observable<Boolean> featuredViewGroupIsGone;
     private final Observable<String> goalStringForTextView;
     private final Observable<String> locationTextViewText;
     private final Observable<Integer> percentageFundedProgress;
     private final Observable<Boolean> percentageFundedProgressBarIsGone;
     private final Observable<Boolean> playButtonIsGone;
     private final Observable<String> pledgedTextViewText;
+    private final Observable<Boolean> potdViewGroupIsGone;
     private final Observable<DateTime> projectDisclaimerGoalReachedDateTime;
     private final Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString;
     private final Observable<Boolean> projectDisclaimerTextViewIsGone;
     private final Observable<Project> projectForDeadlineCountdownTextView;
+    private final Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt;
+    private final Observable<Boolean> projectMetadataViewGroupIsGone;
     private final Observable<String> projectNameTextViewText;
     private final Observable<Photo> projectPhoto;
     private final Observable<Boolean> projectSocialImageViewIsGone;
@@ -233,6 +278,9 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<String> avatarPhotoUrl() {
       return this.avatarPhotoUrl;
     }
+    @Override public @NonNull Observable<Boolean> backingViewGroupIsGone() {
+      return this.backingViewGroupIsGone;
+    }
     @Override public @NonNull Observable<String> backersCountTextViewText() {
       return this.backersCountTextViewText;
     }
@@ -250,6 +298,12 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<String> deadlineCountdownTextViewText() {
       return this.deadlineCountdownTextViewText;
+    }
+    @Override public @NonNull Observable<String> featuredTextViewRootCategory() {
+      return this.featuredTextViewRootCategory;
+    }
+    @Override public @NonNull Observable<Boolean> featuredViewGroupIsGone() {
+      return this.featuredViewGroupIsGone;
     }
     @Override public @NonNull Observable<String> goalStringForTextView() {
       return this.goalStringForTextView;
@@ -269,6 +323,9 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<String> pledgedTextViewText() {
       return this.pledgedTextViewText;
     }
+    @Override public @NonNull Observable<Boolean> potdViewGroupIsGone() {
+      return this.potdViewGroupIsGone;
+    }
     @Override public @NonNull Observable<DateTime> projectDisclaimerGoalReachedDateTime() {
       return this.projectDisclaimerGoalReachedDateTime;
     }
@@ -280,6 +337,12 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<Project> projectForDeadlineCountdownTextView() {
       return this.projectForDeadlineCountdownTextView;
+    }
+    @Override public @NonNull Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt() {
+      return this.projectMetadataViewGroupBackgroundDrawableInt;
+    }
+    @Override public @NonNull Observable<Boolean> projectMetadataViewGroupIsGone() {
+      return this.projectMetadataViewGroupIsGone;
     }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;

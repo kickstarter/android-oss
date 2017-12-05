@@ -1,6 +1,5 @@
 package com.kickstarter.ui.viewholders;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -24,9 +23,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
-import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.models.Category;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
@@ -47,7 +44,6 @@ import butterknife.OnClick;
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.DateTimeUtils.mediumDate;
 import static com.kickstarter.libs.utils.DateTimeUtils.mediumDateShortTime;
-import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenDensity;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenHeightDp;
@@ -160,6 +156,11 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.backersCountTextView::setText);
 
+    this.viewModel.outputs.backingViewGroupIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.backingViewGroup));
+
     this.viewModel.outputs.blurbTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -187,6 +188,18 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.deadlineCountdownTextView::setText);
+
+    this.viewModel.outputs.featuredTextViewRootCategory()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(c ->
+        this.featuredTextView.setText(this.ksString.format(this.featuredInString, "category_name", c))
+      );
+
+    this.viewModel.outputs.featuredViewGroupIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.featuredViewGroup));
 
     this.viewModel.outputs.goalStringForTextView()
       .compose(bindToLifecycle())
@@ -228,6 +241,11 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.pledgedTextView::setText);
 
+    this.viewModel.outputs.potdViewGroupIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.potdViewGroup));
+
     this.viewModel.outputs.projectDisclaimerGoalNotReachedString()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -242,6 +260,16 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.projectDisclaimerTextView));
+
+    this.viewModel.outputs.projectMetadataViewGroupBackgroundDrawableInt()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(d -> this.projectMetadataViewGroup.setBackground(ContextCompat.getDrawable(context(), d)));
+
+    this.viewModel.outputs.projectMetadataViewGroupIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.projectMetadataViewGroup));
 
     this.viewModel.outputs.projectNameTextViewText()
       .compose(bindToLifecycle())
@@ -346,7 +374,6 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void onBind() {
-    setProjectMetadataLozenge();
     setProjectSocialClick();
   }
 
@@ -384,7 +411,25 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.projectStateSubheadTextView.setText(this.fundingCanceledByCreatorString);
   }
 
-  public void setProjectSocialClick() {
+  private void setProjectDisclaimerGoalReachedString(final @NonNull DateTime deadline) {
+    this.projectDisclaimerTextView.setText(this.ksString.format(
+      this.projectDisclaimerGoalReachedString,
+      "deadline",
+      mediumDateShortTime(deadline)
+    ));
+  }
+
+  private void setProjectDisclaimerGoalNotReachedString(final @NonNull Pair<String, DateTime> goalAndDeadline) {
+    this.projectDisclaimerTextView.setText(this.ksString.format(
+      this.projectDisclaimerGoalNotReachedString,
+      "goal_currency",
+      goalAndDeadline.first,
+      "deadline",
+      mediumDateShortTime(goalAndDeadline.second)
+    ));
+  }
+
+  private void setProjectSocialClick() {
     this.projectSocialViewGroup.setBackground(this.clickIndicatorLightMaskedDrawable);
     this.projectSocialViewGroup.setOnClickListener(__ -> this.viewModel.inputs.projectSocialViewGroupClicked());
   }
@@ -483,43 +528,6 @@ public final class ProjectViewHolder extends KSViewHolder {
       } else {
         ViewUtils.setRelativeViewGroupMargins(this.nameCreatorViewGroup, 0, 0, 0, this.grid1Dimen);
       }
-    }
-  }
-
-  private void setProjectDisclaimerGoalReachedString(final @NonNull DateTime deadline) {
-    this.projectDisclaimerTextView.setText(this.ksString.format(
-      this.projectDisclaimerGoalReachedString,
-      "deadline",
-      mediumDateShortTime(deadline)
-    ));
-  }
-
-  private void setProjectDisclaimerGoalNotReachedString(final @NonNull Pair<String, DateTime> goalAndDeadline) {
-    this.projectDisclaimerTextView.setText(this.ksString.format(
-      this.projectDisclaimerGoalNotReachedString,
-      "goal_currency",
-      goalAndDeadline.first,
-      "deadline",
-      mediumDateShortTime(goalAndDeadline.second)
-    ));
-  }
-
-  private void setProjectMetadataLozenge() {
-    final ProjectUtils.Metadata metadata = ProjectUtils.metadataForProject(this.project);
-    if (metadata == ProjectUtils.Metadata.BACKING) {
-      this.projectMetadataViewGroup.setBackground(ContextCompat.getDrawable(context(), R.drawable.rect_green_grey_stroke));
-      this.backingViewGroup.setVisibility(View.VISIBLE);
-    } else if (metadata == ProjectUtils.Metadata.POTD) {
-      this.potdViewGroup.setVisibility(View.VISIBLE);
-    } else if (metadata == ProjectUtils.Metadata.CATEGORY_FEATURED) {
-      this.featuredViewGroup.setVisibility(View.VISIBLE);
-      final Category category = this.project.category();
-      if (category != null && category.root() != null) {
-        final String rootCategory = category.root().name();
-        this.featuredTextView.setText(this.ksString.format(this.featuredInString, "category_name", rootCategory));
-      }
-    } else {
-      this.projectMetadataViewGroup.setVisibility(View.GONE);
     }
   }
 

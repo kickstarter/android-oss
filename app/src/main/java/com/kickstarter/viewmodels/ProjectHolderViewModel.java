@@ -145,7 +145,7 @@ public interface ProjectHolderViewModel {
     Observable<Void> setCanceledProjectStateView();
 
     /** */
-    Observable<Void> setProjectSocialClick();
+    Observable<Void> setProjectSocialClickListener();
 
     /** */
     Observable<DateTime> setSuccessfulProjectStateView();
@@ -195,10 +195,8 @@ public interface ProjectHolderViewModel {
       this.deadlineCountdownTextViewText = project.map(ProjectUtils::deadlineCountdownValue).map(NumberUtils::format);
 
       this.featuredViewGroupIsGone = projectMetadata
-        .map(m -> m == ProjectUtils.Metadata.BACKING
-          || m == ProjectUtils.Metadata.POTD
-          || m != ProjectUtils.Metadata.CATEGORY_FEATURED
-        );
+        .map(ProjectUtils.Metadata.CATEGORY_FEATURED::equals)
+        .map(BooleanUtils::negate);
 
       this.featuredTextViewRootCategory = this.featuredViewGroupIsGone
         .filter(BooleanUtils::isFalse)
@@ -225,7 +223,8 @@ public interface ProjectHolderViewModel {
         .map(p -> this.ksCurrency.format(p.pledged(), p, false, true, RoundingMode.DOWN));
 
       this.potdViewGroupIsGone = projectMetadata
-        .map(m -> m == ProjectUtils.Metadata.BACKING || m != ProjectUtils.Metadata.POTD);
+        .map(ProjectUtils.Metadata.POTD::equals)
+        .map(BooleanUtils::negate);
 
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)
@@ -241,8 +240,11 @@ public interface ProjectHolderViewModel {
         .filter(ProjectUtils.Metadata.BACKING::equals)
         .map(__ -> R.drawable.rect_green_grey_stroke);
 
-      // todo: is this a legit operator
-      this.projectMetadataViewGroupIsGone = projectMetadata.isEmpty();
+      this.projectMetadataViewGroupIsGone = projectMetadata
+        .map(m -> m != ProjectUtils.Metadata.POTD
+          && m != ProjectUtils.Metadata.CATEGORY_FEATURED
+          && m != ProjectUtils.Metadata.BACKING
+        );
 
       this.projectNameTextViewText = project.map(Project::name);
       this.projectOutput = project;
@@ -271,7 +273,7 @@ public interface ProjectHolderViewModel {
       this.projectSocialImageViewIsGone = this.projectSocialViewGroupIsGone;
       this.shouldSetDefaultStatsMargins = this.projectSocialViewGroupIsGone;
       this.setCanceledProjectStateView = project.filter(Project::isCanceled).compose(ignoreValues());
-      this.setProjectSocialClick = project.map(Project::friends).map(fs -> fs.size() > 2).compose(ignoreValues());
+      this.setProjectSocialClickListener = project.map(Project::friends).filter(fs -> fs.size() > 2).compose(ignoreValues());
 
       this.setSuccessfulProjectStateView = project
         .filter(Project::isSuccessful)
@@ -337,7 +339,7 @@ public interface ProjectHolderViewModel {
     private final Observable<Integer> projectStateViewGroupBackgroundColorInt;
     private final Observable<Boolean> projectStateViewGroupIsGone;
     private final Observable<Void> setCanceledProjectStateView;
-    private final Observable<Void> setProjectSocialClick;
+    private final Observable<Void> setProjectSocialClickListener;
     private final Observable<DateTime> setSuccessfulProjectStateView;
     private final Observable<Void> setSuspendedProjectStateView;
     private final Observable<DateTime> setUnsuccessfulProjectStateView;
@@ -456,8 +458,8 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<Void> setCanceledProjectStateView() {
       return this.setCanceledProjectStateView;
     }
-    @Override public @NonNull Observable<Void> setProjectSocialClick() {
-      return this.setProjectSocialClick;
+    @Override public @NonNull Observable<Void> setProjectSocialClickListener() {
+      return this.setProjectSocialClickListener;
     }
     @Override public @NonNull Observable<DateTime> setSuccessfulProjectStateView() {
       return this.setSuccessfulProjectStateView;

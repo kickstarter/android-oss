@@ -316,10 +316,10 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(__ -> this.setCanceledProjectStateView());
 
-    this.viewModel.outputs.setProjectSocialClick()
+    this.viewModel.outputs.setProjectSocialClickListener()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(__ -> this.setProjectSocialClick());
+      .subscribe(__ -> this.setProjectSocialClickListener());
 
     this.viewModel.outputs.setSuccessfulProjectStateView()
       .compose(bindToLifecycle())
@@ -421,7 +421,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     ));
   }
 
-  private void setProjectSocialClick() {
+  private void setProjectSocialClickListener() {
     this.projectSocialViewGroup.setBackground(this.clickIndicatorLightMaskedDrawable);
     this.projectSocialViewGroup.setOnClickListener(__ -> this.viewModel.inputs.projectSocialViewGroupClicked());
   }

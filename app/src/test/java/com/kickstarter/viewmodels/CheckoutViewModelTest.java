@@ -1,5 +1,7 @@
 package com.kickstarter.viewmodels;
 
+import android.support.annotation.NonNull;
+
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.AndroidPayCapability;
 import com.kickstarter.libs.Environment;
@@ -9,6 +11,11 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 public final class CheckoutViewModelTest extends KSRobolectricTestCase {
+  private CheckoutViewModel.ViewModel vm;
+
+  protected void setUpEnvironment(final @NonNull Environment environment) {
+    this.vm = new CheckoutViewModel.ViewModel(environment);
+  }
 
   @Test
   public void test_AndroidPayIsAvailable_WhenNotCapable() {
@@ -17,9 +24,9 @@ public final class CheckoutViewModelTest extends KSRobolectricTestCase {
       .androidPayCapability(new AndroidPayCapability(false))
       .build();
 
-    final CheckoutViewModel vm = new CheckoutViewModel(env);
+    setUpEnvironment(env);
 
-    vm.outputs.isAndroidPayAvailable().subscribe(Assert::assertFalse);
+    this.vm.outputs.isAndroidPayAvailable().subscribe(Assert::assertFalse);
   }
 
   @Test
@@ -29,8 +36,8 @@ public final class CheckoutViewModelTest extends KSRobolectricTestCase {
       .androidPayCapability(new AndroidPayCapability(true))
       .build();
 
-    final CheckoutViewModel vm = new CheckoutViewModel(env);
+    setUpEnvironment(env);
 
-    vm.outputs.isAndroidPayAvailable().subscribe(Assert::assertTrue);
+    this.vm.outputs.isAndroidPayAvailable().subscribe(Assert::assertTrue);
   }
 }

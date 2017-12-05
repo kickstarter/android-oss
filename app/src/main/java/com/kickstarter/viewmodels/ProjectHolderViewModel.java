@@ -190,7 +190,12 @@ public interface ProjectHolderViewModel {
 
       this.blurbTextViewText = project.map(Project::blurb);
       this.categoryTextViewText = project.map(Project::category).filter(ObjectUtils::isNotNull).map(Category::name);
-      this.commentsCountTextViewText = project.map(Project::commentsCount).filter(ObjectUtils::isNotNull).map(NumberUtils::format);
+
+      this.commentsCountTextViewText = project
+        .map(Project::commentsCount)
+        .filter(ObjectUtils::isNotNull)
+        .map(NumberUtils::format);
+
       this.creatorNameTextViewText = project.map(p -> p.creator().name());
       this.deadlineCountdownTextViewText = project.map(ProjectUtils::deadlineCountdownValue).map(NumberUtils::format);
 
@@ -210,10 +215,13 @@ public interface ProjectHolderViewModel {
       this.goalStringForTextView = project
         .map(p -> this.ksCurrency.format(p.goal(), p, false, true, RoundingMode.DOWN));
 
-      this.locationTextViewText = project.map(Project::location).filter(ObjectUtils::isNotNull).map(Location::displayableName);
+      this.locationTextViewText = project
+        .map(Project::location)
+        .filter(ObjectUtils::isNotNull)
+        .map(Location::displayableName);
+
       this.percentageFundedProgress = project.map(Project::percentageFunded).map(ProgressBarUtils::progress);
 
-      // todo: simplify to if project is not live?
       this.percentageFundedProgressBarIsGone = project
         .map(p -> p.isSuccessful() || p.isCanceled() || p.isFailed() || p.isSuspended());
 
@@ -267,14 +275,16 @@ public interface ProjectHolderViewModel {
         .filter(p -> !p.isLive())
         .map(p -> p.state().equals(Project.STATE_SUCCESSFUL) ? R.color.green_alpha_50 : R.color.ksr_grey_400);
 
-      // todo: negate percentageFundedProgressBarIsGone?
-      this.projectStateViewGroupIsGone = project
-        .map(Project::isLive);
+      this.projectStateViewGroupIsGone = project.map(Project::isLive);
 
       this.projectSocialImageViewIsGone = this.projectSocialViewGroupIsGone;
       this.shouldSetDefaultStatsMargins = this.projectSocialViewGroupIsGone;
       this.setCanceledProjectStateView = project.filter(Project::isCanceled).compose(ignoreValues());
-      this.setProjectSocialClickListener = project.map(Project::friends).filter(fs -> fs.size() > 2).compose(ignoreValues());
+
+      this.setProjectSocialClickListener = project
+        .map(Project::friends)
+        .filter(fs -> fs.size() > 2)
+        .compose(ignoreValues());
 
       this.setSuccessfulProjectStateView = project
         .filter(Project::isSuccessful)

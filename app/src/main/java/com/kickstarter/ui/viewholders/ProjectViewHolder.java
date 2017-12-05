@@ -372,7 +372,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   private void setConvertedUsdView(final @NonNull Pair<String, String> goalAndPledged) {
     this.usdConversionTextView.setText(
       this.ksString.format(
-        this.convertedFromString,"pledged", goalAndPledged.second,"goal", goalAndPledged.first
+        this.convertedFromString, "pledged", goalAndPledged.second, "goal", goalAndPledged.first
       )
     );
   };

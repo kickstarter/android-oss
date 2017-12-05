@@ -13,6 +13,8 @@ import com.kickstarter.factories.UserFactory;
 import com.kickstarter.factories.VideoFactory;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
@@ -520,8 +522,13 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testUsdConversionForNonUSProject() {
     final Project project = ProjectFactory.caProject();
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(Pair.create(project, "US"));
+    final Config config = ConfigFactory.configForUSUser();
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    // Set the current config for a US user. KSCurrency needs this config for conversions.
+    setUpEnvironment(environment().toBuilder().ksCurrency(new KSCurrency(currentConfig)).build());
+    this.vm.inputs.configureWith(Pair.create(project, config.countryCode()));
 
     // USD conversion shown for non US project.
     this.usdConversionGoalAndPledgedText.assertValueCount(1);
@@ -534,11 +541,15 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .country("US")
       .build();
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(Pair.create(project, "US"));
+
+    final Config config = ConfigFactory.configForUSUser();
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    setUpEnvironment(environment().toBuilder().ksCurrency(new KSCurrency(currentConfig)).build());
+    this.vm.inputs.configureWith(Pair.create(project, config.countryCode()));
 
     // USD conversion not shown for US project.
-    this.usdConversionGoalAndPledgedText.assertNoValues();
     this.usdConversionTextViewIsGone.assertValue(true);
   }
 }

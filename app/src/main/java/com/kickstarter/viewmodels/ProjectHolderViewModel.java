@@ -37,51 +37,135 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 public interface ProjectHolderViewModel {
 
   interface Inputs {
+    /** Call to configure view holder with a project and the config country. */
     void configureWith(Pair<Project, String> projectAndCountry);
+
+    /** Call when the project social view group is clicked. */
     void projectSocialViewGroupClicked();
   }
 
   interface Outputs {
+    /** Emits the creator's avatar photo url. */
     Observable<String> avatarPhotoUrl();
+
+    /** Emits the backers count string. */
     Observable<String> backersCountTextViewText();
+
+    /** Emits when the backing view group should be gone. */
     Observable<Boolean> backingViewGroupIsGone();
+
+    /** */
     Observable<String> blurbTextViewText();
+
+    /** */
     Observable<String> categoryTextViewText();
+
+    /** */
     Observable<String> commentsCountTextViewText();
+
+    /** */
     Observable<String> creatorNameTextViewText();
+
+    /** */
     Observable<String> deadlineCountdownTextViewText();
+
+    /** */
     Observable<String> featuredTextViewRootCategory();
+
+    /** */
     Observable<Boolean> featuredViewGroupIsGone();
+
+    /** */
     Observable<String> goalStringForTextView();
+
+    /** */
     Observable<String> locationTextViewText();
+
+    /** */
     Observable<Integer> percentageFundedProgress();
+
+    /** */
     Observable<Boolean> percentageFundedProgressBarIsGone();
+
+    /** */
     Observable<Boolean> playButtonIsGone();
+
+    /** */
     Observable<String> pledgedTextViewText();
+
+    /** */
     Observable<Boolean> potdViewGroupIsGone();
+
+    /** */
     Observable<DateTime> projectDisclaimerGoalReachedDateTime();
+
+    /** */
     Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString();
+
+    /** */
     Observable<Boolean> projectDisclaimerTextViewIsGone();
+
+    /** */
     Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt();
+
+    /** */
     Observable<Boolean> projectMetadataViewGroupIsGone();
+
+    /** */
     Observable<String> projectNameTextViewText();
+
+    /** */
     Observable<Project> projectOutput();
+
+    /** */
     Observable<Photo> projectPhoto();
+
+    /** */
     Observable<Boolean> projectSocialImageViewIsGone();
+
+    /** */
     Observable<String> projectSocialImageViewUrl();
+
+    /** */
     Observable<String> projectSocialTextViewText();
+
+    /** */
     Observable<Boolean> projectSocialViewGroupIsGone();
+
+    /** */
     Observable<Integer> projectStateViewGroupBackgroundColorInt();
+
+    /** */
     Observable<Boolean> projectStateViewGroupIsGone();
+
+    /** */
     Observable<Boolean> shouldSetDefaultStatsMargins();
+
+    /** */
     Observable<Void> setCanceledProjectStateView();
+
+    /** */
     Observable<Void> setProjectSocialClick();
+
+    /** */
     Observable<DateTime> setSuccessfulProjectStateView();
+
+    /** */
     Observable<Void> setSuspendedProjectStateView();
+
+    /** */
     Observable<DateTime> setUnsuccessfulProjectStateView();
+
+    /** */
     Observable<Project> startProjectSocialActivity();
+
+    /** */
     Observable<String> updatesCountTextViewText();
+
+    /** */
     Observable<Pair<String, String>> usdConversionGoalAndPledgedText();
+
+    /** */
     Observable<Boolean> usdConversionTextViewIsGone();
   }
 
@@ -95,7 +179,6 @@ public interface ProjectHolderViewModel {
       this.ksString = environment.ksString();
 
       final Observable<Project> project = this.projectAndCountry.map(PairUtils::first);
-      final Observable<String> country = this.projectAndCountry.map(PairUtils::second);
       final Observable<ProjectUtils.Metadata> projectMetadata = project.map(ProjectUtils::metadataForProject);
 
       this.avatarPhotoUrl = project.map(p -> p.creator().avatar().medium());

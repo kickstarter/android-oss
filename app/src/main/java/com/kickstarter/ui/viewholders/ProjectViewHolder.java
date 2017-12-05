@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.NumberUtils;
@@ -52,7 +51,6 @@ import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 public final class ProjectViewHolder extends KSViewHolder {
   private ProjectHolderViewModel.ViewModel viewModel;
   private final Delegate delegate;
-  private final KSCurrency ksCurrency;
   private final KSString ksString;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
@@ -136,7 +134,6 @@ public final class ProjectViewHolder extends KSViewHolder {
     super(view);
     this.viewModel = new ProjectHolderViewModel.ViewModel(environment());
     this.delegate = delegate;
-    this.ksCurrency = environment().ksCurrency();
     this.ksString = environment().ksString();
 
     ButterKnife.bind(this, view);

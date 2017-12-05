@@ -1,0 +1,168 @@
+package com.kickstarter.viewmodels;
+
+import android.support.annotation.NonNull;
+import android.util.Pair;
+
+import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.models.Photo;
+import com.kickstarter.models.Project;
+
+import org.joda.time.DateTime;
+import org.junit.Test;
+
+import java.math.RoundingMode;
+
+import rx.observers.TestSubscriber;
+
+public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
+  private ProjectHolderViewModel.ViewModel vm;
+  private final TestSubscriber<String> avatarPhotoUrl = new TestSubscriber<>();
+  private final TestSubscriber<String> backersCountTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> backingViewGroupIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> blurbTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<String> categoryTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<String> commentsCountTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<String> creatorNameTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<String> deadlineCountdownTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<String> featuredTextViewRootCategory = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> featuredViewGroupIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> goalStringForTextView = new TestSubscriber<>();
+  private final TestSubscriber<String> locationTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Integer> percentageFundedProgress = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> percentageFundedProgressBarIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> playButtonIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> pledgedTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> potdViewGroupIsGone = new TestSubscriber<>();
+  private final TestSubscriber<DateTime> projectDisclaimerGoalReachedDateTime = new TestSubscriber<>();
+  private final TestSubscriber<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> projectDisclaimerTextViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Integer> projectMetadataViewGroupBackgroundDrawableInt = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> projectMetadataViewGroupIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Project> projectOutput = new TestSubscriber<>();
+  private final TestSubscriber<Photo> projectPhoto = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> projectSocialImageViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> projectSocialImageViewUrl = new TestSubscriber<>();
+  private final TestSubscriber<String> projectSocialTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> projectSocialViewGroupIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Integer> projectStateViewGroupBackgroundColorInt = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> projectStateViewGroupIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> shouldSetDefaultStatsMargins = new TestSubscriber<>();
+  private final TestSubscriber<Void> setCanceledProjectStateView = new TestSubscriber<>();
+  private final TestSubscriber<Void> setProjectSocialClick = new TestSubscriber<>();
+  private final TestSubscriber<DateTime> setSuccessfulProjectStateView = new TestSubscriber<>();
+  private final TestSubscriber<Void> setSuspendedProjectStateView = new TestSubscriber<>();
+  private final TestSubscriber<DateTime> setUnsuccessfulProjectStateView = new TestSubscriber<>();
+  private final TestSubscriber<Project> startProjectSocialActivity = new TestSubscriber<>();
+  private final TestSubscriber<String> updatesCountTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Pair<String, String>> usdConversionGoalAndPledgedText= new TestSubscriber<>();
+  private final TestSubscriber<Boolean> usdConversionTextViewIsGone = new TestSubscriber<>();
+
+
+  private void setUpEnvironment(final @NonNull Environment environment) {
+    this.vm = new ProjectHolderViewModel.ViewModel(environment);
+    this.vm.outputs.avatarPhotoUrl().subscribe(this.avatarPhotoUrl);
+    this.vm.outputs.backersCountTextViewText().subscribe(this.backersCountTextViewText);
+//    this.vm.outputs.backingViewGroupIsGone().subscribe(this.backingViewGroupIsGone);
+    this.vm.outputs.blurbTextViewText().subscribe(this.blurbTextViewText);
+//    this.vm.outputs.categoryTextViewText().subscribe(this.categoryTextViewText);
+//    this.vm.outputs.commentsCountTextViewText().subscribe(this.commentsCountTextViewText);
+    this.vm.outputs.creatorNameTextViewText().subscribe(this.creatorNameTextViewText);
+    this.vm.outputs.deadlineCountdownTextViewText().subscribe(this.deadlineCountdownTextViewText);
+//    this.vm.outputs.featuredTextViewRootCategory().subscribe(this.featuredTextViewRootCategory);
+//    this.vm.outputs.featuredViewGroupIsGone().subscribe(this.featuredViewGroupIsGone);
+    this.vm.outputs.goalStringForTextView().subscribe(this.goalStringForTextView);
+//    this.vm.outputs.locationTextViewText().subscribe(this.locationTextViewText);
+//    this.vm.outputs.percentageFundedProgress().subscribe(this.percentageFundedProgress);
+//    this.vm.outputs.percentageFundedProgressBarIsGone().subscribe(this.percentageFundedProgressBarIsGone);
+//    this.vm.outputs.playButtonIsGone().subscribe(this.playButtonIsGone);
+    this.vm.outputs.pledgedTextViewText().subscribe(this.pledgedTextViewText);
+//    this.vm.outputs.potdViewGroupIsGone().subscribe(this.potdViewGroupIsGone);
+//    this.vm.outputs.projectDisclaimerGoalReachedDateTime().subscribe(this.projectDisclaimerGoalReachedDateTime);
+//    this.vm.outputs.projectDisclaimerGoalNotReachedString().subscribe(this.projectDisclaimerGoalNotReachedString);
+//    this.vm.outputs.projectDisclaimerTextViewIsGone().subscribe(this.projectDisclaimerTextViewIsGone);
+//    this.vm.outputs.projectMetadataViewGroupBackgroundDrawableInt().subscribe(this.projectMetadataViewGroupBackgroundDrawableInt);
+//    this.vm.outputs.projectMetadataViewGroupIsGone().subscribe(this.projectMetadataViewGroupIsGone);
+//    this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
+//    this.vm.outputs.projectOutput().subscribe(this.projectOutput);
+//    this.vm.outputs.projectPhoto().subscribe(this.projectPhoto);
+//    this.vm.outputs.projectSocialImageViewIsGone().subscribe(this.projectSocialImageViewIsGone);
+//    this.vm.outputs.projectSocialImageViewUrl().subscribe(this.projectSocialImageViewUrl);
+//    this.vm.outputs.projectSocialTextViewText().subscribe(this.projectSocialTextViewText);
+//    this.vm.outputs.projectSocialViewGroupIsGone().subscribe(this.projectSocialViewGroupIsGone);
+//    this.vm.outputs.projectStateViewGroupBackgroundColorInt().subscribe(this.projectStateViewGroupBackgroundColorInt);
+//    this.vm.outputs.projectStateViewGroupIsGone().subscribe(this.projectStateViewGroupIsGone);
+//    this.vm.outputs.shouldSetDefaultStatsMargins().subscribe(this.shouldSetDefaultStatsMargins);
+//    this.vm.outputs.setCanceledProjectStateView().subscribe(this.setCanceledProjectStateView);
+//    this.vm.outputs.setProjectSocialClick().subscribe(this.setProjectSocialClick);
+//    this.vm.outputs.setSuccessfulProjectStateView().subscribe(this.setSuccessfulProjectStateView);
+//    this.vm.outputs.setSuspendedProjectStateView().subscribe(this.setSuspendedProjectStateView);
+//    this.vm.outputs.setUnsuccessfulProjectStateView().subscribe(this.setUnsuccessfulProjectStateView);
+//    this.vm.outputs.startProjectSocialActivity().subscribe(this.startProjectSocialActivity);
+//    this.vm.outputs.updatesCountTextViewText().subscribe(this.updatesCountTextViewText);
+//    this.vm.outputs.usdConversionGoalAndPledgedText().subscribe(this.usdConversionGoalAndPledgedText);
+//    this.vm.outputs.usdConversionTextViewIsGone().subscribe(this.usdConversionTextViewIsGone);
+  }
+
+  @Test
+  public void testBackingMetadata() {
+
+  }
+
+  @Test
+  public void testCreatorDataEmits() {
+    final Project project = ProjectFactory.project();
+    this.vm.inputs.configureWith(Pair.create(project, "CA"));
+
+    this.avatarPhotoUrl.assertValues(project.creator().avatar().medium());
+    this.creatorNameTextViewText.assertValues(project.creator().name());
+  }
+
+  @Test
+  public void testFeaturedMetadata() {
+
+  }
+
+
+  @Test
+  public void testPotdMetadata() {
+
+  }
+
+  @Test
+  public void testProjectDataEmits() {
+    final Project project = ProjectFactory.project();
+    this.vm.inputs.configureWith(Pair.create(project, "US"));
+
+    this.blurbTextViewText.assertValues(project.blurb());
+    this.goalStringForTextView.assertValues(
+      environment()
+        .ksCurrency()
+        .format(project.goal(), project, false, true, RoundingMode.DOWN)
+    );
+
+    this.pledgedTextViewText.assertValues(
+      environment()
+        .ksCurrency()
+        .format(project.pledged(), project, false, true, RoundingMode.DOWN)
+    );
+
+    this.projectNameTextViewText.assertValues(project.name());
+    this.projectOutput.assertValues(project);
+    this.projectPhoto.assertValues(project.photo());
+  }
+
+  @Test
+  public void testProjectStatsEmit() {
+    final Project project = ProjectFactory.project();
+    this.vm.inputs.configureWith(Pair.create(project, "MX"));
+
+    this.backersCountTextViewText.assertValues(NumberUtils.format(project.backersCount()));
+    this.deadlineCountdownTextViewText.assertValues(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
+  }
+
+}

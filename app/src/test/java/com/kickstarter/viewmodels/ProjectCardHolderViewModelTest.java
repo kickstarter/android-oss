@@ -25,7 +25,7 @@ import java.util.List;
 import rx.observers.TestSubscriber;
 
 
-public class ProjectCardholderViewModelTest extends KSRobolectricTestCase {
+public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
   private ProjectCardHolderViewModel.ViewModel vm;
   private final TestSubscriber<String> backersCountTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backingViewGroupIsGone = new TestSubscriber<>();

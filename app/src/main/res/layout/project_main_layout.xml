@@ -191,7 +191,8 @@
       android:paddingTop="@dimen/grid_2"
       android:paddingStart="@dimen/grid_4"
       android:paddingEnd="@dimen/grid_4"
-      android:paddingBottom="@dimen/grid_2">
+      android:paddingBottom="@dimen/grid_2"
+      tools:visibility="visible">
 
       <TextView
         android:id="@+id/project_state_header_text_view"

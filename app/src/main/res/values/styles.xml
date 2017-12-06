@@ -431,4 +431,13 @@
     <item name="android:textAllCaps">true</item>
   </style>
 
+  <style name="FacepileImageView">
+    <item name="android:padding">1dp</item>
+    <item name="android:foreground">@drawable/oval_white_stroke</item>
+    <item name="android:background">@drawable/oval_white</item>
+    <item name="android:layout_width">@dimen/grid_4</item>
+    <item name="android:layout_height">@dimen/grid_4</item>
+    <item name="android:layout_marginEnd">@dimen/grid_1</item>
+  </style>
+
 </resources>

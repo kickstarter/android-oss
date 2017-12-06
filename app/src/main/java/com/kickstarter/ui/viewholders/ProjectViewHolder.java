@@ -424,7 +424,7 @@ public final class ProjectViewHolder extends KSViewHolder {
         .transform(new CircleTransformation())
         .into(this.projectSocialImageView);
 
-      this.projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(this.project.friends(), this.ksString));
+      this.projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(context(), this.project.friends(), this.ksString));
 
     } else {
       this.projectSocialViewGroup.setVisibility(View.GONE);

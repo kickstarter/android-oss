@@ -13,10 +13,11 @@
   <dimen name="grid_11_half">33dp</dimen>
   <dimen name="grid_6">36dp</dimen>
   <dimen name="grid_7">42dp</dimen>
+  <dimen name="grid_15_half">45dp</dimen>
   <dimen name="grid_8">48dp</dimen>
   <dimen name="grid_9">54dp</dimen>
   <dimen name="grid_10">60dp</dimen>
-  <dimen name="grid_10_half">63dp</dimen>
+  <dimen name="grid_21_half">63dp</dimen>
   <dimen name="grid_12">72dp</dimen>
   <dimen name="grid_13">78dp</dimen>
   <dimen name="grid_14">84dp</dimen>

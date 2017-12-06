@@ -21,7 +21,7 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
       .currentUser(currentUser)
       .build();
 
-    final SettingsViewModel vm = new SettingsViewModel(environment);
+    final SettingsViewModel.ViewModel vm = new SettingsViewModel.ViewModel(environment);
 
     final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
     currentUser.observable().subscribe(currentUserTest);
@@ -51,7 +51,7 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
       .currentUser(currentUser)
       .build();
 
-    final SettingsViewModel vm = new SettingsViewModel(environment);
+    final SettingsViewModel.ViewModel vm = new SettingsViewModel.ViewModel(environment);
 
     final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
     currentUser.observable().subscribe(currentUserTest);
@@ -81,7 +81,7 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
       .currentUser(currentUser)
       .build();
 
-    final SettingsViewModel vm = new SettingsViewModel(environment);
+    final SettingsViewModel.ViewModel vm = new SettingsViewModel.ViewModel(environment);
 
     final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
     currentUser.observable().subscribe(currentUserTest);
@@ -111,7 +111,7 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
       .currentUser(currentUser)
       .build();
 
-    final SettingsViewModel vm = new SettingsViewModel(environment);
+    final SettingsViewModel.ViewModel vm = new SettingsViewModel.ViewModel(environment);
 
     final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
     currentUser.observable().subscribe(currentUserTest);

@@ -239,8 +239,7 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static
-  WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
+  static WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
     @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build, final @NonNull AndroidPayCapability androidPayCapability) {
     return new WebRequestInterceptor(currentUser, endpoint, internalTools, build, androidPayCapability);
   }
@@ -252,8 +251,7 @@ public final class ApplicationModule {
     return retrofit.create(WebService.class);
   }
 
-  private @NonNull
-  static Retrofit createRetrofit(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
+  private static @NonNull Retrofit createRetrofit(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
     return new Retrofit.Builder()
       .client(SocketUtils.enableTLS1_2OnPreLollipop(okHttpClient))
       .baseUrl(baseUrl)
@@ -318,7 +316,7 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   static Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-                            final @NonNull AndroidPayCapability androidPayCapability) {
+    final @NonNull AndroidPayCapability androidPayCapability) {
     return new Koala(new KoalaTrackingClient(context, currentUser, androidPayCapability));
   }
 
@@ -370,10 +368,9 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  static CurrentUserType provideCurrentUser(@AccessTokenPreference final @NonNull StringPreferenceType accessTokenPreference,
-                                            final @NonNull DeviceRegistrarType deviceRegistrar,
-                                            final @NonNull Gson gson,
-                                            @NonNull @UserPreference final StringPreferenceType userPreference) {
+  static CurrentUserType provideCurrentUser(final @AccessTokenPreference @NonNull StringPreferenceType accessTokenPreference,
+    final @NonNull DeviceRegistrarType deviceRegistrar, final @NonNull Gson gson,
+    final @NonNull @UserPreference StringPreferenceType userPreference) {
     return new CurrentUser(accessTokenPreference, deviceRegistrar, gson, userPreference);
   }
 
@@ -434,7 +431,7 @@ public final class ApplicationModule {
 
   @Provides
   static KSWebViewClient provideKSWebViewClient(final @NonNull OkHttpClient okHttpClient,
-                                                @WebEndpoint final String webEndpoint) {
+    final @WebEndpoint String webEndpoint) {
     return new KSWebViewClient(okHttpClient, webEndpoint);
   }
 
@@ -447,8 +444,8 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static PushNotifications providePushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client,
-                                                    final @NonNull DeviceRegistrarType deviceRegistrar) {
+  static PushNotifications providePushNotifications(final @ApplicationContext @NonNull Context context,
+    final @NonNull ApiClientType client, final @NonNull DeviceRegistrarType deviceRegistrar) {
     return new PushNotifications(context, client, deviceRegistrar);
   }
 

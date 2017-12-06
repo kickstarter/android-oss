@@ -18,13 +18,11 @@ public interface ProjectNotificationSettingsViewModel {
 
   interface Outputs {
     Observable<List<ProjectNotification>> projectNotifications();
-  }
 
-  interface Errors {
     Observable<Void> unableToFetchProjectNotificationsError();
   }
 
-  final class ViewModel extends ActivityViewModel<ProjectNotificationSettingsActivity> implements Outputs, Errors {
+  final class ViewModel extends ActivityViewModel<ProjectNotificationSettingsActivity> implements Outputs {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -36,16 +34,13 @@ public interface ProjectNotificationSettingsViewModel {
     }
 
     private Observable<List<ProjectNotification>> projectNotifications;
-
     private final PublishSubject<Throwable> unableToFetchProjectNotificationsError = PublishSubject.create();
 
     public final Outputs outputs = this;
-    public final Errors errors = this;
 
     @Override public @NonNull Observable<List<ProjectNotification>> projectNotifications() {
       return this.projectNotifications;
     }
-
     @Override public @NonNull Observable<Void> unableToFetchProjectNotificationsError() {
       return this.unableToFetchProjectNotificationsError
         .map(__ -> null);

@@ -41,7 +41,7 @@ public final class ProjectNotificationSettingsActivity extends BaseActivity<Proj
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::projectNotifications);
 
-    this.viewModel.errors.unableToFetchProjectNotificationsError()
+    this.viewModel.outputs.unableToFetchProjectNotificationsError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .map(__ -> this.generalErrorString)

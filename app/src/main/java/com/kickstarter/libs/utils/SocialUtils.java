@@ -153,6 +153,7 @@ public final class SocialUtils {
     }
     final String remainingCount = NumberUtils.format(Math.max(0, friends.size() - 3));
 
+    //since we show 3 friends at max, the remaining number needs to be adjusted
     return ksString.format("discovery_baseball_card_social_friends_are_backers", friends.size() == 3 ? friends.size() - 1 : friends.size(),
       "friend_name", friendName,
       "second_friend_name", secondFriendName,

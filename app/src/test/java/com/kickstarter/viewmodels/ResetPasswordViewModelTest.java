@@ -73,7 +73,7 @@ public final class ResetPasswordViewModelTest extends KSRobolectricTestCase {
 
     koalaTest.assertValues("Forgot Password View");
 
-    vm.getErrors().resetError().subscribe(errorTest);
+    vm.getOutputs().resetError().subscribe(errorTest);
 
     vm.getInputs().email("hello@kickstarter.com");
     vm.getInputs().resetPasswordClick();

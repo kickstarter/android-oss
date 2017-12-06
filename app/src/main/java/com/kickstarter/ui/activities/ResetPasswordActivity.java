@@ -58,7 +58,7 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::setFormEnabled);
 
-    this.viewModel.getErrors().resetError()
+    this.viewModel.getOutputs().resetError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> ViewUtils.showDialog(this, this.errorTitleString, this.errorMessageString));

@@ -30,14 +30,12 @@ interface ResetPasswordViewModel {
 
     /** Emits when password reset is completed successfully. */
     fun resetSuccess(): Observable<Void>
-  }
 
-  interface Errors {
     /** Emits when password reset fails. */
     fun resetError(): Observable<String>
   }
 
-  class ViewModel(val environment: Environment) : ActivityViewModel<ResetPasswordActivity>(environment), Inputs, Outputs, Errors {
+  class ViewModel(val environment: Environment) : ActivityViewModel<ResetPasswordActivity>(environment), Inputs, Outputs {
     private val client: ApiClientType = environment.apiClient()
 
     private val email = PublishSubject.create<String>()
@@ -46,12 +44,10 @@ interface ResetPasswordViewModel {
     private val isFormSubmitting = PublishSubject.create<Boolean>()
     private val isFormValid = PublishSubject.create<Boolean>()
     private val resetSuccess = PublishSubject.create<Void>()
-
     private val resetError = PublishSubject.create<ErrorEnvelope>()
 
     val inputs: Inputs = this
     val outputs: Outputs = this
-    val errors: Errors = this
 
     init {
       this.email
@@ -104,7 +100,6 @@ interface ResetPasswordViewModel {
     override fun resetSuccess(): Observable<Void> {
       return this.resetSuccess
     }
-
     override fun resetError(): Observable<String> {
       return this.resetError
         .takeUntil(this.resetSuccess)

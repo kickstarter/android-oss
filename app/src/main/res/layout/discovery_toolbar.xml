@@ -9,14 +9,13 @@
   android:elevation="0dp"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  app:layout_scrollFlags="scroll|exitUntilCollapsed"
+  app:layout_collapseMode="parallax"
   tools:ignore="UnusedAttribute"
   tools:showIn="@layout/discovery_layout">
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:layout_marginTop="@dimen/discovery_drawer_status_bar_height"
     android:baselineAligned="false"
     android:gravity="center_vertical"
     android:orientation="horizontal">

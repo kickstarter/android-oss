@@ -1,6 +1,7 @@
 package com.kickstarter.ui.toolbars;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
@@ -12,7 +13,7 @@ public class AlphaBehavior<V extends View> extends CoordinatorLayout.Behavior<V>
   public AlphaBehavior() {
   }
 
-  public AlphaBehavior(final Context context, final AttributeSet attrs) {
+  public AlphaBehavior(final @NonNull Context context, final @NonNull AttributeSet attrs) {
     super(context, attrs);
   }
 

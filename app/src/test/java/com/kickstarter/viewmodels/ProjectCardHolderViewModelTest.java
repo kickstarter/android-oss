@@ -66,8 +66,8 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.deadlineCountdownText().subscribe(this.deadlineCountdownText);
     this.vm.outputs.featuredViewGroupIsGone().subscribe(this.featuredViewGroupIsGone);
     this.vm.outputs.friendBackingViewIsHidden().subscribe(this.friendBackingViewIsHidden);
-    this.vm.outputs.friendAvatar2IsHidden().subscribe(this.friendAvatar2IsHidden);
-    this.vm.outputs.friendAvatar3IsHidden().subscribe(this.friendAvatar3IsHidden);
+    this.vm.outputs.friendAvatar2IsGone().subscribe(this.friendAvatar2IsHidden);
+    this.vm.outputs.friendAvatar3IsGone().subscribe(this.friendAvatar3IsHidden);
     this.vm.outputs.friendAvatarUrl1().subscribe(this.friendAvatarUrl1);
     this.vm.outputs.friendAvatarUrl2().subscribe(this.friendAvatarUrl2);
     this.vm.outputs.friendAvatarUrl3().subscribe(this.friendAvatarUrl3);

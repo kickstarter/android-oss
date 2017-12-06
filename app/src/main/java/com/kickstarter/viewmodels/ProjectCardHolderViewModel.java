@@ -43,8 +43,8 @@ public interface ProjectCardHolderViewModel {
     Observable<String> deadlineCountdownText();
     Observable<Boolean> featuredViewGroupIsGone();
     Observable<List<User>> friendsForNamepile();
-    Observable<Boolean> friendAvatar2IsHidden();
-    Observable<Boolean> friendAvatar3IsHidden();
+    Observable<Boolean> friendAvatar2IsGone();
+    Observable<Boolean> friendAvatar3IsGone();
     Observable<String> friendAvatarUrl1();
     Observable<String> friendAvatarUrl2();
     Observable<String> friendAvatarUrl3();
@@ -110,12 +110,12 @@ public interface ProjectCardHolderViewModel {
         .filter(friends -> friends.size() > 2)
         .map(friends -> friends.get(2).avatar().small());
 
-      this.friendAvatar2IsHidden = this.project
+      this.friendAvatar2IsGone = this.project
         .map(Project::friends)
         .map(friends -> friends != null && friends.size() > 1)
         .map(BooleanUtils::negate);
 
-      this.friendAvatar3IsHidden = this.project
+      this.friendAvatar3IsGone = this.project
         .map(Project::friends)
         .map(friends -> friends != null && friends.size() > 2)
         .map(BooleanUtils::negate);
@@ -214,8 +214,8 @@ public interface ProjectCardHolderViewModel {
     private final Observable<Boolean> backingViewGroupIsGone;
     private final Observable<String> deadlineCountdownText;
     private final Observable<Boolean> featuredViewGroupIsGone;
-    private final Observable<Boolean> friendAvatar2IsHidden;
-    private final Observable<Boolean> friendAvatar3IsHidden;
+    private final Observable<Boolean> friendAvatar2IsGone;
+    private final Observable<Boolean> friendAvatar3IsGone;
     private final Observable<String> friendAvatarUrl1;
     private final Observable<String> friendAvatarUrl2;
     private final Observable<String> friendAvatarUrl3;
@@ -265,11 +265,11 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<Boolean> featuredViewGroupIsGone() {
       return this.featuredViewGroupIsGone;
     }
-    @Override public @NonNull Observable<Boolean> friendAvatar2IsHidden() {
-      return this.friendAvatar2IsHidden;
+    @Override public @NonNull Observable<Boolean> friendAvatar2IsGone() {
+      return this.friendAvatar2IsGone;
     }
-    @Override public @NonNull Observable<Boolean> friendAvatar3IsHidden() {
-      return this.friendAvatar3IsHidden;
+    @Override public @NonNull Observable<Boolean> friendAvatar3IsGone() {
+      return this.friendAvatar3IsGone;
     }
     @Override public @NonNull Observable<String> friendAvatarUrl1() {
       return this.friendAvatarUrl1;

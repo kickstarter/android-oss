@@ -133,11 +133,13 @@ public final class SocialUtils {
   /**
    * Returns a namepile for a list of friends.
    */
-  public static @NonNull String projectCardFriendNamepile(final Context context, final @NonNull List<User> friends, final @NonNull KSString ksString) {
+  public static @NonNull String projectCardFriendNamepile(final @NonNull Context context, final @NonNull List<User> friends, final @NonNull KSString ksString) {
     final String friendName;
     if (friends.size() < 3) {
       friendName = friends.size() >= 1 ? friends.get(0).name() : "";
     } else {
+      //if there are 3 friends, we should combine the first 2 friend names using the delimiter
+      //and if there are more than 3, we should combine all of them
       final String delimiter = context.getString(R.string.project_social_friends_separator).trim() + " ";
       final String joinedFriends = TextUtils.join(delimiter, Arrays.asList(friends.get(0).name(), friends.get(1).name()));
       friendName = friends.size() == 3 ? joinedFriends.concat(delimiter.trim()) : joinedFriends;

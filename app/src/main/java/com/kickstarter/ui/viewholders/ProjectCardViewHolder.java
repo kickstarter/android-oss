@@ -120,12 +120,12 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.featuredViewGroup));
 
-    this.viewModel.outputs.friendAvatar2IsHidden()
+    this.viewModel.outputs.friendAvatar2IsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(hidden -> ViewUtils.setGone(this.friendBackingAvatarImageView2, hidden));
 
-    this.viewModel.outputs.friendAvatar3IsHidden()
+    this.viewModel.outputs.friendAvatar3IsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(hidden -> ViewUtils.setGone(this.friendBackingAvatarImageView3, hidden));

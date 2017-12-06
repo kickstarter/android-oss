@@ -20,8 +20,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresActivityViewModel(ProjectNotificationSettingsViewModel.class)
-public final class ProjectNotificationSettingsActivity extends BaseActivity<ProjectNotificationSettingsViewModel> {
+@RequiresActivityViewModel(ProjectNotificationSettingsViewModel.ViewModel.class)
+public final class ProjectNotificationSettingsActivity extends BaseActivity<ProjectNotificationSettingsViewModel.ViewModel> {
   protected @Bind(R.id.project_notification_settings_recycler_view) RecyclerView recyclerView;
 
   protected @BindString(R.string.general_error_something_wrong) String generalErrorString;
@@ -41,7 +41,7 @@ public final class ProjectNotificationSettingsActivity extends BaseActivity<Proj
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::projectNotifications);
 
-    this.viewModel.errors.unableToFetchProjectNotificationsError()
+    this.viewModel.outputs.unableToFetchProjectNotificationsError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .map(__ -> this.generalErrorString)

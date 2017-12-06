@@ -240,7 +240,7 @@ public interface SettingsViewModel {
       return this.userOutput;
     }
 
-    @Override public @NonNull final Observable<String> unableToSavePreferenceError() {
+    @Override public @NonNull Observable<String> unableToSavePreferenceError() {
       return this.unableToSavePreferenceError
         .takeUntil(this.updateSuccess)
         .map(__ -> null);

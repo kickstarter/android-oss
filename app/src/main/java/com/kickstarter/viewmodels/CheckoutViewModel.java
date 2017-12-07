@@ -30,18 +30,18 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 public interface CheckoutViewModel {
 
   interface Inputs {
+    /** Call when any back button is pressed. */
+    void backButtonClicked();
+
+    /** Call when the user has clicked the confirm android pay button. */
+    void confirmAndroidPayClicked();
+
     /** Takes a url whenever a page has been intercepted by the web view.
      * @param url The url that has been intercepted */
     void pageIntercepted(final @NonNull String url);
 
-    /** Call when any back button is pressed. */
-    void backButtonClicked();
-
     /** Call when the activity obtains a base 64 payload from an android pay button in the web page. */
     void takePayloadString(final @Nullable String payloadString);
-
-    /** Call when the user has clicked the confirm android pay button. */
-    void confirmAndroidPayClicked();
   }
 
   interface Outputs {

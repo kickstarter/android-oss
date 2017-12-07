@@ -39,8 +39,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 import static com.kickstarter.libs.utils.IntegerUtils.intValueOrZero;
 
-@RequiresActivityViewModel(SettingsViewModel.class)
-public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
+@RequiresActivityViewModel(SettingsViewModel.ViewModel.class)
+public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewModel> {
   protected @Bind(R.id.games_switch) SwitchCompat gamesNewsletterSwitch;
   protected @Bind(R.id.happening_now_switch) SwitchCompat happeningNewsletterSwitch;
   protected @Bind(R.id.friend_activity_mail_icon) IconTextView friendActivityMailIconTextView;

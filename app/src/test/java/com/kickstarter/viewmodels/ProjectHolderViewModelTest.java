@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import rx.observers.TestSubscriber;
 
@@ -50,7 +51,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> percentageFundedProgressBarIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> playButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> pledgedTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> potdViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<DateTime> projectDisclaimerGoalReachedDateTime = new TestSubscriber<>();
   private final TestSubscriber<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString = new TestSubscriber<>();
   private final TestSubscriber<Boolean> projectDisclaimerTextViewIsGone = new TestSubscriber<>();
@@ -61,7 +61,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Photo> projectPhoto = new TestSubscriber<>();
   private final TestSubscriber<Boolean> projectSocialImageViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> projectSocialImageViewUrl = new TestSubscriber<>();
-  private final TestSubscriber<String> projectSocialTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<List<User>> projectSocialTextViewFriends = new TestSubscriber<>();
   private final TestSubscriber<Boolean> projectSocialViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<Integer> projectStateViewGroupBackgroundColorInt = new TestSubscriber<>();
   private final TestSubscriber<Boolean> projectStateViewGroupIsGone = new TestSubscriber<>();
@@ -94,7 +94,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.percentageFundedProgressBarIsGone().subscribe(this.percentageFundedProgressBarIsGone);
     this.vm.outputs.playButtonIsGone().subscribe(this.playButtonIsGone);
     this.vm.outputs.pledgedTextViewText().subscribe(this.pledgedTextViewText);
-    this.vm.outputs.potdViewGroupIsGone().subscribe(this.potdViewGroupIsGone);
     this.vm.outputs.projectDisclaimerGoalReachedDateTime().subscribe(this.projectDisclaimerGoalReachedDateTime);
     this.vm.outputs.projectDisclaimerGoalNotReachedString().subscribe(this.projectDisclaimerGoalNotReachedString);
     this.vm.outputs.projectDisclaimerTextViewIsGone().subscribe(this.projectDisclaimerTextViewIsGone);
@@ -105,7 +104,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.projectPhoto().subscribe(this.projectPhoto);
     this.vm.outputs.projectSocialImageViewIsGone().subscribe(this.projectSocialImageViewIsGone);
     this.vm.outputs.projectSocialImageViewUrl().subscribe(this.projectSocialImageViewUrl);
-    this.vm.outputs.projectSocialTextViewText().subscribe(this.projectSocialTextViewText);
+    this.vm.outputs.projectSocialTextViewFriends().subscribe(this.projectSocialTextViewFriends);
     this.vm.outputs.projectSocialViewGroupIsGone().subscribe(this.projectSocialViewGroupIsGone);
     this.vm.outputs.projectStateViewGroupBackgroundColorInt().subscribe(this.projectStateViewGroupBackgroundColorInt);
     this.vm.outputs.projectStateViewGroupIsGone().subscribe(this.projectStateViewGroupIsGone);
@@ -143,7 +142,23 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
     this.backingViewGroupIsGone.assertValues(false);
     this.featuredViewGroupIsGone.assertValues(true);
-    this.potdViewGroupIsGone.assertValues(true);
+    this.projectMetadataViewGroupBackgroundDrawableInt.assertValues(R.drawable.rect_green_grey_stroke);
+  }
+
+  @Test
+  public void testMetadata_Backing_Featured() {
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .isBacking(true)
+      .featuredAt(DateTime.now())
+      .build();
+
+    setUpEnvironment(environment());
+    this.vm.configureWith(Pair.create(project, "US"));
+
+    this.backingViewGroupIsGone.assertValues(false);
+    this.featuredTextViewRootCategory.assertNoValues();
+    this.featuredViewGroupIsGone.assertValues(true);
     this.projectMetadataViewGroupBackgroundDrawableInt.assertValues(R.drawable.rect_green_grey_stroke);
   }
 
@@ -163,25 +178,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.backingViewGroupIsGone.assertValues(true);
     this.featuredTextViewRootCategory.assertValues(category.root().name());
     this.featuredViewGroupIsGone.assertValues(false);
-    this.potdViewGroupIsGone.assertValues(true);
-    this.projectMetadataViewGroupBackgroundDrawableInt.assertNoValues();
-  }
-
-  @Test
-  public void testMetadata_Featured_Potd() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .potdAt(DateTime.now())
-      .featuredAt(DateTime.now())
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.configureWith(Pair.create(project, "US"));
-
-    this.backingViewGroupIsGone.assertValues(true);
-    this.featuredTextViewRootCategory.assertNoValues();
-    this.featuredViewGroupIsGone.assertValues(true);
-    this.potdViewGroupIsGone.assertValues(false);
     this.projectMetadataViewGroupBackgroundDrawableInt.assertNoValues();
   }
 
@@ -190,7 +186,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     final Project project = ProjectFactory.project()
       .toBuilder()
       .featuredAt(null)
-      .potdAt(null)
       .build();
 
     setUpEnvironment(environment());
@@ -199,44 +194,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.backingViewGroupIsGone.assertValues(true);
     this.featuredTextViewRootCategory.assertNoValues();
     this.featuredViewGroupIsGone.assertValues(true);
-    this.potdViewGroupIsGone.assertValues(true);
     this.projectMetadataViewGroupBackgroundDrawableInt.assertNoValues();
     this.projectMetadataViewGroupIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testMetadata_Potd() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .potdAt(DateTime.now())
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.configureWith(Pair.create(project, "US"));
-
-    this.backingViewGroupIsGone.assertValues(true);
-    this.featuredTextViewRootCategory.assertNoValues();
-    this.featuredViewGroupIsGone.assertValues(true);
-    this.potdViewGroupIsGone.assertValues(false);
-    this.projectMetadataViewGroupBackgroundDrawableInt.assertNoValues();
-  }
-
-  @Test
-  public void testMetadata_Potd_Backing() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .isBacking(true)
-      .potdAt(DateTime.now())
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.configureWith(Pair.create(project, "US"));
-
-    this.backingViewGroupIsGone.assertValues(false);
-    this.featuredTextViewRootCategory.assertNoValues();
-    this.featuredViewGroupIsGone.assertValues(true);
-    this.potdViewGroupIsGone.assertValues(true);
-    this.projectMetadataViewGroupBackgroundDrawableInt.assertValues(R.drawable.rect_green_grey_stroke);
   }
 
   @Test
@@ -381,7 +340,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.setProjectSocialClickListener.assertValueCount(1);
     this.projectSocialImageViewIsGone.assertValues(false);
     this.projectSocialImageViewUrl.assertValueCount(1);
-    this.projectSocialTextViewText.assertValueCount(1);
+    this.projectSocialTextViewFriends.assertValueCount(1);
     this.projectSocialViewGroupIsGone.assertValues(false);
     this.shouldSetDefaultStatsMargins.assertValues(false);
 
@@ -401,7 +360,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
     this.projectSocialImageViewIsGone.assertValues(true);
     this.projectSocialImageViewUrl.assertNoValues();
-    this.projectSocialTextViewText.assertNoValues();
+    this.projectSocialTextViewFriends.assertNoValues();
     this.projectSocialViewGroupIsGone.assertValues(true);
     this.shouldSetDefaultStatsMargins.assertValues(true);
     this.setProjectSocialClickListener.assertNoValues();
@@ -423,7 +382,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.setProjectSocialClickListener.assertNoValues();
     this.projectSocialImageViewIsGone.assertValues(false);
     this.projectSocialImageViewUrl.assertValueCount(1);
-    this.projectSocialTextViewText.assertValueCount(1);
+    this.projectSocialTextViewFriends.assertValueCount(1);
     this.projectSocialViewGroupIsGone.assertValues(false);
     this.shouldSetDefaultStatsMargins.assertValues(false);
   }

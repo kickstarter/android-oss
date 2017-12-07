@@ -2,11 +2,13 @@ package com.kickstarter.libs.utils;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.models.User;
 
+import java.util.Arrays;
 import java.util.List;
 
 public final class SocialUtils {
@@ -131,12 +133,28 @@ public final class SocialUtils {
   /**
    * Returns a namepile for a list of friends.
    */
-  public static @NonNull String projectCardFriendNamepile(final @NonNull List<User> friends, final @NonNull KSString ksString) {
-    final String friendName = friends.size() >= 1 ? friends.get(0).name() : "";
-    final String secondFriendName = friends.size() >= 2 ? friends.get(1).name() : "";
-    final String remainingCount = NumberUtils.format(Math.max(0, friends.size() - 2));
+  public static @NonNull String projectCardFriendNamepile(final @NonNull Context context, final @NonNull List<User> friends, final @NonNull KSString ksString) {
+    final String friendName;
+    if (friends.size() < 3) {
+      friendName = friends.size() >= 1 ? friends.get(0).name() : "";
+    } else {
+      //if there are 3 friends, we should combine the first 2 friend names using the delimiter
+      //and if there are more than 3, we should combine all of them
+      final String delimiter = context.getString(R.string.project_social_friends_separator).trim() + " ";
+      final String joinedFriends = TextUtils.join(delimiter, Arrays.asList(friends.get(0).name(), friends.get(1).name()));
+      friendName = friends.size() == 3 ? joinedFriends.concat(delimiter.trim()) : joinedFriends;
+    }
 
-    return ksString.format("discovery_baseball_card_social_friends_are_backers", friends.size(),
+    final String secondFriendName;
+    if (friends.size() >= 2) {
+      secondFriendName = friends.size() == 2 ? friends.get(1).name() : friends.get(2).name();
+    } else {
+      secondFriendName = "";
+    }
+    final String remainingCount = NumberUtils.format(Math.max(0, friends.size() - 3));
+
+    //since we show 3 friends at max, the remaining number needs to be adjusted
+    return ksString.format("discovery_baseball_card_social_friends_are_backers", friends.size() == 3 ? friends.size() - 1 : friends.size(),
       "friend_name", friendName,
       "second_friend_name", secondFriendName,
       "remaining_count", remainingCount

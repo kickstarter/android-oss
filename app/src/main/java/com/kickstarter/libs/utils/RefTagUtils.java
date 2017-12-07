@@ -104,20 +104,12 @@ public final class RefTagUtils {
   }
 
   /**
-   * Converts a pair (params, project) into a (project, refTag) pair that does some extra logic around POTD and
+   * Converts a pair (params, project) into a (project, refTag) pair that does some extra logic around
    * featured projects.
    */
   public static @NonNull Pair<Project, RefTag> projectAndRefTagFromParamsAndProject(final @NonNull DiscoveryParams params,
     final @NonNull Project project) {
-    final RefTag refTag;
-    if (project.isPotdToday()) {
-      refTag = RefTag.discoverPotd();
-    } else if (project.isFeaturedToday()) {
-      refTag = RefTag.categoryFeatured();
-    } else {
-      refTag = DiscoveryParamsUtils.refTag(params);
-    }
-
+    final RefTag refTag = project.isFeaturedToday() ? RefTag.categoryFeatured() : DiscoveryParamsUtils.refTag(params);
     return new Pair<>(project, refTag);
   }
 

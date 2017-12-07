@@ -14,7 +14,7 @@ public class SocialUtilsTest extends KSRobolectricTestCase {
   @Test
   public void testProjectCardNamepile_oneFriend() {
     final List<User> friends = Collections.singletonList(UserFactory.user().toBuilder().name("Anna").build());
-    assertEquals("Anna is a backer.", SocialUtils.projectCardFriendNamepile(friends, ksString()));
+    assertEquals("Anna is a backer.", SocialUtils.projectCardFriendNamepile(context(), friends, ksString()));
   }
 
   @Test
@@ -23,7 +23,7 @@ public class SocialUtilsTest extends KSRobolectricTestCase {
       UserFactory.user().toBuilder().name("Anna").build(),
       UserFactory.user().toBuilder().name("Ben").build()
     );
-    assertEquals("Anna and Ben are backers.", SocialUtils.projectCardFriendNamepile(friends, ksString()));
+    assertEquals("Anna and Ben are backers.", SocialUtils.projectCardFriendNamepile(context(), friends, ksString()));
   }
 
   @Test
@@ -33,7 +33,18 @@ public class SocialUtilsTest extends KSRobolectricTestCase {
       UserFactory.user().toBuilder().name("Ben").build(),
       UserFactory.user().toBuilder().name("Charles").build()
     );
-    assertEquals("Anna, Ben, and 1 more are backers.", SocialUtils.projectCardFriendNamepile(friends, ksString()));
+    assertEquals("Anna, Ben, and Charles are backers.", SocialUtils.projectCardFriendNamepile(context(), friends, ksString()));
+  }
+
+  @Test
+  public void testProjectCardNamepile_fourFriends() {
+    final List<User> friends = Arrays.asList(
+      UserFactory.user().toBuilder().name("Anna").build(),
+      UserFactory.user().toBuilder().name("Ben").build(),
+      UserFactory.user().toBuilder().name("Charles").build(),
+      UserFactory.user().toBuilder().name("Darlene").build()
+    );
+    assertEquals("Anna, Ben, Charles, and 1 more are backers.", SocialUtils.projectCardFriendNamepile(context(), friends, ksString()));
   }
 }
 

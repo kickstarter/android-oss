@@ -8,39 +8,42 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.activities.ProjectNotificationSettingsActivity;
-import com.kickstarter.viewmodels.errors.ProjectNotificationSettingsViewModelErrors;
-import com.kickstarter.viewmodels.outputs.ProjectNotificationSettingsViewModelOutputs;
 
 import java.util.List;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public final class ProjectNotificationSettingsViewModel extends ActivityViewModel<ProjectNotificationSettingsActivity> implements
-  ProjectNotificationSettingsViewModelOutputs, ProjectNotificationSettingsViewModelErrors {
+public interface ProjectNotificationSettingsViewModel {
 
-  public ProjectNotificationSettingsViewModel(final @NonNull Environment environment) {
-    super(environment);
+  interface Outputs {
+    Observable<List<ProjectNotification>> projectNotifications();
 
-    final ApiClientType client = environment.apiClient();
-
-    this.projectNotifications = client.fetchProjectNotifications()
-      .compose(Transformers.pipeErrorsTo(this.unableToFetchProjectNotificationsError));
+    Observable<Void> unableToFetchProjectNotificationsError();
   }
 
-  private Observable<List<ProjectNotification>> projectNotifications;
+  final class ViewModel extends ActivityViewModel<ProjectNotificationSettingsActivity> implements Outputs {
 
-  private final PublishSubject<Throwable> unableToFetchProjectNotificationsError = PublishSubject.create();
+    public ViewModel(final @NonNull Environment environment) {
+      super(environment);
 
-  public final ProjectNotificationSettingsViewModelOutputs outputs = this;
-  public final ProjectNotificationSettingsViewModelErrors errors = this;
+      final ApiClientType client = environment.apiClient();
 
-  public Observable<List<ProjectNotification>> projectNotifications() {
-    return this.projectNotifications;
-  }
+      this.projectNotifications = client.fetchProjectNotifications()
+        .compose(Transformers.pipeErrorsTo(this.unableToFetchProjectNotificationsError));
+    }
 
-  public Observable<Void> unableToFetchProjectNotificationsError() {
-    return this.unableToFetchProjectNotificationsError
-      .map(__ -> null);
+    private Observable<List<ProjectNotification>> projectNotifications;
+    private final PublishSubject<Throwable> unableToFetchProjectNotificationsError = PublishSubject.create();
+
+    public final Outputs outputs = this;
+
+    @Override public @NonNull Observable<List<ProjectNotification>> projectNotifications() {
+      return this.projectNotifications;
+    }
+    @Override public @NonNull Observable<Void> unableToFetchProjectNotificationsError() {
+      return this.unableToFetchProjectNotificationsError
+        .map(__ -> null);
+    }
   }
 }

@@ -11,27 +11,11 @@
   tools:context=".ui.activities.DiscoveryActivity">
 
   <RelativeLayout
-    android:layout_marginTop="@dimen/discovery_drawer_status_bar_height_negative"
-    android:paddingTop="@dimen/discovery_drawer_status_bar_height"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <android.support.design.widget.AppBarLayout
-      android:id="@+id/parent_app_bar"
-      android:fitsSystemWindows="true"
-      android:elevation="0dp"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      tools:ignore="UnusedAttribute">
-
-      <include layout="@layout/discovery_toolbar"/>
-
-    </android.support.design.widget.AppBarLayout>
-
     <android.support.design.widget.CoordinatorLayout
-      android:elevation="4dp"
-      android:layout_below="@id/parent_app_bar"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       tools:ignore="UnusedAttribute">
@@ -39,31 +23,34 @@
       <android.support.design.widget.AppBarLayout
         android:id="@+id/discovery_sort_app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:elevation="@dimen/card_no_elevation">
 
         <android.support.design.widget.CollapsingToolbarLayout
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          app:layout_scrollFlags="scroll|enterAlways">
+          android:layout_height="96dp"
+          app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+          <include
+            layout="@layout/discovery_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="top" />
 
           <com.kickstarter.ui.views.SortTabLayout
             android:id="@+id/discovery_tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="bottom"
+            app:layout_collapseMode="pin"
+            app:tabBackground="@drawable/click_indicator_light"
             app:tabMode="scrollable"
+            app:tabSelectedTextColor="@color/text_primary"
             app:tabTextAppearance="@style/TabTextAppearance"
             app:tabTextColor="@color/black_alpha_30"
-            app:tabSelectedTextColor="@color/text_primary"
-            app:tabBackground="@drawable/click_indicator_light"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            />
 
         </android.support.design.widget.CollapsingToolbarLayout>
-
-        <include
-          layout="@layout/horizontal_line_0_5dp_view"
-          android:layout_height="wrap_content"
-          android:layout_width="match_parent"
-          android:layout_marginTop="@dimen/sort_tab_divider_margin_top_negative"
-          app:layout_scrollFlags="scroll|enterAlways" />
 
       </android.support.design.widget.AppBarLayout>
 
@@ -72,6 +59,12 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+      <include
+        layout="@layout/horizontal_line_1dp_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.kickstarter.ui.toolbars.AlphaBehavior" />
 
     </android.support.design.widget.CoordinatorLayout>
 

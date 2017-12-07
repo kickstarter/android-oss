@@ -22,6 +22,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
@@ -78,7 +79,6 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.pledged) TextView pledgedTextView;
   protected @Bind(R.id.project_metadata_view_group) ViewGroup projectMetadataViewGroup;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
-  protected @Bind(R.id.potd_view_group) ViewGroup potdViewGroup;
   protected @Bind(R.id.project_social_image) ImageView projectSocialImageView;
   protected @Bind(R.id.project_social_text) TextView projectSocialTextView;
   protected @Bind(R.id.project_stats_view) ViewGroup projectStatsViewGroup;
@@ -237,11 +237,6 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.pledgedTextView::setText);
 
-    this.viewModel.outputs.potdViewGroupIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.potdViewGroup));
-
     this.viewModel.outputs.projectDisclaimerGoalNotReachedString()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -277,10 +272,12 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::setProjectPhoto);
 
-    this.viewModel.outputs.projectSocialTextViewText()
+    this.viewModel.outputs.projectSocialTextViewFriends()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this.projectSocialTextView::setText);
+      .subscribe(friends ->
+         this.projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(context(), friends, this.ksString))
+      );
 
     this.viewModel.outputs.projectSocialImageViewIsGone()
       .compose(bindToLifecycle())

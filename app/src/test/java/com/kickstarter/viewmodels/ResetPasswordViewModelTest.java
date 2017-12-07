@@ -18,17 +18,17 @@ public final class ResetPasswordViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testResetPasswordViewModel_formValidation() {
-    final ResetPasswordViewModel vm = new ResetPasswordViewModel(environment());
+    final ResetPasswordViewModel.ViewModel vm = new ResetPasswordViewModel.ViewModel(environment());
     final TestSubscriber<Boolean> test = new TestSubscriber<>();
 
     koalaTest.assertValues("Forgot Password View");
 
-    vm.outputs.isFormValid().subscribe(test);
+    vm.getOutputs().isFormValid().subscribe(test);
 
-    vm.inputs.email("incorrect@kickstarter");
+    vm.getInputs().email("incorrect@kickstarter");
     test.assertValues(false);
 
-    vm.inputs.email("hello@kickstarter.com");
+    vm.getInputs().email("hello@kickstarter.com");
     test.assertValues(false, true);
 
     koalaTest.assertValueCount(1);
@@ -36,20 +36,20 @@ public final class ResetPasswordViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testResetPasswordViewModel_resetSuccess() {
-    final ResetPasswordViewModel vm = new ResetPasswordViewModel(environment());
+    final ResetPasswordViewModel.ViewModel vm = new ResetPasswordViewModel.ViewModel(environment());
     final TestSubscriber<Void> test = new TestSubscriber<>();
 
     koalaTest.assertValues("Forgot Password View");
 
-    vm.outputs.resetSuccess().subscribe(test);
+    vm.getOutputs().resetSuccess().subscribe(test);
 
-    vm.inputs.resetPasswordClick();
+    vm.getInputs().resetPasswordClick();
     test.assertNoValues();
 
-    vm.inputs.email("hello@kickstarter.com");
+    vm.getInputs().email("hello@kickstarter.com");
     test.assertNoValues();
 
-    vm.inputs.resetPasswordClick();
+    vm.getInputs().resetPasswordClick();
     test.assertValueCount(1);
 
     koalaTest.assertValues("Forgot Password View", "Forgot Password Requested");
@@ -68,15 +68,15 @@ public final class ResetPasswordViewModelTest extends KSRobolectricTestCase {
       .apiClient(apiClient)
       .build();
 
-    final ResetPasswordViewModel vm = new ResetPasswordViewModel(environment);
+    final ResetPasswordViewModel.ViewModel vm = new ResetPasswordViewModel.ViewModel(environment);
     final TestSubscriber<String> errorTest = new TestSubscriber<>();
 
     koalaTest.assertValues("Forgot Password View");
 
-    vm.errors.resetError().subscribe(errorTest);
+    vm.getOutputs().resetError().subscribe(errorTest);
 
-    vm.inputs.email("hello@kickstarter.com");
-    vm.inputs.resetPasswordClick();
+    vm.getInputs().email("hello@kickstarter.com");
+    vm.getInputs().resetPasswordClick();
 
     errorTest.assertValue("bad request");
 

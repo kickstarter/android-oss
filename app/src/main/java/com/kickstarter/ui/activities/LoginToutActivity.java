@@ -33,8 +33,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
-@RequiresActivityViewModel(LoginToutViewModel.class)
-public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
+@RequiresActivityViewModel(LoginToutViewModel.ViewModel.class)
+public final class LoginToutActivity extends BaseActivity<LoginToutViewModel.ViewModel> {
   @Bind(R.id.disclaimer_text_view) TextView disclaimerTextView;
   @Bind(R.id.login_button) Button loginButton;
   @Bind(R.id.facebook_login_button) Button facebookButton;

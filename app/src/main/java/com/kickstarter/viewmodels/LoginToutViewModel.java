@@ -20,8 +20,6 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.LoginToutActivity;
 import com.kickstarter.ui.data.ActivityResult;
 import com.kickstarter.ui.data.LoginReason;
-import com.kickstarter.viewmodels.inputs.LoginToutViewModelInputs;
-import com.kickstarter.viewmodels.outputs.LoginToutViewModelOutputs;
 
 import java.util.List;
 
@@ -33,169 +31,211 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.pipeApiErrorsTo;
 
-public final class LoginToutViewModel extends ActivityViewModel<LoginToutActivity> implements LoginToutViewModelInputs,
-  LoginToutViewModelOutputs {
-  private CallbackManager callbackManager;
-  private final CurrentUserType currentUser;
-  private final ApiClientType client;
+public interface LoginToutViewModel {
 
-  public LoginToutViewModel(final @NonNull Environment environment) {
-    super(environment);
+  interface Inputs {
+    /** Call when the Login to Facebook button is clicked. */
+    void facebookLoginClick(final @NonNull LoginToutActivity activity, final @NonNull List<String> facebookPermissions);
 
-    this.client = environment.apiClient();
-    this.currentUser = environment.currentUser();
+    /** Call when the login button is clicked. */
+    void loginClick();
 
-    registerFacebookCallback();
-
-    final Observable<AccessTokenEnvelope> facebookSuccessTokenEnvelope = this.facebookAccessToken
-      .switchMap(this::loginWithFacebookAccessToken)
-      .share();
-
-    intent()
-      .map(i -> i.getSerializableExtra(IntentKey.LOGIN_REASON))
-      .ofType(LoginReason.class)
-      .compose(bindToLifecycle())
-      .subscribe(this.loginReason::onNext);
-
-    activityResult()
-      .compose(bindToLifecycle())
-      .subscribe(r -> this.callbackManager.onActivityResult(r.requestCode(), r.resultCode(), r.intent()));
-
-    activityResult()
-      .filter(r -> r.isRequestCode(ActivityRequestCodes.LOGIN_FLOW))
-      .filter(ActivityResult::isOk)
-      .compose(bindToLifecycle())
-      .subscribe(__ -> this.finishWithSuccessfulResult.onNext(null));
-
-    this.facebookAuthorizationError
-      .compose(bindToLifecycle())
-      .subscribe(this::clearFacebookSession);
-
-    facebookSuccessTokenEnvelope
-      .compose(bindToLifecycle())
-      .subscribe(envelope -> {
-        this.currentUser.login(envelope.user(), envelope.accessToken());
-        this.finishWithSuccessfulResult.onNext(null);
-      });
-
-    this.startFacebookConfirmationActivity = this.loginError
-      .filter(ErrorEnvelope::isConfirmFacebookSignupError)
-      .map(ErrorEnvelope::facebookUser)
-      .compose(combineLatestPair(this.facebookAccessToken));
-
-    this.startLoginActivity = this.loginClick;
-    this.startSignupActivity = this.signupClick;
-
-    this.loginReason.take(1)
-      .compose(bindToLifecycle())
-      .subscribe(this.koala::trackLoginRegisterTout);
-
-    this.loginError
-      .compose(bindToLifecycle())
-      .subscribe(__ -> this.koala.trackLoginError());
-
-    showMissingFacebookEmailErrorToast()
-      .mergeWith(showFacebookInvalidAccessTokenErrorToast())
-      .mergeWith(showFacebookAuthorizationErrorDialog())
-      .compose(bindToLifecycle())
-      .subscribe(__ -> this.koala.trackFacebookLoginError());
+    /** Call when the signup button is clicked. */
+    void signupClick();
   }
 
-  private void clearFacebookSession(final @NonNull FacebookException e) {
-    LoginManager.getInstance().logOut();
+  interface Outputs {
+    /** Emits when a user has successfully logged in; the login flow should finish with a result indicating success. */
+    Observable<Void> finishWithSuccessfulResult();
+
+    /** Emits when a user has failed to authenticate using Facebook. */
+    Observable<String> showFacebookAuthorizationErrorDialog();
+
+    /** Emits when the API was unable to create a new Facebook user. */
+    Observable<String> showFacebookInvalidAccessTokenErrorToast();
+
+    /** Emits when the API could not retrieve an email for the Facebook user. */
+    Observable<String> showMissingFacebookEmailErrorToast();
+
+    /** Emits when a login attempt is unauthorized. */
+    Observable<String> showUnauthorizedErrorDialog();
+
+    /** Emits a Facebook user and an access token string to confirm Facebook signup. */
+    Observable<Pair<ErrorEnvelope.FacebookUser, String>> startFacebookConfirmationActivity();
+
+    /** Emits when the login activity should be started. */
+    Observable<Void> startLoginActivity();
+
+    /** Emits when the signup activity should be started. */
+    Observable<Void> startSignupActivity();
+
+    /** Emits when a user has successfully logged in using Facebook, but has require two-factor authentication enabled. */
+    Observable<Void> startTwoFactorChallenge();
   }
 
-  private @NonNull Observable<AccessTokenEnvelope> loginWithFacebookAccessToken(final @NonNull String fbAccessToken) {
-    return this.client.loginWithFacebook(fbAccessToken)
-      .compose(pipeApiErrorsTo(this.loginError))
-      .compose(neverError());
-  }
+  final class ViewModel extends ActivityViewModel<LoginToutActivity> implements Inputs, Outputs {
+    private CallbackManager callbackManager;
+    private final CurrentUserType currentUser;
+    private final ApiClientType client;
 
-  private void registerFacebookCallback() {
-    final PublishSubject<String> fbAccessToken = this.facebookAccessToken;
-    final BehaviorSubject<FacebookException> fbAuthError = this.facebookAuthorizationError;
+    public ViewModel(final @NonNull Environment environment) {
+      super(environment);
 
-    this.callbackManager = CallbackManager.Factory.create();
+      this.client = environment.apiClient();
+      this.currentUser = environment.currentUser();
 
-    LoginManager.getInstance().registerCallback(this.callbackManager, new FacebookCallback<LoginResult>() {
-      @Override
-      public void onSuccess(final @NonNull LoginResult result) {
-        fbAccessToken.onNext(result.getAccessToken().getToken());
-      }
+      registerFacebookCallback();
 
-      @Override
-      public void onCancel() {
-        // continue
-      }
+      final Observable<AccessTokenEnvelope> facebookSuccessTokenEnvelope = this.facebookAccessToken
+        .switchMap(this::loginWithFacebookAccessToken)
+        .share();
 
-      @Override
-      public void onError(final @NonNull FacebookException error) {
-        if (error instanceof FacebookAuthorizationException) {
-          fbAuthError.onNext(error);
+      intent()
+        .map(i -> i.getSerializableExtra(IntentKey.LOGIN_REASON))
+        .ofType(LoginReason.class)
+        .compose(bindToLifecycle())
+        .subscribe(this.loginReason::onNext);
+
+      activityResult()
+        .compose(bindToLifecycle())
+        .subscribe(r -> this.callbackManager.onActivityResult(r.requestCode(), r.resultCode(), r.intent()));
+
+      activityResult()
+        .filter(r -> r.isRequestCode(ActivityRequestCodes.LOGIN_FLOW))
+        .filter(ActivityResult::isOk)
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.finishWithSuccessfulResult.onNext(null));
+
+      this.facebookAuthorizationError
+        .compose(bindToLifecycle())
+        .subscribe(this::clearFacebookSession);
+
+      facebookSuccessTokenEnvelope
+        .compose(bindToLifecycle())
+        .subscribe(envelope -> {
+          this.currentUser.login(envelope.user(), envelope.accessToken());
+          this.finishWithSuccessfulResult.onNext(null);
+        });
+
+      this.startFacebookConfirmationActivity = this.loginError
+        .filter(ErrorEnvelope::isConfirmFacebookSignupError)
+        .map(ErrorEnvelope::facebookUser)
+        .compose(combineLatestPair(this.facebookAccessToken));
+
+      this.startLoginActivity = this.loginClick;
+      this.startSignupActivity = this.signupClick;
+
+      this.loginReason.take(1)
+        .compose(bindToLifecycle())
+        .subscribe(this.koala::trackLoginRegisterTout);
+
+      this.loginError
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.koala.trackLoginError());
+
+      showMissingFacebookEmailErrorToast()
+        .mergeWith(showFacebookInvalidAccessTokenErrorToast())
+        .mergeWith(showFacebookAuthorizationErrorDialog())
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.koala.trackFacebookLoginError());
+    }
+
+    private void clearFacebookSession(final @NonNull FacebookException e) {
+      LoginManager.getInstance().logOut();
+    }
+
+    private @NonNull Observable<AccessTokenEnvelope> loginWithFacebookAccessToken(final @NonNull String fbAccessToken) {
+      return this.client.loginWithFacebook(fbAccessToken)
+        .compose(pipeApiErrorsTo(this.loginError))
+        .compose(neverError());
+    }
+
+    private void registerFacebookCallback() {
+      final PublishSubject<String> fbAccessToken = this.facebookAccessToken;
+      final BehaviorSubject<FacebookException> fbAuthError = this.facebookAuthorizationError;
+
+      this.callbackManager = CallbackManager.Factory.create();
+
+      LoginManager.getInstance().registerCallback(this.callbackManager, new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(final @NonNull LoginResult result) {
+          fbAccessToken.onNext(result.getAccessToken().getToken());
         }
-      }
-    });
-  }
 
-  private final PublishSubject<String> facebookAccessToken = PublishSubject.create();
-  private final PublishSubject<Void> loginClick = PublishSubject.create();
-  private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
-  private final PublishSubject<LoginReason> loginReason = PublishSubject.create();
-  private final PublishSubject<Void> signupClick = PublishSubject.create();
+        @Override
+        public void onCancel() {
+          // continue
+        }
 
-  private final BehaviorSubject<FacebookException> facebookAuthorizationError = BehaviorSubject.create();
-  private final BehaviorSubject<Void> finishWithSuccessfulResult = BehaviorSubject.create();
-  private final Observable<Pair<ErrorEnvelope.FacebookUser, String>> startFacebookConfirmationActivity;
-  private final Observable<Void> startLoginActivity;
-  private final Observable<Void> startSignupActivity;
+        @Override
+        public void onError(final @NonNull FacebookException error) {
+          if (error instanceof FacebookAuthorizationException) {
+            fbAuthError.onNext(error);
+          }
+        }
+      });
+    }
 
-  public final LoginToutViewModelInputs inputs = this;
-  public final LoginToutViewModelOutputs outputs = this;
+    private final PublishSubject<String> facebookAccessToken = PublishSubject.create();
+    private final PublishSubject<Void> loginClick = PublishSubject.create();
+    private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
+    private final PublishSubject<LoginReason> loginReason = PublishSubject.create();
+    private final PublishSubject<Void> signupClick = PublishSubject.create();
 
-  @Override public void facebookLoginClick(final @NonNull LoginToutActivity activity, final @NonNull List<String> facebookPermissions) {
-    LoginManager.getInstance().logInWithReadPermissions(activity, facebookPermissions);
-  }
-  @Override public void loginClick() {
-    this.loginClick.onNext(null);
-  }
-  @Override public void signupClick() {
-    this.signupClick.onNext(null);
-  }
+    private final BehaviorSubject<FacebookException> facebookAuthorizationError = BehaviorSubject.create();
+    private final BehaviorSubject<Void> finishWithSuccessfulResult = BehaviorSubject.create();
+    private final Observable<Pair<ErrorEnvelope.FacebookUser, String>> startFacebookConfirmationActivity;
+    private final Observable<Void> startLoginActivity;
+    private final Observable<Void> startSignupActivity;
 
-  @Override public @NonNull Observable<Void> finishWithSuccessfulResult() {
-    return this.finishWithSuccessfulResult;
-  }
-  @Override public @NonNull Observable<String> showFacebookAuthorizationErrorDialog() {
-    return this.facebookAuthorizationError
-      .map(FacebookException::getLocalizedMessage);
-  }
-  @Override public @NonNull Observable<String> showFacebookInvalidAccessTokenErrorToast() {
-    return this.loginError
-      .filter(ErrorEnvelope::isFacebookInvalidAccessTokenError)
-      .map(ErrorEnvelope::errorMessage);
-  }
-  @Override public @NonNull Observable<String> showMissingFacebookEmailErrorToast() {
-    return this.loginError
-      .filter(ErrorEnvelope::isMissingFacebookEmailError)
-      .map(ErrorEnvelope::errorMessage);
-  }
-  @Override public @NonNull Observable<String> showUnauthorizedErrorDialog() {
-    return this.loginError
-      .filter(ErrorEnvelope::isUnauthorizedError)
-      .map(ErrorEnvelope::errorMessage);
-  }
-  @Override public @NonNull Observable<Pair<ErrorEnvelope.FacebookUser, String>> startFacebookConfirmationActivity() {
-    return this.startFacebookConfirmationActivity;
-  }
-  @Override public @NonNull Observable<Void> startLoginActivity() {
-    return this.startLoginActivity;
-  }
-  @Override public @NonNull Observable<Void> startSignupActivity() {
-    return this.startSignupActivity;
-  }
-  @Override public @NonNull Observable<Void> startTwoFactorChallenge() {
-    return this.loginError
-      .filter(ErrorEnvelope::isTfaRequiredError)
-      .map(__ -> null);
+    public final Inputs inputs = this;
+    public final Outputs outputs = this;
+
+    @Override public void facebookLoginClick(final @NonNull LoginToutActivity activity, final @NonNull List<String> facebookPermissions) {
+      LoginManager.getInstance().logInWithReadPermissions(activity, facebookPermissions);
+    }
+    @Override public void loginClick() {
+      this.loginClick.onNext(null);
+    }
+    @Override public void signupClick() {
+      this.signupClick.onNext(null);
+    }
+
+    @Override public @NonNull Observable<Void> finishWithSuccessfulResult() {
+      return this.finishWithSuccessfulResult;
+    }
+    @Override public @NonNull Observable<String> showFacebookAuthorizationErrorDialog() {
+      return this.facebookAuthorizationError
+        .map(FacebookException::getLocalizedMessage);
+    }
+    @Override public @NonNull Observable<String> showFacebookInvalidAccessTokenErrorToast() {
+      return this.loginError
+        .filter(ErrorEnvelope::isFacebookInvalidAccessTokenError)
+        .map(ErrorEnvelope::errorMessage);
+    }
+    @Override public @NonNull Observable<String> showMissingFacebookEmailErrorToast() {
+      return this.loginError
+        .filter(ErrorEnvelope::isMissingFacebookEmailError)
+        .map(ErrorEnvelope::errorMessage);
+    }
+    @Override public @NonNull Observable<String> showUnauthorizedErrorDialog() {
+      return this.loginError
+        .filter(ErrorEnvelope::isUnauthorizedError)
+        .map(ErrorEnvelope::errorMessage);
+    }
+    @Override public @NonNull Observable<Pair<ErrorEnvelope.FacebookUser, String>> startFacebookConfirmationActivity() {
+      return this.startFacebookConfirmationActivity;
+    }
+    @Override public @NonNull Observable<Void> startLoginActivity() {
+      return this.startLoginActivity;
+    }
+    @Override public @NonNull Observable<Void> startSignupActivity() {
+      return this.startSignupActivity;
+    }
+    @Override public @NonNull Observable<Void> startTwoFactorChallenge() {
+      return this.loginError
+        .filter(ErrorEnvelope::isTfaRequiredError)
+        .map(__ -> null);
+    }
   }
 }

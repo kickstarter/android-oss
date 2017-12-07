@@ -7,7 +7,6 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
-import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.ListUtils;
@@ -16,16 +15,17 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
-import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 
 import org.joda.time.DateTime;
 
 import java.math.RoundingMode;
+import java.util.List;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -93,9 +93,6 @@ public interface ProjectHolderViewModel {
     /** Emits the pledged amount for display. */
     Observable<String> pledgedTextViewText();
 
-    /** Emits when the POTD view group should be gone. */
-    Observable<Boolean> potdViewGroupIsGone();
-
     /** Emits the date time to be displayed in the disclaimer. */
     Observable<DateTime> projectDisclaimerGoalReachedDateTime();
 
@@ -126,8 +123,8 @@ public interface ProjectHolderViewModel {
     /** Emits the social image view url for display. */
     Observable<String> projectSocialImageViewUrl();
 
-    /** Emits the social text for display. */
-    Observable<String> projectSocialTextViewText();
+    /** Emits the list of friends to display display in the facepile. */
+    Observable<List<User>> projectSocialTextViewFriends();
 
     /**  Emits when the social view group should be gone. */
     Observable<Boolean> projectSocialViewGroupIsGone();
@@ -171,12 +168,10 @@ public interface ProjectHolderViewModel {
 
   final class ViewModel extends ActivityViewModel<ProjectViewHolder> implements Inputs, Outputs {
     private final KSCurrency ksCurrency;
-    private final KSString ksString;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
       this.ksCurrency = environment.ksCurrency();
-      this.ksString = environment.ksString();
 
       final Observable<Project> project = this.projectAndCountry.map(PairUtils::first);
       final Observable<ProjectUtils.Metadata> projectMetadata = project.map(ProjectUtils::metadataForProject);
@@ -230,10 +225,6 @@ public interface ProjectHolderViewModel {
       this.pledgedTextViewText = project
         .map(p -> this.ksCurrency.format(p.pledged(), p, false, true, RoundingMode.DOWN));
 
-      this.potdViewGroupIsGone = projectMetadata
-        .map(ProjectUtils.Metadata.POTD::equals)
-        .map(BooleanUtils::negate);
-
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)
         .map(Project::deadline);
@@ -249,10 +240,7 @@ public interface ProjectHolderViewModel {
         .map(__ -> R.drawable.rect_green_grey_stroke);
 
       this.projectMetadataViewGroupIsGone = projectMetadata
-        .map(m -> m != ProjectUtils.Metadata.POTD
-          && m != ProjectUtils.Metadata.CATEGORY_FEATURED
-          && m != ProjectUtils.Metadata.BACKING
-        );
+        .map(m -> m != ProjectUtils.Metadata.CATEGORY_FEATURED && m != ProjectUtils.Metadata.BACKING);
 
       this.projectNameTextViewText = project.map(Project::name);
       this.projectOutput = project;
@@ -264,10 +252,9 @@ public interface ProjectHolderViewModel {
         .map(ListUtils::first)
         .map(f -> f.avatar().small());
 
-      this.projectSocialTextViewText = project
+      this.projectSocialTextViewFriends = project
         .map(Project::friends)
-        .filter(ObjectUtils::isNotNull)
-        .map(f -> SocialUtils.projectCardFriendNamepile(f, this.ksString));
+        .filter(ObjectUtils::isNotNull);
 
       this.projectSocialViewGroupIsGone = project.map(Project::isFriendBacking).map(BooleanUtils::negate);
 
@@ -334,7 +321,6 @@ public interface ProjectHolderViewModel {
     private final Observable<Boolean> percentageFundedProgressBarIsGone;
     private final Observable<Boolean> playButtonIsGone;
     private final Observable<String> pledgedTextViewText;
-    private final Observable<Boolean> potdViewGroupIsGone;
     private final Observable<DateTime> projectDisclaimerGoalReachedDateTime;
     private final Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString;
     private final Observable<Boolean> projectDisclaimerTextViewIsGone;
@@ -345,7 +331,7 @@ public interface ProjectHolderViewModel {
     private final Observable<Photo> projectPhoto;
     private final Observable<Boolean> projectSocialImageViewIsGone;
     private final Observable<String> projectSocialImageViewUrl;
-    private final Observable<String> projectSocialTextViewText;
+    private final Observable<List<User>> projectSocialTextViewFriends;
     private final Observable<Boolean> projectSocialViewGroupIsGone;
     private final Observable<Integer> projectStateViewGroupBackgroundColorInt;
     private final Observable<Boolean> projectStateViewGroupIsGone;
@@ -418,9 +404,6 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<String> pledgedTextViewText() {
       return this.pledgedTextViewText;
     }
-    @Override public @NonNull Observable<Boolean> potdViewGroupIsGone() {
-      return this.potdViewGroupIsGone;
-    }
     @Override public @NonNull Observable<DateTime> projectDisclaimerGoalReachedDateTime() {
       return this.projectDisclaimerGoalReachedDateTime;
     }
@@ -451,8 +434,8 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<String> projectSocialImageViewUrl() {
       return this.projectSocialImageViewUrl;
     }
-    @Override public @NonNull Observable<String> projectSocialTextViewText() {
-      return this.projectSocialTextViewText;
+    @Override public @NonNull Observable<List<User>> projectSocialTextViewFriends() {
+      return this.projectSocialTextViewFriends;
     }
     @Override public @NonNull Observable<Boolean> projectSocialViewGroupIsGone() {
       return this.projectSocialViewGroupIsGone;

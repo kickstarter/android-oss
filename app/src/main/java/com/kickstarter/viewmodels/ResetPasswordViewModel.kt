@@ -51,13 +51,13 @@ interface ResetPasswordViewModel {
 
     init {
       this.email
-        .map { StringUtils.isEmail(it) }
+        .map(StringUtils::isEmail)
         .compose(bindToLifecycle())
         .subscribe(this.isFormValid)
 
       this.email
         .compose<String>(Transformers.takeWhen(this.resetPasswordClick))
-        .switchMap { this.submitEmail(it) }
+        .switchMap(this::submitEmail)
         .compose(bindToLifecycle())
         .subscribe { success() }
 

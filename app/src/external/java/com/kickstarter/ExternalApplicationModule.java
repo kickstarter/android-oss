@@ -15,20 +15,23 @@ import dagger.Provides;
 
 @Module(includes = ApplicationModule.class)
 public final class ExternalApplicationModule {
+  private ExternalApplicationModule() {}
+
   @Provides
   @Singleton
-  ApiEndpoint provideApiEndpoint() {
+  static ApiEndpoint provideApiEndpoint() {
     return ApiEndpoint.PRODUCTION;
   }
 
   @Provides
-  BuildCheck provideBuildCheck() {
+  static BuildCheck provideBuildCheck() {
     return new NoopBuildCheck();
   }
 
   @Provides
   @Singleton
-  @NonNull InternalToolsType providesInternalToolsType() {
+  @NonNull
+  static InternalToolsType providesInternalToolsType() {
     return new NoopInternalTools();
   }
 }

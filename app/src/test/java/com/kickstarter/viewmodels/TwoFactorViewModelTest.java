@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ApiExceptionFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -47,7 +48,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.code("");
     this.formIsValid.assertValues(true, false);
 
-    this.koalaTest.assertValue("Two-factor Authentication Confirm View");
+    this.koalaTest.assertValue(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW);
   }
 
   @Test
@@ -70,7 +71,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertValueCount(1);
 
-    this.koalaTest.assertValues("Two-factor Authentication Confirm View", "Login");
+    this.koalaTest.assertValues(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW, KoalaEvent.LOGIN);
   }
 
   @Test
@@ -93,7 +94,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertValueCount(1);
 
-    this.koalaTest.assertValues("Two-factor Authentication Confirm View", "Login");
+    this.koalaTest.assertValues(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW, KoalaEvent.LOGIN);
   }
 
   @Test
@@ -112,7 +113,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.resendClick();
 
     this.showResendCodeConfirmation.assertValueCount(1);
-    this.koalaTest.assertValues("Two-factor Authentication Confirm View", "Two-factor Authentication Resend Code");
+    this.koalaTest.assertValues(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW, KoalaEvent.TWO_FACTOR_AUTH_RESEND_CODE);
   }
 
   @Test
@@ -131,7 +132,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.resendClick();
 
     this.showResendCodeConfirmation.assertValueCount(1);
-    this.koalaTest.assertValues("Two-factor Authentication Confirm View", "Two-factor Authentication Resend Code");
+    this.koalaTest.assertValues(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW, KoalaEvent.TWO_FACTOR_AUTH_RESEND_CODE);
   }
 
   @Test
@@ -168,7 +169,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertNoValues();
     this.genericTfaError.assertValueCount(1);
-    this.koalaTest.assertValues("Two-factor Authentication Confirm View", "Errored User Login");
+    this.koalaTest.assertValues(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW, KoalaEvent.ERRORED_USER_LOGIN);
   }
 
   @Test
@@ -203,6 +204,6 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertNoValues();
     this.tfaCodeMismatchError.assertValueCount(1);
-    this.koalaTest.assertValues("Two-factor Authentication Confirm View", "Errored User Login");
+    this.koalaTest.assertValues(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW, KoalaEvent.ERRORED_USER_LOGIN);
   }
 }

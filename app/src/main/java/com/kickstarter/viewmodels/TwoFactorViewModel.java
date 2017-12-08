@@ -126,7 +126,7 @@ public interface TwoFactorViewModel {
       this.tfaSuccess.onNext(null);
     }
 
-    private Observable<AccessTokenEnvelope> login(final @NonNull String code, final @NonNull String email,
+    private @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String code, final @NonNull String email,
       final @NonNull String password) {
       return this.client.login(email, password, code)
         .compose(Transformers.pipeApiErrorsTo(this.tfaError))
@@ -135,7 +135,7 @@ public interface TwoFactorViewModel {
         .doAfterTerminate(() -> this.formSubmitting.onNext(false));
     }
 
-    private Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String code, final @NonNull String fbAccessToken) {
+    private @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String code, final @NonNull String fbAccessToken) {
       return this.client.loginWithFacebook(fbAccessToken, code)
         .compose(Transformers.pipeApiErrorsTo(this.tfaError))
         .compose(Transformers.neverError())
@@ -143,13 +143,13 @@ public interface TwoFactorViewModel {
         .doAfterTerminate(() -> this.formSubmitting.onNext(false));
     }
 
-    private Observable<AccessTokenEnvelope> resendCode(final @NonNull String email, final @NonNull String password) {
+    private @NonNull Observable<AccessTokenEnvelope> resendCode(final @NonNull String email, final @NonNull String password) {
       return this.client.login(email, password)
         .compose(Transformers.neverError())
         .doOnSubscribe(() -> this.showResendCodeConfirmation.onNext(null));
     }
 
-    private Observable<AccessTokenEnvelope> resendCodeWithFacebook(final @NonNull String fbAccessToken) {
+    private @NonNull Observable<AccessTokenEnvelope> resendCodeWithFacebook(final @NonNull String fbAccessToken) {
       return this.client.loginWithFacebook(fbAccessToken)
         .compose(Transformers.neverError())
         .doOnSubscribe(() -> this.showResendCodeConfirmation.onNext(null));
@@ -163,11 +163,11 @@ public interface TwoFactorViewModel {
     private final PublishSubject<Void> loginClick = PublishSubject.create();
     private final PublishSubject<Void> resendClick = PublishSubject.create();
 
-    private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
     private final PublishSubject<Boolean> formIsValid = PublishSubject.create();
+    private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
     private final PublishSubject<Void> showResendCodeConfirmation = PublishSubject.create();
-    private final PublishSubject<Void> tfaSuccess = PublishSubject.create();
     private final PublishSubject<ErrorEnvelope> tfaError = PublishSubject.create();
+    private final PublishSubject<Void> tfaSuccess = PublishSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -195,7 +195,7 @@ public interface TwoFactorViewModel {
       return this.tfaSuccess;
     }
 
-    @Override public void code(@NonNull final String s) {
+    @Override public void code(final @NonNull String s) {
       this.code.onNext(s);
     }
     @Override public void loginClick() {

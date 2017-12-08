@@ -37,7 +37,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm = new TwoFactorViewModel.ViewModel(environment());
     this.vm.intent(intent);
 
-    this.vm.outputs.formIsValid().subscribe(formIsValid);
+    this.vm.outputs.formIsValid().subscribe(this.formIsValid);
 
     this.formIsValid.assertNoValues();
 
@@ -61,9 +61,8 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm = new TwoFactorViewModel.ViewModel(environment());
     this.vm.intent(intent);
 
-    this.vm.outputs.tfaSuccess().subscribe(tfaSuccess);
-
-    this.vm.outputs.formSubmitting().subscribe(formSubmitting);
+    this.vm.outputs.tfaSuccess().subscribe(this.tfaSuccess);
+    this.vm.outputs.formSubmitting().subscribe(this.formSubmitting);
 
     this.vm.inputs.code("88888");
     this.vm.inputs.loginClick();
@@ -85,9 +84,8 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm = new TwoFactorViewModel.ViewModel(environment());
     this.vm.intent(intent);
 
-    this.vm.outputs.tfaSuccess().subscribe(tfaSuccess);
-
-    this.vm.outputs.formSubmitting().subscribe(formSubmitting);
+    this.vm.outputs.tfaSuccess().subscribe(this.tfaSuccess);
+    this.vm.outputs.formSubmitting().subscribe(this.formSubmitting);
 
     this.vm.inputs.code("88888");
     this.vm.inputs.loginClick();
@@ -109,7 +107,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm = new TwoFactorViewModel.ViewModel(environment());
     this.vm.intent(intent);
 
-    this.vm.outputs.showResendCodeConfirmation().subscribe(showResendCodeConfirmation);
+    this.vm.outputs.showResendCodeConfirmation().subscribe(this.showResendCodeConfirmation);
 
     this.vm.inputs.resendClick();
 
@@ -128,7 +126,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm = new TwoFactorViewModel.ViewModel(environment());
     this.vm.intent(intent);
 
-    this.vm.outputs.showResendCodeConfirmation().subscribe(showResendCodeConfirmation);
+    this.vm.outputs.showResendCodeConfirmation().subscribe(this.showResendCodeConfirmation);
 
     this.vm.inputs.resendClick();
 
@@ -160,11 +158,9 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm = new TwoFactorViewModel.ViewModel(environment);
     this.vm.intent(intent);
 
-    this.vm.outputs.tfaSuccess().subscribe(tfaSuccess);
-
-    this.vm.outputs.formSubmitting().subscribe(formSubmitting);
-
-    this.vm.outputs.genericTfaError().subscribe(genericTfaError);
+    this.vm.outputs.tfaSuccess().subscribe(this.tfaSuccess);
+    this.vm.outputs.formSubmitting().subscribe(this.formSubmitting);
+    this.vm.outputs.genericTfaError().subscribe(this.genericTfaError);
 
     this.vm.inputs.code("88888");
     this.vm.inputs.loginClick();
@@ -197,11 +193,9 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm = new TwoFactorViewModel.ViewModel(environment);
     this.vm.intent(intent);
 
-    this.vm.outputs.tfaSuccess().subscribe(tfaSuccess);
-
-    this.vm.outputs.formSubmitting().subscribe(formSubmitting);
-
-    this.vm.outputs.tfaCodeMismatchError().subscribe(tfaCodeMismatchError);
+    this.vm.outputs.tfaSuccess().subscribe(this.tfaSuccess);
+    this.vm.outputs.formSubmitting().subscribe(this.formSubmitting);
+    this.vm.outputs.tfaCodeMismatchError().subscribe(this.tfaCodeMismatchError);
 
     this.vm.inputs.code("88888");
     this.vm.inputs.loginClick();

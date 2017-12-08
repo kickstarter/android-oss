@@ -7,9 +7,6 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.viewholders.ProjectNotificationViewHolder;
-import com.kickstarter.viewmodels.errors.ProjectNotificationViewModelErrors;
-import com.kickstarter.viewmodels.inputs.ProjectNotificationViewModelInputs;
-import com.kickstarter.viewmodels.outputs.ProjectNotificationViewModelOutputs;
 
 import rx.Notification;
 import rx.Observable;
@@ -20,80 +17,101 @@ import static com.kickstarter.libs.rx.transformers.Transformers.errors;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
-public class ProjectNotificationViewModel extends ActivityViewModel<ProjectNotificationViewHolder> implements
-  ProjectNotificationViewModelInputs, ProjectNotificationViewModelOutputs, ProjectNotificationViewModelErrors {
-  public ProjectNotificationViewModel(final @NonNull Environment environment) {
-    super(environment);
+public interface ProjectNotificationViewModel {
+  interface Inputs {
+    /**
+     * Call when the enable switch is clicked.
+     */
+    void enabledSwitchClick(boolean enabled);
 
-    final ApiClientType client = environment.apiClient();
-
-    // When the enable switch is clicked, update the project notification.
-    final Observable<Notification<ProjectNotification>> updateNotification = this.projectNotification
-      .compose(takePairWhen(this.enabledSwitchClick))
-      .switchMap(ne ->
-        client
-          .updateProjectNotifications(ne.first, ne.second)
-          .materialize()
-      )
-      .share();
-
-    updateNotification
-      .compose(values())
-      .compose(bindToLifecycle())
-      .subscribe(this.projectNotification::onNext);
-
-    updateNotification
-      .compose(errors())
-      .compose(bindToLifecycle())
-      .subscribe(__ -> this.showUnableToSaveProjectNotificationError.onNext(null));
-
-    // Update the project name when a project notification emits.
-    this.projectNotification
-      .map(n -> n.project().name())
-      .compose(bindToLifecycle())
-      .subscribe(this.projectName::onNext);
-
-    // Update the enabled switch when a project notification emits.
-    this.projectNotification
-      .map(n -> n.email() && n.mobile())
-      .compose(bindToLifecycle())
-      .subscribe(this.enabledSwitch::onNext);
+    /**
+     * Call when a notification is bound to the viewholder.
+     */
+    void projectNotification(ProjectNotification projectNotification);
   }
 
-  private PublishSubject<Boolean> enabledSwitchClick = PublishSubject.create();
-  private PublishSubject<ProjectNotification> projectNotification = PublishSubject.create();
+  interface Outputs {
+    /**
+     * Emits `True` if the enabled switch should be toggled on, `False` otherwise.
+     */
+    Observable<Boolean> enabledSwitch();
 
-  private BehaviorSubject<String> projectName = BehaviorSubject.create();
-  private BehaviorSubject<Boolean> enabledSwitch = BehaviorSubject.create();
+    /**
+     * Emits the project's name.
+     */
+    Observable<String> projectName();
 
-  private PublishSubject<Void> showUnableToSaveProjectNotificationError = PublishSubject.create();
-
-  public ProjectNotificationViewModelInputs inputs = this;
-  public ProjectNotificationViewModelOutputs outputs = this;
-  public ProjectNotificationViewModelErrors errors = this;
-
-  @Override
-  public void enabledSwitchClick(final boolean enabled) {
-    this.enabledSwitchClick.onNext(enabled);
+    /**
+     * Show an error indicating the notification cannot be saved.
+     */
+    Observable<Void> showUnableToSaveProjectNotificationError();
   }
 
-  @Override
-  public void projectNotification(final @NonNull ProjectNotification projectNotification) {
-    this.projectNotification.onNext(projectNotification);
-  }
+  final class ViewModel extends ActivityViewModel<ProjectNotificationViewHolder> implements Inputs, Outputs {
+    public ViewModel(final @NonNull Environment environment) {
+      super(environment);
 
-  @Override
-  public @NonNull Observable<String> projectName() {
-    return this.projectName;
-  }
+      final ApiClientType client = environment.apiClient();
 
-  @Override
-  public @NonNull Observable<Boolean> enabledSwitch() {
-    return this.enabledSwitch;
-  }
+      // When the enable switch is clicked, update the project notification.
+      final Observable<Notification<ProjectNotification>> updateNotification = this.projectNotification
+        .compose(takePairWhen(this.enabledSwitchClick))
+        .switchMap(ne ->
+          client
+            .updateProjectNotifications(ne.first, ne.second)
+            .materialize()
+        )
+        .share();
 
-  @Override
-  public @NonNull Observable<Void> showUnableToSaveProjectNotificationError() {
-    return this.showUnableToSaveProjectNotificationError;
+      updateNotification
+        .compose(values())
+        .compose(bindToLifecycle())
+        .subscribe(this.projectNotification::onNext);
+
+      updateNotification
+        .compose(errors())
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.showUnableToSaveProjectNotificationError.onNext(null));
+
+      // Update the project name when a project notification emits.
+      this.projectNotification
+        .map(n -> n.project().name())
+        .compose(bindToLifecycle())
+        .subscribe(this.projectName::onNext);
+
+      // Update the enabled switch when a project notification emits.
+      this.projectNotification
+        .map(n -> n.email() && n.mobile())
+        .compose(bindToLifecycle())
+        .subscribe(this.enabledSwitch::onNext);
+    }
+
+    private PublishSubject<Boolean> enabledSwitchClick = PublishSubject.create();
+    private PublishSubject<ProjectNotification> projectNotification = PublishSubject.create();
+
+    private BehaviorSubject<String> projectName = BehaviorSubject.create();
+    private BehaviorSubject<Boolean> enabledSwitch = BehaviorSubject.create();
+
+    private PublishSubject<Void> showUnableToSaveProjectNotificationError = PublishSubject.create();
+
+    public Inputs inputs = this;
+    public Outputs outputs = this;
+
+    @Override public void enabledSwitchClick(final boolean enabled) {
+      this.enabledSwitchClick.onNext(enabled);
+    }
+    @Override public void projectNotification(final @NonNull ProjectNotification projectNotification) {
+      this.projectNotification.onNext(projectNotification);
+    }
+
+    @Override public @NonNull Observable<String> projectName() {
+      return this.projectName;
+    }
+    @Override public @NonNull Observable<Boolean> enabledSwitch() {
+      return this.enabledSwitch;
+    }
+    @Override public @NonNull Observable<Void> showUnableToSaveProjectNotificationError() {
+      return this.showUnableToSaveProjectNotificationError;
+    }
   }
 }

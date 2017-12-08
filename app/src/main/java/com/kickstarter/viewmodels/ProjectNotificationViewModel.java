@@ -19,31 +19,21 @@ import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 public interface ProjectNotificationViewModel {
   interface Inputs {
-    /**
-     * Call when the enable switch is clicked.
-     */
+    /** Call when the enable switch is clicked. */
     void enabledSwitchClick(boolean enabled);
 
-    /**
-     * Call when a notification is bound to the viewholder.
-     */
+    /** Call when a notification is bound to the viewholder. */
     void projectNotification(ProjectNotification projectNotification);
   }
 
   interface Outputs {
-    /**
-     * Emits `True` if the enabled switch should be toggled on, `False` otherwise.
-     */
+    /** Emits `True` if the enabled switch should be toggled on, `False` otherwise. */
     Observable<Boolean> enabledSwitch();
 
-    /**
-     * Emits the project's name.
-     */
+    /** Emits the project's name. */
     Observable<String> projectName();
 
-    /**
-     * Show an error indicating the notification cannot be saved.
-     */
+    /**  Show an error indicating the notification cannot be saved. */
     Observable<Void> showUnableToSaveProjectNotificationError();
   }
 

@@ -60,12 +60,12 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Request;
-import rx.android.schedulers.AndroidSchedulers;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresActivityViewModel(CheckoutViewModel.class)
-public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> implements KSWebViewClient.Delegate {
+@RequiresActivityViewModel(CheckoutViewModel.ViewModel.class)
+public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewModel> implements KSWebViewClient.Delegate {
   private @Nullable Project project;
 
   protected @Bind(R.id.checkout_toolbar) KSToolbar checkoutToolbar;
@@ -129,12 +129,12 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
 
     this.viewModel.outputs.project()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(p -> this.project = p);
 
     this.viewModel.outputs.title()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this.checkoutToolbar::setTitle);
 
     this.viewModel.outputs.isAndroidPayAvailable()
@@ -150,37 +150,37 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
     this.viewModel.outputs.showAndroidPaySheet()
       .filter(ObjectUtils::isNotNull)
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this::showAndroidPaySheet);
 
     this.viewModel.outputs.displayAndroidPayConfirmation()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this::showOrHideAndroidPayConfirmation);
 
     this.viewModel.outputs.updateAndroidPayConfirmation()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(wp -> updateAndroidPayConfirmation(wp.first, wp.second));
 
     this.viewModel.outputs.popActivityOffStack()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(__ -> this.popActivity());
 
     this.viewModel.outputs.attemptAndroidPayConfirmation()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(wp -> this.attemptAndroidPayConfirmation(wp.first, wp.second));
 
     this.viewModel.outputs.completeAndroidPay()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this::androidPayComplete);
 
-    this.viewModel.errors.androidPayError()
+    this.viewModel.outputs.androidPayError()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this::showAndroidPayError);
   }
 

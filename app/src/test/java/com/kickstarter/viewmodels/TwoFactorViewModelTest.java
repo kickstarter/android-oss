@@ -18,6 +18,13 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public class TwoFactorViewModelTest extends KSRobolectricTestCase {
+  private TwoFactorViewModel.ViewModel vm;
+  private final TestSubscriber<Boolean> formIsValid = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> formSubmitting = new TestSubscriber<>();
+  private final TestSubscriber<Void> genericTfaError = new TestSubscriber<>();
+  private final TestSubscriber<Void> showResendCodeConfirmation = new TestSubscriber<>();
+  private final TestSubscriber<Void> tfaCodeMismatchError = new TestSubscriber<>();
+  private final TestSubscriber<Void> tfaSuccess = new TestSubscriber<>();
 
   @Test
   public void testTwoFactorViewModel_FormValidation() {
@@ -27,21 +34,20 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
     intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
 
-    final TwoFactorViewModel vm = new TwoFactorViewModel(environment());
-    vm.intent(intent);
+    this.vm = new TwoFactorViewModel.ViewModel(environment());
+    this.vm.intent(intent);
 
-    final TestSubscriber<Boolean> formIsValid = new TestSubscriber<>();
-    vm.outputs.formIsValid().subscribe(formIsValid);
+    this.vm.outputs.formIsValid().subscribe(formIsValid);
 
-    formIsValid.assertNoValues();
+    this.formIsValid.assertNoValues();
 
-    vm.inputs.code("444444");
-    formIsValid.assertValue(true);
+    this.vm.inputs.code("444444");
+    this.formIsValid.assertValue(true);
 
-    vm.inputs.code("");
-    formIsValid.assertValues(true, false);
+    this.vm.inputs.code("");
+    this.formIsValid.assertValues(true, false);
 
-    koalaTest.assertValue("Two-factor Authentication Confirm View");
+    this.koalaTest.assertValue("Two-factor Authentication Confirm View");
   }
 
   @Test
@@ -52,22 +58,20 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
     intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
 
-    final TwoFactorViewModel vm = new TwoFactorViewModel(environment());
-    vm.intent(intent);
+    this.vm = new TwoFactorViewModel.ViewModel(environment());
+    this.vm.intent(intent);
 
-    final TestSubscriber<Void> tfaSuccess = new TestSubscriber<>();
-    vm.outputs.tfaSuccess().subscribe(tfaSuccess);
+    this.vm.outputs.tfaSuccess().subscribe(tfaSuccess);
 
-    final TestSubscriber<Boolean> formSubmitting = new TestSubscriber<>();
-    vm.outputs.formSubmitting().subscribe(formSubmitting);
+    this.vm.outputs.formSubmitting().subscribe(formSubmitting);
 
-    vm.inputs.code("88888");
-    vm.inputs.loginClick();
+    this.vm.inputs.code("88888");
+    this.vm.inputs.loginClick();
 
-    formSubmitting.assertValues(true, false);
-    tfaSuccess.assertValueCount(1);
+    this.formSubmitting.assertValues(true, false);
+    this.tfaSuccess.assertValueCount(1);
 
-    koalaTest.assertValues("Two-factor Authentication Confirm View", "Login");
+    this.koalaTest.assertValues("Two-factor Authentication Confirm View", "Login");
   }
 
   @Test
@@ -78,22 +82,20 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     intent.putExtra(IntentKey.FACEBOOK_LOGIN, true);
     intent.putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234");
 
-    final TwoFactorViewModel vm = new TwoFactorViewModel(environment());
-    vm.intent(intent);
+    this.vm = new TwoFactorViewModel.ViewModel(environment());
+    this.vm.intent(intent);
 
-    final TestSubscriber<Void> tfaSuccess = new TestSubscriber<>();
-    vm.outputs.tfaSuccess().subscribe(tfaSuccess);
+    this.vm.outputs.tfaSuccess().subscribe(tfaSuccess);
 
-    final TestSubscriber<Boolean> formSubmitting = new TestSubscriber<>();
-    vm.outputs.formSubmitting().subscribe(formSubmitting);
+    this.vm.outputs.formSubmitting().subscribe(formSubmitting);
 
-    vm.inputs.code("88888");
-    vm.inputs.loginClick();
+    this.vm.inputs.code("88888");
+    this.vm.inputs.loginClick();
 
-    formSubmitting.assertValues(true, false);
-    tfaSuccess.assertValueCount(1);
+    this.formSubmitting.assertValues(true, false);
+    this.tfaSuccess.assertValueCount(1);
 
-    koalaTest.assertValues("Two-factor Authentication Confirm View", "Login");
+    this.koalaTest.assertValues("Two-factor Authentication Confirm View", "Login");
   }
 
   @Test
@@ -104,16 +106,15 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
     intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
 
-    final TwoFactorViewModel vm = new TwoFactorViewModel(environment());
-    vm.intent(intent);
+    this.vm = new TwoFactorViewModel.ViewModel(environment());
+    this.vm.intent(intent);
 
-    final TestSubscriber<Void> showResendCodeConfirmation = new TestSubscriber<>();
-    vm.outputs.showResendCodeConfirmation().subscribe(showResendCodeConfirmation);
+    this.vm.outputs.showResendCodeConfirmation().subscribe(showResendCodeConfirmation);
 
-    vm.inputs.resendClick();
+    this.vm.inputs.resendClick();
 
-    showResendCodeConfirmation.assertValueCount(1);
-    koalaTest.assertValues("Two-factor Authentication Confirm View", "Two-factor Authentication Resend Code");
+    this.showResendCodeConfirmation.assertValueCount(1);
+    this.koalaTest.assertValues("Two-factor Authentication Confirm View", "Two-factor Authentication Resend Code");
   }
 
   @Test
@@ -124,16 +125,15 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     intent.putExtra(IntentKey.FACEBOOK_LOGIN, true);
     intent.putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234");
 
-    final TwoFactorViewModel vm = new TwoFactorViewModel(environment());
-    vm.intent(intent);
+    this.vm = new TwoFactorViewModel.ViewModel(environment());
+    this.vm.intent(intent);
 
-    final TestSubscriber<Void> showResendCodeConfirmation = new TestSubscriber<>();
-    vm.outputs.showResendCodeConfirmation().subscribe(showResendCodeConfirmation);
+    this.vm.outputs.showResendCodeConfirmation().subscribe(showResendCodeConfirmation);
 
-    vm.inputs.resendClick();
+    this.vm.inputs.resendClick();
 
-    showResendCodeConfirmation.assertValueCount(1);
-    koalaTest.assertValues("Two-factor Authentication Confirm View", "Two-factor Authentication Resend Code");
+    this.showResendCodeConfirmation.assertValueCount(1);
+    this.koalaTest.assertValues("Two-factor Authentication Confirm View", "Two-factor Authentication Resend Code");
   }
 
   @Test
@@ -157,25 +157,22 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
     intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
 
-    final TwoFactorViewModel vm = new TwoFactorViewModel(environment);
-    vm.intent(intent);
+    this.vm = new TwoFactorViewModel.ViewModel(environment);
+    this.vm.intent(intent);
 
-    final TestSubscriber<Void> tfaSuccess = new TestSubscriber<>();
-    vm.outputs.tfaSuccess().subscribe(tfaSuccess);
+    this.vm.outputs.tfaSuccess().subscribe(tfaSuccess);
 
-    final TestSubscriber<Boolean> formSubmitting = new TestSubscriber<>();
-    vm.outputs.formSubmitting().subscribe(formSubmitting);
+    this.vm.outputs.formSubmitting().subscribe(formSubmitting);
 
-    final TestSubscriber<Void> genericTfaError = new TestSubscriber<>();
-    vm.errors.genericTfaError().subscribe(genericTfaError);
+    this.vm.outputs.genericTfaError().subscribe(genericTfaError);
 
-    vm.inputs.code("88888");
-    vm.inputs.loginClick();
+    this.vm.inputs.code("88888");
+    this.vm.inputs.loginClick();
 
-    formSubmitting.assertValues(true, false);
-    tfaSuccess.assertNoValues();
-    genericTfaError.assertValueCount(1);
-    koalaTest.assertValues("Two-factor Authentication Confirm View", "Errored User Login");
+    this.formSubmitting.assertValues(true, false);
+    this.tfaSuccess.assertNoValues();
+    this.genericTfaError.assertValueCount(1);
+    this.koalaTest.assertValues("Two-factor Authentication Confirm View", "Errored User Login");
   }
 
   @Test
@@ -197,24 +194,21 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
     intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
 
-    final TwoFactorViewModel vm = new TwoFactorViewModel(environment);
-    vm.intent(intent);
+    this.vm = new TwoFactorViewModel.ViewModel(environment);
+    this.vm.intent(intent);
 
-    final TestSubscriber<Void> tfaSuccess = new TestSubscriber<>();
-    vm.outputs.tfaSuccess().subscribe(tfaSuccess);
+    this.vm.outputs.tfaSuccess().subscribe(tfaSuccess);
 
-    final TestSubscriber<Boolean> formSubmitting = new TestSubscriber<>();
-    vm.outputs.formSubmitting().subscribe(formSubmitting);
+    this.vm.outputs.formSubmitting().subscribe(formSubmitting);
 
-    final TestSubscriber<Void> tfaCodeMismatchError = new TestSubscriber<>();
-    vm.errors.tfaCodeMismatchError().subscribe(tfaCodeMismatchError);
+    this.vm.outputs.tfaCodeMismatchError().subscribe(tfaCodeMismatchError);
 
-    vm.inputs.code("88888");
-    vm.inputs.loginClick();
+    this.vm.inputs.code("88888");
+    this.vm.inputs.loginClick();
 
-    formSubmitting.assertValues(true, false);
-    tfaSuccess.assertNoValues();
-    tfaCodeMismatchError.assertValueCount(1);
-    koalaTest.assertValues("Two-factor Authentication Confirm View", "Errored User Login");
+    this.formSubmitting.assertValues(true, false);
+    this.tfaSuccess.assertNoValues();
+    this.tfaCodeMismatchError.assertValueCount(1);
+    this.koalaTest.assertValues("Two-factor Authentication Confirm View", "Errored User Login");
   }
 }

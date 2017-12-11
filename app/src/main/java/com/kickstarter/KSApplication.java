@@ -8,6 +8,7 @@ import android.support.multidex.MultiDexApplication;
 
 import com.facebook.FacebookSdk;
 import com.kickstarter.libs.ApiCapabilities;
+import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
@@ -21,6 +22,9 @@ import net.hockeyapp.android.CrashManagerListener;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.net.HttpCookie;
+import java.net.URI;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -60,6 +64,14 @@ public class KSApplication extends MultiDexApplication {
       .build();
     component().inject(this);
 
+    /*
+      setting cookie for unique id tracking, hardcoding prod
+     */
+    final HttpCookie cookie = new HttpCookie("vis", UUID.randomUUID().toString());
+    final URI webUri = URI.create(component().environment().webEndpoint());
+    final URI apiUri = URI.create(ApiEndpoint.PRODUCTION.url());
+    this.cookieManager.getCookieStore().add(webUri, cookie);
+    this.cookieManager.getCookieStore().add(apiUri, cookie);
     CookieHandler.setDefault(this.cookieManager);
 
     FacebookSdk.sdkInitialize(this);

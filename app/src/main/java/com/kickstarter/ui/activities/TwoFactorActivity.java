@@ -25,8 +25,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresActivityViewModel(TwoFactorViewModel.class)
-public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
+@RequiresActivityViewModel(TwoFactorViewModel.ViewModel.class)
+public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel.ViewModel> {
   public @Bind(R.id.code) EditText codeEditText;
   public @Bind(R.id.resend_button) Button resendButton;
   public @Bind(R.id.login_button) Button loginButton;
@@ -67,8 +67,8 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
   }
 
   private Observable<String> errorMessages() {
-    return this.viewModel.errors.tfaCodeMismatchError().map(__ -> this.codeMismatchString)
-      .mergeWith(this.viewModel.errors.genericTfaError().map(__ -> this.unableToLoginString));
+    return this.viewModel.outputs.tfaCodeMismatchError().map(__ -> this.codeMismatchString)
+      .mergeWith(this.viewModel.outputs.genericTfaError().map(__ -> this.unableToLoginString));
   }
 
   @OnTextChanged(R.id.code)

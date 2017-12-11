@@ -11,9 +11,11 @@ public final class KoalaEvent {
   public static final String DISCOVER_SEARCH_LEGACY = "Discover Search";
   public static final String DISCOVER_SEARCH_RESULTS_LEGACY = "Discover Search Results";
   public static final String DISCOVER_SEARCH_RESULTS_LOAD_MORE_LEGACY = "Discover Search Results Load More";
+  public static final String ERRORED_USER_LOGIN = "Errored User Login";
   public static final String LOADED_MORE_SEARCH_RESULTS = "Loaded More Search Results";
   public static final String LOADED_OLDER_COMMENTS = "Loaded Older Comments";
   public static final String LOADED_SEARCH_RESULTS = "Loaded Search Results";
+  public static final String LOGIN = "Login";
   public static final String NOTIFICATION_OPENED_LEGACY = "Notification Opened";
   public static final String OPENED_DEEP_LINK = "Opened Deep Link";
   public static final String OPENED_EXTERNAL_LINK = "Opened External Link";
@@ -30,6 +32,8 @@ public final class KoalaEvent {
   public static final String SENT_MESSAGE = "Sent Message";
   public static final String SHOWED_SHARE_SHEET = "Showed Share Sheet";
   public static final String STARRED_PROJECT = "Starred Project";
+  public static final String TWO_FACTOR_AUTH_CONFIRM_VIEW = "Two-factor Authentication Confirm View";
+  public static final String TWO_FACTOR_AUTH_RESEND_CODE = "Two-factor Authentication Resend Code";
   public static final String UNSTARRED_PROJECT = "Unstarred Project";
   public static final String VIEWED_COMMENTS = "Viewed Comments";
   public static final String VIEWED_MESSAGE_INBOX = "Viewed Message Inbox";

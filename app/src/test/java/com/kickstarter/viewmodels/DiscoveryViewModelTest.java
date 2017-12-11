@@ -29,10 +29,10 @@ import java.util.List;
 import rx.observers.TestSubscriber;
 
 public class DiscoveryViewModelTest extends KSRobolectricTestCase {
-
+  private DiscoveryViewModel.ViewModel vm;
   @Test
   public void testBuildCheck() {
-    final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
     final InternalBuildEnvelope buildEnvelope = InternalBuildEnvelopeFactory.newerBuildAvailable();
 
     final TestSubscriber<InternalBuildEnvelope> showBuildCheckAlert = new TestSubscriber<>();
@@ -62,8 +62,8 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
       .currentConfig(currentConfig).build();
     final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
 
-    final DiscoveryViewModel vm = new DiscoveryViewModel(env);
-    vm.outputs.creatorDashboardButtonIsGone().subscribe(creatorDashboardButtonIsGone);
+    this.vm = new DiscoveryViewModel.ViewModel(env);
+    this.vm.outputs.creatorDashboardButtonIsGone().subscribe(creatorDashboardButtonIsGone);
     creatorDashboardButtonIsGone.assertValues(true);
   }
 
@@ -85,7 +85,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
       .currentConfig(currentConfig).build();
     final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
 
-    final DiscoveryViewModel vm = new DiscoveryViewModel(env);
+    this.vm = new DiscoveryViewModel.ViewModel(env);
     vm.outputs.creatorDashboardButtonIsGone().subscribe(creatorDashboardButtonIsGone);
     creatorDashboardButtonIsGone.assertValues(true);
   }
@@ -108,7 +108,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
       .currentConfig(currentConfig).build();
     final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
 
-    final DiscoveryViewModel vm = new DiscoveryViewModel(env);
+    this.vm = new DiscoveryViewModel.ViewModel(env);
     vm.outputs.creatorDashboardButtonIsGone().subscribe(creatorDashboardButtonIsGone);
     creatorDashboardButtonIsGone.assertValues(false);
   }
@@ -117,7 +117,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testDrawerData() {
     final MockCurrentUser currentUser = new MockCurrentUser();
     final Environment env = environment().toBuilder().currentUser(currentUser).build();
-    final DiscoveryViewModel vm = new DiscoveryViewModel(env);
+    this.vm = new DiscoveryViewModel.ViewModel(env);
 
     final TestSubscriber<Void> navigationDrawerDataEmitted = new TestSubscriber<>();
     vm.outputs.navigationDrawerData().compose(Transformers.ignoreValues()).subscribe(navigationDrawerDataEmitted);
@@ -168,7 +168,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testUpdateInterfaceElementsWithParams() {
-    final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
 
     final TestSubscriber<DiscoveryParams> updateToolbarWithParams = new TestSubscriber<>();
     vm.outputs.updateToolbarWithParams().subscribe(updateToolbarWithParams);
@@ -236,7 +236,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testClickingInterfaceElements() {
-    final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
 
     final TestSubscriber<Void> showInternalTools = new TestSubscriber<>();
     vm.outputs.showInternalTools().subscribe(showInternalTools);
@@ -265,7 +265,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testInteractionBetweenParamsAndPageAdapter() {
-    final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
 
     final TestSubscriber<DiscoveryParams> updateParams= new TestSubscriber<>();
     vm.outputs.updateParamsForPage().subscribe(updateParams);
@@ -338,7 +338,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testClearingPages() {
-    final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
 
     final TestSubscriber<List<Integer>> clearPages = new TestSubscriber<>();
     vm.outputs.clearPages().subscribe(clearPages);
@@ -380,7 +380,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testRootCategoriesEmitWithPosition() {
-    final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
 
     final TestSubscriber<List<Category>> rootCategories = new TestSubscriber<>();
     final TestSubscriber<Integer> position = new TestSubscriber<>();

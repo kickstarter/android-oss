@@ -10,7 +10,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public interface BuildCheck {
-  void bind(final @NonNull DiscoveryViewModel viewModel, final @NonNull WebClientType client);
+  void bind(final @NonNull DiscoveryViewModel.ViewModel viewModel, final @NonNull WebClientType client);
 
   BuildCheck DEFAULT = (viewModel, client) -> client.pingBeta()
     .filter(InternalBuildEnvelope::newerBuildAvailable)

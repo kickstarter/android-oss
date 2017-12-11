@@ -43,8 +43,8 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
-@RequiresActivityViewModel(DiscoveryViewModel.class)
-public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
+@RequiresActivityViewModel(DiscoveryViewModel.ViewModel.class)
+public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.ViewModel> {
   private DiscoveryDrawerAdapter drawerAdapter;
   private LinearLayoutManager drawerLayoutManager;
   private DiscoveryPagerAdapter pagerAdapter;

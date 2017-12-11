@@ -20,6 +20,8 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.CrashManagerListener;
 
+import org.joda.time.DateTime;
+
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.HttpCookie;
@@ -68,6 +70,8 @@ public class KSApplication extends MultiDexApplication {
       setting cookie for unique id tracking, hardcoding prod
      */
     final HttpCookie cookie = new HttpCookie("vis", UUID.randomUUID().toString());
+    cookie.setMaxAge(DateTime.now().plusYears(100).getMillis());
+    cookie.setSecure(true);
     final URI webUri = URI.create(component().environment().webEndpoint());
     final URI apiUri = URI.create(ApiEndpoint.PRODUCTION.url());
     this.cookieManager.getCookieStore().add(webUri, cookie);

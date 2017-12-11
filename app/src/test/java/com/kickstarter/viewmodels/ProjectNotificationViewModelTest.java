@@ -16,52 +16,53 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public final class ProjectNotificationViewModelTest extends KSRobolectricTestCase {
+  private ProjectNotificationViewModel.ViewModel vm;
+  private final TestSubscriber<Boolean> enabledSwitchTest = new TestSubscriber<>();
+  private final TestSubscriber<String> projectNameTest = new TestSubscriber<>();
+  private final TestSubscriber<Void> showUnableToSaveNotificationErrorTest = new TestSubscriber<>();
+
   @Test
   public void testNotificationsEmitProjectNameAndEnabledSwitch() {
-    final ProjectNotificationViewModel vm = new ProjectNotificationViewModel(environment());
+    this.vm = new ProjectNotificationViewModel.ViewModel(environment());
 
-    final TestSubscriber<String> projectNameTest = new TestSubscriber<>();
-    vm.outputs.projectName().subscribe(projectNameTest);
-
-    final TestSubscriber<Boolean> enabledSwitchTest = new TestSubscriber<>();
-    vm.outputs.enabledSwitch().subscribe(enabledSwitchTest);
+    this.vm.outputs.projectName().subscribe(this.projectNameTest);
+    this.vm.outputs.enabledSwitch().subscribe(this.enabledSwitchTest);
 
     // Start with an enabled notification.
     final ProjectNotification enabledNotification = ProjectNotificationFactory.enabled();
-    vm.inputs.projectNotification(enabledNotification);
+    this.vm.inputs.projectNotification(enabledNotification);
 
     // Project name and enabled values should match enabled notification.
-    projectNameTest.assertValue(enabledNotification.project().name());
-    enabledSwitchTest.assertValue(true);
+    this.projectNameTest.assertValue(enabledNotification.project().name());
+    this.enabledSwitchTest.assertValue(true);
 
     // Change to a disabled notification.
     final ProjectNotification disabledNotification = ProjectNotificationFactory.disabled();
-    vm.inputs.projectNotification(disabledNotification);
+    this.vm.inputs.projectNotification(disabledNotification);
 
     // Project name and enabled values should match disabled notification.
-    projectNameTest.assertValues(enabledNotification.project().name(), disabledNotification.project().name());
-    enabledSwitchTest.assertValues(true, false);
+    this.projectNameTest.assertValues(enabledNotification.project().name(), disabledNotification.project().name());
+    this.enabledSwitchTest.assertValues(true, false);
   }
 
   @Test
   public void testSwitchClickEmitsEnabledSwitch() {
-    final ProjectNotificationViewModel vm = new ProjectNotificationViewModel(environment());
+    this.vm = new ProjectNotificationViewModel.ViewModel(environment());
 
-    final TestSubscriber<Boolean> enabledSwitchTest = new TestSubscriber<>();
-    vm.outputs.enabledSwitch().subscribe(enabledSwitchTest);
+    this.vm.outputs.enabledSwitch().subscribe(this.enabledSwitchTest);
 
     // Start with a disabled notification.
     final ProjectNotification disabledNotification = ProjectNotificationFactory.disabled();
-    vm.inputs.projectNotification(disabledNotification);
+    this.vm.inputs.projectNotification(disabledNotification);
 
     // Enabled switch should be disabled.
-    enabledSwitchTest.assertValues(false);
+    this.enabledSwitchTest.assertValues(false);
 
     // Enable the previously disabled notification.
-    vm.inputs.enabledSwitchClick(true);
+    this.vm.inputs.enabledSwitchClick(true);
 
     // Enabled switch should now be enabled.
-    enabledSwitchTest.assertValues(false, true);
+    this.enabledSwitchTest.assertValues(false, true);
   }
 
   @Test
@@ -77,24 +78,21 @@ public final class ProjectNotificationViewModelTest extends KSRobolectricTestCas
       .apiClient(client)
       .build();
 
-    final ProjectNotificationViewModel vm = new ProjectNotificationViewModel(environment);
+    this.vm = new ProjectNotificationViewModel.ViewModel(environment);
 
-    final TestSubscriber<Void> showUnableToSaveNotificationErrorTest = new TestSubscriber<>();
-    vm.errors.showUnableToSaveProjectNotificationError().subscribe(showUnableToSaveNotificationErrorTest);
-
-    final TestSubscriber<Boolean> enabledSwitchTest = new TestSubscriber<>();
-    vm.outputs.enabledSwitch().subscribe(enabledSwitchTest);
+    this.vm.outputs.showUnableToSaveProjectNotificationError().subscribe(this.showUnableToSaveNotificationErrorTest);
+    this.vm.outputs.enabledSwitch().subscribe(this.enabledSwitchTest);
 
     // Start with a disabled notification.
     final ProjectNotification projectNotification = ProjectNotificationFactory.disabled();
-    vm.inputs.projectNotification(projectNotification);
+    this.vm.inputs.projectNotification(projectNotification);
 
     // Switch should be disabled.
-    enabledSwitchTest.assertValue(false);
+    this.enabledSwitchTest.assertValue(false);
 
     // Attempt to toggle the notification to true. This should error, and the switch should still be disabled.
-    vm.enabledSwitchClick(true);
-    showUnableToSaveNotificationErrorTest.assertValueCount(1);
-    enabledSwitchTest.assertValue(false);
+    this.vm.enabledSwitchClick(true);
+    this.showUnableToSaveNotificationErrorTest.assertValueCount(1);
+    this.enabledSwitchTest.assertValue(false);
   }
 }

@@ -21,9 +21,9 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
-@RequiresActivityViewModel(ProjectNotificationViewModel.class)
+@RequiresActivityViewModel(ProjectNotificationViewModel.ViewModel.class)
 public final class ProjectNotificationViewHolder extends KSViewHolder {
-  private final ProjectNotificationViewModel viewModel;
+  private final ProjectNotificationViewModel.ViewModel viewModel;
 
   protected @Bind(R.id.enabled_switch) SwitchCompat enabledSwitch;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
@@ -34,7 +34,7 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
     super(view);
     ButterKnife.bind(this, view);
 
-    this.viewModel = new ProjectNotificationViewModel(environment());
+    this.viewModel = new ProjectNotificationViewModel.ViewModel(environment());
 
     RxView.clicks(this.enabledSwitch)
       .map(__ -> this.enabledSwitch.isChecked())
@@ -52,7 +52,7 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(SwitchCompatUtils.setCheckedWithoutAnimation(this.enabledSwitch));
 
-    this.viewModel.errors.showUnableToSaveProjectNotificationError()
+    this.viewModel.outputs.showUnableToSaveProjectNotificationError()
       .map(__ -> this.unableToSaveString)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())

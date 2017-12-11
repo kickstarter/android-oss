@@ -233,19 +233,19 @@ public final class Koala {
   }
 
   public void trackLoginSuccess() {
-    this.client.track("Login");
+    this.client.track(KoalaEvent.LOGIN);
   }
 
   public void trackLoginError() {
-    this.client.track("Errored User Login");
+    this.client.track(KoalaEvent.ERRORED_USER_LOGIN);
   }
 
   public void trackTwoFactorAuthView() {
-    this.client.track("Two-factor Authentication Confirm View");
+    this.client.track(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW);
   }
 
   public void trackTwoFactorResendCode() {
-    this.client.track("Two-factor Authentication Resend Code");
+    this.client.track(KoalaEvent.TWO_FACTOR_AUTH_RESEND_CODE);
   }
 
   public void trackRegisterFormView() {

@@ -29,14 +29,24 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 public interface FacebookConfirmationViewModel {
 
   interface Inputs {
+    /** Call when the create new account button has been clicked. */
     void createNewAccountClick();
+
+    /** Call when the send newsletter switch has been toggled. */
     void sendNewslettersClick(boolean __);
   }
 
   interface Outputs {
+    /** Fill the view's email address. */
     Observable<String> prefillEmail();
+
+    /** Emits a string to display when sign up fails. */
     Observable<String> signupError();
+
+    /** Finish Facebook confirmation activity with OK result. */
     Observable<Void> signupSuccess();
+
+    /** Emits a boolean to check send newsletter switch. */
     Observable<Boolean> sendNewslettersIsChecked();
   }
 

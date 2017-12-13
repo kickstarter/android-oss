@@ -9782,12 +9782,12 @@
     }
   ],
   "ab_experiments": {
-    "koala_alt_frontend_tracking": "control",
+    "koala_alt_frontend_tracking": "experimental",
     "project_build": "control",
     "project_dashboard": "with_dashboard",
     "react_guest_pledging": "control",
     "react_payment_sources_form_mobile": "control",
-    "favorites_recs": "control",
+    "favorites_recs": "experimental",
     "thanks_page_better_recs": "control",
     "project_card_hearts": "control",
     "currency_conversion": "control",

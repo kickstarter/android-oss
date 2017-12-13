@@ -215,6 +215,7 @@
       android:orientation="vertical"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_3"
       android:layout_marginBottom="@dimen/grid_5">
 
       <include layout="@layout/project_stats_view" />

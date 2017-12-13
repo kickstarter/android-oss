@@ -349,7 +349,25 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testProjectSocialView_NoSocial() {
+  public void testProjectSocialView_NoSocial_LoggedIn() {
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .friends(Collections.emptyList())
+      .build();
+
+    setUpEnvironment(environment());
+    this.vm.inputs.configureWith(Pair.create(project, "US"));
+
+    this.projectSocialImageViewIsGone.assertValues(true);
+    this.projectSocialImageViewUrl.assertNoValues();
+    this.projectSocialTextViewFriends.assertNoValues();
+    this.projectSocialViewGroupIsGone.assertValues(true);
+    this.shouldSetDefaultStatsMargins.assertValues(true);
+    this.setProjectSocialClickListener.assertNoValues();
+  }
+
+  @Test
+  public void testProjectSocialView_NoSocial_LoggedOut() {
     final Project project = ProjectFactory.project()
       .toBuilder()
       .friends(null)

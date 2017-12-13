@@ -247,14 +247,14 @@ public interface ProjectHolderViewModel {
       this.projectPhoto = project.map(Project::photo);
 
       this.projectSocialImageViewUrl = project
+        .filter(Project::isFriendBacking)
         .map(Project::friends)
-        .filter(ObjectUtils::isNotNull)
         .map(ListUtils::first)
         .map(f -> f.avatar().small());
 
       this.projectSocialTextViewFriends = project
-        .map(Project::friends)
-        .filter(ObjectUtils::isNotNull);
+        .filter(Project::isFriendBacking)
+        .map(Project::friends);
 
       this.projectSocialViewGroupIsGone = project.map(Project::isFriendBacking).map(BooleanUtils::negate);
 
@@ -269,6 +269,7 @@ public interface ProjectHolderViewModel {
       this.setCanceledProjectStateView = project.filter(Project::isCanceled).compose(ignoreValues());
 
       this.setProjectSocialClickListener = project
+        .filter(Project::isFriendBacking)
         .map(Project::friends)
         .filter(fs -> fs.size() > 2)
         .compose(ignoreValues());

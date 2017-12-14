@@ -1,9 +1,6 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -17,14 +14,15 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.FacebookConfirmationActivity;
 
+import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
-import static com.kickstarter.libs.rx.transformers.Transformers.pipeApiErrorsTo;
+import static com.kickstarter.libs.rx.transformers.Transformers.errors;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 public interface FacebookConfirmationViewModel {
 
@@ -76,20 +74,29 @@ public interface FacebookConfirmationViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.prefillEmail::onNext);
 
-      tokenAndNewsletter
+      final Observable<Notification<AccessTokenEnvelope>> createNewAccountNotification = tokenAndNewsletter
         .compose(takeWhen(this.createNewAccountClick))
-        .flatMap(tn -> createNewAccount(tn.first, tn.second))
+        .flatMap(tn -> this.client.registerWithFacebook(tn.first, tn.second))
+        .share()
+        .materialize();
+
+      createNewAccountNotification
+        .compose(errors())
+        .map(ErrorEnvelope::fromThrowable)
+        .map(ErrorEnvelope::errorMessage)
+        .takeUntil(this.signupSuccess)
+        .compose(bindToLifecycle())
+        .subscribe(this.signupError);
+
+      createNewAccountNotification
+        .compose(values())
+        .ofType(AccessTokenEnvelope.class)
         .compose(bindToLifecycle())
         .subscribe(this::registerWithFacebookSuccess);
 
       this.sendNewslettersClick
         .compose(bindToLifecycle())
         .subscribe(this.sendNewslettersIsChecked::onNext);
-    }
-
-    @Override
-    protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-      super.onCreate(context, savedInstanceState);
 
       this.currentConfig.observable()
         .take(1)
@@ -115,12 +122,6 @@ public interface FacebookConfirmationViewModel {
       this.koala.trackRegisterFormView();
     }
 
-    private Observable<AccessTokenEnvelope> createNewAccount(final @NonNull String fbAccessToken, final boolean sendNewsletters) {
-      return this.client.registerWithFacebook(fbAccessToken, sendNewsletters)
-        .compose(pipeApiErrorsTo(this.signupError))
-        .compose(neverError());
-    }
-
     private void registerWithFacebookSuccess(final @NonNull AccessTokenEnvelope envelope) {
       this.currentUser.login(envelope.user(), envelope.accessToken());
       this.signupSuccess.onNext(null);
@@ -130,7 +131,7 @@ public interface FacebookConfirmationViewModel {
     private final PublishSubject<Boolean> sendNewslettersClick = PublishSubject.create();
 
     private final BehaviorSubject<String> prefillEmail = BehaviorSubject.create();
-    private final PublishSubject<ErrorEnvelope> signupError = PublishSubject.create();
+    private final PublishSubject<String> signupError = PublishSubject.create();
     private final PublishSubject<Void> signupSuccess = PublishSubject.create();
     private final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
 
@@ -148,9 +149,7 @@ public interface FacebookConfirmationViewModel {
       return this.prefillEmail;
     }
     @Override public @NonNull Observable<String> signupError() {
-      return this.signupError
-        .takeUntil(this.signupSuccess)
-        .map(ErrorEnvelope::errorMessage);
+      return this.signupError;
     }
     @Override public @NonNull Observable<Void> signupSuccess() {
       return this.signupSuccess;

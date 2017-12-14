@@ -249,15 +249,15 @@ public final class Koala {
   }
 
   public void trackRegisterFormView() {
-    this.client.track("User Signup");
+    this.client.track(KoalaEvent.USER_SIGNUP);
   }
 
   public void trackRegisterError() {
-    this.client.track("Errored User Signup");
+    this.client.track(KoalaEvent.ERRORED_USER_SIGNUP);
   }
 
   public void trackRegisterSuccess() {
-    this.client.track("New User");
+    this.client.track(KoalaEvent.NEW_USER);
   }
 
   public void trackResetPasswordFormView() {
@@ -273,7 +273,7 @@ public final class Koala {
   }
 
   public void trackFacebookConfirmation() {
-    this.client.track("Facebook Confirm");
+    this.client.track(KoalaEvent.FACEBOOK_CONFIRM);
   }
 
   public void trackFacebookLoginSuccess() {
@@ -289,7 +289,7 @@ public final class Koala {
   }
 
   public void trackSignupNewsletterToggle(final boolean sendNewsletters) {
-    this.client.track("Signup Newsletter Toggle", new HashMap<String, Object>() {
+    this.client.track(KoalaEvent.SIGNUP_NEWSLETTER_TOGGLE, new HashMap<String, Object>() {
       {
         put("send_newsletters", sendNewsletters);
       }

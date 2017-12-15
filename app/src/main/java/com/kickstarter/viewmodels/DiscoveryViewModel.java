@@ -83,10 +83,17 @@ public interface DiscoveryViewModel {
     /** Emits when a newer build is available and an alert should be shown. */
     Observable<InternalBuildEnvelope> showBuildCheckAlert();
 
-    Observable<Void> showLoginTout();
-    Observable<Void> showProfile();
-    Observable<Void> showSettings();
+    /** Start internal tools activity. */
     Observable<Void> showInternalTools();
+
+    /** Start login tout activity for result. */
+    Observable<Void> showLoginTout();
+
+    /** Start profile activity. */
+    Observable<Void> showProfile();
+
+    /** Start settings activity. */
+    Observable<Void> showSettings();
   }
 
   final class ViewModel extends ActivityViewModel<DiscoveryActivity> implements Inputs, Outputs {

@@ -7,7 +7,7 @@ import com.kickstarter.viewmodels.DiscoveryViewModel;
 
 public class NoopBuildCheck implements BuildCheck {
   @Override
-  public void bind(final @NonNull DiscoveryViewModel viewModel, final @NonNull WebClientType client) {
+  public void bind(final @NonNull DiscoveryViewModel.ViewModel viewModel, final @NonNull WebClientType client) {
     // No-op, distribution through Play Store
   }
 }

@@ -42,6 +42,14 @@ public final class KSUri {
     return uri.getHost().equals(Uri.parse(webEndpoint).getHost());
   }
 
+  public static boolean isKSGraphQLUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
+    return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/graph");
+  }
+
+  public static boolean isWebViewUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
+    return isKickstarterUri(uri, webEndpoint) && !isKSGraphQLUri(uri, webEndpoint);
+  }
+
   public static boolean isNewGuestCheckoutUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && NEW_GUEST_CHECKOUT_PATTERN.matcher(uri.getPath()).matches();
   }

@@ -29,21 +29,40 @@ import java.util.List;
 import rx.observers.TestSubscriber;
 
 public class DiscoveryViewModelTest extends KSRobolectricTestCase {
+  private DiscoveryViewModel.ViewModel vm;
+  private final TestSubscriber<List<Integer>> clearPages = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> drawerIsOpen = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> expandSortTabLayout = new TestSubscriber<>();
+  private final TestSubscriber<Void> navigationDrawerDataEmitted = new TestSubscriber<>();
+  private final TestSubscriber<Integer> position = new TestSubscriber<>();
+  private final TestSubscriber<List<Category>> rootCategories = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> rotatedExpandSortTabLayout = new TestSubscriber<>();
+  private final TestSubscriber<Integer> rotatedUpdatePage = new TestSubscriber<>();
+  private final TestSubscriber<DiscoveryParams> rotatedUpdateParams= new TestSubscriber<>();
+  private final TestSubscriber<DiscoveryParams> rotatedUpdateToolbarWithParams = new TestSubscriber<>();
+  private final TestSubscriber<InternalBuildEnvelope> showBuildCheckAlert = new TestSubscriber<>();
+  private final TestSubscriber<Void> showInternalTools = new TestSubscriber<>();
+  private final TestSubscriber<Void> showLoginTout = new TestSubscriber<>();
+  private final TestSubscriber<Void> showProfile = new TestSubscriber<>();
+  private final TestSubscriber<Void> showSettings = new TestSubscriber<>();
+  private final TestSubscriber<Integer> updatePage = new TestSubscriber<>();
+  private final TestSubscriber<DiscoveryParams> updateParams= new TestSubscriber<>();
+  private final TestSubscriber<DiscoveryParams> updateToolbarWithParams = new TestSubscriber<>();
 
   @Test
   public void testBuildCheck() {
-    final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
     final InternalBuildEnvelope buildEnvelope = InternalBuildEnvelopeFactory.newerBuildAvailable();
 
-    final TestSubscriber<InternalBuildEnvelope> showBuildCheckAlert = new TestSubscriber<>();
-    vm.outputs.showBuildCheckAlert().subscribe(showBuildCheckAlert);
+    this.vm.outputs.showBuildCheckAlert().subscribe(this.showBuildCheckAlert);
 
     // Build check should not be shown.
-    showBuildCheckAlert.assertNoValues();
+    this.showBuildCheckAlert.assertNoValues();
 
     // Build check should be shown when newer build is available.
-    vm.inputs.newerBuildIsAvailable(buildEnvelope);
-    showBuildCheckAlert.assertValue(buildEnvelope);
+    this.vm.inputs.newerBuildIsAvailable(buildEnvelope);
+    this.showBuildCheckAlert.assertValue(buildEnvelope);
   }
 
   @Test
@@ -60,11 +79,10 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final Environment env = environment().toBuilder()
       .currentUser(currentUser)
       .currentConfig(currentConfig).build();
-    final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
 
-    final DiscoveryViewModel vm = new DiscoveryViewModel(env);
-    vm.outputs.creatorDashboardButtonIsGone().subscribe(creatorDashboardButtonIsGone);
-    creatorDashboardButtonIsGone.assertValues(true);
+    this.vm = new DiscoveryViewModel.ViewModel(env);
+    this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
+    this.creatorDashboardButtonIsGone.assertValues(true);
   }
 
   @Test
@@ -83,11 +101,10 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final Environment env = environment().toBuilder()
       .currentUser(currentUser)
       .currentConfig(currentConfig).build();
-    final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
 
-    final DiscoveryViewModel vm = new DiscoveryViewModel(env);
-    vm.outputs.creatorDashboardButtonIsGone().subscribe(creatorDashboardButtonIsGone);
-    creatorDashboardButtonIsGone.assertValues(true);
+    this.vm = new DiscoveryViewModel.ViewModel(env);
+    this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
+    this.creatorDashboardButtonIsGone.assertValues(true);
   }
 
   @Test
@@ -106,50 +123,46 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final Environment env = environment().toBuilder()
       .currentUser(currentUser)
       .currentConfig(currentConfig).build();
-    final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
 
-    final DiscoveryViewModel vm = new DiscoveryViewModel(env);
-    vm.outputs.creatorDashboardButtonIsGone().subscribe(creatorDashboardButtonIsGone);
-    creatorDashboardButtonIsGone.assertValues(false);
+    this.vm = new DiscoveryViewModel.ViewModel(env);
+    this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
+    this.creatorDashboardButtonIsGone.assertValues(false);
   }
 
   @Test
   public void testDrawerData() {
     final MockCurrentUser currentUser = new MockCurrentUser();
     final Environment env = environment().toBuilder().currentUser(currentUser).build();
-    final DiscoveryViewModel vm = new DiscoveryViewModel(env);
+    this.vm = new DiscoveryViewModel.ViewModel(env);
 
-    final TestSubscriber<Void> navigationDrawerDataEmitted = new TestSubscriber<>();
-    vm.outputs.navigationDrawerData().compose(Transformers.ignoreValues()).subscribe(navigationDrawerDataEmitted);
-
-    final TestSubscriber<Boolean> drawerIsOpen = new TestSubscriber<>();
-    vm.outputs.drawerIsOpen().subscribe(drawerIsOpen);
+    this.vm.outputs.navigationDrawerData().compose(Transformers.ignoreValues()).subscribe(this.navigationDrawerDataEmitted);
+    this.vm.outputs.drawerIsOpen().subscribe(this.drawerIsOpen);
 
     // Initialize activity.
     final Intent intent = new Intent(Intent.ACTION_MAIN);
-    vm.intent(intent);
+    this.vm.intent(intent);
 
     // Drawer data should emit. Drawer should be closed.
-    navigationDrawerDataEmitted.assertValueCount(1);
-    drawerIsOpen.assertNoValues();
-    koalaTest.assertNoValues();
+    this.navigationDrawerDataEmitted.assertValueCount(1);
+    this.drawerIsOpen.assertNoValues();
+    this.koalaTest.assertNoValues();
 
     // Open drawer and click the top PWL filter.
-    vm.inputs.openDrawer(true);
-    vm.inputs.topFilterViewHolderRowClick(null, NavigationDrawerData.Section.Row
+    this.vm.inputs.openDrawer(true);
+    this.vm.inputs.topFilterViewHolderRowClick(null, NavigationDrawerData.Section.Row
       .builder()
       .params(DiscoveryParams.builder().staffPicks(true).build())
       .build()
     );
 
     // Drawer data should emit. Drawer should open, then close upon selection.
-    navigationDrawerDataEmitted.assertValueCount(2);
-    drawerIsOpen.assertValues(true, false);
-    koalaTest.assertValues("Discover Switch Modal", "Discover Modal Selected Filter");
+    this.navigationDrawerDataEmitted.assertValueCount(2);
+    this.drawerIsOpen.assertValues(true, false);
+    this.koalaTest.assertValues("Discover Switch Modal", "Discover Modal Selected Filter");
 
     // Open drawer and click a child filter.
-    vm.inputs.openDrawer(true);
-    vm.inputs.childFilterViewHolderRowClick(null, NavigationDrawerData.Section.Row
+    this.vm.inputs.openDrawer(true);
+    this.vm.inputs.childFilterViewHolderRowClick(null, NavigationDrawerData.Section.Row
       .builder()
       .params(DiscoveryParams
         .builder()
@@ -160,259 +173,243 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     );
 
     // Drawer data should emit. Drawer should open, then close upon selection.
-    navigationDrawerDataEmitted.assertValueCount(3);
-    drawerIsOpen.assertValues(true, false, true, false);
-    koalaTest.assertValues("Discover Switch Modal", "Discover Modal Selected Filter", "Discover Switch Modal",
+    this.navigationDrawerDataEmitted.assertValueCount(3);
+    this.drawerIsOpen.assertValues(true, false, true, false);
+    this.koalaTest.assertValues("Discover Switch Modal", "Discover Modal Selected Filter", "Discover Switch Modal",
       "Discover Modal Selected Filter");
   }
 
   @Test
   public void testUpdateInterfaceElementsWithParams() {
-    final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    final TestSubscriber<DiscoveryParams> updateToolbarWithParams = new TestSubscriber<>();
-    vm.outputs.updateToolbarWithParams().subscribe(updateToolbarWithParams);
-
-    final TestSubscriber<Boolean> expandSortTabLayout = new TestSubscriber<>();
-    vm.outputs.expandSortTabLayout().subscribe(expandSortTabLayout);
+    this.vm.outputs.updateToolbarWithParams().subscribe(this.updateToolbarWithParams);
+    this.vm.outputs.expandSortTabLayout().subscribe(this.expandSortTabLayout);
 
     // Initialize activity.
     final Intent intent = new Intent(Intent.ACTION_MAIN);
-    vm.intent(intent);
+    this.vm.intent(intent);
 
     // Initial HOME page selected.
-    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
+    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
 
     // Sort tab should be expanded.
-    expandSortTabLayout.assertValues(true);
+    this.expandSortTabLayout.assertValues(true);
 
     // Toolbar params should be loaded with initial params.
-    updateToolbarWithParams.assertValues(DiscoveryParams.builder().build());
+    this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().build());
 
     // Select POPULAR sort.
-    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
+    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
     // Sort tab should be expanded.
-    expandSortTabLayout.assertValues(true, true);
+    this.expandSortTabLayout.assertValues(true, true);
 
     // Unchanged toolbar params should not emit.
-    updateToolbarWithParams.assertValues(DiscoveryParams.builder().build());
+    this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().build());
 
     // Select ALL PROJECTS filter from drawer.
-    vm.inputs.topFilterViewHolderRowClick(null,
+    this.vm.inputs.topFilterViewHolderRowClick(null,
       NavigationDrawerData.Section.Row.builder().params(DiscoveryParams.builder().build()).build()
     );
 
     // Sort tab should be expanded.
-    expandSortTabLayout.assertValues(true, true, true);
-    koalaTest.assertValues("Discover Modal Selected Filter");
+    this.expandSortTabLayout.assertValues(true, true, true);
+    this.koalaTest.assertValues("Discover Modal Selected Filter");
 
     // Select ART category from drawer.
-    vm.inputs.childFilterViewHolderRowClick(null,
+    this.vm.inputs.childFilterViewHolderRowClick(null,
       NavigationDrawerData.Section.Row.builder()
         .params(DiscoveryParams.builder().category(CategoryFactory.artCategory()).build())
         .build()
     );
 
     // Sort tab should be expanded.
-    expandSortTabLayout.assertValues(true, true, true, true);
-    koalaTest.assertValues("Discover Modal Selected Filter", "Discover Modal Selected Filter");
+    this.expandSortTabLayout.assertValues(true, true, true, true);
+    this.koalaTest.assertValues("Discover Modal Selected Filter", "Discover Modal Selected Filter");
 
     // Simulate rotating the device and hitting initial inputs again.
-    final TestSubscriber<DiscoveryParams> rotatedUpdateToolbarWithParams = new TestSubscriber<>();
-    vm.outputs.updateToolbarWithParams().subscribe(rotatedUpdateToolbarWithParams);
-    final TestSubscriber<Boolean> rotatedExpandSortTabLayout = new TestSubscriber<>();
-    vm.outputs.expandSortTabLayout().subscribe(rotatedExpandSortTabLayout);
+    this.vm.outputs.updateToolbarWithParams().subscribe(this.rotatedUpdateToolbarWithParams);
+    this.vm.outputs.expandSortTabLayout().subscribe(this.rotatedExpandSortTabLayout);
 
     // Simulate recreating and setting POPULAR fragment, the previous position before rotation.
-    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
+    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
     // Sort tab and toolbar params should emit again with same params.
-    rotatedExpandSortTabLayout.assertValues(true);
-    rotatedUpdateToolbarWithParams.assertValues(
+    this.rotatedExpandSortTabLayout.assertValues(true);
+    this.rotatedUpdateToolbarWithParams.assertValues(
       DiscoveryParams.builder().category(CategoryFactory.artCategory()).build()
     );
   }
 
   @Test
   public void testClickingInterfaceElements() {
-    final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    final TestSubscriber<Void> showInternalTools = new TestSubscriber<>();
-    vm.outputs.showInternalTools().subscribe(showInternalTools);
-    final TestSubscriber<Void> showLoginTout = new TestSubscriber<>();
-    vm.outputs.showLoginTout().subscribe(showLoginTout);
-    final TestSubscriber<Void> showProfile = new TestSubscriber<>();
-    vm.outputs.showProfile().subscribe(showProfile);
-    final TestSubscriber<Void> showSettings = new TestSubscriber<>();
-    vm.outputs.showSettings().subscribe(showSettings);
+    this.vm.outputs.showInternalTools().subscribe(this.showInternalTools);
+    this.vm.outputs.showLoginTout().subscribe(this.showLoginTout);
+    this.vm.outputs.showProfile().subscribe(this.showProfile);
+    this.vm.outputs.showSettings().subscribe(this.showSettings);
 
-    showInternalTools.assertNoValues();
-    showLoginTout.assertNoValues();
-    showProfile.assertNoValues();
-    showSettings.assertNoValues();
+    this.showInternalTools.assertNoValues();
+    this.showLoginTout.assertNoValues();
+    this.showProfile.assertNoValues();
+    this.showSettings.assertNoValues();
 
-    vm.inputs.loggedInViewHolderInternalToolsClick(null);
-    vm.inputs.loggedOutViewHolderLoginToutClick(null);
-    vm.inputs.loggedInViewHolderProfileClick(null, UserFactory.user());
-    vm.inputs.loggedInViewHolderSettingsClick(null, UserFactory.user());
+    this.vm.inputs.loggedInViewHolderInternalToolsClick(null);
+    this.vm.inputs.loggedOutViewHolderLoginToutClick(null);
+    this.vm.inputs.loggedInViewHolderProfileClick(null, UserFactory.user());
+    this.vm.inputs.loggedInViewHolderSettingsClick(null, UserFactory.user());
 
-    showInternalTools.assertValueCount(1);
-    showLoginTout.assertValueCount(1);
-    showProfile.assertValueCount(1);
-    showSettings.assertValueCount(1);
+    this.showInternalTools.assertValueCount(1);
+    this.showLoginTout.assertValueCount(1);
+    this.showProfile.assertValueCount(1);
+    this.showSettings.assertValueCount(1);
   }
 
   @Test
   public void testInteractionBetweenParamsAndPageAdapter() {
-    final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    final TestSubscriber<DiscoveryParams> updateParams= new TestSubscriber<>();
-    vm.outputs.updateParamsForPage().subscribe(updateParams);
-    final TestSubscriber<Integer> updatePage = new TestSubscriber<>();
-    vm.outputs.updateParamsForPage().map(params -> DiscoveryUtils.positionFromSort(params.sort())).subscribe(updatePage);
+    this.vm.outputs.updateParamsForPage().subscribe(this.updateParams);
+    this.vm.outputs.updateParamsForPage().map(params -> DiscoveryUtils.positionFromSort(params.sort())).subscribe(this.updatePage);
 
     // Start initial activity.
     final Intent intent = new Intent(Intent.ACTION_MAIN);
-    vm.intent(intent);
+    this.vm.intent(intent);
 
     // Initial HOME page selected.
-    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
+    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
 
     // Initial params should emit. Page should not be updated yet.
-    updateParams.assertValues(
+    this.updateParams.assertValues(
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build()
     );
-    updatePage.assertValues(0);
+    this.updatePage.assertValues(0);
 
     // Select POPULAR sort position.
-    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
+    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
     // Params and page should update with new POPULAR sort values.
-    updateParams.assertValues(
+    this.updateParams.assertValues(
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build()
     );
-    updatePage.assertValues(0, 1);
+    this.updatePage.assertValues(0, 1);
 
     // Select ART category from the drawer.
-    vm.inputs.childFilterViewHolderRowClick(null,
+    this.vm.inputs.childFilterViewHolderRowClick(null,
       NavigationDrawerData.Section.Row.builder()
         .params(DiscoveryParams.builder().category(CategoryFactory.artCategory()).build())
         .build()
     );
 
     // Params should update with new category; page should remain the same.
-    updateParams.assertValues(
+    this.updateParams.assertValues(
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).category(CategoryFactory.artCategory()).build()
     );
-    updatePage.assertValues(0, 1, 1);
-    koalaTest.assertValues("Discover Modal Selected Filter");
+    this.updatePage.assertValues(0, 1, 1);
+    this.koalaTest.assertValues("Discover Modal Selected Filter");
 
     // Select HOME sort position.
-    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
+    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
 
     // Params and page should update with new HOME sort value.
-    updateParams.assertValues(
+    this.updateParams.assertValues(
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).category(CategoryFactory.artCategory()).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).category(CategoryFactory.artCategory()).build()
     );
-    updatePage.assertValues(0, 1, 1, 0);
+    this.updatePage.assertValues(0, 1, 1, 0);
 
     // Simulate rotating the device and hitting initial inputs again.
-    final TestSubscriber<DiscoveryParams> rotatedUpdateParams= new TestSubscriber<>();
-    vm.outputs.updateParamsForPage().subscribe(rotatedUpdateParams);
-    final TestSubscriber<Integer> rotatedUpdatePage = new TestSubscriber<>();
-    vm.outputs.updateParamsForPage().map(params -> DiscoveryUtils.positionFromSort(params.sort())).subscribe(rotatedUpdatePage);
+    this.vm.outputs.updateParamsForPage().subscribe(this.rotatedUpdateParams);
+    this.vm.outputs.updateParamsForPage().map(params -> DiscoveryUtils.positionFromSort(params.sort())).subscribe(this.rotatedUpdatePage);
 
     // Should emit again with same params.
-    rotatedUpdateParams.assertValues(
+    this.rotatedUpdateParams.assertValues(
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).category(CategoryFactory.artCategory()).build()
     );
-    rotatedUpdatePage.assertValues(0);
+    this.rotatedUpdatePage.assertValues(0);
   }
 
   @Test
   public void testClearingPages() {
-    final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    final TestSubscriber<List<Integer>> clearPages = new TestSubscriber<>();
-    vm.outputs.clearPages().subscribe(clearPages);
+    this.vm.outputs.clearPages().subscribe(this.clearPages);
 
     // Start initial activity.
     final Intent intent = new Intent(Intent.ACTION_MAIN);
-    vm.intent(intent);
+    this.vm.intent(intent);
 
-    clearPages.assertNoValues();
+    this.clearPages.assertNoValues();
 
-    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
+    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
-    clearPages.assertNoValues();
+    this.clearPages.assertNoValues();
 
-    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 4);
+    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 4);
 
-    clearPages.assertNoValues();
+    this.clearPages.assertNoValues();
 
     // Select ART category from the drawer.
-    vm.inputs.childFilterViewHolderRowClick(null,
+    this.vm.inputs.childFilterViewHolderRowClick(null,
       NavigationDrawerData.Section.Row.builder()
         .params(DiscoveryParams.builder().category(CategoryFactory.artCategory()).build())
         .build()
     );
 
-    clearPages.assertValues(Arrays.asList(0, 1, 2, 3));
+    this.clearPages.assertValues(Arrays.asList(0, 1, 2, 3));
 
-    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
+    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
     // Select MUSIC category from the drawer.
-    vm.inputs.childFilterViewHolderRowClick(null,
+    this.vm.inputs.childFilterViewHolderRowClick(null,
       NavigationDrawerData.Section.Row.builder()
         .params(DiscoveryParams.builder().category(CategoryFactory.musicCategory()).build())
         .build()
     );
 
-    clearPages.assertValues(Arrays.asList(0, 1, 2, 3), Arrays.asList(0, 2, 3, 4));
+    this.clearPages.assertValues(Arrays.asList(0, 1, 2, 3), Arrays.asList(0, 2, 3, 4));
   }
 
   @Test
   public void testRootCategoriesEmitWithPosition() {
-    final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    final TestSubscriber<List<Category>> rootCategories = new TestSubscriber<>();
-    final TestSubscriber<Integer> position = new TestSubscriber<>();
-    vm.outputs.rootCategoriesAndPosition().map(cp -> cp.first).subscribe(rootCategories);
-    vm.outputs.rootCategoriesAndPosition().map(cp -> cp.second).subscribe(position);
+    this.vm.outputs.rootCategoriesAndPosition().map(cp -> cp.first).subscribe(this.rootCategories);
+    this.vm.outputs.rootCategoriesAndPosition().map(cp -> cp.second).subscribe(this.position);
 
     // Start initial activity.
-    vm.intent(new Intent(Intent.ACTION_MAIN));
+    this.vm.intent(new Intent(Intent.ACTION_MAIN));
 
     // Initial HOME page selected.
-    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
+    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
 
-    // Root categories should emit for the initial HOME sort position.
-    rootCategories.assertValueCount(1);
-    position.assertValues(0);
+    // Root categories should emit for the initial HOME sort this.position.
+    this.rootCategories.assertValueCount(1);
+    this.position.assertValues(0);
 
     // Select POPULAR sort position.
-    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
+    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
     // Root categories should emit for the POPULAR sort position.
-    rootCategories.assertValueCount(2);
-    position.assertValues(0, 1);
+    this.rootCategories.assertValueCount(2);
+    this.position.assertValues(0, 1);
 
     // Select ART category from the drawer.
-    vm.inputs.childFilterViewHolderRowClick(null,
+    this.vm.inputs.childFilterViewHolderRowClick(null,
       NavigationDrawerData.Section.Row.builder()
         .params(DiscoveryParams.builder().category(CategoryFactory.artCategory()).build())
         .build()
     );
 
     // Root categories should not emit again for the same position.
-    rootCategories.assertValueCount(2);
-    position.assertValues(0, 1);
+    this.rootCategories.assertValueCount(2);
+    this.position.assertValues(0, 1);
   }
 }

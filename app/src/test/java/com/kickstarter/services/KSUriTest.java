@@ -45,6 +45,29 @@ public final class KSUriTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testKSUri_isWebViewUri() {
+    final Uri ksrUri = Uri.parse("https://www.ksr.com/project");
+    final Uri uri = Uri.parse("https://www.hello-world.org/goodbye");
+    final Uri ksrGraphUri = Uri.parse("https://www.ksr.com/graph");
+    final Uri graphUri = Uri.parse("https://www.hello-world.org/graph");
+
+
+    assertTrue(KSUri.isWebViewUri(ksrUri, this.webEndpoint));
+    assertFalse(KSUri.isWebViewUri(uri, this.webEndpoint));
+    assertFalse(KSUri.isWebViewUri(ksrGraphUri, this.webEndpoint));
+    assertFalse(KSUri.isWebViewUri(graphUri, this.webEndpoint));
+  }
+
+  @Test
+  public void testKSUri_isKSGraphQLUri() {
+    final Uri ksrGraphUri = Uri.parse("https://www.ksr.com/graph");
+    final Uri graphUri = Uri.parse("https://www.hello-world.org/graph");
+
+    assertTrue(KSUri.isKSGraphQLUri(ksrGraphUri, this.webEndpoint));
+    assertFalse(KSUri.isKSGraphQLUri(graphUri, this.webEndpoint));
+  }
+
+  @Test
   public void testKSUri_isModalUri() {
     final Uri modalUri = Uri.parse("https://www.ksr.com/project?modal=true");
 

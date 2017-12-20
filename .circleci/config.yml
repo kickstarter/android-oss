@@ -3,7 +3,7 @@ jobs:
   build:
     resource_class: xlarge
     docker:
-      - image: kickstarter/android-ci:kyle-test
+      - image: kickstarter/androind-ci:kyle-test
         auth:
           username: ksrci  # can specify string literal values
           password: $DOCKERHUB_PASSWORD

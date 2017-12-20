@@ -1,6 +1,7 @@
 version: 2
 jobs:
   build:
+    resource_class: xlarge
     docker:
       - image: kickstarter/android-ci:kyle-test
         auth:

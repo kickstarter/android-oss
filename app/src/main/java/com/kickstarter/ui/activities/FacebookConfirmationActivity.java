@@ -30,8 +30,8 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
-@RequiresActivityViewModel(FacebookConfirmationViewModel.class)
-public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmationViewModel> {
+@RequiresActivityViewModel(FacebookConfirmationViewModel.ViewModel.class)
+public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmationViewModel.ViewModel> {
   protected @Bind(R.id.email) TextView emailTextView;
   protected @Bind(R.id.help_button) TextView helpButton;
   protected @Bind(R.id.sign_up_with_facebook_toolbar) LoginToolbar signUpWithFacebookToolbar;
@@ -63,7 +63,7 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(b -> SwitchCompatUtils.setCheckedWithoutAnimation(this.newsletterSwitch, b));
 
-    this.viewModel.errors.signupError()
+    this.viewModel.outputs.signupError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(e -> ViewUtils.showDialog(this, this.errorTitleString, e));

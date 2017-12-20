@@ -3,7 +3,7 @@ jobs:
   build:
     resource_class: xlarge
     docker:
-      - image: kickstarter/androind-ci:kyle-test
+      - image: kickstarter/android-ci:24ecf62
         auth:
           username: ksrci  # can specify string literal values
           password: $DOCKERHUB_PASSWORD
@@ -25,7 +25,7 @@ jobs:
       - run: echo y | android update sdk --no-ui --all --filter extra-android-m2repository
       - run: echo y | android update sdk --no-ui --all --filter extra-google-m2repository
       - run: echo y | android update sdk --no-ui --all --filter extra-android-support
-      - run: ./gradlew -d dependencies
+      - run: ./gradlew dependencies
       - save_cache:
           key: v1-android-{{ .Branch }}
           paths:

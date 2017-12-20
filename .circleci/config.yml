@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/android:api-25-alpha
+      - image: kickstarter/android-ci:8173417
         auth:
           username: ksrci  # can specify string literal values
           password: $DOCKERHUB_PASSWORD

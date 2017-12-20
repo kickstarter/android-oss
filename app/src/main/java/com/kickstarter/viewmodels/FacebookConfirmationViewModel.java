@@ -1,9 +1,6 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -16,130 +13,149 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.FacebookConfirmationActivity;
-import com.kickstarter.viewmodels.errors.FacebookConfirmationViewModelErrors;
-import com.kickstarter.viewmodels.inputs.FacebookConfirmationViewModelInputs;
-import com.kickstarter.viewmodels.outputs.FacebookConfirmationViewModelOutputs;
 
+import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
-import static com.kickstarter.libs.rx.transformers.Transformers.pipeApiErrorsTo;
+import static com.kickstarter.libs.rx.transformers.Transformers.errors;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
-public class FacebookConfirmationViewModel extends ActivityViewModel<FacebookConfirmationActivity> implements
-  FacebookConfirmationViewModelInputs, FacebookConfirmationViewModelOutputs, FacebookConfirmationViewModelErrors {
-  private final ApiClientType client;
-  private final CurrentUserType currentUser;
-  private final CurrentConfigType currentConfig;
+public interface FacebookConfirmationViewModel {
 
-  // INPUTS
-  private final PublishSubject<Void> createNewAccountClick = PublishSubject.create();
-  public void createNewAccountClick() {
-    this.createNewAccountClick.onNext(null);
-  }
-  private final PublishSubject<Boolean> sendNewslettersClick = PublishSubject.create();
-  public void sendNewslettersClick(final boolean b) {
-    this.sendNewslettersClick.onNext(b);
+  interface Inputs {
+    /** Call when the create new account button has been clicked. */
+    void createNewAccountClick();
+
+    /** Call when the send newsletter switch has been toggled. */
+    void sendNewslettersClick(boolean __);
   }
 
-  // OUTPUTS
-  private final BehaviorSubject<String> prefillEmail = BehaviorSubject.create();
-  public @NonNull Observable<String> prefillEmail() {
-    return this.prefillEmail;
+  interface Outputs {
+    /** Fill the view's email address. */
+    Observable<String> prefillEmail();
+
+    /** Emits a string to display when sign up fails. */
+    Observable<String> signupError();
+
+    /** Finish Facebook confirmation activity with OK result. */
+    Observable<Void> signupSuccess();
+
+    /** Emits a boolean to check send newsletter switch. */
+    Observable<Boolean> sendNewslettersIsChecked();
   }
 
-  private final PublishSubject<Void> signupSuccess = PublishSubject.create();
-  public @NonNull Observable<Void> signupSuccess() {
-    return this.signupSuccess;
-  }
-  private final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
-  public @NonNull Observable<Boolean> sendNewslettersIsChecked() {
-    return this.sendNewslettersIsChecked;
-  }
+  final class ViewModel extends ActivityViewModel<FacebookConfirmationActivity> implements Inputs, Outputs {
+    private final ApiClientType client;
+    private final CurrentUserType currentUser;
+    private final CurrentConfigType currentConfig;
 
-  // ERRORS
-  private final PublishSubject<ErrorEnvelope> signupError = PublishSubject.create();
-  public Observable<String> signupError() {
-    return this.signupError
-      .takeUntil(this.signupSuccess)
-      .map(ErrorEnvelope::errorMessage);
-  }
+    public ViewModel(final @NonNull Environment environment) {
+      super(environment);
 
-  public final FacebookConfirmationViewModelInputs inputs = this;
-  public final FacebookConfirmationViewModelOutputs outputs = this;
-  public final FacebookConfirmationViewModelErrors errors = this;
+      this.client = environment.apiClient();
+      this.currentConfig = environment.currentConfig();
+      this.currentUser = environment.currentUser();
 
-  public FacebookConfirmationViewModel(final @NonNull Environment environment) {
-    super(environment);
+      final Observable<String> facebookAccessToken = intent()
+        .map(i -> i.getStringExtra(IntentKey.FACEBOOK_TOKEN))
+        .ofType(String.class);
 
-    this.client = environment.apiClient();
-    this.currentConfig = environment.currentConfig();
-    this.currentUser = environment.currentUser();
+      final Observable<Pair<String, Boolean>> tokenAndNewsletter = facebookAccessToken
+        .compose(combineLatestPair(this.sendNewslettersIsChecked));
 
-    final Observable<String> facebookAccessToken = intent()
-      .map(i -> i.getStringExtra(IntentKey.FACEBOOK_TOKEN))
-      .ofType(String.class);
+      intent()
+        .map(i -> i.getParcelableExtra(IntentKey.FACEBOOK_USER))
+        .ofType(ErrorEnvelope.FacebookUser.class)
+        .map(ErrorEnvelope.FacebookUser::email)
+        .compose(bindToLifecycle())
+        .subscribe(this.prefillEmail::onNext);
 
-    final Observable<Pair<String, Boolean>> tokenAndNewsletter = facebookAccessToken
-      .compose(combineLatestPair(this.sendNewslettersIsChecked));
+      final Observable<Notification<AccessTokenEnvelope>> createNewAccountNotification = tokenAndNewsletter
+        .compose(takeWhen(this.createNewAccountClick))
+        .flatMap(tn -> this.client.registerWithFacebook(tn.first, tn.second))
+        .share()
+        .materialize();
 
-    intent()
-      .map(i -> i.getParcelableExtra(IntentKey.FACEBOOK_USER))
-      .ofType(ErrorEnvelope.FacebookUser.class)
-      .map(ErrorEnvelope.FacebookUser::email)
-      .compose(bindToLifecycle())
-      .subscribe(this.prefillEmail::onNext);
+      createNewAccountNotification
+        .compose(errors())
+        .map(ErrorEnvelope::fromThrowable)
+        .map(ErrorEnvelope::errorMessage)
+        .takeUntil(this.signupSuccess)
+        .compose(bindToLifecycle())
+        .subscribe(this.signupError);
 
-    tokenAndNewsletter
-      .compose(takeWhen(this.createNewAccountClick))
-      .flatMap(tn -> createNewAccount(tn.first, tn.second))
-      .compose(bindToLifecycle())
-      .subscribe(this::registerWithFacebookSuccess);
+      createNewAccountNotification
+        .compose(values())
+        .ofType(AccessTokenEnvelope.class)
+        .compose(bindToLifecycle())
+        .subscribe(this::registerWithFacebookSuccess);
 
-    this.sendNewslettersClick
-      .compose(bindToLifecycle())
-      .subscribe(this.sendNewslettersIsChecked::onNext);
-  }
+      this.sendNewslettersClick
+        .compose(bindToLifecycle())
+        .subscribe(this.sendNewslettersIsChecked::onNext);
 
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
+      this.currentConfig.observable()
+        .take(1)
+        .map(config -> I18nUtils.isCountryUS(config.countryCode()))
+        .subscribe(this.sendNewslettersIsChecked::onNext);
 
-    this.currentConfig.observable()
-      .take(1)
-      .map(config -> I18nUtils.isCountryUS(config.countryCode()))
-      .subscribe(this.sendNewslettersIsChecked::onNext);
+      this.signupError
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.koala.trackRegisterError());
 
-    this.signupError
-      .compose(bindToLifecycle())
-      .subscribe(__ -> this.koala.trackRegisterError());
+      this.sendNewslettersClick
+        .compose(bindToLifecycle())
+        .subscribe(this.koala::trackSignupNewsletterToggle);
 
-    this.sendNewslettersClick
-      .compose(bindToLifecycle())
-      .subscribe(this.koala::trackSignupNewsletterToggle);
+      this.signupSuccess
+        .compose(bindToLifecycle())
+        .subscribe(__ -> {
+          this.koala.trackLoginSuccess();
+          this.koala.trackRegisterSuccess();
+        });
 
-    this.signupSuccess
-      .compose(bindToLifecycle())
-      .subscribe(__ -> {
-        this.koala.trackLoginSuccess();
-        this.koala.trackRegisterSuccess();
-      });
+      this.koala.trackFacebookConfirmation();
+      this.koala.trackRegisterFormView();
+    }
 
-    this.koala.trackFacebookConfirmation();
-    this.koala.trackRegisterFormView();
-  }
+    private void registerWithFacebookSuccess(final @NonNull AccessTokenEnvelope envelope) {
+      this.currentUser.login(envelope.user(), envelope.accessToken());
+      this.signupSuccess.onNext(null);
+    }
 
-  public Observable<AccessTokenEnvelope> createNewAccount(final @NonNull String fbAccessToken, final boolean sendNewsletters) {
-    return this.client.registerWithFacebook(fbAccessToken, sendNewsletters)
-      .compose(pipeApiErrorsTo(this.signupError))
-      .compose(neverError());
-  }
+    private final PublishSubject<Void> createNewAccountClick = PublishSubject.create();
+    private final PublishSubject<Boolean> sendNewslettersClick = PublishSubject.create();
 
-  private void registerWithFacebookSuccess(final @NonNull AccessTokenEnvelope envelope) {
-    this.currentUser.login(envelope.user(), envelope.accessToken());
-    this.signupSuccess.onNext(null);
+    private final BehaviorSubject<String> prefillEmail = BehaviorSubject.create();
+    private final PublishSubject<String> signupError = PublishSubject.create();
+    private final PublishSubject<Void> signupSuccess = PublishSubject.create();
+    private final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
+
+    public final Inputs inputs = this;
+    public final Outputs outputs = this;
+
+    @Override public void createNewAccountClick() {
+      this.createNewAccountClick.onNext(null);
+    }
+    @Override public void sendNewslettersClick(final boolean b) {
+      this.sendNewslettersClick.onNext(b);
+    }
+
+    @Override public @NonNull Observable<String> prefillEmail() {
+      return this.prefillEmail;
+    }
+    @Override public @NonNull Observable<String> signupError() {
+      return this.signupError;
+    }
+    @Override public @NonNull Observable<Void> signupSuccess() {
+      return this.signupSuccess;
+    }
+    @Override public @NonNull Observable<Boolean> sendNewslettersIsChecked() {
+      return this.sendNewslettersIsChecked;
+    }
   }
 }

@@ -15,7 +15,7 @@ jobs:
       - restore_cache:
           keys:
             - v1-android-{{ .Branch }}
-            - v1-android-d
+            - v1-android-
 
       - run: $ANDROID_HOME/tools/android list target
       - run: make bootstrap-circle

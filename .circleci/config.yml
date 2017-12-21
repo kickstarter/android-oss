@@ -3,7 +3,7 @@ jobs:
   build:
     resource_class: xlarge
     docker:
-      - image: kickstarter/android-ci:24ecf62
+      - image: kickstarter/android-ci:65a9b01
         auth:
           username: ksrci  # can specify string literal values
           password: $DOCKERHUB_PASSWORD

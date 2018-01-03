@@ -23,16 +23,14 @@
       android:id="@+id/back_icon"
       android:nextFocusRight="@+id/heart_icon" />
 
-    <!-- Override the text size because this looks enormous compared to the back icon -->
-    <com.kickstarter.ui.views.IconButton
-      style="@style/ToolbarIcon"
+    <ImageButton
+      style="@style/ToolbarVectorIcon"
       android:id="@+id/share_icon"
       android:focusable="true"
       android:layout_toStartOf="@+id/heart_icon"
       android:nextFocusRight="@+id/heart_icon"
       android:contentDescription="@string/project_accessibility_button_share_label"
-      android:textSize="20sp"
-      android:text="@string/share_icon"/>
+      android:src="@drawable/icon__share"/>
 
     <ImageButton
       style="@style/ToolbarVectorIcon"
@@ -41,7 +39,7 @@
       android:nextFocusLeft="@+id/share_icon"
       android:contentDescription="@string/Save_this_project"
       android:layout_alignParentEnd="true"
-      android:src="@drawable/ic_action_icon_heart" />
+      android:src="@drawable/icon__heart_outline" />
 
   </RelativeLayout>
 

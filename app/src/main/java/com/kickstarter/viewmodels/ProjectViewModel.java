@@ -69,8 +69,8 @@ public interface ProjectViewModel {
   }
 
   interface Outputs {
-    /** Emits a color that corresponds to whether the project is saved.*/
-    Observable<Integer> heartColorInt();
+    /** Emits a drawable that corresponds to whether the project is saved.*/
+    Observable<Integer> heartDrawable();
 
     /** Emits a project and country when a new value is available. If the view model is created with a full project
      * model, this observable will emit that project immediately, and then again when it has updated from the api. */
@@ -196,7 +196,7 @@ public interface ProjectViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackVideoStart);
 
-      this.heartColorInt = currentProject.map(p -> p.isStarred() ? R.color.ksr_green_700 : R.color.text_primary);
+      this.heartDrawableId = currentProject.map(p -> p.isStarred() ? R.drawable.icon__heart : R.drawable.icon__heart_outline);
 
       projectOnUserChangeSave
         .mergeWith(savedProjectOnLoginSuccess)
@@ -272,7 +272,7 @@ public interface ProjectViewModel {
     private final PublishSubject<Void> updatesTextViewClicked = PublishSubject.create();
     private final PublishSubject<Void> viewPledgeButtonClicked = PublishSubject.create();
 
-    private final Observable<Integer> heartColorInt;
+    private final Observable<Integer> heartDrawableId;
     private final Observable<Pair<Project, String>> projectAndUserCountry;
     private final Observable<Void> startLoginToutActivity;
     private final Observable<Project> showShareSheet;
@@ -347,8 +347,8 @@ public interface ProjectViewModel {
     @Override public @NonNull Observable<Project> startVideoActivity() {
       return this.startVideoActivity;
     }
-    @Override public @NonNull Observable<Integer> heartColorInt() {
-      return this.heartColorInt;
+    @Override public @NonNull Observable<Integer> heartDrawable() {
+      return this.heartDrawableId;
     }
     @Override public @NonNull Observable<Pair<Project, String>> projectAndUserCountry() {
       return this.projectAndUserCountry;

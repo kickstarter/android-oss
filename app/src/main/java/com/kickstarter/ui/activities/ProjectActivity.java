@@ -72,10 +72,10 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
     this.projectRecyclerView.setAdapter(this.adapter);
     this.projectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    this.viewModel.outputs.heartColorInt()
+    this.viewModel.outputs.heartDrawable()
       .compose(bindToLifecycle())
       .compose(Transformers.observeForUI())
-      .subscribe(c -> this.heartButton.setColorFilter(ContextCompat.getColor(this, c)));
+      .subscribe(c -> this.heartButton.setImageDrawable(ContextCompat.getDrawable(this, c)));
 
     this.viewModel.outputs.projectAndUserCountry()
       .compose(bindToLifecycle())

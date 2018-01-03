@@ -25,15 +25,14 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <com.kickstarter.ui.views.IconTextView
-      android:paddingTop="@dimen/grid_1_half"
-      android:text="@string/check_icon"
-      android:textColor="@color/white"
+    <ImageView
+      android:src="@drawable/icon__check"
+      android:tint="@color/white"
       android:layout_gravity="center_vertical"
       android:layout_marginEnd="@dimen/grid_1_half"
-      android:textSize="@dimen/callout"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
+      android:layout_height="match_parent"
+      android:contentDescription="@null" />
 
     <TextView
       style="@style/Caption1PrimaryMedium"
@@ -60,8 +59,9 @@
       android:layout_height="match_parent"
       android:layout_width="wrap_content"
       android:focusable="true"
+      android:tint="@color/ksr_soft_black"
       android:contentDescription="@string/Save_this_project"
-      android:src="@drawable/ic_action_icon_heart" />
+      android:src="@drawable/icon__heart" />
 
     <TextView
       android:text="@string/You_saved_this_project"

@@ -271,7 +271,6 @@
     <item name="android:layout_width">@dimen/button_icon_fixed_width</item>
     <item name="android:background">@drawable/click_indicator_light</item>
     <item name="android:gravity">center</item>
-    <item name="android:tint">@color/ksr_soft_black</item>
     <item name="android:layout_centerVertical">true</item>
   </style>
 

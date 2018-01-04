@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -19,7 +20,6 @@ import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.MessageThreadsActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
-import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.CreatorDashboardHeaderHolderViewModel;
 
 import java.math.RoundingMode;
@@ -38,7 +38,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   protected @Bind(R.id.creator_dashboard_amount_raised) TextView amountRaisedTextView;
   protected @Bind(R.id.creator_dashboard_backer_count) TextView backerCountTextView;
   protected @Bind(R.id.creator_dashboard_funding_text) TextView fundingTextTextView;
-  protected @Bind(R.id.creator_dashboard_messages_button) IconButton messagesButton;
+  protected @Bind(R.id.creator_dashboard_messages_button) ImageButton messagesButton;
   protected @Bind(R.id.creator_dashboard_percent) TextView percentTextView;
   protected @Bind(R.id.creator_dashboard_project_blurb) TextView projectBlurbTextView;
   protected @Bind(R.id.creator_dashboard_project_name) TextView projectNameTextView;

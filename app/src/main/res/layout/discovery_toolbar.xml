@@ -59,17 +59,20 @@
       <ImageButton
         android:id="@+id/creator_dashboard_button"
         style="@style/ToolbarVectorIcon"
-        android:src="@drawable/icon__graph_line" />
+        android:src="@drawable/icon__graph_line"
+        android:contentDescription="@string/tabbar_dashboard"/>
 
       <ImageButton
         android:id="@+id/activity_feed_button"
         style="@style/ToolbarIcon"
-        android:src="@drawable/icon__bolt" />
+        android:src="@drawable/icon__bolt"
+        android:contentDescription="@string/tabbar_activity"/>
 
       <ImageButton
         android:id="@+id/search_button"
         style="@style/ToolbarIcon"
-        android:src="@drawable/icon__search" />
+        android:src="@drawable/icon__search"
+        android:contentDescription="@string/tabbar_search"/>
 
     </LinearLayout>
 

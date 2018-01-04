@@ -344,9 +344,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     setContentDescription(imageButton, typeMobile, enabled);
   }
 
-  private int getEnabledColor(boolean enabled) {return enabled ? this.green : this.gray;}
+  private int getEnabledColor(final boolean enabled) {
+    return enabled ? this.green : this.gray;
+  }
 
-  private void setContentDescription(View view, boolean typeMobile, boolean enabled) {
+  private void setContentDescription(final @NonNull View view, final boolean typeMobile, final boolean enabled) {
     String contentDescription = "";
     if (typeMobile && enabled) {
       contentDescription = this.unsubscribeMobileString;

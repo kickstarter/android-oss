@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.R;
 import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
@@ -24,6 +25,7 @@ import rx.observers.TestSubscriber;
 
 public class ProjectViewModelTest extends KSRobolectricTestCase {
   private ProjectViewModel.ViewModel vm;
+  private final TestSubscriber<Integer> heartDrawableId = new TestSubscriber<>();
   private final TestSubscriber<Project> projectTest = new TestSubscriber<>();
   private final TestSubscriber<Project> showShareSheet = new TestSubscriber<>();
   private final TestSubscriber<Void> showSavedPromptTest = new TestSubscriber<>();
@@ -39,6 +41,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ProjectViewModel.ViewModel(environment);
+    this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId);
     this.vm.outputs.projectAndUserCountry().map(pc -> pc.first).subscribe(this.projectTest);
     this.vm.outputs.showShareSheet().subscribe(this.showShareSheet);
     this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest);
@@ -80,12 +83,14 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.halfWayProject()));
 
     this.savedTest.assertValues(false, false);
+    this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline);
 
     // Try starring while logged out
     this.vm.inputs.heartButtonClicked();
 
     // The project shouldn't be saved, and a login prompt should be shown.
     this.savedTest.assertValues(false, false);
+    this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline);
     this.showSavedPromptTest.assertValueCount(0);
     this.startLoginToutActivity.assertValueCount(1);
 
@@ -97,6 +102,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
 
     // The project should be saved, and a star prompt should be shown.
     this.savedTest.assertValues(false, false, true);
+    this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart);
     this.showSavedPromptTest.assertValueCount(1);
 
     // A koala event for starring should be tracked
@@ -144,6 +150,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
 
     // The project should be saved, and a save prompt should NOT be shown.
     this.savedTest.assertValues(false, false, true);
+    this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart);
     this.showSavedPromptTest.assertValueCount(0);
   }
 
@@ -168,6 +175,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
 
     // The project should be saved, and a save prompt should NOT be shown.
     this.savedTest.assertValues(false, false, true);
+    this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart);
     this.showSavedPromptTest.assertValueCount(0);
   }
 

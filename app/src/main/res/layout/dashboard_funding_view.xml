@@ -55,13 +55,12 @@
 
     </LinearLayout>
 
-    <com.kickstarter.ui.views.IconButton
+    <ImageButton
       style="@style/ToolbarIcon"
-      android:drawableStart="@drawable/ic_action_icon__mail"
+      android:src="@drawable/icon__mail"
       android:id="@+id/creator_dashboard_messages_button"
       android:focusable="true"
       android:layout_weight="2"
-      android:layout_gravity="right"
       android:paddingStart="@dimen/grid_4"
       android:contentDescription="@string/accessibility_dashboard_buttons_messages" />
 

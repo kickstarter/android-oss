@@ -93,9 +93,7 @@ public interface CheckoutViewModel {
       this.gson = environment.gson();
 
       intent()
-        .map(i ->
-          i.getParcelableExtra(IntentKey.PROJECT)
-        )
+        .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
         .ofType(Project.class)
         .compose(bindToLifecycle())
         .subscribe(this.project::onNext);
@@ -107,9 +105,7 @@ public interface CheckoutViewModel {
         .subscribe(this.title::onNext);
 
       intent()
-        .map(i ->
-          i.getStringExtra(IntentKey.URL)
-        )
+        .map(i -> i.getStringExtra(IntentKey.URL))
         .ofType(String.class)
         .take(1)
         .mergeWith(this.pageIntercepted)

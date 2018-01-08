@@ -42,7 +42,7 @@ public final class KSUri {
     return uri.getHost().equals(Uri.parse(webEndpoint).getHost());
   }
 
-  public static boolean isKSFavIcon(Uri uri, String webEndpoint) {
+  public static boolean isKSFavIcon(final Uri uri, final String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && uri.getLastPathSegment().equals("favicon.ico");
   }
 

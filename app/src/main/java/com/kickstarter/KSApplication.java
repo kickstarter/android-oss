@@ -5,8 +5,10 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
+import android.text.TextUtils;
 
 import com.facebook.FacebookSdk;
+import com.google.android.gms.iid.InstanceID;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
@@ -69,7 +71,9 @@ public class KSApplication extends MultiDexApplication {
     /*
       setting cookie for unique id tracking, hardcoding prod
      */
-    final HttpCookie cookie = new HttpCookie("vis", UUID.randomUUID().toString());
+    final String deviceId = InstanceID.getInstance(this).getId();
+    final String uuid = TextUtils.isEmpty(deviceId) ? UUID.randomUUID().toString() : deviceId;
+    final HttpCookie cookie = new HttpCookie("vis", uuid);
     cookie.setMaxAge(DateTime.now().plusYears(100).getMillis());
     cookie.setSecure(true);
     final URI webUri = URI.create(component().environment().webEndpoint());

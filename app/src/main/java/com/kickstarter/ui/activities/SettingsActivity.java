@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -43,12 +45,12 @@ import static com.kickstarter.libs.utils.IntegerUtils.intValueOrZero;
 public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewModel> {
   protected @Bind(R.id.games_switch) SwitchCompat gamesNewsletterSwitch;
   protected @Bind(R.id.happening_now_switch) SwitchCompat happeningNewsletterSwitch;
-  protected @Bind(R.id.friend_activity_mail_icon) IconTextView friendActivityMailIconTextView;
+  protected @Bind(R.id.friend_activity_mail_icon) ImageButton friendActivityMailImageButton;
   protected @Bind(R.id.friend_activity_phone_icon) IconTextView friendActivityPhoneIconTextView;
-  protected @Bind(R.id.new_followers_mail_icon) IconTextView newFollowersMailIconTextView;
+  protected @Bind(R.id.new_followers_mail_icon) ImageButton newFollowersMailImageButton;
   protected @Bind(R.id.new_followers_phone_icon) IconTextView newFollowersPhoneIconTextView;
   protected @Bind(R.id.project_notifications_count) TextView projectNotificationsCountTextView;
-  protected @Bind(R.id.project_updates_mail_icon) IconTextView projectUpdatesMailIconTextView;
+  protected @Bind(R.id.project_updates_mail_icon) ImageButton projectUpdatesMailImageButton;
   protected @Bind(R.id.project_updates_phone_icon) IconTextView projectUpdatesPhoneIconTextView;
   protected @Bind(R.id.kickstarter_news_and_events_switch) SwitchCompat promoNewsletterSwitch;
   protected @Bind(R.id.projects_we_love_switch) SwitchCompat weeklyNewsletterSwitch;
@@ -265,12 +267,12 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     this.notifyMobileOfUpdates = isTrue(user.notifyMobileOfUpdates());
     this.notifyOfUpdates = isTrue(user.notifyOfUpdates());
 
-    toggleIconColor(this.friendActivityMailIconTextView, false, this.notifyOfFriendActivity);
-    toggleIconColor(this.friendActivityPhoneIconTextView, true, this.notifyMobileOfFriendActivity);
-    toggleIconColor(this.newFollowersMailIconTextView, false, this.notifyOfFollower);
-    toggleIconColor(this.newFollowersPhoneIconTextView, true, this.notifyMobileOfFollower);
-    toggleIconColor(this.projectUpdatesMailIconTextView, false, this.notifyOfUpdates);
-    toggleIconColor(this.projectUpdatesPhoneIconTextView, true, this.notifyMobileOfUpdates);
+    toggleImageButtonIconColor(this.friendActivityMailImageButton, false, this.notifyOfFriendActivity);
+    toggleTextViewIconColor(this.friendActivityPhoneIconTextView, true, this.notifyMobileOfFriendActivity);
+    toggleImageButtonIconColor(this.newFollowersMailImageButton, false, this.notifyOfFollower);
+    toggleTextViewIconColor(this.newFollowersPhoneIconTextView, true, this.notifyMobileOfFollower);
+    toggleImageButtonIconColor(this.projectUpdatesMailImageButton, false, this.notifyOfUpdates);
+    toggleTextViewIconColor(this.projectUpdatesPhoneIconTextView, true, this.notifyMobileOfUpdates);
 
     SwitchCompatUtils.setCheckedWithoutAnimation(this.gamesNewsletterSwitch, isTrue(user.gamesNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.happeningNewsletterSwitch, isTrue(user.happeningNewsletter()));
@@ -328,10 +330,25 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     ViewUtils.showDialog(this, this.optInTitleString, optInDialogMessageString);
   }
 
-  private void toggleIconColor(final @NonNull TextView iconTextView, final boolean typeMobile, final boolean enabled) {
-    final int color = enabled ? this.green : this.gray;
+  private void toggleTextViewIconColor(final @NonNull TextView iconTextView, final boolean typeMobile, final boolean enabled) {
+    final int color = getEnabledColor(enabled);
     iconTextView.setTextColor(color);
 
+    setContentDescription(iconTextView, typeMobile, enabled);
+  }
+
+  private void toggleImageButtonIconColor(final @NonNull ImageButton imageButton, final boolean typeMobile, final boolean enabled) {
+    final int color = getEnabledColor(enabled);
+    imageButton.setColorFilter(color);
+
+    setContentDescription(imageButton, typeMobile, enabled);
+  }
+
+  private int getEnabledColor(final boolean enabled) {
+    return enabled ? this.green : this.gray;
+  }
+
+  private void setContentDescription(final @NonNull View view, final boolean typeMobile, final boolean enabled) {
     String contentDescription = "";
     if (typeMobile && enabled) {
       contentDescription = this.unsubscribeMobileString;
@@ -345,6 +362,6 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     if (!typeMobile && !enabled) {
       contentDescription = this.subscribeString;
     }
-    iconTextView.setContentDescription(contentDescription);
+    view.setContentDescription(contentDescription);
   }
 }

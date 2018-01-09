@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ImageButton;
 
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.R;
@@ -26,7 +27,6 @@ import com.kickstarter.ui.adapters.DiscoveryPagerAdapter;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.fragments.DiscoveryFragment;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
-import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.ui.views.SortTabLayout;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 
@@ -50,7 +50,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
   private DiscoveryPagerAdapter pagerAdapter;
   private InternalToolsType internalTools;
 
-  protected @Bind(R.id.creator_dashboard_button) IconButton creatorDashboardButton;
+  protected @Bind(R.id.creator_dashboard_button) ImageButton creatorDashboardButton;
   protected @Bind(R.id.discovery_layout) DrawerLayout discoveryLayout;
   protected @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
   protected @Bind(R.id.discovery_drawer_recycler_view) RecyclerView drawerRecyclerView;

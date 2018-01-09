@@ -49,8 +49,8 @@ public interface ProjectViewModel {
     /** Call when the creator name is clicked. */
     void creatorNameTextViewClicked();
 
-    /** Call when the share button is clicked. */
-    void shareButtonClicked();
+    /** Call when the heart button is clicked. */
+    void heartButtonClicked();
 
     /** Call when the manage pledge button is clicked. */
     void managePledgeButtonClicked();
@@ -58,8 +58,8 @@ public interface ProjectViewModel {
     /** Call when the play video button is clicked. */
     void playVideoButtonClicked();
 
-    /** Call when the heart button is clicked. */
-    void heartButtonClicked();
+    /** Call when the share button is clicked. */
+    void shareButtonClicked();
 
     /** Call when the updates button is clicked. */
     void updatesTextViewClicked();
@@ -69,8 +69,8 @@ public interface ProjectViewModel {
   }
 
   interface Outputs {
-    /** Emits a color that corresponds to whether the project is saved.*/
-    Observable<Integer> heartColorInt();
+    /** Emits a drawable id that corresponds to whether the project is saved.*/
+    Observable<Integer> heartDrawableId();
 
     /** Emits a project and country when a new value is available. If the view model is created with a full project
      * model, this observable will emit that project immediately, and then again when it has updated from the api. */
@@ -78,9 +78,6 @@ public interface ProjectViewModel {
 
     /** Emits when the success prompt for saving should be displayed. */
     Observable<Void> showSavedPrompt();
-
-    /** Emits when we should start {@link com.kickstarter.ui.activities.LoginToutActivity}. */
-    Observable<Void> startLoginToutActivity();
 
     /** Emits when we should show the share sheet. */
     Observable<Project> showShareSheet();
@@ -91,14 +88,17 @@ public interface ProjectViewModel {
     /** Emits when we should start the campaign {@link com.kickstarter.ui.activities.WebViewActivity}. */
     Observable<Project> startCampaignWebViewActivity();
 
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.CheckoutActivity}. */
+    Observable<Project> startCheckoutActivity();
+
     /** Emits when we should start {@link com.kickstarter.ui.activities.CommentsActivity}. */
     Observable<Project> startCommentsActivity();
 
     /** Emits when we should start the creator bio {@link com.kickstarter.ui.activities.WebViewActivity}. */
     Observable<Project> startCreatorBioWebViewActivity();
 
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.CheckoutActivity}. */
-    Observable<Project> startCheckoutActivity();
+    /** Emits when we should start {@link com.kickstarter.ui.activities.LoginToutActivity}. */
+    Observable<Void> startLoginToutActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.CheckoutActivity} to manage the pledge. */
     Observable<Project> startManagePledgeActivity();
@@ -196,7 +196,7 @@ public interface ProjectViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackVideoStart);
 
-      this.heartColorInt = currentProject.map(p -> p.isStarred() ? R.color.ksr_green_700 : R.color.text_primary);
+      this.heartDrawableId = currentProject.map(p -> p.isStarred() ? R.drawable.icon__heart : R.drawable.icon__heart_outline);
 
       projectOnUserChangeSave
         .mergeWith(savedProjectOnLoginSuccess)
@@ -272,7 +272,7 @@ public interface ProjectViewModel {
     private final PublishSubject<Void> updatesTextViewClicked = PublishSubject.create();
     private final PublishSubject<Void> viewPledgeButtonClicked = PublishSubject.create();
 
-    private final Observable<Integer> heartColorInt;
+    private final Observable<Integer> heartDrawableId;
     private final Observable<Pair<Project, String>> projectAndUserCountry;
     private final Observable<Void> startLoginToutActivity;
     private final Observable<Project> showShareSheet;
@@ -344,44 +344,44 @@ public interface ProjectViewModel {
       this.viewPledgeButtonClicked.onNext(null);
     }
 
-    @Override public @NonNull Observable<Project> startVideoActivity() {
-      return this.startVideoActivity;
-    }
-    @Override public @NonNull Observable<Integer> heartColorInt() {
-      return this.heartColorInt;
+    @Override public @NonNull Observable<Integer> heartDrawableId() {
+      return this.heartDrawableId;
     }
     @Override public @NonNull Observable<Pair<Project, String>> projectAndUserCountry() {
       return this.projectAndUserCountry;
     }
-    @Override public @NonNull Observable<Project> startCampaignWebViewActivity() {
-      return this.startCampaignWebViewActivity;
-    }
-    @Override public @NonNull Observable<Project> startCreatorBioWebViewActivity() {
-      return this.startCreatorBioWebViewActivity;
-    }
-    @Override public @NonNull Observable<Project> startCommentsActivity() {
-      return this.startCommentsActivity;
-    }
-    @Override public @NonNull Observable<Void> startLoginToutActivity() {
-      return this.startLoginToutActivity;
+    @Override public @NonNull Observable<Void> showSavedPrompt() {
+      return this.showSavedPrompt;
     }
     @Override public @NonNull Observable<Project> showShareSheet() {
       return this.showShareSheet;
     }
-    @Override public @NonNull Observable<Void> showSavedPrompt() {
-      return this.showSavedPrompt;
+    @Override public @NonNull Observable<Pair<Project, User>> startBackingActivity() {
+      return this.startBackingActivity;
     }
-    @Override public @NonNull Observable<Project> startProjectUpdatesActivity() {
-      return this.startProjectUpdatesActivity;
+    @Override public @NonNull Observable<Project> startCampaignWebViewActivity() {
+      return this.startCampaignWebViewActivity;
     }
     @Override public @NonNull Observable<Project> startCheckoutActivity() {
       return this.startCheckoutActivity;
     }
+    @Override public @NonNull Observable<Project> startCommentsActivity() {
+      return this.startCommentsActivity;
+    }
+    @Override public @NonNull Observable<Project> startCreatorBioWebViewActivity() {
+      return this.startCreatorBioWebViewActivity;
+    }
+    @Override public @NonNull Observable<Void> startLoginToutActivity() {
+      return this.startLoginToutActivity;
+    }
     @Override public @NonNull Observable<Project> startManagePledgeActivity() {
       return this.startManagePledgeActivity;
     }
-    @Override public @NonNull Observable<Pair<Project, User>> startBackingActivity() {
-      return this.startBackingActivity;
+    @Override public @NonNull Observable<Project> startProjectUpdatesActivity() {
+      return this.startProjectUpdatesActivity;
+    }
+    @Override public @NonNull Observable<Project> startVideoActivity() {
+      return this.startVideoActivity;
     }
   }
 }

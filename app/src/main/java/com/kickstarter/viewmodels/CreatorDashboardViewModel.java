@@ -34,16 +34,16 @@ public interface CreatorDashboardViewModel {
   }
 
   interface Outputs {
-    /* project and associated stats object */
+    /** project and associated stats object */
     Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats();
 
-    /* emits when project dropdown should be shown */
+    /** emits when project dropdown should be shown */
     Observable<List<Project>> projectsForBottomSheet();
 
-    /* emits when a project is clicked in the project switcher */
+    /** emits when a project is clicked in the project switcher */
     Observable<Project> projectSwitcherProjectClickOutput();
 
-    /* call when button is clicked to view individual project page */
+    /** call when button is clicked to view individual project page */
     Observable<Pair<Project, RefTag>> startProjectActivity();
   }
 
@@ -63,7 +63,8 @@ public interface CreatorDashboardViewModel {
       final Observable<List<Project>> projects = projectsEnvelope
         .map(ProjectsEnvelope::projects);
 
-      projects.map(ListUtils::first).subscribe(this.projectSelected::onNext);
+      projects.map(ListUtils::first)
+        .subscribe(this.projectSelected::onNext);
 
       final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = this.projectSelected
         .switchMap(this.client::fetchProjectStats)

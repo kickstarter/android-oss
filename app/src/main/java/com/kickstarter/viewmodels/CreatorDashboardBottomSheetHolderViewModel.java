@@ -8,6 +8,8 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.CreatorDashboardBottomSheetViewHolder;
 
+import org.joda.time.DateTime;
+
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -18,6 +20,7 @@ public interface CreatorDashboardBottomSheetHolderViewModel {
     void projectSwitcherProjectClicked();
   }
   interface Outputs {
+    Observable<DateTime> projectLaunchDate();
     Observable<String> projectNameText();
     Observable<Project> projectSwitcherProject();
   }
@@ -27,7 +30,11 @@ public interface CreatorDashboardBottomSheetHolderViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.projectNameText = this.currentProject.map(Project::name);
+      this.projectNameText = this.currentProject
+        .map(Project::name);
+
+      this.projectLaunchDate = this.currentProject
+        .map(Project::launchedAt);
 
       this.projectSwitcherProject = this.currentProject
         .compose(Transformers.takeWhen(this.projectSwitcherClicked));
@@ -39,6 +46,7 @@ public interface CreatorDashboardBottomSheetHolderViewModel {
     private final PublishSubject<Project> currentProject = PublishSubject.create();
     private final PublishSubject<Void> projectSwitcherClicked = PublishSubject.create();
 
+    private final Observable<DateTime> projectLaunchDate;
     private final Observable<String> projectNameText;
     private final Observable<Project> projectSwitcherProject;
 
@@ -52,6 +60,10 @@ public interface CreatorDashboardBottomSheetHolderViewModel {
       this.projectSwitcherClicked.onNext(null);
     }
 
+    @Override
+    public Observable<DateTime> projectLaunchDate() {
+      return this.projectLaunchDate;
+    }
     @Override
     public @NonNull Observable<String> projectNameText() {
       return this.projectNameText;

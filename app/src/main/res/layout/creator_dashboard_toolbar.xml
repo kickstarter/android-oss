@@ -5,11 +5,9 @@
   xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="@layout/creator_dashboard_layout"
   style="@style/Toolbar"
-  android:elevation="@dimen/toolbar_elevation"
-  android:id="@+id/message_threads_toolbar"
-  android:background="@color/white"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
+  android:background="@color/transparent"
   tools:ignore="UnusedAttribute">
 
   <RelativeLayout

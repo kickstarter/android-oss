@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+  android:id="@+id/creator_dashboard_bottom_sheet_project_view"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/creator_dashboard_bottom_sheet_project_view"
-  android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content">
+  android:layout_height="wrap_content"
+  android:orientation="vertical"
+  android:padding="@dimen/grid_3">
 
   <TextView
-    android:id="@+id/creator_dashboard_project_switcher_text_view"
+    android:id="@+id/creator_dashboard_project_switcher_project_title"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/grid_3"
-    tools:text="How About Shrek Tho"/>
+    android:textColor="@color/text_primary"
+    android:textSize="@dimen/callout"
+    tools:text="Sample Project Title: A Title That Goes Over One Line" />
 
-  <include layout="@layout/horizontal_line_0_5dp_view"/>
+  <TextView
+    android:id="@+id/creator_dashboard_project_switcher_project_launch"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:text="Launched 8 January 2016" />
 
 </LinearLayout>

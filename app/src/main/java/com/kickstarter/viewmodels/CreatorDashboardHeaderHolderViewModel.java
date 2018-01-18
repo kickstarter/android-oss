@@ -4,12 +4,14 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
+import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.PairUtils;
+import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
@@ -37,17 +39,20 @@ public interface CreatorDashboardHeaderHolderViewModel {
     /** project that is currently being viewed */
     Observable<Project> currentProject();
 
+    /** TODO: add javadoc */
+    Observable<Integer> fundingProgressBarDrawable();
+
     /** Emits when the messages button should be gone. */
     Observable<Boolean> messagesButtonIsGone();
 
     /** string number with the percentage of a projects funding */
     Observable<String> percentageFunded();
 
+    /** Emits the percentage funded amount for display in the progress bar. */
+    Observable<Integer> percentageFundedProgress();
+
     /** localized count of number of backers */
     Observable<String> projectBackersCountText();
-
-    /** current projects blurb */
-    Observable<String> projectBlurbTextViewText();
 
     /** current project's name */
     Observable<String> projectNameTextViewText();
@@ -73,15 +78,17 @@ public interface CreatorDashboardHeaderHolderViewModel {
       this.currentProject = this.projectAndStats
         .map(PairUtils::first);
 
+      this.fundingProgressBarColor = this.currentProject
+        .map(p -> p.isLive() ? R.drawable.progress_bar_green_horizontal : R.drawable.progress_bar_grey_horizontal);
+
       this.messagesButtonIsGone = Observable.zip(this.currentProject, this.currentUser.observable(), Pair::create)
         .map(projectAndUser -> projectAndUser.first.creator().id() != projectAndUser.second.id());
 
       this.percentageFunded = this.currentProject
         .map(p -> NumberUtils.flooredPercentage(p.percentageFunded()));
 
-      this.projectBlurbTextViewText = this.currentProject
-        .map(Project::blurb)
-        .compose(bindToLifecycle());
+      this.percentageFundedProgress = this.currentProject
+        .map(Project::percentageFunded).map(ProgressBarUtils::progress);
 
       this.projectBackersCountText = this.currentProject
         .map(Project::backersCount)
@@ -113,10 +120,11 @@ public interface CreatorDashboardHeaderHolderViewModel {
     private final PublishSubject<Void> viewProjectButtonClicked = PublishSubject.create();
 
     private final Observable<Project> currentProject;
+    private final Observable<Integer> fundingProgressBarColor;
     private final Observable<Boolean> messagesButtonIsGone;
     private final Observable<String> percentageFunded;
+    private final Observable<Integer> percentageFundedProgress;
     private final Observable<String> projectBackersCountText;
-    private final Observable<String> projectBlurbTextViewText;
     private final Observable<String> projectNameTextViewText;
     private final Observable<Project> startMessageThreadsActivity;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
@@ -135,17 +143,22 @@ public interface CreatorDashboardHeaderHolderViewModel {
     @Override public @NonNull Observable<Project> currentProject() {
       return this.currentProject;
     }
+    @Override
+    public Observable<Integer> fundingProgressBarDrawable() {
+      return this.fundingProgressBarColor;
+    }
     @Override public @NonNull Observable<Boolean> messagesButtonIsGone() {
       return this.messagesButtonIsGone;
     }
     @Override public @NonNull Observable<String> percentageFunded() {
       return this.percentageFunded;
     }
+    @Override
+    public Observable<Integer> percentageFundedProgress() {
+      return this.percentageFundedProgress;
+    }
     @Override public @NonNull Observable<String> projectBackersCountText() {
       return this.projectBackersCountText;
-    }
-    @Override public @NonNull Observable<String> projectBlurbTextViewText() {
-      return this.projectBlurbTextViewText;
     }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;

@@ -92,7 +92,7 @@
 
   <style name="ProgressBar" parent="Base.Widget.AppCompat.ProgressBar">
     <item name="android:indeterminateOnly">false</item>
-    <item name="android:progressDrawable">@drawable/progress_bar_horizontal</item>
+    <item name="android:progressDrawable">@drawable/progress_bar_green_horizontal</item>
   </style>
 
   <style name="Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -110,6 +110,7 @@
     <item name="android:textSize">@dimen/callout</item>
     <item name="android:fontFamily">@string/font_family_sans_serif</item>
     <item name="android:minHeight">@dimen/grid_8</item>
+    <item name="android:stateListAnimator">@null</item>
   </style>
 
   <style name="BorderButton" parent="Base.Widget.AppCompat.Button.Borderless">

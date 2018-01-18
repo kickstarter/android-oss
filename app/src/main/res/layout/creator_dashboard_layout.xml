@@ -1,34 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/creator_dashboard_coordinator_view"
-  android:layout_height="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  android:layout_height="match_parent">
 
-  <android.support.design.widget.AppBarLayout
+  <android.support.design.widget.CoordinatorLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-    <android.support.design.widget.CollapsingToolbarLayout
+    <android.support.design.widget.AppBarLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="wrap_content"
+      android:fitsSystemWindows="true">
 
-      <include
-        layout="@layout/creator_dashboard_toolbar"
-        android:id="@+id/creator_dashboard_toolbar"/>
+      <android.support.design.widget.CollapsingToolbarLayout
+        android:id="@+id/creator_dashboard_collapsing_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:paddingBottom="?attr/actionBarSize"
+        app:collapsedTitleTextAppearance="@android:color/transparent"
+        app:expandedTitleMarginStart="@dimen/grid_2"
+        app:expandedTitleTextAppearance="@color/ksr_soft_black"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed"
+        app:paddingEnd="@dimen/grid_2">
 
-    </android.support.design.widget.CollapsingToolbarLayout>
+        <android.support.v7.widget.Toolbar
+          android:id="@+id/creator_dashboard_toolbar"
+          android:layout_width="match_parent"
+          android:layout_height="?attr/actionBarSize"
+          app:contentInsetLeft="0dp"
+          app:contentInsetStart="0dp"
+          android:background="@color/white"
+          app:layout_collapseMode="pin">
 
-  </android.support.design.widget.AppBarLayout>
+          <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/click_indicator_light"
+            android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
+            android:focusable="true"
+            android:padding="@dimen/grid_2"
+            android:src="@drawable/ic_action_icon__arrow_left" />
 
-  <android.support.v7.widget.RecyclerView
-    android:id="@+id/creator_dashboard_bottom_sheet_recycler_view"
+        </android.support.v7.widget.Toolbar>
+      </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
+      android:id="@+id/creator_dashboard_coordinator_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+  </android.support.design.widget.CoordinatorLayout>
+
+  <View
+    android:id="@+id/creator_dashboard_bottom_sheet_scrim"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/ksr_cobalt_500"
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="0dp"
-    app:layout_behavior="@string/bottom_sheet_behavior"/>
+    android:layout_height="match_parent"
+    android:background="@color/black_alpha_17"
+    android:fitsSystemWindows="true"
+    android:visibility="gone" />
 
-</android.support.design.widget.CoordinatorLayout>
+  <android.support.design.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/creator_dashboard_bottom_sheet_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/white"
+      app:behavior_hideable="true"
+      app:behavior_peekHeight="0dp"
+      app:layout_behavior="@string/bottom_sheet_behavior" />
+
+  </android.support.design.widget.CoordinatorLayout>
+
+</FrameLayout>

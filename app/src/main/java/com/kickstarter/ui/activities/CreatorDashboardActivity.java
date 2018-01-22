@@ -72,13 +72,13 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
 
     final BottomSheetBehavior.BottomSheetCallback bottomSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
       @Override
-      public void onStateChanged(@NonNull View bottomSheet, int newState) {
+      public void onStateChanged(final @NonNull View bottomSheet, final int newState) {
         if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
           CreatorDashboardActivity.this.bottomSheetScrim.setVisibility(View.GONE);
         }
       }
       @Override
-      public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+      public void onSlide(final @NonNull View bottomSheet, final float slideOffset) {
 
       }
     };
@@ -115,7 +115,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
 
   @Override
   public void back() {
-    if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+    if (this.bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
       hideBottomSheet();
     } else {
       super.back();

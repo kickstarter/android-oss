@@ -43,7 +43,7 @@ public final class CreatorDashboardBottomSheetViewHolder extends KSViewHolder {
     this.viewModel.outputs.projectLaunchDate()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(d -> projectLaunchDateTextView.setText(DateTimeUtils.longDate(d)));
+      .subscribe(d -> this.projectLaunchDateTextView.setText(DateTimeUtils.longDate(d)));
 
     this.viewModel.outputs.projectSwitcherProject()
       .compose(bindToLifecycle())

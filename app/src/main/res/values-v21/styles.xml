@@ -43,6 +43,20 @@
     <item name="android:layout_marginEnd">@dimen/grid_2</item>
   </style>
 
+  <style name="Button" parent="Base.Widget.AppCompat.Button">
+    <item name="android:textColor">@drawable/button_text_white</item>
+    <item name="android:layout_centerInParent">true</item>
+    <item name="android:singleLine">true</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:paddingStart">@dimen/grid_3</item>
+    <item name="android:paddingEnd">@dimen/grid_3</item>
+    <item name="android:textSize">@dimen/callout</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif</item>
+    <item name="android:minHeight">@dimen/grid_8</item>
+    <item name="android:stateListAnimator">@null</item>
+  </style>
+
   <!-- Rewards -->
   <style name="RewardHeadline" parent="Caption2Primary">
     <item name="android:textColor">@color/ksr_dark_grey_400</item>

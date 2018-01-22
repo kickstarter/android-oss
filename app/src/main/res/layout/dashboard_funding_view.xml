@@ -35,7 +35,7 @@
           android:layout_height="match_parent"
           android:layout_alignParentStart="true"
           android:gravity="center_vertical"
-          android:text="Project"
+          android:text="@string/Go_to_project_page"
           android:textColor="@color/ksr_soft_black"
           android:textSize="@dimen/callout" />
 
@@ -81,7 +81,7 @@
       android:id="@+id/creator_dashboard_project_selector"
       style="@style/SecondaryButton"
       android:layout_width="match_parent"
-      android:text="Select a different project" />
+      android:text="@string/Select_another_project" />
 
   </LinearLayout>
 

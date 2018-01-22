@@ -81,8 +81,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .map(p -> NumberUtils.flooredPercentage(p.percentageFunded()));
 
       this.percentageFundedProgress = this.currentProject
-        .map(Project::percentageFunded)
-        .map(ProgressBarUtils::progress);
+        .map(p -> ProgressBarUtils.progress(p.percentageFunded()));
 
       this.projectBackersCountText = this.currentProject
         .map(Project::backersCount)

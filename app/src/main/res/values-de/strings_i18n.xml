@@ -496,6 +496,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="dashboard_buttons_activity" formatted="false">Aktivität</string>
   <string name="dashboard_buttons_messages" formatted="false">Nachrichten</string>
   <string name="dashboard_buttons_post_update" formatted="false">Update posten</string>
+  <string name="dashboard_buttons_project" formatted="false">Project</string>
   <string name="dashboard_buttons_share" formatted="false">Teilen</string>
   <string name="dashboard_creator_project_currently_live" formatted="false">Jetzt live</string>
   <string name="dashboard_creator_project_funded_on_deadline" formatted="false">Finanziert am %{deadline}</string>

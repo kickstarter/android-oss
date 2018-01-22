@@ -500,6 +500,7 @@ Please try again later.</string>
   <string name="dashboard_buttons_activity" formatted="false">Activity</string>
   <string name="dashboard_buttons_messages" formatted="false">Messages</string>
   <string name="dashboard_buttons_post_update" formatted="false">Post update</string>
+  <string name="dashboard_buttons_project" formatted="false">Project</string>
   <string name="dashboard_buttons_share" formatted="false">Share</string>
   <string name="dashboard_creator_project_currently_live" formatted="false">Currently live</string>
   <string name="dashboard_creator_project_funded_on_deadline" formatted="false">Funded on %{deadline}</string>

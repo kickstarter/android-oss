@@ -496,6 +496,7 @@
   <string name="dashboard_buttons_activity" formatted="false">アクティビティ</string>
   <string name="dashboard_buttons_messages" formatted="false">メッセージ</string>
   <string name="dashboard_buttons_post_update" formatted="false">アップデートを投稿</string>
+  <string name="dashboard_buttons_project" formatted="false">Project</string>
   <string name="dashboard_buttons_share" formatted="false">シェア</string>
   <string name="dashboard_creator_project_currently_live" formatted="false">現在のライブ</string>
   <string name="dashboard_creator_project_funded_on_deadline" formatted="false">%{deadline} に達成</string>

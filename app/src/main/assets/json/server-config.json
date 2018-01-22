@@ -1372,6 +1372,7 @@
           "messages": "Messages",
           "activity": "Activity",
           "post_update": "Post update",
+          "project": "Project",
           "share": "Share"
         },
         "creator_project": {
@@ -3294,6 +3295,7 @@
           "messages": "Nachrichten",
           "activity": "Aktivität",
           "post_update": "Update posten",
+          "project": "Project",
           "share": "Teilen"
         },
         "creator_project": {
@@ -5216,6 +5218,7 @@
           "messages": "Mensajes",
           "activity": "Actividad",
           "post_update": "Publicar actualización",
+          "project": "Project",
           "share": "Compartir"
         },
         "creator_project": {
@@ -7138,6 +7141,7 @@
           "messages": "Messages",
           "activity": "Activité",
           "post_update": "Publier une actu",
+          "project": "Project",
           "share": "Partager"
         },
         "creator_project": {
@@ -9060,6 +9064,7 @@
           "messages": "メッセージ",
           "activity": "アクティビティ",
           "post_update": "アップデートを投稿",
+          "project": "Project",
           "share": "シェア"
         },
         "creator_project": {
@@ -9804,9 +9809,9 @@
   "ab_experiments": {
     "koala_alt_frontend_tracking": "experimental",
     "project_build": "control",
-    "project_dashboard": "with_dashboard",
+    "project_dashboard": "control",
     "react_guest_pledging_run_2": "control",
-    "favorites_recs": "control",
+    "favorites_recs": "experimental",
     "thanks_page_better_recs": "control",
     "project_card_hearts": "control",
     "currency_conversion": "control",

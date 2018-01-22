@@ -14,13 +14,6 @@
     android:orientation="vertical"
     android:padding="@dimen/grid_2">
 
-    <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom"
-      style="@style/Title1"
-      android:id="@+id/creator_dashboard_project_name"/>
-
     <LinearLayout
       android:id="@+id/creator_links"
       android:layout_width="match_parent"

@@ -42,7 +42,6 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   protected @Bind(R.id.creator_dashboard_funding_text) TextView fundingTextTextView;
   protected @Bind(R.id.creator_dashboard_messages) RelativeLayout messagesButton;
   protected @Bind(R.id.creator_dashboard_percent) TextView percentTextView;
-  protected @Bind(R.id.creator_dashboard_project_name) TextView projectNameTextView;
   protected @Bind(R.id.creator_dashboard_time_remaining) TextView timeRemainingTextView;
   protected @Bind(R.id.creator_dashboard_time_remaining_text) TextView timeRemainingTextTextView;
 
@@ -96,11 +95,6 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.backerCountTextView::setText);
-
-    this.viewModel.outputs.projectNameTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.projectNameTextView::setText);
 
     this.viewModel.outputs.timeRemainingText()
       .compose(bindToLifecycle())

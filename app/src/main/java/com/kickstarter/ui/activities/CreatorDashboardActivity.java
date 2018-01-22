@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
+import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -35,7 +36,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
 
   protected @Bind(R.id.creator_dashboard_bottom_sheet_recycler_view) RecyclerView bottomSheetRecyclerView;
   protected @Bind(R.id.creator_dashboard_bottom_sheet_scrim) View bottomSheetScrim;
-//  protected @Bind(R.id.creator_dashboard_project_name) TextView projectNameTextView;
+  protected @Bind(R.id.creator_dashboard_project_name) TextView projectNameTextView;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -54,10 +55,10 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
       .compose(observeForUI())
       .subscribe(this::createProjectDashboardFragment);
 
-//    this.viewModel.outputs.projectAndStats()
-//      .compose(bindToLifecycle())
-//      .compose(observeForUI())
-//      .subscribe(pair -> this.projectNameTextView.setText(pair.first.name()));
+    this.viewModel.outputs.projectAndStats()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(pair -> this.projectNameTextView.setText(pair.first.name()));
 
     this.viewModel.outputs.projectsForBottomSheet()
       .compose(bindToLifecycle())

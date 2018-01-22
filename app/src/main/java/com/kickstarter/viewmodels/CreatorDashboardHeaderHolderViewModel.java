@@ -4,7 +4,6 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
-import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -38,9 +37,6 @@ public interface CreatorDashboardHeaderHolderViewModel {
   interface Outputs {
     /** project that is currently being viewed */
     Observable<Project> currentProject();
-
-    /** TODO: add javadoc */
-    Observable<Integer> fundingProgressBarDrawable();
 
     /** Emits when the messages button should be gone. */
     Observable<Boolean> messagesButtonIsGone();
@@ -77,9 +73,6 @@ public interface CreatorDashboardHeaderHolderViewModel {
 
       this.currentProject = this.projectAndStats
         .map(PairUtils::first);
-
-      this.fundingProgressBarColor = this.currentProject
-        .map(p -> p.isLive() ? R.drawable.progress_bar_green_horizontal : R.drawable.progress_bar_grey_horizontal);
 
       this.messagesButtonIsGone = Observable.zip(this.currentProject, this.currentUser.observable(), Pair::create)
         .map(projectAndUser -> projectAndUser.first.creator().id() != projectAndUser.second.id());
@@ -120,7 +113,6 @@ public interface CreatorDashboardHeaderHolderViewModel {
     private final PublishSubject<Void> viewProjectButtonClicked = PublishSubject.create();
 
     private final Observable<Project> currentProject;
-    private final Observable<Integer> fundingProgressBarColor;
     private final Observable<Boolean> messagesButtonIsGone;
     private final Observable<String> percentageFunded;
     private final Observable<Integer> percentageFundedProgress;
@@ -142,10 +134,6 @@ public interface CreatorDashboardHeaderHolderViewModel {
 
     @Override public @NonNull Observable<Project> currentProject() {
       return this.currentProject;
-    }
-    @Override
-    public Observable<Integer> fundingProgressBarDrawable() {
-      return this.fundingProgressBarColor;
     }
     @Override public @NonNull Observable<Boolean> messagesButtonIsGone() {
       return this.messagesButtonIsGone;

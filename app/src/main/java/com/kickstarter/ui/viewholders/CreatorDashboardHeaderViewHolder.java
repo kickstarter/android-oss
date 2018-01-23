@@ -4,6 +4,7 @@ package com.kickstarter.ui.viewholders;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -90,6 +91,11 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.fundedProgressBar::setProgress);
+
+    this.viewModel.outputs.progressBarBackground()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(r -> this.fundedProgressBar.setProgressDrawable(ContextCompat.getDrawable(this.context(), r)));
 
     this.viewModel.outputs.projectBackersCountText()
       .compose(bindToLifecycle())

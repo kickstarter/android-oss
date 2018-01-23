@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:id="@android:id/background">
+    <shape>
+      <gradient
+        android:endColor="@color/ksr_grey_400"
+        android:startColor="@color/ksr_grey_400" />
+    </shape>
+  </item>
+  <item android:id="@android:id/progress">
+    <clip>
+      <shape>
+        <gradient
+          android:endColor="@color/ksr_dark_grey_400"
+          android:startColor="@color/ksr_dark_grey_400" />
+      </shape>
+    </clip>
+  </item>
+</layer-list>

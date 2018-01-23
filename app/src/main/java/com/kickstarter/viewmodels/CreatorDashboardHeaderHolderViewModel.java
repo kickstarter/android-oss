@@ -4,6 +4,7 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
+import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -47,6 +48,9 @@ public interface CreatorDashboardHeaderHolderViewModel {
     /** Emits the percentage funded amount for display in the progress bar. */
     Observable<Integer> percentageFundedProgress();
 
+    /** Emits color of progress bar based on project state. */
+    Observable<Integer> progressBarBackground();
+
     /** localized count of number of backers */
     Observable<String> projectBackersCountText();
 
@@ -83,6 +87,11 @@ public interface CreatorDashboardHeaderHolderViewModel {
       this.percentageFundedProgress = this.currentProject
         .map(p -> ProgressBarUtils.progress(p.percentageFunded()));
 
+      this.progressBarBackground = this.currentProject
+        .map(p -> p.isLive() || p.isStarted() || p.isSubmitted() || p.isSuccessful())
+        .map(liveStartedSubmittedSuccessful -> liveStartedSubmittedSuccessful ? R.drawable.progress_bar_green_horizontal : R.drawable.progress_bar_grey_horizontal)
+        .compose(bindToLifecycle());
+
       this.projectBackersCountText = this.currentProject
         .map(Project::backersCount)
         .map(NumberUtils::format)
@@ -116,6 +125,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     private final Observable<Boolean> messagesButtonIsGone;
     private final Observable<String> percentageFunded;
     private final Observable<Integer> percentageFundedProgress;
+    private final Observable<Integer> progressBarBackground;
     private final Observable<String> projectBackersCountText;
     private final Observable<String> projectNameTextViewText;
     private final Observable<Project> startMessageThreadsActivity;
@@ -141,9 +151,11 @@ public interface CreatorDashboardHeaderHolderViewModel {
     @Override public @NonNull Observable<String> percentageFunded() {
       return this.percentageFunded;
     }
-    @Override
-    public Observable<Integer> percentageFundedProgress() {
+    @Override public @NonNull Observable<Integer> percentageFundedProgress() {
       return this.percentageFundedProgress;
+    }
+    @Override public @NonNull Observable<Integer> progressBarBackground() {
+      return progressBarBackground;
     }
     @Override public @NonNull Observable<String> projectBackersCountText() {
       return this.projectBackersCountText;

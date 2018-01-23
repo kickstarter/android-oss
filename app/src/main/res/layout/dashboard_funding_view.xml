@@ -91,6 +91,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:layout_marginTop="@dimen/grid_5"
     android:padding="@dimen/grid_2">
 
     <TextView
@@ -113,6 +114,7 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/grid_5"
     android:divider="@drawable/divider_grey_500_horizontal"
     android:orientation="vertical"
     android:padding="@dimen/grid_2"
@@ -122,6 +124,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
+      android:paddingTop="@dimen/grid_1"
       android:paddingBottom="@dimen/grid_3">
 
       <TextView
@@ -160,8 +163,7 @@
         android:id="@+id/creator_dashboard_percent_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/discovery_baseball_card_stats_funded"
-        tools:text="funded" />
+        android:text="@string/discovery_baseball_card_stats_funded" />
 
     </LinearLayout>
 
@@ -185,35 +187,67 @@
         style="@style/BodySecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/grid_4"
-        android:text="@string/discovery_baseball_card_stats_backers"
-        tools:text="backers" />
+        android:text="@string/discovery_baseball_card_stats_backers" />
 
     </LinearLayout>
 
     <LinearLayout
       android:layout_width="match_parent"
+      android:paddingTop="@dimen/grid_3"
       android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:paddingTop="@dimen/grid_3">
+      android:orientation="horizontal"
+      android:baselineAligned="false">
 
-      <TextView
-        android:id="@+id/creator_dashboard_time_remaining"
-        android:layout_width="wrap_content"
+      <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:textColor="@color/text_primary"
-        android:textSize="@dimen/headline"
-        tools:text="3" />
+        android:orientation="vertical">
 
-      <TextView
-        android:id="@+id/creator_dashboard_time_remaining_text"
-        android:layout_width="wrap_content"
+        <TextView
+          android:id="@+id/creator_dashboard_time_remaining"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColor="@color/text_primary"
+          android:textSize="@dimen/headline"
+          tools:text="3" />
+
+        <TextView
+          android:id="@+id/creator_dashboard_time_remaining_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="secs to go" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
-        tools:text="secs to go" />
+        android:orientation="vertical">
 
+        <TextView
+          android:id="@+id/creator_dashboard_project_status"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColor="@color/text_primary"
+          android:textSize="@dimen/headline"
+          tools:text="Failed" />
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="project status" />
+
+      </LinearLayout>
     </LinearLayout>
 
+
+
   </LinearLayout>
+
+  <include layout="@layout/divider_dark_horizontal" />
+
 
 
 </LinearLayout>

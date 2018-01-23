@@ -155,7 +155,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
       return this.percentageFundedProgress;
     }
     @Override public @NonNull Observable<Integer> progressBarBackground() {
-      return progressBarBackground;
+      return this.progressBarBackground;
     }
     @Override public @NonNull Observable<String> projectBackersCountText() {
       return this.projectBackersCountText;

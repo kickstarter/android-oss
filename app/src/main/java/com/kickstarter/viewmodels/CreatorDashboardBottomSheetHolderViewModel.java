@@ -16,12 +16,20 @@ import rx.subjects.PublishSubject;
 public interface CreatorDashboardBottomSheetHolderViewModel {
 
   interface Inputs {
+    /** Current project. */
     void projectInput(Project project);
+
+    /** Call when project is selected. */
     void projectSwitcherProjectClicked();
   }
   interface Outputs {
+    /** Emits the project launch date to be formatted for display. */
     Observable<DateTime> projectLaunchDate();
+
+    /** Emits the project name for display. */
     Observable<String> projectNameText();
+
+    /** Emits when project is selected. */
     Observable<Project> projectSwitcherProject();
   }
 

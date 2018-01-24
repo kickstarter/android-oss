@@ -124,7 +124,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
 
   @OnClick(R.id.creator_view_project_button)
   protected void viewProjectButtonClicked() {
-    this.viewModel.inputs.viewProjectButtonClicked();
+    this.viewModel.inputs.projectButtonClicked();
   }
 
   @Override

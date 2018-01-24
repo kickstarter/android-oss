@@ -30,8 +30,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
     /** Call to configure the view model with Project and Stats. */
     void projectAndStats(Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope);
 
-    /** Call when the View project button is clicked. */
-    void viewProjectButtonClicked();
+    /** Call when the project button is clicked. */
+    void projectButtonClicked();
   }
 
   interface Outputs {
@@ -101,7 +101,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .compose(takeWhen(this.messagesButtonClicked));
 
       this.startProjectActivity = this.currentProject
-        .compose(takeWhen(this.viewProjectButtonClicked))
+        .compose(takeWhen(this.projectButtonClicked))
         .map(p -> Pair.create(p, RefTag.dashboard()));
     }
 
@@ -110,7 +110,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
 
     private final PublishSubject<Void> messagesButtonClicked = PublishSubject.create();
     private final PublishSubject<Pair<Project, ProjectStatsEnvelope>> projectAndStats = PublishSubject.create();
-    private final PublishSubject<Void> viewProjectButtonClicked = PublishSubject.create();
+    private final PublishSubject<Void> projectButtonClicked = PublishSubject.create();
 
     private final Observable<Project> currentProject;
     private final Observable<Boolean> messagesButtonIsGone;
@@ -125,8 +125,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
     @Override public void messagesButtonClicked() {
       this.messagesButtonClicked.onNext(null);
     }
-    @Override public void viewProjectButtonClicked() {
-      this.viewProjectButtonClicked.onNext(null);
+    @Override public void projectButtonClicked() {
+      this.projectButtonClicked.onNext(null);
     }
     @Override public void projectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope) {
       this.projectAndStats.onNext(projectAndProjectStatsEnvelope);

@@ -70,6 +70,26 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
       .compose(observeForUI())
       .subscribe(this::newProjectClicked);
 
+    createAndSetBottomSheetCallback();
+  }
+
+  @Override
+  public void back() {
+    if (this.bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+      hideBottomSheet();
+    } else {
+      super.back();
+    }
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    this.bottomSheetRecyclerView.setAdapter(null);
+    this.bottomSheetBehavior.setBottomSheetCallback(null);
+  }
+
+  private void createAndSetBottomSheetCallback() {
     final BottomSheetBehavior.BottomSheetCallback bottomSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
       @Override
       public void onStateChanged(final @NonNull View bottomSheet, final int newState) {
@@ -111,21 +131,5 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
   public void toggleBottomSheetClick() {
     this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     this.bottomSheetScrim.setVisibility(View.VISIBLE);
-  }
-
-  @Override
-  public void back() {
-    if (this.bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-      hideBottomSheet();
-    } else {
-      super.back();
-    }
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    this.bottomSheetRecyclerView.setAdapter(null);
-    this.bottomSheetBehavior.setBottomSheetCallback(null);
   }
 }

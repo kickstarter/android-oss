@@ -5,6 +5,8 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:showDividers="middle|end"
+  android:divider="@drawable/divider_dark_grey_500_horizontal"
   android:orientation="vertical">
 
   <LinearLayout
@@ -18,10 +20,10 @@
       android:id="@+id/creator_links"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:divider="@drawable/divider_grey_500_horizontal"
-      android:showDividers="middle|end"
       android:layout_marginBottom="@dimen/grid_4"
-      android:orientation="vertical">
+      android:divider="@drawable/divider_grey_500_horizontal"
+      android:orientation="vertical"
+      android:showDividers="middle|end">
 
       <RelativeLayout
         android:id="@+id/creator_view_project_button"
@@ -85,136 +87,132 @@
 
   </LinearLayout>
 
-  <include layout="@layout/divider_dark_horizontal" />
-
   <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/grid_2">
-
-    <TextView
-      style="@style/Title3"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_3"
-      android:text="@string/dashboard_graphs_funding_title_funding_progress" />
-
-    <ProgressBar
-      android:id="@+id/creator_dashboard_funded"
-      style="@style/ProgressBar"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:minHeight="@dimen/progress_bar_min_height"
-      android:progress="50" />
-
-  </LinearLayout>
-
-  <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:divider="@drawable/divider_grey_500_horizontal"
-    android:orientation="vertical"
-    android:padding="@dimen/grid_2"
-    android:showDividers="middle">
+    android:layout_height="wrap_content">
 
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:paddingBottom="@dimen/grid_3">
+      android:padding="@dimen/grid_2">
 
       <TextView
-        android:id="@+id/creator_dashboard_amount_raised"
+        style="@style/Title3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:text="@string/dashboard_graphs_funding_title_funding_progress" />
+
+      <ProgressBar
+        android:id="@+id/creator_dashboard_funded"
+        style="@style/ProgressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/ksr_green_700"
-        android:textSize="@dimen/headline"
-        tools:text="$12,000" />
+        android:minHeight="@dimen/progress_bar_min_height"
+        android:progress="50" />
 
-      <TextView
-        android:id="@+id/creator_dashboard_funding_text"
-        style="@style/BodyPrimary"
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:divider="@drawable/divider_grey_500_horizontal"
+      android:orientation="vertical"
+      android:padding="@dimen/grid_2"
+      android:showDividers="middle">
+
+      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="pledged of $12,000" />
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/grid_3">
 
+        <TextView
+          android:id="@+id/creator_dashboard_amount_raised"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textColor="@color/ksr_green_700"
+          android:textSize="@dimen/headline"
+          tools:text="$12,000" />
+
+        <TextView
+          android:id="@+id/creator_dashboard_funding_text"
+          style="@style/BodyPrimary"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          tools:text="pledged of $12,000" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/grid_3"
+        android:paddingTop="@dimen/grid_3">
+
+        <TextView
+          android:id="@+id/creator_dashboard_percent"
+          style="@style/HeadlineNormal"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="100%" />
+
+        <TextView
+          android:id="@+id/creator_dashboard_percent_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/discovery_baseball_card_stats_funded"
+          tools:text="funded" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/grid_3"
+        android:paddingTop="@dimen/grid_3">
+
+        <TextView
+          android:id="@+id/creator_dashboard_backer_count"
+          style="@style/HeadlineNormal"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="100" />
+
+        <TextView
+          android:id="@+id/creator_dashboard_backer_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/discovery_baseball_card_stats_backers"
+          tools:text="backers" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/grid_5"
+        android:paddingTop="@dimen/grid_3">
+
+        <TextView
+          android:id="@+id/creator_dashboard_time_remaining"
+          style="@style/HeadlineNormal"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="3" />
+
+        <TextView
+          android:id="@+id/creator_dashboard_time_remaining_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="secs to go" />
+
+      </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:paddingBottom="@dimen/grid_3"
-      android:paddingTop="@dimen/grid_3">
-
-      <TextView
-        android:id="@+id/creator_dashboard_percent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/text_primary"
-        android:textSize="@dimen/headline"
-        tools:text="100%" />
-
-      <TextView
-        android:id="@+id/creator_dashboard_percent_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/discovery_baseball_card_stats_funded"
-        tools:text="funded" />
-
-    </LinearLayout>
-
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:paddingBottom="@dimen/grid_3"
-      android:paddingTop="@dimen/grid_3">
-
-      <TextView
-        android:id="@+id/creator_dashboard_backer_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/text_primary"
-        android:textSize="@dimen/headline"
-        tools:text="100" />
-
-      <TextView
-        android:id="@+id/creator_dashboard_backer_text"
-        style="@style/BodySecondary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/grid_4"
-        android:text="@string/discovery_baseball_card_stats_backers"
-        tools:text="backers" />
-
-    </LinearLayout>
-
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:paddingTop="@dimen/grid_3">
-
-      <TextView
-        android:id="@+id/creator_dashboard_time_remaining"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/text_primary"
-        android:textSize="@dimen/headline"
-        tools:text="3" />
-
-      <TextView
-        android:id="@+id/creator_dashboard_time_remaining_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="secs to go" />
-
-    </LinearLayout>
-
   </LinearLayout>
-
-
 </LinearLayout>
-

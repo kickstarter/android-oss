@@ -374,6 +374,10 @@
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
+  <style name="HeadlineNormal" parent="TextPrimary">
+    <item name="android:textSize">@dimen/headline</item>
+  </style>
+
   <style name="Title2" parent="TextPrimary">
     <item name="android:textSize">@dimen/title_2</item>
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>

@@ -191,7 +191,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
-    this.vm.inputs.viewProjectButtonClicked();
+    this.vm.inputs.projectButtonClicked();
     this.startProjectActivity.assertValues(Pair.create(project, RefTag.dashboard()));
   }
 

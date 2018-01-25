@@ -28,22 +28,27 @@ import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 public interface CreatorDashboardViewModel {
   interface Inputs extends CreatorDashboardBottomSheetAdapter.Delegate {
+    /** Call when a project is clicked. */
     void projectViewClicked();
+
+    /** Call when a project is clicked to pass to delegate. */
     void projectSwitcherProjectClickInput(Project project);
+
+    /** Call when a different project should be displayed. */
     void refreshProject(Project project);
   }
 
   interface Outputs {
-    /** project and associated stats object */
+    /** Emits current project and associated stats object. */
     Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats();
 
-    /** emits when project dropdown should be shown */
+    /** Emits when project dropdown should be shown. */
     Observable<List<Project>> projectsForBottomSheet();
 
-    /** emits when a project is clicked in the project switcher */
+    /** Emits when a project is clicked in the project switcher. */
     Observable<Project> projectSwitcherProjectClickOutput();
 
-    /** call when button is clicked to view individual project page */
+    /** Emits when button is clicked to view individual project page. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
   }
 

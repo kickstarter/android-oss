@@ -5,9 +5,9 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:showDividers="middle|end"
   android:divider="@drawable/divider_dark_grey_500_horizontal"
-  android:orientation="vertical">
+  android:orientation="vertical"
+  android:showDividers="middle|end">
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -88,9 +88,10 @@
   </LinearLayout>
 
   <LinearLayout
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/grid_5">
 
     <LinearLayout
       android:layout_width="match_parent"

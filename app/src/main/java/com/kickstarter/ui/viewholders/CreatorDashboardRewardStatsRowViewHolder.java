@@ -8,13 +8,13 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.viewmodels.DashboardRewardStatsRowHolderViewModel;
 
-import java.math.RoundingMode;
-
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -30,6 +30,8 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
 
   private KSCurrency ksCurrency;
 
+  protected @BindString(R.string.dashboard_graphs_rewards_no_reward) String noRewardString;
+
   public CreatorDashboardRewardStatsRowViewHolder(final @NonNull View view) {
     super(view);
     this.viewModel = new DashboardRewardStatsRowHolderViewModel.ViewModel(environment());
@@ -41,7 +43,7 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.percentagePledgedForRewardTextView::setText);
 
-    this.viewModel.outputs.projectAndPledgedForReward()
+    this.viewModel.outputs.projectAndRewardPledged()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setPledgedColumnValue);
@@ -51,10 +53,10 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.rewardBackerCountTextView::setText);
 
-    this.viewModel.outputs.rewardMinimum()
+    this.viewModel.outputs.projectAndRewardMinimum()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this.rewardMinimumTextView::setText);
+      .subscribe(this::setRewardMinimumText);
   }
 
   @Override
@@ -64,9 +66,14 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
   }
 
   private void setPledgedColumnValue(final @NonNull Pair<Project, Float> projectAndPledgedForReward) {
-    final String goalString = this.ksCurrency.format(
-      projectAndPledgedForReward.second, projectAndPledgedForReward.first, false, true, RoundingMode.DOWN
-    );
+    final String goalString = this.ksCurrency
+      .format(projectAndPledgedForReward.second, projectAndPledgedForReward.first);
     this.amountForRewardPledgedTextView.setText(goalString);
+  }
+
+  private void setRewardMinimumText(final @NonNull Pair<Project, Integer> projectAndMinimumForReward) {
+    final String minimumString = IntegerUtils.isZero(projectAndMinimumForReward.second) ?
+      noRewardString : this.ksCurrency.format(projectAndMinimumForReward.second, projectAndMinimumForReward.first);
+    this.rewardMinimumTextView.setText(minimumString);
   }
 }

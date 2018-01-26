@@ -19,16 +19,16 @@ public class DashboardRewardStatsRowHolderViewModelTest extends KSRobolectricTes
   private DashboardRewardStatsRowHolderViewModel.ViewModel vm;
 
   private final TestSubscriber<String> rewardBackerCount = new TestSubscriber<>();
-  private final TestSubscriber<String> rewardMinimum = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, Integer>> projectAndRewardMinimum = new TestSubscriber<>();
   private final TestSubscriber<String> percentageOfTotalPledged = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, Float>> projectAndPledgedForReward = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, Float>> projectAndRewardPledged = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new DashboardRewardStatsRowHolderViewModel.ViewModel(environment);
     this.vm.outputs.rewardBackerCount().subscribe(this.rewardBackerCount);
-    this.vm.outputs.rewardMinimum().subscribe(this.rewardMinimum);
+    this.vm.outputs.projectAndRewardMinimum().subscribe(this.projectAndRewardMinimum);
     this.vm.outputs.percentageOfTotalPledged().subscribe(this.percentageOfTotalPledged);
-    this.vm.outputs.projectAndPledgedForReward().subscribe(this.projectAndPledgedForReward);
+    this.vm.outputs.projectAndRewardPledged().subscribe(this.projectAndRewardPledged);
   }
 
   @Test
@@ -53,8 +53,9 @@ public class DashboardRewardStatsRowHolderViewModelTest extends KSRobolectricTes
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.projectAndRewardStats(Pair.create(ProjectFactory.project(), rewardStats));
-    this.rewardMinimum.assertValues(NumberUtils.format(5));
+    Project project = ProjectFactory.project();
+    this.vm.inputs.projectAndRewardStats(Pair.create(project, rewardStats));
+    this.projectAndRewardMinimum.assertValue(Pair.create(project, 5));
   }
 
   @Test
@@ -80,10 +81,8 @@ public class DashboardRewardStatsRowHolderViewModelTest extends KSRobolectricTes
       .pledged(50)
       .build();
 
-    final float pledgedFloat = (float) rewardStats.pledged();
-
     setUpEnvironment(environment());
     this.vm.inputs.projectAndRewardStats(Pair.create(project, rewardStats));
-    this.projectAndPledgedForReward.assertValues(Pair.create(project, pledgedFloat));
+    this.projectAndRewardPledged.assertValue(Pair.create(project, 50f));
   }
 }

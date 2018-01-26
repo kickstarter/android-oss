@@ -42,6 +42,7 @@ Unterstützer</string>
   <string name="Backers_count_separator_backers_zero" formatted="false">%{backers_count}\n
 Unterstützer</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Werde Unterstützer, um einen Kommentar zu hinterlassen.</string>
+  <string name="Bookmarks" formatted="false">Bookmarks</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Kreative Projekte werden Wirklichkeit!</string>
   <string name="Cancel_your_pledge" formatted="false">Deinen Beitrag zurückziehen</string>
   <string name="Change_payment_method" formatted="false">Zahlungsmethode ändern</string>
@@ -84,6 +85,7 @@ Unterstützer</string>
   <string name="Ending_soon" formatted="false">Endet bald</string>
   <string name="Estimated_delivery" formatted="false">Voraussichtliche Lieferung:</string>
   <string name="Expands_subcategories" formatted="false">Erweitert die Anzeige der Unterkategorien.</string>
+  <string name="Explore" formatted="false">Erkunden</string>
   <string name="Explore_creative_projects" formatted="false">Erkunde kreative Projekte</string>
   <string name="Explore_projects" formatted="false">Projekte erkunden</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Details zu Live-Stream-Event konnten nicht geladen werden</string>
@@ -262,6 +264,8 @@ Unterstützer</string>
   <string name="Saved_projects" formatted="false">Gespeicherte Projekte</string>
   <string name="Saves_project" formatted="false">Speichert dieses Projekt.</string>
   <string name="Say_something_kind" formatted="false">Sag etwas Nettes ...</string>
+  <string name="See_all_category_name_projects" formatted="false">Alle %{category_name}-Projekte anzeigen</string>
+  <string name="Select_another_project" formatted="false">Wähle ein anderes Projekt aus</string>
   <string name="Select_this_reward" formatted="false">Diese Belohnung wählen</string>
   <string name="Select_this_reward_instead" formatted="false">Diese Belohnung auswählen</string>
   <string name="Send" formatted="false">Senden</string>
@@ -422,7 +426,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="activity_project_state_change_funded" formatted="false">Finanziert</string>
   <string name="activity_project_state_change_goal" formatted="false">Ziel</string>
   <string name="activity_project_state_change_launched" formatted="false">Live</string>
-  <string name="activity_project_state_change_pledged_of_goal" formatted="false">von %{goal} beigetragen</string>
+  <string name="activity_project_state_change_pledged_of_goal" formatted="false">von %{goal}</string>
   <string name="activity_project_state_change_project_was_cancelled_by_creator" formatted="false">%{project_name} wurde vom Projektgründer abgebrochen.</string>
   <string name="activity_project_state_change_project_was_not_successfully_funded" formatted="false">%{project_name} wurde nicht erfolgreich finanziert.</string>
   <string name="activity_project_state_change_project_was_successfully_funded" formatted="false">%{project_name} wurde erfolgreich finanziert!</string>
@@ -492,6 +496,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="dashboard_buttons_activity" formatted="false">Aktivität</string>
   <string name="dashboard_buttons_messages" formatted="false">Nachrichten</string>
   <string name="dashboard_buttons_post_update" formatted="false">Update posten</string>
+  <string name="dashboard_buttons_project" formatted="false">Project</string>
   <string name="dashboard_buttons_share" formatted="false">Teilen</string>
   <string name="dashboard_creator_project_currently_live" formatted="false">Jetzt live</string>
   <string name="dashboard_creator_project_funded_on_deadline" formatted="false">Finanziert am %{deadline}</string>

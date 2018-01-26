@@ -12,6 +12,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -27,6 +28,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
 
   private final TestSubscriber<Boolean> messagesButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> percentageFunded = new TestSubscriber<>();
+  private final TestSubscriber<Integer> percentageFundedProgress = new TestSubscriber<>();
   private final TestSubscriber<String> projectBackersCountText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> timeRemainingText = new TestSubscriber<>();
@@ -39,6 +41,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     this.vm.outputs.projectBackersCountText().subscribe(this.projectBackersCountText);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.percentageFunded().subscribe(this.percentageFunded);
+    this.vm.outputs.percentageFundedProgress().subscribe(this.percentageFundedProgress);
     this.vm.outputs.startMessageThreadsActivity().subscribe(this.startMessageThreadsActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.timeRemainingText().subscribe(this.timeRemainingText);
@@ -88,6 +91,8 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
     final String percentageFundedOutput = NumberUtils.flooredPercentage(project.percentageFunded());
     this.percentageFunded.assertValues(percentageFundedOutput);
+    final int percentageFundedProgressOutput = ProgressBarUtils.progress(project.percentageFunded());
+    this.percentageFundedProgress.assertValues(percentageFundedProgressOutput);
   }
 
   @Test
@@ -113,7 +118,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
-    this.vm.inputs.viewProjectButtonClicked();
+    this.vm.inputs.projectButtonClicked();
     this.startProjectActivity.assertValues(Pair.create(project, RefTag.dashboard()));
   }
 

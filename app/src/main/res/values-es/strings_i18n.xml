@@ -42,6 +42,7 @@ patrocinadores</string>
   <string name="Backers_count_separator_backers_zero" formatted="false">%{backers_count}\n
 patrocinadores</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Conviértete en patrocinador y deja un comentario.</string>
+  <string name="Bookmarks" formatted="false">Marcadores</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Dale vida a proyectos creativos.</string>
   <string name="Cancel_your_pledge" formatted="false">Cancela tu contribución</string>
   <string name="Change_payment_method" formatted="false">Cambiar método de pago</string>
@@ -84,6 +85,7 @@ patrocinadores</string>
   <string name="Ending_soon" formatted="false">Finaliza pronto</string>
   <string name="Estimated_delivery" formatted="false">Entrega estimada:</string>
   <string name="Expands_subcategories" formatted="false">Muestra más subcategorías.</string>
+  <string name="Explore" formatted="false">Explora</string>
   <string name="Explore_creative_projects" formatted="false">Explora proyectos creativos</string>
   <string name="Explore_projects" formatted="false">Explora proyectos</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">No se pudo cargar la información acerca del evento en vivo</string>
@@ -262,6 +264,8 @@ patrocinadores</string>
   <string name="Saved_projects" formatted="false">Proyectos guardados</string>
   <string name="Saves_project" formatted="false">Guarda este proyecto.</string>
   <string name="Say_something_kind" formatted="false">Di algo amable...</string>
+  <string name="See_all_category_name_projects" formatted="false">Ver todos los proyectos de %{category_name}</string>
+  <string name="Select_another_project" formatted="false">Selecciona otro proyecto</string>
   <string name="Select_this_reward" formatted="false">Seleccionar esta recompensa</string>
   <string name="Select_this_reward_instead" formatted="false">Selecciona esta recompensa</string>
   <string name="Send" formatted="false">Enviar</string>
@@ -492,6 +496,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="dashboard_buttons_activity" formatted="false">Actividad</string>
   <string name="dashboard_buttons_messages" formatted="false">Mensajes</string>
   <string name="dashboard_buttons_post_update" formatted="false">Publicar actualización</string>
+  <string name="dashboard_buttons_project" formatted="false">Project</string>
   <string name="dashboard_buttons_share" formatted="false">Compartir</string>
   <string name="dashboard_creator_project_currently_live" formatted="false">Actualmente activos</string>
   <string name="dashboard_creator_project_funded_on_deadline" formatted="false">Financiado el %{deadline}</string>

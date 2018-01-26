@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.CreatorDashboardBottomSheetHolderViewModel;
 
@@ -19,7 +20,8 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public final class CreatorDashboardBottomSheetViewHolder extends KSViewHolder {
   private final CreatorDashboardBottomSheetHolderViewModel.ViewModel viewModel;
 
-  protected @Bind(R.id.creator_dashboard_project_switcher_text_view) TextView projectNameTextView;
+  protected @Bind(R.id.creator_dashboard_project_switcher_project_title) TextView projectNameTextView;
+  protected @Bind(R.id.creator_dashboard_project_switcher_project_launch) TextView projectLaunchDateTextView;
 
   private final @Nullable Delegate delegate;
 
@@ -37,6 +39,11 @@ public final class CreatorDashboardBottomSheetViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.projectNameTextView::setText);
+
+    this.viewModel.outputs.projectLaunchDate()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(d -> this.projectLaunchDateTextView.setText(DateTimeUtils.longDate(d)));
 
     this.viewModel.outputs.projectSwitcherProject()
       .compose(bindToLifecycle())

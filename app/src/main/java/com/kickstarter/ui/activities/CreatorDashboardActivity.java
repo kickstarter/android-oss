@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
+import android.view.View;
+import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -33,6 +35,8 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
   private BottomSheetBehavior bottomSheetBehavior;
 
   protected @Bind(R.id.creator_dashboard_bottom_sheet_recycler_view) RecyclerView bottomSheetRecyclerView;
+  protected @Bind(R.id.creator_dashboard_bottom_sheet_scrim) View bottomSheetScrim;
+  protected @Bind(R.id.creator_dashboard_project_name) TextView projectNameTextView;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -43,13 +47,18 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     // Set up the bottom sheet recycler view.
     this.bottomSheetAdapter = new CreatorDashboardBottomSheetAdapter(this.viewModel.inputs);
     this.bottomSheetRecyclerView.setAdapter(this.bottomSheetAdapter);
-    this.bottomSheetRecyclerView.setLayoutManager(new LinearLayoutManager(this)); // todo: reuse LayoutManager?
+    this.bottomSheetRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     this.bottomSheetBehavior = BottomSheetBehavior.from(this.bottomSheetRecyclerView);
 
     this.viewModel.outputs.projectAndStats()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::createProjectDashboardFragment);
+
+    this.viewModel.outputs.projectAndStats()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(pair -> this.projectNameTextView.setText(pair.first.name()));
 
     this.viewModel.outputs.projectsForBottomSheet()
       .compose(bindToLifecycle())
@@ -60,6 +69,41 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
        .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::newProjectClicked);
+
+    createAndSetBottomSheetCallback();
+  }
+
+  @Override
+  public void back() {
+    if (this.bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+      hideBottomSheet();
+    } else {
+      super.back();
+    }
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    this.bottomSheetRecyclerView.setAdapter(null);
+    this.bottomSheetBehavior.setBottomSheetCallback(null);
+  }
+
+  private void createAndSetBottomSheetCallback() {
+    final BottomSheetBehavior.BottomSheetCallback bottomSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
+      @Override
+      public void onStateChanged(final @NonNull View bottomSheet, final int newState) {
+        if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+          CreatorDashboardActivity.this.bottomSheetScrim.setVisibility(View.GONE);
+        }
+      }
+      @Override
+      public void onSlide(final @NonNull View bottomSheet, final float slideOffset) {
+
+      }
+    };
+
+    this.bottomSheetBehavior.setBottomSheetCallback(bottomSheetCallback);
   }
 
   private void setProjectsForDropdown(final @NonNull List<Project> projects) {
@@ -68,7 +112,12 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
 
   private void newProjectClicked(final @NonNull Project project) {
     this.viewModel.refreshProject(project);
+    hideBottomSheet();
+  }
+
+  private void hideBottomSheet() {
     this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    this.bottomSheetScrim.setVisibility(View.GONE);
   }
 
   private void createProjectDashboardFragment(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStats) {
@@ -81,12 +130,6 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
 
   public void toggleBottomSheetClick() {
     this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-    this.bottomSheetRecyclerView.bringToFront();
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    this.bottomSheetRecyclerView.setAdapter(null);
+    this.bottomSheetScrim.setVisibility(View.VISIBLE);
   }
 }

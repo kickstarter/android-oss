@@ -1,176 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+  android:id="@+id/creator_dashboard_funding_view"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/creator_dashboard_funding_view"
-  android:layout_height="wrap_content"
   android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:showDividers="middle|end"
+  android:divider="@drawable/divider_dark_grey_500_horizontal"
   android:orientation="vertical">
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:weightSum="5">
+    android:layout_marginBottom="@dimen/grid_2"
+    android:orientation="vertical"
+    android:padding="@dimen/grid_2">
 
     <LinearLayout
-      android:id="@+id/project_name_blurb_arrow_view"
-      android:foreground="@drawable/click_indicator_light_masked"
-      android:layout_width="wrap_content"
+      android:id="@+id/creator_links"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_weight="3"
-      android:orientation="vertical">
+      android:layout_marginBottom="@dimen/grid_4"
+      android:divider="@drawable/divider_grey_500_horizontal"
+      android:orientation="vertical"
+      android:showDividers="middle|end">
 
-      <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+      <RelativeLayout
+        android:id="@+id/creator_view_project_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_8"
+        android:background="@drawable/click_indicator_light_masked"
+        android:focusable="true">
 
         <TextView
-          android:id="@+id/creator_dashboard_project_name"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingStart="@dimen/grid_2"
-          android:paddingEnd="@dimen/grid_2"
-          style="@style/Title3"
-          tools:text="ayyyy it's shrek" />
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_alignParentStart="true"
+          android:gravity="center_vertical"
+          android:text="@string/dashboard_buttons_project"
+          android:textColor="@color/ksr_soft_black"
+          android:textSize="@dimen/callout" />
 
-        <com.kickstarter.ui.views.IconButton
+        <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:paddingTop="@dimen/grid_2"
-          android:id="@+id/creator_dashboard_button"
-          android:text="@string/keyboard_arrow_down_icon" />
+          android:layout_alignParentEnd="true"
+          android:layout_centerVertical="true"
+          android:contentDescription="@null"
+          android:src="@drawable/chevron_right" />
+
+      </RelativeLayout>
+
+      <RelativeLayout
+        android:id="@+id/creator_dashboard_messages"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_8"
+        android:background="@drawable/click_indicator_light_masked"
+        android:focusable="true">
+
+        <TextView
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_alignParentStart="true"
+          android:gravity="center_vertical"
+          android:text="@string/accessibility_dashboard_buttons_messages"
+          android:textColor="@color/ksr_soft_black"
+          android:textSize="@dimen/callout" />
+
+        <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentEnd="true"
+          android:layout_centerVertical="true"
+          android:contentDescription="@null"
+          android:src="@drawable/chevron_right" />
+
+      </RelativeLayout>
+
+    </LinearLayout>
+
+    <Button
+      android:id="@+id/creator_dashboard_project_selector"
+      style="@style/SecondaryButton"
+      android:layout_width="match_parent"
+      android:text="@string/Select_another_project" />
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:padding="@dimen/grid_2">
+
+      <TextView
+        style="@style/Title3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:text="@string/dashboard_graphs_funding_title_funding_progress" />
+
+      <ProgressBar
+        android:id="@+id/creator_dashboard_funded"
+        style="@style/ProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/progress_bar_min_height"
+        android:progress="50" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:divider="@drawable/divider_grey_500_horizontal"
+      android:orientation="vertical"
+      android:padding="@dimen/grid_2"
+      android:showDividers="middle">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/grid_3">
+
+        <TextView
+          android:id="@+id/creator_dashboard_amount_raised"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textColor="@color/ksr_green_700"
+          android:textSize="@dimen/headline"
+          tools:text="$12,000" />
+
+        <TextView
+          android:id="@+id/creator_dashboard_funding_text"
+          style="@style/BodyPrimary"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          tools:text="pledged of $12,000" />
 
       </LinearLayout>
 
-      <TextView
-        android:id="@+id/creator_dashboard_project_blurb"
+      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/grid_2"
-        android:paddingEnd="@dimen/grid_2"
-        style="@style/BodySecondary"
-        tools:text="do you think it's literally the best movie ever made" />
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/grid_3"
+        android:paddingTop="@dimen/grid_3">
 
+        <TextView
+          android:id="@+id/creator_dashboard_percent"
+          style="@style/HeadlineNormal"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="100%" />
+
+        <TextView
+          android:id="@+id/creator_dashboard_percent_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/discovery_baseball_card_stats_funded"
+          tools:text="funded" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/grid_3"
+        android:paddingTop="@dimen/grid_3">
+
+        <TextView
+          android:id="@+id/creator_dashboard_backer_count"
+          style="@style/HeadlineNormal"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="100" />
+
+        <TextView
+          android:id="@+id/creator_dashboard_backer_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/discovery_baseball_card_stats_backers"
+          tools:text="backers" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/grid_5"
+        android:paddingTop="@dimen/grid_3">
+
+        <TextView
+          android:id="@+id/creator_dashboard_time_remaining"
+          style="@style/HeadlineNormal"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="3" />
+
+        <TextView
+          android:id="@+id/creator_dashboard_time_remaining_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="secs to go" />
+
+      </LinearLayout>
     </LinearLayout>
-
-    <ImageButton
-      style="@style/ToolbarIcon"
-      android:src="@drawable/icon__mail"
-      android:id="@+id/creator_dashboard_messages_button"
-      android:focusable="true"
-      android:layout_weight="2"
-      android:paddingStart="@dimen/grid_4"
-      android:contentDescription="@string/accessibility_dashboard_buttons_messages" />
-
   </LinearLayout>
-
-  <TextView
-    android:id="@+id/creator_dashboard_amount_raised"
-    style="@style/Title1"
-    android:layout_marginTop="@dimen/grid_3"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textColor="@color/ksr_cobalt_500"
-    android:gravity="center_horizontal"
-    tools:text="$12,000" />
-
-  <TextView
-    android:id="@+id/creator_dashboard_funding_text"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:layout_marginBottom="@dimen/grid_3"
-    style="@style/BodyPrimary"
-    tools:text="pledged of $12,000"/>
-
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center_horizontal"
-    android:paddingStart="@dimen/grid_2"
-    android:paddingEnd="@dimen/grid_5">
-
-    <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:paddingStart="@dimen/grid_7"
-      android:paddingEnd="@dimen/grid_7">
-
-      <TextView
-        android:id="@+id/creator_dashboard_percent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/BodyPrimary"
-        tools:text="100%"/>
-
-      <TextView
-        android:id="@+id/creator_dashboard_percent_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/discovery_baseball_card_stats_funded"
-        tools:text="funded"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="vertical">
-
-      <TextView
-        android:id="@+id/creator_dashboard_backer_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/BodyPrimary"
-        tools:text="100"/>
-
-      <TextView
-        android:id="@+id/creator_dashboard_backer_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/BodySecondary"
-        android:layout_marginEnd="@dimen/grid_4"
-        android:text="@string/discovery_baseball_card_stats_backers"
-        tools:text="backers"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="vertical">
-
-      <TextView
-        android:id="@+id/creator_dashboard_time_remaining"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/BodyPrimary"
-        tools:text="3"/>
-
-      <TextView
-        android:id="@+id/creator_dashboard_time_remaining_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="secs to go"/>
-
-    </LinearLayout>
-
-  </LinearLayout>
-
-  <Button
-    android:id="@+id/creator_view_project_button"
-    style="@style/SecondaryButton"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_7"
-    android:layout_marginTop="@dimen/grid_2"
-    android:layout_marginEnd="@dimen/grid_5"
-    android:layout_marginStart="@dimen/grid_5"
-    android:text="@string/View"
-    tools:text="Go to project" />
-
 </LinearLayout>
-

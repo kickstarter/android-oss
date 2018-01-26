@@ -10,6 +10,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.PairUtils;
+import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
@@ -29,8 +30,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
     /** Call to configure the view model with Project and Stats. */
     void projectAndStats(Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope);
 
-    /** Call when the View project button is clicked. */
-    void viewProjectButtonClicked();
+    /** Call when the project button is clicked. */
+    void projectButtonClicked();
   }
 
   interface Outputs {
@@ -43,11 +44,11 @@ public interface CreatorDashboardHeaderHolderViewModel {
     /** string number with the percentage of a projects funding */
     Observable<String> percentageFunded();
 
+    /** Emits the percentage funded amount for display in the progress bar. */
+    Observable<Integer> percentageFundedProgress();
+
     /** localized count of number of backers */
     Observable<String> projectBackersCountText();
-
-    /** current projects blurb */
-    Observable<String> projectBlurbTextViewText();
 
     /** current project's name */
     Observable<String> projectNameTextViewText();
@@ -79,9 +80,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
       this.percentageFunded = this.currentProject
         .map(p -> NumberUtils.flooredPercentage(p.percentageFunded()));
 
-      this.projectBlurbTextViewText = this.currentProject
-        .map(Project::blurb)
-        .compose(bindToLifecycle());
+      this.percentageFundedProgress = this.currentProject
+        .map(p -> ProgressBarUtils.progress(p.percentageFunded()));
 
       this.projectBackersCountText = this.currentProject
         .map(Project::backersCount)
@@ -101,7 +101,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .compose(takeWhen(this.messagesButtonClicked));
 
       this.startProjectActivity = this.currentProject
-        .compose(takeWhen(this.viewProjectButtonClicked))
+        .compose(takeWhen(this.projectButtonClicked))
         .map(p -> Pair.create(p, RefTag.dashboard()));
     }
 
@@ -110,13 +110,13 @@ public interface CreatorDashboardHeaderHolderViewModel {
 
     private final PublishSubject<Void> messagesButtonClicked = PublishSubject.create();
     private final PublishSubject<Pair<Project, ProjectStatsEnvelope>> projectAndStats = PublishSubject.create();
-    private final PublishSubject<Void> viewProjectButtonClicked = PublishSubject.create();
+    private final PublishSubject<Void> projectButtonClicked = PublishSubject.create();
 
     private final Observable<Project> currentProject;
     private final Observable<Boolean> messagesButtonIsGone;
     private final Observable<String> percentageFunded;
+    private final Observable<Integer> percentageFundedProgress;
     private final Observable<String> projectBackersCountText;
-    private final Observable<String> projectBlurbTextViewText;
     private final Observable<String> projectNameTextViewText;
     private final Observable<Project> startMessageThreadsActivity;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
@@ -125,8 +125,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
     @Override public void messagesButtonClicked() {
       this.messagesButtonClicked.onNext(null);
     }
-    @Override public void viewProjectButtonClicked() {
-      this.viewProjectButtonClicked.onNext(null);
+    @Override public void projectButtonClicked() {
+      this.projectButtonClicked.onNext(null);
     }
     @Override public void projectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope) {
       this.projectAndStats.onNext(projectAndProjectStatsEnvelope);
@@ -141,11 +141,12 @@ public interface CreatorDashboardHeaderHolderViewModel {
     @Override public @NonNull Observable<String> percentageFunded() {
       return this.percentageFunded;
     }
+    @Override
+    public Observable<Integer> percentageFundedProgress() {
+      return this.percentageFundedProgress;
+    }
     @Override public @NonNull Observable<String> projectBackersCountText() {
       return this.projectBackersCountText;
-    }
-    @Override public @NonNull Observable<String> projectBlurbTextViewText() {
-      return this.projectBlurbTextViewText;
     }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;

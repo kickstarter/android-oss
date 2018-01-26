@@ -41,6 +41,7 @@
 バッカー</string>
   <string name="Backers_count_separator_backers_zero" formatted="false">%{backers_count} バッカー</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">コメントを残すためにバッカーになる。</string>
+  <string name="Bookmarks" formatted="false">ブックマーク</string>
   <string name="Bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
   <string name="Cancel_your_pledge" formatted="false">プレッジを取り消す</string>
   <string name="Change_payment_method" formatted="false">支払方法の変更</string>
@@ -83,6 +84,7 @@
   <string name="Ending_soon" formatted="false">終了直前</string>
   <string name="Estimated_delivery" formatted="false">配達予定日：</string>
   <string name="Expands_subcategories" formatted="false">サブカテゴリーを表示</string>
+  <string name="Explore" formatted="false">さがす</string>
   <string name="Explore_creative_projects" formatted="false">クリエイティブなプロジェクトをさがす</string>
   <string name="Explore_projects" formatted="false">プロジェクトをさがす</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">ライブ配信の詳細を取得できませんでした</string>
@@ -262,6 +264,8 @@
   <string name="Saved_projects" formatted="false">プロジェクトを保存</string>
   <string name="Saves_project" formatted="false">プロジェクトを保存</string>
   <string name="Say_something_kind" formatted="false">言葉に注意</string>
+  <string name="See_all_category_name_projects" formatted="false">%{category_name} プロジェクトをすべて見る</string>
+  <string name="Select_another_project" formatted="false">他のプロジェクトを選ぶ</string>
   <string name="Select_this_reward" formatted="false">このリワードを選ぶ</string>
   <string name="Select_this_reward_instead" formatted="false">このリワードを選択</string>
   <string name="Send" formatted="false">送信</string>
@@ -434,7 +438,7 @@
   <string name="activity_successfully_funded" formatted="false">資金調達に成功</string>
   <string name="activity_user_name_is_now_following_you" formatted="false">%{user_name} はあなたをフォロー中！</string>
   <string name="activity_user_name_launched_project" formatted="false">%{user_name} がプロジェクトをローンチ！</string>
-  <string name="backer_modal_backer_number" formatted="false">バッカー数 %{backer_number}</string>
+  <string name="backer_modal_backer_number" formatted="false">バッカーナンバー %{backer_number}</string>
   <string name="backer_modal_domestic" formatted="false">国内</string>
   <string name="backer_modal_international" formatted="false">全世界</string>
   <string name="backer_modal_missing_location_name" formatted="false">N/A</string>
@@ -492,6 +496,7 @@
   <string name="dashboard_buttons_activity" formatted="false">アクティビティ</string>
   <string name="dashboard_buttons_messages" formatted="false">メッセージ</string>
   <string name="dashboard_buttons_post_update" formatted="false">アップデートを投稿</string>
+  <string name="dashboard_buttons_project" formatted="false">Project</string>
   <string name="dashboard_buttons_share" formatted="false">シェア</string>
   <string name="dashboard_creator_project_currently_live" formatted="false">現在のライブ</string>
   <string name="dashboard_creator_project_funded_on_deadline" formatted="false">%{deadline} に達成</string>

@@ -1,34 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/creator_dashboard_coordinator_view"
-  android:layout_height="match_parent"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  android:layout_height="match_parent">
 
-  <android.support.design.widget.AppBarLayout
+  <android.support.design.widget.CoordinatorLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-    <android.support.design.widget.CollapsingToolbarLayout
+    <include layout="@layout/creator_dashboard_toolbar" />
+
+    <FrameLayout
+      android:id="@+id/creator_dashboard_coordinator_view"
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="match_parent"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-      <include
-        layout="@layout/creator_dashboard_toolbar"
-        android:id="@+id/creator_dashboard_toolbar"/>
+  </android.support.design.widget.CoordinatorLayout>
 
-    </android.support.design.widget.CollapsingToolbarLayout>
-
-  </android.support.design.widget.AppBarLayout>
-
-  <android.support.v7.widget.RecyclerView
-    android:id="@+id/creator_dashboard_bottom_sheet_recycler_view"
+  <View
+    android:id="@+id/creator_dashboard_bottom_sheet_scrim"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/ksr_cobalt_500"
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="0dp"
-    app:layout_behavior="@string/bottom_sheet_behavior"/>
+    android:layout_height="match_parent"
+    android:background="@color/black_alpha_17"
+    android:fitsSystemWindows="true"
+    android:visibility="gone" />
 
-</android.support.design.widget.CoordinatorLayout>
+  <android.support.design.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/creator_dashboard_bottom_sheet_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/white"
+      app:behavior_hideable="true"
+      app:behavior_peekHeight="0dp"
+      app:layout_behavior="@string/bottom_sheet_behavior" />
+
+  </android.support.design.widget.CoordinatorLayout>
+
+</merge>

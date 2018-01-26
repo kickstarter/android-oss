@@ -42,6 +42,7 @@ contributeurs</string>
   <string name="Backers_count_separator_backers_zero" formatted="false">%{backers_count}\n
 contributeurs</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Soutenez ce projet pour laisser un commentaire.</string>
+  <string name="Bookmarks" formatted="false">Signets</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Réalisez vos projets créatifs.</string>
   <string name="Cancel_your_pledge" formatted="false">Annuler mon engagement</string>
   <string name="Change_payment_method" formatted="false">Changer de moyen de paiement</string>
@@ -84,6 +85,7 @@ contributeurs</string>
   <string name="Ending_soon" formatted="false">Campagnes bientôt terminées</string>
   <string name="Estimated_delivery" formatted="false">Livraison prévue :</string>
   <string name="Expands_subcategories" formatted="false">Développe les sous-catégories.</string>
+  <string name="Explore" formatted="false">Explorer</string>
   <string name="Explore_creative_projects" formatted="false">Découvrez des projets créatifs</string>
   <string name="Explore_projects" formatted="false">Découvrir des projets</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Impossible de récupérer les détails de la diffusion en direct</string>
@@ -263,6 +265,8 @@ n\'ont rien soutenu.</string>
   <string name="Saved_projects" formatted="false">Projets enregistrés</string>
   <string name="Saves_project" formatted="false">Enregistre le projet.</string>
   <string name="Say_something_kind" formatted="false">Un petit mot sympa...</string>
+  <string name="See_all_category_name_projects" formatted="false">Tous les projets de la catégorie %{category_name}</string>
+  <string name="Select_another_project" formatted="false">Sélectionner un autre projet</string>
   <string name="Select_this_reward" formatted="false">Sélectionner cette récompense</string>
   <string name="Select_this_reward_instead" formatted="false">Choisir cette récompense</string>
   <string name="Send" formatted="false">Envoyer</string>
@@ -493,6 +497,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="dashboard_buttons_activity" formatted="false">Activité</string>
   <string name="dashboard_buttons_messages" formatted="false">Messages</string>
   <string name="dashboard_buttons_post_update" formatted="false">Publier une actu</string>
+  <string name="dashboard_buttons_project" formatted="false">Project</string>
   <string name="dashboard_buttons_share" formatted="false">Partager</string>
   <string name="dashboard_creator_project_currently_live" formatted="false">En cours</string>
   <string name="dashboard_creator_project_funded_on_deadline" formatted="false">Financé le %{deadline}</string>

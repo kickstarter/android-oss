@@ -6,7 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -37,11 +38,10 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
 
   protected @Bind(R.id.creator_dashboard_amount_raised) TextView amountRaisedTextView;
   protected @Bind(R.id.creator_dashboard_backer_count) TextView backerCountTextView;
+  protected @Bind(R.id.creator_dashboard_funded) ProgressBar fundedProgressBar;
   protected @Bind(R.id.creator_dashboard_funding_text) TextView fundingTextTextView;
-  protected @Bind(R.id.creator_dashboard_messages_button) ImageButton messagesButton;
+  protected @Bind(R.id.creator_dashboard_messages) RelativeLayout messagesButton;
   protected @Bind(R.id.creator_dashboard_percent) TextView percentTextView;
-  protected @Bind(R.id.creator_dashboard_project_blurb) TextView projectBlurbTextView;
-  protected @Bind(R.id.creator_dashboard_project_name) TextView projectNameTextView;
   protected @Bind(R.id.creator_dashboard_time_remaining) TextView timeRemainingTextView;
   protected @Bind(R.id.creator_dashboard_time_remaining_text) TextView timeRemainingTextTextView;
 
@@ -86,20 +86,15 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.percentTextView::setText);
 
+    this.viewModel.outputs.percentageFundedProgress()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.fundedProgressBar::setProgress);
+
     this.viewModel.outputs.projectBackersCountText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.backerCountTextView::setText);
-
-    this.viewModel.outputs.projectBlurbTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.projectBlurbTextView::setText);
-
-    this.viewModel.outputs.projectNameTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.projectNameTextView::setText);
 
     this.viewModel.outputs.timeRemainingText()
       .compose(bindToLifecycle())
@@ -117,19 +112,19 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
   }
 
-  @OnClick(R.id.project_name_blurb_arrow_view)
+  @OnClick(R.id.creator_dashboard_project_selector)
   protected void dashboardShowProjectMenuClicked() {
     this.delegate.dashboardShowProjectMenuClicked();
   }
 
-  @OnClick(R.id.creator_dashboard_messages_button)
+  @OnClick(R.id.creator_dashboard_messages)
   protected void dashbordMessagesButtonClick() {
     this.viewModel.inputs.messagesButtonClicked();
   }
 
   @OnClick(R.id.creator_view_project_button)
   protected void viewProjectButtonClicked() {
-    this.viewModel.inputs.viewProjectButtonClicked();
+    this.viewModel.inputs.projectButtonClicked();
   }
 
   @Override
@@ -139,9 +134,10 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   }
 
   private void setPledgedOfGoalString(final @NonNull Project currentProject) {
-    final String goalString = this.ksCurrency.format(currentProject.pledged(), currentProject, false, true, RoundingMode.DOWN);
-    this.amountRaisedTextView.setText(goalString);
+    final String pledgedString = this.ksCurrency.format(currentProject.pledged(), currentProject, false, true, RoundingMode.DOWN);
+    this.amountRaisedTextView.setText(pledgedString);
 
+    final String goalString = this.ksCurrency.format(currentProject.goal(), currentProject, false, true, RoundingMode.DOWN);
     final String goalText = this.ksString.format(this.pledgedOfGoalString, "goal", goalString);
     this.fundingTextTextView.setText(goalText);
   }

@@ -19,12 +19,15 @@ import rx.subjects.PublishSubject;
 public interface CreatorDashboardFragmentViewModel {
 
   interface Inputs extends CreatorDashboardAdapter.Delegate {
-    /* project menu clicked */
+    /** Call when project selection should be shown. */
     void dashboardShowProjectMenuClicked();
   }
 
   interface Outputs {
+    /** Call when project selection should be shown. */
     Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats();
+
+    /** Call when project selection should be shown. */
     Observable<Void> toggleBottomSheet();
   }
 

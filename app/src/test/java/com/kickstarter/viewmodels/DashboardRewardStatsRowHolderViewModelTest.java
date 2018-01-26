@@ -53,7 +53,7 @@ public class DashboardRewardStatsRowHolderViewModelTest extends KSRobolectricTes
       .build();
 
     setUpEnvironment(environment());
-    Project project = ProjectFactory.project();
+    final Project project = ProjectFactory.project();
     this.vm.inputs.projectAndRewardStats(Pair.create(project, rewardStats));
     this.projectAndRewardMinimum.assertValue(Pair.create(project, 5));
   }

@@ -73,7 +73,7 @@ public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectri
 
     this.rewardsStatsTruncatedTextIsGone.assertValue(true);
 
-    List<ProjectStatsEnvelope.RewardStats> maxStats = new ArrayList<>();
+    final List<ProjectStatsEnvelope.RewardStats> maxStats = new ArrayList<>();
     for (int i = 1; i <= 10; i++) {
       maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(i).build());
     }

@@ -55,12 +55,12 @@ public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
     this.viewModel.outputs.rewardsStatsTruncatedTextIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(truncatedTextView));
+      .subscribe(ViewUtils.setGone(this.truncatedTextView));
   }
 
-  private void toggleRecyclerViewAndEmptyStateVisibility(boolean gone) {
-    ViewUtils.setGone(rewardStatsRecyclerView, gone);
-    ViewUtils.setGone(emptyTextView, !gone);
+  private void toggleRecyclerViewAndEmptyStateVisibility(final @NonNull Boolean gone) {
+    ViewUtils.setGone(this.rewardStatsRecyclerView, gone);
+    ViewUtils.setGone(this.emptyTextView, !gone);
   }
 
   @OnClick(R.id.dashboard_reward_stats_pledged_view)

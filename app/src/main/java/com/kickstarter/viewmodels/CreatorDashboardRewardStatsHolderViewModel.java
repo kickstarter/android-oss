@@ -11,11 +11,9 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardRewardStatsViewHolder;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -78,10 +76,9 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
 
     private @NonNull List<ProjectStatsEnvelope.RewardStats> sortRewardStats(final @NonNull List<ProjectStatsEnvelope.RewardStats> rewardStatsList) {
       final OrderByPledgedRewardStatsComparator rewardStatsComparator = new OrderByPledgedRewardStatsComparator();
-      final Set<ProjectStatsEnvelope.RewardStats> rewardStatsTreeSet = new TreeSet<>(rewardStatsComparator);
-      rewardStatsTreeSet.addAll(rewardStatsList);
+      Collections.sort(rewardStatsList, rewardStatsComparator);
 
-      return new ArrayList<>(rewardStatsTreeSet);
+      return rewardStatsList;
     }
 
     public final Inputs inputs = this;

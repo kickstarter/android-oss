@@ -92,7 +92,7 @@
 
   <style name="ProgressBar" parent="Base.Widget.AppCompat.ProgressBar">
     <item name="android:indeterminateOnly">false</item>
-    <item name="android:progressDrawable">@drawable/progress_bar_horizontal</item>
+    <item name="android:progressDrawable">@drawable/progress_bar_green_horizontal</item>
   </style>
 
   <style name="Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">

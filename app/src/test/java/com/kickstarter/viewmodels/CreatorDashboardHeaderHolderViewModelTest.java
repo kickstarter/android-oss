@@ -101,70 +101,56 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   @Test
   public void testProgressBarBackground_LiveProject() {
     setUpEnvironment(environment());
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
-    final Project liveProject = ProjectFactory.project().toBuilder().state(Project.STATE_LIVE).build();
-    this.vm.inputs.projectAndStats(Pair.create(liveProject, projectStatsEnvelope));
+    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_LIVE));
     this.progressBarBackground.assertValues(R.drawable.progress_bar_green_horizontal);
   }
 
   @Test
   public void testProgressBarBackground_SubmittedProject() {
     setUpEnvironment(environment());
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
-    final Project submittedProject = ProjectFactory.project().toBuilder().state(Project.STATE_SUBMITTED).build();
-    this.vm.inputs.projectAndStats(Pair.create(submittedProject, projectStatsEnvelope));
+    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_SUBMITTED));
     this.progressBarBackground.assertValues(R.drawable.progress_bar_green_horizontal);
   }
 
   @Test
   public void testProgressBarBackground_StartedProject() {
     setUpEnvironment(environment());
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
-    final Project startedProject = ProjectFactory.project().toBuilder().state(Project.STATE_STARTED).build();
-    this.vm.inputs.projectAndStats(Pair.create(startedProject, projectStatsEnvelope));
+    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_STARTED));
     this.progressBarBackground.assertValues(R.drawable.progress_bar_green_horizontal);
   }
 
   @Test
   public void testProgressBarBackground_SuccessfulProject() {
     setUpEnvironment(environment());
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
-    final Project successfulProject = ProjectFactory.project().toBuilder().state(Project.STATE_SUCCESSFUL).build();
-    this.vm.inputs.projectAndStats(Pair.create(successfulProject, projectStatsEnvelope));
+    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_SUCCESSFUL));
     this.progressBarBackground.assertValues(R.drawable.progress_bar_green_horizontal);
   }
 
   @Test
   public void testProgressBarBackground_FailedProject() {
     setUpEnvironment(environment());
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
-    final Project failedProject = ProjectFactory.project().toBuilder().state(Project.STATE_FAILED).build();
-    this.vm.inputs.projectAndStats(Pair.create(failedProject, projectStatsEnvelope));
+    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_FAILED));
     this.progressBarBackground.assertValues(R.drawable.progress_bar_grey_horizontal);
   }
 
   @Test
   public void testProgressBarBackground_CanceledProject() {
     setUpEnvironment(environment());
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
-    final Project canceledProject = ProjectFactory.project().toBuilder().state(Project.STATE_CANCELED).build();
-    this.vm.inputs.projectAndStats(Pair.create(canceledProject, projectStatsEnvelope));
+    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_CANCELED));
     this.progressBarBackground.assertValues(R.drawable.progress_bar_grey_horizontal);
   }
 
   @Test
   public void testProgressBarBackground_SuspendedProject() {
     setUpEnvironment(environment());
-    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
-    final Project suspendedProject = ProjectFactory.project().toBuilder().state(Project.STATE_SUSPENDED).build();
-    this.vm.inputs.projectAndStats(Pair.create(suspendedProject, projectStatsEnvelope));
+    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_SUSPENDED));
     this.progressBarBackground.assertValues(R.drawable.progress_bar_grey_horizontal);
   }
 
@@ -204,5 +190,12 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
 
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
     this.timeRemainingText.assertValues(NumberUtils.format(deadlineVal));
+  }
+
+  private Pair<Project, ProjectStatsEnvelope> getProjectAndStats(final String state) {
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
+
+    final Project project = ProjectFactory.project().toBuilder().state(state).build();
+    return Pair.create(project, projectStatsEnvelope);
   }
 }

@@ -78,7 +78,8 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
       final OrderByPledgedRewardStatsComparator rewardStatsComparator = new OrderByPledgedRewardStatsComparator();
       Collections.sort(rewardStatsList, rewardStatsComparator);
 
-      return rewardStatsList;
+        //should i make this a constant
+      return rewardStatsList.subList(0, Math.min(rewardStatsList.size(), 10));
     }
 
     public final Inputs inputs = this;

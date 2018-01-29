@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.R;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.ProjectStatsEnvelopeFactory;
 import com.kickstarter.factories.UserFactory;
@@ -31,6 +32,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   private final TestSubscriber<Integer> percentageFundedProgress = new TestSubscriber<>();
   private final TestSubscriber<String> projectBackersCountText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Integer> progressBarBackground = new TestSubscriber<>();
   private final TestSubscriber<String> timeRemainingText = new TestSubscriber<>();
   private final TestSubscriber<Project> startMessageThreadsActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
@@ -42,6 +44,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.percentageFunded().subscribe(this.percentageFunded);
     this.vm.outputs.percentageFundedProgress().subscribe(this.percentageFundedProgress);
+    this.vm.outputs.progressBarBackground().subscribe(this.progressBarBackground);
     this.vm.outputs.startMessageThreadsActivity().subscribe(this.startMessageThreadsActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.timeRemainingText().subscribe(this.timeRemainingText);
@@ -96,6 +99,62 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   }
 
   @Test
+  public void testProgressBarBackground_LiveProject() {
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_LIVE));
+    this.progressBarBackground.assertValues(R.drawable.progress_bar_green_horizontal);
+  }
+
+  @Test
+  public void testProgressBarBackground_SubmittedProject() {
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_SUBMITTED));
+    this.progressBarBackground.assertValues(R.drawable.progress_bar_green_horizontal);
+  }
+
+  @Test
+  public void testProgressBarBackground_StartedProject() {
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_STARTED));
+    this.progressBarBackground.assertValues(R.drawable.progress_bar_green_horizontal);
+  }
+
+  @Test
+  public void testProgressBarBackground_SuccessfulProject() {
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_SUCCESSFUL));
+    this.progressBarBackground.assertValues(R.drawable.progress_bar_green_horizontal);
+  }
+
+  @Test
+  public void testProgressBarBackground_FailedProject() {
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_FAILED));
+    this.progressBarBackground.assertValues(R.drawable.progress_bar_grey_horizontal);
+  }
+
+  @Test
+  public void testProgressBarBackground_CanceledProject() {
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_CANCELED));
+    this.progressBarBackground.assertValues(R.drawable.progress_bar_grey_horizontal);
+  }
+
+  @Test
+  public void testProgressBarBackground_SuspendedProject() {
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_SUSPENDED));
+    this.progressBarBackground.assertValues(R.drawable.progress_bar_grey_horizontal);
+  }
+
+  @Test
   public void testStartMessagesActivity() {
     final User creator = UserFactory.creator();
     final CurrentUserType currentUser = new MockCurrentUser(creator);
@@ -131,5 +190,12 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
 
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
     this.timeRemainingText.assertValues(NumberUtils.format(deadlineVal));
+  }
+
+  private Pair<Project, ProjectStatsEnvelope> getProjectAndStats(final String state) {
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
+
+    final Project project = ProjectFactory.project().toBuilder().state(state).build();
+    return Pair.create(project, projectStatsEnvelope);
   }
 }

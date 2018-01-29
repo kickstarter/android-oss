@@ -78,7 +78,7 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
       final OrderByPledgedRewardStatsComparator rewardStatsComparator = new OrderByPledgedRewardStatsComparator();
       Collections.sort(rewardStatsList, rewardStatsComparator);
 
-        //should i make this a constant
+      //should i make this a constant
       return rewardStatsList.subList(0, Math.min(rewardStatsList.size(), 10));
     }
 

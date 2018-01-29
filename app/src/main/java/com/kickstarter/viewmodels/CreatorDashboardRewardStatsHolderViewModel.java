@@ -11,6 +11,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardRewardStatsViewHolder;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -50,18 +51,21 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
         .map(PairUtils::second)
         .map(this::sortRewardStats);
 
+      final Observable<List<ProjectStatsEnvelope.RewardStats>> limitedSortedRewardStats = sortedRewardStats
+        .map(stats -> new ArrayList<>(stats.subList(0, Math.min(stats.size(), 10))));
+
       this.projectAndRewardStats = this.projectAndRewardStatsInput
         .map(PairUtils::first)
-        .compose(combineLatestPair(sortedRewardStats));
+        .compose(combineLatestPair(limitedSortedRewardStats));
 
-      this.projectAndRewardStats
-        .map(pr -> pr.second.isEmpty())
+      sortedRewardStats
+        .map(List::isEmpty)
         .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.rewardsStatsListIsGone);
 
-      this.projectAndRewardStats
-        .map(pr -> pr.second.size() <= 10)
+      sortedRewardStats
+        .map(pr -> pr.size() <= 10)
         .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.rewardsStatsTruncatedTextIsGone);
@@ -78,8 +82,7 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
       final OrderByPledgedRewardStatsComparator rewardStatsComparator = new OrderByPledgedRewardStatsComparator();
       Collections.sort(rewardStatsList, rewardStatsComparator);
 
-      //should i make this a constant
-      return rewardStatsList.subList(0, Math.min(rewardStatsList.size(), 10));
+      return rewardStatsList;
     }
 
     public final Inputs inputs = this;

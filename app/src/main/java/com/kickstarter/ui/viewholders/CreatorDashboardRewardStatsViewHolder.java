@@ -55,7 +55,7 @@ public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
     this.viewModel.outputs.rewardsStatsTruncatedTextIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.truncatedTextView));
+      .subscribe(gone -> ViewUtils.setGone(this.truncatedTextView, gone));
   }
 
   private void toggleRecyclerViewAndEmptyStateVisibility(final @NonNull Boolean gone) {

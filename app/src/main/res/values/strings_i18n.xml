@@ -211,6 +211,7 @@ from friends yet.</string>
   <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Please log in or sign up to participate in this live stream chat.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Please log in or sign up to subscribe to this live stream.</string>
   <string name="Pledge" formatted="false">Pledge</string>
+  <string name="Pledge_activity" formatted="false">Pledge activity</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Pledge any amount to help bring this project to life.</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Pledge to projects and view all your saved and backed projects in one place.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Pledge to your favorites, then view all the projects you’ve backed here.</string>
@@ -224,6 +225,7 @@ from friends yet.</string>
   <string name="Project_cancelled" formatted="false">Project cancelled</string>
   <string name="Project_saved" formatted="false">Project saved.</string>
   <string name="Projects_We_Love" formatted="false">Projects We Love</string>
+  <string name="Projects_youve_backed" formatted="false">Projects you\'ve backed</string>
   <string name="Projects_youve_launched" formatted="false">Projects you\'ve launched</string>
   <string name="Public_comment" formatted="false">Public comment</string>
   <string name="Pursue_daring_ideas" formatted="false">Pursue\n

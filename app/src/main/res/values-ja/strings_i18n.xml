@@ -208,6 +208,7 @@
   <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">ライブ配信でチャットに参加するためにはログインかサインアップしてください。</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">ログインまたはサインアップして、ライブ配信を見よう！</string>
   <string name="Pledge" formatted="false">プレッジする</string>
+  <string name="Pledge_activity" formatted="false">Pledge activity</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">プレッジでプロジェクトに生命を。</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">プロジェクトを探す、プロジェクトにプレッジする、プロジェクトを保存する、全て一つの場所で。</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">ここにバックした全プロジェクトが表示されます。</string>
@@ -221,6 +222,7 @@
   <string name="Project_cancelled" formatted="false">プロジェクトが取り消されました。</string>
   <string name="Project_saved" formatted="false">プロジェクトを保存しました。</string>
   <string name="Projects_We_Love" formatted="false">Projects We Love</string>
+  <string name="Projects_youve_backed" formatted="false">Projects you\'ve backed</string>
   <string name="Projects_youve_launched" formatted="false">ローンチしたプロジェクト</string>
   <string name="Public_comment" formatted="false">公開コメント</string>
   <string name="Pursue_daring_ideas" formatted="false">大胆な\n

@@ -59,9 +59,11 @@ public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectri
     this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, new ArrayList<>()));
 
     this.rewardsStatsListIsGone.assertValue(true);
+    this.rewardsStatsTruncatedTextIsGone.assertValue(true);
 
     this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, Collections.singletonList(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats())));
     this.rewardsStatsListIsGone.assertValues(true, false);
+    this.rewardsStatsListIsGone.assertValue(true);
   }
 
   @Test
@@ -84,6 +86,5 @@ public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectri
     maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(11).build());
     this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats));
     this.rewardsStatsTruncatedTextIsGone.assertValues(true, false);
-
   }
 }

@@ -63,7 +63,7 @@ public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectri
 
     this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, Collections.singletonList(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats())));
     this.rewardsStatsListIsGone.assertValues(true, false);
-    this.rewardsStatsListIsGone.assertValue(true);
+    this.rewardsStatsTruncatedTextIsGone.assertValue(true);
   }
 
   @Test

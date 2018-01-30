@@ -433,6 +433,26 @@
     <item name="android:textAllCaps">true</item>
   </style>
 
+  <!-- Creator Dashboard -->
+  <style name="CreatorDashboardTableRowContainer">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">@dimen/grid_7</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:orientation">horizontal</item>
+  </style>
+
+  <style name="CreatorDashboardTableRowText" parent="BodyPrimary">
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_weight">2</item>
+    <item name="android:maxLines">1</item>
+    <item name="android:ellipsize">end</item>
+  </style>
+
+  <style name="CreatorDashboardTableRowText.SecondaryColumn">
+    <item name="android:textColor">@color/ksr_dark_grey_500</item>
+  </style>
+
   <style name="FacepileImageView">
     <item name="android:padding">1dp</item>
     <item name="android:foreground">@drawable/oval_white_stroke</item>

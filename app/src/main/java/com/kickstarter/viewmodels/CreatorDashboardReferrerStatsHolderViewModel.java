@@ -13,11 +13,9 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardReferrerStatsViewHolder;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -55,10 +53,9 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
 
     private @NonNull List<ProjectStatsEnvelope.ReferrerStats> sortReferrerStats(final @NonNull List<ProjectStatsEnvelope.ReferrerStats> referrerStatsList) {
       final OrderByBackersReferrerStatsComparator referrerStatsComparator = new OrderByBackersReferrerStatsComparator();
-      final Set<ProjectStatsEnvelope.ReferrerStats> referrerStatsTreeSet = new TreeSet<>(referrerStatsComparator);
-      referrerStatsTreeSet.addAll(referrerStatsList);
+      Collections.sort(referrerStatsList, referrerStatsComparator);
 
-      return new ArrayList<>(referrerStatsTreeSet);
+      return referrerStatsList;
     }
 
     public final Inputs inputs = this;

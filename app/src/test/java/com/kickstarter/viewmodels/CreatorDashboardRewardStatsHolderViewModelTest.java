@@ -25,14 +25,14 @@ public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectri
 
   private final TestSubscriber<Project> projectOutput= new TestSubscriber<>();
   private final TestSubscriber<List<ProjectStatsEnvelope.RewardStats>> rewardStatsOutput = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> rewardsStatsListShouldBeGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> rewardsStatsListIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> rewardsStatsTruncatedTextIsGone = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardRewardStatsHolderViewModel.ViewModel(environment);
     this.vm.outputs.projectAndRewardStats().map(PairUtils::first).subscribe(this.projectOutput);
     this.vm.outputs.projectAndRewardStats().map(PairUtils::second).subscribe(this.rewardStatsOutput);
-    this.vm.outputs.rewardsStatsListShouldBeGone().subscribe(this.rewardsStatsListShouldBeGone);
+    this.vm.outputs.rewardsStatsListIsGone().subscribe(this.rewardsStatsListIsGone);
     this.vm.outputs.rewardsStatsTruncatedTextIsGone().subscribe(this.rewardsStatsTruncatedTextIsGone);
   }
 
@@ -52,16 +52,16 @@ public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectri
   }
 
   @Test
-  public void testRewardsStatsListShouldBeGone() {
+  public void testRewardsStatsListIsGone() {
     setUpEnvironment(environment());
 
     final Project project = ProjectFactory.project();
     this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, new ArrayList<>()));
 
-    this.rewardsStatsListShouldBeGone.assertValue(true);
+    this.rewardsStatsListIsGone.assertValue(true);
 
     this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, Collections.singletonList(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats())));
-    this.rewardsStatsListShouldBeGone.assertValues(true, false);
+    this.rewardsStatsListIsGone.assertValues(true, false);
   }
 
   @Test

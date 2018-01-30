@@ -36,7 +36,7 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
     Observable<Pair<Project, List<ProjectStatsEnvelope.RewardStats>>> projectAndRewardStats();
 
     /** Emits when there are no reward stats. */
-    Observable<Boolean> rewardsStatsListShouldBeGone();
+    Observable<Boolean> rewardsStatsListIsGone();
 
     /** Emits when there are more than 10 reward stats. */
     Observable<Boolean> rewardsStatsTruncatedTextIsGone();
@@ -107,7 +107,7 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
     @Override public @NonNull Observable<Pair<Project, List<ProjectStatsEnvelope.RewardStats>>> projectAndRewardStats() {
       return this.projectAndRewardStats;
     }
-    @Override public @NonNull Observable<Boolean> rewardsStatsListShouldBeGone() {
+    @Override public @NonNull Observable<Boolean> rewardsStatsListIsGone() {
       return this.rewardsStatsListIsGone;
     }
     @Override public @NonNull Observable<Boolean> rewardsStatsTruncatedTextIsGone() {

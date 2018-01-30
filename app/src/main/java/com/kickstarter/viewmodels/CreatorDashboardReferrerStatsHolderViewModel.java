@@ -13,6 +13,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardReferrerStatsViewHolder;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -23,11 +24,19 @@ import rx.subjects.PublishSubject;
 public interface CreatorDashboardReferrerStatsHolderViewModel {
 
   interface Inputs {
+    /** Current project and list of referrer stats. */
     void projectAndReferrerStatsInput(Pair<Project, List<ProjectStatsEnvelope.ReferrerStats>> projectAndReferrerStats);
   }
 
   interface Outputs {
+    /** Emits current project and sorted referrer stats. */
     Observable<Pair<Project, List<ProjectStatsEnvelope.ReferrerStats>>> projectAndReferrerStats();
+
+    /** Emits when there are no referrer stats. */
+    Observable<Boolean> referrerStatsListIsGone();
+
+    /** Emits when there are more than 10 referrer stats. */
+    Observable<Boolean> referrerStatsTruncatedTextIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardReferrerStatsViewHolder> implements Inputs, Outputs {
@@ -39,9 +48,24 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
         .map(PairUtils::second)
         .map(this::sortReferrerStats);
 
+      final Observable<List<ProjectStatsEnvelope.ReferrerStats>> limitedSortedReferrerStats = sortedReferrerStats
+        .map(stats -> new ArrayList<>(stats.subList(0, Math.min(stats.size(), 10))));
+
       this.projectAndReferrerStats = this.projectAndReferrerStatsInput
         .map(PairUtils::first)
-        .compose(Transformers.combineLatestPair(sortedReferrerStats));
+        .compose(Transformers.combineLatestPair(limitedSortedReferrerStats));
+
+      sortedReferrerStats
+        .map(List::isEmpty)
+        .distinctUntilChanged()
+        .compose(bindToLifecycle())
+        .subscribe(this.referrerStatsListIsGone);
+
+      sortedReferrerStats
+        .map(pr -> pr.size() <= 10)
+        .distinctUntilChanged()
+        .compose(bindToLifecycle())
+        .subscribe(this.referrerStatsTruncatedTextIsGone);
     }
 
     final private class OrderByBackersReferrerStatsComparator implements Comparator<ProjectStatsEnvelope.ReferrerStats> {
@@ -62,7 +86,10 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
     public final Outputs outputs = this;
 
     private final PublishSubject<Pair<Project, List<ProjectStatsEnvelope.ReferrerStats>>> projectAndReferrerStatsInput = PublishSubject.create();
+
     private final Observable<Pair<Project, List<ProjectStatsEnvelope.ReferrerStats>>> projectAndReferrerStats;
+    private final PublishSubject<Boolean> referrerStatsListIsGone = PublishSubject.create();
+    private final PublishSubject<Boolean> referrerStatsTruncatedTextIsGone = PublishSubject.create();
 
     @Override
     public void projectAndReferrerStatsInput(final @NonNull Pair<Project, List<ProjectStatsEnvelope.ReferrerStats>> projectAndReferrerStats) {
@@ -70,6 +97,12 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
     }
     @Override public @NonNull Observable<Pair<Project, List<ProjectStatsEnvelope.ReferrerStats>>> projectAndReferrerStats() {
       return this.projectAndReferrerStats;
+    }
+    @Override public @NonNull Observable<Boolean> referrerStatsListIsGone() {
+      return this.referrerStatsListIsGone;
+    }
+    @Override public @NonNull Observable<Boolean> referrerStatsTruncatedTextIsGone() {
+      return this.referrerStatsTruncatedTextIsGone;
     }
   }
 }

@@ -209,6 +209,7 @@ patrocinadores</string>
   <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Por favor inicia sesión o regístrate para participar en este Live Stream.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Por favor inicia sesión o regístrate para suscribirte a este Live Stream.</string>
   <string name="Pledge" formatted="false">Contribución:</string>
+  <string name="Pledge_activity" formatted="false">Actividad de contribución</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Puedes contribuir un monto de libre selección para apoyar este proyecto.</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Haz contribuciones a proyectos y revisa todos tus proyectos guardados y patrocinados - todo en un mismo lugar.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Patrocina tus favoritos y ve todos tus proyectos en un solo lugar.</string>
@@ -222,6 +223,7 @@ patrocinadores</string>
   <string name="Project_cancelled" formatted="false">Proyecto cancelado</string>
   <string name="Project_saved" formatted="false">Proyecto guardado.</string>
   <string name="Projects_We_Love" formatted="false">Nuestros Favoritos</string>
+  <string name="Projects_youve_backed" formatted="false">Proyectos que has patrocinado</string>
   <string name="Projects_youve_launched" formatted="false">Proyectos que has publicado</string>
   <string name="Public_comment" formatted="false">Comentario público</string>
   <string name="Pursue_daring_ideas" formatted="false">Un universo de geniales ideas.</string>
@@ -496,7 +498,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="dashboard_buttons_activity" formatted="false">Actividad</string>
   <string name="dashboard_buttons_messages" formatted="false">Mensajes</string>
   <string name="dashboard_buttons_post_update" formatted="false">Publicar actualización</string>
-  <string name="dashboard_buttons_project" formatted="false">Project</string>
+  <string name="dashboard_buttons_project" formatted="false">Proyecto</string>
   <string name="dashboard_buttons_share" formatted="false">Compartir</string>
   <string name="dashboard_creator_project_currently_live" formatted="false">Actualmente activos</string>
   <string name="dashboard_creator_project_funded_on_deadline" formatted="false">Financiado el %{deadline}</string>

@@ -9821,7 +9821,7 @@
     "project_build": "control",
     "project_dashboard": "control",
     "react_guest_pledging_run_3": "control",
-    "favorites_recs": "experimental",
+    "favorites_recs": "control",
     "show_refreshed_thanks_page": "control",
     "project_card_hearts": "control",
     "currency_conversion": "control",

@@ -40,10 +40,10 @@
           style="@style/SettingsSectionLabel"
           android:text="@string/profile_settings_backer_project_updates" />
 
-        <com.kickstarter.ui.views.IconTextView
+        <ImageButton
           android:id="@+id/project_updates_mail_icon"
-          app:iconType="ss_kickstarter"
-          style="@style/KSSettingsMailIcon" />
+          style="@style/KSSettingsMailIcon"
+          android:contentDescription="@null" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/project_updates_phone_icon"
@@ -103,10 +103,10 @@
           style="@style/SettingsSectionLabel"
           android:text="@string/profile_settings_social_followers" />
 
-        <com.kickstarter.ui.views.IconTextView
+        <ImageButton
           android:id="@+id/new_followers_mail_icon"
-          app:iconType="ss_kickstarter"
-          style="@style/KSSettingsMailIcon" />
+          style="@style/KSSettingsMailIcon"
+          android:contentDescription="@null" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/new_followers_phone_icon"
@@ -127,10 +127,10 @@
           style="@style/SettingsSectionLabel"
           android:text="@string/profile_settings_social_friend_backs"/>
 
-        <com.kickstarter.ui.views.IconTextView
+        <ImageButton
           android:id="@+id/friend_activity_mail_icon"
-          app:iconType="ss_kickstarter"
-          style="@style/KSSettingsMailIcon" />
+          style="@style/KSSettingsMailIcon"
+          android:contentDescription="@null" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/friend_activity_phone_icon"

@@ -13,7 +13,9 @@ import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import rx.observers.TestSubscriber;
@@ -23,25 +25,65 @@ public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectri
 
   private final TestSubscriber<Project> projectOutput= new TestSubscriber<>();
   private final TestSubscriber<List<ProjectStatsEnvelope.RewardStats>> rewardStatsOutput = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> rewardsStatsListShouldBeGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> rewardsStatsTruncatedTextIsGone = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardRewardStatsHolderViewModel.ViewModel(environment);
     this.vm.outputs.projectAndRewardStats().map(PairUtils::first).subscribe(this.projectOutput);
     this.vm.outputs.projectAndRewardStats().map(PairUtils::second).subscribe(this.rewardStatsOutput);
+    this.vm.outputs.rewardsStatsListShouldBeGone().subscribe(this.rewardsStatsListShouldBeGone);
+    this.vm.outputs.rewardsStatsTruncatedTextIsGone().subscribe(this.rewardsStatsTruncatedTextIsGone);
   }
 
   @Test
   public void testProjectAndRewardStats() {
     final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.RewardStats rewardWithOneBacker = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().backersCount(1).build();
-    final ProjectStatsEnvelope.RewardStats rewardWithTwoBackers = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().backersCount(2).build();
-    final ProjectStatsEnvelope.RewardStats rewardWithThreeBackers = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().backersCount(3).build();
-    final List<ProjectStatsEnvelope.RewardStats> unsortedRewardStatsList = Arrays.asList(rewardWithTwoBackers, rewardWithOneBacker, rewardWithThreeBackers);
-    final List<ProjectStatsEnvelope.RewardStats> sortedRewardStatsList = Arrays.asList(rewardWithThreeBackers, rewardWithTwoBackers, rewardWithOneBacker);
+    final ProjectStatsEnvelope.RewardStats rewardWith10Pledged = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(10).build();
+    final ProjectStatsEnvelope.RewardStats rewardWith15Pledged = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(15).build();
+    final ProjectStatsEnvelope.RewardStats rewardWith20Pledged = ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(20).build();
+    final List<ProjectStatsEnvelope.RewardStats> unsortedRewardStatsList = Arrays.asList(rewardWith15Pledged, rewardWith10Pledged, rewardWith20Pledged);
+    final List<ProjectStatsEnvelope.RewardStats> sortedRewardStatsList = Arrays.asList(rewardWith20Pledged, rewardWith15Pledged, rewardWith10Pledged);
     setUpEnvironment(environment());
 
     this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, unsortedRewardStatsList));
-    this.projectOutput.assertValues(project);
-    this.rewardStatsOutput.assertValues(sortedRewardStatsList);
+    this.projectOutput.assertValue(project);
+    this.rewardStatsOutput.assertValue(sortedRewardStatsList);
+  }
+
+  @Test
+  public void testRewardsStatsListShouldBeGone() {
+    setUpEnvironment(environment());
+
+    final Project project = ProjectFactory.project();
+    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, new ArrayList<>()));
+
+    this.rewardsStatsListShouldBeGone.assertValue(true);
+
+    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, Collections.singletonList(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats())));
+    this.rewardsStatsListShouldBeGone.assertValues(true, false);
+  }
+
+  @Test
+  public void testRewardsStatsTruncatedTextIsGone() {
+    setUpEnvironment(environment());
+
+    final Project project = ProjectFactory.project();
+    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, Collections.singletonList(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats())));
+
+    this.rewardsStatsTruncatedTextIsGone.assertValue(true);
+
+    final List<ProjectStatsEnvelope.RewardStats> maxStats = new ArrayList<>();
+    for (int i = 1; i <= 10; i++) {
+      maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(i).build());
+    }
+
+    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats));
+    this.rewardsStatsTruncatedTextIsGone.assertValues(true);
+
+    maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(11).build());
+    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats));
+    this.rewardsStatsTruncatedTextIsGone.assertValues(true, false);
+
   }
 }

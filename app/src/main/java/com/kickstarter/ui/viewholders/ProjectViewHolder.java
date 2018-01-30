@@ -348,7 +348,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.updatesCountTextView::setText);
 
-    this.viewModel.outputs.usdConversionGoalAndPledgedText()
+    this.viewModel.outputs.usdConversionPledgedAndGoalText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setConvertedUsdView);
@@ -366,10 +366,10 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(projectAndCountry);
   }
 
-  private void setConvertedUsdView(final @NonNull Pair<String, String> goalAndPledged) {
+  private void setConvertedUsdView(final @NonNull Pair<String, String> pledgedAndGoal) {
     this.usdConversionTextView.setText(
       this.ksString.format(
-        this.convertedFromString, "pledged", goalAndPledged.second, "goal", goalAndPledged.first
+        this.convertedFromString, "pledged", pledgedAndGoal.first, "goal", pledgedAndGoal.second
       )
     );
   };

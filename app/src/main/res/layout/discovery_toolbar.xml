@@ -56,20 +56,23 @@
       android:layout_height="match_parent"
       android:orientation="horizontal">
 
-      <com.kickstarter.ui.views.IconButton
+      <ImageButton
         android:id="@+id/creator_dashboard_button"
-        style="@style/ToolbarIcon"
-        android:text="@string/play_circle_outline_icon" />
+        style="@style/ToolbarVectorIcon"
+        android:src="@drawable/icon__graph_line"
+        android:contentDescription="@string/tabbar_dashboard"/>
 
-      <com.kickstarter.ui.views.IconButton
+      <ImageButton
         android:id="@+id/activity_feed_button"
         style="@style/ToolbarIcon"
-        android:text="@string/flash_on_icon" />
+        android:src="@drawable/icon__bolt"
+        android:contentDescription="@string/tabbar_activity"/>
 
-      <com.kickstarter.ui.views.IconButton
+      <ImageButton
         android:id="@+id/search_button"
         style="@style/ToolbarIcon"
-        android:text="@string/search_icon" />
+        android:src="@drawable/icon__search"
+        android:contentDescription="@string/tabbar_search"/>
 
     </LinearLayout>
 

@@ -73,7 +73,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<DateTime> setUnsuccessfulProjectStateView = new TestSubscriber<>();
   private final TestSubscriber<Project> startProjectSocialActivity = new TestSubscriber<>();
   private final TestSubscriber<String> updatesCountTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<Pair<String, String>> usdConversionGoalAndPledgedText= new TestSubscriber<>();
+  private final TestSubscriber<Pair<String, String>> usdConversionPledgedAndGoalText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> usdConversionTextViewIsGone = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
@@ -116,7 +116,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.setUnsuccessfulProjectStateView().subscribe(this.setUnsuccessfulProjectStateView);
     this.vm.outputs.startProjectSocialActivity().subscribe(this.startProjectSocialActivity);
     this.vm.outputs.updatesCountTextViewText().subscribe(this.updatesCountTextViewText);
-    this.vm.outputs.usdConversionGoalAndPledgedText().subscribe(this.usdConversionGoalAndPledgedText);
+    this.vm.outputs.usdConversionPledgedAndGoalText().subscribe(this.usdConversionPledgedAndGoalText);
     this.vm.outputs.usdConversionTextViewIsGone().subscribe(this.usdConversionTextViewIsGone);
   }
 
@@ -508,7 +508,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.configureWith(Pair.create(project, config.countryCode()));
 
     // USD conversion shown for non US project.
-    this.usdConversionGoalAndPledgedText.assertValueCount(1);
+    this.usdConversionPledgedAndGoalText.assertValueCount(1);
     this.usdConversionTextViewIsGone.assertValue(false);
   }
 

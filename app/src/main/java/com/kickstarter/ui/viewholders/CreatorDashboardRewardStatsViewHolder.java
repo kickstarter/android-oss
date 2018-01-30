@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.adapters.CreatorDashboardRewardStatsAdapter;
@@ -26,7 +27,9 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
   private final CreatorDashboardRewardStatsHolderViewModel.ViewModel viewModel;
 
-  protected @Bind(R.id.dashboard_reward_stats_pledged_text_view) TextView pledgedTextView;
+  protected @Bind(R.id.dashboard_reward_stats_empty_text_view) TextView emptyTextView;
+  protected @Bind(R.id.dashboard_reward_stats_pledged_view) View pledgedColumnView;
+  protected @Bind(R.id.dashboard_reward_stats_truncated_text_view) TextView truncatedTextView;
   protected @Bind(R.id.dashboard_reward_stats_recycler_view) RecyclerView rewardStatsRecyclerView;
 
   public CreatorDashboardRewardStatsViewHolder(final @NonNull View view) {
@@ -43,9 +46,24 @@ public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(rewardStatsAdapter::takeProjectAndStats);
+
+    this.viewModel.outputs.rewardsStatsListShouldBeGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::toggleRecyclerViewAndEmptyStateVisibility);
+
+    this.viewModel.outputs.rewardsStatsTruncatedTextIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(gone -> ViewUtils.setGone(this.truncatedTextView, gone));
   }
 
-  @OnClick(R.id.dashboard_reward_stats_pledged_text_view)
+  private void toggleRecyclerViewAndEmptyStateVisibility(final @NonNull Boolean gone) {
+    ViewUtils.setGone(this.rewardStatsRecyclerView, gone);
+    ViewUtils.setGone(this.emptyTextView, !gone);
+  }
+
+  @OnClick(R.id.dashboard_reward_stats_pledged_view)
   public void pledgedColumnTitleClicked() {
     this.viewModel.inputs.pledgedColumnTitleClicked();
   }

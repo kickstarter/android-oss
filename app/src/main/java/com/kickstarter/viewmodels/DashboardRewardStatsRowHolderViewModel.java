@@ -18,21 +18,22 @@ import rx.subjects.PublishSubject;
 public interface DashboardRewardStatsRowHolderViewModel {
 
   interface Inputs {
+    /** Current project and reward stat. */
     void projectAndRewardStats(Pair<Project, ProjectStatsEnvelope.RewardStats> projectAndRewardStats);
   }
 
   interface Outputs {
-    /* percent of the total that came from this reward */
+    /** Emits percent of the total that came from this reward. */
     Observable<String> percentageOfTotalPledged();
 
-    /* project and the amount pledged for this reward */
-    Observable<Pair<Project, Float>> projectAndPledgedForReward();
+    /** Emits project and the amount pledged for this reward. */
+    Observable<Pair<Project, Float>> projectAndRewardPledged();
 
-    /* string number of backers */
+    /** Emits string number of backers. */
     Observable<String> rewardBackerCount();
 
-    /* minimum for reward */
-    Observable<String> rewardMinimum();
+    /** Emits minimum for reward. */
+    Observable<Pair<Project, Integer>> projectAndRewardMinimum();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardRewardStatsRowViewHolder> implements Inputs, Outputs {
@@ -46,12 +47,11 @@ public interface DashboardRewardStatsRowHolderViewModel {
         .map(ProjectStatsEnvelope.RewardStats::backersCount)
         .map(NumberUtils::format);
 
-      this.projectAndPledgedForReward = this.projectAndRewardStats
-        .map(pr -> Pair.create(pr.first, (float) (pr.second.pledged())));
+      this.projectAndRewardPledged = this.projectAndRewardStats
+        .map(pr -> Pair.create(pr.first, pr.second.pledged()));
 
-      this.rewardMinimum = rewardStats
-        .map(ProjectStatsEnvelope.RewardStats::minimum)
-        .map(NumberUtils::format);
+      this.rewardMinimum = this.projectAndRewardStats
+        .map(pr -> Pair.create(pr.first, pr.second.minimum()));
 
       this.percentageOfTotalPledged = this.projectAndRewardStats
         .map(projectRewardStats -> {
@@ -68,9 +68,9 @@ public interface DashboardRewardStatsRowHolderViewModel {
     private final PublishSubject<Pair<Project, ProjectStatsEnvelope.RewardStats>> projectAndRewardStats = PublishSubject.create();
 
     private final Observable<String> percentageOfTotalPledged;
-    private final Observable<Pair<Project, Float>> projectAndPledgedForReward;
+    private final Observable<Pair<Project, Float>> projectAndRewardPledged;
     private final Observable<String> rewardBackerCount;
-    private final Observable<String> rewardMinimum;
+    private final Observable<Pair<Project, Integer>> rewardMinimum;
 
     @Override
     public void projectAndRewardStats(final @NonNull Pair<Project, ProjectStatsEnvelope.RewardStats> projectAndRewardStats) {
@@ -80,13 +80,13 @@ public interface DashboardRewardStatsRowHolderViewModel {
     @Override public @NonNull Observable<String> percentageOfTotalPledged() {
       return this.percentageOfTotalPledged;
     }
-    @Override public @NonNull Observable<Pair<Project, Float>> projectAndPledgedForReward() {
-      return this.projectAndPledgedForReward;
+    @Override public @NonNull Observable<Pair<Project, Float>> projectAndRewardPledged() {
+      return this.projectAndRewardPledged;
     }
     @Override public @NonNull Observable<String> rewardBackerCount() {
       return this.rewardBackerCount;
     }
-    @Override public @NonNull Observable<String> rewardMinimum() {
+    @Override public @NonNull Observable<Pair<Project, Integer>> projectAndRewardMinimum() {
       return this.rewardMinimum;
     }
   }

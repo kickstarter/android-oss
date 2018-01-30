@@ -160,7 +160,7 @@ public interface ProjectHolderViewModel {
     Observable<String> updatesCountTextViewText();
 
     /** Emits the usd conversion text for display. */
-    Observable<Pair<String, String>> usdConversionGoalAndPledgedText();
+    Observable<Pair<String, String>> usdConversionPledgedAndGoalText();
 
     /** Emits when the usd conversion view should be gone. */
     Observable<Boolean> usdConversionTextViewIsGone();
@@ -295,11 +295,11 @@ public interface ProjectHolderViewModel {
         .map(pc -> I18nUtils.isCountryUS(pc.second) && !I18nUtils.isCountryUS(pc.first.country()))
         .map(BooleanUtils::negate);
 
-      this.usdConversionGoalAndPledgedText = project
+      this.usdConversionPledgedAndGoalText = project
         .map(p -> {
-          final String goal = this.ksCurrency.format(p.pledged(), p);
-          final String pledged = this.ksCurrency.format(p.goal(), p);
-          return Pair.create(goal, pledged);
+          final String pledged = this.ksCurrency.format(p.pledged(), p);
+          final String goal = this.ksCurrency.format(p.goal(), p);
+          return Pair.create(pledged, goal);
         });
     }
 
@@ -345,7 +345,7 @@ public interface ProjectHolderViewModel {
     private final Observable<Boolean> shouldSetDefaultStatsMargins;
     private final Observable<String> updatesCountTextViewText;
     private final Observable<Boolean> usdConversionTextViewIsGone;
-    private final Observable<Pair<String, String>> usdConversionGoalAndPledgedText;
+    private final Observable<Pair<String, String>> usdConversionPledgedAndGoalText;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -474,8 +474,8 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<Boolean> usdConversionTextViewIsGone() {
       return this.usdConversionTextViewIsGone;
     }
-    @Override public @NonNull Observable<Pair<String, String>> usdConversionGoalAndPledgedText() {
-      return this.usdConversionGoalAndPledgedText;
+    @Override public @NonNull Observable<Pair<String, String>> usdConversionPledgedAndGoalText() {
+      return this.usdConversionPledgedAndGoalText;
     }
   }
 }

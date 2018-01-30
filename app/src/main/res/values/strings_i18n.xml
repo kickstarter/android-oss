@@ -42,6 +42,7 @@ backers</string>
   <string name="Backers_count_separator_backers_zero" formatted="false">%{backers_count}\n
 backers</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Become a backer to leave a comment.</string>
+  <string name="Bookmarks" formatted="false">Bookmarks</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Bring creative projects to life.</string>
   <string name="Cancel_your_pledge" formatted="false">Cancel your pledge</string>
   <string name="Change_payment_method" formatted="false">Change payment method</string>
@@ -84,6 +85,7 @@ backers</string>
   <string name="Ending_soon" formatted="false">Ending Soon</string>
   <string name="Estimated_delivery" formatted="false">Estimated delivery:</string>
   <string name="Expands_subcategories" formatted="false">Expands subcategories.</string>
+  <string name="Explore" formatted="false">Explore</string>
   <string name="Explore_creative_projects" formatted="false">Explore creative projects</string>
   <string name="Explore_projects" formatted="false">Explore projects</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Failed to retrieve live stream event details</string>
@@ -209,6 +211,7 @@ from friends yet.</string>
   <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Please log in or sign up to participate in this live stream chat.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Please log in or sign up to subscribe to this live stream.</string>
   <string name="Pledge" formatted="false">Pledge</string>
+  <string name="Pledge_activity" formatted="false">Pledge activity</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Pledge any amount to help bring this project to life.</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Pledge to projects and view all your saved and backed projects in one place.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Pledge to your favorites, then view all the projects you’ve backed here.</string>
@@ -222,6 +225,7 @@ from friends yet.</string>
   <string name="Project_cancelled" formatted="false">Project cancelled</string>
   <string name="Project_saved" formatted="false">Project saved.</string>
   <string name="Projects_We_Love" formatted="false">Projects We Love</string>
+  <string name="Projects_youve_backed" formatted="false">Projects you\'ve backed</string>
   <string name="Projects_youve_launched" formatted="false">Projects you\'ve launched</string>
   <string name="Public_comment" formatted="false">Public comment</string>
   <string name="Pursue_daring_ideas" formatted="false">Pursue\n
@@ -265,6 +269,8 @@ daring ideas.</string>
   <string name="Saved_projects" formatted="false">Saved projects</string>
   <string name="Saves_project" formatted="false">Saves project.</string>
   <string name="Say_something_kind" formatted="false">Say something kind...</string>
+  <string name="See_all_category_name_projects" formatted="false">See all %{category_name} projects</string>
+  <string name="Select_another_project" formatted="false">Select another project</string>
   <string name="Select_this_reward" formatted="false">Select this reward</string>
   <string name="Select_this_reward_instead" formatted="false">Select this reward instead</string>
   <string name="Send" formatted="false">Send</string>
@@ -496,6 +502,7 @@ Please try again later.</string>
   <string name="dashboard_buttons_activity" formatted="false">Activity</string>
   <string name="dashboard_buttons_messages" formatted="false">Messages</string>
   <string name="dashboard_buttons_post_update" formatted="false">Post update</string>
+  <string name="dashboard_buttons_project" formatted="false">Project</string>
   <string name="dashboard_buttons_share" formatted="false">Share</string>
   <string name="dashboard_creator_project_currently_live" formatted="false">Currently live</string>
   <string name="dashboard_creator_project_funded_on_deadline" formatted="false">Funded on %{deadline}</string>

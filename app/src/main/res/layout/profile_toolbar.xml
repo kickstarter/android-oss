@@ -23,10 +23,9 @@
       style="@style/ToolbarIconBackButton"
       android:id="@+id/back_button" />
 
-    <com.kickstarter.ui.views.IconButton
-      style="@style/ToolbarIcon"
-      android:drawableStart="@drawable/ic_action_icon__mail"
-      android:drawableTint="@color/ksr_soft_black"
+    <ImageButton
+      style="@style/ToolbarVectorIcon"
+      android:src="@drawable/icon__mail"
       android:id="@+id/messages_button"
       android:focusable="true"
       android:paddingStart="@dimen/grid_2"

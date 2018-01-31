@@ -8,7 +8,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.PairUtils;
-import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardReferrerStatsViewHolder;
@@ -22,9 +21,6 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
   }
 
   interface Outputs {
-    /* percent of the total that came from this referrer */
-    Observable<String> percentageOfTotalPledged();
-
     /* project and the amount pledged from this referral source */
     Observable<Pair<Project, Float>> projectAndPledgedForReferrer();
 
@@ -40,16 +36,8 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.percentageOfTotalPledged = this.projectAndReferrerStats
-        .map(pAndrs -> {
-          final Project p = pAndrs.first;
-          final ProjectStatsEnvelope.ReferrerStats rs = pAndrs.second;
-          return NumberUtils.flooredPercentage((rs.pledged() / p.pledged()) * 100);
-        })
-        .map(StringUtils::wrapInParentheses);
-
       this.projectAndPledgedForReferrer = this.projectAndReferrerStats
-        .map(pr -> Pair.create(pr.first, (float) pr.second.pledged()));
+        .map(pr -> Pair.create(pr.first, pr.second.pledged()));
 
       this.referrerSourceName = this.projectAndReferrerStats
         .map(PairUtils::second)
@@ -66,7 +54,6 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
 
     private final PublishSubject<Pair<Project, ProjectStatsEnvelope.ReferrerStats>> projectAndReferrerStats = PublishSubject.create();
 
-    private final Observable<String> percentageOfTotalPledged;
     private final Observable<Pair<Project, Float>> projectAndPledgedForReferrer;
     private final Observable<String> referrerBackerCount;
     private final Observable<String> referrerSourceName;
@@ -75,9 +62,6 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
       this.projectAndReferrerStats.onNext(projectAndReferrerStats);
     }
 
-    @Override public @NonNull Observable<String> percentageOfTotalPledged() {
-      return this.percentageOfTotalPledged;
-    }
     @Override public @NonNull Observable<Pair<Project, Float>> projectAndPledgedForReferrer() {
       return this.projectAndPledgedForReferrer;
     }

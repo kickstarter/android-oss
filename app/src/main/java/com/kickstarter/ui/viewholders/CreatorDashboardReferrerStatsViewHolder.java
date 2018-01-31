@@ -6,8 +6,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
+import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.adapters.CreatorDashboardReferrerStatsAdapter;
@@ -22,9 +24,11 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public class CreatorDashboardReferrerStatsViewHolder extends KSViewHolder {
-
   private final CreatorDashboardReferrerStatsHolderViewModel.ViewModel viewModel;
+
+  protected @Bind(R.id.dashboard_referrer_stats_empty_text_view) TextView emptyTextView;
   protected @Bind(R.id.dashboard_referrer_stats_recycler_view) RecyclerView referrerStatsRecyclerView;
+  protected @Bind(R.id.dashboard_referrer_stats_truncated_text_view) TextView truncatedTextView;
 
   public CreatorDashboardReferrerStatsViewHolder(final @NonNull View view) {
     super(view);
@@ -40,6 +44,21 @@ public class CreatorDashboardReferrerStatsViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(referrerStatsAdapter::takeProjectAndReferrerStats);
+
+    this.viewModel.outputs.referrerStatsListIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::toggleRecyclerViewAndEmptyStateVisibility);
+
+    this.viewModel.outputs.referrerStatsTruncatedTextIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(gone -> ViewUtils.setGone(this.truncatedTextView, gone));
+  }
+
+  private void toggleRecyclerViewAndEmptyStateVisibility(final @NonNull Boolean gone) {
+    ViewUtils.setGone(this.referrerStatsRecyclerView, gone);
+    ViewUtils.setGone(this.emptyTextView, !gone);
   }
 
   @Override

@@ -1,52 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:paddingStart="@dimen/grid_2"
+  android:paddingEnd="@dimen/grid_2"
+  android:layout_marginBottom="@dimen/grid_5"
+  android:layout_marginTop="@dimen/grid_1"
   android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:layout_weight="3"
-  android:layout_marginTop="@dimen/grid_4">
+  android:layout_height="wrap_content">
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_marginTop="@dimen/grid_1">
+    android:divider="@drawable/divider_dark_grey_500_horizontal"
+    android:showDividers="middle"
+    android:orientation="vertical">
 
-    <TextView
-      android:text="@string/dashboard_graphs_referrers_source"
-      android:gravity="center"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:paddingStart="@dimen/grid_4"
-      android:paddingEnd="@dimen/grid_4"
-      android:layout_weight="1"/>
+    <LinearLayout
+      style="@style/CreatorDashboardTableRowContainer">
 
-    <TextView
-      android:text="@string/dashboard_graphs_rewards_pledged"
-      android:gravity="center_horizontal"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:padding="@dimen/grid_1_half"
-      android:layout_weight="1"/>
+      <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:layout_weight="2"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-    <TextView
-      android:text="@string/dashboard_graphs_funding_backers"
-      android:gravity="center_horizontal"
-      android:layout_width="wrap_content"
+        <TextView
+          style="@style/BodyPrimary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/grid_1"
+          android:text="@string/dashboard_graphs_rewards_pledged" />
+
+        <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/ic_down"
+          android:contentDescription="@null" />
+
+      </LinearLayout>
+
+      <TextView
+        style="@style/CreatorDashboardTableRowText"
+        android:layout_weight="1"
+        android:text="@string/dashboard_graphs_funding_backers" />
+
+      <TextView
+        style="@style/CreatorDashboardTableRowText"
+        android:text="@string/dashboard_graphs_referrers_source" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/dashboard_referrer_stats_recycler_view"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingStart="@dimen/grid_4"
-      android:paddingEnd="@dimen/grid_4"
-      android:layout_weight="1" />
+      tools:listitem="@layout/dashboard_referrer_stats_row_view"/>
 
   </LinearLayout>
 
-  <android.support.v7.widget.RecyclerView
-    android:id="@+id/dashboard_referrer_stats_recycler_view"
+  <TextView
+    android:id="@+id/dashboard_referrer_stats_empty_text_view"
+    android:paddingTop="@dimen/grid_10"
+    android:paddingBottom="@dimen/grid_10"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    tools:text="Sorry, no stats yet!\n You don’t have any backings"/>
+
+  <TextView
+    style="@style/BodyPrimary"
+    android:id="@+id/dashboard_referrer_stats_truncated_text_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:text="Limited to the top 10 rewards."/>
 
 </LinearLayout>
-

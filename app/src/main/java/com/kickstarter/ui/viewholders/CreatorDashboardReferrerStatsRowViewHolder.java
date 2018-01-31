@@ -13,8 +13,6 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.viewmodels.CreatorDashboardReferrerStatsRowHolderViewModel;
 
-import java.math.RoundingMode;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -25,7 +23,6 @@ public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHold
 
   private final CreatorDashboardReferrerStatsRowHolderViewModel.ViewModel viewModel;
   protected @Bind(R.id.amount_pledged_for_referrer_text_view) TextView amountPledgedForReferrerTextView;
-  protected @Bind(R.id.percentage_pledged_for_referrer_text_view) TextView percentagePledgedForReferrerTextView;
   protected @Bind(R.id.referrer_source_text_view) TextView referrerSourceTextView;
   protected @Bind(R.id.referrer_backer_count_text_view) TextView referrerBackerCountTextView;
 
@@ -36,11 +33,6 @@ public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHold
     this.viewModel = new CreatorDashboardReferrerStatsRowHolderViewModel.ViewModel(environment());
     ButterKnife.bind(this, view);
     this.ksCurrency = this.environment().ksCurrency();
-
-    this.viewModel.outputs.percentageOfTotalPledged()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.percentagePledgedForReferrerTextView::setText);
 
     this.viewModel.outputs.projectAndPledgedForReferrer()
       .compose(bindToLifecycle())
@@ -65,7 +57,7 @@ public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHold
   }
 
   private void setPledgedColumnValue(final @NonNull Pair<Project, Float> projectAndPledgedForReferrer) {
-    final String goalString = this.ksCurrency.format(projectAndPledgedForReferrer.second, projectAndPledgedForReferrer.first, false, true, RoundingMode.DOWN);
+    final String goalString = this.ksCurrency.format(projectAndPledgedForReferrer.second, projectAndPledgedForReferrer.first);
     this.amountPledgedForReferrerTextView.setText(goalString);
   }
 }

@@ -47,7 +47,7 @@ public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(rewardStatsAdapter::takeProjectAndStats);
 
-    this.viewModel.outputs.rewardsStatsListShouldBeGone()
+    this.viewModel.outputs.rewardsStatsListIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::toggleRecyclerViewAndEmptyStateVisibility);

@@ -28,7 +28,6 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   private final CreatorDashboardReferrerBreakdownHolderViewModel.ViewModel viewModel;
 
-  protected @Bind(R.id.average_pledge_amount_text_view) TextView averagePledgeAmountTextView;
   protected @Bind(R.id.amount_pledged_via_kickstarter_text_view) TextView amountPledgedViaInternalTextView;
   protected @Bind(R.id.amount_pledged_via_external_text_view) TextView amountPledgedViaExternalTextView;
   protected @Bind(R.id.amount_pledged_via_custom_text_view) TextView amountPledgedViaCustomTextView;
@@ -52,11 +51,6 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     this.ksCurrency = this.environment().ksCurrency();
 
     this.viewModel = new CreatorDashboardReferrerBreakdownHolderViewModel.ViewModel(environment());
-
-    this.viewModel.outputs.projectAndAveragePledge()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setAveragePledgeTextViewText);
 
     this.viewModel.outputs.customReferrerColor()
       .compose(bindToLifecycle())
@@ -143,10 +137,5 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   private void setAmountPledgedTextViewText(final @NonNull Pair<Project, Float> projectAndAmount, final TextView textview) {
     final String amountString = this.ksCurrency.format(projectAndAmount.second, projectAndAmount.first, false, true, RoundingMode.DOWN);
     textview.setText(amountString);
-  }
-
-  private void setAveragePledgeTextViewText(final @NonNull Pair<Project, Integer> projectAndAveragePledge) {
-    final String amountString = this.ksCurrency.format(projectAndAveragePledge.second, projectAndAveragePledge.first, true, true, RoundingMode.DOWN);
-    this.averagePledgeAmountTextView.setText(amountString);
   }
 }

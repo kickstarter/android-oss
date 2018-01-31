@@ -5,6 +5,7 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_marginTop="@dimen/grid_5"
+  android:layout_marginBottom="@dimen/grid_5"
   android:orientation="vertical"
   android:padding="@dimen/grid_2">
 
@@ -84,7 +85,6 @@
 
       <TextView
         style="@style/BodyPrimary"
-        android:text="@string/dashboard_graphs_funding_accessibility_non_live_stat_value_few"
         android:id="@+id/dashboard_reward_stats_truncated_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

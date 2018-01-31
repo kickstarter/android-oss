@@ -76,7 +76,7 @@ public class KSApplication extends MultiDexApplication {
     final HttpCookie cookie = new HttpCookie("vis", uuid);
     cookie.setMaxAge(DateTime.now().plusYears(100).getMillis());
     cookie.setSecure(true);
-    final URI webUri = URI.create(component().environment().webEndpoint());
+    final URI webUri = URI.create(Secrets.WebEndpoint.PRODUCTION);
     final URI apiUri = URI.create(ApiEndpoint.PRODUCTION.url());
     this.cookieManager.getCookieStore().add(webUri, cookie);
     this.cookieManager.getCookieStore().add(apiUri, cookie);

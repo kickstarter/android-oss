@@ -23,6 +23,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black_alpha_17"
+    android:clickable="true"
     android:fitsSystemWindows="true"
     android:visibility="gone" />
 
@@ -33,7 +34,7 @@
     <android.support.v7.widget.RecyclerView
       android:id="@+id/creator_dashboard_bottom_sheet_recycler_view"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="268dp"
       android:background="@color/white"
       app:behavior_hideable="true"
       app:behavior_peekHeight="0dp"

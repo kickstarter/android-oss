@@ -8,6 +8,7 @@ import android.view.View;
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.CreatorDashboardBottomSheetViewHolder;
+import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 
 import java.util.List;
@@ -29,7 +30,13 @@ public final class CreatorDashboardBottomSheetAdapter extends KSAdapter {
 
   @Override
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
-    return new CreatorDashboardBottomSheetViewHolder(view, this.delegate);
+    switch (layout) {
+      case R.layout.creator_dashboard_project_switcher_view:
+        return new CreatorDashboardBottomSheetViewHolder(view, this.delegate);
+      case R.layout.creator_dashboard_project_switcher_title:
+      default:
+        return new EmptyViewHolder(view);
+    }
   }
 
   public void takeProjects(final @NonNull List<Project> projects) {

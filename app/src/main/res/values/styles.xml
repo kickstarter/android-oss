@@ -359,6 +359,11 @@
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
+  <style name="CalloutSecondary" parent="TextSecondary">
+    <item name="android:textSize">@dimen/callout</item>
+    <item name="android:lineSpacingExtra">@dimen/callout_line_spacing_extra</item>
+  </style>
+
   <style name="CalloutSecondaryMedium" parent="TextSecondary">
     <item name="android:textSize">@dimen/callout</item>
     <item name="android:lineSpacingExtra">@dimen/callout_line_spacing_extra</item>

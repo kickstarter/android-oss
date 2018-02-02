@@ -79,7 +79,14 @@ public interface CreatorDashboardViewModel {
       final Observable<ProjectStatsEnvelope> projectStatsEnvelope = projectStatsEnvelopeNotification
         .compose(values());
 
-      this.projectsForBottomSheet = projects;
+      this.projectsForBottomSheet = Observable.combineLatest(
+        projects.filter(projectList -> projectList.size() > 1),
+        this.projectSelected,
+        (projectList, project) -> Observable
+          .from(projectList)
+          .filter(p -> p.id() != project.id())
+          .toList())
+        .flatMap(listObservable -> listObservable);
 
       this.projectSelected
         .compose(combineLatestPair(projectStatsEnvelope))

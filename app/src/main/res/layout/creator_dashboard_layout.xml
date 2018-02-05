@@ -27,33 +27,20 @@
     android:fitsSystemWindows="true"
     android:visibility="gone" />
 
-  <LinearLayout
+  <android.support.design.widget.CoordinatorLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_marginTop="?attr/actionBarSize"
+    android:layout_height="match_parent">
 
-    <Space
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/creator_dashboard_bottom_sheet_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_weight="1" />
+      android:background="@color/white"
+      app:behavior_hideable="true"
+      app:behavior_peekHeight="0dp"
+      app:layout_behavior="@string/bottom_sheet_behavior" />
 
-    <android.support.design.widget.CoordinatorLayout
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1">
-
-      <android.support.v7.widget.RecyclerView
-        android:id="@+id/creator_dashboard_bottom_sheet_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        app:behavior_hideable="true"
-        app:behavior_peekHeight="0dp"
-        app:layout_behavior="@string/bottom_sheet_behavior" />
-
-    </android.support.design.widget.CoordinatorLayout>
-
-  </LinearLayout>
-
+  </android.support.design.widget.CoordinatorLayout>
 
 </merge>

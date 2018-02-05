@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.AppBarLayout
+  android:id="@+id/creator_dashboard_app_bar"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/creator_dashboard_app_bar"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:fitsSystemWindows="true"
@@ -54,12 +54,14 @@
           android:src="@drawable/ic_action_icon__arrow_left" />
 
         <TextView
-          style="@style/ToolbarTitle"
           android:id="@+id/creator_dashboard_project_name_small"
+          style="@style/ToolbarTitle"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/grid_2"
+          android:ellipsize="end"
           android:maxLines="1"
-          tools:text="Project Name"/>
+          tools:text="Project Name" />
 
       </RelativeLayout>
 

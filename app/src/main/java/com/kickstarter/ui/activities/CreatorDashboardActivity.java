@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.ToolbarUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.adapters.CreatorDashboardBottomSheetAdapter;
@@ -34,6 +36,8 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
   private CreatorDashboardBottomSheetAdapter bottomSheetAdapter;
   private BottomSheetBehavior bottomSheetBehavior;
 
+  protected @Bind(R.id.creator_dashboard_app_bar) AppBarLayout appBarLayout;
+  protected @Bind(R.id.creator_dashboard_project_name_small) TextView collapsedToolbarTitle;
   protected @Bind(R.id.creator_dashboard_bottom_sheet_recycler_view) RecyclerView bottomSheetRecyclerView;
   protected @Bind(R.id.creator_dashboard_bottom_sheet_scrim) View bottomSheetScrim;
   protected @Bind(R.id.creator_dashboard_project_name) TextView projectNameTextView;
@@ -50,6 +54,8 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.bottomSheetRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     this.bottomSheetBehavior = BottomSheetBehavior.from(this.bottomSheetRecyclerView);
 
+    ToolbarUtils.INSTANCE.fadeAndTranslateToolbarTitleOnExpand(this.appBarLayout, this.collapsedToolbarTitle);
+
     this.viewModel.outputs.projectAndStats()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -59,6 +65,11 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(pair -> this.projectNameTextView.setText(pair.first.name()));
+
+    this.viewModel.outputs.projectAndStats()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(pair -> this.collapsedToolbarTitle.setText(pair.first.name()));
 
     this.viewModel.outputs.projectsForBottomSheet()
       .compose(bindToLifecycle())

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Pair;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,6 +44,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   protected @Bind(R.id.creator_dashboard_funding_text) TextView fundingTextTextView;
   protected @Bind(R.id.creator_dashboard_messages) RelativeLayout messagesButton;
   protected @Bind(R.id.creator_dashboard_percent) TextView percentTextView;
+  protected @Bind(R.id.creator_dashboard_project_selector) Button projectsButton;
   protected @Bind(R.id.creator_dashboard_time_remaining) TextView timeRemainingTextView;
   protected @Bind(R.id.creator_dashboard_time_remaining_text) TextView timeRemainingTextTextView;
 
@@ -81,6 +83,11 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.messagesButton));
+
+    this.viewModel.outputs.otherProjectsButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.projectsButton));
 
     this.viewModel.outputs.percentageFunded()
       .compose(bindToLifecycle())

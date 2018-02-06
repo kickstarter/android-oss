@@ -27,6 +27,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
@@ -91,6 +92,11 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     } else {
       super.back();
     }
+  }
+
+  @OnClick(R.id.creator_dashboard_bottom_sheet_scrim)
+  protected void bottomSheetScrimClicked() {
+    hideBottomSheet();
   }
 
   @Override

@@ -28,6 +28,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   private CreatorDashboardHeaderHolderViewModel.ViewModel vm;
 
   private final TestSubscriber<Boolean> messagesButtonIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> otherProjectsButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> percentageFunded = new TestSubscriber<>();
   private final TestSubscriber<Integer> percentageFundedProgress = new TestSubscriber<>();
   private final TestSubscriber<String> projectBackersCountText = new TestSubscriber<>();
@@ -40,6 +41,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardHeaderHolderViewModel.ViewModel(environment);
     this.vm.outputs.messagesButtonIsGone().subscribe(this.messagesButtonIsGone);
+    this.vm.outputs.otherProjectsButtonIsGone().subscribe(this.otherProjectsButtonIsGone);
     this.vm.outputs.projectBackersCountText().subscribe(this.projectBackersCountText);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
     this.vm.outputs.percentageFunded().subscribe(this.percentageFunded);
@@ -63,6 +65,27 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
 
     // Messages button is gone if current user is not the project creator (e.g. a collaborator).
     this.messagesButtonIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testOtherProjectsButtonIsGone_WhenCreatorHas1Project() {
+    final User creatorWith1Project = UserFactory.creator().toBuilder().createdProjectsCount(1).build();
+    final CurrentUserType creator = new MockCurrentUser(creatorWith1Project);
+
+    setUpEnvironment(environment().toBuilder().currentUser(creator).build());
+    this.vm.inputs.projectAndStats(Pair.create(ProjectFactory.project(), ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
+
+    this.otherProjectsButtonIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testOtherProjectsButtonIsGone_WhenCreatorHasManyProjects() {
+    final CurrentUserType creator = new MockCurrentUser(UserFactory.creator());
+
+    setUpEnvironment(environment().toBuilder().currentUser(creator).build());
+    this.vm.inputs.projectAndStats(Pair.create(ProjectFactory.project(), ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
+
+    this.otherProjectsButtonIsGone.assertValues(false);
   }
 
   @Test

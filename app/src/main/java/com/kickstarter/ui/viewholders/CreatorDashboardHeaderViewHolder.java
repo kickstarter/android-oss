@@ -117,7 +117,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
     this.viewModel.outputs.startMessageThreadsActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::startMessageThreadsActivity);
+      .subscribe(projectAndRefTag -> this.startMessageThreadsActivity(projectAndRefTag.first, projectAndRefTag.second));
 
     this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
@@ -159,9 +159,10 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
     this.timeRemainingTextTextView.setText(ProjectUtils.deadlineCountdownDetail(currentProject, this.context(), this.ksString));
   }
 
-  private void startMessageThreadsActivity(final @NonNull Project project) {
+  private void startMessageThreadsActivity(final @NonNull Project project, final @NonNull RefTag refTag) {
     final Intent intent = new Intent(this.context(), MessageThreadsActivity.class)
-      .putExtra(IntentKey.PROJECT, project);
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.REF_TAG, refTag);
     this.context().startActivity(intent);
   }
 

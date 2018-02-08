@@ -119,7 +119,7 @@ public interface DiscoveryViewModel {
       this.showSettings = this.settingsClick;
 
       final Observable<Boolean> userIsCreator = this.currentUser.observable()
-        .map(u -> u != null && IntegerUtils.isNonZero(u.createdProjectsCount()));
+        .map(u -> u != null && IntegerUtils.isNonZero(u.memberProjectsCount()));
 
       final Observable<Boolean> creatorViewFeatureFlagIsEnabled = environment.currentConfig().observable()
         .map(Config::features)

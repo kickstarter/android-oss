@@ -100,19 +100,19 @@ public interface DiscoveryViewModel {
 
   final class ViewModel extends ActivityViewModel<DiscoveryActivity> implements Inputs, Outputs {
     private final ApiClientType apiClient;
-    private final WebClientType webClient;
     private final BuildCheck buildCheck;
     private final CurrentUserType currentUser;
     private final CurrentConfigType currentConfigType;
+    private final WebClientType webClient;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.apiClient = environment.apiClient();
       this.buildCheck = environment.buildCheck();
+      this.currentConfigType = environment.currentConfig();
       this.currentUser = environment.currentUser();
       this.webClient = environment.webClient();
-      this.currentConfigType = environment.currentConfig();
 
       this.buildCheck.bind(this, this.webClient);
 

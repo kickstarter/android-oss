@@ -127,12 +127,12 @@ public interface DiscoveryViewModel {
       currentUser.subscribe(updatedUser ->
         this.apiClient.config()
           .compose(Transformers.neverError())
-          .subscribe(currentConfigType::config));
+          .subscribe(this.currentConfigType::config));
 
       final Observable<Boolean> userIsCreator = currentUser
         .map(u -> u != null && IntegerUtils.isNonZero(u.createdProjectsCount()));
 
-      final Observable<Boolean> creatorViewFeatureFlagIsEnabled = currentConfigType.observable()
+      final Observable<Boolean> creatorViewFeatureFlagIsEnabled = this.currentConfigType.observable()
         .map(Config::features)
         .filter(ObjectUtils::isNotNull)
         .map(f -> coalesce(f.get(FeatureKey.ANDROID_CREATOR_VIEW), false));

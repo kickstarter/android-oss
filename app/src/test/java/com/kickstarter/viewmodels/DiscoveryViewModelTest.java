@@ -108,8 +108,52 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testCreatorDashboardButtonIsGone__notCollaboratorFeatureEnabled() {
+    final User notCreator = UserFactory.user().toBuilder().memberProjectsCount(0).build();
+    final MockCurrentUser currentUser = new MockCurrentUser(notCreator);
+
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.singletonMap(FeatureKey.ANDROID_CREATOR_VIEW, true))
+      .build();
+
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    final Environment env = environment().toBuilder()
+      .currentUser(currentUser)
+      .currentConfig(currentConfig).build();
+
+    this.vm = new DiscoveryViewModel.ViewModel(env);
+    this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
+    this.creatorDashboardButtonIsGone.assertValues(true);
+  }
+
+  @Test
   public void testCreatorDashboardButtonIsGone__isCreatorFeatureEnabled() {
     final User creator = UserFactory.creator();
+    final MockCurrentUser currentUser = new MockCurrentUser(creator);
+
+    final Config config = ConfigFactory.config()
+      .toBuilder()
+      .features(Collections.singletonMap(FeatureKey.ANDROID_CREATOR_VIEW, true))
+      .build();
+
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    final Environment env = environment().toBuilder()
+      .currentUser(currentUser)
+      .currentConfig(currentConfig).build();
+
+    this.vm = new DiscoveryViewModel.ViewModel(env);
+    this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
+    this.creatorDashboardButtonIsGone.assertValues(false);
+  }
+
+  @Test
+  public void testCreatorDashboardButtonIsGone__isCollaboratorFeatureEnabled() {
+    final User creator = UserFactory.user().toBuilder().memberProjectsCount(2).build();
     final MockCurrentUser currentUser = new MockCurrentUser(creator);
 
     final Config config = ConfigFactory.config()

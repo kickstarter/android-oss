@@ -7,9 +7,11 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.Config;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.FeatureKey;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
@@ -98,15 +100,17 @@ public interface DiscoveryViewModel {
 
   final class ViewModel extends ActivityViewModel<DiscoveryActivity> implements Inputs, Outputs {
     private final ApiClientType apiClient;
-    private final WebClientType webClient;
     private final BuildCheck buildCheck;
     private final CurrentUserType currentUser;
+    private final CurrentConfigType currentConfigType;
+    private final WebClientType webClient;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.apiClient = environment.apiClient();
       this.buildCheck = environment.buildCheck();
+      this.currentConfigType = environment.currentConfig();
       this.currentUser = environment.currentUser();
       this.webClient = environment.webClient();
 
@@ -118,10 +122,17 @@ public interface DiscoveryViewModel {
       this.showProfile = this.profileClick;
       this.showSettings = this.settingsClick;
 
-      final Observable<Boolean> userIsCreator = this.currentUser.observable()
+      final Observable<User> currentUser = this.currentUser.observable();
+
+      currentUser.subscribe(updatedUser ->
+        this.apiClient.config()
+          .compose(Transformers.neverError())
+          .subscribe(this.currentConfigType::config));
+
+      final Observable<Boolean> userIsCreator = currentUser
         .map(u -> u != null && IntegerUtils.isNonZero(u.memberProjectsCount()));
 
-      final Observable<Boolean> creatorViewFeatureFlagIsEnabled = environment.currentConfig().observable()
+      final Observable<Boolean> creatorViewFeatureFlagIsEnabled = this.currentConfigType.observable()
         .map(Config::features)
         .filter(ObjectUtils::isNotNull)
         .map(f -> coalesce(f.get(FeatureKey.ANDROID_CREATOR_VIEW), false));
@@ -203,7 +214,7 @@ public interface DiscoveryViewModel {
       // to avoid displaying old data.
       pagerSelectedPage
         .compose(takeWhen(params))
-        .compose(combineLatestPair(this.currentUser.observable()))
+        .compose(combineLatestPair(currentUser))
         .map(pageAndUser -> pageAndUser.first)
         .flatMap(currentPage -> Observable.from(DiscoveryParams.Sort.values())
           .map(DiscoveryUtils::positionFromSort)
@@ -225,7 +236,7 @@ public interface DiscoveryViewModel {
         categories,
         params,
         expandedCategory,
-        this.currentUser.observable(),
+        currentUser,
         DiscoveryDrawerUtils::deriveNavigationDrawerData
       )
         .distinctUntilChanged()

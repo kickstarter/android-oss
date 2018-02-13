@@ -67,7 +67,7 @@ public class RegisterService extends IntentService {
       .subscribe(__ ->
         this.apiClient.registerPushToken(token)
           .compose(Transformers.neverError())
-          .first().toBlocking().single()
+          .toList().toBlocking().single()
       );
   }
 

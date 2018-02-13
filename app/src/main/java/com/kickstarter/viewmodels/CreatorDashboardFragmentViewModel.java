@@ -51,6 +51,10 @@ public interface CreatorDashboardFragmentViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.projectAndStats);
 
+      this.projectsMenuClick
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.koala.trackOpenedProjectSwitcher());
+
       this.toggleBottomSheet = this.projectsMenuClick;
     }
 

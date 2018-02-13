@@ -38,13 +38,6 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testKoalaTracking() {
-    setUpEnvironment(environment());
-
-    this.koalaTest.assertValue(KoalaEvent.VIEWED_PROJECT_DASHBOARD);
-  }
-
-  @Test
   public void testProjectAndStats() {
     final List<Project> projects = Collections.singletonList(ProjectFactory.project());
 
@@ -62,6 +55,7 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
     final Pair<Project, ProjectStatsEnvelope> outputPair = Pair.create(ListUtils.first(projects), projectStatsEnvelope);
     this.projectAndStats.assertValue(outputPair);
+    this.koalaTest.assertValues(KoalaEvent.VIEWED_PROJECT_DASHBOARD);
   }
 
   @Test
@@ -118,6 +112,6 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.projectSelectionInput(project2);
     this.projectAndStats.assertValues(Pair.create(project1, ProjectStatsEnvelopeFactory.projectStatsEnvelope()), Pair.create(project2, ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_PROJECT_DASHBOARD, KoalaEvent.SWITCHED_PROJECTS);
+    this.koalaTest.assertValues(KoalaEvent.VIEWED_PROJECT_DASHBOARD, KoalaEvent.SWITCHED_PROJECTS, KoalaEvent.VIEWED_PROJECT_DASHBOARD);
   }
 }

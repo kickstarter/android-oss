@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:id="@+id/referrer_breakdown_section_layout"
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
@@ -18,73 +19,142 @@
     android:text="@string/dashboard_graphs_referrers_title_referrers" />
 
   <LinearLayout
-    android:id="@+id/referrer_breakdown_chart_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:visibility="gone">
+    android:paddingEnd="@dimen/grid_2"
+    android:paddingStart="@dimen/grid_2"
+    android:baselineAligned="false">
 
-    <com.kickstarter.ui.views.ReferrerBreakdownView
-      android:id="@+id/referrer_breakdown_view"
-      android:layout_width="@dimen/grid_21"
-      android:layout_height="@dimen/grid_21"
-      android:layout_margin="@dimen/grid_2" />
+    <FrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
 
-    <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:layout_margin="@dimen/grid_2"
-      android:orientation="vertical">
 
       <LinearLayout
+        android:layout_gravity="end"
         android:id="@+id/pledged_via_kickstarter_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="horizontal">
-
-        <ImageView
-          android:id="@+id/percent_via_kickstarter_circle_text_view"
-          android:layout_width="6dp"
-          android:layout_height="6dp"
-          android:layout_gravity="center"
-          android:layout_marginEnd="1dp"
-          android:src="@drawable/creator_dashboard_circle"
-          tools:ignore="ContentDescription" />
-
-        <TextView
-          android:id="@+id/percent_via_kickstarter_text_view"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:gravity="center"
-          tools:text="75%" />
+        android:orientation="vertical">
 
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:orientation="vertical"
-          android:paddingStart="@dimen/grid_2">
+          android:orientation="horizontal">
 
           <TextView
-            android:id="@+id/amount_pledged_via_kickstarter_text_view"
+            android:id="@+id/percent_via_kickstarter_text_view"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            tools:text="$1,000" />
+            android:layout_height="wrap_content"
+            tools:text="75%" />
 
-          <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/dashboard_graphs_referrers_pledged_via_kickstarter" />
+          <ImageView
+            android:id="@+id/percent_via_kickstarter_circle_text_view"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="1dp"
+            android:src="@drawable/creator_dashboard_circle"
+            tools:ignore="ContentDescription" />
 
         </LinearLayout>
 
+        <TextView
+          android:id="@+id/amount_pledged_via_kickstarter_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="$1,000" />
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/dashboard_graphs_referrers_pledged_via_kickstarter" />
+
       </LinearLayout>
 
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_4"
+        android:layout_marginTop="@dimen/grid_15"
+        android:background="@color/ksr_green_800" />
+
+      <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:layout_marginStart="@dimen/grid_7_half"
+        android:background="@color/white"
+        android:contentDescription="@null"
+        android:padding="1dp"
+        android:src="@drawable/indicator_vertical" />
+
+    </FrameLayout>
+
+    <FrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_4"
+        android:layout_marginTop="@dimen/grid_15"
+        android:background="@color/ksr_green_700" />
+
+      <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:layout_marginStart="@dimen/grid_7_half"
+        android:background="@color/white"
+        android:contentDescription="@null"
+        android:padding="1dp"
+        android:src="@drawable/indicator_vertical" />
+
+    </FrameLayout>
+
+    <FrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_4"
+        android:layout_marginTop="@dimen/grid_15"
+        android:background="@color/ksr_green_500" />
+
+      <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:layout_marginStart="@dimen/grid_7_half"
+        android:background="@color/white"
+        android:contentDescription="@null"
+        android:padding="1dp"
+        android:src="@drawable/indicator_vertical" />
+
+    </FrameLayout>
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/referrer_breakdown_chart_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
       <LinearLayout
         android:id="@+id/pledged_via_external_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:orientation="horizontal">
 
         <ImageView
@@ -128,7 +198,6 @@
         android:id="@+id/pledged_via_custom_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:orientation="horizontal">
 
 
@@ -169,4 +238,10 @@
       </LinearLayout>
     </LinearLayout>
   </LinearLayout>
+  <com.kickstarter.ui.views.ReferrerBreakdownView
+    android:id="@+id/referrer_breakdown_view"
+    android:layout_width="@dimen/grid_21"
+    android:layout_height="@dimen/grid_21"
+    android:layout_margin="@dimen/grid_2"
+    android:visibility="invisible" />
 </LinearLayout>

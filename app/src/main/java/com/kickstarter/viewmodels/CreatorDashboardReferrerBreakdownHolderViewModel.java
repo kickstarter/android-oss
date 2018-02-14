@@ -124,7 +124,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
         );
 
       this.customReferrerPercentText = this.customReferrerPercent
-        .map(percent -> NumberUtils.flooredPercentage(percent.floatValue() * 100f));
+        .map(percent -> NumberUtils.flooredPercentage(percent * 100f));
 
       this.customReferrerPledgedAmount = customReferrers
         .flatMap(rs ->

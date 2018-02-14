@@ -21,10 +21,9 @@
       style="@style/CreatorDashboardTableRowContainer">
 
       <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="@dimen/grid_20"
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/grid_2"
-        android:layout_weight="2"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -45,10 +44,12 @@
 
       <TextView
         style="@style/CreatorDashboardTableRowText"
-        android:layout_weight="1"
+        android:layout_width="@dimen/grid_13"
         android:text="@string/dashboard_graphs_funding_backers" />
 
       <TextView
+        android:layout_width="0dp"
+        android:layout_weight="3"
         style="@style/CreatorDashboardTableRowText"
         android:text="@string/dashboard_graphs_referrers_source" />
 

@@ -35,7 +35,7 @@
           tools:ignore="ContentDescription" />
 
         <TextView
-          style="@style/Title2"
+          style="@style/Title2Medium"
           android:id="@+id/user_name_text_view"
           android:gravity="center_horizontal"
           android:layout_width="match_parent"

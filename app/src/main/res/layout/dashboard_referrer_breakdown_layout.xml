@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/referrer_breakdown_section_layout"
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/referrer_breakdown_section_layout"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
@@ -17,19 +18,22 @@
     android:paddingStart="@dimen/grid_2"
     android:text="@string/dashboard_graphs_referrers_title_referrers" />
 
-  <LinearLayout
+  <android.support.constraint.ConstraintLayout
     android:id="@+id/referrer_breakdown_chart_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:baselineAligned="false"
     android:paddingEnd="@dimen/grid_2"
-    android:paddingStart="@dimen/grid_2">
+    android:paddingStart="@dimen/grid_2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <FrameLayout
       android:id="@+id/pledged_via_kickstarter_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_weight="1">
+      tools:layout_constraintTop_creator="1"
+      android:layout_marginTop="54dp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:layout_editor_absoluteX="32dp">
 
       <View
         android:layout_width="match_parent"
@@ -106,7 +110,11 @@
       android:layout_height="wrap_content"
       android:clipChildren="false"
       android:clipToPadding="false"
-      android:layout_weight="1">
+      app:layout_constraintTop_toTopOf="@+id/pledged_via_kickstarter_layout"
+      app:layout_constraintEnd_toEndOf="@+id/pledged_via_kickstarter_layout"
+      app:layout_constraintEnd_toStartOf="@+id/pledged_via_custom_layout"
+      tools:layout_constraintTop_creator="1"
+      tools:layout_constraintRight_creator="1">
 
       <View
         android:layout_width="match_parent"
@@ -191,7 +199,12 @@
       android:id="@+id/pledged_via_custom_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_weight="1">
+      tools:layout_constraintTop_creator="1"
+      android:layout_marginStart="236dp"
+      tools:layout_constraintLeft_creator="1"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/pledged_via_external_layout">
 
       <View
         android:layout_width="match_parent"
@@ -253,7 +266,7 @@
 
       </LinearLayout>
     </FrameLayout>
-  </LinearLayout>
+  </android.support.constraint.ConstraintLayout>
 
   <com.kickstarter.ui.views.ReferrerBreakdownView
     android:id="@+id/referrer_breakdown_view"

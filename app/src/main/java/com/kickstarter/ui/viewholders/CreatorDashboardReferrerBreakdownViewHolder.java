@@ -2,11 +2,11 @@ package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.util.Pair;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -40,7 +40,7 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   protected @Bind(R.id.pledged_via_custom_layout) FrameLayout pledgedViaCustomLayout;
   protected @Bind(R.id.pledged_via_external_layout) FrameLayout pledgedViaExternalLayout;
   protected @Bind(R.id.pledged_via_kickstarter_layout) FrameLayout pledgedViaInternalLayout;
-  protected @Bind(R.id.referrer_breakdown_chart_layout) LinearLayout referrerBreakdownLayout;
+  protected @Bind(R.id.referrer_breakdown_chart_layout) ConstraintLayout referrerBreakdownLayout;
   protected @Bind(R.id.referrer_breakdown_view) ReferrerBreakdownView referrerBreakdownView;
 
   private KSCurrency ksCurrency;
@@ -129,8 +129,8 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   }
 
   private static void setReferrerWidth(Float percent, FrameLayout frameLayout) {
-    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) frameLayout.getLayoutParams();
-    layoutParams.weight = percent;
+    ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) frameLayout.getLayoutParams();
+    layoutParams.horizontalWeight = percent;
     frameLayout.setLayoutParams(layoutParams);
   }
 

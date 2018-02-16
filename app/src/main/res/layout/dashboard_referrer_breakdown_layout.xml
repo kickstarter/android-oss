@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:id="@+id/referrer_breakdown_section_layout"
+<LinearLayout android:id="@+id/referrer_breakdown_section_layout"
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
@@ -20,20 +20,19 @@
 
   <android.support.constraint.ConstraintLayout
     android:id="@+id/referrer_breakdown_chart_layout"
-    android:paddingEnd="@dimen/grid_2"
-    android:paddingStart="@dimen/grid_2"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingEnd="@dimen/grid_2"
+    android:paddingStart="@dimen/grid_2">
 
     <FrameLayout
       android:id="@+id/pledged_via_kickstarter_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      tools:layout_constraintTop_creator="1"
       android:layout_marginTop="54dp"
+      app:layout_constraintHorizontal_weight="1"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      tools:layout_editor_absoluteX="32dp">
+      app:layout_constraintEnd_toStartOf="@+id/pledged_via_external_layout">
 
       <View
         android:layout_width="match_parent"
@@ -110,11 +109,9 @@
       android:layout_height="wrap_content"
       android:clipChildren="false"
       android:clipToPadding="false"
-      app:layout_constraintTop_toTopOf="@+id/pledged_via_kickstarter_layout"
-      app:layout_constraintEnd_toEndOf="@+id/pledged_via_kickstarter_layout"
-      app:layout_constraintEnd_toStartOf="@+id/pledged_via_custom_layout"
-      tools:layout_constraintTop_creator="1"
-      tools:layout_constraintRight_creator="1">
+      app:layout_constraintHorizontal_weight="1"
+      app:layout_constraintStart_toEndOf="@+id/pledged_via_kickstarter_layout"
+      app:layout_constraintEnd_toStartOf="@+id/pledged_via_custom_layout">
 
       <View
         android:layout_width="match_parent"
@@ -125,17 +122,17 @@
       <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
         android:layout_marginBottom="@dimen/grid_2"
         android:layout_marginEnd="@dimen/grid_7_half"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:orientation="horizontal">
 
         <LinearLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:gravity="end"
           android:layout_toStartOf="@+id/external_indicator"
+          android:gravity="end"
           android:orientation="vertical">
 
           <LinearLayout
@@ -181,30 +178,26 @@
           android:id="@+id/external_indicator"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_alignParentEnd="true"
+          android:layout_marginStart="@dimen/grid_1"
           android:layout_marginTop="@dimen/grid_11"
           android:background="@color/white"
           android:contentDescription="@null"
           android:padding="1dp"
-          android:layout_marginStart="@dimen/grid_1"
-          android:layout_alignParentEnd="true"
           android:src="@drawable/indicator_vertical"
           android:tint="@color/ksr_green_500" />
 
       </RelativeLayout>
-
-
     </FrameLayout>
 
     <FrameLayout
       android:id="@+id/pledged_via_custom_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      tools:layout_constraintTop_creator="1"
-      android:layout_marginStart="236dp"
-      tools:layout_constraintLeft_creator="1"
-      app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="@+id/pledged_via_external_layout">
+      app:layout_constraintTop_toTopOf="@+id/pledged_via_kickstarter_layout"
+      app:layout_constraintStart_toEndOf="@+id/pledged_via_external_layout"
+      app:layout_constraintHorizontal_weight="1">
 
       <View
         android:layout_width="match_parent"

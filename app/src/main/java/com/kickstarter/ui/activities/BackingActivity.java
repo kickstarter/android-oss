@@ -10,6 +10,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -31,6 +32,7 @@ import com.squareup.picasso.Picasso;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -40,6 +42,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 public final class BackingActivity extends BaseActivity<BackingViewModel.ViewModel> {
   protected @Bind(R.id.backing_avatar_image_view) ImageView avatarImageView;
   protected @Bind(R.id.backing_backer_name) TextView backerNameTextView;
+  protected @Bind(R.id.backing_got_it_switch) Switch backingGotItSwitch;
   protected @Bind(R.id.backing_backer_number) TextView backerNumberTextView;
   protected @Bind(R.id.backing_amount_and_date_text_view) TextView backingAmountAndDateTextView;
   protected @Bind(R.id.backing_status) TextView backingStatusTextView;
@@ -183,6 +186,11 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.viewMessagesButton));
+
+    this.viewModel.outputs.gotIt()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.backingGotItSwitch::setChecked);
   }
 
   @Override
@@ -198,6 +206,11 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
   @OnClick(R.id.backing_view_messages_button)
   protected void viewMessagesButtonClicked() {
     this.viewModel.inputs.viewMessagesButtonClicked();
+  }
+
+  @OnCheckedChanged(R.id.backing_got_it_switch)
+  protected void gotItSwitchChecked(boolean checked) {
+    this.viewModel.inputs.gotItSwitchChecked(checked);
   }
 
   private void loadBackerAvatar(final @NonNull String url) {

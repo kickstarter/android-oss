@@ -117,6 +117,8 @@ public interface ApiClientType {
 
   @NonNull Observable<Project> toggleProjectSave(final @NonNull Project project);
 
+  @NonNull Observable<Backing> toggleBackingReceived(final @NonNull Project project, final @NonNull Backing backing, final boolean checked);
+
   @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys();
 
   @NonNull Observable<ProjectNotification> updateProjectNotifications(final @NonNull ProjectNotification projectNotification, final boolean checked);

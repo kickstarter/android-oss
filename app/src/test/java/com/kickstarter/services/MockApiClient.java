@@ -367,6 +367,11 @@ public class MockApiClient implements ApiClientType {
   public @NonNull Observable<Project> toggleProjectSave(final @NonNull Project project) {
     return Observable.just(project.toBuilder().isStarred(!project.isStarred()).build());
   }
+  @NonNull
+  @Override
+  public Observable<Backing> toggleBackingReceived(@NonNull Project project, @NonNull User user, boolean check) {
+    return null;
+  }
 
   @Override
   public @NonNull Observable<List<SurveyResponse>> fetchUnansweredSurveys() {

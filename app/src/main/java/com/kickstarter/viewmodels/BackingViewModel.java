@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -37,6 +38,7 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
 
@@ -48,6 +50,8 @@ public interface BackingViewModel {
 
     /** Call when the view messages button is clicked. */
     void viewMessagesButtonClicked();
+
+    void gotItSwitchChecked(boolean checked);
   }
 
   interface Outputs {
@@ -110,6 +114,8 @@ public interface BackingViewModel {
 
     /** Emits a boolean to determine when the View Messages button should be gone. */
     Observable<Boolean> viewMessagesButtonIsGone();
+
+    Observable<Boolean> gotIt();
   }
 
   final class ViewModel extends ActivityViewModel<BackingActivity> implements Inputs, Outputs {
@@ -275,6 +281,32 @@ public interface BackingViewModel {
       project
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackViewedPledgeInfo);
+
+      backing
+        .map(Backing::completedAt)
+        .map(ObjectUtils::isNotNull)
+        .compose(bindToLifecycle())
+        .subscribe(this.gotIt);
+
+//      Observable.combineLatest(project, backing, this.gotItSwitchChecked, (p, b, s) -> {return Pair.create(Pair.create(p, b), s);} )
+//        .switchMap(triple -> client.toggleBackingReceived(triple.first.first, triple.first.second, triple.second)
+//          .map(b -> Log.d("izzytest", b.project().name() + " - " + b.completedAt()))
+//          .materialize())
+//        .compose(bindToLifecycle())
+//        .share()
+//      .subscribe();
+
+      Observable<Pair<Project, Backing>> projectAndBacking = Observable
+        .combineLatest(project, backing, Pair::create);
+
+      projectAndBacking
+        .compose(takePairWhen(this.gotItSwitchChecked))
+        .switchMap(triple -> client.toggleBackingReceived(triple.first.first, triple.first.second, triple.second)
+          .map(b -> Log.d("izzytest", b.project().name() + " - " + b.completedAt()))
+          .materialize())
+        .compose(bindToLifecycle())
+        .share()
+        .subscribe();
     }
 
     private static @NonNull Pair<String, String> backingAmountAndDate(final @NonNull KSCurrency ksCurrency,
@@ -295,6 +327,7 @@ public interface BackingViewModel {
 
     private final PublishSubject<Void> projectClicked = PublishSubject.create();
     private final PublishSubject<Void> viewMessagesButtonClicked = PublishSubject.create();
+    private final PublishSubject<Boolean> gotItSwitchChecked = PublishSubject.create();
 
     private final BehaviorSubject<String> backerNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> backerNumberTextViewText = BehaviorSubject.create();
@@ -316,6 +349,7 @@ public interface BackingViewModel {
     private final PublishSubject<Pair<Project, Backing>> startMessagesActivity = PublishSubject.create();
     private final PublishSubject<Pair<Project, RefTag>> startProjectActivity = PublishSubject.create();
     private final BehaviorSubject<Boolean> viewMessagesButtonIsGone = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> gotIt = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -325,6 +359,10 @@ public interface BackingViewModel {
     }
     @Override public void viewMessagesButtonClicked() {
       this.viewMessagesButtonClicked.onNext(null);
+    }
+    @Override
+    public void gotItSwitchChecked(boolean checked) {
+      this.gotItSwitchChecked.onNext(checked);
     }
 
     @Override public @NonNull Observable<String> backerNameTextViewText() {
@@ -386,6 +424,10 @@ public interface BackingViewModel {
     }
     @Override public @NonNull Observable<Boolean> viewMessagesButtonIsGone() {
       return this.viewMessagesButtonIsGone;
+    }
+    @Override
+    public Observable<Boolean> gotIt() {
+      return this.gotIt;
     }
   }
 }

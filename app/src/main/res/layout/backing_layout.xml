@@ -103,6 +103,7 @@
           tools:text="Status: Collected"/>
 
         <LinearLayout
+          tools:visibility="gone"
           android:orientation="vertical"
           android:paddingBottom="@dimen/grid_4"
           android:layout_width="match_parent"
@@ -150,6 +151,7 @@
         </LinearLayout>
 
         <LinearLayout
+          tools:visibility="gone"
           android:id="@+id/backing_shipping_section"
           android:orientation="vertical"
           android:paddingTop="@dimen/grid_2"
@@ -203,6 +205,24 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/grid_4"
             tools:text="June 2016"/>
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:orientation="vertical"
+          android:layout_height="wrap_content">
+
+          <TextView
+            style="@style/CalloutPrimaryMedium"
+            android:text="@string/discovery_favorite_categories_alert_buttons_got_it"
+            android:paddingTop="@dimen/grid_2"
+            android:paddingBottom="@dimen/grid_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+          <Switch
+            android:id="@+id/backing_got_it_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         </LinearLayout>
 
       </LinearLayout>

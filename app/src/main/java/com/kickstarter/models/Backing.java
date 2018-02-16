@@ -18,6 +18,7 @@ import auto.parcel.AutoParcel;
 public abstract class Backing implements Parcelable {
   public abstract float amount();
   public abstract @Nullable User backer();
+  public abstract @Nullable String backerNote();
   public abstract long backerId();
   public abstract @Nullable DateTime completedAt();
   public abstract long id();
@@ -36,6 +37,7 @@ public abstract class Backing implements Parcelable {
   public abstract static class Builder {
     public abstract Builder amount(float __);
     public abstract Builder backer(User __);
+    public abstract Builder backerNote(String __);
     public abstract Builder backerId(long __);
     public abstract Builder completedAt(DateTime __);
     public abstract Builder id(long __);

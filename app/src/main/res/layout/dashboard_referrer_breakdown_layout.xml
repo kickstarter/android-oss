@@ -9,10 +9,10 @@
   android:showDividers="beginning">
 
   <TextView
-    style="@style/Title3"
+    style="@style/Title2"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_5"
+    android:layout_marginTop="@dimen/grid_7"
     android:paddingEnd="@dimen/grid_2"
     android:paddingStart="@dimen/grid_2"
     android:text="@string/dashboard_graphs_referrers_title_referrers" />

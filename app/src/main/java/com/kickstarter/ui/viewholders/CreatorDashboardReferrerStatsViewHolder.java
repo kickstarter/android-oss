@@ -18,6 +18,7 @@ import com.kickstarter.viewmodels.CreatorDashboardReferrerStatsHolderViewModel;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -28,7 +29,10 @@ public class CreatorDashboardReferrerStatsViewHolder extends KSViewHolder {
 
   protected @Bind(R.id.dashboard_referrer_stats_empty_text_view) TextView emptyTextView;
   protected @Bind(R.id.dashboard_referrer_stats_recycler_view) RecyclerView referrerStatsRecyclerView;
-  protected @Bind(R.id.dashboard_referrer_stats_truncated_text_view) TextView truncatedTextView;
+  protected @Bind(R.id.dashboard_referrer_title) TextView referrerTitleTextView;
+
+  protected @BindString(R.string.Top_pledge_sources) String topPledgeSourcesString;
+  protected @BindString(R.string.Top_ten_pledge_sources) String topTenPledgeSourcesString;
 
   public CreatorDashboardReferrerStatsViewHolder(final @NonNull View view) {
     super(view);
@@ -50,10 +54,14 @@ public class CreatorDashboardReferrerStatsViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::toggleRecyclerViewAndEmptyStateVisibility);
 
-    this.viewModel.outputs.referrerStatsTruncatedTextIsGone()
+    this.viewModel.outputs.referrersTitleIsTopTen()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(gone -> ViewUtils.setGone(this.truncatedTextView, gone));
+      .subscribe(this::setTitleCopy);
+  }
+
+  private void setTitleCopy(final boolean shouldTitleHaveIsTen) {
+    this.referrerTitleTextView.setText(shouldTitleHaveIsTen ? this.topTenPledgeSourcesString : this.topPledgeSourcesString);
   }
 
   private void toggleRecyclerViewAndEmptyStateVisibility(final @NonNull Boolean gone) {

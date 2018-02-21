@@ -75,6 +75,9 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
     /** Emits the current project and the amount pledged via internal referrers **/
     Observable<Pair<Project, Float>> projectAndInternalReferrerPledgedAmount();
+
+    /** Emits when there are more than 10 referrer stats and title copy should reflect limited list. */
+    Observable<Boolean> referrersTitleIsLimitedCopy();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardReferrerBreakdownViewHolder> implements Inputs, Outputs {
@@ -194,6 +197,12 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
       this.pledgedViaInternalLayoutIsGone = this.internalReferrerPledgedAmount
         .map(amount -> amount <= 0f);
+
+      referrerStats
+        .map(rs -> rs.size() > 10)
+        .distinctUntilChanged()
+        .compose(bindToLifecycle())
+        .subscribe(this.referrersTitleIsLimitedCopy);
     }
 
     public final Inputs inputs = this;
@@ -220,6 +229,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
     private final Observable<Pair<Project, Float>> projectAndCustomReferrerPledgedAmount;
     private final Observable<Pair<Project, Float>> projectAndExternalReferrerPledgedAmount;
     private final Observable<Pair<Project, Float>> projectAndInternalReferrerPledgedAmount;
+    private final PublishSubject<Boolean> referrersTitleIsLimitedCopy = PublishSubject.create();
 
     @Override
     public void projectAndStatsInput(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStats) {
@@ -291,6 +301,8 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
     public @NonNull Observable<Pair<Project, Float>> projectAndInternalReferrerPledgedAmount() {
       return this.projectAndInternalReferrerPledgedAmount;
     }
-
+    @Override public @NonNull Observable<Boolean> referrersTitleIsLimitedCopy() {
+      return this.referrersTitleIsLimitedCopy;
+    }
   }
 }

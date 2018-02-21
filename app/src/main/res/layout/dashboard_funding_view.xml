@@ -37,7 +37,7 @@
           android:layout_height="match_parent"
           android:layout_alignParentStart="true"
           android:gravity="center_vertical"
-          android:text="@string/dashboard_buttons_project"
+          android:text="@string/View_project"
           android:textColor="@color/ksr_soft_black"
           android:textSize="@dimen/callout" />
 

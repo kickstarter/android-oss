@@ -8,6 +8,7 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.ProjectStatsEnvelopeFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.ArgumentsKey;
@@ -23,10 +24,9 @@ public class CreatorDashboardFragmentViewModelTest extends KSRobolectricTestCase
   private TestSubscriber<Void> toggleBottomSheet = new TestSubscriber<>();
 
   public void setUpEnvironment(final @NonNull Environment environment) {
-    this.vm = new CreatorDashboardFragmentViewModel.ViewModel(environment());
+    this.vm = new CreatorDashboardFragmentViewModel.ViewModel(environment);
     this.vm.outputs.projectAndStats().subscribe(this.projectAndStats);
     this.vm.outputs.toggleBottomSheet().subscribe(this.toggleBottomSheet);
-
   }
 
   @Test
@@ -40,13 +40,14 @@ public class CreatorDashboardFragmentViewModelTest extends KSRobolectricTestCase
     bundle.putParcelable(ArgumentsKey.CREATOR_DASHBOARD_PROJECT_STATS, projectStats);
     this.vm.arguments(bundle);
 
-    this.projectAndStats.assertValues(Pair.create(project, projectStats));
+    this.projectAndStats.assertValue(Pair.create(project, projectStats));
   }
 
   @Test
   public void testToggleBottomSheet() {
     setUpEnvironment(environment());
-    this.vm.inputs.dashboardShowProjectMenuClicked();
+    this.vm.inputs.projectsListButtonClicked();
     this.toggleBottomSheet.assertValueCount(1);
+    this.koalaTest.assertValue(KoalaEvent.OPENED_PROJECT_SWITCHER);
   }
 }

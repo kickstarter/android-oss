@@ -35,7 +35,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Integer> progressBarBackground = new TestSubscriber<>();
   private final TestSubscriber<String> timeRemainingText = new TestSubscriber<>();
-  private final TestSubscriber<Project> startMessageThreadsActivity = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, RefTag>> startMessageThreadsActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
@@ -190,7 +190,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
 
     // Messages button is shown to project creator, messages activity starts.
     this.messagesButtonIsGone.assertValues(false);
-    this.startMessageThreadsActivity.assertValues(project);
+    this.startMessageThreadsActivity.assertValues(Pair.create(project, RefTag.dashboard()));
   }
 
   @Test

@@ -33,7 +33,7 @@ public class CreatorDashboardReferrerStatsHolderViewModelTest extends KSRobolect
     this.vm.outputs.projectAndReferrerStats().map(PairUtils::first).subscribe(this.projectOutput);
     this.vm.outputs.projectAndReferrerStats().map(PairUtils::second).subscribe(this.referrerStatsOutput);
     this.vm.outputs.referrerStatsListIsGone().subscribe(this.referrerStatsListIsGone);
-    this.vm.outputs.referrersTitleIsLimitedCopy().subscribe(this.referrersTitleIsLimitedCopy);
+    this.vm.outputs.referrersTitleIsTopTen().subscribe(this.referrersTitleIsLimitedCopy);
   }
 
   @Test

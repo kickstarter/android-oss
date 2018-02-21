@@ -42,7 +42,7 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
     Observable<Boolean> rewardsStatsTruncatedTextIsGone();
 
     /** Emits when there are more than 10 reward stats and title copy should reflect limited list. */
-    Observable<Boolean> rewardsTitleIsLimitedCopy();
+    Observable<Boolean> rewardsTitleIsTopTen();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardRewardStatsViewHolder> implements Inputs, Outputs {
@@ -124,7 +124,7 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
       return this.rewardsStatsTruncatedTextIsGone;
     }
     @Override
-    public Observable<Boolean> rewardsTitleIsLimitedCopy() {
+    public Observable<Boolean> rewardsTitleIsTopTen() {
       return this.rewardsTitleIsLimitedCopy;
     }
   }

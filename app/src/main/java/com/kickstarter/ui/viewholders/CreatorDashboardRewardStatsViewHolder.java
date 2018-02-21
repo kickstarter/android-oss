@@ -63,15 +63,15 @@ public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(gone -> ViewUtils.setGone(this.truncatedTextView, gone));
 
-    this.viewModel.outputs.rewardsTitleIsLimitedCopy()
+    this.viewModel.outputs.rewardsTitleIsTopTen()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setTitleCopy);
   }
 
-  private void setTitleCopy(final boolean shouldShowLimitedCopy) {
+  private void setTitleCopy(final boolean referrersTitleIsTopTen) {
     final String formattedTopRewards = StringUtils.sentenceCase(this.topRewardsString);
-    this.rewardsTitleTextView.setText(shouldShowLimitedCopy ? this.topTenRewardsString : formattedTopRewards);
+    this.rewardsTitleTextView.setText(referrersTitleIsTopTen ? this.topTenRewardsString : formattedTopRewards);
   }
 
   private void toggleRecyclerViewAndEmptyStateVisibility(final @NonNull Boolean gone) {

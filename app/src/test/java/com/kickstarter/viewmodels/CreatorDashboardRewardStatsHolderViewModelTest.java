@@ -35,7 +35,7 @@ public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectri
     this.vm.outputs.projectAndRewardStats().map(PairUtils::second).subscribe(this.rewardStatsOutput);
     this.vm.outputs.rewardsStatsListIsGone().subscribe(this.rewardsStatsListIsGone);
     this.vm.outputs.rewardsStatsTruncatedTextIsGone().subscribe(this.rewardsStatsTruncatedTextIsGone);
-    this.vm.outputs.rewardsTitleIsLimitedCopy().subscribe(this.rewardsTitleIsLimitedCopy);
+    this.vm.outputs.rewardsTitleIsTopTen().subscribe(this.rewardsTitleIsLimitedCopy);
   }
 
   @Test

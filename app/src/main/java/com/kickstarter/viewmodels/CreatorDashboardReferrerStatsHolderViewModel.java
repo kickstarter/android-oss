@@ -36,7 +36,7 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
     Observable<Boolean> referrerStatsListIsGone();
 
     /** Emits when there are more than 10 referrer stats and title copy should reflect limited list. */
-    Observable<Boolean> referrersTitleIsLimitedCopy();
+    Observable<Boolean> referrersTitleIsTopTen();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardReferrerStatsViewHolder> implements Inputs, Outputs {
@@ -101,7 +101,7 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
     @Override public @NonNull Observable<Boolean> referrerStatsListIsGone() {
       return this.referrerStatsListIsGone;
     }
-    @Override public @NonNull Observable<Boolean> referrersTitleIsLimitedCopy() {
+    @Override public @NonNull Observable<Boolean> referrersTitleIsTopTen() {
       return this.referrersTitleIsLimitedCopy;
     }
   }

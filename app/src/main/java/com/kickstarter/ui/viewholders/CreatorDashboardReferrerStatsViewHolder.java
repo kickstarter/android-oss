@@ -54,14 +54,14 @@ public class CreatorDashboardReferrerStatsViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::toggleRecyclerViewAndEmptyStateVisibility);
 
-    this.viewModel.outputs.referrersTitleIsLimitedCopy()
+    this.viewModel.outputs.referrersTitleIsTopTen()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setTitleCopy);
   }
 
-  private void setTitleCopy(final boolean shouldShowLimitedCopy) {
-    this.referrerTitleTextView.setText(shouldShowLimitedCopy ? this.topTenPledgeSourcesString : this.topPledgeSourcesString);
+  private void setTitleCopy(final boolean shouldTitleHaveIsTen) {
+    this.referrerTitleTextView.setText(shouldTitleHaveIsTen ? this.topTenPledgeSourcesString : this.topPledgeSourcesString);
   }
 
   private void toggleRecyclerViewAndEmptyStateVisibility(final @NonNull Boolean gone) {

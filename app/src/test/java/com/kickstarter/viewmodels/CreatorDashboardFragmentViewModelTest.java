@@ -46,7 +46,7 @@ public class CreatorDashboardFragmentViewModelTest extends KSRobolectricTestCase
   @Test
   public void testToggleBottomSheet() {
     setUpEnvironment(environment());
-    this.vm.inputs.dashboardShowProjectMenuClicked();
+    this.vm.inputs.projectsListButtonClicked();
     this.toggleBottomSheet.assertValueCount(1);
     this.koalaTest.assertValue(KoalaEvent.OPENED_PROJECT_SWITCHER);
   }

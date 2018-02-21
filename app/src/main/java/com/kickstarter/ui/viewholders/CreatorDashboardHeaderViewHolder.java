@@ -56,7 +56,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   private KSCurrency ksCurrency;
 
   public interface Delegate {
-    void dashboardShowProjectMenuClicked();
+    void projectsListButtonClicked();
   }
 
   public CreatorDashboardHeaderViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
@@ -126,12 +126,12 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   }
 
   @OnClick(R.id.creator_dashboard_project_selector)
-  protected void dashboardShowProjectMenuClicked() {
-    this.delegate.dashboardShowProjectMenuClicked();
+  protected void projectsListButtonClicked() {
+    this.delegate.projectsListButtonClicked();
   }
 
   @OnClick(R.id.creator_dashboard_messages)
-  protected void dashbordMessagesButtonClick() {
+  protected void dashboardMessagesButtonClicked() {
     this.viewModel.inputs.messagesButtonClicked();
   }
 

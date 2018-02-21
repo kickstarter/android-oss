@@ -31,4 +31,13 @@ public class StringUtilsTest extends KSRobolectricTestCase {
     assertTrue(StringUtils.isPresent("a"));
     assertTrue(StringUtils.isPresent(" a "));
   }
+
+  @Test
+  public void testSentenceCase() {
+    assertEquals("Apple", StringUtils.sentenceCase("APPLE"));
+    assertEquals("Apple", StringUtils.sentenceCase("APple"));
+    assertEquals("Apple", StringUtils.sentenceCase("apple"));
+    assertEquals("Snapple apple", StringUtils.sentenceCase("Snapple Apple"));
+    assertEquals("Snapple apple snapple", StringUtils.sentenceCase("Snapple Apple Snapple"));
+  }
 }

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
@@ -69,7 +70,8 @@ public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
   }
 
   private void setTitleCopy(final boolean shouldShowLimitedCopy) {
-    this.rewardsTitleTextView.setText(shouldShowLimitedCopy ? this.topTenRewardsString : this.topRewardsString);
+    final String formattedTopRewards = StringUtils.sentenceCase(this.topRewardsString);
+    this.rewardsTitleTextView.setText(shouldShowLimitedCopy ? this.topTenRewardsString : formattedTopRewards);
   }
 
   private void toggleRecyclerViewAndEmptyStateVisibility(final @NonNull Boolean gone) {

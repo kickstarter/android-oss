@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Patterns;
 
+import java.util.Locale;
+
 public final class StringUtils {
   private StringUtils() {}
 
@@ -23,7 +25,9 @@ public final class StringUtils {
    * Returns a string with only the first character capitalized.
    */
   public static @NonNull String sentenceCase(final @NonNull String str) {
-    return str.length() <= 1 ? str.toUpperCase() : str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+    return str.length() <= 1
+      ? str.toUpperCase(Locale.getDefault())
+      : str.substring(0, 1).toUpperCase(Locale.getDefault()) + str.substring(1).toLowerCase(Locale.getDefault());
   }
 
   /**

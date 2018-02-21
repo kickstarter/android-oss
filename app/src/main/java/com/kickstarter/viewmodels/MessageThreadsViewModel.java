@@ -187,7 +187,7 @@ public interface MessageThreadsViewModel {
       Observable.combineLatest(project, refTag, Pair::create)
         .take(1)
         .compose(bindToLifecycle())
-        .subscribe(data -> this.koala.trackViewedMailbox(Mailbox.INBOX, data.first, data.second));
+        .subscribe(projectAndRefTag -> this.koala.trackViewedMailbox(Mailbox.INBOX, projectAndRefTag.first, projectAndRefTag.second));
     }
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();

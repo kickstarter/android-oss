@@ -126,7 +126,7 @@ public interface DiscoveryViewModel {
           .subscribe(this.currentConfigType::config));
 
       this.creatorDashboardButtonIsGone = currentUser
-        .map(u -> BooleanUtils.negate(u != null && IntegerUtils.isNonZero(u.memberProjectsCount())));
+        .map(user -> BooleanUtils.negate(user != null && IntegerUtils.isNonZero(user.memberProjectsCount())));
 
       // Seed params when we are freshly launching the app with no data.
       final Observable<DiscoveryParams> paramsFromInitialIntent = intent()

@@ -6,6 +6,7 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
@@ -60,7 +61,8 @@ public interface CreatorDashboardViewModel {
         .map(ListUtils::first);
 
       final Observable<Project> currentProject = Observable
-        .merge(firstProject, this.projectSelectionInput);
+        .merge(firstProject, this.projectSelectionInput)
+        .filter(ObjectUtils::isNotNull);
 
       final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = currentProject
         .switchMap(this.client::fetchProjectStats)

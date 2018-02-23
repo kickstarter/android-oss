@@ -221,7 +221,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
     final Intent intent = new Intent(Intent.ACTION_SEND)
       .setType("text/plain")
       .putExtra(Intent.EXTRA_TEXT, shareMessage + " " + project.webProjectUrl());
-    startActivity(intent);
+    startActivity(Intent.createChooser(intent, getResources().getText(R.string.project_accessibility_button_share_label)));
   }
 
   private void startWebViewActivity(final @NonNull String toolbarTitle, final @NonNull String url) {

@@ -4,13 +4,9 @@ import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.CategoryFactory;
-import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.InternalBuildEnvelopeFactory;
 import com.kickstarter.factories.UserFactory;
-import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
-import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.DiscoveryUtils;
@@ -23,7 +19,6 @@ import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import rx.observers.TestSubscriber;
@@ -66,63 +61,13 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCreatorDashboardButtonIsGone__isCreatorFeatureDisabled() {
-    final User creator = UserFactory.creator();
-    final MockCurrentUser currentUser = new MockCurrentUser(creator);
-
-    final Config config = ConfigFactory.config()
-      .toBuilder()
-      .features(Collections.emptyMap())
-      .build();
-    final MockCurrentConfig currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-    final Environment env = environment().toBuilder()
-      .currentUser(currentUser)
-      .currentConfig(currentConfig).build();
-
-    this.vm = new DiscoveryViewModel.ViewModel(env);
-    this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
-    this.creatorDashboardButtonIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testCreatorDashboardButtonIsGone__notCreatorFeatureEnabled() {
-    final User notCreator = UserFactory.user().toBuilder().createdProjectsCount(0).build();
-    final MockCurrentUser currentUser = new MockCurrentUser(notCreator);
-
-    final Config config = ConfigFactory.config()
-      .toBuilder()
-      .features(Collections.singletonMap(FeatureKey.ANDROID_CREATOR_VIEW, true))
-      .build();
-
-    final MockCurrentConfig currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
-    final Environment env = environment().toBuilder()
-      .currentUser(currentUser)
-      .currentConfig(currentConfig).build();
-
-    this.vm = new DiscoveryViewModel.ViewModel(env);
-    this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
-    this.creatorDashboardButtonIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testCreatorDashboardButtonIsGone__notCollaboratorFeatureEnabled() {
+  public void testCreatorDashboardButtonIsGone__notCreatorOrCollaborator() {
     final User notCreator = UserFactory.user().toBuilder().memberProjectsCount(0).build();
     final MockCurrentUser currentUser = new MockCurrentUser(notCreator);
 
-    final Config config = ConfigFactory.config()
-      .toBuilder()
-      .features(Collections.singletonMap(FeatureKey.ANDROID_CREATOR_VIEW, true))
-      .build();
-
-    final MockCurrentConfig currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
     final Environment env = environment().toBuilder()
       .currentUser(currentUser)
-      .currentConfig(currentConfig).build();
+      .build();
 
     this.vm = new DiscoveryViewModel.ViewModel(env);
     this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
@@ -130,43 +75,13 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCreatorDashboardButtonIsGone__isCreatorFeatureEnabled() {
+  public void testCreatorDashboardButtonIsGone__isCreatorOrCollaborator() {
     final User creator = UserFactory.creator();
     final MockCurrentUser currentUser = new MockCurrentUser(creator);
 
-    final Config config = ConfigFactory.config()
-      .toBuilder()
-      .features(Collections.singletonMap(FeatureKey.ANDROID_CREATOR_VIEW, true))
-      .build();
-
-    final MockCurrentConfig currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
     final Environment env = environment().toBuilder()
       .currentUser(currentUser)
-      .currentConfig(currentConfig).build();
-
-    this.vm = new DiscoveryViewModel.ViewModel(env);
-    this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
-    this.creatorDashboardButtonIsGone.assertValues(false);
-  }
-
-  @Test
-  public void testCreatorDashboardButtonIsGone__isCollaboratorFeatureEnabled() {
-    final User creator = UserFactory.user().toBuilder().memberProjectsCount(2).build();
-    final MockCurrentUser currentUser = new MockCurrentUser(creator);
-
-    final Config config = ConfigFactory.config()
-      .toBuilder()
-      .features(Collections.singletonMap(FeatureKey.ANDROID_CREATOR_VIEW, true))
       .build();
-
-    final MockCurrentConfig currentConfig = new MockCurrentConfig();
-    currentConfig.config(config);
-
-    final Environment env = environment().toBuilder()
-      .currentUser(currentUser)
-      .currentConfig(currentConfig).build();
 
     this.vm = new DiscoveryViewModel.ViewModel(env);
     this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);

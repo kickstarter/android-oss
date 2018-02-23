@@ -7,16 +7,18 @@
   android:layout_height="wrap_content"
   android:divider="@drawable/divider_dark_grey_500_horizontal"
   android:orientation="vertical"
-  android:showDividers="beginning">
+  android:showDividers="beginning"
+  android:visibility="gone">
 
   <TextView
-    style="@style/Title3"
+    style="@style/Title2"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_5"
+    android:layout_marginTop="@dimen/grid_7"
     android:paddingEnd="@dimen/grid_2"
     android:paddingStart="@dimen/grid_2"
-    android:text="@string/dashboard_graphs_referrers_title_referrers" />
+    android:text="@string/How_backers_found_your_project"
+    android:visibility="gone" />
 
   <android.support.constraint.ConstraintLayout
     android:id="@+id/referrer_breakdown_chart_layout"
@@ -88,10 +90,10 @@
           android:layout_height="wrap_content"
           tools:text="$1,000" />
 
-        <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/dashboard_graphs_referrers_pledged_via_kickstarter" />
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/via_kickstarter" />
 
       </LinearLayout>
     </LinearLayout>
@@ -173,12 +175,11 @@
           android:layout_height="wrap_content"
           tools:text="$22" />
 
-        <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:gravity="end"
-          tools:text="via external"
-          android:text="@string/dashboard_graphs_referrers_pledged_via_external" />
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="@string/via_external" />
 
       </LinearLayout>
 
@@ -243,10 +244,10 @@
           android:layout_height="wrap_content"
           tools:text="$22,000" />
 
-        <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/dashboard_graphs_referrers_pledged_via_custom" />
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/via_custom" />
 
       </LinearLayout>
 

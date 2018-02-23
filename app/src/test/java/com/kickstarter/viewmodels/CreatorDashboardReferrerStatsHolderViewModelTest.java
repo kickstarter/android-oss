@@ -26,14 +26,14 @@ public class CreatorDashboardReferrerStatsHolderViewModelTest extends KSRobolect
   private final TestSubscriber<Project> projectOutput = new TestSubscriber<>();
   private final TestSubscriber<Boolean> referrerStatsListIsGone = new TestSubscriber<>();
   private final TestSubscriber<List<ProjectStatsEnvelope.ReferrerStats>> referrerStatsOutput = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> referrerStatsTruncatedTextIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> referrersTitleIsLimitedCopy = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardReferrerStatsHolderViewModel.ViewModel(environment);
     this.vm.outputs.projectAndReferrerStats().map(PairUtils::first).subscribe(this.projectOutput);
     this.vm.outputs.projectAndReferrerStats().map(PairUtils::second).subscribe(this.referrerStatsOutput);
     this.vm.outputs.referrerStatsListIsGone().subscribe(this.referrerStatsListIsGone);
-    this.vm.outputs.referrerStatsTruncatedTextIsGone().subscribe(this.referrerStatsTruncatedTextIsGone);
+    this.vm.outputs.referrersTitleIsTopTen().subscribe(this.referrersTitleIsLimitedCopy);
   }
 
   @Test
@@ -59,21 +59,21 @@ public class CreatorDashboardReferrerStatsHolderViewModelTest extends KSRobolect
     this.vm.inputs.projectAndReferrerStatsInput(Pair.create(project, new ArrayList<>()));
 
     this.referrerStatsListIsGone.assertValue(true);
-    this.referrerStatsTruncatedTextIsGone.assertValue(true);
+    this.referrersTitleIsLimitedCopy.assertValue(false);
 
     this.vm.inputs.projectAndReferrerStatsInput(Pair.create(project, Collections.singletonList(ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats())));
     this.referrerStatsListIsGone.assertValues(true, false);
-    this.referrerStatsTruncatedTextIsGone.assertValue(true);
+    this.referrersTitleIsLimitedCopy.assertValue(false);
   }
 
   @Test
-  public void testReferrerStatsTruncatedTextIsGone() {
+  public void testReferrersTitleIsLimitedCopy() {
     setUpEnvironment(environment());
 
     final Project project = ProjectFactory.project();
     this.vm.inputs.projectAndReferrerStatsInput(Pair.create(project, Collections.singletonList(ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats())));
 
-    this.referrerStatsTruncatedTextIsGone.assertValue(true);
+    this.referrersTitleIsLimitedCopy.assertValue(false);
 
     final List<ProjectStatsEnvelope.ReferrerStats> maxStats = new ArrayList<>();
     for (int i = 1; i <= 10; i++) {
@@ -81,10 +81,10 @@ public class CreatorDashboardReferrerStatsHolderViewModelTest extends KSRobolect
     }
 
     this.vm.inputs.projectAndReferrerStatsInput(Pair.create(project, maxStats));
-    this.referrerStatsTruncatedTextIsGone.assertValues(true);
+    this.referrersTitleIsLimitedCopy.assertValues(false);
 
     maxStats.add(ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder().pledged(11).build());
     this.vm.inputs.projectAndReferrerStatsInput(Pair.create(project, maxStats));
-    this.referrerStatsTruncatedTextIsGone.assertValues(true, false);
+    this.referrersTitleIsLimitedCopy.assertValues(false, true);
   }
 }

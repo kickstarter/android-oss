@@ -5,8 +5,8 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
@@ -22,20 +22,13 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 
 public interface CreatorDashboardViewModel {
   interface Inputs extends CreatorDashboardBottomSheetAdapter.Delegate {
-    /** Call when a project is clicked. */
-    void projectViewClicked();
-
     /** Call when a project is clicked to pass to delegate. */
-    void projectSwitcherProjectClickInput(Project project);
-
-    /** Call when a different project should be displayed. */
-    void refreshProject(Project project);
+    void projectSelectionInput(Project project);
   }
 
   interface Outputs {
@@ -44,12 +37,6 @@ public interface CreatorDashboardViewModel {
 
     /** Emits when project dropdown should be shown. */
     Observable<List<Project>> projectsForBottomSheet();
-
-    /** Emits when a project is clicked in the project switcher. */
-    Observable<Project> projectSwitcherProjectClickOutput();
-
-    /** Emits when button is clicked to view individual project page. */
-    Observable<Pair<Project, RefTag>> startProjectActivity();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardActivity> implements Inputs, Outputs {
@@ -60,7 +47,9 @@ public interface CreatorDashboardViewModel {
       this.client = environment.apiClient();
 
       final Observable<Notification<ProjectsEnvelope>> projectsNotification =
-        this.client.fetchProjects(true).materialize().share();
+        this.client.fetchProjects(true)
+          .materialize()
+          .share();
 
       final Observable<ProjectsEnvelope> projectsEnvelope = projectsNotification
         .compose(values());
@@ -68,10 +57,14 @@ public interface CreatorDashboardViewModel {
       final Observable<List<Project>> projects = projectsEnvelope
         .map(ProjectsEnvelope::projects);
 
-      projects.map(ListUtils::first)
-        .subscribe(this.projectSelected::onNext);
+      final Observable<Project> firstProject = projects
+        .map(ListUtils::first);
 
-      final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = this.projectSelected
+      final Observable<Project> currentProject = Observable
+        .merge(firstProject, this.projectSelectionInput)
+        .filter(ObjectUtils::isNotNull);
+
+      final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = currentProject
         .switchMap(this.client::fetchProjectStats)
         .share()
         .materialize();
@@ -81,50 +74,39 @@ public interface CreatorDashboardViewModel {
 
       this.projectsForBottomSheet = Observable.combineLatest(
         projects.filter(projectList -> projectList.size() > 1),
-        this.projectSelected,
+        currentProject,
         (projectList, project) -> Observable
           .from(projectList)
           .filter(p -> p.id() != project.id())
           .toList())
         .flatMap(listObservable -> listObservable);
 
-      this.projectSelected
+      currentProject
         .compose(combineLatestPair(projectStatsEnvelope))
         .compose(bindToLifecycle())
+        .distinctUntilChanged()
         .subscribe(this.projectAndStats);
 
-      this.projectSwitcherProjectClickOutput = this.projectSwitcherClicked;
+      this.projectSelectionInput
+        .compose(bindToLifecycle())
+        .subscribe(this.koala::trackSwitchedProjects);
 
-      this.startProjectActivity = this.projectSelected
-        .compose(takeWhen(this.projectViewClicked))
-        .map(p -> Pair.create(p, RefTag.dashboard()));
+      currentProject
+        .compose(bindToLifecycle())
+        .subscribe(this.koala::trackViewedProjectDashboard);
     }
 
-    private final PublishSubject<Void> projectViewClicked = PublishSubject.create();
-    private final PublishSubject<Project> projectSwitcherClicked = PublishSubject.create();
-    private final BehaviorSubject<Project> projectSelected = BehaviorSubject.create();
+    private final PublishSubject<Project> projectSelectionInput = PublishSubject.create();
 
     private final BehaviorSubject<Pair<Project, ProjectStatsEnvelope>> projectAndStats = BehaviorSubject.create();
     private final Observable<List<Project>> projectsForBottomSheet;
-    private final Observable<Project> projectSwitcherProjectClickOutput;
-    private final Observable<Pair<Project, RefTag>> startProjectActivity;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
     @Override
-    public void projectViewClicked() {
-      this.projectViewClicked.onNext(null);
-    }
-
-    @Override
-    public void projectSwitcherProjectClickInput(final @NonNull Project project) {
-      this.projectSwitcherClicked.onNext(project);
-    }
-
-    @Override
-    public void refreshProject(final @NonNull Project project) {
-      this.projectSelected.onNext(project);
+    public void projectSelectionInput(final @NonNull Project project) {
+      this.projectSelectionInput.onNext(project);
     }
 
     @Override public @NonNull Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats() {
@@ -133,11 +115,6 @@ public interface CreatorDashboardViewModel {
     @Override public @NonNull Observable<List<Project>> projectsForBottomSheet() {
       return this.projectsForBottomSheet;
     }
-    @Override public @NonNull Observable<Project> projectSwitcherProjectClickOutput() {
-      return this.projectSwitcherProjectClickOutput;
-    }
-    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
-      return this.startProjectActivity;
-    }
+
   }
 }

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
@@ -18,6 +19,7 @@ import com.kickstarter.viewmodels.CreatorDashboardRewardStatsHolderViewModel;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -31,6 +33,10 @@ public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
   protected @Bind(R.id.dashboard_reward_stats_pledged_view) View pledgedColumnView;
   protected @Bind(R.id.dashboard_reward_stats_truncated_text_view) TextView truncatedTextView;
   protected @Bind(R.id.dashboard_reward_stats_recycler_view) RecyclerView rewardStatsRecyclerView;
+  protected @Bind(R.id.dashboard_reward_title) TextView rewardsTitleTextView;
+
+  protected @BindString(R.string.dashboard_graphs_rewards_top_rewards) String topRewardsString;
+  protected @BindString(R.string.Top_ten_rewards) String topTenRewardsString;
 
   public CreatorDashboardRewardStatsViewHolder(final @NonNull View view) {
     super(view);
@@ -56,6 +62,16 @@ public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(gone -> ViewUtils.setGone(this.truncatedTextView, gone));
+
+    this.viewModel.outputs.rewardsTitleIsTopTen()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setTitleCopy);
+  }
+
+  private void setTitleCopy(final boolean referrersTitleIsTopTen) {
+    final String formattedTopRewards = StringUtils.sentenceCase(this.topRewardsString);
+    this.rewardsTitleTextView.setText(referrersTitleIsTopTen ? this.topTenRewardsString : formattedTopRewards);
   }
 
   private void toggleRecyclerViewAndEmptyStateVisibility(final @NonNull Boolean gone) {

@@ -74,6 +74,7 @@ patrocinadores</string>
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} estará trasnmitiendo en vivo en Kickstarter %{in_duration}</string>
   <string name="Creator_tips" formatted="false">Consejos para el creador</string>
   <string name="Daily_digest" formatted="false">Resumen diario</string>
+  <string name="Data_will_appear_here_once" formatted="false">Los datos aparecerán aquí una vez que alguien patrocine tu proyecto.</string>
   <string name="Delivered" formatted="false">Entregado</string>
   <string name="Discover_more_projects" formatted="false">Descubre más proyectos.</string>
   <string name="Dismiss" formatted="false">Descartar</string>
@@ -138,6 +139,7 @@ patrocinadores</string>
   <string name="Got_it" formatted="false">¡Listo!</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.</string>
   <string name="Home" formatted="false">Inicio</string>
+  <string name="How_backers_found_your_project" formatted="false">Cómo encontraron tu proyecto los patrocinadores</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Sólo quiero apoyar este proyecto.</string>
   <string name="Individual_Emails" formatted="false">Notificaciones por correo electrónico individuales</string>
   <string name="Info" formatted="false">Información</string>
@@ -247,6 +249,7 @@ patrocinadores</string>
   <string name="Reward_Surveys_one" formatted="false">Cuestionario</string>
   <string name="Reward_Surveys_two" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} cuestionarios</string>
+  <string name="Reward_delivered" formatted="false">¿Recompensa entregada?</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Recompensa&lt;/b> estimada para entregarse en %{delivery_date}</string>
   <string name="Reward_selected" formatted="false">Recompensa seleccionada</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} recompensas:</string>
@@ -307,7 +310,11 @@ patrocinadores</string>
   <string name="Time_left_left" formatted="false">%{time_left} restantes</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">Accede a tus categorías favoritas en el menú en la parte superior de la app.</string>
   <string name="To_read_this_project_update_you_must_be_a_backer" formatted="false">Sólo los patrocinadores pueden leer esta actualización, por favor inicia sesión o regístrate para continuar.</string>
+  <string name="To_see_all_rewards_view_your_project" formatted="false">Para ver todas las recompensas, revisa tu proyecto.</string>
   <string name="Toggle_saving_this_project" formatted="false">Guardar/No guardar este proyecto</string>
+  <string name="Top_pledge_sources" formatted="false">Principales fuentes de contribución</string>
+  <string name="Top_ten_pledge_sources" formatted="false">Las 10 principales fuentes de contribución</string>
+  <string name="Top_ten_rewards" formatted="false">Las 10 mejores recompensas</string>
   <string name="Total_pledged" formatted="false">Contribuciones en total</string>
   <string name="Unfollow_friend_name" formatted="false">Dejar de seguir a %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Dejar de seguir a %{friend_name}.</string>
@@ -320,8 +327,10 @@ patrocinadores</string>
   <string name="Upcoming_live_streams" formatted="false">Live streams futuros</string>
   <string name="Upcoming_with_creator_name" formatted="false">Próximamente: Video de &lt;br/>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Update_pledge" formatted="false">Actualizar contribución</string>
+  <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">Aquí puedes ver las recompensas recibidas.</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Video desactivado hasta se reestablezca la conexión de internet</string>
   <string name="View" formatted="false">Ver</string>
+  <string name="View_project" formatted="false">Ver proyecto</string>
   <string name="View_your_pledge" formatted="false">Revisa tu contribución</string>
   <string name="View_your_reward" formatted="false">Mostrar recompensa</string>
   <string name="Watch_live" formatted="false">Ver en vivo</string>
@@ -1313,4 +1322,7 @@ guardados</string>
   <string name="updates_count_updates_one" formatted="false">%{updates_count} actualización</string>
   <string name="updates_count_updates_two" formatted="false">%{updates_count} actualizaciones</string>
   <string name="updates_count_updates_zero" formatted="false">%{updates_count} actualizaciones</string>
+  <string name="via_custom" formatted="false">a través de personalizados</string>
+  <string name="via_external" formatted="false">a través de externos</string>
+  <string name="via_kickstarter" formatted="false">a través de Kickstarter</string>
 </resources>

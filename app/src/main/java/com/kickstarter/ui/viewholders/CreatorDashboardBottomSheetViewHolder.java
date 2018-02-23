@@ -23,16 +23,13 @@ public final class CreatorDashboardBottomSheetViewHolder extends KSViewHolder {
   protected @Bind(R.id.creator_dashboard_project_switcher_project_title) TextView projectNameTextView;
   protected @Bind(R.id.creator_dashboard_project_switcher_project_launch) TextView projectLaunchDateTextView;
 
-  private final @Nullable Delegate delegate;
-
   public interface Delegate {
-    void projectSwitcherProjectClickInput(Project project);
+    void projectSelectionInput(Project project);
   }
 
-  public CreatorDashboardBottomSheetViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
+  public CreatorDashboardBottomSheetViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.viewModel = new CreatorDashboardBottomSheetHolderViewModel.ViewModel(environment());
-    this.delegate = delegate;
     ButterKnife.bind(this, view);
 
     this.viewModel.outputs.projectNameText()
@@ -48,7 +45,7 @@ public final class CreatorDashboardBottomSheetViewHolder extends KSViewHolder {
     this.viewModel.outputs.projectSwitcherProject()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this.delegate::projectSwitcherProjectClickInput);
+      .subscribe(delegate::projectSelectionInput);
   }
 
   @OnClick(R.id.creator_dashboard_bottom_sheet_project_view)

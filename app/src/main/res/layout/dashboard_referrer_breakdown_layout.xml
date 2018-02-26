@@ -7,8 +7,7 @@
   android:layout_height="wrap_content"
   android:divider="@drawable/divider_dark_grey_500_horizontal"
   android:orientation="vertical"
-  android:showDividers="beginning"
-  android:visibility="gone">
+  android:showDividers="beginning">
 
   <TextView
     style="@style/Title2"
@@ -17,8 +16,7 @@
     android:layout_marginTop="@dimen/grid_7"
     android:paddingEnd="@dimen/grid_2"
     android:paddingStart="@dimen/grid_2"
-    android:text="@string/How_backers_found_your_project"
-    android:visibility="gone" />
+    android:text="@string/How_backers_found_your_project" />
 
   <android.support.constraint.ConstraintLayout
     android:id="@+id/referrer_breakdown_chart_layout"
@@ -38,6 +36,7 @@
       app:layout_constraintTop_toTopOf="@+id/pledged_via_external_layout" />
 
     <LinearLayout
+      android:id="@+id/pledged_via_kickstarter_indicator"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/grid_3"
@@ -90,10 +89,10 @@
           android:layout_height="wrap_content"
           tools:text="$1,000" />
 
-          <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/via_kickstarter" />
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:text="@string/via_kickstarter" />
 
       </LinearLayout>
     </LinearLayout>
@@ -111,21 +110,21 @@
     <View
       android:id="@+id/external_guideline"
       android:layout_width="0dp"
-      android:background="@color/black"
       android:layout_height="0dp"
       android:layout_marginStart="@dimen/grid_3"
       app:layout_constraintStart_toEndOf="@+id/pledged_via_kickstarter_layout"
       app:layout_constraintTop_toTopOf="@id/pledged_via_external_layout" />
 
     <LinearLayout
+      android:id="@+id/pledged_via_external_indicator"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_2"
       android:gravity="bottom"
       android:orientation="horizontal"
-      android:layout_marginBottom="@dimen/grid_2"
-      app:layout_constraintStart_toStartOf="@id/external_guideline"
       app:layout_constraintBottom_toBottomOf="@+id/pledged_via_external_layout"
-      app:layout_constraintEnd_toEndOf="parent">
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@id/external_guideline">
 
       <ImageView
         android:id="@+id/external_indicator"
@@ -134,20 +133,18 @@
         android:background="@color/white"
         android:contentDescription="@null"
         android:padding="1dp"
-        android:src="@drawable/indicator_vertical"
-        android:tint="@color/ksr_green_500" />
+        android:scaleX="-1"
+        android:src="@drawable/indicator_external" />
 
       <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="end"
         android:layout_marginBottom="@dimen/grid_6"
         android:orientation="vertical">
 
         <LinearLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_gravity="end"
           android:orientation="horizontal">
 
           <ImageView
@@ -175,16 +172,12 @@
           android:layout_height="wrap_content"
           tools:text="$22" />
 
-          <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:text="@string/via_external" />
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/via_external" />
 
       </LinearLayout>
-
-
-
     </LinearLayout>
 
     <View
@@ -199,9 +192,9 @@
 
 
     <LinearLayout
+      android:id="@+id/pledged_via_custom_indicator"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/grid_3"
       android:layout_marginTop="@dimen/grid_2"
       android:orientation="horizontal"
       app:layout_constraintEnd_toEndOf="@+id/pledged_via_custom_layout"
@@ -244,10 +237,10 @@
           android:layout_height="wrap_content"
           tools:text="$22,000" />
 
-          <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/via_custom" />
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/via_custom" />
 
       </LinearLayout>
 

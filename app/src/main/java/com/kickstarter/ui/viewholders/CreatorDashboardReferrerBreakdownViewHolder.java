@@ -3,9 +3,9 @@ package com.kickstarter.ui.viewholders;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.Pair;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +20,7 @@ import com.kickstarter.viewmodels.CreatorDashboardReferrerBreakdownHolderViewMod
 import java.math.RoundingMode;
 
 import butterknife.Bind;
+import butterknife.BindDimen;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -37,11 +38,17 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   protected @Bind(R.id.percent_via_external_circle_text_view) ImageView percentExternalCircleTextView;
   protected @Bind(R.id.percent_via_kickstarter_text_view) TextView percentInternalTextView;
   protected @Bind(R.id.percent_via_kickstarter_circle_text_view) ImageView percentInternalCircleTextView;
-  protected @Bind(R.id.pledged_via_custom_layout) FrameLayout pledgedViaCustomLayout;
-  protected @Bind(R.id.pledged_via_external_layout) FrameLayout pledgedViaExternalLayout;
-  protected @Bind(R.id.pledged_via_kickstarter_layout) FrameLayout pledgedViaInternalLayout;
+  protected @Bind(R.id.pledged_via_custom_indicator) View pledgedViaCustomIndicator;
+  protected @Bind(R.id.pledged_via_external_indicator) View pledgedViaExternalIndicator;
+  protected @Bind(R.id.pledged_via_kickstarter_indicator) View pledgedViaInternalIndicator;
+  protected @Bind(R.id.pledged_via_custom_layout) View pledgedViaCustomLayout;
+  protected @Bind(R.id.pledged_via_external_layout) View pledgedViaExternalLayout;
+  protected @Bind(R.id.pledged_via_kickstarter_layout) View pledgedViaInternalLayout;
   protected @Bind(R.id.referrer_breakdown_chart_layout) ConstraintLayout referrerBreakdownLayout;
   protected @Bind(R.id.referrer_breakdown_view) ReferrerBreakdownView referrerBreakdownView;
+
+  protected @BindDimen(R.dimen.grid_1_half) int grid1HalfPixels;
+  protected @BindDimen(R.dimen.grid_3) int grid3Pixels;
 
   private KSCurrency ksCurrency;
 
@@ -60,22 +67,22 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     this.viewModel.outputs.customReferrerPercent()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(percent -> setReferrerWidth(percent, pledgedViaCustomLayout));
+      .subscribe(percent -> setReferrerWidth(percent, this.pledgedViaCustomLayout, this.pledgedViaCustomIndicator));
 
     this.viewModel.outputs.customReferrerPercentText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.percentCustomTextView::setText);
 
-//    this.viewModel.outputs.externalReferrerColor()
-//      .compose(bindToLifecycle())
-//      .compose(observeForUI())
-//      .subscribe(color -> DrawableCompat.setTint(this.percentExternalCircleTextView.getDrawable(), color));
+    this.viewModel.outputs.externalReferrerColor()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(color -> DrawableCompat.setTint(this.percentExternalCircleTextView.getDrawable(), color));
 
     this.viewModel.outputs.externalReferrerPercent()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(percent -> setReferrerWidth(percent, pledgedViaExternalLayout));
+      .subscribe(percent -> setReferrerWidth(percent, this.pledgedViaExternalLayout, this.pledgedViaExternalIndicator));
 
     this.viewModel.outputs.externalReferrerPercentText()
       .compose(bindToLifecycle())
@@ -90,7 +97,7 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     this.viewModel.outputs.internalReferrerPercent()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(percent -> setReferrerWidth(percent, pledgedViaInternalLayout));
+      .subscribe(percent -> setReferrerWidth(percent, this.pledgedViaInternalLayout, this.pledgedViaInternalIndicator));
 
     this.viewModel.outputs.internalReferrerPercentText()
       .compose(bindToLifecycle())
@@ -128,10 +135,19 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
       .subscribe(pa -> this.setAmountPledgedTextViewText(pa, this.amountPledgedViaInternalTextView));
   }
 
-  private static void setReferrerWidth(Float percent, FrameLayout frameLayout) {
-    ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) frameLayout.getLayoutParams();
-    layoutParams.horizontalWeight = percent;
-    frameLayout.setLayoutParams(layoutParams);
+  private void setReferrerWidth(Float percent, View bar, View indicator) {
+    ConstraintLayout.LayoutParams barLayoutParams = (ConstraintLayout.LayoutParams) bar.getLayoutParams();
+    barLayoutParams.horizontalWeight = percent;
+    bar.setLayoutParams(barLayoutParams);
+
+    bar.post(() -> {
+      if (bar.getMeasuredWidth() < grid1HalfPixels) {
+        ConstraintLayout.LayoutParams indicatorLayoutParams = (ConstraintLayout.LayoutParams) bar.getLayoutParams();
+        indicatorLayoutParams.setMarginEnd(0);
+        indicatorLayoutParams.setMarginStart(0);
+        indicator.setLayoutParams(barLayoutParams);
+      }
+    });
   }
 
   @Override

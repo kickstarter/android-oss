@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
   <item>
-    <rotate android:fromDegrees="180">
       <vector
         android:width="15dp"
         android:height="55dp"
@@ -16,10 +15,9 @@
             android:strokeWidth="3" />
           <path
             android:pathData="M14 56L14 14 2 2"
-            android:strokeColor="#034752"
+            android:strokeColor="#009E74"
             android:strokeWidth="1" />
         </group>
       </vector>
-    </rotate>
   </item>
 </layer-list>

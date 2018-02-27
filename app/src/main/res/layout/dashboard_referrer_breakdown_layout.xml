@@ -14,6 +14,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_7"
+    android:layout_marginBottom="@dimen/grid_6"
     android:paddingEnd="@dimen/grid_2"
     android:paddingStart="@dimen/grid_2"
     android:text="@string/How_backers_found_your_project" />
@@ -26,240 +27,228 @@
     android:paddingStart="@dimen/grid_2">
 
     <View
-      android:id="@+id/pledged_via_kickstarter_layout"
+      android:id="@+id/pledged_via_kickstarter_bar"
       android:layout_width="0dp"
-      android:layout_height="@dimen/grid_4"
+      android:layout_height="24dp"
       android:background="@color/ksr_green_800"
-      app:layout_constraintEnd_toStartOf="@+id/pledged_via_external_layout"
+      app:layout_constraintEnd_toStartOf="@+id/pledged_via_external_bar"
       app:layout_constraintHorizontal_weight="1"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="@+id/pledged_via_external_layout" />
+      app:layout_constraintTop_toTopOf="@+id/pledged_via_external_bar" />
 
-    <LinearLayout
+    <ImageView
       android:id="@+id/pledged_via_kickstarter_indicator"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/grid_3"
       android:layout_marginTop="@dimen/grid_2"
-      android:orientation="horizontal"
-      app:layout_constraintStart_toStartOf="@+id/pledged_via_kickstarter_layout"
-      app:layout_constraintTop_toTopOf="@+id/pledged_via_kickstarter_layout">
+      android:contentDescription="@null"
+      android:scaleX="-1"
+      android:scaleY="-1"
+      android:src="@drawable/indicator_kickstarter"
+      app:layout_constraintStart_toStartOf="@+id/pledged_via_kickstarter_bar"
+      app:layout_constraintTop_toTopOf="@+id/pledged_via_kickstarter_bar" />
 
-      <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:contentDescription="@null"
-        android:padding="1dp"
-        android:src="@drawable/indicator_vertical" />
+    <LinearLayout
+      android:id="@+id/pledged_via_kickstarter"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom"
+      android:layout_marginStart="@dimen/grid_1"
+      android:layout_marginTop="@dimen/grid_8"
+      android:orientation="vertical"
+      app:layout_constraintStart_toEndOf="@+id/pledged_via_kickstarter_indicator"
+      app:layout_constraintTop_toTopOf="@+id/pledged_via_kickstarter_bar">
 
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="@dimen/grid_6"
-        android:orientation="vertical">
-
-        <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal">
-
-          <TextView
-            android:id="@+id/percent_via_kickstarter_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="75%" />
-
-          <ImageView
-            android:id="@+id/percent_via_kickstarter_circle_text_view"
-            android:layout_width="6dp"
-            android:layout_height="6dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="1dp"
-            android:src="@drawable/creator_dashboard_circle"
-            android:tint="@color/ksr_green_800"
-            tools:ignore="ContentDescription" />
-
-        </LinearLayout>
+        android:layout_marginBottom="@dimen/grid_1_half"
+        android:orientation="horizontal">
 
         <TextView
-          android:id="@+id/amount_pledged_via_kickstarter_text_view"
+          android:id="@+id/percent_via_kickstarter_text_view"
+          style="@style/CalloutPrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          tools:text="$1,000" />
+          android:layout_marginEnd="@dimen/grid_1_half"
+          tools:text="75%" />
 
-        <TextView
+        <ImageView
+          android:id="@+id/percent_via_kickstarter_circle_text_view"
           android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:text="@string/via_kickstarter" />
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:layout_marginEnd="1dp"
+          android:src="@drawable/creator_dashboard_circle"
+          android:tint="@color/ksr_green_800"
+          tools:ignore="ContentDescription" />
 
       </LinearLayout>
+
+      <TextView
+        android:id="@+id/amount_pledged_via_kickstarter_text_view"
+        style="@style/CalloutSecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="$1,000" />
+
+      <TextView
+        style="@style/Caption1Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="@string/via_kickstarter" />
+
     </LinearLayout>
 
     <View
-      android:id="@+id/pledged_via_external_layout"
+      android:id="@+id/pledged_via_external_bar"
       android:layout_width="0dp"
-      android:layout_height="@dimen/grid_4"
+      android:layout_height="24dp"
       android:background="@color/ksr_green_500"
-      app:layout_constraintEnd_toStartOf="@+id/pledged_via_custom_layout"
+      app:layout_constraintEnd_toStartOf="@+id/pledged_via_custom_bar"
       app:layout_constraintHorizontal_weight="1"
-      app:layout_constraintStart_toEndOf="@+id/pledged_via_kickstarter_layout"
+      app:layout_constraintStart_toEndOf="@+id/pledged_via_kickstarter_bar"
       app:layout_constraintTop_toBottomOf="parent" />
 
-    <View
-      android:id="@+id/external_guideline"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      android:layout_marginStart="@dimen/grid_3"
-      app:layout_constraintStart_toEndOf="@+id/pledged_via_kickstarter_layout"
-      app:layout_constraintTop_toTopOf="@id/pledged_via_external_layout" />
-
     <LinearLayout
-      android:id="@+id/pledged_via_external_indicator"
+      android:id="@+id/pledged_via_external"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_2"
-      android:gravity="bottom"
-      android:orientation="horizontal"
-      app:layout_constraintBottom_toBottomOf="@+id/pledged_via_external_layout"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/external_guideline">
-
-      <ImageView
-        android:id="@+id/external_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:contentDescription="@null"
-        android:padding="1dp"
-        android:scaleX="-1"
-        android:src="@drawable/indicator_external" />
+      android:layout_marginBottom="@dimen/grid_6"
+      android:layout_marginEnd="@dimen/grid_1"
+      android:orientation="vertical"
+      app:layout_constraintBottom_toBottomOf="@+id/pledged_via_external_bar"
+      app:layout_constraintEnd_toStartOf="@+id/pledged_via_external_indicator"
+      app:layout_constraintTop_toTopOf="parent">
 
       <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_6"
-        android:orientation="vertical">
-
-        <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal">
-
-          <ImageView
-            android:id="@+id/percent_via_external_circle_text_view"
-            android:layout_width="6dp"
-            android:layout_height="6dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="1dp"
-            android:src="@drawable/creator_dashboard_circle"
-            android:tint="@color/ksr_green_500"
-            tools:ignore="ContentDescription" />
-
-          <TextView
-            android:id="@+id/percent_via_external_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            tools:text="75%" />
-
-        </LinearLayout>
+        android:layout_marginBottom="@dimen/grid_1_half"
+        android:orientation="horizontal">
 
         <TextView
-          android:id="@+id/amount_pledged_via_external_text_view"
+          android:id="@+id/percent_via_external_text_view"
+          style="@style/CalloutPrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          tools:text="$22" />
+          android:layout_marginEnd="@dimen/grid_1_half"
+          android:gravity="center"
+          tools:text="75%" />
 
-        <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/via_external" />
+        <ImageView
+          android:id="@+id/percent_via_external_circle_text_view"
+          android:layout_width="6dp"
+          android:layout_height="6dp"
+          android:layout_gravity="center_vertical"
+          android:layout_marginEnd="1dp"
+          android:src="@drawable/creator_dashboard_circle"
+          android:tint="@color/ksr_green_500"
+          tools:ignore="ContentDescription" />
 
       </LinearLayout>
+
+      <TextView
+        android:id="@+id/amount_pledged_via_external_text_view"
+        style="@style/CalloutSecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="$22" />
+
+      <TextView
+        style="@style/Caption1Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/via_external" />
+
     </LinearLayout>
 
+    <ImageView
+      android:id="@+id/pledged_via_external_indicator"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_2"
+      android:layout_marginEnd="@dimen/grid_1"
+      android:layout_marginStart="@dimen/grid_3_half"
+      android:contentDescription="@null"
+      android:src="@drawable/indicator_external"
+      app:layout_constraintBottom_toBottomOf="@+id/pledged_via_external_bar"
+      app:layout_constraintStart_toStartOf="@id/pledged_via_external_bar" />
+
     <View
-      android:id="@+id/pledged_via_custom_layout"
+      android:id="@+id/pledged_via_custom_bar"
       android:layout_width="0dp"
-      android:layout_height="@dimen/grid_4"
+      android:layout_height="24dp"
       android:background="@color/ksr_highlighter_green"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_weight="1"
-      app:layout_constraintStart_toEndOf="@+id/pledged_via_external_layout"
-      app:layout_constraintTop_toTopOf="@+id/pledged_via_kickstarter_layout" />
-
+      app:layout_constraintStart_toEndOf="@+id/pledged_via_external_bar"
+      app:layout_constraintTop_toTopOf="@+id/pledged_via_kickstarter_bar" />
 
     <LinearLayout
-      android:id="@+id/pledged_via_custom_indicator"
+      android:id="@+id/pledged_via_custom"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_2"
-      android:orientation="horizontal"
-      app:layout_constraintEnd_toEndOf="@+id/pledged_via_custom_layout"
-      app:layout_constraintTop_toTopOf="@+id/pledged_via_custom_layout">
+      android:layout_marginEnd="@dimen/grid_1"
+      android:layout_marginTop="@dimen/grid_8"
+      android:gravity="end"
+      android:orientation="vertical"
+      app:layout_constraintEnd_toStartOf="@+id/pledged_via_custom_indicator"
+      app:layout_constraintTop_toTopOf="@+id/pledged_via_custom_bar">
 
       <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="@dimen/grid_6"
-        android:gravity="end"
-        android:orientation="vertical">
+        android:layout_marginBottom="@dimen/grid_1_half">
 
-        <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
-
-          <ImageView
-            android:id="@+id/percent_via_custom_circle_text_view"
-            android:layout_width="6dp"
-            android:layout_height="6dp"
-            android:layout_gravity="center"
-            android:layout_marginEnd="1dp"
-            android:src="@drawable/creator_dashboard_circle"
-            android:tint="@color/ksr_highlighter_green"
-            tools:ignore="ContentDescription" />
-
-          <TextView
-            android:id="@+id/percent_via_custom_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            tools:text="75%" />
-
-        </LinearLayout>
+        <ImageView
+          android:id="@+id/percent_via_custom_circle_text_view"
+          android:layout_width="6dp"
+          android:layout_height="6dp"
+          android:layout_gravity="center"
+          android:layout_marginEnd="@dimen/grid_1_half"
+          android:src="@drawable/creator_dashboard_circle"
+          android:tint="@color/ksr_highlighter_green"
+          tools:ignore="ContentDescription" />
 
         <TextView
-          android:id="@+id/amount_pledged_via_custom_text_view"
+          android:id="@+id/percent_via_custom_text_view"
+          style="@style/CalloutPrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          tools:text="$22,000" />
-
-        <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/via_custom" />
+          android:gravity="center"
+          tools:text="75%" />
 
       </LinearLayout>
 
-      <ImageView
+      <TextView
+        android:id="@+id/amount_pledged_via_custom_text_view"
+        style="@style/CalloutSecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:contentDescription="@null"
-        android:padding="1dp"
-        android:src="@drawable/indicator_vertical"
-        android:tint="@color/ksr_highlighter_green" />
+        tools:text="$22,000" />
+
+      <TextView
+        style="@style/Caption1Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/via_custom" />
 
     </LinearLayout>
-  </android.support.constraint.ConstraintLayout>
 
-  <com.kickstarter.ui.views.ReferrerBreakdownView
-    android:id="@+id/referrer_breakdown_view"
-    android:layout_width="@dimen/grid_21"
-    android:layout_height="@dimen/grid_21"
-    android:layout_margin="@dimen/grid_2"
-    android:visibility="gone" />
+    <ImageView
+      android:id="@+id/pledged_via_custom_indicator"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/grid_3"
+      android:layout_marginStart="@dimen/grid_1"
+      android:layout_marginTop="@dimen/grid_2"
+      android:contentDescription="@null"
+      android:scaleY="-1"
+      android:src="@drawable/indicator_custom"
+      app:layout_constraintEnd_toEndOf="@+id/pledged_via_custom_bar"
+      app:layout_constraintTop_toTopOf="@+id/pledged_via_custom_bar" />
+
+  </android.support.constraint.ConstraintLayout>
 </LinearLayout>

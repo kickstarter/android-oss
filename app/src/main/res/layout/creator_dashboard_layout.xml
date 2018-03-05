@@ -23,11 +23,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black_alpha_17"
+    android:clickable="true"
     android:fitsSystemWindows="true"
     android:visibility="gone" />
 
   <android.support.design.widget.CoordinatorLayout
     android:layout_width="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
     android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView

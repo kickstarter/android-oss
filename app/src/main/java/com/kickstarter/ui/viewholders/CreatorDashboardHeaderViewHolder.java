@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Pair;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,6 +44,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   protected @Bind(R.id.creator_dashboard_funding_text) TextView fundingTextTextView;
   protected @Bind(R.id.creator_dashboard_messages) RelativeLayout messagesButton;
   protected @Bind(R.id.creator_dashboard_percent) TextView percentTextView;
+  protected @Bind(R.id.creator_dashboard_project_selector) Button projectsButton;
   protected @Bind(R.id.creator_dashboard_time_remaining) TextView timeRemainingTextView;
   protected @Bind(R.id.creator_dashboard_time_remaining_text) TextView timeRemainingTextTextView;
 
@@ -54,7 +56,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   private KSCurrency ksCurrency;
 
   public interface Delegate {
-    void dashboardShowProjectMenuClicked();
+    void projectsListButtonClicked();
   }
 
   public CreatorDashboardHeaderViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
@@ -81,6 +83,11 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.messagesButton));
+
+    this.viewModel.outputs.otherProjectsButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.projectsButton));
 
     this.viewModel.outputs.percentageFunded()
       .compose(bindToLifecycle())
@@ -110,7 +117,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
     this.viewModel.outputs.startMessageThreadsActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::startMessageThreadsActivity);
+      .subscribe(projectAndRefTag -> this.startMessageThreadsActivity(projectAndRefTag.first, projectAndRefTag.second));
 
     this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
@@ -119,12 +126,12 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   }
 
   @OnClick(R.id.creator_dashboard_project_selector)
-  protected void dashboardShowProjectMenuClicked() {
-    this.delegate.dashboardShowProjectMenuClicked();
+  protected void projectsListButtonClicked() {
+    this.delegate.projectsListButtonClicked();
   }
 
   @OnClick(R.id.creator_dashboard_messages)
-  protected void dashbordMessagesButtonClick() {
+  protected void dashboardMessagesButtonClicked() {
     this.viewModel.inputs.messagesButtonClicked();
   }
 
@@ -152,9 +159,10 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
     this.timeRemainingTextTextView.setText(ProjectUtils.deadlineCountdownDetail(currentProject, this.context(), this.ksString));
   }
 
-  private void startMessageThreadsActivity(final @NonNull Project project) {
+  private void startMessageThreadsActivity(final @NonNull Project project, final @NonNull RefTag refTag) {
     final Intent intent = new Intent(this.context(), MessageThreadsActivity.class)
-      .putExtra(IntentKey.PROJECT, project);
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.REF_TAG, refTag);
     this.context().startActivity(intent);
   }
 

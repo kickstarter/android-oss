@@ -35,8 +35,8 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
     /** Emits when there are no referrer stats. */
     Observable<Boolean> referrerStatsListIsGone();
 
-    /** Emits when there are more than 10 referrer stats. */
-    Observable<Boolean> referrerStatsTruncatedTextIsGone();
+    /** Emits when there are more than 10 referrer stats and title copy should reflect limited list. */
+    Observable<Boolean> referrersTitleIsTopTen();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardReferrerStatsViewHolder> implements Inputs, Outputs {
@@ -62,10 +62,10 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
         .subscribe(this.referrerStatsListIsGone);
 
       sortedReferrerStats
-        .map(pr -> pr.size() <= 10)
+        .map(rs -> rs.size() > 10)
         .distinctUntilChanged()
         .compose(bindToLifecycle())
-        .subscribe(this.referrerStatsTruncatedTextIsGone);
+        .subscribe(this.referrersTitleIsLimitedCopy);
     }
 
     final private class OrderByBackersReferrerStatsComparator implements Comparator<ProjectStatsEnvelope.ReferrerStats> {
@@ -89,7 +89,7 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
 
     private final Observable<Pair<Project, List<ProjectStatsEnvelope.ReferrerStats>>> projectAndReferrerStats;
     private final PublishSubject<Boolean> referrerStatsListIsGone = PublishSubject.create();
-    private final PublishSubject<Boolean> referrerStatsTruncatedTextIsGone = PublishSubject.create();
+    private final PublishSubject<Boolean> referrersTitleIsLimitedCopy = PublishSubject.create();
 
     @Override
     public void projectAndReferrerStatsInput(final @NonNull Pair<Project, List<ProjectStatsEnvelope.ReferrerStats>> projectAndReferrerStats) {
@@ -101,8 +101,8 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
     @Override public @NonNull Observable<Boolean> referrerStatsListIsGone() {
       return this.referrerStatsListIsGone;
     }
-    @Override public @NonNull Observable<Boolean> referrerStatsTruncatedTextIsGone() {
-      return this.referrerStatsTruncatedTextIsGone;
+    @Override public @NonNull Observable<Boolean> referrersTitleIsTopTen() {
+      return this.referrersTitleIsLimitedCopy;
     }
   }
 }

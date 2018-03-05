@@ -10,10 +10,12 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 
@@ -42,6 +44,9 @@ public interface CreatorDashboardHeaderHolderViewModel {
     /** Emits when the messages button should be gone. */
     Observable<Boolean> messagesButtonIsGone();
 
+    /** Emits when the other projects button should be gone. */
+    Observable<Boolean> otherProjectsButtonIsGone();
+
     /** string number with the percentage of a projects funding */
     Observable<String> percentageFunded();
 
@@ -61,7 +66,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     Observable<String> timeRemainingText();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
-    Observable<Project> startMessageThreadsActivity();
+    Observable<Pair<Project, RefTag>> startMessageThreadsActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
@@ -75,10 +80,18 @@ public interface CreatorDashboardHeaderHolderViewModel {
 
       this.currentUser = environment.currentUser();
 
+      final Observable<User> user = this.currentUser.observable();
+
+      this.otherProjectsButtonIsGone = user
+        .map(User::createdProjectsCount)
+        .filter(ObjectUtils::isNotNull)
+        .map(count -> count <= 1)
+        .compose(bindToLifecycle());
+
       this.currentProject = this.projectAndStats
         .map(PairUtils::first);
 
-      this.messagesButtonIsGone = Observable.zip(this.currentProject, this.currentUser.observable(), Pair::create)
+      this.messagesButtonIsGone = Observable.zip(this.currentProject, user, Pair::create)
         .map(projectAndUser -> projectAndUser.first.creator().id() != projectAndUser.second.id());
 
       this.percentageFunded = this.currentProject
@@ -107,7 +120,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .map(NumberUtils::format);
 
       this.startMessageThreadsActivity = this.currentProject
-        .compose(takeWhen(this.messagesButtonClicked));
+        .compose(takeWhen(this.messagesButtonClicked))
+        .map(p -> Pair.create(p, RefTag.dashboard()));
 
       this.startProjectActivity = this.currentProject
         .compose(takeWhen(this.projectButtonClicked))
@@ -123,12 +137,13 @@ public interface CreatorDashboardHeaderHolderViewModel {
 
     private final Observable<Project> currentProject;
     private final Observable<Boolean> messagesButtonIsGone;
+    private final Observable<Boolean> otherProjectsButtonIsGone;
     private final Observable<String> percentageFunded;
     private final Observable<Integer> percentageFundedProgress;
     private final Observable<Integer> progressBarBackground;
     private final Observable<String> projectBackersCountText;
     private final Observable<String> projectNameTextViewText;
-    private final Observable<Project> startMessageThreadsActivity;
+    private final Observable<Pair<Project, RefTag>> startMessageThreadsActivity;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
     private final Observable<String> timeRemainingText;
 
@@ -148,6 +163,9 @@ public interface CreatorDashboardHeaderHolderViewModel {
     @Override public @NonNull Observable<Boolean> messagesButtonIsGone() {
       return this.messagesButtonIsGone;
     }
+    @Override public @NonNull Observable<Boolean> otherProjectsButtonIsGone() {
+      return this.otherProjectsButtonIsGone;
+    }
     @Override public @NonNull Observable<String> percentageFunded() {
       return this.percentageFunded;
     }
@@ -163,7 +181,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
     }
-    @Override public @NonNull Observable<Project> startMessageThreadsActivity() {
+    @Override public @NonNull Observable<Pair<Project, RefTag>> startMessageThreadsActivity() {
       return this.startMessageThreadsActivity;
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {

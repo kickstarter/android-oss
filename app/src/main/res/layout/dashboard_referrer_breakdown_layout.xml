@@ -6,16 +6,18 @@
   android:layout_height="wrap_content"
   android:divider="@drawable/divider_dark_grey_500_horizontal"
   android:orientation="vertical"
-  android:showDividers="beginning">
+  android:showDividers="beginning"
+  android:visibility="gone">
 
   <TextView
-    style="@style/Title3"
+    style="@style/Title2"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_5"
+    android:layout_marginTop="@dimen/grid_7"
     android:paddingEnd="@dimen/grid_2"
     android:paddingStart="@dimen/grid_2"
-    android:text="@string/dashboard_graphs_referrers_title_referrers" />
+    android:text="@string/How_backers_found_your_project"
+    android:visibility="gone" />
 
   <LinearLayout
     android:id="@+id/referrer_breakdown_chart_layout"
@@ -74,7 +76,7 @@
           <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/dashboard_graphs_referrers_pledged_via_kickstarter" />
+            android:text="@string/via_kickstarter" />
 
         </LinearLayout>
 
@@ -118,7 +120,7 @@
           <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dashboard_graphs_referrers_pledged_via_external" />
+            android:text="@string/via_external" />
 
         </LinearLayout>
 
@@ -163,7 +165,7 @@
           <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dashboard_graphs_referrers_pledged_via_custom" />
+            android:text="@string/via_custom" />
 
         </LinearLayout>
       </LinearLayout>

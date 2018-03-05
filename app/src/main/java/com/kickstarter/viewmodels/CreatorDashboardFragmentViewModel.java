@@ -20,7 +20,7 @@ public interface CreatorDashboardFragmentViewModel {
 
   interface Inputs extends CreatorDashboardAdapter.Delegate {
     /** Call when project selection should be shown. */
-    void dashboardShowProjectMenuClicked();
+    void projectsListButtonClicked();
   }
 
   interface Outputs {
@@ -51,10 +51,14 @@ public interface CreatorDashboardFragmentViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.projectAndStats);
 
-      this.toggleBottomSheet = this.projectsMenuClick;
+      this.projectsListButtonClicked
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.koala.trackOpenedProjectSwitcher());
+
+      this.toggleBottomSheet = this.projectsListButtonClicked;
     }
 
-    private final PublishSubject<Void> projectsMenuClick = PublishSubject.create();
+    private final PublishSubject<Void> projectsListButtonClicked = PublishSubject.create();
 
     private final BehaviorSubject<Pair<Project, ProjectStatsEnvelope>> projectAndStats = BehaviorSubject.create();
     private final Observable<Void> toggleBottomSheet;
@@ -63,8 +67,8 @@ public interface CreatorDashboardFragmentViewModel {
     public final Outputs outputs = this;
 
     @Override
-    public void dashboardShowProjectMenuClicked() {
-      this.projectsMenuClick.onNext(null);
+    public void projectsListButtonClicked() {
+      this.projectsListButtonClicked.onNext(null);
     }
 
     @Override public @NonNull Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats() {

@@ -27,6 +27,7 @@ public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectri
   private final TestSubscriber<List<ProjectStatsEnvelope.RewardStats>> rewardStatsOutput = new TestSubscriber<>();
   private final TestSubscriber<Boolean> rewardsStatsListIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> rewardsStatsTruncatedTextIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> rewardsTitleIsLimitedCopy = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardRewardStatsHolderViewModel.ViewModel(environment);
@@ -34,6 +35,7 @@ public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectri
     this.vm.outputs.projectAndRewardStats().map(PairUtils::second).subscribe(this.rewardStatsOutput);
     this.vm.outputs.rewardsStatsListIsGone().subscribe(this.rewardsStatsListIsGone);
     this.vm.outputs.rewardsStatsTruncatedTextIsGone().subscribe(this.rewardsStatsTruncatedTextIsGone);
+    this.vm.outputs.rewardsTitleIsTopTen().subscribe(this.rewardsTitleIsLimitedCopy);
   }
 
   @Test
@@ -86,5 +88,27 @@ public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectri
     maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(11).build());
     this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats));
     this.rewardsStatsTruncatedTextIsGone.assertValues(true, false);
+  }
+
+  @Test
+  public void rewardsTitleIsLimitedCopy() {
+    setUpEnvironment(environment());
+
+    final Project project = ProjectFactory.project();
+    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, Collections.singletonList(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats())));
+
+    this.rewardsTitleIsLimitedCopy.assertValue(false);
+
+    final List<ProjectStatsEnvelope.RewardStats> maxStats = new ArrayList<>();
+    for (int i = 1; i <= 10; i++) {
+      maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(i).build());
+    }
+
+    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats));
+    this.rewardsTitleIsLimitedCopy.assertValues(false);
+
+    maxStats.add(ProjectStatsEnvelopeFactory.RewardStatsFactory.rewardStats().toBuilder().pledged(11).build());
+    this.vm.inputs.projectAndRewardStatsInput(Pair.create(project, maxStats));
+    this.rewardsTitleIsLimitedCopy.assertValues(false, true);
   }
 }

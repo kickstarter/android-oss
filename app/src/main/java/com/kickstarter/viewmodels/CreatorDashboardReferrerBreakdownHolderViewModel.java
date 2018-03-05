@@ -28,26 +28,17 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
   }
 
   interface Outputs {
-    /** Emits the color for the custom referrers on the pie chart **/
-    Observable<Integer> customReferrerColor();
-
     /** Emits the percentage of total pledges from a custom referrer **/
     Observable<Float> customReferrerPercent();
 
     /** Emits the text for the percentage of total pledges from a custom referrer **/
     Observable<String> customReferrerPercentText();
 
-    /** Emits the color for the external referrers on the pie chart **/
-    Observable<Integer> externalReferrerColor();
-
     /** Emits the percentage of total pledges from a external referrer **/
     Observable<Float> externalReferrerPercent();
 
     /** Emits the text for the percentage of total pledges from an external referrer **/
     Observable<String> externalReferrerPercentText();
-
-    /** Emits the color for the internal referrers on the pie chart **/
-    Observable<Integer> internalReferrerColor();
 
     /** Emits the percentage of total pledges from an internal referrer **/
     Observable<Float> internalReferrerPercent();
@@ -75,9 +66,6 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
     /** Emits the current project and the amount pledged via internal referrers **/
     Observable<Pair<Project, Float>> projectAndInternalReferrerPledgedAmount();
-
-    /** Emits when there are more than 10 referrer stats and title copy should reflect limited list. */
-    Observable<Boolean> referrersTitleIsLimitedCopy();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardReferrerBreakdownViewHolder> implements Inputs, Outputs {
@@ -236,11 +224,6 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       this.projectAndProjectStatsInput.onNext(projectAndStats);
     }
 
-
-    @Override
-    public @NonNull Observable<Integer> customReferrerColor() {
-      return this.customReferrerColor;
-    }
     @Override
     public @NonNull Observable<Float> customReferrerPercent() {
       return this.customReferrerPercent;
@@ -250,20 +233,12 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       return this.customReferrerPercentText;
     }
     @Override
-    public @NonNull Observable<Integer> externalReferrerColor() {
-      return this.externalReferrerColor;
-    }
-    @Override
     public @NonNull Observable<Float> externalReferrerPercent() {
       return this.externalReferrerPercent;
     }
     @Override
     public @NonNull Observable<String> externalReferrerPercentText() {
       return this.externalReferrerPercentText;
-    }
-    @Override
-    public @NonNull Observable<Integer> internalReferrerColor() {
-      return this.internalReferrerColor;
     }
     @Override
     public @NonNull Observable<Float> internalReferrerPercent() {
@@ -300,9 +275,6 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
     @Override
     public @NonNull Observable<Pair<Project, Float>> projectAndInternalReferrerPledgedAmount() {
       return this.projectAndInternalReferrerPledgedAmount;
-    }
-    @Override public @NonNull Observable<Boolean> referrersTitleIsLimitedCopy() {
-      return this.referrersTitleIsLimitedCopy;
     }
   }
 }

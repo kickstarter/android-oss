@@ -134,7 +134,6 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     adjustIndicatorMarginForShortBar(bar, indicator);
   }
 
-  // i don't prefer to do this and am ~open~ to suggestions
   private void adjustIndicatorMarginForShortBar(View bar, View indicator) {
     bar.post(() -> {
       if (bar.getMeasuredWidth() < grid3Pixels) {
@@ -146,7 +145,6 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     });
   }
 
-  //same here
   private void flipIndicatorIfStatsOffScreen(View indicator, View stats) {
     stats.post(() -> {
       if (stats.getLeft() < referrerBreakdownLayout.getLeft()) {

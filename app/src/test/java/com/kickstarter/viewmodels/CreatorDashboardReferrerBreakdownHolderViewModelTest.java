@@ -7,7 +7,6 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.ProjectStatsEnvelopeFactory;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ReferrerColor;
 import com.kickstarter.libs.ReferrerType;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
@@ -16,6 +15,7 @@ import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import rx.observers.TestSubscriber;
@@ -26,11 +26,8 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
   private final TestSubscriber<Float> customReferrerPercent = new TestSubscriber<>();
   private final TestSubscriber<Float> externalReferrerPercent = new TestSubscriber<>();
   private final TestSubscriber<Float> internalReferrerPercent = new TestSubscriber<>();
-  private final TestSubscriber<Integer> customReferrerColor = new TestSubscriber<>();
   private final TestSubscriber<String> customReferrerPercentText = new TestSubscriber<>();
-  private final TestSubscriber<Integer> externalReferrerColor = new TestSubscriber<>();
   private final TestSubscriber<String> externalReferrerPercentText = new TestSubscriber<>();
-  private final TestSubscriber<Integer> internalReferrerColor = new TestSubscriber<>();
   private final TestSubscriber<String> internalReferrerPercentText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> pledgedViaCustomLayoutIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> pledgedViaExternalLayoutIsGone = new TestSubscriber<>();
@@ -42,13 +39,10 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardReferrerBreakdownHolderViewModel.ViewModel(environment);
-    this.vm.outputs.customReferrerColor().subscribe(this.customReferrerColor);
     this.vm.outputs.customReferrerPercent().subscribe(this.customReferrerPercent);
     this.vm.outputs.customReferrerPercentText().subscribe(this.customReferrerPercentText);
-    this.vm.outputs.externalReferrerColor().subscribe(this.externalReferrerColor);
     this.vm.outputs.externalReferrerPercent().subscribe(this.externalReferrerPercent);
     this.vm.outputs.externalReferrerPercentText().subscribe(this.externalReferrerPercentText);
-    this.vm.outputs.internalReferrerColor().subscribe(this.internalReferrerColor);
     this.vm.outputs.internalReferrerPercent().subscribe(this.internalReferrerPercent);
     this.vm.outputs.internalReferrerPercentText().subscribe(this.internalReferrerPercentText);
     this.vm.outputs.pledgedViaCustomLayoutIsGone().subscribe(this.pledgedViaCustomLayoutIsGone);
@@ -61,24 +55,13 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
   }
 
   @Test
-  public void testCustomReferrerColor() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.customReferrerColor.assertValues(ReferrerColor.CUSTOM.getReferrerColor());
-  }
-
-  @Test
   public void testCustomReferrerPercent() {
     final Project project = ProjectFactory.project();
     final ProjectStatsEnvelope.ReferrerStats fiftyFivePercentCustomReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory.referrerStats().toBuilder()
       .percentageOfDollars(55f)
       .referrerType(ReferrerType.CUSTOM.getReferrerType())
       .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Arrays.asList(
-      fiftyFivePercentCustomReferrer);
+    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(fiftyFivePercentCustomReferrer);
     final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder().referralDistribution(referrerList).build();
 
     setUpEnvironment(environment());
@@ -93,23 +76,12 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
       .percentageOfDollars(.55f)
       .referrerType(ReferrerType.CUSTOM.getReferrerType())
       .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Arrays.asList(
-      fiftyFivePercentCustomReferrer);
+    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(fiftyFivePercentCustomReferrer);
     final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder().referralDistribution(referrerList).build();
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
     this.customReferrerPercentText.assertValues("55%");
-  }
-
-  @Test
-  public void testExternalReferrerColor() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.externalReferrerColor.assertValues(ReferrerColor.EXTERNAL.getReferrerColor());
   }
 
   @Test
@@ -119,8 +91,7 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
       .percentageOfDollars(15f)
       .referrerType(ReferrerType.EXTERNAL.getReferrerType())
       .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Arrays.asList(
-      fifteenPercentExternalReferrer);
+    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(fifteenPercentExternalReferrer);
     final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder().referralDistribution(referrerList).build();
 
     setUpEnvironment(environment());
@@ -135,23 +106,12 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
       .percentageOfDollars(15f)
       .referrerType(ReferrerType.EXTERNAL.getReferrerType())
       .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Arrays.asList(
-      fifteenPercentExternalReferrer);
+    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(fifteenPercentExternalReferrer);
     final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder().referralDistribution(referrerList).build();
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
     this.externalReferrerPercentText.assertValues(NumberUtils.flooredPercentage(15f * 100f));
-  }
-
-  @Test
-  public void testInternalReferrerColor() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.internalReferrerColor.assertValues(ReferrerColor.INTERNAL.getReferrerColor());
   }
 
   @Test
@@ -161,8 +121,7 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
       .percentageOfDollars(30f)
       .referrerType(ReferrerType.INTERNAL.getReferrerType())
       .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Arrays.asList(
-      thirtyPercentInternalReferrer);
+    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(thirtyPercentInternalReferrer);
     final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder().referralDistribution(referrerList).build();
 
     setUpEnvironment(environment());
@@ -177,8 +136,7 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
       .percentageOfDollars(30f)
       .referrerType(ReferrerType.INTERNAL.getReferrerType())
       .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Arrays.asList(
-      thirtyPercentInternalReferrer);
+    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(thirtyPercentInternalReferrer);
     final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder().referralDistribution(referrerList).build();
 
     setUpEnvironment(environment());
@@ -193,8 +151,7 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
       .pledged(0f)
       .referrerType(ReferrerType.CUSTOM.getReferrerType())
       .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Arrays.asList(
-      zeroPledgedCustomReferrer);
+    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(zeroPledgedCustomReferrer);
     final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder().referralDistribution(referrerList).build();
 
     setUpEnvironment(environment());
@@ -209,8 +166,7 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
       .pledged(0f)
       .referrerType(ReferrerType.EXTERNAL.getReferrerType())
       .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Arrays.asList(
-      zeroPledgedExternalReferrer);
+    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(zeroPledgedExternalReferrer);
     final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder().referralDistribution(referrerList).build();
 
     setUpEnvironment(environment());
@@ -225,8 +181,7 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
       .pledged(0f)
       .referrerType(ReferrerType.INTERNAL.getReferrerType())
       .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Arrays.asList(
-      zeroPledgedInternalReferrer);
+    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(zeroPledgedInternalReferrer);
     final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder().referralDistribution(referrerList).build();
 
     setUpEnvironment(environment());
@@ -244,7 +199,7 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
     final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder().cumulative(cumulativeStats).build();
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.projectAndAveragePledge.assertValues(Pair.create(project, 10));
+    this.projectAndAveragePledge.assertValue(Pair.create(project, 10));
   }
 
   @Test
@@ -268,7 +223,7 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.projectAndCustomReferrerPledgedAmount.assertValues(Pair.create(project, 3f));
+    this.projectAndCustomReferrerPledgedAmount.assertValue(Pair.create(project, 3f));
   }
 
   @Test
@@ -292,7 +247,7 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.projectAndExternalReferrerPledgedAmount.assertValues(Pair.create(project, 3f));
+    this.projectAndExternalReferrerPledgedAmount.assertValue(Pair.create(project, 3f));
   }
 
   @Test
@@ -316,7 +271,7 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.projectAndInternalReferrerPledgedAmount.assertValues(Pair.create(project, 2f));
+    this.projectAndInternalReferrerPledgedAmount.assertValue(Pair.create(project, 2f));
   }
 
   @Test

@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.util.Pair;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -30,12 +29,9 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   protected @Bind(R.id.amount_pledged_via_kickstarter_text_view) TextView amountPledgedViaInternalTextView;
   protected @Bind(R.id.amount_pledged_via_external_text_view) TextView amountPledgedViaExternalTextView;
   protected @Bind(R.id.amount_pledged_via_custom_text_view) TextView amountPledgedViaCustomTextView;
-  protected @Bind(R.id.percent_via_custom_circle_text_view) ImageView percentCustomCircleTextView;
   protected @Bind(R.id.percent_via_custom_text_view) TextView percentCustomTextView;
   protected @Bind(R.id.percent_via_external_text_view) TextView percentExternalTextView;
-  protected @Bind(R.id.percent_via_external_circle_text_view) ImageView percentExternalCircleTextView;
   protected @Bind(R.id.percent_via_kickstarter_text_view) TextView percentInternalTextView;
-  protected @Bind(R.id.percent_via_kickstarter_circle_text_view) ImageView percentInternalCircleTextView;
   protected @Bind(R.id.pledged_via_custom) View pledgedViaCustomLayout;
   protected @Bind(R.id.pledged_via_custom_bar) View pledgedViaCustomBar;
   protected @Bind(R.id.pledged_via_custom_indicator) View pledgedViaCustomIndicator;

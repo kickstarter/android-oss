@@ -75,7 +75,6 @@
           tools:text="75%" />
 
         <ImageView
-          android:id="@+id/percent_via_kickstarter_circle_text_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center_vertical"
@@ -138,7 +137,6 @@
           tools:text="75%" />
 
         <ImageView
-          android:id="@+id/percent_via_external_circle_text_view"
           android:layout_width="6dp"
           android:layout_height="6dp"
           android:layout_gravity="center_vertical"
@@ -203,7 +201,6 @@
         android:layout_marginBottom="@dimen/grid_1_half">
 
         <ImageView
-          android:id="@+id/percent_via_custom_circle_text_view"
           android:layout_width="6dp"
           android:layout_height="6dp"
           android:layout_gravity="center"

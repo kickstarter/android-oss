@@ -122,18 +122,18 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
       .subscribe(pa -> this.setAmountPledgedTextViewText(pa, this.amountPledgedViaInternalTextView));
   }
 
-  private void setReferrerWidth(Float percent, View bar, View indicator) {
-    ConstraintLayout.LayoutParams barLayoutParams = (ConstraintLayout.LayoutParams) bar.getLayoutParams();
+  private void setReferrerWidth(final Float percent, final View bar, final View indicator) {
+    final ConstraintLayout.LayoutParams barLayoutParams = (ConstraintLayout.LayoutParams) bar.getLayoutParams();
     barLayoutParams.horizontalWeight = percent;
     bar.setLayoutParams(barLayoutParams);
 
     adjustIndicatorMarginForShortBar(bar, indicator);
   }
 
-  private void adjustIndicatorMarginForShortBar(View bar, View indicator) {
+  private void adjustIndicatorMarginForShortBar(final View bar, final View indicator) {
     bar.post(() -> {
-      if (bar.getMeasuredWidth() < grid3Pixels) {
-        ConstraintLayout.LayoutParams indicatorLayoutParams = (ConstraintLayout.LayoutParams) indicator.getLayoutParams();
+      if (bar.getMeasuredWidth() < this.grid3Pixels) {
+        final ConstraintLayout.LayoutParams indicatorLayoutParams = (ConstraintLayout.LayoutParams) indicator.getLayoutParams();
         indicatorLayoutParams.startToStart = bar.getId();
         indicatorLayoutParams.endToEnd = bar.getId();
         indicator.setLayoutParams(indicatorLayoutParams);
@@ -141,17 +141,17 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     });
   }
 
-  private void flipIndicatorIfStatsOffScreen(View indicator, View stats) {
+  private void flipIndicatorIfStatsOffScreen(final View indicator, final View stats) {
     stats.post(() -> {
-      if (stats.getLeft() < referrerBreakdownLayout.getLeft()) {
+      if (stats.getLeft() < this.referrerBreakdownLayout.getLeft()) {
         indicator.setScaleX(-1);
-        ConstraintLayout.LayoutParams indicatorLayoutParams = (ConstraintLayout.LayoutParams) indicator.getLayoutParams();
-        indicatorLayoutParams.setMarginStart(grid3Pixels);
+        final ConstraintLayout.LayoutParams indicatorLayoutParams = (ConstraintLayout.LayoutParams) indicator.getLayoutParams();
+        indicatorLayoutParams.setMarginStart(this.grid3Pixels);
         indicator.setLayoutParams(indicatorLayoutParams);
 
-        ConstraintLayout.LayoutParams statsLayoutParams = (ConstraintLayout.LayoutParams) stats.getLayoutParams();
+        final ConstraintLayout.LayoutParams statsLayoutParams = (ConstraintLayout.LayoutParams) stats.getLayoutParams();
         statsLayoutParams.startToEnd = indicator.getId();
-        statsLayoutParams.setMarginStart(grid1Pixels);
+        statsLayoutParams.setMarginStart(this.grid1Pixels);
         statsLayoutParams.endToStart = ConstraintLayout.LayoutParams.UNSET;
         stats.setLayoutParams(statsLayoutParams);
       }

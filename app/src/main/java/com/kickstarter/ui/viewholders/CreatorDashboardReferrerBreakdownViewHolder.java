@@ -26,12 +26,13 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   private final CreatorDashboardReferrerBreakdownHolderViewModel.ViewModel viewModel;
 
-  protected @Bind(R.id.amount_pledged_via_kickstarter_text_view) TextView amountPledgedViaInternalTextView;
-  protected @Bind(R.id.amount_pledged_via_external_text_view) TextView amountPledgedViaExternalTextView;
   protected @Bind(R.id.amount_pledged_via_custom_text_view) TextView amountPledgedViaCustomTextView;
+  protected @Bind(R.id.amount_pledged_via_external_text_view) TextView amountPledgedViaExternalTextView;
+  protected @Bind(R.id.amount_pledged_via_kickstarter_text_view) TextView amountPledgedViaKickstarterTextView;
+  protected @Bind(R.id.dashboard_referrer_breakdown_empty_text_view) TextView emptyCopyTextView;
   protected @Bind(R.id.percent_via_custom_text_view) TextView percentCustomTextView;
   protected @Bind(R.id.percent_via_external_text_view) TextView percentExternalTextView;
-  protected @Bind(R.id.percent_via_kickstarter_text_view) TextView percentInternalTextView;
+  protected @Bind(R.id.percent_via_kickstarter_text_view) TextView percentKickstarterTextView;
   protected @Bind(R.id.pledged_via_custom) View pledgedViaCustomLayout;
   protected @Bind(R.id.pledged_via_custom_bar) View pledgedViaCustomBar;
   protected @Bind(R.id.pledged_via_custom_indicator) View pledgedViaCustomIndicator;
@@ -54,6 +55,11 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     this.ksCurrency = this.environment().ksCurrency();
 
     this.viewModel = new CreatorDashboardReferrerBreakdownHolderViewModel.ViewModel(environment());
+
+    this.viewModel.outputs.breakdownViewIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::toggleChartAndEmptyVisibility);
 
     this.viewModel.outputs.customReferrerPercent()
       .compose(bindToLifecycle())
@@ -80,15 +86,15 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.percentExternalTextView::setText);
 
-    this.viewModel.outputs.internalReferrerPercent()
+    this.viewModel.outputs.kickstarterReferrerPercent()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(percent -> setReferrerWidth(percent, this.pledgedViaKickstarterBar, this.pledgedViaKickstarterIndicator));
 
-    this.viewModel.outputs.internalReferrerPercentText()
+    this.viewModel.outputs.kickstarterReferrerPercentText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this.percentInternalTextView::setText);
+      .subscribe(this.percentKickstarterTextView::setText);
 
     this.viewModel.outputs.pledgedViaCustomLayoutIsGone()
       .compose(bindToLifecycle())
@@ -100,7 +106,7 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(gone -> this.hideReferrer(gone, this.pledgedViaExternalLayout, this.pledgedViaExternalBar, this.pledgedViaExternalIndicator));
 
-    this.viewModel.outputs.pledgedViaInternalLayoutIsGone()
+    this.viewModel.outputs.pledgedViaKickstarterLayoutIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(gone -> this.hideReferrer(gone, this.pledgedViaKickstarterLayout, this.pledgedViaKickstarterBar, this.pledgedViaKickstarterIndicator));
@@ -115,10 +121,10 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(pa -> this.setAmountPledgedTextViewText(pa, this.amountPledgedViaExternalTextView));
 
-    this.viewModel.outputs.projectAndInternalReferrerPledgedAmount()
+    this.viewModel.outputs.projectAndKickstarterReferrerPledgedAmount()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(pa -> this.setAmountPledgedTextViewText(pa, this.amountPledgedViaInternalTextView));
+      .subscribe(pa -> this.setAmountPledgedTextViewText(pa, this.amountPledgedViaKickstarterTextView));
   }
 
   private void setReferrerWidth(final Float percent, final View bar, final View indicator) {
@@ -161,6 +167,11 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     ViewUtils.setGone(layout, gone);
     ViewUtils.setGone(bar, gone);
     ViewUtils.setGone(indicator, gone);
+  }
+
+  private void toggleChartAndEmptyVisibility(final boolean gone) {
+    ViewUtils.setGone(this.referrerBreakdownLayout, gone);
+    ViewUtils.setGone(this.emptyCopyTextView, !gone);
   }
 
   @Override

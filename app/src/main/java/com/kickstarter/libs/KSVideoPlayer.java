@@ -25,22 +25,27 @@ package com.kickstarter.libs;
 import android.support.annotation.NonNull;
 import android.view.Surface;
 
-import com.google.android.exoplayer.ExoPlaybackException;
-import com.google.android.exoplayer.ExoPlayer;
-import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
 import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
 import com.google.android.exoplayer.util.PlayerControl;
+import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
+import com.google.android.exoplayer2.video.MediaCodecVideoRenderer;
+
+import static android.os.Build.VERSION_CODES.M;
 
 /**
  * ExoPlayer wrapper that provides higher level interface.
  */
-public final class KSVideoPlayer implements ExoPlayer.Listener {
+public final class KSVideoPlayer implements Player.EventListener {
   private static final int TRACK_RENDERER_COUNT = 3; // audio, video, text
   private boolean lastReportedPlayWhenReady;
   private int lastReportedPlaybackState;
   private final ExoPlayer player;
-  private MediaCodecVideoTrackRenderer videoRenderer;
-  private PlayerControl playerControl;
+  private MediaCodecVideoRenderer videoRenderer;
+  private Player.EventListener playerControl;
   private final RendererBuilder rendererBuilder;
   private Surface surface;
   private Listener listener;
@@ -56,7 +61,7 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
   public KSVideoPlayer(final @NonNull RendererBuilder rendererBuilder) {
     this.player = ExoPlayer.Factory.newInstance(TRACK_RENDERER_COUNT);
     this.rendererBuilder = rendererBuilder;
-    this.playerControl = new PlayerControl(this.player);
+    this.playerControl = new M(this.player);
     this.player.addListener(this);
   }
 
@@ -64,9 +69,6 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
   public void onPlayerStateChanged(final boolean playWhenReady, final int playbackState) {
     reportPlayerState();
   }
-
-  @Override
-  public void onPlayWhenReadyCommitted() {}
 
   @Override
   public void onPlayerError(final @NonNull ExoPlaybackException error) {}
@@ -93,9 +95,9 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
       return;
     }
     if (blockForSurfacePush) {
-      this.player.blockingSendMessage(this.videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, this.surface);
+      this.player.createMessage(this.videoRenderer, C.MSG_SET_SURFACE, this.surface);
     } else {
-      this.player.sendMessage(this.videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, this.surface);
+      this.player.sendMessages(this.videoRenderer, C.MSG_SET_SURFACE, this.surface);
     }
   }
 
@@ -105,10 +107,10 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
     this.rendererBuilder.buildRenderers(this);
   }
 
-  public void prepareRenderers(final @NonNull MediaCodecVideoTrackRenderer videoRenderer,
-    final @NonNull MediaCodecAudioTrackRenderer audioTrackRenderer) {
+  public void prepareRenderers(final @NonNull MediaCodecVideoRenderer videoRenderer,
+    final @NonNull MediaCodecAudioRenderer audioTrackRenderer) {
     this.videoRenderer = videoRenderer;
-    this.player.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, this.surface);
+    this.player.sendMessages(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, this.surface);
     this.player.prepare(videoRenderer, audioTrackRenderer);
   }
 

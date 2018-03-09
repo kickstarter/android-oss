@@ -79,8 +79,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingBottom="@dimen/grid_10"
-        android:paddingTop="@dimen/grid_10"
+        android:padding="@dimen/grid_10"
         android:text="@string/Data_will_appear_here_once" />
 
       <TextView

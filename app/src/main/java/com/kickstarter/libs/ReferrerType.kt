@@ -8,6 +8,6 @@ import com.kickstarter.R
 enum class ReferrerType(val referrerType: String, val referrerColorId : Int) {
   CUSTOM("custom", R.color.ksr_highlighter_green),
   EXTERNAL("external", R.color.ksr_green_500),
-  INTERNAL("kickstarter", R.color.ksr_green_800)
+  KICKSTARTER("kickstarter", R.color.ksr_green_800)
 }
 

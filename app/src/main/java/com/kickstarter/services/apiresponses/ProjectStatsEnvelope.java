@@ -114,12 +114,8 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
     // enum type.
     public ReferrerType referrerTypeEnumType() {
       switch (referrerType().toLowerCase(Locale.getDefault())) {
-        case "campaign":
-          return ReferrerType.CAMPAIGN;
         case "custom":
           return ReferrerType.CUSTOM;
-        case "domain":
-          return ReferrerType.DOMAIN;
         case "external":
           return ReferrerType.EXTERNAL;
         case "kickstarter":

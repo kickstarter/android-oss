@@ -1,6 +1,7 @@
 package com.kickstarter.services.apiresponses;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.ReferrerType;
 import com.kickstarter.libs.qualifiers.AutoGson;
@@ -112,7 +113,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
 
     // Deserialize the referrer type string names into the corresponding
     // enum type.
-    public static ReferrerType referrerTypeEnum(String referrerType) {
+    public static ReferrerType referrerTypeEnum(final @NonNull String referrerType) {
       switch (referrerType.toLowerCase(Locale.getDefault())) {
         case "custom":
           return ReferrerType.CUSTOM;

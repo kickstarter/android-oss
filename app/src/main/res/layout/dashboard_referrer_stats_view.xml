@@ -5,9 +5,7 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_marginBottom="@dimen/grid_5"
-  android:divider="@drawable/divider_dark_grey_500_horizontal"
-  android:orientation="vertical"
-  android:showDividers="beginning">
+  android:orientation="vertical">
 
   <TextView
     android:id="@+id/dashboard_referrer_title"

@@ -43,7 +43,6 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   protected @Bind(R.id.pledged_via_kickstarter) View pledgedViaKickstarterLayout;
   protected @Bind(R.id.referrer_breakdown_chart_layout) ConstraintLayout referrerBreakdownLayout;
 
-  protected @BindDimen(R.dimen.grid_1_half) int grid1HalfPixels;
   protected @BindDimen(R.dimen.grid_1) int grid1Pixels;
   protected @BindDimen(R.dimen.grid_3) int grid3Pixels;
 

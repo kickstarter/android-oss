@@ -29,7 +29,7 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
     Observable<String> referrerBackerCount();
 
     /** Emits resource ID of referrer color. */
-    Observable<Integer> referrerSourceColor();
+    Observable<Integer> referrerSourceColorId();
 
     /** Emits source name of referrer. */
     Observable<String> referrerSourceName();
@@ -43,9 +43,9 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
       this.projectAndPledgedForReferrer = this.projectAndReferrerStats
         .map(pr -> Pair.create(pr.first, pr.second.pledged()));
 
-      this.referrerSourceColor = this.projectAndReferrerStats
+      this.referrerSourceColorId = this.projectAndReferrerStats
         .map(PairUtils::second)
-        .map(referrerStat -> referrerStat.referrerTypeEnumType().getReferrerColorId());
+        .map(referrerStat -> ProjectStatsEnvelope.ReferrerStats.referrerTypeEnum(referrerStat.referrerType()).getReferrerColorId());
 
       this.referrerSourceName = this.projectAndReferrerStats
         .map(PairUtils::second)
@@ -64,7 +64,7 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
 
     private final Observable<Pair<Project, Float>> projectAndPledgedForReferrer;
     private final Observable<String> referrerBackerCount;
-    private final Observable<Integer> referrerSourceColor;
+    private final Observable<Integer> referrerSourceColorId;
     private final Observable<String> referrerSourceName;
 
     @Override public void projectAndReferrerStatsInput(final @NonNull Pair<Project, ProjectStatsEnvelope.ReferrerStats> projectAndReferrerStats) {
@@ -77,9 +77,8 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
     @Override public @NonNull Observable<String> referrerBackerCount() {
       return this.referrerBackerCount;
     }
-    @Override
-    public Observable<Integer> referrerSourceColor() {
-      return this.referrerSourceColor;
+    @Override public @NonNull Observable<Integer> referrerSourceColorId() {
+      return this.referrerSourceColorId;
     }
     @Override public @NonNull Observable<String> referrerSourceName() {
       return this.referrerSourceName;

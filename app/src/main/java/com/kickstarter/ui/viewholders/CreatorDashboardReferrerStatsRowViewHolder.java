@@ -48,7 +48,7 @@ public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHold
       .compose(observeForUI())
       .subscribe(this.referrerBackerCountTextView::setText);
 
-    this.viewModel.outputs.referrerSourceColor()
+    this.viewModel.outputs.referrerSourceColorId()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setReferrerCircleColor);

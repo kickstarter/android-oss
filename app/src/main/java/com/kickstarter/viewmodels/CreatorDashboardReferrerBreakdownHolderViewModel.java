@@ -83,17 +83,17 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
       final Observable<List<ProjectStatsEnvelope.ReferrerStats>> internalReferrers = referrerStats
         .flatMap(rs ->
-          Observable.from(rs).filter(r -> r.referrerTypeEnumType() == ReferrerType.INTERNAL).toList()
+          Observable.from(rs).filter(r -> ProjectStatsEnvelope.ReferrerStats.referrerTypeEnum(r.referrerType()) == ReferrerType.INTERNAL).toList()
         );
 
       final Observable<List<ProjectStatsEnvelope.ReferrerStats>> externalReferrers = referrerStats
         .flatMap(rs ->
-          Observable.from(rs).filter(r -> r.referrerTypeEnumType() == ReferrerType.EXTERNAL).toList()
+          Observable.from(rs).filter(r -> ProjectStatsEnvelope.ReferrerStats.referrerTypeEnum(r.referrerType()) == ReferrerType.EXTERNAL).toList()
         );
 
       final Observable<List<ProjectStatsEnvelope.ReferrerStats>> customReferrers = referrerStats
         .flatMap(rs ->
-          Observable.from(rs).filter(r -> r.referrerTypeEnumType() == ReferrerType.CUSTOM).toList()
+          Observable.from(rs).filter(r -> ProjectStatsEnvelope.ReferrerStats.referrerTypeEnum(r.referrerType()) == ReferrerType.CUSTOM).toList()
         );
 
       final Observable<Integer> averagePledge = cumulativeStats

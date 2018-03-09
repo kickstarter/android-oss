@@ -21,14 +21,14 @@ public class CreatorDashboardReferrerStatsRowHolderViewModelTest extends KSRobol
 
   private final TestSubscriber<Pair<Project, Float>> projectAndPledgedForReferrer = new TestSubscriber<>();
   private final TestSubscriber<String> referrerBackerCount = new TestSubscriber<>();
-  private final TestSubscriber<Integer> referrerSourceColor = new TestSubscriber<>();
+  private final TestSubscriber<Integer> referrerSourceColorId = new TestSubscriber<>();
   private final TestSubscriber<String> referrerSourceName = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardReferrerStatsRowHolderViewModel.ViewModel(environment);
     this.vm.outputs.projectAndPledgedForReferrer().subscribe(this.projectAndPledgedForReferrer);
     this.vm.outputs.referrerBackerCount().subscribe(this.referrerBackerCount);
-    this.vm.outputs.referrerSourceColor().subscribe(this.referrerSourceColor);
+    this.vm.outputs.referrerSourceColorId().subscribe(this.referrerSourceColorId);
     this.vm.outputs.referrerSourceName().subscribe(this.referrerSourceName);
   }
 
@@ -67,7 +67,7 @@ public class CreatorDashboardReferrerStatsRowHolderViewModelTest extends KSRobol
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndReferrerStatsInput(Pair.create(ProjectFactory.project(), referrerStats));
-    this.referrerSourceColor.assertValues(R.color.ksr_highlighter_green);
+    this.referrerSourceColorId.assertValues(R.color.ksr_highlighter_green);
   }
 
   @Test
@@ -76,7 +76,7 @@ public class CreatorDashboardReferrerStatsRowHolderViewModelTest extends KSRobol
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndReferrerStatsInput(Pair.create(ProjectFactory.project(), referrerStats));
-    this.referrerSourceColor.assertValues(R.color.ksr_green_500);
+    this.referrerSourceColorId.assertValues(R.color.ksr_green_500);
   }
 
   @Test
@@ -85,7 +85,7 @@ public class CreatorDashboardReferrerStatsRowHolderViewModelTest extends KSRobol
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndReferrerStatsInput(Pair.create(ProjectFactory.project(), referrerStats));
-    this.referrerSourceColor.assertValues(R.color.ksr_green_800);
+    this.referrerSourceColorId.assertValues(R.color.ksr_green_800);
   }
 
   @Test

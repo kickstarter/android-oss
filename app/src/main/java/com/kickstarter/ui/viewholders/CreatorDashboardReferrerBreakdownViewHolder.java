@@ -38,12 +38,11 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   protected @Bind(R.id.pledged_via_external) View pledgedViaExternalLayout;
   protected @Bind(R.id.pledged_via_external_bar) View pledgedViaExternalBar;
   protected @Bind(R.id.pledged_via_external_indicator) View pledgedViaExternalIndicator;
-  protected @Bind(R.id.pledged_via_kickstarter_bar) View pledgedViaInternalBar;
-  protected @Bind(R.id.pledged_via_kickstarter_indicator) View pledgedViaInternalIndicator;
-  protected @Bind(R.id.pledged_via_kickstarter) View pledgedViaInternalLayout;
+  protected @Bind(R.id.pledged_via_kickstarter_bar) View pledgedViaKickstarterBar;
+  protected @Bind(R.id.pledged_via_kickstarter_indicator) View pledgedViaKickstarterIndicator;
+  protected @Bind(R.id.pledged_via_kickstarter) View pledgedViaKickstarterLayout;
   protected @Bind(R.id.referrer_breakdown_chart_layout) ConstraintLayout referrerBreakdownLayout;
 
-  protected @BindDimen(R.dimen.grid_1_half) int grid1HalfPixels;
   protected @BindDimen(R.dimen.grid_1) int grid1Pixels;
   protected @BindDimen(R.dimen.grid_3) int grid3Pixels;
 
@@ -84,7 +83,7 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     this.viewModel.outputs.internalReferrerPercent()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(percent -> setReferrerWidth(percent, this.pledgedViaInternalBar, this.pledgedViaInternalIndicator));
+      .subscribe(percent -> setReferrerWidth(percent, this.pledgedViaKickstarterBar, this.pledgedViaKickstarterIndicator));
 
     this.viewModel.outputs.internalReferrerPercentText()
       .compose(bindToLifecycle())
@@ -104,7 +103,7 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     this.viewModel.outputs.pledgedViaInternalLayoutIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(gone -> this.hideReferrer(gone, this.pledgedViaInternalLayout, this.pledgedViaInternalBar, this.pledgedViaInternalIndicator));
+      .subscribe(gone -> this.hideReferrer(gone, this.pledgedViaKickstarterLayout, this.pledgedViaKickstarterBar, this.pledgedViaKickstarterIndicator));
 
     this.viewModel.outputs.projectAndCustomReferrerPledgedAmount()
       .compose(bindToLifecycle())

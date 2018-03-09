@@ -120,9 +120,9 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
         case "external":
           return ReferrerType.EXTERNAL;
         case "kickstarter":
-          return ReferrerType.INTERNAL;
+          return ReferrerType.KICKSTARTER;
         default:
-          return ReferrerType.INTERNAL;
+          return ReferrerType.KICKSTARTER;
       }
     }
 

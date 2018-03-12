@@ -3,8 +3,11 @@ package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.Pair;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -23,6 +26,7 @@ public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHold
 
   private final CreatorDashboardReferrerStatsRowHolderViewModel.ViewModel viewModel;
   protected @Bind(R.id.amount_pledged_for_referrer_text_view) TextView amountPledgedForReferrerTextView;
+  protected @Bind(R.id.referrer_source_circle) ImageView referrerSourceCircleImageView;
   protected @Bind(R.id.referrer_source_text_view) TextView referrerSourceTextView;
   protected @Bind(R.id.referrer_backer_count_text_view) TextView referrerBackerCountTextView;
 
@@ -44,6 +48,11 @@ public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHold
       .compose(observeForUI())
       .subscribe(this.referrerBackerCountTextView::setText);
 
+    this.viewModel.outputs.referrerSourceColorId()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setReferrerCircleColor);
+
     this.viewModel.outputs.referrerSourceName()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -59,5 +68,10 @@ public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHold
   private void setPledgedColumnValue(final @NonNull Pair<Project, Float> projectAndPledgedForReferrer) {
     final String goalString = this.ksCurrency.format(projectAndPledgedForReferrer.second, projectAndPledgedForReferrer.first);
     this.amountPledgedForReferrerTextView.setText(goalString);
+  }
+
+  private void setReferrerCircleColor(final @NonNull Integer referrerCircleColorResourceId) {
+    final Integer color = ContextCompat.getColor(context(), referrerCircleColorResourceId);
+    DrawableCompat.setTint(this.referrerSourceCircleImageView.getDrawable(), color);
   }
 }

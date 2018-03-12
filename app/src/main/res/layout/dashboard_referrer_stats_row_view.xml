@@ -29,6 +29,15 @@
       style="@style/CreatorDashboardTableRowText.SecondaryColumn"
       tools:text="28" />
 
+    <ImageView
+      android:id="@+id/referrer_source_circle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/grid_1"
+      android:contentDescription="@null"
+      android:src="@drawable/creator_dashboard_circle"
+      tools:tint="@color/ksr_green_700" />
+
     <TextView
       android:id="@+id/referrer_source_text_view"
       android:layout_weight="3"

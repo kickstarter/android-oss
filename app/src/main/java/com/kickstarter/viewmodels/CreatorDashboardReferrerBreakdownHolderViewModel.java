@@ -5,7 +5,6 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ReferrerColor;
 import com.kickstarter.libs.ReferrerType;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.PairUtils;
@@ -18,8 +17,6 @@ import java.util.List;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-
 public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
   interface Inputs {
@@ -28,56 +25,47 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
   }
 
   interface Outputs {
-    /** Emits the color for the custom referrers on the pie chart **/
-    Observable<Integer> customReferrerColor();
+    /** Emits a boolean that determines if breakdown chart is gone. */
+    Observable<Boolean> breakdownViewIsGone();
 
-    /** Emits the percentage of total pledges from a custom referrer **/
+    /** Emits the percentage of total pledges from a custom referrer. */
     Observable<Float> customReferrerPercent();
 
-    /** Emits the text for the percentage of total pledges from a custom referrer **/
+    /** Emits the text for the percentage of total pledges from a custom referrer. */
     Observable<String> customReferrerPercentText();
 
-    /** Emits the color for the external referrers on the pie chart **/
-    Observable<Integer> externalReferrerColor();
-
-    /** Emits the percentage of total pledges from a external referrer **/
+    /** Emits the percentage of total pledges from a external referrer. */
     Observable<Float> externalReferrerPercent();
 
-    /** Emits the text for the percentage of total pledges from an external referrer **/
+    /** Emits the text for the percentage of total pledges from an external referrer. */
     Observable<String> externalReferrerPercentText();
 
-    /** Emits the color for the internal referrers on the pie chart **/
-    Observable<Integer> internalReferrerColor();
+    /** Emits the percentage of total pledges from a Kickstarter referrer. */
+    Observable<Float> kickstarterReferrerPercent();
 
-    /** Emits the percentage of total pledges from an internal referrer **/
-    Observable<Float> internalReferrerPercent();
+    /** Emits the text for the percentage of total pledges from a Kickstarter referrer. */
+    Observable<String> kickstarterReferrerPercentText();
 
-    /** Emits the text for the percentage of total pledges from an internal referrer **/
-    Observable<String> internalReferrerPercentText();
-
-    /** Emits a boolean that determines in the pledged via custom layout is gone **/
+    /** Emits a boolean that determines if the pledged via custom layout is gone. */
     Observable<Boolean> pledgedViaCustomLayoutIsGone();
 
-    /** Emits a boolean that determines in the pledged via external layout is gone **/
+    /** Emits a boolean that determines if the pledged via external layout is gone. */
     Observable<Boolean> pledgedViaExternalLayoutIsGone();
 
-    /** Emits a boolean that determines in the pledged via internal layout is gone **/
-    Observable<Boolean> pledgedViaInternalLayoutIsGone();
+    /** Emits a boolean that determines if the pledged via Kickstarter layout is gone. */
+    Observable<Boolean> pledgedViaKickstarterLayoutIsGone();
 
-    /** Emits the current project and the average pledge for that project **/
+    /** Emits the current project and the average pledge for that project. */
     Observable<Pair<Project, Integer>> projectAndAveragePledge();
 
-    /** Emits the current project and the amount pledged via custom referrers **/
+    /** Emits the current project and the amount pledged via custom referrers. */
     Observable<Pair<Project, Float>> projectAndCustomReferrerPledgedAmount();
 
-    /** Emits the current project and the amount pledged via external referrers **/
+    /** Emits the current project and the amount pledged via external referrers. */
     Observable<Pair<Project, Float>> projectAndExternalReferrerPledgedAmount();
 
-    /** Emits the current project and the amount pledged via internal referrers **/
-    Observable<Pair<Project, Float>> projectAndInternalReferrerPledgedAmount();
-
-    /** Emits when there are more than 10 referrer stats and title copy should reflect limited list. */
-    Observable<Boolean> referrersTitleIsLimitedCopy();
+    /** Emits the current project and the amount pledged via Kickstarter referrers. */
+    Observable<Pair<Project, Float>> projectAndKickstarterReferrerPledgedAmount();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardReferrerBreakdownViewHolder> implements Inputs, Outputs {
@@ -96,19 +84,19 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
         .map(PairUtils::second)
         .map(ProjectStatsEnvelope::cumulative);
 
-      final Observable<List<ProjectStatsEnvelope.ReferrerStats>> internalReferrers = referrerStats
+      final Observable<List<ProjectStatsEnvelope.ReferrerStats>> kickstarterReferrers = referrerStats
         .flatMap(rs ->
-          Observable.from(rs).filter(r -> r.referrerTypeEnumType() == ReferrerType.INTERNAL).toList()
+          Observable.from(rs).filter(r -> ProjectStatsEnvelope.ReferrerStats.referrerTypeEnum(r.referrerType()) == ReferrerType.KICKSTARTER).toList()
         );
 
       final Observable<List<ProjectStatsEnvelope.ReferrerStats>> externalReferrers = referrerStats
         .flatMap(rs ->
-          Observable.from(rs).filter(r -> r.referrerTypeEnumType() == ReferrerType.EXTERNAL).toList()
+          Observable.from(rs).filter(r -> ProjectStatsEnvelope.ReferrerStats.referrerTypeEnum(r.referrerType()) == ReferrerType.EXTERNAL).toList()
         );
 
       final Observable<List<ProjectStatsEnvelope.ReferrerStats>> customReferrers = referrerStats
         .flatMap(rs ->
-          Observable.from(rs).filter(r -> r.referrerTypeEnumType() == ReferrerType.CUSTOM).toList()
+          Observable.from(rs).filter(r -> ProjectStatsEnvelope.ReferrerStats.referrerTypeEnum(r.referrerType()) == ReferrerType.CUSTOM).toList()
         );
 
       final Observable<Integer> averagePledge = cumulativeStats
@@ -117,8 +105,8 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
       this.projectAndAveragePledge = Observable.combineLatest(currentProject, averagePledge, Pair::create);
 
-      this.customReferrerColor = Observable.just(ReferrerColor.CUSTOM.getReferrerColor())
-        .compose(takeWhen(customReferrers));
+      this.breakdownViewIsGone = referrerStats
+        .map(List::isEmpty);
 
       this.customReferrerPercent = customReferrers
         .flatMap(rs ->
@@ -127,7 +115,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
         );
 
       this.customReferrerPercentText = this.customReferrerPercent
-        .map(percent -> NumberUtils.flooredPercentage(percent.floatValue() * 100f));
+        .map(percent -> NumberUtils.flooredPercentage(percent * 100f));
 
       this.customReferrerPledgedAmount = customReferrers
         .flatMap(rs ->
@@ -140,9 +128,6 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
         this.customReferrerPledgedAmount,
         Pair::create
       );
-
-      this.externalReferrerColor = Observable.just(ReferrerColor.EXTERNAL.getReferrerColor())
-        .compose(takeWhen(externalReferrers));
 
       this.externalReferrerPercent = externalReferrers
         .flatMap(rs ->
@@ -165,27 +150,24 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
         Pair::create
       );
 
-      this.internalReferrerColor = Observable.just(ReferrerColor.INTERNAL.getReferrerColor())
-        .compose(takeWhen(internalReferrers));
-
-      this.internalReferrerPercent = internalReferrers
+      this.kickstarterReferrerPercent = kickstarterReferrers
         .flatMap(rs ->
           Observable.from(rs)
             .reduce(0f, (accum, stat) -> accum + stat.percentageOfDollars())
         );
 
-      this.internalReferrerPercentText = this.internalReferrerPercent
-        .map(percent -> NumberUtils.flooredPercentage(percent.floatValue() * 100f));
+      this.kickstarterReferrerPercentText = this.kickstarterReferrerPercent
+        .map(percent -> NumberUtils.flooredPercentage(percent * 100f));
 
-      this.internalReferrerPledgedAmount = internalReferrers
+      this.kickstarterReferrerPledgedAmount = kickstarterReferrers
         .flatMap(rs ->
           Observable.from(rs)
             .reduce(0f, (accum, stat) -> accum + stat.pledged())
         );
 
-      this.projectAndInternalReferrerPledgedAmount = Observable.combineLatest(
+      this.projectAndKickstarterReferrerPledgedAmount = Observable.combineLatest(
         currentProject,
-        this.internalReferrerPledgedAmount,
+        this.kickstarterReferrerPledgedAmount,
         Pair::create
       );
 
@@ -195,7 +177,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       this.pledgedViaExternalLayoutIsGone = this.externalReferrerPledgedAmount
         .map(amount -> amount <= 0f);
 
-      this.pledgedViaInternalLayoutIsGone = this.internalReferrerPledgedAmount
+      this.pledgedViaKickstarterLayoutIsGone = this.kickstarterReferrerPledgedAmount
         .map(amount -> amount <= 0f);
 
       referrerStats
@@ -210,25 +192,23 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
     private final PublishSubject<Pair<Project, ProjectStatsEnvelope>> projectAndProjectStatsInput = PublishSubject.create();
 
-    private final Observable<Integer> customReferrerColor;
+    private final Observable<Boolean> breakdownViewIsGone;
     private final Observable<Float> customReferrerPercent;
     private final Observable<String> customReferrerPercentText;
     private final Observable<Float> customReferrerPledgedAmount;
-    private final Observable<Integer> externalReferrerColor;
     private final Observable<Float> externalReferrerPercent;
     private final Observable<String> externalReferrerPercentText;
     private final Observable<Float> externalReferrerPledgedAmount;
-    private final Observable<Integer> internalReferrerColor;
-    private final Observable<Float> internalReferrerPercent;
-    private final Observable<String> internalReferrerPercentText;
-    private final Observable<Float> internalReferrerPledgedAmount;
+    private final Observable<Float> kickstarterReferrerPercent;
+    private final Observable<String> kickstarterReferrerPercentText;
+    private final Observable<Float> kickstarterReferrerPledgedAmount;
     private final Observable<Boolean> pledgedViaCustomLayoutIsGone;
     private final Observable<Boolean> pledgedViaExternalLayoutIsGone;
-    private final Observable<Boolean> pledgedViaInternalLayoutIsGone;
+    private final Observable<Boolean> pledgedViaKickstarterLayoutIsGone;
     private final Observable<Pair<Project, Integer>> projectAndAveragePledge;
     private final Observable<Pair<Project, Float>> projectAndCustomReferrerPledgedAmount;
     private final Observable<Pair<Project, Float>> projectAndExternalReferrerPledgedAmount;
-    private final Observable<Pair<Project, Float>> projectAndInternalReferrerPledgedAmount;
+    private final Observable<Pair<Project, Float>> projectAndKickstarterReferrerPledgedAmount;
     private final PublishSubject<Boolean> referrersTitleIsLimitedCopy = PublishSubject.create();
 
     @Override
@@ -236,10 +216,9 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       this.projectAndProjectStatsInput.onNext(projectAndStats);
     }
 
-
     @Override
-    public @NonNull Observable<Integer> customReferrerColor() {
-      return this.customReferrerColor;
+    public Observable<Boolean> breakdownViewIsGone() {
+      return this.breakdownViewIsGone;
     }
     @Override
     public @NonNull Observable<Float> customReferrerPercent() {
@@ -250,10 +229,6 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       return this.customReferrerPercentText;
     }
     @Override
-    public @NonNull Observable<Integer> externalReferrerColor() {
-      return this.externalReferrerColor;
-    }
-    @Override
     public @NonNull Observable<Float> externalReferrerPercent() {
       return this.externalReferrerPercent;
     }
@@ -262,16 +237,12 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       return this.externalReferrerPercentText;
     }
     @Override
-    public @NonNull Observable<Integer> internalReferrerColor() {
-      return this.internalReferrerColor;
+    public @NonNull Observable<Float> kickstarterReferrerPercent() {
+      return this.kickstarterReferrerPercent;
     }
     @Override
-    public @NonNull Observable<Float> internalReferrerPercent() {
-      return this.internalReferrerPercent;
-    }
-    @Override
-    public @NonNull Observable<String> internalReferrerPercentText() {
-      return this.internalReferrerPercentText;
+    public @NonNull Observable<String> kickstarterReferrerPercentText() {
+      return this.kickstarterReferrerPercentText;
     }
     @Override
     public @NonNull Observable<Boolean> pledgedViaCustomLayoutIsGone() {
@@ -282,8 +253,8 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       return this.pledgedViaExternalLayoutIsGone;
     }
     @Override
-    public @NonNull Observable<Boolean> pledgedViaInternalLayoutIsGone() {
-      return this.pledgedViaInternalLayoutIsGone;
+    public @NonNull Observable<Boolean> pledgedViaKickstarterLayoutIsGone() {
+      return this.pledgedViaKickstarterLayoutIsGone;
     }
     @Override
     public @NonNull Observable<Pair<Project, Integer>> projectAndAveragePledge() {
@@ -298,11 +269,8 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       return this.projectAndExternalReferrerPledgedAmount;
     }
     @Override
-    public @NonNull Observable<Pair<Project, Float>> projectAndInternalReferrerPledgedAmount() {
-      return this.projectAndInternalReferrerPledgedAmount;
-    }
-    @Override public @NonNull Observable<Boolean> referrersTitleIsLimitedCopy() {
-      return this.referrersTitleIsLimitedCopy;
+    public @NonNull Observable<Pair<Project, Float>> projectAndKickstarterReferrerPledgedAmount() {
+      return this.projectAndKickstarterReferrerPledgedAmount;
     }
   }
 }

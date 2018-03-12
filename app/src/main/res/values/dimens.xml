@@ -17,12 +17,14 @@
   <dimen name="grid_8">48dp</dimen>
   <dimen name="grid_9">54dp</dimen>
   <dimen name="grid_10">60dp</dimen>
+  <dimen name="grid_11">64dp</dimen>
   <dimen name="grid_21_half">63dp</dimen>
   <dimen name="grid_12">72dp</dimen>
   <dimen name="grid_13">78dp</dimen>
   <dimen name="grid_14">84dp</dimen>
   <dimen name="grid_15">90dp</dimen>
   <dimen name="grid_16">96dp</dimen>
+  <dimen name="grid_17">102dp</dimen>
   <dimen name="grid_20">120dp</dimen>
   <dimen name="grid_21">126dp</dimen>
   <dimen name="grid_27">162dp</dimen>

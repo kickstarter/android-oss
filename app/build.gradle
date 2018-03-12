@@ -173,6 +173,7 @@ dependencies {
     compile 'net.hockeyapp.android:HockeySDK:3.6.1'
     compile 'org.jsoup:jsoup:1.8.2'
     compile "com.mixpanel.android:mixpanel-android:4.6.4"
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
     // Testing
     testCompile 'junit:junit:4.12'

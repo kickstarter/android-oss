@@ -9883,7 +9883,8 @@
     "react_guest_pledging_run_3": "control",
     "show_refreshed_thanks_page": "control",
     "show_created_by_discovery": "control",
-    "guided_search": "control"
+    "project_cards_description": "control",
+    "default_rec_projects": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

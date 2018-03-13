@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
 
-import com.google.android.exoplayer.AspectRatioFrameLayout;
-import com.google.android.exoplayer.ExoPlayer;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiCapabilities;
@@ -33,7 +33,7 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
   private long playerPosition;
 
   protected @Bind(R.id.video_player_layout) View rootView;
-  protected @Bind(R.id.surface_view) SurfaceView surfaceView;
+  protected @Bind(R.id.player_view) SurfaceView playerView;
   protected @Bind(R.id.loading_indicator) ProgressBar loadingIndicatorProgressBar;
   protected @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
 
@@ -71,11 +71,11 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
 
   @Override
   public void onStateChanged(final boolean playWhenReady, final int playbackState) {
-    if (playbackState == ExoPlayer.STATE_ENDED) {
+    if (playbackState == Player.STATE_ENDED) {
       finish();
     }
 
-    if (playbackState == ExoPlayer.STATE_BUFFERING) {
+    if (playbackState == Player.STATE_BUFFERING) {
       this.loadingIndicatorProgressBar.setVisibility(View.VISIBLE);
     } else {
       this.loadingIndicatorProgressBar.setVisibility(View.GONE);
@@ -117,11 +117,11 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
     this.player.seekTo(this.playerPosition);  // todo: will be used for inline video playing
 
     // Set media controller
-    this.mediaController.setMediaPlayer(this.player.getPlayerControl());
-    this.mediaController.setEnabled(true);
+//    this.
+//    this.mediaController.setMediaPlayer(this.player.getMediaController());
+//    this.mediaController.setEnabled(true);
 
     this.player.prepare();
-    this.player.setSurface(this.surfaceView.getHolder().getSurface());
     this.player.setPlayWhenReady(true);
   }
 

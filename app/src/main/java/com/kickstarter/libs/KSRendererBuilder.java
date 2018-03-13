@@ -50,16 +50,14 @@ public class KSRendererBuilder implements RendererBuilder {
 
   @Override
   public void buildRenderers(final @NonNull KSVideoPlayer player) {
-    final Allocator allocator = new DefaultAllocator(BUFFER_SEGMENT_SIZE);
+    final Allocator allocator = new DefaultAllocator(true, BUFFER_SEGMENT_SIZE);
     final DataSource dataSource = new DefaultDataSource(this.context, null, this.videoLink, true);
-    final ExtractorMediaSource sampleSource = new ExtractorMediaSource(Uri.parse(this.videoLink), dataSource,
+    final ExtractorMediaSource sampleSource = new ExtractorMediaSource.Factory(Uri.parse(this.videoLink), dataSource,
       allocator, BUFFER_SEGMENT_COUNT * BUFFER_SEGMENT_SIZE);
 
     final MediaCodecVideoRenderer videoRenderer = new MediaCodecVideoRenderer(this.context, sampleSource,
       MediaCodecSelector.DEFAULT, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
     final MediaCodecAudioRenderer audioRenderer = new MediaCodecAudioRenderer(sampleSource, MediaCodecSelector.DEFAULT);
-
-
 
     player.prepareRenderers(videoRenderer, audioRenderer);
   }

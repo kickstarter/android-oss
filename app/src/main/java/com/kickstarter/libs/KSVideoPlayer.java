@@ -23,6 +23,7 @@
 package com.kickstarter.libs;
 
 import android.support.annotation.NonNull;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.view.Surface;
 
 import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
@@ -30,8 +31,14 @@ import com.google.android.exoplayer.util.PlayerControl;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.video.MediaCodecVideoRenderer;
 
 import static android.os.Build.VERSION_CODES.M;
@@ -39,13 +46,12 @@ import static android.os.Build.VERSION_CODES.M;
 /**
  * ExoPlayer wrapper that provides higher level interface.
  */
-public final class KSVideoPlayer implements Player.EventListener {
+public final class KSVideoPlayer extends SimpleExoPlayer implements Player.EventListener {
   private static final int TRACK_RENDERER_COUNT = 3; // audio, video, text
   private boolean lastReportedPlayWhenReady;
   private int lastReportedPlaybackState;
   private final ExoPlayer player;
   private MediaCodecVideoRenderer videoRenderer;
-  private Player.EventListener playerControl;
   private final RendererBuilder rendererBuilder;
   private Surface surface;
   private Listener listener;
@@ -59,19 +65,51 @@ public final class KSVideoPlayer implements Player.EventListener {
   }
 
   public KSVideoPlayer(final @NonNull RendererBuilder rendererBuilder) {
-    this.player = ExoPlayer.Factory.newInstance(TRACK_RENDERER_COUNT);
+    super();
+    this.player = ExoPlayerFactory.newInstance().Factory.newInstance(TRACK_RENDERER_COUNT);
     this.rendererBuilder = rendererBuilder;
-    this.playerControl = new M(this.player);
     this.player.addListener(this);
   }
 
   @Override
+  public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+
+  }
+  @Override
+  public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+  }
+  @Override
+  public void onLoadingChanged(boolean isLoading) {
+
+  }
+  @Override
   public void onPlayerStateChanged(final boolean playWhenReady, final int playbackState) {
     reportPlayerState();
+  }
+  @Override
+  public void onRepeatModeChanged(int repeatMode) {
+
+  }
+  @Override
+  public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
   }
 
   @Override
   public void onPlayerError(final @NonNull ExoPlaybackException error) {}
+  @Override
+  public void onPositionDiscontinuity(int reason) {
+
+  }
+  @Override
+  public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+  }
+  @Override
+  public void onSeekProcessed() {
+
+  }
 
   /* ExoPlayer helpers */
   public long getCurrentPosition() {
@@ -84,10 +122,6 @@ public final class KSVideoPlayer implements Player.EventListener {
 
   public int getPlaybackState() {
     return this.player.getPlaybackState();
-  }
-
-  public PlayerControl getPlayerControl() {
-    return this.playerControl;
   }
 
   public void pushSurface(final boolean blockForSurfacePush) {

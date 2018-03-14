@@ -9,13 +9,17 @@ import android.view.View;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
 
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.KSRendererBuilder;
 import com.kickstarter.libs.KSVideoPlayer;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -29,7 +33,7 @@ import rx.android.schedulers.AndroidSchedulers;
 @RequiresActivityViewModel(VideoViewModel.ViewModel.class)
 public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> implements KSVideoPlayer.Listener {
   private MediaController mediaController;
-  private KSVideoPlayer player;
+  private ExoPlayer player;
   private long playerPosition;
 
   protected @Bind(R.id.video_player_layout) View rootView;
@@ -112,8 +116,8 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
 
   public void preparePlayer(final @NonNull String videoUrl) {
     // Create player
-    this.player = new KSVideoPlayer(new KSRendererBuilder(this, videoUrl));
-    this.player.setListener(this);
+    this.player = ExoPlayerFactory.newSimpleInstance(this, new DefaultTrackSelector());
+//    this.player.setListener(this);
     this.player.seekTo(this.playerPosition);  // todo: will be used for inline video playing
 
     // Set media controller
@@ -121,7 +125,8 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
 //    this.mediaController.setMediaPlayer(this.player.getMediaController());
 //    this.mediaController.setEnabled(true);
 
-    this.player.prepare();
+    this.player.prepare(ExtractorMediaSource.Factory(new DefaultDataSourceFactory(useBandwidthMeter ? BANDWIDTH_METER : null))
+      .createMediaSource(uri, handler, listener));
     this.player.setPlayWhenReady(true);
   }
 

@@ -22,37 +22,33 @@
 
 package com.kickstarter.libs;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.media.session.MediaControllerCompat;
 import android.view.Surface;
 
-import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
-import com.google.android.exoplayer.util.PlayerControl;
-import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.video.MediaCodecVideoRenderer;
-
-import static android.os.Build.VERSION_CODES.M;
 
 /**
  * ExoPlayer wrapper that provides higher level interface.
  */
-public final class KSVideoPlayer extends SimpleExoPlayer implements Player.EventListener {
+public final class KSVideoPlayer implements Player.EventListener {
   private static final int TRACK_RENDERER_COUNT = 3; // audio, video, text
   private boolean lastReportedPlayWhenReady;
   private int lastReportedPlaybackState;
   private final ExoPlayer player;
   private MediaCodecVideoRenderer videoRenderer;
-  private final RendererBuilder rendererBuilder;
+  private final RenderersFactory renderersFactory;
   private Surface surface;
   private Listener listener;
 
@@ -64,11 +60,11 @@ public final class KSVideoPlayer extends SimpleExoPlayer implements Player.Event
     void buildRenderers(KSVideoPlayer player);
   }
 
-  public KSVideoPlayer(final @NonNull RendererBuilder rendererBuilder) {
-    super();
-    this.player = ExoPlayerFactory.newInstance().Factory.newInstance(TRACK_RENDERER_COUNT);
-    this.rendererBuilder = rendererBuilder;
-    this.player.addListener(this);
+  public KSVideoPlayer(Context context, TrackSelector trackSelector, LoadControl loadControl) {
+//    super(renderersFactory, trackSelector, loadControl);
+    this.player = null;
+    this.renderersFactory = null;
+//    this.player.addListener(this);
   }
 
   @Override
@@ -128,24 +124,23 @@ public final class KSVideoPlayer extends SimpleExoPlayer implements Player.Event
     if (this.videoRenderer == null) {
       return;
     }
-    if (blockForSurfacePush) {
-      this.player.createMessage(this.videoRenderer, C.MSG_SET_SURFACE, this.surface);
-    } else {
-      this.player.sendMessages(this.videoRenderer, C.MSG_SET_SURFACE, this.surface);
-    }
+//    if (blockForSurfacePush) {
+//      this.player.createMessage(this.videoRenderer, C.MSG_SET_SURFACE, this.surface);
+//    } else {
+//      this.player.sendMessages(this.videoRenderer, C.MSG_SET_SURFACE, this.surface);
+//    }
   }
 
   public void prepare() {
     this.videoRenderer = null;
     reportPlayerState();
-    this.rendererBuilder.buildRenderers(this);
   }
 
   public void prepareRenderers(final @NonNull MediaCodecVideoRenderer videoRenderer,
     final @NonNull MediaCodecAudioRenderer audioTrackRenderer) {
-    this.videoRenderer = videoRenderer;
-    this.player.sendMessages(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, this.surface);
-    this.player.prepare(videoRenderer, audioTrackRenderer);
+//    this.videoRenderer = videoRenderer;
+//    this.player.sendMessages(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, this.surface);
+//    this.player.prepare(videoRenderer, audioTrackRenderer);
   }
 
   public void release() {
@@ -175,10 +170,5 @@ public final class KSVideoPlayer extends SimpleExoPlayer implements Player.Event
 
   public void setPlayWhenReady(final boolean playWhenReady) {
     this.player.setPlayWhenReady(playWhenReady);
-  }
-
-  public void setSurface(final @NonNull Surface surface) {
-    this.surface = surface;
-    pushSurface(false);
   }
 }

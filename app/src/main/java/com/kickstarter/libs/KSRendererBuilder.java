@@ -23,18 +23,8 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
-import android.media.MediaCodec;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
-import com.google.android.exoplayer2.mediacodec.MediaCodecSelector;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.upstream.Allocator;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultAllocator;
-import com.google.android.exoplayer2.upstream.DefaultDataSource;
-import com.google.android.exoplayer2.video.MediaCodecVideoRenderer;
 import com.kickstarter.libs.KSVideoPlayer.RendererBuilder;
 
 public class KSRendererBuilder implements RendererBuilder {
@@ -50,15 +40,15 @@ public class KSRendererBuilder implements RendererBuilder {
 
   @Override
   public void buildRenderers(final @NonNull KSVideoPlayer player) {
-    final Allocator allocator = new DefaultAllocator(true, BUFFER_SEGMENT_SIZE);
-    final DataSource dataSource = new DefaultDataSource(this.context, null, this.videoLink, true);
-    final ExtractorMediaSource sampleSource = new ExtractorMediaSource.Factory(Uri.parse(this.videoLink), dataSource,
-      allocator, BUFFER_SEGMENT_COUNT * BUFFER_SEGMENT_SIZE);
+//    final Allocator allocator = new DefaultAllocator(true, BUFFER_SEGMENT_SIZE);
+//    final DataSource dataSource = new DefaultDataSource(this.context, null, this.videoLink, true);
+//    final ExtractorMediaSource sampleSource =  ExtractorMediaSource.Factory(ExtractorMediaSource.DATA_SOURCE_FACTORY).createMediaSource(uri)(Uri.parse(this.videoLink), dataSource,
+//      allocator, BUFFER_SEGMENT_COUNT * BUFFER_SEGMENT_SIZE);
+//
+//    final MediaCodecVideoRenderer videoRenderer = new MediaCodecVideoRenderer(this.context, sampleSource,
+//      MediaCodecSelector.DEFAULT, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+//    final MediaCodecAudioRenderer audioRenderer = new MediaCodecAudioRenderer(sampleSource, MediaCodecSelector.DEFAULT);
 
-    final MediaCodecVideoRenderer videoRenderer = new MediaCodecVideoRenderer(this.context, sampleSource,
-      MediaCodecSelector.DEFAULT, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
-    final MediaCodecAudioRenderer audioRenderer = new MediaCodecAudioRenderer(sampleSource, MediaCodecSelector.DEFAULT);
-
-    player.prepareRenderers(videoRenderer, audioRenderer);
+//    player.prepareRenderers(videoRenderer, audioRenderer);
   }
 }

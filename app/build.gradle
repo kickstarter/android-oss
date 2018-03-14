@@ -217,7 +217,7 @@ def commitTime() {
 }
 
 buildscript {
-    ext.kotlin_version = '1.1.2-5'
+    ext.kotlin_version = '1.2.20'
 
     repositories {
         mavenCentral()

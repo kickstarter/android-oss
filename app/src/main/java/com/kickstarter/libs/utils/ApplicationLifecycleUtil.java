@@ -62,7 +62,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
         .subscribe(c -> this.config.config(c));
 
       // Refresh the user
-      final Observable<User> user = this.currentUser.observable();
+      final Observable<User> user = this.client.fetchCurrentUser();
 
       final String accessToken = this.currentUser.getAccessToken();
 

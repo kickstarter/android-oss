@@ -21,6 +21,9 @@ public final class UserUtils {
     return I18nUtils.isCountryGermany(location.country());
   }
 
+  /**
+   * Returns whether two users are different where equality is determined by matching IDs.
+   */
   public static boolean userHasChanged(final @Nullable User u1, final @Nullable User u2) {
     if (ObjectUtils.isNull(u1) && ObjectUtils.isNull(u2)) {
       return false;

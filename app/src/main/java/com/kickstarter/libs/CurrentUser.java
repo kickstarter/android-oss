@@ -70,7 +70,6 @@ public class CurrentUser extends CurrentUserType {
 
   @Override
   public void refresh(final @NonNull User freshUser) {
-    Timber.d("refresh user");
     this.user.onNext(freshUser);
   }
 

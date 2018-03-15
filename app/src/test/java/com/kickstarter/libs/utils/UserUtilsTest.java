@@ -10,8 +10,8 @@ public class UserUtilsTest extends KSRobolectricTestCase {
 
   @Test
   public void testUserHasChanged() {
-    User user15 = UserFactory.user().toBuilder().id(15).build();
-    User user21 = UserFactory.user().toBuilder().id(21).build();
+    final User user15 = UserFactory.user().toBuilder().id(15).build();
+    final User user21 = UserFactory.user().toBuilder().id(21).build();
 
     assertTrue(UserUtils.userHasChanged(null, UserFactory.user()));
     assertTrue(UserUtils.userHasChanged(UserFactory.user(), null));

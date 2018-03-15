@@ -122,7 +122,7 @@ public interface DiscoveryViewModel {
       final Observable<User> currentUser = this.currentUser.observable();
 
       final Observable<User> changedUser = currentUser
-        .distinctUntilChanged(((u1, u2) -> !UserUtils.userHasChanged(u1, u2)));
+        .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2));
 
       changedUser.subscribe(updatedUser ->
         this.apiClient.config()

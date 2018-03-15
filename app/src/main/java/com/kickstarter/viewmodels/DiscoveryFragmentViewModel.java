@@ -58,7 +58,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
     this.currentUser = environment.currentUser();
 
     final Observable<User> changedUser = this.currentUser.observable()
-      .distinctUntilChanged(((u1, u2) -> !UserUtils.userHasChanged(u1, u2)));
+      .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2));
 
     final Observable<DiscoveryParams> selectedParams = Observable.combineLatest(
       changedUser,
@@ -117,7 +117,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
       .subscribe(this.shouldShowOnboardingView);
 
     this.currentUser.loggedInUser()
-      .distinctUntilChanged(((u1, u2) -> u1 == null ? u2 == null : u1.id() == u2.id()))
+      .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2))
       .compose(combineLatestPair(this.paramsFromActivity))
       .flatMap(__ -> this.fetchActivity())
       .filter(this::activityHasNotBeenSeen)

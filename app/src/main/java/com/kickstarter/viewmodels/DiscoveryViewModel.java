@@ -14,6 +14,7 @@ import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.IntegerUtils;
+import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
@@ -120,7 +121,10 @@ public interface DiscoveryViewModel {
 
       final Observable<User> currentUser = this.currentUser.observable();
 
-      currentUser.subscribe(updatedUser ->
+      final Observable<User> changedUser = currentUser
+        .distinctUntilChanged(((u1, u2) -> !UserUtils.userHasChanged(u1, u2)));
+
+      changedUser.subscribe(updatedUser ->
         this.apiClient.config()
           .compose(Transformers.neverError())
           .subscribe(this.currentConfigType::config));
@@ -198,7 +202,7 @@ public interface DiscoveryViewModel {
       // to avoid displaying old data.
       pagerSelectedPage
         .compose(takeWhen(params))
-        .compose(combineLatestPair(currentUser))
+        .compose(combineLatestPair(changedUser))
         .map(pageAndUser -> pageAndUser.first)
         .flatMap(currentPage -> Observable.from(DiscoveryParams.Sort.values())
           .map(DiscoveryUtils::positionFromSort)

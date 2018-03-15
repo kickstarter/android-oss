@@ -7,7 +7,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.KSApplication;
@@ -16,13 +15,10 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import javax.inject.Inject;
-
-import rx.Observable;
 
 public final class ApplicationLifecycleUtil implements Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
   protected @Inject Koala koala;
@@ -62,14 +58,12 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
         .subscribe(c -> this.config.config(c));
 
       // Refresh the user
-      final Observable<User> user = this.client.fetchCurrentUser();
-
       final String accessToken = this.currentUser.getAccessToken();
 
-      Observable.just(accessToken)
-        .filter(ObjectUtils::isNotNull)
-        .zipWith(user, Pair::create)
-        .subscribe(tokenUserPair -> this.currentUser.refresh(tokenUserPair.second));
+      if (ObjectUtils.isNotNull(accessToken)) {
+        this.client.fetchCurrentUser()
+          .subscribe(u -> this.currentUser.refresh(u));
+      }
 
       this.isInBackground = false;
     }

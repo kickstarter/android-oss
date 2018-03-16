@@ -75,9 +75,23 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCreatorDashboardButtonIsGone__isCreatorOrCollaborator() {
+  public void testCreatorDashboardButtonIsGone__isCreator() {
     final User creator = UserFactory.creator();
     final MockCurrentUser currentUser = new MockCurrentUser(creator);
+
+    final Environment env = environment().toBuilder()
+      .currentUser(currentUser)
+      .build();
+
+    this.vm = new DiscoveryViewModel.ViewModel(env);
+    this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
+    this.creatorDashboardButtonIsGone.assertValues(false);
+  }
+
+  @Test
+  public void testCreatorDashboardButtonIsGone__isCollaborator() {
+    final User collaborator = UserFactory.collaborator();
+    final MockCurrentUser currentUser = new MockCurrentUser(collaborator);
 
     final Environment env = environment().toBuilder()
       .currentUser(currentUser)

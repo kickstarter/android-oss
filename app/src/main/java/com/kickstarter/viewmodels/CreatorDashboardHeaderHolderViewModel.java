@@ -83,7 +83,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
       final Observable<User> user = this.currentUser.observable();
 
       this.otherProjectsButtonIsGone = user
-        .map(User::createdProjectsCount)
+        .map(User::memberProjectsCount)
         .filter(ObjectUtils::isNotNull)
         .map(count -> count <= 1)
         .compose(bindToLifecycle());

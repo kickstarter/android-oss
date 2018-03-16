@@ -18,6 +18,14 @@ public final class UserFactory {
     return user().toBuilder().social(true).build();
   }
 
+  public static User collaborator() {
+    return user()
+      .toBuilder()
+      .createdProjectsCount(0)
+      .memberProjectsCount(10)
+      .build();
+  }
+
   public static User creator() {
     return user()
       .toBuilder()

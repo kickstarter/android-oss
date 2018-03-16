@@ -15,9 +15,11 @@ import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.RefTagUtils;
+import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -55,8 +57,11 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
     this.activitySamplePreference = environment.activitySamplePreference();
     this.currentUser = environment.currentUser();
 
+    final Observable<User> changedUser = this.currentUser.observable()
+      .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2));
+
     final Observable<DiscoveryParams> selectedParams = Observable.combineLatest(
-      this.currentUser.observable(),
+      changedUser,
       this.paramsFromActivity.distinctUntilChanged(),
       (__, params) -> params
     );
@@ -106,12 +111,13 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
       });
 
     this.paramsFromActivity
-      .compose(combineLatestPair(this.currentUser.isLoggedIn()))
+      .compose(combineLatestPair(this.currentUser.isLoggedIn().distinctUntilChanged()))
       .map(pu -> isOnboardingVisible(pu.first, pu.second))
       .compose(bindToLifecycle())
       .subscribe(this.shouldShowOnboardingView);
 
     this.currentUser.loggedInUser()
+      .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2))
       .compose(combineLatestPair(this.paramsFromActivity))
       .flatMap(__ -> this.fetchActivity())
       .filter(this::activityHasNotBeenSeen)
@@ -128,14 +134,12 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
     this.paramsFromActivity
       .compose(combineLatestPair(paginator.loadingPage().distinctUntilChanged()))
       .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
-      .compose(combineLatestPair(this.currentUser.isLoggedIn()))
+      .compose(combineLatestPair(this.currentUser.isLoggedIn().distinctUntilChanged()))
       .compose(bindToLifecycle())
-      .subscribe(paramsAndLoggedIn -> {
-        this.koala.trackDiscovery(
-          paramsAndLoggedIn.first,
-          isOnboardingVisible(paramsAndLoggedIn.first, paramsAndLoggedIn.second)
-        );
-      });
+      .subscribe(paramsAndLoggedIn -> this.koala.trackDiscovery(
+        paramsAndLoggedIn.first,
+        isOnboardingVisible(paramsAndLoggedIn.first, paramsAndLoggedIn.second)
+      ));
 
     this.startUpdateActivity
       .map(Activity::project)

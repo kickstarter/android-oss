@@ -148,7 +148,8 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
 
   private void flipIndicatorIfStatsOffScreen(final View indicator, final View stats) {
     stats.post(() -> {
-      if (stats.getLeft() < this.referrerBreakdownLayout.getLeft()) {
+      final int leftVisibleEdgeOfBreakdownView = this.referrerBreakdownLayout.getLeft() + this.referrerBreakdownLayout.getPaddingLeft();
+      if (stats.getLeft() < leftVisibleEdgeOfBreakdownView) {
         indicator.setScaleX(-1);
         final ConstraintLayout.LayoutParams indicatorLayoutParams = (ConstraintLayout.LayoutParams) indicator.getLayoutParams();
         indicatorLayoutParams.setMarginStart(this.grid3Pixels);

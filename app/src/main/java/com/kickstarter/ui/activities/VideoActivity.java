@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities;
 
 import android.annotation.TargetApi;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,11 +13,12 @@ import android.widget.ProgressBar;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.jakewharton.rxbinding.view.RxView;
+import com.kickstarter.BuildConfig;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
@@ -125,8 +127,10 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
 //    this.mediaController.setMediaPlayer(this.player.getMediaController());
 //    this.mediaController.setEnabled(true);
 
-    this.player.prepare(ExtractorMediaSource.Factory(new DefaultDataSourceFactory(useBandwidthMeter ? BANDWIDTH_METER : null))
-      .createMediaSource(uri, handler, listener));
+    Uri uri = Uri.parse(videoUrl);
+
+    this.player.prepare(new HlsMediaSource.Factory(new DefaultDataSourceFactory(this, BuildConfig.APPLICATION_ID))
+      .createMediaSource(uri));
     this.player.setPlayWhenReady(true);
   }
 

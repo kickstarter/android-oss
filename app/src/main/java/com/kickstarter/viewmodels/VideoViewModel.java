@@ -15,7 +15,7 @@ import rx.subjects.BehaviorSubject;
 public interface VideoViewModel {
 
   interface Outputs {
-    /** Emits the video for the player. */
+    /** Emits the url of the video for the player. */
     Observable<String> preparePlayerWithUrl();
   }
 

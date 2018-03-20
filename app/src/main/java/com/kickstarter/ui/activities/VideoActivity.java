@@ -105,7 +105,7 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
   private void releasePlayer() {
     if (this.player != null) {
       this.playerPosition = this.player.getCurrentPosition();
-      this.player.removeListener(eventListener);
+      this.player.removeListener(this.eventListener);
       this.player.release();
       this.trackSelector = null;
       this.player = null;
@@ -113,16 +113,16 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
   }
 
   public void preparePlayer(final @NonNull String videoUrl) {
-    TrackSelection.Factory adaptiveTrackSelectionFactory =
-      new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
+    final TrackSelection.Factory adaptiveTrackSelectionFactory = new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
     this.trackSelector = new DefaultTrackSelector(adaptiveTrackSelectionFactory);
 
-    this.player = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
+    this.player = ExoPlayerFactory.newSimpleInstance(this, this.trackSelector);
     this.playerView.setPlayer(this.player);
-    this.player.addListener(eventListener);
+    this.player.addListener(this.eventListener);
 
     this.player.seekTo(this.playerPosition);
-    this.player.prepare(MediaSourceUtil.getMediaSourceForUrl(new DefaultHttpDataSourceFactory(getUserAgent()), videoUrl), this.playerPosition == 0, false);
+    final boolean playerIsResuming = this.playerPosition != 0;
+    this.player.prepare(MediaSourceUtil.getMediaSourceForUrl(new DefaultHttpDataSourceFactory(getUserAgent()), videoUrl), playerIsResuming, false);
     this.player.setPlayWhenReady(true);
   }
 
@@ -138,7 +138,7 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
   private @NonNull Player.DefaultEventListener eventListener =
     new Player.DefaultEventListener() {
       @Override
-      public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+      public void onPlayerStateChanged(final boolean playWhenReady, final int playbackState) {
         onStateChanged(playbackState);
       }
     };

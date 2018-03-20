@@ -13,6 +13,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardReferrerStatsViewHolder;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -48,8 +49,7 @@ public interface CreatorDashboardReferrerStatsHolderViewModel {
         .map(this::sortReferrerStats);
 
       final Observable<List<ProjectStatsEnvelope.ReferrerStats>> limitedSortedReferrerStats = sortedReferrerStats
-//        .map(stats -> new ArrayList<>(stats.subList(0, Math.min(stats.size(), 10))));
-        .map(stats -> stats);
+        .map(stats -> new ArrayList<>(stats.subList(0, Math.min(stats.size(), 10))));
 
       this.projectAndReferrerStats = this.projectAndReferrerStatsInput
         .map(PairUtils::first)

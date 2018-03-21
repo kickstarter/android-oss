@@ -1,15 +1,20 @@
 package com.kickstarter.ui.activities;
 
 import android.annotation.TargetApi;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
@@ -17,13 +22,13 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.MediaSourceUtil;
 import com.kickstarter.viewmodels.VideoViewModel;
 import com.trello.rxlifecycle.ActivityEvent;
 
@@ -122,8 +127,21 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
 
     this.player.seekTo(this.playerPosition);
     final boolean playerIsResuming = this.playerPosition != 0;
-    this.player.prepare(MediaSourceUtil.getMediaSourceForUrl(new DefaultHttpDataSourceFactory(getUserAgent()), videoUrl), playerIsResuming, false);
+    this.player.prepare(getMediaSource(videoUrl), playerIsResuming, false);
     this.player.setPlayWhenReady(true);
+  }
+
+  private MediaSource getMediaSource(final @NonNull String videoUrl) {
+    final DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory(getUserAgent());
+    final Uri videoUri = Uri.parse(videoUrl);
+    final int fileType = Util.inferContentType(videoUri);
+
+    switch (fileType) {
+      case C.TYPE_HLS:
+        return new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
+      default:
+        return new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
+    }
   }
 
   private String getUserAgent() {

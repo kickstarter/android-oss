@@ -17,12 +17,14 @@
     android:layout_marginTop="@dimen/grid_7"
     android:paddingEnd="@dimen/grid_2"
     android:paddingStart="@dimen/grid_2"
+    android:visibility="gone"
     android:text="@string/How_backers_found_your_project" />
 
   <android.support.constraint.ConstraintLayout
     android:id="@+id/referrer_breakdown_chart_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:visibility="gone"
     android:paddingEnd="@dimen/grid_2"
     android:paddingStart="@dimen/grid_2">
 
@@ -250,6 +252,7 @@
   </android.support.constraint.ConstraintLayout>
 
   <TextView
+    android:visibility="gone"
     android:id="@+id/dashboard_referrer_breakdown_empty_text_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

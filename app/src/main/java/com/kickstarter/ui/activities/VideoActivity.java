@@ -1,41 +1,54 @@
 package com.kickstarter.ui.activities;
 
 import android.annotation.TargetApi;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.SurfaceView;
 import android.view.View;
-import android.widget.MediaController;
 import android.widget.ProgressBar;
 
-import com.google.android.exoplayer.AspectRatioFrameLayout;
-import com.google.android.exoplayer.ExoPlayer;
-import com.jakewharton.rxbinding.view.RxView;
+import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.hls.HlsMediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.KSRendererBuilder;
-import com.kickstarter.libs.KSVideoPlayer;
+import com.kickstarter.libs.Build;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.viewmodels.VideoViewModel;
 import com.trello.rxlifecycle.ActivityEvent;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresActivityViewModel(VideoViewModel.ViewModel.class)
-public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> implements KSVideoPlayer.Listener {
-  private MediaController mediaController;
-  private KSVideoPlayer player;
+public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> {
+  private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
+
+  private Build build;
+  private ExoPlayer player;
   private long playerPosition;
+  private TrackSelector trackSelector;
+
 
   protected @Bind(R.id.video_player_layout) View rootView;
-  protected @Bind(R.id.surface_view) SurfaceView surfaceView;
+  protected @Bind(R.id.player_view) PlayerView playerView;
   protected @Bind(R.id.loading_indicator) ProgressBar loadingIndicatorProgressBar;
-  protected @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
 
   @Override
   public void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -43,18 +56,12 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
     setContentView(R.layout.video_player_layout);
     ButterKnife.bind(this);
 
+    this.build = environment().build();
+
     this.viewModel.outputs.preparePlayerWithUrl()
       .compose(Transformers.takeWhen(lifecycle().filter(ActivityEvent.RESUME::equals)))
       .compose(bindToLifecycle())
       .subscribe(this::preparePlayer);
-
-    this.mediaController = new MediaController(this);
-    this.mediaController.setAnchorView(this.rootView);
-
-    RxView.clicks(this.rootView)
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> toggleControlsVisibility());
   }
 
   @Override
@@ -67,19 +74,6 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
   public void onPause() {
     super.onPause();
     releasePlayer();
-  }
-
-  @Override
-  public void onStateChanged(final boolean playWhenReady, final int playbackState) {
-    if (playbackState == ExoPlayer.STATE_ENDED) {
-      finish();
-    }
-
-    if (playbackState == ExoPlayer.STATE_BUFFERING) {
-      this.loadingIndicatorProgressBar.setVisibility(View.VISIBLE);
-    } else {
-      this.loadingIndicatorProgressBar.setVisibility(View.GONE);
-    }
   }
 
   @Override
@@ -102,45 +96,60 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
       : flags;
   }
 
+  private void onStateChanged(final int playbackState) {
+    if (playbackState == Player.STATE_ENDED) {
+      finish();
+    }
+
+    if (playbackState == Player.STATE_BUFFERING) {
+      this.loadingIndicatorProgressBar.setVisibility(View.VISIBLE);
+    } else {
+      this.loadingIndicatorProgressBar.setVisibility(View.GONE);
+    }
+  }
+
+  private void preparePlayer(final @NonNull String videoUrl) {
+    final TrackSelection.Factory adaptiveTrackSelectionFactory = new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
+    this.trackSelector = new DefaultTrackSelector(adaptiveTrackSelectionFactory);
+
+    this.player = ExoPlayerFactory.newSimpleInstance(this, this.trackSelector);
+    this.playerView.setPlayer(this.player);
+    this.player.addListener(this.eventListener);
+
+    this.player.seekTo(this.playerPosition);
+    final boolean playerIsResuming = this.playerPosition != 0;
+    this.player.prepare(getMediaSource(videoUrl), playerIsResuming, false);
+    this.player.setPlayWhenReady(true);
+  }
+
+  private MediaSource getMediaSource(final @NonNull String videoUrl) {
+    final DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory(WebRequestInterceptor.userAgent(this.build));
+    final Uri videoUri = Uri.parse(videoUrl);
+    final int fileType = Util.inferContentType(videoUri);
+
+    switch (fileType) {
+      case C.TYPE_HLS:
+        return new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
+      default:
+        return new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
+    }
+  }
+
   private void releasePlayer() {
     if (this.player != null) {
       this.playerPosition = this.player.getCurrentPosition();
+      this.player.removeListener(this.eventListener);
       this.player.release();
+      this.trackSelector = null;
       this.player = null;
     }
   }
 
-  public void preparePlayer(final @NonNull String videoUrl) {
-    // Create player
-    this.player = new KSVideoPlayer(new KSRendererBuilder(this, videoUrl));
-    this.player.setListener(this);
-    this.player.seekTo(this.playerPosition);  // todo: will be used for inline video playing
-
-    // Set media controller
-    this.mediaController.setMediaPlayer(this.player.getPlayerControl());
-    this.mediaController.setEnabled(true);
-
-    this.player.prepare();
-    this.player.setSurface(this.surfaceView.getHolder().getSurface());
-    this.player.setPlayWhenReady(true);
-  }
-
-  public void toggleControlsVisibility() {
-    if (this.mediaController.isShowing()) {
-      this.mediaController.hide();
-    } else {
-      if (isMediaControllerAttachedToWindow()) {
-        // Attempt fix for crash reports from Remix Mini / 5.1 where the media controller is attached to a window
-        // but not showing. Adding it again crashes the app, so return to avoid that.
-        return;
+  private @NonNull Player.DefaultEventListener eventListener =
+    new Player.DefaultEventListener() {
+      @Override
+      public void onPlayerStateChanged(final boolean playWhenReady, final int playbackState) {
+        onStateChanged(playbackState);
       }
-
-      this.mediaController.show();
-    }
-  }
-
-  @TargetApi(19)
-  private boolean isMediaControllerAttachedToWindow() {
-    return ApiCapabilities.canCheckMediaControllerIsAttachedToWindow() && this.mediaController.isAttachedToWindow();
-  }
+    };
 }

@@ -146,7 +146,7 @@ dependencies {
     annotationProcessor 'com.github.frankiesardo:auto-parcel-processor:0.3.1'
     compile 'com.google.android.gms:play-services-gcm:10.0.1'
     compile 'com.google.android.gms:play-services-wallet:10.0.1'
-    compile 'com.google.android.exoplayer:exoplayer:r1.5.5'
+    compile 'com.google.android.exoplayer:exoplayer:2.7.0'
     compile 'com.google.dagger:dagger:2.8'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.8'
     compile 'com.jakewharton:butterknife:7.0.1'
@@ -185,7 +185,7 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile 'com.android.support.test:rules:0.5'
     androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support:support-annotations:25.1.0'
+    androidTestCompile 'com.android.support:support-annotations:27.0.0'
 }
 
 // SHA and timestamp caching courtesy of https://github.com/gdg-x/frisbee/blob/develop/app/build.gradle#L193-L218

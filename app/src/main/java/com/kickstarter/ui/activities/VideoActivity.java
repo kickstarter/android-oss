@@ -29,6 +29,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.viewmodels.VideoViewModel;
 import com.trello.rxlifecycle.ActivityEvent;
 
@@ -107,17 +108,7 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
     }
   }
 
-  private void releasePlayer() {
-    if (this.player != null) {
-      this.playerPosition = this.player.getCurrentPosition();
-      this.player.removeListener(this.eventListener);
-      this.player.release();
-      this.trackSelector = null;
-      this.player = null;
-    }
-  }
-
-  public void preparePlayer(final @NonNull String videoUrl) {
+  private void preparePlayer(final @NonNull String videoUrl) {
     final TrackSelection.Factory adaptiveTrackSelectionFactory = new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
     this.trackSelector = new DefaultTrackSelector(adaptiveTrackSelectionFactory);
 
@@ -132,7 +123,7 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
   }
 
   private MediaSource getMediaSource(final @NonNull String videoUrl) {
-    final DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory(getUserAgent());
+    final DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory(WebRequestInterceptor.userAgent(this.build));
     final Uri videoUri = Uri.parse(videoUrl);
     final int fileType = Util.inferContentType(videoUri);
 
@@ -144,13 +135,14 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
     }
   }
 
-  private String getUserAgent() {
-    return "Kickstarter Android Mobile Variant/" +
-      this.build.variant() +
-      " Code/" +
-      this.build.versionCode() +
-      " Version/" +
-      this.build.versionName();
+  private void releasePlayer() {
+    if (this.player != null) {
+      this.playerPosition = this.player.getCurrentPosition();
+      this.player.removeListener(this.eventListener);
+      this.player.release();
+      this.trackSelector = null;
+      this.player = null;
+    }
   }
 
   private @NonNull Player.DefaultEventListener eventListener =

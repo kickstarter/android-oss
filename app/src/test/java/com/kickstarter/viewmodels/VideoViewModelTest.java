@@ -25,7 +25,7 @@ public class VideoViewModelTest extends KSRobolectricTestCase {
     // Configure the view model with a project intent.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
-    preparePlayerWithUrl.assertValues(project.video().hls());
+    preparePlayerWithUrl.assertValue(project.video().hls());
   }
 
   @Test
@@ -39,6 +39,6 @@ public class VideoViewModelTest extends KSRobolectricTestCase {
     // Configure the view model with a project intent.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
-    preparePlayerWithUrl.assertValues(project.video().high());
+    preparePlayerWithUrl.assertValue(project.video().high());
   }
 }

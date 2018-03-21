@@ -61,7 +61,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCreatorDashboardButtonIsGone__notCreatorOrCollaborator() {
+  public void testCreatorDashboardButtonIsGone_isTrue_WhenCreatorOrCollaborator() {
     final User notCreator = UserFactory.user().toBuilder().memberProjectsCount(0).build();
     final MockCurrentUser currentUser = new MockCurrentUser(notCreator);
 
@@ -71,11 +71,11 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     this.vm = new DiscoveryViewModel.ViewModel(env);
     this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
-    this.creatorDashboardButtonIsGone.assertValues(true);
+    this.creatorDashboardButtonIsGone.assertValue(true);
   }
 
   @Test
-  public void testCreatorDashboardButtonIsGone__isCreator() {
+  public void testCreatorDashboardButtonIsGone_isFalse_WhenCreator() {
     final User creator = UserFactory.creator();
     final MockCurrentUser currentUser = new MockCurrentUser(creator);
 
@@ -85,11 +85,11 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     this.vm = new DiscoveryViewModel.ViewModel(env);
     this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
-    this.creatorDashboardButtonIsGone.assertValues(false);
+    this.creatorDashboardButtonIsGone.assertValue(false);
   }
 
   @Test
-  public void testCreatorDashboardButtonIsGone__isCollaborator() {
+  public void testCreatorDashboardButtonIsGone_isFalse_WhenCollaborator() {
     final User collaborator = UserFactory.collaborator();
     final MockCurrentUser currentUser = new MockCurrentUser(collaborator);
 
@@ -99,7 +99,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     this.vm = new DiscoveryViewModel.ViewModel(env);
     this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
-    this.creatorDashboardButtonIsGone.assertValues(false);
+    this.creatorDashboardButtonIsGone.assertValue(false);
   }
 
   @Test

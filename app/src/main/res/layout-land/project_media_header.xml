@@ -66,7 +66,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="2"
-          style="@style/Title2"
+          style="@style/Title2Medium"
           android:textColor="@color/white"
           android:paddingBottom="@dimen/grid_1_half"
           tools:ignore="InconsistentLayout"

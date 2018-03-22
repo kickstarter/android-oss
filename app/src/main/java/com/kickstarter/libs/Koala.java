@@ -417,8 +417,12 @@ public final class Koala {
     this.client.track(KoalaEvent.SENT_MESSAGE, props);
   }
 
-  public void trackViewedMailbox(final @NonNull Mailbox mailbox, final @Nullable Project project) {
+  public void trackViewedMailbox(final @NonNull Mailbox mailbox, final @Nullable Project project, final @Nullable RefTag intentRefTag) {
     final Map<String, Object> props = project == null ? Collections.emptyMap() : KoalaUtils.projectProperties(project);
+
+    if (intentRefTag != null) {
+      props.put("ref_tag", intentRefTag.tag());
+    }
 
     switch (mailbox) {
       case INBOX:
@@ -503,5 +507,22 @@ public final class Koala {
     this.client.track(KoalaEvent.CONTINUE_USER_ACTIVITY);
 
     this.client.track(KoalaEvent.OPENED_DEEP_LINK);
+  }
+
+  // CREATOR DASHBOARD
+  public void trackOpenedProjectSwitcher() {
+    this.client.track(KoalaEvent.OPENED_PROJECT_SWITCHER);
+  }
+
+  public void trackSwitchedProjects(final @NonNull Project project) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project);
+
+    this.client.track(KoalaEvent.SWITCHED_PROJECTS, properties);
+  }
+
+  public void trackViewedProjectDashboard(final @NonNull Project project) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project);
+
+    this.client.track(KoalaEvent.VIEWED_PROJECT_DASHBOARD, properties);
   }
 }

@@ -66,7 +66,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     Observable<String> timeRemainingText();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
-    Observable<Project> startMessageThreadsActivity();
+    Observable<Pair<Project, RefTag>> startMessageThreadsActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
@@ -83,7 +83,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
       final Observable<User> user = this.currentUser.observable();
 
       this.otherProjectsButtonIsGone = user
-        .map(User::createdProjectsCount)
+        .map(User::memberProjectsCount)
         .filter(ObjectUtils::isNotNull)
         .map(count -> count <= 1)
         .compose(bindToLifecycle());
@@ -120,7 +120,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .map(NumberUtils::format);
 
       this.startMessageThreadsActivity = this.currentProject
-        .compose(takeWhen(this.messagesButtonClicked));
+        .compose(takeWhen(this.messagesButtonClicked))
+        .map(p -> Pair.create(p, RefTag.dashboard()));
 
       this.startProjectActivity = this.currentProject
         .compose(takeWhen(this.projectButtonClicked))
@@ -142,7 +143,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     private final Observable<Integer> progressBarBackground;
     private final Observable<String> projectBackersCountText;
     private final Observable<String> projectNameTextViewText;
-    private final Observable<Project> startMessageThreadsActivity;
+    private final Observable<Pair<Project, RefTag>> startMessageThreadsActivity;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
     private final Observable<String> timeRemainingText;
 
@@ -180,7 +181,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
     }
-    @Override public @NonNull Observable<Project> startMessageThreadsActivity() {
+    @Override public @NonNull Observable<Pair<Project, RefTag>> startMessageThreadsActivity() {
       return this.startMessageThreadsActivity;
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {

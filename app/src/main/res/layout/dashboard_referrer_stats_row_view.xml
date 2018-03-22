@@ -9,10 +9,9 @@
     style="@style/CreatorDashboardTableRowContainer">
 
     <LinearLayout
-      android:layout_width="0dp"
+      android:layout_width="@dimen/grid_20"
       android:layout_height="match_parent"
       android:layout_marginEnd="@dimen/grid_2"
-      android:layout_weight="2"
       android:background="@color/ksr_grey_100"
       android:gravity="center_vertical"
       android:orientation="horizontal">
@@ -26,12 +25,23 @@
 
     <TextView
       android:id="@+id/referrer_backer_count_text_view"
-      android:layout_weight="1"
+      android:layout_width="@dimen/grid_13"
       style="@style/CreatorDashboardTableRowText.SecondaryColumn"
       tools:text="28" />
 
+    <ImageView
+      android:id="@+id/referrer_source_circle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/grid_1"
+      android:contentDescription="@null"
+      android:src="@drawable/creator_dashboard_circle"
+      tools:tint="@color/ksr_green_700" />
+
     <TextView
       android:id="@+id/referrer_source_text_view"
+      android:layout_weight="3"
+      android:layout_width="0dp"
       style="@style/CreatorDashboardTableRowText.SecondaryColumn"
       tools:text="Facebook" />
 

@@ -9,7 +9,7 @@ import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.ProjectStatsEnvelopeFactory;
 import com.kickstarter.factories.ProjectsEnvelopeFactory;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.MockApiClient;
@@ -29,51 +29,33 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
   private CreatorDashboardViewModel.ViewModel vm;
 
   private final TestSubscriber<Pair<Project, ProjectStatsEnvelope>> projectAndStats = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
   private final TestSubscriber<List<Project>> projectsForBottomSheet = new TestSubscriber<>();
-  private final TestSubscriber<Project> projectSwitcherProjectClickOutput = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardViewModel.ViewModel(environment);
-    this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.projectAndStats().subscribe(this.projectAndStats);
     this.vm.outputs.projectsForBottomSheet().subscribe(this.projectsForBottomSheet);
-    this.vm.outputs.projectSwitcherProjectClickOutput().subscribe(this.projectSwitcherProjectClickOutput);
-  }
-
-  @Test
-  public void testStartProjectActivity() {
-    final List<Project> projects = Collections.singletonList(ProjectFactory.project());
-
-    final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull
-      Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
-        return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects));
-      }
-    };
-    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.inputs.projectViewClicked();
-    this.startProjectActivity.assertValue(Pair.create(ListUtils.first(projects), RefTag.dashboard()));
   }
 
   @Test
   public void testProjectAndStats() {
     final List<Project> projects = Collections.singletonList(ProjectFactory.project());
 
-    final ProjectStatsEnvelope ProjectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
     final MockApiClient apiClient = new MockApiClient() {
       @Override public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
         return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects));
       }
       @Override public @NonNull
       Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project) {
-        return Observable.just(ProjectStatsEnvelope);
+        return Observable.just(projectStatsEnvelope);
       }
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    final Pair<Project, ProjectStatsEnvelope> outputPair = Pair.create(ListUtils.first(projects), ProjectStatsEnvelope);
+    final Pair<Project, ProjectStatsEnvelope> outputPair = Pair.create(ListUtils.first(projects), projectStatsEnvelope);
     this.projectAndStats.assertValue(outputPair);
+    this.koalaTest.assertValues(KoalaEvent.VIEWED_PROJECT_DASHBOARD);
   }
 
   @Test
@@ -109,17 +91,27 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectSwitcherProjectClickOutput() {
-    final Project project = ProjectFactory.project();
-    final List<Project> projects = Collections.singletonList(ProjectFactory.project());
+    final Project project1 = ProjectFactory.project();
+    final Project project2 = ProjectFactory.project();
+    final List<Project> projects = Arrays.asList(
+      project1,
+      project2
+    );
+
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
     final MockApiClient apiClient = new MockApiClient() {
-      @Override public @NonNull
-      Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
+      @Override public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
         return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects));
+      }
+      @Override public @NonNull
+      Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project) {
+        return Observable.just(projectStatsEnvelope);
       }
     };
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
 
-    this.vm.inputs.projectSwitcherProjectClickInput(project);
-    this.projectSwitcherProjectClickOutput.assertValue(project);
+    this.vm.inputs.projectSelectionInput(project2);
+    this.projectAndStats.assertValues(Pair.create(project1, ProjectStatsEnvelopeFactory.projectStatsEnvelope()), Pair.create(project2, ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
+    this.koalaTest.assertValues(KoalaEvent.VIEWED_PROJECT_DASHBOARD, KoalaEvent.SWITCHED_PROJECTS, KoalaEvent.VIEWED_PROJECT_DASHBOARD);
   }
 }

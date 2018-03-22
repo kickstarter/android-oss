@@ -77,10 +77,10 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
       .compose(observeForUI())
       .subscribe(this::setProjectsForDropdown);
 
-    this.viewModel.outputs.projectSwitcherProjectClickOutput()
+    this.viewModel.outputs.projectAndStats()
        .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::newProjectClicked);
+      .subscribe(__ -> newProjectClicked());
 
     createAndSetBottomSheetCallback();
   }
@@ -127,8 +127,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.bottomSheetAdapter.takeProjects(projects);
   }
 
-  private void newProjectClicked(final @NonNull Project project) {
-    this.viewModel.refreshProject(project);
+  private void newProjectClicked() {
     hideBottomSheet();
   }
 

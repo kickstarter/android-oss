@@ -73,6 +73,7 @@
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} は%{in_duration} にライブ配信を行います</string>
   <string name="Creator_tips" formatted="false">アドバイス</string>
   <string name="Daily_digest" formatted="false">デイリーダイジェスト</string>
+  <string name="Data_will_appear_here_once" formatted="false">誰かがプロジェクトをバック（支援）すると、ここにデータが表示されます。</string>
   <string name="Delivered" formatted="false">発送済</string>
   <string name="Discover_more_projects" formatted="false">プロジェクトをさがす</string>
   <string name="Dismiss" formatted="false">破棄</string>
@@ -137,6 +138,7 @@
   <string name="Got_it" formatted="false">完了</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">サーベイを送信しました！</string>
   <string name="Home" formatted="false">ホーム</string>
+  <string name="How_backers_found_your_project" formatted="false">バッカ―があなたのプロジェクトを見つけた経緯</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">プロジェクトをサポートしたい</string>
   <string name="Individual_Emails" formatted="false">個人メール</string>
   <string name="Info" formatted="false">インフォメーション</string>
@@ -208,7 +210,7 @@
   <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">ライブ配信でチャットに参加するためにはログインかサインアップしてください。</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">ログインまたはサインアップして、ライブ配信を見よう！</string>
   <string name="Pledge" formatted="false">プレッジする</string>
-  <string name="Pledge_activity" formatted="false">Pledge activity</string>
+  <string name="Pledge_activity" formatted="false">プレッジ</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">プレッジでプロジェクトに生命を。</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">プロジェクトを探す、プロジェクトにプレッジする、プロジェクトを保存する、全て一つの場所で。</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">ここにバックした全プロジェクトが表示されます。</string>
@@ -222,7 +224,7 @@
   <string name="Project_cancelled" formatted="false">プロジェクトが取り消されました。</string>
   <string name="Project_saved" formatted="false">プロジェクトを保存しました。</string>
   <string name="Projects_We_Love" formatted="false">Projects We Love</string>
-  <string name="Projects_youve_backed" formatted="false">Projects you\'ve backed</string>
+  <string name="Projects_youve_backed" formatted="false">バック（支援）したプロジェクト</string>
   <string name="Projects_youve_launched" formatted="false">ローンチしたプロジェクト</string>
   <string name="Public_comment" formatted="false">公開コメント</string>
   <string name="Pursue_daring_ideas" formatted="false">大胆な\n
@@ -247,6 +249,7 @@
   <string name="Reward_Surveys_one" formatted="false">リワードサーベイ</string>
   <string name="Reward_Surveys_two" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
+  <string name="Reward_delivered" formatted="false">リワードを受け取りましたか？</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>リワード&lt;/b>の配達予定日は%{delivery_date}</string>
   <string name="Reward_selected" formatted="false">選択中のリワード</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} 種類のリワード</string>
@@ -307,7 +310,11 @@
   <string name="Time_left_left" formatted="false">あと%{time_left}</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">上部の「さがす」をタップし、お気に入りカテゴリにアクセス。</string>
   <string name="To_read_this_project_update_you_must_be_a_backer" formatted="false">このアップデートはバッカー専用です。 続行するにはログインまたはサインアップしてください。</string>
+  <string name="To_see_all_rewards_view_your_project" formatted="false">すべてのリワードを確認するには、プロジェクトをご覧ください。</string>
   <string name="Toggle_saving_this_project" formatted="false">プロジェクトを保存</string>
+  <string name="Top_pledge_sources" formatted="false">プレッジソースのトップ</string>
+  <string name="Top_ten_pledge_sources" formatted="false">プレッジソースのトップ10</string>
+  <string name="Top_ten_rewards" formatted="false">リワードのトップ10</string>
   <string name="Total_pledged" formatted="false">プレッジ総計</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} のフォロー解除</string>
   <string name="Unfollows_friend_name" formatted="false">%{friend_name} のフォロー解除</string>
@@ -320,8 +327,10 @@
   <string name="Upcoming_live_streams" formatted="false">ライブ配信が開始します</string>
   <string name="Upcoming_with_creator_name" formatted="false">&lt;br/>&lt;b>%{creator_name}&lt;/b>が近日配信</string>
   <string name="Update_pledge" formatted="false">プレッジをアップデートする</string>
+  <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">受け取ったリワードを確認するにはこちらをご利用ください。</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">インターネット通信状態が向上するまでビデオはご利用いいただけません。</string>
   <string name="View" formatted="false">みる</string>
+  <string name="View_project" formatted="false">プロジェクトを見る</string>
   <string name="View_your_pledge" formatted="false">プレッジをみる</string>
   <string name="View_your_reward" formatted="false">リワードをみる</string>
   <string name="Watch_live" formatted="false">ライブをみる</string>
@@ -498,7 +507,7 @@
   <string name="dashboard_buttons_activity" formatted="false">アクティビティ</string>
   <string name="dashboard_buttons_messages" formatted="false">メッセージ</string>
   <string name="dashboard_buttons_post_update" formatted="false">アップデートを投稿</string>
-  <string name="dashboard_buttons_project" formatted="false">Project</string>
+  <string name="dashboard_buttons_project" formatted="false">プロジェクト</string>
   <string name="dashboard_buttons_share" formatted="false">シェア</string>
   <string name="dashboard_creator_project_currently_live" formatted="false">現在のライブ</string>
   <string name="dashboard_creator_project_funded_on_deadline" formatted="false">%{deadline} に達成</string>
@@ -1306,4 +1315,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="updates_count_updates_one" formatted="false">%{updates_count} 件のアップデート</string>
   <string name="updates_count_updates_two" formatted="false">%{updates_count} 件のアップデート</string>
   <string name="updates_count_updates_zero" formatted="false">%{updates_count} 件のアップデート</string>
+  <string name="via_custom" formatted="false">リファラー経由</string>
+  <string name="via_external" formatted="false">外部を経由</string>
+  <string name="via_kickstarter" formatted="false">kickstarterを経由</string>
 </resources>

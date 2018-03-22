@@ -74,6 +74,7 @@ backers</string>
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} will be streaming live on Kickstarter %{in_duration}</string>
   <string name="Creator_tips" formatted="false">Creator tips</string>
   <string name="Daily_digest" formatted="false">Daily digest</string>
+  <string name="Data_will_appear_here_once" formatted="false">Data will appear here once somebody backs your project.</string>
   <string name="Delivered" formatted="false">Delivered</string>
   <string name="Discover_more_projects" formatted="false">Discover more projects.</string>
   <string name="Dismiss" formatted="false">Dismiss</string>
@@ -138,6 +139,7 @@ backers</string>
   <string name="Got_it" formatted="false">Got it.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Got it! Your survey response has been submitted.</string>
   <string name="Home" formatted="false">Home</string>
+  <string name="How_backers_found_your_project" formatted="false">How backers found your project</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">I’d just like to support the project.</string>
   <string name="Individual_Emails" formatted="false">Individual emails</string>
   <string name="Info" formatted="false">Info</string>
@@ -250,6 +252,7 @@ daring ideas.</string>
   <string name="Reward_Surveys_one" formatted="false">Reward Survey</string>
   <string name="Reward_Surveys_two" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} Reward Surveys</string>
+  <string name="Reward_delivered" formatted="false">Reward delivered?</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Reward&lt;/b> estimated for delivery in %{delivery_date}</string>
   <string name="Reward_selected" formatted="false">Reward selected</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} rewards:</string>
@@ -311,7 +314,11 @@ catch your eye?</string>
   <string name="Time_left_left" formatted="false">%{time_left} left</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">To access all your favorite categories, tap the explore dropdown at the top of the app.</string>
   <string name="To_read_this_project_update_you_must_be_a_backer" formatted="false">To read this project update, you must be a backer. Please log in or sign up to continue.</string>
+  <string name="To_see_all_rewards_view_your_project" formatted="false">To see all rewards, view your project.</string>
   <string name="Toggle_saving_this_project" formatted="false">Toggle saving this project</string>
+  <string name="Top_pledge_sources" formatted="false">Top pledge sources</string>
+  <string name="Top_ten_pledge_sources" formatted="false">Top 10 pledge sources</string>
+  <string name="Top_ten_rewards" formatted="false">Top 10 rewards</string>
   <string name="Total_pledged" formatted="false">Total pledged</string>
   <string name="Unfollow_friend_name" formatted="false">Unfollow %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Unfollows %{friend_name}.</string>
@@ -324,8 +331,10 @@ catch your eye?</string>
   <string name="Upcoming_live_streams" formatted="false">Upcoming live streams</string>
   <string name="Upcoming_with_creator_name" formatted="false">Upcoming with&lt;br/>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Update_pledge" formatted="false">Update pledge</string>
+  <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">Use this to keep track of which rewards you\'ve received.</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Video disabled until the internet connection improves</string>
   <string name="View" formatted="false">View</string>
+  <string name="View_project" formatted="false">View project</string>
   <string name="View_your_pledge" formatted="false">View your pledge</string>
   <string name="View_your_reward" formatted="false">View your reward</string>
   <string name="Watch_live" formatted="false">Watch live</string>
@@ -1319,4 +1328,7 @@ saved</string>
   <string name="updates_count_updates_one" formatted="false">%{updates_count} update</string>
   <string name="updates_count_updates_two" formatted="false">%{updates_count} updates</string>
   <string name="updates_count_updates_zero" formatted="false">%{updates_count} updates</string>
+  <string name="via_custom" formatted="false">via custom</string>
+  <string name="via_external" formatted="false">via external</string>
+  <string name="via_kickstarter" formatted="false">via Kickstarter</string>
 </resources>

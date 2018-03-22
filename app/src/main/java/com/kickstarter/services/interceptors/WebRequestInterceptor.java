@@ -48,7 +48,7 @@ public final class WebRequestInterceptor implements Interceptor {
     }
 
     final Request.Builder requestBuilder = initialRequest.newBuilder()
-      .header("User-Agent", userAgent());
+      .header("User-Agent", userAgent(this.build));
 
     final String basicAuthorizationHeader = this.internalTools.basicAuthorizationHeader();
     if (this.currentUser.exists()) {
@@ -75,15 +75,15 @@ public final class WebRequestInterceptor implements Interceptor {
     return KSUri.isHivequeenUri(initialRequestUri, this.endpoint) || KSUri.isStagingUri(initialRequestUri, this.endpoint);
   }
 
-  private @NonNull String userAgent() {
+  public static @NonNull String userAgent(final @NonNull Build build) {
     // TODO: Check whether device is mobile or tablet, append to user agent
     return new StringBuilder()
       .append("Kickstarter Android Mobile Variant/")
-      .append(this.build.variant())
+      .append(build.variant())
       .append(" Code/")
-      .append(this.build.versionCode())
+      .append(build.versionCode())
       .append(" Version/")
-      .append(this.build.versionName())
+      .append(build.versionName())
       .toString();
   }
 }

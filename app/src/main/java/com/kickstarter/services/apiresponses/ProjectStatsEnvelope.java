@@ -1,6 +1,8 @@
 package com.kickstarter.services.apiresponses;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.ReferrerType;
 import com.kickstarter.libs.qualifiers.AutoGson;
@@ -19,7 +21,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
   public abstract List<FundingDateStats> fundingDistribution();
   public abstract List<ReferrerStats> referralDistribution();
   public abstract List<RewardStats> rewardDistribution();
-  public abstract VideoStats videoStats();
+  public abstract @Nullable VideoStats videoStats();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -112,20 +114,16 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
 
     // Deserialize the referrer type string names into the corresponding
     // enum type.
-    public ReferrerType referrerTypeEnumType() {
-      switch (referrerType().toLowerCase(Locale.getDefault())) {
-        case "campaign":
-          return ReferrerType.CAMPAIGN;
+    public static ReferrerType referrerTypeEnum(final @NonNull String referrerType) {
+      switch (referrerType.toLowerCase(Locale.getDefault())) {
         case "custom":
           return ReferrerType.CUSTOM;
-        case "domain":
-          return ReferrerType.DOMAIN;
         case "external":
           return ReferrerType.EXTERNAL;
         case "kickstarter":
-          return ReferrerType.INTERNAL;
+          return ReferrerType.KICKSTARTER;
         default:
-          return ReferrerType.INTERNAL;
+          return ReferrerType.KICKSTARTER;
       }
     }
 

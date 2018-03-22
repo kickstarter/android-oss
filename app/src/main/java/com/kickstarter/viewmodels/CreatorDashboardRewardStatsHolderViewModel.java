@@ -40,6 +40,9 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
 
     /** Emits when there are more than 10 reward stats. */
     Observable<Boolean> rewardsStatsTruncatedTextIsGone();
+
+    /** Emits when there are more than 10 reward stats and title copy should reflect limited list. */
+    Observable<Boolean> rewardsTitleIsTopTen();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardRewardStatsViewHolder> implements Inputs, Outputs {
@@ -65,10 +68,16 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
         .subscribe(this.rewardsStatsListIsGone);
 
       sortedRewardStats
-        .map(pr -> pr.size() <= 10)
+        .map(rs -> rs.size() <= 10)
         .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.rewardsStatsTruncatedTextIsGone);
+
+      sortedRewardStats
+        .map(rs -> rs.size() > 10)
+        .distinctUntilChanged()
+        .compose(bindToLifecycle())
+        .subscribe(this.rewardsTitleIsLimitedCopy);
     }
 
     final private class OrderByPledgedRewardStatsComparator implements Comparator<ProjectStatsEnvelope.RewardStats> {
@@ -94,6 +103,7 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
     private final Observable<Pair<Project, List<ProjectStatsEnvelope.RewardStats>>> projectAndRewardStats;
     private final PublishSubject<Boolean> rewardsStatsListIsGone = PublishSubject.create();
     private final PublishSubject<Boolean> rewardsStatsTruncatedTextIsGone = PublishSubject.create();
+    private final PublishSubject<Boolean> rewardsTitleIsLimitedCopy = PublishSubject.create();
 
     @Override
     public void pledgedColumnTitleClicked() {
@@ -112,6 +122,10 @@ public interface CreatorDashboardRewardStatsHolderViewModel {
     }
     @Override public @NonNull Observable<Boolean> rewardsStatsTruncatedTextIsGone() {
       return this.rewardsStatsTruncatedTextIsGone;
+    }
+    @Override
+    public Observable<Boolean> rewardsTitleIsTopTen() {
+      return this.rewardsTitleIsLimitedCopy;
     }
   }
 }

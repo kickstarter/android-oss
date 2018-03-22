@@ -39,7 +39,7 @@
       android:id="@+id/project_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      style="@style/Title2"
+      style="@style/Title2Medium"
       android:paddingBottom="@dimen/grid_1_half"
       tools:ignore="InconsistentLayout"
       tools:text="Project name" />

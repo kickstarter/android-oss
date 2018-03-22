@@ -17,17 +17,21 @@ import rx.subjects.PublishSubject;
 
 public interface CreatorDashboardReferrerStatsRowHolderViewModel {
   interface Inputs {
+    /** Current project and list of referrer stats. */
     void projectAndReferrerStatsInput(Pair<Project, ProjectStatsEnvelope.ReferrerStats> projectAndReferrerStats);
   }
 
   interface Outputs {
-    /* project and the amount pledged from this referral source */
+    /** Emits project and the amount pledged for this referrer. */
     Observable<Pair<Project, Float>> projectAndPledgedForReferrer();
 
-    /* string number of backers */
+    /** Emits string number of backers. */
     Observable<String> referrerBackerCount();
 
-    /* name of the source of referrals */
+    /** Emits resource ID of referrer color. */
+    Observable<Integer> referrerSourceColorId();
+
+    /** Emits source name of referrer. */
     Observable<String> referrerSourceName();
   }
 
@@ -38,6 +42,10 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
 
       this.projectAndPledgedForReferrer = this.projectAndReferrerStats
         .map(pr -> Pair.create(pr.first, pr.second.pledged()));
+
+      this.referrerSourceColorId = this.projectAndReferrerStats
+        .map(PairUtils::second)
+        .map(referrerStat -> ProjectStatsEnvelope.ReferrerStats.referrerTypeEnum(referrerStat.referrerType()).getReferrerColorId());
 
       this.referrerSourceName = this.projectAndReferrerStats
         .map(PairUtils::second)
@@ -56,6 +64,7 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
 
     private final Observable<Pair<Project, Float>> projectAndPledgedForReferrer;
     private final Observable<String> referrerBackerCount;
+    private final Observable<Integer> referrerSourceColorId;
     private final Observable<String> referrerSourceName;
 
     @Override public void projectAndReferrerStatsInput(final @NonNull Pair<Project, ProjectStatsEnvelope.ReferrerStats> projectAndReferrerStats) {
@@ -67,6 +76,9 @@ public interface CreatorDashboardReferrerStatsRowHolderViewModel {
     }
     @Override public @NonNull Observable<String> referrerBackerCount() {
       return this.referrerBackerCount;
+    }
+    @Override public @NonNull Observable<Integer> referrerSourceColorId() {
+      return this.referrerSourceColorId;
     }
     @Override public @NonNull Observable<String> referrerSourceName() {
       return this.referrerSourceName;

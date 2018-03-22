@@ -9,6 +9,7 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
@@ -20,6 +21,7 @@ import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.MessageThreadsActivity;
 import com.kickstarter.ui.data.Mailbox;
+import com.kickstarter.ui.intentmappers.ProjectIntentMapper;
 
 import java.util.List;
 
@@ -179,10 +181,13 @@ public interface MessageThreadsViewModel {
         .filter(IntegerUtils::isNonZero)
         .subscribe(this.unreadMessagesCount);
 
-      intent()
+      final Observable<RefTag> refTag = intent()
+        .flatMap(ProjectIntentMapper::refTag);
+
+      Observable.combineLatest(project, refTag, Pair::create)
         .take(1)
         .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackViewedMailbox(Mailbox.INBOX, null));
+        .subscribe(projectAndRefTag -> this.koala.trackViewedMailbox(Mailbox.INBOX, projectAndRefTag.first, projectAndRefTag.second));
     }
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();

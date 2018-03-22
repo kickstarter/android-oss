@@ -6,17 +6,15 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.BuildCheck;
-import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.IntegerUtils;
-import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
@@ -44,7 +42,6 @@ import rx.subjects.PublishSubject;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 
 public interface DiscoveryViewModel {
 
@@ -124,25 +121,16 @@ public interface DiscoveryViewModel {
 
       final Observable<User> currentUser = this.currentUser.observable();
 
-      currentUser.subscribe(updatedUser ->
+      final Observable<User> changedUser = currentUser
+        .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2));
+
+      changedUser.subscribe(updatedUser ->
         this.apiClient.config()
           .compose(Transformers.neverError())
           .subscribe(this.currentConfigType::config));
 
-      final Observable<Boolean> userIsCreator = currentUser
-        .map(u -> u != null && IntegerUtils.isNonZero(u.memberProjectsCount()));
-
-      final Observable<Boolean> creatorViewFeatureFlagIsEnabled = this.currentConfigType.observable()
-        .map(Config::features)
-        .filter(ObjectUtils::isNotNull)
-        .map(f -> coalesce(f.get(FeatureKey.ANDROID_CREATOR_VIEW), false));
-
-      this.creatorDashboardButtonIsGone = Observable.combineLatest(
-        userIsCreator,
-        creatorViewFeatureFlagIsEnabled,
-        Pair::create
-      )
-        .map(isCreatorAndViewDash -> !isCreatorAndViewDash.first || !isCreatorAndViewDash.second);
+      this.creatorDashboardButtonIsGone = currentUser
+        .map(user -> BooleanUtils.negate(user != null && IntegerUtils.isNonZero(user.memberProjectsCount())));
 
       // Seed params when we are freshly launching the app with no data.
       final Observable<DiscoveryParams> paramsFromInitialIntent = intent()
@@ -214,7 +202,7 @@ public interface DiscoveryViewModel {
       // to avoid displaying old data.
       pagerSelectedPage
         .compose(takeWhen(params))
-        .compose(combineLatestPair(currentUser))
+        .compose(combineLatestPair(changedUser))
         .map(pageAndUser -> pageAndUser.first)
         .flatMap(currentPage -> Observable.from(DiscoveryParams.Sort.values())
           .map(DiscoveryUtils::positionFromSort)

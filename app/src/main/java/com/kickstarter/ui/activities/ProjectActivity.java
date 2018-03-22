@@ -50,7 +50,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
 
   protected @BindString(R.string.project_back_button) String projectBackButtonString;
   protected @BindString(R.string.project_checkout_manage_navbar_title) String managePledgeString;
-  protected @BindString(R.string.project_share_twitter_message) String projectShareString;
+  protected @BindString(R.string.project_accessibility_button_share_label) String projectShareLabelString;
+  protected @BindString(R.string.project_share_twitter_message) String projectShareCopyString;
   protected @BindString(R.string.project_star_confirmation) String projectStarConfirmationString;
   protected @BindString(R.string.project_subpages_menu_buttons_campaign) String campaignString;
   protected @BindString(R.string.project_subpages_menu_buttons_creator) String creatorString;
@@ -216,12 +217,12 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
 
   // todo: limit the apps you can share to
   private void startShareIntent(final @NonNull Project project) {
-    final String shareMessage = this.ksString.format(this.projectShareString, "project_title", project.name());
+    final String shareMessage = this.ksString.format(this.projectShareCopyString, "project_title", project.name());
 
     final Intent intent = new Intent(Intent.ACTION_SEND)
       .setType("text/plain")
       .putExtra(Intent.EXTRA_TEXT, shareMessage + " " + project.webProjectUrl());
-    startActivity(intent);
+    startActivity(Intent.createChooser(intent, this.projectShareLabelString));
   }
 
   private void startWebViewActivity(final @NonNull String toolbarTitle, final @NonNull String url) {

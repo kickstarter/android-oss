@@ -2,29 +2,38 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  android:paddingStart="@dimen/grid_2"
-  android:paddingEnd="@dimen/grid_2"
-  android:layout_marginBottom="@dimen/grid_5"
-  android:layout_marginTop="@dimen/grid_1"
-  android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content">
+  android:layout_height="wrap_content"
+  android:layout_marginBottom="@dimen/grid_5"
+  android:orientation="vertical">
+
+  <TextView
+    android:id="@+id/dashboard_referrer_title"
+    style="@style/Title2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/grid_7"
+    android:paddingEnd="@dimen/grid_2"
+    android:paddingStart="@dimen/grid_2"
+    android:text="@string/Top_pledge_sources" />
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/grid_1"
     android:divider="@drawable/divider_dark_grey_500_horizontal"
-    android:showDividers="middle"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingEnd="@dimen/grid_2"
+    android:paddingStart="@dimen/grid_2"
+    android:showDividers="middle">
 
     <LinearLayout
       style="@style/CreatorDashboardTableRowContainer">
 
       <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="@dimen/grid_20"
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/grid_2"
-        android:layout_weight="2"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -45,11 +54,13 @@
 
       <TextView
         style="@style/CreatorDashboardTableRowText"
-        android:layout_weight="1"
+        android:layout_width="@dimen/grid_13"
         android:text="@string/dashboard_graphs_funding_backers" />
 
       <TextView
         style="@style/CreatorDashboardTableRowText"
+        android:layout_width="0dp"
+        android:layout_weight="3"
         android:text="@string/dashboard_graphs_referrers_source" />
 
     </LinearLayout>
@@ -58,24 +69,19 @@
       android:id="@+id/dashboard_referrer_stats_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      tools:listitem="@layout/dashboard_referrer_stats_row_view"/>
+      tools:listitem="@layout/dashboard_referrer_stats_row_view" />
 
   </LinearLayout>
 
   <TextView
     android:id="@+id/dashboard_referrer_stats_empty_text_view"
-    android:paddingTop="@dimen/grid_10"
-    android:paddingBottom="@dimen/grid_10"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    tools:text="Sorry, no stats yet!\n You don’t have any backings"/>
-
-  <TextView
-    style="@style/BodyPrimary"
-    android:id="@+id/dashboard_referrer_stats_truncated_text_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:text="Limited to the top 10 rewards."/>
+    android:paddingBottom="@dimen/grid_10"
+    android:paddingEnd="@dimen/grid_12"
+    android:paddingStart="@dimen/grid_12"
+    android:paddingTop="@dimen/grid_10"
+    android:text="@string/Data_will_appear_here_once" />
 
 </LinearLayout>

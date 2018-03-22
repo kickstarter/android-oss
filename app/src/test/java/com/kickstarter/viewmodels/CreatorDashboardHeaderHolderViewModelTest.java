@@ -35,7 +35,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Integer> progressBarBackground = new TestSubscriber<>();
   private final TestSubscriber<String> timeRemainingText = new TestSubscriber<>();
-  private final TestSubscriber<Project> startMessageThreadsActivity = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, RefTag>> startMessageThreadsActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
@@ -55,7 +55,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   @Test
   public void testMessagesButtonIsGone() {
     final User creator = UserFactory.creator();
-    final CurrentUserType currentUser = new MockCurrentUser(UserFactory.user());
+    final CurrentUserType currentUser = new MockCurrentUser(UserFactory.collaborator());
 
     final Project project = ProjectFactory.project().toBuilder().creator(creator).build();
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
@@ -64,28 +64,28 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
 
     // Messages button is gone if current user is not the project creator (e.g. a collaborator).
-    this.messagesButtonIsGone.assertValues(true);
+    this.messagesButtonIsGone.assertValue(true);
   }
 
   @Test
-  public void testOtherProjectsButtonIsGone_WhenCreatorHas1Project() {
-    final User creatorWith1Project = UserFactory.creator().toBuilder().createdProjectsCount(1).build();
-    final CurrentUserType creator = new MockCurrentUser(creatorWith1Project);
+  public void testOtherProjectsButtonIsGone_isTrue_WhenCollaboratorHas1Project() {
+    final User collaboratorWith1Project = UserFactory.collaborator().toBuilder().memberProjectsCount(1).build();
+    final CurrentUserType collaborator = new MockCurrentUser(collaboratorWith1Project);
 
-    setUpEnvironment(environment().toBuilder().currentUser(creator).build());
+    setUpEnvironment(environment().toBuilder().currentUser(collaborator).build());
     this.vm.inputs.projectAndStats(Pair.create(ProjectFactory.project(), ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
 
-    this.otherProjectsButtonIsGone.assertValues(true);
+    this.otherProjectsButtonIsGone.assertValue(true);
   }
 
   @Test
-  public void testOtherProjectsButtonIsGone_WhenCreatorHasManyProjects() {
-    final CurrentUserType creator = new MockCurrentUser(UserFactory.creator());
+  public void testOtherProjectsButtonIsGone_isFalse_WhenCollaboratorHasManyProjects() {
+    final CurrentUserType collaborator = new MockCurrentUser(UserFactory.collaborator());
 
-    setUpEnvironment(environment().toBuilder().currentUser(creator).build());
+    setUpEnvironment(environment().toBuilder().currentUser(collaborator).build());
     this.vm.inputs.projectAndStats(Pair.create(ProjectFactory.project(), ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
 
-    this.otherProjectsButtonIsGone.assertValues(false);
+    this.otherProjectsButtonIsGone.assertValue(false);
   }
 
   @Test
@@ -95,7 +95,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
-    this.projectBackersCountText.assertValues("10");
+    this.projectBackersCountText.assertValue("10");
   }
 
   @Test
@@ -105,7 +105,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
-    this.projectNameTextViewText.assertValues("somebody once told me");
+    this.projectNameTextViewText.assertValue("somebody once told me");
   }
 
   @Test
@@ -118,7 +118,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final String percentageFundedOutput = NumberUtils.flooredPercentage(project.percentageFunded());
     this.percentageFunded.assertValues(percentageFundedOutput);
     final int percentageFundedProgressOutput = ProgressBarUtils.progress(project.percentageFunded());
-    this.percentageFundedProgress.assertValues(percentageFundedProgressOutput);
+    this.percentageFundedProgress.assertValue(percentageFundedProgressOutput);
   }
 
   @Test
@@ -126,7 +126,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     setUpEnvironment(environment());
 
     this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_LIVE));
-    this.progressBarBackground.assertValues(R.drawable.progress_bar_green_horizontal);
+    this.progressBarBackground.assertValue(R.drawable.progress_bar_green_horizontal);
   }
 
   @Test
@@ -134,7 +134,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     setUpEnvironment(environment());
 
     this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_SUBMITTED));
-    this.progressBarBackground.assertValues(R.drawable.progress_bar_green_horizontal);
+    this.progressBarBackground.assertValue(R.drawable.progress_bar_green_horizontal);
   }
 
   @Test
@@ -142,7 +142,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     setUpEnvironment(environment());
 
     this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_STARTED));
-    this.progressBarBackground.assertValues(R.drawable.progress_bar_green_horizontal);
+    this.progressBarBackground.assertValue(R.drawable.progress_bar_green_horizontal);
   }
 
   @Test
@@ -150,7 +150,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     setUpEnvironment(environment());
 
     this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_SUCCESSFUL));
-    this.progressBarBackground.assertValues(R.drawable.progress_bar_green_horizontal);
+    this.progressBarBackground.assertValue(R.drawable.progress_bar_green_horizontal);
   }
 
   @Test
@@ -158,7 +158,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     setUpEnvironment(environment());
 
     this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_FAILED));
-    this.progressBarBackground.assertValues(R.drawable.progress_bar_grey_horizontal);
+    this.progressBarBackground.assertValue(R.drawable.progress_bar_grey_horizontal);
   }
 
   @Test
@@ -166,7 +166,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     setUpEnvironment(environment());
 
     this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_CANCELED));
-    this.progressBarBackground.assertValues(R.drawable.progress_bar_grey_horizontal);
+    this.progressBarBackground.assertValue(R.drawable.progress_bar_grey_horizontal);
   }
 
   @Test
@@ -174,7 +174,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     setUpEnvironment(environment());
 
     this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_SUSPENDED));
-    this.progressBarBackground.assertValues(R.drawable.progress_bar_grey_horizontal);
+    this.progressBarBackground.assertValue(R.drawable.progress_bar_grey_horizontal);
   }
 
   @Test
@@ -190,7 +190,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
 
     // Messages button is shown to project creator, messages activity starts.
     this.messagesButtonIsGone.assertValues(false);
-    this.startMessageThreadsActivity.assertValues(project);
+    this.startMessageThreadsActivity.assertValue(Pair.create(project, RefTag.dashboard()));
   }
 
   @Test
@@ -201,7 +201,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
     this.vm.inputs.projectButtonClicked();
-    this.startProjectActivity.assertValues(Pair.create(project, RefTag.dashboard()));
+    this.startProjectActivity.assertValue(Pair.create(project, RefTag.dashboard()));
   }
 
   @Test
@@ -212,7 +212,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final int deadlineVal = ProjectUtils.deadlineCountdownValue(project);
 
     this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
-    this.timeRemainingText.assertValues(NumberUtils.format(deadlineVal));
+    this.timeRemainingText.assertValue(NumberUtils.format(deadlineVal));
   }
 
   private Pair<Project, ProjectStatsEnvelope> getProjectAndStats(final String state) {

@@ -385,6 +385,10 @@
 
   <style name="Title2" parent="TextPrimary">
     <item name="android:textSize">@dimen/title_2</item>
+  </style>
+
+  <style name="Title2Medium" parent="TextPrimary">
+    <item name="android:textSize">@dimen/title_2</item>
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
@@ -447,9 +451,8 @@
   </style>
 
   <style name="CreatorDashboardTableRowText" parent="BodyPrimary">
-    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:layout_weight">2</item>
     <item name="android:maxLines">1</item>
     <item name="android:ellipsize">end</item>
   </style>

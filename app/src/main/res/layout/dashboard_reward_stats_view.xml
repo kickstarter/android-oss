@@ -4,13 +4,16 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:layout_marginBottom="@dimen/grid_7"
   android:layout_marginTop="@dimen/grid_5"
-  android:layout_marginBottom="@dimen/grid_5"
   android:orientation="vertical"
-  android:padding="@dimen/grid_2">
+  android:paddingEnd="@dimen/grid_2"
+  android:paddingStart="@dimen/grid_2"
+  android:paddingTop="@dimen/grid_2">
 
   <TextView
-    style="@style/Title3"
+    android:id="@+id/dashboard_reward_title"
+    style="@style/Title2"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="@string/dashboard_graphs_rewards_top_rewards" />
@@ -28,10 +31,9 @@
 
       <LinearLayout
         android:id="@+id/dashboard_reward_stats_pledged_view"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/grid_20"
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/grid_2"
-        android:layout_weight="2"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -50,10 +52,9 @@
 
       </LinearLayout>
 
-
       <TextView
         style="@style/CreatorDashboardTableRowText"
-        android:layout_weight="1"
+        android:layout_width="@dimen/grid_13"
         android:text="@string/dashboard_graphs_funding_backers" />
 
       <TextView
@@ -63,9 +64,9 @@
     </LinearLayout>
 
     <LinearLayout
-      android:orientation="vertical"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
 
       <android.support.v7.widget.RecyclerView
         android:id="@+id/dashboard_reward_stats_recycler_view"
@@ -75,20 +76,18 @@
 
       <TextView
         android:id="@+id/dashboard_reward_stats_empty_text_view"
-        android:paddingTop="@dimen/grid_10"
-        android:paddingBottom="@dimen/grid_10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        tools:text="Sorry, no stats yet!\n You don’t have any backings"/>
-
+        android:padding="@dimen/grid_10"
+        android:text="@string/Data_will_appear_here_once" />
 
       <TextView
-        style="@style/BodyPrimary"
         android:id="@+id/dashboard_reward_stats_truncated_text_view"
+        style="@style/BodyPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Limited to the top 10 rewards."/>
+        android:text="@string/To_see_all_rewards_view_your_project" />
 
     </LinearLayout>
   </LinearLayout>

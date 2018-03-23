@@ -4,9 +4,13 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.ProjectStatsEnvelopeFactory;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
+import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.libs.ReferrerType;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.NumberUtils;
@@ -25,6 +29,8 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
   private CreatorDashboardReferrerBreakdownHolderViewModel.ViewModel vm;
 
   private final TestSubscriber<Boolean> breakdownViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> emptyViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> titleViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<Float> customReferrerPercent = new TestSubscriber<>();
   private final TestSubscriber<Float> externalReferrerPercent = new TestSubscriber<>();
   private final TestSubscriber<Float> kickstarterReferrerPercent = new TestSubscriber<>();
@@ -42,6 +48,8 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardReferrerBreakdownHolderViewModel.ViewModel(environment);
     this.vm.outputs.breakdownViewIsGone().subscribe(this.breakdownViewIsGone);
+    this.vm.outputs.emptyViewIsGone().subscribe(this.emptyViewIsGone);
+    this.vm.outputs.titleViewIsGone().subscribe(this.titleViewIsGone);
     this.vm.outputs.customReferrerPercent().subscribe(this.customReferrerPercent);
     this.vm.outputs.customReferrerPercentText().subscribe(this.customReferrerPercentText);
     this.vm.outputs.externalReferrerPercent().subscribe(this.externalReferrerPercent);
@@ -59,32 +67,113 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
   }
 
   @Test
-  public void testBreakdownViewIsGone_whenStatsEmpty() {
+  public void testBreakdownViewIsGone_isTrue_whenStatsEmptyAndEnabled() {
     final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(ListUtils.empty())
-      .build();
+    final ProjectStatsEnvelope statsEnvelope = getEmptyProjectStatsEnvelope();
 
-    setUpEnvironment(environment());
+    setUpEnvironmentWithBreakdownFlagEnabled();
+
     this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
     this.breakdownViewIsGone.assertValues(true);
   }
 
   @Test
-  public void testBreakdownViewIsGone_whenStatsNotEmpty() {
+  public void testBreakdownViewIsGone_isTrue_whenStatsEmptyAndDisabled() {
     final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats referrerStat = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(referrerStat);
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(referrerList)
-      .build();
+    final ProjectStatsEnvelope statsEnvelope = getEmptyProjectStatsEnvelope();
 
-    setUpEnvironment(environment());
+    setUpEnvironmentWithDefaultConfig();
+
+    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+    this.breakdownViewIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testBreakdownViewIsGone_isTrue_whenStatsNotEmptyAndDisabled() {
+    final Project project = ProjectFactory.project();
+    final ProjectStatsEnvelope statsEnvelope = getProjectStatsEnvelope();
+
+    setUpEnvironmentWithDefaultConfig();
+
+    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+    this.breakdownViewIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testBreakdownViewIsGone_isFalse_whenStatsNotEmptyAndEnabled() {
+    final Project project = ProjectFactory.project();
+    final ProjectStatsEnvelope statsEnvelope = getProjectStatsEnvelope();
+
+    setUpEnvironmentWithBreakdownFlagEnabled();
+
     this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
     this.breakdownViewIsGone.assertValues(false);
+  }
+
+  @Test
+  public void testEmptyViewIsGone_isFalse_whenStatsEmptyAndEnabled() {
+    final Project project = ProjectFactory.project();
+    final ProjectStatsEnvelope statsEnvelope = getEmptyProjectStatsEnvelope();
+
+    setUpEnvironmentWithBreakdownFlagEnabled();
+
+    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+    this.emptyViewIsGone.assertValues(false);
+  }
+
+  @Test
+  public void testEmptyViewIsGone_isTrue_whenStatsEmptyAndDisabled() {
+    final Project project = ProjectFactory.project();
+    final ProjectStatsEnvelope statsEnvelope = getEmptyProjectStatsEnvelope();
+
+    setUpEnvironmentWithDefaultConfig();
+
+    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+    this.emptyViewIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testEmptyViewIsGone_isTrue_whenStatsNotEmptyAndDisabled() {
+    final Project project = ProjectFactory.project();
+    final ProjectStatsEnvelope statsEnvelope = getProjectStatsEnvelope();
+
+    setUpEnvironmentWithDefaultConfig();
+
+    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+    this.emptyViewIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testEmptyViewIsGone_isTrue_whenStatsNotEmptyAndEnabled() {
+    final Project project = ProjectFactory.project();
+    final ProjectStatsEnvelope statsEnvelope = getProjectStatsEnvelope();
+
+    setUpEnvironmentWithBreakdownFlagEnabled();
+
+    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+    this.emptyViewIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testTitleViewIsGone_isFalse_whenEnabled() {
+    final Project project = ProjectFactory.project();
+    final ProjectStatsEnvelope statsEnvelope = getProjectStatsEnvelope();
+
+    setUpEnvironmentWithBreakdownFlagEnabled();
+
+    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+    this.titleViewIsGone.assertValues(false);
+  }
+
+  @Test
+  public void testTitleViewIsGone_isTrue_whenDisabled() {
+    final Project project = ProjectFactory.project();
+    final ProjectStatsEnvelope statsEnvelope = getProjectStatsEnvelope();
+
+    setUpEnvironmentWithDefaultConfig();
+
+    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+    this.titleViewIsGone.assertValues(true);
   }
 
   @Test
@@ -424,5 +513,44 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
     this.customReferrerPercent.assertValues(55.0f);
     this.externalReferrerPercent.assertValues(25.0f);
     this.kickstarterReferrerPercent.assertValues(30.0f);
+  }
+
+  private ProjectStatsEnvelope getEmptyProjectStatsEnvelope() {
+    return ProjectStatsEnvelopeFactory.projectStatsEnvelope()
+      .toBuilder()
+      .referralDistribution(ListUtils.empty())
+      .build();
+  }
+
+  private ProjectStatsEnvelope getProjectStatsEnvelope() {
+    final ProjectStatsEnvelope.ReferrerStats referrerStat = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
+      .referrerStats();
+    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(referrerStat);
+    return ProjectStatsEnvelopeFactory.projectStatsEnvelope()
+      .toBuilder()
+      .referralDistribution(referrerList)
+      .build();
+  }
+
+  private void setUpEnvironmentWithBreakdownFlagEnabled() {
+    final CurrentConfigType currentConfig = new MockCurrentConfig();
+    currentConfig.config(ConfigFactory.configWithFeatureEnabled(FeatureKey.NATIVE_CREATOR_BREAKDOWN_CHART));
+
+    final Environment environment = environment()
+      .toBuilder()
+      .currentConfig(currentConfig)
+      .build();
+    setUpEnvironment(environment);
+  }
+
+  private void setUpEnvironmentWithDefaultConfig() {
+    final CurrentConfigType currentConfig = new MockCurrentConfig();
+    currentConfig.config(ConfigFactory.config());
+
+    final Environment environment = environment()
+      .toBuilder()
+      .currentConfig(currentConfig)
+      .build();
+    setUpEnvironment(environment);
   }
 }

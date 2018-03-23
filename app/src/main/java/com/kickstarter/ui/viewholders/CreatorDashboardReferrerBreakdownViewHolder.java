@@ -60,17 +60,17 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
     this.viewModel.outputs.breakdownViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(referrerBreakdownLayout));
+      .subscribe(ViewUtils.setGone(this.referrerBreakdownLayout));
 
     this.viewModel.outputs.emptyViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(emptyCopyTextView));
+      .subscribe(ViewUtils.setGone(this.emptyCopyTextView));
 
     this.viewModel.outputs.titleViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(referrerBreakdownTitle));
+      .subscribe(ViewUtils.setGone(this.referrerBreakdownTitle));
 
     this.viewModel.outputs.customReferrerPercent()
       .compose(bindToLifecycle())

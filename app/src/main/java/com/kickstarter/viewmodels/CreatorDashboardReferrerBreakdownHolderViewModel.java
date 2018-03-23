@@ -128,7 +128,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
       this.projectAndAveragePledge = Observable.combineLatest(currentProject, averagePledge, Pair::create);
 
-      Observable<Boolean> emptyStats = referrerStats
+      final Observable<Boolean> emptyStats = referrerStats
         .map(List::isEmpty);
 
       this.breakdownViewIsGone = breakdownChartIsEnabled

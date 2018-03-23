@@ -124,7 +124,7 @@ public interface ApiService {
   );
 
   @PUT("/v1/projects/{project_param}/backers/{user_param}")
-  Observable<Response<Backing>> postProjectBacking(
+  Observable<Response<Backing>> putProjectBacking(
     @Path("project_param") long projectParam,
     @Path("user_param") long userParam,
     @Body BackingBody backingBody

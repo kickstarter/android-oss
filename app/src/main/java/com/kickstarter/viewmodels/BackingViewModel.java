@@ -283,18 +283,10 @@ public interface BackingViewModel {
         .subscribe(this.koala::trackViewedPledgeInfo);
 
       backing
-        .map(Backing::completedAt)
+        .map(Backing::backerCompletedAt)
         .map(ObjectUtils::isNotNull)
         .compose(bindToLifecycle())
         .subscribe(this.gotIt);
-
-//      Observable.combineLatest(project, backing, this.gotItSwitchChecked, (p, b, s) -> {return Pair.create(Pair.create(p, b), s);} )
-//        .switchMap(triple -> client.toggleBackingReceived(triple.first.first, triple.first.second, triple.second)
-//          .map(b -> Log.d("izzytest", b.project().name() + " - " + b.completedAt()))
-//          .materialize())
-//        .compose(bindToLifecycle())
-//        .share()
-//      .subscribe();
 
       Observable<Pair<Project, Backing>> projectAndBacking = Observable
         .combineLatest(project, backing, Pair::create);
@@ -302,7 +294,7 @@ public interface BackingViewModel {
       projectAndBacking
         .compose(takePairWhen(this.gotItSwitchChecked))
         .switchMap(triple -> client.toggleBackingReceived(triple.first.first, triple.first.second, triple.second)
-          .map(b -> Log.d("izzytest", b.project().name() + " - " + b.completedAt()))
+          .map(b -> Log.d("izzytest", b.project().name() + " - " + b.backerId() + " - " + b.backerCompletedAt()))
           .materialize())
         .compose(bindToLifecycle())
         .share()

@@ -20,6 +20,7 @@ public abstract class Backing implements Parcelable {
   public abstract @Nullable User backer();
   public abstract @Nullable String backerNote();
   public abstract long backerId();
+  public abstract @Nullable DateTime backerCompletedAt();
   public abstract @Nullable DateTime completedAt();
   public abstract long id();
   public abstract @Nullable Location location();
@@ -39,6 +40,7 @@ public abstract class Backing implements Parcelable {
     public abstract Builder backer(User __);
     public abstract Builder backerNote(String __);
     public abstract Builder backerId(long __);
+    public abstract Builder backerCompletedAt(DateTime __);
     public abstract Builder completedAt(DateTime __);
     public abstract Builder id(long __);
     public abstract Builder location(Location __);

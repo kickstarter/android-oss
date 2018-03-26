@@ -42,7 +42,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
     /** Emits the text for the percentage of total pledges from a custom referrer. */
     Observable<String> customReferrerPercentText();
 
-    /**  */
+    /** Emits a boolean that determines if empty view is gone. */
     Observable<Boolean> emptyViewIsGone();
 
     /** Emits the percentage of total pledges from a external referrer. */
@@ -78,13 +78,13 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
     /** Emits the current project and the amount pledged via Kickstarter referrers. */
     Observable<Pair<Project, Float>> projectAndKickstarterReferrerPledgedAmount();
 
-    /**  */
+    /** Emits a boolean that determines if title is gone. */
     Observable<Boolean> titleViewIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardReferrerBreakdownViewHolder> implements Inputs, Outputs {
 
-    private CurrentConfigType currentConfigType;
+    private final CurrentConfigType currentConfigType;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);

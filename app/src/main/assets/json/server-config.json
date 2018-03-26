@@ -828,6 +828,8 @@
             "games": "Kickstarter Loves Games",
             "invent": "Invent",
             "arts": "Arts & Culture News",
+            "film": "Kickstarter Films",
+            "publishing": "Kickstarter Reads",
             "opt_in": {
               "title": "One final step!",
               "message": "We've sent a confirmation email to the address associated with your account! Please check your email in order to confirm that you'd like to subscribe to %{newsletter}."
@@ -2765,6 +2767,8 @@
             "games": "Wir lieben Spiele",
             "invent": "Kreativ & Erfinderisch",
             "arts": "Kunst & Kultur News",
+            "film": "Kickstarter Films",
+            "publishing": "Kickstarter Reads",
             "opt_in": {
               "title": "Nur noch ein letzter Schritt!",
               "message": "Wir haben eine Bestätigung an die mit deinem Konto verbundene E-Mail-Adresse geschickt! Bitte sieh in deinem Posteingang nach und bestätige dein Abo von %{newsletter}."
@@ -4702,6 +4706,8 @@
             "games": "Nos encantan los juegos",
             "invent": "Invenciones",
             "arts": "Novedades sobre Arte & Cultura",
+            "film": "Kickstarter Films",
+            "publishing": "Kickstarter Reads",
             "opt_in": {
               "title": "¡Sólo un último paso!",
               "message": "Hemos enviado una confirmación a la dirección de correo electrónico asociada con tu cuenta. Por favor checa tu bandeja de entrada y confirma la subscripción a %{newsletter}."
@@ -6639,6 +6645,8 @@
             "games": "Kickstarter aime les jeux",
             "invent": "Inventions",
             "arts": "Actualités art et culture",
+            "film": "Kickstarter Films",
+            "publishing": "Kickstarter Reads",
             "opt_in": {
               "title": "Dernière étape !",
               "message": "Nous vous avons envoyé un e-mail de confirmation à l'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}."
@@ -8576,6 +8584,8 @@
             "games": "Kickstarterが選ぶゲーム",
             "invent": "インベント",
             "arts": "アート＆カルチャー",
+            "film": "Kickstarter Films",
+            "publishing": "Kickstarter Reads",
             "opt_in": {
               "title": "あと少し！",
               "message": "登録されているアドレス宛に認証メールを送信しました！%{newsletter} を購読するには、メールを確認してください。"
@@ -9882,9 +9892,9 @@
     "project_dashboard": "with_dashboard",
     "react_guest_pledging_run_3": "control",
     "show_refreshed_thanks_page": "control",
-    "show_created_by_discovery": "control",
     "project_cards_description": "control",
-    "default_rec_projects": "control"
+    "default_rec_projects": "control",
+    "sticky_global_header": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

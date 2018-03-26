@@ -4,9 +4,14 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.Config;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.ReferrerType;
+import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
@@ -16,6 +21,9 @@ import java.util.List;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 
 public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
@@ -33,6 +41,9 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
     /** Emits the text for the percentage of total pledges from a custom referrer. */
     Observable<String> customReferrerPercentText();
+
+    /** Emits a boolean that determines if empty view is gone. */
+    Observable<Boolean> emptyViewIsGone();
 
     /** Emits the percentage of total pledges from a external referrer. */
     Observable<Float> externalReferrerPercent();
@@ -66,12 +77,24 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
     /** Emits the current project and the amount pledged via Kickstarter referrers. */
     Observable<Pair<Project, Float>> projectAndKickstarterReferrerPledgedAmount();
+
+    /** Emits a boolean that determines if title is gone. */
+    Observable<Boolean> titleViewIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardReferrerBreakdownViewHolder> implements Inputs, Outputs {
 
+    private final CurrentConfigType currentConfigType;
+
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
+
+      this.currentConfigType = environment.currentConfig();
+
+      final Observable<Boolean> breakdownChartIsEnabled = this.currentConfigType.observable()
+        .map(Config::features)
+        .filter(ObjectUtils::isNotNull)
+        .map(f -> coalesce(f.get(FeatureKey.NATIVE_CREATOR_BREAKDOWN_CHART), false));
 
       final Observable<Project> currentProject = this.projectAndProjectStatsInput
         .map(PairUtils::first);
@@ -105,8 +128,16 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
       this.projectAndAveragePledge = Observable.combineLatest(currentProject, averagePledge, Pair::create);
 
-      this.breakdownViewIsGone = referrerStats
+      final Observable<Boolean> emptyStats = referrerStats
         .map(List::isEmpty);
+
+      this.breakdownViewIsGone = breakdownChartIsEnabled
+        .compose(combineLatestPair(emptyStats))
+        .map(enabledAndEmptyStats -> enabledAndEmptyStats.first ? enabledAndEmptyStats.second : true);
+
+      this.emptyViewIsGone = breakdownChartIsEnabled
+        .compose(combineLatestPair(emptyStats))
+        .map(enabledAndEmptyStats -> enabledAndEmptyStats.first ? !enabledAndEmptyStats.second : true);
 
       this.customReferrerPercent = customReferrers
         .flatMap(rs ->
@@ -180,11 +211,8 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
       this.pledgedViaKickstarterLayoutIsGone = this.kickstarterReferrerPledgedAmount
         .map(amount -> amount <= 0f);
 
-      referrerStats
-        .map(rs -> rs.size() > 10)
-        .distinctUntilChanged()
-        .compose(bindToLifecycle())
-        .subscribe(this.referrersTitleIsLimitedCopy);
+      this.titleViewIsGone = breakdownChartIsEnabled
+        .map(BooleanUtils::negate);
     }
 
     public final Inputs inputs = this;
@@ -196,6 +224,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
     private final Observable<Float> customReferrerPercent;
     private final Observable<String> customReferrerPercentText;
     private final Observable<Float> customReferrerPledgedAmount;
+    private final Observable<Boolean> emptyViewIsGone;
     private final Observable<Float> externalReferrerPercent;
     private final Observable<String> externalReferrerPercentText;
     private final Observable<Float> externalReferrerPledgedAmount;
@@ -209,7 +238,7 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
     private final Observable<Pair<Project, Float>> projectAndCustomReferrerPledgedAmount;
     private final Observable<Pair<Project, Float>> projectAndExternalReferrerPledgedAmount;
     private final Observable<Pair<Project, Float>> projectAndKickstarterReferrerPledgedAmount;
-    private final PublishSubject<Boolean> referrersTitleIsLimitedCopy = PublishSubject.create();
+    private final Observable<Boolean> titleViewIsGone;
 
     @Override
     public void projectAndStatsInput(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStats) {
@@ -227,6 +256,10 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
     @Override
     public @NonNull Observable<String> customReferrerPercentText() {
       return this.customReferrerPercentText;
+    }
+    @Override
+    public @NonNull Observable<Boolean> emptyViewIsGone() {
+      return this.emptyViewIsGone;
     }
     @Override
     public @NonNull Observable<Float> externalReferrerPercent() {
@@ -271,6 +304,10 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
     @Override
     public @NonNull Observable<Pair<Project, Float>> projectAndKickstarterReferrerPledgedAmount() {
       return this.projectAndKickstarterReferrerPledgedAmount;
+    }
+    @Override
+    public @NonNull Observable<Boolean> titleViewIsGone() {
+      return this.titleViewIsGone;
     }
   }
 }

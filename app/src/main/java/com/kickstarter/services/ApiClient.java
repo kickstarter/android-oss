@@ -2,7 +2,6 @@ package com.kickstarter.services;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.kickstarter.libs.Config;
@@ -452,12 +451,11 @@ public final class ApiClient implements ApiClientType {
   public
   @NonNull
   Observable<Backing> toggleBackingReceived(final @NonNull Project project, final @NonNull Backing backing, boolean checked) {
-    Log.d("izzy", "toggleBackingReceived");
     return this.service
       .putProjectBacking(project.id(), backing.backerId(), BackingBody.builder()
         .backer(backing.backerId())
         .id(backing.id())
-        .backerCompletedAt(checked ? true : null)
+        .backerCompletedAt(checked ? 1 : 0)
         .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());

@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -292,10 +291,8 @@ public interface BackingViewModel {
         .combineLatest(project, backing, Pair::create);
 
       projectAndBacking
-        .compose(takePairWhen(this.gotItSwitchChecked))
-        .switchMap(triple -> client.toggleBackingReceived(triple.first.first, triple.first.second, triple.second)
-          .map(b -> Log.d("izzytest", b.project().name() + " - " + b.backerId() + " - " + b.backerCompletedAt()))
-          .materialize())
+        .compose(takePairWhen(this.gotItSwitchChecked.skip(1)))
+        .switchMap(triple -> client.toggleBackingReceived(triple.first.first, triple.first.second, triple.second))
         .compose(bindToLifecycle())
         .share()
         .subscribe();

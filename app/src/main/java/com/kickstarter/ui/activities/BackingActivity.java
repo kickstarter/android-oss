@@ -52,6 +52,7 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
   protected @Bind(R.id.project_context_project_name) TextView projectContextProjectNameTextView;
   protected @Bind(R.id.project_context_view) View projectContextView;
   protected @Bind(R.id.backing_estimated_delivery) TextView pledgeEstimatedDeliveryTextView;
+  protected @Bind(R.id.backing_received_section) View backingReceivedSection;
   protected @Bind(R.id.backing_reward_minimum_and_description) TextView rewardMinimumAndDescriptionTextView;
   protected @Bind(R.id.backing_rewards_item_recycler_view) RecyclerView rewardsItemRecyclerView;
   protected @Bind(R.id.backing_rewards_item_section) View rewardsItemSection;
@@ -191,6 +192,11 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.backingGotItSwitch::setChecked);
+
+    this.viewModel.outputs.estimatedDeliverySectionIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.backingReceivedSection));
   }
 
   @Override

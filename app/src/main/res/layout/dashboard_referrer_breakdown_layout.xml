@@ -5,12 +5,16 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:divider="@drawable/divider_dark_grey_500_horizontal"
-  android:orientation="vertical"
-  android:showDividers="beginning">
+  android:orientation="vertical">
+
+  <View
+    android:layout_width="wrap_content"
+    android:layout_height="1dp"
+    android:background="@drawable/divider_dark_grey_500_horizontal"/>
 
   <TextView
     style="@style/Title2"
+    android:id="@+id/referrer_breakdown_title"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/grid_6"

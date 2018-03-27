@@ -313,6 +313,11 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<Backing> postBacking(@NonNull Project project, @NonNull Backing backing, boolean checked) {
+    return Observable.just(BackingFactory.backing());
+  }
+
+  @Override
   public @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
     return Observable.just(CommentFactory.comment().toBuilder().body(body).build());
   }
@@ -366,11 +371,6 @@ public class MockApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<Project> toggleProjectSave(final @NonNull Project project) {
     return Observable.just(project.toBuilder().isStarred(!project.isStarred()).build());
-  }
-  @NonNull
-  @Override
-  public Observable<Backing> toggleBackingReceived(@NonNull Project project, @NonNull User user, boolean check) {
-    return null;
   }
 
   @Override

@@ -23,84 +23,98 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/feed_padding_y"
+        android:divider="@drawable/divider_grey_500_horizontal"
         android:orientation="vertical"
         android:paddingEnd="@dimen/feed_padding_x"
-        android:paddingStart="@dimen/feed_padding_x">
+        android:paddingStart="@dimen/feed_padding_x"
+        android:showDividers="middle">
 
-        <RelativeLayout
+        <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_4">
-
-          <ImageView
-            android:id="@+id/backing_avatar_image_view"
-            android:layout_width="@dimen/grid_13"
-            android:layout_height="@dimen/grid_13"
-            android:focusable="false"
-            tools:background="@color/ksr_cobalt_500"
-            tools:ignore="ContentDescription" />
+          android:orientation="vertical"
+          android:paddingBottom="@dimen/grid_4">
 
           <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toEndOf="@id/backing_avatar_image_view"
-            android:paddingEnd="@dimen/grid_4"
-            android:paddingStart="@dimen/grid_4">
+            android:layout_marginBottom="@dimen/grid_4">
 
-            <TextView
-              android:id="@+id/backing_backer_name"
-              style="@style/CalloutPrimaryMedium"
+            <ImageView
+              android:id="@+id/backing_avatar_image_view"
+              android:layout_width="@dimen/grid_13"
+              android:layout_height="@dimen/grid_13"
+              android:focusable="false"
+              tools:background="@color/ksr_cobalt_500"
+              tools:ignore="ContentDescription" />
+
+            <RelativeLayout
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              tools:text="Blob Fish" />
+              android:layout_centerInParent="true"
+              android:layout_toEndOf="@id/backing_avatar_image_view"
+              android:paddingEnd="@dimen/grid_4"
+              android:paddingStart="@dimen/grid_4">
 
-            <TextView
-              android:id="@+id/backing_backer_number"
-              style="@style/BodySecondary"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_below="@id/backing_backer_name"
-              tools:text="Backer #42" />
+              <TextView
+                android:id="@+id/backing_backer_name"
+                style="@style/CalloutPrimaryMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Blob Fish" />
+
+              <TextView
+                android:id="@+id/backing_backer_number"
+                style="@style/BodySecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/backing_backer_name"
+                tools:text="Backer #42" />
+
+            </RelativeLayout>
 
           </RelativeLayout>
 
-        </RelativeLayout>
+          <Button
+            android:id="@+id/backing_view_messages_button"
+            style="@style/BorderButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/grid_2"
+            android:text="@string/Message_creator"
+            android:visibility="visible" />
 
-        <Button
-          android:id="@+id/backing_view_messages_button"
-          style="@style/BorderButton"
+        </LinearLayout>
+
+        <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_4"
-          android:padding="@dimen/grid_2"
-          android:text="@string/Message_creator"
-          android:visibility="visible" />
+          android:orientation="vertical"
+          android:paddingBottom="@dimen/grid_4">
 
-        <include layout="@layout/horizontal_line_1dp_view" />
+          <TextView
+            style="@style/CalloutPrimaryMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/grid_1"
+            android:paddingTop="@dimen/grid_2"
+            android:text="@string/backer_modal_pledged_title" />
 
-        <TextView
-          style="@style/CalloutPrimaryMedium"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:paddingBottom="@dimen/grid_1"
-          android:paddingTop="@dimen/grid_2"
-          android:text="@string/backer_modal_pledged_title" />
+          <TextView
+            android:id="@+id/backing_amount_and_date_text_view"
+            style="@style/BodyPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="$1 on Thursday, June 8, 2017" />
 
-        <TextView
-          android:id="@+id/backing_amount_and_date_text_view"
-          style="@style/BodyPrimary"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          tools:text="$1 on Thursday, June 8, 2017" />
+          <TextView
+            android:id="@+id/backing_status"
+            style="@style/BodyPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Status: Collected" />
 
-        <TextView
-          android:id="@+id/backing_status"
-          style="@style/BodyPrimary"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:paddingBottom="@dimen/grid_4"
-          tools:text="Status: Collected" />
+        </LinearLayout>
 
         <LinearLayout
           android:layout_width="match_parent"
@@ -108,8 +122,6 @@
           android:orientation="vertical"
           android:paddingBottom="@dimen/grid_4"
           tools:visibility="gone">
-
-          <include layout="@layout/horizontal_line_1dp_view" />
 
           <TextView
             style="@style/CalloutPrimaryMedium"
@@ -155,10 +167,8 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="vertical"
-          android:paddingTop="@dimen/grid_2"
+          android:paddingBottom="@dimen/grid_4"
           tools:visibility="gone">
-
-          <include layout="@layout/horizontal_line_1dp_view" />
 
           <TextView
             style="@style/CalloutPrimaryMedium"
@@ -178,17 +188,15 @@
             android:id="@+id/backing_shipping_amount"
             style="@style/BodyPrimary"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/grid_4" />
+            android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout
           android:id="@+id/backing_estimated_delivery_section"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:orientation="vertical">
-
-          <include layout="@layout/horizontal_line_1dp_view" />
+          android:orientation="vertical"
+          android:paddingBottom="@dimen/grid_4">
 
           <TextView
             style="@style/CalloutPrimaryMedium"
@@ -203,7 +211,6 @@
             style="@style/BodyPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/grid_4"
             tools:text="June 2016" />
         </LinearLayout>
 
@@ -213,7 +220,7 @@
           android:layout_height="wrap_content"
           android:orientation="horizontal"
           android:paddingBottom="@dimen/grid_2"
-          android:paddingTop="@dimen/grid_2">
+          android:paddingTop="@dimen/grid_4">
 
           <LinearLayout
             android:layout_width="0dp"
@@ -239,7 +246,7 @@
           </LinearLayout>
 
           <Switch
-            android:id="@+id/backing_got_it_switch"
+            android:id="@+id/backing_mark_as_received_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         </LinearLayout>

@@ -32,7 +32,6 @@ import com.squareup.picasso.Picasso;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -42,7 +41,6 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 public final class BackingActivity extends BaseActivity<BackingViewModel.ViewModel> {
   protected @Bind(R.id.backing_avatar_image_view) ImageView avatarImageView;
   protected @Bind(R.id.backing_backer_name) TextView backerNameTextView;
-  protected @Bind(R.id.backing_got_it_switch) Switch backingGotItSwitch;
   protected @Bind(R.id.backing_backer_number) TextView backerNumberTextView;
   protected @Bind(R.id.backing_amount_and_date_text_view) TextView backingAmountAndDateTextView;
   protected @Bind(R.id.backing_status) TextView backingStatusTextView;
@@ -52,6 +50,7 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
   protected @Bind(R.id.project_context_project_name) TextView projectContextProjectNameTextView;
   protected @Bind(R.id.project_context_view) View projectContextView;
   protected @Bind(R.id.backing_estimated_delivery) TextView pledgeEstimatedDeliveryTextView;
+  protected @Bind(R.id.backing_mark_as_received_switch) Switch markAsReceivedSwitch;
   protected @Bind(R.id.backing_received_section) View backingReceivedSection;
   protected @Bind(R.id.backing_reward_minimum_and_description) TextView rewardMinimumAndDescriptionTextView;
   protected @Bind(R.id.backing_rewards_item_recycler_view) RecyclerView rewardsItemRecyclerView;
@@ -138,10 +137,20 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
       .compose(observeForUI())
       .subscribe(url -> Picasso.with(this).load(url).into(this.projectContextPhotoImageView));
 
+    this.viewModel.outputs.markAsReceivedIsChecked()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.markAsReceivedSwitch::setChecked);
+
     this.viewModel.outputs.projectNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.projectContextProjectNameTextView::setText);
+
+    this.viewModel.outputs.receivedSectionIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.backingReceivedSection));
 
     this.viewModel.outputs.rewardsItemList()
       .compose(bindToLifecycle())
@@ -187,21 +196,16 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.viewMessagesButton));
-
-    this.viewModel.outputs.gotIt()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.backingGotItSwitch::setChecked);
-
-    this.viewModel.outputs.estimatedDeliverySectionIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.backingReceivedSection));
   }
 
   @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
+  }
+
+  @OnClick(R.id.backing_mark_as_received_switch)
+  protected void markAsReceivedSwitchClicked() {
+    this.viewModel.inputs.markAsReceivedSwitchChecked(this.markAsReceivedSwitch.isChecked());
   }
 
   @OnClick(R.id.project_context_view)
@@ -212,11 +216,6 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
   @OnClick(R.id.backing_view_messages_button)
   protected void viewMessagesButtonClicked() {
     this.viewModel.inputs.viewMessagesButtonClicked();
-  }
-
-  @OnCheckedChanged(R.id.backing_got_it_switch)
-  protected void gotItSwitchChecked(boolean checked) {
-    this.viewModel.inputs.gotItSwitchChecked(checked);
   }
 
   private void loadBackerAvatar(final @NonNull String url) {

@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.RefTag;
@@ -35,6 +34,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
@@ -44,13 +44,14 @@ import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
 public interface BackingViewModel {
 
   interface Inputs {
+    /** Call when the mark as received switch button is checked. */
+    void markAsReceivedSwitchChecked(boolean checked);
+
     /** Call when the project context section is clicked. */
     void projectClicked();
 
     /** Call when the view messages button is clicked. */
     void viewMessagesButtonClicked();
-
-    void gotItSwitchChecked(boolean checked);
   }
 
   interface Outputs {
@@ -84,8 +85,14 @@ public interface BackingViewModel {
     /** Load the project photo given the URL. */
     Observable<String> loadProjectPhoto();
 
+    /** Emits a boolean that determines if mark as received switch should be checked. */
+    Observable<Boolean> markAsReceivedIsChecked();
+
     /** Set the project name TextView's text. */
     Observable<String> projectNameTextViewText();
+
+    /** Emits a boolean that determines if mark as received section is gone. */
+    Observable<Boolean> receivedSectionIsGone();
 
     /** Set the reward minimum and description TextView's text. */
     Observable<Pair<String, String>> rewardMinimumAndDescriptionTextViewText();
@@ -113,20 +120,16 @@ public interface BackingViewModel {
 
     /** Emits a boolean to determine when the View Messages button should be gone. */
     Observable<Boolean> viewMessagesButtonIsGone();
-
-    Observable<Boolean> gotIt();
   }
 
   final class ViewModel extends ActivityViewModel<BackingActivity> implements Inputs, Outputs {
     private final ApiClientType client;
-    private final CurrentUserType currentUser;
     private final KSCurrency ksCurrency;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.client = environment.apiClient();
-      this.currentUser = environment.currentUser();
       this.ksCurrency = environment.ksCurrency();
 
       final Observable<User> backerFromIntent = intent()
@@ -285,17 +288,23 @@ public interface BackingViewModel {
         .map(Backing::backerCompletedAt)
         .map(ObjectUtils::isNotNull)
         .compose(bindToLifecycle())
-        .subscribe(this.gotIt);
+        .subscribe(this.markAsReceivedIsChecked);
 
       Observable<Pair<Project, Backing>> projectAndBacking = Observable
         .combineLatest(project, backing, Pair::create);
 
       projectAndBacking
-        .compose(takePairWhen(this.gotItSwitchChecked.skip(1)))
-        .switchMap(triple -> client.toggleBackingReceived(triple.first.first, triple.first.second, triple.second))
+        .compose(takePairWhen(this.markAsReceivedSwitchChecked))
+        .switchMap(triple -> client.postBacking(triple.first.first, triple.first.second, triple.second))
         .compose(bindToLifecycle())
         .share()
         .subscribe();
+
+      reward
+        .compose(combineLatestPair(backing))
+        .map(rewardAndBacking -> RewardUtils.isNoReward(rewardAndBacking.first) || !rewardAndBacking.second.status().equals(Backing.STATUS_COLLECTED))
+        .compose(bindToLifecycle())
+        .subscribe(this.receivedSectionIsGone);
     }
 
     private static @NonNull Pair<String, String> backingAmountAndDate(final @NonNull KSCurrency ksCurrency,
@@ -316,7 +325,7 @@ public interface BackingViewModel {
 
     private final PublishSubject<Void> projectClicked = PublishSubject.create();
     private final PublishSubject<Void> viewMessagesButtonClicked = PublishSubject.create();
-    private final PublishSubject<Boolean> gotItSwitchChecked = PublishSubject.create();
+    private final PublishSubject<Boolean> markAsReceivedSwitchChecked = PublishSubject.create();
 
     private final BehaviorSubject<String> backerNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> backerNumberTextViewText = BehaviorSubject.create();
@@ -328,7 +337,9 @@ public interface BackingViewModel {
     private final PublishSubject<Void> goBack = PublishSubject.create();
     private final BehaviorSubject<String> loadBackerAvatar = BehaviorSubject.create();
     private final BehaviorSubject<String> loadProjectPhoto = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> markAsReceivedIsChecked = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> receivedSectionIsGone = BehaviorSubject.create();
     private final BehaviorSubject<Pair<String, String>> rewardMinimumAndDescriptionTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<List<RewardsItem>> rewardsItemList = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> rewardsItemsAreGone = BehaviorSubject.create();
@@ -338,7 +349,6 @@ public interface BackingViewModel {
     private final PublishSubject<Pair<Project, Backing>> startMessagesActivity = PublishSubject.create();
     private final PublishSubject<Pair<Project, RefTag>> startProjectActivity = PublishSubject.create();
     private final BehaviorSubject<Boolean> viewMessagesButtonIsGone = BehaviorSubject.create();
-    private final BehaviorSubject<Boolean> gotIt = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -350,8 +360,8 @@ public interface BackingViewModel {
       this.viewMessagesButtonClicked.onNext(null);
     }
     @Override
-    public void gotItSwitchChecked(boolean checked) {
-      this.gotItSwitchChecked.onNext(checked);
+    public void markAsReceivedSwitchChecked(boolean checked) {
+      this.markAsReceivedSwitchChecked.onNext(checked);
     }
 
     @Override public @NonNull Observable<String> backerNameTextViewText() {
@@ -384,8 +394,14 @@ public interface BackingViewModel {
     @Override public @NonNull Observable<String> loadProjectPhoto() {
       return this.loadProjectPhoto;
     }
+    @Override public @NonNull Observable<Boolean> markAsReceivedIsChecked() {
+      return this.markAsReceivedIsChecked;
+    }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
+    }
+    @Override public @NonNull Observable<Boolean> receivedSectionIsGone() {
+      return this.receivedSectionIsGone;
     }
     @Override public @NonNull Observable<Pair<String, String>> rewardMinimumAndDescriptionTextViewText() {
       return this.rewardMinimumAndDescriptionTextViewText;
@@ -413,10 +429,6 @@ public interface BackingViewModel {
     }
     @Override public @NonNull Observable<Boolean> viewMessagesButtonIsGone() {
       return this.viewMessagesButtonIsGone;
-    }
-    @Override
-    public Observable<Boolean> gotIt() {
-      return this.gotIt;
     }
   }
 }

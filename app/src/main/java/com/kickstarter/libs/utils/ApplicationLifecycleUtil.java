@@ -62,6 +62,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
 
       if (ObjectUtils.isNotNull(accessToken)) {
         this.client.fetchCurrentUser()
+          .compose(Transformers.neverError())
           .subscribe(u -> this.currentUser.refresh(u));
       }
 

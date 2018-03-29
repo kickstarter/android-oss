@@ -4,24 +4,15 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.ProjectStatsEnvelopeFactory;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
-import com.kickstarter.libs.MockCurrentConfig;
-import com.kickstarter.libs.ReferrerType;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import rx.observers.TestSubscriber;
 
@@ -30,7 +21,6 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
 
   private final TestSubscriber<Boolean> breakdownViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> emptyViewIsGone = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> titleViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<Float> customReferrerPercent = new TestSubscriber<>();
   private final TestSubscriber<Float> externalReferrerPercent = new TestSubscriber<>();
   private final TestSubscriber<Float> kickstarterReferrerPercent = new TestSubscriber<>();
@@ -49,7 +39,6 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
     this.vm = new CreatorDashboardReferrerBreakdownHolderViewModel.ViewModel(environment);
     this.vm.outputs.breakdownViewIsGone().subscribe(this.breakdownViewIsGone);
     this.vm.outputs.emptyViewIsGone().subscribe(this.emptyViewIsGone);
-    this.vm.outputs.titleViewIsGone().subscribe(this.titleViewIsGone);
     this.vm.outputs.customReferrerPercent().subscribe(this.customReferrerPercent);
     this.vm.outputs.customReferrerPercentText().subscribe(this.customReferrerPercentText);
     this.vm.outputs.externalReferrerPercent().subscribe(this.externalReferrerPercent);
@@ -67,293 +56,99 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
   }
 
   @Test
-  public void testBreakdownViewIsGone_isTrue_whenStatsEmptyAndEnabled() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope statsEnvelope = getEmptyProjectStatsEnvelope();
-
-    setUpEnvironmentWithBreakdownFlagEnabled();
-
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+  public void testBreakdownViewIsGone_isTrue_whenStatsEmpty() {
+    setUpEnvironmentAndInputProjectAndEmptyStats();
     this.breakdownViewIsGone.assertValues(true);
   }
 
   @Test
-  public void testBreakdownViewIsGone_isTrue_whenStatsEmptyAndDisabled() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope statsEnvelope = getEmptyProjectStatsEnvelope();
-
-    setUpEnvironmentWithDefaultConfig();
-
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.breakdownViewIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testBreakdownViewIsGone_isTrue_whenStatsNotEmptyAndDisabled() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope statsEnvelope = getProjectStatsEnvelope();
-
-    setUpEnvironmentWithDefaultConfig();
-
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.breakdownViewIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testBreakdownViewIsGone_isFalse_whenStatsNotEmptyAndEnabled() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope statsEnvelope = getProjectStatsEnvelope();
-
-    setUpEnvironmentWithBreakdownFlagEnabled();
-
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+  public void testBreakdownViewIsGone_isFalse_whenStatsNotEmpty() {
+    setUpEnvironmentAndInputProjectAndStats();
     this.breakdownViewIsGone.assertValues(false);
   }
 
   @Test
-  public void testEmptyViewIsGone_isFalse_whenStatsEmptyAndEnabled() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope statsEnvelope = getEmptyProjectStatsEnvelope();
-
-    setUpEnvironmentWithBreakdownFlagEnabled();
-
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+  public void testEmptyViewIsGone_isFalse_whenStatsEmpty() {
+    setUpEnvironmentAndInputProjectAndEmptyStats();
     this.emptyViewIsGone.assertValues(false);
   }
 
   @Test
-  public void testEmptyViewIsGone_isTrue_whenStatsEmptyAndDisabled() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope statsEnvelope = getEmptyProjectStatsEnvelope();
-
-    setUpEnvironmentWithDefaultConfig();
-
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+  public void testEmptyViewIsGone_isTrue_whenStatsNotEmpty() {
+    setUpEnvironmentAndInputProjectAndStats();
     this.emptyViewIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testEmptyViewIsGone_isTrue_whenStatsNotEmptyAndDisabled() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope statsEnvelope = getProjectStatsEnvelope();
-
-    setUpEnvironmentWithDefaultConfig();
-
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.emptyViewIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testEmptyViewIsGone_isTrue_whenStatsNotEmptyAndEnabled() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope statsEnvelope = getProjectStatsEnvelope();
-
-    setUpEnvironmentWithBreakdownFlagEnabled();
-
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.emptyViewIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testTitleViewIsGone_isFalse_whenEnabled() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope statsEnvelope = getProjectStatsEnvelope();
-
-    setUpEnvironmentWithBreakdownFlagEnabled();
-
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.titleViewIsGone.assertValues(false);
-  }
-
-  @Test
-  public void testTitleViewIsGone_isTrue_whenDisabled() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope statsEnvelope = getProjectStatsEnvelope();
-
-    setUpEnvironmentWithDefaultConfig();
-
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.titleViewIsGone.assertValues(true);
   }
 
   @Test
   public void testCustomReferrerPercent() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats fiftyFivePercentCustomReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .percentageOfDollars(55f)
-      .referrerType(ReferrerType.CUSTOM.getReferrerType())
-      .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(fiftyFivePercentCustomReferrer);
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(referrerList)
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.customReferrerPercent.assertValues(55f);
+    setUpEnvironmentAndInputProjectAndStats();
+    this.customReferrerPercent.assertValues(.5f);
   }
 
   @Test
   public void testCustomReferrerPercentText() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats fiftyFivePercentCustomReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .percentageOfDollars(.55f)
-      .referrerType(ReferrerType.CUSTOM.getReferrerType())
-      .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(fiftyFivePercentCustomReferrer);
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(referrerList)
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.customReferrerPercentText.assertValues("55%");
+    setUpEnvironmentAndInputProjectAndStats();
+    this.customReferrerPercentText.assertValues(NumberUtils.flooredPercentage(.5f * 100f));
   }
 
   @Test
   public void testExternalReferrerPercent() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats fifteenPercentExternalReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .percentageOfDollars(15f)
-      .referrerType(ReferrerType.EXTERNAL.getReferrerType())
-      .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(fifteenPercentExternalReferrer);
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(referrerList)
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.externalReferrerPercent.assertValues(15f);
+    setUpEnvironmentAndInputProjectAndStats();
+    this.externalReferrerPercent.assertValues(.25f);
   }
 
   @Test
   public void testExternalReferrerPercentText() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats fifteenPercentExternalReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .percentageOfDollars(15f)
-      .referrerType(ReferrerType.EXTERNAL.getReferrerType())
-      .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(fifteenPercentExternalReferrer);
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(referrerList)
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.externalReferrerPercentText.assertValues(NumberUtils.flooredPercentage(15f * 100f));
+    setUpEnvironmentAndInputProjectAndStats();
+    this.externalReferrerPercentText.assertValues(NumberUtils.flooredPercentage(.25f * 100f));
   }
 
   @Test
   public void testKickstarterReferrerPercent() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats thirtyPercentKickstarterReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .percentageOfDollars(30f)
-      .referrerType(ReferrerType.KICKSTARTER.getReferrerType())
-      .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(thirtyPercentKickstarterReferrer);
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(referrerList)
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.kickstarterReferrerPercent.assertValues(30f);
+    setUpEnvironmentAndInputProjectAndStats();
+    this.kickstarterReferrerPercent.assertValues(.25f);
   }
 
   @Test
   public void testKickstarterReferrerPercentText() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats thirtyPercentKickstarterReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .percentageOfDollars(30f)
-      .referrerType(ReferrerType.KICKSTARTER.getReferrerType())
-      .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(thirtyPercentKickstarterReferrer);
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(referrerList)
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.kickstarterReferrerPercentText.assertValues(NumberUtils.flooredPercentage(30f * 100f));
+    setUpEnvironmentAndInputProjectAndStats();
+    this.kickstarterReferrerPercentText.assertValues(NumberUtils.flooredPercentage(.25f * 100f));
   }
 
   @Test
-  public void testPledgedViaCustomLayoutIsGone() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats zeroPledgedCustomReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .pledged(0f)
-      .referrerType(ReferrerType.CUSTOM.getReferrerType())
-      .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(zeroPledgedCustomReferrer);
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(referrerList)
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+  public void testPledgedViaCustomLayoutIsGone_isTrue_WhenStatsEmpty() {
+    setUpEnvironmentAndInputProjectAndEmptyStats();
     this.pledgedViaCustomLayoutIsGone.assertValues(true);
   }
 
   @Test
-  public void testPledgedViaExternalLayoutIsGone() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats zeroPledgedExternalReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .pledged(0f)
-      .referrerType(ReferrerType.EXTERNAL.getReferrerType())
-      .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(zeroPledgedExternalReferrer);
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(referrerList)
-      .build();
+  public void testPledgedViaCustomLayoutIsGone_isFalse_WhenStatsNotEmpty() {
+    setUpEnvironmentAndInputProjectAndStats();
+    this.pledgedViaCustomLayoutIsGone.assertValues(false);
+  }
 
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+  @Test
+  public void testPledgedViaExternalLayoutIsGone_isTrue_WhenStatsEmpty() {
+    setUpEnvironmentAndInputProjectAndEmptyStats();
     this.pledgedViaExternalLayoutIsGone.assertValues(true);
   }
 
   @Test
-  public void testPledgedViaKickstarterLayoutIsGone() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats zeroPledgedKickstarterReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .pledged(0f)
-      .referrerType(ReferrerType.KICKSTARTER.getReferrerType())
-      .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(zeroPledgedKickstarterReferrer);
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(referrerList)
-      .build();
+  public void testPledgedViaExternalLayoutIsGone_isFalse_WhenStatsNotEmpty() {
+    setUpEnvironmentAndInputProjectAndStats();
+    this.pledgedViaExternalLayoutIsGone.assertValues(false);
+  }
 
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
+  @Test
+  public void testPledgedViaKickstarterLayoutIsGone_isTrue_WhenStatsEmpty() {
+    setUpEnvironmentAndInputProjectAndEmptyStats();
     this.pledgedViaKickstarterLayoutIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testPledgedViaKickstarterLayoutIsGone_isFalse_WhenStatsNotEmpty() {
+    setUpEnvironmentAndInputProjectAndStats();
+    this.pledgedViaKickstarterLayoutIsGone.assertValues(false);
   }
 
   @Test
@@ -368,6 +163,7 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
       .toBuilder()
       .cumulative(cumulativeStats)
       .build();
+
     setUpEnvironment(environment());
     this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
     this.projectAndAveragePledge.assertValue(Pair.create(project, 10));
@@ -375,182 +171,108 @@ public class CreatorDashboardReferrerBreakdownHolderViewModelTest extends KSRobo
 
   @Test
   public void testProjectAndCustomReferrerPledgedAmount() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats onePledgedCustomReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .pledged(1f)
-      .referrerType(ReferrerType.CUSTOM.getReferrerType())
-      .build();
-    final ProjectStatsEnvelope.ReferrerStats twoPledgedCustomReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .pledged(2f)
-      .referrerType(ReferrerType.CUSTOM.getReferrerType())
-      .build();
-    final ProjectStatsEnvelope.ReferrerStats threePledgedExternalReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .pledged(3f)
-      .referrerType(ReferrerType.EXTERNAL.getReferrerType())
-      .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Arrays.asList(
-      onePledgedCustomReferrer, twoPledgedCustomReferrer, threePledgedExternalReferrer);
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(referrerList)
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.projectAndCustomReferrerPledgedAmount.assertValue(Pair.create(project, 3f));
+    final Project project = setUpEnvironmentAndInputProjectAndStats();
+    this.projectAndCustomReferrerPledgedAmount.assertValue(Pair.create(project, 100f));
   }
 
   @Test
   public void testProjectAndExternalReferrerPledgedAmount() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats onePledgedCustomReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .pledged(1f)
-      .referrerType(ReferrerType.CUSTOM.getReferrerType())
-      .build();
-    final ProjectStatsEnvelope.ReferrerStats twoPledgedCustomReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .pledged(2f)
-      .referrerType(ReferrerType.CUSTOM.getReferrerType())
-      .build();
-    final ProjectStatsEnvelope.ReferrerStats threePledgedExternalReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .pledged(3f)
-      .referrerType(ReferrerType.EXTERNAL.getReferrerType())
-      .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Arrays.asList(
-      onePledgedCustomReferrer, twoPledgedCustomReferrer, threePledgedExternalReferrer);
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(referrerList)
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.projectAndExternalReferrerPledgedAmount.assertValue(Pair.create(project, 3f));
+    final Project project = setUpEnvironmentAndInputProjectAndStats();
+    this.projectAndExternalReferrerPledgedAmount.assertValue(Pair.create(project, 50f));
   }
 
   @Test
   public void testProjectAndKickstarterReferrerPledgedAmount() {
-    final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats onePledgedCustomReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .pledged(1f)
-      .referrerType(ReferrerType.CUSTOM.getReferrerType())
-      .build();
-    final ProjectStatsEnvelope.ReferrerStats twoPledgedKickstarterReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .pledged(2f)
-      .referrerType(ReferrerType.KICKSTARTER.getReferrerType())
-      .build();
-    final ProjectStatsEnvelope.ReferrerStats threePledgedExternalReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .pledged(3f)
-      .referrerType(ReferrerType.EXTERNAL.getReferrerType())
-      .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Arrays.asList(
-      onePledgedCustomReferrer, twoPledgedKickstarterReferrer, threePledgedExternalReferrer);
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(referrerList)
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.projectAndKickstarterReferrerPledgedAmount.assertValue(Pair.create(project, 2f));
+    final Project project = setUpEnvironmentAndInputProjectAndStats();
+    this.projectAndKickstarterReferrerPledgedAmount.assertValue(Pair.create(project, 50f));
   }
 
   @Test
   public void testReferrerPercents() {
     final Project project = ProjectFactory.project();
-    final ProjectStatsEnvelope.ReferrerStats fiftyFivePercentCustomReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
+    final ProjectStatsEnvelope.ReferralAggregateStats referralAggregateStats = ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory
+      .referralAggregates()
       .toBuilder()
-      .percentageOfDollars(55f)
-      .referrerType(ReferrerType.CUSTOM.getReferrerType())
+      .custom(100)
+      .internal(50)
+      .external(50)
       .build();
-    final ProjectStatsEnvelope.ReferrerStats fifteenPercentExternalReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
+
+    ProjectStatsEnvelope.CumulativeStats cumulativeStats = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
       .toBuilder()
-      .percentageOfDollars(15f)
-      .referrerType(ReferrerType.EXTERNAL.getReferrerType())
+      .pledged(200)
       .build();
-    final ProjectStatsEnvelope.ReferrerStats tenPercentExternalReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .percentageOfDollars(10f)
-      .referrerType(ReferrerType.EXTERNAL.getReferrerType())
+
+    ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder()
+      .referralAggregates(referralAggregateStats)
+      .cumulative(cumulativeStats)
       .build();
-    final ProjectStatsEnvelope.ReferrerStats thirtyPercentKickstarterReferrer = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats()
-      .toBuilder()
-      .percentageOfDollars(30f)
-      .referrerType(ReferrerType.KICKSTARTER.getReferrerType())
-      .build();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Arrays.asList(
-      fifteenPercentExternalReferrer,
-      tenPercentExternalReferrer,
-      thirtyPercentKickstarterReferrer,
-      fiftyFivePercentCustomReferrer);
+
     setUpEnvironment(environment());
-    final ProjectStatsEnvelope statsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope()
-      .toBuilder()
-      .referralDistribution(referrerList)
-      .build();
-    this.vm.inputs.projectAndStatsInput(Pair.create(project, statsEnvelope));
-    this.customReferrerPercent.assertValues(55.0f);
-    this.externalReferrerPercent.assertValues(25.0f);
-    this.kickstarterReferrerPercent.assertValues(30.0f);
+    this.vm.inputs.projectAndStatsInput(Pair.create(project, projectStatsEnvelope));
+
+    this.customReferrerPercent.assertValues(.5f);
+    this.externalReferrerPercent.assertValues(.25f);
+    this.kickstarterReferrerPercent.assertValues(.25f);
+  }
+
+  private @NonNull Project setUpEnvironmentAndInputProjectAndStats() {
+    final Project project = ProjectFactory.project();
+    final ProjectStatsEnvelope projectStatsEnvelope = getProjectStatsEnvelope();
+
+    setUpEnvironment(environment());
+    this.vm.inputs.projectAndStatsInput(Pair.create(project, projectStatsEnvelope));
+    return project;
+  }
+
+  private @NonNull Project setUpEnvironmentAndInputProjectAndEmptyStats() {
+    final Project project = ProjectFactory.project();
+    final ProjectStatsEnvelope projectStatsEnvelope = getEmptyProjectStatsEnvelope();
+
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectAndStatsInput(Pair.create(project, projectStatsEnvelope));
+    return project;
   }
 
   private ProjectStatsEnvelope getEmptyProjectStatsEnvelope() {
+    ProjectStatsEnvelope.ReferralAggregateStats referralAggregateStats = ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory.referralAggregates()
+      .toBuilder()
+      .custom(0)
+      .external(0)
+      .internal(0)
+      .build();
+
+    ProjectStatsEnvelope.CumulativeStats cumulativeStats = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
+      .toBuilder()
+      .pledged(0)
+      .build();
+
     return ProjectStatsEnvelopeFactory.projectStatsEnvelope()
       .toBuilder()
+      .cumulative(cumulativeStats)
+      .referralAggregates(referralAggregateStats)
       .referralDistribution(ListUtils.empty())
       .build();
   }
 
   private ProjectStatsEnvelope getProjectStatsEnvelope() {
-    final ProjectStatsEnvelope.ReferrerStats referrerStat = ProjectStatsEnvelopeFactory.ReferrerStatsFactory
-      .referrerStats();
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerList = Collections.singletonList(referrerStat);
-    return ProjectStatsEnvelopeFactory.projectStatsEnvelope()
+    final ProjectStatsEnvelope.ReferralAggregateStats referralAggregateStats = ProjectStatsEnvelopeFactory.ReferralAggregateStatsFactory
+      .referralAggregates()
       .toBuilder()
-      .referralDistribution(referrerList)
+      .custom(100)
+      .internal(50)
+      .external(50)
       .build();
-  }
 
-  private void setUpEnvironmentWithBreakdownFlagEnabled() {
-    final CurrentConfigType currentConfig = new MockCurrentConfig();
-    currentConfig.config(ConfigFactory.configWithFeatureEnabled(FeatureKey.NATIVE_CREATOR_BREAKDOWN_CHART));
-
-    final Environment environment = environment()
+    ProjectStatsEnvelope.CumulativeStats cumulativeStats = ProjectStatsEnvelopeFactory.CumulativeStatsFactory.cumulativeStats()
       .toBuilder()
-      .currentConfig(currentConfig)
+      .pledged(200)
       .build();
-    setUpEnvironment(environment);
-  }
 
-  private void setUpEnvironmentWithDefaultConfig() {
-    final CurrentConfigType currentConfig = new MockCurrentConfig();
-    currentConfig.config(ConfigFactory.config());
-
-    final Environment environment = environment()
-      .toBuilder()
-      .currentConfig(currentConfig)
+    return ProjectStatsEnvelopeFactory.projectStatsEnvelope().toBuilder()
+      .referralAggregates(referralAggregateStats)
+      .cumulative(cumulativeStats)
       .build();
-    setUpEnvironment(environment);
   }
 }

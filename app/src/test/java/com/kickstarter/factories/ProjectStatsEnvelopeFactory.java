@@ -89,8 +89,7 @@ public final class ProjectStatsEnvelopeFactory {
   public static final class ReferralAggregateStatsFactory {
     private ReferralAggregateStatsFactory() {}
 
-    public static @NonNull
-    ProjectStatsEnvelope.ReferralAggregateStats referralAggregates() {
+    public static @NonNull ProjectStatsEnvelope.ReferralAggregateStats referralAggregates() {
       return ProjectStatsEnvelope.ReferralAggregateStats.builder()
         .custom(10)
         .external(15)

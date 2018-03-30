@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentConfigType;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -23,6 +24,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   protected @Inject Koala koala;
   protected @Inject ApiClientType client;
   protected @Inject CurrentConfigType config;
+  protected @Inject CurrentUserType currentUser;
   protected @Inject Logout logout;
 
   private final KSApplication application;
@@ -54,6 +56,15 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
         .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
         .compose(Transformers.neverError())
         .subscribe(c -> this.config.config(c));
+
+      // Refresh the user
+      final String accessToken = this.currentUser.getAccessToken();
+
+      if (ObjectUtils.isNotNull(accessToken)) {
+        this.client.fetchCurrentUser()
+          .compose(Transformers.neverError())
+          .subscribe(u -> this.currentUser.refresh(u));
+      }
 
       this.isInBackground = false;
     }

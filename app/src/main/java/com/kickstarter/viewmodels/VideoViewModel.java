@@ -6,7 +6,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.Video;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.VideoActivity;
 
@@ -16,7 +15,7 @@ import rx.subjects.BehaviorSubject;
 public interface VideoViewModel {
 
   interface Outputs {
-    /** Emits the video for the player. */
+    /** Emits the url of the video for the player. */
     Observable<String> preparePlayerWithUrl();
   }
 
@@ -31,7 +30,8 @@ public interface VideoViewModel {
         .filter(ObjectUtils::isNotNull)
         .map(Project::video)
         .filter(ObjectUtils::isNotNull)
-        .map(Video::high)
+        .map(video -> ObjectUtils.isNotNull(video.hls()) ? video.hls() : video.high())
+        .distinctUntilChanged()
         .take(1)
         .compose(bindToLifecycle())
         .subscribe(this.preparePlayerWithUrl::onNext);

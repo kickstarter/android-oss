@@ -5,9 +5,7 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_marginBottom="@dimen/grid_5"
-  android:divider="@drawable/divider_dark_grey_500_horizontal"
-  android:orientation="vertical"
-  android:showDividers="beginning">
+  android:orientation="vertical">
 
   <TextView
     android:id="@+id/dashboard_referrer_title"
@@ -81,6 +79,8 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:paddingBottom="@dimen/grid_10"
+    android:paddingEnd="@dimen/grid_12"
+    android:paddingStart="@dimen/grid_12"
     android:paddingTop="@dimen/grid_10"
     android:text="@string/Data_will_appear_here_once" />
 

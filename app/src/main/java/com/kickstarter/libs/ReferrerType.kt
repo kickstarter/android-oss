@@ -1,22 +1,13 @@
 package com.kickstarter.libs
 
-import android.graphics.Color
+import com.kickstarter.R
 
 /*
  * describes the source of the referrer
  */
-enum class ReferrerType(val referrerType: String) {
-  CAMPAIGN("campaign"),
-  DOMAIN("domain"),
-  CUSTOM("custom"),
-  EXTERNAL("external"),
-  INTERNAL("kickstarter")
+enum class ReferrerType(val referrerType: String, val referrerColorId : Int) {
+  CUSTOM("custom", R.color.ksr_highlighter_green),
+  EXTERNAL("external", R.color.ksr_green_500),
+  KICKSTARTER("kickstarter", R.color.ksr_green_800)
 }
 
-enum class ReferrerColor(val referrerColor : Int) {
-  CAMPAIGN(Color.BLUE),
-  DOMAIN(Color.GREEN),
-  CUSTOM(Color.GRAY),
-  EXTERNAL(Color.BLACK),
-  INTERNAL(Color.DKGRAY)
-}

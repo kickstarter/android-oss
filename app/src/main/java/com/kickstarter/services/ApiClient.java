@@ -448,9 +448,7 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public
-  @NonNull
-  Observable<Backing> postBacking(final @NonNull Project project, final @NonNull Backing backing, boolean checked) {
+  public @NonNull Observable<Backing> postBacking(final @NonNull Project project, final @NonNull Backing backing, final boolean checked) {
     return this.service
       .putProjectBacking(project.id(), backing.backerId(), BackingBody.builder()
         .backer(backing.backerId())

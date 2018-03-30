@@ -159,6 +159,9 @@ public interface BackingViewModel {
         .map(Backing::reward)
         .filter(ObjectUtils::isNotNull);
 
+      final Observable<String> status = backing
+        .map(Backing::status);
+
       Observable.zip(project, backing, Pair::create)
         .compose(takeWhen(this.viewMessagesButtonClicked))
         .compose(bindToLifecycle())
@@ -181,8 +184,7 @@ public interface BackingViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.backingAmountAndDateTextViewText);
 
-      backing
-        .map(Backing::status)
+      status
         .compose(bindToLifecycle())
         .subscribe(this.backingStatusTextViewText);
 
@@ -290,19 +292,27 @@ public interface BackingViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.markAsReceivedIsChecked);
 
-      Observable<Pair<Project, Backing>> projectAndBacking = Observable
+      final Observable<Pair<Project, Backing>> projectAndBacking = Observable
         .combineLatest(project, backing, Pair::create);
 
       projectAndBacking
         .compose(takePairWhen(this.markAsReceivedSwitchChecked))
-        .switchMap(triple -> client.postBacking(triple.first.first, triple.first.second, triple.second))
+        .switchMap(triple -> this.client.postBacking(triple.first.first, triple.first.second, triple.second))
         .compose(bindToLifecycle())
         .share()
         .subscribe();
 
-      reward
-        .compose(combineLatestPair(backing))
-        .map(rewardAndBacking -> RewardUtils.isNoReward(rewardAndBacking.first) || !rewardAndBacking.second.status().equals(Backing.STATUS_COLLECTED))
+      final Observable<Boolean> rewardIsReceivable = backing
+        .map(Backing::reward)
+        .map(r -> ObjectUtils.isNotNull(r) && !RewardUtils.isNoReward(r));
+
+      final Observable<Boolean> backingIsCollected = status
+        .map(s -> s.equals(Backing.STATUS_COLLECTED));
+
+      rewardIsReceivable
+        .compose(combineLatestPair(backingIsCollected))
+        .map(isReceivableAndCollected -> isReceivableAndCollected.first && isReceivableAndCollected.second)
+        .map(BooleanUtils::negate)
         .compose(bindToLifecycle())
         .subscribe(this.receivedSectionIsGone);
     }
@@ -359,8 +369,7 @@ public interface BackingViewModel {
     @Override public void viewMessagesButtonClicked() {
       this.viewMessagesButtonClicked.onNext(null);
     }
-    @Override
-    public void markAsReceivedSwitchChecked(boolean checked) {
+    @Override public void markAsReceivedSwitchChecked(final boolean checked) {
       this.markAsReceivedSwitchChecked.onNext(checked);
     }
 

@@ -92,11 +92,6 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     this.backerNameTextViewText.assertValues(backing.backer().name());
     this.koalaTest.assertValues(KoalaEvent.VIEWED_PLEDGE_INFO);
   }
-  private void setUpEnvironmentAndIntentWithBacking(Backing backing) {
-    setUpEnvironment(envWithBacking(backing));
-
-    this.vm.intent(intentForBacking(backing));
-  }
 
   @Test
   public void testBackerNumberTextViewText() {
@@ -211,17 +206,17 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testMarkAsReceivedIsChecked_isFalse_whenBackingIsNotBackerCompleted() {
-    final Backing backing = BackingFactory.backing();
-    final Backing backerCompletedBacking = backing
+    final Backing initialBacking = BackingFactory.backing();
+    final Backing updatedBacking = initialBacking
       .toBuilder()
       .backerCompletedAt(DateTime.now())
       .build();
 
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntentWithBacking(initialBacking);
 
     this.markAsReceivedIsChecked.assertValue(false);
 
-    setUpEnvironmentAndIntentWithBacking(backerCompletedBacking);
+    setUpEnvironmentAndIntentWithBacking(updatedBacking);
 
     this.vm.inputs.markAsReceivedSwitchChecked(true);
     this.markAsReceivedIsChecked.assertValues(false, true);
@@ -229,16 +224,20 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testMarkAsReceivedIsChecked_isTrue_whenBackingIsBackerCompleted() {
-    final Backing backing = BackingFactory.backing();
-    final Backing backerCompletedBacking = backing
+    final Backing initialBacking = BackingFactory.backing()
       .toBuilder()
       .backerCompletedAt(DateTime.now())
       .build();
-    setUpEnvironmentAndIntentWithBacking(backerCompletedBacking);
+    final Backing updatedBacking = initialBacking
+      .toBuilder()
+      .backerCompletedAt(null)
+      .build();
+
+    setUpEnvironmentAndIntentWithBacking(initialBacking);
 
     this.markAsReceivedIsChecked.assertValues(true);
 
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntentWithBacking(updatedBacking);
 
     this.vm.inputs.markAsReceivedSwitchChecked(true);
     this.markAsReceivedIsChecked.assertValues(true, false);
@@ -252,10 +251,6 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     this.projectNameTextViewText.assertValues(backing.project().name());
   }
 
-  /*
-  @StringDef({STATUS_CANCELED,
-  STATUS_COLLECTED, STATUS_DROPPED, STATUS_ERRORED, STATUS_PLEDGED, STATUS_PREAUTH})
-*/
   @Test
   public void testReceivedSectionIsGone_isTrue_whenBackingStatusCanceled() {
     final Backing backing = BackingFactory.backing(Backing.STATUS_CANCELED);
@@ -305,6 +300,25 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     setUpEnvironmentAndIntentWithBacking(backingWithNullReward);
 
     this.receivedSectionIsGone.assertValue(true);
+  }
+
+  @Test
+  public void testReceivedSectionIsGone_isTrue_whenRewardIsNoReward() {
+    final Backing backingWithNoReward = BackingFactory.backing(Backing.STATUS_COLLECTED)
+      .toBuilder()
+      .reward(RewardFactory.noReward())
+      .build();
+    setUpEnvironmentAndIntentWithBacking(backingWithNoReward);
+
+    this.receivedSectionIsGone.assertValue(true);
+  }
+
+  @Test
+  public void testReceivedSectionIsGone_isFalse_whenRewardIsReceivableAndBackingIsCollected() {
+    final Backing backing = BackingFactory.backing(Backing.STATUS_COLLECTED);
+    setUpEnvironmentAndIntentWithBacking(backing);
+
+    this.receivedSectionIsGone.assertValue(false);
   }
 
   @Test
@@ -435,9 +449,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
       .apiClient(
         new MockApiClient() {
           @Override
-          public
-          @NonNull
-          Observable<Backing> fetchProjectBacking(final @NonNull Project project,
+          public @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project,
             final @NonNull User user) {
             return Observable.just(backing);
           }
@@ -449,5 +461,11 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
 
   private @NonNull Intent intentForBacking(final @NonNull Backing backing) {
     return new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer());
+  }
+
+  private void setUpEnvironmentAndIntentWithBacking(final @NonNull Backing backing) {
+    setUpEnvironment(envWithBacking(backing));
+
+    this.vm.intent(intentForBacking(backing));
   }
 }

@@ -313,7 +313,7 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Backing> postBacking(@NonNull Project project, @NonNull Backing backing, boolean checked) {
+  public @NonNull Observable<Backing> postBacking(final @NonNull Project project, final @NonNull Backing backing, final boolean checked) {
     return Observable.just(BackingFactory.backing());
   }
 

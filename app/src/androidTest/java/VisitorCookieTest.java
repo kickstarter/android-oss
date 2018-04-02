@@ -1,3 +1,4 @@
+import android.support.annotation.NonNull;
 import android.support.test.filters.SmallTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -31,7 +32,7 @@ public class VisitorCookieTest {
 
   @Test
   public void testVisitorCookieHasBeenSet() {
-    final DiscoveryActivity activity = activityRule.getActivity();
+    final DiscoveryActivity activity = this.activityRule.getActivity();
     final Environment environment = activity.environment();
 
     final CookieManager cookieManager = environment.cookieManager();
@@ -54,7 +55,8 @@ public class VisitorCookieTest {
     Assert.assertTrue(apiCookie.getValue().equals(deviceId));
     Assert.assertFalse(apiCookie.getValue().equals("boop"));
   }
-  private Optional<HttpCookie> getOptionalVisitorCookieForURI(CookieStore cookieStore, URI webUri) {
+
+  private Optional<HttpCookie> getOptionalVisitorCookieForURI(final @NonNull CookieStore cookieStore, final @NonNull URI webUri) {
     // it's problematic, i know
     return cookieStore.get(webUri).stream().filter(c -> c.getName().equals(KEY_VIS)).findFirst();
   }

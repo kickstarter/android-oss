@@ -38,19 +38,24 @@ public class VisitorCookieTest {
     final CookieStore cookieStore = cookieManager.getCookieStore();
     final URI webUri = URI.create(Secrets.WebEndpoint.PRODUCTION);
     final URI apiUri = URI.create(ApiEndpoint.PRODUCTION.url());
-    final Optional<HttpCookie> webVisCookie = getVisitorCookieForURI(cookieStore, webUri);
-    final Optional<HttpCookie> apiVisCookie = getVisitorCookieForURI(cookieStore, apiUri);
+    final Optional<HttpCookie> webVisCookie = getOptionalVisitorCookieForURI(cookieStore, webUri);
+    final Optional<HttpCookie> apiVisCookie = getOptionalVisitorCookieForURI(cookieStore, apiUri);
+    final HttpCookie webCookie = webVisCookie.get();
+    final HttpCookie apiCookie = apiVisCookie.get();
+
+    Assert.assertNotNull(webCookie);
+    Assert.assertNotNull(apiCookie);
 
     final String deviceId = InstanceID.getInstance(activity).getId();
-
     Assert.assertNotNull(deviceId);
-    Assert.assertNotNull(webVisCookie.get());
-    Assert.assertNotNull(apiVisCookie.get());
-    Assert.assertTrue(webVisCookie.get().getValue().equals(deviceId));
-    Assert.assertTrue(apiVisCookie.get().getValue().equals(deviceId));
+
+    Assert.assertTrue(webCookie.getValue().equals(deviceId));
+    Assert.assertFalse(webCookie.getValue().equals("beep"));
+    Assert.assertTrue(apiCookie.getValue().equals(deviceId));
+    Assert.assertFalse(apiCookie.getValue().equals("boop"));
   }
-  private Optional<HttpCookie> getVisitorCookieForURI(CookieStore cookieStore, URI webUri) {
-    // it's problematic
+  private Optional<HttpCookie> getOptionalVisitorCookieForURI(CookieStore cookieStore, URI webUri) {
+    // it's problematic, i know
     return cookieStore.get(webUri).stream().filter(c -> c.getName().equals(KEY_VIS)).findFirst();
   }
 }

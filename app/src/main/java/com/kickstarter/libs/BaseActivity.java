@@ -6,6 +6,7 @@ import android.support.annotation.AnimRes;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
 
@@ -233,7 +234,8 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   /**
    * Returns the application's {@link Environment}.
    */
-  protected @NonNull Environment environment() {
+  @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
+  public  @NonNull Environment environment() {
     return component().environment();
   }
 

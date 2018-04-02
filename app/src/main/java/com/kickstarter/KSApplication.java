@@ -68,19 +68,7 @@ public class KSApplication extends MultiDexApplication {
       .build();
     component().inject(this);
 
-    /*
-      setting cookie for unique id tracking, hardcoding prod
-     */
-    final String deviceId = InstanceID.getInstance(this).getId();
-    final String uuid = TextUtils.isEmpty(deviceId) ? UUID.randomUUID().toString() : deviceId;
-    final HttpCookie cookie = new HttpCookie("vis", uuid);
-    cookie.setMaxAge(DateTime.now().plusYears(100).getMillis());
-    cookie.setSecure(true);
-    final URI webUri = URI.create(Secrets.WebEndpoint.PRODUCTION);
-    final URI apiUri = URI.create(ApiEndpoint.PRODUCTION.url());
-    this.cookieManager.getCookieStore().add(webUri, cookie);
-    this.cookieManager.getCookieStore().add(apiUri, cookie);
-    CookieHandler.setDefault(this.cookieManager);
+    setVisitorCookie();
 
     FacebookSdk.sdkInitialize(this);
 
@@ -114,5 +102,19 @@ public class KSApplication extends MultiDexApplication {
         return true;
       }
     });
+  }
+
+
+  private void setVisitorCookie() {
+    final String deviceId = InstanceID.getInstance(this).getId();
+    final String uuid = TextUtils.isEmpty(deviceId) ? UUID.randomUUID().toString() : deviceId;
+    final HttpCookie cookie = new HttpCookie("vis", uuid);
+    cookie.setMaxAge(DateTime.now().plusYears(100).getMillis());
+    cookie.setSecure(true);
+    final URI webUri = URI.create(Secrets.WebEndpoint.PRODUCTION);
+    final URI apiUri = URI.create(ApiEndpoint.PRODUCTION.url());
+    this.cookieManager.getCookieStore().add(webUri, cookie);
+    this.cookieManager.getCookieStore().add(apiUri, cookie);
+    CookieHandler.setDefault(this.cookieManager);
   }
 }

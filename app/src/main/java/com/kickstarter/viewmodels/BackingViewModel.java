@@ -297,7 +297,8 @@ public interface BackingViewModel {
 
       projectAndBacking
         .compose(takePairWhen(this.markAsReceivedSwitchChecked))
-        .switchMap(triple -> this.client.postBacking(triple.first.first, triple.first.second, triple.second))
+        // combine the project, backing, and checked boolean (<<Project,Backing>, Checked>) to make client call
+        .switchMap(pbc -> this.client.postBacking(pbc.first.first, pbc.first.second, pbc.second))
         .compose(bindToLifecycle())
         .share()
         .subscribe();

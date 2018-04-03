@@ -21,6 +21,7 @@ import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
+import com.kickstarter.services.apirequests.BackingBody;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
 import com.kickstarter.services.apirequests.MessageBody;
@@ -443,6 +444,18 @@ public final class ApiClient implements ApiClientType {
       .toggleProjectStar(project.param())
       .lift(apiErrorOperator())
       .map(StarEnvelope::project)
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<Backing> postBacking(final @NonNull Project project, final @NonNull Backing backing, final boolean checked) {
+    return this.service
+      .putProjectBacking(project.id(), backing.backerId(), BackingBody.builder()
+        .backer(backing.backerId())
+        .id(backing.id())
+        .backerCompletedAt(checked ? 1 : 0)
+        .build())
+      .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 

@@ -10,6 +10,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -49,6 +50,8 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
   protected @Bind(R.id.project_context_project_name) TextView projectContextProjectNameTextView;
   protected @Bind(R.id.project_context_view) View projectContextView;
   protected @Bind(R.id.backing_estimated_delivery) TextView pledgeEstimatedDeliveryTextView;
+  protected @Bind(R.id.backing_mark_as_received_switch) Switch markAsReceivedSwitch;
+  protected @Bind(R.id.backing_received_section) View backingReceivedSection;
   protected @Bind(R.id.backing_reward_minimum_and_description) TextView rewardMinimumAndDescriptionTextView;
   protected @Bind(R.id.backing_rewards_item_recycler_view) RecyclerView rewardsItemRecyclerView;
   protected @Bind(R.id.backing_rewards_item_section) View rewardsItemSection;
@@ -134,10 +137,20 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
       .compose(observeForUI())
       .subscribe(url -> Picasso.with(this).load(url).into(this.projectContextPhotoImageView));
 
+    this.viewModel.outputs.markAsReceivedIsChecked()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.markAsReceivedSwitch::setChecked);
+
     this.viewModel.outputs.projectNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.projectContextProjectNameTextView::setText);
+
+    this.viewModel.outputs.receivedSectionIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.backingReceivedSection));
 
     this.viewModel.outputs.rewardsItemList()
       .compose(bindToLifecycle())
@@ -188,6 +201,11 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
   @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
+  }
+
+  @OnClick(R.id.backing_mark_as_received_switch)
+  protected void markAsReceivedSwitchClicked() {
+    this.viewModel.inputs.markAsReceivedSwitchChecked(this.markAsReceivedSwitch.isChecked());
   }
 
   @OnClick(R.id.project_context_view)

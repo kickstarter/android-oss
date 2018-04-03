@@ -43,7 +43,6 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   protected @Bind(R.id.pledged_via_kickstarter_indicator) View pledgedViaKickstarterIndicator;
   protected @Bind(R.id.pledged_via_kickstarter) View pledgedViaKickstarterLayout;
   protected @Bind(R.id.referrer_breakdown_chart_layout) ConstraintLayout referrerBreakdownLayout;
-  protected @Bind(R.id.referrer_breakdown_title) TextView referrerBreakdownTitle;
 
   protected @BindDimen(R.dimen.grid_1) int grid1Pixels;
   protected @BindDimen(R.dimen.grid_3) int grid3Pixels;
@@ -66,11 +65,6 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.emptyCopyTextView));
-
-    this.viewModel.outputs.titleViewIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.referrerBreakdownTitle));
 
     this.viewModel.outputs.customReferrerPercent()
       .compose(bindToLifecycle())

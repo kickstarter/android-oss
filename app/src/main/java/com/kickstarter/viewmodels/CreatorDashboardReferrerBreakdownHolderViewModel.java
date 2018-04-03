@@ -4,14 +4,10 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.Config;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
-import com.kickstarter.libs.ReferrerType;
 import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
@@ -23,7 +19,6 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 
 public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
@@ -77,82 +72,56 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
     /** Emits the current project and the amount pledged via Kickstarter referrers. */
     Observable<Pair<Project, Float>> projectAndKickstarterReferrerPledgedAmount();
-
-    /** Emits a boolean that determines if title is gone. */
-    Observable<Boolean> titleViewIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardReferrerBreakdownViewHolder> implements Inputs, Outputs {
 
-    private final CurrentConfigType currentConfigType;
-
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
-
-      this.currentConfigType = environment.currentConfig();
-
-      final Observable<Boolean> breakdownChartIsEnabled = this.currentConfigType.observable()
-        .map(Config::features)
-        .filter(ObjectUtils::isNotNull)
-        .map(f -> coalesce(f.get(FeatureKey.NATIVE_CREATOR_BREAKDOWN_CHART), false));
 
       final Observable<Project> currentProject = this.projectAndProjectStatsInput
         .map(PairUtils::first);
 
-      final Observable<List<ProjectStatsEnvelope.ReferrerStats>> referrerStats = this.projectAndProjectStatsInput
+      final Observable<ProjectStatsEnvelope> projectStats = this.projectAndProjectStatsInput
+        .map(PairUtils::second);
+
+      final Observable<ProjectStatsEnvelope.ReferralAggregateStats> referralAggregates = this.projectAndProjectStatsInput
         .map(PairUtils::second)
+        .map(ProjectStatsEnvelope::referralAggregates);
+
+      final Observable<List<ProjectStatsEnvelope.ReferrerStats>> referrerStats = projectStats
         .map(ProjectStatsEnvelope::referralDistribution);
 
-      final Observable<ProjectStatsEnvelope.CumulativeStats> cumulativeStats = this.projectAndProjectStatsInput
-        .map(PairUtils::second)
+      final Observable<ProjectStatsEnvelope.CumulativeStats> cumulativeStats = projectStats
         .map(ProjectStatsEnvelope::cumulative);
-
-      final Observable<List<ProjectStatsEnvelope.ReferrerStats>> kickstarterReferrers = referrerStats
-        .flatMap(rs ->
-          Observable.from(rs).filter(r -> ProjectStatsEnvelope.ReferrerStats.referrerTypeEnum(r.referrerType()) == ReferrerType.KICKSTARTER).toList()
-        );
-
-      final Observable<List<ProjectStatsEnvelope.ReferrerStats>> externalReferrers = referrerStats
-        .flatMap(rs ->
-          Observable.from(rs).filter(r -> ProjectStatsEnvelope.ReferrerStats.referrerTypeEnum(r.referrerType()) == ReferrerType.EXTERNAL).toList()
-        );
-
-      final Observable<List<ProjectStatsEnvelope.ReferrerStats>> customReferrers = referrerStats
-        .flatMap(rs ->
-          Observable.from(rs).filter(r -> ProjectStatsEnvelope.ReferrerStats.referrerTypeEnum(r.referrerType()) == ReferrerType.CUSTOM).toList()
-        );
 
       final Observable<Integer> averagePledge = cumulativeStats
         .map(ProjectStatsEnvelope.CumulativeStats::averagePledge)
         .map(Float::intValue);
+
+      final Observable<Float> pledged = cumulativeStats
+        .map(ProjectStatsEnvelope.CumulativeStats::pledged);
 
       this.projectAndAveragePledge = Observable.combineLatest(currentProject, averagePledge, Pair::create);
 
       final Observable<Boolean> emptyStats = referrerStats
         .map(List::isEmpty);
 
-      this.breakdownViewIsGone = breakdownChartIsEnabled
-        .compose(combineLatestPair(emptyStats))
-        .map(enabledAndEmptyStats -> enabledAndEmptyStats.first ? enabledAndEmptyStats.second : true);
+      this.breakdownViewIsGone = emptyStats;
 
-      this.emptyViewIsGone = breakdownChartIsEnabled
-        .compose(combineLatestPair(emptyStats))
-        .map(enabledAndEmptyStats -> enabledAndEmptyStats.first ? !enabledAndEmptyStats.second : true);
+      this.emptyViewIsGone = emptyStats
+        .map(BooleanUtils::negate);
 
-      this.customReferrerPercent = customReferrers
-        .flatMap(rs ->
-          Observable.from(rs)
-            .reduce(0f, (accum, stat) -> accum + stat.percentageOfDollars())
-        );
+      this.customReferrerPercent = referralAggregates
+        .map(ProjectStatsEnvelope.ReferralAggregateStats::custom)
+        .compose(combineLatestPair(pledged))
+        .map(customAndPledged -> IntegerUtils.isZero(customAndPledged.second.intValue()) ?  0 : customAndPledged.first / customAndPledged.second);
 
       this.customReferrerPercentText = this.customReferrerPercent
         .map(percent -> NumberUtils.flooredPercentage(percent * 100f));
 
-      this.customReferrerPledgedAmount = customReferrers
-        .flatMap(rs ->
-          Observable.from(rs)
-            .reduce(0f, (accum, stat) -> accum + stat.pledged())
-        );
+      this.customReferrerPledgedAmount = referralAggregates
+        .map(ProjectStatsEnvelope.ReferralAggregateStats::custom);
 
       this.projectAndCustomReferrerPledgedAmount = Observable.combineLatest(
         currentProject,
@@ -160,20 +129,16 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
         Pair::create
       );
 
-      this.externalReferrerPercent = externalReferrers
-        .flatMap(rs ->
-          Observable.from(rs)
-            .reduce(0f, (accum, stat) -> accum + stat.percentageOfDollars())
-        );
+      this.externalReferrerPercent = referralAggregates
+        .map(ProjectStatsEnvelope.ReferralAggregateStats::external)
+        .compose(combineLatestPair(pledged))
+        .map(externalAndPledged -> IntegerUtils.isZero(externalAndPledged.second.intValue()) ?  0 : externalAndPledged.first / externalAndPledged.second);
 
       this.externalReferrerPercentText = this.externalReferrerPercent
         .map(percent -> NumberUtils.flooredPercentage(percent * 100f));
 
-      this.externalReferrerPledgedAmount = externalReferrers
-        .flatMap(rs ->
-          Observable.from(rs)
-            .reduce(0f, (accum, stat) -> accum + stat.pledged())
-        );
+      this.externalReferrerPledgedAmount = referralAggregates
+        .map(ProjectStatsEnvelope.ReferralAggregateStats::external);
 
       this.projectAndExternalReferrerPledgedAmount = Observable.combineLatest(
         currentProject,
@@ -181,20 +146,16 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
         Pair::create
       );
 
-      this.kickstarterReferrerPercent = kickstarterReferrers
-        .flatMap(rs ->
-          Observable.from(rs)
-            .reduce(0f, (accum, stat) -> accum + stat.percentageOfDollars())
-        );
+      this.kickstarterReferrerPercent = referralAggregates
+        .map(ProjectStatsEnvelope.ReferralAggregateStats::internal)
+        .compose(combineLatestPair(pledged))
+        .map(internalAndPledged -> IntegerUtils.isZero(internalAndPledged.second.intValue()) ?  0 : internalAndPledged.first / internalAndPledged.second);
 
       this.kickstarterReferrerPercentText = this.kickstarterReferrerPercent
         .map(percent -> NumberUtils.flooredPercentage(percent * 100f));
 
-      this.kickstarterReferrerPledgedAmount = kickstarterReferrers
-        .flatMap(rs ->
-          Observable.from(rs)
-            .reduce(0f, (accum, stat) -> accum + stat.pledged())
-        );
+      this.kickstarterReferrerPledgedAmount = referralAggregates
+        .map(ProjectStatsEnvelope.ReferralAggregateStats::internal);
 
       this.projectAndKickstarterReferrerPledgedAmount = Observable.combineLatest(
         currentProject,
@@ -210,9 +171,6 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
 
       this.pledgedViaKickstarterLayoutIsGone = this.kickstarterReferrerPledgedAmount
         .map(amount -> amount <= 0f);
-
-      this.titleViewIsGone = breakdownChartIsEnabled
-        .map(BooleanUtils::negate);
     }
 
     public final Inputs inputs = this;
@@ -238,7 +196,6 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
     private final Observable<Pair<Project, Float>> projectAndCustomReferrerPledgedAmount;
     private final Observable<Pair<Project, Float>> projectAndExternalReferrerPledgedAmount;
     private final Observable<Pair<Project, Float>> projectAndKickstarterReferrerPledgedAmount;
-    private final Observable<Boolean> titleViewIsGone;
 
     @Override
     public void projectAndStatsInput(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStats) {
@@ -304,10 +261,6 @@ public interface CreatorDashboardReferrerBreakdownHolderViewModel {
     @Override
     public @NonNull Observable<Pair<Project, Float>> projectAndKickstarterReferrerPledgedAmount() {
       return this.projectAndKickstarterReferrerPledgedAmount;
-    }
-    @Override
-    public @NonNull Observable<Boolean> titleViewIsGone() {
-      return this.titleViewIsGone;
     }
   }
 }

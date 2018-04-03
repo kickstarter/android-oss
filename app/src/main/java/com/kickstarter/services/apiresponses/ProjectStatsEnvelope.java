@@ -19,6 +19,7 @@ import auto.parcel.AutoParcel;
 public abstract class ProjectStatsEnvelope implements Parcelable {
   public abstract CumulativeStats cumulative();
   public abstract List<FundingDateStats> fundingDistribution();
+  public abstract ReferralAggregateStats referralAggregates();
   public abstract List<ReferrerStats> referralDistribution();
   public abstract List<RewardStats> rewardDistribution();
   public abstract @Nullable VideoStats videoStats();
@@ -27,6 +28,7 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
   public abstract static class Builder {
     public abstract Builder cumulative(CumulativeStats __);
     public abstract Builder fundingDistribution(List<FundingDateStats> __);
+    public abstract Builder referralAggregates(ReferralAggregateStats __);
     public abstract Builder referralDistribution(List<ReferrerStats> __);
     public abstract Builder rewardDistribution(List<RewardStats> __);
     public abstract Builder videoStats(VideoStats __);
@@ -86,6 +88,28 @@ public abstract class ProjectStatsEnvelope implements Parcelable {
 
     public static Builder builder() {
       return new AutoParcel_ProjectStatsEnvelope_FundingDateStats.Builder();
+    }
+
+    public abstract Builder toBuilder();
+  }
+
+  @AutoParcel
+  @AutoGson
+  public abstract static class ReferralAggregateStats implements Parcelable {
+    public abstract float custom();
+    public abstract float external();
+    public abstract float internal();
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder custom(float __);
+      public abstract Builder external(float __);
+      public abstract Builder internal(float __);
+      public abstract ReferralAggregateStats build();
+    }
+
+    public static Builder builder() {
+      return new AutoParcel_ProjectStatsEnvelope_ReferralAggregateStats.Builder();
     }
 
     public abstract Builder toBuilder();

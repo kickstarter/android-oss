@@ -14,7 +14,6 @@
 
   <TextView
     style="@style/Title2"
-    android:id="@+id/referrer_breakdown_title"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/grid_6"

@@ -7,7 +7,7 @@ import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 
 import org.joda.time.DateTime;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public final class ProjectStatsEnvelopeFactory {
@@ -29,6 +29,11 @@ public final class ProjectStatsEnvelopeFactory {
       .toBuilder()
       .build();
 
+    final ProjectStatsEnvelope.ReferralAggregateStats referralAggregates = ReferralAggregateStatsFactory
+      .referralAggregates()
+      .toBuilder()
+      .build();
+
     final ProjectStatsEnvelope.RewardStats rewardStats = RewardStatsFactory
       .rewardStats()
       .toBuilder()
@@ -39,13 +44,14 @@ public final class ProjectStatsEnvelopeFactory {
       .toBuilder()
       .build();
 
-    final List<ProjectStatsEnvelope.FundingDateStats> fundingDateStatsList = Arrays.asList(fundingDateStats);
-    final List<ProjectStatsEnvelope.RewardStats> rewardStatsList = Arrays.asList(rewardStats);
-    final List<ProjectStatsEnvelope.ReferrerStats> referrerStatsList = Arrays.asList(referrerStats);
+    final List<ProjectStatsEnvelope.FundingDateStats> fundingDateStatsList = Collections.singletonList(fundingDateStats);
+    final List<ProjectStatsEnvelope.RewardStats> rewardStatsList = Collections.singletonList(rewardStats);
+    final List<ProjectStatsEnvelope.ReferrerStats> referrerStatsList = Collections.singletonList(referrerStats);
 
     return ProjectStatsEnvelope.builder()
       .cumulative(cumulativeStats)
       .fundingDistribution(fundingDateStatsList)
+      .referralAggregates(referralAggregates)
       .referralDistribution(referrerStatsList)
       .rewardDistribution(rewardStatsList)
       .videoStats(videoStats)
@@ -76,6 +82,18 @@ public final class ProjectStatsEnvelopeFactory {
         .cumulativeBackersCount(10)
         .date(new DateTime())
         .pledged(500)
+        .build();
+    }
+  }
+
+  public static final class ReferralAggregateStatsFactory {
+    private ReferralAggregateStatsFactory() {}
+
+    public static @NonNull ProjectStatsEnvelope.ReferralAggregateStats referralAggregates() {
+      return ProjectStatsEnvelope.ReferralAggregateStats.builder()
+        .custom(10)
+        .external(15)
+        .internal(20)
         .build();
     }
   }

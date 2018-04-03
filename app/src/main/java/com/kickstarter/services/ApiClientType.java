@@ -96,6 +96,8 @@ public interface ApiClientType {
 
   @NonNull Observable<MessageThread> markAsRead(final @NonNull MessageThread messageThread);
 
+  @NonNull Observable<Backing> postBacking(final @NonNull Project project, final @NonNull Backing backing, final boolean checked);
+
   @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body);
 
   @NonNull Observable<Comment> postComment(final @NonNull Update update, final @NonNull String body);

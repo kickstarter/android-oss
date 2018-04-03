@@ -37,4 +37,11 @@ public final class BackingFactory {
       .status(Backing.STATUS_PLEDGED)
       .build();
   }
+
+  public static Backing backing(final @NonNull String status) {
+    return backing()
+      .toBuilder()
+      .status(status)
+      .build();
+  }
 }

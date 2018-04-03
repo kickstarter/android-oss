@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.RefTag;
@@ -35,14 +34,19 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
 
 public interface BackingViewModel {
 
   interface Inputs {
+    /** Call when the mark as received switch button is checked. */
+    void markAsReceivedSwitchChecked(boolean checked);
+
     /** Call when the project context section is clicked. */
     void projectClicked();
 
@@ -81,8 +85,14 @@ public interface BackingViewModel {
     /** Load the project photo given the URL. */
     Observable<String> loadProjectPhoto();
 
+    /** Emits a boolean that determines if mark as received switch should be checked. */
+    Observable<Boolean> markAsReceivedIsChecked();
+
     /** Set the project name TextView's text. */
     Observable<String> projectNameTextViewText();
+
+    /** Emits a boolean that determines if mark as received section is gone. */
+    Observable<Boolean> receivedSectionIsGone();
 
     /** Set the reward minimum and description TextView's text. */
     Observable<Pair<String, String>> rewardMinimumAndDescriptionTextViewText();
@@ -114,14 +124,12 @@ public interface BackingViewModel {
 
   final class ViewModel extends ActivityViewModel<BackingActivity> implements Inputs, Outputs {
     private final ApiClientType client;
-    private final CurrentUserType currentUser;
     private final KSCurrency ksCurrency;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.client = environment.apiClient();
-      this.currentUser = environment.currentUser();
       this.ksCurrency = environment.ksCurrency();
 
       final Observable<User> backerFromIntent = intent()
@@ -151,6 +159,9 @@ public interface BackingViewModel {
         .map(Backing::reward)
         .filter(ObjectUtils::isNotNull);
 
+      final Observable<String> status = backing
+        .map(Backing::status);
+
       Observable.zip(project, backing, Pair::create)
         .compose(takeWhen(this.viewMessagesButtonClicked))
         .compose(bindToLifecycle())
@@ -173,8 +184,7 @@ public interface BackingViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.backingAmountAndDateTextViewText);
 
-      backing
-        .map(Backing::status)
+      status
         .compose(bindToLifecycle())
         .subscribe(this.backingStatusTextViewText);
 
@@ -275,6 +285,37 @@ public interface BackingViewModel {
       project
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackViewedPledgeInfo);
+
+      backing
+        .map(Backing::backerCompletedAt)
+        .map(ObjectUtils::isNotNull)
+        .compose(bindToLifecycle())
+        .subscribe(this.markAsReceivedIsChecked);
+
+      final Observable<Pair<Project, Backing>> projectAndBacking = Observable
+        .combineLatest(project, backing, Pair::create);
+
+      projectAndBacking
+        .compose(takePairWhen(this.markAsReceivedSwitchChecked))
+        // combine the project, backing, and checked boolean (<<Project,Backing>, Checked>) to make client call
+        .switchMap(pbc -> this.client.postBacking(pbc.first.first, pbc.first.second, pbc.second))
+        .compose(bindToLifecycle())
+        .share()
+        .subscribe();
+
+      final Observable<Boolean> rewardIsReceivable = backing
+        .map(Backing::reward)
+        .map(r -> ObjectUtils.isNotNull(r) && !RewardUtils.isNoReward(r));
+
+      final Observable<Boolean> backingIsCollected = status
+        .map(s -> s.equals(Backing.STATUS_COLLECTED));
+
+      rewardIsReceivable
+        .compose(combineLatestPair(backingIsCollected))
+        .map(isReceivableAndCollected -> isReceivableAndCollected.first && isReceivableAndCollected.second)
+        .map(BooleanUtils::negate)
+        .compose(bindToLifecycle())
+        .subscribe(this.receivedSectionIsGone);
     }
 
     private static @NonNull Pair<String, String> backingAmountAndDate(final @NonNull KSCurrency ksCurrency,
@@ -295,6 +336,7 @@ public interface BackingViewModel {
 
     private final PublishSubject<Void> projectClicked = PublishSubject.create();
     private final PublishSubject<Void> viewMessagesButtonClicked = PublishSubject.create();
+    private final PublishSubject<Boolean> markAsReceivedSwitchChecked = PublishSubject.create();
 
     private final BehaviorSubject<String> backerNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> backerNumberTextViewText = BehaviorSubject.create();
@@ -306,7 +348,9 @@ public interface BackingViewModel {
     private final PublishSubject<Void> goBack = PublishSubject.create();
     private final BehaviorSubject<String> loadBackerAvatar = BehaviorSubject.create();
     private final BehaviorSubject<String> loadProjectPhoto = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> markAsReceivedIsChecked = BehaviorSubject.create();
     private final BehaviorSubject<String> projectNameTextViewText = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> receivedSectionIsGone = BehaviorSubject.create();
     private final BehaviorSubject<Pair<String, String>> rewardMinimumAndDescriptionTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<List<RewardsItem>> rewardsItemList = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> rewardsItemsAreGone = BehaviorSubject.create();
@@ -325,6 +369,9 @@ public interface BackingViewModel {
     }
     @Override public void viewMessagesButtonClicked() {
       this.viewMessagesButtonClicked.onNext(null);
+    }
+    @Override public void markAsReceivedSwitchChecked(final boolean checked) {
+      this.markAsReceivedSwitchChecked.onNext(checked);
     }
 
     @Override public @NonNull Observable<String> backerNameTextViewText() {
@@ -357,8 +404,14 @@ public interface BackingViewModel {
     @Override public @NonNull Observable<String> loadProjectPhoto() {
       return this.loadProjectPhoto;
     }
+    @Override public @NonNull Observable<Boolean> markAsReceivedIsChecked() {
+      return this.markAsReceivedIsChecked;
+    }
     @Override public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
+    }
+    @Override public @NonNull Observable<Boolean> receivedSectionIsGone() {
+      return this.receivedSectionIsGone;
     }
     @Override public @NonNull Observable<Pair<String, String>> rewardMinimumAndDescriptionTextViewText() {
       return this.rewardMinimumAndDescriptionTextViewText;

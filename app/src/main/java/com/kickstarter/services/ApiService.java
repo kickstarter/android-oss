@@ -16,6 +16,7 @@ import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
+import com.kickstarter.services.apirequests.BackingBody;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
 import com.kickstarter.services.apirequests.MessageBody;
@@ -120,6 +121,13 @@ public interface ApiService {
   Observable<Response<Backing>> projectBacking(
     @Path("project_param") String projectParam,
     @Path("user_param") String userParam
+  );
+
+  @PUT("/v1/projects/{project_param}/backers/{user_param}")
+  Observable<Response<Backing>> putProjectBacking(
+    @Path("project_param") long projectParam,
+    @Path("user_param") long userParam,
+    @Body BackingBody backingBody
   );
 
   @GET("/v1/projects/{param}")

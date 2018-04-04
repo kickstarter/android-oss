@@ -31,7 +31,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(SignupViewModel.ViewModel.class)
 public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel> {
-  @Bind(R.id.full_name) EditText nameEditText;
+  @Bind(R.id.name) EditText nameEditText;
   @Bind(R.id.email) EditText emailEditText;
   @Bind(R.id.help_button) TextView helpButton;
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
@@ -86,9 +86,9 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
     new LoginPopupMenu(this, this.helpButton).show();
   }
 
-  @OnTextChanged(R.id.full_name)
-  void onNameTextChanged(final @NonNull CharSequence fullName) {
-    this.viewModel.inputs.fullName(fullName.toString());
+  @OnTextChanged(R.id.name)
+  void onNameTextChanged(final @NonNull CharSequence name) {
+    this.viewModel.inputs.name(name.toString());
   }
 
   @OnTextChanged(R.id.email)

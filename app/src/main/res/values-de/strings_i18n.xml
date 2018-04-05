@@ -176,6 +176,7 @@ Unterstützer</string>
   <string name="Message_backer" formatted="false">Nachricht an Unterstützer senden</string>
   <string name="Message_creator" formatted="false">Nachricht an Projektgründer senden</string>
   <string name="Message_user_name" formatted="false">Nachricht senden an %{user_name}…</string>
+  <string name="Name" formatted="false">Name</string>
   <string name="New_pledge_activity" formatted="false">Neue Finanzierungsbeiträge</string>
   <string name="No_Results" formatted="false">Keine Ergebnisse</string>
   <string name="No_comments_yet" formatted="false">Bisher noch keine Kommentare.</string>

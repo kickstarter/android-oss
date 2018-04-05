@@ -27,7 +27,7 @@ public interface SignupViewModel {
     void email(String email);
 
     /** Call when the name field changes. */
-    void fullName(String fullName);
+    void name(String name);
 
     /** Call when the password field changes. */
     void password(String password);
@@ -69,7 +69,7 @@ public interface SignupViewModel {
       this.currentUser = environment.currentUser();
 
       final Observable<SignupData> signupData = Observable.combineLatest(
-        this.fullName, this.email, this.password, this.sendNewslettersIsChecked, SignupData::new
+        this.name, this.email, this.password, this.sendNewslettersIsChecked, SignupData::new
       );
 
       this.sendNewslettersClick
@@ -116,7 +116,7 @@ public interface SignupViewModel {
     }
 
     private Observable<AccessTokenEnvelope> submit(final @NonNull SignupData data) {
-      return this.client.signup(data.fullName, data.email, data.password, data.password, data.sendNewsletters)
+      return this.client.signup(data.name, data.email, data.password, data.password, data.sendNewsletters)
         .compose(Transformers.pipeApiErrorsTo(this.signupError))
         .compose(Transformers.neverError())
         .doOnSubscribe(() -> this.formSubmitting.onNext(true))
@@ -128,8 +128,8 @@ public interface SignupViewModel {
       this.signupSuccess.onNext(null);
     }
 
-    private final PublishSubject<String> fullName = PublishSubject.create();
     private final PublishSubject<String> email = PublishSubject.create();
+    private final PublishSubject<String> name = PublishSubject.create();
     private final PublishSubject<String> password = PublishSubject.create();
     private final PublishSubject<Boolean> sendNewslettersClick = PublishSubject.create();
     private final PublishSubject<Void> signupClick = PublishSubject.create();
@@ -148,8 +148,8 @@ public interface SignupViewModel {
     @Override public void email(final String email) {
       this.email.onNext(email);
     }
-    @Override public void fullName(final String fullName) {
-      this.fullName.onNext(fullName);
+    @Override public void name(final String name) {
+      this.name.onNext(name);
     }
     @Override public void password(final String password) {
       this.password.onNext(password);
@@ -179,21 +179,21 @@ public interface SignupViewModel {
     }
 
     final static class SignupData {
-      final @NonNull String fullName;
       final @NonNull String email;
+      final @NonNull String name;
       final @NonNull String password;
       final boolean sendNewsletters;
 
-      SignupData(final @NonNull String fullName, final @NonNull String email, final @NonNull String password,
+      SignupData(final @NonNull String name, final @NonNull String email, final @NonNull String password,
         final boolean sendNewsletters) {
-        this.fullName = fullName;
+        this.name = name;
         this.email = email;
         this.password = password;
         this.sendNewsletters = sendNewsletters;
       }
 
       boolean isValid() {
-        return this.fullName.length() > 0 && StringUtils.isEmail(this.email) && this.password.length() >= 6;
+        return this.name.length() > 0 && StringUtils.isEmail(this.email) && this.password.length() >= 6;
       }
     }
   }

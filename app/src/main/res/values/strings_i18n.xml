@@ -177,6 +177,7 @@ with friends.</string>
   <string name="Message_backer" formatted="false">Message backer</string>
   <string name="Message_creator" formatted="false">Message creator</string>
   <string name="Message_user_name" formatted="false">Message %{user_name}…</string>
+  <string name="Name" formatted="false">Name</string>
   <string name="New_pledge_activity" formatted="false">New pledge activity</string>
   <string name="No_Results" formatted="false">No Results</string>
   <string name="No_comments_yet" formatted="false">No comments yet.</string>

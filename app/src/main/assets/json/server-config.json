@@ -210,6 +210,7 @@
         "many": "minutes"
       },
       "minutes_plural": "minutes",
+      "Name": "Name",
       "New_pledge_activity": "New pledge activity",
       "No_comments_yet": "No comments yet.",
       "No_messages": "No messages",
@@ -2149,6 +2150,7 @@
         "many": "Min"
       },
       "minutes_plural": "Min",
+      "Name": "Name",
       "New_pledge_activity": "Neue Finanzierungsbeiträge",
       "No_comments_yet": "Bisher noch keine Kommentare.",
       "No_messages": "Keine Nachrichten",
@@ -4088,6 +4090,7 @@
         "many": "minutos"
       },
       "minutes_plural": "minutos",
+      "Name": "Name",
       "New_pledge_activity": "Nueva actividad de contribución",
       "No_comments_yet": "No hay comentarios todavia.",
       "No_messages": "No hay mensajes",
@@ -6027,6 +6030,7 @@
         "many": "minutes"
       },
       "minutes_plural": "minutes",
+      "Name": "Name",
       "New_pledge_activity": "Nouveaux engagements",
       "No_comments_yet": "Pas de commentaires.",
       "No_messages": "Pas de messages",
@@ -7966,6 +7970,7 @@
         "many": "分"
       },
       "minutes_plural": "分",
+      "Name": "Name",
       "New_pledge_activity": "新しいプレッジ",
       "No_comments_yet": "まだコメントはありません。",
       "No_messages": "メッセージがありません。",
@@ -9894,6 +9899,7 @@
     "show_refreshed_thanks_page": "control",
     "project_cards_description": "control",
     "default_rec_projects": "control",
+    "stripe_elements": "experimental",
     "sticky_global_header": "control"
   },
   "stripe": {

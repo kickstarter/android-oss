@@ -1,6 +1,7 @@
 package com.kickstarter.services.interceptors;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.utils.I18nUtils;
@@ -27,10 +28,15 @@ public final class KSRequestInterceptor implements Interceptor {
   }
 
   private Request request(final @NonNull Request initialRequest) {
-    return initialRequest.newBuilder()
+    Log.d(KSRequestInterceptor.class.getSimpleName(), "testtest " + initialRequest.url().toString() + " " + initialRequest.header("User-Agent"));
+
+    Request build = initialRequest.newBuilder()
       .header("Kickstarter-Android-App", this.build.versionCode().toString())
       .header("Kickstarter-App-Id", this.build.applicationId())
       .header("Accept-Language", I18nUtils.language())
       .build();
+
+    Log.d(KSRequestInterceptor.class.getSimpleName(), "testtest " + build.url().toString() + " " + build.header("User-Agent") +"\n\n\n");
+    return build;
   }
 }

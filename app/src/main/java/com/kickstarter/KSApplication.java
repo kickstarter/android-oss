@@ -5,8 +5,10 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
+import android.text.TextUtils;
 
 import com.facebook.FacebookSdk;
+import com.google.android.gms.iid.InstanceID;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
@@ -66,17 +68,7 @@ public class KSApplication extends MultiDexApplication {
       .build();
     component().inject(this);
 
-    /*
-      setting cookie for unique id tracking, hardcoding prod
-     */
-    final HttpCookie cookie = new HttpCookie("vis", UUID.randomUUID().toString());
-    cookie.setMaxAge(DateTime.now().plusYears(100).getMillis());
-    cookie.setSecure(true);
-    final URI webUri = URI.create(component().environment().webEndpoint());
-    final URI apiUri = URI.create(ApiEndpoint.PRODUCTION.url());
-    this.cookieManager.getCookieStore().add(webUri, cookie);
-    this.cookieManager.getCookieStore().add(apiUri, cookie);
-    CookieHandler.setDefault(this.cookieManager);
+    setVisitorCookie();
 
     FacebookSdk.sdkInitialize(this);
 
@@ -110,5 +102,19 @@ public class KSApplication extends MultiDexApplication {
         return true;
       }
     });
+  }
+
+
+  private void setVisitorCookie() {
+    final String deviceId = InstanceID.getInstance(this).getId();
+    final String uniqueIdentifier = TextUtils.isEmpty(deviceId) ? UUID.randomUUID().toString() : deviceId;
+    final HttpCookie cookie = new HttpCookie("vis", uniqueIdentifier);
+    cookie.setMaxAge(DateTime.now().plusYears(100).getMillis());
+    cookie.setSecure(true);
+    final URI webUri = URI.create(Secrets.WebEndpoint.PRODUCTION);
+    final URI apiUri = URI.create(ApiEndpoint.PRODUCTION.url());
+    this.cookieManager.getCookieStore().add(webUri, cookie);
+    this.cookieManager.getCookieStore().add(apiUri, cookie);
+    CookieHandler.setDefault(this.cookieManager);
   }
 }

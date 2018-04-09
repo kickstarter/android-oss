@@ -4090,7 +4090,7 @@
         "many": "minutos"
       },
       "minutes_plural": "minutos",
-      "Name": "Name",
+      "Name": "Nombre",
       "New_pledge_activity": "Nueva actividad de contribución",
       "No_comments_yet": "No hay comentarios todavia.",
       "No_messages": "No hay mensajes",
@@ -6030,7 +6030,7 @@
         "many": "minutes"
       },
       "minutes_plural": "minutes",
-      "Name": "Name",
+      "Name": "Nom",
       "New_pledge_activity": "Nouveaux engagements",
       "No_comments_yet": "Pas de commentaires.",
       "No_messages": "Pas de messages",
@@ -7970,7 +7970,7 @@
         "many": "分"
       },
       "minutes_plural": "分",
-      "Name": "Name",
+      "Name": "名前",
       "New_pledge_activity": "新しいプレッジ",
       "No_comments_yet": "まだコメントはありません。",
       "No_messages": "メッセージがありません。",
@@ -9897,9 +9897,8 @@
     "project_dashboard": "with_dashboard",
     "react_guest_pledging_run_3": "control",
     "show_refreshed_thanks_page": "control",
-    "project_cards_description": "control",
     "default_rec_projects": "control",
-    "stripe_elements": "experimental",
+    "stripe_elements": "control",
     "sticky_global_header": "control"
   },
   "stripe": {

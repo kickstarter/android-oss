@@ -175,7 +175,7 @@
   <string name="Message_backer" formatted="false">バッカーにメッセージする</string>
   <string name="Message_creator" formatted="false">クリエーターにメッセージする</string>
   <string name="Message_user_name" formatted="false">%{user_name} にメッセージ</string>
-  <string name="Name" formatted="false">Name</string>
+  <string name="Name" formatted="false">名前</string>
   <string name="New_pledge_activity" formatted="false">新しいプレッジ</string>
   <string name="No_Results" formatted="false">該当結果なし</string>
   <string name="No_comments_yet" formatted="false">まだコメントはありません。</string>

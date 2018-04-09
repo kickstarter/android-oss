@@ -41,11 +41,12 @@ public class VisitorCookieTest {
     final URI apiUri = URI.create(ApiEndpoint.PRODUCTION.url());
     final Optional<HttpCookie> webVisCookie = getOptionalVisitorCookieForURI(cookieStore, webUri);
     final Optional<HttpCookie> apiVisCookie = getOptionalVisitorCookieForURI(cookieStore, apiUri);
+
+    Assert.assertTrue(webVisCookie.isPresent());
+    Assert.assertTrue(apiVisCookie.isPresent());
+
     final HttpCookie webCookie = webVisCookie.get();
     final HttpCookie apiCookie = apiVisCookie.get();
-
-    Assert.assertNotNull(webCookie);
-    Assert.assertNotNull(apiCookie);
 
     final String deviceId = InstanceID.getInstance(activity).getId();
     Assert.assertNotNull(deviceId);
@@ -56,8 +57,7 @@ public class VisitorCookieTest {
     Assert.assertFalse(apiCookie.getValue().equals("boop"));
   }
 
-  private Optional<HttpCookie> getOptionalVisitorCookieForURI(final @NonNull CookieStore cookieStore, final @NonNull URI webUri) {
-    // it's problematic, i know
-    return cookieStore.get(webUri).stream().filter(c -> c.getName().equals(KEY_VIS)).findFirst();
+  private Optional<HttpCookie> getOptionalVisitorCookieForURI(final @NonNull CookieStore cookieStore, final @NonNull URI uri) {
+    return cookieStore.get(uri).stream().filter(c -> c.getName().equals(KEY_VIS)).findFirst();
   }
 }

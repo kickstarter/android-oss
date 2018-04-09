@@ -107,8 +107,8 @@ public class KSApplication extends MultiDexApplication {
 
   private void setVisitorCookie() {
     final String deviceId = InstanceID.getInstance(this).getId();
-    final String uuid = TextUtils.isEmpty(deviceId) ? UUID.randomUUID().toString() : deviceId;
-    final HttpCookie cookie = new HttpCookie("vis", uuid);
+    final String uniqueIdentifier = TextUtils.isEmpty(deviceId) ? UUID.randomUUID().toString() : deviceId;
+    final HttpCookie cookie = new HttpCookie("vis", uniqueIdentifier);
     cookie.setMaxAge(DateTime.now().plusYears(100).getMillis());
     cookie.setSecure(true);
     final URI webUri = URI.create(Secrets.WebEndpoint.PRODUCTION);

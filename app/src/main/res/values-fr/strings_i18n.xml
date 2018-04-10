@@ -176,6 +176,7 @@ contributeurs</string>
   <string name="Message_backer" formatted="false">Envoyer un message au contributeur</string>
   <string name="Message_creator" formatted="false">Envoyer un message au créateur</string>
   <string name="Message_user_name" formatted="false">Envoyer un message à %{user_name}</string>
+  <string name="Name" formatted="false">Nom</string>
   <string name="New_pledge_activity" formatted="false">Nouveaux engagements</string>
   <string name="No_Results" formatted="false">Pas de résultats</string>
   <string name="No_comments_yet" formatted="false">Pas de commentaires.</string>

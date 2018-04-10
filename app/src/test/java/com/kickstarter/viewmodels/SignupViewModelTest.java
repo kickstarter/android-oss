@@ -27,7 +27,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> formIsValidTest = new TestSubscriber<>();
     vm.outputs.formIsValid().subscribe(formIsValidTest);
 
-    vm.inputs.fullName("brandon");
+    vm.inputs.name("brandon");
     formIsValidTest.assertNoValues();
 
     vm.inputs.email("incorrect@kickstarter");
@@ -50,7 +50,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> formSubmittingTest = new TestSubscriber<>();
     vm.outputs.formSubmitting().subscribe(formSubmittingTest);
 
-    vm.inputs.fullName("brandon");
+    vm.inputs.name("brandon");
     vm.inputs.email("hello@kickstarter.com");
     vm.inputs.email("incorrect@kickstarter");
     vm.inputs.password("danisawesome");
@@ -87,7 +87,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> formSubmittingTest = new TestSubscriber<>();
     vm.outputs.formSubmitting().subscribe(formSubmittingTest);
 
-    vm.inputs.fullName("brandon");
+    vm.inputs.name("brandon");
     vm.inputs.email("hello@kickstarter.com");
     vm.inputs.email("incorrect@kickstarter");
     vm.inputs.password("danisawesome");
@@ -123,7 +123,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> formSubmittingTest = new TestSubscriber<>();
     vm.outputs.formSubmitting().subscribe(formSubmittingTest);
 
-    vm.inputs.fullName("brandon");
+    vm.inputs.name("brandon");
     vm.inputs.email("hello@kickstarter.com");
     vm.inputs.email("incorrect@kickstarter");
     vm.inputs.password("danisawesome");

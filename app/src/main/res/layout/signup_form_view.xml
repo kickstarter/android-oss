@@ -14,13 +14,13 @@
     android:layout_marginTop="@dimen/grid_2">
 
     <EditText
-      android:id="@+id/full_name"
+      android:id="@+id/name"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:inputType="textPersonName|textCapWords"
       android:maxLines="1"
       style="@style/CalloutPrimary"
-      android:hint="@string/signup_input_fields_full_name" />
+      android:hint="@string/Name" />
 
   </android.support.design.widget.TextInputLayout>
 

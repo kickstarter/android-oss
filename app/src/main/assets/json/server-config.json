@@ -9898,7 +9898,7 @@
     "react_guest_pledging_run_3": "control",
     "show_refreshed_thanks_page": "control",
     "default_rec_projects": "control",
-    "stripe_elements": "control",
+    "stripe_elements": "experimental",
     "sticky_global_header": "control"
   },
   "stripe": {

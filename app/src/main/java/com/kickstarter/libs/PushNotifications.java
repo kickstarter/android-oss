@@ -277,7 +277,8 @@ public final class PushNotifications {
 
     final Intent projectIntent = new Intent(this.context, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT_PARAM, projectParam)
-      .putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, envelope);
+      .putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, envelope)
+      .putExtra(IntentKey.REF_TAG, RefTag.push());
 
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
       .addNextIntentWithParentStack(projectIntent);
@@ -289,7 +290,8 @@ public final class PushNotifications {
     final @NonNull Update update, final @NonNull String projectParam) {
 
     final Intent projectIntent = new Intent(this.context, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT_PARAM, projectParam);
+      .putExtra(IntentKey.PROJECT_PARAM, projectParam)
+      .putExtra(IntentKey.REF_TAG, RefTag.push());
 
     final Intent updateIntent = new Intent(this.context, UpdateActivity.class)
       .putExtra(IntentKey.PROJECT_PARAM, projectParam)

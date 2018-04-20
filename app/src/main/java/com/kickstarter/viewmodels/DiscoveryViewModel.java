@@ -60,7 +60,7 @@ public interface DiscoveryViewModel {
     /** Emits a boolean that determines if the drawer is open or not. */
     Observable<Boolean> drawerIsOpen();
 
-    /** Emits a booelan that determines if the sort tab layout should be expanded/collapsed. */
+    /** Emits a boolean that determines if the sort tab layout should be expanded/collapsed. */
     Observable<Boolean> expandSortTabLayout();
 
     /** Emits when params change so that the tool bar can adjust accordingly. */

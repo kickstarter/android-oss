@@ -114,6 +114,10 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     }
   }
 
+  public boolean isAttached() {
+    return !isDetached();
+  }
+
   public boolean isInstantiated() {
     return this.recyclerView != null;
   }

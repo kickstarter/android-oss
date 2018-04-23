@@ -115,7 +115,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
   }
 
   public boolean isAttached() {
-    return !isDetached();
+    return this.viewModel != null;
   }
 
   public boolean isInstantiated() {

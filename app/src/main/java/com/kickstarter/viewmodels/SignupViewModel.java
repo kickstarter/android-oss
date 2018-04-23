@@ -3,11 +3,9 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -49,9 +47,6 @@ public interface SignupViewModel {
     /** Emits a boolean that determines if the sign up button is disabled. */
     Observable<Boolean> formSubmitting();
 
-    /** Emits a boolean that determines if the send newsletter toggle is checked. */
-    Observable<Boolean> sendNewslettersIsChecked();
-
     /** Finish the activity with a successful result. */
     Observable<Void> signupSuccess();
   }
@@ -59,13 +54,11 @@ public interface SignupViewModel {
   final class ViewModel extends ActivityViewModel<SignupActivity> implements Inputs, Outputs {
     private final ApiClientType client;
     private final CurrentUserType currentUser;
-    private final CurrentConfigType currentConfig;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.client = environment.apiClient();
-      this.currentConfig = environment.currentConfig();
       this.currentUser = environment.currentUser();
 
       final Observable<SignupData> signupData = Observable.combineLatest(
@@ -87,9 +80,7 @@ public interface SignupViewModel {
         .compose(bindToLifecycle())
         .subscribe(this::success);
 
-      this.currentConfig.observable()
-        .take(1)
-        .map(config -> I18nUtils.isCountryUS(config.countryCode()))
+      Observable.just(false)
         .compose(bindToLifecycle())
         .subscribe(this.sendNewslettersIsChecked::onNext);
 
@@ -170,9 +161,6 @@ public interface SignupViewModel {
     }
     @Override public @NonNull BehaviorSubject<Boolean> formSubmitting() {
       return this.formSubmitting;
-    }
-    @Override public @NonNull BehaviorSubject<Boolean> sendNewslettersIsChecked() {
-      return this.sendNewslettersIsChecked;
     }
     @Override public @NonNull PublishSubject<Void> signupSuccess() {
       return this.signupSuccess;

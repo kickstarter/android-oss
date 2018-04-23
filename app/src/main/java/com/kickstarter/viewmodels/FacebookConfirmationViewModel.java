@@ -7,7 +7,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
@@ -96,11 +95,6 @@ public interface FacebookConfirmationViewModel {
 
       this.sendNewslettersClick
         .compose(bindToLifecycle())
-        .subscribe(this.sendNewslettersIsChecked::onNext);
-
-      this.currentConfig.observable()
-        .take(1)
-        .map(config -> I18nUtils.isCountryUS(config.countryCode()))
         .subscribe(this.sendNewslettersIsChecked::onNext);
 
       this.signupError

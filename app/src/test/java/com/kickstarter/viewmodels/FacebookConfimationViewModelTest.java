@@ -98,12 +98,12 @@ public class FacebookConfimationViewModelTest extends KSRobolectricTestCase {
     this.vm = new FacebookConfirmationViewModel.ViewModel(environment);
 
     this.vm.outputs.sendNewslettersIsChecked().subscribe(this.sendNewslettersIsChecked);
-    this.sendNewslettersIsChecked.assertValue(true);
+    this.sendNewslettersIsChecked.assertValue(false);
 
-    this.vm.inputs.sendNewslettersClick(false);
     this.vm.inputs.sendNewslettersClick(true);
+    this.vm.inputs.sendNewslettersClick(false);
 
-    this.sendNewslettersIsChecked.assertValues(true, false, true);
+    this.sendNewslettersIsChecked.assertValues(false, true, false);
     this.koalaTest.assertValues(KoalaEvent.FACEBOOK_CONFIRM, KoalaEvent.USER_SIGNUP,
       KoalaEvent.SIGNUP_NEWSLETTER_TOGGLE, KoalaEvent.SIGNUP_NEWSLETTER_TOGGLE);
   }

@@ -97,6 +97,11 @@ public interface FacebookConfirmationViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.sendNewslettersIsChecked::onNext);
 
+      this.currentConfig.observable()
+        .take(1)
+        .map(config -> false)
+        .subscribe(this.sendNewslettersIsChecked::onNext);
+
       this.signupError
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackRegisterError());

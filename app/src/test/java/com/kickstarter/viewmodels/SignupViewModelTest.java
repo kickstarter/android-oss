@@ -34,13 +34,10 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     formIsValidTest.assertNoValues();
 
     vm.inputs.password("danisawesome");
-    formIsValidTest.assertNoValues();
+    formIsValidTest.assertValues(false);
 
     vm.inputs.email("hello@kickstarter.com");
-    formIsValidTest.assertValues(true);
-
-    vm.inputs.email("incorrect@kickstarter");
-    formIsValidTest.assertValues(true, false);
+    formIsValidTest.assertValues(false, true);
   }
 
   @Test

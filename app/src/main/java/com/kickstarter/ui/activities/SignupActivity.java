@@ -14,6 +14,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
@@ -64,12 +65,18 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::setFormEnabled);
 
+    this.viewModel.outputs.sendNewslettersIsChecked()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(b -> SwitchCompatUtils.setCheckedWithoutAnimation(this.newsletterSwitch, b));
+
     this.viewModel.outputs.errorString()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(e -> ViewUtils.showDialog(this, null, e));
 
     RxView.clicks(this.newsletterSwitch)
+      .skip(1)
       .compose(bindToLifecycle())
       .subscribe(__ -> this.viewModel.inputs.sendNewslettersClick(this.newsletterSwitch.isChecked()));
   }

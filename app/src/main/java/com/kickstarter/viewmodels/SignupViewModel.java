@@ -7,7 +7,6 @@ import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -89,7 +88,7 @@ public interface SignupViewModel {
 
       this.currentConfig.observable()
         .take(1)
-        .map(config -> I18nUtils.isCountryUS(config.countryCode()))
+        .map(config -> false)
         .compose(bindToLifecycle())
         .subscribe(this.sendNewslettersIsChecked::onNext);
 

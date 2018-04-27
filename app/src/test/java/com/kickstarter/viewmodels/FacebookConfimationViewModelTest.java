@@ -91,27 +91,9 @@ public class FacebookConfimationViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testToggleSendNewsLetter_ForUSUser() {
+  public void testToggleSendNewsLetter_isNotChecked() {
     final CurrentConfigType currentConfig = new MockCurrentConfig();
     currentConfig.config(ConfigFactory.config().toBuilder().countryCode("US").build());
-    final Environment environment = environment().toBuilder().currentConfig(currentConfig).build();
-    this.vm = new FacebookConfirmationViewModel.ViewModel(environment);
-
-    this.vm.outputs.sendNewslettersIsChecked().subscribe(this.sendNewslettersIsChecked);
-    this.sendNewslettersIsChecked.assertValue(true);
-
-    this.vm.inputs.sendNewslettersClick(false);
-    this.vm.inputs.sendNewslettersClick(true);
-
-    this.sendNewslettersIsChecked.assertValues(true, false, true);
-    this.koalaTest.assertValues(KoalaEvent.FACEBOOK_CONFIRM, KoalaEvent.USER_SIGNUP,
-      KoalaEvent.SIGNUP_NEWSLETTER_TOGGLE, KoalaEvent.SIGNUP_NEWSLETTER_TOGGLE);
-  }
-
-  @Test
-  public void testToggleSendNewsLetter_ForNonUSUser() {
-    final CurrentConfigType currentConfig = new MockCurrentConfig();
-    currentConfig.config(ConfigFactory.config().toBuilder().countryCode("MX").build());
     final Environment environment = environment().toBuilder().currentConfig(currentConfig).build();
     this.vm = new FacebookConfirmationViewModel.ViewModel(environment);
 

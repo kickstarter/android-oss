@@ -15,7 +15,6 @@ public abstract class User implements Parcelable {
   public abstract @Nullable Integer backedProjectsCount();
   public abstract @Nullable Integer createdProjectsCount();
   public abstract @Nullable Boolean gamesNewsletter();
-  public abstract @Nullable Boolean generateRecommendations();
   public abstract @Nullable Boolean happeningNewsletter();
   public abstract long id();
   public abstract @Nullable Location location();
@@ -31,6 +30,7 @@ public abstract class User implements Parcelable {
   public abstract @Nullable Boolean notifyOfFollower();
   public abstract @Nullable Boolean notifyOfFriendActivity();
   public abstract @Nullable Boolean notifyOfUpdates();
+  public abstract @Nullable Boolean optedOutOfRecommendations();
   public abstract @Nullable Boolean promoNewsletter();
   public abstract @Nullable Boolean social();
   public abstract @Nullable Integer starredProjectsCount();
@@ -43,7 +43,6 @@ public abstract class User implements Parcelable {
     public abstract Builder backedProjectsCount(Integer __);
     public abstract Builder createdProjectsCount(Integer __);
     public abstract Builder gamesNewsletter(Boolean __);
-    public abstract Builder generateRecommendations(Boolean __);
     public abstract Builder happeningNewsletter(Boolean __);
     public abstract Builder id(long __);
     public abstract Builder location(Location __);
@@ -59,6 +58,7 @@ public abstract class User implements Parcelable {
     public abstract Builder notifyOfFollower(Boolean __);
     public abstract Builder notifyOfFriendActivity(Boolean __);
     public abstract Builder notifyOfUpdates(Boolean __);
+    public abstract Builder optedOutOfRecommendations(Boolean __);
     public abstract Builder promoNewsletter(Boolean __);
     public abstract Builder social(Boolean __);
     public abstract Builder starredProjectsCount(Integer __);

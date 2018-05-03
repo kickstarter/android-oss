@@ -10,6 +10,7 @@ public final class UserFactory {
       .avatar(AvatarFactory.avatar())
       .id(IdFactory.id())
       .name("Sammy Sosa")
+      .generateRecommendations(true)
       .location(LocationFactory.unitedStates())
       .build();
   }
@@ -38,6 +39,13 @@ public final class UserFactory {
     return user()
       .toBuilder()
       .location(LocationFactory.germany())
+      .build();
+  }
+
+  public static User noRecommendations() {
+    return user()
+      .toBuilder()
+      .generateRecommendations(false)
       .build();
   }
 }

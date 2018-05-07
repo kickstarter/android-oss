@@ -24,6 +24,7 @@ import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.data.Newsletter;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.viewmodels.SettingsViewModel;
@@ -60,6 +61,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
 
   protected @BindString(R.string.profile_settings_newsletter_games) String gamesNewsletterString;
   protected @BindString(R.string.profile_settings_newsletter_happening) String happeningNewsletterString;
+  protected @BindString(R.string.Help_center) String helpCenter;
   protected @BindString(R.string.mailto) String mailtoString;
   protected @BindString(R.string.Logged_Out) String loggedOutString;
   protected @BindString(R.string.profile_settings_newsletter_weekly) String weeklyNewsletterString;
@@ -162,9 +164,12 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     startHelpActivity(HelpActivity.CookiePolicy.class);
   }
 
-  @OnClick(R.id.faq)
-  public void faqClick() {
-    startHelpActivity(HelpActivity.Faq.class);
+  @OnClick(R.id.help_center)
+  public void helpCenterClick() {
+    final Intent intent = new Intent(this, WebViewActivity.class)
+      .putExtra(IntentKey.TOOLBAR_TITLE, helpCenter)
+      .putExtra(IntentKey.URL, "http://help.kickstarter.com/hc");
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   @OnClick(R.id.how_kickstarter_works)

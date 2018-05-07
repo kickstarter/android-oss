@@ -138,6 +138,7 @@ patrocinadores</string>
   <string name="Go_to_project_page" formatted="false">Ir a la página de proyecto</string>
   <string name="Got_it" formatted="false">¡Listo!</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.</string>
+  <string name="Help_center" formatted="false">Help Center</string>
   <string name="Home" formatted="false">Inicio</string>
   <string name="How_backers_found_your_project" formatted="false">Cómo encontraron tu proyecto los patrocinadores</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Sólo quiero apoyar este proyecto.</string>
@@ -221,6 +222,7 @@ patrocinadores</string>
   <string name="Pledged_on_date" formatted="false">&lt;b>Contribuido&lt;/b> el %{pledge_date}</string>
   <string name="Popular" formatted="false">Popular</string>
   <string name="Popular_Projects" formatted="false">Proyectos populares</string>
+  <string name="Privacy" formatted="false">Privacy</string>
   <string name="Project_Cancelled" formatted="false">Proyecto cancelado.</string>
   <string name="Project_Suspended" formatted="false">Proyecto suspendido.</string>
   <string name="Project_cancelled" formatted="false">Proyecto cancelado</string>
@@ -235,6 +237,7 @@ patrocinadores</string>
   <string name="Read_more_about_the_campaign" formatted="false">Leer más sobre la campaña</string>
   <string name="Read_more_about_the_campaign_arrow" formatted="false">Leer más sobre esta campaña  →</string>
   <string name="Recent_live_stream" formatted="false">Live-Stream reciente</string>
+  <string name="Recommendations" formatted="false">Recommendations</string>
   <string name="Recommended" formatted="false">Recomendados</string>
   <string name="Recommended_For_You" formatted="false">Recomendaciones para ti</string>
   <string name="Recorded_Live" formatted="false">Grabado en vivo</string>

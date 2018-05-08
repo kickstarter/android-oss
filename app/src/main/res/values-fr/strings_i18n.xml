@@ -134,10 +134,13 @@ contributeurs</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> a soutenu un projet de &lt;i>théâtre&lt;/i>.</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} a lancé un projet !</string>
   <string name="Funding_successful" formatted="false">Intégralement financé</string>
+  <string name="Get_notified_about_new_messages" formatted="false">Get notified about new messages?</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Envoyez-moi des notifications au sujet des diffusions en direct de ce créateur.</string>
+  <string name="Get_reminded_about_this_project" formatted="false">Get reminded about this project?</string>
   <string name="Go_to_project_page" formatted="false">Accéder à la page de projet</string>
   <string name="Got_it" formatted="false">Super.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Merci ! Vos réponses au questionnaire ont bien été envoyées.</string>
+  <string name="Help_center" formatted="false">Help Center</string>
   <string name="Home" formatted="false">Accueil</string>
   <string name="How_backers_found_your_project" formatted="false">Comment les contributeurs ont découvert votre projet</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Je souhaite simplement soutenir le projet.</string>
@@ -151,6 +154,7 @@ contributeurs</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Soyez informé des prochaines diffusions en direct</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (si le projet est financé)</string>
   <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter n\'est pas un magasin.</string>
+  <string name="Know_when_creators_and_backers_message_you" formatted="false">Know when creators and backers message you by enabling notifications.</string>
   <string name="Learn_more_about_accountability" formatted="false">En savoir plus sur la responsabilité</string>
   <string name="Left_count_left_few" formatted="false">%{left_count} restantes</string>
   <string name="Left_count_left_many" formatted="false">%{left_count} restantes</string>
@@ -177,6 +181,7 @@ contributeurs</string>
   <string name="Message_creator" formatted="false">Envoyer un message au créateur</string>
   <string name="Message_user_name" formatted="false">Envoyer un message à %{user_name}</string>
   <string name="Name" formatted="false">Nom</string>
+  <string name="Never" formatted="false">Never</string>
   <string name="New_pledge_activity" formatted="false">Nouveaux engagements</string>
   <string name="No_Results" formatted="false">Pas de résultats</string>
   <string name="No_comments_yet" formatted="false">Pas de commentaires.</string>
@@ -188,6 +193,7 @@ n\'ont rien soutenu.</string>
   <string name="No_unread_messages" formatted="false">Pas de messages non lus</string>
   <string name="Not_delivered" formatted="false">Non distribué</string>
   <string name="Not_followed" formatted="false">Non abonné</string>
+  <string name="Not_now" formatted="false">Not Now</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Une fois que vous aurez soutenu un projet, des recommandations personnalisées s\'afficheront ici.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Plus que %{amount_of_time} pour regarder cette diffusion.</string>
   <string name="Opens_comments" formatted="false">Ouvre les commentaires.</string>
@@ -222,6 +228,7 @@ n\'ont rien soutenu.</string>
   <string name="Pledged_on_date" formatted="false">&lt;b>Engagement&lt;/b> du %{pledge_date}</string>
   <string name="Popular" formatted="false">Tendances</string>
   <string name="Popular_Projects" formatted="false">Les tendances</string>
+  <string name="Privacy" formatted="false">Privacy</string>
   <string name="Project_Cancelled" formatted="false">Projet annulé.</string>
   <string name="Project_Suspended" formatted="false">Projet suspendu.</string>
   <string name="Project_cancelled" formatted="false">Projet annulé</string>
@@ -235,7 +242,11 @@ n\'ont rien soutenu.</string>
   <string name="Rate_us_in_the_App_Store" formatted="false">Évaluez-nous dans l\'App Store</string>
   <string name="Read_more_about_the_campaign" formatted="false">En savoir plus sur la campagne</string>
   <string name="Read_more_about_the_campaign_arrow" formatted="false">En savoir plus sur la campagne →</string>
+  <string name="Receive_a_reminder_forty_eight_hours_before_this_project_ends" formatted="false">Receive a reminder 48 hours before this and any other saved project ends by enabling notifications.</string>
+  <string name="Receive_project_updates_and_more" formatted="false">Receive project updates and more by enabling notifications.</string>
+  <string name="Receive_project_updates_messages_and_more" formatted="false">Receive project updates, messages, and more by enabling notifications.</string>
   <string name="Recent_live_stream" formatted="false">Diffusion en direct récente</string>
+  <string name="Recommendations" formatted="false">Recommendations</string>
   <string name="Recommended" formatted="false">Rien que pour vous</string>
   <string name="Recommended_For_You" formatted="false">Rien que pour vous</string>
   <string name="Recorded_Live" formatted="false">Enregistré en direct</string>
@@ -290,6 +301,8 @@ n\'ont rien soutenu.</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Un problème est survenu. Veuillez réessayer.</string>
   <string name="Starting_soon" formatted="false">Bientôt en direct</string>
   <string name="Status" formatted="false">État :</string>
+  <string name="Stay_up_to_date" formatted="false">Stay up to date?</string>
+  <string name="Stay_updated_on_this_project" formatted="false">Stay updated on this project?</string>
   <string name="Subscribe" formatted="false">S\'abonner</string>
   <string name="Subscribed" formatted="false">Abonné </string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Abonnement aux diffusions en direct à venir.</string>

@@ -294,6 +294,26 @@
 
       <TextView
         style="@style/SettingsSectionTitle"
+        android:text="@string/Privacy" />
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_10"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:text="@string/Recommendations" />
+
+        <android.support.v7.widget.SwitchCompat
+          android:id="@+id/recommendations_switch"
+          style="@style/EndSettingsWidget" />
+
+      </LinearLayout>
+
+      <TextView
+        style="@style/SettingsSectionTitle"
         android:text="@string/profile_settings_rating_title" />
 
       <LinearLayout

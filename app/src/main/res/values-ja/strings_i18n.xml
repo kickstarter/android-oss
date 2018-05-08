@@ -133,10 +133,13 @@
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> は&lt;i>演劇&lt;/i> プロジェクトをバックしています。</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} がプロジェクトを発表しました！</string>
   <string name="Funding_successful" formatted="false">ファンディング成功</string>
+  <string name="Get_notified_about_new_messages" formatted="false">Get notified about new messages?</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">このクリエイターのライブ配信通知を受け取る</string>
+  <string name="Get_reminded_about_this_project" formatted="false">Get reminded about this project?</string>
   <string name="Go_to_project_page" formatted="false">プロジェクトページを見る</string>
   <string name="Got_it" formatted="false">完了</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">サーベイを送信しました！</string>
+  <string name="Help_center" formatted="false">Help Center</string>
   <string name="Home" formatted="false">ホーム</string>
   <string name="How_backers_found_your_project" formatted="false">バッカ―があなたのプロジェクトを見つけた経緯</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">プロジェクトをサポートしたい</string>
@@ -150,6 +153,7 @@
   <string name="Keep_up_with_future_live_streams" formatted="false">ライブ配信を通知</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (達成した時)</string>
   <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarterはオンラインストアではありません。</string>
+  <string name="Know_when_creators_and_backers_message_you" formatted="false">Know when creators and backers message you by enabling notifications.</string>
   <string name="Learn_more_about_accountability" formatted="false">報告義務に関してさらに詳しく</string>
   <string name="Left_count_left_few" formatted="false">残り%{left_count}</string>
   <string name="Left_count_left_many" formatted="false">残り%{left_count}</string>
@@ -176,6 +180,7 @@
   <string name="Message_creator" formatted="false">クリエーターにメッセージする</string>
   <string name="Message_user_name" formatted="false">%{user_name} にメッセージ</string>
   <string name="Name" formatted="false">名前</string>
+  <string name="Never" formatted="false">Never</string>
   <string name="New_pledge_activity" formatted="false">新しいプレッジ</string>
   <string name="No_Results" formatted="false">該当結果なし</string>
   <string name="No_comments_yet" formatted="false">まだコメントはありません。</string>
@@ -186,6 +191,7 @@
   <string name="No_unread_messages" formatted="false">未読メッセージはありません</string>
   <string name="Not_delivered" formatted="false">未配送</string>
   <string name="Not_followed" formatted="false">フォローしてない</string>
+  <string name="Not_now" formatted="false">Not Now</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">プロジェクトをバックするとこのスペースにあなたへのオススメを表示します</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">あと%{amount_of_time} のみ視聴可能</string>
   <string name="Opens_comments" formatted="false">コメントをみる</string>
@@ -220,6 +226,7 @@
   <string name="Pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
   <string name="Popular" formatted="false">人気</string>
   <string name="Popular_Projects" formatted="false">人気のプロジェクト</string>
+  <string name="Privacy" formatted="false">Privacy</string>
   <string name="Project_Cancelled" formatted="false">プロジェクトが取り消されました。</string>
   <string name="Project_Suspended" formatted="false">中止プロジェクト</string>
   <string name="Project_cancelled" formatted="false">プロジェクトが取り消されました。</string>
@@ -234,7 +241,11 @@
   <string name="Rate_us_in_the_App_Store" formatted="false">Appストアで評価する</string>
   <string name="Read_more_about_the_campaign" formatted="false">キャンペーンの詳細をみる</string>
   <string name="Read_more_about_the_campaign_arrow" formatted="false">キャンペーンの詳細をみる  →</string>
+  <string name="Receive_a_reminder_forty_eight_hours_before_this_project_ends" formatted="false">Receive a reminder 48 hours before this and any other saved project ends by enabling notifications.</string>
+  <string name="Receive_project_updates_and_more" formatted="false">Receive project updates and more by enabling notifications.</string>
+  <string name="Receive_project_updates_messages_and_more" formatted="false">Receive project updates, messages, and more by enabling notifications.</string>
   <string name="Recent_live_stream" formatted="false">最近のライブ配信</string>
+  <string name="Recommendations" formatted="false">Recommendations</string>
   <string name="Recommended" formatted="false">おすすめ</string>
   <string name="Recommended_For_You" formatted="false">あなたへのおすすめ</string>
   <string name="Recorded_Live" formatted="false">配信済ライブ</string>
@@ -289,6 +300,8 @@
   <string name="Something_went_wrong_please_try_again" formatted="false">なにかが間違っています。もう一度お試しください。</string>
   <string name="Starting_soon" formatted="false">もう少しで始まります。</string>
   <string name="Status" formatted="false">ステータス</string>
+  <string name="Stay_up_to_date" formatted="false">Stay up to date?</string>
+  <string name="Stay_updated_on_this_project" formatted="false">Stay updated on this project?</string>
   <string name="Subscribe" formatted="false">購読する</string>
   <string name="Subscribed" formatted="false">購読済</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">ライブ配信を購読</string>

@@ -21,6 +21,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ApplicationUtils;
+import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.User;
@@ -166,10 +167,10 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
 
   @OnClick(R.id.help_center)
   public void helpCenterClick() {
-    final Intent intent = new Intent(this, WebViewActivity.class)
+    final Intent intent = new Intent(Intent.ACTION_VIEW)
       .putExtra(IntentKey.TOOLBAR_TITLE, helpCenter)
-      .putExtra(IntentKey.URL, "http://help.kickstarter.com/hc");
-    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+      .putExtra(IntentKey.URL, Secrets.HelpCenter.ENDPOINT);
+    startActivity(intent);
   }
 
   @OnClick(R.id.how_kickstarter_works)

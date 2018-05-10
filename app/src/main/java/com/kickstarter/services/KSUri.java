@@ -39,7 +39,7 @@ public final class KSUri {
   }
 
   public static boolean isKickstarterUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return uri.getHost().equals(Uri.parse(webEndpoint).getHost()) || isKSHelpCenterUri(uri);
+    return uri.getHost().equals(Uri.parse(webEndpoint).getHost());
   }
 
   public static boolean isKSFavIcon(final Uri uri, final String webEndpoint) {
@@ -50,12 +50,7 @@ public final class KSUri {
     return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/graph");
   }
 
-  public static boolean isKSHelpCenterUri(final @NonNull Uri uri) {
-    return uri.getHost().equals(Uri.parse(Secrets.HelpCenter.PRODUCTION).getHost());
-  }
-
   public static boolean isWebViewUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-//    return (isKickstarterUri(uri, webEndpoint) || isKSHelpCenterUri(uri)) && !isKSGraphQLUri(uri, webEndpoint) && !isKSFavIcon(uri, webEndpoint);
     return isKickstarterUri(uri, webEndpoint) && !isKSGraphQLUri(uri, webEndpoint) && !isKSFavIcon(uri, webEndpoint);
   }
 

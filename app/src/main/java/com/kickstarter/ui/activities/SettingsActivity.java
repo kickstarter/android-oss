@@ -293,8 +293,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   /**
    * Lazily creates a logout confirmation dialog and stores it in an instance variable.
    */
-  private @NonNull
-  AlertDialog lazyLogoutConfirmationDialog() {
+  private @NonNull AlertDialog lazyLogoutConfirmationDialog() {
     if (this.logoutConfirmationDialog == null) {
       this.logoutConfirmationDialog = new AlertDialog.Builder(this)
         .setTitle(getString(R.string.profile_settings_logout_alert_title))
@@ -316,8 +315,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     ApplicationUtils.startNewDiscoveryActivity(this);
   }
 
-  private @Nullable
-  String newsletterString(final @NonNull Newsletter newsletter) {
+  private @Nullable String newsletterString(final @NonNull Newsletter newsletter) {
     switch (newsletter) {
       case GAMES:
         return this.gamesNewsletterString;

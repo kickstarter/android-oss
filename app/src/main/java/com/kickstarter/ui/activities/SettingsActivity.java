@@ -25,7 +25,6 @@ import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.User;
-import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.data.Newsletter;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.viewmodels.SettingsViewModel;
@@ -167,9 +166,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
 
   @OnClick(R.id.help_center)
   public void helpCenterClick() {
-    final Intent intent = new Intent(Intent.ACTION_VIEW)
-      .putExtra(IntentKey.TOOLBAR_TITLE, helpCenter)
-      .putExtra(IntentKey.URL, Secrets.HelpCenter.ENDPOINT);
+    final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.HelpCenter.ENDPOINT));
     startActivity(intent);
   }
 

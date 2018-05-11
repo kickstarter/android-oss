@@ -21,9 +21,11 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ApplicationUtils;
+import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.data.Newsletter;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.viewmodels.SettingsViewModel;
@@ -228,6 +230,14 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     startHelpActivity(HelpActivity.Terms.class);
   }
 
+  @OnClick(R.id.settings_delete_account)
+  public void deleteAccountClick() {
+    final Intent intent = new Intent(this, WebViewActivity.class)
+      .putExtra(IntentKey.URL, Secrets.Privacy.DELETE_ACCOUNT)
+      .putExtra(IntentKey.TOOLBAR_TITLE, "Delete account");
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
   @OnClick(R.id.settings_rate_us)
   public void rateUsClick() {
     ViewUtils.openStoreRating(this, getPackageName());
@@ -283,7 +293,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   /**
    * Lazily creates a logout confirmation dialog and stores it in an instance variable.
    */
-  private @NonNull AlertDialog lazyLogoutConfirmationDialog() {
+  private @NonNull
+  AlertDialog lazyLogoutConfirmationDialog() {
     if (this.logoutConfirmationDialog == null) {
       this.logoutConfirmationDialog = new AlertDialog.Builder(this)
         .setTitle(getString(R.string.profile_settings_logout_alert_title))
@@ -305,7 +316,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     ApplicationUtils.startNewDiscoveryActivity(this);
   }
 
-  private @Nullable String newsletterString(final @NonNull Newsletter newsletter) {
+  private @Nullable
+  String newsletterString(final @NonNull Newsletter newsletter) {
     switch (newsletter) {
       case GAMES:
         return this.gamesNewsletterString;

@@ -292,6 +292,20 @@
 
       </LinearLayout>
 
+      <LinearLayout
+        android:id="@+id/settings_delete_account"
+        style="@style/SettingsClickableSection">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          tools:text="Delete account" />
+
+        <com.kickstarter.ui.views.IconTextView
+          style="@style/EndSettingsWidget"
+          android:text="@string/chevron_right_icon"
+          android:textColor="@color/ksr_soft_black" />
+      </LinearLayout>
+
       <TextView
         style="@style/SettingsSectionTitle"
         android:text="@string/profile_settings_rating_title" />

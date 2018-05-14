@@ -138,6 +138,7 @@ backers</string>
   <string name="Go_to_project_page" formatted="false">Go to project page</string>
   <string name="Got_it" formatted="false">Got it.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Got it! Your survey response has been submitted.</string>
+  <string name="Help_center" formatted="false">Help Center</string>
   <string name="Home" formatted="false">Home</string>
   <string name="How_backers_found_your_project" formatted="false">How backers found your project</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">I’d just like to support the project.</string>
@@ -223,6 +224,7 @@ from friends yet.</string>
   <string name="Pledged_on_date" formatted="false">&lt;b>Pledged&lt;/b> on %{pledge_date}</string>
   <string name="Popular" formatted="false">Popular</string>
   <string name="Popular_Projects" formatted="false">Popular Projects</string>
+  <string name="Privacy" formatted="false">Privacy</string>
   <string name="Project_Cancelled" formatted="false">Project Cancelled.</string>
   <string name="Project_Suspended" formatted="false">Project Suspended.</string>
   <string name="Project_cancelled" formatted="false">Project cancelled</string>
@@ -238,6 +240,7 @@ daring ideas.</string>
   <string name="Read_more_about_the_campaign" formatted="false">Read more about the campaign</string>
   <string name="Read_more_about_the_campaign_arrow" formatted="false">Read more about the campaign  →</string>
   <string name="Recent_live_stream" formatted="false">Recent live stream</string>
+  <string name="Recommendations" formatted="false">Recommendations</string>
   <string name="Recommended" formatted="false">Recommended</string>
   <string name="Recommended_For_You" formatted="false">Recommended For You</string>
   <string name="Recorded_Live" formatted="false">Recorded Live</string>

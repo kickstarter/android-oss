@@ -137,6 +137,7 @@
   <string name="Go_to_project_page" formatted="false">プロジェクトページを見る</string>
   <string name="Got_it" formatted="false">完了</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">サーベイを送信しました！</string>
+  <string name="Help_center" formatted="false">Help Center</string>
   <string name="Home" formatted="false">ホーム</string>
   <string name="How_backers_found_your_project" formatted="false">バッカ―があなたのプロジェクトを見つけた経緯</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">プロジェクトをサポートしたい</string>
@@ -220,6 +221,7 @@
   <string name="Pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
   <string name="Popular" formatted="false">人気</string>
   <string name="Popular_Projects" formatted="false">人気のプロジェクト</string>
+  <string name="Privacy" formatted="false">Privacy</string>
   <string name="Project_Cancelled" formatted="false">プロジェクトが取り消されました。</string>
   <string name="Project_Suspended" formatted="false">中止プロジェクト</string>
   <string name="Project_cancelled" formatted="false">プロジェクトが取り消されました。</string>
@@ -235,6 +237,7 @@
   <string name="Read_more_about_the_campaign" formatted="false">キャンペーンの詳細をみる</string>
   <string name="Read_more_about_the_campaign_arrow" formatted="false">キャンペーンの詳細をみる  →</string>
   <string name="Recent_live_stream" formatted="false">最近のライブ配信</string>
+  <string name="Recommendations" formatted="false">Recommendations</string>
   <string name="Recommended" formatted="false">おすすめ</string>
   <string name="Recommended_For_You" formatted="false">あなたへのおすすめ</string>
   <string name="Recorded_Live" formatted="false">配信済ライブ</string>

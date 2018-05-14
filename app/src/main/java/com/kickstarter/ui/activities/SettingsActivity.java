@@ -25,7 +25,6 @@ import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.User;
-import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.data.Newsletter;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.viewmodels.SettingsViewModel;
@@ -232,10 +231,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
 
   @OnClick(R.id.settings_delete_account)
   public void deleteAccountClick() {
-    final Intent intent = new Intent(this, WebViewActivity.class)
-      .putExtra(IntentKey.URL, Secrets.Privacy.DELETE_ACCOUNT)
-      .putExtra(IntentKey.TOOLBAR_TITLE, "Delete account");
-    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.Privacy.DELETE_ACCOUNT));
+    startActivity(intent);
   }
 
   @OnClick(R.id.settings_rate_us)

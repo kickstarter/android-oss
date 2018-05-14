@@ -154,6 +154,7 @@
       "Go_to_project_page": "Go to project page",
       "Got_it": "Got it.",
       "Got_it_your_survey_response_has_been_submitted": "Got it! Your survey response has been submitted.",
+      "Help_center": "Help Center",
       "Home": "Home",
       "How_backers_found_your_project": "How backers found your project",
       "hours": {
@@ -258,6 +259,7 @@
       "plus_shipping_cost": "+%{shipping_cost}",
       "Popular": "Popular",
       "Popular_Projects": "Popular Projects",
+      "Privacy": "Privacy",
       "Project_Cancelled": "Project Cancelled.",
       "Project_cancelled": "Project cancelled",
       "project_count_projects": {
@@ -294,6 +296,7 @@
       "Read_more_about_the_campaign_arrow": "Read more about the campaign  →",
       "Recent_live_stream": "Recent live stream",
       "Recommended": "Recommended",
+      "Recommendations": "Recommendations",
       "Recommended_For_You": "Recommended For You",
       "Recorded_live_with_creator_name": "Recorded live with <b>%{creator_name}</b>",
       "Recorded_Live": "Recorded Live",
@@ -2094,6 +2097,7 @@
       "Go_to_project_page": "Zu Projektseite",
       "Got_it": "Alles klar!",
       "Got_it_your_survey_response_has_been_submitted": "Alles klar! Deine Antwort auf die Befragung wurde übermittelt.",
+      "Help_center": "Hilfe-Center",
       "Home": "Home",
       "How_backers_found_your_project": "Wie Unterstützer dein Projekt gefunden haben",
       "hours": {
@@ -2198,6 +2202,7 @@
       "plus_shipping_cost": "+%{shipping_cost}",
       "Popular": "Beliebt",
       "Popular_Projects": "Beliebte Projekte",
+      "Privacy": "Datenschutz",
       "Project_Cancelled": "Projekt abgebrochen.",
       "Project_cancelled": "Projekt abgebrochen",
       "project_count_projects": {
@@ -2234,6 +2239,7 @@
       "Read_more_about_the_campaign_arrow": "Mehr über diese Kampagne lesen  →",
       "Recent_live_stream": "Kürzlich gesendeter Live-Stream",
       "Recommended": "Empfehlungen",
+      "Recommendations": "Empfehlungen",
       "Recommended_For_You": "Empfehlungen für dich",
       "Recorded_live_with_creator_name": "Live aufgenommen von <b>%{creator_name}</b>",
       "Recorded_Live": "Live aufgenommen",
@@ -4034,6 +4040,7 @@
       "Go_to_project_page": "Ir a la página de proyecto",
       "Got_it": "¡Listo!",
       "Got_it_your_survey_response_has_been_submitted": "¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.",
+      "Help_center": "Help Center",
       "Home": "Inicio",
       "How_backers_found_your_project": "Cómo encontraron tu proyecto los patrocinadores",
       "hours": {
@@ -4138,6 +4145,7 @@
       "plus_shipping_cost": "+%{shipping_cost}",
       "Popular": "Popular",
       "Popular_Projects": "Proyectos populares",
+      "Privacy": "Privacy",
       "Project_Cancelled": "Proyecto cancelado.",
       "Project_cancelled": "Proyecto cancelado",
       "project_count_projects": {
@@ -4174,6 +4182,7 @@
       "Read_more_about_the_campaign_arrow": "Leer más sobre esta campaña  →",
       "Recent_live_stream": "Live-Stream reciente",
       "Recommended": "Recomendados",
+      "Recommendations": "Recommendations",
       "Recommended_For_You": "Recomendaciones para ti",
       "Recorded_live_with_creator_name": "Grabado en vivo por <b>%{creator_name}</b>",
       "Recorded_Live": "Grabado en vivo",
@@ -5974,6 +5983,7 @@
       "Go_to_project_page": "Accéder à la page de projet",
       "Got_it": "Super.",
       "Got_it_your_survey_response_has_been_submitted": "Merci ! Vos réponses au questionnaire ont bien été envoyées.",
+      "Help_center": "Help Center",
       "Home": "Accueil",
       "How_backers_found_your_project": "Comment les contributeurs ont découvert votre projet",
       "hours": {
@@ -6078,6 +6088,7 @@
       "plus_shipping_cost": "+ %{shipping_cost}",
       "Popular": "Tendances",
       "Popular_Projects": "Les tendances",
+      "Privacy": "Privacy",
       "Project_Cancelled": "Projet annulé.",
       "Project_cancelled": "Projet annulé",
       "project_count_projects": {
@@ -6114,6 +6125,7 @@
       "Read_more_about_the_campaign_arrow": "En savoir plus sur la campagne →",
       "Recent_live_stream": "Diffusion en direct récente",
       "Recommended": "Rien que pour vous",
+      "Recommendations": "Recommendations",
       "Recommended_For_You": "Rien que pour vous",
       "Recorded_live_with_creator_name": "Enregistré en direct avec <b>%{creator_name}</b>",
       "Recorded_Live": "Enregistré en direct",
@@ -7914,6 +7926,7 @@
       "Go_to_project_page": "プロジェクトページを見る",
       "Got_it": "完了",
       "Got_it_your_survey_response_has_been_submitted": "サーベイを送信しました！",
+      "Help_center": "Help Center",
       "Home": "ホーム",
       "How_backers_found_your_project": "バッカ―があなたのプロジェクトを見つけた経緯",
       "hours": {
@@ -8018,6 +8031,7 @@
       "plus_shipping_cost": "+%{shipping_cost}",
       "Popular": "人気",
       "Popular_Projects": "人気のプロジェクト",
+      "Privacy": "Privacy",
       "Project_Cancelled": "プロジェクトが取り消されました。",
       "Project_cancelled": "プロジェクトが取り消されました。",
       "project_count_projects": {
@@ -8054,6 +8068,7 @@
       "Read_more_about_the_campaign_arrow": "キャンペーンの詳細をみる  →",
       "Recent_live_stream": "最近のライブ配信",
       "Recommended": "おすすめ",
+      "Recommendations": "Recommendations",
       "Recommended_For_You": "あなたへのおすすめ",
       "Recorded_live_with_creator_name": "配信された<b>%{creator_name}</b>のライブ",
       "Recorded_Live": "配信済ライブ",
@@ -9896,10 +9911,10 @@
     "project_build": "control",
     "project_dashboard": "with_dashboard",
     "react_guest_pledging_run_3": "control",
-    "default_rec_projects": "control",
     "stripe_elements": "experimental",
-    "react_backer_rewards": "control",
-    "sticky_global_header": "control"
+    "sticky_global_header_2": "exempt",
+    "react_backer_rewards_public_release": "excluded",
+    "native_show_project_card_category": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

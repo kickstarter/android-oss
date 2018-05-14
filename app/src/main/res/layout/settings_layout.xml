@@ -203,12 +203,12 @@
         android:text="@string/profile_settings_about_title" />
 
       <LinearLayout
-        android:id="@+id/faq"
+        android:id="@+id/help_center"
         style="@style/SettingsClickableSection">
 
         <TextView
           style="@style/SettingsSectionLabel"
-          android:text="@string/profile_settings_about_faq" />
+          android:text="@string/Help_center" />
 
         <com.kickstarter.ui.views.IconTextView
           style="@style/EndSettingsWidget"

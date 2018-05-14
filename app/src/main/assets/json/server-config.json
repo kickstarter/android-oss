@@ -9956,7 +9956,7 @@
     "project_build": "control",
     "project_dashboard": "with_dashboard",
     "react_guest_pledging_run_3": "control",
-    "stripe_elements": "control",
+    "stripe_elements": "experimental",
     "sticky_global_header_2": "exempt",
     "react_backer_rewards_public_release": "excluded",
     "native_show_project_card_category": "control"

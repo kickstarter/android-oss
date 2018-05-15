@@ -21,6 +21,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ApplicationUtils;
+import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.User;
@@ -62,6 +63,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
 
   protected @BindString(R.string.profile_settings_newsletter_games) String gamesNewsletterString;
   protected @BindString(R.string.profile_settings_newsletter_happening) String happeningNewsletterString;
+  protected @BindString(R.string.Help_center) String helpCenter;
   protected @BindString(R.string.mailto) String mailtoString;
   protected @BindString(R.string.Logged_Out) String loggedOutString;
   protected @BindString(R.string.profile_settings_newsletter_weekly) String weeklyNewsletterString;
@@ -168,9 +170,10 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     startHelpActivity(HelpActivity.CookiePolicy.class);
   }
 
-  @OnClick(R.id.faq)
-  public void faqClick() {
-    startHelpActivity(HelpActivity.Faq.class);
+  @OnClick(R.id.help_center)
+  public void helpCenterClick() {
+    final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.HelpCenter.ENDPOINT));
+    startActivity(intent);
   }
 
   @OnClick(R.id.how_kickstarter_works)

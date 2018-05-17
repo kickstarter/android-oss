@@ -491,10 +491,7 @@
   <string name="login_tout_default_intent_traditional_login_button" formatted="false">Log in</string>
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Sign up</string>
   <string name="login_tout_default_intent_traditional_title" formatted="false">Use your email address:</string>
-  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms" formatted="false">By signing up, you agree to our terms of use, privacy policy, and cookie policy.</string>
-  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" formatted="false">By signing up, you agree to our &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, and &lt;u>cookie policy&lt;/u>.</string>
   <string name="login_tout_disclaimer_read_more" formatted="false">Read more</string>
-  <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">We\'ll never post anything without your permission.</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
   <string name="login_tout_errors_facebook_authorization_exception_button" formatted="false">Let\'s try that again</string>
   <string name="login_tout_errors_facebook_authorization_exception_message" formatted="false">We\'re having some trouble getting you logged in.</string>
@@ -770,7 +767,6 @@ Thank you for your support!</string>
   <string name="signup_input_fields_password" formatted="false">Password</string>
   <string name="signup_input_fields_password_min_characters" formatted="false">Password (minimum 6 characters)</string>
   <string name="signup_navbar_title" formatted="false">Sign up</string>
-  <string name="signup_newsletter_full" formatted="false">Receive our weekly newsletter and other occasional updates.</string>
   <string name="social_buttons_cancel" formatted="false">Cancel</string>
   <string name="social_buttons_post" formatted="false">Post</string>
   <string name="social_buttons_send" formatted="false">Send</string>

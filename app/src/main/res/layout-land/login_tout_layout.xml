@@ -25,22 +25,14 @@
       <Button
         android:id="@+id/facebook_login_button"
         android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/grid_1"
         style="@style/FacebookButton" />
-
-      <TextView
-        style="@style/Caption1Secondary"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_1"
-        android:textColor="@color/text_secondary"
-        android:text="@string/discovery_facebook_connect_hero_we_will_never_post_anything_on_facebook" />
 
       <Button
         style="@style/BorderButton"
         android:id="@+id/login_button"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/grid_4"
+        android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_1"
         android:text="@string/login_buttons_log_in_email" />
 
@@ -58,11 +50,9 @@
         android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_2"
         android:gravity="center_horizontal"
-        android:layout_marginStart="@dimen/grid_2"
-        android:layout_marginEnd="@dimen/grid_2"
         android:textAppearance="@style/Caption1Primary"
         android:textColor="@color/text_secondary"
-        android:text="@string/login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" />
+        android:text="@string/login_tout_disclaimer_agree_to_terms_html" />
 
     </LinearLayout>
 

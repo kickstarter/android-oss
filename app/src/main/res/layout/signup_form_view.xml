@@ -5,6 +5,8 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:focusable="true"
+  android:focusableInTouchMode="true"
   android:gravity="center_horizontal">
 
   <android.support.design.widget.TextInputLayout
@@ -65,7 +67,7 @@
     android:layout_height="wrap_content"
     style="@style/Caption1Secondary"
     android:layout_marginBottom="@dimen/grid_1"
-    android:text="@string/signup_newsletter_full"/>
+    android:text="@string/signup_newsletter_full_opt_out"/>
 
   <Button
     android:id="@+id/signup_button"
@@ -84,8 +86,6 @@
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:layout_marginBottom="@dimen/grid_1"
-    android:padding="@dimen/grid_1"
-    android:text="@string/login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" />
+    android:text="@string/login_tout_disclaimer_agree_to_terms_html" />
 
 </LinearLayout>
-

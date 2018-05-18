@@ -942,10 +942,9 @@ Bitte versuche es später noch einmal.</string>
   <string name="login_tout_default_intent_traditional_login_button" formatted="false">Anmelden</string>
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Registrieren</string>
   <string name="login_tout_default_intent_traditional_title" formatted="false">Benutze deine E-Mail-Adresse:</string>
-  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms" formatted="false">Mit der Registrierung stimmst du unseren Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu.</string>
-  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" formatted="false">Durch deine Anmeldung erklärst du dich mir unseren &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, und &lt;u>cookie policy&lt;/u> einverstanden.</string>
+  <string name="login_tout_disclaimer_agree_to_terms" formatted="false">By creating an account, you agree to our terms of use, privacy policy, and cookie policy. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.</string>
+  <string name="login_tout_disclaimer_agree_to_terms_html" formatted="false">By creating an account, you agree to our &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, and &lt;u>cookie policy&lt;/u>. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.</string>
   <string name="login_tout_disclaimer_read_more" formatted="false">Weiterlesen</string>
-  <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">Wir veröffentlichen niemals etwas ohne deine Zustimmung.</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
   <string name="login_tout_errors_facebook_authorization_exception_button" formatted="false">Versuche es noch einmal!</string>
   <string name="login_tout_errors_facebook_authorization_exception_message" formatted="false">Fehler beim Einloggen aufgetreten.</string>
@@ -1251,7 +1250,7 @@ gespeichert</string>
   <string name="signup_input_fields_password" formatted="false">Passwort</string>
   <string name="signup_input_fields_password_min_characters" formatted="false">Passwort (mindestens 6 Zeichen)</string>
   <string name="signup_navbar_title" formatted="false">Registrieren</string>
-  <string name="signup_newsletter_full" formatted="false">Endecke neue Projekte in unserem wöchentlichen Newsletter.</string>
+  <string name="signup_newsletter_full_opt_out" formatted="false">Du erhältst den wöchentlichen Kickstarter Newsletter und sporadische Updates per E-Mail. Du kannst diese E-Mails jederzeit über den in der E-Mail enthaltenen Link oder wie in unseren Datenschutzrichtlinien dargelegt abwählen.</string>
   <string name="social_buttons_cancel" formatted="false">Abbrechen</string>
   <string name="social_buttons_post" formatted="false">Posten</string>
   <string name="social_buttons_send" formatted="false">Senden</string>

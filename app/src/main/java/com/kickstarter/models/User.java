@@ -24,11 +24,13 @@ public abstract class User implements Parcelable {
   public abstract @Nullable Boolean notifyMobileOfComments();
   public abstract @Nullable Boolean notifyMobileOfFollower();
   public abstract @Nullable Boolean notifyMobileOfFriendActivity();
+  public abstract @Nullable Boolean notifyMobileOfMessages();
   public abstract @Nullable Boolean notifyMobileOfUpdates();
   public abstract @Nullable Boolean notifyOfBackings();
   public abstract @Nullable Boolean notifyOfComments();
   public abstract @Nullable Boolean notifyOfFollower();
   public abstract @Nullable Boolean notifyOfFriendActivity();
+  public abstract @Nullable Boolean notifyOfMessages();
   public abstract @Nullable Boolean notifyOfUpdates();
   public abstract @Nullable Boolean optedOutOfRecommendations();
   public abstract @Nullable Boolean promoNewsletter();
@@ -52,11 +54,13 @@ public abstract class User implements Parcelable {
     public abstract Builder notifyMobileOfComments(Boolean __);
     public abstract Builder notifyMobileOfFollower(Boolean __);
     public abstract Builder notifyMobileOfFriendActivity(Boolean __);
+    public abstract Builder notifyMobileOfMessages(Boolean __);
     public abstract Builder notifyMobileOfUpdates(Boolean __);
     public abstract Builder notifyOfBackings(Boolean __);
     public abstract Builder notifyOfComments(Boolean __);
     public abstract Builder notifyOfFollower(Boolean __);
     public abstract Builder notifyOfFriendActivity(Boolean __);
+    public abstract Builder notifyOfMessages(Boolean __);
     public abstract Builder notifyOfUpdates(Boolean __);
     public abstract Builder optedOutOfRecommendations(Boolean __);
     public abstract Builder promoNewsletter(Boolean __);

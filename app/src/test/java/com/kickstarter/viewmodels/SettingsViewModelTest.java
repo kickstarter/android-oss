@@ -26,10 +26,10 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
       .currentUser(currentUser)
       .build();
 
-    currentUser.observable().subscribe(currentUserTest);
+    currentUser.observable().subscribe(this.currentUserTest);
 
     this.vm = new SettingsViewModel.ViewModel(environment);
-    this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest);
+    this.vm.outputs.showOptInPrompt().subscribe(this.showOptInPromptTest);
   }
 
   @Test

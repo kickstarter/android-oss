@@ -204,7 +204,7 @@ public interface SettingsViewModel {
     @Override public void notifyMobileOfFriendActivity(final boolean b) {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyMobileOfFriendActivity(b).build());
     }
-    @Override public void notifyMobileOfMessages(boolean b) {
+    @Override public void notifyMobileOfMessages(final boolean b) {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyMobileOfMessages(b).build());
     }
     @Override public void notifyMobileOfUpdates(final boolean b) {
@@ -216,7 +216,7 @@ public interface SettingsViewModel {
     @Override public void notifyOfFriendActivity(final boolean b) {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyOfFriendActivity(b).build());
     }
-    @Override public void notifyOfMessages(boolean b) {
+    @Override public void notifyOfMessages(final boolean b) {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyOfMessages(b).build());
     }
     @Override public void notifyOfUpdates(final boolean b) {

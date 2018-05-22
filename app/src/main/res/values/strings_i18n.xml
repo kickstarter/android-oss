@@ -75,10 +75,12 @@ backers</string>
   <string name="Creator_tips" formatted="false">Creator tips</string>
   <string name="Daily_digest" formatted="false">Daily digest</string>
   <string name="Data_will_appear_here_once" formatted="false">Data will appear here once somebody backs your project.</string>
+  <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter Account</string>
   <string name="Delivered" formatted="false">Delivered</string>
   <string name="Discover_more_projects" formatted="false">Discover more projects.</string>
   <string name="Dismiss" formatted="false">Dismiss</string>
   <string name="Done" formatted="false">Done</string>
+  <string name="Download_your_personal_data" formatted="false">Download your personal data</string>
   <string name="Earth" formatted="false">Earth</string>
   <string name="Either_the_pledge_or_the_project_was_canceled" formatted="false">Either the pledge or the project was canceled before the deadline.</string>
   <string name="Email_frequency" formatted="false">Email frequency</string>
@@ -146,6 +148,7 @@ backers</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">I’d just like to support the project.</string>
   <string name="Individual_Emails" formatted="false">Individual emails</string>
   <string name="Info" formatted="false">Info</string>
+  <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">It may take up to 24 hours to collect your data. When it’s ready, we’ll send instructions to download your data to the email associated with this account. If you don’t hear from us, come back here to try again.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">It’s a way to bring creative projects to life.</string>
   <string name="Its_better_with_friends" formatted="false">It’s better\n
 with friends.</string>
@@ -191,6 +194,7 @@ with friends.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">No pledges\n
 from friends yet.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">No replay is available for this live stream.</string>
+  <string name="No_saved_projects" formatted="false">No saved projects</string>
   <string name="No_unread_messages" formatted="false">No unread messages</string>
   <string name="Not_delivered" formatted="false">Not delivered</string>
   <string name="Not_followed" formatted="false">Not followed</string>
@@ -259,6 +263,7 @@ daring ideas.</string>
   <string name="Replay_past_live_stream" formatted="false">Replay past live stream</string>
   <string name="Replay_past_live_streams" formatted="false">Replay past live streams</string>
   <string name="Reply_to_user_name" formatted="false">Reply to %{user_name}…</string>
+  <string name="Request_my_Personal_Data" formatted="false">Request my Personal Data</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_one" formatted="false">Reward Survey</string>
@@ -302,6 +307,7 @@ daring ideas.</string>
   <string name="Something_catch_your_eye" formatted="false">Something\n
 catch your eye?</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Something went wrong, please try again.</string>
+  <string name="Start_data_collection" formatted="false">Start data collection</string>
   <string name="Starting_soon" formatted="false">Starting soon</string>
   <string name="Status" formatted="false">Status</string>
   <string name="Stay_up_to_date" formatted="false">Stay up to date?</string>
@@ -353,6 +359,7 @@ catch your eye?</string>
   <string name="View_your_reward" formatted="false">View your reward</string>
   <string name="Watch_live" formatted="false">Watch live</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">We couldn\'t find anything for “%{search_term}”.</string>
+  <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">We use your activity internally to make recommendations for you. Turn recommendations off to opt out of this.</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">We were unable to connect to the live stream chat.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">We were unable to load the shipping destinations.\n
 Please try again later.</string>

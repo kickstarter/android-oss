@@ -292,20 +292,6 @@
 
       </LinearLayout>
 
-      <LinearLayout
-        android:id="@+id/settings_delete_account"
-        style="@style/SettingsClickableSection">
-
-        <TextView
-          style="@style/SettingsSectionLabel"
-          tools:text="Delete account" />
-
-        <com.kickstarter.ui.views.IconTextView
-          style="@style/EndSettingsWidget"
-          android:text="@string/chevron_right_icon"
-          android:textColor="@color/ksr_soft_black" />
-      </LinearLayout>
-
       <TextView
         style="@style/SettingsSectionTitle"
         android:text="@string/profile_settings_rating_title" />
@@ -333,6 +319,24 @@
         android:layout_marginBottom="@dimen/grid_4"
         android:layout_marginTop="@dimen/grid_5"
         android:text="@string/profile_settings_log_out_button" />
+
+      <TextView
+        style="@style/SettingsSectionTitle"
+        android:text="@string/Privacy" />
+
+      <LinearLayout
+        android:id="@+id/settings_delete_account"
+        style="@style/SettingsClickableSection">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:text="@string/Delete_my_Kickstarter_Account" />
+
+        <com.kickstarter.ui.views.IconTextView
+          style="@style/EndSettingsWidget"
+          android:text="@string/chevron_right_icon"
+          android:textColor="@color/ksr_soft_black" />
+      </LinearLayout>
 
     </LinearLayout>
 

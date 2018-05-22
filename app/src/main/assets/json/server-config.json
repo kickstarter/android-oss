@@ -150,10 +150,13 @@
       "Followed": "Followed",
       "Following": "Following",
       "Funding_successful": "Funding successful",
+      "Get_notified_about_new_messages": "Get notified about new messages?",
       "Get_notified_about_this_creators_live_streams": "Get notified about this creator’s live streams",
+      "Get_reminded_about_this_project": "Get reminded about this project?",
       "Go_to_project_page": "Go to project page",
       "Got_it": "Got it.",
       "Got_it_your_survey_response_has_been_submitted": "Got it! Your survey response has been submitted.",
+      "Help_center": "Help Center",
       "Home": "Home",
       "How_backers_found_your_project": "How backers found your project",
       "hours": {
@@ -175,6 +178,7 @@
       "Keep_up_with_future_live_streams": "Keep up with future live streams",
       "Kickstarter_if_funded": "Kickstarter (if funded)",
       "Kickstarter_is_not_a_store": "Kickstarter is not a store.",
+      "Know_when_creators_and_backers_message_you": "Know when creators and backers message you by enabling notifications.",
       "Learn_more_about_accountability": "Learn more about accountability",
       "Left_count_left": {
         "zero": "%{left_count} left",
@@ -211,6 +215,7 @@
       },
       "minutes_plural": "minutes",
       "Name": "Name",
+      "Never": "Never",
       "New_pledge_activity": "New pledge activity",
       "No_comments_yet": "No comments yet.",
       "No_messages": "No messages",
@@ -221,6 +226,7 @@
       "No_unread_messages": "No unread messages",
       "Not_followed": "Not followed",
       "Not_delivered": "Not delivered",
+      "Not_now": "Not Now",
       "Once_you_back_a_project_well_share": "Once you back a project, we’ll share personalized recommendations in this space.",
       "Only_amount_of_time_left_to_watch_this": "Only %{amount_of_time} left to watch this.",
       "Opens_comments": "Opens comments.",
@@ -258,6 +264,7 @@
       "plus_shipping_cost": "+%{shipping_cost}",
       "Popular": "Popular",
       "Popular_Projects": "Popular Projects",
+      "Privacy": "Privacy",
       "Project_Cancelled": "Project Cancelled.",
       "Project_cancelled": "Project cancelled",
       "project_count_projects": {
@@ -292,8 +299,12 @@
       "Rate_us_in_the_App_Store": "Rate us in the App Store",
       "Read_more_about_the_campaign": "Read more about the campaign",
       "Read_more_about_the_campaign_arrow": "Read more about the campaign  →",
+      "Receive_a_reminder_forty_eight_hours_before_this_project_ends": "Receive a reminder 48 hours before this and any other saved project ends by enabling notifications.",
+      "Receive_project_updates_and_more": "Receive project updates and more by enabling notifications.",
+      "Receive_project_updates_messages_and_more": "Receive project updates, messages, and more by enabling notifications.",
       "Recent_live_stream": "Recent live stream",
       "Recommended": "Recommended",
+      "Recommendations": "Recommendations",
       "Recommended_For_You": "Recommended For You",
       "Recorded_live_with_creator_name": "Recorded live with <b>%{creator_name}</b>",
       "Recorded_Live": "Recorded Live",
@@ -354,6 +365,8 @@
       "Something_went_wrong_please_try_again": "Something went wrong, please try again.",
       "Starting_soon": "Starting soon",
       "Status": "Status",
+      "Stay_up_to_date": "Stay up to date?",
+      "Stay_updated_on_this_project": "Stay updated on this project?",
       "Subscribe": "Subscribe",
       "Subscribed": "Subscribed",
       "Subscribes_to_upcoming_lives_streams": "Subscribes to upcoming live streams.",
@@ -961,9 +974,8 @@
           }
         },
         "disclaimer": {
-          "by_signing_up_you_agree_to_terms": "By signing up, you agree to our terms of use, privacy policy, and cookie policy.",
-          "by_signing_up_you_agree_to_terms_html": "By signing up, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.",
-          "we_never_post_anything_without_permission": "We'll never post anything without your permission.",
+          "agree_to_terms": "By creating an account, you agree to our terms of use, privacy policy, and cookie policy. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
+          "agree_to_terms_html": "By creating an account, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
           "read_more": "Read more"
         },
         "navbar_title": "Log in or sign up"
@@ -1009,7 +1021,7 @@
           "password_min_characters": "Password (minimum 6 characters)"
         },
         "navbar_title": "Sign up",
-        "newsletter_full": "Receive our weekly newsletter and other occasional updates.",
+        "newsletter_full_opt_out": "Receive Kickstarter's weekly newsletter and other occasional updates by email. You can opt out of these messages at any time by using the link in the email and as otherwise set out in our Privacy Policy.",
         "button": "Sign up",
         "button_email": "Sign up with email",
         "error": {
@@ -2090,10 +2102,13 @@
       "Followed": "Abonniert",
       "Following": "Abonniert",
       "Funding_successful": "Finanzierung erfolgreich",
+      "Get_notified_about_new_messages": "Möchtest du benachrichtigt werden bei neuen Nachrichten?",
       "Get_notified_about_this_creators_live_streams": "Benachrichtigungen zu den Live-Streams dieses Projektgründers erhalten.",
+      "Get_reminded_about_this_project": "Möchtest du an dieses Projekt erinnert werden?",
       "Go_to_project_page": "Zu Projektseite",
       "Got_it": "Alles klar!",
       "Got_it_your_survey_response_has_been_submitted": "Alles klar! Deine Antwort auf die Befragung wurde übermittelt.",
+      "Help_center": "Hilfe-Center",
       "Home": "Home",
       "How_backers_found_your_project": "Wie Unterstützer dein Projekt gefunden haben",
       "hours": {
@@ -2115,6 +2130,7 @@
       "Keep_up_with_future_live_streams": "Zeitnahe Info zu zukünftigen Live-Streams",
       "Kickstarter_if_funded": "Kickstarter (bei Finanzierung)",
       "Kickstarter_is_not_a_store": "Kickstarter ist kein Geschäft.",
+      "Know_when_creators_and_backers_message_you": "Aktiviere Benachrichtigungen, damit du über eingehende Nachrichten von Projektgründern und Unterstützern Bescheid weißt.",
       "Learn_more_about_accountability": "Weitere Informationen zur Rechenschaftspflicht",
       "Left_count_left": {
         "zero": "%{left_count} übrig",
@@ -2151,6 +2167,7 @@
       },
       "minutes_plural": "Min",
       "Name": "Name",
+      "Never": "Niemals",
       "New_pledge_activity": "Neue Finanzierungsbeiträge",
       "No_comments_yet": "Bisher noch keine Kommentare.",
       "No_messages": "Keine Nachrichten",
@@ -2161,6 +2178,7 @@
       "No_unread_messages": "Keine ungelesenen Nachrichten",
       "Not_followed": "Nicht abonniert",
       "Not_delivered": "Nicht verschickt",
+      "Not_now": "Nicht jetzt",
       "Once_you_back_a_project_well_share": "Wenn du ein Projekt unterstützt, werden wir dir hier maßgeschneiderte Empfehlungen machen.",
       "Only_amount_of_time_left_to_watch_this": "Nur noch %{amount_of_time} live!",
       "Opens_comments": "Öffnet Kommentare.",
@@ -2198,6 +2216,7 @@
       "plus_shipping_cost": "+%{shipping_cost}",
       "Popular": "Beliebt",
       "Popular_Projects": "Beliebte Projekte",
+      "Privacy": "Datenschutz",
       "Project_Cancelled": "Projekt abgebrochen.",
       "Project_cancelled": "Projekt abgebrochen",
       "project_count_projects": {
@@ -2232,8 +2251,12 @@
       "Rate_us_in_the_App_Store": "Bewerte uns im App Store!",
       "Read_more_about_the_campaign": "Mehr über diese Kampagne lesen",
       "Read_more_about_the_campaign_arrow": "Mehr über diese Kampagne lesen  →",
+      "Receive_a_reminder_forty_eight_hours_before_this_project_ends": "Aktiviere Benachrichtigungen - wir schicken dir eine Erinnerung 48 Stunden, bevor dieses und andere gespeicherte Projekte abläuft.",
+      "Receive_project_updates_and_more": "Aktiviere Benachrichtigungen - so weißt du immer über Projektaktualisierungen Bescheid.",
+      "Receive_project_updates_messages_and_more": "Aktiviere Benachrichtigungen - so weißt du immer über Projektaktualisierungen, neue Nachrichten und ähnliches Bescheid.",
       "Recent_live_stream": "Kürzlich gesendeter Live-Stream",
       "Recommended": "Empfehlungen",
+      "Recommendations": "Empfehlungen",
       "Recommended_For_You": "Empfehlungen für dich",
       "Recorded_live_with_creator_name": "Live aufgenommen von <b>%{creator_name}</b>",
       "Recorded_Live": "Live aufgenommen",
@@ -2294,6 +2317,8 @@
       "Something_went_wrong_please_try_again": "Da hat etwas nicht geklappt. Bitte versuche es später noch einmal.",
       "Starting_soon": "Beginnt in Kürze",
       "Status": "Status:",
+      "Stay_up_to_date": "Möchtest du auf dem Laufenden bleiben?",
+      "Stay_updated_on_this_project": "Möchtest du bei diesem Projekt auf dem Laufenden bleiben?",
       "Subscribe": "Abonnieren",
       "Subscribed": "Abo aktiviert",
       "Subscribes_to_upcoming_lives_streams": "Zukünftige Live-Streams abonnieren.",
@@ -2901,9 +2926,8 @@
           }
         },
         "disclaimer": {
-          "by_signing_up_you_agree_to_terms": "Mit der Registrierung stimmst du unseren Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu.",
-          "by_signing_up_you_agree_to_terms_html": "Durch deine Anmeldung erklärst du dich mir unseren <u>terms of use</u>, <u>privacy policy</u>, und <u>cookie policy</u> einverstanden.",
-          "we_never_post_anything_without_permission": "Wir veröffentlichen niemals etwas ohne deine Zustimmung.",
+          "agree_to_terms": "By creating an account, you agree to our terms of use, privacy policy, and cookie policy. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
+          "agree_to_terms_html": "By creating an account, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
           "read_more": "Weiterlesen"
         },
         "navbar_title": "Einloggen oder anmelden"
@@ -2949,7 +2973,7 @@
           "password_min_characters": "Passwort (mindestens 6 Zeichen)"
         },
         "navbar_title": "Registrieren",
-        "newsletter_full": "Endecke neue Projekte in unserem wöchentlichen Newsletter.",
+        "newsletter_full_opt_out": "Du erhältst den wöchentlichen Kickstarter Newsletter und sporadische Updates per E-Mail. Du kannst diese E-Mails jederzeit über den in der E-Mail enthaltenen Link oder wie in unseren Datenschutzrichtlinien dargelegt abwählen.",
         "button": "Registrieren",
         "button_email": "Mit E-Mail-Adresse registrieren",
         "error": {
@@ -4030,10 +4054,13 @@
       "Followed": "Siguiendo",
       "Following": "Siguiendo",
       "Funding_successful": "Financiado con éxito",
+      "Get_notified_about_new_messages": "¿Deseas recibir notificaciones sobre nuevos mensajes?",
       "Get_notified_about_this_creators_live_streams": "Recibe notificaciones sobre los Live Streams de este creador",
+      "Get_reminded_about_this_project": "¿Deseas recibir recordatorios sobre este proyecto?",
       "Go_to_project_page": "Ir a la página de proyecto",
       "Got_it": "¡Listo!",
       "Got_it_your_survey_response_has_been_submitted": "¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.",
+      "Help_center": "Centro de ayuda",
       "Home": "Inicio",
       "How_backers_found_your_project": "Cómo encontraron tu proyecto los patrocinadores",
       "hours": {
@@ -4055,6 +4082,7 @@
       "Keep_up_with_future_live_streams": "Recibe info sobre live streams futuros",
       "Kickstarter_if_funded": "Kickstarter (si la financiación es exitosa)",
       "Kickstarter_is_not_a_store": "Kickstarter no es una tienda.",
+      "Know_when_creators_and_backers_message_you": "Entérate cuando los creadores y patrocinadores te envíen mensajes habilitando las notificaciones.",
       "Learn_more_about_accountability": "Más información sobre las responsabilidades",
       "Left_count_left": {
         "zero": "%{left_count} restantes",
@@ -4091,6 +4119,7 @@
       },
       "minutes_plural": "minutos",
       "Name": "Nombre",
+      "Never": "Nunca",
       "New_pledge_activity": "Nueva actividad de contribución",
       "No_comments_yet": "No hay comentarios todavia.",
       "No_messages": "No hay mensajes",
@@ -4101,6 +4130,7 @@
       "No_unread_messages": "No hay mensajes no leídos",
       "Not_followed": "No siguiendo",
       "Not_delivered": "No entregado",
+      "Not_now": "Ahora no",
       "Once_you_back_a_project_well_share": "Tu patrocinio de un proyecto nos ayuda a hacerte recomendaciones personalizadas.",
       "Only_amount_of_time_left_to_watch_this": "Queda poco tiempo para verlo (%{amount_of_time}).",
       "Opens_comments": "Abre comentarios.",
@@ -4138,6 +4168,7 @@
       "plus_shipping_cost": "+%{shipping_cost}",
       "Popular": "Popular",
       "Popular_Projects": "Proyectos populares",
+      "Privacy": "Privacidad",
       "Project_Cancelled": "Proyecto cancelado.",
       "Project_cancelled": "Proyecto cancelado",
       "project_count_projects": {
@@ -4172,8 +4203,12 @@
       "Rate_us_in_the_App_Store": "¡Califícanos en la App Store!",
       "Read_more_about_the_campaign": "Leer más sobre la campaña",
       "Read_more_about_the_campaign_arrow": "Leer más sobre esta campaña  →",
+      "Receive_a_reminder_forty_eight_hours_before_this_project_ends": "Recibe un recordatorio 48 horas antes de que este o cualquier otro proyecto guardado finalice habilitando las notificaciones.",
+      "Receive_project_updates_and_more": "Recibe actualizaciones de proyectos y más habilitando las notificaciones.",
+      "Receive_project_updates_messages_and_more": "Recibe actualizaciones de proyectos, mensajes y más habilitando las notificaciones.",
       "Recent_live_stream": "Live-Stream reciente",
       "Recommended": "Recomendados",
+      "Recommendations": "Recomendaciones",
       "Recommended_For_You": "Recomendaciones para ti",
       "Recorded_live_with_creator_name": "Grabado en vivo por <b>%{creator_name}</b>",
       "Recorded_Live": "Grabado en vivo",
@@ -4234,6 +4269,8 @@
       "Something_went_wrong_please_try_again": "Ocurrió un error. Inténtalo nuevamente más tarde.",
       "Starting_soon": "Comienza en breve",
       "Status": "Estado:",
+      "Stay_up_to_date": "¿Deseas mantenerte actualizado?",
+      "Stay_updated_on_this_project": "¿Deseas mantenerte actualizado sobre este proyecto?",
       "Subscribe": "Suscribir",
       "Subscribed": "Suscripción activa",
       "Subscribes_to_upcoming_lives_streams": "Activa subscripción a futuros Live-Streams.",
@@ -4841,9 +4878,8 @@
           }
         },
         "disclaimer": {
-          "by_signing_up_you_agree_to_terms": "Al registrarte, estás aceptando nuestros términos de uso, nuestra política de privacidad y de cookies.",
-          "by_signing_up_you_agree_to_terms_html": "Con la registración confirmas tu conformidad con nuestros <u>terms of use</u>, <u>privacy policy</u>, y <u>cookie policy</u>.",
-          "we_never_post_anything_without_permission": "Nunca publicaremos nada sin tu consentimiento.",
+          "agree_to_terms": "By creating an account, you agree to our terms of use, privacy policy, and cookie policy. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
+          "agree_to_terms_html": "By creating an account, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
           "read_more": "Leer más"
         },
         "navbar_title": "Inicia sesión o regístrate"
@@ -4889,7 +4925,7 @@
           "password_min_characters": "Clave (mínimo 6 caracteres)"
         },
         "navbar_title": "Registrar",
-        "newsletter_full": "Descubre nuevos proyectos con nuestro boletín semanal.",
+        "newsletter_full_opt_out": "Recibe el boletín semanal de Kickstarter y otras actualizaciones ocasionales por correo electrónico. Puedes optar por dejar de recibir estos mensajes en cualquier momento utilizando el enlace incluido en el correo electrónico y según lo establecido en nuestra Política de privacidad.",
         "button": "Regístrar",
         "button_email": "Registro con correo electrónico",
         "error": {
@@ -5970,10 +6006,13 @@
       "Followed": "Abonné",
       "Following": "Projets soutenus par mes amis",
       "Funding_successful": "Intégralement financé",
+      "Get_notified_about_new_messages": "Envie d'être informé des messages entrants ?",
       "Get_notified_about_this_creators_live_streams": "Envoyez-moi des notifications au sujet des diffusions en direct de ce créateur.",
+      "Get_reminded_about_this_project": "Envie de recevoir un rappel à propos de ce projet ?",
       "Go_to_project_page": "Accéder à la page de projet",
       "Got_it": "Super.",
       "Got_it_your_survey_response_has_been_submitted": "Merci ! Vos réponses au questionnaire ont bien été envoyées.",
+      "Help_center": "Centre d'aide",
       "Home": "Accueil",
       "How_backers_found_your_project": "Comment les contributeurs ont découvert votre projet",
       "hours": {
@@ -5995,6 +6034,7 @@
       "Keep_up_with_future_live_streams": "Soyez informé des prochaines diffusions en direct",
       "Kickstarter_if_funded": "Kickstarter (si le projet est financé)",
       "Kickstarter_is_not_a_store": "Kickstarter n'est pas un magasin.",
+      "Know_when_creators_and_backers_message_you": "Activez vos notifications pour savoir quand un créateur ou un contributeur vous envoie un message.",
       "Learn_more_about_accountability": "En savoir plus sur la responsabilité",
       "Left_count_left": {
         "zero": "%{left_count} restantes",
@@ -6031,6 +6071,7 @@
       },
       "minutes_plural": "minutes",
       "Name": "Nom",
+      "Never": "Jamais",
       "New_pledge_activity": "Nouveaux engagements",
       "No_comments_yet": "Pas de commentaires.",
       "No_messages": "Pas de messages",
@@ -6041,6 +6082,7 @@
       "No_unread_messages": "Pas de messages non lus",
       "Not_followed": "Non abonné",
       "Not_delivered": "Non distribué",
+      "Not_now": "Pas maintenant",
       "Once_you_back_a_project_well_share": "Une fois que vous aurez soutenu un projet, des recommandations personnalisées s'afficheront ici.",
       "Only_amount_of_time_left_to_watch_this": "Plus que %{amount_of_time} pour regarder cette diffusion.",
       "Opens_comments": "Ouvre les commentaires.",
@@ -6078,6 +6120,7 @@
       "plus_shipping_cost": "+ %{shipping_cost}",
       "Popular": "Tendances",
       "Popular_Projects": "Les tendances",
+      "Privacy": "Vie privée",
       "Project_Cancelled": "Projet annulé.",
       "Project_cancelled": "Projet annulé",
       "project_count_projects": {
@@ -6112,8 +6155,12 @@
       "Rate_us_in_the_App_Store": "Évaluez-nous dans l'App Store",
       "Read_more_about_the_campaign": "En savoir plus sur la campagne",
       "Read_more_about_the_campaign_arrow": "En savoir plus sur la campagne →",
+      "Receive_a_reminder_forty_eight_hours_before_this_project_ends": "Si vous activez vos notifications, vous recevrez un rappel 48 heures avant la fin de ce projet et de tous les autres que vous enregistrez.",
+      "Receive_project_updates_and_more": "Si vous activez vos notifications, vous recevrez des actus de projet et plus.",
+      "Receive_project_updates_messages_and_more": "Si vous activez vos notifications, vous recevrez des actus de projet, vos messages et plus.",
       "Recent_live_stream": "Diffusion en direct récente",
       "Recommended": "Rien que pour vous",
+      "Recommendations": "Recommandations",
       "Recommended_For_You": "Rien que pour vous",
       "Recorded_live_with_creator_name": "Enregistré en direct avec <b>%{creator_name}</b>",
       "Recorded_Live": "Enregistré en direct",
@@ -6174,6 +6221,8 @@
       "Something_went_wrong_please_try_again": "Un problème est survenu. Veuillez réessayer.",
       "Starting_soon": "Bientôt en direct",
       "Status": "État :",
+      "Stay_up_to_date": "Envie d'être informé ?",
+      "Stay_updated_on_this_project": "Envie de suivre ce projet ?",
       "Subscribe": "S'abonner",
       "Subscribed": "Abonné ",
       "Subscribes_to_upcoming_lives_streams": "Abonnement aux diffusions en direct à venir.",
@@ -6781,9 +6830,8 @@
           }
         },
         "disclaimer": {
-          "by_signing_up_you_agree_to_terms": "En vous inscrivant, vous acceptez les Conditions d'utilisation, notre Politique de confidentialité et notre Politique en matière de cookies.",
-          "by_signing_up_you_agree_to_terms_html": "En vous inscrivant, vous acceptez nos <u>Conditions d'utilisation</u>, notre <u>Politique de confidentialité</u> et notre <u>Politique en matière de cookies</u>.",
-          "we_never_post_anything_without_permission": "Rien ne sera publié sans votre permission.",
+          "agree_to_terms": "By creating an account, you agree to our terms of use, privacy policy, and cookie policy. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
+          "agree_to_terms_html": "By creating an account, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
           "read_more": "En savoir plus"
         },
         "navbar_title": "Connexion ou inscription"
@@ -6829,7 +6877,7 @@
           "password_min_characters": "Mot de passe (6 caractères minimum)"
         },
         "navbar_title": "Inscription",
-        "newsletter_full": "Découvrez de nouveaux projets grâce à notre lettre d'informations hebdomadaire.",
+        "newsletter_full_opt_out": "Vous recevrez la lettre d'information hebdomadaire de Kickstarter et d'autres actualités, par e-mail. Vous pouvez vous désabonner de ces messages à tout moment en cliquant sur le lien contenu dans chaque e-mail ou en suivant les instructions de notre Politique de confidentialité.",
         "button": "Inscription",
         "button_email": "Inscription avec votre adresse e-mail",
         "error": {
@@ -7910,10 +7958,13 @@
       "Followed": "フォロー中",
       "Following": "フォロー中の友達",
       "Funding_successful": "ファンディング成功",
+      "Get_notified_about_new_messages": "新規メッセージについて通知の受信を希望しますか？",
       "Get_notified_about_this_creators_live_streams": "このクリエイターのライブ配信通知を受け取る",
+      "Get_reminded_about_this_project": "このプロジェクトについてリマインダーを希望しますか？",
       "Go_to_project_page": "プロジェクトページを見る",
       "Got_it": "完了",
       "Got_it_your_survey_response_has_been_submitted": "サーベイを送信しました！",
+      "Help_center": "ヘルプセンター",
       "Home": "ホーム",
       "How_backers_found_your_project": "バッカ―があなたのプロジェクトを見つけた経緯",
       "hours": {
@@ -7935,6 +7986,7 @@
       "Keep_up_with_future_live_streams": "ライブ配信を通知",
       "Kickstarter_if_funded": "Kickstarter (達成した時)",
       "Kickstarter_is_not_a_store": "Kickstarterはオンラインストアではありません。",
+      "Know_when_creators_and_backers_message_you": "クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。",
       "Learn_more_about_accountability": "報告義務に関してさらに詳しく",
       "Left_count_left": {
         "zero": "残り%{left_count}",
@@ -7971,6 +8023,7 @@
       },
       "minutes_plural": "分",
       "Name": "名前",
+      "Never": "通知を受けない",
       "New_pledge_activity": "新しいプレッジ",
       "No_comments_yet": "まだコメントはありません。",
       "No_messages": "メッセージがありません。",
@@ -7981,6 +8034,7 @@
       "No_unread_messages": "未読メッセージはありません",
       "Not_followed": "フォローしてない",
       "Not_delivered": "未配送",
+      "Not_now": "後で",
       "Once_you_back_a_project_well_share": "プロジェクトをバックするとこのスペースにあなたへのオススメを表示します",
       "Only_amount_of_time_left_to_watch_this": "あと%{amount_of_time} のみ視聴可能",
       "Opens_comments": "コメントをみる",
@@ -8018,6 +8072,7 @@
       "plus_shipping_cost": "+%{shipping_cost}",
       "Popular": "人気",
       "Popular_Projects": "人気のプロジェクト",
+      "Privacy": "プライバシー",
       "Project_Cancelled": "プロジェクトが取り消されました。",
       "Project_cancelled": "プロジェクトが取り消されました。",
       "project_count_projects": {
@@ -8052,8 +8107,12 @@
       "Rate_us_in_the_App_Store": "Appストアで評価する",
       "Read_more_about_the_campaign": "キャンペーンの詳細をみる",
       "Read_more_about_the_campaign_arrow": "キャンペーンの詳細をみる  →",
+      "Receive_a_reminder_forty_eight_hours_before_this_project_ends": "通知を有効にして、このプロジェクトやその他の保存済みプロジェクトが終了する48時間前にリマインダーを受け取ります。",
+      "Receive_project_updates_and_more": "通知を有効にして、プロジェクトの更新情報等を受け取ります。",
+      "Receive_project_updates_messages_and_more": "通知を有効にして、プロジェクトの更新情報、メッセージ等を受け取ります。",
       "Recent_live_stream": "最近のライブ配信",
       "Recommended": "おすすめ",
+      "Recommendations": "おすすめ",
       "Recommended_For_You": "あなたへのおすすめ",
       "Recorded_live_with_creator_name": "配信された<b>%{creator_name}</b>のライブ",
       "Recorded_Live": "配信済ライブ",
@@ -8114,6 +8173,8 @@
       "Something_went_wrong_please_try_again": "なにかが間違っています。もう一度お試しください。",
       "Starting_soon": "もう少しで始まります。",
       "Status": "ステータス",
+      "Stay_up_to_date": "最新情報を常に把握したい？",
+      "Stay_updated_on_this_project": "このプロジェクトの最新情報を受け取りたい？",
       "Subscribe": "購読する",
       "Subscribed": "購読済",
       "Subscribes_to_upcoming_lives_streams": "ライブ配信を購読",
@@ -8721,9 +8782,8 @@
           }
         },
         "disclaimer": {
-          "by_signing_up_you_agree_to_terms": "サインアップは、利用規約とプライバシーポリシー、Cookieポリシーへの同意とみなされます。",
-          "by_signing_up_you_agree_to_terms_html": "サインアップは、<u>利用方法</u>、<u>プライバシーポリシー</u>、<u>または<u>Cookieポリシーへの同意とみなします。</u>",
-          "we_never_post_anything_without_permission": "Kickstarterが勝手に投稿することはありません。",
+          "agree_to_terms": "By creating an account, you agree to our terms of use, privacy policy, and cookie policy. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
+          "agree_to_terms_html": "By creating an account, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
           "read_more": "さらに読む"
         },
         "navbar_title": "ログインかサインアップ"
@@ -8769,7 +8829,7 @@
           "password_min_characters": "パスワード(６文字以上)"
         },
         "navbar_title": "サインアップ",
-        "newsletter_full": "ニュースレターやアップデートを受け取ろう",
+        "newsletter_full_opt_out": "Kickstarter の週刊ニュースレーターや更新情報をメールでお届けします。このような Kickstarter からのお知らせメールを受け取りたくない場合は、そのメール内に記載されているリンクを使うか、プライバシーポリシーに記載されている方法で、いつでも配信を停止することができます。",
         "button": "サインアップ",
         "button_email": "Eメールでサインアップ",
         "error": {
@@ -9896,10 +9956,10 @@
     "project_build": "control",
     "project_dashboard": "with_dashboard",
     "react_guest_pledging_run_3": "control",
-    "default_rec_projects": "control",
     "stripe_elements": "experimental",
-    "react_backer_rewards": "control",
-    "sticky_global_header": "control"
+    "sticky_global_header_2": "exempt",
+    "react_backer_rewards_public_release": "excluded",
+    "native_show_project_card_category": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

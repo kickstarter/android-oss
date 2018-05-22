@@ -134,10 +134,13 @@ backers</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed a &lt;i>Theater&lt;/i> project.</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} launched a project!</string>
   <string name="Funding_successful" formatted="false">Funding successful</string>
+  <string name="Get_notified_about_new_messages" formatted="false">Get notified about new messages?</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Get notified about this creator’s live streams</string>
+  <string name="Get_reminded_about_this_project" formatted="false">Get reminded about this project?</string>
   <string name="Go_to_project_page" formatted="false">Go to project page</string>
   <string name="Got_it" formatted="false">Got it.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Got it! Your survey response has been submitted.</string>
+  <string name="Help_center" formatted="false">Help Center</string>
   <string name="Home" formatted="false">Home</string>
   <string name="How_backers_found_your_project" formatted="false">How backers found your project</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">I’d just like to support the project.</string>
@@ -152,6 +155,7 @@ with friends.</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Keep up with future live streams</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (if funded)</string>
   <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter is not a store.</string>
+  <string name="Know_when_creators_and_backers_message_you" formatted="false">Know when creators and backers message you by enabling notifications.</string>
   <string name="Learn_more_about_accountability" formatted="false">Learn more about accountability</string>
   <string name="Left_count_left_few" formatted="false">%{left_count} left</string>
   <string name="Left_count_left_many" formatted="false">%{left_count} left</string>
@@ -178,6 +182,7 @@ with friends.</string>
   <string name="Message_creator" formatted="false">Message creator</string>
   <string name="Message_user_name" formatted="false">Message %{user_name}…</string>
   <string name="Name" formatted="false">Name</string>
+  <string name="Never" formatted="false">Never</string>
   <string name="New_pledge_activity" formatted="false">New pledge activity</string>
   <string name="No_Results" formatted="false">No Results</string>
   <string name="No_comments_yet" formatted="false">No comments yet.</string>
@@ -189,6 +194,7 @@ from friends yet.</string>
   <string name="No_unread_messages" formatted="false">No unread messages</string>
   <string name="Not_delivered" formatted="false">Not delivered</string>
   <string name="Not_followed" formatted="false">Not followed</string>
+  <string name="Not_now" formatted="false">Not Now</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Once you back a project, we’ll share personalized recommendations in this space.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Only %{amount_of_time} left to watch this.</string>
   <string name="Opens_comments" formatted="false">Opens comments.</string>
@@ -223,6 +229,7 @@ from friends yet.</string>
   <string name="Pledged_on_date" formatted="false">&lt;b>Pledged&lt;/b> on %{pledge_date}</string>
   <string name="Popular" formatted="false">Popular</string>
   <string name="Popular_Projects" formatted="false">Popular Projects</string>
+  <string name="Privacy" formatted="false">Privacy</string>
   <string name="Project_Cancelled" formatted="false">Project Cancelled.</string>
   <string name="Project_Suspended" formatted="false">Project Suspended.</string>
   <string name="Project_cancelled" formatted="false">Project cancelled</string>
@@ -237,7 +244,11 @@ daring ideas.</string>
   <string name="Rate_us_in_the_App_Store" formatted="false">Rate us in the App Store</string>
   <string name="Read_more_about_the_campaign" formatted="false">Read more about the campaign</string>
   <string name="Read_more_about_the_campaign_arrow" formatted="false">Read more about the campaign  →</string>
+  <string name="Receive_a_reminder_forty_eight_hours_before_this_project_ends" formatted="false">Receive a reminder 48 hours before this and any other saved project ends by enabling notifications.</string>
+  <string name="Receive_project_updates_and_more" formatted="false">Receive project updates and more by enabling notifications.</string>
+  <string name="Receive_project_updates_messages_and_more" formatted="false">Receive project updates, messages, and more by enabling notifications.</string>
   <string name="Recent_live_stream" formatted="false">Recent live stream</string>
+  <string name="Recommendations" formatted="false">Recommendations</string>
   <string name="Recommended" formatted="false">Recommended</string>
   <string name="Recommended_For_You" formatted="false">Recommended For You</string>
   <string name="Recorded_Live" formatted="false">Recorded Live</string>
@@ -293,6 +304,8 @@ catch your eye?</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Something went wrong, please try again.</string>
   <string name="Starting_soon" formatted="false">Starting soon</string>
   <string name="Status" formatted="false">Status</string>
+  <string name="Stay_up_to_date" formatted="false">Stay up to date?</string>
+  <string name="Stay_updated_on_this_project" formatted="false">Stay updated on this project?</string>
   <string name="Subscribe" formatted="false">Subscribe</string>
   <string name="Subscribed" formatted="false">Subscribed</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Subscribes to upcoming live streams.</string>
@@ -933,10 +946,9 @@ Please try again later.</string>
   <string name="login_tout_default_intent_traditional_login_button" formatted="false">Log in</string>
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Sign up</string>
   <string name="login_tout_default_intent_traditional_title" formatted="false">Use your email address:</string>
-  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms" formatted="false">By signing up, you agree to our terms of use, privacy policy, and cookie policy.</string>
-  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" formatted="false">By signing up, you agree to our &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, and &lt;u>cookie policy&lt;/u>.</string>
+  <string name="login_tout_disclaimer_agree_to_terms" formatted="false">By creating an account, you agree to our terms of use, privacy policy, and cookie policy. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.</string>
+  <string name="login_tout_disclaimer_agree_to_terms_html" formatted="false">By creating an account, you agree to our &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, and &lt;u>cookie policy&lt;/u>. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.</string>
   <string name="login_tout_disclaimer_read_more" formatted="false">Read more</string>
-  <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">We\'ll never post anything without your permission.</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
   <string name="login_tout_errors_facebook_authorization_exception_button" formatted="false">Let\'s try that again</string>
   <string name="login_tout_errors_facebook_authorization_exception_message" formatted="false">We\'re having some trouble getting you logged in.</string>
@@ -1245,7 +1257,7 @@ saved</string>
   <string name="signup_input_fields_password" formatted="false">Password</string>
   <string name="signup_input_fields_password_min_characters" formatted="false">Password (minimum 6 characters)</string>
   <string name="signup_navbar_title" formatted="false">Sign up</string>
-  <string name="signup_newsletter_full" formatted="false">Receive our weekly newsletter and other occasional updates.</string>
+  <string name="signup_newsletter_full_opt_out" formatted="false">Receive Kickstarter\'s weekly newsletter and other occasional updates by email. You can opt out of these messages at any time by using the link in the email and as otherwise set out in our Privacy Policy.</string>
   <string name="social_buttons_cancel" formatted="false">Cancel</string>
   <string name="social_buttons_post" formatted="false">Post</string>
   <string name="social_buttons_send" formatted="false">Send</string>

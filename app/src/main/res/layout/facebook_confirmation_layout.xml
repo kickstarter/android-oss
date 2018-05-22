@@ -41,7 +41,7 @@
         style="@style/BodySecondary"
         android:layout_marginTop="@dimen/grid_4"
         android:layout_marginBottom="@dimen/grid_2"
-        android:text="@string/signup_newsletter_full"/>
+        android:text="@string/signup_newsletter_full_opt_out"/>
 
       <Button
         android:id="@+id/create_new_account_button"
@@ -54,7 +54,7 @@
       <com.kickstarter.ui.views.HtmlTextView
         android:id="@+id/disclaimer"
         style="@style/Caption1Secondary"
-        android:text="@string/login_tout_disclaimer_by_signing_up_you_agree_to_terms_html"
+        android:text="@string/login_tout_disclaimer_agree_to_terms_html"
         android:gravity="center"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="wrap_content"

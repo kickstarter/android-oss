@@ -320,7 +320,6 @@
           android:text="@string/Version_name" />
 
         <TextView
-          style=""
           android:layout_height="wrap_content"
           android:layout_width="wrap_content"
           android:id="@+id/version_name" />

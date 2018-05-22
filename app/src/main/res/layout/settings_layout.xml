@@ -339,6 +339,8 @@
           android:textColor="@color/ksr_red_400"
           android:text="@string/profile_settings_log_out_button" />
 
+      </LinearLayout>
+
       <TextView
         style="@style/SettingsSectionTitle"
         android:text="@string/Privacy" />

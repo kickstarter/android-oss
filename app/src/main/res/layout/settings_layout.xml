@@ -311,14 +311,33 @@
 
       </LinearLayout>
 
-      <Button
-        android:id="@+id/log_out_button"
-        style="@style/BorderButton"
+      <LinearLayout
+        android:background="@color/white"
+        style="@style/SettingsClickableSection">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:text="@string/Version_name" />
+
+        <TextView
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:id="@+id/version_name" />
+
+      </LinearLayout>
+
+      <android.support.v4.widget.Space
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_4"
-        android:layout_marginTop="@dimen/grid_5"
-        android:text="@string/profile_settings_log_out_button" />
+        android:layout_height="@dimen/grid_7" />
+
+      <LinearLayout
+        android:id="@+id/log_out"
+        style="@style/SettingsClickableSection">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:textColor="@color/ksr_red_400"
+          android:text="@string/profile_settings_log_out_button" />
 
       <TextView
         style="@style/SettingsSectionTitle"

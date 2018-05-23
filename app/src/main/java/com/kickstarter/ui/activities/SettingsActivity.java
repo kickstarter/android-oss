@@ -57,6 +57,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @Bind(R.id.project_updates_phone_icon) IconTextView projectUpdatesPhoneIconTextView;
   protected @Bind(R.id.kickstarter_news_and_events_switch) SwitchCompat promoNewsletterSwitch;
   protected @Bind(R.id.projects_we_love_switch) SwitchCompat weeklyNewsletterSwitch;
+  protected @Bind(R.id.version_name) TextView versionName;
 
   protected @BindColor(R.color.ksr_green_700) int green;
   protected @BindColor(R.color.ksr_dark_grey_400) int gray;
@@ -151,6 +152,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> logout());
+
+    setVersionName();
   }
 
   @OnClick(R.id.contact)
@@ -179,7 +182,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     startHelpActivity(HelpActivity.HowItWorks.class);
   }
 
-  @OnClick(R.id.log_out_button)
+  @OnClick(R.id.log_out)
   public void logoutClick() {
     this.viewModel.inputs.logoutClicked();
   }
@@ -384,5 +387,9 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
       contentDescription = this.subscribeString;
     }
     view.setContentDescription(contentDescription);
+  }
+
+  private void setVersionName() {
+    this.versionName.setText(this.build.versionName());
   }
 }

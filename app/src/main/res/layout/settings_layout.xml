@@ -91,6 +91,28 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_10"
         android:layout_marginEnd="@dimen/settings_icon_margin_x"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:text="@string/accessibility_dashboard_buttons_messages" />
+
+        <ImageButton
+          android:id="@+id/messages_mail_icon"
+          style="@style/KSSettingsMailIcon"
+          android:contentDescription="@null" />
+
+        <com.kickstarter.ui.views.IconTextView
+          android:id="@+id/messages_phone_icon"
+          style="@style/KSSettingsPhoneIcon" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_10"
+        android:layout_marginEnd="@dimen/settings_icon_margin_x"
         android:gravity="center_vertical">
 
         <TextView
@@ -331,14 +353,53 @@
 
       </LinearLayout>
 
-      <Button
-        android:id="@+id/log_out_button"
-        style="@style/BorderButton"
+      <LinearLayout
+        android:background="@color/white"
+        style="@style/SettingsClickableSection">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:text="@string/Version_name" />
+
+        <TextView
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:id="@+id/version_name" />
+
+      </LinearLayout>
+
+      <android.support.v4.widget.Space
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_4"
-        android:layout_marginTop="@dimen/grid_5"
-        android:text="@string/profile_settings_log_out_button" />
+        android:layout_height="@dimen/grid_7" />
+
+      <LinearLayout
+        android:id="@+id/log_out"
+        style="@style/SettingsClickableSection">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:textColor="@color/ksr_red_400"
+          android:text="@string/profile_settings_log_out_button" />
+
+      </LinearLayout>
+
+      <TextView
+        style="@style/SettingsSectionTitle"
+        android:text="@string/Privacy" />
+
+      <LinearLayout
+        android:id="@+id/settings_delete_account"
+        style="@style/SettingsClickableSection">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:text="@string/Delete_my_Kickstarter_Account" />
+
+        <com.kickstarter.ui.views.IconTextView
+          style="@style/EndSettingsWidget"
+          android:text="@string/chevron_right_icon"
+          android:textColor="@color/ksr_soft_black" />
+      </LinearLayout>
 
     </LinearLayout>
 

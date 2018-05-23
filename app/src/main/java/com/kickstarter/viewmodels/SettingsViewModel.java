@@ -42,6 +42,9 @@ public interface SettingsViewModel {
     /** Call when the notify mobile of friend backs a project toggle changes. */
     void notifyMobileOfFriendActivity(boolean checked);
 
+    /** Call when the notify mobile of messages toggle changes. */
+    void notifyMobileOfMessages(boolean checked);
+
     /** Call when the notify mobile of project updates toggle changes. */
     void notifyMobileOfUpdates(boolean checked);
 
@@ -50,6 +53,9 @@ public interface SettingsViewModel {
 
     /** Call when the notify of friend backs a project toggle changes. */
     void notifyOfFriendActivity(boolean checked);
+
+    /** Call when the notify of messages toggle changes. */
+    void notifyOfMessages(boolean checked);
 
     /** Call when the notify of project updates toggle changes. */
     void notifyOfUpdates(boolean checked);
@@ -207,6 +213,9 @@ public interface SettingsViewModel {
     @Override public void notifyMobileOfFriendActivity(final boolean b) {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyMobileOfFriendActivity(b).build());
     }
+    @Override public void notifyMobileOfMessages(final boolean b) {
+      this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyMobileOfMessages(b).build());
+    }
     @Override public void notifyMobileOfUpdates(final boolean b) {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyMobileOfUpdates(b).build());
     }
@@ -215,6 +224,9 @@ public interface SettingsViewModel {
     }
     @Override public void notifyOfFriendActivity(final boolean b) {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyOfFriendActivity(b).build());
+    }
+    @Override public void notifyOfMessages(final boolean b) {
+      this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyOfMessages(b).build());
     }
     @Override public void notifyOfUpdates(final boolean b) {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyOfUpdates(b).build());

@@ -31,6 +31,7 @@ import com.kickstarter.viewmodels.SettingsViewModel;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -49,7 +50,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @Bind(R.id.happening_now_switch) SwitchCompat happeningNewsletterSwitch;
   protected @Bind(R.id.friend_activity_mail_icon) ImageButton friendActivityMailImageButton;
   protected @Bind(R.id.friend_activity_phone_icon) IconTextView friendActivityPhoneIconTextView;
-  protected @Bind(R.id.messages_mail_icon) ImageButton messagessMailImageButton;
+  protected @Bind(R.id.messages_mail_icon) ImageButton messagesMailImageButton;
   protected @Bind(R.id.messages_phone_icon) IconTextView messagesPhoneIconTextView;
   protected @Bind(R.id.new_followers_mail_icon) ImageButton newFollowersMailImageButton;
   protected @Bind(R.id.new_followers_phone_icon) IconTextView newFollowersPhoneIconTextView;
@@ -64,9 +65,9 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @BindColor(R.color.ksr_green_700) int green;
   protected @BindColor(R.color.ksr_dark_grey_400) int gray;
 
+  protected @BindString(R.string.Got_it) String gotItString;
   protected @BindString(R.string.profile_settings_newsletter_games) String gamesNewsletterString;
   protected @BindString(R.string.profile_settings_newsletter_happening) String happeningNewsletterString;
-  protected @BindString(R.string.Help_center) String helpCenter;
   protected @BindString(R.string.mailto) String mailtoString;
   protected @BindString(R.string.Logged_Out) String loggedOutString;
   protected @BindString(R.string.profile_settings_newsletter_weekly) String weeklyNewsletterString;
@@ -81,6 +82,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @BindString(R.string.profile_settings_error) String unableToSaveString;
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_mobile_notifications) String unsubscribeMobileString;
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_notifications) String unsubscribeString;
+  protected @BindString(R.string.Recommendations) String recommendations;
+  protected @BindString(R.string.We_use_your_activity_internally_to_make_recommendations_for_you) String recommendationsInfo;
 
   private CurrentUserType currentUser;
   private Build build;
@@ -96,6 +99,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   private boolean notifyOfMessages;
   private boolean notifyOfUpdates;
   private AlertDialog logoutConfirmationDialog;
+  private AlertDialog recommendationsInfoDialog;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -107,6 +111,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     this.currentUser = environment().currentUser();
     this.ksString = environment().ksString();
     this.logout = environment().logout();
+
+    setVersionName();
 
     this.viewModel.outputs.user()
       .compose(bindToLifecycle())
@@ -159,7 +165,10 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> logout());
 
-    setVersionName();
+    this.viewModel.outputs.showRecommendationsInfo()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> lazyRecommendationsInfoDialog().show());
   }
 
   @OnClick(R.id.contact)
@@ -249,6 +258,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     this.viewModel.inputs.notifyMobileOfUpdates(!this.notifyMobileOfUpdates);
   }
 
+  @OnClick(R.id.recommendations_info)
+  public void recommendationsInfoClick() {
+    this.viewModel.inputs.recommendationsInfoClicked();
+  }
+
   @OnClick(R.id.terms_of_use)
   public void termsOfUseClick() {
     startHelpActivity(HelpActivity.Terms.class);
@@ -303,7 +317,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
 
     toggleImageButtonIconColor(this.friendActivityMailImageButton, false, this.notifyOfFriendActivity);
     toggleTextViewIconColor(this.friendActivityPhoneIconTextView, true, this.notifyMobileOfFriendActivity);
-    toggleImageButtonIconColor(this.messagessMailImageButton, false, this.notifyOfMessages);
+    toggleImageButtonIconColor(this.messagesMailImageButton, false, this.notifyOfMessages);
     toggleTextViewIconColor(this.messagesPhoneIconTextView, true, this.notifyMobileOfMessages);
     toggleImageButtonIconColor(this.newFollowersMailImageButton, false, this.notifyOfFollower);
     toggleTextViewIconColor(this.newFollowersPhoneIconTextView, true, this.notifyMobileOfFollower);
@@ -325,16 +339,25 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
       this.logoutConfirmationDialog = new AlertDialog.Builder(this)
         .setTitle(getString(R.string.profile_settings_logout_alert_title))
         .setMessage(getString(R.string.profile_settings_logout_alert_message))
-        .setPositiveButton(getString(R.string.profile_settings_logout_alert_confirm_button), (__, ___) -> {
-          this.viewModel.inputs.confirmLogoutClicked();
-        })
-        .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button), (__, ___) -> {
-          this.viewModel.inputs.closeLogoutConfirmationClicked();
-        })
+        .setPositiveButton(getString(R.string.profile_settings_logout_alert_confirm_button), (__, ___) -> this.viewModel.inputs.confirmLogoutClicked())
+        .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button), (__, ___) -> this.viewModel.inputs.closeLogoutConfirmationClicked())
         .setOnCancelListener(__ -> this.viewModel.inputs.closeLogoutConfirmationClicked())
         .create();
     }
     return this.logoutConfirmationDialog;
+  }
+
+  private @NonNull AlertDialog lazyRecommendationsInfoDialog() {
+    if (this.recommendationsInfoDialog == null) {
+      final String capitalizedGotIt = this.gotItString.toUpperCase(Locale.getDefault());
+      this.recommendationsInfoDialog = new AlertDialog.Builder(this)
+        .setTitle(this.recommendations)
+        .setMessage(this.recommendationsInfo)
+        .setPositiveButton(capitalizedGotIt, (__, ___) -> this.recommendationsInfoDialog.dismiss())
+        .setCancelable(true)
+        .create();
+    }
+    return this.recommendationsInfoDialog;
   }
 
   private void logout() {

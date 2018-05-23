@@ -63,6 +63,9 @@ public interface SettingsViewModel {
     /** Call when the user toggles the Recommendations switch. */
     void optedOutOfRecommendations(boolean checked);
 
+    /** Call when the user clicks the Recommendations info icon. */
+    void recommendationsInfoClicked();
+
     /** Call when the user toggles the Kickstarter Loves Games newsletter switch. */
     void sendGamesNewsletter(boolean checked);
 
@@ -85,6 +88,9 @@ public interface SettingsViewModel {
 
     /** Show a dialog to inform the user that their newsletter subscription must be confirmed via email. */
     Observable<Newsletter> showOptInPrompt();
+
+    /** Emits when user should be shown the Recommendations info dialog. */
+    Observable<Void> showRecommendationsInfo();
 
     /** Emits user containing settings state. */
     Observable<User> user();
@@ -181,6 +187,7 @@ public interface SettingsViewModel {
     private final BehaviorSubject<Void> logout = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> showConfirmLogoutPrompt = BehaviorSubject.create();
     private final PublishSubject<Newsletter> showOptInPrompt = PublishSubject.create();
+    private final PublishSubject<Void> showRecommendationsInfo = PublishSubject.create();
     private final PublishSubject<Void> updateSuccess = PublishSubject.create();
     private final BehaviorSubject<User> userOutput = BehaviorSubject.create();
 
@@ -203,6 +210,9 @@ public interface SettingsViewModel {
     public void optedOutOfRecommendations(final boolean checked) {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().optedOutOfRecommendations(!checked).build());
       this.optedOutOfRecommendations.onNext(!checked);
+    }
+    @Override public void recommendationsInfoClicked() {
+      this.showRecommendationsInfo.onNext(null);
     }
     @Override public void logoutClicked() {
       this.showConfirmLogoutPrompt.onNext(true);
@@ -256,6 +266,9 @@ public interface SettingsViewModel {
     }
     @Override public @NonNull Observable<Newsletter> showOptInPrompt() {
       return this.showOptInPrompt;
+    }
+    @Override public @NonNull Observable<Void> showRecommendationsInfo() {
+      return this.showRecommendationsInfo;
     }
     @Override public @NonNull Observable<User> user() {
       return this.userOutput;

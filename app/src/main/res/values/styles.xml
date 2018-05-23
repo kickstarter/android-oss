@@ -185,6 +185,18 @@
     <item name="android:background">@drawable/click_indicator_light</item>
   </style>
 
+  <style name="SettingsInfoIcon">
+    <item name="android:src">@drawable/icon__info</item>
+    <item name="android:focusable">true</item>
+    <item name="android:layout_centerVertical">true</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_width">@dimen/settings_icon_fixed_width</item>
+    <item name="android:gravity">center</item>
+    <item name="android:paddingTop">@dimen/grid_1_half</item>
+    <item name="android:background">@drawable/click_indicator_light</item>
+    <item name="android:tint">@color/ksr_grey_500</item>
+  </style>
+
   <style name="EndSettingsWidgetBase">
     <item name="android:layout_centerVertical">true</item>
     <item name="android:textSize">@dimen/settings_icon</item>

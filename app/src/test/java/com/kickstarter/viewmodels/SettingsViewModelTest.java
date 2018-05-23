@@ -18,6 +18,7 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
   private SettingsViewModel.ViewModel vm;
   private final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
   private final TestSubscriber<Newsletter> showOptInPromptTest = new TestSubscriber<>();
+  private final TestSubscriber<Void> showRecommendationsInfo = new TestSubscriber<>();
 
 
   private void setUpEnvironment(final @NonNull User user) {
@@ -29,6 +30,7 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     currentUser.observable().subscribe(this.currentUserTest);
 
     this.vm = new SettingsViewModel.ViewModel(environment);
+    this.vm.outputs.showRecommendationsInfo().subscribe(this.showRecommendationsInfo);
     this.vm.outputs.showOptInPrompt().subscribe(this.showOptInPromptTest);
   }
 
@@ -45,6 +47,22 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.optedOutOfRecommendations(false);
     this.currentUserTest.assertValues(user, user.toBuilder().optedOutOfRecommendations(false).build(), user);
+
+    this.showOptInPromptTest.assertNoValues();
+    this.koalaTest.assertValues("Settings View");
+  }
+
+  @Test
+  public void testSettingsViewModel_showRecommendationsInfo() {
+    final User user = UserFactory.user();
+
+    setUpEnvironment(user);
+
+    this.currentUserTest.assertValues(user);
+    this.showRecommendationsInfo.assertValueCount(0);
+
+    this.vm.inputs.recommendationsInfoClicked();
+    this.showRecommendationsInfo.assertValueCount(1);
 
     this.showOptInPromptTest.assertNoValues();
     this.koalaTest.assertValues("Settings View");

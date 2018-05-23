@@ -381,6 +381,21 @@
           android:textColor="@color/ksr_soft_black" />
       </LinearLayout>
 
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_10"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:text="@string/Recommendations" />
+
+        <android.support.v7.widget.SwitchCompat
+          android:id="@+id/recommendations_switch"
+          style="@style/EndSettingsWidget" />
+      </LinearLayout>
+
     </LinearLayout>
 
   </ScrollView>

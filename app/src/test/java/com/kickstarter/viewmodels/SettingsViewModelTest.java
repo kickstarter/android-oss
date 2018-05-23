@@ -1,5 +1,7 @@
 package com.kickstarter.viewmodels;
 
+import android.support.annotation.NonNull;
+
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
@@ -13,123 +15,129 @@ import org.junit.Test;
 import rx.observers.TestSubscriber;
 
 public final class SettingsViewModelTest extends KSRobolectricTestCase {
-  @Test
-  public void testSettingsViewModel_sendGamesNewsletter() {
-    final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
+  private SettingsViewModel.ViewModel vm;
+  private final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
+  private final TestSubscriber<Newsletter> showOptInPromptTest = new TestSubscriber<>();
+
+
+  private void setUpEnvironment(final @NonNull User user) {
     final CurrentUserType currentUser = new MockCurrentUser(user);
     final Environment environment = environment().toBuilder()
       .currentUser(currentUser)
       .build();
 
-    final SettingsViewModel.ViewModel vm = new SettingsViewModel.ViewModel(environment);
+    currentUser.observable().subscribe(this.currentUserTest);
 
-    final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
-    currentUser.observable().subscribe(currentUserTest);
+    this.vm = new SettingsViewModel.ViewModel(environment);
+    this.vm.outputs.showOptInPrompt().subscribe(this.showOptInPromptTest);
+  }
 
-    final TestSubscriber<Newsletter> showOptInPromptTest = new TestSubscriber<>();
-    vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest);
+  @Test
+  public void testSettingsViewModel_optedOutOfRecommendations() {
+    final User user = UserFactory.noRecommendations();
 
-    currentUserTest.assertValues(user);
-    koalaTest.assertValues("Settings View");
+    setUpEnvironment(user);
+    
+    this.currentUserTest.assertValues(user);
 
-    vm.inputs.sendGamesNewsletter(true);
-    koalaTest.assertValues("Settings View", "Newsletter Subscribe");
-    currentUserTest.assertValues(user, user.toBuilder().gamesNewsletter(true).build());
+    this.vm.inputs.optedOutOfRecommendations(true);
+    this.currentUserTest.assertValues(user, user.toBuilder().optedOutOfRecommendations(false).build());
 
-    vm.inputs.sendGamesNewsletter(false);
-    koalaTest.assertValues("Settings View", "Newsletter Subscribe", "Newsletter Unsubscribe");
-    currentUserTest.assertValues(user, user.toBuilder().gamesNewsletter(true).build(), user);
+    this.vm.inputs.optedOutOfRecommendations(false);
+    this.currentUserTest.assertValues(user, user.toBuilder().optedOutOfRecommendations(false).build(), user);
 
-    showOptInPromptTest.assertNoValues();
+    this.showOptInPromptTest.assertNoValues();
+    this.koalaTest.assertValues("Settings View");
+  }
+
+  @Test
+  public void testSettingsViewModel_sendGamesNewsletter() {
+    final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
+
+    setUpEnvironment(user);
+
+    this.vm.outputs.showOptInPrompt().subscribe(this.showOptInPromptTest);
+
+    this.currentUserTest.assertValues(user);
+    this.koalaTest.assertValues("Settings View");
+
+    this.vm.inputs.sendGamesNewsletter(true);
+    this.koalaTest.assertValues("Settings View", "Newsletter Subscribe");
+    this.currentUserTest.assertValues(user, user.toBuilder().gamesNewsletter(true).build());
+
+    this.vm.inputs.sendGamesNewsletter(false);
+    this.koalaTest.assertValues("Settings View", "Newsletter Subscribe", "Newsletter Unsubscribe");
+    this.currentUserTest.assertValues(user, user.toBuilder().gamesNewsletter(true).build(), user);
+
+    this.showOptInPromptTest.assertNoValues();
   }
 
   @Test
   public void testSettingsViewModel_sendHappeningNewsletter() {
     final User user = UserFactory.user().toBuilder().happeningNewsletter(false).build();
-    final CurrentUserType currentUser = new MockCurrentUser(user);
-    final Environment environment = environment().toBuilder()
-      .currentUser(currentUser)
-      .build();
 
-    final SettingsViewModel.ViewModel vm = new SettingsViewModel.ViewModel(environment);
-
-    final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
-    currentUser.observable().subscribe(currentUserTest);
+    setUpEnvironment(user);
 
     final TestSubscriber<Newsletter> showOptInPromptTest = new TestSubscriber<>();
-    vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest);
+    this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest);
 
-    currentUserTest.assertValues(user);
-    koalaTest.assertValues("Settings View");
+    this.currentUserTest.assertValues(user);
+    this.koalaTest.assertValues("Settings View");
 
-    vm.inputs.sendHappeningNewsletter(true);
-    koalaTest.assertValues("Settings View", "Newsletter Subscribe");
-    currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build());
+    this.vm.inputs.sendHappeningNewsletter(true);
+    this.koalaTest.assertValues("Settings View", "Newsletter Subscribe");
+    this.currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build());
 
-    vm.inputs.sendHappeningNewsletter(false);
-    koalaTest.assertValues("Settings View", "Newsletter Subscribe", "Newsletter Unsubscribe");
-    currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build(), user);
+    this.vm.inputs.sendHappeningNewsletter(false);
+    this.koalaTest.assertValues("Settings View", "Newsletter Subscribe", "Newsletter Unsubscribe");
+    this.currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build(), user);
 
-    showOptInPromptTest.assertNoValues();
+    this.showOptInPromptTest.assertNoValues();
   }
 
   @Test
   public void testSettingsViewModel_sendPromoNewsletter() {
     final User user = UserFactory.user().toBuilder().promoNewsletter(false).build();
-    final CurrentUserType currentUser = new MockCurrentUser(user);
-    final Environment environment = environment().toBuilder()
-      .currentUser(currentUser)
-      .build();
 
-    final SettingsViewModel.ViewModel vm = new SettingsViewModel.ViewModel(environment);
-
-    final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
-    currentUser.observable().subscribe(currentUserTest);
+    setUpEnvironment(user);
 
     final TestSubscriber<Newsletter> showOptInPromptTest = new TestSubscriber<>();
-    vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest);
+    this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest);
 
-    currentUserTest.assertValues(user);
-    koalaTest.assertValues("Settings View");
+    this.currentUserTest.assertValues(user);
+    this.koalaTest.assertValues("Settings View");
 
-    vm.inputs.sendPromoNewsletter(true);
-    koalaTest.assertValues("Settings View", "Newsletter Subscribe");
-    currentUserTest.assertValues(user, user.toBuilder().promoNewsletter(true).build());
+    this.vm.inputs.sendPromoNewsletter(true);
+    this.koalaTest.assertValues("Settings View", "Newsletter Subscribe");
+    this.currentUserTest.assertValues(user, user.toBuilder().promoNewsletter(true).build());
 
-    vm.inputs.sendPromoNewsletter(false);
-    koalaTest.assertValues("Settings View", "Newsletter Subscribe", "Newsletter Unsubscribe");
-    currentUserTest.assertValues(user, user.toBuilder().promoNewsletter(true).build(), user);
+    this.vm.inputs.sendPromoNewsletter(false);
+    this.koalaTest.assertValues("Settings View", "Newsletter Subscribe", "Newsletter Unsubscribe");
+    this.currentUserTest.assertValues(user, user.toBuilder().promoNewsletter(true).build(), user);
 
-    showOptInPromptTest.assertNoValues();
+    this.showOptInPromptTest.assertNoValues();
   }
 
   @Test
   public void testSettingsViewModel_sendWeeklyNewsletter() {
     final User user = UserFactory.user().toBuilder().weeklyNewsletter(false).build();
-    final CurrentUserType currentUser = new MockCurrentUser(user);
-    final Environment environment = environment().toBuilder()
-      .currentUser(currentUser)
-      .build();
 
-    final SettingsViewModel.ViewModel vm = new SettingsViewModel.ViewModel(environment);
-
-    final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
-    currentUser.observable().subscribe(currentUserTest);
+    setUpEnvironment(user);
 
     final TestSubscriber<Newsletter> showOptInPromptTest = new TestSubscriber<>();
-    vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest);
+    this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest);
 
-    currentUserTest.assertValues(user);
-    koalaTest.assertValues("Settings View");
+    this.currentUserTest.assertValues(user);
+    this.koalaTest.assertValues("Settings View");
 
-    vm.inputs.sendWeeklyNewsletter(true);
-    koalaTest.assertValues("Settings View", "Newsletter Subscribe");
-    currentUserTest.assertValues(user, user.toBuilder().weeklyNewsletter(true).build());
+    this.vm.inputs.sendWeeklyNewsletter(true);
+    this.koalaTest.assertValues("Settings View", "Newsletter Subscribe");
+    this.currentUserTest.assertValues(user, user.toBuilder().weeklyNewsletter(true).build());
 
-    vm.inputs.sendWeeklyNewsletter(false);
-    koalaTest.assertValues("Settings View", "Newsletter Subscribe", "Newsletter Unsubscribe");
-    currentUserTest.assertValues(user, user.toBuilder().weeklyNewsletter(true).build(), user);
+    this.vm.inputs.sendWeeklyNewsletter(false);
+    this.koalaTest.assertValues("Settings View", "Newsletter Subscribe", "Newsletter Unsubscribe");
+    this.currentUserTest.assertValues(user, user.toBuilder().weeklyNewsletter(true).build(), user);
 
-    showOptInPromptTest.assertNoValues();
+    this.showOptInPromptTest.assertNoValues();
   }
 }

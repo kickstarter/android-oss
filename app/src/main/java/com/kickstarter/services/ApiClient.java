@@ -476,6 +476,7 @@ public final class ApiClient implements ApiClientType {
     return this.service
       .updateUserSettings(
         SettingsBody.builder()
+          .optedOutOfRecommendations(isTrue(user.optedOutOfRecommendations()) ? 1 : 0)
           .notifyMobileOfFollower(isTrue(user.notifyMobileOfFollower()))
           .notifyMobileOfFriendActivity(isTrue(user.notifyMobileOfFriendActivity()))
           .notifyMobileOfMessages(isTrue(user.notifyMobileOfMessages()))

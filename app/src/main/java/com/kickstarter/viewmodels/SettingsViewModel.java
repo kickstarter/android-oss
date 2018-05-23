@@ -60,6 +60,9 @@ public interface SettingsViewModel {
     /** Call when the notify of project updates toggle changes. */
     void notifyOfUpdates(boolean checked);
 
+    /** Call when the user toggles the Recommendations switch. */
+    void optedOutOfRecommendations(boolean checked);
+
     /** Call when the user toggles the Kickstarter Loves Games newsletter switch. */
     void sendGamesNewsletter(boolean checked);
 
@@ -171,6 +174,7 @@ public interface SettingsViewModel {
 
     private final PublishSubject<Void> confirmLogoutClicked = PublishSubject.create();
     private final PublishSubject<Void> contactEmailClicked = PublishSubject.create();
+    private final PublishSubject<Boolean> optedOutOfRecommendations = PublishSubject.create();
     private final PublishSubject<Pair<Boolean, Newsletter>> newsletterInput = PublishSubject.create();
     private final PublishSubject<User> userInput = PublishSubject.create();
 
@@ -194,6 +198,11 @@ public interface SettingsViewModel {
     }
     @Override public void contactEmailClicked() {
       this.contactEmailClicked.onNext(null);
+    }
+    @Override
+    public void optedOutOfRecommendations(final boolean checked) {
+      this.userInput.onNext(this.userOutput.getValue().toBuilder().optedOutOfRecommendations(!checked).build());
+      this.optedOutOfRecommendations.onNext(!checked);
     }
     @Override public void logoutClicked() {
       this.showConfirmLogoutPrompt.onNext(true);

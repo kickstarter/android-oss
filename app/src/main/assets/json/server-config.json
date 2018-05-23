@@ -10030,7 +10030,7 @@
     "stripe_elements": "experimental",
     "sticky_global_header_2": "exempt",
     "react_backer_rewards_public_release": "excluded",
-    "mobile_stripe_elements": "control",
+    "mobile_stripe_elements": "experimental",
     "native_show_project_card_category": "control"
   },
   "stripe": {

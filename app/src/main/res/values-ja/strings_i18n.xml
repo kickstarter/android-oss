@@ -74,10 +74,12 @@
   <string name="Creator_tips" formatted="false">アドバイス</string>
   <string name="Daily_digest" formatted="false">デイリーダイジェスト</string>
   <string name="Data_will_appear_here_once" formatted="false">誰かがプロジェクトをバック（支援）すると、ここにデータが表示されます。</string>
+  <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter Account</string>
   <string name="Delivered" formatted="false">発送済</string>
   <string name="Discover_more_projects" formatted="false">プロジェクトをさがす</string>
   <string name="Dismiss" formatted="false">破棄</string>
   <string name="Done" formatted="false">完了</string>
+  <string name="Download_your_personal_data" formatted="false">自分の個人データをダウンロード</string>
   <string name="Earth" formatted="false">全世界</string>
   <string name="Either_the_pledge_or_the_project_was_canceled" formatted="false">プレッジもプロジェクトも期限前にキャンセル済</string>
   <string name="Email_frequency" formatted="false">通知頻度</string>
@@ -145,6 +147,7 @@
   <string name="Id_just_like_to_support_the_project" formatted="false">プロジェクトをサポートしたい</string>
   <string name="Individual_Emails" formatted="false">個人メール</string>
   <string name="Info" formatted="false">インフォメーション</string>
+  <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
   <string name="Its_better_with_friends" formatted="false">友達にとってより良い。</string>
   <string name="Joining_the_live_stream" formatted="false">ライブ配信に参加</string>
@@ -188,6 +191,7 @@
   <string name="No_one_has_posted_an_update_yet" formatted="false">まだアップデートの投稿はありません。</string>
   <string name="No_pledges_from_friends_yet" formatted="false">友達からのプレッジはありません。</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">このライブ配信を再生することはできません</string>
+  <string name="No_saved_projects" formatted="false">No saved projects</string>
   <string name="No_unread_messages" formatted="false">未読メッセージはありません</string>
   <string name="Not_delivered" formatted="false">未配送</string>
   <string name="Not_followed" formatted="false">フォローしてない</string>
@@ -256,6 +260,7 @@
   <string name="Replay_past_live_stream" formatted="false">過去のライブ配信をリプレイ</string>
   <string name="Replay_past_live_streams" formatted="false">過去のライブ配信をリプレイ</string>
   <string name="Reply_to_user_name" formatted="false">%{user_nameに返信</string>
+  <string name="Request_my_Personal_Data" formatted="false">Request my Personal Data</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_one" formatted="false">リワードサーベイ</string>
@@ -298,6 +303,7 @@
   <string name="Signs_up_with_Email" formatted="false">Eメールでサインアップする。</string>
   <string name="Something_catch_your_eye" formatted="false">何か目にとまるものはありましたか？</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">なにかが間違っています。もう一度お試しください。</string>
+  <string name="Start_data_collection" formatted="false">データの収集を開始する</string>
   <string name="Starting_soon" formatted="false">もう少しで始まります。</string>
   <string name="Status" formatted="false">ステータス</string>
   <string name="Stay_up_to_date" formatted="false">最新情報を常に把握したい？</string>
@@ -349,6 +355,7 @@
   <string name="View_your_reward" formatted="false">リワードをみる</string>
   <string name="Watch_live" formatted="false">ライブをみる</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">「%{search_term}」に一致するものがありませんでした。</string>
+  <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">あなたのアクティビティをもとにおすすめの提供を行っています。オプトアウトするにはおすすめ機能をオフにしてください。</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">ライブ配信への接続に失敗。</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">配送先の読込に失敗。\n
 再度お試しください。</string>
@@ -943,8 +950,8 @@
   <string name="login_tout_default_intent_traditional_login_button" formatted="false">ログイン</string>
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">サインアップ</string>
   <string name="login_tout_default_intent_traditional_title" formatted="false">メールアドレスを使用：</string>
-  <string name="login_tout_disclaimer_agree_to_terms" formatted="false">By creating an account, you agree to our terms of use, privacy policy, and cookie policy. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.</string>
-  <string name="login_tout_disclaimer_agree_to_terms_html" formatted="false">By creating an account, you agree to our &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, and &lt;u>cookie policy&lt;/u>. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.</string>
+  <string name="login_tout_disclaimer_agree_to_terms" formatted="false">アカウントを作成することで、Kickstarter の利用規約、プライバシーポリシー、Cookie ポリシーに同意するものとみなされます。プライバシーポリシーと Cookie ポリシーでは、Kickstarter のサービスとサイトを配信、改善、促進するために、同社がお客様のデータをどのように使用しているか、そしてそのようなデータ使用を管理するためのお客様の権利について説明しています。</string>
+  <string name="login_tout_disclaimer_agree_to_terms_html" formatted="false">アカウントを作成することで、Kickstarter の&lt;u>利用規約&lt;/u>、&lt;u>プライバシーポリシー&lt;/u>、&lt;u>Cookie ポリシー&lt;/u>に同意するものとみなされます。プライバシーポリシーと Cookie ポリシーでは、Kickstarter のサービスとサイトを配信、改善、促進するために、同社がお客様のデータをどのように使用しているか、そしてそのようなデータ使用を管理するためのお客様の権利について説明しています。</string>
   <string name="login_tout_disclaimer_read_more" formatted="false">さらに読む</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
   <string name="login_tout_errors_facebook_authorization_exception_button" formatted="false">もう一度お試しください</string>

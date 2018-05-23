@@ -248,6 +248,12 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     startHelpActivity(HelpActivity.Terms.class);
   }
 
+  @OnClick(R.id.settings_delete_account)
+  public void deleteAccountClick() {
+    final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.Privacy.DELETE_ACCOUNT));
+    startActivity(intent);
+  }
+
   @OnClick(R.id.settings_rate_us)
   public void rateUsClick() {
     ViewUtils.openStoreRating(this, getPackageName());

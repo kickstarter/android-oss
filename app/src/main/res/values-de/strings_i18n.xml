@@ -75,10 +75,12 @@ Unterstützer</string>
   <string name="Creator_tips" formatted="false">Tpps für Projektgründer</string>
   <string name="Daily_digest" formatted="false">Tägliche Zusammenfassung</string>
   <string name="Data_will_appear_here_once" formatted="false">Info wird hier angezeigt, sobald jemand dein Projekt unterstützt.</string>
+  <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter Account</string>
   <string name="Delivered" formatted="false">Verschickt</string>
   <string name="Discover_more_projects" formatted="false">Erkunde mehr Projekte.</string>
   <string name="Dismiss" formatted="false">Verwerfen</string>
   <string name="Done" formatted="false">Fertig!</string>
+  <string name="Download_your_personal_data" formatted="false">Lade deine persönlichen Daten herunter</string>
   <string name="Earth" formatted="false">Erde</string>
   <string name="Either_the_pledge_or_the_project_was_canceled" formatted="false">Entweder der Finanzierungsbeitrag wurde zurückgezogen oder das Projekt wurde abgebrochen, bevor die Frist abgelaufen war.</string>
   <string name="Email_frequency" formatted="false">Häufigkeit der E-Mails</string>
@@ -146,6 +148,7 @@ Unterstützer</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Ich möchte das Projekt einfach nur unterstützen.</string>
   <string name="Individual_Emails" formatted="false">Individuelle E-Mails</string>
   <string name="Info" formatted="false">Info</string>
+  <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">Die Zusammenstellung deiner Daten kann bis zu 24 Stunden dauern. Sobald sie zum Download bereitstehen, werden wir dir eine Anleitung dazu per E-Mail schicken. Solltest du nichts von uns hören, versuche es von hier aus noch einmal.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">Es ist eine Plattform, um kreative Projekte ins Leben zu rufen.</string>
   <string name="Its_better_with_friends" formatted="false">Gemeinsam mehr erreichen</string>
   <string name="Joining_the_live_stream" formatted="false">Verbindung zum Live-Stream wird aufgebaut</string>
@@ -189,6 +192,7 @@ Unterstützer</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Es wurden noch keine Updates gepostet.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Es gibt noch keine Beiträge von Freunden.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Keine Wiedergabe verügbar für diesen Live-Stream.</string>
+  <string name="No_saved_projects" formatted="false">No saved projects</string>
   <string name="No_unread_messages" formatted="false">Keine ungelesenen Nachrichten</string>
   <string name="Not_delivered" formatted="false">Nicht verschickt</string>
   <string name="Not_followed" formatted="false">Nicht abonniert</string>
@@ -256,6 +260,7 @@ Unterstützer</string>
   <string name="Replay_past_live_stream" formatted="false">Wiedergabe des vorigen Live-Streams</string>
   <string name="Replay_past_live_streams" formatted="false">Wiedergabe vergangener Live-Streams</string>
   <string name="Reply_to_user_name" formatted="false">%{user_name} antworten …</string>
+  <string name="Request_my_Personal_Data" formatted="false">Request my Personal Data</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_Surveys_one" formatted="false">Befragung</string>
@@ -298,6 +303,7 @@ Unterstützer</string>
   <string name="Signs_up_with_Email" formatted="false">Mit E-Mail-Adresse registrieren.</string>
   <string name="Something_catch_your_eye" formatted="false">Etwas interessantes gefunden?</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Da hat etwas nicht geklappt. Bitte versuche es später noch einmal.</string>
+  <string name="Start_data_collection" formatted="false">Daten zusammenstellen</string>
   <string name="Starting_soon" formatted="false">Beginnt in Kürze</string>
   <string name="Status" formatted="false">Status:</string>
   <string name="Stay_up_to_date" formatted="false">Möchtest du auf dem Laufenden bleiben?</string>
@@ -349,6 +355,7 @@ Unterstützer</string>
   <string name="View_your_reward" formatted="false">Belohnung ansehen</string>
   <string name="Watch_live" formatted="false">Live ansehen</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">Es wurden keine Ergebnisse für die Suche "%{search_term}" gefunden.</string>
+  <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">Deine Aktivitäten werden intern genutzt, um dir Empfehlungen zu unterbreiten. Um dies zu deaktivieren, wähle "Empfehlungen" einfach ab.</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">Es konnte leider keine Verbindung zum Chat des Live-Streams hergestellt werden.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">Das Laden der Versandadressen war leider nicht möglich.\n
 Bitte versuche es später noch einmal.</string>
@@ -942,8 +949,8 @@ Bitte versuche es später noch einmal.</string>
   <string name="login_tout_default_intent_traditional_login_button" formatted="false">Anmelden</string>
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Registrieren</string>
   <string name="login_tout_default_intent_traditional_title" formatted="false">Benutze deine E-Mail-Adresse:</string>
-  <string name="login_tout_disclaimer_agree_to_terms" formatted="false">By creating an account, you agree to our terms of use, privacy policy, and cookie policy. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.</string>
-  <string name="login_tout_disclaimer_agree_to_terms_html" formatted="false">By creating an account, you agree to our &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, and &lt;u>cookie policy&lt;/u>. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.</string>
+  <string name="login_tout_disclaimer_agree_to_terms" formatted="false">Bei Erstellung eines Kontos stimmst du unseren Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu. Unsere Datenschutz- und Cookie-Richtlinien erläutern, wie wir deine Daten zur Bereitstellung, Verbesserung und Promotion unsere Services und unserer Webseite nutzen.</string>
+  <string name="login_tout_disclaimer_agree_to_terms_html" formatted="false">Bei Erstellung eines Kontos stimmst du unseren &lt;u>Nutzungsbedingungen&lt;/u>, &lt;u>Datenschutzrichtlinien&lt;/u> und &lt;u>Cookie-Richtlinien&lt;/u> zu. Unsere Datenschutz- und Cookie-Richtlinien erläutern, wie wir deine Daten zur Bereitstellung, Verbesserung und Promotion unsere Services und unserer Webseite nutzen.</string>
   <string name="login_tout_disclaimer_read_more" formatted="false">Weiterlesen</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
   <string name="login_tout_errors_facebook_authorization_exception_button" formatted="false">Versuche es noch einmal!</string>

@@ -23,6 +23,7 @@
   <string name="All_gone" formatted="false">Alle weg</string>
   <string name="Amount_previous_amount" formatted="false">Jetziger Betrag: %{amount}, vorheriger Betrag: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Betrag: %{amount}, %{reward}</string>
+  <string name="Are_you_sure" formatted="false">Bist du sicher?</string>
   <string name="Ask_me_anything" formatted="false">Frage stellen</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Kann noch %{time} %{units} angesehen werden</string>
   <string name="Back" formatted="false">Zurück</string>
@@ -44,6 +45,7 @@ Unterstützer</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Werde Unterstützer, um einen Kommentar zu hinterlassen.</string>
   <string name="Bookmarks" formatted="false">Bookmarks</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Kreative Projekte werden Wirklichkeit!</string>
+  <string name="Cancel" formatted="false">Abbrechen</string>
   <string name="Cancel_your_pledge" formatted="false">Deinen Beitrag zurückziehen</string>
   <string name="Change_payment_method" formatted="false">Zahlungsmethode ändern</string>
   <string name="Chat" formatted="false">Chat</string>
@@ -75,7 +77,7 @@ Unterstützer</string>
   <string name="Creator_tips" formatted="false">Tpps für Projektgründer</string>
   <string name="Daily_digest" formatted="false">Tägliche Zusammenfassung</string>
   <string name="Data_will_appear_here_once" formatted="false">Info wird hier angezeigt, sobald jemand dein Projekt unterstützt.</string>
-  <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter Account</string>
+  <string name="Delete_my_Kickstarter_Account" formatted="false">Mein Kickstarter-Konto löschen</string>
   <string name="Delivered" formatted="false">Verschickt</string>
   <string name="Discover_more_projects" formatted="false">Erkunde mehr Projekte.</string>
   <string name="Dismiss" formatted="false">Verwerfen</string>
@@ -118,6 +120,7 @@ Unterstützer</string>
   <string name="Follow_your_Facebook_friends_and_keep_up_with_the_projects" formatted="false">Folge deinen Facebook-Freunden - wir halten dich auf dem Laufenden, wenn sie ein Projekt unterstützen oder veröffentlichen.</string>
   <string name="Followed" formatted="false">Abonniert</string>
   <string name="Following" formatted="false">Abonniert</string>
+  <string name="Following_More_Info" formatted="false">Following More Info</string>
   <string name="Follows_friend_name" formatted="false">%{friend_name} folgen.</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> hat ein &lt;i>Kunst-Projekt&lt;/i> unterstützt.</string>
   <string name="Friend_backed_comics_project" formatted="false">&lt;b>%{friend_name}&lt;/b> hat ein &lt;i>Comics-Projekt&lt;/i> unterstützt.</string>
@@ -146,6 +149,7 @@ Unterstützer</string>
   <string name="Home" formatted="false">Home</string>
   <string name="How_backers_found_your_project" formatted="false">Wie Unterstützer dein Projekt gefunden haben</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Ich möchte das Projekt einfach nur unterstützen.</string>
+  <string name="If_you_turn_following_off" formatted="false">If you turn following off, you won\'t be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers. This can’t be undone.</string>
   <string name="Individual_Emails" formatted="false">Individuelle E-Mails</string>
   <string name="Info" formatted="false">Info</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">Die Zusammenstellung deiner Daten kann bis zu 24 Stunden dauern. Sobald sie zum Download bereitstehen, werden wir dir eine Anleitung dazu per E-Mail schicken. Solltest du nichts von uns hören, versuche es von hier aus noch einmal.</string>
@@ -192,7 +196,7 @@ Unterstützer</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Es wurden noch keine Updates gepostet.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Es gibt noch keine Beiträge von Freunden.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Keine Wiedergabe verügbar für diesen Live-Stream.</string>
-  <string name="No_saved_projects" formatted="false">No saved projects</string>
+  <string name="No_saved_projects" formatted="false">Keine gespeicherten Projekte</string>
   <string name="No_unread_messages" formatted="false">Keine ungelesenen Nachrichten</string>
   <string name="Not_delivered" formatted="false">Nicht verschickt</string>
   <string name="Not_followed" formatted="false">Nicht abonniert</string>
@@ -250,6 +254,7 @@ Unterstützer</string>
   <string name="Receive_project_updates_messages_and_more" formatted="false">Aktiviere Benachrichtigungen - so weißt du immer über Projektaktualisierungen, neue Nachrichten und ähnliches Bescheid.</string>
   <string name="Recent_live_stream" formatted="false">Kürzlich gesendeter Live-Stream</string>
   <string name="Recommendations" formatted="false">Empfehlungen</string>
+  <string name="Recommendations_More_Info" formatted="false">Recommendations More Info</string>
   <string name="Recommended" formatted="false">Empfehlungen</string>
   <string name="Recommended_For_You" formatted="false">Empfehlungen für dich</string>
   <string name="Recorded_Live" formatted="false">Live aufgenommen</string>
@@ -260,7 +265,7 @@ Unterstützer</string>
   <string name="Replay_past_live_stream" formatted="false">Wiedergabe des vorigen Live-Streams</string>
   <string name="Replay_past_live_streams" formatted="false">Wiedergabe vergangener Live-Streams</string>
   <string name="Reply_to_user_name" formatted="false">%{user_name} antworten …</string>
-  <string name="Request_my_Personal_Data" formatted="false">Request my Personal Data</string>
+  <string name="Request_my_Personal_Data" formatted="false">Meine persönlichen Daten anfordern</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_Surveys_one" formatted="false">Befragung</string>
@@ -360,7 +365,9 @@ Unterstützer</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">Das Laden der Versandadressen war leider nicht möglich.\n
 Bitte versuche es später noch einmal.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Wir werden dir 48 Stunden vor Ablauf dieses Projekts eine Benachrichtigung senden, sowie für alle Projekte, die du in Zukunft speicherst. Um alle gespeicherten Projekte anzusehen, gehe bitte zu deiner Profilseite.</string>
+  <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">When following is on, you can follow the activity of others and others can follow your activity. Turn following off to permanently delete this data.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail</string>
+  <string name="Yes_turn_off" formatted="false">Yes, turn off</string>
   <string name="You_Launched" formatted="false">Dein Projekt ist live!</string>
   <string name="You_backed_this_project" formatted="false">Du hast dieses Projekt unterstützt.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Dank deiner Unterstützung ist &lt;b>%{project_name}&lt;/b> seiner Verwirklichung einen Schritt näher. Sag es weiter!</string>

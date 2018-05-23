@@ -334,17 +334,17 @@
       </LinearLayout>
 
       <LinearLayout
-        android:background="@color/white"
-        style="@style/SettingsClickableSection">
+        style="@style/SettingsClickableSection"
+        android:background="@color/white">
 
         <TextView
           style="@style/SettingsSectionLabel"
           android:text="@string/Version_name" />
 
         <TextView
-          android:layout_height="wrap_content"
+          android:id="@+id/version_name"
           android:layout_width="wrap_content"
-          android:id="@+id/version_name" />
+          android:layout_height="wrap_content" />
 
       </LinearLayout>
 
@@ -358,8 +358,8 @@
 
         <TextView
           style="@style/SettingsSectionLabel"
-          android:textColor="@color/ksr_red_400"
-          android:text="@string/profile_settings_log_out_button" />
+          android:text="@string/profile_settings_log_out_button"
+          android:textColor="@color/ksr_red_400" />
 
       </LinearLayout>
 
@@ -390,6 +390,11 @@
         <TextView
           style="@style/SettingsSectionLabel"
           android:text="@string/Recommendations" />
+
+        <ImageButton
+          android:id="@+id/recommendations_info"
+          android:contentDescription="@string/Recommendations_More_Info"
+          style="@style/SettingsInfoIcon" />
 
         <android.support.v7.widget.SwitchCompat
           android:id="@+id/recommendations_switch"

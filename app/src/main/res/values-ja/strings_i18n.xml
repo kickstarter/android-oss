@@ -23,6 +23,7 @@
   <string name="All_gone" formatted="false">終了</string>
   <string name="Amount_previous_amount" formatted="false">金額: %{amount}, 以前の金額: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">金額：%{amount}、%{reward}</string>
+  <string name="Are_you_sure" formatted="false">Are you sure?</string>
   <string name="Ask_me_anything" formatted="false">お問い合わせ</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">さらに%{time} の%{units} を見ることができます</string>
   <string name="Back" formatted="false">バック</string>
@@ -43,6 +44,7 @@
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">コメントを残すためにバッカーになる。</string>
   <string name="Bookmarks" formatted="false">ブックマーク</string>
   <string name="Bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
+  <string name="Cancel" formatted="false">Cancel</string>
   <string name="Cancel_your_pledge" formatted="false">プレッジを取り消す</string>
   <string name="Change_payment_method" formatted="false">支払方法の変更</string>
   <string name="Chat" formatted="false">チャット</string>
@@ -74,7 +76,7 @@
   <string name="Creator_tips" formatted="false">アドバイス</string>
   <string name="Daily_digest" formatted="false">デイリーダイジェスト</string>
   <string name="Data_will_appear_here_once" formatted="false">誰かがプロジェクトをバック（支援）すると、ここにデータが表示されます。</string>
-  <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter Account</string>
+  <string name="Delete_my_Kickstarter_Account" formatted="false">Kickstarter アカウントを削除</string>
   <string name="Delivered" formatted="false">発送済</string>
   <string name="Discover_more_projects" formatted="false">プロジェクトをさがす</string>
   <string name="Dismiss" formatted="false">破棄</string>
@@ -117,6 +119,7 @@
   <string name="Follow_your_Facebook_friends_and_keep_up_with_the_projects" formatted="false">Facebookの友達をフォローしよう！</string>
   <string name="Followed" formatted="false">フォロー中</string>
   <string name="Following" formatted="false">フォロー中の友達</string>
+  <string name="Following_More_Info" formatted="false">Following More Info</string>
   <string name="Follows_friend_name" formatted="false">%{friend_name} をフォロー</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> は&lt;i>アート&lt;/i> プロジェクトをバックしています。</string>
   <string name="Friend_backed_comics_project" formatted="false">&lt;b>%{friend_name}&lt;/b> は&lt;i>コミック&lt;/i> プロジェクトをバックしています。</string>
@@ -145,6 +148,7 @@
   <string name="Home" formatted="false">ホーム</string>
   <string name="How_backers_found_your_project" formatted="false">バッカ―があなたのプロジェクトを見つけた経緯</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">プロジェクトをサポートしたい</string>
+  <string name="If_you_turn_following_off" formatted="false">If you turn following off, you won\'t be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers. This can’t be undone.</string>
   <string name="Individual_Emails" formatted="false">個人メール</string>
   <string name="Info" formatted="false">インフォメーション</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
@@ -191,7 +195,7 @@
   <string name="No_one_has_posted_an_update_yet" formatted="false">まだアップデートの投稿はありません。</string>
   <string name="No_pledges_from_friends_yet" formatted="false">友達からのプレッジはありません。</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">このライブ配信を再生することはできません</string>
-  <string name="No_saved_projects" formatted="false">No saved projects</string>
+  <string name="No_saved_projects" formatted="false">保存済みのプロジェクトはありません</string>
   <string name="No_unread_messages" formatted="false">未読メッセージはありません</string>
   <string name="Not_delivered" formatted="false">未配送</string>
   <string name="Not_followed" formatted="false">フォローしてない</string>
@@ -250,6 +254,7 @@
   <string name="Receive_project_updates_messages_and_more" formatted="false">通知を有効にして、プロジェクトの更新情報、メッセージ等を受け取ります。</string>
   <string name="Recent_live_stream" formatted="false">最近のライブ配信</string>
   <string name="Recommendations" formatted="false">おすすめ</string>
+  <string name="Recommendations_More_Info" formatted="false">Recommendations More Info</string>
   <string name="Recommended" formatted="false">おすすめ</string>
   <string name="Recommended_For_You" formatted="false">あなたへのおすすめ</string>
   <string name="Recorded_Live" formatted="false">配信済ライブ</string>
@@ -260,7 +265,7 @@
   <string name="Replay_past_live_stream" formatted="false">過去のライブ配信をリプレイ</string>
   <string name="Replay_past_live_streams" formatted="false">過去のライブ配信をリプレイ</string>
   <string name="Reply_to_user_name" formatted="false">%{user_nameに返信</string>
-  <string name="Request_my_Personal_Data" formatted="false">Request my Personal Data</string>
+  <string name="Request_my_Personal_Data" formatted="false">自分の個人データをリクエストする</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_one" formatted="false">リワードサーベイ</string>
@@ -360,7 +365,9 @@
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">配送先の読込に失敗。\n
 再度お試しください。</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">終了48時間前に通知が届きます。保存アイテムをみるにはプロフィールをご覧ください。</string>
+  <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">When following is on, you can follow the activity of others and others can follow your activity. Turn following off to permanently delete this data.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">プロジェクトを保存し、終了の48時間前にリマインドする。</string>
+  <string name="Yes_turn_off" formatted="false">Yes, turn off</string>
   <string name="You_Launched" formatted="false">発表されました！</string>
   <string name="You_backed_this_project" formatted="false">バック済</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">&lt;b>%{project_name}&lt;/b>へのバックが完了しました。このプロジェクトは、成功に一歩近づきました！ありがとうございます。</string>

@@ -7,6 +7,7 @@ import auto.parcel.AutoParcel;
 @AutoGson
 @AutoParcel
 public abstract class SettingsBody {
+  public abstract int optedOutOfRecommendations();
   public abstract boolean notifyMobileOfFollower();
   public abstract boolean notifyMobileOfFriendActivity();
   public abstract boolean notifyMobileOfMessages();
@@ -22,6 +23,7 @@ public abstract class SettingsBody {
 
   @AutoParcel.Builder
   public abstract static class Builder {
+    public abstract Builder optedOutOfRecommendations(int __);
     public abstract Builder notifyMobileOfFollower(boolean __);
     public abstract Builder notifyMobileOfFriendActivity(boolean __);
     public abstract Builder notifyMobileOfMessages(boolean __);

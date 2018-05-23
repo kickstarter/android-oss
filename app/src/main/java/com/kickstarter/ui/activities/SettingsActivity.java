@@ -39,6 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.kickstarter.libs.utils.BooleanUtils.isFalse;
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 import static com.kickstarter.libs.utils.IntegerUtils.intValueOrZero;
 
@@ -56,6 +57,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @Bind(R.id.project_updates_mail_icon) ImageButton projectUpdatesMailImageButton;
   protected @Bind(R.id.project_updates_phone_icon) IconTextView projectUpdatesPhoneIconTextView;
   protected @Bind(R.id.kickstarter_news_and_events_switch) SwitchCompat promoNewsletterSwitch;
+  protected @Bind(R.id.recommendations_switch) SwitchCompat recommendationsSwitch;
   protected @Bind(R.id.projects_we_love_switch) SwitchCompat weeklyNewsletterSwitch;
   protected @Bind(R.id.version_name) TextView versionName;
 
@@ -124,6 +126,10 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     RxView.clicks(this.gamesNewsletterSwitch)
       .compose(bindToLifecycle())
       .subscribe(__ -> this.viewModel.inputs.sendGamesNewsletter(this.gamesNewsletterSwitch.isChecked()));
+
+    RxView.clicks(this.recommendationsSwitch)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> this.viewModel.inputs.optedOutOfRecommendations(this.recommendationsSwitch.isChecked()));
 
     RxView.clicks(this.happeningNewsletterSwitch)
       .compose(bindToLifecycle())
@@ -305,6 +311,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     toggleTextViewIconColor(this.projectUpdatesPhoneIconTextView, true, this.notifyMobileOfUpdates);
 
     SwitchCompatUtils.setCheckedWithoutAnimation(this.gamesNewsletterSwitch, isTrue(user.gamesNewsletter()));
+    SwitchCompatUtils.setCheckedWithoutAnimation(this.recommendationsSwitch, isFalse(user.optedOutOfRecommendations()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.happeningNewsletterSwitch, isTrue(user.happeningNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.promoNewsletterSwitch, isTrue(user.promoNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.weeklyNewsletterSwitch, isTrue(user.weeklyNewsletter()));

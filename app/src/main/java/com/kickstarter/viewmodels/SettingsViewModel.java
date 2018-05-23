@@ -89,7 +89,7 @@ public interface SettingsViewModel {
     /** Show a dialog to inform the user that their newsletter subscription must be confirmed via email. */
     Observable<Newsletter> showOptInPrompt();
 
-    /** Emits when user should be shown the recommendations info dialog. */
+    /** Emits when user should be shown the Recommendations info dialog. */
     Observable<Void> showRecommendationsInfo();
 
     /** Emits user containing settings state. */

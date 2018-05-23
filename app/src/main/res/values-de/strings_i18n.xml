@@ -23,7 +23,7 @@
   <string name="All_gone" formatted="false">Alle weg</string>
   <string name="Amount_previous_amount" formatted="false">Jetziger Betrag: %{amount}, vorheriger Betrag: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Betrag: %{amount}, %{reward}</string>
-  <string name="Are_you_sure" formatted="false">Are you sure?</string>
+  <string name="Are_you_sure" formatted="false">Bist du sicher?</string>
   <string name="Ask_me_anything" formatted="false">Frage stellen</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Kann noch %{time} %{units} angesehen werden</string>
   <string name="Back" formatted="false">Zurück</string>
@@ -45,7 +45,7 @@ Unterstützer</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Werde Unterstützer, um einen Kommentar zu hinterlassen.</string>
   <string name="Bookmarks" formatted="false">Bookmarks</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Kreative Projekte werden Wirklichkeit!</string>
-  <string name="Cancel" formatted="false">Cancel</string>
+  <string name="Cancel" formatted="false">Abbrechen</string>
   <string name="Cancel_your_pledge" formatted="false">Deinen Beitrag zurückziehen</string>
   <string name="Change_payment_method" formatted="false">Zahlungsmethode ändern</string>
   <string name="Chat" formatted="false">Chat</string>

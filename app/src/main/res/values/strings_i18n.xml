@@ -23,6 +23,7 @@
   <string name="All_gone" formatted="false">All gone</string>
   <string name="Amount_previous_amount" formatted="false">Amount: %{amount}, previous amount: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Amount: %{amount}, %{reward}</string>
+  <string name="Are_you_sure" formatted="false">Are you sure?</string>
   <string name="Ask_me_anything" formatted="false">Ask me anything</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Available to watch for %{time} more %{units}</string>
   <string name="Back" formatted="false">Back</string>
@@ -44,6 +45,7 @@ backers</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Become a backer to leave a comment.</string>
   <string name="Bookmarks" formatted="false">Bookmarks</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Bring creative projects to life.</string>
+  <string name="Cancel" formatted="false">Cancel</string>
   <string name="Cancel_your_pledge" formatted="false">Cancel your pledge</string>
   <string name="Change_payment_method" formatted="false">Change payment method</string>
   <string name="Chat" formatted="false">Chat</string>
@@ -118,6 +120,7 @@ backers</string>
   <string name="Follow_your_Facebook_friends_and_keep_up_with_the_projects" formatted="false">Follow your Facebook friends and keep up with the projects they back and launch.</string>
   <string name="Followed" formatted="false">Followed</string>
   <string name="Following" formatted="false">Following</string>
+  <string name="Following_More_Info" formatted="false">Following More Info</string>
   <string name="Follows_friend_name" formatted="false">Follows %{friend_name}.</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed an &lt;i>Art&lt;/i> project.</string>
   <string name="Friend_backed_comics_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed a &lt;i>Comics&lt;/i> project.</string>
@@ -146,6 +149,7 @@ backers</string>
   <string name="Home" formatted="false">Home</string>
   <string name="How_backers_found_your_project" formatted="false">How backers found your project</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">I’d just like to support the project.</string>
+  <string name="If_you_turn_following_off" formatted="false">If you turn following off, you won\'t be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers. This can’t be undone.</string>
   <string name="Individual_Emails" formatted="false">Individual emails</string>
   <string name="Info" formatted="false">Info</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">It may take up to 24 hours to collect your data. When it’s ready, we’ll send instructions to download your data to the email associated with this account. If you don’t hear from us, come back here to try again.</string>
@@ -253,6 +257,7 @@ daring ideas.</string>
   <string name="Receive_project_updates_messages_and_more" formatted="false">Receive project updates, messages, and more by enabling notifications.</string>
   <string name="Recent_live_stream" formatted="false">Recent live stream</string>
   <string name="Recommendations" formatted="false">Recommendations</string>
+  <string name="Recommendations_More_Info" formatted="false">Recommendations More Info</string>
   <string name="Recommended" formatted="false">Recommended</string>
   <string name="Recommended_For_You" formatted="false">Recommended For You</string>
   <string name="Recorded_Live" formatted="false">Recorded Live</string>
@@ -364,7 +369,9 @@ catch your eye?</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">We were unable to load the shipping destinations.\n
 Please try again later.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">We’ll remind you 48 hours before this project ends, and you\'ll get a reminder about all projects you save moving forward. To view everything you’ve saved, visit your profile.</string>
+  <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">When following is on, you can follow the activity of others and others can follow your activity. Turn following off to permanently delete this data.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">When you save a project we’ll send you a reminder 48 hours before it ends</string>
+  <string name="Yes_turn_off" formatted="false">Yes, turn off</string>
   <string name="You_Launched" formatted="false">You Launched!</string>
   <string name="You_backed_this_project" formatted="false">You backed this project.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">You have successfully backed &lt;b>%{project_name}&lt;/b>. This project is now one step closer to a reality, thanks to you. Spread the word!</string>

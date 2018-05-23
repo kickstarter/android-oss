@@ -96,6 +96,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   private boolean notifyOfMessages;
   private boolean notifyOfUpdates;
   private AlertDialog logoutConfirmationDialog;
+  private AlertDialog recommendationsInfoDialog;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -107,6 +108,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     this.currentUser = environment().currentUser();
     this.ksString = environment().ksString();
     this.logout = environment().logout();
+
+    setVersionName();
 
     this.viewModel.outputs.user()
       .compose(bindToLifecycle())
@@ -159,7 +162,10 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> logout());
 
-    setVersionName();
+    this.viewModel.outputs.showRecommendationsInfo()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> lazyRecommendationsInfoDialog().show());
   }
 
   @OnClick(R.id.contact)
@@ -249,6 +255,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     this.viewModel.inputs.notifyMobileOfUpdates(!this.notifyMobileOfUpdates);
   }
 
+  @OnClick(R.id.recommendations_info)
+  public void recommendationsInfoClick() {
+    this.viewModel.inputs.recommendationsInfoClicked();
+  }
+
   @OnClick(R.id.terms_of_use)
   public void termsOfUseClick() {
     startHelpActivity(HelpActivity.Terms.class);
@@ -325,16 +336,24 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
       this.logoutConfirmationDialog = new AlertDialog.Builder(this)
         .setTitle(getString(R.string.profile_settings_logout_alert_title))
         .setMessage(getString(R.string.profile_settings_logout_alert_message))
-        .setPositiveButton(getString(R.string.profile_settings_logout_alert_confirm_button), (__, ___) -> {
-          this.viewModel.inputs.confirmLogoutClicked();
-        })
-        .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button), (__, ___) -> {
-          this.viewModel.inputs.closeLogoutConfirmationClicked();
-        })
+        .setPositiveButton(getString(R.string.profile_settings_logout_alert_confirm_button), (__, ___) -> this.viewModel.inputs.confirmLogoutClicked())
+        .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button), (__, ___) -> this.viewModel.inputs.closeLogoutConfirmationClicked())
         .setOnCancelListener(__ -> this.viewModel.inputs.closeLogoutConfirmationClicked())
         .create();
     }
     return this.logoutConfirmationDialog;
+  }
+
+  private @NonNull AlertDialog lazyRecommendationsInfoDialog() {
+    if (this.recommendationsInfoDialog == null) {
+      this.recommendationsInfoDialog = new AlertDialog.Builder(this)
+        .setTitle(getString(R.string.Recommendations))
+        .setMessage(getString(R.string.We_use_your_activity_internally_to_make_recommendations_for_you))
+        .setPositiveButton(getString(R.string.Got_it), (__, ___) -> this.recommendationsInfoDialog.dismiss())
+        .setCancelable(true)
+        .create();
+    }
+    return this.recommendationsInfoDialog;
   }
 
   private void logout() {

@@ -211,8 +211,7 @@ public interface SettingsViewModel {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().optedOutOfRecommendations(!checked).build());
       this.optedOutOfRecommendations.onNext(!checked);
     }
-    @Override
-    public void recommendationsInfoClicked() {
+    @Override public void recommendationsInfoClicked() {
       this.showRecommendationsInfo.onNext(null);
     }
     @Override public void logoutClicked() {
@@ -268,8 +267,7 @@ public interface SettingsViewModel {
     @Override public @NonNull Observable<Newsletter> showOptInPrompt() {
       return this.showOptInPrompt;
     }
-    @Override
-    public Observable<Void> showRecommendationsInfo() {
+    @Override public @NonNull Observable<Void> showRecommendationsInfo() {
       return this.showRecommendationsInfo;
     }
     @Override public @NonNull Observable<User> user() {

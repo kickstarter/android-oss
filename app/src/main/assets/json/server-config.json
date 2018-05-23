@@ -88,10 +88,12 @@
         "many": "days"
       },
       "days_plural": "days",
+      "Delete_my_Kickstarter_Account": "Delete my Kickstarter Account",
       "Delivered": "Delivered",
       "Discover_more_projects": "Discover more projects.",
       "Dismiss": "Dismiss",
       "Done": "Done",
+      "Download_your_personal_data": "Download your personal data",
       "Earth": "Earth",
       "Either_the_pledge_or_the_project_was_canceled": "Either the pledge or the project was canceled before the deadline.",
       "Email_frequency": "Email frequency",
@@ -170,6 +172,7 @@
       "Id_just_like_to_support_the_project": "I’d just like to support the project.",
       "Individual_Emails": "Individual emails",
       "Info": "Info",
+      "It_may_take_up_to_24_hours_to_collect_your_data": "It may take up to 24 hours to collect your data. When it’s ready, we’ll send instructions to download your data to the email associated with this account. If you don’t hear from us, come back here to try again.",
       "Its_a_way_to_bring_creative_projects_to_life": "It’s a way to bring creative projects to life.",
       "Its_better_with_friends": "It’s better\nwith friends.",
       "Joining_the_live_stream": "Joining the live stream",
@@ -223,6 +226,7 @@
       "No_pledges_from_friends_yet": "No pledges\nfrom friends yet.",
       "No_replay_is_available_for_this_live_stream": "No replay is available for this live stream.",
       "No_Results": "No Results",
+      "No_saved_projects": "No saved projects",
       "No_unread_messages": "No unread messages",
       "Not_followed": "Not followed",
       "Not_delivered": "Not delivered",
@@ -314,6 +318,7 @@
       "Replay_past_live_stream": "Replay past live stream",
       "Replay_past_live_streams": "Replay past live streams",
       "Reply_to_user_name": "Reply to %{user_name}…",
+      "Request_my_Personal_Data": "Request my Personal Data",
       "Reward_delivered": "Reward delivered?",
       "Reward_estimated_for_delivery_in_date": "<b>Reward</b> estimated for delivery in %{delivery_date}",
       "Rewards_count_rewards": {
@@ -363,6 +368,7 @@
       "Signs_up_with_Email": "Signs up with Email.",
       "Something_catch_your_eye": "Something\ncatch your eye?",
       "Something_went_wrong_please_try_again": "Something went wrong, please try again.",
+      "Start_data_collection": "Start data collection",
       "Starting_soon": "Starting soon",
       "Status": "Status",
       "Stay_up_to_date": "Stay up to date?",
@@ -426,6 +432,7 @@
       "Watch_live": "Watch live",
       "We_couldnt_find_anything_for_search_term": "We couldn't find anything for “%{search_term}”.",
       "Well_remind_you_forty_eight_hours_before_this_project_ends": "We’ll remind you 48 hours before this project ends, and you'll get a reminder about all projects you save moving forward. To view everything you’ve saved, visit your profile.",
+      "We_use_your_activity_internally_to_make_recommendations_for_you": "We use your activity internally to make recommendations for you. Turn recommendations off to opt out of this.",
       "We_were_unable_to_connect_to_the_live_stream_chat": "We were unable to connect to the live stream chat.",
       "We_were_unable_to_load_the_shipping_destinations": "We were unable to load the shipping destinations.\nPlease try again later.",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "When you save a project we’ll send you a reminder 48 hours before it ends",
@@ -2040,10 +2047,12 @@
         "many": "Tg"
       },
       "days_plural": "Tg",
+      "Delete_my_Kickstarter_Account": "Delete my Kickstarter Account",
       "Delivered": "Verschickt",
       "Discover_more_projects": "Erkunde mehr Projekte.",
       "Dismiss": "Verwerfen",
       "Done": "Fertig!",
+      "Download_your_personal_data": "Lade deine persönlichen Daten herunter",
       "Earth": "Erde",
       "Either_the_pledge_or_the_project_was_canceled": "Entweder der Finanzierungsbeitrag wurde zurückgezogen oder das Projekt wurde abgebrochen, bevor die Frist abgelaufen war.",
       "Email_frequency": "Häufigkeit der E-Mails",
@@ -2122,6 +2131,7 @@
       "Id_just_like_to_support_the_project": "Ich möchte das Projekt einfach nur unterstützen.",
       "Individual_Emails": "Individuelle E-Mails",
       "Info": "Info",
+      "It_may_take_up_to_24_hours_to_collect_your_data": "Die Zusammenstellung deiner Daten kann bis zu 24 Stunden dauern. Sobald sie zum Download bereitstehen, werden wir dir eine Anleitung dazu per E-Mail schicken. Solltest du nichts von uns hören, versuche es von hier aus noch einmal.",
       "Its_a_way_to_bring_creative_projects_to_life": "Es ist eine Plattform, um kreative Projekte ins Leben zu rufen.",
       "Its_better_with_friends": "Gemeinsam mehr erreichen",
       "Joining_the_live_stream": "Verbindung zum Live-Stream wird aufgebaut",
@@ -2175,6 +2185,7 @@
       "No_pledges_from_friends_yet": "Es gibt noch keine Beiträge von Freunden.",
       "No_replay_is_available_for_this_live_stream": "Keine Wiedergabe verügbar für diesen Live-Stream.",
       "No_Results": "Keine Ergebnisse",
+      "No_saved_projects": "No saved projects",
       "No_unread_messages": "Keine ungelesenen Nachrichten",
       "Not_followed": "Nicht abonniert",
       "Not_delivered": "Nicht verschickt",
@@ -2266,6 +2277,7 @@
       "Replay_past_live_stream": "Wiedergabe des vorigen Live-Streams",
       "Replay_past_live_streams": "Wiedergabe vergangener Live-Streams",
       "Reply_to_user_name": "%{user_name} antworten …",
+      "Request_my_Personal_Data": "Request my Personal Data",
       "Reward_delivered": "Belohnung versandt?",
       "Reward_estimated_for_delivery_in_date": "Voraussichtliche Lieferung der <b>Belohnung</b> im %{delivery_date}",
       "Rewards_count_rewards": {
@@ -2315,6 +2327,7 @@
       "Signs_up_with_Email": "Mit E-Mail-Adresse registrieren.",
       "Something_catch_your_eye": "Etwas interessantes gefunden?",
       "Something_went_wrong_please_try_again": "Da hat etwas nicht geklappt. Bitte versuche es später noch einmal.",
+      "Start_data_collection": "Daten zusammenstellen",
       "Starting_soon": "Beginnt in Kürze",
       "Status": "Status:",
       "Stay_up_to_date": "Möchtest du auf dem Laufenden bleiben?",
@@ -2378,6 +2391,7 @@
       "Watch_live": "Live ansehen",
       "We_couldnt_find_anything_for_search_term": "Es wurden keine Ergebnisse für die Suche \"%{search_term}\" gefunden.",
       "Well_remind_you_forty_eight_hours_before_this_project_ends": "Wir werden dir 48 Stunden vor Ablauf dieses Projekts eine Benachrichtigung senden, sowie für alle Projekte, die du in Zukunft speicherst. Um alle gespeicherten Projekte anzusehen, gehe bitte zu deiner Profilseite.",
+      "We_use_your_activity_internally_to_make_recommendations_for_you": "Deine Aktivitäten werden intern genutzt, um dir Empfehlungen zu unterbreiten. Um dies zu deaktivieren, wähle \"Empfehlungen\" einfach ab.",
       "We_were_unable_to_connect_to_the_live_stream_chat": "Es konnte leider keine Verbindung zum Chat des Live-Streams hergestellt werden.",
       "We_were_unable_to_load_the_shipping_destinations": "Das Laden der Versandadressen war leider nicht möglich.\nBitte versuche es später noch einmal.",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail",
@@ -2926,8 +2940,8 @@
           }
         },
         "disclaimer": {
-          "agree_to_terms": "By creating an account, you agree to our terms of use, privacy policy, and cookie policy. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
-          "agree_to_terms_html": "By creating an account, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
+          "agree_to_terms": "Bei Erstellung eines Kontos stimmst du unseren Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu. Unsere Datenschutz- und Cookie-Richtlinien erläutern, wie wir deine Daten zur Bereitstellung, Verbesserung und Promotion unsere Services und unserer Webseite nutzen.",
+          "agree_to_terms_html": "Bei Erstellung eines Kontos stimmst du unseren <u>Nutzungsbedingungen</u>, <u>Datenschutzrichtlinien</u> und <u>Cookie-Richtlinien</u> zu. Unsere Datenschutz- und Cookie-Richtlinien erläutern, wie wir deine Daten zur Bereitstellung, Verbesserung und Promotion unsere Services und unserer Webseite nutzen.",
           "read_more": "Weiterlesen"
         },
         "navbar_title": "Einloggen oder anmelden"
@@ -3992,10 +4006,12 @@
         "many": "días"
       },
       "days_plural": "días",
+      "Delete_my_Kickstarter_Account": "Delete my Kickstarter Account",
       "Delivered": "Entregado",
       "Discover_more_projects": "Descubre más proyectos.",
       "Dismiss": "Descartar",
       "Done": "Listo",
+      "Download_your_personal_data": "Descarga tus datos personales",
       "Earth": "Tierra",
       "Either_the_pledge_or_the_project_was_canceled": "Se canceló la contribución o el proyecto antes de que el plazo terminara.",
       "Email_frequency": "Frecuencia de aviso por correo electrónico",
@@ -4074,6 +4090,7 @@
       "Id_just_like_to_support_the_project": "Sólo quiero apoyar este proyecto.",
       "Individual_Emails": "Notificaciones por correo electrónico individuales",
       "Info": "Información",
+      "It_may_take_up_to_24_hours_to_collect_your_data": "Puede demorar hasta 24 horas recopilar tus datos. Cuando estén listos, te enviaremos instrucciones para descargar tus datos al correo electrónico asociado con esta cuenta. Si no recibes noticias nuestras, vuelve aquí e inténtalo de nuevo.",
       "Its_a_way_to_bring_creative_projects_to_life": "Es una plataforma para dar vida a proyectos creativos.",
       "Its_better_with_friends": "Todo en la vida es mejor con amigos ...",
       "Joining_the_live_stream": "Abriendo conexión a Live Stream",
@@ -4127,6 +4144,7 @@
       "No_pledges_from_friends_yet": "Todavía no hay contribuciones de amigos.",
       "No_replay_is_available_for_this_live_stream": "Este Live Stream no cuenta con repetición.",
       "No_Results": "Sin resultados",
+      "No_saved_projects": "No saved projects",
       "No_unread_messages": "No hay mensajes no leídos",
       "Not_followed": "No siguiendo",
       "Not_delivered": "No entregado",
@@ -4218,6 +4236,7 @@
       "Replay_past_live_stream": "Repetir live stream pasado",
       "Replay_past_live_streams": "Repetir live streams pasados",
       "Reply_to_user_name": "Responder a %{user_name}…",
+      "Request_my_Personal_Data": "Request my Personal Data",
       "Reward_delivered": "¿Recompensa entregada?",
       "Reward_estimated_for_delivery_in_date": "<b>Recompensa</b> estimada para entregarse en %{delivery_date}",
       "Rewards_count_rewards": {
@@ -4267,6 +4286,7 @@
       "Signs_up_with_Email": "Registro con correo electrónico.",
       "Something_catch_your_eye": "¿Algo que te haya llamado la atención?",
       "Something_went_wrong_please_try_again": "Ocurrió un error. Inténtalo nuevamente más tarde.",
+      "Start_data_collection": "Comenzar la recopilación de datos",
       "Starting_soon": "Comienza en breve",
       "Status": "Estado:",
       "Stay_up_to_date": "¿Deseas mantenerte actualizado?",
@@ -4330,6 +4350,7 @@
       "Watch_live": "Ver en vivo",
       "We_couldnt_find_anything_for_search_term": "La búsqueda \"%{search_term}\" no dio resultados.",
       "Well_remind_you_forty_eight_hours_before_this_project_ends": "Te recordaremos 48 horas antes de que finalice este proyecto y recibirás un recordatorio sobre todos los proyectos que guardes de aquí en adelante. Para ver todo lo que has guardado, visita tu perfil.",
+      "We_use_your_activity_internally_to_make_recommendations_for_you": "Utilizamos tu actividad internamente para hacerte recomendaciones. Desactiva las recomendaciones si no quieres recibirlas.",
       "We_were_unable_to_connect_to_the_live_stream_chat": "No se pudo conectar al chat de live stream.",
       "We_were_unable_to_load_the_shipping_destinations": "No se pudieron cargar los destinos de envío.\nPor favor inténtalo de nuevo más tarde.",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "Cuando guardes un proyecto, te enviaremos un recordatorio por correo electrónico 48 horas antes de que finalice",
@@ -4878,8 +4899,8 @@
           }
         },
         "disclaimer": {
-          "agree_to_terms": "By creating an account, you agree to our terms of use, privacy policy, and cookie policy. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
-          "agree_to_terms_html": "By creating an account, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
+          "agree_to_terms": "Al crear una cuenta, aceptas nuestros términos de uso, política de privacidad y política de cookies. Nuestras políticas de privacidad y de cookies explican cómo utilizamos tus datos para entregar, mejorar y promocionar nuestro servicio y nuestro sitio, y cómo puedes ejercer tus derechos para controlar dicho uso.",
+          "agree_to_terms_html": "Al crear una cuenta, aceptas nuestros <u>términos de uso</u>, <u>política de privacidad</u> y<u>política de cookies</u>. Nuestras políticas de privacidad y de cookies explican cómo utilizamos tus datos para entregar, mejorar y promocionar nuestro servicio y nuestro sitio, y cómo puedes ejercer tus derechos para controlar dicho uso.",
           "read_more": "Leer más"
         },
         "navbar_title": "Inicia sesión o regístrate"
@@ -5944,10 +5965,12 @@
         "many": "jours"
       },
       "days_plural": "jours",
+      "Delete_my_Kickstarter_Account": "Delete my Kickstarter Account",
       "Delivered": "Distribué",
       "Discover_more_projects": "Découvrez plus de projets.",
       "Dismiss": "Ignorer",
       "Done": "Terminé",
+      "Download_your_personal_data": "Téléchargement de vos données personnelles",
       "Earth": "Terre",
       "Either_the_pledge_or_the_project_was_canceled": "Soit l'engagement soit le projet a été annulé avant la date limite.",
       "Email_frequency": "Fréquence d'envoi des e-mails",
@@ -6026,6 +6049,7 @@
       "Id_just_like_to_support_the_project": "Je souhaite simplement soutenir le projet.",
       "Individual_Emails": "E-mails individuels",
       "Info": "Info",
+      "It_may_take_up_to_24_hours_to_collect_your_data": "La préparation de vos données personnelles peut prendre jusqu'à 24 heures. Nous vous enverrons des instructions de téléchargement à l'adresse e-mail associée à ce compte une fois que tout sera prêt. Si vous ne recevez rien, revenez ici pour réessayer.",
       "Its_a_way_to_bring_creative_projects_to_life": "C'est un outil qui permet de donner vie à des projets créatifs.",
       "Its_better_with_friends": "On est mieux ensemble.",
       "Joining_the_live_stream": "Connexion à la diffusion en direct en cours",
@@ -6079,6 +6103,7 @@
       "No_pledges_from_friends_yet": "Mes amis \nn'ont rien soutenu.",
       "No_replay_is_available_for_this_live_stream": "Pas de rediffusion possible pour cette diffusion en direct.",
       "No_Results": "Pas de résultats",
+      "No_saved_projects": "No saved projects",
       "No_unread_messages": "Pas de messages non lus",
       "Not_followed": "Non abonné",
       "Not_delivered": "Non distribué",
@@ -6170,6 +6195,7 @@
       "Replay_past_live_stream": "Rediffusion",
       "Replay_past_live_streams": "Revoir des diffusions en direct passées",
       "Reply_to_user_name": "Répondre à %{user_name}…",
+      "Request_my_Personal_Data": "Request my Personal Data",
       "Reward_delivered": "Récompense livrée ?",
       "Reward_estimated_for_delivery_in_date": "<b>Récompense</b> prévue pour %{delivery_date}",
       "Rewards_count_rewards": {
@@ -6219,6 +6245,7 @@
       "Signs_up_with_Email": "Inscription avec l'adresse e-mail.",
       "Something_catch_your_eye": "Quelque chose a retenu votre attention ?",
       "Something_went_wrong_please_try_again": "Un problème est survenu. Veuillez réessayer.",
+      "Start_data_collection": "Commencer la préparation",
       "Starting_soon": "Bientôt en direct",
       "Status": "État :",
       "Stay_up_to_date": "Envie d'être informé ?",
@@ -6282,6 +6309,7 @@
       "Watch_live": "Regarder en direct",
       "We_couldnt_find_anything_for_search_term": "Pas de résultats pour « %{search_term} ».",
       "Well_remind_you_forty_eight_hours_before_this_project_ends": "Nous vous enverrons un rappel 48 heures avant la fin de cette campagne. Vous recevrez aussi des rappels pour tous les projets que vous avez enregistré. Ceux-ci sont tous accessibles depuis votre profil.",
+      "We_use_your_activity_internally_to_make_recommendations_for_you": "À l'interne, nous nous servons de vos activités pour vous faire des recommandations. Si vous ne souhaitez pas participer, nous vous invitons à désactiver vos recommandations.",
       "We_were_unable_to_connect_to_the_live_stream_chat": "Connexion au chat en direct impossible.",
       "We_were_unable_to_load_the_shipping_destinations": "Nous n'avons pas été en mesure de charger les destinations d'expédition.\nVeuillez réessayer ultérieurement.",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "Pour chaque projet que vous enregistrez, nous vous enverrons un rappel 48 heures avant la fin de sa campagne.",
@@ -6830,8 +6858,8 @@
           }
         },
         "disclaimer": {
-          "agree_to_terms": "By creating an account, you agree to our terms of use, privacy policy, and cookie policy. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
-          "agree_to_terms_html": "By creating an account, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
+          "agree_to_terms": "En créant un compte, vous acceptez nos conditions d'utilisation, notre politique de confidentialité et notre politique en matière de cookies. Ces deux dernières politiques décrivent comment nous utilisons vos données pour proposer, améliorer et faire la promotion de nos services et de notre site, ainsi que les droits dont vous disposez pour contrôler cette utilisation et comment les exercer.",
+          "agree_to_terms_html": "En créant un compte, vous acceptez nos <u>conditions d'utilisation</u>, notre <u>politique de confidentialité</u> et notre <u>politique en matière de cookies</u>. Ces deux dernières politiques décrivent comment nous utilisons vos données pour proposer, améliorer et faire la promotion de nos services et de notre site, ainsi que les droits dont vous disposez pour contrôler cette utilisation et comment les exercer.",
           "read_more": "En savoir plus"
         },
         "navbar_title": "Connexion ou inscription"
@@ -7896,10 +7924,12 @@
         "many": "日"
       },
       "days_plural": "日",
+      "Delete_my_Kickstarter_Account": "Delete my Kickstarter Account",
       "Delivered": "発送済",
       "Discover_more_projects": "プロジェクトをさがす",
       "Dismiss": "破棄",
       "Done": "完了",
+      "Download_your_personal_data": "自分の個人データをダウンロード",
       "Earth": "全世界",
       "Either_the_pledge_or_the_project_was_canceled": "プレッジもプロジェクトも期限前にキャンセル済",
       "Email_frequency": "通知頻度",
@@ -7978,6 +8008,7 @@
       "Id_just_like_to_support_the_project": "プロジェクトをサポートしたい",
       "Individual_Emails": "個人メール",
       "Info": "インフォメーション",
+      "It_may_take_up_to_24_hours_to_collect_your_data": "データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。",
       "Its_a_way_to_bring_creative_projects_to_life": "クリエイティブなプロジェクトに生命を。",
       "Its_better_with_friends": "友達にとってより良い。",
       "Joining_the_live_stream": "ライブ配信に参加",
@@ -8031,6 +8062,7 @@
       "No_pledges_from_friends_yet": "友達からのプレッジはありません。",
       "No_replay_is_available_for_this_live_stream": "このライブ配信を再生することはできません",
       "No_Results": "該当結果なし",
+      "No_saved_projects": "No saved projects",
       "No_unread_messages": "未読メッセージはありません",
       "Not_followed": "フォローしてない",
       "Not_delivered": "未配送",
@@ -8122,6 +8154,7 @@
       "Replay_past_live_stream": "過去のライブ配信をリプレイ",
       "Replay_past_live_streams": "過去のライブ配信をリプレイ",
       "Reply_to_user_name": "%{user_nameに返信",
+      "Request_my_Personal_Data": "Request my Personal Data",
       "Reward_delivered": "リワードを受け取りましたか？",
       "Reward_estimated_for_delivery_in_date": "<b>リワード</b>の配達予定日は%{delivery_date}",
       "Rewards_count_rewards": {
@@ -8171,6 +8204,7 @@
       "Signs_up_with_Email": "Eメールでサインアップする。",
       "Something_catch_your_eye": "何か目にとまるものはありましたか？",
       "Something_went_wrong_please_try_again": "なにかが間違っています。もう一度お試しください。",
+      "Start_data_collection": "データの収集を開始する",
       "Starting_soon": "もう少しで始まります。",
       "Status": "ステータス",
       "Stay_up_to_date": "最新情報を常に把握したい？",
@@ -8234,6 +8268,7 @@
       "Watch_live": "ライブをみる",
       "We_couldnt_find_anything_for_search_term": "「%{search_term}」に一致するものがありませんでした。",
       "Well_remind_you_forty_eight_hours_before_this_project_ends": "終了48時間前に通知が届きます。保存アイテムをみるにはプロフィールをご覧ください。",
+      "We_use_your_activity_internally_to_make_recommendations_for_you": "あなたのアクティビティをもとにおすすめの提供を行っています。オプトアウトするにはおすすめ機能をオフにしてください。",
       "We_were_unable_to_connect_to_the_live_stream_chat": "ライブ配信への接続に失敗。",
       "We_were_unable_to_load_the_shipping_destinations": "配送先の読込に失敗。\n再度お試しください。",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "プロジェクトを保存し、終了の48時間前にリマインドする。",
@@ -8782,8 +8817,8 @@
           }
         },
         "disclaimer": {
-          "agree_to_terms": "By creating an account, you agree to our terms of use, privacy policy, and cookie policy. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
-          "agree_to_terms_html": "By creating an account, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>. Our privacy and cookie policies explain how we use your data to deliver, improve and promote our service and our site, and how you can exercise your rights to control that use.",
+          "agree_to_terms": "アカウントを作成することで、Kickstarter の利用規約、プライバシーポリシー、Cookie ポリシーに同意するものとみなされます。プライバシーポリシーと Cookie ポリシーでは、Kickstarter のサービスとサイトを配信、改善、促進するために、同社がお客様のデータをどのように使用しているか、そしてそのようなデータ使用を管理するためのお客様の権利について説明しています。",
+          "agree_to_terms_html": "アカウントを作成することで、Kickstarter の<u>利用規約</u>、<u>プライバシーポリシー</u>、<u>Cookie ポリシー</u>に同意するものとみなされます。プライバシーポリシーと Cookie ポリシーでは、Kickstarter のサービスとサイトを配信、改善、促進するために、同社がお客様のデータをどのように使用しているか、そしてそのようなデータ使用を管理するためのお客様の権利について説明しています。",
           "read_more": "さらに読む"
         },
         "navbar_title": "ログインかサインアップ"
@@ -9772,6 +9807,7 @@
     "ios_live_stream_chat": true,
     "ios_backer_dashboard": true,
     "message_spam": true,
+    "drip_identity_settings": true,
     "creator_search": true
   },
   "launched_countries": [

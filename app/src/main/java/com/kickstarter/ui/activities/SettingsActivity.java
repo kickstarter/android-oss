@@ -48,6 +48,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @Bind(R.id.happening_now_switch) SwitchCompat happeningNewsletterSwitch;
   protected @Bind(R.id.friend_activity_mail_icon) ImageButton friendActivityMailImageButton;
   protected @Bind(R.id.friend_activity_phone_icon) IconTextView friendActivityPhoneIconTextView;
+  protected @Bind(R.id.messages_mail_icon) ImageButton messagessMailImageButton;
+  protected @Bind(R.id.messages_phone_icon) IconTextView messagesPhoneIconTextView;
   protected @Bind(R.id.new_followers_mail_icon) ImageButton newFollowersMailImageButton;
   protected @Bind(R.id.new_followers_phone_icon) IconTextView newFollowersPhoneIconTextView;
   protected @Bind(R.id.project_notifications_count) TextView projectNotificationsCountTextView;
@@ -85,9 +87,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
 
   private boolean notifyMobileOfFollower;
   private boolean notifyMobileOfFriendActivity;
+  private boolean notifyMobileOfMessages;
   private boolean notifyMobileOfUpdates;
   private boolean notifyOfFollower;
   private boolean notifyOfFriendActivity;
+  private boolean notifyOfMessages;
   private boolean notifyOfUpdates;
   private AlertDialog logoutConfirmationDialog;
 
@@ -209,6 +213,16 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     this.viewModel.inputs.notifyMobileOfFriendActivity(!this.notifyMobileOfFriendActivity);
   }
 
+  @OnClick(R.id.messages_mail_icon)
+  public void toggleNotifyOfMessages() {
+    this.viewModel.inputs.notifyOfMessages(!this.notifyOfMessages);
+  }
+
+  @OnClick(R.id.messages_phone_icon)
+  public void toggleNotifyMobileOfMessages() {
+    this.viewModel.inputs.notifyMobileOfMessages(!this.notifyMobileOfMessages);
+  }
+
   @OnClick(R.id.new_followers_mail_icon)
   public void toggleNotifyOfNewFollowers() {
     this.viewModel.inputs.notifyOfFollower(!this.notifyOfFollower);
@@ -274,6 +288,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
 
     this.notifyMobileOfFriendActivity = isTrue(user.notifyMobileOfFriendActivity());
     this.notifyOfFriendActivity = isTrue(user.notifyOfFriendActivity());
+    this.notifyMobileOfMessages = isTrue(user.notifyMobileOfMessages());
+    this.notifyOfMessages = isTrue(user.notifyOfMessages());
     this.notifyMobileOfFollower = isTrue(user.notifyMobileOfFollower());
     this.notifyOfFollower = isTrue(user.notifyOfFollower());
     this.notifyMobileOfUpdates = isTrue(user.notifyMobileOfUpdates());
@@ -281,6 +297,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
 
     toggleImageButtonIconColor(this.friendActivityMailImageButton, false, this.notifyOfFriendActivity);
     toggleTextViewIconColor(this.friendActivityPhoneIconTextView, true, this.notifyMobileOfFriendActivity);
+    toggleImageButtonIconColor(this.messagessMailImageButton, false, this.notifyOfMessages);
+    toggleTextViewIconColor(this.messagesPhoneIconTextView, true, this.notifyMobileOfMessages);
     toggleImageButtonIconColor(this.newFollowersMailImageButton, false, this.notifyOfFollower);
     toggleTextViewIconColor(this.newFollowersPhoneIconTextView, true, this.notifyMobileOfFollower);
     toggleImageButtonIconColor(this.projectUpdatesMailImageButton, false, this.notifyOfUpdates);

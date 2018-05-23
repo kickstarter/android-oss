@@ -91,6 +91,28 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_10"
         android:layout_marginEnd="@dimen/settings_icon_margin_x"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:text="@string/accessibility_dashboard_buttons_messages" />
+
+        <ImageButton
+          android:id="@+id/messages_mail_icon"
+          style="@style/KSSettingsMailIcon"
+          android:contentDescription="@null" />
+
+        <com.kickstarter.ui.views.IconTextView
+          android:id="@+id/messages_phone_icon"
+          style="@style/KSSettingsPhoneIcon" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_10"
+        android:layout_marginEnd="@dimen/settings_icon_margin_x"
         android:gravity="center_vertical">
 
         <TextView

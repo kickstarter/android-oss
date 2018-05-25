@@ -382,6 +382,20 @@
       </LinearLayout>
 
       <LinearLayout
+        android:id="@+id/settings_request_data"
+        style="@style/SettingsClickableSection">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:text="@string/Request_my_Personal_Data" />
+
+        <com.kickstarter.ui.views.IconTextView
+          style="@style/EndSettingsWidget"
+          android:text="@string/chevron_right_icon"
+          android:textColor="@color/ksr_soft_black" />
+      </LinearLayout>
+
+      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_10"
         android:gravity="center_vertical"

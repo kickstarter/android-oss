@@ -93,6 +93,7 @@ backers</string>
   <string name="Explore" formatted="false">Explore</string>
   <string name="Explore_creative_projects" formatted="false">Explore creative projects</string>
   <string name="Explore_projects" formatted="false">Explore projects</string>
+  <string name="Facebook_login_disclaimer" formatted="false">If you login with Facebook, we’ll import your name and profile photo. We\'ll also access your friend list so you can follow your Facebook friends on Kickstarter. We will never post anything on Facebook without your permission.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Failed to retrieve live stream event details</string>
   <string name="Failed_to_update_subscription" formatted="false">Failed to update subscription</string>
   <string name="Filter_by_all_projects" formatted="false">Filter by all projects</string>
@@ -188,6 +189,7 @@ with friends.</string>
   <string name="Message_backer" formatted="false">Message backer</string>
   <string name="Message_creator" formatted="false">Message creator</string>
   <string name="Message_user_name" formatted="false">Message %{user_name}…</string>
+  <string name="Messages" formatted="false">Messages</string>
   <string name="Name" formatted="false">Name</string>
   <string name="Never" formatted="false">Never</string>
   <string name="New_pledge_activity" formatted="false">New pledge activity</string>

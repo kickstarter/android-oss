@@ -23,7 +23,7 @@
   <string name="All_gone" formatted="false">¡Recompensas agotadas!</string>
   <string name="Amount_previous_amount" formatted="false">Monto actual: %{amount}, monto previo: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Monto: %{amount}, %{reward}</string>
-  <string name="Are_you_sure" formatted="false">Are you sure?</string>
+  <string name="Are_you_sure" formatted="false">¿Estás seguro?</string>
   <string name="Ask_me_anything" formatted="false">¡Pregúntame!</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Disponible para reproducción %{time} %{units} más</string>
   <string name="Back" formatted="false">Atrás</string>
@@ -45,7 +45,7 @@ patrocinadores</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Conviértete en patrocinador y deja un comentario.</string>
   <string name="Bookmarks" formatted="false">Marcadores</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Dale vida a proyectos creativos.</string>
-  <string name="Cancel" formatted="false">Cancel</string>
+  <string name="Cancel" formatted="false">Cancelar</string>
   <string name="Cancel_your_pledge" formatted="false">Cancela tu contribución</string>
   <string name="Change_payment_method" formatted="false">Cambiar método de pago</string>
   <string name="Chat" formatted="false">Chat</string>
@@ -93,6 +93,7 @@ patrocinadores</string>
   <string name="Explore" formatted="false">Explora</string>
   <string name="Explore_creative_projects" formatted="false">Explora proyectos creativos</string>
   <string name="Explore_projects" formatted="false">Explora proyectos</string>
+  <string name="Facebook_login_disclaimer" formatted="false">Si inicias sesión con Facebook, importaremos tu nombre y foto de perfil. También accederemos a tu lista de amigos para que puedas seguir a tus amigos de Facebook en Kickstarter. Jamás publicaremos nada en Facebook sin tu permiso.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">No se pudo cargar la información acerca del evento en vivo</string>
   <string name="Failed_to_update_subscription" formatted="false">No se pudo actualizar la suscripción</string>
   <string name="Filter_by_all_projects" formatted="false">Filtro: Todos los proyectos</string>
@@ -120,7 +121,7 @@ patrocinadores</string>
   <string name="Follow_your_Facebook_friends_and_keep_up_with_the_projects" formatted="false">Sigue a tus amigos de Facebook y entérate cuando patrocinan o publican un proyecto.</string>
   <string name="Followed" formatted="false">Siguiendo</string>
   <string name="Following" formatted="false">Siguiendo</string>
-  <string name="Following_More_Info" formatted="false">Following More Info</string>
+  <string name="Following_More_Info" formatted="false">Más información sobre el seguimiento</string>
   <string name="Follows_friend_name" formatted="false">Sigue a %{friend_name}.</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> patrocinó un proyecto de &lt;i>Arte&lt;/i>.</string>
   <string name="Friend_backed_comics_project" formatted="false">&lt;b>%{friend_name}&lt;/b> patrocinó un proyecto de &lt;i>Comics&lt;/i>.</string>
@@ -149,7 +150,7 @@ patrocinadores</string>
   <string name="Home" formatted="false">Inicio</string>
   <string name="How_backers_found_your_project" formatted="false">Cómo encontraron tu proyecto los patrocinadores</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Sólo quiero apoyar este proyecto.</string>
-  <string name="If_you_turn_following_off" formatted="false">If you turn following off, you won\'t be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers. This can’t be undone.</string>
+  <string name="If_you_turn_following_off" formatted="false">Si desactivas el seguimiento, no podrás seguir a nadie y nadie podrá seguirte. Tu perfil se desconectará de todos tus seguidores. Esto no se puede deshacer.</string>
   <string name="Individual_Emails" formatted="false">Notificaciones por correo electrónico individuales</string>
   <string name="Info" formatted="false">Información</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">Puede demorar hasta 24 horas recopilar tus datos. Cuando estén listos, te enviaremos instrucciones para descargar tus datos al correo electrónico asociado con esta cuenta. Si no recibes noticias nuestras, vuelve aquí e inténtalo de nuevo.</string>
@@ -187,6 +188,7 @@ patrocinadores</string>
   <string name="Message_backer" formatted="false">Enviar mensaje a patrocinador</string>
   <string name="Message_creator" formatted="false">Enviar mensaje al creador</string>
   <string name="Message_user_name" formatted="false">Mensaje a %{user_name}…</string>
+  <string name="Messages" formatted="false">Mensajes</string>
   <string name="Name" formatted="false">Nombre</string>
   <string name="Never" formatted="false">Nunca</string>
   <string name="New_pledge_activity" formatted="false">Nueva actividad de contribución</string>
@@ -254,7 +256,7 @@ patrocinadores</string>
   <string name="Receive_project_updates_messages_and_more" formatted="false">Recibe actualizaciones de proyectos, mensajes y más habilitando las notificaciones.</string>
   <string name="Recent_live_stream" formatted="false">Live-Stream reciente</string>
   <string name="Recommendations" formatted="false">Recomendaciones</string>
-  <string name="Recommendations_More_Info" formatted="false">Recommendations More Info</string>
+  <string name="Recommendations_More_Info" formatted="false">Más información sobre las recomendaciones</string>
   <string name="Recommended" formatted="false">Recomendados</string>
   <string name="Recommended_For_You" formatted="false">Recomendaciones para ti</string>
   <string name="Recorded_Live" formatted="false">Grabado en vivo</string>
@@ -365,9 +367,9 @@ patrocinadores</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">No se pudieron cargar los destinos de envío.\n
 Por favor inténtalo de nuevo más tarde.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Te recordaremos 48 horas antes de que finalice este proyecto y recibirás un recordatorio sobre todos los proyectos que guardes de aquí en adelante. Para ver todo lo que has guardado, visita tu perfil.</string>
-  <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">When following is on, you can follow the activity of others and others can follow your activity. Turn following off to permanently delete this data.</string>
+  <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Cuando el seguimiento está activado, puedes seguir la actividad de los demás y otros pueden seguir tu actividad. Desactiva el seguimiento para eliminar esta información definitivamente.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Cuando guardes un proyecto, te enviaremos un recordatorio por correo electrónico 48 horas antes de que finalice</string>
-  <string name="Yes_turn_off" formatted="false">Yes, turn off</string>
+  <string name="Yes_turn_off" formatted="false">Sí, desactivar</string>
   <string name="You_Launched" formatted="false">¡Tu proyecto fue publicado!</string>
   <string name="You_backed_this_project" formatted="false">Patrocinaste este proyecto.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Has patrocinado &lt;b>%{project_name}&lt;/b> con éxito. Gracias a ti, este proyecto está ahora un paso más cerca de hacerse realidad. ¡Corre la voz!</string>

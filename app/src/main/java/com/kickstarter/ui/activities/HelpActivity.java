@@ -30,8 +30,9 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
   public static final int HELP_TYPE_HOW_IT_WORKS = 2;
   public static final int HELP_TYPE_COOKIE_POLICY = 3;
   public static final int HELP_TYPE_FAQ = 4;
+  public static final int HELP_TYPE_HELP_CENTER = 5;
 
-  @IntDef({HELP_TYPE_TERMS, HELP_TYPE_PRIVACY, HELP_TYPE_HOW_IT_WORKS, HELP_TYPE_COOKIE_POLICY, HELP_TYPE_FAQ})
+  @IntDef({HELP_TYPE_TERMS, HELP_TYPE_PRIVACY, HELP_TYPE_HOW_IT_WORKS, HELP_TYPE_COOKIE_POLICY, HELP_TYPE_FAQ, HELP_TYPE_HELP_CENTER})
   @Retention(RetentionPolicy.SOURCE)
   public @interface HelpType {}
 
@@ -76,6 +77,12 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
     }
   }
 
+  public static class HelpCenter extends HelpActivity {
+    public HelpCenter() {
+      helpType(HELP_TYPE_HELP_CENTER);
+    }
+  }
+
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -105,6 +112,9 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
         break;
       case HELP_TYPE_FAQ:
         builder.appendEncodedPath("help/faq/kickstarter+basics");
+        break;
+      case HELP_TYPE_HELP_CENTER:
+        builder.appendEncodedPath("help");
         break;
     }
     return builder.toString();

@@ -188,8 +188,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
 
   @OnClick(R.id.help_center)
   public void helpCenterClick() {
-    final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.HelpCenter.ENDPOINT));
-    startActivity(intent);
+    startHelpActivity(HelpActivity.HelpCenter.class);
   }
 
   @OnClick(R.id.how_kickstarter_works)
@@ -273,7 +272,6 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.Privacy.DELETE_ACCOUNT));
     startActivity(intent);
   }
-
 
   @OnClick(R.id.settings_request_data)
   public void requestDataClick() {

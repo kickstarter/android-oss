@@ -19,8 +19,8 @@ jobs:
 
       - run: $ANDROID_HOME/tools/android list target
       - run: make bootstrap-circle
-      - run: echo y | android update sdk --no-ui --all --filter android-25
-      - run: echo y | android update sdk --no-ui --all --filter build-tools-25.0.0
+      - run: echo y | android update sdk --no-ui --all --filter android-27
+      - run: echo y | android update sdk --no-ui --all --filter build-tools-27.0.3
       - run: echo y | android update sdk --no-ui --all --filter platform-tools
       - run: echo y | android update sdk --no-ui --all --filter extra-android-m2repository
       - run: echo y | android update sdk --no-ui --all --filter extra-google-m2repository

@@ -28,7 +28,8 @@
     android:icon="@mipmap/ic_launcher"
     android:label="@string/app_name"
     android:supportsRtl="false"
-    android:theme="@style/KSTheme">
+    android:theme="@style/KSTheme"
+    tools:replace="android:supportsRtl">
 
     <!-- ACTIVITIES -->
 
@@ -414,10 +415,11 @@
 
     <activity
       android:name="com.facebook.FacebookActivity"
-      android:parentActivityName=".ui.activities.ProjectActivity"
       android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+      android:label="@string/app_name"
+      android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@android:style/Theme.Translucent.NoTitleBar"
-      android:label="@string/app_name">
+      tools:replace="android:theme">
 
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"

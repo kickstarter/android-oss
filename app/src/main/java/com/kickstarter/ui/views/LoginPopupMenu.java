@@ -33,7 +33,7 @@ public class LoginPopupMenu extends PopupMenu {
           activity.startActivity(intent);
           break;
         case R.id.help:
-          intent = new Intent(context, HelpActivity.Faq.class);
+          intent = new Intent(context, HelpActivity.HelpCenter.class);
           activity.startActivity(intent);
           break;
       }

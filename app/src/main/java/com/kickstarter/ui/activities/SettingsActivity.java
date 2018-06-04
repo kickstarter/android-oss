@@ -46,6 +46,7 @@ import static com.kickstarter.libs.utils.IntegerUtils.intValueOrZero;
 
 @RequiresActivityViewModel(SettingsViewModel.ViewModel.class)
 public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewModel> {
+  protected @Bind(R.id.following_switch) SwitchCompat followingSwitch;
   protected @Bind(R.id.games_switch) SwitchCompat gamesNewsletterSwitch;
   protected @Bind(R.id.happening_now_switch) SwitchCompat happeningNewsletterSwitch;
   protected @Bind(R.id.friend_activity_mail_icon) ImageButton friendActivityMailImageButton;
@@ -65,6 +66,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @BindColor(R.color.ksr_green_700) int green;
   protected @BindColor(R.color.ksr_dark_grey_400) int gray;
 
+  protected @BindString(R.string.Following) String followingString;
+  protected @BindString(R.string.When_following_is_on_you_can_follow_the_acticity_of_others) String followingInfoString;
   protected @BindString(R.string.Got_it) String gotItString;
   protected @BindString(R.string.profile_settings_newsletter_games) String gamesNewsletterString;
   protected @BindString(R.string.profile_settings_newsletter_happening) String happeningNewsletterString;
@@ -82,8 +85,9 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @BindString(R.string.profile_settings_error) String unableToSaveString;
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_mobile_notifications) String unsubscribeMobileString;
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_notifications) String unsubscribeString;
-  protected @BindString(R.string.Recommendations) String recommendations;
+  protected @BindString(R.string.Recommendations) String recommendationsString;
   protected @BindString(R.string.We_use_your_activity_internally_to_make_recommendations_for_you) String recommendationsInfo;
+  protected @BindString(R.string.Yes_turn_off) String yesTurnOffString;
 
   private CurrentUserType currentUser;
   private Build build;
@@ -99,6 +103,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   private boolean notifyOfMessages;
   private boolean notifyOfUpdates;
   private AlertDialog logoutConfirmationDialog;
+  private AlertDialog followingInfoDialog;
   private AlertDialog recommendationsInfoDialog;
 
   @Override
@@ -128,6 +133,16 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> ViewUtils.showToast(this, this.unableToSaveString));
+
+    RxView.clicks(this.followingSwitch)
+      .compose(bindToLifecycle())
+      .filter(__ -> this.followingSwitch.isChecked())
+      .subscribe(__ -> this.viewModel.inputs.optIntoFollowing());
+
+    RxView.clicks(this.followingSwitch)
+      .compose(bindToLifecycle())
+      .filter(__ -> !this.followingSwitch.isChecked())
+      .subscribe(__ -> this.viewModel.inputs.tentativelyOptOutOfFollowing());
 
     RxView.clicks(this.gamesNewsletterSwitch)
       .compose(bindToLifecycle())
@@ -165,6 +180,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> logout());
 
+    this.viewModel.outputs.showFollowingInfo()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> lazyFollowingInfoDialog().show());
+
     this.viewModel.outputs.showRecommendationsInfo()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -184,6 +204,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   @OnClick(R.id.cookie_policy)
   public void cookiePolicyClick() {
     startHelpActivity(HelpActivity.CookiePolicy.class);
+  }
+
+  @OnClick(R.id.following_info)
+  public void followingInfoClick() {
+    this.viewModel.inputs.followingInfoClicked();
   }
 
   @OnClick(R.id.help_center)
@@ -211,6 +236,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   @OnClick(R.id.privacy_policy)
   public void privacyPolicyClick() {
     startHelpActivity(HelpActivity.Privacy.class);
+  }
+
+  @OnClick(R.id.recommendations_info)
+  public void recommendationsInfoClick() {
+    this.viewModel.inputs.recommendationsInfoClicked();
   }
 
   public void startHelpActivity(final @NonNull Class<? extends HelpActivity> helpClass) {
@@ -256,11 +286,6 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   @OnClick(R.id.project_updates_phone_icon)
   public void toggleNotifyMobileOfUpdates() {
     this.viewModel.inputs.notifyMobileOfUpdates(!this.notifyMobileOfUpdates);
-  }
-
-  @OnClick(R.id.recommendations_info)
-  public void recommendationsInfoClick() {
-    this.viewModel.inputs.recommendationsInfoClicked();
   }
 
   @OnClick(R.id.terms_of_use)
@@ -331,11 +356,37 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     toggleImageButtonIconColor(this.projectUpdatesMailImageButton, false, this.notifyOfUpdates);
     toggleTextViewIconColor(this.projectUpdatesPhoneIconTextView, true, this.notifyMobileOfUpdates);
 
+    SwitchCompatUtils.setCheckedWithoutAnimation(this.followingSwitch, isTrue(user.social()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.gamesNewsletterSwitch, isTrue(user.gamesNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.recommendationsSwitch, isFalse(user.optedOutOfRecommendations()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.happeningNewsletterSwitch, isTrue(user.happeningNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.promoNewsletterSwitch, isTrue(user.promoNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.weeklyNewsletterSwitch, isTrue(user.weeklyNewsletter()));
+  }
+
+  private @NonNull AlertDialog lazyFollowingInfoDialog() {
+    if (this.followingInfoDialog == null) {
+      final String capitalizedGotIt = this.gotItString.toUpperCase(Locale.getDefault());
+      this.followingInfoDialog = new AlertDialog.Builder(this)
+        .setTitle(this.followingString)
+        .setMessage(this.followingInfoString)
+        .setPositiveButton(capitalizedGotIt, (__, ___) -> this.followingInfoDialog.dismiss())
+        .setCancelable(true)
+        .create();
+    }
+    return this.followingInfoDialog;
+  }
+
+  private @NonNull AlertDialog lazyFollowingOptOutConfirmationDialog() {
+    if (this.logoutConfirmationDialog == null) {
+      this.logoutConfirmationDialog = new AlertDialog.Builder(this)
+        .setTitle(getString(R.string.profile_settings_logout_alert_title))
+        .setMessage(getString(R.string.profile_settings_logout_alert_message))
+        .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button), (__, ___) -> this.viewModel.inputs.closeLogoutConfirmationClicked())
+        .setOnCancelListener(__ -> this.viewModel.inputs.closeLogoutConfirmationClicked())
+        .create();
+    }
+    return this.logoutConfirmationDialog;
   }
 
   /**
@@ -358,7 +409,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     if (this.recommendationsInfoDialog == null) {
       final String capitalizedGotIt = this.gotItString.toUpperCase(Locale.getDefault());
       this.recommendationsInfoDialog = new AlertDialog.Builder(this)
-        .setTitle(this.recommendations)
+        .setTitle(this.recommendationsString)
         .setMessage(this.recommendationsInfo)
         .setPositiveButton(capitalizedGotIt, (__, ___) -> this.recommendationsInfoDialog.dismiss())
         .setCancelable(true)

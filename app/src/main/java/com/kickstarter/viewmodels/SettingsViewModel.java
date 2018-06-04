@@ -33,6 +33,9 @@ public interface SettingsViewModel {
     /** Call when the user clicks on contact email. */
     void contactEmailClicked();
 
+    /** Call when the user clicks the Follwing info icon. */
+    void followingInfoClicked();
+
     /** Call when the user taps the logout button. */
     void logoutClicked();
 
@@ -60,6 +63,9 @@ public interface SettingsViewModel {
     /** Call when the notify of project updates toggle changes. */
     void notifyOfUpdates(boolean checked);
 
+    /** Call when the user toggles the Following switch. */
+    void optIntoFollowing();
+
     /** Call when the user toggles the Recommendations switch. */
     void optedOutOfRecommendations(boolean checked);
 
@@ -77,6 +83,8 @@ public interface SettingsViewModel {
 
     /** Call when the user toggles the Projects We Love newsletter switch. */
     void sendWeeklyNewsletter(boolean checked);
+
+    void tentativelyOptOutOfFollowing();
   }
 
   interface Outputs {
@@ -85,6 +93,12 @@ public interface SettingsViewModel {
 
     /** Emits a boolean that determines if the logout confirmation should be displayed. */
     Observable<Boolean> showConfirmLogoutPrompt();
+
+    /** Emits a boolean that determines if the logout confirmation should be displayed. */
+    Observable<Void> showConfirmFollowingOptOutPrompt();
+
+    /** Emits when user should be shown the Following info dialog. */
+    Observable<Void> showFollowingInfo();
 
     /** Show a dialog to inform the user that their newsletter subscription must be confirmed via email. */
     Observable<Newsletter> showOptInPrompt();
@@ -185,7 +199,9 @@ public interface SettingsViewModel {
     private final PublishSubject<User> userInput = PublishSubject.create();
 
     private final BehaviorSubject<Void> logout = BehaviorSubject.create();
+    private final BehaviorSubject<Void> showConfirmFollowingOptOutPrompt = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> showConfirmLogoutPrompt = BehaviorSubject.create();
+    private final BehaviorSubject<Void> showFollowingInfo = BehaviorSubject.create();
     private final PublishSubject<Newsletter> showOptInPrompt = PublishSubject.create();
     private final PublishSubject<Void> showRecommendationsInfo = PublishSubject.create();
     private final PublishSubject<Void> updateSuccess = PublishSubject.create();
@@ -205,6 +221,9 @@ public interface SettingsViewModel {
     }
     @Override public void contactEmailClicked() {
       this.contactEmailClicked.onNext(null);
+    }
+    @Override public void followingInfoClicked() {
+      this.showFollowingInfo.onNext(null);
     }
     @Override
     public void optedOutOfRecommendations(final boolean checked) {
@@ -241,6 +260,9 @@ public interface SettingsViewModel {
     @Override public void notifyOfUpdates(final boolean b) {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyOfUpdates(b).build());
     }
+    @Override public void optIntoFollowing() {
+      this.userInput.onNext(this.userOutput.getValue().toBuilder().social(true).build());
+    }
     @Override public void sendGamesNewsletter(final boolean checked) {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().gamesNewsletter(checked).build());
       this.newsletterInput.onNext(new Pair<>(checked, Newsletter.GAMES));
@@ -257,12 +279,22 @@ public interface SettingsViewModel {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().weeklyNewsletter(checked).build());
       this.newsletterInput.onNext(new Pair<>(checked, Newsletter.WEEKLY));
     }
+    @Override
+    public void tentativelyOptOutOfFollowing() {
+      this.showConfirmFollowingOptOutPrompt.onNext(null);
+    }
 
     @Override public @NonNull Observable<Void> logout() {
       return this.logout;
     }
     @Override public @NonNull Observable<Boolean> showConfirmLogoutPrompt() {
       return this.showConfirmLogoutPrompt;
+    }
+    @Override public @NonNull Observable<Void> showConfirmFollowingOptOutPrompt() {
+      return this.showConfirmFollowingOptOutPrompt;
+    }
+    @Override public @NonNull Observable<Void> showFollowingInfo() {
+      return this.showFollowingInfo;
     }
     @Override public @NonNull Observable<Newsletter> showOptInPrompt() {
       return this.showOptInPrompt;

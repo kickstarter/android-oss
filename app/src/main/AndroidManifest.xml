@@ -165,11 +165,6 @@
       />
 
     <activity
-      android:name=".ui.activities.HelpActivity$HelpCenter"
-      android:theme="@style/HelpActivity"
-      />
-
-    <activity
       android:name=".ui.activities.HelpActivity$HowItWorks"
       android:theme="@style/HelpActivity"
       />

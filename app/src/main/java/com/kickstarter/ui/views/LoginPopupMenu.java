@@ -2,12 +2,14 @@ package com.kickstarter.ui.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.PopupMenu;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.ui.activities.HelpActivity;
 
 public class LoginPopupMenu extends PopupMenu {
@@ -33,7 +35,7 @@ public class LoginPopupMenu extends PopupMenu {
           activity.startActivity(intent);
           break;
         case R.id.help:
-          intent = new Intent(context, HelpActivity.HelpCenter.class);
+          intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.HelpCenter.ENDPOINT));
           activity.startActivity(intent);
           break;
       }

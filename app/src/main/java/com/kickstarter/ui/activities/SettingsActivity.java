@@ -188,7 +188,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
 
   @OnClick(R.id.help_center)
   public void helpCenterClick() {
-    startHelpActivity(HelpActivity.HelpCenter.class);
+    final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.HelpCenter.ENDPOINT));
+    startActivity(intent);
   }
 
   @OnClick(R.id.how_kickstarter_works)

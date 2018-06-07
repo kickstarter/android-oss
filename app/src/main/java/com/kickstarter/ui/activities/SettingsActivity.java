@@ -274,7 +274,6 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     startActivity(intent);
   }
 
-
   @OnClick(R.id.settings_request_data)
   public void requestDataClick() {
     final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.Privacy.REQUEST_DATA));

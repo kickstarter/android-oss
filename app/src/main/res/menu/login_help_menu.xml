@@ -11,5 +11,5 @@
     android:title="@string/login_tout_help_sheet_cookie" />
   <item
     android:id="@+id/help"
-    android:title="@string/profile_settings_about_faq_short" />
+    android:title="@string/Help_center" />
 </menu>

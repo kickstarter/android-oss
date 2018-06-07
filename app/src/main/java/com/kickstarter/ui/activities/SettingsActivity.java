@@ -389,8 +389,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
         .setCancelable(false)
         .setTitle(getString(R.string.Are_you_sure))
         .setMessage(getString(R.string.If_you_turn_following_off))
-        .setNegativeButton(cancelString, (__, ___) -> this.viewModel.inputs.optOutOfFollowing(false))
-        .setPositiveButton(yesTurnOffString, (__, ___) -> this.viewModel.inputs.optOutOfFollowing(true))
+        .setNegativeButton(this.cancelString, (__, ___) -> this.viewModel.inputs.optOutOfFollowing(false))
+        .setPositiveButton(this.yesTurnOffString, (__, ___) -> this.viewModel.inputs.optOutOfFollowing(true))
         .create();
     }
     return this.followingConfirmationDialog;

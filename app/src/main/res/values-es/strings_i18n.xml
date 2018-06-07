@@ -147,6 +147,7 @@ patrocinadores</string>
   <string name="Got_it" formatted="false">¡Listo!</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.</string>
   <string name="Help_center" formatted="false">Centro de ayuda</string>
+  <string name="Hide_password" formatted="false">Ocultar contraseña</string>
   <string name="Home" formatted="false">Inicio</string>
   <string name="How_backers_found_your_project" formatted="false">Cómo encontraron tu proyecto los patrocinadores</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Sólo quiero apoyar este proyecto.</string>
@@ -219,6 +220,7 @@ patrocinadores</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">También puedes seleccionar una de las siguientes recompensas:</string>
   <string name="Other_payment_methods" formatted="false">Otros métodos de pago</string>
   <string name="Other_projects_you_might_like" formatted="false">Otros proyectos que te pueden gustar.</string>
+  <string name="Password_visibility" formatted="false">Visibilidad de la contraseña</string>
   <string name="Past_live_stream" formatted="false">Live Stream pasado</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Cargo efectuado a método de pago indicado.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Ingresa un monto de contribución de %{amount} o menor.</string>
@@ -238,6 +240,7 @@ patrocinadores</string>
   <string name="Popular" formatted="false">Popular</string>
   <string name="Popular_Projects" formatted="false">Proyectos populares</string>
   <string name="Privacy" formatted="false">Privacidad</string>
+  <string name="Private_profile" formatted="false">Perfil privado</string>
   <string name="Project_Cancelled" formatted="false">Proyecto cancelado.</string>
   <string name="Project_Suspended" formatted="false">Proyecto suspendido.</string>
   <string name="Project_cancelled" formatted="false">Proyecto cancelado</string>
@@ -306,6 +309,7 @@ patrocinadores</string>
   <string name="Share_update" formatted="false">Compartir</string>
   <string name="Shipping" formatted="false">Envío</string>
   <string name="Ships_to" formatted="false">Envío a:</string>
+  <string name="Show_password" formatted="false">Mostrar contraseña</string>
   <string name="Shows_list_of_subcategories" formatted="false">Mostrar lista de subcategorías.</string>
   <string name="Signs_up_with_Email" formatted="false">Registro con correo electrónico.</string>
   <string name="Something_catch_your_eye" formatted="false">¿Algo que te haya llamado la atención?</string>

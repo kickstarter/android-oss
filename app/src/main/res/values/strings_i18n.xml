@@ -147,6 +147,7 @@ backers</string>
   <string name="Got_it" formatted="false">Got it</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Got it! Your survey response has been submitted.</string>
   <string name="Help_center" formatted="false">Help Center</string>
+  <string name="Hide_password" formatted="false">Hide password</string>
   <string name="Home" formatted="false">Home</string>
   <string name="How_backers_found_your_project" formatted="false">How backers found your project</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">I’d just like to support the project.</string>
@@ -221,6 +222,7 @@ from friends yet.</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">Or select a different reward below:</string>
   <string name="Other_payment_methods" formatted="false">Other payment methods</string>
   <string name="Other_projects_you_might_like" formatted="false">Other projects you might like.</string>
+  <string name="Password_visibility" formatted="false">Password visibility</string>
   <string name="Past_live_stream" formatted="false">Past live stream</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Payment method was successfully charged.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Please enter an amount of %{amount} or less.</string>
@@ -240,6 +242,7 @@ from friends yet.</string>
   <string name="Popular" formatted="false">Popular</string>
   <string name="Popular_Projects" formatted="false">Popular Projects</string>
   <string name="Privacy" formatted="false">Privacy</string>
+  <string name="Private_profile" formatted="false">Private profile</string>
   <string name="Project_Cancelled" formatted="false">Project Cancelled.</string>
   <string name="Project_Suspended" formatted="false">Project Suspended.</string>
   <string name="Project_cancelled" formatted="false">Project cancelled</string>
@@ -309,6 +312,7 @@ daring ideas.</string>
   <string name="Share_update" formatted="false">Share update</string>
   <string name="Shipping" formatted="false">Shipping</string>
   <string name="Ships_to" formatted="false">Ships to:</string>
+  <string name="Show_password" formatted="false">Show password</string>
   <string name="Shows_list_of_subcategories" formatted="false">Shows list of subcategories.</string>
   <string name="Signs_up_with_Email" formatted="false">Signs up with Email.</string>
   <string name="Something_catch_your_eye" formatted="false">Something\n

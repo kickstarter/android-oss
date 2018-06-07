@@ -66,6 +66,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @BindColor(R.color.ksr_green_700) int green;
   protected @BindColor(R.color.ksr_dark_grey_400) int gray;
 
+  protected @BindString(R.string.Cancel) String cancelString;
   protected @BindString(R.string.Following) String followingString;
   protected @BindString(R.string.When_following_is_on_you_can_follow_the_acticity_of_others) String followingInfoString;
   protected @BindString(R.string.Got_it) String gotItString;
@@ -102,8 +103,9 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   private boolean notifyOfFriendActivity;
   private boolean notifyOfMessages;
   private boolean notifyOfUpdates;
-  private AlertDialog logoutConfirmationDialog;
+  private AlertDialog followingConfirmationDialog;
   private AlertDialog followingInfoDialog;
+  private AlertDialog logoutConfirmationDialog;
   private AlertDialog recommendationsInfoDialog;
 
   @Override
@@ -136,13 +138,22 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
 
     RxView.clicks(this.followingSwitch)
       .compose(bindToLifecycle())
-      .filter(__ -> this.followingSwitch.isChecked())
-      .subscribe(__ -> this.viewModel.inputs.optIntoFollowing());
+      .subscribe(__ -> this.viewModel.inputs.optIntoFollowing(this.followingSwitch.isChecked()));
 
-    RxView.clicks(this.followingSwitch)
+    this.viewModel.outputs.hideConfirmFollowingOptOutPrompt()
       .compose(bindToLifecycle())
-      .filter(__ -> !this.followingSwitch.isChecked())
-      .subscribe(__ -> this.viewModel.inputs.tentativelyOptOutOfFollowing());
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> SwitchCompatUtils.setCheckedWithoutAnimation(this.followingSwitch, true));
+
+    this.viewModel.outputs.showConfirmFollowingOptOutPrompt()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> lazyFollowingOptOutConfirmationDialog().show());
+
+    this.viewModel.outputs.showFollowingInfo()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> lazyFollowingInfoDialog().show());
 
     RxView.clicks(this.gamesNewsletterSwitch)
       .compose(bindToLifecycle())
@@ -179,11 +190,6 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> logout());
-
-    this.viewModel.outputs.showFollowingInfo()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> lazyFollowingInfoDialog().show());
 
     this.viewModel.outputs.showRecommendationsInfo()
       .compose(bindToLifecycle())
@@ -378,15 +384,16 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   }
 
   private @NonNull AlertDialog lazyFollowingOptOutConfirmationDialog() {
-    if (this.logoutConfirmationDialog == null) {
-      this.logoutConfirmationDialog = new AlertDialog.Builder(this)
-        .setTitle(getString(R.string.profile_settings_logout_alert_title))
-        .setMessage(getString(R.string.profile_settings_logout_alert_message))
-        .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button), (__, ___) -> this.viewModel.inputs.closeLogoutConfirmationClicked())
-        .setOnCancelListener(__ -> this.viewModel.inputs.closeLogoutConfirmationClicked())
+    if (this.followingConfirmationDialog == null) {
+      this.followingConfirmationDialog = new AlertDialog.Builder(this)
+        .setCancelable(false)
+        .setTitle(getString(R.string.Are_you_sure))
+        .setMessage(getString(R.string.If_you_turn_following_off))
+        .setNegativeButton(cancelString, (__, ___) -> this.viewModel.inputs.optOutOfFollowing(false))
+        .setPositiveButton(yesTurnOffString, (__, ___) -> this.viewModel.inputs.optOutOfFollowing(true))
         .create();
     }
-    return this.logoutConfirmationDialog;
+    return this.followingConfirmationDialog;
   }
 
   /**

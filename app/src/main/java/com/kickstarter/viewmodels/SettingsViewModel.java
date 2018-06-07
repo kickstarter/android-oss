@@ -64,7 +64,10 @@ public interface SettingsViewModel {
     void notifyOfUpdates(boolean checked);
 
     /** Call when the user toggles the Following switch. */
-    void optIntoFollowing();
+    void optIntoFollowing(boolean checked);
+
+    /** Call when the user confirms or cancels opting out of Following. */
+    void optOutOfFollowing(boolean optOut);
 
     /** Call when the user toggles the Recommendations switch. */
     void optedOutOfRecommendations(boolean checked);
@@ -83,19 +86,20 @@ public interface SettingsViewModel {
 
     /** Call when the user toggles the Projects We Love newsletter switch. */
     void sendWeeklyNewsletter(boolean checked);
-
-    void tentativelyOptOutOfFollowing();
   }
 
   interface Outputs {
     /** Emits when its time to log the user out. */
     Observable<Void> logout();
 
-    /** Emits a boolean that determines if the logout confirmation should be displayed. */
-    Observable<Boolean> showConfirmLogoutPrompt();
+    /** Emits when Following switch should be turned back on after user cancels opting out. */
+    Observable<Void> hideConfirmFollowingOptOutPrompt();
+
+    /** Emits when user should be shown the Following confirmation dialog. */
+    Observable<Void> showConfirmFollowingOptOutPrompt();
 
     /** Emits a boolean that determines if the logout confirmation should be displayed. */
-    Observable<Void> showConfirmFollowingOptOutPrompt();
+    Observable<Boolean> showConfirmLogoutPrompt();
 
     /** Emits when user should be shown the Following info dialog. */
     Observable<Void> showFollowingInfo();
@@ -175,6 +179,26 @@ public interface SettingsViewModel {
           this.logout.onNext(null);
         });
 
+      this.optIntoFollowing
+        .compose(bindToLifecycle())
+        .filter(checked -> checked)
+        .subscribe(__ -> this.userInput.onNext(this.userOutput.getValue().toBuilder().social(true).build()));
+
+      this.optIntoFollowing
+        .compose(bindToLifecycle())
+        .filter(checked -> !checked)
+        .subscribe(__ -> this.showConfirmFollowingOptOutPrompt.onNext(null));
+
+      this.optOutOfFollowing
+        .compose(bindToLifecycle())
+        .filter(optOut -> optOut)
+        .subscribe(__ -> this.userInput.onNext(this.userOutput.getValue().toBuilder().social(false).build()));
+
+      this.optOutOfFollowing
+        .compose(bindToLifecycle())
+        .filter(optOut -> !optOut)
+        .subscribe(__ -> this.hideConfirmFollowingOptOutPrompt.onNext(null));
+
       this.koala.trackSettingsView();
     }
 
@@ -196,8 +220,11 @@ public interface SettingsViewModel {
     private final PublishSubject<Void> contactEmailClicked = PublishSubject.create();
     private final PublishSubject<Boolean> optedOutOfRecommendations = PublishSubject.create();
     private final PublishSubject<Pair<Boolean, Newsletter>> newsletterInput = PublishSubject.create();
+    private final PublishSubject<Boolean> optIntoFollowing = PublishSubject.create();
+    private final PublishSubject<Boolean> optOutOfFollowing = PublishSubject.create();
     private final PublishSubject<User> userInput = PublishSubject.create();
 
+    private final BehaviorSubject<Void> hideConfirmFollowingOptOutPrompt = BehaviorSubject.create();
     private final BehaviorSubject<Void> logout = BehaviorSubject.create();
     private final BehaviorSubject<Void> showConfirmFollowingOptOutPrompt = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> showConfirmLogoutPrompt = BehaviorSubject.create();
@@ -260,8 +287,11 @@ public interface SettingsViewModel {
     @Override public void notifyOfUpdates(final boolean b) {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().notifyOfUpdates(b).build());
     }
-    @Override public void optIntoFollowing() {
-      this.userInput.onNext(this.userOutput.getValue().toBuilder().social(true).build());
+    @Override public void optIntoFollowing(final boolean checked) {
+      this.optIntoFollowing.onNext(checked);
+    }
+    @Override public void optOutOfFollowing(final boolean optOut) {
+      this.optOutOfFollowing.onNext(optOut);
     }
     @Override public void sendGamesNewsletter(final boolean checked) {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().gamesNewsletter(checked).build());
@@ -279,13 +309,12 @@ public interface SettingsViewModel {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().weeklyNewsletter(checked).build());
       this.newsletterInput.onNext(new Pair<>(checked, Newsletter.WEEKLY));
     }
-    @Override
-    public void tentativelyOptOutOfFollowing() {
-      this.showConfirmFollowingOptOutPrompt.onNext(null);
-    }
 
     @Override public @NonNull Observable<Void> logout() {
       return this.logout;
+    }
+    @Override public @NonNull Observable<Void> hideConfirmFollowingOptOutPrompt() {
+      return this.hideConfirmFollowingOptOutPrompt;
     }
     @Override public @NonNull Observable<Boolean> showConfirmLogoutPrompt() {
       return this.showConfirmLogoutPrompt;

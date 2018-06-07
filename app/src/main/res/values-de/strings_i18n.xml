@@ -147,6 +147,7 @@ Unterstützer</string>
   <string name="Got_it" formatted="false">Alles klar!</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Alles klar! Deine Antwort auf die Befragung wurde übermittelt.</string>
   <string name="Help_center" formatted="false">Hilfe-Center</string>
+  <string name="Hide_password" formatted="false">Passwort verbergen</string>
   <string name="Home" formatted="false">Home</string>
   <string name="How_backers_found_your_project" formatted="false">Wie Unterstützer dein Projekt gefunden haben</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Ich möchte das Projekt einfach nur unterstützen.</string>
@@ -219,6 +220,7 @@ Unterstützer</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">Oder eine andere Belohnung wählen:</string>
   <string name="Other_payment_methods" formatted="false">Weitere Zahlungsmethoden</string>
   <string name="Other_projects_you_might_like" formatted="false">Ähnliche Projekte:</string>
+  <string name="Password_visibility" formatted="false">Passwort-Anzeige</string>
   <string name="Past_live_stream" formatted="false">Früherer Live-Stream</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Zahlungsmethode wurde erfolgreich belastet.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Bitte gib einen Finanzierungsbeitrag von %{amount} oder weniger ein.</string>
@@ -238,6 +240,7 @@ Unterstützer</string>
   <string name="Popular" formatted="false">Beliebt</string>
   <string name="Popular_Projects" formatted="false">Beliebte Projekte</string>
   <string name="Privacy" formatted="false">Datenschutz</string>
+  <string name="Private_profile" formatted="false">Privates Profil</string>
   <string name="Project_Cancelled" formatted="false">Projekt abgebrochen.</string>
   <string name="Project_Suspended" formatted="false">Projekt ausgesetzt.</string>
   <string name="Project_cancelled" formatted="false">Projekt abgebrochen</string>
@@ -306,6 +309,7 @@ Unterstützer</string>
   <string name="Share_update" formatted="false">Teilen</string>
   <string name="Shipping" formatted="false">Versand</string>
   <string name="Ships_to" formatted="false">Versand an:</string>
+  <string name="Show_password" formatted="false">Passwort anzeigen</string>
   <string name="Shows_list_of_subcategories" formatted="false">Unterkategorien anzeigen.</string>
   <string name="Signs_up_with_Email" formatted="false">Mit E-Mail-Adresse registrieren.</string>
   <string name="Something_catch_your_eye" formatted="false">Etwas interessantes gefunden?</string>

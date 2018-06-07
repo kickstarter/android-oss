@@ -17,6 +17,8 @@ import rx.observers.TestSubscriber;
 public final class SettingsViewModelTest extends KSRobolectricTestCase {
   private SettingsViewModel.ViewModel vm;
   private final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
+  private final TestSubscriber<Void> hideConfirmFollowingOptOutPrompt = new TestSubscriber<>();
+  private final TestSubscriber<Void> showConfirmFollowingOptOutPrompt = new TestSubscriber<>();
   private final TestSubscriber<Newsletter> showOptInPromptTest = new TestSubscriber<>();
   private final TestSubscriber<Void> showRecommendationsInfo = new TestSubscriber<>();
 
@@ -30,8 +32,67 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     currentUser.observable().subscribe(this.currentUserTest);
 
     this.vm = new SettingsViewModel.ViewModel(environment);
+    this.vm.outputs.hideConfirmFollowingOptOutPrompt().subscribe(this.hideConfirmFollowingOptOutPrompt);
+    this.vm.outputs.showConfirmFollowingOptOutPrompt().subscribe(this.showConfirmFollowingOptOutPrompt);
     this.vm.outputs.showRecommendationsInfo().subscribe(this.showRecommendationsInfo);
     this.vm.outputs.showOptInPrompt().subscribe(this.showOptInPromptTest);
+  }
+
+  @Test
+  public void testSettingsViewModel_optIntoFollowing() {
+    final User user = UserFactory.user();
+
+    setUpEnvironment(user);
+
+    this.currentUserTest.assertValues(user);
+
+    this.vm.inputs.optIntoFollowing(true);
+    this.currentUserTest.assertValues(user, user.toBuilder().social(true).build());
+
+    this.showConfirmFollowingOptOutPrompt.assertNoValues();
+    this.hideConfirmFollowingOptOutPrompt.assertNoValues();
+    this.showOptInPromptTest.assertNoValues();
+    this.koalaTest.assertValues("Settings View");
+  }
+
+  @Test
+  public void testSettingsViewModel_optIntoFollowing_userCancelOptOut() {
+    final User user = UserFactory.socialUser();
+
+    setUpEnvironment(user);
+
+    this.currentUserTest.assertValues(user);
+
+    this.vm.inputs.optIntoFollowing(false);
+    this.currentUserTest.assertValues(user);
+    this.showConfirmFollowingOptOutPrompt.assertValueCount(1);
+
+    this.vm.inputs.optOutOfFollowing(false);
+    this.hideConfirmFollowingOptOutPrompt.assertValueCount(1);
+    this.currentUserTest.assertValues(user);
+
+    this.showOptInPromptTest.assertNoValues();
+    this.koalaTest.assertValues("Settings View");
+  }
+
+  @Test
+  public void testSettingsViewModel_optIntoFollowing_userConfirmOptOut() {
+    final User user = UserFactory.socialUser();
+
+    setUpEnvironment(user);
+
+    this.currentUserTest.assertValues(user);
+
+    this.vm.inputs.optIntoFollowing(false);
+    this.currentUserTest.assertValues(user);
+    this.showConfirmFollowingOptOutPrompt.assertValueCount(1);
+
+    this.vm.inputs.optOutOfFollowing(true);
+    this.currentUserTest.assertValues(user, user.toBuilder().social(false).build());
+
+    this.hideConfirmFollowingOptOutPrompt.assertNoValues();
+    this.showOptInPromptTest.assertNoValues();
+    this.koalaTest.assertValues("Settings View");
   }
 
   @Test

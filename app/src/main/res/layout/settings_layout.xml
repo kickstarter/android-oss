@@ -415,6 +415,26 @@
           style="@style/EndSettingsWidget" />
       </LinearLayout>
 
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_10"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:text="@string/Following" />
+
+        <ImageButton
+          android:id="@+id/following_info"
+          android:contentDescription="@string/Following_More_Info"
+          style="@style/SettingsInfoIcon" />
+
+        <android.support.v7.widget.SwitchCompat
+          android:id="@+id/following_switch"
+          style="@style/EndSettingsWidget" />
+      </LinearLayout>
+
     </LinearLayout>
 
   </ScrollView>

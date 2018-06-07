@@ -13,9 +13,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageButton;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.security.ProviderInstaller;
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
+import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
@@ -29,6 +34,8 @@ import com.kickstarter.ui.fragments.DiscoveryFragment;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.views.SortTabLayout;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
+
+import net.hockeyapp.android.ExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -160,6 +167,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.viewModel.inputs::openDrawer);
+
+    updateAndroidSecurityProvider();
   }
 
   private static @NonNull List<DiscoveryFragment> createFragments(final int pages) {
@@ -206,5 +215,20 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       })
       .setIcon(android.R.drawable.ic_dialog_alert)
       .show();
+  }
+
+  private void updateAndroidSecurityProvider() {
+    if (!ApiCapabilities.tls1_2IsEnabledByDefault()) {
+      // https://stackoverflow.com/questions/29916962/javax-net-ssl-sslhandshakeexception-javax-net-ssl-sslprotocolexception-ssl-han/36892715#36892715
+      try {
+        ProviderInstaller.installIfNeeded(this);
+      } catch (GooglePlayServicesRepairableException e) {
+        // Thrown when Google Play Services is not installed, up-to-date, or enabled
+        // Show dialog to allow users to install, update, or otherwise enable Google Play services.
+        GooglePlayServicesUtil.getErrorDialog(e.getConnectionStatusCode(), this, 0);
+      } catch (GooglePlayServicesNotAvailableException e) {
+        ExceptionHandler.saveException(e, null);
+      }
+    }
   }
 }

@@ -144,6 +144,7 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'com.github.frankiesardo:auto-parcel:0.3.1'
     annotationProcessor 'com.github.frankiesardo:auto-parcel-processor:0.3.1'
+    compile 'com.google.android.gms:play-services-auth:10.0.1'
     compile 'com.google.android.gms:play-services-gcm:10.0.1'
     compile 'com.google.android.gms:play-services-wallet:10.0.1'
     compile 'com.google.android.exoplayer:exoplayer:2.7.0'

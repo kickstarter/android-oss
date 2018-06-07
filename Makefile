@@ -38,9 +38,4 @@ secrets:
 	mkdir -p app/src/main/assets/www/
 	cp vendor/native-secrets/android/WebViewJavascript.html app/src/main/assets/www/WebViewJavascript.html || true
 
-	# Copy TLS helpers over.
-	cp -rf vendor/native-secrets/android/SocketUtils.java app/src/main/java/com/kickstarter/libs/utils/SocketUtils.java \
-		|| cp -rf config/SocketUtils.java app/src/main/java/com/kickstarter/libs/utils/SocketUtils.java
-	cp -rf vendor/native-secrets/android/TLSSocketFactory.java app/src/main/java/com/kickstarter/libs/TLSSocketFactory.java || true
-
 .PHONY: bootstrap bootstrap-circle dependencies secrets

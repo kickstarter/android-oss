@@ -1,7 +1,7 @@
 {
   "project_info": {
     "project_number": "",
-    "firebase_url": "",
+    "firebase_url": "https://android-external-debug.firebaseio.com",
     "project_id": "android-external-debug"
   },
   "client": [

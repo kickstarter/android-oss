@@ -6,10 +6,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.gcm.GcmPubSub;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.KSApplication;
-import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -40,12 +39,7 @@ public class RegisterService extends IntentService {
     Timber.d("onHandleIntent");
 
     try {
-      // This initially hits the network to retrieve the token, subsequent calls are local
-      final InstanceID instanceID = InstanceID.getInstance(this);
-
-      // R.string.gcm_defaultSenderId is derived from google-services.json
-      final String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
-        GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+      final String token = FirebaseInstanceId.getInstance().getToken();
       Timber.d("Token: %s", token);
 
       sendTokenToApi(token);

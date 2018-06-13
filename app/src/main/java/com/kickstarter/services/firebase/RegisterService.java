@@ -1,13 +1,12 @@
-package com.kickstarter.services.gcm;
+package com.kickstarter.services.firebase;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.android.gms.gcm.GcmPubSub;
-import com.google.android.gms.iid.InstanceID;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -71,7 +70,7 @@ public class RegisterService extends IntentService {
    * @throws IOException if unable to reach the GCM PubSub service
    */
   private void subscribeToGlobalTopic(final @NonNull String token) throws IOException {
-    GcmPubSub.getInstance(this).subscribe(token, "/topics/global", null);
+    FirebaseMessaging.getInstance().subscribeToTopic("global");
   }
 }
 

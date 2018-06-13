@@ -1,4 +1,4 @@
-package com.kickstarter.services.gcm;
+package com.kickstarter.services.firebase;
 
 import android.app.IntentService;
 import android.content.Intent;

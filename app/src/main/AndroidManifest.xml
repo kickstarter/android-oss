@@ -10,13 +10,8 @@
   <!-- We need coarse location to find projects near a user. Could also see people being uncomfortable with providing
     this permission though, since location is not core to the app. -->
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-  <!-- WAKE_LOCK keeps the processor from sleeping when a GCM message is received -->
-  <uses-permission android:name="android.permission.WAKE_LOCK" />
   <!-- RECEIVE allows the app to register to receive GCM messages -->
   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-  <!-- Prevent other apps from registering and receiving our app's messages -->
-  <permission android:name="${applicationId}.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-  <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
 
   <!-- Mixpanel library requires this permission -->
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -446,46 +441,33 @@
 
     <!-- SERVICES, PROVIDERS, RECEIVERS -->
 
-    <!-- Sets up the app to send, receive, register with GCM. -->
-    <receiver
-      android:name="com.google.android.gms.gcm.GcmReceiver"
-      android:exported="true"
-      android:permission="com.google.android.c2dm.permission.SEND" >
-      <intent-filter>
-        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-        <!-- The registration action is only needed for pre-4.4 KitKat devices -->
-        <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-        <category android:name="${applicationId}" />
-      </intent-filter>
-    </receiver>
-
-    <!-- Receives new message events from GCM. -->
+    <!-- Receives new message events from Firebase. -->
     <service
-      android:name=".services.gcm.MessageService"
+      android:name=".services.firebase.MessageService"
       android:exported="false" >
       <intent-filter>
-        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+        <action android:name="com.google.firebase.MESSAGING_EVENT" />
       </intent-filter>
     </service>
 
-    <!-- Processes token refresh events from GCM (e.g. token expired). Registers a new token. -->
+    <!-- Processes token refresh events from Friebase (e.g. token expired). Registers a new token. -->
     <service
-      android:name=".services.gcm.TokenListenerService"
+      android:name=".services.firebase.TokenListenerService"
       android:exported="false">
       <intent-filter>
-        <action android:name="com.google.android.gms.iid.InstanceID"/>
+        <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
       </intent-filter>
     </service>
 
-    <!-- Registers new tokens with the app, sets up device subscription with GCM. -->
+    <!-- Registers new tokens with the app, sets up device subscription with Firebase. -->
     <service
-      android:name=".services.gcm.RegisterService"
+      android:name=".services.firebase.RegisterService"
       android:exported="false">
     </service>
 
-    <!-- Unsubscribes the device from GCM. -->
+    <!-- Unsubscribes the device from Firebase. -->
     <service
-      android:name=".services.gcm.UnregisterService"
+      android:name=".services.firebase.UnregisterService"
       android:exported="false">
     </service>
 

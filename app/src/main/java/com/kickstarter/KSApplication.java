@@ -8,7 +8,7 @@ import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 
 import com.facebook.FacebookSdk;
-import com.google.android.gms.iid.InstanceID;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
@@ -106,7 +106,7 @@ public class KSApplication extends MultiDexApplication {
 
 
   private void setVisitorCookie() {
-    final String deviceId = InstanceID.getInstance(this).getId();
+    final String deviceId = FirebaseInstanceId.getInstance().getId();
     final String uniqueIdentifier = TextUtils.isEmpty(deviceId) ? UUID.randomUUID().toString() : deviceId;
     final HttpCookie cookie = new HttpCookie("vis", uniqueIdentifier);
     cookie.setMaxAge(DateTime.now().plusYears(100).getMillis());

@@ -1,9 +1,9 @@
-package com.kickstarter.services.gcm;
+package com.kickstarter.services.firebase;
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
-import com.google.android.gms.gcm.GcmListenerService;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -12,11 +12,13 @@ import com.kickstarter.models.pushdata.Activity;
 import com.kickstarter.models.pushdata.GCM;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class MessageService extends GcmListenerService {
+public class MessageService extends FirebaseMessagingService {
   @Inject protected Gson gson;
   @Inject protected PushNotifications pushNotifications;
 
@@ -27,25 +29,29 @@ public class MessageService extends GcmListenerService {
   }
 
   /**
-   * Called when a message is received from GCM.
+   * Called when a message is received from Firebase.
    *
-   * @param from SenderID of the sender.
-   * @param data Data bundle containing message data as key/value pairs.
+   * @param remoteMessage Object containing message information.
    */
   @Override
-  public void onMessageReceived(final @NonNull String from, final @NonNull Bundle data) {
+  public void onMessageReceived(RemoteMessage remoteMessage) {
+    super.onMessageReceived(remoteMessage);
+
     final String senderId = getString(R.string.gcm_defaultSenderId);
-    if (!from.equals(senderId)) {
+    final String from = remoteMessage.getFrom();
+    if (!TextUtils.equals(from,senderId)) {
       Timber.e("Received a message from %s, expecting %s", from, senderId);
       return;
     }
 
+    final Map<String, String> data = remoteMessage.getData();
+
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
-      .activity(this.gson.fromJson(data.getString("activity"), Activity.class))
-      .gcm(this.gson.fromJson(data.getString("gcm"), GCM.class))
-      .message(this.gson.fromJson(data.getString("message"), PushNotificationEnvelope.Message.class))
-      .project(this.gson.fromJson(data.getString("project"), PushNotificationEnvelope.Project.class))
-      .survey(this.gson.fromJson(data.getString("survey"), PushNotificationEnvelope.Survey.class))
+      .activity(this.gson.fromJson(data.get("activity"), Activity.class))
+      .gcm(this.gson.fromJson(data.get("gcm"), GCM.class))
+      .message(this.gson.fromJson(data.get("message"), PushNotificationEnvelope.Message.class))
+      .project(this.gson.fromJson(data.get("project"), PushNotificationEnvelope.Project.class))
+      .survey(this.gson.fromJson(data.get("survey"), PushNotificationEnvelope.Survey.class))
       .build();
 
     if (envelope == null) {

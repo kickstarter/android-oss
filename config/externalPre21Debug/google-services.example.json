@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "",
+    "firebase_url": "",
     "project_id": "android-external-debug"
   },
   "client": [
@@ -26,7 +27,7 @@
           "other_platform_oauth_client": []
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

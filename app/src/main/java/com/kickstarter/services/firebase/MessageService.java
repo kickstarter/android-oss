@@ -34,12 +34,12 @@ public class MessageService extends FirebaseMessagingService {
    * @param remoteMessage Object containing message information.
    */
   @Override
-  public void onMessageReceived(RemoteMessage remoteMessage) {
+  public void onMessageReceived(final RemoteMessage remoteMessage) {
     super.onMessageReceived(remoteMessage);
 
     final String senderId = getString(R.string.gcm_defaultSenderId);
     final String from = remoteMessage.getFrom();
-    if (!TextUtils.equals(from,senderId)) {
+    if (!TextUtils.equals(from, senderId)) {
       Timber.e("Received a message from %s, expecting %s", from, senderId);
       return;
     }

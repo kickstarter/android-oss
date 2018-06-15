@@ -51,10 +51,9 @@
         android:layout_width="match_parent"
         android:text="@string/facebook_confirmation_button" />
 
-      <com.kickstarter.ui.views.HtmlTextView
-        android:id="@+id/disclaimer"
+      <TextView
         style="@style/Caption1Secondary"
-        android:text="@string/login_tout_disclaimer_agree_to_terms_html"
+        android:text="@string/Facebook_login_disclaimer"
         android:gravity="center"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="wrap_content"

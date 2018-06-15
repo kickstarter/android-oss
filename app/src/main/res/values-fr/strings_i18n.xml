@@ -121,7 +121,7 @@ contributeurs</string>
   <string name="Follow_your_Facebook_friends_and_keep_up_with_the_projects" formatted="false">Suivez vos amis Facebook, les projets qu\'ils soutiennent et les campagnes qu\'ils lancent.</string>
   <string name="Followed" formatted="false">Abonné</string>
   <string name="Following" formatted="false">Projets soutenus par mes amis</string>
-  <string name="Following_More_Info" formatted="false">Following More Info</string>
+  <string name="Following_More_Info" formatted="false">Plus d\'informations sur le suivi et l\'abonnement</string>
   <string name="Follows_friend_name" formatted="false">Abonnement aux actus de %{friend_name}.</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> a soutenu un projet &lt;i>artistique&lt;/i>.</string>
   <string name="Friend_backed_comics_project" formatted="false">&lt;b>%{friend_name}&lt;/b> a soutenu un projet de &lt;i>BD&lt;/i>.</string>
@@ -147,6 +147,7 @@ contributeurs</string>
   <string name="Got_it" formatted="false">Super.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Merci ! Vos réponses au questionnaire ont bien été envoyées.</string>
   <string name="Help_center" formatted="false">Centre d\'aide</string>
+  <string name="Hide_password" formatted="false">Masquer le mot de passe</string>
   <string name="Home" formatted="false">Accueil</string>
   <string name="How_backers_found_your_project" formatted="false">Comment les contributeurs ont découvert votre projet</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Je souhaite simplement soutenir le projet.</string>
@@ -220,6 +221,7 @@ n\'ont rien soutenu.</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">Ou sélectionner une autre récompense ci-dessous :</string>
   <string name="Other_payment_methods" formatted="false">Autres moyens de paiement</string>
   <string name="Other_projects_you_might_like" formatted="false">Autre projets qui pourraient vous intéresser</string>
+  <string name="Password_visibility" formatted="false">Visibilité du mot de passe</string>
   <string name="Past_live_stream" formatted="false">Diffusion en direct passée</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Le moyen de paiement a bien été débité.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Veuillez saisir un montant de %{amount} ou moins.</string>
@@ -239,6 +241,7 @@ n\'ont rien soutenu.</string>
   <string name="Popular" formatted="false">Tendances</string>
   <string name="Popular_Projects" formatted="false">Les tendances</string>
   <string name="Privacy" formatted="false">Vie privée</string>
+  <string name="Private_profile" formatted="false">Profil privé</string>
   <string name="Project_Cancelled" formatted="false">Projet annulé.</string>
   <string name="Project_Suspended" formatted="false">Projet suspendu.</string>
   <string name="Project_cancelled" formatted="false">Projet annulé</string>
@@ -307,6 +310,7 @@ n\'ont rien soutenu.</string>
   <string name="Share_update" formatted="false">Partager</string>
   <string name="Shipping" formatted="false">Expédition</string>
   <string name="Ships_to" formatted="false">Livraison :</string>
+  <string name="Show_password" formatted="false">Afficher le mot de passe</string>
   <string name="Shows_list_of_subcategories" formatted="false">Affiche la liste des sous-catégories.</string>
   <string name="Signs_up_with_Email" formatted="false">Inscription avec l\'adresse e-mail.</string>
   <string name="Something_catch_your_eye" formatted="false">Quelque chose a retenu votre attention ?</string>

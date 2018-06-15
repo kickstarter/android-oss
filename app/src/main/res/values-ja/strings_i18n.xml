@@ -146,6 +146,7 @@
   <string name="Got_it" formatted="false">完了</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">サーベイを送信しました！</string>
   <string name="Help_center" formatted="false">ヘルプセンター</string>
+  <string name="Hide_password" formatted="false">パスワードを非表示にする</string>
   <string name="Home" formatted="false">ホーム</string>
   <string name="How_backers_found_your_project" formatted="false">バッカ―があなたのプロジェクトを見つけた経緯</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">プロジェクトをサポートしたい</string>
@@ -218,6 +219,7 @@
   <string name="Or_select_a_different_reward_below_colon" formatted="false">別のリワードをみる：</string>
   <string name="Other_payment_methods" formatted="false">その他の支払方法</string>
   <string name="Other_projects_you_might_like" formatted="false">おすすめをさらに見る</string>
+  <string name="Password_visibility" formatted="false">パスワードの表示/非表示</string>
   <string name="Past_live_stream" formatted="false">過去のプロジェクト</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">支払い方法が登録されました。</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">%{amount} 以下の金額を入力してくだささい。</string>
@@ -237,6 +239,7 @@
   <string name="Popular" formatted="false">人気</string>
   <string name="Popular_Projects" formatted="false">人気のプロジェクト</string>
   <string name="Privacy" formatted="false">プライバシー</string>
+  <string name="Private_profile" formatted="false">プライベート設定のプロフィール</string>
   <string name="Project_Cancelled" formatted="false">プロジェクトが取り消されました。</string>
   <string name="Project_Suspended" formatted="false">中止プロジェクト</string>
   <string name="Project_cancelled" formatted="false">プロジェクトが取り消されました。</string>
@@ -306,6 +309,7 @@
   <string name="Share_update" formatted="false">アップデートをシェアしましょう</string>
   <string name="Shipping" formatted="false">配送</string>
   <string name="Ships_to" formatted="false">配送先：</string>
+  <string name="Show_password" formatted="false">パスワードを表示する</string>
   <string name="Shows_list_of_subcategories" formatted="false">サブカテゴリーリストを見せる。</string>
   <string name="Signs_up_with_Email" formatted="false">Eメールでサインアップする。</string>
   <string name="Something_catch_your_eye" formatted="false">何か目にとまるものはありましたか？</string>

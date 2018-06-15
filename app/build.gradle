@@ -129,6 +129,12 @@ android {
         }
         main.java.srcDirs += 'src/main/kotlin'
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 repositories {
@@ -185,13 +191,13 @@ dependencies {
     // Testing
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:1.10.19'
-    testImplementation 'org.robolectric:robolectric:3.0'
+    testImplementation 'org.robolectric:robolectric:3.8'
     testImplementation 'org.robolectric:shadows-multidex:3.0'
-    testImplementation "org.robolectric:shadows-play-services:3.0"
-    testImplementation "org.robolectric:shadows-support-v4:3.0"
-    androidTestImplementation 'com.android.support.test:rules:0.5'
-    androidTestImplementation 'com.android.support.test:runner:0.5'
-    androidTestImplementation 'com.android.support:support-annotations:27.0.0'
+    testImplementation 'org.robolectric:shadows-play-services:3.0'
+    testImplementation 'org.robolectric:shadows-support-v4:3.4-rc2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support:support-annotations:27.1.1'
 }
 
 // SHA and timestamp caching courtesy of https://github.com/gdg-x/frisbee/blob/develop/app/build.gradle#L193-L218

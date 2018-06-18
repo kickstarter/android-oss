@@ -9,11 +9,10 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUserType;
+import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.ApiClientType;
-
-import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -41,8 +40,10 @@ public class RegisterService extends IntentService {
       final String token = FirebaseInstanceId.getInstance().getToken();
       Timber.d("Token: %s", token);
 
-      sendTokenToApi(token);
-      subscribeToGlobalTopic(token);
+      if(ObjectUtils.isNotNull(token)) {
+        sendTokenToApi(token);
+        subscribeToGlobalTopic();
+      }
     } catch (final Exception e) {
       Timber.e("Failed to complete token refresh: %s", e);
     }
@@ -66,11 +67,9 @@ public class RegisterService extends IntentService {
 
   /**
    * Subscribe to generic global topic - not using more specific topics.
-   *
-   * @throws IOException if unable to reach the GCM PubSub service
    */
-  private void subscribeToGlobalTopic(final @NonNull String token) throws IOException {
-    FirebaseMessaging.getInstance().subscribeToTopic("global");
+  private void subscribeToGlobalTopic() {
+    FirebaseMessaging.getInstance().subscribeToTopic(DeviceRegistrar.TOPIC_GLOBAL);
   }
 }
 

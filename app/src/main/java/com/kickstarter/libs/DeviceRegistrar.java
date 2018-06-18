@@ -13,6 +13,8 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
   private final @NonNull PlayServicesCapability playServicesCapability;
   private @ApplicationContext @NonNull Context context;
 
+  public static final String TOPIC_GLOBAL = "global";
+
   public DeviceRegistrar(final @NonNull PlayServicesCapability playServicesCapability,
     final @ApplicationContext @NonNull Context context) {
     this.playServicesCapability = playServicesCapability;

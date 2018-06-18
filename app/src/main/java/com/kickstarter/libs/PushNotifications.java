@@ -1,11 +1,13 @@
 package com.kickstarter.libs;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -47,6 +49,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 
 public final class PushNotifications {
+  private static final String CHANNEL_ID = DeviceRegistrar.TOPIC_GLOBAL;
   private final @ApplicationContext Context context;
   private final ApiClientType client;
   private final DeviceRegistrarType deviceRegistrar;
@@ -63,6 +66,8 @@ public final class PushNotifications {
   }
 
   public void initialize() {
+    createNotificationChannel();
+
     this.subscriptions.add(
       this.notifications
         .onBackpressureBuffer()
@@ -131,6 +136,24 @@ public final class PushNotifications {
 
   public void add(final @NonNull PushNotificationEnvelope envelope) {
     this.notifications.onNext(envelope);
+  }
+
+  private void createNotificationChannel() {
+    // Create the NotificationChannel, but only on API 26+ because
+    // the NotificationChannel class is new and not in the support library
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      CharSequence name = this.context.getString(R.string.channel_name);
+      String description = this.context.getString(R.string.channel_description);
+      int importance = NotificationManager.IMPORTANCE_DEFAULT;
+      NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+      channel.setDescription(description);
+      // Register the channel with the system; you can't change the importance
+      // or other notification behaviors after this
+      NotificationManager notificationManager = this.context.getSystemService(NotificationManager.class);
+      if (ObjectUtils.isNotNull(notificationManager)) {
+        notificationManager.createNotificationChannel(channel);
+      }
+    }
   }
 
   private void displayNotificationFromFriendFollowActivity(final @NonNull PushNotificationEnvelope envelope) {
@@ -263,7 +286,7 @@ public final class PushNotifications {
   private @NonNull NotificationCompat.Builder notificationBuilder(final @NonNull String title,
     final @NonNull String text) {
 
-    return new NotificationCompat.Builder(this.context)
+    return new NotificationCompat.Builder(this.context, "")
       .setSmallIcon(R.drawable.ic_kickstarter_micro_k)
       .setColor(ContextCompat.getColor(this.context, R.color.ksr_green_800))
       .setContentText(text)

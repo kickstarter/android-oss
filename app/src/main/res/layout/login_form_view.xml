@@ -2,63 +2,65 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:gravity="center_horizontal">
+  android:gravity="center_horizontal"
+  android:orientation="vertical">
 
   <android.support.design.widget.TextInputLayout
-    app:hintTextAppearance="@style/BodySecondary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_2">
+    android:layout_marginTop="@dimen/grid_2"
+    app:hintTextAppearance="@style/BodySecondary">
 
-    <EditText
+    <android.support.design.widget.TextInputEditText
       android:id="@+id/email"
+      style="@style/CalloutPrimary"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:hint="@string/login_placeholder_email"
       android:inputType="textEmailAddress"
-      android:maxLines="1"
-      style="@style/CalloutPrimary"
-      android:hint="@string/login_placeholder_email" />
+      android:maxLines="1" />
 
   </android.support.design.widget.TextInputLayout>
 
   <android.support.design.widget.TextInputLayout
-    app:hintTextAppearance="@style/BodySecondary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_1">
+    android:layout_marginTop="@dimen/grid_1"
+    app:hintTextAppearance="@style/BodySecondary"
+    app:passwordToggleEnabled="true"
+    app:passwordToggleTint="@color/ksr_text_green_700">
 
-    <EditText
+    <android.support.design.widget.TextInputEditText
       android:id="@+id/password"
+      style="@style/CalloutPrimary"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/grid_2"
-      android:inputType="textPassword"
-      style="@style/CalloutPrimary"
-      android:hint="@string/login_placeholder_password" />
+      android:hint="@string/login_placeholder_password"
+      android:inputType="textPassword" />
 
   </android.support.design.widget.TextInputLayout>
 
   <Button
     android:id="@+id/login_button"
     style="@style/PrimaryButton"
-    android:enabled="false"
-    android:layout_marginTop="@dimen/grid_2"
     android:layout_width="match_parent"
+    android:layout_marginTop="@dimen/grid_2"
+    android:enabled="false"
     android:text="@string/login_buttons_log_in" />
 
   <TextView
-    style="@style/Caption1Primary"
     android:id="@+id/forgot_your_password_text_view"
-    android:background="@drawable/click_indicator_light_masked"
+    style="@style/Caption1Primary"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_1"
     android:layout_marginBottom="@dimen/grid_1"
-    android:paddingTop="@dimen/grid_1"
+    android:layout_marginTop="@dimen/grid_1"
+    android:background="@drawable/click_indicator_light_masked"
+    android:gravity="center_horizontal"
     android:paddingBottom="@dimen/grid_1"
-    android:gravity="center_horizontal" />
+    android:paddingTop="@dimen/grid_1" />
 
 </LinearLayout>

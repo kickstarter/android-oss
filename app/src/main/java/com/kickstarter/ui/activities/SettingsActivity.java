@@ -60,6 +60,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @Bind(R.id.project_updates_phone_icon) IconTextView projectUpdatesPhoneIconTextView;
   protected @Bind(R.id.kickstarter_news_and_events_switch) SwitchCompat promoNewsletterSwitch;
   protected @Bind(R.id.recommendations_switch) SwitchCompat recommendationsSwitch;
+  protected @Bind(R.id.private_profile_switch) SwitchCompat privateProfileSwitch;
   protected @Bind(R.id.projects_we_love_switch) SwitchCompat weeklyNewsletterSwitch;
   protected @Bind(R.id.version_name) TextView versionName;
 
@@ -107,6 +108,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   private AlertDialog followingInfoDialog;
   private AlertDialog logoutConfirmationDialog;
   private AlertDialog recommendationsInfoDialog;
+  private AlertDialog privateProfileInfoDialog;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -174,6 +176,10 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     RxView.clicks(this.weeklyNewsletterSwitch)
       .compose(bindToLifecycle())
       .subscribe(__ -> this.viewModel.inputs.sendWeeklyNewsletter(this.weeklyNewsletterSwitch.isChecked()));
+
+    RxView.clicks(this.privateProfileSwitch)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> this.viewModel.inputs.showPublicProfile(this.privateProfileSwitch.isChecked()));
 
     this.viewModel.outputs.showConfirmLogoutPrompt()
       .compose(bindToLifecycle())
@@ -415,6 +421,20 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     if (this.recommendationsInfoDialog == null) {
       final String capitalizedGotIt = this.gotItString.toUpperCase(Locale.getDefault());
       this.recommendationsInfoDialog = new AlertDialog.Builder(this)
+        .setTitle(this.recommendationsString)
+        .setMessage(this.recommendationsInfo)
+        .setPositiveButton(capitalizedGotIt, (__, ___) -> this.recommendationsInfoDialog.dismiss())
+        .setCancelable(true)
+        .create();
+    }
+    return this.recommendationsInfoDialog;
+  }
+
+  //TODO - Finish AlertDialog
+  private @NonNull AlertDialog lazyPrivateProfileInfoDialog() {
+    if (this.privateProfileInfoDialog == null) {
+      final String capitalizedGotIt = this.gotItString.toUpperCase(Locale.getDefault());
+      this.privateProfileInfoDialog = new AlertDialog.Builder(this)
         .setTitle(this.recommendationsString)
         .setMessage(this.recommendationsInfo)
         .setPositiveButton(capitalizedGotIt, (__, ___) -> this.recommendationsInfoDialog.dismiss())

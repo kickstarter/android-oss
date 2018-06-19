@@ -86,6 +86,9 @@ public interface SettingsViewModel {
 
     /** Call when the user toggles the Projects We Love newsletter switch. */
     void sendWeeklyNewsletter(boolean checked);
+
+    /** Call when user toggles the private profile switch. */
+    void showPublicProfile(boolean checked);
   }
 
   interface Outputs {
@@ -308,6 +311,9 @@ public interface SettingsViewModel {
     @Override public void sendWeeklyNewsletter(final boolean checked) {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().weeklyNewsletter(checked).build());
       this.newsletterInput.onNext(new Pair<>(checked, Newsletter.WEEKLY));
+    }
+    @Override public void showPublicProfile(final boolean checked) {
+      this.userInput.onNext(this.userOutput.getValue().toBuilder().showPublicProfile(checked).build());
     }
 
     @Override public @NonNull Observable<Void> logout() {

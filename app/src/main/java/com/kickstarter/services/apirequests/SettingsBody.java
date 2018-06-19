@@ -21,6 +21,7 @@ public abstract class SettingsBody {
   public abstract int happeningNewsletter();
   public abstract int promoNewsletter();
   public abstract int weeklyNewsletter();
+  public abstract int showPublicProfile();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -38,6 +39,7 @@ public abstract class SettingsBody {
     public abstract Builder happeningNewsletter(int __);
     public abstract Builder promoNewsletter(int __);
     public abstract Builder weeklyNewsletter(int __);
+    public abstract Builder showPublicProfile(int __);
     public abstract SettingsBody build();
   }
 

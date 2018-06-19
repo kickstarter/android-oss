@@ -38,6 +38,7 @@ public abstract class User implements Parcelable {
   public abstract @Nullable Integer starredProjectsCount();
   public abstract @Nullable Integer unreadMessagesCount();
   public abstract @Nullable Boolean weeklyNewsletter();
+  public abstract @Nullable Boolean showPublicProfile();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -68,6 +69,7 @@ public abstract class User implements Parcelable {
     public abstract Builder starredProjectsCount(Integer __);
     public abstract Builder unreadMessagesCount(Integer __);
     public abstract Builder weeklyNewsletter(Boolean __);
+    public abstract Builder showPublicProfile(Boolean __);
     public abstract User build();
   }
 

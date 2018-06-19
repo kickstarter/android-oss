@@ -368,6 +368,66 @@
         android:text="@string/Privacy" />
 
       <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_10"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:text="@string/Following" />
+
+        <ImageButton
+          android:id="@+id/following_info"
+          style="@style/SettingsInfoIcon"
+          android:contentDescription="@string/Following_More_Info" />
+
+        <android.support.v7.widget.SwitchCompat
+          android:id="@+id/following_switch"
+          style="@style/EndSettingsWidget" />
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_10"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:text="@string/Recommendations" />
+
+        <ImageButton
+          android:id="@+id/recommendations_info"
+          style="@style/SettingsInfoIcon"
+          android:contentDescription="@string/Recommendations_More_Info" />
+
+        <android.support.v7.widget.SwitchCompat
+          android:id="@+id/recommendations_switch"
+          style="@style/EndSettingsWidget" />
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_10"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+          style="@style/SettingsSectionLabel"
+          android:text="@string/Private_profile" />
+
+        <ImageButton
+          android:id="@+id/private_profile_info"
+          style="@style/SettingsInfoIcon"
+          android:contentDescription="@string/Private_profile" />
+
+        <android.support.v7.widget.SwitchCompat
+          android:id="@+id/private_profile_switch"
+          style="@style/EndSettingsWidget" />
+      </LinearLayout>
+
+      <LinearLayout
         android:id="@+id/settings_delete_account"
         style="@style/SettingsClickableSection">
 
@@ -393,46 +453,6 @@
           style="@style/EndSettingsWidget"
           android:text="@string/chevron_right_icon"
           android:textColor="@color/ksr_soft_black" />
-      </LinearLayout>
-
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_10"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-          style="@style/SettingsSectionLabel"
-          android:text="@string/Recommendations" />
-
-        <ImageButton
-          android:id="@+id/recommendations_info"
-          android:contentDescription="@string/Recommendations_More_Info"
-          style="@style/SettingsInfoIcon" />
-
-        <android.support.v7.widget.SwitchCompat
-          android:id="@+id/recommendations_switch"
-          style="@style/EndSettingsWidget" />
-      </LinearLayout>
-
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_10"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-          style="@style/SettingsSectionLabel"
-          android:text="@string/Following" />
-
-        <ImageButton
-          android:id="@+id/following_info"
-          android:contentDescription="@string/Following_More_Info"
-          style="@style/SettingsInfoIcon" />
-
-        <android.support.v7.widget.SwitchCompat
-          android:id="@+id/following_switch"
-          style="@style/EndSettingsWidget" />
       </LinearLayout>
 
     </LinearLayout>

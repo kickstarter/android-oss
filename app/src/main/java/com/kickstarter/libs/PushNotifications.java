@@ -49,7 +49,8 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 
 public final class PushNotifications {
-  private static final String CHANNEL_ID = DeviceRegistrar.TOPIC_GLOBAL;
+  // TODO: 6/19/18 what should we name this? 
+  private static final String CHANNEL_ID = "test";
   private final @ApplicationContext Context context;
   private final ApiClientType client;
   private final DeviceRegistrarType deviceRegistrar;
@@ -142,8 +143,9 @@ public final class PushNotifications {
     // Create the NotificationChannel, but only on API 26+ because
     // the NotificationChannel class is new and not in the support library
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      CharSequence name = this.context.getString(R.string.channel_name);
-      String description = this.context.getString(R.string.channel_description);
+      // TODO: 6/19/18 I need strings for this
+      CharSequence name = this.context.getString(R.string.app_name);
+      String description = this.context.getString(R.string.app_name);
       int importance = NotificationManager.IMPORTANCE_DEFAULT;
       NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
       channel.setDescription(description);
@@ -286,7 +288,7 @@ public final class PushNotifications {
   private @NonNull NotificationCompat.Builder notificationBuilder(final @NonNull String title,
     final @NonNull String text) {
 
-    return new NotificationCompat.Builder(this.context, "")
+    return new NotificationCompat.Builder(this.context, CHANNEL_ID)
       .setSmallIcon(R.drawable.ic_kickstarter_micro_k)
       .setColor(ContextCompat.getColor(this.context, R.color.ksr_green_800))
       .setContentText(text)

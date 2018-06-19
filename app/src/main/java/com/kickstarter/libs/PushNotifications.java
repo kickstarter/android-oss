@@ -144,14 +144,14 @@ public final class PushNotifications {
     // the NotificationChannel class is new and not in the support library
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       // TODO: 6/19/18 I need strings for this
-      CharSequence name = this.context.getString(R.string.app_name);
-      String description = this.context.getString(R.string.app_name);
-      int importance = NotificationManager.IMPORTANCE_DEFAULT;
-      NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+      final CharSequence name = this.context.getString(R.string.app_name);
+      final String description = this.context.getString(R.string.app_name);
+      final int importance = NotificationManager.IMPORTANCE_DEFAULT;
+      final NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
       channel.setDescription(description);
       // Register the channel with the system; you can't change the importance
       // or other notification behaviors after this
-      NotificationManager notificationManager = this.context.getSystemService(NotificationManager.class);
+      final NotificationManager notificationManager = this.context.getSystemService(NotificationManager.class);
       if (ObjectUtils.isNotNull(notificationManager)) {
         notificationManager.createNotificationChannel(channel);
       }

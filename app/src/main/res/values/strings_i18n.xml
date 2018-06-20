@@ -94,6 +94,7 @@ backers</string>
   <string name="Explore_creative_projects" formatted="false">Explore creative projects</string>
   <string name="Explore_projects" formatted="false">Explore projects</string>
   <string name="Facebook_login_disclaimer" formatted="false">If you login with Facebook, we’ll import your name and profile photo. We\'ll also access your friend list so you can follow your Facebook friends on Kickstarter. We will never post anything on Facebook without your permission.</string>
+  <string name="Facebook_login_disclaimer_update" formatted="false">By logging in with Facebook, we’ll import your name, profile photo and friend list.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Failed to retrieve live stream event details</string>
   <string name="Failed_to_update_subscription" formatted="false">Failed to update subscription</string>
   <string name="Filter_by_all_projects" formatted="false">Filter by all projects</string>
@@ -243,6 +244,8 @@ from friends yet.</string>
   <string name="Popular_Projects" formatted="false">Popular Projects</string>
   <string name="Privacy" formatted="false">Privacy</string>
   <string name="Private_profile" formatted="false">Private profile</string>
+  <string name="Private_profile_more_info" formatted="false">Private profile more info</string>
+  <string name="Private_profile_more_info_content" formatted="false">Kickstarter profiles are private by default. To make your profile public and visible to the world, turn this off.</string>
   <string name="Project_Cancelled" formatted="false">Project Cancelled.</string>
   <string name="Project_Suspended" formatted="false">Project Suspended.</string>
   <string name="Project_cancelled" formatted="false">Project cancelled</string>

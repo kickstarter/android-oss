@@ -420,7 +420,7 @@
         <ImageButton
           android:id="@+id/private_profile_info"
           style="@style/SettingsInfoIcon"
-          android:contentDescription="@string/Private_profile" />
+          android:contentDescription="@string/Private_profile_more_info" />
 
         <android.support.v7.widget.SwitchCompat
           android:id="@+id/private_profile_switch"

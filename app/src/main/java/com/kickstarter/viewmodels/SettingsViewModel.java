@@ -75,6 +75,9 @@ public interface SettingsViewModel {
     /** Call when the user clicks the Recommendations info icon. */
     void recommendationsInfoClicked();
 
+    /** Call when the user clicks the Recommendations info icon. */
+    void privateProfileInfoClicked();
+
     /** Call when the user toggles the Kickstarter Loves Games newsletter switch. */
     void sendGamesNewsletter(boolean checked);
 
@@ -112,6 +115,9 @@ public interface SettingsViewModel {
 
     /** Emits when user should be shown the Recommendations info dialog. */
     Observable<Void> showRecommendationsInfo();
+
+    /** Emits when user should be shown the Private Profile info dialog */
+    Observable<Void> showPrivateProfileInfo();
 
     /** Emits user containing settings state. */
     Observable<User> user();
@@ -234,6 +240,7 @@ public interface SettingsViewModel {
     private final BehaviorSubject<Void> showFollowingInfo = BehaviorSubject.create();
     private final PublishSubject<Newsletter> showOptInPrompt = PublishSubject.create();
     private final PublishSubject<Void> showRecommendationsInfo = PublishSubject.create();
+    private final PublishSubject<Void> showPrivateProfileInfo = PublishSubject.create();
     private final PublishSubject<Void> updateSuccess = PublishSubject.create();
     private final BehaviorSubject<User> userOutput = BehaviorSubject.create();
 
@@ -262,6 +269,10 @@ public interface SettingsViewModel {
     }
     @Override public void recommendationsInfoClicked() {
       this.showRecommendationsInfo.onNext(null);
+    }
+    @Override
+    public void privateProfileInfoClicked() {
+      this.showPrivateProfileInfo.onNext(null);
     }
     @Override public void logoutClicked() {
       this.showConfirmLogoutPrompt.onNext(true);
@@ -337,6 +348,7 @@ public interface SettingsViewModel {
     @Override public @NonNull Observable<Void> showRecommendationsInfo() {
       return this.showRecommendationsInfo;
     }
+    @Override public @NonNull Observable<Void> showPrivateProfileInfo() { return  this.showPrivateProfileInfo; }
     @Override public @NonNull Observable<User> user() {
       return this.userOutput;
     }

@@ -90,6 +90,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @BindString(R.string.Recommendations) String recommendationsString;
   protected @BindString(R.string.We_use_your_activity_internally_to_make_recommendations_for_you) String recommendationsInfo;
   protected @BindString(R.string.Yes_turn_off) String yesTurnOffString;
+  protected @BindString(R.string.Private_profile) String privateProfileString;
+  protected @BindString(R.string.Private_profile_more_info_content) String privateProfileInfoString;
 
   private CurrentUserType currentUser;
   private Build build;
@@ -201,6 +203,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> lazyRecommendationsInfoDialog().show());
+
+    this.viewModel.outputs.showPrivateProfileInfo()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> lazyPrivateProfileInfoDialog().show());
   }
 
   @OnClick(R.id.contact)
@@ -253,6 +260,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   @OnClick(R.id.recommendations_info)
   public void recommendationsInfoClick() {
     this.viewModel.inputs.recommendationsInfoClicked();
+  }
+
+  @OnClick(R.id.private_profile_info)
+  public void privateProfileInfoClick() {
+    this.viewModel.inputs.privateProfileInfoClicked();
   }
 
   public void startHelpActivity(final @NonNull Class<? extends HelpActivity> helpClass) {
@@ -373,6 +385,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     SwitchCompatUtils.setCheckedWithoutAnimation(this.happeningNewsletterSwitch, isTrue(user.happeningNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.promoNewsletterSwitch, isTrue(user.promoNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.weeklyNewsletterSwitch, isTrue(user.weeklyNewsletter()));
+    SwitchCompatUtils.setCheckedWithoutAnimation(this.privateProfileSwitch, isTrue(user.showPublicProfile()));
   }
 
   private @NonNull AlertDialog lazyFollowingInfoDialog() {
@@ -430,18 +443,17 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     return this.recommendationsInfoDialog;
   }
 
-  //TODO - Finish AlertDialog
   private @NonNull AlertDialog lazyPrivateProfileInfoDialog() {
     if (this.privateProfileInfoDialog == null) {
       final String capitalizedGotIt = this.gotItString.toUpperCase(Locale.getDefault());
       this.privateProfileInfoDialog = new AlertDialog.Builder(this)
-        .setTitle(this.recommendationsString)
-        .setMessage(this.recommendationsInfo)
-        .setPositiveButton(capitalizedGotIt, (__, ___) -> this.recommendationsInfoDialog.dismiss())
+        .setTitle(this.privateProfileString)
+        .setMessage(this.privateProfileInfoString)
+        .setPositiveButton(capitalizedGotIt, (__, ___) -> this.privateProfileInfoDialog.dismiss())
         .setCancelable(true)
         .create();
     }
-    return this.recommendationsInfoDialog;
+    return this.privateProfileInfoDialog;
   }
 
   private void logout() {

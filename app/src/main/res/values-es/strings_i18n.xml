@@ -94,6 +94,7 @@ patrocinadores</string>
   <string name="Explore_creative_projects" formatted="false">Explora proyectos creativos</string>
   <string name="Explore_projects" formatted="false">Explora proyectos</string>
   <string name="Facebook_login_disclaimer" formatted="false">Si inicias sesión con Facebook, importaremos tu nombre y foto de perfil. También accederemos a tu lista de amigos para que puedas seguir a tus amigos de Facebook en Kickstarter. Jamás publicaremos nada en Facebook sin tu permiso.</string>
+  <string name="Facebook_login_disclaimer_update" formatted="false">By logging in with Facebook, we’ll import your name, profile photo and friend list.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">No se pudo cargar la información acerca del evento en vivo</string>
   <string name="Failed_to_update_subscription" formatted="false">No se pudo actualizar la suscripción</string>
   <string name="Filter_by_all_projects" formatted="false">Filtro: Todos los proyectos</string>
@@ -241,6 +242,8 @@ patrocinadores</string>
   <string name="Popular_Projects" formatted="false">Proyectos populares</string>
   <string name="Privacy" formatted="false">Privacidad</string>
   <string name="Private_profile" formatted="false">Perfil privado</string>
+  <string name="Private_profile_more_info" formatted="false">Más información sobre el perfil privado</string>
+  <string name="Private_profile_more_info_content" formatted="false">Los perfiles de Kickstarter son privados por defecto. Para hacer que tu perfil sea público y visible para el mundo, desactiva esta opción.</string>
   <string name="Project_Cancelled" formatted="false">Proyecto cancelado.</string>
   <string name="Project_Suspended" formatted="false">Proyecto suspendido.</string>
   <string name="Project_cancelled" formatted="false">Proyecto cancelado</string>

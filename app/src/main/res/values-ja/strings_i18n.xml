@@ -93,6 +93,7 @@
   <string name="Explore_creative_projects" formatted="false">クリエイティブなプロジェクトをさがす</string>
   <string name="Explore_projects" formatted="false">プロジェクトをさがす</string>
   <string name="Facebook_login_disclaimer" formatted="false">Facebook でログインすると、あなたの氏名とプロフィール写真がインポートされます。また、あなたが Kickstarter 上で Facebook 友達をフォローすることができるように、友達リストも Kickstarter によってアクセスされます。あなたの許可なしに Kickstarter が Facebook 上に投稿を行うことは決してありません。  </string>
+  <string name="Facebook_login_disclaimer_update" formatted="false">Facebook を使ってログインすると、お名前とプロフィール写真、友達リストがインポートされます。</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">ライブ配信の詳細を取得できませんでした</string>
   <string name="Failed_to_update_subscription" formatted="false">定期購読の更新に失敗しました</string>
   <string name="Filter_by_all_projects" formatted="false">全てのプロジェクトに絞る</string>
@@ -240,6 +241,8 @@
   <string name="Popular_Projects" formatted="false">人気のプロジェクト</string>
   <string name="Privacy" formatted="false">プライバシー</string>
   <string name="Private_profile" formatted="false">プライベート設定のプロフィール</string>
+  <string name="Private_profile_more_info" formatted="false">プライベート設定のプロフィール詳細</string>
+  <string name="Private_profile_more_info_content" formatted="false">Kickstarter でのプロフィールはデフォルト設定ではプライベート (非公開) となっています。プロフィールを公開したい場合はこの設定をオフにしてください。</string>
   <string name="Project_Cancelled" formatted="false">プロジェクトが取り消されました。</string>
   <string name="Project_Suspended" formatted="false">中止プロジェクト</string>
   <string name="Project_cancelled" formatted="false">プロジェクトが取り消されました。</string>

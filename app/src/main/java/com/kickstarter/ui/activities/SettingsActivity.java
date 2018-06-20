@@ -55,12 +55,12 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @Bind(R.id.messages_phone_icon) IconTextView messagesPhoneIconTextView;
   protected @Bind(R.id.new_followers_mail_icon) ImageButton newFollowersMailImageButton;
   protected @Bind(R.id.new_followers_phone_icon) IconTextView newFollowersPhoneIconTextView;
+  protected @Bind(R.id.private_profile_switch) SwitchCompat privateProfileSwitch;
   protected @Bind(R.id.project_notifications_count) TextView projectNotificationsCountTextView;
   protected @Bind(R.id.project_updates_mail_icon) ImageButton projectUpdatesMailImageButton;
   protected @Bind(R.id.project_updates_phone_icon) IconTextView projectUpdatesPhoneIconTextView;
   protected @Bind(R.id.kickstarter_news_and_events_switch) SwitchCompat promoNewsletterSwitch;
   protected @Bind(R.id.recommendations_switch) SwitchCompat recommendationsSwitch;
-  protected @Bind(R.id.private_profile_switch) SwitchCompat privateProfileSwitch;
   protected @Bind(R.id.projects_we_love_switch) SwitchCompat weeklyNewsletterSwitch;
   protected @Bind(R.id.version_name) TextView versionName;
 
@@ -75,10 +75,13 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @BindString(R.string.profile_settings_newsletter_happening) String happeningNewsletterString;
   protected @BindString(R.string.mailto) String mailtoString;
   protected @BindString(R.string.Logged_Out) String loggedOutString;
-  protected @BindString(R.string.profile_settings_newsletter_weekly) String weeklyNewsletterString;
-  protected @BindString(R.string.profile_settings_newsletter_promo) String promoNewsletterString;
   protected @BindString(R.string.profile_settings_newsletter_opt_in_message) String optInMessageString;
   protected @BindString(R.string.profile_settings_newsletter_opt_in_title) String optInTitleString;
+  protected @BindString(R.string.Private_profile) String privateProfileString;
+  protected @BindString(R.string.Private_profile_more_info_content) String privateProfileInfoString;
+  protected @BindString(R.string.profile_settings_newsletter_promo) String promoNewsletterString;
+  protected @BindString(R.string.Recommendations) String recommendationsString;
+  protected @BindString(R.string.We_use_your_activity_internally_to_make_recommendations_for_you) String recommendationsInfo;
   protected @BindString(R.string.profile_settings_accessibility_subscribe_mobile_notifications) String subscribeMobileString;
   protected @BindString(R.string.profile_settings_accessibility_subscribe_notifications) String subscribeString;
   protected @BindString(R.string.support_email_body) String supportEmailBodyString;
@@ -87,11 +90,9 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @BindString(R.string.profile_settings_error) String unableToSaveString;
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_mobile_notifications) String unsubscribeMobileString;
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_notifications) String unsubscribeString;
-  protected @BindString(R.string.Recommendations) String recommendationsString;
-  protected @BindString(R.string.We_use_your_activity_internally_to_make_recommendations_for_you) String recommendationsInfo;
+  protected @BindString(R.string.profile_settings_newsletter_weekly) String weeklyNewsletterString;
   protected @BindString(R.string.Yes_turn_off) String yesTurnOffString;
-  protected @BindString(R.string.Private_profile) String privateProfileString;
-  protected @BindString(R.string.Private_profile_more_info_content) String privateProfileInfoString;
+
 
   private CurrentUserType currentUser;
   private Build build;

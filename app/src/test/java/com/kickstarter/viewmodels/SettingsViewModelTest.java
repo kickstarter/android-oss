@@ -20,8 +20,8 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> hideConfirmFollowingOptOutPrompt = new TestSubscriber<>();
   private final TestSubscriber<Void> showConfirmFollowingOptOutPrompt = new TestSubscriber<>();
   private final TestSubscriber<Newsletter> showOptInPromptTest = new TestSubscriber<>();
-  private final TestSubscriber<Void> showRecommendationsInfo = new TestSubscriber<>();
   private final TestSubscriber<Void> showPrivateProfileInfo = new TestSubscriber<>();
+  private final TestSubscriber<Void> showRecommendationsInfo = new TestSubscriber<>();
 
 
   private void setUpEnvironment(final @NonNull User user) {

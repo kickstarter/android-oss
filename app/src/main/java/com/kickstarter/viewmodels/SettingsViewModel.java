@@ -113,11 +113,11 @@ public interface SettingsViewModel {
     /** Show a dialog to inform the user that their newsletter subscription must be confirmed via email. */
     Observable<Newsletter> showOptInPrompt();
 
-    /** Emits when user should be shown the Recommendations info dialog. */
-    Observable<Void> showRecommendationsInfo();
-
     /** Emits when user should be shown the Private Profile info dialog */
     Observable<Void> showPrivateProfileInfo();
+
+    /** Emits when user should be shown the Recommendations info dialog. */
+    Observable<Void> showRecommendationsInfo();
 
     /** Emits user containing settings state. */
     Observable<User> user();
@@ -270,8 +270,7 @@ public interface SettingsViewModel {
     @Override public void recommendationsInfoClicked() {
       this.showRecommendationsInfo.onNext(null);
     }
-    @Override
-    public void privateProfileInfoClicked() {
+    @Override public void privateProfileInfoClicked() {
       this.showPrivateProfileInfo.onNext(null);
     }
     @Override public void logoutClicked() {

@@ -16,12 +16,12 @@ public abstract class SettingsBody {
   public abstract boolean notifyOfFriendActivity();
   public abstract boolean notifyOfMessages();
   public abstract boolean notifyOfUpdates();
+  public abstract int showPublicProfile();
   public abstract int social();
   public abstract int gamesNewsletter();
   public abstract int happeningNewsletter();
   public abstract int promoNewsletter();
   public abstract int weeklyNewsletter();
-  public abstract int showPublicProfile();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -34,12 +34,12 @@ public abstract class SettingsBody {
     public abstract Builder notifyOfFriendActivity(boolean __);
     public abstract Builder notifyOfMessages(boolean __);
     public abstract Builder notifyOfUpdates(boolean __);
+    public abstract Builder showPublicProfile(int __);
     public abstract Builder social(int __);
     public abstract Builder gamesNewsletter(int __);
     public abstract Builder happeningNewsletter(int __);
     public abstract Builder promoNewsletter(int __);
     public abstract Builder weeklyNewsletter(int __);
-    public abstract Builder showPublicProfile(int __);
     public abstract SettingsBody build();
   }
 

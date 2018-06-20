@@ -34,11 +34,11 @@ public abstract class User implements Parcelable {
   public abstract @Nullable Boolean notifyOfUpdates();
   public abstract @Nullable Boolean optedOutOfRecommendations();
   public abstract @Nullable Boolean promoNewsletter();
+  public abstract @Nullable Boolean showPublicProfile();
   public abstract @Nullable Boolean social();
   public abstract @Nullable Integer starredProjectsCount();
   public abstract @Nullable Integer unreadMessagesCount();
   public abstract @Nullable Boolean weeklyNewsletter();
-  public abstract @Nullable Boolean showPublicProfile();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -65,11 +65,11 @@ public abstract class User implements Parcelable {
     public abstract Builder notifyOfUpdates(Boolean __);
     public abstract Builder optedOutOfRecommendations(Boolean __);
     public abstract Builder promoNewsletter(Boolean __);
+    public abstract Builder showPublicProfile(Boolean __);
     public abstract Builder social(Boolean __);
     public abstract Builder starredProjectsCount(Integer __);
     public abstract Builder unreadMessagesCount(Integer __);
     public abstract Builder weeklyNewsletter(Boolean __);
-    public abstract Builder showPublicProfile(Boolean __);
     public abstract User build();
   }
 

@@ -324,7 +324,7 @@ public interface SettingsViewModel {
       this.newsletterInput.onNext(new Pair<>(checked, Newsletter.WEEKLY));
     }
     @Override public void showPublicProfile(final boolean checked) {
-      this.userInput.onNext(this.userOutput.getValue().toBuilder().showPublicProfile(checked).build());
+      this.userInput.onNext(this.userOutput.getValue().toBuilder().showPublicProfile(!checked).build());
     }
 
     @Override public @NonNull Observable<Void> logout() {

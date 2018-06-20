@@ -385,7 +385,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     SwitchCompatUtils.setCheckedWithoutAnimation(this.happeningNewsletterSwitch, isTrue(user.happeningNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.promoNewsletterSwitch, isTrue(user.promoNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.weeklyNewsletterSwitch, isTrue(user.weeklyNewsletter()));
-    SwitchCompatUtils.setCheckedWithoutAnimation(this.privateProfileSwitch, isTrue(user.showPublicProfile()));
+    SwitchCompatUtils.setCheckedWithoutAnimation(this.privateProfileSwitch, isFalse(user.showPublicProfile()));
   }
 
   private @NonNull AlertDialog lazyFollowingInfoDialog() {

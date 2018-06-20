@@ -349,7 +349,7 @@ public interface SettingsViewModel {
       return this.showRecommendationsInfo;
     }
     @Override public @NonNull Observable<Void> showPrivateProfileInfo() {
-      return  this.showPrivateProfileInfo; }
+      return this.showPrivateProfileInfo; }
     @Override public @NonNull Observable<User> user() {
       return this.userOutput;
     }

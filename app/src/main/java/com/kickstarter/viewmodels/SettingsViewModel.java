@@ -75,6 +75,9 @@ public interface SettingsViewModel {
     /** Call when the user clicks the Recommendations info icon. */
     void recommendationsInfoClicked();
 
+    /** Call when the user clicks the Private Profile info icon. */
+    void privateProfileInfoClicked();
+
     /** Call when the user toggles the Kickstarter Loves Games newsletter switch. */
     void sendGamesNewsletter(boolean checked);
 
@@ -86,6 +89,9 @@ public interface SettingsViewModel {
 
     /** Call when the user toggles the Projects We Love newsletter switch. */
     void sendWeeklyNewsletter(boolean checked);
+
+    /** Call when user toggles the private profile switch. */
+    void showPublicProfile(boolean checked);
   }
 
   interface Outputs {
@@ -106,6 +112,9 @@ public interface SettingsViewModel {
 
     /** Show a dialog to inform the user that their newsletter subscription must be confirmed via email. */
     Observable<Newsletter> showOptInPrompt();
+
+    /** Emits when user should be shown the Private Profile info dialog */
+    Observable<Void> showPrivateProfileInfo();
 
     /** Emits when user should be shown the Recommendations info dialog. */
     Observable<Void> showRecommendationsInfo();
@@ -231,6 +240,7 @@ public interface SettingsViewModel {
     private final BehaviorSubject<Void> showFollowingInfo = BehaviorSubject.create();
     private final PublishSubject<Newsletter> showOptInPrompt = PublishSubject.create();
     private final PublishSubject<Void> showRecommendationsInfo = PublishSubject.create();
+    private final PublishSubject<Void> showPrivateProfileInfo = PublishSubject.create();
     private final PublishSubject<Void> updateSuccess = PublishSubject.create();
     private final BehaviorSubject<User> userOutput = BehaviorSubject.create();
 
@@ -259,6 +269,9 @@ public interface SettingsViewModel {
     }
     @Override public void recommendationsInfoClicked() {
       this.showRecommendationsInfo.onNext(null);
+    }
+    @Override public void privateProfileInfoClicked() {
+      this.showPrivateProfileInfo.onNext(null);
     }
     @Override public void logoutClicked() {
       this.showConfirmLogoutPrompt.onNext(true);
@@ -309,6 +322,9 @@ public interface SettingsViewModel {
       this.userInput.onNext(this.userOutput.getValue().toBuilder().weeklyNewsletter(checked).build());
       this.newsletterInput.onNext(new Pair<>(checked, Newsletter.WEEKLY));
     }
+    @Override public void showPublicProfile(final boolean checked) {
+      this.userInput.onNext(this.userOutput.getValue().toBuilder().showPublicProfile(!checked).build());
+    }
 
     @Override public @NonNull Observable<Void> logout() {
       return this.logout;
@@ -330,6 +346,9 @@ public interface SettingsViewModel {
     }
     @Override public @NonNull Observable<Void> showRecommendationsInfo() {
       return this.showRecommendationsInfo;
+    }
+    @Override public @NonNull Observable<Void> showPrivateProfileInfo() {
+      return this.showPrivateProfileInfo;
     }
     @Override public @NonNull Observable<User> user() {
       return this.userOutput;

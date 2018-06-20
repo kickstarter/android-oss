@@ -20,6 +20,7 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> hideConfirmFollowingOptOutPrompt = new TestSubscriber<>();
   private final TestSubscriber<Void> showConfirmFollowingOptOutPrompt = new TestSubscriber<>();
   private final TestSubscriber<Newsletter> showOptInPromptTest = new TestSubscriber<>();
+  private final TestSubscriber<Void> showPrivateProfileInfo = new TestSubscriber<>();
   private final TestSubscriber<Void> showRecommendationsInfo = new TestSubscriber<>();
 
 
@@ -35,6 +36,7 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.hideConfirmFollowingOptOutPrompt().subscribe(this.hideConfirmFollowingOptOutPrompt);
     this.vm.outputs.showConfirmFollowingOptOutPrompt().subscribe(this.showConfirmFollowingOptOutPrompt);
     this.vm.outputs.showRecommendationsInfo().subscribe(this.showRecommendationsInfo);
+    this.vm.outputs.showPrivateProfileInfo().subscribe(this.showPrivateProfileInfo);
     this.vm.outputs.showOptInPrompt().subscribe(this.showOptInPromptTest);
   }
 
@@ -124,6 +126,22 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.recommendationsInfoClicked();
     this.showRecommendationsInfo.assertValueCount(1);
+
+    this.showOptInPromptTest.assertNoValues();
+    this.koalaTest.assertValues("Settings View");
+  }
+
+  @Test
+  public void testSettingsViewModel_showPrivateProfileInfo() {
+    final User user = UserFactory.user();
+
+    setUpEnvironment(user);
+
+    this.currentUserTest.assertValues(user);
+    this.showPrivateProfileInfo.assertValueCount(0);
+
+    this.vm.inputs.privateProfileInfoClicked();
+    this.showPrivateProfileInfo.assertValueCount(1);
 
     this.showOptInPromptTest.assertNoValues();
     this.koalaTest.assertValues("Settings View");

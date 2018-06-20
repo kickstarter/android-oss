@@ -108,6 +108,7 @@
       "Expands_subcategories": "Expands subcategories.",
       "Explore": "Explore",
       "Facebook_login_disclaimer": "If you login with Facebook, we’ll import your name and profile photo. We'll also access your friend list so you can follow your Facebook friends on Kickstarter. We will never post anything on Facebook without your permission.",
+      "Facebook_login_disclaimer_update": "By logging in with Facebook, we’ll import your name, profile photo and friend list.",
       "Failed_to_retrieve_live_stream_event_details": "Failed to retrieve live stream event details",
       "Failed_to_update_subscription": "Failed to update subscription",
       "Filter_by_all_projects": "Filter by all projects",
@@ -278,6 +279,8 @@
       "Popular_Projects": "Popular Projects",
       "Privacy": "Privacy",
       "Private_profile": "Private profile",
+      "Private_profile_more_info": "Private profile more info",
+      "Private_profile_more_info_content": "Kickstarter profiles are private by default. To make your profile public and visible to the world, turn this off.",
       "Project_Cancelled": "Project Cancelled.",
       "Project_cancelled": "Project cancelled",
       "project_count_projects": {
@@ -2080,6 +2083,7 @@
       "Expands_subcategories": "Erweitert die Anzeige der Unterkategorien.",
       "Explore": "Erkunden",
       "Facebook_login_disclaimer": "Wenn du dich über Facebook anmeldest, importieren wir deinen Namen und dein Profilfoto. Außerdem wird deine Freundesliste importiert, damit du deinen Freunden auf Kickstarter folgen kannst. Wir werden niemals etwas ohne deine Erlaubnis auf Facebook posten.",
+      "Facebook_login_disclaimer_update": "By logging in with Facebook, we’ll import your name, profile photo and friend list.",
       "Failed_to_retrieve_live_stream_event_details": "Details zu Live-Stream-Event konnten nicht geladen werden",
       "Failed_to_update_subscription": "Abo konnte nicht aktualisiert werden",
       "Filter_by_all_projects": "Filter: Alle Projekte",
@@ -2250,6 +2254,8 @@
       "Popular_Projects": "Beliebte Projekte",
       "Privacy": "Datenschutz",
       "Private_profile": "Privates Profil",
+      "Private_profile_more_info": "Privates Profil - Mehr Info",
+      "Private_profile_more_info_content": "Die Standard-Einstellung für Profile sind auf Kickstarter ist privat. Um dein Profil öffentlich zu machen, hebe diese Einstellung bitte auf.",
       "Project_Cancelled": "Projekt abgebrochen.",
       "Project_cancelled": "Projekt abgebrochen",
       "project_count_projects": {
@@ -4052,6 +4058,7 @@
       "Expands_subcategories": "Muestra más subcategorías.",
       "Explore": "Explora",
       "Facebook_login_disclaimer": "Si inicias sesión con Facebook, importaremos tu nombre y foto de perfil. También accederemos a tu lista de amigos para que puedas seguir a tus amigos de Facebook en Kickstarter. Jamás publicaremos nada en Facebook sin tu permiso.",
+      "Facebook_login_disclaimer_update": "By logging in with Facebook, we’ll import your name, profile photo and friend list.",
       "Failed_to_retrieve_live_stream_event_details": "No se pudo cargar la información acerca del evento en vivo",
       "Failed_to_update_subscription": "No se pudo actualizar la suscripción",
       "Filter_by_all_projects": "Filtro: Todos los proyectos",
@@ -4222,6 +4229,8 @@
       "Popular_Projects": "Proyectos populares",
       "Privacy": "Privacidad",
       "Private_profile": "Perfil privado",
+      "Private_profile_more_info": "Más información sobre el perfil privado",
+      "Private_profile_more_info_content": "Los perfiles de Kickstarter son privados por defecto. Para hacer que tu perfil sea público y visible para el mundo, desactiva esta opción.",
       "Project_Cancelled": "Proyecto cancelado.",
       "Project_cancelled": "Proyecto cancelado",
       "project_count_projects": {
@@ -6024,6 +6033,7 @@
       "Expands_subcategories": "Développe les sous-catégories.",
       "Explore": "Explorer",
       "Facebook_login_disclaimer": "Si vous vous connectez avec Facebook, nous importerons votre nom et votre photo de profil. Nous accéderons aussi à votre liste d'amis pour vous permettre de suivre vos connaissances sur Kickstarter. Nous ne publierons jamais sur Facebook sans votre autorisation.",
+      "Facebook_login_disclaimer_update": "By logging in with Facebook, we’ll import your name, profile photo and friend list.",
       "Failed_to_retrieve_live_stream_event_details": "Impossible de récupérer les détails de la diffusion en direct",
       "Failed_to_update_subscription": "Mise à jour de l'abonnement impossible",
       "Filter_by_all_projects": "Filtrer : tous les projets",
@@ -6194,6 +6204,8 @@
       "Popular_Projects": "Les tendances",
       "Privacy": "Vie privée",
       "Private_profile": "Profil privé",
+      "Private_profile_more_info": "Plus d'informations sur le profil privé",
+      "Private_profile_more_info_content": "Par défaut, les profils Kickstarter sont privés. Pour rendre votre profil public et visible par tout le monde, décochez cette case.",
       "Project_Cancelled": "Projet annulé.",
       "Project_cancelled": "Projet annulé",
       "project_count_projects": {
@@ -7996,6 +8008,7 @@
       "Expands_subcategories": "サブカテゴリーを表示",
       "Explore": "さがす",
       "Facebook_login_disclaimer": "Facebook でログインすると、あなたの氏名とプロフィール写真がインポートされます。また、あなたが Kickstarter 上で Facebook 友達をフォローすることができるように、友達リストも Kickstarter によってアクセスされます。あなたの許可なしに Kickstarter が Facebook 上に投稿を行うことは決してありません。  ",
+      "Facebook_login_disclaimer_update": "Facebook を使ってログインすると、お名前とプロフィール写真、友達リストがインポートされます。",
       "Failed_to_retrieve_live_stream_event_details": "ライブ配信の詳細を取得できませんでした",
       "Failed_to_update_subscription": "定期購読の更新に失敗しました",
       "Filter_by_all_projects": "全てのプロジェクトに絞る",
@@ -8166,6 +8179,8 @@
       "Popular_Projects": "人気のプロジェクト",
       "Privacy": "プライバシー",
       "Private_profile": "プライベート設定のプロフィール",
+      "Private_profile_more_info": "プライベート設定のプロフィール詳細",
+      "Private_profile_more_info_content": "Kickstarter でのプロフィールはデフォルト設定ではプライベート (非公開) となっています。プロフィールを公開したい場合はこの設定をオフにしてください。",
       "Project_Cancelled": "プロジェクトが取り消されました。",
       "Project_cancelled": "プロジェクトが取り消されました。",
       "project_count_projects": {
@@ -10054,15 +10069,10 @@
     }
   ],
   "ab_experiments": {
-    "project_build": "control",
     "project_dashboard": "with_dashboard",
-    "react_guest_pledging_run_3": "control",
     "stripe_elements": "experimental",
     "stripe_elements_manage_payments": "experimental",
-    "sticky_global_header_2": "exempt",
-    "react_backer_rewards_public_release": "excluded",
-    "mobile_stripe_elements": "experimental",
-    "native_show_project_card_category": "control"
+    "mobile_stripe_elements": "experimental"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

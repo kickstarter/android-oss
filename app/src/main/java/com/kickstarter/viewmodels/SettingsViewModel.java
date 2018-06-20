@@ -348,7 +348,8 @@ public interface SettingsViewModel {
     @Override public @NonNull Observable<Void> showRecommendationsInfo() {
       return this.showRecommendationsInfo;
     }
-    @Override public @NonNull Observable<Void> showPrivateProfileInfo() { return  this.showPrivateProfileInfo; }
+    @Override public @NonNull Observable<Void> showPrivateProfileInfo() {
+      return  this.showPrivateProfileInfo;}
     @Override public @NonNull Observable<User> user() {
       return this.userOutput;
     }

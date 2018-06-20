@@ -75,7 +75,7 @@ public interface SettingsViewModel {
     /** Call when the user clicks the Recommendations info icon. */
     void recommendationsInfoClicked();
 
-    /** Call when the user clicks the Recommendations info icon. */
+    /** Call when the user clicks the Private Profile info icon. */
     void privateProfileInfoClicked();
 
     /** Call when the user toggles the Kickstarter Loves Games newsletter switch. */

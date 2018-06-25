@@ -28,6 +28,15 @@
         android:layout_marginBottom="@dimen/grid_1"
         style="@style/FacebookButton" />
 
+      <TextView
+        style="@style/Caption1Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:background="@drawable/click_indicator_light_masked"
+        android:gravity="center"
+        android:text="@string/Facebook_login_disclaimer_update" />
+
       <Button
         style="@style/BorderButton"
         android:id="@+id/login_button"

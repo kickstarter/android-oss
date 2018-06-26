@@ -2,69 +2,78 @@
 <ScrollView
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  android:orientation="vertical"
-  android:background="@color/white"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:background="@color/white"
+  android:orientation="vertical"
   tools:context=".ui.activities.LoginToutActivity">
 
   <LinearLayout
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <include layout="@layout/login_toolbar" />
 
     <LinearLayout
-      android:orientation="vertical"
-      android:gravity="center_horizontal"
-      android:paddingStart="@dimen/grid_4"
-      android:paddingEnd="@dimen/grid_4"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:orientation="vertical"
+      android:paddingEnd="@dimen/grid_4"
+      android:paddingStart="@dimen/grid_4">
 
       <include
         layout="@layout/logo_call_to_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_8"
-        android:layout_marginTop="@dimen/grid_10" />
+        android:layout_marginBottom="@dimen/grid_6"
+        android:layout_marginTop="@dimen/grid_6" />
 
       <Button
         android:id="@+id/facebook_login_button"
         style="@style/FacebookButton"
-        android:layout_marginBottom="@dimen/grid_3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_1" />
+
+      <TextView
+        style="@style/Caption1Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:background="@drawable/click_indicator_light_masked"
+        android:gravity="center"
+        android:text="@string/Facebook_login_disclaimer_update" />
 
       <Button
-        style="@style/BorderButton"
         android:id="@+id/login_button"
+        style="@style/BorderButton"
         android:layout_width="match_parent"
         android:layout_marginBottom="@dimen/grid_3"
         android:text="@string/login_buttons_log_in_email" />
 
       <Button
-        style="@style/BorderButton"
         android:id="@+id/sign_up_button"
+        style="@style/BorderButton"
         android:layout_width="match_parent"
         android:text="@string/signup_button_email" />
 
       <com.kickstarter.ui.views.HtmlTextView
-        style="@style/Caption1Secondary"
         android:id="@+id/disclaimer_text_view"
-        android:background="@drawable/click_indicator_light_masked"
+        style="@style/Caption1Secondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_1"
+        android:background="@drawable/click_indicator_light_masked"
         android:gravity="center_horizontal"
-        android:paddingStart="@dimen/grid_1"
-        android:paddingEnd="@dimen/grid_1"
-        android:paddingTop="@dimen/grid_1"
         android:paddingBottom="@dimen/grid_1"
-        android:textColor="@color/ksr_dark_grey_500"
-        android:text="@string/login_tout_disclaimer_agree_to_terms_html" />
+        android:paddingEnd="@dimen/grid_1"
+        android:paddingStart="@dimen/grid_1"
+        android:paddingTop="@dimen/grid_1"
+        android:text="@string/login_tout_disclaimer_agree_to_terms_html"
+        android:textColor="@color/ksr_dark_grey_500" />
 
     </LinearLayout>
 

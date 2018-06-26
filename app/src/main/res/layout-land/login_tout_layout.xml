@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:background="@color/white"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:background="@color/white"
+  android:orientation="vertical">
 
   <LinearLayout
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <include layout="@layout/login_toolbar" />
 
     <LinearLayout
-      android:orientation="vertical"
-      android:gravity="center_horizontal"
-      android:paddingStart="@dimen/grid_21"
-      android:paddingEnd="@dimen/grid_21"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:orientation="vertical"
+      android:paddingEnd="@dimen/grid_21"
+      android:paddingStart="@dimen/grid_21">
 
       <Button
         android:id="@+id/facebook_login_button"
+        style="@style/FacebookButton"
         android:layout_width="match_parent"
-        android:layout_marginBottom="@dimen/grid_1"
-        style="@style/FacebookButton" />
+        android:layout_marginBottom="@dimen/grid_1" />
 
       <TextView
         style="@style/Caption1Secondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_3"
+        android:layout_marginBottom="@dimen/grid_1"
         android:background="@drawable/click_indicator_light_masked"
         android:gravity="center"
         android:text="@string/Facebook_login_disclaimer_update" />
 
       <Button
-        style="@style/BorderButton"
         android:id="@+id/login_button"
+        style="@style/BorderButton"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_1"
+        android:layout_marginTop="@dimen/grid_1"
         android:text="@string/login_buttons_log_in_email" />
 
       <Button
-        style="@style/BorderButton"
         android:id="@+id/sign_up_button"
+        style="@style/BorderButton"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/grid_1"
         android:text="@string/signup_button_email" />
@@ -56,12 +56,12 @@
         android:id="@+id/disclaimer_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_1"
         android:gravity="center_horizontal"
+        android:text="@string/login_tout_disclaimer_agree_to_terms_html"
         android:textAppearance="@style/Caption1Primary"
-        android:textColor="@color/text_secondary"
-        android:text="@string/login_tout_disclaimer_agree_to_terms_html" />
+        android:textColor="@color/text_secondary" />
 
     </LinearLayout>
 

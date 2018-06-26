@@ -27,8 +27,8 @@
         layout="@layout/logo_call_to_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_8"
-        android:layout_marginTop="@dimen/grid_10" />
+        android:layout_marginBottom="@dimen/grid_6"
+        android:layout_marginTop="@dimen/grid_6" />
 
       <Button
         android:id="@+id/facebook_login_button"

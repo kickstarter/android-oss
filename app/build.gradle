@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply from: 'quality.gradle'
+apply plugin: 'io.fabric'
 
 def externalPrivateVersion = new File(project.rootDir.path + "/app/external_version_code.txt").text.trim().toInteger()
 def externalPublicVersion = new File(project.rootDir.path + "/app/external_version_name.txt").text.trim()
@@ -128,6 +129,7 @@ android {
 
 repositories {
     jcenter()
+    maven { url 'https://maven.fabric.io/public' }
     maven {
         url 'https://maven.google.com'
     }
@@ -175,6 +177,9 @@ dependencies {
     compile 'org.jsoup:jsoup:1.8.2'
     compile "com.mixpanel.android:mixpanel-android:4.6.4"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
+        transitive = true;
+    }
 
     // Testing
     testCompile 'junit:junit:4.12'

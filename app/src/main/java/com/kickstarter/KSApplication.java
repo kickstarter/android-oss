@@ -7,6 +7,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.google.android.gms.iid.InstanceID;
 import com.kickstarter.libs.ApiCapabilities;
@@ -32,6 +33,7 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 public class KSApplication extends MultiDexApplication {
@@ -62,6 +64,7 @@ public class KSApplication extends MultiDexApplication {
     }
 
     JodaTimeAndroid.init(this);
+    Fabric.with(this, new Crashlytics());
 
     this.component = DaggerApplicationComponent.builder()
       .applicationModule(new ApplicationModule(this))

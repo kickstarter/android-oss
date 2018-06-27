@@ -504,6 +504,11 @@
 
     <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
+    <meta-data
+      android:name="io.fabric.ApiKey"
+      android:value="@string/crashlytics_key"
+      />
+
     <!-- Mixpanel configuration, see https://github.com/mixpanel/mixpanel-android/blob/87b85d4b5917cdf94118f72b1538b489546a53ec/src/main/java/com/mixpanel/android/mpmetrics/MPConfig.java -->
     <meta-data
       android:name="com.mixpanel.android.MPConfig.EventsEndpoint"

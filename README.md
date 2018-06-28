@@ -29,7 +29,9 @@ for your system. We are currently on JDK 8.
    Studio project` and select the project. Gradle will build the project.
 6. Run the app. Click `Run > Run 'app'`. After the project builds you'll be
    prompted to build or launch an emulator.
-
+7. The app will not load any data and will be blank because you do not have 
+   access to all of our dependencies (they are private). This is intended behavior.
+   
 ## Documentation
 
 While we're at it, why not share our docs? Check out the

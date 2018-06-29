@@ -89,10 +89,13 @@
   <string name="Ending_soon" formatted="false">終了直前</string>
   <string name="Estimated_delivery" formatted="false">配達予定日：</string>
   <string name="Expands_subcategories" formatted="false">サブカテゴリーを表示</string>
+  <string name="Expired_date_at_time" formatted="false">有効期限: %{date} %{time}</string>
+  <string name="Expires_date_at_time" formatted="false">有効期限: %{date} %{time}</string>
   <string name="Explore" formatted="false">さがす</string>
   <string name="Explore_creative_projects" formatted="false">クリエイティブなプロジェクトをさがす</string>
   <string name="Explore_projects" formatted="false">プロジェクトをさがす</string>
   <string name="Facebook_login_disclaimer" formatted="false">Facebook でログインすると、あなたの氏名とプロフィール写真がインポートされます。また、あなたが Kickstarter 上で Facebook 友達をフォローすることができるように、友達リストも Kickstarter によってアクセスされます。あなたの許可なしに Kickstarter が Facebook 上に投稿を行うことは決してありません。  </string>
+  <string name="Facebook_login_disclaimer_update" formatted="false">Facebook を使ってログインすると、お名前とプロフィール写真、友達リストがインポートされます。</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">ライブ配信の詳細を取得できませんでした</string>
   <string name="Failed_to_update_subscription" formatted="false">定期購読の更新に失敗しました</string>
   <string name="Filter_by_all_projects" formatted="false">全てのプロジェクトに絞る</string>
@@ -238,12 +241,18 @@
   <string name="Pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
   <string name="Popular" formatted="false">人気</string>
   <string name="Popular_Projects" formatted="false">人気のプロジェクト</string>
+  <string name="Preparing_your_personal_data" formatted="false">あなたの個人データを準備中…</string>
   <string name="Privacy" formatted="false">プライバシー</string>
   <string name="Private_profile" formatted="false">プライベート設定のプロフィール</string>
+  <string name="Private_profile_more_info" formatted="false">プライベート設定のプロフィール詳細</string>
+  <string name="Private_profile_more_info_content" formatted="false">Kickstarter でのプロフィールはデフォルト設定ではプライベート (非公開) となっています。プロフィールを公開したい場合はこの設定をオフにしてください。</string>
   <string name="Project_Cancelled" formatted="false">プロジェクトが取り消されました。</string>
   <string name="Project_Suspended" formatted="false">中止プロジェクト</string>
+  <string name="Project_activity" formatted="false">Project activity</string>
   <string name="Project_cancelled" formatted="false">プロジェクトが取り消されました。</string>
+  <string name="Project_reminders" formatted="false">Project reminders</string>
   <string name="Project_saved" formatted="false">プロジェクトを保存しました。</string>
+  <string name="Project_updates" formatted="false">Project updates</string>
   <string name="Projects_We_Love" formatted="false">Projects We Love</string>
   <string name="Projects_youve_backed" formatted="false">バック（支援）したプロジェクト</string>
   <string name="Projects_youve_launched" formatted="false">ローンチしたプロジェクト</string>
@@ -279,6 +288,7 @@
   <string name="Reward_delivered" formatted="false">リワードを受け取りましたか？</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>リワード&lt;/b>の配達予定日は%{delivery_date}</string>
   <string name="Reward_selected" formatted="false">選択中のリワード</string>
+  <string name="Reward_surveys" formatted="false">Reward surveys</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_colon_many" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_colon_one" formatted="false">%{rewards_count} 種類のリワード</string>

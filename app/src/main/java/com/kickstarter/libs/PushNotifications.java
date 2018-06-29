@@ -316,7 +316,7 @@ public final class PushNotifications {
   }
 
   private @NonNull NotificationCompat.Builder notificationBuilder(final @NonNull String title,
-    final @NonNull String text, final @NonNull String channelId ) {
+    final @NonNull String text, final @NonNull String channelId) {
 
     return new NotificationCompat.Builder(this.context, channelId)
       .setSmallIcon(R.drawable.ic_kickstarter_micro_k)

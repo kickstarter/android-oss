@@ -90,10 +90,13 @@ patrocinadores</string>
   <string name="Ending_soon" formatted="false">Finaliza pronto</string>
   <string name="Estimated_delivery" formatted="false">Entrega estimada:</string>
   <string name="Expands_subcategories" formatted="false">Muestra más subcategorías.</string>
+  <string name="Expired_date_at_time" formatted="false">Venció el %{date} a la(s) %{time}</string>
+  <string name="Expires_date_at_time" formatted="false">Vence el %{date} a la(s) %{time}</string>
   <string name="Explore" formatted="false">Explora</string>
   <string name="Explore_creative_projects" formatted="false">Explora proyectos creativos</string>
   <string name="Explore_projects" formatted="false">Explora proyectos</string>
   <string name="Facebook_login_disclaimer" formatted="false">Si inicias sesión con Facebook, importaremos tu nombre y foto de perfil. También accederemos a tu lista de amigos para que puedas seguir a tus amigos de Facebook en Kickstarter. Jamás publicaremos nada en Facebook sin tu permiso.</string>
+  <string name="Facebook_login_disclaimer_update" formatted="false">Al iniciar sesión con Facebook, importaremos tu nombre, foto de perfil y lista de amigos.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">No se pudo cargar la información acerca del evento en vivo</string>
   <string name="Failed_to_update_subscription" formatted="false">No se pudo actualizar la suscripción</string>
   <string name="Filter_by_all_projects" formatted="false">Filtro: Todos los proyectos</string>
@@ -239,12 +242,18 @@ patrocinadores</string>
   <string name="Pledged_on_date" formatted="false">&lt;b>Contribuido&lt;/b> el %{pledge_date}</string>
   <string name="Popular" formatted="false">Popular</string>
   <string name="Popular_Projects" formatted="false">Proyectos populares</string>
+  <string name="Preparing_your_personal_data" formatted="false">Preparando tus datos personales...</string>
   <string name="Privacy" formatted="false">Privacidad</string>
   <string name="Private_profile" formatted="false">Perfil privado</string>
+  <string name="Private_profile_more_info" formatted="false">Más información sobre el perfil privado</string>
+  <string name="Private_profile_more_info_content" formatted="false">Los perfiles de Kickstarter son privados por defecto. Para hacer que tu perfil sea público y visible para el mundo, desactiva esta opción.</string>
   <string name="Project_Cancelled" formatted="false">Proyecto cancelado.</string>
   <string name="Project_Suspended" formatted="false">Proyecto suspendido.</string>
+  <string name="Project_activity" formatted="false">Project activity</string>
   <string name="Project_cancelled" formatted="false">Proyecto cancelado</string>
+  <string name="Project_reminders" formatted="false">Project reminders</string>
   <string name="Project_saved" formatted="false">Proyecto guardado.</string>
+  <string name="Project_updates" formatted="false">Project updates</string>
   <string name="Projects_We_Love" formatted="false">Nuestros Favoritos</string>
   <string name="Projects_youve_backed" formatted="false">Proyectos que has patrocinado</string>
   <string name="Projects_youve_launched" formatted="false">Proyectos que has publicado</string>
@@ -279,6 +288,7 @@ patrocinadores</string>
   <string name="Reward_delivered" formatted="false">¿Recompensa entregada?</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Recompensa&lt;/b> estimada para entregarse en %{delivery_date}</string>
   <string name="Reward_selected" formatted="false">Recompensa seleccionada</string>
+  <string name="Reward_surveys" formatted="false">Reward surveys</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} recompensas:</string>
   <string name="Rewards_count_rewards_colon_many" formatted="false">%{rewards_count} recompensas:</string>
   <string name="Rewards_count_rewards_colon_one" formatted="false">%{rewards_count} recompensa:</string>

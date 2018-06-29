@@ -55,6 +55,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @Bind(R.id.messages_phone_icon) IconTextView messagesPhoneIconTextView;
   protected @Bind(R.id.new_followers_mail_icon) ImageButton newFollowersMailImageButton;
   protected @Bind(R.id.new_followers_phone_icon) IconTextView newFollowersPhoneIconTextView;
+  protected @Bind(R.id.private_profile_switch) SwitchCompat privateProfileSwitch;
   protected @Bind(R.id.project_notifications_count) TextView projectNotificationsCountTextView;
   protected @Bind(R.id.project_updates_mail_icon) ImageButton projectUpdatesMailImageButton;
   protected @Bind(R.id.project_updates_phone_icon) IconTextView projectUpdatesPhoneIconTextView;
@@ -74,10 +75,13 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @BindString(R.string.profile_settings_newsletter_happening) String happeningNewsletterString;
   protected @BindString(R.string.mailto) String mailtoString;
   protected @BindString(R.string.Logged_Out) String loggedOutString;
-  protected @BindString(R.string.profile_settings_newsletter_weekly) String weeklyNewsletterString;
-  protected @BindString(R.string.profile_settings_newsletter_promo) String promoNewsletterString;
   protected @BindString(R.string.profile_settings_newsletter_opt_in_message) String optInMessageString;
   protected @BindString(R.string.profile_settings_newsletter_opt_in_title) String optInTitleString;
+  protected @BindString(R.string.Private_profile) String privateProfileString;
+  protected @BindString(R.string.Private_profile_more_info_content) String privateProfileInfoString;
+  protected @BindString(R.string.profile_settings_newsletter_promo) String promoNewsletterString;
+  protected @BindString(R.string.Recommendations) String recommendationsString;
+  protected @BindString(R.string.We_use_your_activity_internally_to_make_recommendations_for_you) String recommendationsInfo;
   protected @BindString(R.string.profile_settings_accessibility_subscribe_mobile_notifications) String subscribeMobileString;
   protected @BindString(R.string.profile_settings_accessibility_subscribe_notifications) String subscribeString;
   protected @BindString(R.string.support_email_body) String supportEmailBodyString;
@@ -86,9 +90,9 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   protected @BindString(R.string.profile_settings_error) String unableToSaveString;
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_mobile_notifications) String unsubscribeMobileString;
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_notifications) String unsubscribeString;
-  protected @BindString(R.string.Recommendations) String recommendationsString;
-  protected @BindString(R.string.We_use_your_activity_internally_to_make_recommendations_for_you) String recommendationsInfo;
+  protected @BindString(R.string.profile_settings_newsletter_weekly) String weeklyNewsletterString;
   protected @BindString(R.string.Yes_turn_off) String yesTurnOffString;
+
 
   private CurrentUserType currentUser;
   private Build build;
@@ -107,6 +111,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   private AlertDialog followingInfoDialog;
   private AlertDialog logoutConfirmationDialog;
   private AlertDialog recommendationsInfoDialog;
+  private AlertDialog privateProfileInfoDialog;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -175,6 +180,10 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
       .compose(bindToLifecycle())
       .subscribe(__ -> this.viewModel.inputs.sendWeeklyNewsletter(this.weeklyNewsletterSwitch.isChecked()));
 
+    RxView.clicks(this.privateProfileSwitch)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> this.viewModel.inputs.showPublicProfile(this.privateProfileSwitch.isChecked()));
+
     this.viewModel.outputs.showConfirmLogoutPrompt()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -195,6 +204,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> lazyRecommendationsInfoDialog().show());
+
+    this.viewModel.outputs.showPrivateProfileInfo()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> lazyPrivateProfileInfoDialog().show());
   }
 
   @OnClick(R.id.contact)
@@ -247,6 +261,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
   @OnClick(R.id.recommendations_info)
   public void recommendationsInfoClick() {
     this.viewModel.inputs.recommendationsInfoClicked();
+  }
+
+  @OnClick(R.id.private_profile_info)
+  public void privateProfileInfoClick() {
+    this.viewModel.inputs.privateProfileInfoClicked();
   }
 
   public void startHelpActivity(final @NonNull Class<? extends HelpActivity> helpClass) {
@@ -367,6 +386,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
     SwitchCompatUtils.setCheckedWithoutAnimation(this.happeningNewsletterSwitch, isTrue(user.happeningNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.promoNewsletterSwitch, isTrue(user.promoNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(this.weeklyNewsletterSwitch, isTrue(user.weeklyNewsletter()));
+    SwitchCompatUtils.setCheckedWithoutAnimation(this.privateProfileSwitch, isFalse(user.showPublicProfile()));
   }
 
   private @NonNull AlertDialog lazyFollowingInfoDialog() {
@@ -422,6 +442,19 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel.ViewM
         .create();
     }
     return this.recommendationsInfoDialog;
+  }
+
+  private @NonNull AlertDialog lazyPrivateProfileInfoDialog() {
+    if (this.privateProfileInfoDialog == null) {
+      final String capitalizedGotIt = this.gotItString.toUpperCase(Locale.getDefault());
+      this.privateProfileInfoDialog = new AlertDialog.Builder(this)
+        .setTitle(this.privateProfileString)
+        .setMessage(this.privateProfileInfoString)
+        .setPositiveButton(capitalizedGotIt, (__, ___) -> this.privateProfileInfoDialog.dismiss())
+        .setCancelable(true)
+        .create();
+    }
+    return this.privateProfileInfoDialog;
   }
 
   private void logout() {

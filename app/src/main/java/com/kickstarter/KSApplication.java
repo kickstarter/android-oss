@@ -20,8 +20,6 @@ import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
 import net.danlew.android.joda.JodaTimeAndroid;
-import net.hockeyapp.android.CrashManager;
-import net.hockeyapp.android.CrashManagerListener;
 
 import org.joda.time.DateTime;
 
@@ -100,11 +98,6 @@ public class KSApplication extends MultiDexApplication {
       ? Secrets.HockeyAppId.EXTERNAL
       : Secrets.HockeyAppId.INTERNAL;
 
-    CrashManager.register(this, appId, new CrashManagerListener() {
-      public boolean shouldAutoUploadCrashes() {
-        return true;
-      }
-    });
   }
 
 

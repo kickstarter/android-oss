@@ -165,7 +165,7 @@ public final class PushNotifications {
     channels.add(getNotificationChannel(CHANNEL_PROJECT_REMINDER, R.string.Project_reminders, NotificationManager.IMPORTANCE_DEFAULT));
     channels.add(getNotificationChannel(CHANNEL_PROJECT_UPDATES, R.string.Project_updates, NotificationManager.IMPORTANCE_DEFAULT));
     final NotificationChannel followingChannel = getNotificationChannel(CHANNEL_FOLLOWING, R.string.Following, NotificationManager.IMPORTANCE_DEFAULT);
-    followingChannel.setDescription(this.context.getString(R.string.Following_More_Info));
+    followingChannel.setDescription(this.context.getString(R.string.When_following_is_on_you_can_follow_the_acticity_of_others));
     channels.add(followingChannel);
     channels.add(getNotificationChannel(CHANNEL_SURVEY, R.string.Reward_surveys, NotificationManager.IMPORTANCE_HIGH));
     return channels;

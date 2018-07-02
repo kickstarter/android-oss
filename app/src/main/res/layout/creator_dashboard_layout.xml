@@ -30,6 +30,7 @@
     android:background="@color/black_alpha_17"
     android:clickable="true"
     android:fitsSystemWindows="true"
+    android:focusable="true"
     android:visibility="gone" />
 
   <android.support.design.widget.CoordinatorLayout

@@ -1,12 +1,12 @@
-package com.kickstarter.services.gcm;
+package com.kickstarter.services.firebase;
 
 import android.content.Intent;
 
-import com.google.android.gms.iid.InstanceIDListenerService;
+import com.google.firebase.iid.FirebaseInstanceIdService;
 
 import timber.log.Timber;
 
-public class TokenListenerService extends InstanceIDListenerService {
+public class TokenListenerService extends FirebaseInstanceIdService {
   /**
    * Called if the InstanceID token is updated. This can occur in a variety of scenarios - the
    * InstanceID service might periodically request that we refresh a token every 6 months, or

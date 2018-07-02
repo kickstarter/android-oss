@@ -1,21 +1,18 @@
-package com.kickstarter.services.gcm;
+package com.kickstarter.services.firebase;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.android.gms.gcm.GcmPubSub;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.kickstarter.KSApplication;
-import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUserType;
+import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.ApiClientType;
-
-import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -40,16 +37,13 @@ public class RegisterService extends IntentService {
     Timber.d("onHandleIntent");
 
     try {
-      // This initially hits the network to retrieve the token, subsequent calls are local
-      final InstanceID instanceID = InstanceID.getInstance(this);
-
-      // R.string.gcm_defaultSenderId is derived from google-services.json
-      final String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
-        GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+      final String token = FirebaseInstanceId.getInstance().getToken();
       Timber.d("Token: %s", token);
 
-      sendTokenToApi(token);
-      subscribeToGlobalTopic(token);
+      if(ObjectUtils.isNotNull(token)) {
+        sendTokenToApi(token);
+        subscribeToGlobalTopic();
+      }
     } catch (final Exception e) {
       Timber.e("Failed to complete token refresh: %s", e);
     }
@@ -73,11 +67,9 @@ public class RegisterService extends IntentService {
 
   /**
    * Subscribe to generic global topic - not using more specific topics.
-   *
-   * @throws IOException if unable to reach the GCM PubSub service
    */
-  private void subscribeToGlobalTopic(final @NonNull String token) throws IOException {
-    GcmPubSub.getInstance(this).subscribe(token, "/topics/global", null);
+  private void subscribeToGlobalTopic() {
+    FirebaseMessaging.getInstance().subscribeToTopic(DeviceRegistrar.TOPIC_GLOBAL);
   }
 }
 

@@ -1,5 +1,6 @@
 package com.kickstarter.libs;
 
+import android.os.Build;
 import android.view.ViewGroup;
 
 public final class ApiCapabilities {
@@ -7,6 +8,10 @@ public final class ApiCapabilities {
 
   public static boolean canCheckMediaControllerIsAttachedToWindow() {
     return android.os.Build.VERSION.SDK_INT >= 19;
+  }
+
+  public static boolean canCreateNotificationChannels() {
+    return android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
   }
 
   public static boolean canDebugWebViews() {

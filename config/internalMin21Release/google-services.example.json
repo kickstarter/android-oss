@@ -1,12 +1,13 @@
 {
   "project_info": {
     "project_number": "",
+    "firebase_url": "https://android-internal-release.firebaseio.com",
     "project_id": "android-internal-release"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "",
+        "mobilesdk_app_id": "1:0:android:0",
         "android_client_info": {
           "package_name": "com.kickstarter.kickstarter.internal"
         }
@@ -26,7 +27,7 @@
           "other_platform_oauth_client": []
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

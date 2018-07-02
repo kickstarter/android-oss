@@ -4248,7 +4248,7 @@
       "Private_profile": "Perfil privado",
       "Private_profile_more_info": "Más información sobre el perfil privado",
       "Private_profile_more_info_content": "Los perfiles de Kickstarter son privados por defecto. Para hacer que tu perfil sea público y visible para el mundo, desactiva esta opción.",
-      "Project_activity": "Project activity",
+      "Project_activity": "Actividad del proyecto",
       "Project_Cancelled": "Proyecto cancelado.",
       "Project_cancelled": "Proyecto cancelado",
       "project_count_projects": {
@@ -4272,10 +4272,10 @@
         "few": "%{projects_count}\nguardados",
         "many": "%{projects_count}\nguardados"
       },
-      "Project_reminders": "Project reminders",
+      "Project_reminders": "Recordatorios del proyecto",
       "Project_saved": "Proyecto guardado.",
       "Project_Suspended": "Proyecto suspendido.",
-      "Project_updates": "Project updates",
+      "Project_updates": "Actualizaciones del proyecto",
       "Projects_We_Love": "Nuestros Favoritos",
       "Projects_youve_launched": "Proyectos que has publicado",
       "Projects_youve_backed": "Proyectos que has patrocinado",
@@ -4304,7 +4304,7 @@
       "Request_my_Personal_Data": "Solicitar mis datos personales",
       "Reward_delivered": "¿Recompensa entregada?",
       "Reward_estimated_for_delivery_in_date": "<b>Recompensa</b> estimada para entregarse en %{delivery_date}",
-      "Reward_surveys": "Reward surveys",
+      "Reward_surveys": "Cuestionarios sobre recompensas",
       "Rewards_count_rewards": {
         "zero": "%{rewards_count} recompensas",
         "one": "%{rewards_count} recompensa",

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <LinearLayout
+    android:id="@+id/new_settings_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ksr_grey_100"
+    android:orientation="vertical"
+    tools:ignore="TooManyViews">
+
+    <include layout="@layout/settings_toolbar" />
+
+    <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+          android:id="@+id/notification_container"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:layout_marginTop="@dimen/grid_3"
+          android:background="@color/white"
+          android:elevation="@dimen/grid_2"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:layout_marginEnd="@dimen/form_margin_x"
+            android:layout_marginStart="@dimen/form_margin_x"
+            android:text="@string/Notifications" />
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/newsletters_container"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:background="@color/white"
+          android:elevation="@dimen/grid_2"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:layout_marginEnd="@dimen/form_margin_x"
+            android:layout_marginStart="@dimen/form_margin_x"
+            android:text="@string/Newsletters" />
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/help_container"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:background="@color/white"
+          android:elevation="@dimen/grid_2"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:layout_marginEnd="@dimen/form_margin_x"
+            android:layout_marginStart="@dimen/form_margin_x"
+            android:text="@string/Help" />
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/privacy_container"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:background="@color/white"
+          android:elevation="@dimen/grid_2"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:layout_marginEnd="@dimen/form_margin_x"
+            android:layout_marginStart="@dimen/form_margin_x"
+            android:text="@string/Privacy" />
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/log_out_container"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:background="@color/white"
+          android:elevation="@dimen/grid_2"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:layout_marginEnd="@dimen/form_margin_x"
+            android:layout_marginStart="@dimen/form_margin_x"
+            android:text="@string/Log_out"
+            android:textColor="@color/ksr_red_400" />
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:background="@color/white"
+          android:elevation="@dimen/grid_2"
+          android:orientation="vertical">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/callout_line_spacing_extra"
+            android:layout_marginEnd="@dimen/form_margin_x"
+            android:layout_marginStart="@dimen/form_margin_x"
+            android:layout_marginTop="@dimen/grid_2"
+            android:text="@string/Rate_us_in_the_App_Store" />
+
+          <TextView
+            android:id="@+id/version_name_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/callout_line_spacing_extra"
+            android:layout_marginEnd="@dimen/form_margin_x"
+            android:layout_marginStart="@dimen/form_margin_x"
+            android:text="@string/Version_name" />
+        </LinearLayout>
+
+      </LinearLayout>
+
+    </ScrollView>
+
+  </LinearLayout>
+
+</layout>

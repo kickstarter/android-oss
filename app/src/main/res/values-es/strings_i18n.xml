@@ -79,6 +79,7 @@ patrocinadores</string>
   <string name="Data_will_appear_here_once" formatted="false">Los datos aparecerán aquí una vez que alguien patrocine tu proyecto.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Eliminar mi cuenta de Kickstarter</string>
   <string name="Delivered" formatted="false">Entregado</string>
+  <string name="Developer" formatted="false">Developer</string>
   <string name="Discover_more_projects" formatted="false">Descubre más proyectos.</string>
   <string name="Dismiss" formatted="false">Descartar</string>
   <string name="Done" formatted="false">Listo</string>
@@ -97,6 +98,8 @@ patrocinadores</string>
   <string name="Explore_projects" formatted="false">Explora proyectos</string>
   <string name="Facebook_login_disclaimer" formatted="false">Si inicias sesión con Facebook, importaremos tu nombre y foto de perfil. También accederemos a tu lista de amigos para que puedas seguir a tus amigos de Facebook en Kickstarter. Jamás publicaremos nada en Facebook sin tu permiso.</string>
   <string name="Facebook_login_disclaimer_update" formatted="false">Al iniciar sesión con Facebook, importaremos tu nombre, foto de perfil y lista de amigos.</string>
+  <string name="Facebook_reconnect" formatted="false">Vuelve a conectar</string>
+  <string name="Facebook_reconnect_description" formatted="false">Disculpa, tu cuenta se desconectó accidentalmente. Conéctala otra vez para volver a seguir a tus amigos.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">No se pudo cargar la información acerca del evento en vivo</string>
   <string name="Failed_to_update_subscription" formatted="false">No se pudo actualizar la suscripción</string>
   <string name="Filter_by_all_projects" formatted="false">Filtro: Todos los proyectos</string>
@@ -149,6 +152,7 @@ patrocinadores</string>
   <string name="Go_to_project_page" formatted="false">Ir a la página de proyecto</string>
   <string name="Got_it" formatted="false">¡Listo!</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.</string>
+  <string name="Help" formatted="false">Help</string>
   <string name="Help_center" formatted="false">Centro de ayuda</string>
   <string name="Hide_password" formatted="false">Ocultar contraseña</string>
   <string name="Home" formatted="false">Inicio</string>
@@ -185,6 +189,7 @@ patrocinadores</string>
   <string name="Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you" formatted="false">Inicia sesión para guardar este proyecto. Te recordaremos 48 horas antes de que finalice.</string>
   <string name="Log_in_or_sign_up_to_subscribe" formatted="false">Para activar la suscripción, por favor inicia sesión o regístrate</string>
   <string name="Log_in_to_leave_a_comment" formatted="false">Inicia sesión para dejar un comentario.</string>
+  <string name="Log_out" formatted="false">Log out</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">Contribuir sin recompensa</string>
   <string name="Manage_your_pledge" formatted="false">Administra tu contribución</string>
   <string name="Manage_your_pledge_below" formatted="false">Administra tu contribución:</string>
@@ -196,6 +201,7 @@ patrocinadores</string>
   <string name="Name" formatted="false">Nombre</string>
   <string name="Never" formatted="false">Nunca</string>
   <string name="New_pledge_activity" formatted="false">Nueva actividad de contribución</string>
+  <string name="Newsletters" formatted="false">Newsletters</string>
   <string name="No_Results" formatted="false">Sin resultados</string>
   <string name="No_comments_yet" formatted="false">No hay comentarios todavia.</string>
   <string name="No_messages" formatted="false">No hay mensajes</string>
@@ -207,6 +213,7 @@ patrocinadores</string>
   <string name="Not_delivered" formatted="false">No entregado</string>
   <string name="Not_followed" formatted="false">No siguiendo</string>
   <string name="Not_now" formatted="false">Ahora no</string>
+  <string name="Notifications" formatted="false">Notifications</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Tu patrocinio de un proyecto nos ayuda a hacerte recomendaciones personalizadas.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Queda poco tiempo para verlo (%{amount_of_time}).</string>
   <string name="Opens_comments" formatted="false">Abre comentarios.</string>

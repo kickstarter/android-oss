@@ -465,6 +465,15 @@ public abstract class DiscoveryParams implements Parcelable {
       && (social() == null || social() != 1) && category() == null && location() == null && isFalse(recommended());
   }
 
+  /**
+   * Determines if params are for All Projects, i.e. discovery without params.
+   * @return true if is All Projects.
+   */
+  public boolean isSavedProjects() {
+    return isTrue(starred() != null && starred() == 1) && isFalse(staffPicks()) && (backed() == null || backed() != 1)
+      && (social() == null || social() != 1) && category() == null && location() == null && isFalse(recommended());
+  }
+
   public boolean isCategorySet() {
     return category() != null;
   }

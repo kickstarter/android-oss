@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ImageView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -16,6 +18,7 @@ import com.kickstarter.libs.BaseFragment;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
@@ -39,10 +42,13 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
-@RequiresFragmentViewModel(DiscoveryFragmentViewModel.class)
-public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewModel> {
+@RequiresFragmentViewModel(DiscoveryFragmentViewModel.ViewModel.class)
+public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewModel.ViewModel> {
   private RecyclerViewPaginator recyclerViewPaginator;
 
+  protected @Bind(R.id.discovery_empty_heart_filled) ImageView heartFilled;
+  protected @Bind(R.id.discovery_empty_heart_outline) ImageView heartOutline;
+  protected @Bind(R.id.discovery_empty_view) View emptyView;
   protected @Bind(R.id.discovery_recycler_view) RecyclerView recyclerView;
 
   public DiscoveryFragment() {}
@@ -78,6 +84,16 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
       .compose(observeForUI())
       .subscribe(adapter::takeProjects);
 
+    this.viewModel.outputs.shouldShowEmptySavedView()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(show -> ViewUtils.setGone(emptyView, !show));
+
+    this.viewModel.outputs.animateHearts()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> animateHearts());
+
     this.viewModel.outputs.shouldShowOnboardingView()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -104,6 +120,17 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
       .subscribe(__ -> this.startLoginToutActivity());
 
     return view;
+  }
+
+  private void animateHearts() {
+    this.heartFilled.setAlpha(0f);
+    this.heartFilled.setScaleX(0f);
+    this.heartFilled.setScaleY(0f);
+    this.heartOutline.setAlpha(1f);
+    this.heartOutline.setScaleX(1f);
+    this.heartOutline.setScaleY(1f);
+    this.heartFilled.animate().alpha(1).scaleX(1).scaleY(1).setInterpolator(new AccelerateDecelerateInterpolator()).setStartDelay(500).start();
+    this.heartOutline.animate().alpha(0).scaleX(0).scaleY(0).setInterpolator(new AccelerateDecelerateInterpolator()).setStartDelay(500).start();
   }
 
   @Override

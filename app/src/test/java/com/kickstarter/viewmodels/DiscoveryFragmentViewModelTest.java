@@ -35,7 +35,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectsEmitWithNewCategoryParams() {
-    final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment());
+    final DiscoveryFragmentViewModel.ViewModel vm = new DiscoveryFragmentViewModel.ViewModel(environment());
 
     final TestSubscriber<Boolean> hasProjects = new TestSubscriber<>();
     vm.outputs.projectList().map(ListUtils::nonEmpty).subscribe(hasProjects);
@@ -66,7 +66,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectsEmitWithNewSort() {
-    final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment());
+    final DiscoveryFragmentViewModel.ViewModel vm = new DiscoveryFragmentViewModel.ViewModel(environment());
 
     final TestSubscriber<List<Project>> projects = new TestSubscriber<>();
     vm.outputs.projectList().filter(ListUtils::nonEmpty).subscribe(projects);
@@ -92,7 +92,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
       .currentUser(currentUser)
       .build();
 
-    final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment);
+    final DiscoveryFragmentViewModel.ViewModel vm = new DiscoveryFragmentViewModel.ViewModel(environment);
 
     final TestSubscriber<List<Project>> projects = new TestSubscriber<>();
     vm.outputs.projectList().filter(ListUtils::nonEmpty).subscribe(projects);
@@ -131,7 +131,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
       .currentUser(currentUser)
       .build();
 
-    final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment);
+    final DiscoveryFragmentViewModel.ViewModel vm = new DiscoveryFragmentViewModel.ViewModel(environment);
 
     final TestSubscriber<Activity> activityTest = new TestSubscriber<>();
     vm.outputs.activity().subscribe(activityTest);
@@ -166,7 +166,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testClickingInterfaceElements() {
-    final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment());
+    final DiscoveryFragmentViewModel.ViewModel vm = new DiscoveryFragmentViewModel.ViewModel(environment());
 
     final TestSubscriber<Boolean> showActivityFeed = new TestSubscriber<>();
     vm.outputs.showActivityFeed().subscribe(showActivityFeed);

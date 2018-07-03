@@ -473,6 +473,7 @@
       android:exported="true"/>
 
     <activity android:name="net.hockeyapp.android.UpdateActivity" />
+    <activity android:name=".ui.activities.NewSettingsActivity" />
 
     <!-- See https://mixpanel.com/help/reference/android#referrer_tracking -->
     <receiver

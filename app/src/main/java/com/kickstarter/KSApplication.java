@@ -68,9 +68,7 @@ public class KSApplication extends MultiDexApplication {
       .build();
     component().inject(this);
 
-    if (!isInUnitTests()) {
-      setVisitorCookie();
-    }
+    setVisitorCookie();
 
     FacebookSdk.sdkInitialize(this);
 

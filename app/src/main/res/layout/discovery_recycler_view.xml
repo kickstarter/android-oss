@@ -1,6 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/discovery_recycler_view"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"/>
+  android:layout_height="match_parent">
+
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/discovery_recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:listitem="@layout/project_card_view" />
+
+  <LinearLayout
+    android:id="@+id/discovery_empty_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/grid_5"
+    android:visibility="gone">
+
+    <ImageView
+      android:layout_width="@dimen/grid_4"
+      android:layout_height="@dimen/grid_4"
+      android:layout_marginBottom="@dimen/grid_2"
+      android:contentDescription="@null"
+      android:src="@drawable/icon__heart_outline" />
+
+    <TextView
+      style="@style/Title2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_1"
+      android:gravity="center"
+      android:text="@string/No_saved_projects" />
+
+    <TextView
+      style="@style/CalloutSecondary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:text="@string/Tap_the_heart_on_a_project_to_get_notified" />
+
+  </LinearLayout>
+</FrameLayout>

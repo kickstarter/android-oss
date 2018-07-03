@@ -32,14 +32,18 @@ import com.kickstarter.viewmodels.DiscoveryFragmentViewModel;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
 @RequiresFragmentViewModel(DiscoveryFragmentViewModel.class)
 public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewModel> {
-  private RecyclerView recyclerView;
   private RecyclerViewPaginator recyclerViewPaginator;
+
+  protected @Bind(R.id.discovery_recycler_view) RecyclerView recyclerView;
 
   public DiscoveryFragment() {}
 
@@ -55,8 +59,9 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
   public @Nullable View onCreateView(final @NonNull LayoutInflater inflater, final @Nullable ViewGroup container,
     final @Nullable Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
+    final View view = inflater.inflate(R.layout.discovery_recycler_view, container, false);
+    ButterKnife.bind(this, view);
 
-    this.recyclerView = (RecyclerView) inflater.inflate(R.layout.discovery_recycler_view, container, false);
     final DiscoveryAdapter adapter = new DiscoveryAdapter(this.viewModel.inputs);
     this.recyclerView.setAdapter(adapter);
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this.recyclerView.getContext());
@@ -98,7 +103,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
       .compose(observeForUI())
       .subscribe(__ -> this.startLoginToutActivity());
 
-    return this.recyclerView;
+    return view;
   }
 
   @Override

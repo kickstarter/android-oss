@@ -6,7 +6,6 @@
   style="@style/Toolbar"
   android:id="@+id/project_notification_settings_toolbar"
   tools:showIn="@layout/settings_layout"
-  app:elevation="@dimen/grid_2"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
 

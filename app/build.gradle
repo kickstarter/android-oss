@@ -108,6 +108,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    dataBinding {
+        enabled = true
+    }
+
     // Fixes build error hitting GC overhead limit
     dexOptions {
         javaMaxHeapSize "3072M"

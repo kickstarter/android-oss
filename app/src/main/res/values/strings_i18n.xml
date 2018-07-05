@@ -79,6 +79,7 @@ backers</string>
   <string name="Data_will_appear_here_once" formatted="false">Data will appear here once somebody backs your project.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter Account</string>
   <string name="Delivered" formatted="false">Delivered</string>
+  <string name="Developer" formatted="false">Developer</string>
   <string name="Discover_more_projects" formatted="false">Discover more projects.</string>
   <string name="Dismiss" formatted="false">Dismiss</string>
   <string name="Done" formatted="false">Done</string>
@@ -97,6 +98,8 @@ backers</string>
   <string name="Explore_projects" formatted="false">Explore projects</string>
   <string name="Facebook_login_disclaimer" formatted="false">If you login with Facebook, we’ll import your name and profile photo. We\'ll also access your friend list so you can follow your Facebook friends on Kickstarter. We will never post anything on Facebook without your permission.</string>
   <string name="Facebook_login_disclaimer_update" formatted="false">By logging in with Facebook, we’ll import your name, profile photo and friend list.</string>
+  <string name="Facebook_reconnect" formatted="false">Please reconnect</string>
+  <string name="Facebook_reconnect_description" formatted="false">Our apologies, your account was accidentally disconnected. Reconnect to follow friends again.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Failed to retrieve live stream event details</string>
   <string name="Failed_to_update_subscription" formatted="false">Failed to update subscription</string>
   <string name="Filter_by_all_projects" formatted="false">Filter by all projects</string>
@@ -149,6 +152,7 @@ backers</string>
   <string name="Go_to_project_page" formatted="false">Go to project page</string>
   <string name="Got_it" formatted="false">Got it</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Got it! Your survey response has been submitted.</string>
+  <string name="Help" formatted="false">Help</string>
   <string name="Help_center" formatted="false">Help Center</string>
   <string name="Hide_password" formatted="false">Hide password</string>
   <string name="Home" formatted="false">Home</string>
@@ -186,6 +190,7 @@ with friends.</string>
   <string name="Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you" formatted="false">Log in or sign up to save this project. We’ll remind you 48 hours before it ends.</string>
   <string name="Log_in_or_sign_up_to_subscribe" formatted="false">Log in or sign up to subscribe</string>
   <string name="Log_in_to_leave_a_comment" formatted="false">Log in to leave a comment.</string>
+  <string name="Log_out" formatted="false">Log out</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">Make a pledge without a reward</string>
   <string name="Manage_your_pledge" formatted="false">Manage your pledge</string>
   <string name="Manage_your_pledge_below" formatted="false">Manage your pledge below</string>
@@ -197,6 +202,7 @@ with friends.</string>
   <string name="Name" formatted="false">Name</string>
   <string name="Never" formatted="false">Never</string>
   <string name="New_pledge_activity" formatted="false">New pledge activity</string>
+  <string name="Newsletters" formatted="false">Newsletters</string>
   <string name="No_Results" formatted="false">No Results</string>
   <string name="No_comments_yet" formatted="false">No comments yet.</string>
   <string name="No_messages" formatted="false">No messages</string>
@@ -209,6 +215,7 @@ from friends yet.</string>
   <string name="Not_delivered" formatted="false">Not delivered</string>
   <string name="Not_followed" formatted="false">Not followed</string>
   <string name="Not_now" formatted="false">Not Now</string>
+  <string name="Notifications" formatted="false">Notifications</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Once you back a project, we’ll share personalized recommendations in this space.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Only %{amount_of_time} left to watch this.</string>
   <string name="Opens_comments" formatted="false">Opens comments.</string>

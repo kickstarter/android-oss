@@ -481,5 +481,23 @@
     <item name="android:layout_height">@dimen/grid_4</item>
     <item name="android:layout_marginEnd">@dimen/grid_1</item>
   </style>
+  
+  <!-- Settings -->
+  <style name="SettingsRowCard" parent="CalloutPrimary">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">@dimen/grid_10</item>
+    <item name="android:layout_marginTop">@dimen/grid_3</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:paddingEnd">@dimen/grid_3</item>
+    <item name="android:paddingStart">@dimen/grid_3</item>
+  </style>
+
+  <style name="SettingsSingleRow" parent="CalloutPrimary">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:paddingStart">@dimen/grid_3</item>
+    <item name="android:paddingEnd">@dimen/grid_3</item>
+  </style>
 
 </resources>

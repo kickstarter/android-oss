@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools">
 
   <LinearLayout
@@ -22,118 +23,104 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-
-        <LinearLayout
-          android:id="@+id/notification_container"
+        <android.support.v7.widget.CardView
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_10"
+          android:layout_height="wrap_content"
+          android:background="@color/white"
+          app:cardElevation="@dimen/grid_2">
+
+          <!--todo these need new styles; the cards should be wrapped around each group-->
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+              android:id="@+id/notification_card"
+              style="@style/SettingsRowCard"
+              android:text="@string/Notifications" />
+
+            <TextView
+              android:id="@+id/newsletters_card"
+              style="@style/SettingsRowCard"
+              android:text="@string/Newsletters" />
+          </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_3"
           android:layout_marginTop="@dimen/grid_3"
           android:background="@color/white"
-          android:elevation="@dimen/grid_2"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
+          app:cardElevation="@dimen/grid_2">
 
-          <TextView
-            style="@style/SettingsSectionLabel"
-            android:layout_marginEnd="@dimen/form_margin_x"
-            android:layout_marginStart="@dimen/form_margin_x"
-            android:text="@string/Notifications" />
-        </LinearLayout>
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <LinearLayout
-          android:id="@+id/newsletters_container"
+            <TextView
+              android:id="@+id/help_card"
+              style="@style/SettingsRowCard"
+              android:text="@string/Help" />
+
+            <TextView
+              android:id="@+id/privacy_card"
+              style="@style/SettingsRowCard"
+              android:text="@string/Privacy" />
+          </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+          android:id="@+id/log_out_card"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_10"
-          android:layout_marginBottom="@dimen/grid_2"
+          android:layout_marginBottom="@dimen/grid_3"
           android:background="@color/white"
-          android:elevation="@dimen/grid_2"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
+          app:cardElevation="@dimen/grid_2">
 
           <TextView
-            style="@style/SettingsSectionLabel"
-            android:layout_marginEnd="@dimen/form_margin_x"
-            android:layout_marginStart="@dimen/form_margin_x"
-            android:text="@string/Newsletters" />
-        </LinearLayout>
-
-        <LinearLayout
-          android:id="@+id/help_container"
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_10"
-          android:background="@color/white"
-          android:elevation="@dimen/grid_2"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
-
-          <TextView
-            style="@style/SettingsSectionLabel"
-            android:layout_marginEnd="@dimen/form_margin_x"
-            android:layout_marginStart="@dimen/form_margin_x"
-            android:text="@string/Help" />
-        </LinearLayout>
-
-        <LinearLayout
-          android:id="@+id/privacy_container"
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_10"
-          android:layout_marginBottom="@dimen/grid_2"
-          android:background="@color/white"
-          android:elevation="@dimen/grid_2"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
-
-          <TextView
-            style="@style/SettingsSectionLabel"
-            android:layout_marginEnd="@dimen/form_margin_x"
-            android:layout_marginStart="@dimen/form_margin_x"
-            android:text="@string/Privacy" />
-        </LinearLayout>
-
-        <LinearLayout
-          android:id="@+id/log_out_container"
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_10"
-          android:layout_marginBottom="@dimen/grid_2"
-          android:background="@color/white"
-          android:elevation="@dimen/grid_2"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
-
-          <TextView
-            style="@style/SettingsSectionLabel"
-            android:layout_marginEnd="@dimen/form_margin_x"
-            android:layout_marginStart="@dimen/form_margin_x"
+            style="@style/SettingsSingleRow"
             android:text="@string/Log_out"
             android:textColor="@color/ksr_red_400" />
-        </LinearLayout>
+        </android.support.v7.widget.CardView>
 
-        <LinearLayout
+        <android.support.v7.widget.CardView
+          android:id="@+id/rate_us_card"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_10"
+          android:layout_marginBottom="@dimen/grid_3"
           android:background="@color/white"
-          android:elevation="@dimen/grid_2"
-          android:orientation="vertical">
+          app:cardElevation="@dimen/grid_2">
 
-          <TextView
-            style="@style/SettingsSectionLabel"
+          <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/callout_line_spacing_extra"
-            android:layout_marginEnd="@dimen/form_margin_x"
-            android:layout_marginStart="@dimen/form_margin_x"
-            android:layout_marginTop="@dimen/grid_2"
-            android:text="@string/Rate_us_in_the_App_Store" />
+            android:orientation="vertical">
 
-          <TextView
-            android:id="@+id/version_name_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/callout_line_spacing_extra"
-            android:layout_marginEnd="@dimen/form_margin_x"
-            android:layout_marginStart="@dimen/form_margin_x"
-            android:text="@string/Version_name" />
-        </LinearLayout>
+            <TextView
+              style="@style/CalloutPrimary"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/callout_line_spacing_extra"
+              android:layout_marginTop="@dimen/grid_2"
+              android:paddingEnd="@dimen/grid_3"
+              android:paddingStart="@dimen/grid_3"
+              android:text="@string/Rate_us_in_the_App_Store" />
+
+            <TextView
+              android:id="@+id/version_name_text_view"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:paddingEnd="@dimen/grid_3"
+              android:paddingStart="@dimen/grid_3"
+              android:text="@string/Version_name" />
+          </LinearLayout>
+
+        </android.support.v7.widget.CardView>
 
       </LinearLayout>
 

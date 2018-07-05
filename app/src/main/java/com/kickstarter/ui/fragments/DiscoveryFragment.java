@@ -87,7 +87,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     this.viewModel.outputs.shouldShowEmptySavedView()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(show -> ViewUtils.setGone(emptyView, !show));
+      .subscribe(show -> ViewUtils.setGone(this.emptyView, !show));
 
     this.viewModel.outputs.animateHearts()
       .compose(bindToLifecycle())
@@ -123,12 +123,12 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
   }
 
   private void animateHearts() {
-    this.heartFilled.setAlpha(0f);
-    this.heartFilled.setScaleX(0f);
-    this.heartFilled.setScaleY(0f);
-    this.heartOutline.setAlpha(1f);
-    this.heartOutline.setScaleX(1f);
-    this.heartOutline.setScaleY(1f);
+//    this.heartFilled.setAlpha(0f);
+//    this.heartFilled.setScaleX(0f);
+//    this.heartFilled.setScaleY(0f);
+//    this.heartOutline.setAlpha(1f);
+//    this.heartOutline.setScaleX(1f);
+//    this.heartOutline.setScaleY(1f);
     this.heartFilled.animate().alpha(1).scaleX(1).scaleY(1).setInterpolator(new AccelerateDecelerateInterpolator()).setStartDelay(500).start();
     this.heartOutline.animate().alpha(0).scaleX(0).scaleY(0).setInterpolator(new AccelerateDecelerateInterpolator()).setStartDelay(500).start();
   }

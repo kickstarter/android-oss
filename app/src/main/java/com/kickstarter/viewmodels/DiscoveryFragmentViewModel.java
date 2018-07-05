@@ -298,8 +298,8 @@ public interface DiscoveryFragmentViewModel {
     @Override public @NonNull Observable<Activity> activity() {
       return this.activity;
     }
-    @Override
-    public Observable<Boolean> animateHearts() { return this.animateHearts;
+    @Override public Observable<Boolean> animateHearts() {
+      return this.animateHearts;
     }
     @Override public @NonNull Observable<List<Project>> projectList() {
       return this.projectList;

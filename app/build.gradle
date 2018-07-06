@@ -249,4 +249,3 @@ gradle.taskGraph.beforeTask { Task task ->
 }
 
 apply plugin: 'com.google.gms.google-services'
-

@@ -434,6 +434,9 @@
       </intent-filter>
     </activity>
 
+    <activity android:name=".ui.activities.SettingsNewActivity" />
+
+
     <!-- SERVICES, PROVIDERS, RECEIVERS -->
 
     <!-- Receives new message events from Firebase. -->
@@ -473,7 +476,6 @@
       android:exported="true"/>
 
     <activity android:name="net.hockeyapp.android.UpdateActivity" />
-    <activity android:name=".ui.activities.SettingsNewActivity" />
 
     <!-- See https://mixpanel.com/help/reference/android#referrer_tracking -->
     <receiver

@@ -197,7 +197,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
   }
 
   private void startSettingsActivity() {
-    final Intent intent = new Intent(this, SettingsActivity.class)
+    final Intent intent = new Intent(this, SettingsNewActivity.class)
       .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
     startActivity(intent);
   }

@@ -1,5 +1,6 @@
 package com.kickstarter.ui.fragments;
 
+import android.animation.AnimatorSet;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,15 +10,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseFragment;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel;
+import com.kickstarter.libs.utils.AnimationUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
@@ -44,11 +46,13 @@ import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
 @RequiresFragmentViewModel(DiscoveryFragmentViewModel.ViewModel.class)
 public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewModel.ViewModel> {
+  private AnimatorSet heartsAnimation;
   private RecyclerViewPaginator recyclerViewPaginator;
 
   protected @Bind(R.id.discovery_empty_heart_filled) ImageView heartFilled;
   protected @Bind(R.id.discovery_empty_heart_outline) ImageView heartOutline;
   protected @Bind(R.id.discovery_empty_view) View emptyView;
+  protected @Bind(R.id.discovery_hearts_container) View heartsContainer;
   protected @Bind(R.id.discovery_recycler_view) RecyclerView recyclerView;
 
   public DiscoveryFragment() {}
@@ -65,7 +69,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
   public @Nullable View onCreateView(final @NonNull LayoutInflater inflater, final @Nullable ViewGroup container,
     final @Nullable Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
-    final View view = inflater.inflate(R.layout.discovery_recycler_view, container, false);
+    final View view = inflater.inflate(R.layout.fragment_discovery, container, false);
     ButterKnife.bind(this, view);
 
     final DiscoveryAdapter adapter = new DiscoveryAdapter(this.viewModel.inputs);
@@ -79,6 +83,12 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
       .compose(observeForUI())
       .subscribe(adapter::takeActivity);
 
+    this.viewModel.outputs.startHeartAnimation()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .filter(__ -> !lazyHeartCrossFadeAnimation().isRunning())
+      .subscribe(__ -> lazyHeartCrossFadeAnimation().start());
+
     this.viewModel.outputs.projectList()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -88,11 +98,6 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(show -> ViewUtils.setGone(this.emptyView, !show));
-
-    this.viewModel.outputs.animateHearts()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> animateHearts());
 
     this.viewModel.outputs.shouldShowOnboardingView()
       .compose(bindToLifecycle())
@@ -119,18 +124,17 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
       .compose(observeForUI())
       .subscribe(__ -> this.startLoginToutActivity());
 
+    RxView.clicks(this.heartsContainer)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> this.viewModel.inputs.heartContainerClicked());
+
     return view;
   }
 
-  private void animateHearts() {
-//    this.heartFilled.setAlpha(0f);
-//    this.heartFilled.setScaleX(0f);
-//    this.heartFilled.setScaleY(0f);
-//    this.heartOutline.setAlpha(1f);
-//    this.heartOutline.setScaleX(1f);
-//    this.heartOutline.setScaleY(1f);
-    this.heartFilled.animate().alpha(1).scaleX(1).scaleY(1).setInterpolator(new AccelerateDecelerateInterpolator()).setStartDelay(500).start();
-    this.heartOutline.animate().alpha(0).scaleX(0).scaleY(0).setInterpolator(new AccelerateDecelerateInterpolator()).setStartDelay(500).start();
+  @Override
+  public void onPause() {
+    super.onPause();
+    this.heartsAnimation = null;
   }
 
   @Override
@@ -152,6 +156,13 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
 
   public boolean isInstantiated() {
     return this.recyclerView != null;
+  }
+
+  private @NonNull AnimatorSet lazyHeartCrossFadeAnimation() {
+    if (this.heartsAnimation == null) {
+      this.heartsAnimation = AnimationUtils.INSTANCE.crossFadeAndReverse(this.heartOutline, this.heartFilled, 400L);
+    }
+    return this.heartsAnimation;
   }
 
   private void startActivityFeedActivity() {

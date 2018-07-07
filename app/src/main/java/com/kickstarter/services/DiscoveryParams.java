@@ -466,8 +466,8 @@ public abstract class DiscoveryParams implements Parcelable {
   }
 
   /**
-   * Determines if params are for All Projects, i.e. discovery without params.
-   * @return true if is All Projects.
+   * Determines if params are for Saved Projects, i.e. discovery with starred params.
+   * @return true if is Saved Projects.
    */
   public boolean isSavedProjects() {
     return isTrue(starred() != null && starred() == 1) && isFalse(staffPicks()) && (backed() == null || backed() != 1)

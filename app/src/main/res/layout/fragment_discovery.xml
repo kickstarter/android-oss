@@ -19,30 +19,31 @@
     android:orientation="vertical"
     android:padding="@dimen/grid_5"
     android:visibility="gone"
-    tools:visibility="visible"
-    tools:background="@color/white">
+    tools:visibility="visible">
 
     <FrameLayout
-      android:layout_width="@dimen/grid_4"
-      android:layout_height="@dimen/grid_4"
-      android:layout_marginBottom="@dimen/grid_2">
-
-      <ImageView
-        android:id="@+id/discovery_empty_heart_outline"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@null"
-        android:src="@drawable/icon__heart_outline" />
+      android:id="@+id/discovery_hearts_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
 
       <ImageView
         android:id="@+id/discovery_empty_heart_filled"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
         android:contentDescription="@null"
+        android:padding="@dimen/grid_2"
         android:scaleX="0"
         android:scaleY="0"
-        android:alpha="0"
         android:src="@drawable/icon__heart" />
+
+      <ImageView
+        android:id="@+id/discovery_empty_heart_outline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:padding="@dimen/grid_2"
+        android:src="@drawable/icon__heart_outline" />
 
     </FrameLayout>
 

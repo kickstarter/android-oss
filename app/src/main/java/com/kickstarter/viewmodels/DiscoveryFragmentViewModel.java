@@ -47,40 +47,43 @@ import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 public interface DiscoveryFragmentViewModel {
 
   interface Inputs extends DiscoveryAdapter.Delegate {
-    /** Call when params from Discovery Activity change. */
-    void paramsFromActivity(final DiscoveryParams params);
-
     /** Call when the page content should be cleared.  */
     void clearPage();
 
+    /** Call when user clicks hearts to start animation.  */
+    void heartContainerClicked();
+
     /** Call for project pagination. */
     void nextPage();
+
+    /** Call when params from Discovery Activity change. */
+    void paramsFromActivity(final DiscoveryParams params);
 
     /**  Call when we should load the root categories. */
     void rootCategories(final List<Category> rootCategories);
   }
 
   interface Outputs {
-    /** . */
-    Observable<Boolean> animateHearts();
-
-    /** Emits a list of projects to display.*/
-    Observable<List<Project>> projectList();
-
-    /** Emits when the activity feed should be shown. */
-    Observable<Boolean> showActivityFeed();
-
     /**  Emits an activity for the activity sample view. */
     Observable<Activity> activity();
 
-    /** Emits when the login tout activity should be shown. */
-    Observable<Boolean> showLoginTout();
+    /** Emits a list of projects to display.*/
+    Observable<List<Project>> projectList();
 
     /** Emits a boolean that determines if the saved empty view should be shown. */
     Observable<Boolean> shouldShowEmptySavedView();
 
     /** Emits a boolean that determines if the onboarding view should be shown. */
     Observable<Boolean> shouldShowOnboardingView();
+
+    /** Emits when the activity feed should be shown. */
+    Observable<Boolean> showActivityFeed();
+
+    /** Emits when the login tout activity should be shown. */
+    Observable<Boolean> showLoginTout();
+
+    /** Emits when the heart animation should play. */
+    Observable<Void> startHeartAnimation();
 
     /** Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
@@ -103,6 +106,9 @@ public interface DiscoveryFragmentViewModel {
 
       final Observable<User> changedUser = this.currentUser.observable()
         .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2));
+
+      final Observable<Boolean> userIsLoggedIn = this.currentUser.isLoggedIn()
+        .distinctUntilChanged();
 
       final Observable<DiscoveryParams> selectedParams = Observable.combineLatest(
         changedUser,
@@ -155,22 +161,24 @@ public interface DiscoveryFragmentViewModel {
         });
 
       this.paramsFromActivity
-        .compose(combineLatestPair(this.currentUser.isLoggedIn().distinctUntilChanged()))
+        .compose(combineLatestPair(userIsLoggedIn))
         .map(pu -> isOnboardingVisible(pu.first, pu.second))
         .compose(bindToLifecycle())
         .subscribe(this.shouldShowOnboardingView);
 
       this.paramsFromActivity
-        .compose(combineLatestPair(this.currentUser.isLoggedIn().distinctUntilChanged()))
-        .map(pu -> isSavedVisible(pu.first, pu.second))
-        .compose(takePairWhen(this.projectList))
-        .map(savedVisibleAndProjects -> savedVisibleAndProjects.first && savedVisibleAndProjects.second.isEmpty())
+        .map(this::isSavedVisible)
+        .compose(combineLatestPair(this.projectList))
+        .map(savedAndProjects -> savedAndProjects.first && savedAndProjects.second.isEmpty())
         .compose(bindToLifecycle())
+        .distinctUntilChanged()
         .subscribe(this.shouldShowEmptySavedView);
 
       this.shouldShowEmptySavedView
         .filter(BooleanUtils::isTrue)
-        .subscribe(this.animateHearts);
+        .map(__ -> null)
+        .mergeWith(this.heartContainerClicked)
+        .subscribe(__ -> this.startHeartAnimation.onNext(null));
 
       this.currentUser.loggedInUser()
         .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2))
@@ -190,7 +198,7 @@ public interface DiscoveryFragmentViewModel {
       this.paramsFromActivity
         .compose(combineLatestPair(paginator.loadingPage().distinctUntilChanged()))
         .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
-        .compose(combineLatestPair(this.currentUser.isLoggedIn().distinctUntilChanged()))
+        .compose(combineLatestPair(userIsLoggedIn))
         .compose(bindToLifecycle())
         .subscribe(paramsAndLoggedIn -> this.koala.trackDiscovery(
           paramsAndLoggedIn.first,
@@ -222,8 +230,8 @@ public interface DiscoveryFragmentViewModel {
       return isTrue(params.isAllProjects()) && isSortHome && !isLoggedIn;
     }
 
-    private boolean isSavedVisible(final @NonNull DiscoveryParams params, final boolean isLoggedIn) {
-      return isTrue(params.isSavedProjects()) && isLoggedIn;
+    private boolean isSavedVisible(final @NonNull DiscoveryParams params) {
+      return params.isSavedProjects();
     }
 
     private void saveLastSeenActivityId(final @Nullable Activity activity) {
@@ -232,7 +240,6 @@ public interface DiscoveryFragmentViewModel {
       }
     }
 
-    private final PublishSubject<Boolean> animateHearts = PublishSubject.create();
     private final PublishSubject<Boolean> activityClick = PublishSubject.create();
     private final PublishSubject<Project> activitySampleProjectClick = PublishSubject.create();
     private final PublishSubject<Activity> activityUpdateClick = PublishSubject.create();
@@ -242,8 +249,10 @@ public interface DiscoveryFragmentViewModel {
     private final PublishSubject<DiscoveryParams> paramsFromActivity = PublishSubject.create();
     private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
     private final PublishSubject<List<Category>> rootCategories = PublishSubject.create();
+    private final PublishSubject<Void> startHeartAnimation = PublishSubject.create();
 
     private final BehaviorSubject<Activity> activity = BehaviorSubject.create();
+    private final BehaviorSubject<Void> heartContainerClicked = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> projectList = BehaviorSubject.create();
     private final Observable<Boolean> showActivityFeed;
     private final Observable<Boolean> showLoginTout;
@@ -285,6 +294,9 @@ public interface DiscoveryFragmentViewModel {
     @Override public void clearPage() {
       this.clearPage.onNext(null);
     }
+    @Override public void heartContainerClicked() {
+      this.heartContainerClicked.onNext(null);
+    }
     @Override public void discoveryOnboardingViewHolderLoginToutClick(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
       this.discoveryOnboardingLoginToutClick.onNext(true);
     }
@@ -298,9 +310,6 @@ public interface DiscoveryFragmentViewModel {
     @Override public @NonNull Observable<Activity> activity() {
       return this.activity;
     }
-    @Override public Observable<Boolean> animateHearts() {
-      return this.animateHearts;
-    }
     @Override public @NonNull Observable<List<Project>> projectList() {
       return this.projectList;
     }
@@ -310,8 +319,11 @@ public interface DiscoveryFragmentViewModel {
     @Override public @NonNull Observable<Boolean> showLoginTout() {
       return this.showLoginTout;
     }
-    @Override public Observable<Boolean> shouldShowEmptySavedView() {
+    @Override public @NonNull Observable<Boolean> shouldShowEmptySavedView() {
       return this.shouldShowEmptySavedView;
+    }
+    @Override public @NonNull Observable<Void> startHeartAnimation() {
+      return this.startHeartAnimation;
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;

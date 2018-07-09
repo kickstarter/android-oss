@@ -16,18 +16,19 @@ class SettingsNewViewModel(private val context: Context, private val environment
 
     fun getVersion() = BuildConfig.VERSION_NAME
 
-    fun rateUsClick() = ViewUtils.openStoreRating(context, context.packageName)
+    fun helpClick() = context.startActivity(Intent(context, HelpNewActivity::class.java))
 
     fun logoutClick() {
         environment.logout().execute()
         ApplicationUtils.startNewDiscoveryActivity(context)
     }
 
-    fun notificationsClick() = context.startActivity(Intent(context, NotificationsActivity::class.java))
-
     fun newsletterClick() = context.startActivity(Intent(context, NewsletterActivity::class.java))
 
-    fun helpClick() = context.startActivity(Intent(context, HelpNewActivity::class.java))
+    fun notificationsClick() = context.startActivity(Intent(context, NotificationsActivity::class.java))
 
     fun privacyClick() = context.startActivity(Intent(context, PrivacyActivity::class.java))
+
+    fun rateUsClick() = ViewUtils.openStoreRating(context, context.packageName)
+
 }

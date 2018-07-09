@@ -83,6 +83,7 @@
         <android.support.v7.widget.CardView
           android:id="@+id/log_out_card"
           style="@style/SettingsCardView"
+          android:onClick="@{() -> viewModel.logoutClick()}"
           android:layout_marginBottom="@dimen/grid_3">
 
           <TextView

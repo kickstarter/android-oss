@@ -434,6 +434,9 @@
       </intent-filter>
     </activity>
 
+    <activity android:name=".ui.activities.SettingsNewActivity" />
+
+
     <!-- SERVICES, PROVIDERS, RECEIVERS -->
 
     <!-- Receives new message events from Firebase. -->

@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply from: 'quality.gradle'
 
 def externalPrivateVersion = new File(project.rootDir.path + "/app/external_version_code.txt").text.trim().toInteger()
@@ -158,13 +160,13 @@ dependencies {
     implementation 'com.android.support:support-annotations:27.1.1'
     implementation 'com.facebook.android:facebook-android-sdk:4.33.0'
     implementation 'com.github.frankiesardo:auto-parcel:0.3.1'
-    annotationProcessor 'com.github.frankiesardo:auto-parcel-processor:0.3.1'
+    kapt 'com.github.frankiesardo:auto-parcel-processor:0.3.1'
     implementation 'com.google.firebase:firebase-core:16.0.0'
     implementation 'com.google.firebase:firebase-messaging:17.0.0'
     implementation 'com.google.android.gms:play-services-wallet:15.0.1'
     implementation 'com.google.android.exoplayer:exoplayer:2.7.0'
     implementation 'com.google.dagger:dagger:2.11'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
+    kapt 'com.google.dagger:dagger-compiler:2.11'
     implementation 'com.jakewharton:butterknife:7.0.1'
     implementation 'com.jakewharton:process-phoenix:1.0.2'
     implementation 'com.jakewharton.timber:timber:3.0.1'
@@ -231,18 +233,6 @@ def commitTime() {
     return value
 }
 
-buildscript {
-    ext.kotlin_version = '1.1.2-5'
-
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 // Copy google-services.json from variant directory to root of app
 gradle.taskGraph.beforeTask { Task task ->
     if (task.name ==~ /process.*GoogleServices/) {
@@ -259,4 +249,3 @@ gradle.taskGraph.beforeTask { Task task ->
 }
 
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'kotlin-android'

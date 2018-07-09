@@ -4,9 +4,10 @@
   xmlns:tools="http://schemas.android.com/tools">
 
   <data>
+
     <variable
       name="viewModel"
-      type="com.kickstarter.viewmodels.SettingsNewViewModel"/>
+      type="com.kickstarter.viewmodels.SettingsNewViewModel" />
   </data>
 
   <LinearLayout
@@ -47,11 +48,13 @@
             <TextView
               android:id="@+id/notification_card"
               style="@style/SettingsSingleRow"
+              android:onClick="@{() -> viewModel.notificationsClick()}"
               android:text="@string/Notifications" />
 
             <TextView
               android:id="@+id/newsletters_card"
               style="@style/SettingsSingleRow"
+              android:onClick="@{() -> viewModel.newsletterClick()}"
               android:text="@string/Newsletters" />
           </LinearLayout>
 
@@ -70,11 +73,13 @@
             <TextView
               android:id="@+id/help_card"
               style="@style/SettingsSingleRow"
+              android:onClick="@{() -> viewModel.helpClick()}"
               android:text="@string/Help" />
 
             <TextView
               android:id="@+id/privacy_card"
               style="@style/SettingsSingleRow"
+              android:onClick="@{() -> viewModel.privacyClick()}"
               android:text="@string/Privacy" />
           </LinearLayout>
 
@@ -83,7 +88,8 @@
         <android.support.v7.widget.CardView
           android:id="@+id/log_out_card"
           style="@style/SettingsCardView"
-          android:layout_marginBottom="@dimen/grid_3">
+          android:layout_marginBottom="@dimen/grid_3"
+          android:onClick="@{() -> viewModel.logoutClick()}">
 
           <TextView
             style="@style/SettingsSingleRow"
@@ -94,8 +100,8 @@
         <android.support.v7.widget.CardView
           android:id="@+id/rate_us_card"
           style="@style/SettingsCardView"
-          android:onClick="@{() -> viewModel.rateUsClick()}"
-          android:layout_marginBottom="@dimen/grid_3">
+          android:layout_marginBottom="@dimen/grid_3"
+          android:onClick="@{() -> viewModel.rateUsClick()}">
 
           <LinearLayout
             style="@style/SettingsSingleRow"

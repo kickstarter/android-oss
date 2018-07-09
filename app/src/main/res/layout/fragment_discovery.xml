@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/discovery_recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:listitem="@layout/project_card_view" />
+
+  <LinearLayout
+    android:id="@+id/discovery_empty_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/grid_5"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <FrameLayout
+      android:id="@+id/discovery_hearts_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
+
+      <ImageView
+        android:id="@+id/discovery_empty_heart_filled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:contentDescription="@null"
+        android:padding="@dimen/grid_2"
+        android:scaleX="0"
+        android:scaleY="0"
+        android:src="@drawable/icon__heart" />
+
+      <ImageView
+        android:id="@+id/discovery_empty_heart_outline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:padding="@dimen/grid_2"
+        android:src="@drawable/icon__heart_outline" />
+
+    </FrameLayout>
+
+    <TextView
+      style="@style/Title2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_1"
+      android:gravity="center"
+      android:text="@string/No_saved_projects" />
+
+    <TextView
+      style="@style/CalloutSecondary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:text="@string/Tap_the_heart_on_a_project_to_get_notified" />
+
+  </LinearLayout>
+</FrameLayout>

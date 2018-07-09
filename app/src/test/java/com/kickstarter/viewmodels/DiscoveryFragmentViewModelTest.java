@@ -7,6 +7,7 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ActivityEnvelopeFactory;
 import com.kickstarter.factories.ActivityFactory;
 import com.kickstarter.factories.CategoryFactory;
+import com.kickstarter.factories.DiscoverEnvelopeFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
@@ -22,9 +23,11 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
+import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,24 +35,49 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
+  private DiscoveryFragmentViewModel.ViewModel vm;
+
+  private final TestSubscriber<Activity> activityTest = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> hasProjects = new TestSubscriber<>();
+  private final TestSubscriber<List<Project>> projects = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> shouldShowEmptySavedView = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> shouldShowOnboardingViewTest = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> showActivityFeed = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> showLoginTout = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, RefTag>> showProject = new TestSubscriber<>();
+  private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
+
+  private void setUpEnvironment(final @NonNull Environment environment) {
+    this.vm = new DiscoveryFragmentViewModel.ViewModel(environment);
+    this.vm.outputs.activity().subscribe(this.activityTest);
+    this.vm.outputs.projectList().map(ListUtils::nonEmpty).subscribe(this.hasProjects);
+    this.vm.outputs.projectList().filter(ListUtils::nonEmpty).subscribe(this.projects);
+    this.vm.outputs.shouldShowEmptySavedView().subscribe(this.shouldShowEmptySavedView);
+    this.vm.outputs.shouldShowOnboardingView().subscribe(this.shouldShowOnboardingViewTest);
+    this.vm.outputs.showActivityFeed().subscribe(this.showActivityFeed);
+    this.vm.outputs.showLoginTout().subscribe(this.showLoginTout);
+    this.vm.outputs.startProjectActivity().subscribe(this.showProject);
+    this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
+  }
+
+  private void setUpInitialHomeAllProjectsParams() {
+    this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
+    this.vm.inputs.rootCategories(CategoryFactory.rootCategories());
+  }
 
   @Test
   public void testProjectsEmitWithNewCategoryParams() {
-    final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment());
-
-    final TestSubscriber<Boolean> hasProjects = new TestSubscriber<>();
-    vm.outputs.projectList().map(ListUtils::nonEmpty).subscribe(hasProjects);
+    setUpEnvironment(environment());
 
     // Load initial params and root categories from activity.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
-    vm.inputs.rootCategories(CategoryFactory.rootCategories());
+    setUpInitialHomeAllProjectsParams();
 
     // Should emit current fragment's projects.
-    hasProjects.assertValues(true);
-    koalaTest.assertValues("Discover List View");
+    this.hasProjects.assertValues(true);
+    this.koalaTest.assertValues("Discover List View");
 
     // Select a new category.
-    vm.inputs.paramsFromActivity(
+    this.vm.inputs.paramsFromActivity(
       DiscoveryParams.builder()
         .category(CategoryFactory.artCategory())
         .sort(DiscoveryParams.Sort.HOME)
@@ -57,31 +85,27 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     );
 
     // Projects are cleared, new projects load.
-    hasProjects.assertValues(true, false, true);
-    koalaTest.assertValues("Discover List View", "Discover List View");
+    this.hasProjects.assertValues(true, false, true);
+    this.koalaTest.assertValues("Discover List View", "Discover List View");
 
-    vm.inputs.clearPage();
-    hasProjects.assertValues(true, false, true, false);
+    this.vm.inputs.clearPage();
+    this.hasProjects.assertValues(true, false, true, false);
   }
 
   @Test
   public void testProjectsEmitWithNewSort() {
-    final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment());
-
-    final TestSubscriber<List<Project>> projects = new TestSubscriber<>();
-    vm.outputs.projectList().filter(ListUtils::nonEmpty).subscribe(projects);
+    setUpEnvironment(environment());
 
     // Initial load.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
-    vm.inputs.rootCategories(CategoryFactory.rootCategories());
+    setUpInitialHomeAllProjectsParams();
 
-    projects.assertValueCount(1);
-    koalaTest.assertValues("Discover List View");
+    this.projects.assertValueCount(1);
+    this.koalaTest.assertValues("Discover List View");
 
     // Popular tab clicked.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());
-    projects.assertValueCount(2);
-    koalaTest.assertValues("Discover List View", "Discover List View");
+    this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());
+    this.projects.assertValueCount(2);
+    this.koalaTest.assertValues("Discover List View", "Discover List View");
   }
 
   @Test
@@ -92,23 +116,95 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
       .currentUser(currentUser)
       .build();
 
-    final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment);
-
-    final TestSubscriber<List<Project>> projects = new TestSubscriber<>();
-    vm.outputs.projectList().filter(ListUtils::nonEmpty).subscribe(projects);
-
+    setUpEnvironment(environment);
+    
     // Initial load.
-    vm.inputs.rootCategories(CategoryFactory.rootCategories());
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
+    setUpInitialHomeAllProjectsParams();
+
+    this.hasProjects.assertValue(true);
 
     // Projects should emit.
-    projects.assertValueCount(1);
+    this.projects.assertValueCount(1);
 
     // Log in.
     currentUser.refresh(UserFactory.user());
 
     // Projects should emit again.
-    projects.assertValueCount(2);
+    this.projects.assertValueCount(2);
+  }
+
+  @Test
+  public void testShouldShowEmptySavedView_isFalse_whenUserHasSavedProjects() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+
+    final Environment environment = environment().toBuilder()
+      .apiClient(new MockApiClient())
+      .currentUser(currentUser)
+      .build();
+
+    setUpEnvironment(environment);
+
+    // Initial home all projects params.
+    setUpInitialHomeAllProjectsParams();
+
+    this.hasProjects.assertValue(true);
+    this.shouldShowEmptySavedView.assertValue(false);
+
+    // Login.
+    currentUser.refresh(UserFactory.user());
+
+    // Projects are cleared, new projects load.
+    this.hasProjects.assertValues(true, false, true);
+    this.shouldShowEmptySavedView.assertValues(false);
+
+    // Saved projects params.
+    this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().starred(1).build());
+
+    // Projects are cleared, new projects load.
+    this.hasProjects.assertValues(true, false, true, false, true);
+    this.shouldShowEmptySavedView.assertValues(false);
+  }
+
+  @Test
+  public void testShouldShowEmptySavedView_isTrue_whenUserHasNoSavedProjects() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
+        if (params.isSavedProjects()) {
+          return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(new ArrayList<>()));
+        } else {
+          return super.fetchProjects(params);
+        }
+      }
+    };
+
+    final Environment environment = environment().toBuilder()
+      .apiClient(apiClient)
+      .currentUser(currentUser)
+      .build();
+
+    setUpEnvironment(environment);
+
+    // Initial home all projects params.
+    setUpInitialHomeAllProjectsParams();
+
+    this.hasProjects.assertValue(true);
+    this.shouldShowEmptySavedView.assertValue(false);
+
+    // Login.
+    currentUser.refresh(UserFactory.user());
+
+    // Projects are cleared, new projects load.
+    this.hasProjects.assertValues(true, false, true);
+    this.shouldShowEmptySavedView.assertValues(false);
+
+    // Saved projects params.
+    this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().starred(1).build());
+
+    // Projects are cleared, new projects load.
+    this.hasProjects.assertValues(true, false, true, false, false);
+    this.shouldShowEmptySavedView.assertValues(false, true);
   }
 
   @Test
@@ -131,81 +227,62 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
       .currentUser(currentUser)
       .build();
 
-    final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment);
-
-    final TestSubscriber<Activity> activityTest = new TestSubscriber<>();
-    vm.outputs.activity().subscribe(activityTest);
-
-    final TestSubscriber<Boolean> shouldShowOnboardingViewTest = new TestSubscriber<>();
-    vm.outputs.shouldShowOnboardingView().subscribe(shouldShowOnboardingViewTest);
+    setUpEnvironment(environment);
 
     // Initial home all projects params.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
-    vm.inputs.rootCategories(CategoryFactory.rootCategories());
+    setUpInitialHomeAllProjectsParams();
 
     // Should show onboarding view.
-    shouldShowOnboardingViewTest.assertValues(true);
-    activityTest.assertValue(null);
+    this.shouldShowOnboardingViewTest.assertValues(true);
+    this.activityTest.assertValue(null);
 
     // Change params. Onboarding view should not be shown.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
-    shouldShowOnboardingViewTest.assertValues(true, false);
-    activityTest.assertValues(null, null);
+    this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
+    this.shouldShowOnboardingViewTest.assertValues(true, false);
+    this.activityTest.assertValues(null, null);
 
     // Login.
     currentUser.refresh(UserFactory.user());
 
     // Activity sampler should be shown rather than onboarding view.
-    shouldShowOnboardingViewTest.assertValues(true, false, false);
-    activityTest.assertValues(null, null, activity);
+    this.shouldShowOnboardingViewTest.assertValues(true, false, false);
+    this.activityTest.assertValues(null, null, activity);
 
     // Change params. Activity sampler should not be shown.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
-    activityTest.assertValues(null, null, activity, null);
+    this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
+    this.activityTest.assertValues(null, null, activity, null);
   }
 
   @Test
   public void testClickingInterfaceElements() {
-    final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment());
-
-    final TestSubscriber<Boolean> showActivityFeed = new TestSubscriber<>();
-    vm.outputs.showActivityFeed().subscribe(showActivityFeed);
-
-    final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
-    vm.outputs.startUpdateActivity().subscribe(startUpdateActivity);
-
-    final TestSubscriber<Boolean> showLoginTout = new TestSubscriber<>();
-    vm.outputs.showLoginTout().subscribe(showLoginTout);
-
-    final TestSubscriber<Pair<Project, RefTag>> showProject = new TestSubscriber<>();
-    vm.outputs.startProjectActivity().subscribe(showProject);
+    setUpEnvironment(environment());
 
     // Clicking see activity feed button on sampler should show activity feed.
-    showActivityFeed.assertNoValues();
-    vm.inputs.activitySampleFriendBackingViewHolderSeeActivityClicked(null);
-    showActivityFeed.assertValues(true);
-    vm.inputs.activitySampleFriendFollowViewHolderSeeActivityClicked(null);
-    showActivityFeed.assertValues(true, true);
-    vm.inputs.activitySampleProjectViewHolderSeeActivityClicked(null);
-    showActivityFeed.assertValues(true, true, true);
+    this.showActivityFeed.assertNoValues();
+    this.vm.inputs.activitySampleFriendBackingViewHolderSeeActivityClicked(null);
+    this.showActivityFeed.assertValues(true);
+    this.vm.inputs.activitySampleFriendFollowViewHolderSeeActivityClicked(null);
+    this.showActivityFeed.assertValues(true, true);
+    this.vm.inputs.activitySampleProjectViewHolderSeeActivityClicked(null);
+    this.showActivityFeed.assertValues(true, true, true);
 
     // Clicking activity update on sampler should show activity update.
-    startUpdateActivity.assertNoValues();
-    vm.inputs.activitySampleProjectViewHolderUpdateClicked(null, ActivityFactory.updateActivity());
-    startUpdateActivity.assertValueCount(1);
-    koalaTest.assertValues(KoalaEvent.VIEWED_UPDATE);
+    this.startUpdateActivity.assertNoValues();
+    this.vm.inputs.activitySampleProjectViewHolderUpdateClicked(null, ActivityFactory.updateActivity());
+    this.startUpdateActivity.assertValueCount(1);
+    this.koalaTest.assertValues(KoalaEvent.VIEWED_UPDATE);
 
     // Clicking login on onboarding view should show login tout.
-    showLoginTout.assertNoValues();
-    vm.inputs.discoveryOnboardingViewHolderLoginToutClick(null);
-    showLoginTout.assertValue(true);
+    this.showLoginTout.assertNoValues();
+    this.vm.inputs.discoveryOnboardingViewHolderLoginToutClick(null);
+    this.showLoginTout.assertValue(true);
 
     // Pass in params and sort to fetch projects.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
+    this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
 
     // Clicking on a project card should show project activity.
-    showProject.assertNoValues();
-    vm.inputs.projectCardViewHolderClicked(ProjectFactory.project());
-    showProject.assertValueCount(1);
+    this.showProject.assertNoValues();
+    this.vm.inputs.projectCardViewHolderClicked(ProjectFactory.project());
+    this.showProject.assertValueCount(1);
   }
 }

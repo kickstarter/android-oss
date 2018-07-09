@@ -11,6 +11,10 @@ import android.view.animation.Interpolator
 
 object AnimationUtils {
 
+   const val SCALE_X = "scaleX"
+   const val SCALE_Y = "scaleY"
+   const val ALPHA = "alpha"
+
   @JvmOverloads
   fun disappearAnimation(duration: Long = 300L): Animation {
     val animation = AlphaAnimation(1.0f, 0.0f)
@@ -30,9 +34,9 @@ object AnimationUtils {
   @JvmOverloads
   fun fadeInAndScale(view: View, duration: Long = 500L, startDelay: Long = 500L,
                      interpolator: Interpolator = AccelerateDecelerateInterpolator()): ObjectAnimator {
-    val scaleX = PropertyValuesHolder.ofFloat("scaleX", 0f, 1f)
-    val scaleY = PropertyValuesHolder.ofFloat("scaleY", 0f, 1f)
-    val alpha = PropertyValuesHolder.ofFloat("alpha", 0f, 1f)
+    val scaleX = PropertyValuesHolder.ofFloat(SCALE_X, 0f, 1f)
+    val scaleY = PropertyValuesHolder.ofFloat(SCALE_Y, 0f, 1f)
+    val alpha = PropertyValuesHolder.ofFloat(ALPHA, 0f, 1f)
     val animator = ObjectAnimator.ofPropertyValuesHolder(view, scaleX, scaleY, alpha)
     animator.duration = duration
     animator.startDelay = startDelay
@@ -43,9 +47,9 @@ object AnimationUtils {
   @JvmOverloads
   fun fadeOutAndScale(view: View, duration: Long = 500L, startDelay: Long = 500L,
                       interpolator: Interpolator = AccelerateDecelerateInterpolator()): ObjectAnimator {
-    val scaleX = PropertyValuesHolder.ofFloat("scaleX", 1f, 0f)
-    val scaleY = PropertyValuesHolder.ofFloat("scaleY", 1f, 0f)
-    val alpha = PropertyValuesHolder.ofFloat("alpha", 1f, 0f)
+    val scaleX = PropertyValuesHolder.ofFloat(SCALE_X, 1f, 0f)
+    val scaleY = PropertyValuesHolder.ofFloat(SCALE_Y, 1f, 0f)
+    val alpha = PropertyValuesHolder.ofFloat(ALPHA, 1f, 0f)
     val animator = ObjectAnimator.ofPropertyValuesHolder(view, scaleX, scaleY, alpha)
     animator.duration = duration
     animator.startDelay = startDelay

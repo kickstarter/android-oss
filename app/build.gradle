@@ -10,10 +10,10 @@ def internalPublicVersion = new File(project.rootDir.path + "/app/internal_versi
 def isCircle = "true" == System.getenv("CIRCLECI")
 
 ext.signing = [
-    storeFilePath: "path/to/keystore",
-    storePassword: "keystore password",
-    keyAlias     : "key alias",
-    keyPassword  : "key password"
+        storeFilePath: "path/to/keystore",
+        storePassword: "keystore password",
+        keyAlias     : "key alias",
+        keyPassword  : "key password"
 ]
 
 if (file('signing.gradle').exists()) {
@@ -249,3 +249,5 @@ gradle.taskGraph.beforeTask { Task task ->
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+apply plugin: 'kotlin-android-extensions'

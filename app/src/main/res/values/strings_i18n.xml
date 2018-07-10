@@ -152,6 +152,7 @@ backers</string>
   <string name="Go_to_project_page" formatted="false">Go to project page</string>
   <string name="Got_it" formatted="false">Got it</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Got it! Your survey response has been submitted.</string>
+  <string name="Happening_newsletter" formatted="false">Sign up to receive a mix of new projects, compelling stories, and visual inspiration, delivered once (and sometimes twice) a week.</string>
   <string name="Help" formatted="false">Help</string>
   <string name="Help_center" formatted="false">Help Center</string>
   <string name="Hide_password" formatted="false">Hide password</string>
@@ -202,6 +203,7 @@ with friends.</string>
   <string name="Name" formatted="false">Name</string>
   <string name="Never" formatted="false">Never</string>
   <string name="New_pledge_activity" formatted="false">New pledge activity</string>
+  <string name="News_events" formatted="false">Big news and events happening near you, delivered just a few times a year.</string>
   <string name="Newsletters" formatted="false">Newsletters</string>
   <string name="No_Results" formatted="false">No Results</string>
   <string name="No_comments_yet" formatted="false">No comments yet.</string>
@@ -331,6 +333,7 @@ daring ideas.</string>
   <string name="Ships_to" formatted="false">Ships to:</string>
   <string name="Show_password" formatted="false">Show password</string>
   <string name="Shows_list_of_subcategories" formatted="false">Shows list of subcategories.</string>
+  <string name="Sign_up_newsletter" formatted="false">Sign up for Projects We Love to receive a weekly mix of noteworthy projects, handpicked by our team.</string>
   <string name="Signs_up_with_Email" formatted="false">Signs up with Email.</string>
   <string name="Something_catch_your_eye" formatted="false">Something\n
 catch your eye?</string>
@@ -339,6 +342,7 @@ catch your eye?</string>
   <string name="Starting_soon" formatted="false">Starting soon</string>
   <string name="Status" formatted="false">Status</string>
   <string name="Stay_up_to_date" formatted="false">Stay up to date?</string>
+  <string name="Stay_up_to_date_newsletter" formatted="false">Stay up to date with our favorite projects, and any news and events that are on our radar.</string>
   <string name="Stay_updated_on_this_project" formatted="false">Stay updated on this project?</string>
   <string name="Subscribe" formatted="false">Subscribe</string>
   <string name="Subscribed" formatted="false">Subscribed</string>

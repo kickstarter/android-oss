@@ -78,7 +78,7 @@
   <string name="Data_will_appear_here_once" formatted="false">誰かがプロジェクトをバック（支援）すると、ここにデータが表示されます。</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Kickstarter アカウントを削除</string>
   <string name="Delivered" formatted="false">発送済</string>
-  <string name="Developer" formatted="false">Developer</string>
+  <string name="Developer" formatted="false">開発者</string>
   <string name="Discover_more_projects" formatted="false">プロジェクトをさがす</string>
   <string name="Dismiss" formatted="false">破棄</string>
   <string name="Done" formatted="false">完了</string>
@@ -97,8 +97,8 @@
   <string name="Explore_projects" formatted="false">プロジェクトをさがす</string>
   <string name="Facebook_login_disclaimer" formatted="false">Facebook でログインすると、あなたの氏名とプロフィール写真がインポートされます。また、あなたが Kickstarter 上で Facebook 友達をフォローすることができるように、友達リストも Kickstarter によってアクセスされます。あなたの許可なしに Kickstarter が Facebook 上に投稿を行うことは決してありません。  </string>
   <string name="Facebook_login_disclaimer_update" formatted="false">Facebook を使ってログインすると、お名前とプロフィール写真、友達リストがインポートされます。</string>
-  <string name="Facebook_reconnect" formatted="false">Please reconnect</string>
-  <string name="Facebook_reconnect_description" formatted="false">Our apologies, your account was accidentally disconnected. Reconnect to follow friends again.</string>
+  <string name="Facebook_reconnect" formatted="false">もう一度接続してください</string>
+  <string name="Facebook_reconnect_description" formatted="false">申し訳ございません。アカウントの接続が切断されました。もう一度接続しなおして友達をフォローしてください。</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">ライブ配信の詳細を取得できませんでした</string>
   <string name="Failed_to_update_subscription" formatted="false">定期購読の更新に失敗しました</string>
   <string name="Filter_by_all_projects" formatted="false">全てのプロジェクトに絞る</string>
@@ -151,7 +151,8 @@
   <string name="Go_to_project_page" formatted="false">プロジェクトページを見る</string>
   <string name="Got_it" formatted="false">完了</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">サーベイを送信しました！</string>
-  <string name="Help" formatted="false">Help</string>
+  <string name="Happening_newsletter" formatted="false">Sign up to receive a mix of new projects, compelling stories, and visual inspiration, delivered once (and sometimes twice) a week.</string>
+  <string name="Help" formatted="false">ヘルプ</string>
   <string name="Help_center" formatted="false">ヘルプセンター</string>
   <string name="Hide_password" formatted="false">パスワードを非表示にする</string>
   <string name="Home" formatted="false">ホーム</string>
@@ -188,7 +189,7 @@
   <string name="Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you" formatted="false">ログインかサインインしてこのプロジェクトを保存してください。終了４８時間前にリマインドします。</string>
   <string name="Log_in_or_sign_up_to_subscribe" formatted="false">ログインまたはサインアップしてください</string>
   <string name="Log_in_to_leave_a_comment" formatted="false">ログインしてコメントを残す。</string>
-  <string name="Log_out" formatted="false">Log out</string>
+  <string name="Log_out" formatted="false">ログアウト</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">リワードなしでプレッジ</string>
   <string name="Manage_your_pledge" formatted="false">プレッジを変更</string>
   <string name="Manage_your_pledge_below" formatted="false">以下のプレッジを変更</string>
@@ -200,7 +201,8 @@
   <string name="Name" formatted="false">名前</string>
   <string name="Never" formatted="false">通知を受けない</string>
   <string name="New_pledge_activity" formatted="false">新しいプレッジ</string>
-  <string name="Newsletters" formatted="false">Newsletters</string>
+  <string name="News_events" formatted="false">Big news and events happening near you, delivered just a few times a year.</string>
+  <string name="Newsletters" formatted="false">ニュースレター</string>
   <string name="No_Results" formatted="false">該当結果なし</string>
   <string name="No_comments_yet" formatted="false">まだコメントはありません。</string>
   <string name="No_messages" formatted="false">メッセージがありません。</string>
@@ -212,7 +214,7 @@
   <string name="Not_delivered" formatted="false">未配送</string>
   <string name="Not_followed" formatted="false">フォローしてない</string>
   <string name="Not_now" formatted="false">後で</string>
-  <string name="Notifications" formatted="false">Notifications</string>
+  <string name="Notifications" formatted="false">通知</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">プロジェクトをバックするとこのスペースにあなたへのオススメを表示します</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">あと%{amount_of_time} のみ視聴可能</string>
   <string name="Opens_comments" formatted="false">コメントをみる</string>
@@ -255,11 +257,11 @@
   <string name="Private_profile_more_info_content" formatted="false">Kickstarter でのプロフィールはデフォルト設定ではプライベート (非公開) となっています。プロフィールを公開したい場合はこの設定をオフにしてください。</string>
   <string name="Project_Cancelled" formatted="false">プロジェクトが取り消されました。</string>
   <string name="Project_Suspended" formatted="false">中止プロジェクト</string>
-  <string name="Project_activity" formatted="false">Project activity</string>
+  <string name="Project_activity" formatted="false">プロジェクトのアクティビティ</string>
   <string name="Project_cancelled" formatted="false">プロジェクトが取り消されました。</string>
-  <string name="Project_reminders" formatted="false">Project reminders</string>
+  <string name="Project_reminders" formatted="false">プロジェクトのリマインダー</string>
   <string name="Project_saved" formatted="false">プロジェクトを保存しました。</string>
-  <string name="Project_updates" formatted="false">Project updates</string>
+  <string name="Project_updates" formatted="false">プロジェクトの更新情報</string>
   <string name="Projects_We_Love" formatted="false">Projects We Love</string>
   <string name="Projects_youve_backed" formatted="false">バック（支援）したプロジェクト</string>
   <string name="Projects_youve_launched" formatted="false">ローンチしたプロジェクト</string>
@@ -295,7 +297,7 @@
   <string name="Reward_delivered" formatted="false">リワードを受け取りましたか？</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>リワード&lt;/b>の配達予定日は%{delivery_date}</string>
   <string name="Reward_selected" formatted="false">選択中のリワード</string>
-  <string name="Reward_surveys" formatted="false">Reward surveys</string>
+  <string name="Reward_surveys" formatted="false">リワードのサーベイ</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_colon_many" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_colon_one" formatted="false">%{rewards_count} 種類のリワード</string>
@@ -328,6 +330,7 @@
   <string name="Ships_to" formatted="false">配送先：</string>
   <string name="Show_password" formatted="false">パスワードを表示する</string>
   <string name="Shows_list_of_subcategories" formatted="false">サブカテゴリーリストを見せる。</string>
+  <string name="Sign_up_newsletter" formatted="false">Sign up for Projects We Love to receive a weekly mix of noteworthy projects, handpicked by our team.</string>
   <string name="Signs_up_with_Email" formatted="false">Eメールでサインアップする。</string>
   <string name="Something_catch_your_eye" formatted="false">何か目にとまるものはありましたか？</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">なにかが間違っています。もう一度お試しください。</string>
@@ -335,6 +338,7 @@
   <string name="Starting_soon" formatted="false">もう少しで始まります。</string>
   <string name="Status" formatted="false">ステータス</string>
   <string name="Stay_up_to_date" formatted="false">最新情報を常に把握したい？</string>
+  <string name="Stay_up_to_date_newsletter" formatted="false">Stay up to date with our favorite projects, and any news and events that are on our radar.</string>
   <string name="Stay_updated_on_this_project" formatted="false">このプロジェクトの最新情報を受け取りたい？</string>
   <string name="Subscribe" formatted="false">購読する</string>
   <string name="Subscribed" formatted="false">購読済</string>

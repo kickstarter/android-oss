@@ -1,13 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
 
-  <android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+  <data>
+    <variable
+      name="viewModel"
+      type="com.kickstarter.viewmodels.HelpNewViewModel"/>
+  </data>
+
+
+  <LinearLayout
+    android:id="@+id/new_help_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.kickstarter.ui.activities.NewsletterActivity">
+    android:background="@color/ksr_grey_100"
+    android:orientation="vertical"
+    tools:ignore="TooManyViews">
 
-  </android.support.constraint.ConstraintLayout>
+    <android.support.design.widget.AppBarLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <include layout="@layout/newsletter_toolbar" />
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+          style="@style/SettingsCardView"
+          android:layout_marginTop="@dimen/grid_2">
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/grid_10"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+              android:id="@+id/subscribe_all_text_view"
+              style="@style/NewsletterSingleRow"
+              android:text="Subscribe to all" />
+
+            <android.support.v7.widget.SwitchCompat
+              android:id="@+id/subscribe_all_switch"
+              style="@style/EndSettingsWidget" />
+
+          </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+          style="@style/SettingsCardView"
+          android:layout_marginTop="@dimen/grid_3">
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/grid_10"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+              android:id="@+id/projects_we_love_text_view"
+              style="@style/NewsletterSingleRow"
+              android:text="@string/Projects_We_Love" />
+
+            <android.support.v7.widget.SwitchCompat
+              android:id="@+id/projects_we_love_switch"
+              style="@style/EndSettingsWidget" />
+
+          </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+          style="@style/SettingsCardView"
+          android:layout_marginTop="@dimen/grid_3">
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/grid_10"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+              style="@style/NewsletterSingleRow"
+              android:text="@string/profile_settings_newsletter_happening" />
+
+            <android.support.v7.widget.SwitchCompat
+              android:id="@+id/happening_switch"
+              style="@style/EndSettingsWidget" />
+
+          </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+          style="@style/SettingsCardView"
+          android:layout_marginTop="@dimen/grid_3">
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/grid_10"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+              style="@style/NewsletterSingleRow"
+              android:text="News &amp; Events" />
+
+            <android.support.v7.widget.SwitchCompat
+              android:id="@+id/news_events_switch"
+              style="@style/EndSettingsWidget" />
+
+          </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+
+      </LinearLayout>
+
+    </ScrollView>
+
+  </LinearLayout>
+
 </layout>
+

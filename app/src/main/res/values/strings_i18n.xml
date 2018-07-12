@@ -1105,12 +1105,15 @@ Let\'s change that!</string>
   <string name="profile_settings_newsletter_arts" formatted="false">Arts &amp; Culture News</string>
   <string name="profile_settings_newsletter_film" formatted="false">Kickstarter Films</string>
   <string name="profile_settings_newsletter_games" formatted="false">Kickstarter Loves Games</string>
-  <string name="profile_settings_newsletter_happening" formatted="false">Happening Now</string>
+  <string name="profile_settings_newsletter_happening" formatted="false">Happening</string>
+  <string name="profile_settings_newsletter_happening_now" formatted="false">Happening Now</string>
   <string name="profile_settings_newsletter_invent" formatted="false">Invent</string>
+  <string name="profile_settings_newsletter_news_event" formatted="false">News &amp; Events</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">We\'ve sent a confirmation email to the address associated with your account! Please check your email in order to confirm that you\'d like to subscribe to %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">One final step!</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Kickstarter News and Events</string>
   <string name="profile_settings_newsletter_publishing" formatted="false">Kickstarter Reads</string>
+  <string name="profile_settings_newsletter_subscribe_all" formatted="false">Subscribe to all</string>
   <string name="profile_settings_newsletter_title" formatted="false">Newsletters</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Projects We Love</string>
   <string name="profile_settings_rating_message" formatted="false">Thanks for using the Kickstarter app.\n

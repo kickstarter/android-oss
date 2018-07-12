@@ -3,15 +3,8 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools">
 
-  <data>
-    <variable
-      name="viewModel"
-      type="com.kickstarter.viewmodels.HelpNewViewModel"/>
-  </data>
-
-
   <LinearLayout
-    android:id="@+id/new_help_layout"
+    android:id="@+id/newsletter_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/ksr_grey_100"
@@ -36,6 +29,10 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+          style="@style/NewsLetterTextView"
+          android:text="@string/Stay_up_to_date_newsletter" />
+
         <android.support.v7.widget.CardView
           style="@style/SettingsCardView"
           android:layout_marginTop="@dimen/grid_2">
@@ -49,18 +46,18 @@
             <TextView
               android:id="@+id/subscribe_all_text_view"
               style="@style/NewsletterSingleRow"
-              android:text="Subscribe to all" />
+              android:text="@string/profile_settings_newsletter_subscribe_all" />
 
             <android.support.v7.widget.SwitchCompat
               android:id="@+id/subscribe_all_switch"
-              style="@style/EndSettingsWidget" />
+              style="@style/NewsLetterSwitch" />
 
           </LinearLayout>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
           style="@style/SettingsCardView"
-          android:layout_marginTop="@dimen/grid_3">
+          android:layout_marginTop="@dimen/grid_5">
 
           <LinearLayout
             android:layout_width="match_parent"
@@ -75,14 +72,17 @@
 
             <android.support.v7.widget.SwitchCompat
               android:id="@+id/projects_we_love_switch"
-              style="@style/EndSettingsWidget" />
+              style="@style/NewsLetterSwitch" />
 
           </LinearLayout>
         </android.support.v7.widget.CardView>
 
+        <TextView
+          style="@style/NewsLetterTextView"
+          android:text="@string/Sign_up_newsletter" />
+
         <android.support.v7.widget.CardView
-          style="@style/SettingsCardView"
-          android:layout_marginTop="@dimen/grid_3">
+          style="@style/SettingsCardView">
 
           <LinearLayout
             android:layout_width="match_parent"
@@ -96,14 +96,17 @@
 
             <android.support.v7.widget.SwitchCompat
               android:id="@+id/happening_switch"
-              style="@style/EndSettingsWidget" />
+              style="@style/NewsLetterSwitch" />
 
           </LinearLayout>
         </android.support.v7.widget.CardView>
 
+        <TextView
+          style="@style/NewsLetterTextView"
+          android:text="@string/Happening_newsletter" />
+
         <android.support.v7.widget.CardView
-          style="@style/SettingsCardView"
-          android:layout_marginTop="@dimen/grid_3">
+          style="@style/SettingsCardView">
 
           <LinearLayout
             android:layout_width="match_parent"
@@ -113,15 +116,18 @@
 
             <TextView
               style="@style/NewsletterSingleRow"
-              android:text="News &amp; Events" />
+              android:text="@string/profile_settings_newsletter_news_event" />
 
             <android.support.v7.widget.SwitchCompat
               android:id="@+id/news_events_switch"
-              style="@style/EndSettingsWidget" />
+              style="@style/NewsLetterSwitch" />
 
           </LinearLayout>
         </android.support.v7.widget.CardView>
 
+        <TextView
+          style="@style/NewsLetterTextView"
+          android:text="@string/News_events" />
 
       </LinearLayout>
 

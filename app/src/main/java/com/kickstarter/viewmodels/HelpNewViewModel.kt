@@ -19,6 +19,7 @@ class HelpNewViewModel(private val context: Context, private val environment: En
 
 
     fun contactClick() {
+        environment.koala().trackContactEmailClicked()
         environment.currentUser().observable()
                 .take(1)
                 .observeOn(AndroidSchedulers.mainThread())

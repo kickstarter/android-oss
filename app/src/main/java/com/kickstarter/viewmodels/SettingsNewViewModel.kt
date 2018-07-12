@@ -20,6 +20,7 @@ class SettingsNewViewModel(private val context: Context, private val environment
 
     fun logoutClick() {
         environment.logout().execute()
+        environment.koala().trackLogout()
         ApplicationUtils.startNewDiscoveryActivity(context)
     }
 

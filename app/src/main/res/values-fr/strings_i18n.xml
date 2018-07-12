@@ -1102,11 +1102,14 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_settings_newsletter_film" formatted="false">Kickstarter Films</string>
   <string name="profile_settings_newsletter_games" formatted="false">Kickstarter aime les jeux</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening</string>
+  <string name="profile_settings_newsletter_happening_now" formatted="false">Happening Now</string>
   <string name="profile_settings_newsletter_invent" formatted="false">Inventions</string>
+  <string name="profile_settings_newsletter_news_event" formatted="false">News &amp; Events</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">Nous vous avons envoyé un e-mail de confirmation à l\'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">Dernière étape !</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Nouvelles et évènements Kickstarter</string>
   <string name="profile_settings_newsletter_publishing" formatted="false">Kickstarter Reads</string>
+  <string name="profile_settings_newsletter_subscribe_all" formatted="false">Subscribe to all</string>
   <string name="profile_settings_newsletter_title" formatted="false">Lettres d\'information</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Nos coups de cœur</string>
   <string name="profile_settings_rating_message" formatted="false">Merci d\'utiliser l\'application Kickstarter.\n

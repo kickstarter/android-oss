@@ -879,16 +879,19 @@
             "title": "Newsletters",
             "weekly": "Projects We Love",
             "promo": "Kickstarter News and Events",
-            "happening": "Happening Now",
+            "happening": "Happening",
+            "happening_now": "Happening Now",
             "games": "Kickstarter Loves Games",
             "invent": "Invent",
             "arts": "Arts & Culture News",
             "film": "Kickstarter Films",
+            "news_event": "News & Events",
             "publishing": "Kickstarter Reads",
             "opt_in": {
               "title": "One final step!",
               "message": "We've sent a confirmation email to the address associated with your account! Please check your email in order to confirm that you'd like to subscribe to %{newsletter}."
-            }
+            },
+            "subscribe_all": "Subscribe to all"
           },
           "about": {
             "title": "Help",
@@ -2873,15 +2876,18 @@
             "weekly": "Unsere Lieblingsprojekte",
             "promo": "Kickstarter Neuigkeiten und Events",
             "happening": "Happening Now",
+            "happening_now": "Happening Now",
             "games": "Wir lieben Spiele",
             "invent": "Kreativ & Erfinderisch",
             "arts": "Kunst & Kultur News",
             "film": "Kickstarter Films",
+            "news_event": "News & Events",
             "publishing": "Kickstarter Reads",
             "opt_in": {
               "title": "Nur noch ein letzter Schritt!",
               "message": "Wir haben eine Bestätigung an die mit deinem Konto verbundene E-Mail-Adresse geschickt! Bitte sieh in deinem Posteingang nach und bestätige dein Abo von %{newsletter}."
-            }
+            },
+            "subscribe_all": "Subscribe to all"
           },
           "about": {
             "title": "Über uns",
@@ -4866,15 +4872,18 @@
             "weekly": "Nuestros Favoritos",
             "promo": "Novedades y eventos de Kickstarter",
             "happening": "Eventos",
+            "happening_now": "Happening Now",
             "games": "Nos encantan los juegos",
             "invent": "Invenciones",
             "arts": "Novedades sobre Arte & Cultura",
             "film": "Kickstarter Films",
+            "news_event": "News & Events",
             "publishing": "Kickstarter Reads",
             "opt_in": {
               "title": "¡Sólo un último paso!",
               "message": "Hemos enviado una confirmación a la dirección de correo electrónico asociada con tu cuenta. Por favor checa tu bandeja de entrada y confirma la subscripción a %{newsletter}."
-            }
+            },
+            "subscribe_all": "Subscribe to all"
           },
           "about": {
             "title": "Acerca de",
@@ -6859,15 +6868,18 @@
             "weekly": "Nos coups de cœur",
             "promo": "Nouvelles et évènements Kickstarter",
             "happening": "Happening",
+            "happening_now": "Happening Now",
             "games": "Kickstarter aime les jeux",
             "invent": "Inventions",
             "arts": "Actualités art et culture",
             "film": "Kickstarter Films",
+            "news_event": "News & Events",
             "publishing": "Kickstarter Reads",
             "opt_in": {
               "title": "Dernière étape !",
               "message": "Nous vous avons envoyé un e-mail de confirmation à l'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}."
-            }
+            },
+            "subscribe_all": "Subscribe to all"
           },
           "about": {
             "title": "À propos de Kickstarter",
@@ -8852,15 +8864,18 @@
             "weekly": "Projects We Love",
             "promo": "Kickstarterのニュースとイベント",
             "happening": "出来事",
+            "happening_now": "Happening Now",
             "games": "Kickstarterが選ぶゲーム",
             "invent": "インベント",
             "arts": "アート＆カルチャー",
             "film": "Kickstarter Films",
+            "news_event": "News & Events",
             "publishing": "Kickstarter Reads",
             "opt_in": {
               "title": "あと少し！",
               "message": "登録されているアドレス宛に認証メールを送信しました！%{newsletter} を購読するには、メールを確認してください。"
-            }
+            },
+            "subscribe_all": "Subscribe to all"
           },
           "about": {
             "title": "ヘルプ",
@@ -10160,7 +10175,7 @@
   ],
   "ab_experiments": {
     "project_dashboard": "with_dashboard",
-    "project_card_stats": "with_no_of_backers",
+    "project_card_stats": "no_percentage",
     "telegraf_proxy": "experimental",
     "es5_project_search": "control"
   },

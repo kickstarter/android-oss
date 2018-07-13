@@ -79,7 +79,7 @@ contributeurs</string>
   <string name="Data_will_appear_here_once" formatted="false">Ces données seront visibles dès que vous aurez reçu votre première contribution.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Supprimer mon compte Kickstarter</string>
   <string name="Delivered" formatted="false">Distribué</string>
-  <string name="Developer" formatted="false">Developer</string>
+  <string name="Developer" formatted="false">Développeur</string>
   <string name="Discover_more_projects" formatted="false">Découvrez plus de projets.</string>
   <string name="Dismiss" formatted="false">Ignorer</string>
   <string name="Done" formatted="false">Terminé</string>
@@ -98,8 +98,8 @@ contributeurs</string>
   <string name="Explore_projects" formatted="false">Découvrir des projets</string>
   <string name="Facebook_login_disclaimer" formatted="false">Si vous vous connectez avec Facebook, nous importerons votre nom et votre photo de profil. Nous accéderons aussi à votre liste d\'amis pour vous permettre de suivre vos connaissances sur Kickstarter. Nous ne publierons jamais sur Facebook sans votre autorisation.</string>
   <string name="Facebook_login_disclaimer_update" formatted="false">Lorsque vous vous connectez avec Facebook, votre nom, votre photo de profil et votre liste d\'amis seront importés.</string>
-  <string name="Facebook_reconnect" formatted="false">Please reconnect</string>
-  <string name="Facebook_reconnect_description" formatted="false">Our apologies, your account was accidentally disconnected. Reconnect to follow friends again.</string>
+  <string name="Facebook_reconnect" formatted="false">Veuillez vous reconnecter.</string>
+  <string name="Facebook_reconnect_description" formatted="false">Nous sommes désolés, mais votre compte a été déconnecté accidentellement. Veuillez vous reconnecter pour retrouver vos amis.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Impossible de récupérer les détails de la diffusion en direct</string>
   <string name="Failed_to_update_subscription" formatted="false">Mise à jour de l\'abonnement impossible</string>
   <string name="Filter_by_all_projects" formatted="false">Filtrer : tous les projets</string>
@@ -152,7 +152,8 @@ contributeurs</string>
   <string name="Go_to_project_page" formatted="false">Accéder à la page de projet</string>
   <string name="Got_it" formatted="false">Super.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Merci ! Vos réponses au questionnaire ont bien été envoyées.</string>
-  <string name="Help" formatted="false">Help</string>
+  <string name="Happening_newsletter" formatted="false">Sign up to receive a mix of new projects, compelling stories, and visual inspiration, delivered once (and sometimes twice) a week.</string>
+  <string name="Help" formatted="false">Aide</string>
   <string name="Help_center" formatted="false">Centre d\'aide</string>
   <string name="Hide_password" formatted="false">Masquer le mot de passe</string>
   <string name="Home" formatted="false">Accueil</string>
@@ -189,7 +190,7 @@ contributeurs</string>
   <string name="Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you" formatted="false">Connectez-vous ou inscrivez-vous pour enregistrer ce projet. Vous recevrez un rappel 48 heures avant la fin.</string>
   <string name="Log_in_or_sign_up_to_subscribe" formatted="false">Connectez-vous ou inscrivez-vous pour vous abonner</string>
   <string name="Log_in_to_leave_a_comment" formatted="false">Connectez-vous pour laisser un commentaire.</string>
-  <string name="Log_out" formatted="false">Log out</string>
+  <string name="Log_out" formatted="false">Déconnexion</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">S\'engager sans recevoir de récompense</string>
   <string name="Manage_your_pledge" formatted="false">Gérer mon engagement</string>
   <string name="Manage_your_pledge_below" formatted="false">Gérer mon engagement</string>
@@ -201,7 +202,8 @@ contributeurs</string>
   <string name="Name" formatted="false">Nom</string>
   <string name="Never" formatted="false">Jamais</string>
   <string name="New_pledge_activity" formatted="false">Nouveaux engagements</string>
-  <string name="Newsletters" formatted="false">Newsletters</string>
+  <string name="News_events" formatted="false">Big news and events happening near you, delivered just a few times a year.</string>
+  <string name="Newsletters" formatted="false">Lettres d\'information</string>
   <string name="No_Results" formatted="false">Pas de résultats</string>
   <string name="No_comments_yet" formatted="false">Pas de commentaires.</string>
   <string name="No_messages" formatted="false">Pas de messages</string>
@@ -329,6 +331,7 @@ n\'ont rien soutenu.</string>
   <string name="Ships_to" formatted="false">Livraison :</string>
   <string name="Show_password" formatted="false">Afficher le mot de passe</string>
   <string name="Shows_list_of_subcategories" formatted="false">Affiche la liste des sous-catégories.</string>
+  <string name="Sign_up_newsletter" formatted="false">Sign up for Projects We Love to receive a weekly mix of noteworthy projects, handpicked by our team.</string>
   <string name="Signs_up_with_Email" formatted="false">Inscription avec l\'adresse e-mail.</string>
   <string name="Something_catch_your_eye" formatted="false">Quelque chose a retenu votre attention ?</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Un problème est survenu. Veuillez réessayer.</string>
@@ -336,6 +339,7 @@ n\'ont rien soutenu.</string>
   <string name="Starting_soon" formatted="false">Bientôt en direct</string>
   <string name="Status" formatted="false">État :</string>
   <string name="Stay_up_to_date" formatted="false">Envie d\'être informé ?</string>
+  <string name="Stay_up_to_date_newsletter" formatted="false">Stay up to date with our favorite projects, and any news and events that are on our radar.</string>
   <string name="Stay_updated_on_this_project" formatted="false">Envie de suivre ce projet ?</string>
   <string name="Subscribe" formatted="false">S\'abonner</string>
   <string name="Subscribed" formatted="false">Abonné </string>
@@ -1098,11 +1102,14 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_settings_newsletter_film" formatted="false">Kickstarter Films</string>
   <string name="profile_settings_newsletter_games" formatted="false">Kickstarter aime les jeux</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening</string>
+  <string name="profile_settings_newsletter_happening_now" formatted="false">Happening Now</string>
   <string name="profile_settings_newsletter_invent" formatted="false">Inventions</string>
+  <string name="profile_settings_newsletter_news_event" formatted="false">News &amp; Events</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">Nous vous avons envoyé un e-mail de confirmation à l\'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">Dernière étape !</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Nouvelles et évènements Kickstarter</string>
   <string name="profile_settings_newsletter_publishing" formatted="false">Kickstarter Reads</string>
+  <string name="profile_settings_newsletter_subscribe_all" formatted="false">Subscribe to all</string>
   <string name="profile_settings_newsletter_title" formatted="false">Lettres d\'information</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Nos coups de cœur</string>
   <string name="profile_settings_rating_message" formatted="false">Merci d\'utiliser l\'application Kickstarter.\n

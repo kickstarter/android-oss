@@ -31,7 +31,7 @@ module Milkrun
     def path
       raise 'Build has not been compiled yet!' unless assembled?
 
-      File.join(Milkrun.app_dir, "build/outputs/apk/app-#{components.join('-')}.apk")
+      File.join(Milkrun.app_dir, "build/outputs/apk/#{audience + components[1]}/#{build_type}/app-#{components.join('-')}.apk")
     end
 
     def task

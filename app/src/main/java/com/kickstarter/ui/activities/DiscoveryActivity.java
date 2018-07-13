@@ -18,6 +18,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.security.ProviderInstaller;
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
+import com.kickstarter.BuildConfig;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
@@ -197,8 +198,15 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
   }
 
   private void startSettingsActivity() {
-    final Intent intent = new Intent(this, SettingsNewActivity.class)
-      .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
+    final Intent intent;
+
+    if (BuildConfig.DEBUG) {
+      intent = new Intent(this, SettingsNewActivity.class);
+    } else {
+      intent = new Intent(this, SettingsActivity.class);
+    }
+
+    intent.putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
     startActivity(intent);
   }
 

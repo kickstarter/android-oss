@@ -32,7 +32,6 @@ class SettingsNewViewModelTest {
         Intents.release()
     }
 
-
     @Test
     fun testHelpClick() {
         events.clickOnView(R.id.help_card)
@@ -70,6 +69,4 @@ class SettingsNewViewModelTest {
                 hasAction(Intent.ACTION_VIEW),
                 hasData("market://details?id=${BuildConfig.APPLICATION_ID}")))
     }
-
-
 }

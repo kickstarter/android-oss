@@ -66,6 +66,4 @@ class HelpActivityViewModelTest {
         events.clickOnView(R.id.terms_card)
         checkThat.nextOpenActivityIs(HelpActivity.Terms::class.java)
     }
-
-
 }

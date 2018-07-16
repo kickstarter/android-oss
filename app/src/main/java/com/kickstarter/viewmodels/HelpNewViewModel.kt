@@ -17,7 +17,6 @@ import java.util.*
 
 class HelpNewViewModel(private val context: Context, private val environment: Environment) : BaseObservable() {
 
-
     fun contactClick() {
         environment.koala().trackContactEmailClicked()
         environment.currentUser().observable()
@@ -52,8 +51,8 @@ class HelpNewViewModel(private val context: Context, private val environment: En
     }
 
     private fun startActivityWithTransition() {
-        val application = context as Activity
-        application.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        val activity = context as Activity
+        activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun composeContactEmail(user: User?) {

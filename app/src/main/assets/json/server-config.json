@@ -10175,6 +10175,7 @@
   ],
   "ab_experiments": {
     "project_dashboard": "with_dashboard",
+    "new_project_header": "experimental",
     "project_card_stats": "no_percentage",
     "telegraf_proxy": "experimental",
     "es5_project_search": "control"

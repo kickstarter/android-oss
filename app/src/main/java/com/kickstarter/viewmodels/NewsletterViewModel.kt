@@ -9,6 +9,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import io.reactivex.rxkotlin.withLatestFrom
 import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.utils.UserUtils
 import com.kickstarter.models.User
 import com.kickstarter.ui.activities.NewsletterActivity
 import com.kickstarter.ui.data.Newsletter
@@ -37,19 +38,25 @@ interface NewsletterViewModel {
     interface Outputs {
         /** Emits user containing settings state. */
         fun user(): Observable<User>
+
+        /** Show a dialog to inform the user that their newsletter subscription must be confirmed via email.  */
+         fun showOptInPrompt(): Observable<Newsletter>
     }
 
     interface Errors {
         fun unableToSavePreferenceError(): Observable<String>
     }
 
-    open class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<NewsletterActivity>(environment), Inputs, Errors, Outputs {
+    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<NewsletterActivity>(environment), Inputs, Errors, Outputs {
+
         private val client = environment.apiClient()
         private val currentUser = environment.currentUser()
         private val newsletterInput = PublishSubject.create<Pair<Boolean, Newsletter>>()
+        private val showOptInPrompt = PublishSubject.create<Newsletter>()
         private val userInput = PublishSubject.create<User>()
         private val updateSuccess = PublishSubject.create<Void>()
         private val userOutput = BehaviorSubject.create<User>()
+
 
         private val unableToSavePreferenceError = PublishSubject.create<Throwable>()
 
@@ -58,7 +65,6 @@ interface NewsletterViewModel {
         val errors: Errors = this
 
         init {
-
 
             client.fetchCurrentUser()
                     .retry(2)
@@ -70,6 +76,13 @@ interface NewsletterViewModel {
                     .take(1)
                     .compose(bindToLifecycle())
                     .subscribe(userOutput::onNext)
+
+            this.currentUser.observable()
+                    .compose(takePairWhen(this.newsletterInput))
+                    .filter { requiresDoubleOptIn(it.first, it.second.first) }
+                    .map<Newsletter> {it.second.second }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showOptInPrompt)
 
             userInput
                     .concatMap { updateSettings(it) }
@@ -95,6 +108,8 @@ interface NewsletterViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(koala::trackNewsletterToggle)
         }
+
+        private fun requiresDoubleOptIn(user: User, checked: Boolean) = UserUtils.isLocationGermany(user) && checked
 
         private fun success(user: User) {
             currentUser.refresh(user)
@@ -125,6 +140,8 @@ interface NewsletterViewModel {
             userInput.onNext(userOutput.value.toBuilder().weeklyNewsletter(checked).build());
             newsletterInput.onNext(Pair(checked, Newsletter.WEEKLY))
         }
+
+        override fun showOptInPrompt(): Observable<Newsletter>  = showOptInPrompt
 
         override fun user() = userOutput
 

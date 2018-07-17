@@ -7,8 +7,8 @@ import com.kickstarter.models.User
 import org.junit.Test
 import rx.observers.TestSubscriber
 
-class NotificationViewModelTest : KSRobolectricTestCase() {
-    private var vm: NotificationViewModel.ViewModel? = null
+class NotificationsViewModelTest : KSRobolectricTestCase() {
+    private var vm: NotificationsViewModel.ViewModel? = null
 
     private val currentUserTest = TestSubscriber<User>()
 
@@ -20,7 +20,7 @@ class NotificationViewModelTest : KSRobolectricTestCase() {
 
         currentUser.observable().subscribe(this.currentUserTest)
 
-        this.vm = NotificationViewModel.ViewModel(environment)
+        this.vm = NotificationsViewModel.ViewModel(environment)
     }
 
     @Test

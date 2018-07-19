@@ -48,8 +48,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
                 .subscribe({ this.displayPreferences(it) })
 
         manage_project_notifications.setOnClickListener {
-            val intent = Intent(this, ProjectNotificationSettingsActivity::class.java)
-            startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+            startProjectNotificationsSettingsActivity()
         }
 
         friend_activity_mail_icon.setOnClickListener{
@@ -140,5 +139,10 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             contentDescription = getString(this.subscribeString)
         }
         view.contentDescription = contentDescription
+    }
+
+    private fun startProjectNotificationsSettingsActivity() {
+        val intent = Intent(this, ProjectNotificationSettingsActivity::class.java)
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 }

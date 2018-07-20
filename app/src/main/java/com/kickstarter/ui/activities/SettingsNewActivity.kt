@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.databinding.SettingsLayoutNewBinding
+import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.viewmodels.SettingsNewViewModel
 
 class SettingsNewActivity : AppCompatActivity() {
@@ -16,5 +17,11 @@ class SettingsNewActivity : AppCompatActivity() {
 
         val environment = (application as KSApplication).component().environment()
         binding.viewModel = SettingsNewViewModel(this, environment)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val exit = slideInFromLeft()
+        overridePendingTransition(exit.first, exit.second)
     }
 }

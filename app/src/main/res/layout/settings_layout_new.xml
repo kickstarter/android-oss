@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools">
+  xmlns:android="http://schemas.android.com/apk/res/android">
 
   <data>
 
@@ -15,8 +14,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/ksr_grey_100"
-    android:orientation="vertical"
-    tools:ignore="TooManyViews">
+    android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
       android:layout_width="match_parent"

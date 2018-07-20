@@ -7,7 +7,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import io.reactivex.rxkotlin.withLatestFrom
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.UserUtils
 import com.kickstarter.models.User
@@ -16,7 +15,6 @@ import com.kickstarter.ui.data.Newsletter
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import java.util.function.BiFunction
 
 interface NewsletterViewModel {
 
@@ -78,9 +76,9 @@ interface NewsletterViewModel {
                     .subscribe(userOutput::onNext)
 
             this.currentUser.observable()
-                    .compose(takePairWhen(this.newsletterInput))
-                    .filter { requiresDoubleOptIn(it.first, it.second.first) }
-                    .map<Newsletter> {it.second.second }
+                    .compose<Pair<User, Pair<Boolean, Newsletter>>>(takePairWhen<User, Pair<Boolean, Newsletter>>(this.newsletterInput))
+                    .filter { us -> requiresDoubleOptIn(us.first, us.second.first) }
+                    .map { us -> us.second.second }
                     .compose(bindToLifecycle())
                     .subscribe(this.showOptInPrompt)
 
@@ -121,7 +119,6 @@ interface NewsletterViewModel {
                     .compose(Transformers.pipeErrorsTo<User>(unableToSavePreferenceError))
         }
 
-
         override fun sendAllNewsletter(checked: Boolean) {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
@@ -132,12 +129,12 @@ interface NewsletterViewModel {
         }
 
         override fun sendPromoNewsletter(checked: Boolean) {
-            userInput.onNext(userOutput.value.toBuilder().promoNewsletter(checked).build());
+            userInput.onNext(userOutput.value.toBuilder().promoNewsletter(checked).build())
             newsletterInput.onNext(Pair(checked, Newsletter.PROMO))
         }
 
         override fun sendWeeklyNewsletter(checked: Boolean) {
-            userInput.onNext(userOutput.value.toBuilder().weeklyNewsletter(checked).build());
+            userInput.onNext(userOutput.value.toBuilder().weeklyNewsletter(checked).build())
             newsletterInput.onNext(Pair(checked, Newsletter.WEEKLY))
         }
 
@@ -148,7 +145,7 @@ interface NewsletterViewModel {
         override fun unableToSavePreferenceError() : Observable<String> {
            return unableToSavePreferenceError
                     .takeUntil(updateSuccess)
-                    .map(null)
+                    .map {_ -> null }
         }
 
     }

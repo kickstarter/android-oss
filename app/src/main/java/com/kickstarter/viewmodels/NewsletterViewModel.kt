@@ -64,16 +64,16 @@ interface NewsletterViewModel {
 
         init {
 
-            client.fetchCurrentUser()
+            this.client.fetchCurrentUser()
                     .retry(2)
                     .compose(Transformers.neverError())
                     .compose(bindToLifecycle())
-                    .subscribe(currentUser::refresh)
+                    .subscribe(this.currentUser::refresh)
 
-            currentUser.observable()
+            this.currentUser.observable()
                     .take(1)
                     .compose(bindToLifecycle())
-                    .subscribe(userOutput::onNext)
+                    .subscribe(this.userOutput::onNext)
 
             this.currentUser.observable()
                     .compose<Pair<User, Pair<Boolean, Newsletter>>>(takePairWhen<User, Pair<Boolean, Newsletter>>(this.newsletterInput))
@@ -82,41 +82,41 @@ interface NewsletterViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showOptInPrompt)
 
-            userInput
+            this.userInput
                     .concatMap { updateSettings(it) }
                     .compose(bindToLifecycle())
                     .subscribe { success(it) }
 
-            userInput
+            this.userInput
                     .compose(bindToLifecycle())
-                    .subscribe(userOutput)
+                    .subscribe(this.userOutput)
 
 
-            userOutput
+            this.userOutput
                     .window(2, 1)
                     .flatMap<List<User>>({ it.toList() })
                     .map<User>({ ListUtils.first(it) })
-                    .compose<User>(takeWhen<User, Throwable>(unableToSavePreferenceError))
+                    .compose<User>(takeWhen<User, Throwable>(this.unableToSavePreferenceError))
                     .compose(bindToLifecycle())
-                    .subscribe(userOutput)
+                    .subscribe(this.userOutput)
 
 
-            newsletterInput
+            this.newsletterInput
                     .map { bs -> bs.first }
                     .compose(bindToLifecycle())
-                    .subscribe(koala::trackNewsletterToggle)
+                    .subscribe(this.koala::trackNewsletterToggle)
         }
 
         private fun requiresDoubleOptIn(user: User, checked: Boolean) = UserUtils.isLocationGermany(user) && checked
 
         private fun success(user: User) {
-            currentUser.refresh(user)
-            updateSuccess.onNext(null)
+            this.currentUser.refresh(user)
+            this.updateSuccess.onNext(null)
         }
 
         private fun updateSettings(user: User): Observable<User> {
-            return client.updateUserSettings(user)
-                    .compose(Transformers.pipeErrorsTo<User>(unableToSavePreferenceError))
+            return this.client.updateUserSettings(user)
+                    .compose(Transformers.pipeErrorsTo<User>(this.unableToSavePreferenceError))
         }
 
         override fun sendAllNewsletter(checked: Boolean) {
@@ -124,27 +124,27 @@ interface NewsletterViewModel {
         }
 
         override fun sendHappeningNewsletter(checked: Boolean) {
-            userInput.onNext(userOutput.value.toBuilder().happeningNewsletter(checked).build())
-            newsletterInput.onNext(Pair(checked, Newsletter.HAPPENING))
+            this.userInput.onNext(this.userOutput.value.toBuilder().happeningNewsletter(checked).build())
+            this.newsletterInput.onNext(Pair(checked, Newsletter.HAPPENING))
         }
 
         override fun sendPromoNewsletter(checked: Boolean) {
-            userInput.onNext(userOutput.value.toBuilder().promoNewsletter(checked).build())
-            newsletterInput.onNext(Pair(checked, Newsletter.PROMO))
+            this.userInput.onNext(this.userOutput.value.toBuilder().promoNewsletter(checked).build())
+            this.newsletterInput.onNext(Pair(checked, Newsletter.PROMO))
         }
 
         override fun sendWeeklyNewsletter(checked: Boolean) {
-            userInput.onNext(userOutput.value.toBuilder().weeklyNewsletter(checked).build())
-            newsletterInput.onNext(Pair(checked, Newsletter.WEEKLY))
+            this.userInput.onNext(this.userOutput.value.toBuilder().weeklyNewsletter(checked).build())
+            this.newsletterInput.onNext(Pair(checked, Newsletter.WEEKLY))
         }
 
-        override fun showOptInPrompt(): Observable<Newsletter>  = showOptInPrompt
+        override fun showOptInPrompt(): Observable<Newsletter>  = this.showOptInPrompt
 
-        override fun user() = userOutput
+        override fun user() = this.userOutput
 
         override fun unableToSavePreferenceError() : Observable<String> {
-           return unableToSavePreferenceError
-                    .takeUntil(updateSuccess)
+           return this.unableToSavePreferenceError
+                    .takeUntil(this.updateSuccess)
                     .map {_ -> null }
         }
 

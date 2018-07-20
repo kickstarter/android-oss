@@ -33,43 +33,43 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_newsletter)
 
-        build = environment().build()
-        currentUserType =  environment().currentUser()
-        ksString = environment().ksString()
+        this.build = environment().build()
+        this.currentUserType =  environment().currentUser()
+        this.ksString = environment().ksString()
 
-        viewModel.outputs.user()
+        this.viewModel.outputs.user()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::displayPreferences)
 
-        viewModel.errors.unableToSavePreferenceError()
+        this.viewModel.errors.unableToSavePreferenceError()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.showToast(this, getString(R.string.profile_settings_error)) }
 
-        viewModel.outputs.showOptInPrompt()
+        this.viewModel.outputs.showOptInPrompt()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::showOptInPrompt)
 
-        RxView.clicks(binding.happeningSwitch)
+        RxView.clicks(this.binding.happeningSwitch)
                 .compose(bindToLifecycle())
-                .subscribe { viewModel.inputs.sendHappeningNewsletter(binding.happeningSwitch.isChecked) }
+                .subscribe { viewModel.inputs.sendHappeningNewsletter(this.binding.happeningSwitch.isChecked) }
 
-        RxView.clicks(binding.newsEventsSwitch)
+        RxView.clicks(this.binding.newsEventsSwitch)
                 .compose(bindToLifecycle())
-                .subscribe { viewModel.inputs.sendPromoNewsletter(binding.newsEventsSwitch.isChecked) }
+                .subscribe { viewModel.inputs.sendPromoNewsletter(this.binding.newsEventsSwitch.isChecked) }
 
-        RxView.clicks(binding.projectsWeLoveTextView)
+        RxView.clicks(this.binding.projectsWeLoveTextView)
                 .compose(bindToLifecycle())
-                .subscribe { viewModel.inputs.sendWeeklyNewsletter(binding.projectsWeLoveSwitch.isChecked) }
+                .subscribe { viewModel.inputs.sendWeeklyNewsletter(this.binding.projectsWeLoveSwitch.isChecked) }
 
     }
 
     private fun displayPreferences(@NonNull user: User) {
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.happeningSwitch, isTrue(user.happeningNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.newsEventsSwitch, isTrue(user.promoNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(binding.projectsWeLoveSwitch, isTrue(user.weeklyNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(this.binding.happeningSwitch, isTrue(user.happeningNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(this.binding.newsEventsSwitch, isTrue(user.promoNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(this.binding.projectsWeLoveSwitch, isTrue(user.weeklyNewsletter()))
     }
 
     private fun newsletterString(newsletter: Newsletter): String? {
@@ -82,7 +82,7 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
     }
 
     private fun showOptInPrompt(newsletter: Newsletter) {
-        val string = newsletterString(newsletter) ?: return
+        val string = newsletterString(newsletter)
 
         val optInDialogMessageString = this.ksString.format(getString(R.string.profile_settings_newsletter_opt_in_message), "newsletter", string)
         ViewUtils.showDialog(this, getString(R.string.profile_settings_newsletter_opt_in_title), optInDialogMessageString)

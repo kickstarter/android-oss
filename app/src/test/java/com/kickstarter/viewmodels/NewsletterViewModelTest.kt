@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import android.support.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.factories.UserFactory
 import com.kickstarter.libs.MockCurrentUser
@@ -11,7 +10,7 @@ import rx.observers.TestSubscriber
 
 class NewsletterViewModelTest : KSRobolectricTestCase() {
 
-    private var vm: NewsletterViewModel.ViewModel? = null
+    private lateinit var vm: NewsletterViewModel.ViewModel
     private val currentUserTest = TestSubscriber<User>()
     private val showOptInPromptTest = TestSubscriber<Newsletter>()
 
@@ -24,7 +23,7 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         currentUser.observable().subscribe(this.currentUserTest)
 
         this.vm = NewsletterViewModel.ViewModel(environment)
-        this.vm!!.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
+        this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
     }
 
     @Test
@@ -42,20 +41,18 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(user)
 
-        vm!!.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
+        this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
 
-        currentUserTest.assertValues(user)
-        koalaTest.assertValues("Newsletter View")
+        this.currentUserTest.assertValues(user)
 
-        vm!!.inputs.sendHappeningNewsletter(true)
-        koalaTest.assertValues("Newsletter View", "Newsletter Subscribe")
-        currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build())
+        this.vm.inputs.sendHappeningNewsletter(true)
+        this.koalaTest.assertValues("Newsletter Subscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build())
 
-        vm!!.inputs.sendHappeningNewsletter(false)
-        koalaTest.assertValues("Newsletter View", "Newsletter Subscribe", "Newsletter Unsubscribe")
-        currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build(), user)
+        this.vm.inputs.sendHappeningNewsletter(false)
+        this.koalaTest.assertValues("Newsletter Subscribe", "Newsletter Unsubscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build(), user)
 
-        showOptInPromptTest.assertNoValues();
         showOptInPromptTest.assertNoValues()
     }
 
@@ -65,20 +62,19 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(user)
 
-        vm!!.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
+        this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
 
-        currentUserTest.assertValues(user)
-        koalaTest.assertValues("Newsletter View")
+        this.currentUserTest.assertValues(user)
 
-        vm!!.inputs.sendPromoNewsletter(true)
-        koalaTest.assertValues("Newsletter View", "Newsletter Subscribe")
-        currentUserTest.assertValues(user, user.toBuilder().promoNewsletter(true).build())
+        this.vm.inputs.sendPromoNewsletter(true)
+        this.koalaTest.assertValues("Newsletter Subscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().promoNewsletter(true).build())
 
-        vm!!.inputs.sendPromoNewsletter(false)
-        koalaTest.assertValues("Newsletter View", "Newsletter Subscribe", "Newsletter Unsubscribe")
-        currentUserTest.assertValues(user, user.toBuilder().promoNewsletter(true).build(), user)
+        this.vm.inputs.sendPromoNewsletter(false)
+        this.koalaTest.assertValues("Newsletter Subscribe", "Newsletter Unsubscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().promoNewsletter(true).build(), user)
 
-        showOptInPromptTest.assertNoValues()
+        this.showOptInPromptTest.assertNoValues()
     }
 
     @Test
@@ -87,19 +83,18 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(user)
 
-        vm!!.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
+        this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
 
-        currentUserTest.assertValues(user)
-        koalaTest.assertValues("Newsletter View")
+        this.currentUserTest.assertValues(user)
 
-        vm!!.inputs.sendWeeklyNewsletter(true)
-        koalaTest.assertValues("Newsletter View", "Newsletter Subscribe")
-        currentUserTest.assertValues(user, user.toBuilder().weeklyNewsletter(true).build())
+        this.vm.inputs.sendWeeklyNewsletter(true)
+        this.koalaTest.assertValues("Newsletter Subscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().weeklyNewsletter(true).build())
 
-        vm!!.inputs.sendWeeklyNewsletter(false)
-        koalaTest.assertValues("Newsletter View", "Newsletter Subscribe", "Newsletter Unsubscribe")
-        currentUserTest.assertValues(user, user.toBuilder().weeklyNewsletter(true).build(), user)
+        this.vm.inputs.sendWeeklyNewsletter(false)
+        this.koalaTest.assertValues("Newsletter Subscribe", "Newsletter Unsubscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().weeklyNewsletter(true).build(), user)
 
-        showOptInPromptTest.assertNoValues()
+        this.showOptInPromptTest.assertNoValues()
     }
 }

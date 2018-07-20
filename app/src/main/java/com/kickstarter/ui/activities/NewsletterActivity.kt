@@ -34,7 +34,7 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_newsletter)
 
         this.build = environment().build()
-        this.currentUserType =  environment().currentUser()
+        this.currentUserType = environment().currentUser()
         this.ksString = environment().ksString()
 
         this.viewModel.outputs.user()
@@ -52,18 +52,11 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::showOptInPrompt)
 
-        RxView.clicks(this.binding.happeningSwitch)
-                .compose(bindToLifecycle())
-                .subscribe { viewModel.inputs.sendHappeningNewsletter(this.binding.happeningSwitch.isChecked) }
-
-        RxView.clicks(this.binding.newsEventsSwitch)
-                .compose(bindToLifecycle())
-                .subscribe { viewModel.inputs.sendPromoNewsletter(this.binding.newsEventsSwitch.isChecked) }
-
-        RxView.clicks(this.binding.projectsWeLoveTextView)
-                .compose(bindToLifecycle())
-                .subscribe { viewModel.inputs.sendWeeklyNewsletter(this.binding.projectsWeLoveSwitch.isChecked) }
-
+        binding.apply {
+            happeningSwitch.setOnClickListener { viewModel.inputs.sendHappeningNewsletter(happeningSwitch.isChecked) }
+            newsEventsSwitch.setOnClickListener { viewModel.inputs.sendPromoNewsletter(newsEventsSwitch.isChecked) }
+            projectsWeLoveSwitch.setOnClickListener { viewModel.inputs.sendWeeklyNewsletter(projectsWeLoveSwitch.isChecked) }
+        }
     }
 
     private fun displayPreferences(@NonNull user: User) {

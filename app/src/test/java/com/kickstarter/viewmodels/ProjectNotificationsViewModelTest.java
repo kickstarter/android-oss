@@ -15,7 +15,7 @@ import org.junit.Test;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
-public final class ProjectNotificationViewModelTest extends KSRobolectricTestCase {
+public final class ProjectNotificationsViewModelTest extends KSRobolectricTestCase {
   private ProjectNotificationViewModel.ViewModel vm;
   private final TestSubscriber<Boolean> enabledSwitchTest = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTest = new TestSubscriber<>();

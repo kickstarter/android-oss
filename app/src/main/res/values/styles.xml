@@ -177,12 +177,10 @@
   <style name="KSSettingsMailIcon">
     <item name="android:src">@drawable/icon__mail</item>
     <item name="android:focusable">true</item>
-    <item name="android:layout_centerVertical">true</item>
-    <item name="android:layout_height">match_parent</item>
-    <item name="android:layout_width">@dimen/settings_icon_fixed_width</item>
-    <item name="android:gravity">center</item>
-    <item name="android:paddingTop">@dimen/grid_1_half</item>
-    <item name="android:background">@drawable/click_indicator_light</item>
+    <item name="android:layout_height">@dimen/grid_6</item>
+    <item name="android:layout_width">@dimen/grid_6</item>
+    <item name="android:background">@drawable/circle_gray_outline</item>
+    <item name="android:foreground">@drawable/circular_click_indicator_light</item>
   </style>
 
   <style name="SettingsInfoIcon">
@@ -210,11 +208,11 @@
 
   <style name="KSSettingsPhoneIcon" parent="EndSettingsWidget">
     <item name="android:focusable">true</item>
-    <item name="android:layout_marginRight">@dimen/grid_1</item>
-    <item name="android:layout_height">match_parent</item>
-    <item name="android:layout_width">@dimen/settings_icon_fixed_width</item>
-    <item name="android:background">@drawable/click_indicator_light</item>
-    <item name="android:text">@string/phone_android_icon</item>
+    <item name="android:layout_height">@dimen/grid_6</item>
+    <item name="android:layout_width">@dimen/grid_6</item>
+    <item name="android:background">@drawable/circle_gray_outline</item>
+    <item name="android:foreground">@drawable/circular_click_indicator_light</item>
+    <item name="android:src">@drawable/icon__phone</item>
   </style>
 
   <style name="SettingsClickableSection">
@@ -230,13 +228,19 @@
     <item name="android:layout_weight">1</item>
     <item name="android:layout_width">0dp</item>
     <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
+    <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
+    <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
+    <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
   </style>
 
   <style name="SettingsSectionTitle" parent="BodySecondary">
-    <item name="android:layout_marginTop">@dimen/grid_7</item>
+    <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
     <item name="android:layout_marginBottom">@dimen/grid_2</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
+    <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
   </style>
 
   <!-- Toolbars -->

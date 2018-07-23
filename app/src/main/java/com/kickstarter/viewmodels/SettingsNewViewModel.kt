@@ -19,8 +19,8 @@ class SettingsNewViewModel(private val context: Context, private val environment
     fun helpClick() = context.startActivity(Intent(context, HelpNewActivity::class.java))
 
     fun logoutClick() {
-        environment.logout().execute()
-        environment.koala().trackLogout()
+        this.environment.logout().execute()
+        this.environment.koala().trackLogout()
         ApplicationUtils.startNewDiscoveryActivity(context)
     }
 

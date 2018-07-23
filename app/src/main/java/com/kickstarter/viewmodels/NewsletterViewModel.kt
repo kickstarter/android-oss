@@ -30,7 +30,6 @@ interface NewsletterViewModel {
 
         /** Call when the user toggles the Projects We Love newsletter switch.  */
         fun sendWeeklyNewsletter(checked: Boolean)
-
     }
 
     interface Outputs {
@@ -42,6 +41,7 @@ interface NewsletterViewModel {
     }
 
     interface Errors {
+        /** Emits when there is an error updating the user preferences. */
         fun unableToSavePreferenceError(): Observable<String>
     }
 
@@ -54,7 +54,6 @@ interface NewsletterViewModel {
         private val userInput = PublishSubject.create<User>()
         private val updateSuccess = PublishSubject.create<Void>()
         private val userOutput = BehaviorSubject.create<User>()
-
 
         private val unableToSavePreferenceError = PublishSubject.create<Throwable>()
 
@@ -91,7 +90,6 @@ interface NewsletterViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.userOutput)
 
-
             this.userOutput
                     .window(2, 1)
                     .flatMap<List<User>>({ it.toList() })
@@ -100,23 +98,10 @@ interface NewsletterViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.userOutput)
 
-
             this.newsletterInput
                     .map { bs -> bs.first }
                     .compose(bindToLifecycle())
                     .subscribe(this.koala::trackNewsletterToggle)
-        }
-
-        private fun requiresDoubleOptIn(user: User, checked: Boolean) = UserUtils.isLocationGermany(user) && checked
-
-        private fun success(user: User) {
-            this.currentUser.refresh(user)
-            this.updateSuccess.onNext(null)
-        }
-
-        private fun updateSettings(user: User): Observable<User> {
-            return this.client.updateUserSettings(user)
-                    .compose(Transformers.pipeErrorsTo<User>(this.unableToSavePreferenceError))
         }
 
         override fun sendAllNewsletter(checked: Boolean) {
@@ -148,5 +133,16 @@ interface NewsletterViewModel {
                     .map {_ -> null }
         }
 
+        private fun requiresDoubleOptIn(user: User, checked: Boolean) = UserUtils.isLocationGermany(user) && checked
+
+        private fun success(user: User) {
+            this.currentUser.refresh(user)
+            this.updateSuccess.onNext(null)
+        }
+
+        private fun updateSettings(user: User): Observable<User> {
+            return this.client.updateUserSettings(user)
+                    .compose(Transformers.pipeErrorsTo<User>(this.unableToSavePreferenceError))
+        }
     }
 }

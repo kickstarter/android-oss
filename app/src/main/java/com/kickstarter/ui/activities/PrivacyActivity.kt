@@ -1,10 +1,13 @@
 package com.kickstarter.ui.activities
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.kickstarter.R
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.viewmodels.PrivacyViewModel
 
-class PrivacyActivity : AppCompatActivity() {
+@RequiresActivityViewModel(PrivacyViewModel.ViewModel::class)
+class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

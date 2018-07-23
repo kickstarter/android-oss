@@ -1,12 +1,8 @@
 package com.kickstarter.ui.activities
 
-import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.annotation.NonNull
-import butterknife.BindColor
-import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
-import com.kickstarter.databinding.ActivityNewsletterBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType

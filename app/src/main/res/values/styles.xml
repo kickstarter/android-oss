@@ -494,12 +494,34 @@
     <item name="android:foreground">@drawable/click_indicator_light</item>
   </style>
 
-  <style name="SettingsCardView" parent="CardView">
+  <style name="SettingsLinearRow" parent="CalloutPrimary">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="cardCornerRadius">0dp</item>
+    <item name="android:divider">@drawable/divider_grey_500_horizontal</item>
+    <item name="android:showDividers">end</item>
+    <item name="android:orientation">vertical</item>
     <item name="android:foreground">@drawable/click_indicator_light</item>
     <item name="android:background">@color/white</item>
+  </style>
+
+  <style name="NewsletterSingleRow" parent="CalloutPrimary">
+    <item name="android:layout_weight">1</item>
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:padding">@dimen/grid_3</item>
+    <item name="android:foreground">@drawable/click_indicator_light</item>
+  </style>
+
+  <style name="NewsLetterTextView" >
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:padding">@dimen/grid_3</item>
+  </style>
+
+  <style name="NewsLetterSwitch" parent="EndSettingsWidget">
+    <item name="android:layout_marginEnd">@dimen/grid_1</item>
   </style>
 
 </resources>

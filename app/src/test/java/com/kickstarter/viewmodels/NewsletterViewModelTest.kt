@@ -53,7 +53,7 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         this.koalaTest.assertValues("Newsletter Subscribe", "Newsletter Unsubscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build(), user)
 
-        showOptInPromptTest.assertNoValues()
+        this.showOptInPromptTest.assertNoValues()
     }
 
     @Test

@@ -18,15 +18,15 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.User
 import com.kickstarter.ui.data.Newsletter
 import com.kickstarter.viewmodels.NewsletterViewModel
+import kotlinx.android.synthetic.main.activity_newsletter.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(NewsletterViewModel.ViewModel::class)
 class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
 
     private lateinit var binding: ActivityNewsletterBinding
-
-    private lateinit var currentUserType: CurrentUserType
     private lateinit var build: Build
+    private lateinit var currentUserType: CurrentUserType
     private lateinit var ksString: KSString
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,11 +52,9 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::showOptInPrompt)
 
-        binding.apply {
-            happeningSwitch.setOnClickListener { viewModel.inputs.sendHappeningNewsletter(happeningSwitch.isChecked) }
-            newsEventsSwitch.setOnClickListener { viewModel.inputs.sendPromoNewsletter(newsEventsSwitch.isChecked) }
-            projectsWeLoveSwitch.setOnClickListener { viewModel.inputs.sendWeeklyNewsletter(projectsWeLoveSwitch.isChecked) }
-        }
+        happening_switch.setOnClickListener {  viewModel.inputs.sendHappeningNewsletter(happening_switch.isChecked) }
+        news_events_switch.setOnClickListener { viewModel.inputs.sendPromoNewsletter(news_events_switch.isChecked) }
+        projects_we_love_switch.setOnClickListener { viewModel.inputs.sendWeeklyNewsletter(projects_we_love_switch.isChecked) }
     }
 
     private fun displayPreferences(@NonNull user: User) {
@@ -65,7 +63,7 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
         SwitchCompatUtils.setCheckedWithoutAnimation(this.binding.projectsWeLoveSwitch, isTrue(user.weeklyNewsletter()))
     }
 
-    private fun newsletterString(newsletter: Newsletter): String? {
+    private fun newsletterString(@NonNull newsletter: Newsletter): String? {
         return when (newsletter) {
             Newsletter.HAPPENING -> getString(R.string.profile_settings_newsletter_happening)
             Newsletter.PROMO -> getString(R.string.profile_settings_newsletter_promo)

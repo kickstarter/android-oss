@@ -34,14 +34,15 @@ interface NewsletterViewModel {
     }
 
     interface Outputs {
+        /** Show a dialog to inform the user that their newsletter subscription must be confirmed via email.  */
+        fun showOptInPrompt(): Observable<Newsletter>
+
         /** Emits user containing settings state. */
         fun user(): Observable<User>
-
-        /** Show a dialog to inform the user that their newsletter subscription must be confirmed via email.  */
-         fun showOptInPrompt(): Observable<Newsletter>
     }
 
     interface Errors {
+        /** Emits when there is an error updating the user preferences. */
         fun unableToSavePreferenceError(): Observable<String>
     }
 
@@ -54,7 +55,6 @@ interface NewsletterViewModel {
         private val userInput = PublishSubject.create<User>()
         private val updateSuccess = PublishSubject.create<Void>()
         private val userOutput = BehaviorSubject.create<User>()
-
 
         private val unableToSavePreferenceError = PublishSubject.create<Throwable>()
 
@@ -91,7 +91,6 @@ interface NewsletterViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.userOutput)
 
-
             this.userOutput
                     .window(2, 1)
                     .flatMap<List<User>>({ it.toList() })
@@ -100,23 +99,10 @@ interface NewsletterViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.userOutput)
 
-
             this.newsletterInput
                     .map { bs -> bs.first }
                     .compose(bindToLifecycle())
                     .subscribe(this.koala::trackNewsletterToggle)
-        }
-
-        private fun requiresDoubleOptIn(user: User, checked: Boolean) = UserUtils.isLocationGermany(user) && checked
-
-        private fun success(user: User) {
-            this.currentUser.refresh(user)
-            this.updateSuccess.onNext(null)
-        }
-
-        private fun updateSettings(user: User): Observable<User> {
-            return this.client.updateUserSettings(user)
-                    .compose(Transformers.pipeErrorsTo<User>(this.unableToSavePreferenceError))
         }
 
         override fun sendAllNewsletter(checked: Boolean) {
@@ -146,6 +132,18 @@ interface NewsletterViewModel {
            return this.unableToSavePreferenceError
                     .takeUntil(this.updateSuccess)
                     .map {_ -> null }
+        }
+
+        private fun requiresDoubleOptIn(user: User, checked: Boolean) = UserUtils.isLocationGermany(user) && checked
+
+        private fun success(user: User) {
+            this.currentUser.refresh(user)
+            this.updateSuccess.onNext(null)
+        }
+
+        private fun updateSettings(user: User): Observable<User> {
+            return this.client.updateUserSettings(user)
+                    .compose(Transformers.pipeErrorsTo<User>(this.unableToSavePreferenceError))
         }
 
     }

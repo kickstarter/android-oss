@@ -24,14 +24,13 @@ import rx.android.schedulers.AndroidSchedulers
 @RequiresActivityViewModel(NewsletterViewModel.ViewModel::class)
 class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
 
-    private lateinit var binding: ActivityNewsletterBinding
     private lateinit var build: Build
     private lateinit var currentUserType: CurrentUserType
     private lateinit var ksString: KSString
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_newsletter)
+        setContentView(R.layout.activity_newsletter)
 
         this.build = environment().build()
         this.currentUserType = environment().currentUser()
@@ -52,15 +51,15 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::showOptInPrompt)
 
-        happening_switch.setOnClickListener {  viewModel.inputs.sendHappeningNewsletter(happening_switch.isChecked) }
+        happening_switch.setOnClickListener { viewModel.inputs.sendHappeningNewsletter(happening_switch.isChecked) }
         news_events_switch.setOnClickListener { viewModel.inputs.sendPromoNewsletter(news_events_switch.isChecked) }
         projects_we_love_switch.setOnClickListener { viewModel.inputs.sendWeeklyNewsletter(projects_we_love_switch.isChecked) }
     }
 
     private fun displayPreferences(@NonNull user: User) {
-        SwitchCompatUtils.setCheckedWithoutAnimation(this.binding.happeningSwitch, isTrue(user.happeningNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(this.binding.newsEventsSwitch, isTrue(user.promoNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(this.binding.projectsWeLoveSwitch, isTrue(user.weeklyNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(happening_switch, isTrue(user.happeningNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(news_events_switch, isTrue(user.promoNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(projects_we_love_switch, isTrue(user.weeklyNewsletter()))
     }
 
     private fun newsletterString(@NonNull newsletter: Newsletter): String? {

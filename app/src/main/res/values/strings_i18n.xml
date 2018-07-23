@@ -23,6 +23,7 @@
   <string name="All_gone" formatted="false">All gone</string>
   <string name="Amount_previous_amount" formatted="false">Amount: %{amount}, previous amount: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Amount: %{amount}, %{reward}</string>
+  <string name="App_version" formatted="false">App version</string>
   <string name="Are_you_sure" formatted="false">Are you sure?</string>
   <string name="Ask_me_anything" formatted="false">Ask me anything</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Available to watch for %{time} more %{units}</string>

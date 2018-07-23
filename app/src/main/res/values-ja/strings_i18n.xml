@@ -23,6 +23,7 @@
   <string name="All_gone" formatted="false">終了</string>
   <string name="Amount_previous_amount" formatted="false">金額: %{amount}, 以前の金額: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">金額：%{amount}、%{reward}</string>
+  <string name="App_version" formatted="false">App version</string>
   <string name="Are_you_sure" formatted="false">オフにしてもよろしいですか？</string>
   <string name="Ask_me_anything" formatted="false">お問い合わせ</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">さらに%{time} の%{units} を見ることができます</string>
@@ -151,7 +152,7 @@
   <string name="Go_to_project_page" formatted="false">プロジェクトページを見る</string>
   <string name="Got_it" formatted="false">完了</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">サーベイを送信しました！</string>
-  <string name="Happening_newsletter" formatted="false">Sign up to receive a mix of new projects, compelling stories, and visual inspiration, delivered once (and sometimes twice) a week.</string>
+  <string name="Happening_newsletter" formatted="false">新しいプロジェクトや、感動的なストーリー、視覚的なインスピレーションなどが週に1回 (時には2回) 届くニュースレターにサインアップしましょう。</string>
   <string name="Help" formatted="false">ヘルプ</string>
   <string name="Help_center" formatted="false">ヘルプセンター</string>
   <string name="Hide_password" formatted="false">パスワードを非表示にする</string>
@@ -201,7 +202,7 @@
   <string name="Name" formatted="false">名前</string>
   <string name="Never" formatted="false">通知を受けない</string>
   <string name="New_pledge_activity" formatted="false">新しいプレッジ</string>
-  <string name="News_events" formatted="false">Big news and events happening near you, delivered just a few times a year.</string>
+  <string name="News_events" formatted="false">1年に数回だけ、お近くのニュースやイベント情報をお届け。</string>
   <string name="Newsletters" formatted="false">ニュースレター</string>
   <string name="No_Results" formatted="false">該当結果なし</string>
   <string name="No_comments_yet" formatted="false">まだコメントはありません。</string>
@@ -330,7 +331,7 @@
   <string name="Ships_to" formatted="false">配送先：</string>
   <string name="Show_password" formatted="false">パスワードを表示する</string>
   <string name="Shows_list_of_subcategories" formatted="false">サブカテゴリーリストを見せる。</string>
-  <string name="Sign_up_newsletter" formatted="false">Sign up for Projects We Love to receive a weekly mix of noteworthy projects, handpicked by our team.</string>
+  <string name="Sign_up_newsletter" formatted="false">Projects We Love に登録して、私たち Kickstarter チームが選別した注目プロジェクトに関する情報を週に1度受け取りましょう。</string>
   <string name="Signs_up_with_Email" formatted="false">Eメールでサインアップする。</string>
   <string name="Something_catch_your_eye" formatted="false">何か目にとまるものはありましたか？</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">なにかが間違っています。もう一度お試しください。</string>
@@ -338,7 +339,7 @@
   <string name="Starting_soon" formatted="false">もう少しで始まります。</string>
   <string name="Status" formatted="false">ステータス</string>
   <string name="Stay_up_to_date" formatted="false">最新情報を常に把握したい？</string>
-  <string name="Stay_up_to_date_newsletter" formatted="false">Stay up to date with our favorite projects, and any news and events that are on our radar.</string>
+  <string name="Stay_up_to_date_newsletter" formatted="false">Kickstarter チームお気に入りのプロジェクトや、当社が選んだ注目ニュースやイベントについての最新情報を受信しましょう。</string>
   <string name="Stay_updated_on_this_project" formatted="false">このプロジェクトの最新情報を受け取りたい？</string>
   <string name="Subscribe" formatted="false">購読する</string>
   <string name="Subscribed" formatted="false">購読済</string>
@@ -1105,12 +1106,12 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="profile_settings_newsletter_happening" formatted="false">出来事</string>
   <string name="profile_settings_newsletter_happening_now" formatted="false">Happening Now</string>
   <string name="profile_settings_newsletter_invent" formatted="false">インベント</string>
-  <string name="profile_settings_newsletter_news_event" formatted="false">News &amp; Events</string>
+  <string name="profile_settings_newsletter_news_event" formatted="false">ニュース＆イベント</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">登録されているアドレス宛に認証メールを送信しました！%{newsletter} を購読するには、メールを確認してください。</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">あと少し！</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Kickstarterのニュースとイベント</string>
   <string name="profile_settings_newsletter_publishing" formatted="false">Kickstarter Reads</string>
-  <string name="profile_settings_newsletter_subscribe_all" formatted="false">Subscribe to all</string>
+  <string name="profile_settings_newsletter_subscribe_all" formatted="false">すべてのニュースレターを購読する</string>
   <string name="profile_settings_newsletter_title" formatted="false">ニュースレター</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Projects We Love</string>
   <string name="profile_settings_rating_message" formatted="false">Kickstarterアプリの使い心地はいかがですか？\n

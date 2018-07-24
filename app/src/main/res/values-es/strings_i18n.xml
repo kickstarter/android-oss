@@ -1101,6 +1101,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_logout_alert_title" formatted="false">Cerrar sesión</string>
   <string name="profile_settings_navbar_title" formatted="false">Configuración</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notificaciones</string>
+  <string name="profile_settings_newsletter_alumni" formatted="false">Kickstarter Alumni</string>
   <string name="profile_settings_newsletter_alumni_newsletter" formatted="false">Suscríbete para recibir correos electrónicos mensuales con consejos y recursos para seguir trabajando en tu proyecto creativo, entrevistas con creadores de Kickstarter, invitaciones a eventos y más.</string>
   <string name="profile_settings_newsletter_arts" formatted="false">Novedades sobre Arte &amp; Cultura</string>
   <string name="profile_settings_newsletter_arts_news" formatted="false">Arts News</string>

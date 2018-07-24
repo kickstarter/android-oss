@@ -879,6 +879,7 @@
             "likes": "New likes"
           },
           "newsletter": {
+            "alumni": "Kickstarter Alumni",
             "alumni_newsletter": "Sign up to receive monthly emails featuring tips and resources for continuing work on your creative project, interviews with Kickstarter creators, invites to events, and more.",
             "arts_news": "Arts News",
             "arts_news_newsletter": "Discover new projects and ideas from established and emerging artists, handpicked each month by Kickstarter's Arts team.",
@@ -2883,6 +2884,7 @@
             "likes": "Neue Likes"
           },
           "newsletter": {
+            "alumni": "Kickstarter Alumni",
             "alumni_newsletter": "Abonniere unsere monatlichen E-Mails mit Tipps und Ressourcen für dein kreatives Projekt. Außerdem: Interviews mit Kickstarter-Projektgründern, Einladungen zu Events und vieles mehr.",
             "arts_news": "Arts News",
             "arts_news_newsletter": "Entdecke einmal monatlich neue Projekte und Ideen von etablierten Künstlern und Newcomern, handverlesen vom Kickstarter Kunst-Team.",
@@ -4887,6 +4889,7 @@
             "likes": "\"Me gusta\" nuevos"
           },
           "newsletter": {
+            "alumni": "Kickstarter Alumni",
             "alumni_newsletter": "Suscríbete para recibir correos electrónicos mensuales con consejos y recursos para seguir trabajando en tu proyecto creativo, entrevistas con creadores de Kickstarter, invitaciones a eventos y más.",
             "arts_news": "Arts News",
             "arts_news_newsletter": "Descubre cada mes las selecciones de nuestro equipo de arte sobre nuevos proyectos e ideas de artistas con trayectoria y emergentes.",
@@ -6891,6 +6894,7 @@
             "likes": "Nouvelles mentions J'aime"
           },
           "newsletter": {
+            "alumni": "Kickstarter Alumni",
             "alumni_newsletter": "Sign up to receive monthly emails featuring tips and resources for continuing work on your creative project, interviews with Kickstarter creators, invites to events, and more.",
             "arts_news": "Arts News",
             "arts_news_newsletter": "Discover new projects and ideas from established and emerging artists, handpicked each month by Kickstarter's Arts team.",
@@ -8895,6 +8899,7 @@
             "likes": "Newいいね"
           },
           "newsletter": {
+            "alumni": "Kickstarter Alumni",
             "alumni_newsletter": "Sign up to receive monthly emails featuring tips and resources for continuing work on your creative project, interviews with Kickstarter creators, invites to events, and more.",
             "arts_news": "Arts News",
             "arts_news_newsletter": "Discover new projects and ideas from established and emerging artists, handpicked each month by Kickstarter's Arts team.",
@@ -10216,7 +10221,7 @@
   "ab_experiments": {
     "project_dashboard": "with_dashboard",
     "new_project_header": "experimental",
-    "project_card_stats": "no_percentage",
+    "project_card_stats": "with_no_of_backers",
     "telegraf_proxy": "experimental",
     "es5_project_search": "experimental",
     "es5_backer_report_search": "control",

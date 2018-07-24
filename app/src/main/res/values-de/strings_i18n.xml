@@ -1100,6 +1100,7 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_settings_logout_alert_title" formatted="false">Abmelden</string>
   <string name="profile_settings_navbar_title" formatted="false">Einstellungen</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Benachrichtigungen</string>
+  <string name="profile_settings_newsletter_alumni" formatted="false">Kickstarter Alumni</string>
   <string name="profile_settings_newsletter_alumni_newsletter" formatted="false">Abonniere unsere monatlichen E-Mails mit Tipps und Ressourcen für dein kreatives Projekt. Außerdem: Interviews mit Kickstarter-Projektgründern, Einladungen zu Events und vieles mehr.</string>
   <string name="profile_settings_newsletter_arts" formatted="false">Kunst &amp; Kultur News</string>
   <string name="profile_settings_newsletter_arts_news" formatted="false">Arts News</string>

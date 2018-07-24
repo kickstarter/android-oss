@@ -36,6 +36,90 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testSettingsViewModel_sendAlumniNewsletter() {
+        val user = UserFactory.user().toBuilder().alumniNewsletter(false).build()
+
+        setUpEnvironment(user)
+
+        this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
+
+        this.currentUserTest.assertValues(user)
+
+        this.vm.inputs.sendAlumniNewsletter(true)
+        this.koalaTest.assertValues("Newsletter Subscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().alumniNewsletter(true).build())
+
+        this.vm.inputs.sendAlumniNewsletter(false)
+        this.koalaTest.assertValues("Newsletter Subscribe", "Newsletter Unsubscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().alumniNewsletter(true).build(), user)
+
+        this.showOptInPromptTest.assertNoValues()
+    }
+
+    @Test
+    fun testSettingsViewModel_sendArtNewsletter() {
+        val user = UserFactory.user().toBuilder().artsNewsNewsletter(false).build()
+
+        setUpEnvironment(user)
+
+        this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
+
+        this.currentUserTest.assertValues(user)
+
+        this.vm.inputs.sendArtsNewsNewsletter(true)
+        this.koalaTest.assertValues("Newsletter Subscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().artsNewsNewsletter(true).build())
+
+        this.vm.inputs.sendArtsNewsNewsletter(false)
+        this.koalaTest.assertValues("Newsletter Subscribe", "Newsletter Unsubscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().artsNewsNewsletter(true).build(), user)
+
+        this.showOptInPromptTest.assertNoValues()
+    }
+
+    @Test
+    fun testSettingsViewModel_sendFilmNewsletter() {
+        val user = UserFactory.user().toBuilder().filmsNewsletter(false).build()
+
+        setUpEnvironment(user)
+
+        this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
+
+        this.currentUserTest.assertValues(user)
+
+        this.vm.inputs.sendFilmsNewsletter(true)
+        this.koalaTest.assertValues("Newsletter Subscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().filmsNewsletter(true).build())
+
+        this.vm.inputs.sendFilmsNewsletter(false)
+        this.koalaTest.assertValues("Newsletter Subscribe", "Newsletter Unsubscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().filmsNewsletter(true).build(), user)
+
+        this.showOptInPromptTest.assertNoValues()
+    }
+
+    @Test
+    fun testSettingsViewModel_sendGamesNewsletter() {
+        val user = UserFactory.user().toBuilder().gamesNewsletter(false).build()
+
+        setUpEnvironment(user)
+
+        this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
+
+        this.currentUserTest.assertValues(user)
+
+        this.vm.inputs.sendGamesNewsletter(true)
+        this.koalaTest.assertValues("Newsletter Subscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().gamesNewsletter(true).build())
+
+        this.vm.inputs.sendGamesNewsletter(false)
+        this.koalaTest.assertValues("Newsletter Subscribe", "Newsletter Unsubscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().gamesNewsletter(true).build(), user)
+
+        this.showOptInPromptTest.assertNoValues()
+    }
+
+    @Test
     fun testSettingsViewModel_sendHappeningNewsletter() {
         val user = UserFactory.user().toBuilder().happeningNewsletter(false).build()
 
@@ -57,6 +141,27 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testSettingsViewModel_sendInventNewsletter() {
+        val user = UserFactory.user().toBuilder().inventNewsletter(false).build()
+
+        setUpEnvironment(user)
+
+        this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
+
+        this.currentUserTest.assertValues(user)
+
+        this.vm.inputs.sendInventNewsletter(true)
+        this.koalaTest.assertValues("Newsletter Subscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().inventNewsletter(true).build())
+
+        this.vm.inputs.sendInventNewsletter(false)
+        this.koalaTest.assertValues("Newsletter Subscribe", "Newsletter Unsubscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().inventNewsletter(true).build(), user)
+
+        this.showOptInPromptTest.assertNoValues()
+    }
+
+    @Test
     fun testSettingsViewModel_sendPromoNewsletter() {
         val user = UserFactory.user().toBuilder().promoNewsletter(false).build()
 
@@ -73,6 +178,27 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.sendPromoNewsletter(false)
         this.koalaTest.assertValues("Newsletter Subscribe", "Newsletter Unsubscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().promoNewsletter(true).build(), user)
+
+        this.showOptInPromptTest.assertNoValues()
+    }
+
+    @Test
+    fun testSettingsViewModel_sendReadsNewsletter() {
+        val user = UserFactory.user().toBuilder().readsNewsletter(false).build()
+
+        setUpEnvironment(user)
+
+        this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
+
+        this.currentUserTest.assertValues(user)
+
+        this.vm.inputs.sendReadsNewsletter(true)
+        this.koalaTest.assertValues("Newsletter Subscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().readsNewsletter(true).build())
+
+        this.vm.inputs.sendReadsNewsletter(false)
+        this.koalaTest.assertValues("Newsletter Subscribe", "Newsletter Unsubscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().readsNewsletter(true).build(), user)
 
         this.showOptInPromptTest.assertNoValues()
     }

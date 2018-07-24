@@ -26,7 +26,6 @@ public abstract class SettingsBody {
   public abstract int inventNewsletter();
   public abstract int promoNewsletter();
   public abstract int readsNewsletter();
-  public abstract int subscribeAllNewsletter();
   public abstract int weeklyNewsletter();
 
   @AutoParcel.Builder
@@ -50,7 +49,6 @@ public abstract class SettingsBody {
     public abstract Builder inventNewsletter(int __);
     public abstract Builder promoNewsletter(int __);
     public abstract Builder readsNewsletter(int __);
-    public abstract Builder subscribeAllNewsletter(int __);
     public abstract Builder weeklyNewsletter(int __);
     public abstract SettingsBody build();
   }

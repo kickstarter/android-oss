@@ -1105,6 +1105,7 @@ Let\'s change that!</string>
   <string name="profile_settings_logout_alert_title" formatted="false">Log out</string>
   <string name="profile_settings_navbar_title" formatted="false">Settings</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notifications</string>
+  <string name="profile_settings_newsletter_alumni" formatted="false">Kickstarter Alumni</string>
   <string name="profile_settings_newsletter_alumni_newsletter" formatted="false">Sign up to receive monthly emails featuring tips and resources for continuing work on your creative project, interviews with Kickstarter creators, invites to events, and more.</string>
   <string name="profile_settings_newsletter_arts" formatted="false">Arts &amp; Culture News</string>
   <string name="profile_settings_newsletter_arts_news" formatted="false">Arts News</string>

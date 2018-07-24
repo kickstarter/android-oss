@@ -55,7 +55,7 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
         invent_switch.setOnClickListener { viewModel.inputs.sendInventNewsletter(invent_switch.isChecked) }
         projects_we_love_switch.setOnClickListener { viewModel.inputs.sendWeeklyNewsletter(projects_we_love_switch.isChecked) }
         reads_switch.setOnClickListener { viewModel.inputs.sendReadsNewsletter(reads_switch.isChecked) }
-        subscribe_all_switch.setOnClickListener {viewModel.inputs.sendAllNewsletter(subscribe_all_switch.isChecked)}
+        subscribe_all_switch.setOnClickListener { viewModel.inputs.sendAllNewsletter(subscribe_all_switch.isChecked) }
     }
 
     private fun displayPreferences(@NonNull user: User) {
@@ -67,22 +67,20 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
         SwitchCompatUtils.setCheckedWithoutAnimation(invent_switch, isTrue(user.inventNewsletter()))
         SwitchCompatUtils.setCheckedWithoutAnimation(projects_we_love_switch, isTrue(user.weeklyNewsletter()))
         SwitchCompatUtils.setCheckedWithoutAnimation(reads_switch, isTrue(user.readsNewsletter()))
-//        SwitchCompatUtils.setCheckedWithoutAnimation(subscribe_all_switch, isTrue(user.subscribeAllNewsletter()))
     }
 
     private fun newsletterString(@NonNull newsletter: Newsletter): String? {
         return when (newsletter) {
             Newsletter.ALL -> getString(R.string.profile_settings_newsletter_subscribe_all)
-            Newsletter.ALUMNI -> "Alumni"
+            Newsletter.ALUMNI -> getString(R.string.profile_settings_newsletter_alumni)
             Newsletter.ARTS -> getString(R.string.profile_settings_newsletter_arts)
-            Newsletter.FILMS -> "Kickstarter Films"
+            Newsletter.FILMS -> getString(R.string.profile_settings_newsletter_film)
             Newsletter.GAMES -> getString(R.string.profile_settings_newsletter_games)
             Newsletter.HAPPENING -> getString(R.string.profile_settings_newsletter_happening)
-            Newsletter.INVENT -> "Invent"
+            Newsletter.INVENT -> getString(R.string.profile_settings_newsletter_invent)
             Newsletter.PROMO -> getString(R.string.profile_settings_newsletter_promo)
-            Newsletter.READS -> "Kickstarter Reads"
+            Newsletter.READS -> getString(R.string.profile_settings_newsletter_publishing)
             Newsletter.WEEKLY -> getString(R.string.profile_settings_newsletter_weekly)
-            else -> null
         }
     }
 

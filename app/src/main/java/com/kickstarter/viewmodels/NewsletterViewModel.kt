@@ -22,11 +22,29 @@ interface NewsletterViewModel {
         /** Call when the user toggles the subscribe all switch.  */
         fun sendAllNewsletter(checked: Boolean)
 
+        /** Call when the user toggles the alumni switch. */
+        fun sendAlumniNewsletter(checked: Boolean)
+
+        /** Call when the user toggles the arts & news switch. */
+        fun sendArtsNewsNewsletter(checked: Boolean)
+
+        /** Call when the user toggles the films switch. */
+        fun sendFilmsNewsletter(checked: Boolean)
+
+        /** Call when the user toggles the games switch. */
+        fun sendGamesNewsletter(checked: Boolean)
+
         /** Call when the user toggles the Happening newsletter switch.  */
         fun sendHappeningNewsletter(checked: Boolean)
 
+        /** Call when the user toggles the invent switch */
+        fun sendInventNewsletter(checked: Boolean)
+
         /** Call when the user toggles the Kickstarter News & Events newsletter switch.  */
         fun sendPromoNewsletter(checked: Boolean)
+
+        /** Call when the user toggles the reads switch. */
+        fun sendReadsNewsletter(checked: Boolean)
 
         /** Call when the user toggles the Projects We Love newsletter switch.  */
         fun sendWeeklyNewsletter(checked: Boolean)
@@ -105,7 +123,38 @@ interface NewsletterViewModel {
         }
 
         override fun sendAllNewsletter(checked: Boolean) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            this.userInput.onNext(this.userOutput.value.toBuilder()
+                    .alumniNewsletter(checked)
+                    .artsNewsNewsletter(checked)
+                    .filmsNewsletter(checked)
+                    .gamesNewsletter(checked)
+                    .happeningNewsletter(checked)
+                    .inventNewsletter(checked)
+                    .promoNewsletter(checked)
+                    .readsNewsletter(checked)
+                    .weeklyNewsletter(checked)
+                    .build())
+            this.newsletterInput.onNext(Pair(checked, Newsletter.ALL))
+        }
+
+        override fun sendAlumniNewsletter(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().alumniNewsletter(checked).build())
+            this.newsletterInput.onNext(Pair(checked, Newsletter.ALUMNI))
+        }
+
+        override fun sendArtsNewsNewsletter(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().artsNewsNewsletter(checked).build())
+            this.newsletterInput.onNext(Pair(checked, Newsletter.ARTS))
+        }
+
+        override fun sendFilmsNewsletter(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().filmsNewsletter(checked).build())
+            this.newsletterInput.onNext(Pair(checked, Newsletter.FILMS))
+        }
+
+        override fun sendGamesNewsletter(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().gamesNewsletter(checked).build())
+            this.newsletterInput.onNext(Pair(checked, Newsletter.GAMES))
         }
 
         override fun sendHappeningNewsletter(checked: Boolean) {
@@ -113,9 +162,19 @@ interface NewsletterViewModel {
             this.newsletterInput.onNext(Pair(checked, Newsletter.HAPPENING))
         }
 
+        override fun sendInventNewsletter(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().inventNewsletter(checked).build())
+            this.newsletterInput.onNext(Pair(checked, Newsletter.INVENT))
+        }
+
         override fun sendPromoNewsletter(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().promoNewsletter(checked).build())
             this.newsletterInput.onNext(Pair(checked, Newsletter.PROMO))
+        }
+
+        override fun sendReadsNewsletter(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().readsNewsletter(checked).build())
+            this.newsletterInput.onNext(Pair(checked, Newsletter.READS))
         }
 
         override fun sendWeeklyNewsletter(checked: Boolean) {

@@ -18,13 +18,8 @@ import java.util.*
 class HelpNewViewModel(private val context: Context, private val environment: Environment) : BaseObservable() {
 
     fun contactClick() {
-<<<<<<< HEAD
-        environment.koala().trackContactEmailClicked()
-        environment.currentUser().observable()
-=======
         this.environment.koala().trackContactEmailClicked()
         this.environment.currentUser().observable()
->>>>>>> master
                 .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::composeContactEmail)

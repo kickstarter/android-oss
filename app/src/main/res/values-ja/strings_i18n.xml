@@ -80,6 +80,7 @@
   <string name="Delete_my_Kickstarter_Account" formatted="false">Kickstarter アカウントを削除</string>
   <string name="Delivered" formatted="false">発送済</string>
   <string name="Developer" formatted="false">開発者</string>
+  <string name="Discover_arts_news" formatted="false">Discover innovative projects and ideas, handpicked twice a month by Kickstarter\'s Design &amp; Tech team.</string>
   <string name="Discover_more_projects" formatted="false">プロジェクトをさがす</string>
   <string name="Dismiss" formatted="false">破棄</string>
   <string name="Done" formatted="false">完了</string>
@@ -146,6 +147,7 @@
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> は&lt;i>演劇&lt;/i> プロジェクトをバックしています。</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} がプロジェクトを発表しました！</string>
   <string name="Funding_successful" formatted="false">ファンディング成功</string>
+  <string name="Games_newsletter" formatted="false">Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter\'s Games team.</string>
   <string name="Get_notified_about_new_messages" formatted="false">新規メッセージについて通知の受信を希望しますか？</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">このクリエイターのライブ配信通知を受け取る</string>
   <string name="Get_reminded_about_this_project" formatted="false">このプロジェクトについてリマインダーを希望しますか？</string>
@@ -1100,8 +1102,12 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="profile_settings_logout_alert_title" formatted="false">ログアウト</string>
   <string name="profile_settings_navbar_title" formatted="false">設定</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">通知設定</string>
+  <string name="profile_settings_newsletter_alumni_newsletter" formatted="false">Sign up to receive monthly emails featuring tips and resources for continuing work on your creative project, interviews with Kickstarter creators, invites to events, and more.</string>
   <string name="profile_settings_newsletter_arts" formatted="false">アート＆カルチャー</string>
+  <string name="profile_settings_newsletter_arts_news" formatted="false">Arts News</string>
+  <string name="profile_settings_newsletter_arts_news_newsletter" formatted="false">Discover new projects and ideas from established and emerging artists, handpicked each month by Kickstarter\'s Arts team.</string>
   <string name="profile_settings_newsletter_film" formatted="false">Kickstarter Films</string>
+  <string name="profile_settings_newsletter_films_newsletter" formatted="false">Sign up for a monthly newsletter curated by Kickstarter\'s Film team, highlighting new projects, creator stories, and events on their radar.</string>
   <string name="profile_settings_newsletter_games" formatted="false">Kickstarterが選ぶゲーム</string>
   <string name="profile_settings_newsletter_happening" formatted="false">出来事</string>
   <string name="profile_settings_newsletter_happening_now" formatted="false">Happening Now</string>
@@ -1111,6 +1117,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">あと少し！</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Kickstarterのニュースとイベント</string>
   <string name="profile_settings_newsletter_publishing" formatted="false">Kickstarter Reads</string>
+  <string name="profile_settings_newsletter_publishing_newsletter" formatted="false">Sign up for a monthly newsletter from Kickstarter\'s Publishing team highlighting great new projects, creator stories, and literary events on their radar.</string>
   <string name="profile_settings_newsletter_subscribe_all" formatted="false">すべてのニュースレターを購読する</string>
   <string name="profile_settings_newsletter_title" formatted="false">ニュースレター</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Projects We Love</string>

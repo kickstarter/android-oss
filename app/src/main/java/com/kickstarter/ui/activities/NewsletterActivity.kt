@@ -47,21 +47,40 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::showOptInPrompt)
 
+        alumni_switch.setOnClickListener { viewModel.inputs.sendAlumniNewsletter(alumni_switch.isChecked) }
+        arts_news_switch.setOnClickListener { viewModel.inputs.sendArtsNewsNewsletter(arts_news_switch.isChecked) }
+        films_switch.setOnClickListener { viewModel.inputs.sendFilmsNewsletter(films_switch.isChecked) }
+        games_we_love_switch.setOnClickListener { viewModel.inputs.sendGamesNewsletter(games_we_love_switch.isChecked) }
         happening_switch.setOnClickListener { viewModel.inputs.sendHappeningNewsletter(happening_switch.isChecked) }
-        news_events_switch.setOnClickListener { viewModel.inputs.sendPromoNewsletter(news_events_switch.isChecked) }
+        invent_switch.setOnClickListener { viewModel.inputs.sendInventNewsletter(invent_switch.isChecked) }
         projects_we_love_switch.setOnClickListener { viewModel.inputs.sendWeeklyNewsletter(projects_we_love_switch.isChecked) }
+        reads_switch.setOnClickListener { viewModel.inputs.sendReadsNewsletter(reads_switch.isChecked) }
+        subscribe_all_switch.setOnClickListener {viewModel.inputs.sendAllNewsletter(subscribe_all_switch.isChecked)}
     }
 
     private fun displayPreferences(@NonNull user: User) {
+        SwitchCompatUtils.setCheckedWithoutAnimation(alumni_switch, isTrue(user.alumniNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(arts_news_switch, isTrue(user.artsNewsNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(films_switch, isTrue(user.filmsNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(games_we_love_switch, isTrue(user.gamesNewsletter()))
         SwitchCompatUtils.setCheckedWithoutAnimation(happening_switch, isTrue(user.happeningNewsletter()))
-        SwitchCompatUtils.setCheckedWithoutAnimation(news_events_switch, isTrue(user.promoNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(invent_switch, isTrue(user.inventNewsletter()))
         SwitchCompatUtils.setCheckedWithoutAnimation(projects_we_love_switch, isTrue(user.weeklyNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(reads_switch, isTrue(user.readsNewsletter()))
+//        SwitchCompatUtils.setCheckedWithoutAnimation(subscribe_all_switch, isTrue(user.subscribeAllNewsletter()))
     }
 
     private fun newsletterString(@NonNull newsletter: Newsletter): String? {
         return when (newsletter) {
+            Newsletter.ALL -> getString(R.string.profile_settings_newsletter_subscribe_all)
+            Newsletter.ALUMNI -> "Alumni"
+            Newsletter.ARTS -> getString(R.string.profile_settings_newsletter_arts)
+            Newsletter.FILMS -> "Kickstarter Films"
+            Newsletter.GAMES -> getString(R.string.profile_settings_newsletter_games)
             Newsletter.HAPPENING -> getString(R.string.profile_settings_newsletter_happening)
+            Newsletter.INVENT -> "Invent"
             Newsletter.PROMO -> getString(R.string.profile_settings_newsletter_promo)
+            Newsletter.READS -> "Kickstarter Reads"
             Newsletter.WEEKLY -> getString(R.string.profile_settings_newsletter_weekly)
             else -> null
         }

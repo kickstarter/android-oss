@@ -95,6 +95,7 @@
       "Delivered": "Delivered",
       "Developer": "Developer",
       "Discover_more_projects": "Discover more projects.",
+      "Discover_arts_news": "Discover innovative projects and ideas, handpicked twice a month by Kickstarter's Design & Tech team.",
       "Dismiss": "Dismiss",
       "Done": "Done",
       "Download_your_personal_data": "Download your personal data",
@@ -163,6 +164,7 @@
       "Following": "Following",
       "Following_More_Info": "Following More Info",
       "Funding_successful": "Funding successful",
+      "Games_newsletter": "Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter's Games team.",
       "Get_notified_about_new_messages": "Get notified about new messages?",
       "Get_notified_about_this_creators_live_streams": "Get notified about this creator’s live streams",
       "Get_reminded_about_this_project": "Get reminded about this project?",
@@ -877,6 +879,9 @@
             "likes": "New likes"
           },
           "newsletter": {
+            "alumni_newsletter": "Sign up to receive monthly emails featuring tips and resources for continuing work on your creative project, interviews with Kickstarter creators, invites to events, and more.",
+            "arts_news": "Arts News",
+            "arts_news_newsletter": "Discover new projects and ideas from established and emerging artists, handpicked each month by Kickstarter's Arts team.",
             "title": "Newsletters",
             "weekly": "Projects We Love",
             "promo": "Kickstarter News and Events",
@@ -886,8 +891,10 @@
             "invent": "Invent",
             "arts": "Arts & Culture News",
             "film": "Kickstarter Films",
+            "films_newsletter": "Sign up for a monthly newsletter curated by Kickstarter's Film team, highlighting new projects, creator stories, and events on their radar.",
             "news_event": "News & Events",
             "publishing": "Kickstarter Reads",
+            "publishing_newsletter": "Sign up for a monthly newsletter from Kickstarter's Publishing team highlighting great new projects, creator stories, and literary events on their radar.",
             "opt_in": {
               "title": "One final step!",
               "message": "We've sent a confirmation email to the address associated with your account! Please check your email in order to confirm that you'd like to subscribe to %{newsletter}."
@@ -2092,6 +2099,7 @@
       "Delivered": "Verschickt",
       "Developer": "Entwickler",
       "Discover_more_projects": "Erkunde mehr Projekte.",
+      "Discover_arts_news": "Entdecke innovative Projekte und Ideen, handverlesen zweimal monatlich von Kickstarters Design & Tech Team.",
       "Dismiss": "Verwerfen",
       "Done": "Fertig!",
       "Download_your_personal_data": "Lade deine persönlichen Daten herunter",
@@ -2160,6 +2168,7 @@
       "Following": "Abonniert",
       "Following_More_Info": "Mehr Info zu Folgen",
       "Funding_successful": "Finanzierung erfolgreich",
+      "Games_newsletter": "Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter's Games team.",
       "Get_notified_about_new_messages": "Möchtest du benachrichtigt werden bei neuen Nachrichten?",
       "Get_notified_about_this_creators_live_streams": "Benachrichtigungen zu den Live-Streams dieses Projektgründers erhalten.",
       "Get_reminded_about_this_project": "Möchtest du an dieses Projekt erinnert werden?",
@@ -2874,6 +2883,9 @@
             "likes": "Neue Likes"
           },
           "newsletter": {
+            "alumni_newsletter": "Abonniere unsere monatlichen E-Mails mit Tipps und Ressourcen für dein kreatives Projekt. Außerdem: Interviews mit Kickstarter-Projektgründern, Einladungen zu Events und vieles mehr.",
+            "arts_news": "Arts News",
+            "arts_news_newsletter": "Entdecke einmal monatlich neue Projekte und Ideen von etablierten Künstlern und Newcomern, handverlesen vom Kickstarter Kunst-Team.",
             "title": "Newsletter",
             "weekly": "Unsere Lieblingsprojekte",
             "promo": "Kickstarter Neuigkeiten und Events",
@@ -2883,8 +2895,10 @@
             "invent": "Kreativ & Erfinderisch",
             "arts": "Kunst & Kultur News",
             "film": "Kickstarter Films",
+            "films_newsletter": "Abonniere den monatlichen Newsletter des Kickstarter Film-Teams mit Highlights zu neuen Projekten, Projektgründer-Stories und Veranstaltungen.",
             "news_event": "Neuigkeiten und Veranstaltungen",
             "publishing": "Kickstarter Reads",
+            "publishing_newsletter": "Abonniere den monatlicher Newsletter des Kickstarter Publishing-Teams mit Highlights zu neuen Projekten, Projektgründer-Stories und Literatur-Veranstaltungen.",
             "opt_in": {
               "title": "Nur noch ein letzter Schritt!",
               "message": "Wir haben eine Bestätigung an die mit deinem Konto verbundene E-Mail-Adresse geschickt! Bitte sieh in deinem Posteingang nach und bestätige dein Abo von %{newsletter}."
@@ -4089,6 +4103,7 @@
       "Delivered": "Entregado",
       "Developer": "Desarrollador",
       "Discover_more_projects": "Descubre más proyectos.",
+      "Discover_arts_news": "Descubre proyectos e ideas innovadores, seleccionados exclusivamente para ti dos veces al mes por el equipo de Diseño & Tecnología de Kickstarter.",
       "Dismiss": "Descartar",
       "Done": "Listo",
       "Download_your_personal_data": "Descarga tus datos personales",
@@ -4157,6 +4172,7 @@
       "Following": "Siguiendo",
       "Following_More_Info": "Más información sobre el seguimiento",
       "Funding_successful": "Financiado con éxito",
+      "Games_newsletter": "Suscríbete para recibir, cada dos semanas, una combinación de nuevos proyectos y actualizaciones sobre todo lo relacionado a juegos, seleccionados exclusivamente para ti por el equipo de Juegos de Kickstarter.",
       "Get_notified_about_new_messages": "¿Deseas recibir notificaciones sobre nuevos mensajes?",
       "Get_notified_about_this_creators_live_streams": "Recibe notificaciones sobre los Live Streams de este creador",
       "Get_reminded_about_this_project": "¿Deseas recibir recordatorios sobre este proyecto?",
@@ -4871,6 +4887,9 @@
             "likes": "\"Me gusta\" nuevos"
           },
           "newsletter": {
+            "alumni_newsletter": "Suscríbete para recibir correos electrónicos mensuales con consejos y recursos para seguir trabajando en tu proyecto creativo, entrevistas con creadores de Kickstarter, invitaciones a eventos y más.",
+            "arts_news": "Arts News",
+            "arts_news_newsletter": "Descubre cada mes las selecciones de nuestro equipo de arte sobre nuevos proyectos e ideas de artistas con trayectoria y emergentes.",
             "title": "Boletines informativos",
             "weekly": "Nuestros Favoritos",
             "promo": "Novedades y eventos de Kickstarter",
@@ -4880,8 +4899,10 @@
             "invent": "Invenciones",
             "arts": "Novedades sobre Arte & Cultura",
             "film": "Kickstarter Films",
+            "films_newsletter": "Regístrate para recibir un boletín mensual a cargo del equipo de cine de Kickstarter que destaca nuevos proyectos, historias de creadores y eventos que tengan en la mira.",
             "news_event": "Novedades y eventos",
             "publishing": "Kickstarter Reads",
+            "publishing_newsletter": "Regístrate para recibir un boletín mensual del equipo de publicaciones de Kickstarter que destaca nuevos proyectos estupendos, historias de creadores y eventos literarios que tengan en la mira.",
             "opt_in": {
               "title": "¡Sólo un último paso!",
               "message": "Hemos enviado una confirmación a la dirección de correo electrónico asociada con tu cuenta. Por favor checa tu bandeja de entrada y confirma la subscripción a %{newsletter}."
@@ -6086,6 +6107,7 @@
       "Delivered": "Distribué",
       "Developer": "Développeur",
       "Discover_more_projects": "Découvrez plus de projets.",
+      "Discover_arts_news": "Discover innovative projects and ideas, handpicked twice a month by Kickstarter's Design & Tech team.",
       "Dismiss": "Ignorer",
       "Done": "Terminé",
       "Download_your_personal_data": "Téléchargement de vos données personnelles",
@@ -6154,6 +6176,7 @@
       "Following": "Projets soutenus par mes amis",
       "Following_More_Info": "Plus d'informations sur le suivi et l'abonnement",
       "Funding_successful": "Intégralement financé",
+      "Games_newsletter": "Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter's Games team.",
       "Get_notified_about_new_messages": "Envie d'être informé des messages entrants ?",
       "Get_notified_about_this_creators_live_streams": "Envoyez-moi des notifications au sujet des diffusions en direct de ce créateur.",
       "Get_reminded_about_this_project": "Envie de recevoir un rappel à propos de ce projet ?",
@@ -6868,6 +6891,9 @@
             "likes": "Nouvelles mentions J'aime"
           },
           "newsletter": {
+            "alumni_newsletter": "Sign up to receive monthly emails featuring tips and resources for continuing work on your creative project, interviews with Kickstarter creators, invites to events, and more.",
+            "arts_news": "Arts News",
+            "arts_news_newsletter": "Discover new projects and ideas from established and emerging artists, handpicked each month by Kickstarter's Arts team.",
             "title": "Lettres d'information",
             "weekly": "Nos coups de cœur",
             "promo": "Nouvelles et évènements Kickstarter",
@@ -6877,8 +6903,10 @@
             "invent": "Inventions",
             "arts": "Actualités art et culture",
             "film": "Kickstarter Films",
+            "films_newsletter": "Sign up for a monthly newsletter curated by Kickstarter's Film team, highlighting new projects, creator stories, and events on their radar.",
             "news_event": "Actualités et événements",
             "publishing": "Kickstarter Reads",
+            "publishing_newsletter": "Sign up for a monthly newsletter from Kickstarter's Publishing team highlighting great new projects, creator stories, and literary events on their radar.",
             "opt_in": {
               "title": "Dernière étape !",
               "message": "Nous vous avons envoyé un e-mail de confirmation à l'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}."
@@ -8083,6 +8111,7 @@
       "Delivered": "発送済",
       "Developer": "開発者",
       "Discover_more_projects": "プロジェクトをさがす",
+      "Discover_arts_news": "Discover innovative projects and ideas, handpicked twice a month by Kickstarter's Design & Tech team.",
       "Dismiss": "破棄",
       "Done": "完了",
       "Download_your_personal_data": "自分の個人データをダウンロード",
@@ -8151,6 +8180,7 @@
       "Following": "フォロー中の友達",
       "Following_More_Info": "フォロー 詳細",
       "Funding_successful": "ファンディング成功",
+      "Games_newsletter": "Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter's Games team.",
       "Get_notified_about_new_messages": "新規メッセージについて通知の受信を希望しますか？",
       "Get_notified_about_this_creators_live_streams": "このクリエイターのライブ配信通知を受け取る",
       "Get_reminded_about_this_project": "このプロジェクトについてリマインダーを希望しますか？",
@@ -8865,6 +8895,9 @@
             "likes": "Newいいね"
           },
           "newsletter": {
+            "alumni_newsletter": "Sign up to receive monthly emails featuring tips and resources for continuing work on your creative project, interviews with Kickstarter creators, invites to events, and more.",
+            "arts_news": "Arts News",
+            "arts_news_newsletter": "Discover new projects and ideas from established and emerging artists, handpicked each month by Kickstarter's Arts team.",
             "title": "ニュースレター",
             "weekly": "Projects We Love",
             "promo": "Kickstarterのニュースとイベント",
@@ -8874,8 +8907,10 @@
             "invent": "インベント",
             "arts": "アート＆カルチャー",
             "film": "Kickstarter Films",
+            "films_newsletter": "Sign up for a monthly newsletter curated by Kickstarter's Film team, highlighting new projects, creator stories, and events on their radar.",
             "news_event": "ニュース＆イベント",
             "publishing": "Kickstarter Reads",
+            "publishing_newsletter": "Sign up for a monthly newsletter from Kickstarter's Publishing team highlighting great new projects, creator stories, and literary events on their radar.",
             "opt_in": {
               "title": "あと少し！",
               "message": "登録されているアドレス宛に認証メールを送信しました！%{newsletter} を購読するには、メールを確認してください。"
@@ -10181,9 +10216,9 @@
   "ab_experiments": {
     "project_dashboard": "with_dashboard",
     "new_project_header": "experimental",
-    "project_card_stats": "with_no_of_backers",
+    "project_card_stats": "no_percentage",
     "telegraf_proxy": "experimental",
-    "es5_project_search": "control",
+    "es5_project_search": "experimental",
     "es5_backer_report_search": "control",
     "es5_creator_search": "control"
   },

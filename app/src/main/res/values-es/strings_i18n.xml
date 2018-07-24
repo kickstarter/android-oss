@@ -81,6 +81,7 @@ patrocinadores</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Eliminar mi cuenta de Kickstarter</string>
   <string name="Delivered" formatted="false">Entregado</string>
   <string name="Developer" formatted="false">Desarrollador</string>
+  <string name="Discover_arts_news" formatted="false">Descubre proyectos e ideas innovadores, seleccionados exclusivamente para ti dos veces al mes por el equipo de Diseño &amp; Tecnología de Kickstarter.</string>
   <string name="Discover_more_projects" formatted="false">Descubre más proyectos.</string>
   <string name="Dismiss" formatted="false">Descartar</string>
   <string name="Done" formatted="false">Listo</string>
@@ -147,6 +148,7 @@ patrocinadores</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> patrocinó un proyecto de &lt;i>Teatro&lt;/i>.</string>
   <string name="Friend_name_launched_a_project" formatted="false">¡%{friend_name} publicó un proyecto!</string>
   <string name="Funding_successful" formatted="false">Financiado con éxito</string>
+  <string name="Games_newsletter" formatted="false">Suscríbete para recibir, cada dos semanas, una combinación de nuevos proyectos y actualizaciones sobre todo lo relacionado a juegos, seleccionados exclusivamente para ti por el equipo de Juegos de Kickstarter.</string>
   <string name="Get_notified_about_new_messages" formatted="false">¿Deseas recibir notificaciones sobre nuevos mensajes?</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Recibe notificaciones sobre los Live Streams de este creador</string>
   <string name="Get_reminded_about_this_project" formatted="false">¿Deseas recibir recordatorios sobre este proyecto?</string>
@@ -1099,8 +1101,12 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_logout_alert_title" formatted="false">Cerrar sesión</string>
   <string name="profile_settings_navbar_title" formatted="false">Configuración</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notificaciones</string>
+  <string name="profile_settings_newsletter_alumni_newsletter" formatted="false">Suscríbete para recibir correos electrónicos mensuales con consejos y recursos para seguir trabajando en tu proyecto creativo, entrevistas con creadores de Kickstarter, invitaciones a eventos y más.</string>
   <string name="profile_settings_newsletter_arts" formatted="false">Novedades sobre Arte &amp; Cultura</string>
+  <string name="profile_settings_newsletter_arts_news" formatted="false">Arts News</string>
+  <string name="profile_settings_newsletter_arts_news_newsletter" formatted="false">Descubre cada mes las selecciones de nuestro equipo de arte sobre nuevos proyectos e ideas de artistas con trayectoria y emergentes.</string>
   <string name="profile_settings_newsletter_film" formatted="false">Kickstarter Films</string>
+  <string name="profile_settings_newsletter_films_newsletter" formatted="false">Regístrate para recibir un boletín mensual a cargo del equipo de cine de Kickstarter que destaca nuevos proyectos, historias de creadores y eventos que tengan en la mira.</string>
   <string name="profile_settings_newsletter_games" formatted="false">Nos encantan los juegos</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Eventos</string>
   <string name="profile_settings_newsletter_happening_now" formatted="false">Happening ahora</string>
@@ -1110,6 +1116,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">¡Sólo un último paso!</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Novedades y eventos de Kickstarter</string>
   <string name="profile_settings_newsletter_publishing" formatted="false">Kickstarter Reads</string>
+  <string name="profile_settings_newsletter_publishing_newsletter" formatted="false">Regístrate para recibir un boletín mensual del equipo de publicaciones de Kickstarter que destaca nuevos proyectos estupendos, historias de creadores y eventos literarios que tengan en la mira.</string>
   <string name="profile_settings_newsletter_subscribe_all" formatted="false">Suscribir a todos</string>
   <string name="profile_settings_newsletter_title" formatted="false">Boletines informativos</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Nuestros Favoritos</string>

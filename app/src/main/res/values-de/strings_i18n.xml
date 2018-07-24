@@ -81,6 +81,7 @@ Unterstützer</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Mein Kickstarter-Konto löschen</string>
   <string name="Delivered" formatted="false">Verschickt</string>
   <string name="Developer" formatted="false">Entwickler</string>
+  <string name="Discover_arts_news" formatted="false">Entdecke innovative Projekte und Ideen, handverlesen zweimal monatlich von Kickstarters Design &amp; Tech Team.</string>
   <string name="Discover_more_projects" formatted="false">Erkunde mehr Projekte.</string>
   <string name="Dismiss" formatted="false">Verwerfen</string>
   <string name="Done" formatted="false">Fertig!</string>
@@ -147,6 +148,7 @@ Unterstützer</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> hat ein &lt;i>Theater-Projekt&lt;/i> unterstützt.</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} hat ein Projekt veröffentlicht!</string>
   <string name="Funding_successful" formatted="false">Finanzierung erfolgreich</string>
+  <string name="Games_newsletter" formatted="false">Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter\'s Games team.</string>
   <string name="Get_notified_about_new_messages" formatted="false">Möchtest du benachrichtigt werden bei neuen Nachrichten?</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Benachrichtigungen zu den Live-Streams dieses Projektgründers erhalten.</string>
   <string name="Get_reminded_about_this_project" formatted="false">Möchtest du an dieses Projekt erinnert werden?</string>
@@ -1098,8 +1100,12 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_settings_logout_alert_title" formatted="false">Abmelden</string>
   <string name="profile_settings_navbar_title" formatted="false">Einstellungen</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Benachrichtigungen</string>
+  <string name="profile_settings_newsletter_alumni_newsletter" formatted="false">Abonniere unsere monatlichen E-Mails mit Tipps und Ressourcen für dein kreatives Projekt. Außerdem: Interviews mit Kickstarter-Projektgründern, Einladungen zu Events und vieles mehr.</string>
   <string name="profile_settings_newsletter_arts" formatted="false">Kunst &amp; Kultur News</string>
+  <string name="profile_settings_newsletter_arts_news" formatted="false">Arts News</string>
+  <string name="profile_settings_newsletter_arts_news_newsletter" formatted="false">Entdecke einmal monatlich neue Projekte und Ideen von etablierten Künstlern und Newcomern, handverlesen vom Kickstarter Kunst-Team.</string>
   <string name="profile_settings_newsletter_film" formatted="false">Kickstarter Films</string>
+  <string name="profile_settings_newsletter_films_newsletter" formatted="false">Abonniere den monatlichen Newsletter des Kickstarter Film-Teams mit Highlights zu neuen Projekten, Projektgründer-Stories und Veranstaltungen.</string>
   <string name="profile_settings_newsletter_games" formatted="false">Wir lieben Spiele</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening Now</string>
   <string name="profile_settings_newsletter_happening_now" formatted="false">Jetzt in Happening</string>
@@ -1109,6 +1115,7 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">Nur noch ein letzter Schritt!</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Kickstarter Neuigkeiten und Events</string>
   <string name="profile_settings_newsletter_publishing" formatted="false">Kickstarter Reads</string>
+  <string name="profile_settings_newsletter_publishing_newsletter" formatted="false">Abonniere den monatlicher Newsletter des Kickstarter Publishing-Teams mit Highlights zu neuen Projekten, Projektgründer-Stories und Literatur-Veranstaltungen.</string>
   <string name="profile_settings_newsletter_subscribe_all" formatted="false">Alle abonnieren</string>
   <string name="profile_settings_newsletter_title" formatted="false">Newsletter</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Unsere Lieblingsprojekte</string>

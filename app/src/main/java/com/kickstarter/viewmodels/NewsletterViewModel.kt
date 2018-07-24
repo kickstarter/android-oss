@@ -51,11 +51,11 @@ interface NewsletterViewModel {
     }
 
     interface Outputs {
+        /** Show a dialog to inform the user that their newsletter subscription must be confirmed via email.  */
+        fun showOptInPrompt(): Observable<Newsletter>
+
         /** Emits user containing settings state. */
         fun user(): Observable<User>
-
-        /** Show a dialog to inform the user that their newsletter subscription must be confirmed via email.  */
-         fun showOptInPrompt(): Observable<Newsletter>
     }
 
     interface Errors {

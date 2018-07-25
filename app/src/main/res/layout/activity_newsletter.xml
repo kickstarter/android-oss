@@ -112,6 +112,30 @@
 
           <TextView
             style="@style/NewsletterSingleRow"
+            android:text="@string/profile_settings_newsletter_news_event" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/news_events_switch"
+            style="@style/NewsLetterSwitch" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <TextView
+        style="@style/NewsLetterTextView"
+        android:text="@string/News_events" />
+
+      <LinearLayout
+        style="@style/SettingsLinearRow">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/NewsletterSingleRow"
             android:text="@string/profile_settings_newsletter_games" />
 
           <android.support.v7.widget.SwitchCompat

@@ -38,7 +38,7 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSettingsViewModel_sendAlumniNewsletter() {
+    fun testAlumniNewsletter() {
         val user = UserFactory.user().toBuilder().alumniNewsletter(false).build()
 
         setUpEnvironment(user)
@@ -59,7 +59,7 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSettingsViewModel_sendArtNewsletter() {
+    fun testArtNewsletter() {
         val user = UserFactory.user().toBuilder().artsCultureNewsletter(false).build()
 
         setUpEnvironment(user)
@@ -80,7 +80,7 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSettingsViewModel_sendFilmNewsletter() {
+    fun testFilmNewsletter() {
         val user = UserFactory.user().toBuilder().filmNewsletter(false).build()
 
         setUpEnvironment(user)
@@ -101,7 +101,7 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSettingsViewModel_sendGamesNewsletter() {
+    fun testGamesNewsletter() {
         val user = UserFactory.user().toBuilder().gamesNewsletter(false).build()
 
         setUpEnvironment(user)
@@ -122,7 +122,7 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSettingsViewModel_sendHappeningNewsletter() {
+    fun testHappeningNewsletter() {
         val user = UserFactory.user().toBuilder().happeningNewsletter(false).build()
 
         setUpEnvironment(user)
@@ -143,7 +143,7 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSettingsViewModel_sendInventNewsletter() {
+    fun testInventNewsletter() {
         val user = UserFactory.user().toBuilder().inventNewsletter(false).build()
 
         setUpEnvironment(user)
@@ -164,7 +164,7 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSettingsViewModel_sendPromoNewsletter() {
+    fun testPromoNewsletter() {
         val user = UserFactory.user().toBuilder().promoNewsletter(false).build()
 
         setUpEnvironment(user)
@@ -185,7 +185,7 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSettingsViewModel_sendReadsNewsletter() {
+    fun testPublishingNewsletter() {
         val user = UserFactory.user().toBuilder().publishingNewsletter(false).build()
 
         setUpEnvironment(user)
@@ -228,7 +228,7 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSettingsViewModel_sendWeeklyNewsletter() {
+    fun testWeeklyNewsletter() {
         val user = UserFactory.user().toBuilder().weeklyNewsletter(false).build()
 
         setUpEnvironment(user)

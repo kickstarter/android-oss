@@ -18,9 +18,14 @@ public abstract class SettingsBody {
   public abstract boolean notifyOfUpdates();
   public abstract int showPublicProfile();
   public abstract int social();
+  public abstract int alumniNewsletter();
+  public abstract int artsCultureNewsletter();
+  public abstract int filmNewsletter();
   public abstract int gamesNewsletter();
   public abstract int happeningNewsletter();
+  public abstract int inventNewsletter();
   public abstract int promoNewsletter();
+  public abstract int publishingNewsletter();
   public abstract int weeklyNewsletter();
 
   @AutoParcel.Builder
@@ -36,9 +41,14 @@ public abstract class SettingsBody {
     public abstract Builder notifyOfUpdates(boolean __);
     public abstract Builder showPublicProfile(int __);
     public abstract Builder social(int __);
+    public abstract Builder alumniNewsletter(int __);
+    public abstract Builder artsCultureNewsletter(int __);
+    public abstract Builder filmNewsletter(int __);
     public abstract Builder gamesNewsletter(int __);
     public abstract Builder happeningNewsletter(int __);
+    public abstract Builder inventNewsletter(int __);
     public abstract Builder promoNewsletter(int __);
+    public abstract Builder publishingNewsletter(int __);
     public abstract Builder weeklyNewsletter(int __);
     public abstract SettingsBody build();
   }

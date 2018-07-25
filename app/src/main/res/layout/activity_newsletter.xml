@@ -2,7 +2,6 @@
 <LinearLayout
   android:id="@+id/newsletter_layout"
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@color/ksr_grey_100"
@@ -16,7 +15,6 @@
 
   </android.support.design.widget.AppBarLayout>
 
-
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -28,11 +26,12 @@
 
       <TextView
         style="@style/NewsLetterTextView"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_3"
         android:text="@string/Stay_up_to_date_newsletter" />
 
       <LinearLayout
-        style="@style/SettingsLinearRow"
-        android:layout_marginTop="@dimen/grid_2">
+        style="@style/SettingsLinearRow">
 
         <LinearLayout
           android:layout_width="match_parent"
@@ -54,7 +53,7 @@
 
       <LinearLayout
         style="@style/SettingsLinearRow"
-        android:layout_marginTop="@dimen/grid_5">
+        android:layout_marginTop="@dimen/grid_6">
 
         <LinearLayout
           android:layout_width="match_parent"
@@ -126,10 +125,154 @@
         style="@style/NewsLetterTextView"
         android:text="@string/News_events" />
 
+      <LinearLayout
+        style="@style/SettingsLinearRow">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/NewsletterSingleRow"
+            android:text="@string/profile_settings_newsletter_games" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/games_we_love_switch"
+            style="@style/NewsLetterSwitch" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <TextView
+        style="@style/NewsLetterTextView"
+        android:text="@string/Games_newsletter" />
+
+      <LinearLayout
+        style="@style/SettingsLinearRow">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/NewsletterSingleRow"
+            android:text="@string/profile_settings_newsletter_invent" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/invent_switch"
+            style="@style/NewsLetterSwitch" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <TextView
+        style="@style/NewsLetterTextView"
+        android:text="@string/Discover_arts_news" />
+
+      <LinearLayout
+        style="@style/SettingsLinearRow">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/NewsletterSingleRow"
+            android:text="@string/profile_settings_newsletter_arts_news" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/arts_news_switch"
+            style="@style/NewsLetterSwitch" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <TextView
+        style="@style/NewsLetterTextView"
+        android:text="@string/profile_settings_newsletter_arts_news_newsletter" />
+
+
+      <LinearLayout
+        style="@style/SettingsLinearRow">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/NewsletterSingleRow"
+            android:text="@string/profile_settings_newsletter_film" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/films_switch"
+            style="@style/NewsLetterSwitch" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <TextView
+        style="@style/NewsLetterTextView"
+        android:text="@string/profile_settings_newsletter_films_newsletter" />
+
+      <LinearLayout
+        style="@style/SettingsLinearRow">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/NewsletterSingleRow"
+            android:text="@string/profile_settings_newsletter_publishing" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/reads_switch"
+            style="@style/NewsLetterSwitch" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <TextView
+        style="@style/NewsLetterTextView"
+        android:text="@string/profile_settings_newsletter_publishing_newsletter" />
+
+      <LinearLayout
+        style="@style/SettingsLinearRow">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/NewsletterSingleRow"
+            android:text="@string/profile_settings_newsletter_alumni" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/alumni_switch"
+            style="@style/NewsLetterSwitch" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <TextView
+        style="@style/NewsLetterTextView"
+        android:text="@string/profile_settings_newsletter_alumni_newsletter" />
+
     </LinearLayout>
 
   </ScrollView>
 
 </LinearLayout>
-
 

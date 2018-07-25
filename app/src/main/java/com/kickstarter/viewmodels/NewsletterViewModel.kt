@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.UserUtils
 import com.kickstarter.models.User
@@ -54,6 +55,9 @@ interface NewsletterViewModel {
         /** Show a dialog to inform the user that their newsletter subscription must be confirmed via email.  */
         fun showOptInPrompt(): Observable<Newsletter>
 
+        /** Emits a Boolean notifying the subscribe all switch that all newsletters are checked */
+        fun subscribeAll(): Observable<Boolean>
+
         /** Emits user containing settings state. */
         fun user(): Observable<User>
     }
@@ -69,6 +73,7 @@ interface NewsletterViewModel {
         private val currentUser = environment.currentUser()
         private val newsletterInput = PublishSubject.create<Pair<Boolean, Newsletter>>()
         private val showOptInPrompt = PublishSubject.create<Newsletter>()
+        private val subscribeAll = BehaviorSubject.create<Boolean>()
         private val userInput = PublishSubject.create<User>()
         private val updateSuccess = PublishSubject.create<Void>()
         private val userOutput = BehaviorSubject.create<User>()
@@ -99,6 +104,15 @@ interface NewsletterViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showOptInPrompt)
 
+            this.newsletterInput
+                    .map { bs -> bs.first }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.koala::trackNewsletterToggle)
+
+            this.currentUser.observable()
+                    .map { isSubscribedToAllNewsletters(it) }
+                    .subscribe(this.subscribeAll::onNext)
+
             this.userInput
                     .concatMap { updateSettings(it) }
                     .compose(bindToLifecycle())
@@ -116,22 +130,18 @@ interface NewsletterViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.userOutput)
 
-            this.newsletterInput
-                    .map { bs -> bs.first }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.koala::trackNewsletterToggle)
         }
 
         override fun sendAllNewsletter(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder()
                     .alumniNewsletter(checked)
-                    .artsNewsNewsletter(checked)
-                    .filmsNewsletter(checked)
+                    .artsCultureNewsletter(checked)
+                    .filmNewsletter(checked)
                     .gamesNewsletter(checked)
                     .happeningNewsletter(checked)
                     .inventNewsletter(checked)
                     .promoNewsletter(checked)
-                    .readsNewsletter(checked)
+                    .publishingNewsletter(checked)
                     .weeklyNewsletter(checked)
                     .build())
             this.newsletterInput.onNext(Pair(checked, Newsletter.ALL))
@@ -143,12 +153,12 @@ interface NewsletterViewModel {
         }
 
         override fun sendArtsNewsNewsletter(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().artsNewsNewsletter(checked).build())
+            this.userInput.onNext(this.userOutput.value.toBuilder().artsCultureNewsletter(checked).build())
             this.newsletterInput.onNext(Pair(checked, Newsletter.ARTS))
         }
 
         override fun sendFilmsNewsletter(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().filmsNewsletter(checked).build())
+            this.userInput.onNext(this.userOutput.value.toBuilder().filmNewsletter(checked).build())
             this.newsletterInput.onNext(Pair(checked, Newsletter.FILMS))
         }
 
@@ -173,7 +183,7 @@ interface NewsletterViewModel {
         }
 
         override fun sendReadsNewsletter(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().readsNewsletter(checked).build())
+            this.userInput.onNext(this.userOutput.value.toBuilder().publishingNewsletter(checked).build())
             this.newsletterInput.onNext(Pair(checked, Newsletter.READS))
         }
 
@@ -184,12 +194,22 @@ interface NewsletterViewModel {
 
         override fun showOptInPrompt(): Observable<Newsletter>  = this.showOptInPrompt
 
+        override fun subscribeAll(): Observable<Boolean> = this.subscribeAll
+
         override fun user() = this.userOutput
 
         override fun unableToSavePreferenceError() : Observable<String> {
            return this.unableToSavePreferenceError
                     .takeUntil(this.updateSuccess)
                     .map {_ -> null }
+        }
+
+        private fun isSubscribedToAllNewsletters(@NonNull user: User): Boolean {
+            return isTrue(user.alumniNewsletter()) && isTrue(user.artsCultureNewsletter()) &&
+            isTrue(user.filmNewsletter()) && isTrue(user.gamesNewsletter()) &&
+                    isTrue(user.happeningNewsletter()) && isTrue(user.inventNewsletter()) &&
+                    isTrue(user.promoNewsletter()) && isTrue(user.publishingNewsletter()) &&
+                    isTrue(user.weeklyNewsletter())
         }
 
         private fun requiresDoubleOptIn(user: User, checked: Boolean) = UserUtils.isLocationGermany(user) && checked

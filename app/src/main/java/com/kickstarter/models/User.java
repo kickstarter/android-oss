@@ -12,11 +12,11 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class User implements Parcelable {
   public abstract @Nullable Boolean alumniNewsletter();
-  public abstract @Nullable Boolean artsNewsNewsletter();
+  public abstract @Nullable Boolean artsCultureNewsletter();
   public abstract Avatar avatar();
   public abstract @Nullable Integer backedProjectsCount();
   public abstract @Nullable Integer createdProjectsCount();
-  public abstract @Nullable Boolean filmsNewsletter();
+  public abstract @Nullable Boolean filmNewsletter();
   public abstract @Nullable Boolean gamesNewsletter();
   public abstract @Nullable Boolean happeningNewsletter();
   public abstract long id();
@@ -38,7 +38,7 @@ public abstract class User implements Parcelable {
   public abstract @Nullable Boolean notifyOfUpdates();
   public abstract @Nullable Boolean optedOutOfRecommendations();
   public abstract @Nullable Boolean promoNewsletter();
-  public abstract @Nullable Boolean readsNewsletter();
+  public abstract @Nullable Boolean publishingNewsletter();
   public abstract @Nullable Boolean showPublicProfile();
   public abstract @Nullable Boolean social();
   public abstract @Nullable Integer starredProjectsCount();
@@ -48,11 +48,11 @@ public abstract class User implements Parcelable {
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder alumniNewsletter(Boolean __);
-    public abstract Builder artsNewsNewsletter(Boolean __);
+    public abstract Builder artsCultureNewsletter(Boolean __);
     public abstract Builder avatar(Avatar __);
     public abstract Builder backedProjectsCount(Integer __);
     public abstract Builder createdProjectsCount(Integer __);
-    public abstract Builder filmsNewsletter(Boolean __);
+    public abstract Builder filmNewsletter(Boolean __);
     public abstract Builder gamesNewsletter(Boolean __);
     public abstract Builder happeningNewsletter(Boolean __);
     public abstract Builder id(long __);
@@ -74,7 +74,7 @@ public abstract class User implements Parcelable {
     public abstract Builder notifyOfUpdates(Boolean __);
     public abstract Builder optedOutOfRecommendations(Boolean __);
     public abstract Builder promoNewsletter(Boolean __);
-    public abstract Builder readsNewsletter(Boolean __);
+    public abstract Builder publishingNewsletter(Boolean __);
     public abstract Builder showPublicProfile(Boolean __);
     public abstract Builder social(Boolean __);
     public abstract Builder starredProjectsCount(Integer __);

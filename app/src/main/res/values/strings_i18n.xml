@@ -23,6 +23,7 @@
   <string name="All_gone" formatted="false">All gone</string>
   <string name="Amount_previous_amount" formatted="false">Amount: %{amount}, previous amount: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Amount: %{amount}, %{reward}</string>
+  <string name="App_version" formatted="false">App version</string>
   <string name="Are_you_sure" formatted="false">Are you sure?</string>
   <string name="Ask_me_anything" formatted="false">Ask me anything</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Available to watch for %{time} more %{units}</string>
@@ -80,6 +81,7 @@ backers</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter Account</string>
   <string name="Delivered" formatted="false">Delivered</string>
   <string name="Developer" formatted="false">Developer</string>
+  <string name="Discover_arts_news" formatted="false">Discover innovative projects and ideas, handpicked twice a month by Kickstarter\'s Design &amp; Tech team.</string>
   <string name="Discover_more_projects" formatted="false">Discover more projects.</string>
   <string name="Dismiss" formatted="false">Dismiss</string>
   <string name="Done" formatted="false">Done</string>
@@ -146,6 +148,7 @@ backers</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed a &lt;i>Theater&lt;/i> project.</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} launched a project!</string>
   <string name="Funding_successful" formatted="false">Funding successful</string>
+  <string name="Games_newsletter" formatted="false">Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter\'s Games team.</string>
   <string name="Get_notified_about_new_messages" formatted="false">Get notified about new messages?</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Get notified about this creator’s live streams</string>
   <string name="Get_reminded_about_this_project" formatted="false">Get reminded about this project?</string>
@@ -1102,8 +1105,13 @@ Let\'s change that!</string>
   <string name="profile_settings_logout_alert_title" formatted="false">Log out</string>
   <string name="profile_settings_navbar_title" formatted="false">Settings</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notifications</string>
+  <string name="profile_settings_newsletter_alumni" formatted="false">Kickstarter Alumni</string>
+  <string name="profile_settings_newsletter_alumni_newsletter" formatted="false">Sign up to receive monthly emails featuring tips and resources for continuing work on your creative project, interviews with Kickstarter creators, invites to events, and more.</string>
   <string name="profile_settings_newsletter_arts" formatted="false">Arts &amp; Culture News</string>
+  <string name="profile_settings_newsletter_arts_news" formatted="false">Arts News</string>
+  <string name="profile_settings_newsletter_arts_news_newsletter" formatted="false">Discover new projects and ideas from established and emerging artists, handpicked each month by Kickstarter\'s Arts team.</string>
   <string name="profile_settings_newsletter_film" formatted="false">Kickstarter Films</string>
+  <string name="profile_settings_newsletter_films_newsletter" formatted="false">Sign up for a monthly newsletter curated by Kickstarter\'s Film team, highlighting new projects, creator stories, and events on their radar.</string>
   <string name="profile_settings_newsletter_games" formatted="false">Kickstarter Loves Games</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening</string>
   <string name="profile_settings_newsletter_happening_now" formatted="false">Happening Now</string>
@@ -1113,6 +1121,7 @@ Let\'s change that!</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">One final step!</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Kickstarter News and Events</string>
   <string name="profile_settings_newsletter_publishing" formatted="false">Kickstarter Reads</string>
+  <string name="profile_settings_newsletter_publishing_newsletter" formatted="false">Sign up for a monthly newsletter from Kickstarter\'s Publishing team highlighting great new projects, creator stories, and literary events on their radar.</string>
   <string name="profile_settings_newsletter_subscribe_all" formatted="false">Subscribe to all</string>
   <string name="profile_settings_newsletter_title" formatted="false">Newsletters</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Projects We Love</string>

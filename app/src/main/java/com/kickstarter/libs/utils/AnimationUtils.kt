@@ -8,7 +8,6 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.Interpolator
-import kotlinx.android.synthetic.main.activity_notifications.*
 
 object AnimationUtils {
 

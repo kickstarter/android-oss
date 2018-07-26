@@ -100,8 +100,6 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             AnimationUtils.notificationBounceAnimation(project_updates_phone_icon, project_updates_mail_icon)
         }
 
-
-
     }
 
     private fun displayPreferences(user: User) {

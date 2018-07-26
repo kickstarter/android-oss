@@ -40,6 +40,7 @@ interface PrivacyViewModel {
     }
 
     interface Errors {
+        /** Emits when saving preference fails.  */
         fun unableToSavePreferenceError(): Observable<String>
     }
 

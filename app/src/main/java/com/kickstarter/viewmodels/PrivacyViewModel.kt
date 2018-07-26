@@ -29,7 +29,6 @@ interface PrivacyViewModel {
     }
 
     interface Outputs {
-
         /** Emits when Following switch should be turned back on after user cancels opting out.  */
         fun hideConfirmFollowingOptOutPrompt(): Observable<Void>
 
@@ -45,7 +44,6 @@ interface PrivacyViewModel {
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<PrivacyActivity>(environment), Inputs, Outputs, Errors {
-        private val optedOutOfRecommendations = PublishSubject.create<Boolean>()
         private val optIntoFollowing = PublishSubject.create<Boolean>()
         private val optOutOfFollowing = PublishSubject.create<Boolean>()
         private val userInput = PublishSubject.create<User>()

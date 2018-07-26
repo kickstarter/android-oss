@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<android.support.design.widget.CoordinatorLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
@@ -34,7 +34,110 @@
     </com.kickstarter.ui.toolbars.KSToolbar>
   </android.support.design.widget.AppBarLayout>
 
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ksr_grey_100"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.kickstarter.ui.activities.PrivacyActivity">
 
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
 
-</android.support.constraint.ConstraintLayout>
+      <LinearLayout
+        style="@style/SettingsLinearRow"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
 
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/NewsletterSingleRow"
+            android:text="@string/Following" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/following_switch"
+            style="@style/NewsLetterSwitch" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <TextView
+        style="@style/NewsLetterTextView"
+        android:text="@string/When_following_is_on_you_can_follow_the_acticity_of_others" />
+
+      <LinearLayout
+        style="@style/SettingsLinearRow">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/NewsletterSingleRow"
+            android:text="@string/Recommendations" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/recommendations_switch"
+            style="@style/NewsLetterSwitch" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <TextView
+        style="@style/NewsLetterTextView"
+        android:text="@string/We_use_your_activity_internally_to_make_recommendations_for_you" />
+
+      <LinearLayout
+        android:id="@+id/settings_request_data"
+        style="@style/SettingsLinearRow"
+        android:layout_marginTop="@dimen/grid_3">
+
+        <LinearLayout
+          style="@style/SettingsSingleRow"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+            style="@style/CalloutPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Request_my_Personal_Data" />
+        </LinearLayout>
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/settings_delete_account"
+        style="@style/SettingsLinearRow"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
+
+        <LinearLayout
+          style="@style/SettingsSingleRow"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+            style="@style/CalloutPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Delete_my_Kickstarter_Account"
+            android:textColor="@color/ksr_red_400" />
+        </LinearLayout>
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </ScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

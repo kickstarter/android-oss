@@ -8,6 +8,7 @@ import android.widget.ImageButton
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.AnimationUtils
 import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.IntegerUtils.intValueOrZero
 import com.kickstarter.models.User
@@ -18,10 +19,10 @@ import rx.android.schedulers.AndroidSchedulers
 @RequiresActivityViewModel(NotificationsViewModel.ViewModel::class)
 class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
 
-    private val green =  R.color.ksr_green_500
+    private val green = R.color.ksr_green_500
     private val grey = R.color.ksr_dark_grey_400
 
-    private val circleOutline =  R.drawable.circle_gray_outline
+    private val circleOutline = R.drawable.circle_gray_outline
     private val circleFilled = R.drawable.circle_gray_filled
 
     private val subscribeString = R.string.profile_settings_accessibility_subscribe_notifications
@@ -51,20 +52,28 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             startProjectNotificationsSettingsActivity()
         }
 
-        friend_activity_mail_icon.setOnClickListener{
+        friend_activity_mail_icon.setOnClickListener {
             this.viewModel.inputs.notifyOfFriendActivity(!this.notifyOfFriendActivity)
         }
 
-        friend_activity_phone_icon.setOnClickListener{
+        friend_activity_phone_icon.setOnClickListener {
             this.viewModel.inputs.notifyMobileOfFriendActivity(!this.notifyMobileOfFriendActivity)
         }
 
-        messages_mail_icon.setOnClickListener{
+        friends_back_project_row.setOnClickListener {
+                AnimationUtils.notificationBounceAnimation(friend_activity_phone_icon, friend_activity_mail_icon)
+        }
+
+        messages_mail_icon.setOnClickListener {
             this.viewModel.inputs.notifyOfMessages(!this.notifyOfMessages)
         }
 
         messages_phone_icon.setOnClickListener {
             this.viewModel.inputs.notifyMobileOfMessages(!this.notifyMobileOfMessages)
+        }
+
+        messages_notification_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(messages_phone_icon, messages_mail_icon)
         }
 
         new_followers_mail_icon.setOnClickListener {
@@ -75,6 +84,10 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             this.viewModel.inputs.notifyMobileOfFollower(!this.notifyMobileOfFollower)
         }
 
+        new_followers_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(new_followers_phone_icon, new_followers_mail_icon)
+        }
+
         project_updates_mail_icon.setOnClickListener {
             this.viewModel.inputs.notifyOfUpdates(!this.notifyOfUpdates)
         }
@@ -82,6 +95,13 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         project_updates_phone_icon.setOnClickListener {
             this.viewModel.inputs.notifyMobileOfUpdates(!this.notifyMobileOfUpdates)
         }
+
+        project_updates_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(project_updates_phone_icon, project_updates_mail_icon)
+        }
+
+
+
     }
 
     private fun displayPreferences(user: User) {

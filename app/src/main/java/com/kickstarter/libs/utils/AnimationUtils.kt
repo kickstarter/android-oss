@@ -8,6 +8,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.Interpolator
+import kotlinx.android.synthetic.main.activity_notifications.*
 
 object AnimationUtils {
 
@@ -63,7 +64,7 @@ object AnimationUtils {
     val crossFadeAnimatorSet = AnimatorSet()
     val fadeOutAndScale = fadeOutAndScale(visibleView, crossDuration, startDelay, interpolator)
     val fadeInAndScale = fadeInAndScale(hiddenView, crossDuration, startDelay, interpolator)
-    
+
     crossFadeAnimatorSet.playTogether(fadeOutAndScale, fadeInAndScale)
 
     return crossFadeAnimatorSet
@@ -77,5 +78,17 @@ object AnimationUtils {
     val endAnimation = crossFade(hiddenView, visibleView, crossDuration, startDelay, interpolator)
     crossFadeAndReverseAnimatorSet.playSequentially(startAnimation, endAnimation)
     return crossFadeAndReverseAnimatorSet
+  }
+
+  fun notificationBounceAnimation(view: View, secondView: View) {
+    val pvhX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.2f, 1.0f)
+    val phvY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.2f, 1.0f)
+    val scaleAnimation = ObjectAnimator.ofPropertyValuesHolder(view, pvhX, phvY).setDuration(100)
+    scaleAnimation.interpolator = AccelerateDecelerateInterpolator()
+    val scaleAnimationMail = ObjectAnimator.ofPropertyValuesHolder(secondView, pvhX, phvY).setDuration(100)
+    scaleAnimationMail.interpolator = AccelerateDecelerateInterpolator()
+    val animatorSet = AnimatorSet()
+    animatorSet.play(scaleAnimationMail).after(50).after(scaleAnimation)
+    animatorSet.start()
   }
 }

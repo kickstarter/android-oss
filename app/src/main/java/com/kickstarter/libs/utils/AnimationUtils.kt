@@ -80,14 +80,15 @@ object AnimationUtils {
   }
 
   fun notificationBounceAnimation(view: View, secondView: View) {
-    val pvhX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.2f, 1.0f)
-    val phvY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.2f, 1.0f)
-    val scaleAnimation = ObjectAnimator.ofPropertyValuesHolder(view, pvhX, phvY).setDuration(100)
+    val pvhX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0f, 1.3f, 1.0f)
+    val phvY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0f, 1.3f, 1.0f)
+    val scaleAnimation = ObjectAnimator.ofPropertyValuesHolder(view, pvhX, phvY).setDuration(200)
     scaleAnimation.interpolator = AccelerateDecelerateInterpolator()
-    val scaleAnimationMail = ObjectAnimator.ofPropertyValuesHolder(secondView, pvhX, phvY).setDuration(100)
+    val scaleAnimationMail = ObjectAnimator.ofPropertyValuesHolder(secondView, pvhX, phvY).setDuration(200)
     scaleAnimationMail.interpolator = AccelerateDecelerateInterpolator()
     val animatorSet = AnimatorSet()
-    animatorSet.play(scaleAnimationMail).after(50).after(scaleAnimation)
+    animatorSet.play(scaleAnimation)
+    animatorSet.play(scaleAnimationMail).after(100)
     animatorSet.start()
   }
 }

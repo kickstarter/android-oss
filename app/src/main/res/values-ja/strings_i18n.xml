@@ -23,6 +23,7 @@
   <string name="All_gone" formatted="false">終了</string>
   <string name="Amount_previous_amount" formatted="false">金額: %{amount}, 以前の金額: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">金額：%{amount}、%{reward}</string>
+  <string name="App_version" formatted="false">App version</string>
   <string name="Are_you_sure" formatted="false">オフにしてもよろしいですか？</string>
   <string name="Ask_me_anything" formatted="false">お問い合わせ</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">さらに%{time} の%{units} を見ることができます</string>
@@ -78,6 +79,8 @@
   <string name="Data_will_appear_here_once" formatted="false">誰かがプロジェクトをバック（支援）すると、ここにデータが表示されます。</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Kickstarter アカウントを削除</string>
   <string name="Delivered" formatted="false">発送済</string>
+  <string name="Developer" formatted="false">開発者</string>
+  <string name="Discover_arts_news" formatted="false">Discover innovative projects and ideas, handpicked twice a month by Kickstarter\'s Design &amp; Tech team.</string>
   <string name="Discover_more_projects" formatted="false">プロジェクトをさがす</string>
   <string name="Dismiss" formatted="false">破棄</string>
   <string name="Done" formatted="false">完了</string>
@@ -89,11 +92,15 @@
   <string name="Ending_soon" formatted="false">終了直前</string>
   <string name="Estimated_delivery" formatted="false">配達予定日：</string>
   <string name="Expands_subcategories" formatted="false">サブカテゴリーを表示</string>
+  <string name="Expired_date_at_time" formatted="false">有効期限: %{date} %{time}</string>
+  <string name="Expires_date_at_time" formatted="false">有効期限: %{date} %{time}</string>
   <string name="Explore" formatted="false">さがす</string>
   <string name="Explore_creative_projects" formatted="false">クリエイティブなプロジェクトをさがす</string>
   <string name="Explore_projects" formatted="false">プロジェクトをさがす</string>
   <string name="Facebook_login_disclaimer" formatted="false">Facebook でログインすると、あなたの氏名とプロフィール写真がインポートされます。また、あなたが Kickstarter 上で Facebook 友達をフォローすることができるように、友達リストも Kickstarter によってアクセスされます。あなたの許可なしに Kickstarter が Facebook 上に投稿を行うことは決してありません。  </string>
   <string name="Facebook_login_disclaimer_update" formatted="false">Facebook を使ってログインすると、お名前とプロフィール写真、友達リストがインポートされます。</string>
+  <string name="Facebook_reconnect" formatted="false">もう一度接続してください</string>
+  <string name="Facebook_reconnect_description" formatted="false">申し訳ございません。アカウントの接続が切断されました。もう一度接続しなおして友達をフォローしてください。</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">ライブ配信の詳細を取得できませんでした</string>
   <string name="Failed_to_update_subscription" formatted="false">定期購読の更新に失敗しました</string>
   <string name="Filter_by_all_projects" formatted="false">全てのプロジェクトに絞る</string>
@@ -140,12 +147,15 @@
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> は&lt;i>演劇&lt;/i> プロジェクトをバックしています。</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} がプロジェクトを発表しました！</string>
   <string name="Funding_successful" formatted="false">ファンディング成功</string>
+  <string name="Games_newsletter" formatted="false">Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter\'s Games team.</string>
   <string name="Get_notified_about_new_messages" formatted="false">新規メッセージについて通知の受信を希望しますか？</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">このクリエイターのライブ配信通知を受け取る</string>
   <string name="Get_reminded_about_this_project" formatted="false">このプロジェクトについてリマインダーを希望しますか？</string>
   <string name="Go_to_project_page" formatted="false">プロジェクトページを見る</string>
   <string name="Got_it" formatted="false">完了</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">サーベイを送信しました！</string>
+  <string name="Happening_newsletter" formatted="false">新しいプロジェクトや、感動的なストーリー、視覚的なインスピレーションなどが週に1回 (時には2回) 届くニュースレターにサインアップしましょう。</string>
+  <string name="Help" formatted="false">ヘルプ</string>
   <string name="Help_center" formatted="false">ヘルプセンター</string>
   <string name="Hide_password" formatted="false">パスワードを非表示にする</string>
   <string name="Home" formatted="false">ホーム</string>
@@ -182,6 +192,7 @@
   <string name="Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you" formatted="false">ログインかサインインしてこのプロジェクトを保存してください。終了４８時間前にリマインドします。</string>
   <string name="Log_in_or_sign_up_to_subscribe" formatted="false">ログインまたはサインアップしてください</string>
   <string name="Log_in_to_leave_a_comment" formatted="false">ログインしてコメントを残す。</string>
+  <string name="Log_out" formatted="false">ログアウト</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">リワードなしでプレッジ</string>
   <string name="Manage_your_pledge" formatted="false">プレッジを変更</string>
   <string name="Manage_your_pledge_below" formatted="false">以下のプレッジを変更</string>
@@ -193,6 +204,8 @@
   <string name="Name" formatted="false">名前</string>
   <string name="Never" formatted="false">通知を受けない</string>
   <string name="New_pledge_activity" formatted="false">新しいプレッジ</string>
+  <string name="News_events" formatted="false">1年に数回だけ、お近くのニュースやイベント情報をお届け。</string>
+  <string name="Newsletters" formatted="false">ニュースレター</string>
   <string name="No_Results" formatted="false">該当結果なし</string>
   <string name="No_comments_yet" formatted="false">まだコメントはありません。</string>
   <string name="No_messages" formatted="false">メッセージがありません。</string>
@@ -204,6 +217,7 @@
   <string name="Not_delivered" formatted="false">未配送</string>
   <string name="Not_followed" formatted="false">フォローしてない</string>
   <string name="Not_now" formatted="false">後で</string>
+  <string name="Notifications" formatted="false">通知</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">プロジェクトをバックするとこのスペースにあなたへのオススメを表示します</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">あと%{amount_of_time} のみ視聴可能</string>
   <string name="Opens_comments" formatted="false">コメントをみる</string>
@@ -239,14 +253,18 @@
   <string name="Pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
   <string name="Popular" formatted="false">人気</string>
   <string name="Popular_Projects" formatted="false">人気のプロジェクト</string>
+  <string name="Preparing_your_personal_data" formatted="false">あなたの個人データを準備中…</string>
   <string name="Privacy" formatted="false">プライバシー</string>
   <string name="Private_profile" formatted="false">プライベート設定のプロフィール</string>
   <string name="Private_profile_more_info" formatted="false">プライベート設定のプロフィール詳細</string>
   <string name="Private_profile_more_info_content" formatted="false">Kickstarter でのプロフィールはデフォルト設定ではプライベート (非公開) となっています。プロフィールを公開したい場合はこの設定をオフにしてください。</string>
   <string name="Project_Cancelled" formatted="false">プロジェクトが取り消されました。</string>
   <string name="Project_Suspended" formatted="false">中止プロジェクト</string>
+  <string name="Project_activity" formatted="false">プロジェクトのアクティビティ</string>
   <string name="Project_cancelled" formatted="false">プロジェクトが取り消されました。</string>
+  <string name="Project_reminders" formatted="false">プロジェクトのリマインダー</string>
   <string name="Project_saved" formatted="false">プロジェクトを保存しました。</string>
+  <string name="Project_updates" formatted="false">プロジェクトの更新情報</string>
   <string name="Projects_We_Love" formatted="false">Projects We Love</string>
   <string name="Projects_youve_backed" formatted="false">バック（支援）したプロジェクト</string>
   <string name="Projects_youve_launched" formatted="false">ローンチしたプロジェクト</string>
@@ -282,6 +300,7 @@
   <string name="Reward_delivered" formatted="false">リワードを受け取りましたか？</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>リワード&lt;/b>の配達予定日は%{delivery_date}</string>
   <string name="Reward_selected" formatted="false">選択中のリワード</string>
+  <string name="Reward_surveys" formatted="false">リワードのサーベイ</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_colon_many" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_colon_one" formatted="false">%{rewards_count} 種類のリワード</string>
@@ -314,6 +333,7 @@
   <string name="Ships_to" formatted="false">配送先：</string>
   <string name="Show_password" formatted="false">パスワードを表示する</string>
   <string name="Shows_list_of_subcategories" formatted="false">サブカテゴリーリストを見せる。</string>
+  <string name="Sign_up_newsletter" formatted="false">Projects We Love に登録して、私たち Kickstarter チームが選別した注目プロジェクトに関する情報を週に1度受け取りましょう。</string>
   <string name="Signs_up_with_Email" formatted="false">Eメールでサインアップする。</string>
   <string name="Something_catch_your_eye" formatted="false">何か目にとまるものはありましたか？</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">なにかが間違っています。もう一度お試しください。</string>
@@ -321,6 +341,7 @@
   <string name="Starting_soon" formatted="false">もう少しで始まります。</string>
   <string name="Status" formatted="false">ステータス</string>
   <string name="Stay_up_to_date" formatted="false">最新情報を常に把握したい？</string>
+  <string name="Stay_up_to_date_newsletter" formatted="false">Kickstarter チームお気に入りのプロジェクトや、当社が選んだ注目ニュースやイベントについての最新情報を受信しましょう。</string>
   <string name="Stay_updated_on_this_project" formatted="false">このプロジェクトの最新情報を受け取りたい？</string>
   <string name="Subscribe" formatted="false">購読する</string>
   <string name="Subscribed" formatted="false">購読済</string>
@@ -1081,15 +1102,24 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="profile_settings_logout_alert_title" formatted="false">ログアウト</string>
   <string name="profile_settings_navbar_title" formatted="false">設定</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">通知設定</string>
+  <string name="profile_settings_newsletter_alumni" formatted="false">Kickstarter Alumni</string>
+  <string name="profile_settings_newsletter_alumni_newsletter" formatted="false">Sign up to receive monthly emails featuring tips and resources for continuing work on your creative project, interviews with Kickstarter creators, invites to events, and more.</string>
   <string name="profile_settings_newsletter_arts" formatted="false">アート＆カルチャー</string>
+  <string name="profile_settings_newsletter_arts_news" formatted="false">Arts News</string>
+  <string name="profile_settings_newsletter_arts_news_newsletter" formatted="false">Discover new projects and ideas from established and emerging artists, handpicked each month by Kickstarter\'s Arts team.</string>
   <string name="profile_settings_newsletter_film" formatted="false">Kickstarter Films</string>
+  <string name="profile_settings_newsletter_films_newsletter" formatted="false">Sign up for a monthly newsletter curated by Kickstarter\'s Film team, highlighting new projects, creator stories, and events on their radar.</string>
   <string name="profile_settings_newsletter_games" formatted="false">Kickstarterが選ぶゲーム</string>
   <string name="profile_settings_newsletter_happening" formatted="false">出来事</string>
+  <string name="profile_settings_newsletter_happening_now" formatted="false">Happening Now</string>
   <string name="profile_settings_newsletter_invent" formatted="false">インベント</string>
+  <string name="profile_settings_newsletter_news_event" formatted="false">ニュース＆イベント</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">登録されているアドレス宛に認証メールを送信しました！%{newsletter} を購読するには、メールを確認してください。</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">あと少し！</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Kickstarterのニュースとイベント</string>
   <string name="profile_settings_newsletter_publishing" formatted="false">Kickstarter Reads</string>
+  <string name="profile_settings_newsletter_publishing_newsletter" formatted="false">Sign up for a monthly newsletter from Kickstarter\'s Publishing team highlighting great new projects, creator stories, and literary events on their radar.</string>
+  <string name="profile_settings_newsletter_subscribe_all" formatted="false">すべてのニュースレターを購読する</string>
   <string name="profile_settings_newsletter_title" formatted="false">ニュースレター</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Projects We Love</string>
   <string name="profile_settings_rating_message" formatted="false">Kickstarterアプリの使い心地はいかがですか？\n

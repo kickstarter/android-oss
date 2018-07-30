@@ -6,12 +6,14 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.utils.PlayServicesCapability;
-import com.kickstarter.services.gcm.RegisterService;
-import com.kickstarter.services.gcm.UnregisterService;
+import com.kickstarter.services.firebase.RegisterService;
+import com.kickstarter.services.firebase.UnregisterService;
 
 public final class DeviceRegistrar implements DeviceRegistrarType {
   private final @NonNull PlayServicesCapability playServicesCapability;
   private @ApplicationContext @NonNull Context context;
+
+  public static final String TOPIC_GLOBAL = "global";
 
   public DeviceRegistrar(final @NonNull PlayServicesCapability playServicesCapability,
     final @ApplicationContext @NonNull Context context) {

@@ -3,7 +3,7 @@ import android.support.test.filters.SmallTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.google.android.gms.iid.InstanceID;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.Secrets;
@@ -16,9 +16,7 @@ import org.junit.runner.RunWith;
 
 import java.net.CookieManager;
 import java.net.CookieStore;
-import java.net.HttpCookie;
 import java.net.URI;
-import java.util.Optional;
 
 @RunWith(AndroidJUnit4.class)
 @SmallTest
@@ -39,25 +37,15 @@ public class VisitorCookieTest {
     final CookieStore cookieStore = cookieManager.getCookieStore();
     final URI webUri = URI.create(Secrets.WebEndpoint.PRODUCTION);
     final URI apiUri = URI.create(ApiEndpoint.PRODUCTION.url());
-    final Optional<HttpCookie> webVisCookie = getOptionalVisitorCookieForURI(cookieStore, webUri);
-    final Optional<HttpCookie> apiVisCookie = getOptionalVisitorCookieForURI(cookieStore, apiUri);
 
-    Assert.assertTrue(webVisCookie.isPresent());
-    Assert.assertTrue(apiVisCookie.isPresent());
-
-    final HttpCookie webCookie = webVisCookie.get();
-    final HttpCookie apiCookie = apiVisCookie.get();
-
-    final String deviceId = InstanceID.getInstance(activity).getId();
+    final String deviceId = FirebaseInstanceId.getInstance().getId();
     Assert.assertNotNull(deviceId);
 
-    Assert.assertTrue(webCookie.getValue().equals(deviceId));
-    Assert.assertFalse(webCookie.getValue().equals("beep"));
-    Assert.assertTrue(apiCookie.getValue().equals(deviceId));
-    Assert.assertFalse(apiCookie.getValue().equals("boop"));
+    Assert.assertTrue(hasVisitorCookieForURI(cookieStore, webUri, deviceId));
+    Assert.assertTrue(hasVisitorCookieForURI(cookieStore, apiUri, deviceId));
   }
 
-  private Optional<HttpCookie> getOptionalVisitorCookieForURI(final @NonNull CookieStore cookieStore, final @NonNull URI uri) {
-    return cookieStore.get(uri).stream().filter(c -> c.getName().equals(KEY_VIS)).findFirst();
+  private boolean hasVisitorCookieForURI(final @NonNull CookieStore cookieStore, final @NonNull URI uri, final @NonNull String deviceId) {
+    return cookieStore.get(uri).stream().anyMatch(httpCookie -> httpCookie.getName().equals(KEY_VIS) && httpCookie.getValue().equals(deviceId));
   }
 }

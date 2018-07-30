@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="crashlytics_key">testKey</string>
+  <string name="crashlytics_key">testkey</string>
 </resources>

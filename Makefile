@@ -30,6 +30,11 @@ secrets:
 	cp vendor/native-secrets/android/koala_endpoint.xml app/src/main/res/values/koala_endpoint.xml \
 		|| cp config/koala_endpoint.xml.example app/src/main/res/values/koala_endpoint.xml
 
+	# Copy crashlytics over. Fallback to examples if they don't exist
+	mkdir -p app/src/main/res/values/
+	cp vendor/native-secrets/android/crashlytics_key.xml app/src/main/res/values/crashlytics_key.xml \
+	  || cp config/crashlytics_key.xml.example app/src/main/res/values/crashlytics_key.xml
+
 	# Copy web client over.
 	cp -rf vendor/native-secrets/android/WebViewJavascriptInterface.java app/src/main/java/com/kickstarter/libs/WebViewJavascriptInterface.java \
 		|| cp -rf config/WebViewJavascriptInterface.java app/src/main/java/com/kickstarter/libs/WebViewJavascriptInterface.java

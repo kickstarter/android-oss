@@ -23,6 +23,7 @@
   <string name="All_gone" formatted="false">All gone</string>
   <string name="Amount_previous_amount" formatted="false">Amount: %{amount}, previous amount: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Amount: %{amount}, %{reward}</string>
+  <string name="App_version" formatted="false">App version</string>
   <string name="Are_you_sure" formatted="false">Are you sure?</string>
   <string name="Ask_me_anything" formatted="false">Ask me anything</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Available to watch for %{time} more %{units}</string>
@@ -79,6 +80,8 @@ backers</string>
   <string name="Data_will_appear_here_once" formatted="false">Data will appear here once somebody backs your project.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter Account</string>
   <string name="Delivered" formatted="false">Delivered</string>
+  <string name="Developer" formatted="false">Developer</string>
+  <string name="Discover_arts_news" formatted="false">Discover innovative projects and ideas, handpicked twice a month by Kickstarter\'s Design &amp; Tech team.</string>
   <string name="Discover_more_projects" formatted="false">Discover more projects.</string>
   <string name="Dismiss" formatted="false">Dismiss</string>
   <string name="Done" formatted="false">Done</string>
@@ -90,11 +93,15 @@ backers</string>
   <string name="Ending_soon" formatted="false">Ending Soon</string>
   <string name="Estimated_delivery" formatted="false">Estimated delivery:</string>
   <string name="Expands_subcategories" formatted="false">Expands subcategories.</string>
+  <string name="Expired_date_at_time" formatted="false">Expired %{date} at %{time}</string>
+  <string name="Expires_date_at_time" formatted="false">Expires %{date} at %{time}</string>
   <string name="Explore" formatted="false">Explore</string>
   <string name="Explore_creative_projects" formatted="false">Explore creative projects</string>
   <string name="Explore_projects" formatted="false">Explore projects</string>
   <string name="Facebook_login_disclaimer" formatted="false">If you login with Facebook, we’ll import your name and profile photo. We\'ll also access your friend list so you can follow your Facebook friends on Kickstarter. We will never post anything on Facebook without your permission.</string>
   <string name="Facebook_login_disclaimer_update" formatted="false">By logging in with Facebook, we’ll import your name, profile photo and friend list.</string>
+  <string name="Facebook_reconnect" formatted="false">Please reconnect</string>
+  <string name="Facebook_reconnect_description" formatted="false">Our apologies, your account was accidentally disconnected. Reconnect to follow friends again.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Failed to retrieve live stream event details</string>
   <string name="Failed_to_update_subscription" formatted="false">Failed to update subscription</string>
   <string name="Filter_by_all_projects" formatted="false">Filter by all projects</string>
@@ -141,12 +148,15 @@ backers</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed a &lt;i>Theater&lt;/i> project.</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} launched a project!</string>
   <string name="Funding_successful" formatted="false">Funding successful</string>
+  <string name="Games_newsletter" formatted="false">Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter\'s Games team.</string>
   <string name="Get_notified_about_new_messages" formatted="false">Get notified about new messages?</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Get notified about this creator’s live streams</string>
   <string name="Get_reminded_about_this_project" formatted="false">Get reminded about this project?</string>
   <string name="Go_to_project_page" formatted="false">Go to project page</string>
   <string name="Got_it" formatted="false">Got it</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Got it! Your survey response has been submitted.</string>
+  <string name="Happening_newsletter" formatted="false">Sign up to receive a mix of new projects, compelling stories, and visual inspiration, delivered once (and sometimes twice) a week.</string>
+  <string name="Help" formatted="false">Help</string>
   <string name="Help_center" formatted="false">Help Center</string>
   <string name="Hide_password" formatted="false">Hide password</string>
   <string name="Home" formatted="false">Home</string>
@@ -184,6 +194,7 @@ with friends.</string>
   <string name="Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you" formatted="false">Log in or sign up to save this project. We’ll remind you 48 hours before it ends.</string>
   <string name="Log_in_or_sign_up_to_subscribe" formatted="false">Log in or sign up to subscribe</string>
   <string name="Log_in_to_leave_a_comment" formatted="false">Log in to leave a comment.</string>
+  <string name="Log_out" formatted="false">Log out</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">Make a pledge without a reward</string>
   <string name="Manage_your_pledge" formatted="false">Manage your pledge</string>
   <string name="Manage_your_pledge_below" formatted="false">Manage your pledge below</string>
@@ -195,6 +206,8 @@ with friends.</string>
   <string name="Name" formatted="false">Name</string>
   <string name="Never" formatted="false">Never</string>
   <string name="New_pledge_activity" formatted="false">New pledge activity</string>
+  <string name="News_events" formatted="false">Big news and events happening near you, delivered just a few times a year.</string>
+  <string name="Newsletters" formatted="false">Newsletters</string>
   <string name="No_Results" formatted="false">No Results</string>
   <string name="No_comments_yet" formatted="false">No comments yet.</string>
   <string name="No_messages" formatted="false">No messages</string>
@@ -207,6 +220,7 @@ from friends yet.</string>
   <string name="Not_delivered" formatted="false">Not delivered</string>
   <string name="Not_followed" formatted="false">Not followed</string>
   <string name="Not_now" formatted="false">Not Now</string>
+  <string name="Notifications" formatted="false">Notifications</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Once you back a project, we’ll share personalized recommendations in this space.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Only %{amount_of_time} left to watch this.</string>
   <string name="Opens_comments" formatted="false">Opens comments.</string>
@@ -242,14 +256,18 @@ from friends yet.</string>
   <string name="Pledged_on_date" formatted="false">&lt;b>Pledged&lt;/b> on %{pledge_date}</string>
   <string name="Popular" formatted="false">Popular</string>
   <string name="Popular_Projects" formatted="false">Popular Projects</string>
+  <string name="Preparing_your_personal_data" formatted="false">Preparing your personal data...</string>
   <string name="Privacy" formatted="false">Privacy</string>
   <string name="Private_profile" formatted="false">Private profile</string>
   <string name="Private_profile_more_info" formatted="false">Private profile more info</string>
   <string name="Private_profile_more_info_content" formatted="false">Kickstarter profiles are private by default. To make your profile public and visible to the world, turn this off.</string>
   <string name="Project_Cancelled" formatted="false">Project Cancelled.</string>
   <string name="Project_Suspended" formatted="false">Project Suspended.</string>
+  <string name="Project_activity" formatted="false">Project activity</string>
   <string name="Project_cancelled" formatted="false">Project cancelled</string>
+  <string name="Project_reminders" formatted="false">Project reminders</string>
   <string name="Project_saved" formatted="false">Project saved.</string>
+  <string name="Project_updates" formatted="false">Project updates</string>
   <string name="Projects_We_Love" formatted="false">Projects We Love</string>
   <string name="Projects_youve_backed" formatted="false">Projects you\'ve backed</string>
   <string name="Projects_youve_launched" formatted="false">Projects you\'ve launched</string>
@@ -285,6 +303,7 @@ daring ideas.</string>
   <string name="Reward_delivered" formatted="false">Reward delivered?</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Reward&lt;/b> estimated for delivery in %{delivery_date}</string>
   <string name="Reward_selected" formatted="false">Reward selected</string>
+  <string name="Reward_surveys" formatted="false">Reward surveys</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} rewards:</string>
   <string name="Rewards_count_rewards_colon_many" formatted="false">%{rewards_count} rewards:</string>
   <string name="Rewards_count_rewards_colon_one" formatted="false">%{rewards_count} reward:</string>
@@ -317,6 +336,7 @@ daring ideas.</string>
   <string name="Ships_to" formatted="false">Ships to:</string>
   <string name="Show_password" formatted="false">Show password</string>
   <string name="Shows_list_of_subcategories" formatted="false">Shows list of subcategories.</string>
+  <string name="Sign_up_newsletter" formatted="false">Sign up for Projects We Love to receive a weekly mix of noteworthy projects, handpicked by our team.</string>
   <string name="Signs_up_with_Email" formatted="false">Signs up with Email.</string>
   <string name="Something_catch_your_eye" formatted="false">Something\n
 catch your eye?</string>
@@ -325,6 +345,7 @@ catch your eye?</string>
   <string name="Starting_soon" formatted="false">Starting soon</string>
   <string name="Status" formatted="false">Status</string>
   <string name="Stay_up_to_date" formatted="false">Stay up to date?</string>
+  <string name="Stay_up_to_date_newsletter" formatted="false">Stay up to date with our favorite projects, and any news and events that are on our radar.</string>
   <string name="Stay_updated_on_this_project" formatted="false">Stay updated on this project?</string>
   <string name="Subscribe" formatted="false">Subscribe</string>
   <string name="Subscribed" formatted="false">Subscribed</string>
@@ -1084,15 +1105,24 @@ Let\'s change that!</string>
   <string name="profile_settings_logout_alert_title" formatted="false">Log out</string>
   <string name="profile_settings_navbar_title" formatted="false">Settings</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notifications</string>
+  <string name="profile_settings_newsletter_alumni" formatted="false">Kickstarter Alumni</string>
+  <string name="profile_settings_newsletter_alumni_newsletter" formatted="false">Sign up to receive monthly emails featuring tips and resources for continuing work on your creative project, interviews with Kickstarter creators, invites to events, and more.</string>
   <string name="profile_settings_newsletter_arts" formatted="false">Arts &amp; Culture News</string>
+  <string name="profile_settings_newsletter_arts_news" formatted="false">Arts News</string>
+  <string name="profile_settings_newsletter_arts_news_newsletter" formatted="false">Discover new projects and ideas from established and emerging artists, handpicked each month by Kickstarter\'s Arts team.</string>
   <string name="profile_settings_newsletter_film" formatted="false">Kickstarter Films</string>
+  <string name="profile_settings_newsletter_films_newsletter" formatted="false">Sign up for a monthly newsletter curated by Kickstarter\'s Film team, highlighting new projects, creator stories, and events on their radar.</string>
   <string name="profile_settings_newsletter_games" formatted="false">Kickstarter Loves Games</string>
-  <string name="profile_settings_newsletter_happening" formatted="false">Happening Now</string>
+  <string name="profile_settings_newsletter_happening" formatted="false">Happening</string>
+  <string name="profile_settings_newsletter_happening_now" formatted="false">Happening Now</string>
   <string name="profile_settings_newsletter_invent" formatted="false">Invent</string>
+  <string name="profile_settings_newsletter_news_event" formatted="false">News &amp; Events</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">We\'ve sent a confirmation email to the address associated with your account! Please check your email in order to confirm that you\'d like to subscribe to %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">One final step!</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Kickstarter News and Events</string>
   <string name="profile_settings_newsletter_publishing" formatted="false">Kickstarter Reads</string>
+  <string name="profile_settings_newsletter_publishing_newsletter" formatted="false">Sign up for a monthly newsletter from Kickstarter\'s Publishing team highlighting great new projects, creator stories, and literary events on their radar.</string>
+  <string name="profile_settings_newsletter_subscribe_all" formatted="false">Subscribe to all</string>
   <string name="profile_settings_newsletter_title" formatted="false">Newsletters</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Projects We Love</string>
   <string name="profile_settings_rating_message" formatted="false">Thanks for using the Kickstarter app.\n

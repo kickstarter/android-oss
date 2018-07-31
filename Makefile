@@ -14,7 +14,7 @@ submodules:
 secrets:
 	# Copy java secrets over. Fallback to example secrets if they don't exist.
 	-@rm -rf vendor/native-secrets
-	-@git clone -@git clone git@github.com:kickstarter/native-secrets.git vendor/native-secrets 2>/dev/null || echo '(Skipping secrets.)'
+	-@git clone git@github.com:kickstarter/native-secrets.git vendor/native-secrets 2>/dev/null || echo '(Skipping secrets.)'
 
 	cp vendor/native-secrets/android/Secrets.java app/src/main/java/com/kickstarter/libs/utils/Secrets.java \
 		|| cp app/src/main/java/com/kickstarter/libs/utils/Secrets.java.example app/src/main/java/com/kickstarter/libs/utils/Secrets.java

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
+
+
+  <LinearLayout
+    android:id="@+id/new_help_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ksr_grey_100"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <include layout="@layout/help_toolbar" />
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+          android:id="@+id/email_card"
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_2">
+
+          <LinearLayout
+            style="@style/SettingsSingleRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+              android:text="Email"
+              android:layout_marginBottom="@dimen/grid_1"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content" />
+
+            <TextView
+              android:id="@+id/email_address_text_view"
+              style="@style/CalloutPrimary"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="User's Email Address" />
+          </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/change_password_card"
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_2">
+
+          <LinearLayout
+            style="@style/SettingsSingleRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+              style="@style/CalloutPrimary"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="Change Password" />
+          </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/privacy_card"
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_2">
+
+          <LinearLayout
+            style="@style/SettingsSingleRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+              style="@style/CalloutPrimary"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@string/Privacy" />
+          </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/payment_methods_card"
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_2">
+
+          <LinearLayout
+            style="@style/SettingsSingleRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+              style="@style/CalloutPrimary"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="Payment Methods" />
+          </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/currency_card"
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_2">
+
+          <LinearLayout
+            style="@style/SettingsSingleRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Currency" />
+
+            <Spinner
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"/>
+
+          </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/shipping_addresses_card"
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_2">
+
+          <LinearLayout
+            style="@style/SettingsSingleRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+              style="@style/CalloutPrimary"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="Shipping Addresses" />
+          </LinearLayout>
+        </LinearLayout>
+
+      </LinearLayout>
+
+    </ScrollView>
+
+  </LinearLayout>
+
+</layout>
+

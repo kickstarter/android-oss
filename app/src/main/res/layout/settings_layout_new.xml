@@ -46,7 +46,6 @@
             <LinearLayout
               android:layout_width="match_parent"
               android:layout_height="72dp"
-              android:foreground="drawable/click_indicator_light"
               android:orientation="horizontal">
 
               <ImageView
@@ -84,12 +83,19 @@
 
             </LinearLayout>
 
-            <TextView
-              style="@style/SettingsSingleRow"
-              android:onClick="@{() -> viewModel.newsletterClick()}"
-              android:text="Change Password" />
           </LinearLayout>
 
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/account_card"
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_2"
+          android:onClick="@{() -> viewModel.accountClick()}">
+
+          <TextView
+            style="@style/SettingsSingleRow"
+            android:text="Account" />
         </LinearLayout>
 
         <LinearLayout

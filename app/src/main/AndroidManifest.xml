@@ -129,7 +129,7 @@
     <activity
       android:name=".ui.activities.HelpActivity"
       android:theme="@style/HelpActivity" />
-    <activity android:name=".ui.activities.HelpNewActivity"/>
+    <activity android:name=".ui.activities.HelpNewActivity" />
     <activity
       android:name=".ui.activities.HelpActivity$CookiePolicy"
       android:theme="@style/HelpActivity" />
@@ -188,9 +188,9 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.ProfileActivity" />
     </activity>
-    <activity android:name=".ui.activities.NotificationsActivity"/>
-    <activity android:name=".ui.activities.NewsletterActivity"/>
-    <activity android:name=".ui.activities.PrivacyActivity"/>
+    <activity android:name=".ui.activities.NotificationsActivity" />
+    <activity android:name=".ui.activities.NewsletterActivity" />
+    <activity android:name=".ui.activities.PrivacyActivity" />
     <activity
       android:name=".ui.activities.ProjectNotificationSettingsActivity"
       android:parentActivityName=".ui.activities.SettingsActivity">
@@ -411,6 +411,9 @@
     <meta-data
       android:name="com.google.android.gms.wallet.api.enabled"
       android:value="true" />
+
+    <activity android:name=".ui.activities.AccountActivity">
+    </activity>
   </application>
 
 </manifest>

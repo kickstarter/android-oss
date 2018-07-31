@@ -7,12 +7,11 @@ import com.kickstarter.BuildConfig
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.ui.activities.HelpNewActivity
-import com.kickstarter.ui.activities.NewsletterActivity
-import com.kickstarter.ui.activities.NotificationsActivity
-import com.kickstarter.ui.activities.PrivacyActivity
+import com.kickstarter.ui.activities.*
 
 class SettingsNewViewModel(private val context: Context, private val environment: Environment) : BaseObservable() {
+
+    fun accountClick() = context.startActivity(Intent(context, AccountActivity::class.java))
 
     fun getVersion() = BuildConfig.VERSION_NAME
 

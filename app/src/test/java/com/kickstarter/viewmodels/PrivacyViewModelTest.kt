@@ -37,7 +37,7 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSettingsViewModel_optIntoFollowing() {
+    fun testOptIntoFollowing() {
         val user = UserFactory.user()
 
         setUpEnvironment(user)
@@ -52,7 +52,7 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSettingsViewModel_optIntoFollowing_userCancelOptOut() {
+    fun testOptIntoFollowing_userCancelsOptOut() {
         val user = UserFactory.socialUser()
 
         setUpEnvironment(user)
@@ -69,7 +69,7 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSettingsViewModel_optIntoFollowing_userConfirmOptOut() {
+    fun testOptIntoFollowing_userConfirmsOptOut() {
         val user = UserFactory.socialUser()
 
         setUpEnvironment(user)
@@ -87,7 +87,7 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testSettingsViewModel_optedOutOfRecommendations() {
+    fun testOptedOutOfRecommendations() {
         val user = UserFactory.noRecommendations()
 
         setUpEnvironment(user)

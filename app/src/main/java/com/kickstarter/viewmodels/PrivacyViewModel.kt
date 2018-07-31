@@ -129,23 +129,15 @@ interface PrivacyViewModel {
             this.userInput.onNext(this.userOutput.value.toBuilder().showPublicProfile(!checked).build())
         }
 
-        override fun hideConfirmFollowingOptOutPrompt(): Observable<Void> {
-            return this.hideConfirmFollowingOptOutPrompt
-        }
+        override fun hideConfirmFollowingOptOutPrompt(): Observable<Void> = this.hideConfirmFollowingOptOutPrompt
 
-        override fun showConfirmFollowingOptOutPrompt(): Observable<Void> {
-            return this.showConfirmFollowingOptOutPrompt
-        }
+        override fun showConfirmFollowingOptOutPrompt(): Observable<Void> = this.showConfirmFollowingOptOutPrompt
 
-        override fun user(): Observable<User> {
-            return this.userOutput
-        }
+        override fun user(): Observable<User> = this.userOutput
 
-        override fun unableToSavePreferenceError(): Observable<String> {
-            return this.unableToSavePreferenceError
-                    .takeUntil(this.updateSuccess)
-                    .map { _ -> null }
-        }
+        override fun unableToSavePreferenceError(): Observable<String> = this.unableToSavePreferenceError
+                .takeUntil(this.updateSuccess)
+                .map { _ -> null }
 
         private fun success(user: User) {
             this.currentUser.refresh(user)

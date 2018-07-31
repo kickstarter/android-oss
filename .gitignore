@@ -78,3 +78,5 @@ vendor/native-secrets
 app/src/**/google-services.json
 app/src/main/java/com/kickstarter/libs/TLSSocketFactory.java
 app/src/main/java/com/kickstarter/libs/utils/SocketUtils.java
+app/src/main/res/values/crashlytics_key.xml
+fabric.properties

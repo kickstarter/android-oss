@@ -157,7 +157,6 @@ afterEvaluate {
     buildFabricPropertiesIfNeeded()
 }
 
-
 /**
  *
  * build fabric properties file, if missing

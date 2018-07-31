@@ -132,7 +132,7 @@
   <dimen name="text_view_corner_radius">@dimen/grid_1_half</dimen>
 
   <!-- Toolbars -->
-  <dimen name="toolbar_elevation">@dimen/grid_1_half</dimen>
+  <dimen name="ks_toolbar_elevation">@dimen/grid_1_half</dimen>
 
   <!-- Activity feed view -->
   <dimen name="activity_feed_view_margin_top">0dp</dimen>

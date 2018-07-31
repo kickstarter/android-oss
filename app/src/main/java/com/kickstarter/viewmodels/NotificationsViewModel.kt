@@ -98,16 +98,6 @@ interface NotificationsViewModel {
                     .subscribe(this.userOutput)
         }
 
-        private fun success(user: User) {
-            this.currentUser.refresh(user)
-            this.updateSuccess.onNext(null)
-        }
-
-        private fun updateSettings(user: User): Observable<User> {
-            return this.client.updateUserSettings(user)
-                    .compose(Transformers.pipeErrorsTo(this.unableToSavePreferenceError))
-        }
-
         override fun notifyMobileOfFollower(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfFollower(checked).build())
         }
@@ -148,6 +138,16 @@ interface NotificationsViewModel {
             return this.unableToSavePreferenceError
                     .takeUntil(this.updateSuccess)
                     .map { _ -> null }
+        }
+
+        private fun success(user: User) {
+            this.currentUser.refresh(user)
+            this.updateSuccess.onNext(null)
+        }
+
+        private fun updateSettings(user: User): Observable<User> {
+            return this.client.updateUserSettings(user)
+                    .compose(Transformers.pipeErrorsTo(this.unableToSavePreferenceError))
         }
     }
 }

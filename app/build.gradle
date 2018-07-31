@@ -200,7 +200,7 @@ final rx_binding_version = "0.3.0"
 final rx_java_version = "1.1.5"
 final rx_lifecycle_version = "0.3.0"
 final stripe_version = "6.1.2"
-final support_version = "27.0.2"
+final support_version = "27.1.1"
 final support_annotations_version = "27.1.1"
 final timber_version = "3.0.1"
 

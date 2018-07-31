@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageButton;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -35,8 +36,6 @@ import com.kickstarter.ui.fragments.DiscoveryFragment;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.views.SortTabLayout;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
-
-import net.hockeyapp.android.ExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -235,7 +234,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
         // Show dialog to allow users to install, update, or otherwise enable Google Play services.
         GooglePlayServicesUtil.getErrorDialog(e.getConnectionStatusCode(), this, 0);
       } catch (GooglePlayServicesNotAvailableException e) {
-        ExceptionHandler.saveException(e, null);
+        Crashlytics.logException(e);
       }
     }
   }

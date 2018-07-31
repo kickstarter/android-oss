@@ -52,7 +52,7 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testOptIntoFollowing_userCancelsOptOut() {
+    fun testHideConfirmFollowingOptOutPrompt_userCancelsOptOut() {
         val user = UserFactory.socialUser()
 
         setUpEnvironment(user)
@@ -69,7 +69,7 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testOptIntoFollowing_userConfirmsOptOut() {
+    fun testHideConfirmFollowingOptOutPrompt_userConfirmsOptOut() {
         val user = UserFactory.socialUser()
 
         setUpEnvironment(user)

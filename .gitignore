@@ -68,6 +68,7 @@ config/*.yml
 app/src/main/java/com/kickstarter/libs/utils/Secrets.java
 lib/milkrun/secrets.rb
 app/src/main/assets/fonts/ss-kickstarter.otf
+app/src/main/res/values/crashlytics_key.xml
 app/src/main/res/values/koala_endpoint.xml
 app/src/debug/res/values/koala_endpoint.xml
 config/koala_endpoint.xml
@@ -78,3 +79,4 @@ vendor/native-secrets
 app/src/**/google-services.json
 app/src/main/java/com/kickstarter/libs/TLSSocketFactory.java
 app/src/main/java/com/kickstarter/libs/utils/SocketUtils.java
+fabric.properties

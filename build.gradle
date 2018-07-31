@@ -4,12 +4,14 @@ buildscript {
     repositories {
         jcenter()
         google()
+        maven { url 'https://maven.fabric.io/public' }
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.3'
         classpath 'com.google.gms:google-services:4.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 
@@ -18,6 +20,8 @@ allprojects {
         google()
         jcenter()
         mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
+
         maven {
             url 'https://oss.sonatype.org/content/repositories/snapshots/'
         }

@@ -374,8 +374,6 @@
       android:exported="true"
       tools:ignore="ExportedContentProvider" />
 
-    <activity android:name="net.hockeyapp.android.UpdateActivity" />
-
     <!-- See https://mixpanel.com/help/reference/android#referrer_tracking -->
     <receiver
       android:name="com.mixpanel.android.mpmetrics.InstallReferrerReceiver"
@@ -391,6 +389,7 @@
     <meta-data
       android:name="com.facebook.sdk.ApplicationId"
       android:value="@string/facebook_app_id" />
+
 
     <!-- Mixpanel configuration, see https://github.com/mixpanel/mixpanel-android/blob/87b85d4b5917cdf94118f72b1538b489546a53ec/src/main/java/com/mixpanel/android/mpmetrics/MPConfig.java -->
     <meta-data

@@ -45,6 +45,9 @@ interface NotificationsViewModel {
     interface Outputs {
 
         /** Emits user containing settings state.  */
+        fun shouldHideCreatorNotifications(): Observable<Boolean>
+
+        /** Emits user containing settings state.  */
         fun user(): Observable<User>
     }
 
@@ -55,6 +58,7 @@ interface NotificationsViewModel {
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<NotificationsActivity>(environment), Inputs, Outputs, Errors {
         private val userInput = PublishSubject.create<User>()
 
+        private val shouldHideCreatorNotifications = BehaviorSubject.create<Boolean>()
         private val userOutput = BehaviorSubject.create<User>()
         private val updateSuccess = PublishSubject.create<Void>()
 
@@ -128,6 +132,10 @@ interface NotificationsViewModel {
 
         override fun notifyOfUpdates(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfUpdates(checked).build())
+        }
+
+        override fun shouldHideCreatorNotifications(): Observable<Boolean> {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
         override fun user(): Observable<User> {

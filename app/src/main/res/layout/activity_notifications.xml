@@ -117,6 +117,129 @@
       </LinearLayout>
 
       <LinearLayout
+        android:id="@+id/creator_notifications_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <TextView
+          style="@style/SettingsSectionTitle"
+          android:layout_marginBottom="@dimen/grid_2"
+          tools:text="@string/profile_settings_creator_title" />
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:text="@string/Pledge_activity" />
+
+          <ImageButton
+            android:id="@+id/pledge_activity_mail_icon"
+            style="@style/KSSettingsMailIcon"
+            android:contentDescription="@null" />
+
+          <Space
+            android:layout_width="@dimen/grid_2"
+            android:layout_height="wrap_content" />
+
+          <ImageButton
+            android:id="@+id/pledge_activity_phone_icon"
+            style="@style/KSSettingsPhoneIcon"
+            android:contentDescription="@null" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_creator_comments" />
+
+          <ImageButton
+            android:id="@+id/comments_mail_icon"
+            style="@style/KSSettingsMailIcon"
+            android:contentDescription="@null" />
+
+          <Space
+            android:layout_width="@dimen/grid_2"
+            android:layout_height="wrap_content" />
+
+          <ImageButton
+            android:id="@+id/comments_phone_icon"
+            style="@style/KSSettingsPhoneIcon"
+            android:contentDescription="@null" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_creator_likes" />
+
+          <ImageButton
+            android:id="@+id/likes_mail_icon"
+            style="@style/KSSettingsMailIcon"
+            android:contentDescription="@null" />
+
+          <Space
+            android:layout_width="@dimen/grid_2"
+            android:layout_height="wrap_content" />
+
+          <ImageButton
+            android:id="@+id/likes_phone_icon"
+            style="@style/KSSettingsPhoneIcon"
+            android:contentDescription="@null" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:text="@string/Creator_tips" />
+
+          <ImageButton
+            android:id="@+id/creator_tips_mail_icon"
+            style="@style/KSSettingsMailIcon"
+            android:contentDescription="@null" />
+
+          <Space
+            android:layout_width="@dimen/grid_2"
+            android:layout_height="wrap_content" />
+
+          <ImageButton
+            android:id="@+id/creator_tips_phone_icon"
+            style="@style/KSSettingsPhoneIcon"
+            android:contentDescription="@null" />
+
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"

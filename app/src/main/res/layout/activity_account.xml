@@ -15,7 +15,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
-      <include layout="@layout/help_toolbar" />
+      <include layout="@layout/account_toolbar" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -41,10 +41,10 @@
             android:orientation="vertical">
 
             <TextView
-              android:text="Email"
-              android:layout_marginBottom="@dimen/grid_1"
               android:layout_width="wrap_content"
-              android:layout_height="wrap_content" />
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/grid_1"
+              android:text="Email" />
 
             <TextView
               android:id="@+id/email_address_text_view"
@@ -75,7 +75,7 @@
         </LinearLayout>
 
         <LinearLayout
-          android:id="@+id/privacy_card"
+          android:id="@+id/privacy_row"
           style="@style/SettingsLinearRow"
           android:layout_marginTop="@dimen/grid_2">
 
@@ -130,7 +130,7 @@
 
             <Spinner
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"/>
+              android:layout_height="wrap_content" />
 
           </LinearLayout>
         </LinearLayout>

@@ -2,13 +2,6 @@
 <layout
   xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <data>
-
-    <variable
-      name="viewModel"
-      type="com.kickstarter.viewmodels.SettingsNewViewModel" />
-  </data>
-
   <LinearLayout
     android:id="@+id/new_settings_layout"
     android:layout_width="match_parent"
@@ -39,6 +32,7 @@
           android:layout_marginTop="@dimen/grid_2">
 
           <LinearLayout
+            android:id="@+id/edit_profile_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -48,13 +42,12 @@
               android:layout_height="72dp"
               android:orientation="horizontal">
 
-              <ImageView
+              <com.kickstarter.ui.views.RoundedImageView
                 android:id="@+id/profile_picture_image_view"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="@dimen/activity_horizontal_margin"
-                android:src="@color/ksr_green_500" />
+                android:layout_marginTop="@dimen/activity_horizontal_margin" />
 
               <LinearLayout
                 android:layout_width="0dp"
@@ -69,7 +62,6 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:gravity="center_vertical"
-                  android:onClick="@{() -> viewModel.notificationsClick()}"
                   android:text="Edit Profile" />
 
                 <TextView
@@ -88,10 +80,9 @@
         </LinearLayout>
 
         <LinearLayout
-          android:id="@+id/account_card"
+          android:id="@+id/account_row"
           style="@style/SettingsLinearRow"
-          android:layout_marginTop="@dimen/grid_2"
-          android:onClick="@{() -> viewModel.accountClick()}">
+          android:layout_marginTop="@dimen/grid_2">
 
           <TextView
             style="@style/SettingsSingleRow"
@@ -108,15 +99,13 @@
             android:orientation="vertical">
 
             <TextView
-              android:id="@+id/notification_card"
+              android:id="@+id/notification_row"
               style="@style/SettingsSingleRow"
-              android:onClick="@{() -> viewModel.notificationsClick()}"
               android:text="@string/Notifications" />
 
             <TextView
-              android:id="@+id/newsletters_card"
+              android:id="@+id/newsletters_row"
               style="@style/SettingsSingleRow"
-              android:onClick="@{() -> viewModel.newsletterClick()}"
               android:text="@string/Newsletters" />
           </LinearLayout>
 
@@ -133,25 +122,22 @@
             android:orientation="vertical">
 
             <TextView
-              android:id="@+id/help_card"
+              android:id="@+id/help_row"
               style="@style/SettingsSingleRow"
-              android:onClick="@{() -> viewModel.helpClick()}"
               android:text="@string/Help" />
 
             <TextView
-              android:id="@+id/privacy_card"
+              android:id="@+id/privacy_row"
               style="@style/SettingsSingleRow"
-              android:onClick="@{() -> viewModel.privacyClick()}"
               android:text="@string/Privacy" />
           </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
-          android:id="@+id/log_out_card"
+          android:id="@+id/log_out_row"
           style="@style/SettingsLinearRow"
-          android:layout_marginBottom="@dimen/grid_3"
-          android:onClick="@{() -> viewModel.logoutClick()}">
+          android:layout_marginBottom="@dimen/grid_3">
 
           <TextView
             style="@style/SettingsSingleRow"
@@ -160,10 +146,9 @@
         </LinearLayout>
 
         <LinearLayout
-          android:id="@+id/rate_us_card"
+          android:id="@+id/rate_us_row"
           style="@style/SettingsLinearRow"
-          android:layout_marginBottom="@dimen/grid_3"
-          android:onClick="@{() -> viewModel.rateUsClick()}">
+          android:layout_marginBottom="@dimen/grid_3">
 
           <LinearLayout
             style="@style/SettingsSingleRow"
@@ -180,8 +165,7 @@
             <TextView
               android:id="@+id/version_name_text_view"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:text="@{viewModel.version}" />
+              android:layout_height="wrap_content" />
           </LinearLayout>
 
         </LinearLayout>

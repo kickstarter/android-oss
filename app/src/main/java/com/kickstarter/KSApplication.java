@@ -7,6 +7,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.ApiCapabilities;
@@ -19,8 +20,7 @@ import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
 import net.danlew.android.joda.JodaTimeAndroid;
-import net.hockeyapp.android.CrashManager;
-import net.hockeyapp.android.CrashManagerListener;
+
 
 import org.joda.time.DateTime;
 
@@ -32,6 +32,7 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 public class KSApplication extends MultiDexApplication {
@@ -62,6 +63,7 @@ public class KSApplication extends MultiDexApplication {
     }
 
     JodaTimeAndroid.init(this);
+    Fabric.with(this, new Crashlytics());
 
     this.component = DaggerApplicationComponent.builder()
       .applicationModule(new ApplicationModule(this))
@@ -99,11 +101,6 @@ public class KSApplication extends MultiDexApplication {
       ? Secrets.HockeyAppId.EXTERNAL
       : Secrets.HockeyAppId.INTERNAL;
 
-    CrashManager.register(this, appId, new CrashManagerListener() {
-      public boolean shouldAutoUploadCrashes() {
-        return true;
-      }
-    });
   }
 
 

@@ -25,6 +25,8 @@
       android:layout_height="match_parent">
 
       <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -46,11 +48,13 @@
               android:layout_marginBottom="@dimen/grid_1"
               android:text="Email" />
 
-            <TextView
+            <EditText
               android:id="@+id/email_address_text_view"
               style="@style/CalloutPrimary"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:maxLines="1"
+              android:inputType="textEmailAddress"
               android:text="User's Email Address" />
           </LinearLayout>
         </LinearLayout>

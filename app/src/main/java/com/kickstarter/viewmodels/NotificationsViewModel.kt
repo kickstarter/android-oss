@@ -6,6 +6,7 @@ import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
@@ -45,7 +46,7 @@ interface NotificationsViewModel {
     interface Outputs {
 
         /** Emits user containing settings state.  */
-        fun shouldHideCreatorNotifications(): Observable<Boolean>
+        fun creatorNotificationsAreGone(): Observable<Boolean>
 
         /** Emits user containing settings state.  */
         fun user(): Observable<User>
@@ -58,7 +59,7 @@ interface NotificationsViewModel {
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<NotificationsActivity>(environment), Inputs, Outputs, Errors {
         private val userInput = PublishSubject.create<User>()
 
-        private val shouldHideCreatorNotifications = BehaviorSubject.create<Boolean>()
+        private val creatorNotificationsAreGone : Observable<Boolean>
         private val userOutput = BehaviorSubject.create<User>()
         private val updateSuccess = PublishSubject.create<Void>()
 
@@ -83,6 +84,10 @@ interface NotificationsViewModel {
                     .take(1)
                     .compose(bindToLifecycle())
                     .subscribe({ this.userOutput.onNext(it) })
+
+            this.creatorNotificationsAreGone = this.currentUser.observable()
+                    .map { u -> IntegerUtils.isNonZero(u.createdProjectsCount())  }
+                    .distinctUntilChanged()
 
             this.userInput
                     .concatMap<User>({ this.updateSettings(it) })
@@ -134,19 +139,13 @@ interface NotificationsViewModel {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfUpdates(checked).build())
         }
 
-        override fun shouldHideCreatorNotifications(): Observable<Boolean> {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
+        override fun creatorNotificationsAreGone(): Observable<Boolean> = this.creatorNotificationsAreGone
 
-        override fun user(): Observable<User> {
-            return this.userOutput
-        }
+        override fun user(): Observable<User> = this.userOutput
 
-        override fun unableToSavePreferenceError(): Observable<String> {
-            return this.unableToSavePreferenceError
+        override fun unableToSavePreferenceError(): Observable<String> =  this.unableToSavePreferenceError
                     .takeUntil(this.updateSuccess)
                     .map { _ -> null }
-        }
 
         private fun success(user: User) {
             this.currentUser.refresh(user)

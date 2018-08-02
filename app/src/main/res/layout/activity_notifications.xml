@@ -61,6 +61,7 @@
           android:text="@string/profile_settings_backer_title" />
 
         <LinearLayout
+          android:id="@+id/project_updates_row"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginEnd="@dimen/activity_horizontal_margin"
@@ -128,6 +129,7 @@
           android:text="@string/profile_settings_social_title" />
 
         <LinearLayout
+          android:id="@+id/messages_notification_row"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginEnd="@dimen/activity_horizontal_margin"
@@ -155,6 +157,7 @@
         </LinearLayout>
 
         <LinearLayout
+          android:id="@+id/new_followers_row"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginEnd="@dimen/activity_horizontal_margin"
@@ -181,6 +184,7 @@
         </LinearLayout>
 
         <LinearLayout
+          android:id="@+id/friends_back_project_row"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginEnd="@dimen/activity_horizontal_margin"

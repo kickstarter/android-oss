@@ -35,6 +35,16 @@
         android:orientation="vertical">
 
         <LinearLayout
+          android:id="@+id/account_row"
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_2">
+
+          <TextView
+            style="@style/SettingsSingleRow"
+            android:text="@string/Account" />
+        </LinearLayout>
+
+        <LinearLayout
           style="@style/SettingsLinearRow"
           android:layout_marginTop="@dimen/grid_2">
 

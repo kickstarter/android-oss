@@ -11,9 +11,11 @@ import android.view.animation.Interpolator
 
 object AnimationUtils {
 
+   const val ALPHA = "alpha"
+   const val INITIAL_SCALE = 1.0f
+   const val MAX_SCALE = 1.3f
    const val SCALE_X = "scaleX"
    const val SCALE_Y = "scaleY"
-   const val ALPHA = "alpha"
 
   @JvmOverloads
   fun disappearAnimation(duration: Long = 300L): Animation {
@@ -63,7 +65,7 @@ object AnimationUtils {
     val crossFadeAnimatorSet = AnimatorSet()
     val fadeOutAndScale = fadeOutAndScale(visibleView, crossDuration, startDelay, interpolator)
     val fadeInAndScale = fadeInAndScale(hiddenView, crossDuration, startDelay, interpolator)
-    
+
     crossFadeAnimatorSet.playTogether(fadeOutAndScale, fadeInAndScale)
 
     return crossFadeAnimatorSet
@@ -77,5 +79,18 @@ object AnimationUtils {
     val endAnimation = crossFade(hiddenView, visibleView, crossDuration, startDelay, interpolator)
     crossFadeAndReverseAnimatorSet.playSequentially(startAnimation, endAnimation)
     return crossFadeAndReverseAnimatorSet
+  }
+
+  fun notificationBounceAnimation(view: View, secondView: View) {
+    val pvhX = PropertyValuesHolder.ofFloat(View.SCALE_X, INITIAL_SCALE, MAX_SCALE, INITIAL_SCALE)
+    val phvY = PropertyValuesHolder.ofFloat(View.SCALE_Y, INITIAL_SCALE, MAX_SCALE, INITIAL_SCALE)
+    val phoneScaleAnimation = ObjectAnimator.ofPropertyValuesHolder(view, pvhX, phvY).setDuration(200)
+    phoneScaleAnimation.interpolator = AccelerateDecelerateInterpolator()
+    val mailScaleAnimation = ObjectAnimator.ofPropertyValuesHolder(secondView, pvhX, phvY).setDuration(200)
+    mailScaleAnimation.interpolator = AccelerateDecelerateInterpolator()
+    val animatorSet = AnimatorSet()
+    animatorSet.play(phoneScaleAnimation)
+    animatorSet.play(mailScaleAnimation).after(100)
+    animatorSet.start()
   }
 }

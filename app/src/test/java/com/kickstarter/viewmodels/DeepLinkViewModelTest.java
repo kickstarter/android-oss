@@ -43,6 +43,21 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testProjectPreviewLink_startsBrowser() {
+    setUpEnvironment();
+
+    final String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?token=beepboop";
+    this.vm.intent(intentWithData(url));
+    this.vm.packageManager(application().getPackageManager());
+
+    this.requestPackageManager.assertValueCount(1);
+    this.startBrowser.assertValueCount(1);
+    this.startDiscoveryActivity.assertNoValues();
+    this.startProjectActivity.assertNoValues();
+    this.koalaTest.assertNoValues();
+  }
+
+  @Test
   public void testProjectDeepLink_startsProjectActivity() {
     setUpEnvironment();
 

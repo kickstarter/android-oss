@@ -32,7 +32,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
 
     private var notifyMobileOfBackings: Boolean = false
     private var notifyMobileOfComments: Boolean = false
-    private var notifyMobileOfCreatorTips: Boolean = false
+    private var notifyMobileOfCreatorEdu: Boolean = false
     private var notifyMobileOfFollower: Boolean = false
     private var notifyMobileOfFriendActivity: Boolean = false
     private var notifyMobileOfMessages: Boolean = false
@@ -40,7 +40,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     private var notifyMobileOfUpdates: Boolean = false
     private var notifyOfBackings: Boolean = false
     private var notifyOfComments: Boolean = false
-    private var notifyOfCreatorTips: Boolean = false
+    private var notifyOfCreatorEdu: Boolean = false
     private var notifyOfFollower: Boolean = false
     private var notifyOfFriendActivity: Boolean = false
     private var notifyOfMessages: Boolean = false
@@ -65,6 +65,30 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             startProjectNotificationsSettingsActivity()
         }
 
+        backings_mail_icon.setOnClickListener {
+            this.viewModel.inputs.notifyOfBackings(!this.notifyOfBackings)
+        }
+
+        backings_phone_icon.setOnClickListener {
+            this.viewModel.inputs.notifyMobileOfBackings(!this.notifyMobileOfBackings)
+        }
+
+        comments_mail_icon.setOnClickListener {
+            this.viewModel.inputs.notifyOfComments(!this.notifyOfComments)
+        }
+
+        comments_phone_icon.setOnClickListener {
+            this.viewModel.inputs.notifyMobileOfComments(!this.notifyMobileOfComments)
+        }
+
+        creator_edu_mail_icon.setOnClickListener {
+            this.viewModel.inputs.notifyOfCreatorEdu(!this.notifyOfCreatorEdu)
+        }
+
+        creator_edu_phone_icon.setOnClickListener {
+            this.viewModel.inputs.notifyMobileOfCreatorEdu(!this.notifyMobileOfCreatorEdu)
+        }
+
         friend_activity_mail_icon.setOnClickListener{
             this.viewModel.inputs.notifyOfFriendActivity(!this.notifyOfFriendActivity)
         }
@@ -87,6 +111,14 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
 
         new_followers_phone_icon.setOnClickListener {
             this.viewModel.inputs.notifyMobileOfFollower(!this.notifyMobileOfFollower)
+        }
+
+        post_likes_mail_icon.setOnClickListener {
+            this.viewModel.inputs.notifyOfUpdates(!this.notifyOfPostLikes)
+        }
+
+        post_likes_phone_icon.setOnClickListener {
+            this.viewModel.inputs.notifyMobileOfUpdates(!this.notifyMobileOfPostLikes)
         }
 
         project_updates_mail_icon.setOnClickListener {
@@ -115,8 +147,8 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         this.notifyMobileOfBackings = isTrue(user.notifyMobileOfBackings())
         this.notifyOfBackings = isTrue(user.notifyOfBackings())
 
-        toggleImageButtonIconColor(pledge_activity_phone_icon, this.notifyMobileOfBackings, true)
-        toggleImageButtonIconColor(pledge_activity_mail_icon, this.notifyOfBackings)
+        toggleImageButtonIconColor(backings_phone_icon, this.notifyMobileOfBackings, true)
+        toggleImageButtonIconColor(backings_mail_icon, this.notifyOfBackings)
     }
 
     private fun displayCommentsNotificationSettings(user: User) {
@@ -128,11 +160,11 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     }
 
     private fun displayCreatorTipsNotificationSettings(user: User) {
-        this.notifyMobileOfCreatorTips = isTrue(user.notifyMobileOfCreatorTips())
-        this.notifyOfCreatorTips = isTrue(user.notifyOfCreatorTips())
+        this.notifyMobileOfCreatorEdu = isTrue(user.notifyMobileOfCreatorEdu())
+        this.notifyOfCreatorEdu = isTrue(user.notifyOfCreatorEdu())
 
-        toggleImageButtonIconColor(creator_tips_phone_icon, this.notifyMobileOfCreatorTips, true)
-        toggleImageButtonIconColor(creator_tips_mail_icon, this.notifyOfCreatorTips)
+        toggleImageButtonIconColor(creator_edu_phone_icon, this.notifyMobileOfCreatorEdu, true)
+        toggleImageButtonIconColor(creator_edu_mail_icon, this.notifyOfCreatorEdu)
     }
 
     private fun displayFollowerNotificationSettings(user: User) {
@@ -163,8 +195,8 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         this.notifyMobileOfPostLikes = isTrue(user.notifyMobileOfPostLikes())
         this.notifyOfPostLikes = isTrue(user.notifyOfPostLikes())
 
-        toggleImageButtonIconColor(likes_phone_icon, this.notifyMobileOfPostLikes, true)
-        toggleImageButtonIconColor(likes_mail_icon, this.notifyOfPostLikes)
+        toggleImageButtonIconColor(post_likes_phone_icon, this.notifyMobileOfPostLikes, true)
+        toggleImageButtonIconColor(post_likes_mail_icon, this.notifyOfPostLikes)
     }
 
     private fun displayUpdatesNotificationSettings(user: User) {

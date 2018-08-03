@@ -141,7 +141,7 @@
             android:text="@string/Pledge_activity" />
 
           <ImageButton
-            android:id="@+id/pledge_activity_mail_icon"
+            android:id="@+id/backings_mail_icon"
             style="@style/KSSettingsMailIcon"
             android:contentDescription="@null" />
 
@@ -150,7 +150,7 @@
             android:layout_height="wrap_content" />
 
           <ImageButton
-            android:id="@+id/pledge_activity_phone_icon"
+            android:id="@+id/backings_phone_icon"
             style="@style/KSSettingsPhoneIcon"
             android:contentDescription="@null" />
 
@@ -195,7 +195,7 @@
             android:text="@string/profile_settings_creator_likes" />
 
           <ImageButton
-            android:id="@+id/likes_mail_icon"
+            android:id="@+id/post_likes_mail_icon"
             style="@style/KSSettingsMailIcon"
             android:contentDescription="@null" />
 
@@ -204,7 +204,7 @@
             android:layout_height="wrap_content" />
 
           <ImageButton
-            android:id="@+id/likes_phone_icon"
+            android:id="@+id/post_likes_phone_icon"
             style="@style/KSSettingsPhoneIcon"
             android:contentDescription="@null" />
 
@@ -222,7 +222,7 @@
             android:text="@string/Creator_tips" />
 
           <ImageButton
-            android:id="@+id/creator_tips_mail_icon"
+            android:id="@+id/creator_edu_mail_icon"
             style="@style/KSSettingsMailIcon"
             android:contentDescription="@null" />
 
@@ -231,7 +231,7 @@
             android:layout_height="wrap_content" />
 
           <ImageButton
-            android:id="@+id/creator_tips_phone_icon"
+            android:id="@+id/creator_edu_phone_icon"
             style="@style/KSSettingsPhoneIcon"
             android:contentDescription="@null" />
 
@@ -331,7 +331,6 @@
         </LinearLayout>
 
       </LinearLayout>
-
 
     </LinearLayout>
 

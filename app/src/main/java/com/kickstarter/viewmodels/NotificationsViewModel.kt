@@ -18,6 +18,15 @@ import rx.subjects.PublishSubject
 interface NotificationsViewModel {
     interface Inputs {
 
+        /** Call when the notify mobile of pledge activity toggle changes.  */
+        fun notifyMobileOfBackings(checked: Boolean)
+
+        /** Call when the notify mobile of new comments toggle changes.  */
+        fun notifyMobileOfComments(checked: Boolean)
+
+        /** Call when the notify mobile of new comments toggle changes.  */
+        fun notifyMobileOfCreatorEdu(checked: Boolean)
+
         /** Call when the notify mobile of new followers toggle changes.  */
         fun notifyMobileOfFollower(checked: Boolean)
 
@@ -28,7 +37,19 @@ interface NotificationsViewModel {
         fun notifyMobileOfMessages(checked: Boolean)
 
         /** Call when the notify mobile of project updates toggle changes.  */
+        fun notifyMobileOfPostLikes(checked: Boolean)
+
+        /** Call when the notify mobile of project updates toggle changes.  */
         fun notifyMobileOfUpdates(checked: Boolean)
+
+        /** Call when the notify of pledge activity toggle changes.  */
+        fun notifyOfBackings(checked: Boolean)
+
+        /** Call when the notify of new comments toggle changes.  */
+        fun notifyOfComments(checked: Boolean)
+
+        /** Call when the notify of creator tips toggle changes.  */
+        fun notifyOfCreatorEdu(checked: Boolean)
 
         /** Call when the notify of new followers toggle changes.  */
         fun notifyOfFollower(checked: Boolean)
@@ -38,6 +59,9 @@ interface NotificationsViewModel {
 
         /** Call when the notify of messages toggle changes.  */
         fun notifyOfMessages(checked: Boolean)
+
+        /** Call when the notify of post likes toggle changes.  */
+        fun notifyOfPostLikes(checked: Boolean)
 
         /** Call when the notify of project updates toggle changes.  */
         fun notifyOfUpdates(checked: Boolean)
@@ -107,6 +131,18 @@ interface NotificationsViewModel {
                     .subscribe(this.userOutput)
         }
 
+        override fun notifyMobileOfBackings(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfBackings(checked).build())
+        }
+
+        override fun notifyMobileOfComments(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfComments(checked).build())
+        }
+
+        override fun notifyMobileOfCreatorEdu(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfCreatorEdu(checked).build())
+        }
+
         override fun notifyMobileOfFollower(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfFollower(checked).build())
         }
@@ -119,8 +155,24 @@ interface NotificationsViewModel {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfMessages(checked).build())
         }
 
+        override fun notifyMobileOfPostLikes(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfPostLikes(checked).build())
+        }
+
         override fun notifyMobileOfUpdates(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfUpdates(checked).build())
+        }
+
+        override fun notifyOfBackings(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfBackings(checked).build())
+        }
+
+        override fun notifyOfComments(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfComments(checked).build())
+        }
+
+        override fun notifyOfCreatorEdu(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfCreatorEdu(checked).build())
         }
 
         override fun notifyOfFollower(checked: Boolean) {
@@ -133,6 +185,10 @@ interface NotificationsViewModel {
 
         override fun notifyOfMessages(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfMessages(checked).build())
+        }
+
+        override fun notifyOfPostLikes(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfPostLikes(checked).build())
         }
 
         override fun notifyOfUpdates(checked: Boolean) {

@@ -8,13 +8,21 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class SettingsBody {
   public abstract int optedOutOfRecommendations();
+  public abstract boolean notifyMobileOfBackings();
+  public abstract boolean notifyMobileOfComments();
+  public abstract boolean notifyMobileOfCreatorEdu();
   public abstract boolean notifyMobileOfFollower();
   public abstract boolean notifyMobileOfFriendActivity();
   public abstract boolean notifyMobileOfMessages();
+  public abstract boolean notifyMobileOfPostLikes();
   public abstract boolean notifyMobileOfUpdates();
+  public abstract boolean notifyOfBackings();
+  public abstract boolean notifyOfComments();
+  public abstract boolean notifyOfCreatorEdu();
   public abstract boolean notifyOfFollower();
   public abstract boolean notifyOfFriendActivity();
   public abstract boolean notifyOfMessages();
+  public abstract boolean notifyOfPostLikes();
   public abstract boolean notifyOfUpdates();
   public abstract int showPublicProfile();
   public abstract int social();
@@ -31,13 +39,21 @@ public abstract class SettingsBody {
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder optedOutOfRecommendations(int __);
+    public abstract Builder notifyMobileOfBackings(boolean __);
+    public abstract Builder notifyMobileOfComments(boolean __);
+    public abstract Builder notifyMobileOfCreatorEdu(boolean __);
     public abstract Builder notifyMobileOfFollower(boolean __);
     public abstract Builder notifyMobileOfFriendActivity(boolean __);
     public abstract Builder notifyMobileOfMessages(boolean __);
+    public abstract Builder notifyMobileOfPostLikes(boolean __);
     public abstract Builder notifyMobileOfUpdates(boolean __);
+    public abstract Builder notifyOfBackings(boolean __);
+    public abstract Builder notifyOfComments(boolean __);
+    public abstract Builder notifyOfCreatorEdu(boolean __);
     public abstract Builder notifyOfFollower(boolean __);
     public abstract Builder notifyOfFriendActivity(boolean __);
     public abstract Builder notifyOfMessages(boolean __);
+    public abstract Builder notifyOfPostLikes(boolean __);
     public abstract Builder notifyOfUpdates(boolean __);
     public abstract Builder showPublicProfile(int __);
     public abstract Builder social(int __);

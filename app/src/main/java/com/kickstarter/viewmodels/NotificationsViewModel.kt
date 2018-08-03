@@ -110,7 +110,8 @@ interface NotificationsViewModel {
                     .subscribe({ this.userOutput.onNext(it) })
 
             this.creatorNotificationsAreGone = this.currentUser.observable()
-                    .map { u -> IntegerUtils.isNonZero(u.createdProjectsCount())  }
+                    .compose(bindToLifecycle())
+                    .map { u -> IntegerUtils.isZero(u.createdProjectsCount()?: 0)  }
                     .distinctUntilChanged()
 
             this.userInput

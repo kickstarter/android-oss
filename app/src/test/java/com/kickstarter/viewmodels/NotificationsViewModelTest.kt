@@ -10,6 +10,7 @@ import rx.observers.TestSubscriber
 class NotificationsViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: NotificationsViewModel.ViewModel
 
+    private val creatorNotificationsAreGone = TestSubscriber<Boolean>()
     private val currentUserTest = TestSubscriber<User>()
 
     private fun setUpEnvironment(user: User) {
@@ -21,10 +22,30 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         currentUser.observable().subscribe(this.currentUserTest)
 
         this.vm = NotificationsViewModel.ViewModel(environment)
+
+        this.vm.outputs.creatorNotificationsAreGone().subscribe(this.creatorNotificationsAreGone)
     }
 
     @Test
-    fun tesCurrentUser() {
+    fun testCreatorNotificationsAreGone_IsFalseWhenUserACreator() {
+        val user = UserFactory.creator()
+
+        setUpEnvironment(user)
+
+        this.creatorNotificationsAreGone.assertValue(false)
+    }
+
+    @Test
+    fun testCreatorNotificationsAreGone_IsTrueWhenUserIsNotACreator() {
+        val user = UserFactory.collaborator()
+
+        setUpEnvironment(user)
+
+        this.creatorNotificationsAreGone.assertValue(true)
+    }
+
+    @Test
+    fun testCurrentUser() {
         val user = UserFactory.user()
 
         setUpEnvironment(user)

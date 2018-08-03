@@ -55,7 +55,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         this.viewModel.outputs.creatorNotificationsAreGone()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ ViewUtils.setGone(creator_notifications_section) })
+                .subscribe({ ViewUtils.setGone(creator_notifications_section, it) })
 
         this.viewModel.outputs.user()
                 .compose(bindToLifecycle())
@@ -74,6 +74,10 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             this.viewModel.inputs.notifyMobileOfBackings(!this.notifyMobileOfBackings)
         }
 
+        backings_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(backings_phone_icon, backings_mail_icon)
+        }
+
         comments_mail_icon.setOnClickListener {
             this.viewModel.inputs.notifyOfComments(!this.notifyOfComments)
         }
@@ -82,12 +86,20 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             this.viewModel.inputs.notifyMobileOfComments(!this.notifyMobileOfComments)
         }
 
+        comments_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(comments_phone_icon, comments_mail_icon)
+        }
+
         creator_edu_mail_icon.setOnClickListener {
             this.viewModel.inputs.notifyOfCreatorEdu(!this.notifyOfCreatorEdu)
         }
 
         creator_edu_phone_icon.setOnClickListener {
             this.viewModel.inputs.notifyMobileOfCreatorEdu(!this.notifyMobileOfCreatorEdu)
+        }
+
+        creator_edu_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(creator_edu_phone_icon, creator_edu_mail_icon)
         }
 
         friend_activity_mail_icon.setOnClickListener {
@@ -133,6 +145,11 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         post_likes_phone_icon.setOnClickListener {
             this.viewModel.inputs.notifyMobileOfUpdates(!this.notifyMobileOfPostLikes)
         }
+
+        post_likes_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(post_likes_phone_icon, post_likes_mail_icon)
+        }
+
         project_updates_mail_icon.setOnClickListener {
             this.viewModel.inputs.notifyOfUpdates(!this.notifyOfUpdates)
         }

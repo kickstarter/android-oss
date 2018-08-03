@@ -62,11 +62,7 @@
 
         <LinearLayout
           android:id="@+id/project_updates_row"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
+          style="@style/SettingsNotificationRow">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -90,11 +86,9 @@
 
         <LinearLayout
           android:id="@+id/manage_project_notifications"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
+          style="@style/SettingsNotificationRow"
           android:background="@drawable/click_indicator_light_masked"
           android:focusable="true"
-          android:gravity="center_vertical"
           android:orientation="vertical">
 
           <TextView
@@ -108,7 +102,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:textColor="@color/ksr_soft_black"
             android:textSize="@dimen/caption_1"
             tools:text="3" />
@@ -128,14 +121,11 @@
         <TextView
           style="@style/SettingsSectionTitle"
           android:layout_marginBottom="@dimen/grid_2"
-          tools:text="@string/profile_settings_creator_title" />
+          android:text="@string/profile_settings_creator_title" />
 
         <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
+          android:id="@+id/backings_row"
+          style="@style/SettingsNotificationRow">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -158,11 +148,8 @@
         </LinearLayout>
 
         <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
+          android:id="@+id/comments_row"
+          style="@style/SettingsNotificationRow">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -185,11 +172,8 @@
         </LinearLayout>
 
         <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
+          android:id="@+id/post_likes_row"
+          style="@style/SettingsNotificationRow">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -212,11 +196,8 @@
         </LinearLayout>
 
         <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
+          android:id="@+id/creator_edu_row"
+          style="@style/SettingsNotificationRow">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -253,11 +234,7 @@
 
         <LinearLayout
           android:id="@+id/messages_notification_row"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
+          style="@style/SettingsNotificationRow">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -281,10 +258,7 @@
 
         <LinearLayout
           android:id="@+id/new_followers_row"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:gravity="center_vertical">
+          style="@style/SettingsNotificationRow">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -308,11 +282,7 @@
 
         <LinearLayout
           android:id="@+id/friends_back_project_row"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
+          style="@style/SettingsNotificationRow">
 
           <TextView
             style="@style/SettingsSectionLabel"

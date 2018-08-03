@@ -139,11 +139,11 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         }
 
         post_likes_mail_icon.setOnClickListener {
-            this.viewModel.inputs.notifyOfUpdates(!this.notifyOfPostLikes)
+            this.viewModel.inputs.notifyOfPostLikes(!this.notifyOfPostLikes)
         }
 
         post_likes_phone_icon.setOnClickListener {
-            this.viewModel.inputs.notifyMobileOfUpdates(!this.notifyMobileOfPostLikes)
+            this.viewModel.inputs.notifyMobileOfPostLikes(!this.notifyMobileOfPostLikes)
         }
 
         post_likes_row.setOnClickListener {

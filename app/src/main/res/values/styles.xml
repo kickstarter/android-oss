@@ -228,7 +228,6 @@
     <item name="android:layout_weight">1</item>
     <item name="android:layout_width">0dp</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
     <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
     <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
     <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
@@ -526,6 +525,17 @@
 
   <style name="NewsLetterSwitch" parent="EndSettingsWidget">
     <item name="android:layout_marginEnd">@dimen/grid_1</item>
+  </style>
+
+  <style name="SettingsNotificationRow">
+    <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
+    <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:orientation">horizontal</item>
+    <item name="android:clipChildren">false</item>
+    <item name="android:clipToPadding">false</item>
   </style>
 
 </resources>

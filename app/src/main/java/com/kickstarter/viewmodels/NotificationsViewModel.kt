@@ -6,6 +6,7 @@ import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
@@ -17,6 +18,15 @@ import rx.subjects.PublishSubject
 interface NotificationsViewModel {
     interface Inputs {
 
+        /** Call when the notify mobile of pledge activity toggle changes.  */
+        fun notifyMobileOfBackings(checked: Boolean)
+
+        /** Call when the notify mobile of new comments toggle changes.  */
+        fun notifyMobileOfComments(checked: Boolean)
+
+        /** Call when the notify mobile of new comments toggle changes.  */
+        fun notifyMobileOfCreatorEdu(checked: Boolean)
+
         /** Call when the notify mobile of new followers toggle changes.  */
         fun notifyMobileOfFollower(checked: Boolean)
 
@@ -27,7 +37,19 @@ interface NotificationsViewModel {
         fun notifyMobileOfMessages(checked: Boolean)
 
         /** Call when the notify mobile of project updates toggle changes.  */
+        fun notifyMobileOfPostLikes(checked: Boolean)
+
+        /** Call when the notify mobile of project updates toggle changes.  */
         fun notifyMobileOfUpdates(checked: Boolean)
+
+        /** Call when the notify of pledge activity toggle changes.  */
+        fun notifyOfBackings(checked: Boolean)
+
+        /** Call when the notify of new comments toggle changes.  */
+        fun notifyOfComments(checked: Boolean)
+
+        /** Call when the notify of creator tips toggle changes.  */
+        fun notifyOfCreatorEdu(checked: Boolean)
 
         /** Call when the notify of new followers toggle changes.  */
         fun notifyOfFollower(checked: Boolean)
@@ -38,11 +60,17 @@ interface NotificationsViewModel {
         /** Call when the notify of messages toggle changes.  */
         fun notifyOfMessages(checked: Boolean)
 
+        /** Call when the notify of post likes toggle changes.  */
+        fun notifyOfPostLikes(checked: Boolean)
+
         /** Call when the notify of project updates toggle changes.  */
         fun notifyOfUpdates(checked: Boolean)
     }
 
     interface Outputs {
+
+        /** Emits user containing settings state.  */
+        fun creatorNotificationsAreGone(): Observable<Boolean>
 
         /** Emits user containing settings state.  */
         fun user(): Observable<User>
@@ -55,6 +83,7 @@ interface NotificationsViewModel {
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<NotificationsActivity>(environment), Inputs, Outputs, Errors {
         private val userInput = PublishSubject.create<User>()
 
+        private val creatorNotificationsAreGone : Observable<Boolean>
         private val userOutput = BehaviorSubject.create<User>()
         private val updateSuccess = PublishSubject.create<Void>()
 
@@ -80,6 +109,11 @@ interface NotificationsViewModel {
                     .compose(bindToLifecycle())
                     .subscribe({ this.userOutput.onNext(it) })
 
+            this.creatorNotificationsAreGone = this.currentUser.observable()
+                    .compose(bindToLifecycle())
+                    .map { u -> IntegerUtils.isZero(u.createdProjectsCount()?: 0)  }
+                    .distinctUntilChanged()
+
             this.userInput
                     .concatMap<User>({ this.updateSettings(it) })
                     .compose(bindToLifecycle())
@@ -98,6 +132,18 @@ interface NotificationsViewModel {
                     .subscribe(this.userOutput)
         }
 
+        override fun notifyMobileOfBackings(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfBackings(checked).build())
+        }
+
+        override fun notifyMobileOfComments(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfComments(checked).build())
+        }
+
+        override fun notifyMobileOfCreatorEdu(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfCreatorEdu(checked).build())
+        }
+
         override fun notifyMobileOfFollower(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfFollower(checked).build())
         }
@@ -110,8 +156,24 @@ interface NotificationsViewModel {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfMessages(checked).build())
         }
 
+        override fun notifyMobileOfPostLikes(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfPostLikes(checked).build())
+        }
+
         override fun notifyMobileOfUpdates(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyMobileOfUpdates(checked).build())
+        }
+
+        override fun notifyOfBackings(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfBackings(checked).build())
+        }
+
+        override fun notifyOfComments(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfComments(checked).build())
+        }
+
+        override fun notifyOfCreatorEdu(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfCreatorEdu(checked).build())
         }
 
         override fun notifyOfFollower(checked: Boolean) {
@@ -126,19 +188,21 @@ interface NotificationsViewModel {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfMessages(checked).build())
         }
 
+        override fun notifyOfPostLikes(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfPostLikes(checked).build())
+        }
+
         override fun notifyOfUpdates(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfUpdates(checked).build())
         }
 
-        override fun user(): Observable<User> {
-            return this.userOutput
-        }
+        override fun creatorNotificationsAreGone(): Observable<Boolean> = this.creatorNotificationsAreGone
 
-        override fun unableToSavePreferenceError(): Observable<String> {
-            return this.unableToSavePreferenceError
+        override fun user(): Observable<User> = this.userOutput
+
+        override fun unableToSavePreferenceError(): Observable<String> =  this.unableToSavePreferenceError
                     .takeUntil(this.updateSuccess)
                     .map { _ -> null }
-        }
 
         private fun success(user: User) {
             this.currentUser.refresh(user)

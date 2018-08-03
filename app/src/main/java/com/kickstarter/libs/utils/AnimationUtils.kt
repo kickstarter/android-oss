@@ -8,6 +8,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.Interpolator
+import android.widget.ImageButton
 
 object AnimationUtils {
 
@@ -81,12 +82,12 @@ object AnimationUtils {
     return crossFadeAndReverseAnimatorSet
   }
 
-  fun notificationBounceAnimation(view: View, secondView: View) {
+  fun notificationBounceAnimation(phoneIcon: ImageButton, mailIcon: ImageButton) {
     val pvhX = PropertyValuesHolder.ofFloat(View.SCALE_X, INITIAL_SCALE, MAX_SCALE, INITIAL_SCALE)
     val phvY = PropertyValuesHolder.ofFloat(View.SCALE_Y, INITIAL_SCALE, MAX_SCALE, INITIAL_SCALE)
-    val phoneScaleAnimation = ObjectAnimator.ofPropertyValuesHolder(view, pvhX, phvY).setDuration(200)
+    val phoneScaleAnimation = ObjectAnimator.ofPropertyValuesHolder(phoneIcon, pvhX, phvY).setDuration(200)
     phoneScaleAnimation.interpolator = AccelerateDecelerateInterpolator()
-    val mailScaleAnimation = ObjectAnimator.ofPropertyValuesHolder(secondView, pvhX, phvY).setDuration(200)
+    val mailScaleAnimation = ObjectAnimator.ofPropertyValuesHolder(mailIcon, pvhX, phvY).setDuration(200)
     mailScaleAnimation.interpolator = AccelerateDecelerateInterpolator()
     val animatorSet = AnimatorSet()
     animatorSet.play(phoneScaleAnimation)

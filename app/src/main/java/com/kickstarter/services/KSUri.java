@@ -3,6 +3,7 @@ package com.kickstarter.services;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.Secrets;
 
 import java.util.regex.Matcher;
@@ -60,6 +61,10 @@ public final class KSUri {
 
   public static boolean isProjectUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && PROJECT_PATTERN.matcher(uri.getPath()).matches();
+  }
+
+  public static boolean isProjectPreviewUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
+    return isProjectUri(uri, webEndpoint) && ObjectUtils.isNotNull(uri.getQueryParameter("token"));
   }
 
   public static boolean isSignupUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {

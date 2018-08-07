@@ -22,16 +22,16 @@ import kotlinx.android.synthetic.main.reset_password_form_view.*
 @RequiresActivityViewModel(ResetPasswordViewModel.ViewModel::class)
 class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
 
-    private var forgotPasswordString = getString(R.string.forgot_password_title)
-    private var errorMessageString = getString(R.string.forgot_password_error)
-    private var errorTitleString = getString(R.string.general_error_oops)
+    private var forgotPasswordString = R.string.forgot_password_title
+    private var errorMessageString = R.string.forgot_password_error
+    private var errorTitleString = R.string.general_error_oops
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.reset_password_layout)
         ButterKnife.bind(this)
-        login_toolbar.setTitle(forgotPasswordString)
+        login_toolbar.setTitle(getString(this.forgotPasswordString))
 
         this.viewModel.outputs.resetSuccess()
                 .compose(bindToLifecycle())
@@ -51,7 +51,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
         this.viewModel.outputs.resetError()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.showDialog(this, this.errorTitleString, this.errorMessageString!!) }
+                .subscribe { ViewUtils.showDialog(this, getString(this.errorTitleString), getString(this.errorMessageString)) }
 
         reset_password_button.setOnClickListener { this.viewModel.inputs.resetPasswordClick() }
 

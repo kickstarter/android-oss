@@ -21,7 +21,7 @@
     android:id="@+id/confirmation_group"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="gone"
+    android:visibility="visible"
     android:layout_below="@id/checkout_toolbar">
 
     <LinearLayout
@@ -99,13 +99,13 @@
           <Button
             android:id="@+id/android_pay_change"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/grid_5"
+            android:layout_height="wrap_content"
             android:paddingStart="0dp"
             android:paddingEnd="0dp"
             style="@style/BorderButton"
             android:textAppearance="@style/Caption1Primary"
             android:text="@string/project_checkout_android_pay_change"
-            android:layout_gravity="center" />
+            android:layout_gravity="center_vertical" />
 
         </LinearLayout>
 

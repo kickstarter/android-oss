@@ -70,6 +70,9 @@ interface NotificationsViewModel {
     interface Outputs {
 
         /** Emits user containing settings state.  */
+        fun creatorDigestFrequencyIsGone(): Observable<Boolean>
+
+        /** Emits user containing settings state.  */
         fun creatorNotificationsAreGone(): Observable<Boolean>
 
         /** Emits user containing settings state.  */
@@ -83,6 +86,7 @@ interface NotificationsViewModel {
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<NotificationsActivity>(environment), Inputs, Outputs, Errors {
         private val userInput = PublishSubject.create<User>()
 
+        private val creatorDigestFrequencyIsGone : Observable<Boolean>
         private val creatorNotificationsAreGone : Observable<Boolean>
         private val userOutput = BehaviorSubject.create<User>()
         private val updateSuccess = PublishSubject.create<Void>()
@@ -195,6 +199,8 @@ interface NotificationsViewModel {
         override fun notifyOfUpdates(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfUpdates(checked).build())
         }
+
+        override fun creatorDigestFrequencyIsGone(): Observable<Boolean> = this.creatorDigestFrequencyIsGone
 
         override fun creatorNotificationsAreGone(): Observable<Boolean> = this.creatorNotificationsAreGone
 

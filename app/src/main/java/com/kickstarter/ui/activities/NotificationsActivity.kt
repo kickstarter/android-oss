@@ -52,6 +52,11 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notifications)
 
+        this.viewModel.outputs.creatorDigestFrequencyIsGone()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ ViewUtils.setGone(email_frequency_row, it) })
+
         this.viewModel.outputs.creatorNotificationsAreGone()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -183,6 +188,8 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
 
         toggleImageButtonIconColor(backings_phone_icon, this.notifyMobileOfBackings, true)
         toggleImageButtonIconColor(backings_mail_icon, this.notifyOfBackings)
+
+
     }
 
     private fun displayCommentsNotificationSettings(user: User) {

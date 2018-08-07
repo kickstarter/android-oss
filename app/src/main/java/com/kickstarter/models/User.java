@@ -34,6 +34,7 @@ public abstract class User implements Parcelable {
   public abstract @Nullable Boolean notifyMobileOfUpdates();
   public abstract @Nullable Boolean notifyOfBackings();
   public abstract @Nullable Boolean notifyOfComments();
+  public abstract @Nullable Boolean notifyOfCreatorDigest();
   public abstract @Nullable Boolean notifyOfCreatorEdu();
   public abstract @Nullable Boolean notifyOfFollower();
   public abstract @Nullable Boolean notifyOfFriendActivity();
@@ -74,6 +75,7 @@ public abstract class User implements Parcelable {
     public abstract Builder notifyMobileOfUpdates(Boolean __);
     public abstract Builder notifyOfBackings(Boolean __);
     public abstract Builder notifyOfComments(Boolean __);
+    public abstract Builder notifyOfCreatorDigest(Boolean __);
     public abstract Builder notifyOfCreatorEdu(Boolean __);
     public abstract Builder notifyOfFollower(Boolean __);
     public abstract Builder notifyOfFriendActivity(Boolean __);

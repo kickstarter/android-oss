@@ -21,7 +21,7 @@
     android:id="@+id/confirmation_group"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="visible"
+    android:visibility="gone"
     android:layout_below="@id/checkout_toolbar">
 
     <LinearLayout

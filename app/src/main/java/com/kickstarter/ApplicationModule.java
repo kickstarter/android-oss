@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
+import com.apollographql.apollo.ApolloClient;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -61,6 +62,7 @@ import com.kickstarter.services.WebClient;
 import com.kickstarter.services.WebClientType;
 import com.kickstarter.services.WebService;
 import com.kickstarter.services.interceptors.ApiRequestInterceptor;
+import com.kickstarter.services.interceptors.GraphqlInterceptor;
 import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
@@ -76,6 +78,7 @@ import dagger.Provides;
 import okhttp3.CookieJar;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -101,6 +104,7 @@ public final class ApplicationModule {
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfigType currentConfig,
     final @NonNull CurrentUserType currentUser,
+    final @NonNull ApolloClient apolloClient,
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
@@ -119,6 +123,7 @@ public final class ApplicationModule {
       .activitySamplePreference(activitySamplePreference)
       .androidPayCapability(androidPayCapability)
       .apiClient(apiClient)
+      .apolloClient(apolloClient)
       .build(build)
       .buildCheck(buildCheck)
       .cookieManager(cookieManager)
@@ -145,6 +150,25 @@ public final class ApplicationModule {
   @NonNull
   static ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
     return new ApiClient(apiService, gson);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static ApolloClient provideApolloClient(HttpLoggingInterceptor httpLoggingInterceptor, final @NonNull KSRequestInterceptor ksRequestInterceptor,
+    final @NonNull WebRequestInterceptor webRequestInterceptor, GraphqlInterceptor graphqlInterceptor) {
+
+    final OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+    builder
+      .addInterceptor(graphqlInterceptor)
+      .addInterceptor(httpLoggingInterceptor)
+      .addInterceptor(webRequestInterceptor)
+      .addInterceptor(ksRequestInterceptor);
+
+    return ApolloClient.builder().serverUrl("https://www.kickstarter.com/graph")
+      .okHttpClient(builder.build())
+      .build();
   }
 
   @Provides
@@ -185,6 +209,14 @@ public final class ApplicationModule {
   static ApiRequestInterceptor provideApiRequestInterceptor(final @NonNull String clientId,
     final @NonNull CurrentUserType currentUser, final @NonNull ApiEndpoint endpoint) {
     return new ApiRequestInterceptor(clientId, currentUser, endpoint.url());
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static GraphqlInterceptor provideGraphqlInterceptor(final @NonNull String clientId,
+    final @NonNull CurrentUserType currentUser) {
+    return new GraphqlInterceptor(clientId, currentUser);
   }
 
   @Provides

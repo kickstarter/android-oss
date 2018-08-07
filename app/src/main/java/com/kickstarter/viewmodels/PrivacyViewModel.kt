@@ -1,6 +1,11 @@
 package com.kickstarter.viewmodels
 
 import android.support.annotation.NonNull
+import android.util.Log
+import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.exception.ApolloException
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
@@ -60,6 +65,7 @@ interface PrivacyViewModel {
         val outputs: PrivacyViewModel.Outputs = this
         val errors: PrivacyViewModel.Errors = this
 
+        private val apolloClient: ApolloClient = environment.apolloClient()
         private val client: ApiClientType = environment.apiClient()
         private val currentUser: CurrentUserType = environment.currentUser()
 
@@ -111,6 +117,19 @@ interface PrivacyViewModel {
                     .compose<Boolean>(bindToLifecycle<Boolean>())
                     .filter({ optOut -> !optOut })
                     .subscribe({ _ -> this.hideConfirmFollowingOptOutPrompt.onNext(null) })
+
+            this.apolloClient
+                    .query(UserQuery.builder().build())
+                    .enqueue(object : ApolloCall.Callback<UserQuery.Data>() {
+                        override fun onFailure(e: ApolloException) {
+                            Log.e("izzytest", e.localizedMessage)
+                        }
+
+                        override fun onResponse(response: Response<UserQuery.Data>) {
+                            Log.d("izzytest", response.data()?.me()?.email())
+                        }
+
+                    })
         }
 
         override fun optIntoFollowing(checked: Boolean) {

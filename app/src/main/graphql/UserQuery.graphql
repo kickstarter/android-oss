@@ -1,0 +1,12 @@
+query UserQuery {
+  me {
+    name
+    email
+    id
+    uid
+    hasPassword
+
+    #Trying to get a picture
+    imageUrl (width: 40)
+  }
+}

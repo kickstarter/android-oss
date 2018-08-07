@@ -13,6 +13,7 @@ apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.apollographql.android'
 apply from: 'quality.gradle'
 
 def externalPrivateVersion = new File(project.rootDir.path + "/app/external_version_code.txt").text.trim().toInteger()
@@ -273,6 +274,8 @@ dependencies {
     implementation("com.crashlytics.sdk.android:crashlytics:$crashlytics_version") {
         transitive = true
     }
+    implementation 'com.apollographql.apollo:apollo-runtime:1.0.0-alpha'
+
 
     // Testing
     testImplementation "junit:junit:$junit_version"

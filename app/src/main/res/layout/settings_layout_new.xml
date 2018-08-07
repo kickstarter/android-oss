@@ -24,7 +24,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
     <ScrollView
       android:layout_width="match_parent"
       android:layout_height="match_parent">
@@ -37,7 +36,7 @@
         <LinearLayout
           android:id="@+id/account_row"
           style="@style/SettingsLinearRow"
-          android:layout_marginTop="@dimen/grid_2">
+          android:layout_marginTop="@dimen/grid_3">
 
           <TextView
             style="@style/SettingsSingleRow"

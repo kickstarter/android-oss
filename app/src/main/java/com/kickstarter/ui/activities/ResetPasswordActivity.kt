@@ -11,7 +11,6 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.viewmodels.ResetPasswordViewModel
 
-import butterknife.ButterKnife
 import com.kickstarter.extensions.onChange
 import rx.android.schedulers.AndroidSchedulers
 
@@ -30,13 +29,12 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.reset_password_layout)
-        ButterKnife.bind(this)
         login_toolbar.setTitle(getString(this.forgotPasswordString))
 
         this.viewModel.outputs.resetSuccess()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { onResetSuccess()}
+                .subscribe { onResetSuccess() }
 
         this.viewModel.outputs.isFormSubmitting()
                 .compose(bindToLifecycle())

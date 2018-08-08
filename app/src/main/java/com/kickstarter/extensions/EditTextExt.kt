@@ -15,3 +15,5 @@ fun EditText.onChange(input: (String) -> Unit) {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
     })
 }
+
+fun EditText.string() = this.text.toString()

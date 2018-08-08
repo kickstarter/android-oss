@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import UserPrivacyQuery
 import android.support.annotation.NonNull
 import android.util.Log
 import com.apollographql.apollo.ApolloCall
@@ -119,14 +120,14 @@ interface PrivacyViewModel {
                     .subscribe({ _ -> this.hideConfirmFollowingOptOutPrompt.onNext(null) })
 
             this.apolloClient
-                    .query(UserQuery.builder().build())
-                    .enqueue(object : ApolloCall.Callback<UserQuery.Data>() {
+                    .query(UserPrivacyQuery.builder().build())
+                    .enqueue(object : ApolloCall.Callback<UserPrivacyQuery.Data>() {
                         override fun onFailure(e: ApolloException) {
                             Log.e("izzytest", e.localizedMessage)
                         }
 
-                        override fun onResponse(response: Response<UserQuery.Data>) {
-                            Log.d("izzytest", response.data()?.me()?.email())
+                        override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
+                            Log.d("izzytest", response.data()?.me()?.name())
                         }
 
                     })

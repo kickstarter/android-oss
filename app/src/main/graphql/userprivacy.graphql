@@ -1,0 +1,5 @@
+query UserPrivacy {
+  me {
+    name
+  }
+}

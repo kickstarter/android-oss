@@ -4,7 +4,6 @@ import com.kickstarter.libs.CurrentUserType
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Request
-import okhttp3.Response
 
 class GraphqlInterceptor(private val clientId: String, private val currentUser: CurrentUserType) : Interceptor {
 
@@ -17,13 +16,13 @@ class GraphqlInterceptor(private val clientId: String, private val currentUser: 
         }
 
         return builder
+                .method(initialRequest.method(), initialRequest.body())
                 .url(url(initialRequest.url()))
                 .build()
     }
 
     private fun url(initialHttpUrl: HttpUrl): HttpUrl {
         val builder = initialHttpUrl.newBuilder()
-                .setQueryParameter("client_id", clientId)
         return builder.build()
     }
 }

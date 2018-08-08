@@ -78,7 +78,6 @@ import dagger.Provides;
 import okhttp3.CookieJar;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -166,7 +165,8 @@ public final class ApplicationModule {
       .addInterceptor(webRequestInterceptor)
       .addInterceptor(ksRequestInterceptor);
 
-    return ApolloClient.builder().serverUrl("https://www.kickstarter.com/graph")
+    return ApolloClient.builder()
+      .serverUrl("https://www.kickstarter.com/graph")
       .okHttpClient(builder.build())
       .build();
   }

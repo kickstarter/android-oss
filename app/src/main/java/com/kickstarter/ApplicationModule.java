@@ -62,7 +62,7 @@ import com.kickstarter.services.WebClient;
 import com.kickstarter.services.WebClientType;
 import com.kickstarter.services.WebService;
 import com.kickstarter.services.interceptors.ApiRequestInterceptor;
-import com.kickstarter.services.interceptors.GraphqlInterceptor;
+import com.kickstarter.services.interceptors.GraphQLInterceptor;
 import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
@@ -154,20 +154,17 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static ApolloClient provideApolloClient(HttpLoggingInterceptor httpLoggingInterceptor, final @NonNull KSRequestInterceptor ksRequestInterceptor,
-    final @NonNull WebRequestInterceptor webRequestInterceptor, GraphqlInterceptor graphqlInterceptor) {
+  static ApolloClient provideApolloClient(final @NonNull HttpLoggingInterceptor httpLoggingInterceptor,
+    final @NonNull GraphQLInterceptor graphQLInterceptor) {
 
-    final OkHttpClient.Builder builder = new OkHttpClient.Builder();
-
-    builder
-      .addInterceptor(graphqlInterceptor)
+    final OkHttpClient okHttpClient = new OkHttpClient.Builder()
       .addInterceptor(httpLoggingInterceptor)
-      .addInterceptor(webRequestInterceptor)
-      .addInterceptor(ksRequestInterceptor);
+      .addInterceptor(graphQLInterceptor)
+      .build();
 
     return ApolloClient.builder()
       .serverUrl("https://www.kickstarter.com/graph")
-      .okHttpClient(builder.build())
+      .okHttpClient(okHttpClient)
       .build();
   }
 
@@ -214,9 +211,8 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static GraphqlInterceptor provideGraphqlInterceptor(final @NonNull String clientId,
-    final @NonNull CurrentUserType currentUser) {
-    return new GraphqlInterceptor(clientId, currentUser);
+  static GraphQLInterceptor provideGraphQLInterceptor(final @NonNull CurrentUserType currentUser) {
+    return new GraphQLInterceptor(currentUser);
   }
 
   @Provides

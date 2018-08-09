@@ -326,7 +326,12 @@
           android:scheme="https" />
       </intent-filter>
     </activity>
-    <activity android:name=".ui.activities.SettingsActivity" />
+    <activity android:name=".ui.activities.SettingsActivity"
+      android:parentActivityName=".ui.activities.DiscoveryActivity">
+    <meta-data
+      android:name="android.support.PARENT_ACTIVITY"
+      android:value=".ui.activities.DiscoveryActivity" />
+    </activity>
 
     <!-- SERVICES, PROVIDERS, RECEIVERS -->
 

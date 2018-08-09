@@ -4,6 +4,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 
+/** This is an Extension function to implement a TextChangedListener for EditText */
 fun EditText.onChange(input: (String) -> Unit) {
     this.addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
@@ -16,4 +17,5 @@ fun EditText.onChange(input: (String) -> Unit) {
     })
 }
 
+/** This is an Extension function to get the string input for EditText */
 fun EditText.string() = this.text.toString()

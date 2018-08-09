@@ -12,6 +12,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.viewmodels.ResetPasswordViewModel
 
 import com.kickstarter.extensions.onChange
+import com.kickstarter.extensions.text
 import rx.android.schedulers.AndroidSchedulers
 
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
@@ -63,7 +64,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
     private fun onResetSuccess() {
         setFormEnabled(false)
         val intent = Intent(this, LoginActivity::class.java)
-                .putExtra(IntentKey.EMAIL, email.text.toString())
+                .putExtra(IntentKey.EMAIL, email.text())
         startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
     }
 

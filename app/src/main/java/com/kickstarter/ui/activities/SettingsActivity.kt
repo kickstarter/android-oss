@@ -7,16 +7,16 @@ import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.databinding.SettingsLayoutNewBinding
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
-import com.kickstarter.viewmodels.SettingsNewViewModel
+import com.kickstarter.viewmodels.SettingsViewModel
 
-class SettingsNewActivity : AppCompatActivity() {
+class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding: SettingsLayoutNewBinding = DataBindingUtil.setContentView(this, R.layout.settings_layout_new)
 
         val environment = (application as KSApplication).component().environment()
-        binding.viewModel = SettingsNewViewModel(this, environment)
+        binding.viewModel = SettingsViewModel(this, environment)
     }
 
     override fun onBackPressed() {

@@ -12,7 +12,7 @@ import com.kickstarter.ui.activities.NewsletterActivity
 import com.kickstarter.ui.activities.NotificationsActivity
 import com.kickstarter.ui.activities.PrivacyActivity
 
-class SettingsNewViewModel(private val context: Context, private val environment: Environment) : BaseObservable() {
+class SettingsViewModel(private val context: Context, private val environment: Environment) : BaseObservable() {
 
     fun getVersion() = BuildConfig.VERSION_NAME
 

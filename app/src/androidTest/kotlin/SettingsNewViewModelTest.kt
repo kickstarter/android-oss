@@ -22,7 +22,7 @@ class SettingsNewViewModelTest {
 
     @Rule
     @JvmField
-    val activityRule = ActivityTestRule(SettingsNewActivity::class.java)
+    val activityRule = ActivityTestRule(SettingsActivity::class.java)
 
     @Before
     fun setUp() {

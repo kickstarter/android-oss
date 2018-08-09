@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="com.kickstarter.viewmodels.SettingsNewViewModel" />
+      type="com.kickstarter.viewmodels.SettingsViewModel" />
   </data>
 
   <LinearLayout

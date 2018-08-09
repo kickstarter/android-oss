@@ -5,9 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.util.Pair
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
@@ -17,18 +14,10 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.toolbars.LoginToolbar
 import com.kickstarter.ui.views.ConfirmDialog
 import com.kickstarter.viewmodels.LoginViewModel
-
-import butterknife.Bind
-import butterknife.BindString
-import butterknife.ButterKnife
-import butterknife.OnClick
-import butterknife.OnTextChanged
 import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.string
-import rx.Observable
+import com.kickstarter.extensions.text
 
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
@@ -148,8 +137,8 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
 
     private fun startTwoFactorActivity() {
         val intent = Intent(this, TwoFactorActivity::class.java)
-                .putExtra(IntentKey.EMAIL, email.string())
-                .putExtra(IntentKey.PASSWORD, password.string())
+                .putExtra(IntentKey.EMAIL, email.text())
+                .putExtra(IntentKey.PASSWORD, password.text())
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

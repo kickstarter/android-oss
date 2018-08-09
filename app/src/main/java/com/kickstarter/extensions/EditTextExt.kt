@@ -18,4 +18,4 @@ fun EditText.onChange(input: (String) -> Unit) {
 }
 
 /** This is an Extension function to get the string input for EditText */
-fun EditText.string() = this.text.toString()
+fun EditText.text() = this.text.toString()

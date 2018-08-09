@@ -26,6 +26,7 @@ import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
@@ -234,7 +235,9 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
         // Show dialog to allow users to install, update, or otherwise enable Google Play services.
         GooglePlayServicesUtil.getErrorDialog(e.getConnectionStatusCode(), this, 0);
       } catch (GooglePlayServicesNotAvailableException e) {
-        Crashlytics.logException(e);
+        if (!Secrets.IS_OSS) {
+          Crashlytics.logException(e);
+        }
       }
     }
   }

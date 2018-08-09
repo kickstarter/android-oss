@@ -63,7 +63,10 @@ public class KSApplication extends MultiDexApplication {
     }
 
     JodaTimeAndroid.init(this);
-    Fabric.with(this, new Crashlytics());
+
+    if (!Secrets.IS_OSS) {
+      Fabric.with(this, new Crashlytics());
+    }
 
     this.component = DaggerApplicationComponent.builder()
       .applicationModule(new ApplicationModule(this))

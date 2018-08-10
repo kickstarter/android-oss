@@ -32,11 +32,6 @@ class SettingsNewActivity : BaseActivity<SettingsNewViewModel.ViewModel>() {
 
         version_name_text_view.text = this.build.versionName()
 
-        this.viewModel.outputs.avatarPhotoUrl()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { url -> profile_picture_image_view.loadImage(url) }
-
         this.viewModel.outputs.logout()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -52,11 +47,6 @@ class SettingsNewActivity : BaseActivity<SettingsNewViewModel.ViewModel>() {
                         lazyLogoutConfirmationDialog().dismiss()
                     }
                 })
-
-        this.viewModel.outputs.userName()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { name -> name_text_view.text = name }
 
         account_row.setOnClickListener { startActivity(Intent(this, AccountActivity::class.java)) }
         help_row.setOnClickListener { startActivity(Intent(this, HelpNewActivity::class.java)) }

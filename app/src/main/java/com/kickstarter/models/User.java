@@ -4,6 +4,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import auto.parcel.AutoParcel;
@@ -102,4 +103,20 @@ public abstract class User implements Parcelable {
   }
 
   public abstract Builder toBuilder();
+
+  public enum EmailFrequency {
+    DAILY(R.string.Daily_digest),
+    INDIVIDUAL(R.string.Individual_Emails);
+
+    private int stringResId;
+
+    EmailFrequency(int stringResId) {
+      this.stringResId = stringResId;
+    }
+
+    public int getStringResId() {
+      return stringResId;
+    }
+  }
+
 }

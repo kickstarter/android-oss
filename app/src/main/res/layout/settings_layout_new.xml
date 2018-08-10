@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-  xmlns:android="http://schemas.android.com/apk/res/android">
-
-  <data>
-
-    <variable
-      name="viewModel"
-      type="com.kickstarter.viewmodels.SettingsViewModel" />
-  </data>
 
   <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/new_settings_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -41,6 +33,7 @@
           <TextView
             style="@style/SettingsSingleRow"
             android:text="@string/Account" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -53,15 +46,13 @@
             android:orientation="vertical">
 
             <TextView
-              android:id="@+id/notification_card"
+              android:id="@+id/notification_row"
               style="@style/SettingsSingleRow"
-              android:onClick="@{() -> viewModel.notificationsClick()}"
               android:text="@string/Notifications" />
 
             <TextView
-              android:id="@+id/newsletters_card"
+              android:id="@+id/newsletters_row"
               style="@style/SettingsSingleRow"
-              android:onClick="@{() -> viewModel.newsletterClick()}"
               android:text="@string/Newsletters" />
           </LinearLayout>
 
@@ -78,25 +69,22 @@
             android:orientation="vertical">
 
             <TextView
-              android:id="@+id/help_card"
+              android:id="@+id/help_row"
               style="@style/SettingsSingleRow"
-              android:onClick="@{() -> viewModel.helpClick()}"
               android:text="@string/Help" />
 
             <TextView
-              android:id="@+id/privacy_card"
+              android:id="@+id/privacy_row"
               style="@style/SettingsSingleRow"
-              android:onClick="@{() -> viewModel.privacyClick()}"
               android:text="@string/Privacy" />
           </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
-          android:id="@+id/log_out_card"
+          android:id="@+id/log_out_row"
           style="@style/SettingsLinearRow"
-          android:layout_marginBottom="@dimen/grid_3"
-          android:onClick="@{() -> viewModel.logoutClick()}">
+          android:layout_marginBottom="@dimen/grid_3">
 
           <TextView
             style="@style/SettingsSingleRow"
@@ -105,10 +93,9 @@
         </LinearLayout>
 
         <LinearLayout
-          android:id="@+id/rate_us_card"
+          android:id="@+id/rate_us_row"
           style="@style/SettingsLinearRow"
-          android:layout_marginBottom="@dimen/grid_3"
-          android:onClick="@{() -> viewModel.rateUsClick()}">
+          android:layout_marginBottom="@dimen/grid_3">
 
           <LinearLayout
             style="@style/SettingsSingleRow"
@@ -125,8 +112,7 @@
             <TextView
               android:id="@+id/version_name_text_view"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:text="@{viewModel.version}" />
+              android:layout_height="wrap_content" />
           </LinearLayout>
 
         </LinearLayout>
@@ -136,5 +122,3 @@
     </ScrollView>
 
   </LinearLayout>
-
-</layout>

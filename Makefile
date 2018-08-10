@@ -31,7 +31,8 @@ secrets:
 		|| cp config/koala_endpoint.xml.example app/src/main/res/values/koala_endpoint.xml
 
 # Copy crashlytics over. Fallback to examples if they don't exist
-	cp vendor/native-secrets/android/fabric.properties app/fabric.properties || true
+	cp vendor/native-secrets/android/fabric.properties app/fabric.properties
+	  || cp config/fabric.properties.example app/fabric.properties
 
 	# Copy web client over.
 	cp -rf vendor/native-secrets/android/WebViewJavascriptInterface.java app/src/main/java/com/kickstarter/libs/WebViewJavascriptInterface.java \

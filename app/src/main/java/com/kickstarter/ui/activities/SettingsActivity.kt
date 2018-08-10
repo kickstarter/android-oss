@@ -11,7 +11,7 @@ import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.SettingsViewModel
-import kotlinx.android.synthetic.main.settings_layout_new.*
+import kotlinx.android.synthetic.main.settings_layout.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(SettingsViewModel.ViewModel::class)
@@ -24,7 +24,7 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.settings_layout_new)
+        setContentView(R.layout.settings_layout)
 
         this.build = environment().build()
         this.currentUser = environment().currentUser()

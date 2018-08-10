@@ -27,28 +27,20 @@ interface SettingsViewModel {
     }
 
     interface Outputs {
-        /** Emits the user's avatar photo url for display.  */
-        fun avatarPhotoUrl(): Observable<String>
-
         /** Emits when its time to log the user out.  */
         fun logout(): Observable<Void>
 
         /** Emits a boolean that determines if the logout confirmation should be displayed.  */
         fun showConfirmLogoutPrompt(): Observable<Boolean>
-
-        /** Emits the user's name. */
-        fun userName(): Observable<String>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<SettingsActivity>(environment), Inputs, Outputs {
 
-        private var avatarPhotoUrl: Observable<String>
         private val client: ApiClientType = environment.apiClient()
         private val confirmLogoutClicked = PublishSubject.create<Void>()
         private val currentUser: CurrentUserType = environment.currentUser()
         private val logout = BehaviorSubject.create<Void>()
         private val showConfirmLogoutPrompt = BehaviorSubject.create<Boolean>()
-        private var userName: Observable<String>
         private val userOutput = BehaviorSubject.create<User>()
 
         val inputs: Inputs = this
@@ -75,13 +67,7 @@ interface SettingsViewModel {
                         this.logout.onNext(null)
                     }
 
-
-            this.avatarPhotoUrl = userOutput.map { user -> user.avatar().thumb() }
-
-            this.userName = userOutput.map { user -> user.name() }
         }
-
-        override fun avatarPhotoUrl(): Observable<String> = this.avatarPhotoUrl
 
         override fun closeLogoutConfirmationClicked() = this.showConfirmLogoutPrompt.onNext(false)
 
@@ -93,6 +79,5 @@ interface SettingsViewModel {
 
         override fun showConfirmLogoutPrompt(): Observable<Boolean> = this.showConfirmLogoutPrompt
 
-        override fun userName(): Observable<String> = this.userName
     }
 }

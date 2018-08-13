@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.kickstarter.R
+import com.kickstarter.extensions.bottomSlideAnimation
 import com.kickstarter.libs.*
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ApplicationUtils
@@ -49,11 +50,23 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { logout() }
 
-        help_row.setOnClickListener { startActivity(Intent(this, HelpNewActivity::class.java)) }
+        help_row.setOnClickListener {
+            startActivity(Intent(this, HelpNewActivity::class.java))
+            bottomSlideAnimation()
+        }
         log_out_row.setOnClickListener { this.viewModel.inputs.logoutClicked() }
-        newsletters_row.setOnClickListener { startActivity(Intent(this, NewsletterActivity::class.java)) }
-        notification_row.setOnClickListener { startActivity(Intent(this, NotificationsActivity::class.java)) }
-        privacy_row.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
+        newsletters_row.setOnClickListener {
+            startActivity(Intent(this, NewsletterActivity::class.java))
+            bottomSlideAnimation()
+        }
+        notification_row.setOnClickListener {
+            startActivity(Intent(this, NotificationsActivity::class.java))
+            bottomSlideAnimation()
+        }
+        privacy_row.setOnClickListener {
+            startActivity(Intent(this, PrivacyActivity::class.java))
+            bottomSlideAnimation()
+        }
         rate_us_row.setOnClickListener { ViewUtils.openStoreRating(this, this.packageName) }
     }
 

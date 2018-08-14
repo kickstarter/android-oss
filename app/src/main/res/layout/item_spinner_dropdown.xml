@@ -12,5 +12,3 @@
   android:paddingStart="@dimen/activity_horizontal_margin"
   android:paddingTop="@dimen/grid_1"
   tools:text="Item" />
-
-

@@ -72,10 +72,10 @@ interface NotificationsViewModel {
 
     interface Outputs {
 
-        /** Emits user containing settings state.  */
+        /** Emission determines whether we should be hiding backings frequency emails settings.  */
         fun creatorDigestFrequencyIsGone(): Observable<Boolean>
 
-        /** Emits user containing settings state.  */
+        /** Emission determines whether we should be hiding creator notification settings.   */
         fun creatorNotificationsAreGone(): Observable<Boolean>
 
         /** Emits user containing settings state.  */

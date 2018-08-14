@@ -74,7 +74,6 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         val arrayAdapter = ArrayAdapter<String>(this, R.layout.item_spinner, emailFrequencyStrings)
         arrayAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
         email_frequency_spinner.adapter = arrayAdapter
-//        email_frequency_spinner.isSelected = false
 
         manage_project_notifications.setOnClickListener {
             startProjectNotificationsSettingsActivity()
@@ -195,13 +194,18 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         this.notifyMobileOfBackings = isTrue(user.notifyMobileOfBackings())
         this.notifyOfBackings = isTrue(user.notifyOfBackings())
         this.notifyOfCreatorDigest = isTrue(user.notifyOfCreatorDigest())
-        val currentlySelected =  if (notifyOfCreatorDigest) User.EmailFrequency.DAILY.ordinal else User.EmailFrequency.INDIVIDUAL.ordinal
+
+        val frequencyIndex = when {
+            notifyOfCreatorDigest -> User.EmailFrequency.DIGEST.ordinal
+            else -> User.EmailFrequency.INDIVIDUAL.ordinal
+        }
 
         toggleImageButtonIconColor(backings_phone_icon, this.notifyMobileOfBackings, true)
         toggleImageButtonIconColor(backings_mail_icon, this.notifyOfBackings)
 
-        if (currentlySelected != email_frequency_spinner.selectedItem) {
-            email_frequency_spinner.setSelection(currentlySelected, false)
+
+        if (frequencyIndex != email_frequency_spinner.selectedItemPosition) {
+            email_frequency_spinner.setSelection(frequencyIndex, false)
         }
 
         email_frequency_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -210,9 +214,8 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val dailyDigest = position == User.EmailFrequency.DAILY.ordinal
-                if (notifyOfCreatorDigest != dailyDigest) {
-                    viewModel.inputs.notifyOfCreatorDigest(dailyDigest)
+                if (frequencyIndex != position) {
+                    viewModel.inputs.notifyOfCreatorDigest(position == User.EmailFrequency.DIGEST.ordinal)
                 }
             }
         }

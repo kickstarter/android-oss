@@ -109,7 +109,7 @@ public abstract class User implements Parcelable {
 
   public enum EmailFrequency {
     INDIVIDUAL(R.string.Individual_Emails),
-    DAILY(R.string.Daily_digest);
+    DIGEST(R.string.Daily_digest);
 
     private int stringResId;
 

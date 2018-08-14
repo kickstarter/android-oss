@@ -113,22 +113,21 @@ public abstract class User implements Parcelable {
 
     private int stringResId;
 
-    EmailFrequency(int stringResId) {
+    EmailFrequency(final int stringResId) {
       this.stringResId = stringResId;
     }
 
     @NotNull
-    public static String[] getStrings(Resources resources) {
-      String[] strings = new String[values().length];
-      EmailFrequency[] values = values();
+    public static String[] getStrings(final @NonNull Resources resources) {
+      final String[] strings = new String[values().length];
+      final EmailFrequency[] values = values();
 
       for (int i = 0, valuesLength = values.length; i < valuesLength; i++) {
-        EmailFrequency emailFrequency = values[i];
+        final EmailFrequency emailFrequency = values[i];
         strings[i] = resources.getString(emailFrequency.stringResId);
       }
 
       return strings;
     }
   }
-
 }

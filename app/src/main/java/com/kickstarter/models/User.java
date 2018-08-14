@@ -1,11 +1,14 @@
 package com.kickstarter.models;
 
+import android.content.res.Resources;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.AutoGson;
+
+import org.jetbrains.annotations.NotNull;
 
 import auto.parcel.AutoParcel;
 
@@ -105,8 +108,8 @@ public abstract class User implements Parcelable {
   public abstract Builder toBuilder();
 
   public enum EmailFrequency {
-    DAILY(R.string.Daily_digest),
-    INDIVIDUAL(R.string.Individual_Emails);
+    INDIVIDUAL(R.string.Individual_Emails),
+    DAILY(R.string.Daily_digest);
 
     private int stringResId;
 
@@ -114,8 +117,17 @@ public abstract class User implements Parcelable {
       this.stringResId = stringResId;
     }
 
-    public int getStringResId() {
-      return stringResId;
+    @NotNull
+    public static String[] getStrings(Resources resources) {
+      String[] strings = new String[values().length];
+      EmailFrequency[] values = values();
+
+      for (int i = 0, valuesLength = values.length; i < valuesLength; i++) {
+        EmailFrequency emailFrequency = values[i];
+        strings[i] = resources.getString(emailFrequency.stringResId);
+      }
+
+      return strings;
     }
   }
 

@@ -161,10 +161,12 @@
             android:text="@string/Email_frequency" />
 
           <Spinner
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
             android:id="@+id/email_frequency_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:listitem="@android:layout/simple_spinner_dropdown_item" />
+            android:dropDownVerticalOffset="@dimen/grid_11"
+            tools:listitem="@layout/item_spinner" />
         </LinearLayout>
 
         <LinearLayout

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+  style="@style/CalloutPrimary"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:gravity="center_vertical"
+  android:minHeight="@dimen/grid_8"
+  android:paddingBottom="@dimen/grid_1"
+  android:paddingEnd="@dimen/activity_horizontal_margin"
+  android:paddingStart="@dimen/activity_horizontal_margin"
+  android:paddingTop="@dimen/grid_1"
+  tools:text="Item" />
+
+

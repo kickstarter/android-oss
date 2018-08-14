@@ -48,6 +48,9 @@ interface NotificationsViewModel {
         /** Call when the notify of new comments toggle changes.  */
         fun notifyOfComments(checked: Boolean)
 
+        /** Call when the email frequency spinner selection changes.  */
+        fun notifyOfCreatorDigest(checked: Boolean)
+
         /** Call when the notify of creator tips toggle changes.  */
         fun notifyOfCreatorEdu(checked: Boolean)
 
@@ -108,14 +111,21 @@ interface NotificationsViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.currentUser.refresh(it) }
 
-            this.currentUser.observable()
+            val currentUser = this.currentUser.observable()
+
+            currentUser
                     .take(1)
                     .compose(bindToLifecycle())
                     .subscribe({ this.userOutput.onNext(it) })
 
-            this.creatorNotificationsAreGone = this.currentUser.observable()
+            this.creatorDigestFrequencyIsGone = currentUser
                     .compose(bindToLifecycle())
-                    .map { u -> IntegerUtils.isZero(u.createdProjectsCount()?: 0)  }
+                    .map { it.notifyOfBackings() != true  }
+                    .distinctUntilChanged()
+
+            this.creatorNotificationsAreGone = currentUser
+                    .compose(bindToLifecycle())
+                    .map { IntegerUtils.isZero(it.createdProjectsCount()?: 0) }
                     .distinctUntilChanged()
 
             this.userInput
@@ -169,11 +179,19 @@ interface NotificationsViewModel {
         }
 
         override fun notifyOfBackings(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfBackings(checked).build())
+            val userBuilder = this.userOutput.value.toBuilder().notifyOfBackings(checked)
+            if (!checked) {
+                userBuilder.notifyOfCreatorDigest(false)
+            }
+            this.userInput.onNext(userBuilder.build())
         }
 
         override fun notifyOfComments(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfComments(checked).build())
+        }
+
+        override fun notifyOfCreatorDigest(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfCreatorDigest(checked).build())
         }
 
         override fun notifyOfCreatorEdu(checked: Boolean) {

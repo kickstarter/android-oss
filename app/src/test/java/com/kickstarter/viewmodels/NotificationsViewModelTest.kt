@@ -10,6 +10,7 @@ import rx.observers.TestSubscriber
 class NotificationsViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: NotificationsViewModel.ViewModel
 
+    private val creatorDigestFrequencyIsGone = TestSubscriber<Boolean>()
     private val creatorNotificationsAreGone = TestSubscriber<Boolean>()
     private val currentUserTest = TestSubscriber<User>()
 
@@ -23,7 +24,26 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
 
         this.vm = NotificationsViewModel.ViewModel(environment)
 
+        this.vm.outputs.creatorDigestFrequencyIsGone().subscribe(this.creatorDigestFrequencyIsGone)
         this.vm.outputs.creatorNotificationsAreGone().subscribe(this.creatorNotificationsAreGone)
+    }
+
+    @Test
+    fun testCreatorDigestFrequencyIsGone_IsFalseWhenUserHasBackingsEmails() {
+        val user = UserFactory.creator().toBuilder().notifyOfBackings(true).build()
+
+        setUpEnvironment(user)
+
+        this.creatorDigestFrequencyIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testCreatorDigestFrequencyIsGone_IsTrueWhenUserDoesNotHaveBackingsEmails() {
+        val user = UserFactory.creator().toBuilder().notifyOfBackings(false).build()
+
+        setUpEnvironment(user)
+
+        this.creatorDigestFrequencyIsGone.assertValue(true)
     }
 
     @Test
@@ -141,6 +161,17 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.notifyOfBackings(true)
         this.currentUserTest.assertValues(user, user.toBuilder().notifyOfBackings(true).build())
+
+
+        this.vm.inputs.notifyOfCreatorDigest(true)
+        this.currentUserTest.assertValues(user, user.toBuilder().notifyOfBackings(true).build(),
+                user.toBuilder().notifyOfBackings(true).notifyOfCreatorDigest(true).build())
+
+        //when we turn off backing emails, we also turn off the digest
+        this.vm.inputs.notifyOfBackings(false)
+        this.currentUserTest.assertValues(user, user.toBuilder().notifyOfBackings(true).build(),
+                user.toBuilder().notifyOfBackings(true).notifyOfCreatorDigest(true).build(),
+                user.toBuilder().notifyOfBackings(false).notifyOfCreatorDigest(false).build())
     }
 
     @Test
@@ -151,6 +182,16 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.notifyOfComments(true)
         this.currentUserTest.assertValues(user, user.toBuilder().notifyOfComments(true).build())
+    }
+
+    @Test
+    fun testNotifyOfCreatorDigest() {
+        val user = UserFactory.user().toBuilder().notifyOfCreatorDigest(false).build()
+
+        setUpEnvironment(user)
+
+        this.vm.inputs.notifyOfCreatorDigest(true)
+        this.currentUserTest.assertValues(user, user.toBuilder().notifyOfCreatorDigest(true).build())
     }
 
     @Test

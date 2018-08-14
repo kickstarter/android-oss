@@ -203,7 +203,6 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         toggleImageButtonIconColor(backings_phone_icon, this.notifyMobileOfBackings, true)
         toggleImageButtonIconColor(backings_mail_icon, this.notifyOfBackings)
 
-
         if (frequencyIndex != email_frequency_spinner.selectedItemPosition) {
             email_frequency_spinner.setSelection(frequencyIndex, false)
         }

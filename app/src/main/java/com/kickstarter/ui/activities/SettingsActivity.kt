@@ -3,13 +3,12 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.util.Pair
 import com.kickstarter.R
+import com.kickstarter.extensions.startActivityWithSlideUpTransition
 import com.kickstarter.libs.*
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
-import com.kickstarter.libs.utils.TransitionUtils.slideUpFromBottom
 
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.SettingsViewModel
@@ -52,27 +51,19 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
                 .subscribe { logout() }
 
         help_row.setOnClickListener {
-            startActivity(Intent(this, HelpNewActivity::class.java))
-            exitTransition()
+            startActivityWithSlideUpTransition(Intent(this, HelpNewActivity::class.java))
         }
         log_out_row.setOnClickListener { this.viewModel.inputs.logoutClicked() }
         newsletters_row.setOnClickListener {
-            startActivity(Intent(this, NewsletterActivity::class.java))
-            exitTransition()
+            startActivityWithSlideUpTransition(Intent(this, NewsletterActivity::class.java))
         }
         notification_row.setOnClickListener {
-            startActivity(Intent(this, NotificationsActivity::class.java))
-            exitTransition()
+            startActivityWithSlideUpTransition(Intent(this, NotificationsActivity::class.java))
         }
         privacy_row.setOnClickListener {
-            startActivity(Intent(this, PrivacyActivity::class.java))
-            exitTransition()
+            startActivityWithSlideUpTransition(Intent(this, PrivacyActivity::class.java))
         }
         rate_us_row.setOnClickListener { ViewUtils.openStoreRating(this, this.packageName) }
-    }
-
-    override fun exitTransition(): Pair<Int, Int>? {
-       return slideUpFromBottom()
     }
 
     private fun logout() {
@@ -85,6 +76,7 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         val exit = slideInFromLeft()
         overridePendingTransition(exit.first, exit.second)
     }
+
 
     /**
      * Lazily creates a logout confirmation dialog and stores it in an instance variable.

@@ -15,14 +15,14 @@ import org.junit.Test
 import utils.Events
 import utils.Matchers
 
-class SettingsNewViewModelTest {
+class SettingsViewModelTest {
 
     private val events = Events()
     private val checkThat = Matchers()
 
     @Rule
     @JvmField
-    val activityRule = ActivityTestRule(SettingsNewActivity::class.java)
+    val activityRule = ActivityTestRule(SettingsActivity::class.java)
 
     @Before
     fun setUp() {
@@ -36,37 +36,37 @@ class SettingsNewViewModelTest {
 
     @Test
     fun testHelpClick() {
-        events.clickOnView(R.id.help_card)
+        events.clickOnView(R.id.help_row)
         checkThat.nextOpenActivityIs(HelpNewActivity::class.java)
     }
 
     @Test
     fun testLogoutClick() {
-        events.clickOnView(R.id.log_out_card)
+        events.clickOnView(R.id.log_out_row)
         checkThat.nextOpenActivityIs(DiscoveryActivity::class.java)
     }
 
     @Test
     fun testNewsletterClick() {
-        events.clickOnView(R.id.newsletters_card)
+        events.clickOnView(R.id.newsletters_row)
         checkThat.nextOpenActivityIs(NewsletterActivity::class.java)
     }
 
     @Test
     fun testNotificationsClick() {
-        events.clickOnView(R.id.notification_card)
+        events.clickOnView(R.id.notification_row)
         checkThat.nextOpenActivityIs(NotificationsActivity::class.java)
     }
 
     @Test
     fun testPrivacyClick() {
-        events.clickOnView(R.id.privacy_card)
+        events.clickOnView(R.id.privacy_row)
         checkThat.nextOpenActivityIs(PrivacyActivity::class.java)
     }
 
     @Test
     fun testRateUsClick() {
-        events.clickOnView(R.id.rate_us_card)
+        events.clickOnView(R.id.rate_us_row)
         intended(allOf(
                 hasAction(Intent.ACTION_VIEW),
                 hasData("market://details?id=${BuildConfig.APPLICATION_ID}")))

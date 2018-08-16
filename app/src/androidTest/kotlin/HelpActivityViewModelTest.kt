@@ -60,7 +60,7 @@ class HelpActivityViewModelTest {
 
     @Test
     fun testPrivacyPolicyClick() {
-        events.clickOnView(R.id.privacy_card)
+        events.clickOnView(R.id.privacy_row)
         checkThat.nextOpenActivityIs(HelpActivity.Privacy::class.java)
     }
 

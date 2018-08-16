@@ -3,12 +3,13 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.util.Pair
 import com.kickstarter.R
-import com.kickstarter.extensions.bottomSlideAnimation
 import com.kickstarter.libs.*
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
+import com.kickstarter.libs.utils.TransitionUtils.slideUpFromBottom
 
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.SettingsViewModel
@@ -52,22 +53,26 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
 
         help_row.setOnClickListener {
             startActivity(Intent(this, HelpNewActivity::class.java))
-            bottomSlideAnimation()
+            exitTransition()
         }
         log_out_row.setOnClickListener { this.viewModel.inputs.logoutClicked() }
         newsletters_row.setOnClickListener {
             startActivity(Intent(this, NewsletterActivity::class.java))
-            bottomSlideAnimation()
+            exitTransition()
         }
         notification_row.setOnClickListener {
             startActivity(Intent(this, NotificationsActivity::class.java))
-            bottomSlideAnimation()
+            exitTransition()
         }
         privacy_row.setOnClickListener {
             startActivity(Intent(this, PrivacyActivity::class.java))
-            bottomSlideAnimation()
+            exitTransition()
         }
         rate_us_row.setOnClickListener { ViewUtils.openStoreRating(this, this.packageName) }
+    }
+
+    override fun exitTransition(): Pair<Int, Int>? {
+       return slideUpFromBottom()
     }
 
     private fun logout() {

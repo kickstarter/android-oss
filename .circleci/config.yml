@@ -64,13 +64,10 @@ jobs:
       - run:
           name: Bundle install
           command: bundle check || bundle install
-      - save_cache:
-                key: v1-gems-{{ checksum "Gemfile.lock" }}
-                paths:
-                  - vendor/bundle
-          - run:
-              name: Deploy to Crashlytics Alpha
-              command: bundle exec fastlane alpha
+
+      - run:
+          name: Deploy to Crashlytics Alpha
+          command: bundle exec fastlane alpha
 
 # Workflows
 workflows:

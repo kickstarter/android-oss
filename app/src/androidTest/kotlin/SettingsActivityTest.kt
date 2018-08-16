@@ -15,7 +15,7 @@ import org.junit.Test
 import utils.Events
 import utils.Matchers
 
-class SettingsViewModelTest {
+class SettingsActivityTest {
 
     private val events = Events()
     private val checkThat = Matchers()
@@ -37,7 +37,7 @@ class SettingsViewModelTest {
     @Test
     fun testHelpClick() {
         events.clickOnView(R.id.help_row)
-        checkThat.nextOpenActivityIs(HelpNewActivity::class.java)
+        checkThat.nextOpenActivityIs(HelpSettingsActivity::class.java)
     }
 
     @Test

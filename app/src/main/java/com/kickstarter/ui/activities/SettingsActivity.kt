@@ -51,7 +51,7 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
                 .subscribe { logout() }
 
         help_row.setOnClickListener {
-            startActivityWithSlideUpTransition(Intent(this, HelpNewActivity::class.java))
+            startActivityWithSlideUpTransition(Intent(this, HelpSettingsActivity::class.java))
         }
         log_out_row.setOnClickListener { this.viewModel.inputs.logoutClicked() }
         newsletters_row.setOnClickListener {

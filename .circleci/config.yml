@@ -1,7 +1,7 @@
 version: 2
 jobs:
 
-  android_job:
+  build:
     resource_class: xlarge
     docker:
       - image: kickstarter/android-ci:65a9b01
@@ -75,7 +75,7 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - android_job:
+      - build
       - deploy_crashlytics:
           filters:
             branches:

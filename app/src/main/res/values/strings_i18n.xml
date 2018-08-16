@@ -53,6 +53,7 @@ backers</string>
   <string name="Change_password" formatted="false">Change password</string>
   <string name="Change_payment_method" formatted="false">Change payment method</string>
   <string name="Chat" formatted="false">Chat</string>
+  <string name="Check_back_later_for_an_update_on_your_export_progress" formatted="false">Check back later for an update on your export progress.</string>
   <string name="Chooses_location_for_shipping" formatted="false">Chooses %{location} for shipping.</string>
   <string name="Close_live_stream" formatted="false">Close live stream</string>
   <string name="Close_project" formatted="false">Close project</string>
@@ -82,7 +83,7 @@ backers</string>
   <string name="Currency" formatted="false">Currency</string>
   <string name="Daily_digest" formatted="false">Daily digest</string>
   <string name="Data_will_appear_here_once" formatted="false">Data will appear here once somebody backs your project.</string>
-  <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter Account</string>
+  <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter account</string>
   <string name="Delivered" formatted="false">Delivered</string>
   <string name="Developer" formatted="false">Developer</string>
   <string name="Discover_arts_news" formatted="false">Discover innovative projects and ideas, handpicked twice a month by Kickstarter\'s Design &amp; Tech team.</string>
@@ -107,7 +108,7 @@ backers</string>
   <string name="Facebook_login_disclaimer" formatted="false">If you login with Facebook, we’ll import your name and profile photo. We\'ll also access your friend list so you can follow your Facebook friends on Kickstarter. We will never post anything on Facebook without your permission.</string>
   <string name="Facebook_login_disclaimer_update" formatted="false">By logging in with Facebook, we’ll import your name, profile photo and friend list.</string>
   <string name="Facebook_reconnect" formatted="false">Please reconnect</string>
-  <string name="Facebook_reconnect_description" formatted="false">Our apologies, your account was accidentally disconnected. Reconnect to follow friends again.</string>
+  <string name="Facebook_reconnect_description" formatted="false">Your account was disconnected for your security. By logging in with Facebook, we’ll import your name, profile photo and friend list.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Failed to retrieve live stream event details</string>
   <string name="Failed_to_update_subscription" formatted="false">Failed to update subscription</string>
   <string name="Filter_by_all_projects" formatted="false">Filter by all projects</string>
@@ -302,7 +303,7 @@ daring ideas.</string>
   <string name="Replay_past_live_stream" formatted="false">Replay past live stream</string>
   <string name="Replay_past_live_streams" formatted="false">Replay past live streams</string>
   <string name="Reply_to_user_name" formatted="false">Reply to %{user_name}…</string>
-  <string name="Request_my_Personal_Data" formatted="false">Request my Personal Data</string>
+  <string name="Request_my_personal_data" formatted="false">Request my personal data</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_one" formatted="false">Reward Survey</string>
@@ -350,7 +351,7 @@ daring ideas.</string>
   <string name="Something_catch_your_eye" formatted="false">Something\n
 catch your eye?</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Something went wrong, please try again.</string>
-  <string name="Start_data_collection" formatted="false">Start data collection</string>
+  <string name="Start_the_request" formatted="false">Start the request</string>
   <string name="Starting_soon" formatted="false">Starting soon</string>
   <string name="Status" formatted="false">Status</string>
   <string name="Stay_up_to_date" formatted="false">Stay up to date?</string>
@@ -384,6 +385,7 @@ catch your eye?</string>
   <string name="Top_ten_pledge_sources" formatted="false">Top 10 pledge sources</string>
   <string name="Top_ten_rewards" formatted="false">Top 10 rewards</string>
   <string name="Total_pledged" formatted="false">Total pledged</string>
+  <string name="Unable_to_request_data" formatted="false">Unable to request data.</string>
   <string name="Unfollow_friend_name" formatted="false">Unfollow %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Unfollows %{friend_name}.</string>
   <string name="Unsaved" formatted="false">Unsaved</string>

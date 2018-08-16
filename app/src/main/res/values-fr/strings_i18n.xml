@@ -53,6 +53,7 @@ contributeurs</string>
   <string name="Change_password" formatted="false">Change password</string>
   <string name="Change_payment_method" formatted="false">Changer de moyen de paiement</string>
   <string name="Chat" formatted="false">Chat</string>
+  <string name="Check_back_later_for_an_update_on_your_export_progress" formatted="false">Check back later for an update on your export progress.</string>
   <string name="Chooses_location_for_shipping" formatted="false">Sélectionne %{location} pour la livraison.</string>
   <string name="Close_live_stream" formatted="false">Fermer la diffusion en direct</string>
   <string name="Close_project" formatted="false">Fermer le projet</string>
@@ -300,7 +301,7 @@ n\'ont rien soutenu.</string>
   <string name="Replay_past_live_stream" formatted="false">Rediffusion</string>
   <string name="Replay_past_live_streams" formatted="false">Revoir des diffusions en direct passées</string>
   <string name="Reply_to_user_name" formatted="false">Répondre à %{user_name}…</string>
-  <string name="Request_my_Personal_Data" formatted="false">Demander mes données personnelles</string>
+  <string name="Request_my_personal_data" formatted="false">Request my personal data</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_one" formatted="false">Questionnaire</string>
@@ -347,7 +348,7 @@ n\'ont rien soutenu.</string>
   <string name="Signs_up_with_Email" formatted="false">Inscription avec l\'adresse e-mail.</string>
   <string name="Something_catch_your_eye" formatted="false">Quelque chose a retenu votre attention ?</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Un problème est survenu. Veuillez réessayer.</string>
-  <string name="Start_data_collection" formatted="false">Commencer la préparation</string>
+  <string name="Start_the_request" formatted="false">Start the request</string>
   <string name="Starting_soon" formatted="false">Bientôt en direct</string>
   <string name="Status" formatted="false">État :</string>
   <string name="Stay_up_to_date" formatted="false">Envie d\'être informé ?</string>
@@ -381,6 +382,7 @@ n\'ont rien soutenu.</string>
   <string name="Top_ten_pledge_sources" formatted="false">Vos 10 principales sources de contributions</string>
   <string name="Top_ten_rewards" formatted="false">Les 10 récompenses qui ont le plus de succès</string>
   <string name="Total_pledged" formatted="false">Total engagé</string>
+  <string name="Unable_to_request_data" formatted="false">Unable to request data.</string>
   <string name="Unfollow_friend_name" formatted="false">Ne plus suivre %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Désabonnement des actus de %{friend_name}.</string>
   <string name="Unsaved" formatted="false">Non enregistré</string>

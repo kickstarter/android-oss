@@ -34,6 +34,16 @@ jobs:
       - run: ./gradlew checkstyle
       - run: ./gradlew lintExternalPre21Release
       - run: ./gradlew assembleExternalPre21Release testExternalPre21Release -PdisablePreDex
+      - restore_cache:
+                keys:
+                  - v1-gems-{{ checksum "Gemfile.lock" }}
+            - run:
+                name: Bundle install
+                command: bundle check || bundle install
+            - save_cache:
+                      key: v1-gems-{{ checksum "Gemfile.lock" }}
+                      paths:
+                        - vendor/bundle
       - run:
           name: Deploy to Crashlytics Alpha
           command: bundle exec fastlane alpha

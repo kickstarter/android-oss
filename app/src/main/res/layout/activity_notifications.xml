@@ -148,6 +148,28 @@
         </LinearLayout>
 
         <LinearLayout
+          android:id="@+id/email_frequency_row"
+          style="@style/SettingsNotificationRow"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+            style="@style/Caption1Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Email_frequency" />
+
+          <Spinner
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+            android:id="@+id/email_frequency_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dropDownVerticalOffset="@dimen/grid_11"
+            tools:listitem="@layout/item_spinner" />
+        </LinearLayout>
+
+        <LinearLayout
           android:id="@+id/comments_row"
           style="@style/SettingsNotificationRow">
 

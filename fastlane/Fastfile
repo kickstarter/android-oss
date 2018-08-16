@@ -13,13 +13,36 @@ default_platform :android
 # Fastfile actions accept additional configuration, but
 # don't worry, fastlane will prompt you for required
 # info which you can add here later
+
+
+ lane :alpha do
+   gradle(task: "assembleInternalMin21Debug")
+   crashlytics
+   slack(
+     slack_url: ENV["slack_webhook"],
+     message: "Aplha build successfully delivered!"
+    )
+ end
+
+ lane :external_min21 do
+   build_android_app(task: "assembleExternalMin21Debug")
+   slack(
+     slack_url: ENV["slack_webhook"],
+     message: "External debug build successfully delivered!"
+    )
+ end
+
 lane :beta do
   # build the release variant
-  build_android_app(task: "assembleRelease")
+  build_android_app(task: "assembleInternalPre21Release")
+  slack(
+    slack_url: ENV["slack_webhook"],
+    message: "Internal release build successfully delivered!"
+   )
+  crashlytics
+ end
 
-  # upload to Beta by Crashlytics
-  crashlytics(
-    api_token: "42ed3a9f80e767878c3ba3e7832a80ee7aabec42",
-    build_secret: "0879a05903a7119a1556d14951bad987d1653d90fee30ad3894d823a7292f13a"
-  )
-end
+ private_lane :crashlytics do
+   api_token: ENV["apiKey"],
+   build_secret: ENV["apiSecret"]
+ end

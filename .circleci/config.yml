@@ -34,6 +34,9 @@ jobs:
       - run: ./gradlew checkstyle
       - run: ./gradlew lintExternalPre21Release
       - run: ./gradlew assembleExternalPre21Release testExternalPre21Release -PdisablePreDex
+      - run:
+          name: Deploy to Crashlytics Alpha
+          command: bundle exec fastlane alpha
       - store_artifacts:
           path: app/build/reports
           destination: reports

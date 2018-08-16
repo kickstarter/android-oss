@@ -1,6 +1,5 @@
 version: 2
-
-base_job:
+jobs:
 build:
     resource_class: xlarge
     docker:
@@ -41,10 +40,9 @@ build:
       - store_test_results:
           path: app/build/outputs
 
-jobs:
 
     deploy_crashlytics:
-    << *base_job
+    << *build
     steps:
       - restore_cache:
           keys:

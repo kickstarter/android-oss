@@ -1,8 +1,4 @@
-source 'https://rubygems.org'
+# Gemfile
 
-gem 'activesupport'
-gem 'aws-sdk'
-gem 'configs'
-gem 'commander'
-gem 'excon'
-gem 'rainbow'
+source 'https://rubygems.org'
+gem 'fastlane'

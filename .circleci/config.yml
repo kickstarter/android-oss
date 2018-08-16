@@ -42,26 +42,34 @@ jobs:
 
 
   deploy_crashlytics:
-  steps:
-    - restore_cache:
-        keys:
-        - v1-android-{{ .Branch }}
-        - v1-android-
+  docker:
+        - image: kickstarter/android-ci:65a9b01
+          auth:
+            username: ksrci  # can specify string literal values
+            password: $DOCKERHUB_PASSWORD
+      environment:
+        ADB_INSTALL_TIMEOUT: 8
+        GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx512m -XX:+HeapDumpOnOutOfMemoryError"'
+    steps:
+      - restore_cache:
+          keys:
+          - v1-android-{{ .Branch }}
+          - v1-android-
 
-    - restore_cache:
-        keys:
-          - v1-gems-{{ checksum "Gemfile.lock" }}
+      - restore_cache:
+          keys:
+            - v1-gems-{{ checksum "Gemfile.lock" }}
 
-    - run:
-        name: Bundle install
-        command: bundle check || bundle install
-    - save_cache:
-              key: v1-gems-{{ checksum "Gemfile.lock" }}
-              paths:
-                - vendor/bundle
-        - run:
-            name: Deploy to Crashlytics Alpha
-            command: bundle exec fastlane alpha
+      - run:
+          name: Bundle install
+          command: bundle check || bundle install
+      - save_cache:
+                key: v1-gems-{{ checksum "Gemfile.lock" }}
+                paths:
+                  - vendor/bundle
+          - run:
+              name: Deploy to Crashlytics Alpha
+              command: bundle exec fastlane alpha
 
 # Workflows
 workflows:

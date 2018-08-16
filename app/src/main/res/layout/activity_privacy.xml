@@ -110,7 +110,7 @@
             style="@style/CalloutPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/Request_my_Personal_Data" />
+            android:text="@string/Request_my_personal_data" />
         </LinearLayout>
       </LinearLayout>
 

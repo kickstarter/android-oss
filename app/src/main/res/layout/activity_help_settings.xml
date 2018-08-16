@@ -45,25 +45,6 @@
       </LinearLayout>
 
       <LinearLayout
-        android:id="@+id/how_kickstarter_works"
-        style="@style/SettingsLinearRow"
-        android:layout_marginTop="@dimen/grid_3">
-
-        <LinearLayout
-          style="@style/SettingsSingleRow"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="vertical">
-
-          <TextView
-            style="@style/CalloutPrimary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/login_tout_help_sheet_how_it_works" />
-        </LinearLayout>
-      </LinearLayout>
-
-      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">

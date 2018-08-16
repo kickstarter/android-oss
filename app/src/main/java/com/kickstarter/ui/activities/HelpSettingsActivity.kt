@@ -53,10 +53,6 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
             startActivityWithSlideLeftTransition(Intent(Intent.ACTION_VIEW, Uri.parse(Secrets.HelpCenter.ENDPOINT)))
         }
 
-        how_kickstarter_works.setOnClickListener {
-            startActivityWithSlideLeftTransition(Intent(this, HelpActivity.HowItWorks::class.java))
-        }
-
         privacy_policy.setOnClickListener {
             startActivityWithSlideLeftTransition(Intent(this, HelpActivity.Privacy::class.java))
         }

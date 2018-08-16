@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.extensions.startActivityWithSlideUpTransition
 import com.kickstarter.libs.*
@@ -53,16 +54,23 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         help_row.setOnClickListener {
             startActivityWithSlideUpTransition(Intent(this, HelpSettingsActivity::class.java))
         }
-        log_out_row.setOnClickListener { this.viewModel.inputs.logoutClicked() }
+
+        log_out_row.setOnClickListener {
+            this.viewModel.inputs.logoutClicked()
+        }
+
         newsletters_row.setOnClickListener {
             startActivityWithSlideUpTransition(Intent(this, NewsletterActivity::class.java))
         }
+
         notification_row.setOnClickListener {
             startActivityWithSlideUpTransition(Intent(this, NotificationsActivity::class.java))
         }
+
         privacy_row.setOnClickListener {
             startActivityWithSlideUpTransition(Intent(this, PrivacyActivity::class.java))
         }
+
         rate_us_row.setOnClickListener { ViewUtils.openStoreRating(this, this.packageName) }
     }
 
@@ -71,10 +79,8 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         ApplicationUtils.startNewDiscoveryActivity(this)
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        val exit = slideInFromLeft()
-        overridePendingTransition(exit.first, exit.second)
+    override fun exitTransition(): Pair<Int, Int>? {
+        return slideInFromLeft()
     }
 
     /**

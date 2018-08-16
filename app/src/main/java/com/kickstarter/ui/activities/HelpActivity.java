@@ -57,12 +57,6 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
     }
   }
 
-  public static class HowItWorks extends HelpActivity {
-    public HowItWorks() {
-      helpType(HELP_TYPE_HOW_IT_WORKS);
-    }
-  }
-
   public static class CookiePolicy extends HelpActivity {
     public CookiePolicy() {
       helpType(HELP_TYPE_COOKIE_POLICY);

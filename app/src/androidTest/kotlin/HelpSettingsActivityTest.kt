@@ -60,12 +60,6 @@ class HelpSettingsActivityTest {
     }
 
     @Test
-    fun testHowKSWorksClick() {
-        events.clickOnView(R.id.how_kickstarter_works)
-        checkThat.nextOpenActivityIs(HelpActivity.HowItWorks::class.java)
-    }
-
-    @Test
     fun testPrivacyPolicyClick() {
         events.clickOnView(R.id.privacy_policy)
         checkThat.nextOpenActivityIs(HelpActivity.Privacy::class.java)

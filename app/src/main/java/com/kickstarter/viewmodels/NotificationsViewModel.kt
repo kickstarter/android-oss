@@ -218,9 +218,9 @@ interface NotificationsViewModel {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfUpdates(checked).build())
         }
 
-        override fun creatorDigestFrequencyIsGone(): Observable<Boolean> = this.creatorDigestFrequencyIsGone
+        override fun creatorDigestFrequencyIsGone() = this.creatorDigestFrequencyIsGone
 
-        override fun creatorNotificationsAreGone(): Observable<Boolean> = this.creatorNotificationsAreGone
+        override fun creatorNotificationsAreGone() = this.creatorNotificationsAreGone
 
         override fun user(): Observable<User> = this.userOutput
 

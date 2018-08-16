@@ -77,7 +77,6 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         overridePendingTransition(exit.first, exit.second)
     }
 
-
     /**
      * Lazily creates a logout confirmation dialog and stores it in an instance variable.
      */

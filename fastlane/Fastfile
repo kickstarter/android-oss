@@ -17,32 +17,46 @@ default_platform :android
 
  lane :alpha do
    gradle(task: "assembleInternalMin21Debug")
-   crashlytics
    slack(
      slack_url: ENV["slack_webhook"],
      message: "Aplha build successfully delivered!"
+    )
+
+    # upload to Beta by Crashlytics
+    crashlytics(
+      api_token: ENV["apiKey"],
+      build_secret: ENV["apiSecret"]
+      notifications: true
     )
  end
 
  lane :external_min21 do
    build_android_app(task: "assembleExternalMin21Debug")
    slack(
-     slack_url: ENV["slack_webhook"],
-     message: "External debug build successfully delivered!"
+    slack_url: ENV["slack_webhook"],
+    message: "External debug build successfully delivered!"
+   )
+
+    # upload to Beta by Crashlytics
+    crashlytics(
+      api_token: ENV["apiKey"],
+      build_secret: ENV["apiSecret"]
+      notifications: true
     )
  end
 
 lane :beta do
   # build the release variant
   build_android_app(task: "assembleInternalPre21Release")
-  slack(
-    slack_url: ENV["slack_webhook"],
-    message: "Internal release build successfully delivered!"
-   )
-  crashlytics
- end
 
- private_lane :crashlytics do
-   api_token: ENV["apiKey"],
-   build_secret: ENV["apiSecret"]
+  # upload to Beta by Crashlytics
+  crashlytics(
+    api_token: ENV["apiKey"],
+    build_secret: ENV["apiSecret"]
+    notifications: true
+  )
+  slack(
+   slack_url: ENV["slack_webhook"],
+   message: "Internal release build successfully delivered!"
+  )
  end

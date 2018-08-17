@@ -70,8 +70,8 @@ jobs:
           command: bundle check || bundle install
 
       - run:
-          name: Deploy to Crashlytics Alpha
-          command: bundle exec fastlane alpha
+          name: Deploy to Crashlytics Internal
+          command: bundle exec fastlane internal
 
 
 # Workflows
@@ -83,7 +83,7 @@ workflows:
       - deploy_crashlytics:
           filters:
             branches:
-              only: master
+              only: internal
 
 experimental:
   notify:

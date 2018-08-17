@@ -25,7 +25,7 @@ default_platform :android
     # upload to Beta by Crashlytics
     crashlytics(
       api_token: ENV["apiKey"],
-      build_secret: ENV["apiSecret"]
+      build_secret: ENV["apiSecret"],
       notifications: true
     )
  end
@@ -40,7 +40,7 @@ default_platform :android
     # upload to Beta by Crashlytics
     crashlytics(
       api_token: ENV["apiKey"],
-      build_secret: ENV["apiSecret"]
+      build_secret: ENV["apiSecret"],
       notifications: true
     )
  end
@@ -52,7 +52,7 @@ lane :beta do
   # upload to Beta by Crashlytics
   crashlytics(
     api_token: ENV["apiKey"],
-    build_secret: ENV["apiSecret"]
+    build_secret: ENV["apiSecret"],
     notifications: true
   )
   slack(

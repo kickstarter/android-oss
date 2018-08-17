@@ -4,11 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.kickstarter.R
+import com.kickstarter.extensions.startActivityWithSlideUpTransition
 import com.kickstarter.libs.*
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
-
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.SettingsViewModel
 import kotlinx.android.synthetic.main.settings_layout.*
@@ -49,11 +49,26 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { logout() }
 
-        help_row.setOnClickListener { startActivity(Intent(this, HelpNewActivity::class.java)) }
-        log_out_row.setOnClickListener { this.viewModel.inputs.logoutClicked() }
-        newsletters_row.setOnClickListener { startActivity(Intent(this, NewsletterActivity::class.java)) }
-        notification_row.setOnClickListener { startActivity(Intent(this, NotificationsActivity::class.java)) }
-        privacy_row.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
+        help_row.setOnClickListener {
+            startActivityWithSlideUpTransition(Intent(this, HelpSettingsActivity::class.java))
+        }
+
+        log_out_row.setOnClickListener {
+            this.viewModel.inputs.logoutClicked()
+        }
+
+        newsletters_row.setOnClickListener {
+            startActivityWithSlideUpTransition(Intent(this, NewsletterActivity::class.java))
+        }
+
+        notification_row.setOnClickListener {
+            startActivityWithSlideUpTransition(Intent(this, NotificationsActivity::class.java))
+        }
+
+        privacy_row.setOnClickListener {
+            startActivityWithSlideUpTransition(Intent(this, PrivacyActivity::class.java))
+        }
+
         rate_us_row.setOnClickListener { ViewUtils.openStoreRating(this, this.packageName) }
     }
 
@@ -62,11 +77,7 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         ApplicationUtils.startNewDiscoveryActivity(this)
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        val exit = slideInFromLeft()
-        overridePendingTransition(exit.first, exit.second)
-    }
+    override fun exitTransition() = slideInFromLeft()
 
     /**
      * Lazily creates a logout confirmation dialog and stores it in an instance variable.

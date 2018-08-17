@@ -122,10 +122,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    dataBinding {
-        enabled = true
-    }
-
     // Fixes build error hitting GC overhead limit
     dexOptions {
         javaMaxHeapSize "3072M"
@@ -216,7 +212,7 @@ final rx_java_version = "1.1.5"
 final rx_lifecycle_version = "0.3.0"
 final stripe_version = "6.1.2"
 final support_version = "27.1.0"
-final support_annotations_version = "27.1.0"
+final support_annotations_version = "27.1.1"
 final timber_version = "3.0.1"
 
 // Test support versions
@@ -227,7 +223,7 @@ final robolectric_version = "3.8"
 final robolectric_shadows_version = "3.0"
 final robolectric_shadows_support_version = "3.4-rc2"
 final test_rules_version = "1.0.2"
-final test_support_annotations_version = "27.1.0"
+final test_support_annotations_version = "27.1.1"
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')

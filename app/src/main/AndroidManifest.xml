@@ -129,12 +129,9 @@
     <activity
       android:name=".ui.activities.HelpActivity"
       android:theme="@style/HelpActivity" />
-    <activity android:name=".ui.activities.HelpNewActivity" />
+    <activity android:name=".ui.activities.HelpSettingsActivity" />
     <activity
       android:name=".ui.activities.HelpActivity$CookiePolicy"
-      android:theme="@style/HelpActivity" />
-    <activity
-      android:name=".ui.activities.HelpActivity$HowItWorks"
       android:theme="@style/HelpActivity" />
     <activity
       android:name=".ui.activities.HelpActivity$Privacy"

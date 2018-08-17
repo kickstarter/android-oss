@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
@@ -41,6 +43,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     private var notifyMobileOfUpdates: Boolean = false
     private var notifyOfBackings: Boolean = false
     private var notifyOfComments: Boolean = false
+    private var notifyOfCreatorDigest: Boolean = false
     private var notifyOfCreatorEdu: Boolean = false
     private var notifyOfFollower: Boolean = false
     private var notifyOfFriendActivity: Boolean = false
@@ -52,6 +55,11 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notifications)
 
+        this.viewModel.outputs.creatorDigestFrequencyIsGone()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ ViewUtils.setGone(email_frequency_row, it) })
+
         this.viewModel.outputs.creatorNotificationsAreGone()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -61,6 +69,11 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ this.displayPreferences(it) })
+
+        val emailFrequencyStrings = User.EmailFrequency.getStrings(this.resources)
+        val arrayAdapter = ArrayAdapter<String>(this, R.layout.item_spinner, emailFrequencyStrings)
+        arrayAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
+        email_frequency_spinner.adapter = arrayAdapter
 
         manage_project_notifications.setOnClickListener {
             startProjectNotificationsSettingsActivity()
@@ -180,9 +193,31 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     private fun displayBackingsNotificationSettings(user: User) {
         this.notifyMobileOfBackings = isTrue(user.notifyMobileOfBackings())
         this.notifyOfBackings = isTrue(user.notifyOfBackings())
+        this.notifyOfCreatorDigest = isTrue(user.notifyOfCreatorDigest())
+
+        val frequencyIndex = when {
+            notifyOfCreatorDigest -> User.EmailFrequency.DIGEST.ordinal
+            else -> User.EmailFrequency.INDIVIDUAL.ordinal
+        }
 
         toggleImageButtonIconColor(backings_phone_icon, this.notifyMobileOfBackings, true)
         toggleImageButtonIconColor(backings_mail_icon, this.notifyOfBackings)
+
+        if (frequencyIndex != email_frequency_spinner.selectedItemPosition) {
+            email_frequency_spinner.setSelection(frequencyIndex, false)
+        }
+
+        email_frequency_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (frequencyIndex != position) {
+                    viewModel.inputs.notifyOfCreatorDigest(position == User.EmailFrequency.DIGEST.ordinal)
+                }
+            }
+        }
     }
 
     private fun displayCommentsNotificationSettings(user: User) {

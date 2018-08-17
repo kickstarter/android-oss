@@ -1,0 +1,84 @@
+# More documentation about how to customize your build
+# can be found here:
+# https://docs.fastlane.tools
+fastlane_version "2.68.0"
+
+$LOAD_PATH << '../lib'
+require 'milkrun'
+
+# This value helps us track success metrics for Fastfiles
+# we automatically generate. Feel free to remove this line
+# once you get things running smoothly!
+generated_fastfile_id "416135f4-dacf-4e7b-958c-f49d4e7dcb71"
+
+default_platform :android
+
+# Fastfile actions accept additional configuration, but
+# don't worry, fastlane will prompt you for required
+# info which you can add here later
+
+  lane :update_strings do
+    Milkrun::ServerConfigRefresher.new(local: false).refresh
+    Milkrun::I18nStringResources.new.create
+  end
+
+  private_lane :increment_internal_version_code do
+    Milkrun::VersionCode.new(audience: "internal").bump
+  end
+
+  private_lane :increment_external_version_code do
+    Milkrun::VersionCode.new(audience: "external").bump
+  end
+
+ lane :alpha do
+   update_strings
+   increment_internal_version_code
+   gradle(task: "assembleInternalPre21Debug")
+   slack(
+     slack_url: ENV["slack_webhook"],
+     message: "Internal debug build successfully delivered!"
+    )
+
+    # upload to Beta by Crashlytics
+    crashlytics(
+      api_token: ENV["apiKey"],
+      build_secret: ENV["apiSecret"],
+      notifications: true
+    )
+ end
+
+ lane :production do
+   update_strings
+   increment_external_version_code
+   build_android_app(task: "assembleExternalPre21Release")
+   slack(
+    slack_url: ENV["slack_webhook"],
+    message: "External debug build successfully delivered!"
+   )
+
+    # upload to Beta by Crashlytics
+    crashlytics(
+      api_token: ENV["apiKey"],
+      build_secret: ENV["apiSecret"],
+      notifications: true
+    )
+ end
+
+lane :internal do
+  update_strings
+  increment_internal_version_code
+
+  # build the release variant
+  build_android_app(task: "assembleInternalPre21Release")
+
+  # upload to Beta by Crashlytics
+  crashlytics(
+    api_token: ENV["apiKey"],
+    build_secret: ENV["apiSecret"],
+    notifications: true
+  )
+  slack(
+   slack_url: ENV["slack_webhook"],
+   message: "Internal release build successfully delivered!"
+  )
+ end

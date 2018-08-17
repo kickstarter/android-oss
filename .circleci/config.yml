@@ -1,5 +1,6 @@
 version: 2
 jobs:
+
   build:
     resource_class: xlarge
     docker:
@@ -39,6 +40,50 @@ jobs:
           destination: reports
       - store_test_results:
           path: app/build/outputs
+
+
+  deploy_crashlytics:
+    docker:
+          - image: kickstarter/android-ci:65a9b01
+            auth:
+              username: ksrci  # can specify string literal values
+              password: $DOCKERHUB_PASSWORD
+    environment:
+      ADB_INSTALL_TIMEOUT: 8
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx512m -XX:+HeapDumpOnOutOfMemoryError"'
+    steps:
+      - restore_cache:
+          keys:
+          - v1-android-{{ .Branch }}
+          - v1-android-
+
+      - run:
+          name: Make bootstrap
+          command: make bootstrap
+
+      - restore_cache:
+          keys:
+            - v1-gems-{{ checksum "Gemfile.lock" }}
+
+      - run:
+          name: Bundle install
+          command: bundle check || bundle install
+
+      - run:
+          name: Deploy to Crashlytics Alpha
+          command: bundle exec fastlane alpha
+
+
+# Workflows
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - deploy_crashlytics:
+          filters:
+            branches:
+              only: alpha
 
 experimental:
   notify:

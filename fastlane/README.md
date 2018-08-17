@@ -15,6 +15,16 @@ Install _fastlane_ using
 or alternatively using `brew cask install fastlane`
 
 # Available Actions
+### string
+```
+fastlane string
+```
+
+### internal_build_number
+```
+fastlane internal_build_number
+```
+
 ### alpha
 ```
 fastlane alpha

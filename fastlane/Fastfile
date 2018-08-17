@@ -3,6 +3,9 @@
 # https://docs.fastlane.tools
 fastlane_version "2.68.0"
 
+$LOAD_PATH << '../lib'
+require 'milkrun'
+
 # This value helps us track success metrics for Fastfiles
 # we automatically generate. Feel free to remove this line
 # once you get things running smoothly!
@@ -14,12 +17,26 @@ default_platform :android
 # don't worry, fastlane will prompt you for required
 # info which you can add here later
 
+  lane :update_strings do
+    Milkrun::ServerConfigRefresher.new(local: false).refresh
+    Milkrun::I18nStringResources.new.create
+  end
+
+  private_lane :increment_internal_version_code do
+    Milkrun::VersionCode.new(audience: "internal").bump
+  end
+
+  private_lane :increment_external_version_code do
+    Milkrun::VersionCode.new(audience: "external").bump
+  end
 
  lane :alpha do
-   gradle(task: "assembleInternalMin21Debug")
+   update_strings
+   increment_internal_version_code
+   gradle(task: "assembleInternalPre21Debug")
    slack(
      slack_url: ENV["slack_webhook"],
-     message: "Aplha build successfully delivered!"
+     message: "Internal debug build successfully delivered!"
     )
 
     # upload to Beta by Crashlytics
@@ -30,8 +47,10 @@ default_platform :android
     )
  end
 
- lane :external_min21 do
-   build_android_app(task: "assembleExternalMin21Debug")
+ lane :production do
+   update_strings
+   increment_external_version_code
+   build_android_app(task: "assembleExternalPre21Release")
    slack(
     slack_url: ENV["slack_webhook"],
     message: "External debug build successfully delivered!"
@@ -45,7 +64,10 @@ default_platform :android
     )
  end
 
-lane :beta do
+lane :internal do
+  update_strings
+  increment_internal_version_code
+
   # build the release variant
   build_android_app(task: "assembleInternalPre21Release")
 

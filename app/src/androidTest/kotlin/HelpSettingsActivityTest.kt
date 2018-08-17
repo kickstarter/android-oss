@@ -7,7 +7,7 @@ import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import com.kickstarter.R
 import com.kickstarter.ui.activities.HelpActivity
-import com.kickstarter.ui.activities.HelpNewActivity
+import com.kickstarter.ui.activities.HelpSettingsActivity
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -19,14 +19,14 @@ import utils.Matchers
 
 
 @RunWith(AndroidJUnit4::class)
-class HelpActivityViewModelTest {
+class HelpSettingsActivityTest {
 
     private val events = Events()
     private val checkThat = Matchers()
 
     @Rule
     @JvmField
-    val activityRule = ActivityTestRule(HelpNewActivity::class.java)
+    val activityRule = ActivityTestRule(HelpSettingsActivity::class.java)
 
     @Before
     fun setUp() {
@@ -39,34 +39,35 @@ class HelpActivityViewModelTest {
     }
 
     @Test
+    fun testContactClick() {
+        events.clickOnView(R.id.contact)
+        intended(allOf(
+                IntentMatchers.hasAction(Intent.ACTION_CHOOSER)))
+    }
+
+    @Test
     fun testCookiePolicyClick() {
-        events.clickOnView(R.id.cookie_policy_card)
+        events.clickOnView(R.id.cookie_policy)
         checkThat.nextOpenActivityIs(HelpActivity.CookiePolicy::class.java)
     }
 
     @Test
     fun testHelpCenterClick() {
-        events.clickOnView(R.id.help_center_card)
+        events.clickOnView(R.id.help_center)
         intended(allOf(
                 IntentMatchers.hasAction(Intent.ACTION_VIEW),
                 IntentMatchers.hasData("https://kickstarter.com/help")))
     }
 
     @Test
-    fun testHowKSWorksClick() {
-        events.clickOnView(R.id.how_kickstarter_works_card)
-        checkThat.nextOpenActivityIs(HelpActivity.HowItWorks::class.java)
-    }
-
-    @Test
     fun testPrivacyPolicyClick() {
-        events.clickOnView(R.id.privacy_row)
+        events.clickOnView(R.id.privacy_policy)
         checkThat.nextOpenActivityIs(HelpActivity.Privacy::class.java)
     }
 
     @Test
     fun testTermsClick() {
-        events.clickOnView(R.id.terms_card)
+        events.clickOnView(R.id.terms_of_use)
         checkThat.nextOpenActivityIs(HelpActivity.Terms::class.java)
     }
 }

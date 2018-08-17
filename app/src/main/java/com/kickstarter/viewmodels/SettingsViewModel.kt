@@ -59,7 +59,6 @@ interface SettingsViewModel {
                     .compose(bindToLifecycle())
                     .subscribe({ this.userOutput.onNext(it) })
 
-
             this.confirmLogoutClicked
                     .compose(bindToLifecycle())
                     .subscribe{
@@ -67,6 +66,7 @@ interface SettingsViewModel {
                         this.logout.onNext(null)
                     }
 
+            this.koala.trackSettingsView()
         }
 
         override fun closeLogoutConfirmationClicked() = this.showConfirmLogoutPrompt.onNext(false)

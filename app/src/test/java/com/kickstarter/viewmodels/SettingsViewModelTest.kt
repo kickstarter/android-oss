@@ -11,6 +11,7 @@ class SettingsViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: SettingsViewModel.ViewModel
     private val currentUserTest = TestSubscriber<User>()
+    private val logout = TestSubscriber<Void>()
     private val showConfirmLogoutPrompt = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(user: User) {
@@ -22,7 +23,21 @@ class SettingsViewModelTest : KSRobolectricTestCase() {
         currentUser.observable().subscribe(this.currentUserTest)
 
         this.vm = SettingsViewModel.ViewModel(environment)
+        this.vm.outputs.logout().subscribe(this.logout)
         this.vm.outputs.showConfirmLogoutPrompt().subscribe(this.showConfirmLogoutPrompt)
+    }
+
+    @Test
+    fun testConfirmLogoutClicked() {
+        val user = UserFactory.user()
+
+        setUpEnvironment(user)
+
+        this.currentUserTest.assertValues(user)
+
+        this.vm.inputs.confirmLogoutClicked()
+        this.logout.assertValueCount(1)
+        this.koalaTest.assertValues("Settings View", "Logout")
     }
 
     @Test
@@ -36,7 +51,7 @@ class SettingsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testLogoutConfirmation() {
+    fun testShowConfirmLogoutPrompt() {
         val user = UserFactory.user()
 
         setUpEnvironment(user)

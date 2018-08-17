@@ -52,6 +52,7 @@
   <string name="Change_password" formatted="false">Change password</string>
   <string name="Change_payment_method" formatted="false">支払方法の変更</string>
   <string name="Chat" formatted="false">チャット</string>
+  <string name="Check_back_later_for_an_update_on_your_export_progress" formatted="false">Check back later for an update on your export progress.</string>
   <string name="Chooses_location_for_shipping" formatted="false">配送先%{location} を選択</string>
   <string name="Close_live_stream" formatted="false">ライブ配信を閉じる</string>
   <string name="Close_project" formatted="false">プロジェクトを閉じる</string>
@@ -299,7 +300,7 @@
   <string name="Replay_past_live_stream" formatted="false">過去のライブ配信をリプレイ</string>
   <string name="Replay_past_live_streams" formatted="false">過去のライブ配信をリプレイ</string>
   <string name="Reply_to_user_name" formatted="false">%{user_nameに返信</string>
-  <string name="Request_my_Personal_Data" formatted="false">自分の個人データをリクエストする</string>
+  <string name="Request_my_personal_data" formatted="false">Request my personal data</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_one" formatted="false">リワードサーベイ</string>
@@ -346,7 +347,7 @@
   <string name="Signs_up_with_Email" formatted="false">Eメールでサインアップする。</string>
   <string name="Something_catch_your_eye" formatted="false">何か目にとまるものはありましたか？</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">なにかが間違っています。もう一度お試しください。</string>
-  <string name="Start_data_collection" formatted="false">データの収集を開始する</string>
+  <string name="Start_the_request" formatted="false">Start the request</string>
   <string name="Starting_soon" formatted="false">もう少しで始まります。</string>
   <string name="Status" formatted="false">ステータス</string>
   <string name="Stay_up_to_date" formatted="false">最新情報を常に把握したい？</string>
@@ -380,6 +381,7 @@
   <string name="Top_ten_pledge_sources" formatted="false">プレッジソースのトップ10</string>
   <string name="Top_ten_rewards" formatted="false">リワードのトップ10</string>
   <string name="Total_pledged" formatted="false">プレッジ総計</string>
+  <string name="Unable_to_request_data" formatted="false">Unable to request data.</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} のフォロー解除</string>
   <string name="Unfollows_friend_name" formatted="false">%{friend_name} のフォロー解除</string>
   <string name="Unsaved" formatted="false">未保存</string>

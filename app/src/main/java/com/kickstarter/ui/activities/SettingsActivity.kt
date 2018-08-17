@@ -3,14 +3,12 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.extensions.startActivityWithSlideUpTransition
 import com.kickstarter.libs.*
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
-
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.SettingsViewModel
 import kotlinx.android.synthetic.main.settings_layout.*
@@ -79,9 +77,7 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         ApplicationUtils.startNewDiscoveryActivity(this)
     }
 
-    override fun exitTransition(): Pair<Int, Int>? {
-        return slideInFromLeft()
-    }
+    override fun exitTransition() = slideInFromLeft()
 
     /**
      * Lazily creates a logout confirmation dialog and stores it in an instance variable.

@@ -23,7 +23,6 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
     private lateinit var build: Build
     private lateinit var currentUser: CurrentUserType
 
-    private val loggedOut = R.string.Logged_Out
     private val mailto = R.string.mailto
     private val supportEmail = R.string.support_email_to_android
     private val supportEmailBody = R.string.support_email_body
@@ -62,9 +61,9 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         }
     }
 
-    private fun composeContactEmail(user: User?) {
+    private fun composeContactEmail(user: User) {
         val debugInfo = Arrays.asList(
-                user?.id()?.toString() ?: getString(this.loggedOut),
+                user.id().toString(),
                 this.build.versionName(),
                 android.os.Build.VERSION.RELEASE + " (SDK " + Integer.toString(android.os.Build.VERSION.SDK_INT) + ")",
                 android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL

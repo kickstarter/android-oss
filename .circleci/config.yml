@@ -57,6 +57,10 @@ jobs:
           - v1-android-{{ .Branch }}
           - v1-android-
 
+      - run:
+          name: Make bootstrap
+          command: make bootstrap
+
       - restore_cache:
           keys:
             - v1-gems-{{ checksum "Gemfile.lock" }}

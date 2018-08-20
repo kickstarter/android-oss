@@ -110,7 +110,7 @@ workflows:
       - build
       - test:
           requires:
-            -build
+            - build
       - deploy_crashlytics:
           requires:
             - build

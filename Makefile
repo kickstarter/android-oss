@@ -47,17 +47,17 @@ secrets:
 .PHONY: bootstrap bootstrap-circle dependencies secrets
 
 sync_oss_to_private:
-  @echo "Syncing oss to private..."
-  @git checkout oss $(BRANCH)
-  @git pull oss $(BRANCH)
-  @git push private $(BRANCH)
+	@echo "Syncing oss to private..."
+	@git checkout oss $(BRANCH)
+	@git pull oss $(BRANCH)
+	@git push private $(BRANCH)
 
-  @echo "private and oss remotes are now synced!"
+	@echo "private and oss remotes are now synced!"
 
 sync_private_to_oss:
-  @echo "Syncing private to oss..."
-  @git checkout private $(BRANCH)
-  @git pull private $(BRANCH)
-  @git push oss $(BRANCH)
+	@echo "Syncing private to oss..."
+	@git checkout private $(BRANCH)
+	@git pull private $(BRANCH)
+	@git push oss $(BRANCH)
 
-  @echo "private and oss remotes are now synced!"
+	@echo "private and oss remotes are now synced!"

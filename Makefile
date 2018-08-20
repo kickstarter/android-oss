@@ -71,8 +71,8 @@ alpha:
 
 	@echo "Deploying private/alpha-$(COMMIT)..."
 
-	@git branch -f alpha-$(COMMIT)
+	@git branch -f alpha
 	@git push -f private alpha-$(COMMIT)
-	@git branch -d alpha-$(COMMIT)
+	@git branch -d alpha
 
 	@echo "Deploy has been kicked off to CircleCI!"

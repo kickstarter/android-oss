@@ -78,7 +78,7 @@ jobs:
           path: app/build/outputs
 
 
-  deploy_crashlytics:
+  alpha:
     resource_class: xlarge
     docker:
       - image: circleci/android:api-27-alpha
@@ -103,6 +103,28 @@ jobs:
           name: Deploy to Crashlytics Alpha
           command: bundle exec fastlane alpha
 
+  create_alpha:
+     resource_class: xlarge
+        docker:
+          - image: circleci/android:api-27-alpha
+            auth:
+              username: ksrci
+              password: $DOCKERHUB_PASSWORD
+        environment:
+          TERM: dumb
+          ADB_INSTALL_TIMEOUT: 8
+          GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx512m -XX:+HeapDumpOnOutOfMemoryError"'
+        steps:
+          - checkout
+          # how can i cache this?
+          - run: make bootstrap-circle
+          - run: ./gradlew dependencies
+
+
+          - run:
+              name: push to alpha branch
+              command: make alpha
+
 workflows:
   version: 2
   build_and_test:
@@ -111,13 +133,20 @@ workflows:
       - test:
           requires:
             - build
-      - deploy_crashlytics:
+      - alpha:
           requires:
             - build
             - test
           filters:
             branches:
               only: alpha
+      - create_alpha:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              only: master
 
 experimental:
   notify:

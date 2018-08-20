@@ -1,4 +1,5 @@
 BRANCH ?= master
+COMMIT ?= $(CIRCLE_SHA1)
 
 bootstrap: dependencies secrets
 	./script/bootstrap
@@ -61,3 +62,17 @@ sync_private_to_oss:
 	@git push oss $(BRANCH)
 
 	@echo "private and oss remotes are now synced!"
+
+
+alpha:
+	@echo "Adding remotes..."
+	@git remote add oss https://github.com/kickstarter/android-oss
+	@git remote add private https://github.com/kickstarter/android-private
+
+	@echo "Deploying private/alpha-$(COMMIT)..."
+
+	@git branch -f alpha-$(COMMIT)
+	@git push -f private alpha-$(COMMIT)
+	@git branch -d alpha-$(COMMIT)
+
+	@echo "Deploy has been kicked off to CircleCI!"

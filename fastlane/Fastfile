@@ -24,7 +24,7 @@ lane :update_strings do
   current_branch = git_branch
 
   push_to_git_remote(
-    remote-branch: "oss",         # optional, default: "origin"
+    remote: "oss",         # optional, default: "origin"
     local_branch: current_branch,  # optional, aliased by "branch", default: "master"
     force: true,    # optional, default: false
     tags: false     # optional, default: true

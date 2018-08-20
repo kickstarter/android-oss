@@ -1,3 +1,6 @@
+BRANCH ?= master
+COMMIT ?= $(CIRCLE_SHA1)
+
 bootstrap: dependencies secrets
 	./script/bootstrap
 
@@ -43,3 +46,33 @@ secrets:
 	cp vendor/native-secrets/android/WebViewJavascript.html app/src/main/assets/www/WebViewJavascript.html || true
 
 .PHONY: bootstrap bootstrap-circle dependencies secrets
+
+sync_oss_to_private:
+	@echo "Syncing oss to private..."
+	@git checkout oss $(BRANCH)
+	@git pull oss $(BRANCH)
+	@git push private $(BRANCH)
+
+	@echo "private and oss remotes are now synced!"
+
+sync_private_to_oss:
+	@echo "Syncing private to oss..."
+	@git checkout private $(BRANCH)
+	@git pull private $(BRANCH)
+	@git push oss $(BRANCH)
+
+	@echo "private and oss remotes are now synced!"
+
+
+alpha:
+	@echo "Adding remotes..."
+	@git remote add oss https://github.com/kickstarter/android-oss
+	@git remote add private https://github.com/kickstarter/android-private
+
+	@echo "Deploying private/alpha-$(COMMIT)..."
+
+	@git branch -f alpha-$(COMMIT)
+	@git push -f private alpha-$(COMMIT)
+	@git branch -d alpha-$(COMMIT)
+
+	@echo "Deploy has been kicked off to CircleCI!"

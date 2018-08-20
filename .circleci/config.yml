@@ -32,9 +32,45 @@ jobs:
           paths:
             - ~/.gradle
             - ~/.android
+      - run: ./gradlew assembleExternalPre21Release
+      - store_artifacts:
+          path: app/build/reports
+          destination: reports
+
+  test:
+    resource_class: xlarge
+    docker:
+      - image: kickstarter/android-ci:65a9b01
+        auth:
+          username: ksrci
+          password: $DOCKERHUB_PASSWORD
+    environment:
+      ADB_INSTALL_TIMEOUT: 8
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx512m -XX:+HeapDumpOnOutOfMemoryError"'
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-android-{{ .Branch }}
+            - v1-android-
+
+      - run: $ANDROID_HOME/tools/android list target
+      - run: make bootstrap-circle
+      - run: echo y | android update sdk --no-ui --all --filter android-27
+      - run: echo y | android update sdk --no-ui --all --filter build-tools-27.0.3
+      - run: echo y | android update sdk --no-ui --all --filter platform-tools
+      - run: echo y | android update sdk --no-ui --all --filter extra-android-m2repository
+      - run: echo y | android update sdk --no-ui --all --filter extra-google-m2repository
+      - run: echo y | android update sdk --no-ui --all --filter extra-android-support
+      - run: ./gradlew dependencies
+      - save_cache:
+          key: v1-android-{{ .Branch }}
+          paths:
+            - ~/.gradle
+            - ~/.android
       - run: ./gradlew checkstyle
       - run: ./gradlew lintExternalPre21Release
-      - run: ./gradlew assembleExternalPre21Release testExternalPre21Release -PdisablePreDex
+      - run: ./gradlew testExternalPre21Release -PdisablePreDex
       - store_artifacts:
           path: app/build/reports
           destination: reports
@@ -42,51 +78,78 @@ jobs:
           path: app/build/outputs
 
 
-  deploy_crashlytics:
+  alpha:
+    resource_class: xlarge
     docker:
-          - image: kickstarter/android-ci:65a9b01
-            auth:
-              username: ksrci  # can specify string literal values
-              password: $DOCKERHUB_PASSWORD
+      - image: circleci/android:api-27-alpha
+        auth:
+          username: ksrci
+          password: $DOCKERHUB_PASSWORD
     environment:
+      TERM: dumb
       ADB_INSTALL_TIMEOUT: 8
       GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx512m -XX:+HeapDumpOnOutOfMemoryError"'
     steps:
-      - restore_cache:
-          keys:
-          - v1-android-{{ .Branch }}
-          - v1-android-
-
-      - run:
-          name: Make bootstrap
-          command: make bootstrap
-
-      - restore_cache:
-          keys:
-            - v1-gems-{{ checksum "Gemfile.lock" }}
+      - checkout
+      # how can i cache this?
+      - run: make bootstrap-circle
+      - run: ./gradlew dependencies
 
       - run:
           name: Bundle install
-          command: bundle check || bundle install
+          command: bundle check || bundle install --path vendor/bundle
 
       - run:
           name: Deploy to Crashlytics Alpha
           command: bundle exec fastlane alpha
 
+  create_alpha:
+    resource_class: xlarge
+    docker:
+      - image: circleci/android:api-27-alpha
+        auth:
+          username: ksrci
+          password: $DOCKERHUB_PASSWORD
+    environment:
+      TERM: dumb
+      ADB_INSTALL_TIMEOUT: 8
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx512m -XX:+HeapDumpOnOutOfMemoryError"'
+    steps:
+      - checkout
+      # how can i cache this?
+      - run: make bootstrap-circle
+      - run: ./gradlew dependencies
 
-# Workflows
+      - run:
+          name: push to alpha branch
+          command: make alpha
+
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
-      - deploy_crashlytics:
+      - test:
+          requires:
+            - build
+      - alpha:
+          requires:
+            - build
+            - test
           filters:
             branches:
               only: alpha
+      - create_alpha:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              only: master
 
 experimental:
   notify:
     branches:
       only:
         - master
+        - alpha

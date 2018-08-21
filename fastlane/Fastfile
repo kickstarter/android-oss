@@ -24,38 +24,42 @@ lane :update_strings do
   current_branch = git_branch
 
   push_to_git_remote(
-    remote: "oss",         # optional, default: "origin"
-    local_branch: current_branch,  # optional, aliased by "branch", default: "master"
-    force: true,    # optional, default: false
-    tags: false     # optional, default: true
+    remote: "oss",
+    local_branch: current_branch,
+    force: true,
+    tags: false
   )
 end
 
 lane :alpha do
   gradle(task: "assembleInternalPre21Debug")
-  slack(
-    slack_url: ENV["slack_webhook"],
-    message: "Internal debug build successfully delivered!"
-    )
 
   crashlytics(
     api_token: ENV["apiKey"],
     build_secret: ENV["apiSecret"],
+    groups: "development",
     notifications: true
+    )
+
+  slack(
+    slack_url: ENV["slack_webhook"],
+    message: "Alpha build successfully delivered!"
     )
 end
 
 lane :external do
   build_android_app(task: "assembleExternalPre21Release")
-  slack(
-    slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
-    message: "External debug build successfully delivered!"
-    )
 
   crashlytics(
     api_token: Milkrun::FabricCredentialsExtractor.new.api_key,
     build_secret: Milkrun::FabricCredentialsExtractor.new.api_secret,
+    groups: "development",
     notifications: true
+    )
+
+  slack(
+    slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
+    message: "External release build successfully delivered!"
     )
 end
 
@@ -65,6 +69,7 @@ lane :internal do
   crashlytics(
     api_token: Milkrun::FabricCredentialsExtractor.new.api_key,
     build_secret: Milkrun::FabricCredentialsExtractor.new.api_secret,
+    groups: "development",
     notifications: true
     )
 

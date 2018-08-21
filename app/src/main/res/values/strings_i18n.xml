@@ -53,7 +53,7 @@ backers</string>
   <string name="Change_password" formatted="false">Change password</string>
   <string name="Change_payment_method" formatted="false">Change payment method</string>
   <string name="Chat" formatted="false">Chat</string>
-  <string name="Check_back_later_for_an_update_on_your_export_progress" formatted="false">Check back later for an update on your export progress.</string>
+  <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Check back later for an update on your export progress.</string>
   <string name="Chooses_location_for_shipping" formatted="false">Chooses %{location} for shipping.</string>
   <string name="Close_live_stream" formatted="false">Close live stream</string>
   <string name="Close_project" formatted="false">Close project</string>
@@ -385,7 +385,7 @@ catch your eye?</string>
   <string name="Top_ten_pledge_sources" formatted="false">Top 10 pledge sources</string>
   <string name="Top_ten_rewards" formatted="false">Top 10 rewards</string>
   <string name="Total_pledged" formatted="false">Total pledged</string>
-  <string name="Unable_to_request_data" formatted="false">Unable to request data.</string>
+  <string name="Unable_to_request" formatted="false">Unable to request data.</string>
   <string name="Unfollow_friend_name" formatted="false">Unfollow %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Unfollows %{friend_name}.</string>
   <string name="Unsaved" formatted="false">Unsaved</string>

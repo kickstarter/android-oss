@@ -53,7 +53,7 @@ Unterstützer</string>
   <string name="Change_password" formatted="false">Passwort ändern</string>
   <string name="Change_payment_method" formatted="false">Zahlungsmethode ändern</string>
   <string name="Chat" formatted="false">Chat</string>
-  <string name="Check_back_later_for_an_update_on_your_export_progress" formatted="false">Check back later for an update on your export progress.</string>
+  <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Der Fortschritt des Exports wird in Kürze verfügbar sein- schau später noch einmal vorbei.</string>
   <string name="Chooses_location_for_shipping" formatted="false">Legt %{location} als Versandort fest.</string>
   <string name="Close_live_stream" formatted="false">Live-Stream schließen</string>
   <string name="Close_project" formatted="false">Projekt schließen</string>
@@ -300,7 +300,7 @@ Unterstützer</string>
   <string name="Replay_past_live_stream" formatted="false">Wiedergabe des vorigen Live-Streams</string>
   <string name="Replay_past_live_streams" formatted="false">Wiedergabe vergangener Live-Streams</string>
   <string name="Reply_to_user_name" formatted="false">%{user_name} antworten …</string>
-  <string name="Request_my_personal_data" formatted="false">Request my personal data</string>
+  <string name="Request_my_personal_data" formatted="false">Meine persönlichen Daten anfordern</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_Surveys_one" formatted="false">Befragung</string>
@@ -347,7 +347,7 @@ Unterstützer</string>
   <string name="Signs_up_with_Email" formatted="false">Mit E-Mail-Adresse registrieren.</string>
   <string name="Something_catch_your_eye" formatted="false">Etwas interessantes gefunden?</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Da hat etwas nicht geklappt. Bitte versuche es später noch einmal.</string>
-  <string name="Start_the_request" formatted="false">Start the request</string>
+  <string name="Start_the_request" formatted="false">Daten zusammenstellen</string>
   <string name="Starting_soon" formatted="false">Beginnt in Kürze</string>
   <string name="Status" formatted="false">Status:</string>
   <string name="Stay_up_to_date" formatted="false">Möchtest du auf dem Laufenden bleiben?</string>
@@ -381,7 +381,7 @@ Unterstützer</string>
   <string name="Top_ten_pledge_sources" formatted="false">Top 10 Quellen deiner Beiträge</string>
   <string name="Top_ten_rewards" formatted="false">Top 10-Belohnungen</string>
   <string name="Total_pledged" formatted="false">Anzahl der Beiträge insgesamt</string>
-  <string name="Unable_to_request_data" formatted="false">Unable to request data.</string>
+  <string name="Unable_to_request" formatted="false">Daten konnten nicht angefordert werden.</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} nicht mehr folgen</string>
   <string name="Unfollows_friend_name" formatted="false">%{friend_name} nicht mehr folgen.</string>
   <string name="Unsaved" formatted="false">Speichern wurde rückgängig gemacht</string>

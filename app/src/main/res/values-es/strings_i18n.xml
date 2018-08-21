@@ -53,7 +53,7 @@ patrocinadores</string>
   <string name="Change_password" formatted="false">Cambiar contraseña</string>
   <string name="Change_payment_method" formatted="false">Cambiar método de pago</string>
   <string name="Chat" formatted="false">Chat</string>
-  <string name="Check_back_later_for_an_update_on_your_export_progress" formatted="false">Check back later for an update on your export progress.</string>
+  <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Vuelve más tarde para obtener una actualización sobre tu progreso de exportación.</string>
   <string name="Chooses_location_for_shipping" formatted="false">Destino determinado: %{location}.</string>
   <string name="Close_live_stream" formatted="false">Cerrar Live Stream</string>
   <string name="Close_project" formatted="false">Cerrar proyecto</string>
@@ -300,7 +300,7 @@ patrocinadores</string>
   <string name="Replay_past_live_stream" formatted="false">Repetir live stream pasado</string>
   <string name="Replay_past_live_streams" formatted="false">Repetir live streams pasados</string>
   <string name="Reply_to_user_name" formatted="false">Responder a %{user_name}…</string>
-  <string name="Request_my_personal_data" formatted="false">Request my personal data</string>
+  <string name="Request_my_personal_data" formatted="false">Solicitar mis datos personales</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_Surveys_one" formatted="false">Cuestionario</string>
@@ -347,7 +347,7 @@ patrocinadores</string>
   <string name="Signs_up_with_Email" formatted="false">Registro con correo electrónico.</string>
   <string name="Something_catch_your_eye" formatted="false">¿Algo que te haya llamado la atención?</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Ocurrió un error. Inténtalo nuevamente más tarde.</string>
-  <string name="Start_the_request" formatted="false">Start the request</string>
+  <string name="Start_the_request" formatted="false">Comenzar la recopilación de datos</string>
   <string name="Starting_soon" formatted="false">Comienza en breve</string>
   <string name="Status" formatted="false">Estado:</string>
   <string name="Stay_up_to_date" formatted="false">¿Deseas mantenerte actualizado?</string>
@@ -381,7 +381,7 @@ patrocinadores</string>
   <string name="Top_ten_pledge_sources" formatted="false">Las 10 principales fuentes de contribución</string>
   <string name="Top_ten_rewards" formatted="false">Las 10 mejores recompensas</string>
   <string name="Total_pledged" formatted="false">Contribuciones en total</string>
-  <string name="Unable_to_request_data" formatted="false">Unable to request data.</string>
+  <string name="Unable_to_request" formatted="false">No se pueden solicitar datos.</string>
   <string name="Unfollow_friend_name" formatted="false">Dejar de seguir a %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Dejar de seguir a %{friend_name}.</string>
   <string name="Unsaved" formatted="false">Sin guardar</string>

@@ -48,15 +48,15 @@ end
 lane :external do
   build_android_app(task: "assembleExternalPre21Release")
   slack(
-    slack_url: ENV["slack_webhook"],
+    slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
     message: "External debug build successfully delivered!"
     )
 
-  crashlytics(
-    api_token: ENV["apiKey"],
-    build_secret: ENV["apiSecret"],
-    notifications: true
-    )
+    crashlytics(
+      api_token: Milkrun::FabricCredentialsExtractor.new.api_key,
+      build_secret: Milkrun::FabricCredentialsExtractor.new.api_secret,
+      notifications: true
+      )
 end
 
 lane :internal do

@@ -15,14 +15,14 @@ Install _fastlane_ using
 or alternatively using `brew cask install fastlane`
 
 # Available Actions
-### string
+### update_strings
 ```
-fastlane string
+fastlane update_strings
 ```
 
-### internal_build_number
+### fabric_creds
 ```
-fastlane internal_build_number
+fastlane fabric_creds
 ```
 
 ### alpha
@@ -30,14 +30,14 @@ fastlane internal_build_number
 fastlane alpha
 ```
 
-### external_min21
+### external
 ```
-fastlane external_min21
+fastlane external
 ```
 
-### beta
+### internal
 ```
-fastlane beta
+fastlane internal
 ```
 
 

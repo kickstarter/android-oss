@@ -31,6 +31,11 @@ lane :update_strings do
   )
 end
 
+lane :fabric_creds do
+  creds = Milkrun::FabricCredentialsExtractor.new.creds
+  puts creds
+end
+
 lane :alpha do
   gradle(task: "assembleInternalPre21Debug")
   slack(

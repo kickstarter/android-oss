@@ -43,7 +43,7 @@ lane :alpha do
 
   slack(
     slack_url: ENV["slack_webhook"],
-    message: "ALpha build successfully delivered!"
+    message: "Alpha build successfully delivered!"
     )
 end
 

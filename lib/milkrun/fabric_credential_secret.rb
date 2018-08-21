@@ -1,7 +1,7 @@
 module Milkrun
-  class FabricCredentialsExtractor
+  class FabricSecretExtractor
 
-    def creds
+    def secret
        lines = File.readlines("../app/fabric.properties")
             cred = lines.map { |line| line.strip.split('=') }.to_h
             secret = cred["apiSecret"]

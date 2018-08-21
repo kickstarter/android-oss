@@ -24,10 +24,10 @@ lane :update_strings do
   current_branch = git_branch
 
   push_to_git_remote(
-    remote: "oss",         # optional, default: "origin"
-    local_branch: current_branch,  # optional, aliased by "branch", default: "master"
-    force: true,    # optional, default: false
-    tags: false     # optional, default: true
+    remote: "oss",
+    local_branch: current_branch,
+    force: true,
+    tags: false
   )
 end
 
@@ -43,7 +43,7 @@ lane :alpha do
 
   slack(
     slack_url: ENV["slack_webhook"],
-    message: "Internal debug build successfully delivered!"
+    message: "ALpha build successfully delivered!"
     )
 end
 
@@ -58,7 +58,7 @@ lane :external do
     )
 
   slack(
-    slack_url: ENV["slack_webhook"],
+    slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
     message: "External release build successfully delivered!"
     )
 end

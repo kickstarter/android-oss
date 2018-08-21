@@ -32,11 +32,8 @@ lane :update_strings do
 end
 
 lane :fabric_creds do
-  creds = Milkrun::FabricCredentialsExtractor.new.creds
-  secret = Milkrun::FabricSecretExtractor.new.secret
-
-  puts secret
-  puts creds
+  Milkrun::FabricCredentialsExtractor.new.api_key
+  Milkrun::FabricCredentialsExtractor.new.api_secret
 end
 
 lane :alpha do
@@ -69,12 +66,10 @@ end
 
 lane :internal do
   build_android_app(task: "assembleInternalPre21Release")
-  creds = Milkrun::FabricCredentialsExtractor.new.creds
-  secret = Milkrun::FabricSecretExtractor.new.secret
 
   crashlytics(
-    api_token: creds,
-    build_secret: secret,
+    api_token: Milkrun::FabricCredentialsExtractor.new.api_key,
+    build_secret: Milkrun::FabricCredentialsExtractor.new.api_secret,
     notifications: true
     )
 

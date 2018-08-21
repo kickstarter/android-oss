@@ -31,11 +31,6 @@ lane :update_strings do
   )
 end
 
-lane :fabric_creds do
-  creds = Milkrun::FabricCredentialsExtractor.new.creds
-  puts creds
-end
-
 lane :alpha do
   gradle(task: "assembleInternalPre21Debug")
   slack(
@@ -53,13 +48,13 @@ end
 lane :external do
   build_android_app(task: "assembleExternalPre21Release")
   slack(
-    slack_url: ENV["slack_webhook"],
+    slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
     message: "External debug build successfully delivered!"
     )
 
   crashlytics(
-    api_token: ENV["apiKey"],
-    build_secret: ENV["apiSecret"],
+    api_token: Milkrun::FabricCredentialsExtractor.new.api_key,
+    build_secret: Milkrun::FabricCredentialsExtractor.new.api_secret,
     notifications: true
     )
 end
@@ -68,13 +63,13 @@ lane :internal do
   build_android_app(task: "assembleInternalPre21Release")
 
   crashlytics(
-    api_token: ENV["apiKey"],
-    build_secret: ENV["apiSecret"],
+    api_token: Milkrun::FabricCredentialsExtractor.new.api_key,
+    build_secret: Milkrun::FabricCredentialsExtractor.new.api_secret,
     notifications: true
     )
 
   slack(
-    slack_url: ENV["slack_webhook"],
+    slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
     message: "Internal release build successfully delivered!"
     )
 end

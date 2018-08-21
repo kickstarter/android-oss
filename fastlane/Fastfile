@@ -52,11 +52,11 @@ lane :external do
     message: "External debug build successfully delivered!"
     )
 
-    crashlytics(
-      api_token: Milkrun::FabricCredentialsExtractor.new.api_key,
-      build_secret: Milkrun::FabricCredentialsExtractor.new.api_secret,
-      notifications: true
-      )
+  crashlytics(
+    api_token: Milkrun::FabricCredentialsExtractor.new.api_key,
+    build_secret: Milkrun::FabricCredentialsExtractor.new.api_secret,
+    notifications: true
+    )
 end
 
 lane :internal do

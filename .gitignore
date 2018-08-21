@@ -79,3 +79,4 @@ app/src/**/google-services.json
 app/src/main/java/com/kickstarter/libs/TLSSocketFactory.java
 app/src/main/java/com/kickstarter/libs/utils/SocketUtils.java
 fabric.properties
+slack.properties

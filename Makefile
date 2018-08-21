@@ -36,6 +36,8 @@ secrets:
 # Copy crashlytics over. Fallback to examples if they don't exist
 	cp vendor/native-secrets/android/fabric.properties app/fabric.properties || cp config/fabric.properties.example app/fabric.properties
 
+# Copy slack_webhook over.
+	cp vendor/native-secrets/android/slack.properties config/slack.properties
 
 	# Copy web client over.
 	cp -rf vendor/native-secrets/android/WebViewJavascriptInterface.java app/src/main/java/com/kickstarter/libs/WebViewJavascriptInterface.java \

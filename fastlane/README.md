@@ -20,11 +20,6 @@ or alternatively using `brew cask install fastlane`
 fastlane update_strings
 ```
 
-### fabric_creds
-```
-fastlane fabric_creds
-```
-
 ### alpha
 ```
 fastlane alpha

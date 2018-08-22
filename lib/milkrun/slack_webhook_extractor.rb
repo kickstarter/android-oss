@@ -2,7 +2,7 @@ module Milkrun
   class SlackWebhookExtractor
 
     def properties
-    lines = File.readlines("../config/slack.properties")
+    lines = File.readlines("../app/slack.properties")
             properties = lines.map { |line| line.strip.split('=') }.to_h
     end
 

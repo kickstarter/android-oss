@@ -5,28 +5,26 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.util.Pair
-
 import com.kickstarter.R
+import com.kickstarter.extensions.onChange
+import com.kickstarter.extensions.text
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.views.ConfirmDialog
 import com.kickstarter.viewmodels.LoginViewModel
-import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.text
-
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import kotlinx.android.synthetic.main.login_form_view.*
 import kotlinx.android.synthetic.main.login_toolbar.*
 
 @RequiresActivityViewModel(LoginViewModel.ViewModel::class)
 class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
-    private lateinit var confirmResetPasswordSuccessDialog: ConfirmDialog
+    private var confirmResetPasswordSuccessDialog: ConfirmDialog? = null
     private lateinit var ksString: KSString
 
     private val forgotPasswordString = R.string.login_buttons_forgot_password_html
@@ -98,15 +96,15 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
      */
     private fun resetPasswordSuccessDialog(email: String): ConfirmDialog {
         if (this.confirmResetPasswordSuccessDialog == null) {
-            val message = this.ksString!!.format(getString(this.forgotPasswordSentEmailString), "email", email)
+            val message = this.ksString.format(getString(this.forgotPasswordSentEmailString), "email", email)
             this.confirmResetPasswordSuccessDialog = ConfirmDialog(this, null, message)
 
-            this.confirmResetPasswordSuccessDialog
+            this.confirmResetPasswordSuccessDialog!!
                     .setOnDismissListener { this.viewModel.inputs.resetPasswordConfirmationDialogDismissed() }
-            this.confirmResetPasswordSuccessDialog
+            this.confirmResetPasswordSuccessDialog!!
                     .setOnCancelListener { this.viewModel.inputs.resetPasswordConfirmationDialogDismissed() }
         }
-        return this.confirmResetPasswordSuccessDialog
+        return this.confirmResetPasswordSuccessDialog!!
     }
 
     private fun errorMessages() =

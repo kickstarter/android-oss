@@ -75,7 +75,7 @@
 
       <TextView
         style="@style/NewsLetterTextView"
-        android:text="@string/Sign_up_newsletter" />
+        android:text="@string/A_weekly_roundup_of_the_best_and_brightest" />
 
       <LinearLayout
         style="@style/SettingsLinearRow">
@@ -99,7 +99,7 @@
 
       <TextView
         style="@style/NewsLetterTextView"
-        android:text="@string/Happening_newsletter" />
+        android:text="@string/The_zeitgeist_delivered_to_your_inbox_via_new" />
 
       <LinearLayout
         style="@style/SettingsLinearRow">
@@ -123,7 +123,7 @@
 
       <TextView
         style="@style/NewsLetterTextView"
-        android:text="@string/News_events" />
+        android:text="@string/Big_Kickstarter_news_and_events_near_you" />
 
       <LinearLayout
         style="@style/SettingsLinearRow">
@@ -147,7 +147,7 @@
 
       <TextView
         style="@style/NewsLetterTextView"
-        android:text="@string/Games_newsletter" />
+        android:text="@string/Join_our_secret_society" />
 
       <LinearLayout
         style="@style/SettingsLinearRow">
@@ -171,7 +171,7 @@
 
       <TextView
         style="@style/NewsLetterTextView"
-        android:text="@string/Discover_arts_news" />
+        android:text="@string/Discover_the_future_of_Design_and_Tech" />
 
       <LinearLayout
         style="@style/SettingsLinearRow">
@@ -195,7 +195,7 @@
 
       <TextView
         style="@style/NewsLetterTextView"
-        android:text="@string/profile_settings_newsletter_arts_news_newsletter" />
+        android:text="@string/New_work_and_big_ideas_from_established_and" />
 
 
       <LinearLayout
@@ -220,7 +220,7 @@
 
       <TextView
         style="@style/NewsLetterTextView"
-        android:text="@string/profile_settings_newsletter_films_newsletter" />
+        android:text="@string/Love_film_We_do_too" />
 
       <LinearLayout
         style="@style/SettingsLinearRow">
@@ -244,7 +244,7 @@
 
       <TextView
         style="@style/NewsLetterTextView"
-        android:text="@string/profile_settings_newsletter_publishing_newsletter" />
+        android:text="@string/Welcome_to_our_library_Peruse_the_stacks_with_us" />
 
       <LinearLayout
         style="@style/SettingsLinearRow">
@@ -268,7 +268,7 @@
 
       <TextView
         style="@style/NewsLetterTextView"
-        android:text="@string/profile_settings_newsletter_alumni_newsletter" />
+        android:text="@string/Keep_in_touch_after_your_campaign" />
 
     </LinearLayout>
 

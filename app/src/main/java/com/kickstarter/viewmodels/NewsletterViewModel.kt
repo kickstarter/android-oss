@@ -111,6 +111,7 @@ interface NewsletterViewModel {
 
             this.currentUser.observable()
                     .map { isSubscribedToAllNewsletters(it) }
+                    .compose(bindToLifecycle())
                     .subscribe(this.subscribeAll::onNext)
 
             this.userInput

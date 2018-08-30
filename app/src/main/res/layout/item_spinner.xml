@@ -2,9 +2,11 @@
 <TextView
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  style="@style/BodyPrimary"
-  tools:ignore="UnusedResources"
-  android:id="@android:id/text1"
+  style="@style/CalloutPrimary"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:textColor="@color/ksr_soft_black" />
+  android:paddingTop="@dimen/grid_1"
+  android:paddingBottom="@dimen/grid_1"
+  android:gravity="center_vertical"
+  android:minHeight="@dimen/grid_8"
+  tools:text="Item" />

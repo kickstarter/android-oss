@@ -487,6 +487,7 @@ public final class ApiClient implements ApiClientType {
           .notifyMobileOfUpdates(isTrue(user.notifyMobileOfUpdates()))
           .notifyOfBackings(isTrue(user.notifyOfBackings()))
           .notifyOfComments(isTrue(user.notifyOfComments()))
+          .notifyOfCreatorDigest(isTrue(user.notifyOfCreatorDigest()))
           .notifyOfCreatorEdu(isTrue(user.notifyOfCreatorEdu()))
           .notifyOfFollower(isTrue(user.notifyOfFollower()))
           .notifyOfFriendActivity(isTrue(user.notifyOfFriendActivity()))

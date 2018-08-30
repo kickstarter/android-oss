@@ -129,12 +129,9 @@
     <activity
       android:name=".ui.activities.HelpActivity"
       android:theme="@style/HelpActivity" />
-    <activity android:name=".ui.activities.HelpNewActivity"/>
+    <activity android:name=".ui.activities.HelpSettingsActivity" />
     <activity
       android:name=".ui.activities.HelpActivity$CookiePolicy"
-      android:theme="@style/HelpActivity" />
-    <activity
-      android:name=".ui.activities.HelpActivity$HowItWorks"
       android:theme="@style/HelpActivity" />
     <activity
       android:name=".ui.activities.HelpActivity$Privacy"
@@ -188,9 +185,9 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.ProfileActivity" />
     </activity>
-    <activity android:name=".ui.activities.NotificationsActivity"/>
-    <activity android:name=".ui.activities.NewsletterActivity"/>
-    <activity android:name=".ui.activities.PrivacyActivity"/>
+    <activity android:name=".ui.activities.NewsletterActivity" />
+    <activity android:name=".ui.activities.NotificationsActivity" />
+    <activity android:name=".ui.activities.PrivacyActivity" />
     <activity
       android:name=".ui.activities.ProjectNotificationSettingsActivity"
       android:parentActivityName=".ui.activities.SettingsActivity">
@@ -242,8 +239,7 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-    <activity
-      android:name=".ui.activities.SettingsActivity"
+    <activity android:name=".ui.activities.SettingsActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity">
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
@@ -333,7 +329,6 @@
           android:scheme="https" />
       </intent-filter>
     </activity>
-    <activity android:name=".ui.activities.SettingsNewActivity" />
 
     <!-- SERVICES, PROVIDERS, RECEIVERS -->
 
@@ -411,6 +406,7 @@
     <meta-data
       android:name="com.google.android.gms.wallet.api.enabled"
       android:value="true" />
+
   </application>
 
 </manifest>

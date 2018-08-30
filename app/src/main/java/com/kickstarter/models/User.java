@@ -1,10 +1,14 @@
 package com.kickstarter.models;
 
+import android.content.res.Resources;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.AutoGson;
+
+import org.jetbrains.annotations.NotNull;
 
 import auto.parcel.AutoParcel;
 
@@ -34,6 +38,7 @@ public abstract class User implements Parcelable {
   public abstract @Nullable Boolean notifyMobileOfUpdates();
   public abstract @Nullable Boolean notifyOfBackings();
   public abstract @Nullable Boolean notifyOfComments();
+  public abstract @Nullable Boolean notifyOfCreatorDigest();
   public abstract @Nullable Boolean notifyOfCreatorEdu();
   public abstract @Nullable Boolean notifyOfFollower();
   public abstract @Nullable Boolean notifyOfFriendActivity();
@@ -74,6 +79,7 @@ public abstract class User implements Parcelable {
     public abstract Builder notifyMobileOfUpdates(Boolean __);
     public abstract Builder notifyOfBackings(Boolean __);
     public abstract Builder notifyOfComments(Boolean __);
+    public abstract Builder notifyOfCreatorDigest(Boolean __);
     public abstract Builder notifyOfCreatorEdu(Boolean __);
     public abstract Builder notifyOfFollower(Boolean __);
     public abstract Builder notifyOfFriendActivity(Boolean __);
@@ -100,4 +106,28 @@ public abstract class User implements Parcelable {
   }
 
   public abstract Builder toBuilder();
+
+  public enum EmailFrequency {
+    INDIVIDUAL(R.string.Individual_Emails),
+    DIGEST(R.string.Daily_digest);
+
+    private int stringResId;
+
+    EmailFrequency(final int stringResId) {
+      this.stringResId = stringResId;
+    }
+
+    @NotNull
+    public static String[] getStrings(final @NonNull Resources resources) {
+      final String[] strings = new String[values().length];
+      final EmailFrequency[] values = values();
+
+      for (int i = 0, valuesLength = values.length; i < valuesLength; i++) {
+        final EmailFrequency emailFrequency = values[i];
+        strings[i] = resources.getString(emailFrequency.stringResId);
+      }
+
+      return strings;
+    }
+  }
 }

@@ -48,6 +48,9 @@ interface NotificationsViewModel {
         /** Call when the notify of new comments toggle changes.  */
         fun notifyOfComments(checked: Boolean)
 
+        /** Call when the email frequency spinner selection changes.  */
+        fun notifyOfCreatorDigest(checked: Boolean)
+
         /** Call when the notify of creator tips toggle changes.  */
         fun notifyOfCreatorEdu(checked: Boolean)
 
@@ -69,7 +72,10 @@ interface NotificationsViewModel {
 
     interface Outputs {
 
-        /** Emits user containing settings state.  */
+        /** Emission determines whether we should be hiding backings frequency emails settings.  */
+        fun creatorDigestFrequencyIsGone(): Observable<Boolean>
+
+        /** Emission determines whether we should be hiding creator notification settings.   */
         fun creatorNotificationsAreGone(): Observable<Boolean>
 
         /** Emits user containing settings state.  */
@@ -83,6 +89,7 @@ interface NotificationsViewModel {
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<NotificationsActivity>(environment), Inputs, Outputs, Errors {
         private val userInput = PublishSubject.create<User>()
 
+        private val creatorDigestFrequencyIsGone : Observable<Boolean>
         private val creatorNotificationsAreGone : Observable<Boolean>
         private val userOutput = BehaviorSubject.create<User>()
         private val updateSuccess = PublishSubject.create<Void>()
@@ -104,14 +111,21 @@ interface NotificationsViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.currentUser.refresh(it) }
 
-            this.currentUser.observable()
+            val currentUser = this.currentUser.observable()
+
+            currentUser
                     .take(1)
                     .compose(bindToLifecycle())
                     .subscribe({ this.userOutput.onNext(it) })
 
-            this.creatorNotificationsAreGone = this.currentUser.observable()
+            this.creatorDigestFrequencyIsGone = currentUser
                     .compose(bindToLifecycle())
-                    .map { u -> IntegerUtils.isZero(u.createdProjectsCount()?: 0)  }
+                    .map { it.notifyOfBackings() != true  }
+                    .distinctUntilChanged()
+
+            this.creatorNotificationsAreGone = currentUser
+                    .compose(bindToLifecycle())
+                    .map { IntegerUtils.isZero(it.createdProjectsCount()?: 0) }
                     .distinctUntilChanged()
 
             this.userInput
@@ -165,11 +179,19 @@ interface NotificationsViewModel {
         }
 
         override fun notifyOfBackings(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfBackings(checked).build())
+            val userBuilder = this.userOutput.value.toBuilder().notifyOfBackings(checked)
+            if (!checked) {
+                userBuilder.notifyOfCreatorDigest(false)
+            }
+            this.userInput.onNext(userBuilder.build())
         }
 
         override fun notifyOfComments(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfComments(checked).build())
+        }
+
+        override fun notifyOfCreatorDigest(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfCreatorDigest(checked).build())
         }
 
         override fun notifyOfCreatorEdu(checked: Boolean) {
@@ -196,7 +218,9 @@ interface NotificationsViewModel {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfUpdates(checked).build())
         }
 
-        override fun creatorNotificationsAreGone(): Observable<Boolean> = this.creatorNotificationsAreGone
+        override fun creatorDigestFrequencyIsGone() = this.creatorDigestFrequencyIsGone
+
+        override fun creatorNotificationsAreGone() = this.creatorNotificationsAreGone
 
         override fun user(): Observable<User> = this.userOutput
 

@@ -16,9 +16,15 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.apollographql.android'
 apply from: 'quality.gradle'
 
-def externalPrivateVersion = new File(project.rootDir.path + "/app/external_version_code.txt").text.trim().toInteger()
+def getVersionCodeTimestamp() {
+    def date = new Date()
+    def formattedDate = date.format('yyMMddHHmm')
+    def code = formattedDate.toInteger()
+    println sprintf("VersionCode: %d", code)
+    return code
+}
+
 def externalPublicVersion = new File(project.rootDir.path + "/app/external_version_name.txt").text.trim()
-def internalPrivateVersion = new File(project.rootDir.path + "/app/internal_version_code.txt").text.trim().toInteger()
 def internalPublicVersion = new File(project.rootDir.path + "/app/internal_version_name.txt").text.trim()
 def isCircle = "true" == System.getenv("CIRCLECI")
 
@@ -107,13 +113,13 @@ android {
         internal {
             dimension "AUDIENCE"
             applicationId "com.kickstarter.kickstarter.internal"
-            versionCode internalPrivateVersion
+            versionCode getVersionCodeTimestamp()
             versionName internalPublicVersion
         }
         external {
             dimension "AUDIENCE"
             applicationId "com.kickstarter.kickstarter"
-            versionCode externalPrivateVersion
+            versionCode getVersionCodeTimestamp()
             versionName externalPublicVersion
         }
     }
@@ -121,10 +127,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    dataBinding {
-        enabled = true
     }
 
     // Fixes build error hitting GC overhead limit
@@ -220,14 +222,14 @@ final okhttp_version = "3.5.0"
 final picasso_version = "2.5.2"
 final phoenix_version = "1.0.2"
 final play_services_version = "15.0.1"
-final retrofit_version = "2.2.0"
+final retrofit_version = "2.3.0"
 final rx_android_version = "1.2.0"
 final rx_binding_version = "0.3.0"
 final rx_java_version = "1.1.5"
 final rx_lifecycle_version = "0.3.0"
 final stripe_version = "6.1.2"
 final support_version = "27.1.0"
-final support_annotations_version = "27.1.0"
+final support_annotations_version = "27.1.1"
 final timber_version = "3.0.1"
 
 // Test support versions
@@ -238,7 +240,7 @@ final robolectric_version = "3.8"
 final robolectric_shadows_version = "3.0"
 final robolectric_shadows_support_version = "3.4-rc2"
 final test_rules_version = "1.0.2"
-final test_support_annotations_version = "27.1.0"
+final test_support_annotations_version = "27.1.1"
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')

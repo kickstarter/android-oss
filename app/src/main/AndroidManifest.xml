@@ -239,7 +239,8 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-    <activity android:name=".ui.activities.SettingsActivity"
+    <activity
+      android:name=".ui.activities.SettingsActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity">
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
@@ -407,6 +408,10 @@
       android:name="com.google.android.gms.wallet.api.enabled"
       android:value="true" />
 
+    <activity android:name=".ui.activities.AccountActivity">
+    </activity>
+    <activity android:name=".ui.activities.ChangeEmailActivity">
+    </activity>
   </application>
 
 </manifest>

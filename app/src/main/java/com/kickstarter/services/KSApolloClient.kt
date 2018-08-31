@@ -9,16 +9,16 @@ import rx.Single
 
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
-    override fun userPrivacy(): Single<Response<UserPrivacyQuery.Data>> {
-        return Single.create<Response<UserPrivacyQuery.Data>>({ e ->
+    override fun userPrivacy(): Single<UserPrivacyQuery.Data> {
+        return Single.create<UserPrivacyQuery.Data>({ subscriber ->
             service.query(UserPrivacyQuery.builder().build())
                     .enqueue(object : ApolloCall.Callback<UserPrivacyQuery.Data>() {
                         override fun onFailure(exception: ApolloException) {
-                            e.onError(exception)
+                            subscriber.onError(exception)
                         }
 
                         override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
-                            e.onSuccess(response)
+                            subscriber.onSuccess(response.data())
                         }
                     })
         }

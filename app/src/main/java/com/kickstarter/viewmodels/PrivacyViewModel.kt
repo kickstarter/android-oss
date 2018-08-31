@@ -1,9 +1,6 @@
 package com.kickstarter.viewmodels
 
-import UserPrivacyQuery
 import android.support.annotation.NonNull
-import android.util.Log
-import com.apollographql.apollo.api.Response
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
@@ -116,11 +113,6 @@ interface PrivacyViewModel {
                     .compose<Boolean>(bindToLifecycle<Boolean>())
                     .filter({ optOut -> !optOut })
                     .subscribe({ _ -> this.hideConfirmFollowingOptOutPrompt.onNext(null) })
-
-            this.apolloClient
-                    .userPrivacy()
-                    .compose<Response<UserPrivacyQuery.Data>>(singleBindToLifecycle<Response<UserPrivacyQuery.Data>>())
-                    .subscribe({beep -> Log.d("izzytest", beep.data()?.me()?.name() )})
         }
 
         override fun optIntoFollowing(checked: Boolean) {

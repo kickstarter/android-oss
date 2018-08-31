@@ -180,13 +180,6 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static ApiService provideApolloService(final @ApiRetrofit @NonNull Retrofit retrofit) {
-    return retrofit.create(ApiService.class);
-  }
-
-  @Provides
-  @Singleton
-  @NonNull
   static OkHttpClient provideOkHttpClient(final @NonNull ApiRequestInterceptor apiRequestInterceptor, final @NonNull CookieJar cookieJar,
     final @NonNull HttpLoggingInterceptor httpLoggingInterceptor, final @NonNull KSRequestInterceptor ksRequestInterceptor,
     final @NonNull Build build, final @NonNull WebRequestInterceptor webRequestInterceptor) {

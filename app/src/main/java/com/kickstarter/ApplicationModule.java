@@ -58,6 +58,7 @@ import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApolloClientType;
+import com.kickstarter.services.KSApolloClient;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.WebClientType;
@@ -172,18 +173,8 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static ApolloClientType provideApolloClientType(final @NonNull HttpLoggingInterceptor httpLoggingInterceptor,
-    final @NonNull GraphQLInterceptor graphQLInterceptor) {
-
-    final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-      .addInterceptor(httpLoggingInterceptor)
-      .addInterceptor(graphQLInterceptor)
-      .build();
-
-    return ApolloClient.builder()
-      .serverUrl("https://www.kickstarter.com/graph")
-      .okHttpClient(okHttpClient)
-      .build();
+  static ApolloClientType provideApolloClientType(final @NonNull ApolloClient apolloClient) {
+    return new KSApolloClient(apolloClient);
   }
 
   @Provides

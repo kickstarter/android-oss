@@ -8,7 +8,6 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.activities.PrivacyActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -61,7 +60,6 @@ interface PrivacyViewModel {
         val outputs: PrivacyViewModel.Outputs = this
         val errors: PrivacyViewModel.Errors = this
 
-        private val apolloClient: ApolloClientType = environment.apolloClient()
         private val client: ApiClientType = environment.apiClient()
         private val currentUser: CurrentUserType = environment.currentUser()
 

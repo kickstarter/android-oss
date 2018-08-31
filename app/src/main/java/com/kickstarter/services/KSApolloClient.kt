@@ -21,7 +21,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             subscriber.onSuccess(response.data())
                         }
                     })
-        }
-        )
+        })
     }
 }

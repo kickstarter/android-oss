@@ -19,7 +19,7 @@ interface ChangeEmailViewModel {
     }
 
     interface Outputs {
-        /** Emits the user's avatar photo url for display.  */
+        // TODO javadoc
         fun userEmail(): Observable<String>
     }
 

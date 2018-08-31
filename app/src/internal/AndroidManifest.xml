@@ -6,5 +6,6 @@
   <application>
     <activity android:name=".ui.activities.InternalToolsActivity" />
     <activity android:name=".ui.activities.PlaygroundActivity" />
+    <activity android:name=".ui.activities.TestApolloActivity" />
   </application>
 </manifest>

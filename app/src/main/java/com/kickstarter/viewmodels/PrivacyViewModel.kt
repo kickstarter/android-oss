@@ -3,10 +3,7 @@ package com.kickstarter.viewmodels
 import UserPrivacyQuery
 import android.support.annotation.NonNull
 import android.util.Log
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.exception.ApolloException
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
@@ -14,6 +11,7 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.activities.PrivacyActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -66,7 +64,7 @@ interface PrivacyViewModel {
         val outputs: PrivacyViewModel.Outputs = this
         val errors: PrivacyViewModel.Errors = this
 
-        private val apolloClient: ApolloClient = environment.apolloClient()
+        private val apolloClient: ApolloClientType = environment.apolloClient()
         private val client: ApiClientType = environment.apiClient()
         private val currentUser: CurrentUserType = environment.currentUser()
 
@@ -120,17 +118,9 @@ interface PrivacyViewModel {
                     .subscribe({ _ -> this.hideConfirmFollowingOptOutPrompt.onNext(null) })
 
             this.apolloClient
-                    .query(UserPrivacyQuery.builder().build())
-                    .enqueue(object : ApolloCall.Callback<UserPrivacyQuery.Data>() {
-                        override fun onFailure(e: ApolloException) {
-                            Log.e("izzytest", e.localizedMessage)
-                        }
-
-                        override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
-                            Log.d("izzytest", response.data()?.me()?.name())
-                        }
-
-                    })
+                    .userPrivacy()
+                    .compose<Response<UserPrivacyQuery.Data>>(singleBindToLifecycle<Response<UserPrivacyQuery.Data>>())
+                    .subscribe({beep -> Log.d("izzytest", beep.data()?.me()?.name() )})
         }
 
         override fun optIntoFollowing(checked: Boolean) {

@@ -3,12 +3,12 @@ package com.kickstarter.libs;
 import android.content.SharedPreferences;
 import android.os.Parcelable;
 
-import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.WebClientType;
 
 import java.net.CookieManager;
@@ -21,7 +21,7 @@ public abstract class Environment implements Parcelable {
   public abstract IntPreferenceType activitySamplePreference();
   public abstract AndroidPayCapability androidPayCapability();
   public abstract ApiClientType apiClient();
-  public abstract ApolloClient apolloClient();
+  public abstract ApolloClientType apolloClient();
   public abstract Build build();
   public abstract BuildCheck buildCheck();
   public abstract CookieManager cookieManager();
@@ -46,7 +46,7 @@ public abstract class Environment implements Parcelable {
     public abstract Builder activitySamplePreference(IntPreferenceType __);
     public abstract Builder androidPayCapability(AndroidPayCapability __);
     public abstract Builder apiClient(ApiClientType __);
-    public abstract Builder apolloClient(ApolloClient __);
+    public abstract Builder apolloClient(ApolloClientType __);
     public abstract Builder build(Build __);
     public abstract Builder buildCheck(BuildCheck __);
     public abstract Builder cookieManager(CookieManager __);

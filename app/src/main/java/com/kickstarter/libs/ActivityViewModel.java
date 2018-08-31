@@ -12,6 +12,7 @@ import com.kickstarter.ui.data.ActivityResult;
 import com.trello.rxlifecycle.ActivityEvent;
 
 import rx.Observable;
+import rx.Single;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -97,6 +98,19 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
    * `subscribe`.
    */
   public @NonNull <T> Observable.Transformer<T, T> bindToLifecycle() {
+    return source -> source.takeUntil(
+      this.view.switchMap(v -> v.lifecycle().map(e -> Pair.create(v, e)))
+        .filter(ve -> isFinished(ve.first, ve.second))
+    );
+  }
+  /**
+   * By composing this transformer with an observable you guarantee that every observable in your view model
+   * will be properly completed when the view model completes.
+   *
+   * It is required that *every* observable in a view model do `.compose(bindToLifecycle())` before calling
+   * `subscribe`.
+   */
+  public @NonNull <T> Single.Transformer<T, T> singleBindToLifecycle() {
     return source -> source.takeUntil(
       this.view.switchMap(v -> v.lifecycle().map(e -> Pair.create(v, e)))
         .filter(ve -> isFinished(ve.first, ve.second))

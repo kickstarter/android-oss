@@ -57,6 +57,7 @@ import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
+import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.WebClientType;
@@ -98,12 +99,12 @@ public final class ApplicationModule {
   static Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
     final @NonNull AndroidPayCapability androidPayCapability,
     final @NonNull ApiClientType apiClient,
+    final @NonNull ApolloClientType apolloClient,
     final @NonNull Build build,
     final @NonNull BuildCheck buildCheck,
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfigType currentConfig,
     final @NonNull CurrentUserType currentUser,
-    final @NonNull ApolloClient apolloClient,
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
@@ -166,6 +167,30 @@ public final class ApplicationModule {
       .serverUrl("https://www.kickstarter.com/graph")
       .okHttpClient(okHttpClient)
       .build();
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static ApolloClientType provideApolloClientType(final @NonNull HttpLoggingInterceptor httpLoggingInterceptor,
+    final @NonNull GraphQLInterceptor graphQLInterceptor) {
+
+    final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+      .addInterceptor(httpLoggingInterceptor)
+      .addInterceptor(graphQLInterceptor)
+      .build();
+
+    return ApolloClient.builder()
+      .serverUrl("https://www.kickstarter.com/graph")
+      .okHttpClient(okHttpClient)
+      .build();
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static ApiService provideApolloService(final @ApiRetrofit @NonNull Retrofit retrofit) {
+    return retrofit.create(ApiService.class);
   }
 
   @Provides

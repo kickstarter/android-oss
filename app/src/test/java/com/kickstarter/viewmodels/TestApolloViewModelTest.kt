@@ -35,6 +35,9 @@ class TestApolloViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.makeNetworkCallClicked()
         this.email.assertValue("izzy@test.com")
+
+        this.vm.inputs.makeNetworkCallWithErrorsClicked()
+        this.email.assertValues("izzy@test.com", "izzy@test.com")
     }
 
     @Test
@@ -47,6 +50,9 @@ class TestApolloViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.makeNetworkCallClicked()
         this.name.assertValue("Izzy")
+
+        this.vm.inputs.makeNetworkCallWithErrorsClicked()
+        this.name.assertValues("Izzy","Izzy")
     }
 
     @Test
@@ -58,6 +64,9 @@ class TestApolloViewModelTest : KSRobolectricTestCase() {
         }).build())
 
         this.vm.inputs.makeNetworkCallClicked()
+        this.error.assertNoValues()
+
+        this.vm.inputs.makeNetworkCallWithErrorsClicked()
         this.error.assertValueCount(1)
     }
 }

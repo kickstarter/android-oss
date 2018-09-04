@@ -49,7 +49,7 @@ interface ChangeEmailViewModel {
 
             this.apolloClient
                     .userPrivacy()
-                    .compose(singleBindToLifecycle())
+                    .compose(bindToLifecycle())
                     .subscribe({
                         val email = it.me()?.email()
                         this@ViewModel.userEmail.onNext(email)

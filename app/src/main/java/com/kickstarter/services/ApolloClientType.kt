@@ -1,8 +1,8 @@
 package com.kickstarter.services
 
 import UserPrivacyQuery
-import rx.Single
+import rx.Observable
 
 interface ApolloClientType {
-    fun userPrivacy(): Single<UserPrivacyQuery.Data>
+    fun userPrivacy(): Observable<UserPrivacyQuery.Data>
 }

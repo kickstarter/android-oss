@@ -1,8 +1,9 @@
 package com.kickstarter.ui.viewmodels
 
+import UserPrivacyQuery
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers.neverError
+import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.activities.TestApolloActivity
 import rx.Observable
@@ -24,6 +25,9 @@ class TestApolloViewModel {
 
         /** Emits the logged in user's name.  */
         fun name(): Observable<String>
+
+        /** Emits a boolean that determines if a network call is in progress.  */
+        fun showProgressBar(): Observable<Boolean>
     }
 
     interface Errors {
@@ -42,29 +46,34 @@ class TestApolloViewModel {
 
         private val email = BehaviorSubject.create<String>()
         private val name = BehaviorSubject.create<String>()
+        private val showProgressBar = BehaviorSubject.create<Boolean>()
 
         private val error = BehaviorSubject.create<String>()
 
         private val apolloClient: ApolloClientType = environment.apolloClient()
 
         init {
+
             this.makeNetworkCallClicked
-                    .switchMap { this.apolloClient.userPrivacy().toObservable() }
+                    .flatMap { userPrivacy().compose<UserPrivacyQuery.Data>(neverError()) }
                     .compose(bindToLifecycle())
-                    .compose(neverError())
                     .subscribe({
-                        this.email.onNext(it.me()?.email())
-                        this.name.onNext(it.me()?.name())
+                        emitData(it)
                     })
 
-            this.makeNetworkCallWithErrorsClicked
-                    .switchMap { this.apolloClient.userPrivacy().toObservable() }
+            val userPrivacyNotification = this.makeNetworkCallWithErrorsClicked
+                    .switchMap { userPrivacy().materialize() }
                     .compose(bindToLifecycle())
+                    .share()
+
+            userPrivacyNotification
+                    .compose(errors())
+                    .subscribe({ this.error.onNext(it.localizedMessage) })
+
+            userPrivacyNotification
+                    .compose(values())
                     .subscribe({
-                        this.email.onNext(it.me()?.email())
-                        this.name.onNext(it.me()?.name())
-                    }, {
-                        this.error.onNext(it.localizedMessage)
+                        emitData(it)
                     })
         }
 
@@ -80,6 +89,19 @@ class TestApolloViewModel {
 
         override fun name(): Observable<String> = this.name
 
+        override fun showProgressBar(): Observable<Boolean> = this.showProgressBar
+
         override fun error(): Observable<String> = this.error
+
+        private fun emitData(it: UserPrivacyQuery.Data) {
+            this.email.onNext(it.me()?.email())
+            this.name.onNext(it.me()?.name())
+        }
+
+        private fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+            return this.apolloClient.userPrivacy()
+                    .doOnSubscribe { this.showProgressBar.onNext(true) }
+                    .doAfterTerminate { this.showProgressBar.onNext(false) }
+        }
     }
 }

@@ -73,7 +73,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
     setupBuildInformationSection();
 
-    testApolloButton.setText("Apollo POC");
+    this.testApolloButton.setText("Apollo POC");
   }
 
   @OnClick(R.id.playground_button)

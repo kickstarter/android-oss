@@ -139,6 +139,7 @@ backers</string>
   <string name="Follow_your_Facebook_friends_and_keep_up_with_the_projects" formatted="false">Follow your Facebook friends and keep up with the projects they back and launch.</string>
   <string name="Followed" formatted="false">Followed</string>
   <string name="Following" formatted="false">Following</string>
+  <string name="Following_Disabled_Info" formatted="false">Following must be on to find Facebook friends. Following can be changed in Settings > Privacy.</string>
   <string name="Following_More_Info" formatted="false">Following More Info</string>
   <string name="Follows_friend_name" formatted="false">Follows %{friend_name}.</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed an &lt;i>Art&lt;/i> project.</string>

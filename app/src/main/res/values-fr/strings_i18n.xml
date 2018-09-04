@@ -90,7 +90,7 @@ contributeurs</string>
   <string name="Developer" formatted="false">Développeur</string>
   <string name="Discover_arts_news" formatted="false">Des idées et des projets innovants à découvrir, soigneusement sélectionnés deux fois par mois par l\'équipe Design et technologie de Kickstarter.</string>
   <string name="Discover_more_projects" formatted="false">Découvrez plus de projets.</string>
-  <string name="Discover_the_future_of_Design_and_Tech" formatted="false">Discover the future of Design and Tech.</string>
+  <string name="Discover_the_future_of_Design_and_Tech" formatted="false">Tout sur l\'avenir du design et de la technologie.</string>
   <string name="Dismiss" formatted="false">Ignorer</string>
   <string name="Done" formatted="false">Terminé</string>
   <string name="Download_your_personal_data" formatted="false">Téléchargement de vos données personnelles</string>
@@ -139,6 +139,7 @@ contributeurs</string>
   <string name="Follow_your_Facebook_friends_and_keep_up_with_the_projects" formatted="false">Suivez vos amis Facebook, les projets qu\'ils soutiennent et les campagnes qu\'ils lancent.</string>
   <string name="Followed" formatted="false">Abonné</string>
   <string name="Following" formatted="false">Projets soutenus par mes amis</string>
+  <string name="Following_Disabled_Info" formatted="false">Following must be on to find Facebook friends. Following can be changed in Settings > Privacy.</string>
   <string name="Following_More_Info" formatted="false">Plus d\'informations sur le suivi et l\'abonnement</string>
   <string name="Follows_friend_name" formatted="false">Abonnement aux actus de %{friend_name}.</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> a soutenu un projet &lt;i>artistique&lt;/i>.</string>
@@ -178,10 +179,10 @@ contributeurs</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">La préparation de vos données personnelles peut prendre jusqu\'à 24 heures. Nous vous enverrons des instructions de téléchargement à l\'adresse e-mail associée à ce compte une fois que tout sera prêt. Si vous ne recevez rien, revenez ici pour réessayer.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">C\'est un outil qui permet de donner vie à des projets créatifs.</string>
   <string name="Its_better_with_friends" formatted="false">On est mieux ensemble.</string>
-  <string name="Join_our_secret_society" formatted="false">Join our secret society.</string>
+  <string name="Join_our_secret_society" formatted="false">Notre société secrète n\'attend que vous.</string>
   <string name="Joining_the_live_stream" formatted="false">Connexion à la diffusion en direct en cours</string>
   <string name="Just_for_you" formatted="false">Rien que pour vous.</string>
-  <string name="Keep_in_touch_after_your_campaign" formatted="false">Keep in touch after your campaign and plan your next project.</string>
+  <string name="Keep_in_touch_after_your_campaign" formatted="false">Une façon de garder le contact après votre campagne et de prévoir votre prochain projet.</string>
   <string name="Keep_reading" formatted="false">Plus</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Soyez informé des prochaines diffusions en direct</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (si le projet est financé)</string>

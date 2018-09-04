@@ -139,6 +139,7 @@ patrocinadores</string>
   <string name="Follow_your_Facebook_friends_and_keep_up_with_the_projects" formatted="false">Sigue a tus amigos de Facebook y entérate cuando patrocinan o publican un proyecto.</string>
   <string name="Followed" formatted="false">Siguiendo</string>
   <string name="Following" formatted="false">Siguiendo</string>
+  <string name="Following_Disabled_Info" formatted="false">El seguimiento debe estar activado para encontrar amigos de Facebook. El seguimiento se puede cambiar en Configuración > Privacidad.</string>
   <string name="Following_More_Info" formatted="false">Más información sobre el seguimiento</string>
   <string name="Follows_friend_name" formatted="false">Sigue a %{friend_name}.</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> patrocinó un proyecto de &lt;i>Arte&lt;/i>.</string>
@@ -181,7 +182,7 @@ patrocinadores</string>
   <string name="Join_our_secret_society" formatted="false">Únete a nuestra sociedad secreta.</string>
   <string name="Joining_the_live_stream" formatted="false">Abriendo conexión a Live Stream</string>
   <string name="Just_for_you" formatted="false">Sólo para ti.</string>
-  <string name="Keep_in_touch_after_your_campaign" formatted="false">Keep in touch after your campaign and plan your next project.</string>
+  <string name="Keep_in_touch_after_your_campaign" formatted="false">Mantente en contacto después de tu campaña y planifica tu próximo proyecto.</string>
   <string name="Keep_reading" formatted="false">Leer más</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Recibe info sobre live streams futuros</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (si la financiación es exitosa)</string>

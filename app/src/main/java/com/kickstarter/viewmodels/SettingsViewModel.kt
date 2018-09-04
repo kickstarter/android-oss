@@ -61,7 +61,7 @@ interface SettingsViewModel {
 
             this.confirmLogoutClicked
                     .compose(bindToLifecycle())
-                    .subscribe {
+                    .subscribe{
                         this.koala.trackLogout()
                         this.logout.onNext(null)
                     }

@@ -239,8 +239,7 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-    <activity
-      android:name=".ui.activities.SettingsActivity"
+    <activity android:name=".ui.activities.SettingsActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity">
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
@@ -370,8 +369,6 @@
       android:exported="true"
       tools:ignore="ExportedContentProvider" />
 
-    <activity android:name="net.hockeyapp.android.UpdateActivity" />
-
     <!-- See https://mixpanel.com/help/reference/android#referrer_tracking -->
     <receiver
       android:name="com.mixpanel.android.mpmetrics.InstallReferrerReceiver"
@@ -408,10 +405,6 @@
       android:name="com.google.android.gms.wallet.api.enabled"
       android:value="true" />
 
-    <activity android:name=".ui.activities.AccountActivity">
-    </activity>
-    <activity android:name=".ui.activities.ChangeEmailActivity">
-    </activity>
   </application>
 
 </manifest>

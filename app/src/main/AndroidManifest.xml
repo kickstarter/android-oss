@@ -261,6 +261,8 @@
         android:value=".ui.activities.ActivityFeedActivity" />
     </activity>
 
+    <activity android:name=".ui.activities.TestApolloActivity" />
+
     <!-- TODO: Maybe the parent should be the project? -->
     <activity
       android:name=".ui.activities.ThanksActivity"

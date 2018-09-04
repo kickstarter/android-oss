@@ -7,7 +7,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.ui.viewmodels.TestApolloViewModel
+import com.kickstarter.viewmodels.TestApolloViewModel
 import kotlinx.android.synthetic.main.activity_test_apollo.*
 import rx.android.schedulers.AndroidSchedulers
 

@@ -4,7 +4,6 @@ import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.services.MockApolloClient
-import com.kickstarter.ui.viewmodels.TestApolloViewModel
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber

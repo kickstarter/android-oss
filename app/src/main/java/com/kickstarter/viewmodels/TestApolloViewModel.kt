@@ -1,4 +1,4 @@
-package com.kickstarter.ui.viewmodels
+package com.kickstarter.viewmodels
 
 import UserPrivacyQuery
 import com.kickstarter.libs.ActivityViewModel
@@ -37,9 +37,9 @@ class TestApolloViewModel {
 
     class ViewModel(environment: Environment) : ActivityViewModel<TestApolloActivity>(environment), Inputs, Outputs, Errors {
 
-        val inputs: TestApolloViewModel.Inputs = this
-        val outputs: TestApolloViewModel.Outputs = this
-        val errors: TestApolloViewModel.Errors = this
+        val inputs: Inputs = this
+        val outputs: Outputs = this
+        val errors: Errors = this
 
         private val makeNetworkCallClicked = PublishSubject.create<Void>()
         private val makeNetworkCallWithErrorsClicked = PublishSubject.create<Void>()

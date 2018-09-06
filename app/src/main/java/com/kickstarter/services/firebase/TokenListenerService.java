@@ -1,11 +1,9 @@
 package com.kickstarter.services.firebase;
 
-import android.content.Intent;
 
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
-import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 
 import timber.log.Timber;

@@ -1,16 +1,10 @@
 package com.kickstarter.services.firebase;
 
-import android.app.IntentService;
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUserType;
@@ -18,8 +12,6 @@ import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.ApiClientType;
-
-import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
@@ -38,13 +30,13 @@ public class RegisterService extends JobService {
 
   @Override
   public boolean onStartJob(JobParameters job) {
-    FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener((Executor) this, instanceIdResult -> {
+    FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
       String newToken = instanceIdResult.getToken();
       Timber.d("newToken",newToken);
       sendTokenToApi(newToken);
       subscribeToGlobalTopic();
-
     });
+
     return true;
   }
 

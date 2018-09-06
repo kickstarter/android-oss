@@ -1,8 +1,5 @@
 package com.kickstarter.services.firebase;
 
-import android.app.IntentService;
-import android.content.Intent;
-import android.support.annotation.NonNull;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;

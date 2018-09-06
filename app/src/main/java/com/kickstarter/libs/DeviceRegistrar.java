@@ -1,9 +1,11 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.services.firebase.RegisterService;
@@ -29,7 +31,13 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
       return;
     }
 
-    this.context.startService(new Intent(this.context, RegisterService.class));
+    FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this.context));
+    Job job = dispatcher.newJobBuilder()
+      .setService(RegisterService.class)
+      .setTag("Register-service")
+      .build();
+
+    dispatcher.mustSchedule(job);
   }
 
   /**
@@ -40,6 +48,12 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
       return;
     }
 
-    this.context.startService(new Intent(this.context, UnregisterService.class));
+    FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this.context));
+    Job job = dispatcher.newJobBuilder()
+      .setService(UnregisterService.class)
+      .setTag("Unregister-service")
+      .build();
+
+    dispatcher.mustSchedule(job);
   }
 }

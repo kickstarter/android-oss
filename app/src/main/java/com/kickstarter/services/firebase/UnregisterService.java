@@ -30,4 +30,3 @@ public class UnregisterService extends JobService {
   }
 
 }
-

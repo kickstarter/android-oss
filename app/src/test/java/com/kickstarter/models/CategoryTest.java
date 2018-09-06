@@ -1,6 +1,6 @@
 package com.kickstarter.models;
 
-import com.kickstarter.factories.CategoryFactory;
+import com.kickstarter.mock.factories.CategoryFactory;
 
 import junit.framework.TestCase;
 

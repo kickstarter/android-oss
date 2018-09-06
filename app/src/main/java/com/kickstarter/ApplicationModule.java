@@ -53,10 +53,12 @@ import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.libs.utils.Secrets;
+import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.KSWebViewClient;
+import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.WebClientType;
 import com.kickstarter.services.WebService;
@@ -144,7 +146,7 @@ public final class ApplicationModule {
   @Singleton
   @NonNull
   static ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
-    return new ApiClient(apiService, gson);
+      return Secrets.IS_OSS ? new MockApiClient() : new ApiClient(apiService, gson);
   }
 
   @Provides
@@ -350,7 +352,7 @@ public final class ApplicationModule {
   static CurrentConfigType provideCurrentConfig(final @NonNull AssetManager assetManager,
                                                 final @NonNull Gson gson,
                                                 final @ConfigPreference @NonNull StringPreferenceType configPreference) {
-    return new CurrentConfig(assetManager, gson, configPreference);
+    return Secrets.IS_OSS ? new MockCurrentConfig() : new CurrentConfig(assetManager, gson, configPreference);
   }
 
   @Provides

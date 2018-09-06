@@ -44,8 +44,7 @@ public final class ProjectIntentMapper {
       .retry(3);
 
     return projectFromParceledProject
-      .mergeWith(projectFromParceledParam)
-      .compose(Transformers.neverError());
+      .mergeWith(projectFromParceledParam);
   }
 
   /**

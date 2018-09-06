@@ -3,7 +3,7 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.CategoryFactory;
+import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.models.Category;
 import com.kickstarter.ui.viewholders.ThanksCategoryHolderViewModel;

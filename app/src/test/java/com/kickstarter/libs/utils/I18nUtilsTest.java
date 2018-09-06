@@ -1,6 +1,6 @@
 package com.kickstarter.libs.utils;
 
-import com.kickstarter.factories.LocationFactory;
+import com.kickstarter.mock.factories.LocationFactory;
 
 import junit.framework.TestCase;
 

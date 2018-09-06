@@ -3,7 +3,7 @@ package com.kickstarter.ui.adapters;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 

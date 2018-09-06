@@ -1,7 +1,7 @@
 package com.kickstarter.libs.utils;
 
-import com.kickstarter.factories.CategoryFactory;
-import com.kickstarter.factories.LocationFactory;
+import com.kickstarter.mock.factories.CategoryFactory;
+import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.services.DiscoveryParams;
 

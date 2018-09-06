@@ -3,7 +3,7 @@ package com.kickstarter.libs.utils;
 import android.content.SharedPreferences;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.libs.MockSharedPreferences;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Project;

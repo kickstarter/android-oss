@@ -1,8 +1,8 @@
 package com.kickstarter.libs.utils;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.CategoryFactory;
-import com.kickstarter.factories.UserFactory;
+import com.kickstarter.mock.factories.CategoryFactory;
+import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.models.Category;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;

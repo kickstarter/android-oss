@@ -4,12 +4,12 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.ActivityEnvelopeFactory;
-import com.kickstarter.factories.ActivityFactory;
-import com.kickstarter.factories.CategoryFactory;
-import com.kickstarter.factories.DiscoverEnvelopeFactory;
-import com.kickstarter.factories.ProjectFactory;
-import com.kickstarter.factories.UserFactory;
+import com.kickstarter.mock.factories.ActivityEnvelopeFactory;
+import com.kickstarter.mock.factories.ActivityFactory;
+import com.kickstarter.mock.factories.CategoryFactory;
+import com.kickstarter.mock.factories.DiscoverEnvelopeFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
@@ -21,7 +21,7 @@ import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.services.MockApiClient;
+import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 

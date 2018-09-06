@@ -31,8 +31,8 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
       return;
     }
 
-    FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this.context));
-    Job job = dispatcher.newJobBuilder()
+    final FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this.context));
+    final Job job = dispatcher.newJobBuilder()
       .setService(RegisterService.class)
       .setTag("Register-service")
       .build();
@@ -48,8 +48,8 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
       return;
     }
 
-    FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this.context));
-    Job job = dispatcher.newJobBuilder()
+    final FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this.context));
+    final Job job = dispatcher.newJobBuilder()
       .setService(UnregisterService.class)
       .setTag("Unregister-service")
       .build();

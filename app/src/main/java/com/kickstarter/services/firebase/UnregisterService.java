@@ -10,7 +10,7 @@ import timber.log.Timber;
 public class UnregisterService extends JobService {
 
   @Override
-  public boolean onStartJob(JobParameters job) {
+  public boolean onStartJob(final JobParameters job) {
     Timber.d("onStartJob");
     new Thread(() -> {
       try {
@@ -25,7 +25,7 @@ public class UnregisterService extends JobService {
   }
 
   @Override
-  public boolean onStopJob(JobParameters job) {
+  public boolean onStopJob(final JobParameters job) {
     return false;
   }
 

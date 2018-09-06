@@ -29,10 +29,10 @@ public class RegisterService extends JobService {
 
 
   @Override
-  public boolean onStartJob(JobParameters job) {
+  public boolean onStartJob(final JobParameters job) {
     FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
-      String newToken = instanceIdResult.getToken();
-      Timber.d("newToken",newToken);
+      final String newToken = instanceIdResult.getToken();
+      Timber.d("newToken", newToken);
       sendTokenToApi(newToken);
       subscribeToGlobalTopic();
     });
@@ -41,7 +41,7 @@ public class RegisterService extends JobService {
   }
 
   @Override
-  public boolean onStopJob(JobParameters job) {
+  public boolean onStopJob(final JobParameters job) {
     return false;
   }
 

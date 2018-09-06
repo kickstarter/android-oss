@@ -4,8 +4,13 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.firebase.jobdispatcher.JobParameters;
+import com.firebase.jobdispatcher.JobService;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUserType;
@@ -14,17 +19,15 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.ApiClientType;
 
+import java.util.concurrent.Executor;
+
 import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class RegisterService extends IntentService {
+public class RegisterService extends JobService {
   protected @Inject ApiClientType apiClient;
   protected @Inject CurrentUserType currentUser;
-
-  public RegisterService() {
-    super("RegisterService");
-  }
 
   @Override
   public void onCreate() {
@@ -32,21 +35,22 @@ public class RegisterService extends IntentService {
     ((KSApplication) getApplicationContext()).component().inject(this);
   }
 
+
   @Override
-  protected void onHandleIntent(final @Nullable Intent intent) {
-    Timber.d("onHandleIntent");
+  public boolean onStartJob(JobParameters job) {
+    FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener((Executor) this, instanceIdResult -> {
+      String newToken = instanceIdResult.getToken();
+      Timber.d("newToken",newToken);
+      sendTokenToApi(newToken);
+      subscribeToGlobalTopic();
 
-    try {
-      final String token = FirebaseInstanceId.getInstance().getToken();
-      Timber.d("Token: %s", token);
+    });
+    return true;
+  }
 
-      if(ObjectUtils.isNotNull(token)) {
-        sendTokenToApi(token);
-        subscribeToGlobalTopic();
-      }
-    } catch (final Exception e) {
-      Timber.e("Failed to complete token refresh: %s", e);
-    }
+  @Override
+  public boolean onStopJob(JobParameters job) {
+    return false;
   }
 
   /**

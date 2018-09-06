@@ -3,13 +3,10 @@ package com.kickstarter.libs;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.utils.PlayServicesCapability;
-import com.kickstarter.services.firebase.RegisterService;
-import com.kickstarter.services.firebase.UnregisterService;
+import com.kickstarter.services.firebase.DispatcherKt;
+
 
 public final class DeviceRegistrar implements DeviceRegistrarType {
   private final @NonNull PlayServicesCapability playServicesCapability;
@@ -30,14 +27,7 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
     if (!this.playServicesCapability.isCapable()) {
       return;
     }
-
-    final FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this.context));
-    final Job job = dispatcher.newJobBuilder()
-      .setService(RegisterService.class)
-      .setTag("Register-service")
-      .build();
-
-    dispatcher.mustSchedule(job);
+    DispatcherKt.dispatchTokenJob(this.context, DispatcherKt.REGISTER_SERVICE);
   }
 
   /**
@@ -47,13 +37,6 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
     if (!this.playServicesCapability.isCapable()) {
       return;
     }
-
-    final FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this.context));
-    final Job job = dispatcher.newJobBuilder()
-      .setService(UnregisterService.class)
-      .setTag("Unregister-service")
-      .build();
-
-    dispatcher.mustSchedule(job);
+    DispatcherKt.dispatchTokenJob(this.context, DispatcherKt.UNREGISTER_SERVICE);
   }
 }

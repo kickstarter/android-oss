@@ -96,9 +96,40 @@
         android:text="@string/We_use_your_activity_internally_to_make_recommendations_for_you" />
 
       <LinearLayout
+        style="@style/SettingsLinearRow">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/NewsletterSingleRow"
+            android:text="@string/Private_profile" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/private_profile_switch"
+            style="@style/NewsLetterSwitch" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <TextView
+        style="@style/NewsLetterTextView"
+        android:layout_marginBottom="@dimen/grid_1"
+        android:layout_marginTop="@dimen/grid_2"
+        android:text="@string/If_your_profile_is_private" />
+
+      <TextView
+        style="@style/NewsLetterTextView"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:text="@string/If_your_profile_is_public" />
+
+      <LinearLayout
         android:id="@+id/settings_request_data"
         style="@style/SettingsLinearRow"
-        android:layout_marginTop="@dimen/grid_3">
+        android:layout_marginTop="@dimen/grid_2">
 
         <LinearLayout
           style="@style/SettingsSingleRow"

@@ -51,6 +51,7 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
                 .subscribe({ this.displayPreferences(it) })
 
         following_switch.setOnClickListener{ this.viewModel.inputs.optIntoFollowing(following_switch.isChecked) }
+        private_profile_switch.setOnClickListener { this.viewModel.inputs.showPublicProfile(private_profile_switch.isChecked) }
         recommendations_switch.setOnClickListener { this.viewModel.inputs.optedOutOfRecommendations(recommendations_switch.isChecked) }
         settings_request_data.setOnClickListener { showPrivacyWebpage(Secrets.Privacy.REQUEST_DATA) }
         settings_delete_account.setOnClickListener { showPrivacyWebpage(Secrets.Privacy.DELETE_ACCOUNT) }
@@ -58,6 +59,7 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
 
     private fun displayPreferences(user: User) {
         SwitchCompatUtils.setCheckedWithoutAnimation(following_switch, isTrue(user.social()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(private_profile_switch, isFalse(user.showPublicProfile()))
         SwitchCompatUtils.setCheckedWithoutAnimation(recommendations_switch, isFalse(user.optedOutOfRecommendations()))
     }
 

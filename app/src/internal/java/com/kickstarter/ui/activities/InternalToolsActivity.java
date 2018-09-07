@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
 import android.webkit.URLUtil;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -57,6 +58,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   @Bind(R.id.variant) TextView variant;
   @Bind(R.id.version_code) TextView versionCode;
   @Bind(R.id.version_name) TextView versionName;
+  @Bind(R.id.test_apollo) Button testApolloButton;
   @BindDrawable(android.R.drawable.ic_dialog_alert) Drawable icDialogAlertDrawable;
 
   @Override
@@ -70,6 +72,8 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     this.currentUser = environment().currentUser();
 
     setupBuildInformationSection();
+
+    this.testApolloButton.setText("Apollo POC");
   }
 
   @OnClick(R.id.playground_button)
@@ -111,6 +115,11 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   @OnClick(R.id.submit_bug_report_button)
   public void submitBugReportButtonClick() {
     this.currentUser.observable().take(1).subscribe(this::submitBugReport);
+  }
+
+  @OnClick(R.id.test_apollo)
+  public void testApolloButtonClick() {
+    startActivity(new Intent(this, TestApolloActivity.class));
   }
 
   private void submitBugReport(final @Nullable User user) {

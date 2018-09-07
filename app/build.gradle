@@ -13,13 +13,13 @@ apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.apollographql.android'
 apply from: 'quality.gradle'
 
-def getVersionCodeTimestamp() {
+static def getVersionCodeTimestamp() {
     def date = new Date()
     def formattedDate = date.format('yyMMddHHmm')
     def code = formattedDate.toInteger()
-    println sprintf("VersionCode: %d", code)
     return code
 }
 
@@ -165,6 +165,16 @@ android {
 
 }
 
+buildscript {
+    repositories {
+        jcenter()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    }
+    dependencies {
+        classpath 'com.apollographql.apollo:apollo-gradle-plugin:0.5.0'
+    }
+}
+
 afterEvaluate {
     buildFabricPropertiesIfNeeded()
 }
@@ -186,13 +196,13 @@ def buildFabricPropertiesIfNeeded() {
 
 repositories {
     jcenter()
-    maven { url 'https://maven.fabric.io/public' }
     maven {
         url 'https://maven.google.com'
     }
 }
 
 // library versions
+final apollo = "0.5.0"
 final auto_parcel_version = "0.3.1"
 final butterknife_version = "7.0.1"
 final constraint_layout_version = "1.1.0"
@@ -275,6 +285,8 @@ dependencies {
     implementation("com.crashlytics.sdk.android:crashlytics:$crashlytics_version") {
         transitive = true
     }
+    implementation "com.apollographql.apollo:apollo-runtime:$apollo"
+    implementation "com.apollographql.apollo:apollo-android-support:$apollo"
 
     // Testing
     testImplementation "junit:junit:$junit_version"

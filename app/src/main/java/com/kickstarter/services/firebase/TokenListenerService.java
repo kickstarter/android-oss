@@ -1,16 +1,13 @@
 package com.kickstarter.services.firebase;
 
 
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.google.firebase.messaging.FirebaseMessagingService;
 
-import javax.inject.Inject;
 
 import timber.log.Timber;
 
 public class TokenListenerService extends FirebaseMessagingService {
 
-  protected @Inject FirebaseJobDispatcher firebaseJobDispatcher;
   /**
    * Called if the InstanceID token is updated. This can occur in a variety of scenarios - the
    * InstanceID service might periodically request that we refresh a token every 6 months, or

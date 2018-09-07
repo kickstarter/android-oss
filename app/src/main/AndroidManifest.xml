@@ -357,12 +357,18 @@
     <service
       android:name=".services.firebase.RegisterService"
       android:exported="false">
+      <intent-filter>
+        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+      </intent-filter>
     </service>
 
     <!-- Unsubscribes the device from Firebase. -->
     <service
       android:name=".services.firebase.UnregisterService"
       android:exported="false">
+      <intent-filter>
+        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+      </intent-filter>
     </service>
 
     <provider

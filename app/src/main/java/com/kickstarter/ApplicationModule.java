@@ -11,8 +11,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
 import com.apollographql.apollo.ApolloClient;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

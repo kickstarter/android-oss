@@ -33,7 +33,7 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
     if (!this.playServicesCapability.isCapable()) {
       return;
     }
-    DispatcherKt.dispatchJob(context, RegisterService.class, RegisterService.REGISTER_SERVICE);
+    DispatcherKt.dispatchJob(this.context, RegisterService.class, RegisterService.REGISTER_SERVICE);
   }
 
   /**
@@ -43,6 +43,6 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
     if (!this.playServicesCapability.isCapable()) {
       return;
     }
-    DispatcherKt.dispatchJob(context, UnregisterService.class, UnregisterService.UNREGISTER_SERVICE);
+    DispatcherKt.dispatchJob(this.context, UnregisterService.class, UnregisterService.UNREGISTER_SERVICE);
   }
 }

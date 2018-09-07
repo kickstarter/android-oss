@@ -11,6 +11,8 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
 import com.apollographql.apollo.ApolloClient;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -175,6 +177,13 @@ public final class ApplicationModule {
   @NonNull
   static ApolloClientType provideApolloClientType(final @NonNull ApolloClient apolloClient) {
     return new KSApolloClient(apolloClient);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  FirebaseJobDispatcher provideFirebaseJobDispatcher(final @ApplicationContext @NonNull Context context) {
+    return new FirebaseJobDispatcher(new GooglePlayDriver(context));
   }
 
   @Provides

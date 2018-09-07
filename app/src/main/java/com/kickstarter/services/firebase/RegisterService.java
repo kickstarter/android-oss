@@ -20,6 +20,7 @@ import timber.log.Timber;
 public class RegisterService extends JobService {
   protected @Inject ApiClientType apiClient;
   protected @Inject CurrentUserType currentUser;
+  public static final String REGISTER_SERVICE = "Register-service";
 
   @Override
   public void onCreate() {

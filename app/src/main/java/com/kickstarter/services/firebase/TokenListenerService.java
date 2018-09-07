@@ -1,11 +1,17 @@
 package com.kickstarter.services.firebase;
 
 
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.Job;
 import com.google.firebase.messaging.FirebaseMessagingService;
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 
 public class TokenListenerService extends FirebaseMessagingService {
+
+  protected @Inject FirebaseJobDispatcher firebaseJobDispatcher;
   /**
    * Called if the InstanceID token is updated. This can occur in a variety of scenarios - the
    * InstanceID service might periodically request that we refresh a token every 6 months, or
@@ -19,6 +25,10 @@ public class TokenListenerService extends FirebaseMessagingService {
   public void onNewToken(final String s) {
     super.onNewToken(s);
     Timber.d(s + "Token refreshed, creating new RegisterService intent");
-    DispatcherKt.dispatchTokenJob(this, DispatcherKt.REGISTER_SERVICE);
+    Job job = firebaseJobDispatcher.newJobBuilder()
+      .setService(RegisterService.class)
+      .setTag(RegisterService.REGISTER_SERVICE)
+      .build();
+    firebaseJobDispatcher.mustSchedule(job);
   }
 }

@@ -2,7 +2,6 @@ package com.kickstarter.services.firebase;
 
 
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.Job;
 import com.google.firebase.messaging.FirebaseMessagingService;
 
 import javax.inject.Inject;
@@ -25,10 +24,6 @@ public class TokenListenerService extends FirebaseMessagingService {
   public void onNewToken(final String s) {
     super.onNewToken(s);
     Timber.d(s + "Token refreshed, creating new RegisterService intent");
-    final Job job = this.firebaseJobDispatcher.newJobBuilder()
-      .setService(RegisterService.class)
-      .setTag(RegisterService.REGISTER_SERVICE)
-      .build();
-    this.firebaseJobDispatcher.mustSchedule(job);
+    DispatcherKt.dispatchJob(this, RegisterService.class, RegisterService.REGISTER_SERVICE);
   }
 }

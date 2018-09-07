@@ -22,7 +22,7 @@ public class UnregisterService extends JobService {
       }
     });
 
-    return true;
+    return false;
   }
 
   @Override

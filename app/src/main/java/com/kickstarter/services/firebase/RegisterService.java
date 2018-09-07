@@ -38,7 +38,7 @@ public class RegisterService extends JobService {
       subscribeToGlobalTopic();
     });
 
-    return true;
+    return false;
   }
 
   @Override

@@ -4,9 +4,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.Job;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.utils.PlayServicesCapability;
+import com.kickstarter.services.firebase.DispatcherKt;
 import com.kickstarter.services.firebase.RegisterService;
 import com.kickstarter.services.firebase.UnregisterService;
 
@@ -33,11 +33,7 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
     if (!this.playServicesCapability.isCapable()) {
       return;
     }
-    final Job job = this.firebaseJobDispatcher.newJobBuilder()
-      .setService(RegisterService.class)
-      .setTag(RegisterService.REGISTER_SERVICE)
-      .build();
-    this.firebaseJobDispatcher.mustSchedule(job);
+    DispatcherKt.dispatchJob(context, RegisterService.class, RegisterService.REGISTER_SERVICE);
   }
 
   /**
@@ -47,10 +43,6 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
     if (!this.playServicesCapability.isCapable()) {
       return;
     }
-    final Job job = this.firebaseJobDispatcher.newJobBuilder()
-      .setService(RegisterService.class)
-      .setTag(UnregisterService.UNREGISTER_SERVICE)
-      .build();
-    this.firebaseJobDispatcher.mustSchedule(job);
+    DispatcherKt.dispatchJob(context, UnregisterService.class, UnregisterService.UNREGISTER_SERVICE);
   }
 }

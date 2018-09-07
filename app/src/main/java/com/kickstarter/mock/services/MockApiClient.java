@@ -10,6 +10,7 @@ import com.kickstarter.mock.factories.BackingFactory;
 import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.mock.factories.CommentFactory;
 import com.kickstarter.mock.factories.CommentsEnvelopeFactory;
+import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory;
 import com.kickstarter.mock.factories.MessageThreadsEnvelopeFactory;
@@ -65,7 +66,7 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Config> config() {
-    return Observable.empty();
+    return Observable.just(ConfigFactory.config());
   }
 
   @Override
@@ -119,7 +120,7 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Project> fetchProject(final @NonNull Project project) {
-    return Observable.just(project);
+    return Observable.defer(() -> Observable.just(project));
   }
 
   @Override

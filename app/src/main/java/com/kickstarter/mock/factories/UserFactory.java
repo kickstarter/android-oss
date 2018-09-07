@@ -9,7 +9,7 @@ public final class UserFactory {
     return User.builder()
       .avatar(AvatarFactory.avatar())
       .id(IdFactory.id())
-      .name("Sammy Sosa")
+      .name("Nathan Squid")
       .optedOutOfRecommendations(false)
       .location(LocationFactory.unitedStates())
       .build();

@@ -153,7 +153,7 @@ public final class ApplicationModule {
   @Singleton
   @NonNull
   static ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
-      return Secrets.IS_OSS ? new MockApiClient() : new ApiClient(apiService, gson);
+    return Secrets.IS_OSS ? new MockApiClient() : new ApiClient(apiService, gson);
   }
 
   @Provides
@@ -162,7 +162,7 @@ public final class ApplicationModule {
   static ApolloClient provideApolloClient(final @NonNull Build build, final @NonNull HttpLoggingInterceptor httpLoggingInterceptor,
     final @NonNull GraphQLInterceptor graphQLInterceptor) {
 
-    OkHttpClient.Builder builder = new OkHttpClient.Builder()
+    final OkHttpClient.Builder builder = new OkHttpClient.Builder()
       .addInterceptor(graphQLInterceptor);
 
     // Only log in debug mode to avoid leaking sensitive information.
@@ -170,8 +170,7 @@ public final class ApplicationModule {
       builder.addInterceptor(httpLoggingInterceptor);
     }
 
-    final OkHttpClient okHttpClient = builder
-      .build();
+    final OkHttpClient okHttpClient = builder.build();
 
     return ApolloClient.builder()
       .serverUrl("https://www.kickstarter.com/graph")

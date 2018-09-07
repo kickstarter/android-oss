@@ -9,7 +9,7 @@ import com.kickstarter.libs.Koala;
 import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.libs.MockTrackingClient;
 import com.kickstarter.mock.services.MockApiClient;
-import com.kickstarter.services.MockApolloClient;
+import com.kickstarter.mock.services.MockApolloClient;
 import com.kickstarter.mock.services.MockWebClient;
 
 import junit.framework.TestCase;

@@ -3,7 +3,7 @@ package com.kickstarter.viewmodels
 import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.services.MockApolloClient
+import com.kickstarter.mock.services.MockApolloClient
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber

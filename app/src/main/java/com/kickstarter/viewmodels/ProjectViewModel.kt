@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.support.annotation.NonNull
 import android.util.Pair
@@ -11,7 +10,6 @@ import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
-import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.adapters.ProjectAdapter
@@ -142,13 +140,13 @@ interface ProjectViewModel {
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
             val cookieRefTag = initialProject
                     .take(1)
-                    .map<RefTag> { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
+                    .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
 
             val refTag = intent()
-                    .flatMap<RefTag>({ ProjectIntentMapper.refTag(it) })
+                    .flatMap({ ProjectIntentMapper.refTag(it) })
 
             val pushNotificationEnvelope = intent()
-                    .flatMap<PushNotificationEnvelope>({ ProjectIntentMapper.pushNotificationEnvelope(it) })
+                    .flatMap({ ProjectIntentMapper.pushNotificationEnvelope(it) })
 
             val loggedInUserOnHeartClick = this.currentUser.observable()
                     .compose<User>(takeWhen(this.heartButtonClicked))
@@ -160,11 +158,11 @@ interface ProjectViewModel {
 
             val projectOnUserChangeSave = initialProject
                     .compose(takeWhen<Project, User>(loggedInUserOnHeartClick))
-                    .switchMap<Project>({ this.toggleProjectSave(it) })
+                    .switchMap({ this.toggleProjectSave(it) })
                     .share()
 
             loggedOutUserOnHeartClick
-                    .compose(ignoreValues<User>())
+                    .compose(ignoreValues())
                     .subscribe(this.startLoginToutActivity)
 
             val savedProjectOnLoginSuccess = this.startLoginToutActivity
@@ -172,7 +170,7 @@ interface ProjectViewModel {
                     .filter { su -> su.second != null }
                     .withLatestFrom<Project, Project>(initialProject) { _, p -> p }
                     .take(1)
-                    .switchMap<Project>({ this.saveProject(it) })
+                    .switchMap({ this.saveProject(it) })
                     .share()
 
             val currentProject = Observable.merge(
@@ -187,7 +185,7 @@ interface ProjectViewModel {
                     .subscribe(this.showSavedPrompt)
 
             currentProject
-                    .compose(combineLatestPair(this.currentConfig.observable().map<String>({ it.countryCode() })))
+                    .compose<Pair<Project, String>>(combineLatestPair(this.currentConfig.observable().map({ it.countryCode() })))
                     .subscribe(this.projectAndUserCountry)
 
             currentProject
@@ -267,7 +265,7 @@ interface ProjectViewModel {
 
             intent()
                     .filter({ IntentMapper.appBannerIsSet(it) })
-                    .compose<Intent>(bindToLifecycle<Intent>())
+                    .compose(bindToLifecycle())
                     .subscribe { _ -> this.koala.trackOpenedAppBanner() }
         }
 
@@ -276,11 +274,7 @@ interface ProjectViewModel {
          * data in the activity and the other comes from the ref stored in a cookie associated to the project.
          */
         private inner class RefTagsAndProject internal constructor(val refTagFromIntent: RefTag?, val refTagFromCookie: RefTag?,
-                                                                   val project: Project) {
-            fun project(): Project {
-                return this.project
-            }
-        }
+                                                                   val project: Project)
 
         override fun backProjectButtonClicked() {
             this.backProjectButtonClicked.onNext(null)

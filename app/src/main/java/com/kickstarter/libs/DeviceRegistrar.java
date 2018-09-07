@@ -33,11 +33,11 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
     if (!this.playServicesCapability.isCapable()) {
       return;
     }
-    Job job = firebaseJobDispatcher.newJobBuilder()
+    final Job job = this.firebaseJobDispatcher.newJobBuilder()
       .setService(RegisterService.class)
       .setTag(RegisterService.REGISTER_SERVICE)
       .build();
-    firebaseJobDispatcher.mustSchedule(job);
+    this.firebaseJobDispatcher.mustSchedule(job);
   }
 
   /**
@@ -47,10 +47,10 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
     if (!this.playServicesCapability.isCapable()) {
       return;
     }
-    Job job = firebaseJobDispatcher.newJobBuilder()
+    final Job job = this.firebaseJobDispatcher.newJobBuilder()
       .setService(RegisterService.class)
       .setTag(UnregisterService.UNREGISTER_SERVICE)
       .build();
-    firebaseJobDispatcher.mustSchedule(job);
+    this.firebaseJobDispatcher.mustSchedule(job);
   }
 }

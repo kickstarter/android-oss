@@ -25,10 +25,10 @@ public class TokenListenerService extends FirebaseMessagingService {
   public void onNewToken(final String s) {
     super.onNewToken(s);
     Timber.d(s + "Token refreshed, creating new RegisterService intent");
-    Job job = firebaseJobDispatcher.newJobBuilder()
+    final Job job = this.firebaseJobDispatcher.newJobBuilder()
       .setService(RegisterService.class)
       .setTag(RegisterService.REGISTER_SERVICE)
       .build();
-    firebaseJobDispatcher.mustSchedule(job);
+    this.firebaseJobDispatcher.mustSchedule(job);
   }
 }

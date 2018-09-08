@@ -4,13 +4,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
+import com.kickstarter.libs.Config;
 import com.kickstarter.mock.factories.ActivityEnvelopeFactory;
 import com.kickstarter.mock.factories.ActivityFactory;
 import com.kickstarter.mock.factories.BackingFactory;
 import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.mock.factories.CommentFactory;
 import com.kickstarter.mock.factories.CommentsEnvelopeFactory;
-import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory;
 import com.kickstarter.mock.factories.MessageThreadsEnvelopeFactory;
@@ -18,7 +18,6 @@ import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.SurveyResponseFactory;
 import com.kickstarter.mock.factories.UpdateFactory;
 import com.kickstarter.mock.factories.UserFactory;
-import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
@@ -66,7 +65,7 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Config> config() {
-    return Observable.just(ConfigFactory.config());
+    return Observable.empty();
   }
 
   @Override
@@ -120,7 +119,7 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Project> fetchProject(final @NonNull Project project) {
-    return Observable.defer(() -> Observable.just(project));
+    return Observable.just(project);
   }
 
   @Override

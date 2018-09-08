@@ -54,7 +54,7 @@ import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.libs.utils.Secrets;
-import com.kickstarter.mock.MockCurrentConfig;
+import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.mock.services.MockApolloClient;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiClientType;
@@ -62,7 +62,6 @@ import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.KSApolloClient;
 import com.kickstarter.services.KSWebViewClient;
-import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.WebClientType;
 import com.kickstarter.services.WebService;
@@ -395,7 +394,7 @@ public final class ApplicationModule {
   static CurrentConfigType provideCurrentConfig(final @NonNull AssetManager assetManager,
                                                 final @NonNull Gson gson,
                                                 final @ConfigPreference @NonNull StringPreferenceType configPreference) {
-    return Secrets.IS_OSS ? new MockCurrentConfig() : new CurrentConfig(assetManager, gson, configPreference);
+    return new CurrentConfig(assetManager, gson, configPreference);
   }
 
   @Provides

@@ -1,10 +1,9 @@
 package com.kickstarter.services.firebase;
 
-import android.app.IntentService;
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
+import com.firebase.jobdispatcher.JobParameters;
+import com.firebase.jobdispatcher.JobService;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.kickstarter.KSApplication;
@@ -18,13 +17,10 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class RegisterService extends IntentService {
+public class RegisterService extends JobService {
   protected @Inject ApiClientType apiClient;
   protected @Inject CurrentUserType currentUser;
-
-  public RegisterService() {
-    super("RegisterService");
-  }
+  public static final String REGISTER_SERVICE = "Register-service";
 
   @Override
   public void onCreate() {
@@ -32,21 +28,22 @@ public class RegisterService extends IntentService {
     ((KSApplication) getApplicationContext()).component().inject(this);
   }
 
+
   @Override
-  protected void onHandleIntent(final @Nullable Intent intent) {
-    Timber.d("onHandleIntent");
+  public boolean onStartJob(final JobParameters job) {
+    FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
+      final String newToken = instanceIdResult.getToken();
+      Timber.d("newToken", newToken);
+      sendTokenToApi(newToken);
+      subscribeToGlobalTopic();
+    });
 
-    try {
-      final String token = FirebaseInstanceId.getInstance().getToken();
-      Timber.d("Token: %s", token);
+    return false;
+  }
 
-      if(ObjectUtils.isNotNull(token)) {
-        sendTokenToApi(token);
-        subscribeToGlobalTopic();
-      }
-    } catch (final Exception e) {
-      Timber.e("Failed to complete token refresh: %s", e);
-    }
+  @Override
+  public boolean onStopJob(final JobParameters job) {
+    return false;
   }
 
   /**

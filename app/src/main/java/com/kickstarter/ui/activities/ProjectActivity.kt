@@ -6,7 +6,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Pair
 import android.view.View
-import butterknife.ButterKnife
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
@@ -33,18 +32,17 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     private var grid8Dimen = R.dimen.grid_8
 
     private val projectBackButtonString = R.string.project_back_button
-    private var managePledgeString = R.string.project_checkout_manage_navbar_title
-    private var projectShareLabelString = R.string.project_accessibility_button_share_label
-    private var projectShareCopyString = R.string.project_share_twitter_message
-    private var projectStarConfirmationString = R.string.project_star_confirmation
-    private var campaignString = R.string.project_subpages_menu_buttons_campaign
-    private var creatorString = R.string.project_subpages_menu_buttons_creator
+    private val managePledgeString = R.string.project_checkout_manage_navbar_title
+    private val projectShareLabelString = R.string.project_accessibility_button_share_label
+    private val projectShareCopyString = R.string.project_share_twitter_message
+    private val projectStarConfirmationString = R.string.project_star_confirmation
+    private val campaignString = R.string.project_subpages_menu_buttons_campaign
+    private val creatorString = R.string.project_subpages_menu_buttons_creator
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.project_layout)
-        ButterKnife.bind(this)
         this.ksString = environment().ksString()
 
         project_action_buttons.visibility = when {
@@ -114,12 +112,12 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.viewModel.outputs.showSavedPrompt()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { _ -> this.showStarToast() }
+                .subscribe({ this.showStarToast() } )
 
         this.viewModel.outputs.startLoginToutActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { _ -> this.startLoginToutActivity() }
+                .subscribe({ this.startLoginToutActivity() })
 
         back_project_button.setOnClickListener {
             this.viewModel.inputs.backProjectButtonClicked()

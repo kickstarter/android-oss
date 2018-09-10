@@ -15,8 +15,7 @@ We've also open sourced our iOS app, written in Swift:
 
 ## Getting Started
 
-_Follow these instructions to build and run the project without data; note that
-the app will be blank._
+_Follow these instructions to build and run the project with mock data.._
 
 1. Clone this repository.
 2. Download the appropriate [JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
@@ -29,8 +28,6 @@ for your system. We are currently on JDK 8.
    Studio project` and select the project. Gradle will build the project.
 6. Run the app. Click `Run > Run 'app'`. After the project builds you'll be
    prompted to build or launch an emulator.
-7. The app will not load any data and will be blank because you do not have 
-   access to all of our dependencies (they are private). This is intended behavior.
    
 ## Documentation
 

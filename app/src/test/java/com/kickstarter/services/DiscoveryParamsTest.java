@@ -3,7 +3,7 @@ package com.kickstarter.services;
 import android.net.Uri;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.CategoryFactory;
+import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.models.Category;
 
 import org.junit.Test;

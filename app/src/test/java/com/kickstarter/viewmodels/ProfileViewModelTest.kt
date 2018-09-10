@@ -1,22 +1,19 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.factories.DiscoverEnvelopeFactory
-import com.kickstarter.factories.ProjectFactory
-import com.kickstarter.factories.UserFactory
+import com.kickstarter.mock.factories.DiscoverEnvelopeFactory
+import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KoalaEvent
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
-import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.DiscoveryParams
-import com.kickstarter.services.MockApiClient
+import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
 
 import org.junit.Test
-
-import java.util.Collections
 
 import rx.Observable
 import rx.observers.TestSubscriber

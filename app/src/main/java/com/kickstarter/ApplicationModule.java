@@ -54,6 +54,8 @@ import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.libs.utils.Secrets;
+import com.kickstarter.mock.services.MockApiClient;
+import com.kickstarter.mock.services.MockApolloClient;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
@@ -150,19 +152,24 @@ public final class ApplicationModule {
   @Singleton
   @NonNull
   static ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
-    return new ApiClient(apiService, gson);
+    return Secrets.IS_OSS ? new MockApiClient() : new ApiClient(apiService, gson);
   }
 
   @Provides
   @Singleton
   @NonNull
-  static ApolloClient provideApolloClient(final @NonNull HttpLoggingInterceptor httpLoggingInterceptor,
+  static ApolloClient provideApolloClient(final @NonNull Build build, final @NonNull HttpLoggingInterceptor httpLoggingInterceptor,
     final @NonNull GraphQLInterceptor graphQLInterceptor) {
 
-    final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-      .addInterceptor(httpLoggingInterceptor)
-      .addInterceptor(graphQLInterceptor)
-      .build();
+    final OkHttpClient.Builder builder = new OkHttpClient.Builder()
+      .addInterceptor(graphQLInterceptor);
+
+    // Only log in debug mode to avoid leaking sensitive information.
+    if (build.isDebug()) {
+      builder.addInterceptor(httpLoggingInterceptor);
+    }
+
+    final OkHttpClient okHttpClient = builder.build();
 
     return ApolloClient.builder()
       .serverUrl("https://www.kickstarter.com/graph")
@@ -174,7 +181,7 @@ public final class ApplicationModule {
   @Singleton
   @NonNull
   static ApolloClientType provideApolloClientType(final @NonNull ApolloClient apolloClient) {
-    return new KSApolloClient(apolloClient);
+    return Secrets.IS_OSS ? new MockApolloClient() : new KSApolloClient(apolloClient);
   }
 
   @Provides

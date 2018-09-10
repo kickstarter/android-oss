@@ -1,7 +1,7 @@
 package com.kickstarter.libs.utils;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.UserFactory;
+import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.models.User;
 
 import org.junit.Test;

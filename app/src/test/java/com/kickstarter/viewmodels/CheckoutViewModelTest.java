@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.ActivityResultFactory;
+import com.kickstarter.mock.factories.ActivityResultFactory;
 import com.kickstarter.libs.AndroidPayCapability;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.ui.IntentKey;

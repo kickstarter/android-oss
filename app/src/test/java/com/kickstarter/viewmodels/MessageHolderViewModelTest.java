@@ -3,8 +3,8 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.MessageFactory;
-import com.kickstarter.factories.UserFactory;
+import com.kickstarter.mock.factories.MessageFactory;
+import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Message;

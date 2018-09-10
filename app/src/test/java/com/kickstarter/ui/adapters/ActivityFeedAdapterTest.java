@@ -1,8 +1,8 @@
 package com.kickstarter.ui.adapters;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.ActivityFactory;
-import com.kickstarter.factories.SurveyResponseFactory;
+import com.kickstarter.mock.factories.ActivityFactory;
+import com.kickstarter.mock.factories.SurveyResponseFactory;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.SurveyResponse;
 

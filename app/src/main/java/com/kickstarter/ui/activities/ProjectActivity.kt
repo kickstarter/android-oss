@@ -57,67 +57,67 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.viewModel.outputs.heartDrawableId()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { i -> heart_icon.setImageDrawable(ContextCompat.getDrawable(this, i)) }
+                .subscribe { heart_icon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
 
         this.viewModel.outputs.projectAndUserCountry()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { pc -> this.renderProject(pc.first, pc.second) }
+                .subscribe { this.renderProject(it.first, it.second) }
 
         this.viewModel.outputs.startCampaignWebViewActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.startCampaignWebViewActivity(it) })
+                .subscribe { this.startCampaignWebViewActivity(it) }
 
         this.viewModel.outputs.startCommentsActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.startCommentsActivity(it) })
+                .subscribe { this.startCommentsActivity(it) }
 
         this.viewModel.outputs.startCreatorBioWebViewActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.startCreatorBioWebViewActivity(it) })
+                .subscribe { this.startCreatorBioWebViewActivity(it) }
 
         this.viewModel.outputs.showShareSheet()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.startShareIntent(it) })
+                .subscribe { this.startShareIntent(it) }
 
         this.viewModel.outputs.startProjectUpdatesActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.startProjectUpdatesActivity(it) })
+                .subscribe { this.startProjectUpdatesActivity(it) }
 
         this.viewModel.outputs.startVideoActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.startVideoActivity(it) })
+                .subscribe { this.startVideoActivity(it) }
 
         this.viewModel.outputs.startCheckoutActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.startCheckoutActivity(it) })
+                .subscribe { this.startCheckoutActivity(it) }
 
         this.viewModel.outputs.startManagePledgeActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.startManagePledge(it) })
+                .subscribe { this.startManagePledge(it) }
 
         this.viewModel.outputs.startBackingActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.startBackingActivity(it) })
+                .subscribe { this.startBackingActivity(it) }
 
         this.viewModel.outputs.showSavedPrompt()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.showStarToast() } )
+                .subscribe { this.showStarToast() }
 
         this.viewModel.outputs.startLoginToutActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.startLoginToutActivity() })
+                .subscribe { this.startLoginToutActivity() }
 
         back_project_button.setOnClickListener {
             this.viewModel.inputs.backProjectButtonClicked()

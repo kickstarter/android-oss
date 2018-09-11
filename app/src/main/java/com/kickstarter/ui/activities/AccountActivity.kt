@@ -9,11 +9,16 @@ import kotlinx.android.synthetic.main.activity_account.*
 
 class AccountActivity : AppCompatActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
 
+        setUpSpinner()
+
+        privacy_row.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
+    }
+
+    private fun setUpSpinner() {
         val currencies = listOf(getString(R.string.Currency_AUD), getString(R.string.Currency_CAD),
                 getString(R.string.Currency_CHF), getString(R.string.Currency_DKK), getString(R.string.Currency_EUR),
                 getString(R.string.Currency_GBP), getString(R.string.Currency_HKD), getString(R.string.Currency_JPY),
@@ -23,7 +28,5 @@ class AccountActivity : AppCompatActivity() {
         val arrayAdapter = ArrayAdapter<String>(this, R.layout.item_spinner, currencies)
         arrayAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
         currency_spinner.adapter = arrayAdapter
-
-        privacy_row.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
     }
 }

@@ -25,7 +25,6 @@
       android:orientation="vertical">
 
       <LinearLayout
-        android:id="@+id/chane_email_row"
         style="@style/SettingsLinearRow"
         android:layout_marginBottom="@dimen/grid_3"
         android:layout_marginTop="@dimen/grid_3">

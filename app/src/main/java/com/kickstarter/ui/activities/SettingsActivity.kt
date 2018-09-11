@@ -49,6 +49,10 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { logout() }
 
+        account_row.setOnClickListener {
+            startActivityWithSlideUpTransition(Intent(this, AccountActivity::class.java))
+        }
+
         help_row.setOnClickListener {
             startActivityWithSlideUpTransition(Intent(this, HelpSettingsActivity::class.java))
         }

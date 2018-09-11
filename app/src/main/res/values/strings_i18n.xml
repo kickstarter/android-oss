@@ -52,6 +52,7 @@ backers</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Bring creative projects to life.</string>
   <string name="Cancel" formatted="false">Cancel</string>
   <string name="Cancel_your_pledge" formatted="false">Cancel your pledge</string>
+  <string name="Change_email" formatted="false">Change email</string>
   <string name="Change_password" formatted="false">Change password</string>
   <string name="Change_payment_method" formatted="false">Change payment method</string>
   <string name="Chat" formatted="false">Chat</string>
@@ -83,6 +84,20 @@ backers</string>
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} will be streaming live on Kickstarter %{in_duration}</string>
   <string name="Creator_tips" formatted="false">Creator tips</string>
   <string name="Currency" formatted="false">Currency</string>
+  <string name="Currency_AUD" formatted="false">$ Australian Dollar (AUD)</string>
+  <string name="Currency_CAD" formatted="false">$ Canadian Dollar (CAD)</string>
+  <string name="Currency_CHF" formatted="false">Fr Swiss Franc (CHF)</string>
+  <string name="Currency_DKK" formatted="false">kr Danish Krone (DKK)</string>
+  <string name="Currency_EUR" formatted="false">€ Euro (EUR)</string>
+  <string name="Currency_GBP" formatted="false">£ Pound Sterling (GBP)</string>
+  <string name="Currency_HKD" formatted="false">$ Hong Kong Dollar (HKD)</string>
+  <string name="Currency_JPY" formatted="false">¥ Yen (JPY)</string>
+  <string name="Currency_MXN" formatted="false">$ Mexican Peso (MXN)</string>
+  <string name="Currency_NOK" formatted="false">kr Norwegian Krone (NOK)</string>
+  <string name="Currency_NZD" formatted="false">$ New Zealand Dollar (NZD)</string>
+  <string name="Currency_SEK" formatted="false">kr Swedish Krona (SEK)</string>
+  <string name="Currency_SGD" formatted="false">$ Singapore Dollar (SGD)</string>
+  <string name="Currency_USD" formatted="false">$ US Dollar (USD)</string>
   <string name="Daily_digest" formatted="false">Daily digest</string>
   <string name="Data_will_appear_here_once" formatted="false">Data will appear here once somebody backs your project.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter account</string>
@@ -173,7 +188,7 @@ backers</string>
   <string name="Home" formatted="false">Home</string>
   <string name="How_backers_found_your_project" formatted="false">How backers found your project</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">I’d just like to support the project.</string>
-  <string name="If_you_turn_following_off" formatted="false">If you turn following off, you won\'t be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers. This can’t be undone.</string>
+  <string name="If_you_turn_following_off" formatted="false">If you turn following off, you won\'t be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers.</string>
   <string name="If_your_profile_is_private" formatted="false">If your profile is private, others can see your name and picture.</string>
   <string name="If_your_profile_is_public" formatted="false">If your profile is not private, others can also see the projects you\'ve backed, your location, bio and websites.</string>
   <string name="Individual_Emails" formatted="false">Individual emails</string>

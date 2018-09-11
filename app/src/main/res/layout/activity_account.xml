@@ -87,17 +87,6 @@
 
       </LinearLayout>
 
-      <LinearLayout
-        style="@style/SettingsLinearRow"
-        android:layout_marginTop="@dimen/grid_3">
-
-        <TextView
-          android:id="@+id/shipping_address_row"
-          style="@style/SettingsSingleRow"
-          android:text="@string/Shipping_addresses" />
-
-      </LinearLayout>
-
     </LinearLayout>
 
   </ScrollView>

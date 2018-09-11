@@ -29,6 +29,7 @@
 
     <!-- ACTIVITIES -->
 
+    <activity android:name=".ui.activities.AccountActivity"/>
     <activity
       android:name=".ui.activities.ActivityFeedActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
@@ -239,7 +240,8 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-    <activity android:name=".ui.activities.SettingsActivity"
+    <activity
+      android:name=".ui.activities.SettingsActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity">
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
@@ -260,7 +262,6 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.ActivityFeedActivity" />
     </activity>
-
     <activity android:name=".ui.activities.TestApolloActivity" />
 
     <!-- TODO: Maybe the parent should be the project? -->
@@ -358,7 +359,7 @@
       android:name=".services.firebase.RegisterService"
       android:exported="false">
       <intent-filter>
-        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
       </intent-filter>
     </service>
 
@@ -367,7 +368,7 @@
       android:name=".services.firebase.UnregisterService"
       android:exported="false">
       <intent-filter>
-        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
       </intent-filter>
     </service>
 

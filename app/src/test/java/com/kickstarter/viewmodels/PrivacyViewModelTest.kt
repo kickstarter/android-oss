@@ -98,7 +98,7 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
 
         this.vm = PrivacyViewModel.ViewModel(env)
         this.vm.outputs.hidePrivateProfileRow().subscribe(this.hidePrivateProfile)
-        this.hidePrivateProfile.assertValue(false)
+        this.hidePrivateProfile.assertValue(true)
     }
 
     @Test
@@ -112,7 +112,7 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
 
         this.vm = PrivacyViewModel.ViewModel(env)
         this.vm.outputs.hidePrivateProfileRow().subscribe(this.hidePrivateProfile)
-        this.hidePrivateProfile.assertValue(true)
+        this.hidePrivateProfile.assertValue(false)
     }
 
     @Test

@@ -1,8 +1,8 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.User
 import org.junit.Test
 import rx.observers.TestSubscriber
@@ -12,6 +12,7 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
 
     private val currentUserTest = TestSubscriber<User>()
     private val hideConfirmFollowingOptOutPrompt = TestSubscriber<Void>()
+    private val hidePrivateProfile = TestSubscriber<Boolean>()
     private val showConfirmFollowingOptOutPrompt = TestSubscriber<Void>()
 
     private fun setUpEnvironment(user: User) {
@@ -84,6 +85,24 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
         this.currentUserTest.assertValues(user, user.toBuilder().social(false).build())
 
         this.hideConfirmFollowingOptOutPrompt.assertNoValues()
+    }
+
+    @Test
+    fun testHidePrivateProfileRow_isFalse() {
+        val creator = UserFactory.creator()
+        setUpEnvironment(creator)
+
+        this.vm.outputs.hidePrivateProfileRow().subscribe(this.hidePrivateProfile)
+        this.hidePrivateProfile.assertValue(true)
+    }
+
+    @Test
+    fun testHidePrivateProfileRow_isTrue() {
+        val notCreator = UserFactory.user().toBuilder().createdProjectsCount(0).build()
+        setUpEnvironment(notCreator)
+
+        this.vm.outputs.hidePrivateProfileRow().subscribe(this.hidePrivateProfile)
+        this.hidePrivateProfile.assertValue(false)
     }
 
     @Test

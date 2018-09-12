@@ -52,7 +52,7 @@ contributeurs</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Réalisez vos projets créatifs.</string>
   <string name="Cancel" formatted="false">Annuler</string>
   <string name="Cancel_your_pledge" formatted="false">Annuler mon engagement</string>
-  <string name="Change_email" formatted="false">Change email</string>
+  <string name="Change_email" formatted="false">Changer d\'adresse e-mail</string>
   <string name="Change_password" formatted="false">Changer de mot de passe</string>
   <string name="Change_payment_method" formatted="false">Changer de moyen de paiement</string>
   <string name="Chat" formatted="false">Chat</string>
@@ -98,6 +98,8 @@ contributeurs</string>
   <string name="Currency_SEK" formatted="false">kr Swedish Krona (SEK)</string>
   <string name="Currency_SGD" formatted="false">$ Singapore Dollar (SGD)</string>
   <string name="Currency_USD" formatted="false">$ US Dollar (USD)</string>
+  <string name="Current_email" formatted="false">Current email</string>
+  <string name="Current_password" formatted="false">Current password</string>
   <string name="Daily_digest" formatted="false">Résumé quotidien</string>
   <string name="Data_will_appear_here_once" formatted="false">Ces données seront visibles dès que vous aurez reçu votre première contribution.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Supprimer mon compte Kickstarter</string>
@@ -154,7 +156,7 @@ contributeurs</string>
   <string name="Follow_your_Facebook_friends_and_keep_up_with_the_projects" formatted="false">Suivez vos amis Facebook, les projets qu\'ils soutiennent et les campagnes qu\'ils lancent.</string>
   <string name="Followed" formatted="false">Abonné</string>
   <string name="Following" formatted="false">Projets soutenus par mes amis</string>
-  <string name="Following_Disabled_Info" formatted="false">Following must be on to find Facebook friends. Following can be changed in Settings > Privacy.</string>
+  <string name="Following_Disabled_Info" formatted="false">Pour retrouver vos amis Facebook, activez la fonction Abonnements sous Paramètres > Vie privée.</string>
   <string name="Following_More_Info" formatted="false">Plus d\'informations sur le suivi et l\'abonnement</string>
   <string name="Follows_friend_name" formatted="false">Abonnement aux actus de %{friend_name}.</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> a soutenu un projet &lt;i>artistique&lt;/i>.</string>
@@ -189,8 +191,8 @@ contributeurs</string>
   <string name="How_backers_found_your_project" formatted="false">Comment les contributeurs ont découvert votre projet</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Je souhaite simplement soutenir le projet.</string>
   <string name="If_you_turn_following_off" formatted="false">Si vous désactivez les fonctionnalités de suivi, vous ne pourrez pas vous abonner aux activités des autres et plus personne ne pourra suivre les vôtres. Votre profil sera déconnecté de tous vos abonnés. Cette action ne pourra pas être annulée.</string>
-  <string name="If_your_profile_is_private" formatted="false">If your profile is private, others can see your name and picture.</string>
-  <string name="If_your_profile_is_public" formatted="false">If your profile is not private, others can also see the projects you\'ve backed, your location, bio and websites.</string>
+  <string name="If_your_profile_is_private" formatted="false">Si votre profil est privé, seuls votre nom et votre photo seront visibles.</string>
+  <string name="If_your_profile_is_public" formatted="false">Si votre profil n\'est pas privé, les projets que vous avez soutenus, votre bio, votre emplacement géographique et vos sites Web seront également visibles.</string>
   <string name="Individual_Emails" formatted="false">E-mails individuels</string>
   <string name="Info" formatted="false">Info</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">La préparation de vos données personnelles peut prendre jusqu\'à 24 heures. Nous vous enverrons des instructions de téléchargement à l\'adresse e-mail associée à ce compte une fois que tout sera prêt. Si vous ne recevez rien, revenez ici pour réessayer.</string>

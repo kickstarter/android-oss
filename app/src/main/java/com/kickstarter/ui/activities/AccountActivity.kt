@@ -15,6 +15,7 @@ class AccountActivity : AppCompatActivity() {
 
         setUpSpinner()
 
+        change_email_row.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
         privacy_row.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
     }
 

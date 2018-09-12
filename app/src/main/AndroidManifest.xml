@@ -29,7 +29,7 @@
 
     <!-- ACTIVITIES -->
 
-    <activity android:name=".ui.activities.AccountActivity"/>
+    <activity android:name=".ui.activities.AccountActivity" />
     <activity
       android:name=".ui.activities.ActivityFeedActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
@@ -38,6 +38,7 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.DiscoveryActivity" />
     </activity>
+    <activity android:name=".ui.activities.ChangeEmailActivity"/>
     <activity
       android:name=".ui.activities.CheckoutActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"

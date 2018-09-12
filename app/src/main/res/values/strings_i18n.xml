@@ -98,6 +98,8 @@ backers</string>
   <string name="Currency_SEK" formatted="false">kr Swedish Krona (SEK)</string>
   <string name="Currency_SGD" formatted="false">$ Singapore Dollar (SGD)</string>
   <string name="Currency_USD" formatted="false">$ US Dollar (USD)</string>
+  <string name="Current_email" formatted="false">Current email</string>
+  <string name="Current_password" formatted="false">Current password</string>
   <string name="Daily_digest" formatted="false">Daily digest</string>
   <string name="Data_will_appear_here_once" formatted="false">Data will appear here once somebody backs your project.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter account</string>

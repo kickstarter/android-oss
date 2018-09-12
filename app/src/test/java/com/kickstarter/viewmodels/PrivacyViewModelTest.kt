@@ -90,13 +90,8 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testHidePrivateProfileRow_isFalse() {
         val creator = UserFactory.creator()
-        val currentUser = MockCurrentUser(creator)
+        setUpEnvironment(creator)
 
-        val env = environment().toBuilder()
-                .currentUser(currentUser)
-                .build()
-
-        this.vm = PrivacyViewModel.ViewModel(env)
         this.vm.outputs.hidePrivateProfileRow().subscribe(this.hidePrivateProfile)
         this.hidePrivateProfile.assertValue(true)
     }
@@ -104,13 +99,8 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testHidePrivateProfileRow_isTrue() {
         val notCreator = UserFactory.user().toBuilder().createdProjectsCount(0).build()
-        val currentUser = MockCurrentUser(notCreator)
+        setUpEnvironment(notCreator)
 
-        val env = environment().toBuilder()
-                .currentUser(currentUser)
-                .build()
-
-        this.vm = PrivacyViewModel.ViewModel(env)
         this.vm.outputs.hidePrivateProfileRow().subscribe(this.hidePrivateProfile)
         this.hidePrivateProfile.assertValue(false)
     }

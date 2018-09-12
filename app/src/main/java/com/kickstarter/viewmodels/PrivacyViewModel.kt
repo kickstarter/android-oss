@@ -53,8 +53,9 @@ interface PrivacyViewModel {
         private val optIntoFollowing = PublishSubject.create<Boolean>()
         private val optOutOfFollowing = PublishSubject.create<Boolean>()
         private val userInput = PublishSubject.create<User>()
+
         private val hideConfirmFollowingOptOutPrompt = BehaviorSubject.create<Void>()
-        private var hidePrivateProfileRow: Observable<Boolean>
+        private var hidePrivateProfileRow = BehaviorSubject.create<Boolean>()
         private val showConfirmFollowingOptOutPrompt = BehaviorSubject.create<Void>()
         private val userOutput = BehaviorSubject.create<User>()
         private val updateSuccess = PublishSubject.create<Void>()
@@ -75,15 +76,18 @@ interface PrivacyViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.currentUser.refresh(it) }
 
-            this.currentUser.observable()
+            val currentUser = this.currentUser.observable()
+
+            currentUser
                     .take(1)
                     .compose(bindToLifecycle())
                     .subscribe({ this.userOutput.onNext(it) })
 
-            this.hidePrivateProfileRow = this.currentUser.observable()
+            currentUser
                     .compose(bindToLifecycle())
                     .filter(ObjectUtils::isNotNull)
                     .map { user -> IntegerUtils.isNonZero(user.createdProjectsCount()) }
+                    .subscribe(this.hidePrivateProfileRow)
 
             this.userInput
                     .concatMap<User>({ this.updateSettings(it) })
@@ -141,7 +145,7 @@ interface PrivacyViewModel {
 
         override fun hideConfirmFollowingOptOutPrompt(): Observable<Void> = this.hideConfirmFollowingOptOutPrompt
 
-        override fun hidePrivateProfileRow() = this.hidePrivateProfileRow
+        override fun hidePrivateProfileRow(): Observable<Boolean> = this.hidePrivateProfileRow
 
         override fun showConfirmFollowingOptOutPrompt(): Observable<Void> = this.showConfirmFollowingOptOutPrompt
 

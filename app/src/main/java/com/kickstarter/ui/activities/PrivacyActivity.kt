@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.BooleanUtils.isFalse
 import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.Secrets
@@ -50,7 +51,16 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ this.displayPreferences(it) })
 
-        following_switch.setOnClickListener{ this.viewModel.inputs.optIntoFollowing(following_switch.isChecked) }
+        this.viewModel.outputs.hidePrivateProfileRow()
+                .compose(bindToLifecycle<Boolean>())
+                .compose(observeForUI<Boolean>())
+                .subscribe { it ->
+                    ViewUtils.setGone(private_profile_row, it)
+                    ViewUtils.setGone(private_profile_text_view, it)
+                    ViewUtils.setGone(public_profile_text_view, it)
+                }
+
+        following_switch.setOnClickListener { this.viewModel.inputs.optIntoFollowing(following_switch.isChecked) }
         private_profile_switch.setOnClickListener { this.viewModel.inputs.showPublicProfile(private_profile_switch.isChecked) }
         recommendations_switch.setOnClickListener { this.viewModel.inputs.optedOutOfRecommendations(recommendations_switch.isChecked) }
         settings_request_data.setOnClickListener { showPrivacyWebpage(Secrets.Privacy.REQUEST_DATA) }
@@ -76,7 +86,7 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
         return this.followingConfirmationDialog!!
     }
 
-    private fun showPrivacyWebpage(url : String) {
+    private fun showPrivacyWebpage(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(intent)
     }

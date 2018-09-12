@@ -7,7 +7,6 @@ import android.support.v7.app.AlertDialog
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.BooleanUtils.isFalse
 import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.Secrets
@@ -53,7 +52,7 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
 
         this.viewModel.outputs.hidePrivateProfileRow()
                 .compose(bindToLifecycle())
-                .compose(observeForUI())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe( {
                     ViewUtils.setGone(private_profile_row, it)
                     ViewUtils.setGone(private_profile_text_view, it)

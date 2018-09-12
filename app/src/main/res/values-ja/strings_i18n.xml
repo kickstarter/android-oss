@@ -51,6 +51,7 @@
   <string name="Bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
   <string name="Cancel" formatted="false">キャンセル</string>
   <string name="Cancel_your_pledge" formatted="false">プレッジを取り消す</string>
+  <string name="Change_email" formatted="false">メールアドレスを変更</string>
   <string name="Change_password" formatted="false">パスワードを変更</string>
   <string name="Change_payment_method" formatted="false">支払方法の変更</string>
   <string name="Chat" formatted="false">チャット</string>
@@ -82,6 +83,22 @@
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} は%{in_duration} にライブ配信を行います</string>
   <string name="Creator_tips" formatted="false">アドバイス</string>
   <string name="Currency" formatted="false">通貨</string>
+  <string name="Currency_AUD" formatted="false">$ オーストラリアドル (AUD)</string>
+  <string name="Currency_CAD" formatted="false">$ カナダドル (CAD)</string>
+  <string name="Currency_CHF" formatted="false">Fr スイスフラン (CHF)</string>
+  <string name="Currency_DKK" formatted="false">kr デンマーククローネ (DKK)</string>
+  <string name="Currency_EUR" formatted="false">€ ユーロ (EUR)</string>
+  <string name="Currency_GBP" formatted="false">£ ポンド (GBP)</string>
+  <string name="Currency_HKD" formatted="false">$ 香港ドル (HKD)</string>
+  <string name="Currency_JPY" formatted="false">¥ 円 (JPY)</string>
+  <string name="Currency_MXN" formatted="false">$ メキシコペソ (MXN)</string>
+  <string name="Currency_NOK" formatted="false">kr ノルウェークローネ (NOK)</string>
+  <string name="Currency_NZD" formatted="false">$ ニュージーランドドル (NZD)</string>
+  <string name="Currency_SEK" formatted="false">kr スウェーデンクローナ (SEK)</string>
+  <string name="Currency_SGD" formatted="false">$ シンガポールドル (SGD)</string>
+  <string name="Currency_USD" formatted="false">$ 米ドル (USD)</string>
+  <string name="Current_email" formatted="false">Current email</string>
+  <string name="Current_password" formatted="false">Current password</string>
   <string name="Daily_digest" formatted="false">デイリーダイジェスト</string>
   <string name="Data_will_appear_here_once" formatted="false">誰かがプロジェクトをバック（支援）すると、ここにデータが表示されます。</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Kickstarter アカウントを削除</string>
@@ -138,7 +155,7 @@
   <string name="Follow_your_Facebook_friends_and_keep_up_with_the_projects" formatted="false">Facebookの友達をフォローしよう！</string>
   <string name="Followed" formatted="false">フォロー中</string>
   <string name="Following" formatted="false">フォロー中の友達</string>
-  <string name="Following_Disabled_Info" formatted="false">Following must be on to find Facebook friends. Following can be changed in Settings > Privacy.</string>
+  <string name="Following_Disabled_Info" formatted="false">Facebook の友達を見つけるには、フォローをオンにする必要があります。フォローの設定は、「設定 > プライバシー」から変更することができます。</string>
   <string name="Following_More_Info" formatted="false">フォロー 詳細</string>
   <string name="Follows_friend_name" formatted="false">%{friend_name} をフォロー</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> は&lt;i>アート&lt;/i> プロジェクトをバックしています。</string>
@@ -173,8 +190,8 @@
   <string name="How_backers_found_your_project" formatted="false">バッカ―があなたのプロジェクトを見つけた経緯</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">プロジェクトをサポートしたい</string>
   <string name="If_you_turn_following_off" formatted="false">フォローをオフにすると、あなたは誰もフォローすることができなくなり、また他の人があなたをフォローすることもできなくなります。また、既存のフォロワーとのつながりも絶たれます。この操作は後から元に戻すことはできませんのでご注意ください。</string>
-  <string name="If_your_profile_is_private" formatted="false">If your profile is private, others can see your name and picture.</string>
-  <string name="If_your_profile_is_public" formatted="false">If your profile is not private, others can also see the projects you\'ve backed, your location, bio and websites.</string>
+  <string name="If_your_profile_is_private" formatted="false">プロフィールがプライベート (非公開) 設定の場合、あなたの名前と写真が表示されます。</string>
+  <string name="If_your_profile_is_public" formatted="false">プロフィールがプライベート (非公開) 設定でない場合は、過去にあなたがバックしたプロジェクトや、あなたの地域情報、あなたの自己紹介欄とウェブサイトも表示されます。</string>
   <string name="Individual_Emails" formatted="false">個人メール</string>
   <string name="Info" formatted="false">インフォメーション</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>

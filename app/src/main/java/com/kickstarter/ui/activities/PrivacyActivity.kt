@@ -52,13 +52,13 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
                 .subscribe({ this.displayPreferences(it) })
 
         this.viewModel.outputs.hidePrivateProfileRow()
-                .compose(bindToLifecycle<Boolean>())
-                .compose(observeForUI<Boolean>())
-                .subscribe { it ->
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe( {
                     ViewUtils.setGone(private_profile_row, it)
                     ViewUtils.setGone(private_profile_text_view, it)
                     ViewUtils.setGone(public_profile_text_view, it)
-                }
+                })
 
         following_switch.setOnClickListener { this.viewModel.inputs.optIntoFollowing(following_switch.isChecked) }
         private_profile_switch.setOnClickListener { this.viewModel.inputs.showPublicProfile(private_profile_switch.isChecked) }

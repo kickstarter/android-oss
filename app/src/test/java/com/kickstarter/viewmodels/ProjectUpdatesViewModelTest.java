@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;

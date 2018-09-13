@@ -29,6 +29,7 @@
 
     <!-- ACTIVITIES -->
 
+    <activity android:name=".ui.activities.AccountActivity" />
     <activity
       android:name=".ui.activities.ActivityFeedActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
@@ -37,6 +38,7 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.DiscoveryActivity" />
     </activity>
+    <activity android:name=".ui.activities.ChangeEmailActivity"/>
     <activity
       android:name=".ui.activities.CheckoutActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
@@ -129,12 +131,9 @@
     <activity
       android:name=".ui.activities.HelpActivity"
       android:theme="@style/HelpActivity" />
-    <activity android:name=".ui.activities.HelpNewActivity" />
+    <activity android:name=".ui.activities.HelpSettingsActivity" />
     <activity
       android:name=".ui.activities.HelpActivity$CookiePolicy"
-      android:theme="@style/HelpActivity" />
-    <activity
-      android:name=".ui.activities.HelpActivity$HowItWorks"
       android:theme="@style/HelpActivity" />
     <activity
       android:name=".ui.activities.HelpActivity$Privacy"
@@ -188,8 +187,8 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.ProfileActivity" />
     </activity>
-    <activity android:name=".ui.activities.NotificationsActivity" />
     <activity android:name=".ui.activities.NewsletterActivity" />
+    <activity android:name=".ui.activities.NotificationsActivity" />
     <activity android:name=".ui.activities.PrivacyActivity" />
     <activity
       android:name=".ui.activities.ProjectNotificationSettingsActivity"
@@ -264,6 +263,7 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.ActivityFeedActivity" />
     </activity>
+    <activity android:name=".ui.activities.TestApolloActivity" />
 
     <!-- TODO: Maybe the parent should be the project? -->
     <activity
@@ -333,7 +333,6 @@
           android:scheme="https" />
       </intent-filter>
     </activity>
-    <activity android:name=".ui.activities.SettingsNewActivity" />
 
     <!-- SERVICES, PROVIDERS, RECEIVERS -->
 
@@ -352,7 +351,7 @@
       android:name=".services.firebase.TokenListenerService"
       android:exported="false">
       <intent-filter>
-        <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+        <action android:name="com.google.firebase.MESSAGING_EVENT" />
       </intent-filter>
     </service>
 
@@ -360,12 +359,18 @@
     <service
       android:name=".services.firebase.RegisterService"
       android:exported="false">
+      <intent-filter>
+        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+      </intent-filter>
     </service>
 
     <!-- Unsubscribes the device from Firebase. -->
     <service
       android:name=".services.firebase.UnregisterService"
       android:exported="false">
+      <intent-filter>
+        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+      </intent-filter>
     </service>
 
     <provider
@@ -373,8 +378,6 @@
       android:authorities="com.facebook.app.FacebookContentProvider${applicationId}"
       android:exported="true"
       tools:ignore="ExportedContentProvider" />
-
-    <activity android:name="net.hockeyapp.android.UpdateActivity" />
 
     <!-- See https://mixpanel.com/help/reference/android#referrer_tracking -->
     <receiver
@@ -412,8 +415,6 @@
       android:name="com.google.android.gms.wallet.api.enabled"
       android:value="true" />
 
-    <activity android:name=".ui.activities.AccountActivity">
-    </activity>
   </application>
 
 </manifest>

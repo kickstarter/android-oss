@@ -61,11 +61,8 @@
           android:text="@string/profile_settings_backer_title" />
 
         <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
+          android:id="@+id/project_updates_row"
+          style="@style/SettingsNotificationRow">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -89,11 +86,9 @@
 
         <LinearLayout
           android:id="@+id/manage_project_notifications"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
+          style="@style/SettingsNotificationRow"
           android:background="@drawable/click_indicator_light_masked"
           android:focusable="true"
-          android:gravity="center_vertical"
           android:orientation="vertical">
 
           <TextView
@@ -107,10 +102,142 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:textColor="@color/ksr_soft_black"
             android:textSize="@dimen/caption_1"
             tools:text="3" />
+
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/creator_notifications_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <TextView
+          style="@style/SettingsSectionTitle"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:text="@string/profile_settings_creator_title" />
+
+        <LinearLayout
+          android:id="@+id/backings_row"
+          style="@style/SettingsNotificationRow">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:text="@string/Pledge_activity" />
+
+          <ImageButton
+            android:id="@+id/backings_mail_icon"
+            style="@style/KSSettingsMailIcon"
+            android:contentDescription="@null" />
+
+          <Space
+            android:layout_width="@dimen/grid_2"
+            android:layout_height="wrap_content" />
+
+          <ImageButton
+            android:id="@+id/backings_phone_icon"
+            style="@style/KSSettingsPhoneIcon"
+            android:contentDescription="@null" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/email_frequency_row"
+          style="@style/SettingsNotificationRow"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+            style="@style/Caption1Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Email_frequency" />
+
+          <Spinner
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+            android:id="@+id/email_frequency_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dropDownVerticalOffset="@dimen/grid_11"
+            tools:listitem="@layout/item_spinner" />
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/comments_row"
+          style="@style/SettingsNotificationRow">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_creator_comments" />
+
+          <ImageButton
+            android:id="@+id/comments_mail_icon"
+            style="@style/KSSettingsMailIcon"
+            android:contentDescription="@null" />
+
+          <Space
+            android:layout_width="@dimen/grid_2"
+            android:layout_height="wrap_content" />
+
+          <ImageButton
+            android:id="@+id/comments_phone_icon"
+            style="@style/KSSettingsPhoneIcon"
+            android:contentDescription="@null" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/post_likes_row"
+          style="@style/SettingsNotificationRow">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_creator_likes" />
+
+          <ImageButton
+            android:id="@+id/post_likes_mail_icon"
+            style="@style/KSSettingsMailIcon"
+            android:contentDescription="@null" />
+
+          <Space
+            android:layout_width="@dimen/grid_2"
+            android:layout_height="wrap_content" />
+
+          <ImageButton
+            android:id="@+id/post_likes_phone_icon"
+            style="@style/KSSettingsPhoneIcon"
+            android:contentDescription="@null" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/creator_edu_row"
+          style="@style/SettingsNotificationRow">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:text="@string/Creator_tips" />
+
+          <ImageButton
+            android:id="@+id/creator_edu_mail_icon"
+            style="@style/KSSettingsMailIcon"
+            android:contentDescription="@null" />
+
+          <Space
+            android:layout_width="@dimen/grid_2"
+            android:layout_height="wrap_content" />
+
+          <ImageButton
+            android:id="@+id/creator_edu_phone_icon"
+            style="@style/KSSettingsPhoneIcon"
+            android:contentDescription="@null" />
 
         </LinearLayout>
 
@@ -128,11 +255,8 @@
           android:text="@string/profile_settings_social_title" />
 
         <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
+          android:id="@+id/messages_notification_row"
+          style="@style/SettingsNotificationRow">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -155,10 +279,8 @@
         </LinearLayout>
 
         <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:gravity="center_vertical">
+          android:id="@+id/new_followers_row"
+          style="@style/SettingsNotificationRow">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -181,11 +303,8 @@
         </LinearLayout>
 
         <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:gravity="center_vertical"
-          android:orientation="horizontal">
+          android:id="@+id/friends_back_project_row"
+          style="@style/SettingsNotificationRow">
 
           <TextView
             style="@style/SettingsSectionLabel"
@@ -208,7 +327,6 @@
         </LinearLayout>
 
       </LinearLayout>
-
 
     </LinearLayout>
 

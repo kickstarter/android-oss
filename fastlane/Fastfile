@@ -1,0 +1,80 @@
+# More documentation about how to customize your build
+# can be found here:
+# https://docs.fastlane.tools
+fastlane_version "2.68.0"
+
+$LOAD_PATH << '../lib'
+require 'milkrun'
+
+# This value helps us track success metrics for Fastfiles
+# we automatically generate. Feel free to remove this line
+# once you get things running smoothly!
+generated_fastfile_id "416135f4-dacf-4e7b-958c-f49d4e7dcb71"
+
+default_platform :android
+
+# Fastfile actions accept additional configuration, but
+# don't worry, fastlane will prompt you for required
+# info which you can add here later
+
+lane :update_strings do
+  Milkrun::ServerConfigRefresher.new(local: false).refresh
+  Milkrun::I18nStringResources.new.create
+
+  current_branch = git_branch
+
+  push_to_git_remote(
+    remote: "oss",
+    local_branch: current_branch,
+    force: true,
+    tags: false
+  )
+end
+
+lane :alpha do
+  gradle(task: "assembleInternalPre21Debug")
+
+  crashlytics(
+    api_token: ENV["apiKey"],
+    build_secret: ENV["apiSecret"],
+    groups: "development",
+    notifications: true
+    )
+
+  slack(
+    slack_url: ENV["slack_webhook"],
+    message: "Alpha build successfully delivered!"
+    )
+end
+
+lane :external do
+  build_android_app(task: "assembleExternalPre21Release")
+
+  crashlytics(
+    api_token: Milkrun::FabricCredentialsExtractor.new.api_key,
+    build_secret: Milkrun::FabricCredentialsExtractor.new.api_secret,
+    groups: "development",
+    notifications: true
+    )
+
+  slack(
+    slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
+    message: "External release build successfully delivered!"
+    )
+end
+
+lane :internal do
+  build_android_app(task: "assembleInternalPre21Release")
+
+  crashlytics(
+    api_token: Milkrun::FabricCredentialsExtractor.new.api_key,
+    build_secret: Milkrun::FabricCredentialsExtractor.new.api_secret,
+    groups: "development",
+    notifications: true
+    )
+
+  slack(
+    slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
+    message: "Internal release build successfully delivered!"
+    )
+end

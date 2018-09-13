@@ -5,9 +5,9 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.BackingFactory;
-import com.kickstarter.factories.LocationFactory;
-import com.kickstarter.factories.RewardFactory;
+import com.kickstarter.mock.factories.BackingFactory;
+import com.kickstarter.mock.factories.LocationFactory;
+import com.kickstarter.mock.factories.RewardFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
@@ -20,7 +20,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.models.RewardsItem;
 import com.kickstarter.models.User;
-import com.kickstarter.services.MockApiClient;
+import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.ui.IntentKey;
 
 import org.joda.time.DateTime;

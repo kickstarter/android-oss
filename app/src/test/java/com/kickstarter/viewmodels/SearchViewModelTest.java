@@ -3,14 +3,14 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.DiscoverEnvelopeFactory;
-import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.mock.factories.DiscoverEnvelopeFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.services.MockApiClient;
+import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 
 import org.junit.Test;

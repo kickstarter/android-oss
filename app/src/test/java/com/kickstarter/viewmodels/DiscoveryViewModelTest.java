@@ -3,9 +3,9 @@ package com.kickstarter.viewmodels;
 import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.CategoryFactory;
-import com.kickstarter.factories.InternalBuildEnvelopeFactory;
-import com.kickstarter.factories.UserFactory;
+import com.kickstarter.mock.factories.CategoryFactory;
+import com.kickstarter.mock.factories.InternalBuildEnvelopeFactory;
+import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.rx.transformers.Transformers;

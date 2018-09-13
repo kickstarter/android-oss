@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.PhotoFactory;
-import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.mock.factories.PhotoFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;

@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.ConfigFactory;
-import com.kickstarter.factories.ProjectFactory;
-import com.kickstarter.factories.RewardFactory;
+import com.kickstarter.mock.factories.ConfigFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.RewardFactory;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;

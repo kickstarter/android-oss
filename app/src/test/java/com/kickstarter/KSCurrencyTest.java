@@ -1,11 +1,11 @@
 package com.kickstarter;
 
-import com.kickstarter.factories.ConfigFactory;
-import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.mock.factories.ConfigFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.KSCurrency;
-import com.kickstarter.libs.MockCurrentConfig;
+import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.models.Project;
 
 import junit.framework.TestCase;

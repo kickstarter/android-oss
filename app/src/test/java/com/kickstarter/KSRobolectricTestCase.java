@@ -6,10 +6,11 @@ import android.support.annotation.NonNull;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Koala;
-import com.kickstarter.libs.MockCurrentConfig;
+import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.libs.MockTrackingClient;
-import com.kickstarter.services.MockApiClient;
-import com.kickstarter.services.MockWebClient;
+import com.kickstarter.mock.services.MockApiClient;
+import com.kickstarter.mock.services.MockApolloClient;
+import com.kickstarter.mock.services.MockWebClient;
 
 import junit.framework.TestCase;
 
@@ -43,6 +44,7 @@ public abstract class KSRobolectricTestCase extends TestCase {
 
     this.environment = application().component().environment().toBuilder()
       .apiClient(new MockApiClient())
+      .apolloClient(new MockApolloClient())
       .currentConfig(new MockCurrentConfig())
       .webClient(new MockWebClient())
       .koala(new Koala(testTrackingClient))

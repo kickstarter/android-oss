@@ -1,3 +1,6 @@
+BRANCH ?= master
+COMMIT ?= $(CIRCLE_SHA1)
+
 bootstrap: dependencies secrets
 	./script/bootstrap
 
@@ -30,8 +33,11 @@ secrets:
 	cp vendor/native-secrets/android/koala_endpoint.xml app/src/main/res/values/koala_endpoint.xml \
 		|| cp config/koala_endpoint.xml.example app/src/main/res/values/koala_endpoint.xml
 
-# Copy crashlytics over. Fallback to examples if they don't exist
-	cp vendor/native-secrets/android/fabric.properties app/fabric.properties || true
+  # Copy crashlytics over. Fallback to examples if they don't exist
+	cp vendor/native-secrets/android/fabric.properties app/fabric.properties || cp config/fabric.properties.example app/fabric.properties
+
+  # Copy slack_webhook over.
+	cp vendor/native-secrets/android/slack.properties app/slack.properties || true
 
 	# Copy web client over.
 	cp -rf vendor/native-secrets/android/WebViewJavascriptInterface.java app/src/main/java/com/kickstarter/libs/WebViewJavascriptInterface.java \
@@ -42,3 +48,33 @@ secrets:
 	cp vendor/native-secrets/android/WebViewJavascript.html app/src/main/assets/www/WebViewJavascript.html || true
 
 .PHONY: bootstrap bootstrap-circle dependencies secrets
+
+sync_oss_to_private:
+	@echo "Syncing oss to private..."
+	@git checkout oss $(BRANCH)
+	@git pull oss $(BRANCH)
+	@git push private $(BRANCH)
+
+	@echo "private and oss remotes are now synced!"
+
+sync_private_to_oss:
+	@echo "Syncing private to oss..."
+	@git checkout private $(BRANCH)
+	@git pull private $(BRANCH)
+	@git push oss $(BRANCH)
+
+	@echo "private and oss remotes are now synced!"
+
+
+alpha:
+	@echo "Adding remotes..."
+	@git remote add oss https://github.com/kickstarter/android-oss
+	@git remote add private https://github.com/kickstarter/android-private
+
+	@echo "Deploying private/alpha-$(COMMIT)..."
+
+	@git branch -f alpha
+	@git push -f private alpha
+	@git branch -d alpha
+
+	@echo "Deploy has been kicked off to CircleCI!"

@@ -1,168 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
+
+<LinearLayout
+  android:id="@+id/new_settings_layout"
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools">
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/ksr_grey_100"
+  android:orientation="vertical">
 
-
-  <LinearLayout
-    android:id="@+id/new_help_layout"
+  <android.support.design.widget.AppBarLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/ksr_grey_100"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <android.support.design.widget.AppBarLayout
+    <include layout="@layout/account_toolbar" />
+
+  </android.support.design.widget.AppBarLayout>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-
-      <include layout="@layout/account_toolbar" />
-
-    </android.support.design.widget.AppBarLayout>
-
-
-    <ScrollView
-      android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
 
       <LinearLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        style="@style/SettingsLinearRow"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_3">
 
-        <LinearLayout
-          android:id="@+id/email_card"
-          style="@style/SettingsLinearRow"
-          android:layout_marginTop="@dimen/grid_2">
+        <TextView
+          android:id="@+id/change_email_row"
+          style="@style/SettingsSingleRow"
+          android:text="@string/Change_email" />
 
-          <LinearLayout
-            style="@style/SettingsSingleRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginBottom="@dimen/grid_1"
-              android:text="Email" />
-
-            <EditText
-              android:id="@+id/email_address_text_view"
-              style="@style/CalloutPrimary"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:maxLines="1"
-              android:inputType="textEmailAddress"
-              android:text="User's Email Address" />
-          </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-          android:id="@+id/change_password_card"
-          style="@style/SettingsLinearRow"
-          android:layout_marginTop="@dimen/grid_2">
-
-          <LinearLayout
-            style="@style/SettingsSingleRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-              style="@style/CalloutPrimary"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:text="Change Password" />
-          </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-          android:id="@+id/privacy_row"
-          style="@style/SettingsLinearRow"
-          android:layout_marginTop="@dimen/grid_2">
-
-          <LinearLayout
-            style="@style/SettingsSingleRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-              style="@style/CalloutPrimary"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:text="@string/Privacy" />
-          </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-          android:id="@+id/payment_methods_card"
-          style="@style/SettingsLinearRow"
-          android:layout_marginTop="@dimen/grid_2">
-
-          <LinearLayout
-            style="@style/SettingsSingleRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-              style="@style/CalloutPrimary"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:text="Payment Methods" />
-          </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-          android:id="@+id/currency_card"
-          style="@style/SettingsLinearRow"
-          android:layout_marginTop="@dimen/grid_2">
-
-          <LinearLayout
-            style="@style/SettingsSingleRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="Currency" />
-
-            <Spinner
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content" />
-
-          </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-          android:id="@+id/shipping_addresses_card"
-          style="@style/SettingsLinearRow"
-          android:layout_marginTop="@dimen/grid_2">
-
-          <LinearLayout
-            style="@style/SettingsSingleRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-              style="@style/CalloutPrimary"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:text="Shipping Addresses" />
-          </LinearLayout>
-        </LinearLayout>
+        <TextView
+          android:id="@+id/change_password_row"
+          style="@style/SettingsSingleRow"
+          android:text="@string/Change_password" />
 
       </LinearLayout>
 
-    </ScrollView>
+      <LinearLayout
+        style="@style/SettingsLinearRow">
 
-  </LinearLayout>
+        <TextView
+          android:id="@+id/privacy_row"
+          style="@style/SettingsSingleRow"
+          android:text="@string/Privacy" />
 
-</layout>
+      </LinearLayout>
 
+      <LinearLayout
+        style="@style/SettingsLinearRow"
+        android:layout_marginTop="@dimen/grid_3">
+
+        <TextView
+          android:id="@+id/payment_methods_row"
+          style="@style/SettingsSingleRow"
+          android:text="@string/Payment_methods" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        style="@style/SettingsLinearRow"
+        android:layout_marginTop="@dimen/grid_3">
+
+        <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/grid_2"
+          android:gravity="center_vertical"
+          android:text="@string/Currency" />
+
+        <Spinner
+          android:id="@+id/currency_spinner"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/grid_1">
+
+        </Spinner>
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </ScrollView>
+
+</LinearLayout>

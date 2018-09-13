@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.ProjectFactory;
-import com.kickstarter.factories.PushNotificationEnvelopeFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.PushNotificationEnvelopeFactory;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.MockApiClient;
+import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper;

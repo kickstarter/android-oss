@@ -15,14 +15,14 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <com.kickstarter.ui.views.IconButton
+    <com.kickstarter.ui.views.IconTextView
       style="@style/ToolbarIconBackButton"
       android:id="@+id/back_button" />
 
     <TextView
       style="@style/ToolbarTitle"
       android:id="@+id/title_text_view"
-      android:text="Account" />
+      android:text="@string/Account" />
 
   </RelativeLayout>
 

@@ -3,7 +3,7 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.SurveyResponseFactory;
+import com.kickstarter.mock.factories.SurveyResponseFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;

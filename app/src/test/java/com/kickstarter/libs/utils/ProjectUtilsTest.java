@@ -1,8 +1,8 @@
 package com.kickstarter.libs.utils;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.ProjectFactory;
-import com.kickstarter.factories.UserFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.models.Project;
 
 import org.joda.time.DateTime;

@@ -252,7 +252,6 @@ dependencies {
     implementation "com.android.support:support-annotations:$support_annotations_version"
     implementation "com.facebook.android:facebook-android-sdk:$facebook_version"
     implementation "com.github.frankiesardo:auto-parcel:$auto_parcel_version"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     kapt "com.github.frankiesardo:auto-parcel-processor:$auto_parcel_version"
     implementation "com.google.firebase:firebase-core:$firebase_version"
     implementation "com.firebase:firebase-jobdispatcher:$firebase_job_dispatcher_version"

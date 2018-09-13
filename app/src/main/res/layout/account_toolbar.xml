@@ -3,9 +3,9 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  tools:showIn="@layout/activity_account"
   style="@style/Toolbar"
   android:id="@+id/account_toolbar"
+  tools:showIn="@layout/activity_account"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
 
@@ -21,7 +21,6 @@
 
     <TextView
       style="@style/ToolbarTitle"
-      android:id="@+id/title_text_view"
       android:text="@string/Account" />
 
   </RelativeLayout>

@@ -1,9 +1,10 @@
-package com.kickstarter
 
 import android.content.Intent
 import android.support.test.espresso.intent.Intents
 import android.support.test.espresso.intent.Intents.intended
 import android.support.test.espresso.intent.matcher.IntentMatchers.hasAction
+import com.kickstarter.BuildConfig
+import com.kickstarter.R
 import android.support.test.espresso.intent.matcher.IntentMatchers.hasData
 import android.support.test.rule.ActivityTestRule
 import com.kickstarter.ui.activities.*

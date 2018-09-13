@@ -15,7 +15,7 @@
 
   <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
+    android:layout_height="?android:attr/actionBarSize"
     android:baselineAligned="false"
     android:gravity="center_vertical"
     android:orientation="horizontal">

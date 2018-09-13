@@ -9,10 +9,10 @@ import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.ApiEndpoint;
-import com.kickstarter.libs.Build;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.libs.utils.Secrets;
@@ -20,7 +20,6 @@ import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
 import net.danlew.android.joda.JodaTimeAndroid;
-
 
 import org.joda.time.DateTime;
 
@@ -46,11 +45,6 @@ public class KSApplication extends MultiDexApplication {
   public void onCreate() {
     super.onCreate();
 
-    // Send crash reports in release builds
-    if (!BuildConfig.DEBUG && !isInUnitTests()) {
-      checkForCrashes();
-    }
-
     MultiDex.install(this);
 
     // Only log for internal builds
@@ -69,6 +63,8 @@ public class KSApplication extends MultiDexApplication {
       .applicationModule(new ApplicationModule(this))
       .build();
     component().inject(this);
+
+    FirebaseApp.initializeApp(this);
 
     if (!isInUnitTests()) {
       setVisitorCookie();
@@ -95,14 +91,6 @@ public class KSApplication extends MultiDexApplication {
   public boolean isInUnitTests() {
     return false;
   }
-
-  private void checkForCrashes() {
-    final String appId = Build.isExternal()
-      ? Secrets.HockeyAppId.EXTERNAL
-      : Secrets.HockeyAppId.INTERNAL;
-
-  }
-
 
   private void setVisitorCookie() {
     final String deviceId = FirebaseInstanceId.getInstance().getId();

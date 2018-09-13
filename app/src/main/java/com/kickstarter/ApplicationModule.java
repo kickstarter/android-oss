@@ -120,7 +120,7 @@ public final class ApplicationModule {
     final @NonNull Scheduler scheduler,
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull WebClientType webClient,
-    final @NonNull String webEndpoint) {
+    final @NonNull @WebEndpoint String webEndpoint) {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)

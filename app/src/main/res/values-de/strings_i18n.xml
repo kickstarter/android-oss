@@ -52,7 +52,7 @@ Unterstützer</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Kreative Projekte werden Wirklichkeit!</string>
   <string name="Cancel" formatted="false">Abbrechen</string>
   <string name="Cancel_your_pledge" formatted="false">Deinen Beitrag zurückziehen</string>
-  <string name="Change_email" formatted="false">Change email</string>
+  <string name="Change_email" formatted="false">E-Mail-Adresse ändern</string>
   <string name="Change_password" formatted="false">Passwort ändern</string>
   <string name="Change_payment_method" formatted="false">Zahlungsmethode ändern</string>
   <string name="Chat" formatted="false">Chat</string>
@@ -84,20 +84,22 @@ Unterstützer</string>
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} wird in %{in_duration} live auf Kickstarter streamen</string>
   <string name="Creator_tips" formatted="false">Tpps für Projektgründer</string>
   <string name="Currency" formatted="false">Währung</string>
-  <string name="Currency_AUD" formatted="false">$ Australian Dollar (AUD)</string>
-  <string name="Currency_CAD" formatted="false">$ Canadian Dollar (CAD)</string>
-  <string name="Currency_CHF" formatted="false">Fr Swiss Franc (CHF)</string>
-  <string name="Currency_DKK" formatted="false">kr Danish Krone (DKK)</string>
+  <string name="Currency_AUD" formatted="false">$ Australischer Dollar (AUD)</string>
+  <string name="Currency_CAD" formatted="false">$ Kanadischer Dollar (CAD)</string>
+  <string name="Currency_CHF" formatted="false">Fr Schweizer Franken (CHF)</string>
+  <string name="Currency_DKK" formatted="false">kr Dänische Krone (DKK)</string>
   <string name="Currency_EUR" formatted="false">€ Euro (EUR)</string>
-  <string name="Currency_GBP" formatted="false">£ Pound Sterling (GBP)</string>
-  <string name="Currency_HKD" formatted="false">$ Hong Kong Dollar (HKD)</string>
+  <string name="Currency_GBP" formatted="false">£ Pfund Sterling (GBP)</string>
+  <string name="Currency_HKD" formatted="false">$ Hongkong-Dollar (HKD)</string>
   <string name="Currency_JPY" formatted="false">¥ Yen (JPY)</string>
-  <string name="Currency_MXN" formatted="false">$ Mexican Peso (MXN)</string>
-  <string name="Currency_NOK" formatted="false">kr Norwegian Krone (NOK)</string>
-  <string name="Currency_NZD" formatted="false">$ New Zealand Dollar (NZD)</string>
-  <string name="Currency_SEK" formatted="false">kr Swedish Krona (SEK)</string>
-  <string name="Currency_SGD" formatted="false">$ Singapore Dollar (SGD)</string>
-  <string name="Currency_USD" formatted="false">$ US Dollar (USD)</string>
+  <string name="Currency_MXN" formatted="false">$ Mexikanischer Peso (MXN)</string>
+  <string name="Currency_NOK" formatted="false">kr Norwegische Krone (NOK)</string>
+  <string name="Currency_NZD" formatted="false">$ Neuseeland-Dollar (NZD)</string>
+  <string name="Currency_SEK" formatted="false">kr Schwedische Krone (SEK)</string>
+  <string name="Currency_SGD" formatted="false">$ Singapur-Dollar (SGD)</string>
+  <string name="Currency_USD" formatted="false">$ US-Dollar (USD)</string>
+  <string name="Current_email" formatted="false">Current email</string>
+  <string name="Current_password" formatted="false">Current password</string>
   <string name="Daily_digest" formatted="false">Tägliche Zusammenfassung</string>
   <string name="Data_will_appear_here_once" formatted="false">Info wird hier angezeigt, sobald jemand dein Projekt unterstützt.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Mein Kickstarter-Konto löschen</string>
@@ -154,7 +156,7 @@ Unterstützer</string>
   <string name="Follow_your_Facebook_friends_and_keep_up_with_the_projects" formatted="false">Folge deinen Facebook-Freunden - wir halten dich auf dem Laufenden, wenn sie ein Projekt unterstützen oder veröffentlichen.</string>
   <string name="Followed" formatted="false">Abonniert</string>
   <string name="Following" formatted="false">Abonniert</string>
-  <string name="Following_Disabled_Info" formatted="false">Following must be on to find Facebook friends. Following can be changed in Settings > Privacy.</string>
+  <string name="Following_Disabled_Info" formatted="false">Die Funktion "Abonnieren" muss aktiviert sein, um Freunde auf Facebook zu finden. Gehe dazu zu Einstellungen > Datenschutz.</string>
   <string name="Following_More_Info" formatted="false">Mehr Info zu Folgen</string>
   <string name="Follows_friend_name" formatted="false">%{friend_name} folgen.</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> hat ein &lt;i>Kunst-Projekt&lt;/i> unterstützt.</string>
@@ -189,8 +191,10 @@ Unterstützer</string>
   <string name="How_backers_found_your_project" formatted="false">Wie Unterstützer dein Projekt gefunden haben</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Ich möchte das Projekt einfach nur unterstützen.</string>
   <string name="If_you_turn_following_off" formatted="false">Wenn du diese Funktion abwählst, kannst du niemandem mehr folgen und es wird dir auch niemand folgen können. Dein Profil wird den Leuten, denen du gefolgt bist, nicht mehr angezeigt. Dies kann nicht rückgängig gemacht werden.</string>
-  <string name="If_your_profile_is_private" formatted="false">If your profile is private, others can see your name and picture.</string>
-  <string name="If_your_profile_is_public" formatted="false">If your profile is not private, others can also see the projects you\'ve backed, your location, bio and websites.</string>
+  <string name="If_your_profile_is_private" formatted="false">Wenn dein Profil privat ist, sind dein Namen und dein Profilbild für Andere sichtbar.\n
+\n
+Wenn dein Profil nicht privat ist, sind außerdem die Projekte, die du unterstützt hast, deine Biografie und deine Websites für Andere sichtbar.</string>
+  <string name="If_your_profile_is_public" formatted="false">Wenn dein Profil nicht privat ist, sind außerdem die Projekte, die du unterstützt hast, dein Standort, deine Biografie und deine Websites für Andere sichtbar.</string>
   <string name="Individual_Emails" formatted="false">Individuelle E-Mails</string>
   <string name="Info" formatted="false">Info</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">Die Zusammenstellung deiner Daten kann bis zu 24 Stunden dauern. Sobald sie zum Download bereitstehen, werden wir dir eine Anleitung dazu per E-Mail schicken. Solltest du nichts von uns hören, versuche es von hier aus noch einmal.</string>

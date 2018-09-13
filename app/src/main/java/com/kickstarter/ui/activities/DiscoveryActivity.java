@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -95,6 +96,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
 
     this.sortViewPager.setAdapter(this.pagerAdapter);
     this.sortTabLayout.setupWithViewPager(this.sortViewPager);
+    addTabSelectedListenerToTabLayout();
 
     this.viewModel.outputs.creatorDashboardButtonIsGone()
       .compose(bindToLifecycle())
@@ -180,6 +182,23 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
 
   public @NonNull DrawerLayout discoveryLayout() {
     return this.discoveryLayout;
+  }
+
+  private void addTabSelectedListenerToTabLayout() {
+    this.sortTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+      @Override
+      public void onTabSelected(final TabLayout.Tab tab) {
+
+      }
+      @Override
+      public void onTabUnselected(final TabLayout.Tab tab) {
+
+      }
+      @Override
+      public void onTabReselected(final TabLayout.Tab tab) {
+        DiscoveryActivity.this.pagerAdapter.scrollToTop(tab.getPosition());
+      }
+    });
   }
 
   private void startLoginToutActivity() {

@@ -249,7 +249,6 @@ public interface DiscoveryFragmentViewModel {
     private final PublishSubject<DiscoveryParams> paramsFromActivity = PublishSubject.create();
     private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
     private final PublishSubject<List<Category>> rootCategories = PublishSubject.create();
-    private final PublishSubject<Void> startHeartAnimation = PublishSubject.create();
 
     private final BehaviorSubject<Activity> activity = BehaviorSubject.create();
     private final BehaviorSubject<Void> heartContainerClicked = BehaviorSubject.create();
@@ -260,6 +259,7 @@ public interface DiscoveryFragmentViewModel {
     private final BehaviorSubject<Boolean> shouldShowOnboardingView = BehaviorSubject.create();
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
     private final Observable<Activity> startUpdateActivity;
+    private final BehaviorSubject<Void> startHeartAnimation = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;

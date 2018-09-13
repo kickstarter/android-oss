@@ -17,6 +17,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
+import com.kickstarter.libs.utils.Secrets;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,7 +32,6 @@ public class KSToolbar extends Toolbar {
   private @WebEndpoint String webEndpoint;
 
   private final CompositeSubscription subscriptions = new CompositeSubscription();
-
 
   public KSToolbar(final @NonNull Context context) {
     super(context);
@@ -55,7 +55,7 @@ public class KSToolbar extends Toolbar {
   protected void onDraw(final Canvas canvas) {
     super.onDraw(canvas);
 
-    if (this.webEndpoint.contains("staging")) {
+    if (!this.webEndpoint.equals(Secrets.WebEndpoint.PRODUCTION)) {
       canvas.drawRect(0, 0, getWidth(), getHeight(), this.backgroundPaint);
     }
   }

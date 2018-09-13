@@ -17,42 +17,7 @@
 
     <android.support.design.widget.CoordinatorLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      tools:ignore="UnusedAttribute">
-
-      <android.support.design.widget.AppBarLayout
-        android:id="@+id/discovery_sort_app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="@dimen/card_no_elevation">
-
-        <android.support.design.widget.CollapsingToolbarLayout
-          android:layout_width="match_parent"
-          android:layout_height="96dp"
-          app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-          <include
-            layout="@layout/discovery_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="top" />
-
-          <com.kickstarter.ui.views.SortTabLayout
-            android:id="@+id/discovery_tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="bottom"
-            app:layout_collapseMode="pin"
-            app:tabBackground="@drawable/click_indicator_light"
-            app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/text_primary"
-            app:tabTextAppearance="@style/TabTextAppearance"
-            app:tabTextColor="@color/black_alpha_30"
-            />
-
-        </android.support.design.widget.CollapsingToolbarLayout>
-
-      </android.support.design.widget.AppBarLayout>
+      android:layout_height="match_parent">
 
       <android.support.v4.view.ViewPager
         android:id="@+id/discovery_view_pager"
@@ -65,6 +30,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="com.kickstarter.ui.toolbars.AlphaBehavior" />
+
+      <android.support.design.widget.AppBarLayout
+        android:id="@+id/discovery_sort_app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="@dimen/card_no_elevation">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          app:layout_scrollFlags="scroll">
+
+          <include
+            layout="@layout/discovery_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:layout_gravity="top" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+        <com.kickstarter.ui.views.SortTabLayout
+          android:id="@+id/discovery_tab_layout"
+          android:layout_width="match_parent"
+          android:layout_height="?android:attr/actionBarSize"
+          android:layout_gravity="bottom"
+          app:tabBackground="@drawable/click_indicator_light"
+          app:tabMode="scrollable"
+          app:tabSelectedTextColor="@color/text_primary"
+          app:tabTextAppearance="@style/TabTextAppearance"
+          app:tabTextColor="@color/black_alpha_30" />
+
+      </android.support.design.widget.AppBarLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 

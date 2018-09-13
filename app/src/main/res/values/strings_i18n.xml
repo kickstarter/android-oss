@@ -66,6 +66,7 @@ backers</string>
   <string name="Collapses_subcategories" formatted="false">Collapses subcategories.</string>
   <string name="Collections" formatted="false">Collections</string>
   <string name="Complete_payment" formatted="false">Complete payment</string>
+  <string name="Confirm_password" formatted="false">Confirm new password</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Connect with Facebook to follow friends and get notified when they back or launch projects.</string>
   <string name="Contact_creator" formatted="false">Contact creator</string>
   <string name="Continue_to_payment" formatted="false">Continue to payment</string>
@@ -239,6 +240,7 @@ with friends.</string>
   <string name="Messages" formatted="false">Messages</string>
   <string name="Name" formatted="false">Name</string>
   <string name="Never" formatted="false">Never</string>
+  <string name="New_password" formatted="false">New password</string>
   <string name="New_pledge_activity" formatted="false">New pledge activity</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">New work and big ideas from established and emerging artists.</string>
   <string name="News_events" formatted="false">Big news and events happening near you, delivered just a few times a year.</string>

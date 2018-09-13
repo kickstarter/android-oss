@@ -7,10 +7,13 @@ import com.kickstarter.R
 import com.kickstarter.extensions.startActivityWithSlideUpTransition
 import com.kickstarter.libs.*
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.SettingsViewModel
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.settings_layout.*
 import rx.android.schedulers.AndroidSchedulers
 
@@ -33,6 +36,16 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
 
         version_name_text_view.text = this.build.versionName()
 
+        this.viewModel.outputs.avatarImageViewUrl()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { url -> Picasso.with(this).load(url).transform(CircleTransformation()).into(profile_picture_image_view) }
+
+        this.viewModel.outputs.logout()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { logout() }
+
         this.viewModel.outputs.showConfirmLogoutPrompt()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -44,13 +57,17 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
                     }
                 })
 
-        this.viewModel.outputs.logout()
+        this.viewModel.outputs.userNameTextViewText()
                 .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { logout() }
+                .compose(Transformers.observeForUI())
+                .subscribe({ name_text_view.text = it })
 
         account_row.setOnClickListener {
             startActivityWithSlideUpTransition(Intent(this, AccountActivity::class.java))
+        }
+
+        edit_profile_row.setOnClickListener {
+            startActivityWithSlideUpTransition(Intent(this, EditProfileActivity::class.java))
         }
 
         help_row.setOnClickListener {

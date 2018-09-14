@@ -4,3 +4,12 @@ query UserPrivacy {
     email
   }
 }
+
+mutation UpdateUserEmail($email: Email!, $current_password: String!) {
+  updateUserAccount(input: {email: $email, current_password: $current_password}) {
+    user {
+      name
+      email
+    }
+  }
+}

@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import UpdateUserEmailMutation
 import UserPrivacyQuery
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
@@ -17,6 +18,9 @@ class TestApolloViewModel {
 
         /** Call when the make network call with errors button has been clicked.  */
         fun makeNetworkCallWithErrorsClicked()
+
+        /** Call when update button has been clicked.  */
+        fun updateEmailClicked(newEmail: String, currentPassword: String)
     }
 
     interface Outputs {
@@ -43,6 +47,7 @@ class TestApolloViewModel {
 
         private val makeNetworkCallClicked = PublishSubject.create<Void>()
         private val makeNetworkCallWithErrorsClicked = PublishSubject.create<Void>()
+        private val updateEmail = PublishSubject.create<Pair<String, String>>()
 
         private val email = BehaviorSubject.create<String>()
         private val name = BehaviorSubject.create<String>()
@@ -75,6 +80,21 @@ class TestApolloViewModel {
                     .subscribe({
                         emitData(it)
                     })
+
+            val updateEmailNotification = this.updateEmail
+                    .switchMap { updateEmail(it).materialize() }
+                    .compose(bindToLifecycle())
+                    .share()
+
+            updateEmailNotification
+                    .compose(errors())
+                    .subscribe({ this.error.onNext(it.localizedMessage) })
+
+            updateEmailNotification
+                    .compose(values())
+                    .subscribe({
+                        emitData(it)
+                    })
         }
 
         override fun makeNetworkCallClicked() {
@@ -83,6 +103,10 @@ class TestApolloViewModel {
 
         override fun makeNetworkCallWithErrorsClicked() {
             this.makeNetworkCallWithErrorsClicked.onNext(null)
+        }
+
+        override fun updateEmailClicked(newEmail: String, currentPassword: String) {
+            this.updateEmail.onNext(Pair(newEmail, currentPassword))
         }
 
         override fun email(): Observable<String> = this.email
@@ -96,6 +120,17 @@ class TestApolloViewModel {
         private fun emitData(it: UserPrivacyQuery.Data) {
             this.email.onNext(it.me()?.email())
             this.name.onNext(it.me()?.name())
+        }
+
+        private fun emitData(it: UpdateUserEmailMutation.Data) {
+            this.email.onNext(it.updateUserAccount()?.user()?.email())
+            this.name.onNext(it.updateUserAccount()?.user()?.name())
+        }
+
+        private fun updateEmail(emailAndPassword: Pair<String, String>): Observable<UpdateUserEmailMutation.Data> {
+            return this.apolloClient.updateUserEmail(emailAndPassword.first, emailAndPassword.second)
+                    .doOnSubscribe { this.showProgressBar.onNext(true) }
+                    .doAfterTerminate { this.showProgressBar.onNext(false) }
         }
 
         private fun userPrivacy(): Observable<UserPrivacyQuery.Data> {

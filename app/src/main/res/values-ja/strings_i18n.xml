@@ -65,6 +65,7 @@
   <string name="Collapses_subcategories" formatted="false">サブカテゴリーを閉じる</string>
   <string name="Collections" formatted="false">コレクション</string>
   <string name="Complete_payment" formatted="false">支払いを完了</string>
+  <string name="Confirm_password" formatted="false">Confirm new password</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Facebookとリンクさせ、友達がプロジェクトを作成したりバックしたりした際に通知を受け取る</string>
   <string name="Contact_creator" formatted="false">クリエイターに連絡</string>
   <string name="Continue_to_payment" formatted="false">支払いを続ける</string>
@@ -97,8 +98,8 @@
   <string name="Currency_SEK" formatted="false">kr スウェーデンクローナ (SEK)</string>
   <string name="Currency_SGD" formatted="false">$ シンガポールドル (SGD)</string>
   <string name="Currency_USD" formatted="false">$ 米ドル (USD)</string>
-  <string name="Current_email" formatted="false">Current email</string>
-  <string name="Current_password" formatted="false">Current password</string>
+  <string name="Current_email" formatted="false">現在のメールアドレス</string>
+  <string name="Current_password" formatted="false">現在のパスワード</string>
   <string name="Daily_digest" formatted="false">デイリーダイジェスト</string>
   <string name="Data_will_appear_here_once" formatted="false">誰かがプロジェクトをバック（支援）すると、ここにデータが表示されます。</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Kickstarter アカウントを削除</string>
@@ -237,6 +238,7 @@
   <string name="Messages" formatted="false">メッセージ</string>
   <string name="Name" formatted="false">名前</string>
   <string name="Never" formatted="false">通知を受けない</string>
+  <string name="New_password" formatted="false">New password</string>
   <string name="New_pledge_activity" formatted="false">新しいプレッジ</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">新進アーティストや著名アーティストの最新プロジェクトやアイデアをご紹介。</string>
   <string name="News_events" formatted="false">1年に数回だけ、お近くのニュースやイベント情報をお届け。</string>

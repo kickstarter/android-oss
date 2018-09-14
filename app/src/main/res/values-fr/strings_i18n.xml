@@ -66,6 +66,7 @@ contributeurs</string>
   <string name="Collapses_subcategories" formatted="false">Masque les sous-catégories.</string>
   <string name="Collections" formatted="false">Collections</string>
   <string name="Complete_payment" formatted="false">Payer</string>
+  <string name="Confirm_password" formatted="false">Confirm new password</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Si vous vous connectez avec votre compte Facebook, vous pourrez suivre vos amis et recevoir des notifications chaque fois qu\'ils lancent ou soutiennent de nouveaux projets.</string>
   <string name="Contact_creator" formatted="false">Contacter le créateur</string>
   <string name="Continue_to_payment" formatted="false">Continuer vers le paiement</string>
@@ -84,22 +85,22 @@ contributeurs</string>
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} sera en direct sur Kickstarter %{in_duration}</string>
   <string name="Creator_tips" formatted="false">Astuces pour créateurs</string>
   <string name="Currency" formatted="false">Devise</string>
-  <string name="Currency_AUD" formatted="false">$ Australian Dollar (AUD)</string>
-  <string name="Currency_CAD" formatted="false">$ Canadian Dollar (CAD)</string>
-  <string name="Currency_CHF" formatted="false">Fr Swiss Franc (CHF)</string>
-  <string name="Currency_DKK" formatted="false">kr Danish Krone (DKK)</string>
-  <string name="Currency_EUR" formatted="false">€ Euro (EUR)</string>
-  <string name="Currency_GBP" formatted="false">£ Pound Sterling (GBP)</string>
-  <string name="Currency_HKD" formatted="false">$ Hong Kong Dollar (HKD)</string>
-  <string name="Currency_JPY" formatted="false">¥ Yen (JPY)</string>
-  <string name="Currency_MXN" formatted="false">$ Mexican Peso (MXN)</string>
-  <string name="Currency_NOK" formatted="false">kr Norwegian Krone (NOK)</string>
-  <string name="Currency_NZD" formatted="false">$ New Zealand Dollar (NZD)</string>
-  <string name="Currency_SEK" formatted="false">kr Swedish Krona (SEK)</string>
-  <string name="Currency_SGD" formatted="false">$ Singapore Dollar (SGD)</string>
-  <string name="Currency_USD" formatted="false">$ US Dollar (USD)</string>
-  <string name="Current_email" formatted="false">Current email</string>
-  <string name="Current_password" formatted="false">Current password</string>
+  <string name="Currency_AUD" formatted="false">Dollar australien – $ (AUD)</string>
+  <string name="Currency_CAD" formatted="false">Dollar Canadien – $ (CAD)</string>
+  <string name="Currency_CHF" formatted="false">Franc suisse – Fr (CHF)</string>
+  <string name="Currency_DKK" formatted="false">Couronne danoise – kr (DKK)</string>
+  <string name="Currency_EUR" formatted="false">Euro – € (EUR)</string>
+  <string name="Currency_GBP" formatted="false">Livre sterling – £ (GBP)</string>
+  <string name="Currency_HKD" formatted="false">Dollar de Hong Kong – $ (HKD)</string>
+  <string name="Currency_JPY" formatted="false">Yen – ¥ (JPY)</string>
+  <string name="Currency_MXN" formatted="false">Pesos mexicain – $ (MXN)</string>
+  <string name="Currency_NOK" formatted="false">Couronne norvégienne – kr (NOK)</string>
+  <string name="Currency_NZD" formatted="false">Dollar néo-zélandais – $ (NZD)</string>
+  <string name="Currency_SEK" formatted="false">Couronne suédoise – kr (SEK)</string>
+  <string name="Currency_SGD" formatted="false">Dollar singapourien – $ (SGD)</string>
+  <string name="Currency_USD" formatted="false">Dollar américain – $ (USD)</string>
+  <string name="Current_email" formatted="false">Adresse e-mail actuelle</string>
+  <string name="Current_password" formatted="false">Mot de passe actuel</string>
   <string name="Daily_digest" formatted="false">Résumé quotidien</string>
   <string name="Data_will_appear_here_once" formatted="false">Ces données seront visibles dès que vous aurez reçu votre première contribution.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Supprimer mon compte Kickstarter</string>
@@ -238,6 +239,7 @@ contributeurs</string>
   <string name="Messages" formatted="false">Messages</string>
   <string name="Name" formatted="false">Nom</string>
   <string name="Never" formatted="false">Jamais</string>
+  <string name="New_password" formatted="false">New password</string>
   <string name="New_pledge_activity" formatted="false">Nouveaux engagements</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">Grandes idées et nouveaux travaux signés par des artistes établis et émergents.</string>
   <string name="News_events" formatted="false">Les grandes nouvelles et événements près de chez vous, quelques fois par an.</string>

@@ -131,6 +131,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:inputType="text"
+          android:hint="@string/Location"
           android:layout_marginEnd="@dimen/activity_horizontal_margin"
           android:layout_marginStart="@dimen/activity_horizontal_margin"
           android:layout_marginTop="@dimen/grid_1" />

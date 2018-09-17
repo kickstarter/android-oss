@@ -40,6 +40,7 @@
     </activity>
     <activity android:name=".ui.activities.ChangeEmailActivity" />
     <activity android:name=".ui.activities.ChangePasswordActivity"/>
+    <activity android:name=".ui.activities.EditProfileActivity"/>
     <activity
       android:name=".ui.activities.CheckoutActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"

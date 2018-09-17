@@ -54,7 +54,9 @@
           android:layout_marginBottom="@dimen/grid_3"
           android:layout_marginEnd="155dp"
           android:scaleType="centerCrop"
-          android:src="@drawable/edit_icon" />
+          android:src="@drawable/edit_icon"
+          tools:ignore="ContentDescription"/>
+
       </FrameLayout>
 
       <LinearLayout
@@ -76,6 +78,7 @@
           android:id="@+id/name_edit_text"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:hint="@string/Name"
           android:layout_marginEnd="@dimen/activity_horizontal_margin"
           android:layout_marginStart="@dimen/activity_horizontal_margin"
           android:layout_marginTop="@dimen/grid_1"

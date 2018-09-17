@@ -417,8 +417,6 @@
       android:name="com.google.android.gms.wallet.api.enabled"
       android:value="true" />
 
-    <activity android:name=".ui.activities.EditProfileActivity">
-    </activity>
   </application>
 
 </manifest>

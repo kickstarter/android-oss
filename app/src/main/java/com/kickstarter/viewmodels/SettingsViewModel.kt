@@ -27,11 +27,17 @@ interface SettingsViewModel {
     }
 
     interface Outputs {
+        /** Emits the user avatar image to be displayed.  */
+        fun avatarImageViewUrl(): Observable<String>
+
         /** Emits when its time to log the user out.  */
         fun logout(): Observable<Void>
 
         /** Emits a boolean that determines if the logout confirmation should be displayed.  */
         fun showConfirmLogoutPrompt(): Observable<Boolean>
+
+        /** Emits the user name to be displayed.  */
+        fun userNameTextViewText(): Observable<String>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<SettingsActivity>(environment), Inputs, Outputs {
@@ -42,6 +48,9 @@ interface SettingsViewModel {
         private val logout = BehaviorSubject.create<Void>()
         private val showConfirmLogoutPrompt = BehaviorSubject.create<Boolean>()
         private val userOutput = BehaviorSubject.create<User>()
+
+        private val avatarImageViewUrl: Observable<String>
+        private val userNameTextViewText: Observable<String>
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -61,13 +70,19 @@ interface SettingsViewModel {
 
             this.confirmLogoutClicked
                     .compose(bindToLifecycle())
-                    .subscribe{
+                    .subscribe {
                         this.koala.trackLogout()
                         this.logout.onNext(null)
                     }
 
+            this.avatarImageViewUrl = this.currentUser.loggedInUser().map { u -> u.avatar().medium() }
+
+            this.userNameTextViewText = this.currentUser.loggedInUser().map({ it.name() })
+
             this.koala.trackSettingsView()
         }
+
+        override fun avatarImageViewUrl() = this.avatarImageViewUrl
 
         override fun closeLogoutConfirmationClicked() = this.showConfirmLogoutPrompt.onNext(false)
 
@@ -78,6 +93,8 @@ interface SettingsViewModel {
         override fun logout(): Observable<Void> = this.logout
 
         override fun showConfirmLogoutPrompt(): Observable<Boolean> = this.showConfirmLogoutPrompt
+
+        override fun userNameTextViewText() = this.userNameTextViewText
 
     }
 }

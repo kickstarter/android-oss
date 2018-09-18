@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+  android:id="@+id/new_settings_layout"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/ksr_grey_100"
+  android:orientation="vertical">
+
+  <android.support.design.widget.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/edit_profile_toolbar" />
+
+  </android.support.design.widget.AppBarLayout>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_3"
+      android:focusable="true"
+      android:focusableInTouchMode="true"
+      android:orientation="vertical">
+
+      <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_profile_linear_background"
+        android:orientation="vertical">
+
+        <ImageView
+          android:id="@+id/avatar_image_view"
+          android:layout_width="@dimen/profile_avatar_width"
+          android:layout_height="@dimen/profile_avatar_height"
+          android:layout_gravity="center_horizontal"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:layout_marginTop="@dimen/grid_2"
+          android:background="@drawable/avatar_stroke"
+          android:scaleType="centerCrop"
+          tools:ignore="ContentDescription" />
+
+        <ImageView
+          android:id="@+id/change_image_icon"
+          android:layout_width="24dp"
+          android:layout_height="24dp"
+          android:layout_gravity="bottom|right"
+          android:layout_marginBottom="@dimen/grid_3"
+          android:layout_marginEnd="155dp"
+          android:scaleType="centerCrop"
+          android:src="@drawable/edit_icon"
+          tools:ignore="ContentDescription"/>
+
+      </FrameLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <TextView
+          style="@style/Caption1Secondary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/grid_2"
+          android:text="@string/Name" />
+
+        <EditText
+          android:id="@+id/name_edit_text"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/Name"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/grid_1"
+          android:imeOptions="actionNext"
+          android:inputType="textPersonName"
+          android:maxLines="1" />
+
+        <TextView
+          style="@style/NewsLetterTextView"
+          android:layout_marginTop="@dimen/grid_1"
+          android:text="@string/Your_name_displayed" />
+
+        <TextView
+          style="@style/Caption1Secondary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/grid_2"
+          android:text="@string/Biography" />
+
+        <EditText
+          android:id="@+id/bio_edit_text"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/grid_1"
+          android:hint="@string/Introduce_yourself"
+          android:imeOptions="actionNext"
+          android:inputType="text"
+          android:maxLines="3" />
+
+        <TextView
+          style="@style/NewsLetterTextView"
+          android:layout_marginTop="@dimen/grid_1"
+          android:text="@string/Write_a_bio" />
+
+        <TextView
+          style="@style/Caption1Secondary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/grid_2"
+          android:text="@string/Location" />
+
+        <EditText
+          android:id="@+id/location_edit_text"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:inputType="text"
+          android:hint="@string/Location"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/grid_1" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        style="@style/SettingsLinearRow"
+        android:layout_marginTop="@dimen/grid_2">
+
+        <TextView
+          style="@style/CalloutSecondaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/grid_2"
+          android:text="@string/Websites" />
+
+        <android.support.v7.widget.RecyclerView
+          android:id="@+id/website_recyclerview"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/grid_1" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        style="@style/SettingsLinearRow">
+
+        <TextView
+          style="@style/CalloutPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/grid_2"
+          android:text="@string/Add"
+          android:textColor="@color/ksr_green_700" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/private_profile_row"
+        style="@style/SettingsLinearRow"
+        android:layout_marginTop="@dimen/grid_2">
+
+        <TextView
+          style="@style/CalloutSecondaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/grid_2"
+          android:text="@string/Privacy" />
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_10"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/NewsletterSingleRow"
+            android:text="@string/Private_profile" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/private_profile_switch"
+            style="@style/NewsLetterSwitch" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <TextView
+        android:id="@+id/private_profile_text_view"
+        style="@style/NewsLetterTextView"
+        android:layout_marginBottom="@dimen/grid_1"
+        android:layout_marginTop="@dimen/grid_2"
+        android:text="@string/If_your_profile_is_private" />
+
+      <TextView
+        android:id="@+id/public_profile_text_view"
+        style="@style/NewsLetterTextView"
+        android:layout_marginBottom="@dimen/grid_8"
+        android:text="@string/If_your_profile_is_public" />
+
+    </LinearLayout>
+
+  </ScrollView>
+
+</LinearLayout>

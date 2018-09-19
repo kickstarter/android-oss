@@ -203,4 +203,8 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
   public void clearPage() {
     this.viewModel.inputs.clearPage();
   }
+
+  public void scrollToTop() {
+    this.recyclerView.smoothScrollToPosition(0);
+  }
 }

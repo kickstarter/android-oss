@@ -12,7 +12,6 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.utils.AnimationUtils;
-import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.HelpViewModel;
@@ -68,7 +67,7 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
     super.onCreate(savedInstanceState);
     setContentView(R.layout.help_layout);
     ButterKnife.bind(this);
-    this.webEndpoint = Secrets.WebEndpoint.PRODUCTION;
+    this.webEndpoint = environment().webEndpoint();
 
     final String url = getUrlForHelpType(this.helpType);
     this.kickstarterWebView.loadUrl(url);

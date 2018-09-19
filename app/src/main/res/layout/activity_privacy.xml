@@ -96,6 +96,7 @@
         android:text="@string/We_use_your_activity_internally_to_make_recommendations_for_you" />
 
       <LinearLayout
+        android:id="@+id/private_profile_row"
         style="@style/SettingsLinearRow">
 
         <LinearLayout
@@ -116,12 +117,14 @@
       </LinearLayout>
 
       <TextView
+        android:id="@+id/private_profile_text_view"
         style="@style/NewsLetterTextView"
         android:layout_marginBottom="@dimen/grid_1"
         android:layout_marginTop="@dimen/grid_2"
         android:text="@string/If_your_profile_is_private" />
 
       <TextView
+        android:id="@+id/public_profile_text_view"
         style="@style/NewsLetterTextView"
         android:layout_marginBottom="@dimen/grid_3"
         android:text="@string/If_your_profile_is_public" />

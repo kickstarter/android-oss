@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Toast
 import com.kickstarter.R
+import com.kickstarter.extensions.text
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ViewUtils
@@ -27,6 +28,12 @@ class TestApolloActivity : BaseActivity<TestApolloViewModel.ViewModel>() {
         make_graphql_call_with_errors.text = "Make GraphQL call with errors"
         make_graphql_call_with_errors.setOnClickListener {
             this.viewModel.inputs.makeNetworkCallWithErrorsClicked()
+            clearNameAndEmail()
+        }
+
+        update_email.text = "Update email"
+        update_email.setOnClickListener {
+            this.viewModel.inputs.updateEmailClicked(new_email.text(), current_password.text())
             clearNameAndEmail()
         }
 

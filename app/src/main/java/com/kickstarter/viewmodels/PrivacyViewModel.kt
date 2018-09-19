@@ -5,7 +5,9 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.PrivacyActivity
@@ -32,6 +34,9 @@ interface PrivacyViewModel {
         /** Emits when Following switch should be turned back on after user cancels opting out.  */
         fun hideConfirmFollowingOptOutPrompt(): Observable<Void>
 
+        /** Emits when the user is a creator and we need to hide the private profile row. */
+        fun hidePrivateProfileRow(): Observable<Boolean>
+
         /** Emits when user should be shown the Following confirmation dialog.  */
         fun showConfirmFollowingOptOutPrompt(): Observable<Void>
 
@@ -50,6 +55,7 @@ interface PrivacyViewModel {
         private val userInput = PublishSubject.create<User>()
 
         private val hideConfirmFollowingOptOutPrompt = BehaviorSubject.create<Void>()
+        private var hidePrivateProfileRow = BehaviorSubject.create<Boolean>()
         private val showConfirmFollowingOptOutPrompt = BehaviorSubject.create<Void>()
         private val userOutput = BehaviorSubject.create<User>()
         private val updateSuccess = PublishSubject.create<Void>()
@@ -70,10 +76,18 @@ interface PrivacyViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.currentUser.refresh(it) }
 
-            this.currentUser.observable()
+            val currentUser = this.currentUser.observable()
+
+            currentUser
                     .take(1)
                     .compose(bindToLifecycle())
                     .subscribe({ this.userOutput.onNext(it) })
+
+            currentUser
+                    .compose(bindToLifecycle())
+                    .filter(ObjectUtils::isNotNull)
+                    .map { user -> IntegerUtils.isNonZero(user.createdProjectsCount()) }
+                    .subscribe(this.hidePrivateProfileRow)
 
             this.userInput
                     .concatMap<User>({ this.updateSettings(it) })
@@ -130,6 +144,8 @@ interface PrivacyViewModel {
         }
 
         override fun hideConfirmFollowingOptOutPrompt(): Observable<Void> = this.hideConfirmFollowingOptOutPrompt
+
+        override fun hidePrivateProfileRow(): Observable<Boolean> = this.hidePrivateProfileRow
 
         override fun showConfirmFollowingOptOutPrompt(): Observable<Void> = this.showConfirmFollowingOptOutPrompt
 

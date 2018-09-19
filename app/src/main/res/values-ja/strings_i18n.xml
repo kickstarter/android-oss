@@ -4,7 +4,7 @@
   <string name="A_weekly_roundup_of_the_best_and_brightest" formatted="false">Kickstarter スタッフがセレクトした今週のおすすめプロジェクト総まとめ。</string>
   <string name="About_reward_amount" formatted="false">約 %{reward_amount}　</string>
   <string name="Account" formatted="false">アカウント</string>
-  <string name="Add" formatted="false">Add</string>
+  <string name="Add" formatted="false">追加</string>
   <string name="Add_attachments" formatted="false">添付ファイルを追加...</string>
   <string name="All_Art_Projects" formatted="false">全てのアートプロジェクト</string>
   <string name="All_Comics_Projects" formatted="false">全てのコミックプロジェクト</string>
@@ -26,6 +26,7 @@
   <string name="All_gone" formatted="false">終了</string>
   <string name="Amount_previous_amount" formatted="false">金額: %{amount}, 以前の金額: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">金額：%{amount}、%{reward}</string>
+  <string name="Amounts_shown" formatted="false">The amounts shown are an approximate conversion. If the project is successful, your pledge will be collected in the native currency of the project, which is also displayed.</string>
   <string name="App_version" formatted="false">アプリ版</string>
   <string name="Are_you_sure" formatted="false">オフにしてもよろしいですか？</string>
   <string name="Ask_me_anything" formatted="false">お問い合わせ</string>
@@ -34,7 +35,7 @@
   <string name="Back_this_project_below" formatted="false">このプロジェクトをバックする</string>
   <string name="Backed_by_Friends" formatted="false">友達がバックしたプロジェクト</string>
   <string name="Backed_by_people_you_follow" formatted="false">フォロー中の友達がバック</string>
-  <string name="Backed_projects_projects_count" formatted="false">%{project_count} 個のバックしたプロジェクト</string>
+  <string name="Backed_projects_projects_count" formatted="false">%{project_count} 件のバック済プロジェクト</string>
   <string name="Backer_has_pledged_to_this_project" formatted="false">バッカーはこのプロジェクトにプレッジしました</string>
   <string name="Backers_count_separator_backers_few" formatted="false">%{backers_count}\n
 バッカー</string>
@@ -52,6 +53,7 @@
   <string name="Bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
   <string name="Cancel" formatted="false">キャンセル</string>
   <string name="Cancel_your_pledge" formatted="false">プレッジを取り消す</string>
+  <string name="Change_currency" formatted="false">Change currency</string>
   <string name="Change_email" formatted="false">メールアドレスを変更</string>
   <string name="Change_password" formatted="false">パスワードを変更</string>
   <string name="Change_payment_method" formatted="false">支払方法の変更</string>
@@ -66,7 +68,7 @@
   <string name="Collapses_subcategories" formatted="false">サブカテゴリーを閉じる</string>
   <string name="Collections" formatted="false">コレクション</string>
   <string name="Complete_payment" formatted="false">支払いを完了</string>
-  <string name="Confirm_password" formatted="false">Confirm new password</string>
+  <string name="Confirm_password" formatted="false">新しいパスワードの確認</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Facebookとリンクさせ、友達がプロジェクトを作成したりバックしたりした際に通知を受け取る</string>
   <string name="Contact_creator" formatted="false">クリエイターに連絡</string>
   <string name="Continue_to_payment" formatted="false">支払いを続ける</string>
@@ -196,7 +198,7 @@
   <string name="If_your_profile_is_public" formatted="false">プロフィールがプライベート (非公開) 設定でない場合は、過去にあなたがバックしたプロジェクトや、あなたの地域情報、あなたの自己紹介欄とウェブサイトも表示されます。</string>
   <string name="Individual_Emails" formatted="false">個人メール</string>
   <string name="Info" formatted="false">インフォメーション</string>
-  <string name="Introduce_yourself" formatted="false">Introduce yourself</string>
+  <string name="Introduce_yourself" formatted="false">自己紹介</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
   <string name="Its_better_with_friends" formatted="false">友達にとってより良い。</string>
@@ -231,6 +233,7 @@
   <string name="Log_out" formatted="false">ログアウト</string>
   <string name="Love_film_We_do_too" formatted="false">映画ファン？そんなあなたに必須のニュースレター。</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">リワードなしでプレッジ</string>
+  <string name="Making_this_change" formatted="false">Making this change will allow you to see project goal and pledge amounts converted to your chosen currency.</string>
   <string name="Manage_your_pledge" formatted="false">プレッジを変更</string>
   <string name="Manage_your_pledge_below" formatted="false">以下のプレッジを変更</string>
   <string name="Manage_your_reward" formatted="false">リワードの管理</string>
@@ -240,7 +243,7 @@
   <string name="Messages" formatted="false">メッセージ</string>
   <string name="Name" formatted="false">名前</string>
   <string name="Never" formatted="false">通知を受けない</string>
-  <string name="New_password" formatted="false">New password</string>
+  <string name="New_password" formatted="false">新しいパスワード</string>
   <string name="New_pledge_activity" formatted="false">新しいプレッジ</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">新進アーティストや著名アーティストの最新プロジェクトやアイデアをご紹介。</string>
   <string name="News_events" formatted="false">1年に数回だけ、お近くのニュースやイベント情報をお届け。</string>
@@ -442,7 +445,8 @@
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">終了48時間前に通知が届きます。保存アイテムをみるにはプロフィールをご覧ください。</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">フォローがオンになっていると、他の人のアクティビティをフォローすることができ、また、他の人もあなたのアクティビティをフォローすることができます。このようなデータを永久に削除するためにはフォローをオフにしてください。</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">プロジェクトを保存し、終了の48時間前にリマインドする。</string>
-  <string name="Write_a_bio" formatted="false">Write a short bio. Just a sentence or two is great.</string>
+  <string name="Write_a_bio" formatted="false">簡単な自己紹介を書いてください。ほんの１～２文で構いません。</string>
+  <string name="Yes_change_currency" formatted="false">Yes, Change currency</string>
   <string name="Yes_turn_off" formatted="false">はい、オフにします</string>
   <string name="You_Launched" formatted="false">発表されました！</string>
   <string name="You_backed_this_project" formatted="false">バック済</string>
@@ -451,7 +455,7 @@
   <string name="You_saved_this_project" formatted="false">保存済みです</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">メッセージの送信に失敗。</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">バックした友達はまだいませんが、今後こちらに表示されます。</string>
-  <string name="Your_name_displayed" formatted="false">Your name is always displayed on your profile.</string>
+  <string name="Your_name_displayed" formatted="false">あなたの名前はプロフィールに常に表示されます。</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">支払方法の登録完了。</string>
   <string name="Your_pledge" formatted="false">プレッジ</string>
   <string name="Your_pledge_amount" formatted="false">プレッジ額：</string>
@@ -573,7 +577,7 @@
   <string name="backing_info_pledged_backing_amount" formatted="false">プレッジ：%{backing_amount}</string>
   <string name="category_name_saved" formatted="false">%{category_name} を保存</string>
   <string name="category_promo_explore_category" formatted="false">%{category_name} をさがす</string>
-  <string name="category_promo_project_count_live_projects" formatted="false">%{formatted_count} 個のプロジェクト</string>
+  <string name="category_promo_project_count_live_projects" formatted="false">%{project_count} 件の公開中プロジェクト</string>
   <string name="comments_count_comments_few" formatted="false">%{comments_count} のコメント</string>
   <string name="comments_count_comments_many" formatted="false">%{comments_count} のコメント</string>
   <string name="comments_count_comments_one" formatted="false">%{comments_count} のコメント</string>
@@ -1100,11 +1104,11 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="profile_category_count_categories_backed_two" formatted="false">2カテゴリーへバック</string>
   <string name="profile_category_count_categories_backed_zero" formatted="false">0 カテゴリーへバック</string>
   <string name="profile_pie_slice_category_name_backed_projects_count" formatted="false">%{category_name}（%{backed_projects_count}）</string>
-  <string name="profile_project_count_projects_backed_few" formatted="false">%{project_count} 個バック済</string>
-  <string name="profile_project_count_projects_backed_many" formatted="false">%{project_count} 個バック済</string>
-  <string name="profile_project_count_projects_backed_one" formatted="false">1個バック</string>
-  <string name="profile_project_count_projects_backed_two" formatted="false">2個バック</string>
-  <string name="profile_project_count_projects_backed_zero" formatted="false">0個のバック</string>
+  <string name="profile_project_count_projects_backed_few" formatted="false">%{project_count} 件のバック済プロジェクト</string>
+  <string name="profile_project_count_projects_backed_many" formatted="false">%{project_count} 件のバック済プロジェクト</string>
+  <string name="profile_project_count_projects_backed_one" formatted="false">1件のバック済みプロジェクト</string>
+  <string name="profile_project_count_projects_backed_two" formatted="false">2件のバック済みプロジェクト</string>
+  <string name="profile_project_count_projects_backed_zero" formatted="false">0件のバック済みプロジェクト</string>
   <string name="profile_projects_backed_project_count_projects_few" formatted="false">%{project_count} プロジェクトへバック済</string>
   <string name="profile_projects_backed_project_count_projects_many" formatted="false">%{project_count} プロジェクトへバック済</string>
   <string name="profile_projects_backed_project_count_projects_one" formatted="false">1プロジェクトへバック</string>
@@ -1241,11 +1245,11 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="project_comments_empty_state_non_backer_title" formatted="false">コメントなし</string>
   <string name="project_comments_error_posting" formatted="false">申し訳ございません。コメントできませんでした。</string>
   <string name="project_comments_posted" formatted="false">コメント投稿完了!</string>
-  <string name="project_count_projects_few" formatted="false">%{project_count} 個のプロジェクト</string>
-  <string name="project_count_projects_many" formatted="false">%{formatted_count} 個のプロジェクト</string>
-  <string name="project_count_projects_one" formatted="false">%{project_count} 個のプロジェクト</string>
-  <string name="project_count_projects_two" formatted="false">%{project_count} 個のプロジェクト</string>
-  <string name="project_count_projects_zero" formatted="false">%{project_count} 個のプロジェクト</string>
+  <string name="project_count_projects_few" formatted="false">%{project_count} 件のプロジェクト</string>
+  <string name="project_count_projects_many" formatted="false">%{project_count} 件のプロジェクト</string>
+  <string name="project_count_projects_one" formatted="false">%{project_count} 件のプロジェクト</string>
+  <string name="project_count_projects_two" formatted="false">%{project_count} 件のプロジェクト</string>
+  <string name="project_count_projects_zero" formatted="false">%{project_count} 件のプロジェクト</string>
   <string name="project_creator_by_creator" formatted="false">by %{creator_name}</string>
   <string name="project_creator_by_creator_html" formatted="false">by &lt;u>%{creator_name}&lt;/u></string>
   <string name="project_creator_youre_a_backer" formatted="false">\u0020• あなたはバッカーです</string>
@@ -1300,18 +1304,18 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="project_view_pledge_status_dropped" formatted="false">取消</string>
   <string name="project_view_pledge_status_errored" formatted="false">エラー</string>
   <string name="project_view_pledge_status_pledged" formatted="false">プレッジ済</string>
-  <string name="projects_count_newline_backed_few" formatted="false">%{projects_count} \n個のプロジェクトをバック</string>
-  <string name="projects_count_newline_backed_many" formatted="false">%{projects_count}\n個のプロジェクトをバック</string>
-  <string name="projects_count_newline_backed_one" formatted="false">1\n人のバッカー</string>
-  <string name="projects_count_newline_backed_two" formatted="false">2\n人のバッカー</string>
-  <string name="projects_count_newline_backed_zero" formatted="false">0\n人のバッカー</string>
+  <string name="projects_count_newline_backed_few" formatted="false">%{projects_count} \n件バック済み</string>
+  <string name="projects_count_newline_backed_many" formatted="false">%{projects_count}\n件バック済み</string>
+  <string name="projects_count_newline_backed_one" formatted="false">1\n件バック済み</string>
+  <string name="projects_count_newline_backed_two" formatted="false">2\n件バック済み</string>
+  <string name="projects_count_newline_backed_zero" formatted="false">0\n件バック済み</string>
   <string name="projects_count_newline_saved_few" formatted="false">%{projects_count} \n
 保存済み</string>
   <string name="projects_count_newline_saved_many" formatted="false">%{projects_count} \n
 保存済み</string>
-  <string name="projects_count_newline_saved_one" formatted="false">1\n個保存</string>
-  <string name="projects_count_newline_saved_two" formatted="false">2\n個保存</string>
-  <string name="projects_count_newline_saved_zero" formatted="false">0\n個保存</string>
+  <string name="projects_count_newline_saved_one" formatted="false">1\n件保存済み</string>
+  <string name="projects_count_newline_saved_two" formatted="false">2\n件保存済み</string>
+  <string name="projects_count_newline_saved_zero" formatted="false">0\n件保存済み</string>
   <string name="push_notifications_alert_buttons_close" formatted="false">閉じる</string>
   <string name="push_notifications_alert_buttons_view" formatted="false">みる</string>
   <string name="rewards_info_all_gone" formatted="false">終了</string>

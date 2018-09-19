@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="@dimen/currency_dialog_width"
+  android:layout_height="@dimen/currency_dialog_height"
+  android:layout_gravity="center"
+  android:background="@drawable/dialog_alert_rounded"
+  android:orientation="vertical">
+
+  <TextView
+    style="@style/CalloutPrimary"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/grid_3"
+    android:text="@string/Change_currency" />
+
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/grid_2"
+    android:text="@string/Making_this_change" />
+
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/grid_2"
+    android:text="@string/Amounts_shown" />
+
+  <Button
+    android:id="@+id/confirm_button"
+    style="@style/Widget.AppCompat.Button.Borderless"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="end|bottom"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/grid_2"
+    android:text="@string/Yes_change_currency"
+    android:textAllCaps="true"
+    android:textColor="@color/ksr_green_500" />
+
+  <Button
+    android:id="@+id/cancel_button"
+    style="@style/Widget.AppCompat.Button.Borderless"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="end|bottom"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/grid_2"
+    android:text="@string/Cancel"
+    android:textAllCaps="true"
+    android:textColor="@color/ksr_green_500" />
+
+</LinearLayout>

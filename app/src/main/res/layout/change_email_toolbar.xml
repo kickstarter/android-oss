@@ -20,8 +20,19 @@
       android:id="@+id/back_button" />
 
     <TextView
+      android:id="@+id/change_email_toolbar_text_view"
       style="@style/ToolbarTitle"
       android:text="@string/Change_email" />
+
+    <ImageView
+      android:layout_toEndOf="@id/change_email_toolbar_text_view"
+      android:layout_centerVertical="true"
+      android:layout_marginStart="@dimen/grid_12"
+      android:id="@+id/save_email_button"
+      android:src="@drawable/ic_action_check"
+      android:backgroundTint="@color/ksr_green_500"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
 
   </RelativeLayout>
 

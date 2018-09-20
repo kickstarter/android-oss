@@ -36,6 +36,8 @@ interface ChangeEmailViewModel {
 
         /** Emits a boolean that determines if a network call is in progress.  */
         fun showProgressBar(): Observable<Boolean>
+
+        fun userEmail(): Observable<String>
     }
 
     interface Errors {
@@ -55,6 +57,7 @@ interface ChangeEmailViewModel {
 
         private val email = BehaviorSubject.create<String>()
         private val name = BehaviorSubject.create<String>()
+        private var userEmail = BehaviorSubject.create<String>()
         private val showProgressBar = BehaviorSubject.create<Boolean>()
 
         private val error = BehaviorSubject.create<String>()
@@ -62,6 +65,12 @@ interface ChangeEmailViewModel {
         private val apolloClient: ApolloClientType = environment.apolloClient()
 
         init {
+
+            this.apolloClient.userPrivacy()
+                    .compose(bindToLifecycle())
+                    .subscribe { user ->
+                        this.userEmail.onNext(user?.me()?.email())
+                    }
 
             this.makeNetworkCallClicked
                     .flatMap { userPrivacy().compose<UserPrivacyQuery.Data>(neverError()) }
@@ -118,6 +127,8 @@ interface ChangeEmailViewModel {
         override fun name(): Observable<String> = this.name
 
         override fun showProgressBar(): Observable<Boolean> = this.showProgressBar
+
+        override fun userEmail(): Observable<String> = this.userEmail
 
         override fun error(): Observable<String> = this.error
 

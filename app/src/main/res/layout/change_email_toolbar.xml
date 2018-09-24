@@ -31,7 +31,6 @@
       android:scaleType="centerCrop"
       android:id="@+id/save_email_button"
       android:src="@drawable/ic_action_check"
-      android:backgroundTint="@color/ksr_green_500"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 

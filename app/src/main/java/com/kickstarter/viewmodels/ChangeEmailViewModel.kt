@@ -31,9 +31,6 @@ interface ChangeEmailViewModel {
         /** Emits the logged in user's email address.  */
         fun email(): Observable<String>
 
-        /** Emits the logged in user's name.  */
-        fun name(): Observable<String>
-
         /** Emits a boolean that determines if a network call is in progress.  */
         fun showProgressBar(): Observable<Boolean>
 
@@ -57,7 +54,6 @@ interface ChangeEmailViewModel {
         private val updateEmail = PublishSubject.create<Pair<String, String>>()
 
         private val email = BehaviorSubject.create<String>()
-        private val name = BehaviorSubject.create<String>()
         private val showProgressBar = BehaviorSubject.create<Boolean>()
 
         private val error = BehaviorSubject.create<String>()
@@ -126,8 +122,6 @@ interface ChangeEmailViewModel {
 
         override fun email(): Observable<String> = this.email
 
-        override fun name(): Observable<String> = this.name
-
         override fun showProgressBar(): Observable<Boolean> = this.showProgressBar
 
         override fun success(): Observable<String> = this.success
@@ -136,12 +130,10 @@ interface ChangeEmailViewModel {
 
         private fun emitData(it: UserPrivacyQuery.Data) {
             this.email.onNext(it.me()?.email())
-            this.name.onNext(it.me()?.name())
         }
 
         private fun emitData(it: UpdateUserEmailMutation.Data) {
             this.email.onNext(it.updateUserAccount()?.user()?.email())
-            this.name.onNext(it.updateUserAccount()?.user()?.name())
             this.success.onNext(it.updateUserAccount()?.user()?.email())
         }
 

@@ -31,15 +31,15 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { user_current_email_text_view.text = it }
 
-        this.viewModel.outputs.showProgressBar()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(progress_bar, !it) }
-
         this.viewModel.errors.error()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
+
+        this.viewModel.outputs.showProgressBar()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { ViewUtils.setGone(progress_bar, !it) }
 
         this.viewModel.outputs.success()
                 .compose(bindToLifecycle())

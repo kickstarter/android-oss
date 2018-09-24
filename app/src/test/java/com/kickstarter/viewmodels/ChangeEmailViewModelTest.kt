@@ -10,13 +10,13 @@ import rx.observers.TestSubscriber
 
 class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: ChangeEmailViewModel.ViewModel
+    private lateinit var vm: TestApolloViewModel.ViewModel
 
     private val email = TestSubscriber<String>()
     private val error = TestSubscriber<String>()
 
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = ChangeEmailViewModel.ViewModel(environment)
+        this.vm = TestApolloViewModel.ViewModel(environment)
 
         this.vm.outputs.email().subscribe(this.email)
         this.vm.errors.error().subscribe(this.error)

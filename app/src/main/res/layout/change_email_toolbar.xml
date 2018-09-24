@@ -27,7 +27,8 @@
     <ImageView
       android:layout_toEndOf="@id/change_email_toolbar_text_view"
       android:layout_centerVertical="true"
-      android:layout_marginStart="@dimen/grid_12"
+      android:layout_marginStart="@dimen/grid_33"
+      android:scaleType="centerCrop"
       android:id="@+id/save_email_button"
       android:src="@drawable/ic_action_check"
       android:backgroundTint="@color/ksr_green_500"

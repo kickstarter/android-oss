@@ -4,7 +4,7 @@
   <string name="A_weekly_roundup_of_the_best_and_brightest" formatted="false">Un tour d\'horizon hebdomadaire des meilleurs projets Kickstarter, triés sur le volet par nos soins.</string>
   <string name="About_reward_amount" formatted="false">Environ %{reward_amount}</string>
   <string name="Account" formatted="false">Votre compte</string>
-  <string name="Add" formatted="false">Add</string>
+  <string name="Add" formatted="false">Ajouter</string>
   <string name="Add_attachments" formatted="false">Ajouter des pièces jointes...</string>
   <string name="All_Art_Projects" formatted="false">Tous les projets de la catégorie Art</string>
   <string name="All_Comics_Projects" formatted="false">Tous les projets de la catégorie Bande dessinée</string>
@@ -26,6 +26,7 @@
   <string name="All_gone" formatted="false">Épuisé</string>
   <string name="Amount_previous_amount" formatted="false">Montant : %{amount}, montant précédant : %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Montant : %{amount}, %{reward}</string>
+  <string name="Amounts_shown" formatted="false">Les montants qui s\'affichent représentent une conversion approximative. Si le projet est intégralement financé, votre contribution sera débitée dans la devise d\'origine du projet, également affichée.</string>
   <string name="App_version" formatted="false">Version de l\'application</string>
   <string name="Are_you_sure" formatted="false">Êtes-vous certain ?</string>
   <string name="Ask_me_anything" formatted="false">Posez-moi une question !</string>
@@ -53,6 +54,7 @@ contributeurs</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Réalisez vos projets créatifs.</string>
   <string name="Cancel" formatted="false">Annuler</string>
   <string name="Cancel_your_pledge" formatted="false">Annuler mon engagement</string>
+  <string name="Change_currency" formatted="false">Changer de devise</string>
   <string name="Change_email" formatted="false">Changer d\'adresse e-mail</string>
   <string name="Change_password" formatted="false">Changer de mot de passe</string>
   <string name="Change_payment_method" formatted="false">Changer de moyen de paiement</string>
@@ -67,7 +69,7 @@ contributeurs</string>
   <string name="Collapses_subcategories" formatted="false">Masque les sous-catégories.</string>
   <string name="Collections" formatted="false">Collections</string>
   <string name="Complete_payment" formatted="false">Payer</string>
-  <string name="Confirm_password" formatted="false">Confirm new password</string>
+  <string name="Confirm_password" formatted="false">Confirmer le nouveau mot de passe</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Si vous vous connectez avec votre compte Facebook, vous pourrez suivre vos amis et recevoir des notifications chaque fois qu\'ils lancent ou soutiennent de nouveaux projets.</string>
   <string name="Contact_creator" formatted="false">Contacter le créateur</string>
   <string name="Continue_to_payment" formatted="false">Continuer vers le paiement</string>
@@ -119,6 +121,7 @@ contributeurs</string>
   <string name="Email" formatted="false">E-mail</string>
   <string name="Email_frequency" formatted="false">Fréquence d\'envoi des e-mails</string>
   <string name="Email_notifications" formatted="false">Notifications par e-mail</string>
+  <string name="Email_unverified" formatted="false">This email address is unverified.</string>
   <string name="Ending_soon" formatted="false">Campagnes bientôt terminées</string>
   <string name="Estimated_delivery" formatted="false">Livraison prévue :</string>
   <string name="Expands_subcategories" formatted="false">Développe les sous-catégories.</string>
@@ -197,7 +200,7 @@ contributeurs</string>
   <string name="If_your_profile_is_public" formatted="false">Si votre profil n\'est pas privé, les projets que vous avez soutenus, votre bio, votre emplacement géographique et vos sites Web seront également visibles.</string>
   <string name="Individual_Emails" formatted="false">E-mails individuels</string>
   <string name="Info" formatted="false">Info</string>
-  <string name="Introduce_yourself" formatted="false">Introduce yourself</string>
+  <string name="Introduce_yourself" formatted="false">Présentez-vous ici.</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">La préparation de vos données personnelles peut prendre jusqu\'à 24 heures. Nous vous enverrons des instructions de téléchargement à l\'adresse e-mail associée à ce compte une fois que tout sera prêt. Si vous ne recevez rien, revenez ici pour réessayer.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">C\'est un outil qui permet de donner vie à des projets créatifs.</string>
   <string name="Its_better_with_friends" formatted="false">On est mieux ensemble.</string>
@@ -232,6 +235,7 @@ contributeurs</string>
   <string name="Log_out" formatted="false">Déconnexion</string>
   <string name="Love_film_We_do_too" formatted="false">Cinéphile ? Nous aussi.</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">S\'engager sans recevoir de récompense</string>
+  <string name="Making_this_change" formatted="false">Cette fonction vous permettra de voir votre objectif de financement et le montant de chaque engagement dans la devise de votre choix.</string>
   <string name="Manage_your_pledge" formatted="false">Gérer mon engagement</string>
   <string name="Manage_your_pledge_below" formatted="false">Gérer mon engagement</string>
   <string name="Manage_your_reward" formatted="false">Gérer votre récompense</string>
@@ -241,7 +245,7 @@ contributeurs</string>
   <string name="Messages" formatted="false">Messages</string>
   <string name="Name" formatted="false">Nom</string>
   <string name="Never" formatted="false">Jamais</string>
-  <string name="New_password" formatted="false">New password</string>
+  <string name="New_password" formatted="false">Nouveau mot de passe</string>
   <string name="New_pledge_activity" formatted="false">Nouveaux engagements</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">Grandes idées et nouveaux travaux signés par des artistes établis et émergents.</string>
   <string name="News_events" formatted="false">Les grandes nouvelles et événements près de chez vous, quelques fois par an.</string>
@@ -333,6 +337,7 @@ n\'ont rien soutenu.</string>
   <string name="Replay_past_live_streams" formatted="false">Revoir des diffusions en direct passées</string>
   <string name="Reply_to_user_name" formatted="false">Répondre à %{user_name}…</string>
   <string name="Request_my_personal_data" formatted="false">Demander mes données personnelles</string>
+  <string name="Resend_verification_email" formatted="false">Re-send verification email</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_one" formatted="false">Questionnaire</string>
@@ -427,6 +432,7 @@ n\'ont rien soutenu.</string>
   <string name="Upcoming_with_creator_name" formatted="false">&lt;br/>&lt;b>%{creator_name}&lt;/b> bientôt en direct</string>
   <string name="Update_pledge" formatted="false">Modifier mon engagement</string>
   <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">Utilisez cette fonction pour garder une trace des récompenses que vous avez reçues.</string>
+  <string name="Verification_email_sent" formatted="false">We\'ve just sent you a verification email. Click the link in it and your address will be verified.</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Vidéo désactivée en attente d\'une meilleure connexion Internet</string>
   <string name="View" formatted="false">Afficher</string>
   <string name="View_project" formatted="false">Afficher le projet</string>
@@ -443,7 +449,8 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Nous vous enverrons un rappel 48 heures avant la fin de cette campagne. Vous recevrez aussi des rappels pour tous les projets que vous avez enregistré. Ceux-ci sont tous accessibles depuis votre profil.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Lorsque les fonctionnalités de suivi sont activées, vous pouvez vous abonner aux activités des autres, qui pourront à leur tour s\'abonner aux vôtres. Pour supprimer définitivement ces données, il vous suffit de désactiver les fonctionnalités de suivi.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Pour chaque projet que vous enregistrez, nous vous enverrons un rappel 48 heures avant la fin de sa campagne.</string>
-  <string name="Write_a_bio" formatted="false">Write a short bio. Just a sentence or two is great.</string>
+  <string name="Write_a_bio" formatted="false">Une petite biographie d\'une phrase ou deux.</string>
+  <string name="Yes_change_currency" formatted="false">Oui, changer de devise</string>
   <string name="Yes_turn_off" formatted="false">Oui, désactiver</string>
   <string name="You_Launched" formatted="false">Projet lancé !</string>
   <string name="You_backed_this_project" formatted="false">Vous avez soutenu ce projet.</string>
@@ -452,7 +459,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="You_saved_this_project" formatted="false">Vous avez enregistré ce projet.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Votre message n\'a pas été envoyé.</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Vos amis n\'ont encore rien soutenu, mais dès qu\'ils s\'y seront mis, leurs engagements s\'afficheront ici.</string>
-  <string name="Your_name_displayed" formatted="false">Your name is always displayed on your profile.</string>
+  <string name="Your_name_displayed" formatted="false">Votre nom s\'affichera toujours sur votre profil.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Votre moyen de paiement a bien été débité.</string>
   <string name="Your_pledge" formatted="false">Mon engagement</string>
   <string name="Your_pledge_amount" formatted="false">Montant engagé :</string>

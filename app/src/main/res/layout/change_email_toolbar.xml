@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.kickstarter.ui.toolbars.KSToolbar
+  android:id="@+id/change_email_toolbar"
+  style="@style/Toolbar"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  style="@style/Toolbar"
-  android:id="@+id/change_email_toolbar"
-  tools:showIn="@layout/activity_change_email"
   app:contentInsetLeft="0dp"
-  app:contentInsetStart="0dp">
+  app:contentInsetStart="0dp"
+  tools:showIn="@layout/activity_change_email">
 
   <RelativeLayout
     android:layout_width="match_parent"
@@ -16,8 +16,8 @@
     android:orientation="horizontal">
 
     <com.kickstarter.ui.views.IconTextView
-      style="@style/ToolbarIconBackButton"
-      android:id="@+id/back_button" />
+      android:id="@+id/back_button"
+      style="@style/ToolbarIconBackButton" />
 
     <TextView
       android:id="@+id/change_email_toolbar_text_view"
@@ -25,14 +25,15 @@
       android:text="@string/Change_email" />
 
     <ImageView
-      android:layout_toEndOf="@id/change_email_toolbar_text_view"
+      android:id="@+id/save_email_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:layout_centerVertical="true"
       android:layout_marginStart="@dimen/grid_33"
+      android:layout_toEndOf="@id/change_email_toolbar_text_view"
+      android:contentDescription="@null"
       android:scaleType="centerCrop"
-      android:id="@+id/save_email_button"
-      android:src="@drawable/ic_action_check"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
+      android:src="@drawable/ic_action_check" />
 
   </RelativeLayout>
 

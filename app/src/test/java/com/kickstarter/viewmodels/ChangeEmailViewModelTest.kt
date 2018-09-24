@@ -26,7 +26,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     fun testEmail() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "", "rashady@test.com")))
+                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "", "rashad@test.com")))
             }
         }).build())
 

@@ -524,10 +524,7 @@
       "When_following_is_on_you_can_follow_the_acticity_of_others": "When following is on, you can follow the activity of others and others can follow your activity. Turn following off to permanently delete this data.",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "When you save a project we’ll send you a reminder 48 hours before it ends",
       "Write_a_bio": "Write a short bio. Just a sentence or two is great.",
-<<<<<<< HEAD
       "Yes_change_currency": "Yes, Change currency",
-=======
->>>>>>> master
       "Yes_turn_off": "Yes, turn off",
       "You_backed_this_project": "You backed this project.",
       "You_Launched": "You Launched!",
@@ -2066,11 +2063,7 @@
       "A_weekly_roundup_of_the_best_and_brightest": "Eine wöchentliche Zusammenfassung der besten und cleversten Projekte auf Kickstarter, handverlesen von unserem Team.",
       "About_reward_amount": "Ungefähr %{reward_amount}",
       "Account": "Konto",
-<<<<<<< HEAD
       "Add": "Hinzufügen",
-=======
-      "Add": "Add",
->>>>>>> master
       "Add_attachments": "Anhänge hinzufügen ...",
       "All_Projects": "Alle Projekte",
       "All_category_name_Projects": "Alle Projekte der Kategorie %{category_name}",
@@ -2140,11 +2133,7 @@
         "many": "%{comments_count} Kommentare"
       },
       "Complete_payment": "Zahlung abschließen",
-<<<<<<< HEAD
       "Confirm_password": "Neues Passwort bestätigen",
-=======
-      "Confirm_password": "Confirm new password",
->>>>>>> master
       "Connect_with_Facebook_to_follow_friends_and_get_notified": "Verknüpfe dein Konto mit Facebook - du kannst deinen Freunden folgen und wirst benachrichtigt, sobald sie ein Projekt veröffentlichen oder unterstützen.",
       "Contact_creator": "Projektgründer kontaktieren",
       "Continue_to_payment": "Weiter zur Zahlung",
@@ -2294,11 +2283,7 @@
       "If_your_profile_is_public": "Wenn dein Profil nicht privat ist, sind außerdem die Projekte, die du unterstützt hast, dein Standort, deine Biografie und deine Websites für Andere sichtbar.",
       "Individual_Emails": "Individuelle E-Mails",
       "Info": "Info",
-<<<<<<< HEAD
       "Introduce_yourself": "Stelle dich vor",
-=======
-      "Introduce_yourself": "Introduce yourself",
->>>>>>> master
       "It_may_take_up_to_24_hours_to_collect_your_data": "Die Zusammenstellung deiner Daten kann bis zu 24 Stunden dauern. Sobald sie zum Download bereitstehen, werden wir dir eine Anleitung dazu per E-Mail schicken. Solltest du nichts von uns hören, versuche es von hier aus noch einmal.",
       "Its_a_way_to_bring_creative_projects_to_life": "Es ist eine Plattform, um kreative Projekte ins Leben zu rufen.",
       "Its_better_with_friends": "Gemeinsam mehr erreichen",
@@ -2355,11 +2340,7 @@
       "Newsletters": "Newsletter",
       "News_events": "Ein paar Mal pro Jahr: Neuigkeiten und Events in deiner Nähe.",
       "Never": "Niemals",
-<<<<<<< HEAD
       "New_password": "Neues Passwort",
-=======
-      "New_password": "New password",
->>>>>>> master
       "New_pledge_activity": "Neue Finanzierungsbeiträge",
       "New_work_and_big_ideas_from_established_and": "Neue Arbeiten und großartige Ideen von etablierten und neuen Künstlern.",
       "No_comments_yet": "Bisher noch keine Kommentare.",
@@ -2601,12 +2582,8 @@
       "We_were_unable_to_load_the_shipping_destinations": "Das Laden der Versandadressen war leider nicht möglich.\nBitte versuche es später noch einmal.",
       "When_following_is_on_you_can_follow_the_acticity_of_others": "Wenn die Funktion Folgen gewählt wurde, kannst du die Aktivitäten von anderen einsehen und diese sehen deine Aktivitäten. Wenn die Funktion abgewählt wurde, werden diese Daten endgültig gelöscht.",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail",
-<<<<<<< HEAD
       "Write_a_bio": "Schreibe eine kurze Biografie, ein oder zwei Sätze genügen.",
       "Yes_change_currency": "Ja, Währung ändern",
-=======
-      "Write_a_bio": "Write a short bio. Just a sentence or two is great.",
->>>>>>> master
       "Yes_turn_off": "Ja, deaktivieren",
       "You_backed_this_project": "Du hast dieses Projekt unterstützt.",
       "You_Launched": "Dein Projekt ist live!",
@@ -2616,11 +2593,7 @@
       "Youre_about_to_create_a_new_Kickstarter_account": "Du wirst hiermit ein neues Kickstarter-Konto mit deiner Facebook-E-Mail-Adresse anlegen. Bitte bestätige diesen Vorgang.",
       "Your_chat_message_wasnt_sent_successfully": "Deine Chat-Nachricht konnte leider nicht gesendet werden.",
       "Your_friends_havent_backed_any_projects_yet": "Deine Freunde haben bisher noch kein Projekt unterstützt. Aber sobald sie das tun, wird es hier angezeigt.",
-<<<<<<< HEAD
       "Your_name_displayed": "Dein Name wird auf deinem Profil angezeigt.",
-=======
-      "Your_name_displayed": "Your name is always displayed on your profile.",
->>>>>>> master
       "Your_payment_method_was_successfully_charged": "Deine Zahlungsmethode wurde erfolgreich belastet.",
       "Your_pledge": "Dein Beitrag",
       "Your_pledge_amount": "Dein Beitrag:",
@@ -4149,11 +4122,7 @@
       "A_weekly_roundup_of_the_best_and_brightest": "Un resumen semanal de los mejores y más brillantes proyectos de Kickstarter, seleccionados por nuestro equipo.",
       "About_reward_amount": "Aprox. %{reward_amount}",
       "Account": "Cuenta",
-<<<<<<< HEAD
       "Add": "Añadir",
-=======
-      "Add": "Add",
->>>>>>> master
       "Add_attachments": "Agregar anexos …",
       "All_Projects": "Todos los proyectos",
       "All_category_name_Projects": "Todos los proyectos de la categoría %{category_name}",
@@ -4373,11 +4342,7 @@
       "If_your_profile_is_public": "Si tu perfil no es privado, otros usuarios también podrán ver los proyectos que has patrocinado, tu ubicación, biografía y sitios web.",
       "Individual_Emails": "Notificaciones por correo electrónico individuales",
       "Info": "Información",
-<<<<<<< HEAD
       "Introduce_yourself": "Preséntate",
-=======
-      "Introduce_yourself": "Introduce yourself",
->>>>>>> master
       "It_may_take_up_to_24_hours_to_collect_your_data": "Puede demorar hasta 24 horas recopilar tus datos. Cuando estén listos, te enviaremos instrucciones para descargar tus datos al correo electrónico asociado con esta cuenta. Si no recibes noticias nuestras, vuelve aquí e inténtalo de nuevo.",
       "Its_a_way_to_bring_creative_projects_to_life": "Es una plataforma para dar vida a proyectos creativos.",
       "Its_better_with_friends": "Todo en la vida es mejor con amigos ...",
@@ -4676,12 +4641,8 @@
       "We_were_unable_to_load_the_shipping_destinations": "No se pudieron cargar los destinos de envío.\nPor favor inténtalo de nuevo más tarde.",
       "When_following_is_on_you_can_follow_the_acticity_of_others": "Cuando el seguimiento está activado, puedes seguir la actividad de los demás y otros pueden seguir tu actividad. Desactiva el seguimiento para eliminar esta información definitivamente.",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "Cuando guardes un proyecto, te enviaremos un recordatorio por correo electrónico 48 horas antes de que finalice",
-<<<<<<< HEAD
       "Write_a_bio": "Escribe una biografía breve mediante una oración o dos.",
       "Yes_change_currency": "Sí, cambiar la moneda",
-=======
-      "Write_a_bio": "Write a short bio. Just a sentence or two is great.",
->>>>>>> master
       "Yes_turn_off": "Sí, desactivar",
       "You_backed_this_project": "Patrocinaste este proyecto.",
       "You_Launched": "¡Tu proyecto fue publicado!",
@@ -4691,11 +4652,7 @@
       "Youre_about_to_create_a_new_Kickstarter_account": "Estás a punto de crear una nueva cuenta de Kickstarter usando el correo electrónico associado a tu cuenta de Facebook. Por favor confírmalo antes de proceder.",
       "Your_chat_message_wasnt_sent_successfully": "Tu mensaje no fue enviado.",
       "Your_friends_havent_backed_any_projects_yet": "Tus amigos todavía no han hecho contribuciones, pero en cuanto lo hagan, se verán reflejadas aquí.",
-<<<<<<< HEAD
       "Your_name_displayed": "Tu nombre siempre se muestra en tu perfil.",
-=======
-      "Your_name_displayed": "Your name is always displayed on your profile.",
->>>>>>> master
       "Your_payment_method_was_successfully_charged": "Se efectuó el cargo a tu método de pago.",
       "Your_pledge": "Tu contribución",
       "Your_pledge_amount": "Monto de tu contribución:",
@@ -6224,11 +6181,7 @@
       "A_weekly_roundup_of_the_best_and_brightest": "Un tour d'horizon hebdomadaire des meilleurs projets Kickstarter, triés sur le volet par nos soins.",
       "About_reward_amount": "Environ %{reward_amount}",
       "Account": "Votre compte",
-<<<<<<< HEAD
       "Add": "Ajouter",
-=======
-      "Add": "Add",
->>>>>>> master
       "Add_attachments": "Ajouter des pièces jointes...",
       "All_Projects": "Tous les projets",
       "All_category_name_Projects": "Tous les projets de la catégorie %{category_name}",
@@ -6298,11 +6251,7 @@
         "many": "%{comments_count} commentaires"
       },
       "Complete_payment": "Payer",
-<<<<<<< HEAD
       "Confirm_password": "Confirmer le nouveau mot de passe",
-=======
-      "Confirm_password": "Confirm new password",
->>>>>>> master
       "Connect_with_Facebook_to_follow_friends_and_get_notified": "Si vous vous connectez avec votre compte Facebook, vous pourrez suivre vos amis et recevoir des notifications chaque fois qu'ils lancent ou soutiennent de nouveaux projets.",
       "Contact_creator": "Contacter le créateur",
       "Continue_to_payment": "Continuer vers le paiement",
@@ -6452,11 +6401,7 @@
       "If_your_profile_is_public": "Si votre profil n'est pas privé, les projets que vous avez soutenus, votre bio, votre emplacement géographique et vos sites Web seront également visibles.",
       "Individual_Emails": "E-mails individuels",
       "Info": "Info",
-<<<<<<< HEAD
       "Introduce_yourself": "Présentez-vous ici.",
-=======
-      "Introduce_yourself": "Introduce yourself",
->>>>>>> master
       "It_may_take_up_to_24_hours_to_collect_your_data": "La préparation de vos données personnelles peut prendre jusqu'à 24 heures. Nous vous enverrons des instructions de téléchargement à l'adresse e-mail associée à ce compte une fois que tout sera prêt. Si vous ne recevez rien, revenez ici pour réessayer.",
       "Its_a_way_to_bring_creative_projects_to_life": "C'est un outil qui permet de donner vie à des projets créatifs.",
       "Its_better_with_friends": "On est mieux ensemble.",
@@ -6513,11 +6458,7 @@
       "Newsletters": "Lettres d'information",
       "News_events": "Les grandes nouvelles et événements près de chez vous, quelques fois par an.",
       "Never": "Jamais",
-<<<<<<< HEAD
       "New_password": "Nouveau mot de passe",
-=======
-      "New_password": "New password",
->>>>>>> master
       "New_pledge_activity": "Nouveaux engagements",
       "New_work_and_big_ideas_from_established_and": "Grandes idées et nouveaux travaux signés par des artistes établis et émergents.",
       "No_comments_yet": "Pas de commentaires.",
@@ -6759,12 +6700,8 @@
       "We_were_unable_to_load_the_shipping_destinations": "Nous n'avons pas été en mesure de charger les destinations d'expédition.\nVeuillez réessayer ultérieurement.",
       "When_following_is_on_you_can_follow_the_acticity_of_others": "Lorsque les fonctionnalités de suivi sont activées, vous pouvez vous abonner aux activités des autres, qui pourront à leur tour s'abonner aux vôtres. Pour supprimer définitivement ces données, il vous suffit de désactiver les fonctionnalités de suivi.",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "Pour chaque projet que vous enregistrez, nous vous enverrons un rappel 48 heures avant la fin de sa campagne.",
-<<<<<<< HEAD
       "Write_a_bio": "Une petite biographie d'une phrase ou deux.",
       "Yes_change_currency": "Oui, changer de devise",
-=======
-      "Write_a_bio": "Write a short bio. Just a sentence or two is great.",
->>>>>>> master
       "Yes_turn_off": "Oui, désactiver",
       "You_backed_this_project": "Vous avez soutenu ce projet.",
       "You_Launched": "Projet lancé !",
@@ -6774,11 +6711,7 @@
       "Youre_about_to_create_a_new_Kickstarter_account": "Vous êtes sur le point de créer un nouveau compte Kickstarter avec l'adresse e-mail que vous utilisez sur Facebook. Veuillez confirmer avant de continuer.",
       "Your_chat_message_wasnt_sent_successfully": "Votre message n'a pas été envoyé.",
       "Your_friends_havent_backed_any_projects_yet": "Vos amis n'ont encore rien soutenu, mais dès qu'ils s'y seront mis, leurs engagements s'afficheront ici.",
-<<<<<<< HEAD
       "Your_name_displayed": "Votre nom s'affichera toujours sur votre profil.",
-=======
-      "Your_name_displayed": "Your name is always displayed on your profile.",
->>>>>>> master
       "Your_payment_method_was_successfully_charged": "Votre moyen de paiement a bien été débité.",
       "Your_pledge": "Mon engagement",
       "Your_pledge_amount": "Montant engagé :",
@@ -8307,11 +8240,7 @@
       "A_weekly_roundup_of_the_best_and_brightest": "Kickstarter スタッフがセレクトした今週のおすすめプロジェクト総まとめ。",
       "About_reward_amount": "約 %{reward_amount}　",
       "Account": "アカウント",
-<<<<<<< HEAD
       "Add": "追加",
-=======
-      "Add": "Add",
->>>>>>> master
       "Add_attachments": "添付ファイルを追加...",
       "All_Projects": "全てのプロジェクト",
       "All_category_name_Projects": "%{category_name} の全プロジェクト",
@@ -8381,11 +8310,7 @@
         "many": "%{comments_count} のコメント"
       },
       "Complete_payment": "支払いを完了",
-<<<<<<< HEAD
       "Confirm_password": "新しいパスワードの確認",
-=======
-      "Confirm_password": "Confirm new password",
->>>>>>> master
       "Connect_with_Facebook_to_follow_friends_and_get_notified": "Facebookとリンクさせ、友達がプロジェクトを作成したりバックしたりした際に通知を受け取る",
       "Contact_creator": "クリエイターに連絡",
       "Continue_to_payment": "支払いを続ける",
@@ -8535,11 +8460,7 @@
       "If_your_profile_is_public": "プロフィールがプライベート (非公開) 設定でない場合は、過去にあなたがバックしたプロジェクトや、あなたの地域情報、あなたの自己紹介欄とウェブサイトも表示されます。",
       "Individual_Emails": "個人メール",
       "Info": "インフォメーション",
-<<<<<<< HEAD
       "Introduce_yourself": "自己紹介",
-=======
-      "Introduce_yourself": "Introduce yourself",
->>>>>>> master
       "It_may_take_up_to_24_hours_to_collect_your_data": "データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。",
       "Its_a_way_to_bring_creative_projects_to_life": "クリエイティブなプロジェクトに生命を。",
       "Its_better_with_friends": "友達にとってより良い。",
@@ -8596,11 +8517,7 @@
       "Newsletters": "ニュースレター",
       "News_events": "1年に数回だけ、お近くのニュースやイベント情報をお届け。",
       "Never": "通知を受けない",
-<<<<<<< HEAD
       "New_password": "新しいパスワード",
-=======
-      "New_password": "New password",
->>>>>>> master
       "New_pledge_activity": "新しいプレッジ",
       "New_work_and_big_ideas_from_established_and": "新進アーティストや著名アーティストの最新プロジェクトやアイデアをご紹介。",
       "No_comments_yet": "まだコメントはありません。",
@@ -8842,12 +8759,8 @@
       "We_were_unable_to_load_the_shipping_destinations": "配送先の読込に失敗。\n再度お試しください。",
       "When_following_is_on_you_can_follow_the_acticity_of_others": "フォローがオンになっていると、他の人のアクティビティをフォローすることができ、また、他の人もあなたのアクティビティをフォローすることができます。このようなデータを永久に削除するためにはフォローをオフにしてください。",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "プロジェクトを保存し、終了の48時間前にリマインドする。",
-<<<<<<< HEAD
       "Write_a_bio": "簡単な自己紹介を書いてください。ほんの１～２文で構いません。",
       "Yes_change_currency": "はい、通貨を変更します",
-=======
-      "Write_a_bio": "Write a short bio. Just a sentence or two is great.",
->>>>>>> master
       "Yes_turn_off": "はい、オフにします",
       "You_backed_this_project": "バック済",
       "You_Launched": "発表されました！",
@@ -8857,11 +8770,7 @@
       "Youre_about_to_create_a_new_Kickstarter_account": "Facebookのメールアドレスで新しいアカウントを作成しようとしています。再度確認してください。",
       "Your_chat_message_wasnt_sent_successfully": "メッセージの送信に失敗。",
       "Your_friends_havent_backed_any_projects_yet": "バックした友達はまだいませんが、今後こちらに表示されます。",
-<<<<<<< HEAD
       "Your_name_displayed": "あなたの名前はプロフィールに常に表示されます。",
-=======
-      "Your_name_displayed": "Your name is always displayed on your profile.",
->>>>>>> master
       "Your_payment_method_was_successfully_charged": "支払方法の登録完了。",
       "Your_pledge": "プレッジ",
       "Your_pledge_amount": "プレッジ額：",

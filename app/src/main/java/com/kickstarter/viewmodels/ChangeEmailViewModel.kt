@@ -1,12 +1,10 @@
 package com.kickstarter.viewmodels
 
 import UpdateUserEmailMutation
-import UserPrivacyQuery
 import android.support.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.activities.ChangeEmailActivity
@@ -17,9 +15,6 @@ import rx.subjects.PublishSubject
 interface ChangeEmailViewModel {
 
     interface Inputs {
-        /** Call when the make network call button has been clicked.  */
-        fun makeNetworkCallClicked()
-
         /** Call when update button has been clicked.  */
         fun updateEmailClicked(newEmail: String, currentPassword: String)
     }
@@ -46,7 +41,6 @@ interface ChangeEmailViewModel {
         val outputs: Outputs = this
         val errors: Errors = this
 
-        private val makeNetworkCallClicked = PublishSubject.create<Void>()
         private val updateEmail = PublishSubject.create<Pair<String, String>>()
 
         private val email = BehaviorSubject.create<String>()
@@ -66,13 +60,6 @@ interface ChangeEmailViewModel {
                         this@ViewModel.email.onNext(email)
                     }
 
-            this.makeNetworkCallClicked
-                    .flatMap { userPrivacy().compose<UserPrivacyQuery.Data>(neverError()) }
-                    .compose(bindToLifecycle())
-                    .subscribe({
-                        emitData(it)
-                    })
-
             val updateEmailNotification = this.updateEmail
                     .switchMap { updateEmail(it).materialize() }
                     .compose(bindToLifecycle())
@@ -89,10 +76,6 @@ interface ChangeEmailViewModel {
                     })
         }
 
-        override fun makeNetworkCallClicked() {
-            this.makeNetworkCallClicked.onNext(null)
-        }
-
         override fun updateEmailClicked(newEmail: String, currentPassword: String) {
             this.updateEmail.onNext(Pair(newEmail, currentPassword))
         }
@@ -105,10 +88,6 @@ interface ChangeEmailViewModel {
 
         override fun error(): Observable<String> = this.error
 
-        private fun emitData(it: UserPrivacyQuery.Data) {
-            this.email.onNext(it.me()?.email())
-        }
-
         private fun emitData(it: UpdateUserEmailMutation.Data) {
             this.email.onNext(it.updateUserAccount()?.user()?.email())
             this.success.onNext(it.updateUserAccount()?.user()?.email())
@@ -120,10 +99,5 @@ interface ChangeEmailViewModel {
                     .doAfterTerminate { this.showProgressBar.onNext(false) }
         }
 
-        private fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-            return this.apolloClient.userPrivacy()
-                    .doOnSubscribe { this.showProgressBar.onNext(true) }
-                    .doAfterTerminate { this.showProgressBar.onNext(false) }
-        }
     }
 }

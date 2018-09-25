@@ -11,13 +11,13 @@ import rx.observers.TestSubscriber
 
 class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: TestApolloViewModel.ViewModel
+    private lateinit var vm: ChangeEmailViewModel.ViewModel
 
     private val email = TestSubscriber<String>()
     private val error = TestSubscriber<String>()
 
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = TestApolloViewModel.ViewModel(environment)
+        this.vm = ChangeEmailViewModel.ViewModel(environment)
 
         this.vm.outputs.email().subscribe(this.email)
         this.vm.errors.error().subscribe(this.error)
@@ -31,11 +31,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
             }
         }).build())
 
-        this.vm.inputs.makeNetworkCallClicked()
         this.email.assertValue("rashad@test.com")
-
-        this.vm.inputs.makeNetworkCallWithErrorsClicked()
-        this.email.assertValues("rashad@test.com", "rashad@test.com")
     }
 
     @Test
@@ -47,22 +43,8 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
             }
         }).build())
 
+        this.email.assertValue("some@email.com")
         this.vm.inputs.updateEmailClicked("rashad@gmail.com", "somepassword")
-        this.email.assertValue("rashad@gmail.com")
-    }
-
-    @Test
-    fun testError() {
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.error(NullPointerException())
-            }
-        }).build())
-
-        this.vm.inputs.makeNetworkCallClicked()
-        this.error.assertNoValues()
-
-        this.vm.inputs.makeNetworkCallWithErrorsClicked()
-        this.error.assertValueCount(1)
+        this.email.assertValues("some@email.com", "rashad@gmail.com")
     }
 }

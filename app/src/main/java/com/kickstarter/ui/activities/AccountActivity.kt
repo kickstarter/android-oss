@@ -3,9 +3,14 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.kickstarter.R
+import com.kickstarter.ui.views.ChangeCurrencyDialog
 import kotlinx.android.synthetic.main.activity_account.*
+
+const val FRAGMENT_TAG = "changeCurrencyFragment"
 
 class AccountActivity : AppCompatActivity() {
 
@@ -30,5 +35,23 @@ class AccountActivity : AppCompatActivity() {
         val arrayAdapter = ArrayAdapter<String>(this, R.layout.item_spinner, currencies)
         arrayAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
         currency_spinner.adapter = arrayAdapter
+        val itemPosition = currency_spinner.selectedItemPosition
+        currency_spinner.setSelection(itemPosition, false)
+
+        currency_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, postion: Int, id: Long) {
+                if (itemPosition != postion) {
+                    showDialog()
+                }
+            }
+        }
+
+    }
+
+    private fun showDialog() {
+        val fm = supportFragmentManager
+        ChangeCurrencyDialog().show(fm, FRAGMENT_TAG)
     }
 }

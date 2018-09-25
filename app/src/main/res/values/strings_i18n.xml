@@ -26,6 +26,7 @@
   <string name="All_gone" formatted="false">All gone</string>
   <string name="Amount_previous_amount" formatted="false">Amount: %{amount}, previous amount: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Amount: %{amount}, %{reward}</string>
+  <string name="Amounts_shown" formatted="false">The amounts shown are an approximate conversion. If the project is successful, your pledge will be collected in the native currency of the project, which is also displayed.</string>
   <string name="App_version" formatted="false">App version</string>
   <string name="Are_you_sure" formatted="false">Are you sure?</string>
   <string name="Ask_me_anything" formatted="false">Ask me anything</string>
@@ -53,6 +54,7 @@ backers</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Bring creative projects to life.</string>
   <string name="Cancel" formatted="false">Cancel</string>
   <string name="Cancel_your_pledge" formatted="false">Cancel your pledge</string>
+  <string name="Change_currency" formatted="false">Change currency</string>
   <string name="Change_email" formatted="false">Change email</string>
   <string name="Change_password" formatted="false">Change password</string>
   <string name="Change_payment_method" formatted="false">Change payment method</string>
@@ -233,6 +235,7 @@ with friends.</string>
   <string name="Log_out" formatted="false">Log out</string>
   <string name="Love_film_We_do_too" formatted="false">Love film? We do, too.</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">Make a pledge without a reward</string>
+  <string name="Making_this_change" formatted="false">Making this change will allow you to see project goal and pledge amounts converted to your chosen currency.</string>
   <string name="Manage_your_pledge" formatted="false">Manage your pledge</string>
   <string name="Manage_your_pledge_below" formatted="false">Manage your pledge below</string>
   <string name="Manage_your_reward" formatted="false">Manage your reward</string>
@@ -447,6 +450,7 @@ Please try again later.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">When following is on, you can follow the activity of others and others can follow your activity. Turn following off to permanently delete this data.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">When you save a project we’ll send you a reminder 48 hours before it ends</string>
   <string name="Write_a_bio" formatted="false">Write a short bio. Just a sentence or two is great.</string>
+  <string name="Yes_change_currency" formatted="false">Yes, Change currency</string>
   <string name="Yes_turn_off" formatted="false">Yes, turn off</string>
   <string name="You_Launched" formatted="false">You Launched!</string>
   <string name="You_backed_this_project" formatted="false">You backed this project.</string>

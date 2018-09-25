@@ -80,11 +80,18 @@
             android:id="@+id/current_password_edit_text"
             style="@style/ChangeEmailPassTextInputEditTextMarginTop"
             android:hint="@string/Current_password"
-            android:inputType="textEmailAddress" />
+            android:inputType="textPassword" />
 
         </android.support.design.widget.TextInputLayout>
 
       </LinearLayout>
+
+      <ProgressBar
+        android:id="@+id/progress_bar"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     </LinearLayout>
 

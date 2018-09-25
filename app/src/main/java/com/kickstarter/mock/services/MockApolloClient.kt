@@ -7,7 +7,8 @@ import rx.Observable
 
 open class MockApolloClient : ApolloClientType {
     override fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data> {
-        return Observable.empty()
+        return Observable.just(UpdateUserEmailMutation.Data(UpdateUserEmailMutation.UpdateUserAccount("",
+                UpdateUserEmailMutation.User("", "Some Name", "some@email.com"))))
     }
 
     override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {

@@ -10,6 +10,8 @@ import com.kickstarter.R
 import com.kickstarter.ui.views.ChangeCurrencyDialog
 import kotlinx.android.synthetic.main.activity_account.*
 
+const val FRAGMENT_TAG = "changeCurrencyFragment"
+
 class AccountActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,16 +19,6 @@ class AccountActivity : AppCompatActivity() {
         setContentView(R.layout.activity_account)
 
         setUpSpinner()
-
-        currency_spinner.setSelection(13, false)
-
-        currency_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(p0: AdapterView<*>?) {}
-
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                showDialog()
-            }
-        }
 
         change_email_row.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
         change_password_row.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
@@ -43,10 +35,23 @@ class AccountActivity : AppCompatActivity() {
         val arrayAdapter = ArrayAdapter<String>(this, R.layout.item_spinner, currencies)
         arrayAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
         currency_spinner.adapter = arrayAdapter
+        val itemPosition = currency_spinner.selectedItemPosition
+        currency_spinner.setSelection(itemPosition, false)
+
+        currency_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, postion: Int, id: Long) {
+                if (itemPosition != postion) {
+                    showDialog()
+                }
+            }
+        }
+
     }
 
     private fun showDialog() {
         val fm = supportFragmentManager
-        ChangeCurrencyDialog().show(fm, "changeCurrencyFragment")
+        ChangeCurrencyDialog().show(fm, FRAGMENT_TAG)
     }
 }

@@ -174,7 +174,7 @@ public final class ApplicationModule {
     final OkHttpClient okHttpClient = builder.build();
 
     return ApolloClient.builder()
-      .serverUrl("https://wwww.kickstarter.com/graph")
+      .serverUrl("https://www.kickstarter.com/graph")
       .addCustomTypeAdapter(CustomType.EMAIL, new EmailAdapter())
       .okHttpClient(okHttpClient)
       .build();

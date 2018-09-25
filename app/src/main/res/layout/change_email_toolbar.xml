@@ -35,6 +35,10 @@
       android:scaleType="centerCrop"
       android:src="@drawable/ic_action_check" />
 
+    <TextView
+      style="@style/ToolbarTitle"
+      android:text="@string/Change_email" />
+
   </RelativeLayout>
 
 </com.kickstarter.ui.toolbars.KSToolbar>

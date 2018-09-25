@@ -15,12 +15,14 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
     private val email = TestSubscriber<String>()
     private val error = TestSubscriber<String>()
+    private val success = TestSubscriber<Void>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ChangeEmailViewModel.ViewModel(environment)
 
-        this.vm.outputs.email().subscribe(this.email)
         this.vm.errors.error().subscribe(this.error)
+        this.vm.outputs.email().subscribe(this.email)
+        this.vm.outputs.success().subscribe(this.success)
     }
 
     @Test
@@ -46,5 +48,6 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         this.email.assertValue("some@email.com")
         this.vm.inputs.updateEmailClicked("rashad@gmail.com", "somepassword")
         this.email.assertValues("some@email.com", "rashad@gmail.com")
+        this.success.assertValueCount(1)
     }
 }

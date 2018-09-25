@@ -27,7 +27,7 @@ interface ChangeEmailViewModel {
         fun showProgressBar(): Observable<Boolean>
 
         /** Emits the logged in user's email which we use get the success of the mutation. */
-        fun success(): Observable<String>
+        fun success(): Observable<Void>
     }
 
     interface Errors {
@@ -45,9 +45,9 @@ interface ChangeEmailViewModel {
 
         private val email = BehaviorSubject.create<String>()
         private val showProgressBar = BehaviorSubject.create<Boolean>()
+        private val success = BehaviorSubject.create<Void>()
 
         private val error = BehaviorSubject.create<String>()
-        private val success = BehaviorSubject.create<String>()
 
         private val apolloClient: ApolloClientType = environment.apolloClient()
 
@@ -84,13 +84,13 @@ interface ChangeEmailViewModel {
 
         override fun showProgressBar(): Observable<Boolean> = this.showProgressBar
 
-        override fun success(): Observable<String> = this.success
+        override fun success(): Observable<Void> = this.success
 
         override fun error(): Observable<String> = this.error
 
         private fun emitData(it: UpdateUserEmailMutation.Data) {
             this.email.onNext(it.updateUserAccount()?.user()?.email())
-            this.success.onNext(it.updateUserAccount()?.user()?.email())
+            this.success.onNext(null)
         }
 
         private fun updateEmail(emailAndPassword: Pair<String, String>): Observable<UpdateUserEmailMutation.Data> {

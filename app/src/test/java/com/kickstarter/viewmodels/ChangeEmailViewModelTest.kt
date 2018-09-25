@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import UpdateUserEmailMutation
 import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
@@ -35,6 +36,19 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.makeNetworkCallWithErrorsClicked()
         this.email.assertValues("rashad@test.com", "rashad@test.com")
+    }
+
+    @Test
+    fun testEmailMutation() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data> {
+                return Observable.just(UpdateUserEmailMutation.Data(UpdateUserEmailMutation
+                        .UpdateUserAccount("", UpdateUserEmailMutation.User("", "", email))))
+            }
+        }).build())
+
+        this.vm.inputs.updateEmailClicked("rashad@gmail.com", "somepassword")
+        this.email.assertValue("rashad@gmail.com")
     }
 
     @Test

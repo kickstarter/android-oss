@@ -1,113 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-  <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/new_settings_layout"
+<LinearLayout
+  android:id="@+id/new_settings_layout"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/ksr_grey_100"
+  android:orientation="vertical"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <android.support.design.widget.AppBarLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/ksr_grey_100"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <android.support.design.widget.AppBarLayout
+    <include layout="@layout/settings_toolbar" />
+
+  </android.support.design.widget.AppBarLayout>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-
-      <include layout="@layout/settings_toolbar" />
-
-    </android.support.design.widget.AppBarLayout>
-
-    <ScrollView
-      android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_3"
+      android:orientation="vertical">
 
       <LinearLayout
+        android:id="@+id/edit_profile_row"
+        android:background="@color/white"
+        android:foreground="@drawable/click_indicator_light"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="@dimen/grid_12"
+        android:orientation="horizontal">
+
+        <ImageView
+          android:id="@+id/profile_picture_image_view"
+          android:layout_width="@dimen/comments_feed_avatar_width"
+          android:layout_height="@dimen/comments_feed_avatar_height"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/activity_horizontal_margin"
+          android:src="@color/ksr_green_500"
+          tools:ignore="ContentDescription"/>
 
         <LinearLayout
-          style="@style/SettingsLinearRow"
-          android:layout_marginTop="@dimen/grid_2">
-
-          <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-              android:id="@+id/notification_row"
-              style="@style/SettingsSingleRow"
-              android:text="@string/Notifications" />
-
-            <TextView
-              android:id="@+id/newsletters_row"
-              style="@style/SettingsSingleRow"
-              android:text="@string/Newsletters" />
-          </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-          style="@style/SettingsLinearRow"
-          android:layout_marginBottom="@dimen/grid_3"
-          android:layout_marginTop="@dimen/grid_3">
-
-          <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-              android:id="@+id/help_row"
-              style="@style/SettingsSingleRow"
-              android:text="@string/Help" />
-
-            <TextView
-              android:id="@+id/privacy_row"
-              style="@style/SettingsSingleRow"
-              android:text="@string/Privacy" />
-          </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-          android:id="@+id/log_out_row"
-          style="@style/SettingsLinearRow"
-          android:layout_marginBottom="@dimen/grid_3">
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/activity_horizontal_margin"
+          android:layout_weight="1"
+          android:orientation="vertical">
 
           <TextView
-            style="@style/SettingsSingleRow"
-            android:text="@string/Log_out"
-            android:textColor="@color/ksr_red_400" />
-        </LinearLayout>
-
-        <LinearLayout
-          android:id="@+id/rate_us_row"
-          style="@style/SettingsLinearRow"
-          android:layout_marginBottom="@dimen/grid_3">
-
-          <LinearLayout
-            style="@style/SettingsSingleRow"
-            android:layout_width="match_parent"
+            style="@style/CalloutPrimary"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:gravity="center_vertical"
+            android:text="@string/Edit_profile" />
 
-            <TextView
-              style="@style/CalloutPrimary"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:text="@string/profile_settings_rating_rate_us_play_store" />
-
-            <TextView
-              android:id="@+id/version_name_text_view"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content" />
-          </LinearLayout>
+          <TextView
+            android:id="@+id/name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical" />
 
         </LinearLayout>
 
       </LinearLayout>
 
-    </ScrollView>
+      <LinearLayout
+        android:id="@+id/account_row"
+        style="@style/SettingsLinearRow"
+        android:layout_marginBottom="@dimen/grid_3">
 
-  </LinearLayout>
+        <TextView
+          style="@style/SettingsSingleRow"
+          android:text="@string/Account" />
+      </LinearLayout>
+
+      <LinearLayout
+        style="@style/SettingsLinearRow">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+            android:id="@+id/notification_row"
+            style="@style/SettingsSingleRow"
+            android:text="@string/Notifications" />
+
+          <TextView
+            android:id="@+id/newsletters_row"
+            style="@style/SettingsSingleRow"
+            android:text="@string/Newsletters" />
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <LinearLayout
+        style="@style/SettingsLinearRow"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_3">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+            android:id="@+id/help_row"
+            style="@style/SettingsSingleRow"
+            android:text="@string/Help" />
+
+          <TextView
+            android:id="@+id/privacy_row"
+            style="@style/SettingsSingleRow"
+            android:text="@string/Privacy" />
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/log_out_row"
+        style="@style/SettingsLinearRow"
+        android:layout_marginBottom="@dimen/grid_3">
+
+        <TextView
+          style="@style/SettingsSingleRow"
+          android:text="@string/Log_out"
+          android:textColor="@color/ksr_red_400" />
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/rate_us_row"
+        style="@style/SettingsLinearRow"
+        android:layout_marginBottom="@dimen/grid_3">
+
+        <LinearLayout
+          style="@style/SettingsSingleRow"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+            style="@style/CalloutPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_settings_rating_rate_us_play_store" />
+
+          <TextView
+            android:id="@+id/version_name_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        </LinearLayout>
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </ScrollView>
+
+</LinearLayout>

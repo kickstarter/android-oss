@@ -4,6 +4,7 @@
   <string name="A_weekly_roundup_of_the_best_and_brightest" formatted="false">Eine wöchentliche Zusammenfassung der besten und cleversten Projekte auf Kickstarter, handverlesen von unserem Team.</string>
   <string name="About_reward_amount" formatted="false">Ungefähr %{reward_amount}</string>
   <string name="Account" formatted="false">Konto</string>
+  <string name="Add" formatted="false">Add</string>
   <string name="Add_attachments" formatted="false">Anhänge hinzufügen ...</string>
   <string name="All_Art_Projects" formatted="false">Alle Projekte der Kategorie Kunst</string>
   <string name="All_Comics_Projects" formatted="false">Alle Projekte der Kategorie Comics</string>
@@ -66,6 +67,7 @@ Unterstützer</string>
   <string name="Collapses_subcategories" formatted="false">Reduziert die Anzeige der Unterkategorien.</string>
   <string name="Collections" formatted="false">Sammlungen</string>
   <string name="Complete_payment" formatted="false">Zahlung abschließen</string>
+  <string name="Confirm_password" formatted="false">Confirm new password</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Verknüpfe dein Konto mit Facebook - du kannst deinen Freunden folgen und wirst benachrichtigt, sobald sie ein Projekt veröffentlichen oder unterstützen.</string>
   <string name="Contact_creator" formatted="false">Projektgründer kontaktieren</string>
   <string name="Continue_to_payment" formatted="false">Weiter zur Zahlung</string>
@@ -98,8 +100,8 @@ Unterstützer</string>
   <string name="Currency_SEK" formatted="false">kr Schwedische Krone (SEK)</string>
   <string name="Currency_SGD" formatted="false">$ Singapur-Dollar (SGD)</string>
   <string name="Currency_USD" formatted="false">$ US-Dollar (USD)</string>
-  <string name="Current_email" formatted="false">Current email</string>
-  <string name="Current_password" formatted="false">Current password</string>
+  <string name="Current_email" formatted="false">Derzeitige E-Mail</string>
+  <string name="Current_password" formatted="false">Derzeitiges Passwort</string>
   <string name="Daily_digest" formatted="false">Tägliche Zusammenfassung</string>
   <string name="Data_will_appear_here_once" formatted="false">Info wird hier angezeigt, sobald jemand dein Projekt unterstützt.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Mein Kickstarter-Konto löschen</string>
@@ -197,6 +199,7 @@ Wenn dein Profil nicht privat ist, sind außerdem die Projekte, die du unterstü
   <string name="If_your_profile_is_public" formatted="false">Wenn dein Profil nicht privat ist, sind außerdem die Projekte, die du unterstützt hast, dein Standort, deine Biografie und deine Websites für Andere sichtbar.</string>
   <string name="Individual_Emails" formatted="false">Individuelle E-Mails</string>
   <string name="Info" formatted="false">Info</string>
+  <string name="Introduce_yourself" formatted="false">Introduce yourself</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">Die Zusammenstellung deiner Daten kann bis zu 24 Stunden dauern. Sobald sie zum Download bereitstehen, werden wir dir eine Anleitung dazu per E-Mail schicken. Solltest du nichts von uns hören, versuche es von hier aus noch einmal.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">Es ist eine Plattform, um kreative Projekte ins Leben zu rufen.</string>
   <string name="Its_better_with_friends" formatted="false">Gemeinsam mehr erreichen</string>
@@ -240,6 +243,7 @@ Wenn dein Profil nicht privat ist, sind außerdem die Projekte, die du unterstü
   <string name="Messages" formatted="false">Nachrichten</string>
   <string name="Name" formatted="false">Name</string>
   <string name="Never" formatted="false">Niemals</string>
+  <string name="New_password" formatted="false">New password</string>
   <string name="New_pledge_activity" formatted="false">Neue Finanzierungsbeiträge</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">Neue Arbeiten und großartige Ideen von etablierten und neuen Künstlern.</string>
   <string name="News_events" formatted="false">Ein paar Mal pro Jahr: Neuigkeiten und Events in deiner Nähe.</string>
@@ -440,6 +444,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Wir werden dir 48 Stunden vor Ablauf dieses Projekts eine Benachrichtigung senden, sowie für alle Projekte, die du in Zukunft speicherst. Um alle gespeicherten Projekte anzusehen, gehe bitte zu deiner Profilseite.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Wenn die Funktion Folgen gewählt wurde, kannst du die Aktivitäten von anderen einsehen und diese sehen deine Aktivitäten. Wenn die Funktion abgewählt wurde, werden diese Daten endgültig gelöscht.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail</string>
+  <string name="Write_a_bio" formatted="false">Write a short bio. Just a sentence or two is great.</string>
   <string name="Yes_turn_off" formatted="false">Ja, deaktivieren</string>
   <string name="You_Launched" formatted="false">Dein Projekt ist live!</string>
   <string name="You_backed_this_project" formatted="false">Du hast dieses Projekt unterstützt.</string>
@@ -448,6 +453,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="You_saved_this_project" formatted="false">Du hast dieses Projekt gespeichert.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Deine Chat-Nachricht konnte leider nicht gesendet werden.</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Deine Freunde haben bisher noch kein Projekt unterstützt. Aber sobald sie das tun, wird es hier angezeigt.</string>
+  <string name="Your_name_displayed" formatted="false">Your name is always displayed on your profile.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Deine Zahlungsmethode wurde erfolgreich belastet.</string>
   <string name="Your_pledge" formatted="false">Dein Beitrag</string>
   <string name="Your_pledge_amount" formatted="false">Dein Beitrag:</string>

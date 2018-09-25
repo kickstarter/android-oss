@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.kickstarter.ui.toolbars.KSToolbar
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  style="@style/Toolbar"
+  android:id="@+id/change_email_toolbar"
+  tools:showIn="@layout/activity_change_email"
+  app:contentInsetLeft="0dp"
+  app:contentInsetStart="0dp">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.kickstarter.ui.views.IconTextView
+      style="@style/ToolbarIconBackButton"
+      android:id="@+id/back_button" />
+
+    <TextView
+      style="@style/ToolbarTitle"
+      android:text="@string/Change_email" />
+
+  </RelativeLayout>
+
+</com.kickstarter.ui.toolbars.KSToolbar>

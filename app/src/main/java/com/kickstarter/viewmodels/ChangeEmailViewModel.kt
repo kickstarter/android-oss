@@ -20,9 +20,6 @@ interface ChangeEmailViewModel {
         /** Call when the make network call button has been clicked.  */
         fun makeNetworkCallClicked()
 
-        /** Call when the make network call with errors button has been clicked.  */
-        fun makeNetworkCallWithErrorsClicked()
-
         /** Call when update button has been clicked.  */
         fun updateEmailClicked(newEmail: String, currentPassword: String)
     }
@@ -50,7 +47,6 @@ interface ChangeEmailViewModel {
         val errors: Errors = this
 
         private val makeNetworkCallClicked = PublishSubject.create<Void>()
-        private val makeNetworkCallWithErrorsClicked = PublishSubject.create<Void>()
         private val updateEmail = PublishSubject.create<Pair<String, String>>()
 
         private val email = BehaviorSubject.create<String>()
@@ -77,21 +73,6 @@ interface ChangeEmailViewModel {
                         emitData(it)
                     })
 
-            val userPrivacyNotification = this.makeNetworkCallWithErrorsClicked
-                    .switchMap { userPrivacy().materialize() }
-                    .compose(bindToLifecycle())
-                    .share()
-
-            userPrivacyNotification
-                    .compose(Transformers.errors())
-                    .subscribe({ this.error.onNext(it.localizedMessage) })
-
-            userPrivacyNotification
-                    .compose(values())
-                    .subscribe({
-                        emitData(it)
-                    })
-
             val updateEmailNotification = this.updateEmail
                     .switchMap { updateEmail(it).materialize() }
                     .compose(bindToLifecycle())
@@ -110,10 +91,6 @@ interface ChangeEmailViewModel {
 
         override fun makeNetworkCallClicked() {
             this.makeNetworkCallClicked.onNext(null)
-        }
-
-        override fun makeNetworkCallWithErrorsClicked() {
-            this.makeNetworkCallWithErrorsClicked.onNext(null)
         }
 
         override fun updateEmailClicked(newEmail: String, currentPassword: String) {

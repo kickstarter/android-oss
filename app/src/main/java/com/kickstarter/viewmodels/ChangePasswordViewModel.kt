@@ -32,6 +32,12 @@ interface ChangePasswordViewModel {
         /** Emits when the password update was unsuccessful. */
         fun error(): Observable<String>
 
+        /** Emits when the user types a password confirmation that doesn't match the new password. */
+        fun passwordConfirmationWarningIsVisible(): Observable<Boolean>
+
+        /** Emits when the user types a new password less than 6 characters. */
+        fun passwordLengthWarningIsVisible(): Observable<Boolean>
+
         /** Emits when the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
 
@@ -39,7 +45,7 @@ interface ChangePasswordViewModel {
         fun saveButtonIsEnabled(): Observable<Boolean>
 
         /** Emits when the password update was unsuccessful. */
-        fun success(): Observable<Void>
+        fun success(): Observable<String>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ChangePasswordActivity>(environment), Inputs, Outputs {
@@ -50,24 +56,41 @@ interface ChangePasswordViewModel {
         private val newPassword = PublishSubject.create<String>()
 
         private val error = BehaviorSubject.create<String>()
+        private val passwordConfirmationWarningIsVisible = BehaviorSubject.create<Boolean>()
+        private val passwordLengthWarningIsVisible = BehaviorSubject.create<Boolean>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
-        private val success = BehaviorSubject.create<Void>()
+        private val success = BehaviorSubject.create<String>()
 
         val inputs: ChangePasswordViewModel.Inputs = this
         val outputs: ChangePasswordViewModel.Outputs = this
 
-        private val apolloClient: ApolloClientType = environment.apolloClient()
+        private val apolloClient: ApolloClientType = this.environment.apolloClient()
 
         init {
 
-            val changePassword = Observable.combineLatest(currentPassword, 
-                    confirmPassword,
-                    newPassword,
+            val changePassword = Observable.combineLatest(this.currentPassword,
+                    this.confirmPassword,
+                    this.newPassword,
                     { current, new, confirm -> ChangePassword(current, new, confirm) })
+
+            this.newPassword
+                    .map<Boolean> { it.length in 1 until MINIMUM_PASSWORD_LENGTH }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.passwordLengthWarningIsVisible)
+
+            this.confirmPassword
+                    .compose(combineLatestPair<String, String>(this.newPassword))
+                    .filter { it.first.isNotEmpty() }
+                    .map<Boolean> { it.second != it.first }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.passwordConfirmationWarningIsVisible)
 
             changePassword
                     .map { cp -> cp.isValid() }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.saveButtonIsEnabled)
 
@@ -83,7 +106,7 @@ interface ChangePasswordViewModel {
 
             changePasswordNotification
                     .compose(values())
-                    .compose(ignoreValues())
+                    .map { it.updateUserAccount()?.user()?.email() }
                     .subscribe(this.success)
 
         }
@@ -114,6 +137,14 @@ interface ChangePasswordViewModel {
             return this.error
         }
 
+        override fun passwordConfirmationWarningIsVisible(): Observable<Boolean> {
+            return this.passwordConfirmationWarningIsVisible
+        }
+
+        override fun passwordLengthWarningIsVisible(): Observable<Boolean> {
+            return this.passwordLengthWarningIsVisible
+        }
+
         override fun progressBarIsVisible(): Observable<Boolean> {
             return this.progressBarIsVisible
         }
@@ -122,19 +153,24 @@ interface ChangePasswordViewModel {
             return this.saveButtonIsEnabled
         }
 
-        override fun success(): Observable<Void> {
+        override fun success(): Observable<String> {
             return this.success
         }
 
         data class ChangePassword(val currentPassword: String, val newPassword: String, val confirmPassword: String) {
             fun isValid(): Boolean {
-                return isNotEmptyAndAtLeast6Chars(currentPassword)
-                        && isNotEmptyAndAtLeast6Chars(newPassword)
-                        && isNotEmptyAndAtLeast6Chars(confirmPassword)
+                return isNotEmptyAndAtLeast6Chars(this.currentPassword)
+                        && isNotEmptyAndAtLeast6Chars(this.newPassword)
+                        && isNotEmptyAndAtLeast6Chars(this.confirmPassword)
+                        && this.confirmPassword == this.newPassword
             }
 
-            private fun isNotEmptyAndAtLeast6Chars(string: String) = !string.isEmpty() && string.length >= 6
+            private fun isNotEmptyAndAtLeast6Chars(password: String) = !password.isEmpty() && password.length >= MINIMUM_PASSWORD_LENGTH
         }
+    }
+
+    companion object {
+        const val MINIMUM_PASSWORD_LENGTH = 6
     }
 
 }

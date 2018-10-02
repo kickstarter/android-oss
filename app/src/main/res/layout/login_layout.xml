@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<android.support.design.widget.CoordinatorLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:background="@color/white"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:background="@color/white"
+  android:orientation="vertical">
 
-  <LinearLayout
-    android:orientation="vertical"
+  <android.support.design.widget.AppBarLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <include layout="@layout/login_toolbar" />
+
+  </android.support.design.widget.AppBarLayout>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <include
       layout="@layout/login_form_view"
@@ -19,7 +27,6 @@
       android:layout_height="wrap_content"
       android:layout_marginLeft="@dimen/form_margin_x"
       android:layout_marginRight="@dimen/form_margin_x" />
+  </ScrollView>
 
-  </LinearLayout>
-
-</ScrollView>
+</android.support.design.widget.CoordinatorLayout>

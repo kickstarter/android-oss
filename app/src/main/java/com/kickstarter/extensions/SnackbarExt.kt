@@ -14,12 +14,14 @@ fun Snackbar.adjustMargins() {
     this.view.layoutParams = params
 }
 
-fun Snackbar.error(context: Context) {
+fun Snackbar.error(context: Context): Snackbar {
     adjustMargins()
     this.view.background = ContextCompat.getDrawable(context, R.drawable.bg_snackbar_error)
+    return this
 }
 
-fun Snackbar.success(context: Context) {
+fun Snackbar.success(context: Context): Snackbar {
     adjustMargins()
     this.view.background = ContextCompat.getDrawable(context, R.drawable.bg_snackbar_success)
+    return this
 }

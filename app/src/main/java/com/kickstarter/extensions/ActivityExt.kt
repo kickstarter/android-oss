@@ -21,9 +21,7 @@ fun Activity.showErrorSnackbar(anchor: View, stringResId: Int) {
 }
 
 fun Activity.showErrorSnackbar(anchor: View, message: String) {
-    val snackbar = Snackbar.make(anchor, message, Snackbar.LENGTH_LONG)
-    snackbar.error(this)
-    snackbar.show()
+    Snackbar.make(anchor, message, Snackbar.LENGTH_LONG).error(this).show()
 }
 
 fun Activity.showSuccessSnackbar(anchor: View, stringResId: Int) {
@@ -31,7 +29,5 @@ fun Activity.showSuccessSnackbar(anchor: View, stringResId: Int) {
 }
 
 fun Activity.showSuccessSnackbar(anchor: View, message: String) {
-    val snackbar = Snackbar.make(anchor, message, Snackbar.LENGTH_LONG)
-    snackbar.success(this)
-    snackbar.show()
+    Snackbar.make(anchor, message, Snackbar.LENGTH_LONG).success(this).show()
 }

@@ -9,7 +9,7 @@ import rx.Observable
 open class MockApolloClient : ApolloClientType {
     override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
         return Observable.just(UpdateUserPasswordMutation.Data(UpdateUserPasswordMutation.UpdateUserAccount("",
-                UpdateUserPasswordMutation.User("", "Some Name"))))
+                UpdateUserPasswordMutation.User("", "some@email.com"))))
     }
 
     override fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data> {

@@ -2,11 +2,11 @@ package com.kickstarter.viewmodels
 
 import android.support.annotation.NonNull
 import android.util.Pair
-
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.StringUtils
 import com.kickstarter.services.ApiClientType
@@ -14,14 +14,10 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.LoginActivity
-
+import com.kickstarter.ui.data.LoginReason
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-
-import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.neverError
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 
 interface LoginViewModel {
 
@@ -56,10 +52,13 @@ interface LoginViewModel {
         /** Finish the activity with a successful result.  */
         fun loginSuccess(): Observable<Void>
 
-        /** Fill the view's email address and show a dialog indicating the user's password has been reset.  */
-        fun prefillEmailFromPasswordReset(): Observable<String>
+        /** Fill the view's email address when it's supplied from the intent.  */
+        fun prefillEmail(): Observable<String>
 
-        /** Emits a boolean to determine whether or not the login button should be enabled.  */
+        /** Emits when a user has successfully changed their password and needs to login again.  */
+        fun showChangedPasswordSnackbar(): Observable<Void>
+
+        /** Emits a boolean to determine whether reset password dialog should be shown.  */
         fun showResetPasswordSuccessDialog(): Observable<Pair<Boolean, String>>
 
         /** Start two factor activity for result.  */
@@ -78,7 +77,8 @@ interface LoginViewModel {
         private val invalidloginError: Observable<String>
         private val logInButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val loginSuccess = PublishSubject.create<Void>()
-        private val prefillEmailFromPasswordReset = BehaviorSubject.create<String>()
+        private val prefillEmail = BehaviorSubject.create<String>()
+        private val showChangedPasswordSnackbar = BehaviorSubject.create<Void>()
         private val showResetPasswordSuccessDialog = BehaviorSubject.create<Pair<Boolean, String>>()
         private val tfaChallenge: Observable<Void>
 
@@ -98,23 +98,44 @@ interface LoginViewModel {
             val isValid = emailAndPassword
                     .map<Boolean> { isValid(it.first, it.second) }
 
-            val emailFromIntent = intent()
-                    .map { i -> i.getStringExtra(IntentKey.EMAIL) }
+            val emailAndReason = intent()
+                    .filter{ it.hasExtra(IntentKey.EMAIL)}
+                    .map {
+                        Pair.create(it.getStringExtra(IntentKey.EMAIL),
+                                if (it.hasExtra(IntentKey.LOGIN_REASON)) {
+                                    it.getSerializableExtra(IntentKey.LOGIN_REASON) as LoginReason
+                                } else {
+                                    LoginReason.DEFAULT
+                                })
+                    }
+
+            emailAndReason
+                    .map { it.first }
                     .ofType(String::class.java)
-
-            emailFromIntent
                     .compose(bindToLifecycle())
-                    .subscribe(this.prefillEmailFromPasswordReset)
+                    .subscribe(this.prefillEmail)
 
-            emailFromIntent
+            emailAndReason
+                    .filter { it.second == LoginReason.RESET_PASSWORD }
+                    .map { it.first }
+                    .ofType(String::class.java)
                     .map { e -> Pair.create(true, e) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showResetPasswordSuccessDialog)
 
+            emailAndReason
+                    .map { it.second }
+                    .ofType(LoginReason::class.java)
+                    .filter{ LoginReason.CHANGE_PASSWORD == it }
+                    .compose(ignoreValues())
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showChangedPasswordSnackbar)
+
             this.resetPasswordConfirmationDialogDismissed
                     .map<Boolean>({ BooleanUtils.negate(it) })
-                    .compose<Pair<Boolean, String>>(combineLatestPair(emailFromIntent))
-                    .compose(bindToLifecycle<Pair<Boolean, String>>())
+                    .compose<Pair<Boolean, Pair<String, LoginReason>>>(combineLatestPair(emailAndReason))
+                    .map { Pair.create(it.first, it.second.first) }
+                    .compose(bindToLifecycle())
                     .subscribe(this.showResetPasswordSuccessDialog)
 
             isValid
@@ -177,13 +198,15 @@ interface LoginViewModel {
 
         override fun invalidLoginError() = this.invalidloginError
 
-        override fun loginButtonIsEnabled() = this.logInButtonIsEnabled
+        override fun loginButtonIsEnabled(): BehaviorSubject<Boolean> = this.logInButtonIsEnabled
 
-        override fun loginSuccess() = this.loginSuccess
+        override fun loginSuccess(): PublishSubject<Void> = this.loginSuccess
 
-        override fun prefillEmailFromPasswordReset() = this.prefillEmailFromPasswordReset
+        override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail
 
-        override fun showResetPasswordSuccessDialog() = this.showResetPasswordSuccessDialog
+        override fun showChangedPasswordSnackbar(): Observable<Void> = this.showChangedPasswordSnackbar
+
+        override fun showResetPasswordSuccessDialog(): BehaviorSubject<Pair<Boolean, String>> = this.showResetPasswordSuccessDialog
 
         override fun tfaChallenge() = this.tfaChallenge
     }

@@ -113,8 +113,4 @@ class ChangePasswordActivity : BaseActivity<ChangePasswordViewModel.ViewModel>()
         this.saveEnabled = saveEnabled
         invalidateOptionsMenu()
     }
-
-    companion object {
-        const val REQUEST_CODE = 1010
-    }
 }

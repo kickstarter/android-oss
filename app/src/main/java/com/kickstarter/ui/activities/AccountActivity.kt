@@ -1,12 +1,10 @@
 package com.kickstarter.ui.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.ArrayAdapter
 import com.kickstarter.R
-import com.kickstarter.extensions.showSuccessSnackbar
 import kotlinx.android.synthetic.main.activity_account.*
 
 class AccountActivity : AppCompatActivity() {
@@ -18,7 +16,7 @@ class AccountActivity : AppCompatActivity() {
         setUpSpinner()
 
         change_email_row.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
-        change_password_row.setOnClickListener { startActivityForResult(Intent(this, ChangePasswordActivity::class.java), ChangePasswordActivity.REQUEST_CODE) }
+        change_password_row.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
         privacy_row.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
     }
 
@@ -32,12 +30,5 @@ class AccountActivity : AppCompatActivity() {
         val arrayAdapter = ArrayAdapter<String>(this, R.layout.item_spinner, currencies)
         arrayAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
         currency_spinner.adapter = arrayAdapter
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == ChangePasswordActivity.REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            showSuccessSnackbar(account_container, R.string.Got_it)
-        }
     }
 }

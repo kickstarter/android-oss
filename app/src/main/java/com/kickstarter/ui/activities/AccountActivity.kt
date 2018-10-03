@@ -22,9 +22,9 @@ import type.CurrencyCode
 @RequiresActivityViewModel(AccountViewModel.ViewModel::class)
 class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
 
-    private var showCurrencyChangeDialog: AlertDialog? = null
     private var currentCurrencySelection: CurrencyCode? = null
     private var newCurrencySelection: CurrencyCode? = null
+    private var showCurrencyChangeDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,15 +38,15 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
                     setSpinnerSelection(it)
                 }
 
-        this.viewModel.outputs.progressBarIsVisible()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { ViewUtils.setGone(progress_bar, !it) }
-
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { showErrorSnackbar(change_password_toolbar, it) }
+
+        this.viewModel.outputs.progressBarIsVisible()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { ViewUtils.setGone(progress_bar, !it) }
 
         this.viewModel.outputs.success()
                 .compose(bindToLifecycle())
@@ -85,7 +85,6 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
             this.showCurrencyChangeDialog = AlertDialog.Builder(this)
                     .setCancelable(false)
                     .setTitle(getString(R.string.Change_currency))
-                    .setMessage(getString(R.string.If_you_turn_following_off))
                     .setNegativeButton(R.string.Cancel) { _, _ ->
                         setSpinnerSelection(currentCurrencySelection!!.rawValue())
                     }

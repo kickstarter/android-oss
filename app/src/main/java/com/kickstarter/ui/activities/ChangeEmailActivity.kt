@@ -20,7 +20,6 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_change_email)
 
-
         save_email_button.setOnClickListener {
             this.viewModel.inputs.updateEmailClicked(new_email_edit_text.text(), current_password_edit_text.text())
             clearPasswordAndEmail()

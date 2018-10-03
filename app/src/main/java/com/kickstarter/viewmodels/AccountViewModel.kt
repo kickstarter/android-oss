@@ -25,13 +25,13 @@ interface AccountViewModel {
         /** Emits the current user's chosen Currency. */
         fun chosenCurrency(): Observable<String>
 
-        /** Emits a string to display when user could not be found.  */
+        /** Emits a string to display when network could not be found.  */
         fun error(): Observable<String>
 
         /** Emits when the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
 
-        /** Emits when the password update was unsuccessful. */
+        /** Emits when the currency update was unsuccessful. */
         fun success(): Observable<String>
     }
 

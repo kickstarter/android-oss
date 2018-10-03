@@ -28,7 +28,7 @@ class TestApolloViewModelTest : KSRobolectricTestCase() {
     fun testEmail() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "", "izzy@test.com","","")))
+                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "", "izzy@test.com","")))
             }
         }).build())
 
@@ -43,7 +43,7 @@ class TestApolloViewModelTest : KSRobolectricTestCase() {
     fun testName() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "Izzy", "","", "")))
+                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "Izzy", "","")))
             }
         }).build())
 

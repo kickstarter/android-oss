@@ -146,10 +146,6 @@
   <dimen name="popup_menu_horizontal_offset">-151dp</dimen>
   <dimen name="popup_menu_vertical_offset">-46dp</dimen>
 
-  <!-- Currency Dialog -->
-  <dimen name="currency_dialog_height">450dp</dimen>
-  <dimen name="currency_dialog_width">280dp</dimen>
-
   <!-- Android Pay -->
   <dimen name="buy_button_height">48dp</dimen>
   <dimen name="buy_button_width">300dp</dimen>

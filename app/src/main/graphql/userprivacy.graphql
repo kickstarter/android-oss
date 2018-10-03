@@ -2,5 +2,24 @@ query UserPrivacy {
   me {
     name
     email
+    biography
+    chosenCurrency
+  }
+}
+
+mutation UpdateUserEmail($email: Email!, $current_password: String!) {
+  updateUserAccount(input: {email: $email, current_password: $current_password}) {
+    user {
+      name
+      email
+    }
+  }
+}
+
+mutation UpdateUserCurrency($chosenCurrency: CurrencyCode!) {
+  updateUserProfile(input: {chosenCurrency: $chosenCurrency}) {
+    user {
+    chosenCurrency
+    }
   }
 }

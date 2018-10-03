@@ -175,6 +175,10 @@ buildscript {
     }
 }
 
+apollo {
+
+}
+
 afterEvaluate {
     buildFabricPropertiesIfNeeded()
 }

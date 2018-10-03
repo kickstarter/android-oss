@@ -67,6 +67,52 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
+    <android.support.design.widget.TextInputLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_3">
+
+      <android.support.design.widget.TextInputEditText
+        android:id="@+id/new_email"
+        style="@style/CalloutPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:hint="@string/login_placeholder_email"
+        android:inputType="textEmailAddress"
+        android:maxLines="1" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_2"
+      android:layout_marginTop="@dimen/grid_2"
+      app:hintTextAppearance="@style/BodySecondary"
+      app:passwordToggleEnabled="true"
+      app:passwordToggleTint="@color/password_toggle">
+
+      <android.support.design.widget.TextInputEditText
+        android:id="@+id/current_password"
+        style="@style/CalloutPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/grid_1"
+        android:hint="@string/Current_password"
+        android:inputType="textPassword" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+      android:id="@+id/update_email"
+      style="@style/PrimaryButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:layout_marginBottom="@dimen/grid_1" />
+
     <ProgressBar
       android:id="@+id/progress_bar"
       android:visibility="gone"

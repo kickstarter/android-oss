@@ -50,7 +50,16 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ this.displayPreferences(it) })
 
-        following_switch.setOnClickListener{ this.viewModel.inputs.optIntoFollowing(following_switch.isChecked) }
+        this.viewModel.outputs.hidePrivateProfileRow()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe( {
+                    ViewUtils.setGone(private_profile_row, it)
+                    ViewUtils.setGone(private_profile_text_view, it)
+                    ViewUtils.setGone(public_profile_text_view, it)
+                })
+
+        following_switch.setOnClickListener { this.viewModel.inputs.optIntoFollowing(following_switch.isChecked) }
         private_profile_switch.setOnClickListener { this.viewModel.inputs.showPublicProfile(private_profile_switch.isChecked) }
         recommendations_switch.setOnClickListener { this.viewModel.inputs.optedOutOfRecommendations(recommendations_switch.isChecked) }
         settings_request_data.setOnClickListener { showPrivacyWebpage(Secrets.Privacy.REQUEST_DATA) }
@@ -76,7 +85,7 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
         return this.followingConfirmationDialog!!
     }
 
-    private fun showPrivacyWebpage(url : String) {
+    private fun showPrivacyWebpage(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(intent)
     }

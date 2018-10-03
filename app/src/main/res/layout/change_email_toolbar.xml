@@ -16,8 +16,24 @@
     android:orientation="horizontal">
 
     <com.kickstarter.ui.views.IconTextView
-      style="@style/ToolbarIconBackButton"
-      android:id="@+id/back_button" />
+      android:id="@+id/back_button"
+      style="@style/ToolbarIconBackButton" />
+
+    <TextView
+      android:id="@+id/change_email_toolbar_text_view"
+      style="@style/ToolbarTitle"
+      android:text="@string/Change_email" />
+
+    <ImageView
+      android:id="@+id/save_email_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:layout_marginStart="@dimen/grid_33"
+      android:layout_toEndOf="@id/change_email_toolbar_text_view"
+      android:contentDescription="@null"
+      android:scaleType="centerCrop"
+      android:src="@drawable/ic_action_check" />
 
     <TextView
       style="@style/ToolbarTitle"

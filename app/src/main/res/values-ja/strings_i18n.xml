@@ -26,7 +26,7 @@
   <string name="All_gone" formatted="false">終了</string>
   <string name="Amount_previous_amount" formatted="false">金額: %{amount}, 以前の金額: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">金額：%{amount}、%{reward}</string>
-  <string name="Amounts_shown" formatted="false">The amounts shown are an approximate conversion. If the project is successful, your pledge will be collected in the native currency of the project, which is also displayed.</string>
+  <string name="Amounts_shown" formatted="false">表示されている金額は、おおよその換算金額ですのでご注意ください。プロジェクトが成功した場合、プレッジはプロジェクトをローンチした国の通貨で集められ、その換算額も表示されます。</string>
   <string name="App_version" formatted="false">アプリ版</string>
   <string name="Are_you_sure" formatted="false">オフにしてもよろしいですか？</string>
   <string name="Ask_me_anything" formatted="false">お問い合わせ</string>
@@ -53,7 +53,7 @@
   <string name="Bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
   <string name="Cancel" formatted="false">キャンセル</string>
   <string name="Cancel_your_pledge" formatted="false">プレッジを取り消す</string>
-  <string name="Change_currency" formatted="false">Change currency</string>
+  <string name="Change_currency" formatted="false">通貨の変更</string>
   <string name="Change_email" formatted="false">メールアドレスを変更</string>
   <string name="Change_password" formatted="false">パスワードを変更</string>
   <string name="Change_payment_method" formatted="false">支払方法の変更</string>
@@ -120,6 +120,7 @@
   <string name="Email" formatted="false">メールアドレス</string>
   <string name="Email_frequency" formatted="false">通知頻度</string>
   <string name="Email_notifications" formatted="false">メール通知設定</string>
+  <string name="Email_unverified" formatted="false">This email address is unverified.</string>
   <string name="Ending_soon" formatted="false">終了直前</string>
   <string name="Estimated_delivery" formatted="false">配達予定日：</string>
   <string name="Expands_subcategories" formatted="false">サブカテゴリーを表示</string>
@@ -233,7 +234,7 @@
   <string name="Log_out" formatted="false">ログアウト</string>
   <string name="Love_film_We_do_too" formatted="false">映画ファン？そんなあなたに必須のニュースレター。</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">リワードなしでプレッジ</string>
-  <string name="Making_this_change" formatted="false">Making this change will allow you to see project goal and pledge amounts converted to your chosen currency.</string>
+  <string name="Making_this_change" formatted="false">この変更によって、プロジェクトゴールとプレッジ額が選択された通貨で表示されます。</string>
   <string name="Manage_your_pledge" formatted="false">プレッジを変更</string>
   <string name="Manage_your_pledge_below" formatted="false">以下のプレッジを変更</string>
   <string name="Manage_your_reward" formatted="false">リワードの管理</string>
@@ -335,6 +336,7 @@
   <string name="Replay_past_live_streams" formatted="false">過去のライブ配信をリプレイ</string>
   <string name="Reply_to_user_name" formatted="false">%{user_nameに返信</string>
   <string name="Request_my_personal_data" formatted="false">自分の個人データをリクエストする</string>
+  <string name="Resend_verification_email" formatted="false">Re-send verification email</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_one" formatted="false">リワードサーベイ</string>
@@ -429,6 +431,7 @@
   <string name="Upcoming_with_creator_name" formatted="false">&lt;br/>&lt;b>%{creator_name}&lt;/b>が近日配信</string>
   <string name="Update_pledge" formatted="false">プレッジをアップデートする</string>
   <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">受け取ったリワードを確認するにはこちらをご利用ください。</string>
+  <string name="Verification_email_sent" formatted="false">We\'ve just sent you a verification email. Click the link in it and your address will be verified.</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">インターネット通信状態が向上するまでビデオはご利用いいただけません。</string>
   <string name="View" formatted="false">みる</string>
   <string name="View_project" formatted="false">プロジェクトを見る</string>
@@ -446,7 +449,7 @@
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">フォローがオンになっていると、他の人のアクティビティをフォローすることができ、また、他の人もあなたのアクティビティをフォローすることができます。このようなデータを永久に削除するためにはフォローをオフにしてください。</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">プロジェクトを保存し、終了の48時間前にリマインドする。</string>
   <string name="Write_a_bio" formatted="false">簡単な自己紹介を書いてください。ほんの１～２文で構いません。</string>
-  <string name="Yes_change_currency" formatted="false">Yes, Change currency</string>
+  <string name="Yes_change_currency" formatted="false">はい、通貨を変更します</string>
   <string name="Yes_turn_off" formatted="false">はい、オフにします</string>
   <string name="You_Launched" formatted="false">発表されました！</string>
   <string name="You_backed_this_project" formatted="false">バック済</string>

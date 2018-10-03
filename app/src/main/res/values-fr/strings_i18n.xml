@@ -26,7 +26,7 @@
   <string name="All_gone" formatted="false">Épuisé</string>
   <string name="Amount_previous_amount" formatted="false">Montant : %{amount}, montant précédant : %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Montant : %{amount}, %{reward}</string>
-  <string name="Amounts_shown" formatted="false">The amounts shown are an approximate conversion. If the project is successful, your pledge will be collected in the native currency of the project, which is also displayed.</string>
+  <string name="Amounts_shown" formatted="false">Les montants qui s\'affichent représentent une conversion approximative. Si le projet est intégralement financé, votre contribution sera débitée dans la devise d\'origine du projet, également affichée.</string>
   <string name="App_version" formatted="false">Version de l\'application</string>
   <string name="Are_you_sure" formatted="false">Êtes-vous certain ?</string>
   <string name="Ask_me_anything" formatted="false">Posez-moi une question !</string>
@@ -54,7 +54,7 @@ contributeurs</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Réalisez vos projets créatifs.</string>
   <string name="Cancel" formatted="false">Annuler</string>
   <string name="Cancel_your_pledge" formatted="false">Annuler mon engagement</string>
-  <string name="Change_currency" formatted="false">Change currency</string>
+  <string name="Change_currency" formatted="false">Changer de devise</string>
   <string name="Change_email" formatted="false">Changer d\'adresse e-mail</string>
   <string name="Change_password" formatted="false">Changer de mot de passe</string>
   <string name="Change_payment_method" formatted="false">Changer de moyen de paiement</string>
@@ -121,6 +121,7 @@ contributeurs</string>
   <string name="Email" formatted="false">E-mail</string>
   <string name="Email_frequency" formatted="false">Fréquence d\'envoi des e-mails</string>
   <string name="Email_notifications" formatted="false">Notifications par e-mail</string>
+  <string name="Email_unverified" formatted="false">This email address is unverified.</string>
   <string name="Ending_soon" formatted="false">Campagnes bientôt terminées</string>
   <string name="Estimated_delivery" formatted="false">Livraison prévue :</string>
   <string name="Expands_subcategories" formatted="false">Développe les sous-catégories.</string>
@@ -234,7 +235,7 @@ contributeurs</string>
   <string name="Log_out" formatted="false">Déconnexion</string>
   <string name="Love_film_We_do_too" formatted="false">Cinéphile ? Nous aussi.</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">S\'engager sans recevoir de récompense</string>
-  <string name="Making_this_change" formatted="false">Making this change will allow you to see project goal and pledge amounts converted to your chosen currency.</string>
+  <string name="Making_this_change" formatted="false">Cette fonction vous permettra de voir votre objectif de financement et le montant de chaque engagement dans la devise de votre choix.</string>
   <string name="Manage_your_pledge" formatted="false">Gérer mon engagement</string>
   <string name="Manage_your_pledge_below" formatted="false">Gérer mon engagement</string>
   <string name="Manage_your_reward" formatted="false">Gérer votre récompense</string>
@@ -336,6 +337,7 @@ n\'ont rien soutenu.</string>
   <string name="Replay_past_live_streams" formatted="false">Revoir des diffusions en direct passées</string>
   <string name="Reply_to_user_name" formatted="false">Répondre à %{user_name}…</string>
   <string name="Request_my_personal_data" formatted="false">Demander mes données personnelles</string>
+  <string name="Resend_verification_email" formatted="false">Re-send verification email</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_one" formatted="false">Questionnaire</string>
@@ -430,6 +432,7 @@ n\'ont rien soutenu.</string>
   <string name="Upcoming_with_creator_name" formatted="false">&lt;br/>&lt;b>%{creator_name}&lt;/b> bientôt en direct</string>
   <string name="Update_pledge" formatted="false">Modifier mon engagement</string>
   <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">Utilisez cette fonction pour garder une trace des récompenses que vous avez reçues.</string>
+  <string name="Verification_email_sent" formatted="false">We\'ve just sent you a verification email. Click the link in it and your address will be verified.</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Vidéo désactivée en attente d\'une meilleure connexion Internet</string>
   <string name="View" formatted="false">Afficher</string>
   <string name="View_project" formatted="false">Afficher le projet</string>
@@ -447,7 +450,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Lorsque les fonctionnalités de suivi sont activées, vous pouvez vous abonner aux activités des autres, qui pourront à leur tour s\'abonner aux vôtres. Pour supprimer définitivement ces données, il vous suffit de désactiver les fonctionnalités de suivi.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Pour chaque projet que vous enregistrez, nous vous enverrons un rappel 48 heures avant la fin de sa campagne.</string>
   <string name="Write_a_bio" formatted="false">Une petite biographie d\'une phrase ou deux.</string>
-  <string name="Yes_change_currency" formatted="false">Yes, Change currency</string>
+  <string name="Yes_change_currency" formatted="false">Oui, changer de devise</string>
   <string name="Yes_turn_off" formatted="false">Oui, désactiver</string>
   <string name="You_Launched" formatted="false">Projet lancé !</string>
   <string name="You_backed_this_project" formatted="false">Vous avez soutenu ce projet.</string>

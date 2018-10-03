@@ -23,3 +23,11 @@ mutation UpdateUserCurrency($chosenCurrency: CurrencyCode!) {
     }
   }
 }
+
+mutation UpdateUserPassword($current_password: String!, $password: String!, $password_confirmation: String!) {
+  updateUserAccount(input: {current_password: $current_password, password: $password, password_confirmation: $password_confirmation}) {
+    user {
+      email
+    }
+  }
+}

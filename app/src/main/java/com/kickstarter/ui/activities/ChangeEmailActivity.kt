@@ -1,10 +1,9 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.widget.Toast
 import com.kickstarter.R
-import com.kickstarter.extensions.success
+import com.kickstarter.extensions.showSuccessSnackbar
 import com.kickstarter.extensions.text
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
@@ -54,9 +53,6 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
     }
 
     private fun showSnackbar() {
-        val snackbar = Snackbar.make(change_email_layout, getString(R.string.Verification_email_sent),
-                Snackbar.LENGTH_LONG)
-        snackbar.success(this)
-        snackbar.show()
+        showSuccessSnackbar(change_email_layout, R.string.Verification_email_sent )
     }
 }

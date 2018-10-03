@@ -159,7 +159,7 @@ public final class ApplicationModule {
   @Singleton
   @NonNull
   static ApolloClient provideApolloClient(final @NonNull Build build, final @NonNull HttpLoggingInterceptor httpLoggingInterceptor,
-    final @NonNull GraphQLInterceptor graphQLInterceptor) {
+    final @NonNull GraphQLInterceptor graphQLInterceptor, @NonNull @WebEndpoint final String webEndpoint) {
 
     final OkHttpClient.Builder builder = new OkHttpClient.Builder()
       .addInterceptor(graphQLInterceptor);
@@ -172,7 +172,7 @@ public final class ApplicationModule {
     final OkHttpClient okHttpClient = builder.build();
 
     return ApolloClient.builder()
-      .serverUrl("https://www.kickstarter.com/graph")
+      .serverUrl(webEndpoint + "/graph")
       .okHttpClient(okHttpClient)
       .build();
   }

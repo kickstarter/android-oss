@@ -55,7 +55,7 @@ public class KSToolbar extends Toolbar {
   protected void onDraw(final Canvas canvas) {
     super.onDraw(canvas);
 
-    if (!this.webEndpoint.equals(Secrets.WebEndpoint.PRODUCTION)) {
+    if (!isInEditMode() && !this.webEndpoint.equals(Secrets.WebEndpoint.PRODUCTION)) {
       canvas.drawRect(0, 0, getWidth(), getHeight(), this.backgroundPaint);
     }
   }
@@ -108,10 +108,12 @@ public class KSToolbar extends Toolbar {
   }
 
   private void init(final @NonNull Context context) {
-    this.backgroundPaint = new Paint();
-    this.backgroundPaint.setStyle(Paint.Style.FILL);
-    this.backgroundPaint.setColor(ContextCompat.getColor(context, R.color.accent));
+    if (!isInEditMode()) {
+      this.backgroundPaint = new Paint();
+      this.backgroundPaint.setStyle(Paint.Style.FILL);
+      this.backgroundPaint.setColor(ContextCompat.getColor(context, R.color.ksr_dark_grey_400));
 
-    this.webEndpoint = environment().webEndpoint();
+      this.webEndpoint = environment().webEndpoint();
+    }
   }
 }

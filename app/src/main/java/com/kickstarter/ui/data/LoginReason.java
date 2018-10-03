@@ -5,9 +5,11 @@ import android.support.annotation.NonNull;
 public enum LoginReason {
   DEFAULT,
   ACTIVITY_FEED,
+  CHANGE_PASSWORD,
   COMMENT_FEED,
   BACK_PROJECT,
   MESSAGE_CREATOR,
+  RESET_PASSWORD,
   STAR_PROJECT;
 
   public boolean isDefaultFlow() {

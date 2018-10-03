@@ -121,7 +121,7 @@ contributeurs</string>
   <string name="Email" formatted="false">E-mail</string>
   <string name="Email_frequency" formatted="false">Fréquence d\'envoi des e-mails</string>
   <string name="Email_notifications" formatted="false">Notifications par e-mail</string>
-  <string name="Email_unverified" formatted="false">This email address is unverified.</string>
+  <string name="Email_unverified" formatted="false">Adresse e-mail non vérifiée.</string>
   <string name="Ending_soon" formatted="false">Campagnes bientôt terminées</string>
   <string name="Estimated_delivery" formatted="false">Livraison prévue :</string>
   <string name="Expands_subcategories" formatted="false">Développe les sous-catégories.</string>
@@ -187,6 +187,7 @@ contributeurs</string>
   <string name="Get_reminded_about_this_project" formatted="false">Envie de recevoir un rappel à propos de ce projet ?</string>
   <string name="Go_to_project_page" formatted="false">Accéder à la page de projet</string>
   <string name="Got_it" formatted="false">Super.</string>
+  <string name="Got_it_your_changes_have_been_saved" formatted="false">Got it! Your changes have been saved.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Merci ! Vos réponses au questionnaire ont bien été envoyées.</string>
   <string name="Happening_newsletter" formatted="false">Inscrivez-vous pour recevoir une sélection de nouveaux projets, de témoignages et d\'inspiration visuelle, une fois par semaine (et parfois deux).</string>
   <string name="Help" formatted="false">Aide</string>
@@ -337,7 +338,7 @@ n\'ont rien soutenu.</string>
   <string name="Replay_past_live_streams" formatted="false">Revoir des diffusions en direct passées</string>
   <string name="Reply_to_user_name" formatted="false">Répondre à %{user_name}…</string>
   <string name="Request_my_personal_data" formatted="false">Demander mes données personnelles</string>
-  <string name="Resend_verification_email" formatted="false">Re-send verification email</string>
+  <string name="Resend_verification_email" formatted="false">Renvoyer l\'e-mail de vérification</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_one" formatted="false">Questionnaire</string>
@@ -432,7 +433,7 @@ n\'ont rien soutenu.</string>
   <string name="Upcoming_with_creator_name" formatted="false">&lt;br/>&lt;b>%{creator_name}&lt;/b> bientôt en direct</string>
   <string name="Update_pledge" formatted="false">Modifier mon engagement</string>
   <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">Utilisez cette fonction pour garder une trace des récompenses que vous avez reçues.</string>
-  <string name="Verification_email_sent" formatted="false">We\'ve just sent you a verification email. Click the link in it and your address will be verified.</string>
+  <string name="Verification_email_sent" formatted="false">Nous venons de vous envoyer un e-mail de vérification. Cliquez sur le lien qu\'il contient pour vérifier votre adresse.</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Vidéo désactivée en attente d\'une meilleure connexion Internet</string>
   <string name="View" formatted="false">Afficher</string>
   <string name="View_project" formatted="false">Afficher le projet</string>

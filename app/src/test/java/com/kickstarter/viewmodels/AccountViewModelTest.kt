@@ -10,16 +10,30 @@ import rx.Observable
 import rx.observers.TestSubscriber
 import type.CurrencyCode
 
-class AccountActivityViewModelTest : KSRobolectricTestCase() {
+class AccountViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: AccountActivityViewModel.ViewModel
+    private lateinit var vm: AccountViewModel.ViewModel
 
     private val chosenCurrency = TestSubscriber<String>()
+    private val error = TestSubscriber<String>()
+    private val success = TestSubscriber<String>()
 
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = AccountActivityViewModel.ViewModel(environment)
+        this.vm = AccountViewModel.ViewModel(environment)
 
         this.vm.outputs.chosenCurrency().subscribe(this.chosenCurrency)
+        this.vm.outputs.error().subscribe(this.error)
+        this.vm.outputs.success().subscribe(this.success)
+    }
+
+    @Test
+    fun testError() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
+                return  Observable.error(Exception("Oops"))
+            }
+        }).build())
+
     }
 
     @Test
@@ -46,10 +60,9 @@ class AccountActivityViewModelTest : KSRobolectricTestCase() {
         this.chosenCurrency.assertValue("USD")
         this.vm.inputs.onSelectedCurrency(CurrencyCode.AUD)
         this.chosenCurrency.assertValues("USD", CurrencyCode.AUD.rawValue())
+        this.success.assertValue(CurrencyCode.AUD.rawValue())
         this.vm.inputs.onSelectedCurrency(CurrencyCode.AUD)
         this.chosenCurrency.assertValues("USD", CurrencyCode.AUD.rawValue())
     }
 
 }
-
-

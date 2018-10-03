@@ -7,18 +7,24 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.kickstarter.R
-import kotlinx.android.synthetic.main.activity_account.*
+import com.kickstarter.extensions.showErrorSnackbar
+import com.kickstarter.extensions.showSuccessSnackbar
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.viewmodels.AccountActivityViewModel
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.viewmodels.AccountViewModel
+import kotlinx.android.synthetic.main.activity_account.*
+import kotlinx.android.synthetic.main.change_password_toolbar.*
 import rx.android.schedulers.AndroidSchedulers
 import type.CurrencyCode
 
-@RequiresActivityViewModel(AccountActivityViewModel.ViewModel::class)
-class AccountActivity : BaseActivity<AccountActivityViewModel.ViewModel>() {
+@RequiresActivityViewModel(AccountViewModel.ViewModel::class)
+class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
 
     private var showCurrencyChangeDialog: AlertDialog? = null
     private var currentCurrencySelection: CurrencyCode? = null
+    private var newCurrencySelection: CurrencyCode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +37,21 @@ class AccountActivity : BaseActivity<AccountActivityViewModel.ViewModel>() {
                 .subscribe {
                     setSpinnerSelection(it)
                 }
+
+        this.viewModel.outputs.progressBarIsVisible()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { ViewUtils.setGone(progress_bar, !it) }
+
+        this.viewModel.outputs.error()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { showErrorSnackbar(change_password_toolbar, it) }
+
+        this.viewModel.outputs.success()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { showSuccessSnackbar(account_container, R.string.Got_it_your_changes_have_been_saved) }
 
         change_email_row.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
         change_password_row.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
@@ -52,13 +73,14 @@ class AccountActivity : BaseActivity<AccountActivityViewModel.ViewModel>() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, postion: Int, id: Long) {
                 if (currentCurrencySelection != null && currentCurrencySelection!!.ordinal != postion) {
-                    lazyFollowingOptOutConfirmationDialog(CurrencyCode.values()[postion]).show()
+                    newCurrencySelection = CurrencyCode.values()[postion]
+                    lazyFollowingOptOutConfirmationDialog().show()
                 }
             }
         }
     }
 
-    private fun lazyFollowingOptOutConfirmationDialog(currencyCode: CurrencyCode): AlertDialog {
+    private fun lazyFollowingOptOutConfirmationDialog(): AlertDialog {
         if (this.showCurrencyChangeDialog == null) {
             this.showCurrencyChangeDialog = AlertDialog.Builder(this)
                     .setCancelable(false)
@@ -68,8 +90,8 @@ class AccountActivity : BaseActivity<AccountActivityViewModel.ViewModel>() {
                         setSpinnerSelection(currentCurrencySelection!!.rawValue())
                     }
                     .setPositiveButton(R.string.Yes_change_currency, { _, _ ->
-                        this.viewModel.inputs.onSelectedCurrency(currencyCode)
-                        setSpinnerSelection(currencyCode.rawValue())
+                        this.viewModel.inputs.onSelectedCurrency(newCurrencySelection!!)
+                        setSpinnerSelection(newCurrencySelection!!.rawValue())
                     })
                     .create()
         }

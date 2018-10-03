@@ -14,7 +14,7 @@ import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import type.CurrencyCode
 
-interface AccountActivityViewModel {
+interface AccountViewModel {
 
     interface Inputs {
         /** Notifies when the spinner has been selected. */
@@ -24,22 +24,27 @@ interface AccountActivityViewModel {
     interface Outputs {
         /** Emits the current user's chosen Currency. */
         fun chosenCurrency(): Observable<String>
-    }
 
-    interface Errors {
         /** Emits a string to display when user could not be found.  */
         fun error(): Observable<String>
+
+        /** Emits when the progress bar should be visible. */
+        fun progressBarIsVisible(): Observable<Boolean>
+
+        /** Emits when the password update was unsuccessful. */
+        fun success(): Observable<String>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<AccountActivity>(environment), Inputs, Outputs, Errors {
+    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<AccountActivity>(environment), Inputs, Outputs {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
-        val errors: Errors = this
 
         private val onSelectedCurrency = PublishSubject.create<CurrencyCode>()
 
         private val chosenCurrency = BehaviorSubject.create<String>()
+        private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
+        private val success = BehaviorSubject.create<String>()
 
         private val error = BehaviorSubject.create<String>()
 
@@ -63,7 +68,10 @@ interface AccountActivityViewModel {
             updateCurrencyNotification
                     .compose(values())
                     .map { it.updateUserProfile()?.user()?.chosenCurrency() }
-                    .subscribe { this.chosenCurrency.onNext(it) }
+                    .subscribe {
+                        this.chosenCurrency.onNext(it)
+                        this.success.onNext(it)
+                    }
 
             updateCurrencyNotification
                     .compose(Transformers.errors())
@@ -79,8 +87,18 @@ interface AccountActivityViewModel {
 
         override fun error(): Observable<String> = this.error
 
+        override fun progressBarIsVisible(): Observable<Boolean> {
+            return this.progressBarIsVisible
+        }
+
+        override fun success(): BehaviorSubject<String> {
+            return this.success
+        }
+
         private fun updateUserCurrency(currencyCode: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
             return this.apolloClient.updateUserCurrencyPreference(currencyCode)
+                    .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
+                    .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
 
         }
     }

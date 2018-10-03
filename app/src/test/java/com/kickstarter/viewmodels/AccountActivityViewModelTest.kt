@@ -31,7 +31,6 @@ class AccountActivityViewModelTest : KSRobolectricTestCase() {
             }
         }).build())
 
-
         this.chosenCurrency.assertValue("MXN")
     }
 

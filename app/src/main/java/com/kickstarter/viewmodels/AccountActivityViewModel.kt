@@ -10,7 +10,6 @@ import com.kickstarter.ui.activities.AccountActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import timber.log.Timber
 import type.CurrencyCode
 
 interface AccountActivityViewModel {
@@ -18,9 +17,6 @@ interface AccountActivityViewModel {
     interface Inputs {
         /** Notifies when the spinner has been selected. */
         fun onSelectedCurrency(currencyCode: CurrencyCode)
-
-        /** Emits when Following switch should be turned back on after user cancels opting out.  */
-        fun hideCurrencyDialog(): Observable<Void>
     }
 
     interface Outputs {
@@ -33,21 +29,18 @@ interface AccountActivityViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val chosenCurrency = PublishSubject.create<String>()
+        private val onSelectedCurrency = PublishSubject.create<CurrencyCode>()
 
-        private val hideCurrencyDialog = BehaviorSubject.create<Void>()
-        private val onSelectedCurrency = BehaviorSubject.create<CurrencyCode>()
+        private val chosenCurrency = BehaviorSubject.create<String>()
 
         private val apolloClient: ApolloClientType = environment.apolloClient()
 
         init {
 
             this.apolloClient.userPrivacy()
+                    .map { it.me()?.chosenCurrency() }
                     .compose(bindToLifecycle())
-                    .subscribe {
-                        val currency = it.me()?.chosenCurrency()
-                        this@ViewModel.chosenCurrency.onNext(currency)
-                    }
+                    .subscribe { this.chosenCurrency.onNext(it) }
 
             this.onSelectedCurrency
                     .compose(combineLatestPair<CurrencyCode, String>(this.chosenCurrency))
@@ -55,19 +48,16 @@ interface AccountActivityViewModel {
                     .filter { it.first.rawValue() != it.second }
                     .map<CurrencyCode> { it.first }
                     .switchMap { updateUserCurrency(it) }
-                    .subscribe {
-                        Timber.d("Currency change was successful")
-                    }
+                    .map { it.updateUserProfile()?.user()?.chosenCurrency() }
+                    .subscribe { this.chosenCurrency.onNext(it) }
 
         }
-
-        override fun chosenCurrency(): Observable<String> = this.chosenCurrency
 
         override fun onSelectedCurrency(currencyCode: CurrencyCode) {
             this.onSelectedCurrency.onNext(currencyCode)
         }
 
-        override fun hideCurrencyDialog(): BehaviorSubject<Void> = this.hideCurrencyDialog
+        override fun chosenCurrency(): BehaviorSubject<String> = this.chosenCurrency
 
         private fun updateUserCurrency(currencyCode: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
             return this.apolloClient.updateUserCurrencyPreference(currencyCode)

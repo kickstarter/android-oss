@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.change_password_toolbar.*
 @RequiresActivityViewModel(ChangePasswordViewModel.ViewModel::class)
 class ChangePasswordActivity : BaseActivity<ChangePasswordViewModel.ViewModel>() {
 
-    var saveEnabled = false
+    private var saveEnabled = false
     private lateinit var logout: Logout
 
     override fun onCreate(savedInstanceState: Bundle?) {

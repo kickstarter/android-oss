@@ -11,8 +11,9 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
-interface ChangePasswordViewModel {
+const val MINIMUM_PASSWORD_LENGTH = 6
 
+interface ChangePasswordViewModel {
 
     interface Inputs {
         /** Call when the user clicks the change password button. */
@@ -168,9 +169,4 @@ interface ChangePasswordViewModel {
             private fun isNotEmptyAndAtLeast6Chars(password: String) = !password.isEmpty() && password.length >= MINIMUM_PASSWORD_LENGTH
         }
     }
-
-    companion object {
-        const val MINIMUM_PASSWORD_LENGTH = 6
-    }
-
 }

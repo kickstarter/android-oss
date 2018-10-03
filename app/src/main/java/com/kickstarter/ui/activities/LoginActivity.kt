@@ -7,6 +7,7 @@ import android.text.Html
 import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.extensions.onChange
+import com.kickstarter.extensions.showSuccessSnackbar
 import com.kickstarter.extensions.text
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
@@ -42,6 +43,9 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
         login_toolbar.setTitle(getString(this.loginString))
         forgot_your_password_text_view.text = Html.fromHtml(getString(this.forgotPasswordString))
 
+        email.onChange { this.viewModel.inputs.email(it) }
+        password.onChange { this.viewModel.inputs.password(it) }
+
         errorMessages()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -57,10 +61,18 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
                 .compose(observeForUI())
                 .subscribe { onSuccess() }
 
-        this.viewModel.outputs.prefillEmailFromPasswordReset()
+        this.viewModel.outputs.prefillEmail()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe({ email.setText(it) })
+                .subscribe({
+                    email.setText(it)
+                    email.setSelection(it.length)
+                })
+
+        this.viewModel.outputs.showChangedPasswordSnackbar()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { showSuccessSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }
 
         this.viewModel.outputs.showResetPasswordSuccessDialog()
                 .compose(bindToLifecycle())
@@ -79,9 +91,6 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe({ this.setLoginButtonEnabled(it) })
-
-        email.onChange { this.viewModel.inputs.email(it) }
-        password.onChange { this.viewModel.inputs.password(it) }
 
         forgot_your_password_text_view.setOnClickListener {
             val intent = Intent(this, ResetPasswordActivity::class.java)

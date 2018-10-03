@@ -3,21 +3,19 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
-
 import com.kickstarter.R
-import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.ui.IntentKey
-import com.kickstarter.viewmodels.ResetPasswordViewModel
-
 import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.text
-import rx.android.schedulers.AndroidSchedulers
-
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
+import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.viewmodels.ResetPasswordViewModel
 import kotlinx.android.synthetic.main.login_toolbar.*
 import kotlinx.android.synthetic.main.reset_password_form_view.*
+import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ResetPasswordViewModel.ViewModel::class)
 class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
@@ -65,6 +63,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
         setFormEnabled(false)
         val intent = Intent(this, LoginActivity::class.java)
                 .putExtra(IntentKey.EMAIL, email.text())
+                .putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
         startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
     }
 

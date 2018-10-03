@@ -120,7 +120,7 @@
   <string name="Email" formatted="false">メールアドレス</string>
   <string name="Email_frequency" formatted="false">通知頻度</string>
   <string name="Email_notifications" formatted="false">メール通知設定</string>
-  <string name="Email_unverified" formatted="false">This email address is unverified.</string>
+  <string name="Email_unverified" formatted="false">このメールアドレスは認証されていません。</string>
   <string name="Ending_soon" formatted="false">終了直前</string>
   <string name="Estimated_delivery" formatted="false">配達予定日：</string>
   <string name="Expands_subcategories" formatted="false">サブカテゴリーを表示</string>
@@ -186,6 +186,7 @@
   <string name="Get_reminded_about_this_project" formatted="false">このプロジェクトについてリマインダーを希望しますか？</string>
   <string name="Go_to_project_page" formatted="false">プロジェクトページを見る</string>
   <string name="Got_it" formatted="false">完了</string>
+  <string name="Got_it_your_changes_have_been_saved" formatted="false">Got it! Your changes have been saved.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">サーベイを送信しました！</string>
   <string name="Happening_newsletter" formatted="false">新しいプロジェクトや、感動的なストーリー、視覚的なインスピレーションなどが週に1回 (時には2回) 届くニュースレターにサインアップしましょう。</string>
   <string name="Help" formatted="false">ヘルプ</string>
@@ -336,7 +337,7 @@
   <string name="Replay_past_live_streams" formatted="false">過去のライブ配信をリプレイ</string>
   <string name="Reply_to_user_name" formatted="false">%{user_nameに返信</string>
   <string name="Request_my_personal_data" formatted="false">自分の個人データをリクエストする</string>
-  <string name="Resend_verification_email" formatted="false">Re-send verification email</string>
+  <string name="Resend_verification_email" formatted="false">認証メールをもう一度送信</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_one" formatted="false">リワードサーベイ</string>
@@ -431,7 +432,7 @@
   <string name="Upcoming_with_creator_name" formatted="false">&lt;br/>&lt;b>%{creator_name}&lt;/b>が近日配信</string>
   <string name="Update_pledge" formatted="false">プレッジをアップデートする</string>
   <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">受け取ったリワードを確認するにはこちらをご利用ください。</string>
-  <string name="Verification_email_sent" formatted="false">We\'ve just sent you a verification email. Click the link in it and your address will be verified.</string>
+  <string name="Verification_email_sent" formatted="false">認証メールを送信しました。メール内のリンクをクリックすればメールアドレスが認証済みとなります。</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">インターネット通信状態が向上するまでビデオはご利用いいただけません。</string>
   <string name="View" formatted="false">みる</string>
   <string name="View_project" formatted="false">プロジェクトを見る</string>

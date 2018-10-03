@@ -187,6 +187,7 @@ patrocinadores</string>
   <string name="Get_reminded_about_this_project" formatted="false">¿Deseas recibir recordatorios sobre este proyecto?</string>
   <string name="Go_to_project_page" formatted="false">Ir a la página de proyecto</string>
   <string name="Got_it" formatted="false">¡Listo!</string>
+  <string name="Got_it_your_changes_have_been_saved" formatted="false">Got it! Your changes have been saved.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.</string>
   <string name="Happening_newsletter" formatted="false">Suscríbete para recibir una combinación de nuevos proyectos, historias persuasivas e inspiración visual, que se entregan una vez (y algunas veces dos veces) por semana.</string>
   <string name="Help" formatted="false">Ayuda</string>
@@ -197,8 +198,7 @@ patrocinadores</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Sólo quiero apoyar este proyecto.</string>
   <string name="If_you_turn_following_off" formatted="false">Si desactivas el seguimiento, no podrás seguir a nadie y nadie podrá seguirte. Tu perfil se desconectará de todos tus seguidores. Esto no se puede deshacer.</string>
   <string name="If_your_profile_is_private" formatted="false">Si tu perfil es privado, otros usuarios podrán ver tu nombre e imagen.\n
-\n
-Si tu perfil no es privado, otros usuarios también podrán ver los proyectos que has patrocinado, tu ubicación, biografía y sitios web.</string>
+</string>
   <string name="If_your_profile_is_public" formatted="false">Si tu perfil no es privado, otros usuarios también podrán ver los proyectos que has patrocinado, tu ubicación, biografía y sitios web.</string>
   <string name="Individual_Emails" formatted="false">Notificaciones por correo electrónico individuales</string>
   <string name="Info" formatted="false">Información</string>

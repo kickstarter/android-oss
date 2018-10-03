@@ -46,7 +46,10 @@ class AccountActivityViewModelTest : KSRobolectricTestCase() {
         this.chosenCurrency.assertValue("USD")
         this.vm.inputs.onSelectedCurrency(CurrencyCode.AUD)
         this.chosenCurrency.assertValues("USD", CurrencyCode.AUD.rawValue())
+        this.vm.inputs.onSelectedCurrency(CurrencyCode.AUD)
+        this.chosenCurrency.assertValues("USD", CurrencyCode.AUD.rawValue())
     }
+
 }
 
 

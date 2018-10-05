@@ -5,7 +5,6 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_marginBottom="@dimen/grid_1"
-  android:layout_marginTop="@dimen/discovery_drawer_status_bar_height"
   android:orientation="vertical"
   android:theme="@style/ThemeOverlay.AppCompat.Light">
 

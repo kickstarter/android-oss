@@ -49,6 +49,8 @@ import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.GamesNewsletterPreference;
+import com.kickstarter.libs.qualifiers.KoalaEndpoint;
+import com.kickstarter.libs.qualifiers.KoalaRetrofit;
 import com.kickstarter.libs.qualifiers.PackageNameString;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
@@ -63,6 +65,7 @@ import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.KSApolloClient;
 import com.kickstarter.services.KSWebViewClient;
+import com.kickstarter.services.KoalaService;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.WebClientType;
 import com.kickstarter.services.WebService;
@@ -221,6 +224,16 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
+  @KoalaRetrofit
+  @NonNull
+  static Retrofit provideKoalaRetrofit(@NonNull @KoalaEndpoint final String koalaEndpoint,
+    final @NonNull Gson gson,
+    final @NonNull OkHttpClient okHttpClient) {
+    return createRetrofit(koalaEndpoint, gson, okHttpClient);
+  }
+
+  @Provides
+  @Singleton
   @NonNull
   static ApiRequestInterceptor provideApiRequestInterceptor(final @NonNull String clientId,
     final @NonNull CurrentUserType currentUser, final @NonNull ApiEndpoint endpoint) {
@@ -239,6 +252,13 @@ public final class ApplicationModule {
   @NonNull
   static ApiService provideApiService(final @ApiRetrofit @NonNull Retrofit retrofit) {
     return retrofit.create(ApiService.class);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static KoalaService provideKoalaService(final @KoalaRetrofit @NonNull Retrofit retrofit) {
+    return retrofit.create(KoalaService.class);
   }
 
   @Provides
@@ -362,8 +382,8 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   static Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-    final @NonNull AndroidPayCapability androidPayCapability) {
-    return new Koala(new KoalaTrackingClient(context, currentUser, androidPayCapability));
+    final @NonNull AndroidPayCapability androidPayCapability, final @NonNull KoalaService koalaService, final @NonNull Build build) {
+    return new Koala(new KoalaTrackingClient(context, currentUser, androidPayCapability, koalaService, build));
   }
 
   @Provides
@@ -444,6 +464,16 @@ public final class ApplicationModule {
     return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
       "https://www.kickstarter.com" :
       apiEndpoint.url().replaceAll("(?<=\\Ahttps?:\\/\\/)api.", "");
+  }
+
+  @Provides
+  @Singleton
+  @KoalaEndpoint
+  @NonNull
+  static String provideKoalaEndpoint(final @NonNull ApiEndpoint apiEndpoint) {
+    return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
+      Secrets.KoalaEndpoint.PRODUCTION :
+      Secrets.KoalaEndpoint.STAGING;
   }
 
   @Provides

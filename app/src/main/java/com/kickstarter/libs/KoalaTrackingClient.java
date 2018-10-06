@@ -28,6 +28,9 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import io.fabric.sdk.android.Fabric;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public final class KoalaTrackingClient extends TrackingClientType {
@@ -70,42 +73,51 @@ public final class KoalaTrackingClient extends TrackingClientType {
       this.service
         .track(getTrackingDataString(eventName, newProperties))
         .subscribeOn(Schedulers.io())
-        .subscribe(response -> {
-            if (this.build.isDebug()) {
-              if (response.isSuccessful()) {
-                Log.d(TAG, "Successfully tracked event: " + eventName);
-              } else {
-                logTrackingError(eventName);
-              }
-            }
-          },
-          __ -> {
-            if (build.isDebug()) {
-              logTrackingError(eventName);
-            }
-          });
+        .subscribe(handleResponse(eventName),
+          handleError(eventName));
     } catch (JSONException e) {
       logTrackingError(eventName);
     }
   }
 
-  private String getTrackingDataString(@NonNull String eventName, Map<String, Object> newProperties) throws JSONException {
-    JSONObject trackingEvent = new JSONObject();
+  private @NonNull Action1<Throwable> handleError(final @NonNull String eventName) {
+    return __ -> {
+      if (this.build.isDebug()) {
+        logTrackingError(eventName);
+      }
+    };
+  }
+
+
+  private @NonNull Action1<Response<ResponseBody>> handleResponse(final @NonNull String eventName) {
+    return response -> {
+      if (this.build.isDebug()) {
+        if (response.isSuccessful()) {
+          Log.d(TAG, "Successfully tracked event: " + eventName);
+        } else {
+          logTrackingError(eventName);
+        }
+      }
+    };
+  }
+
+  private String getTrackingDataString(final @NonNull String eventName, final @NonNull Map<String, Object> newProperties) throws JSONException {
+    final JSONObject trackingEvent = new JSONObject();
     trackingEvent.put("event", eventName);
 
-    Map<String, Object> compactProperties = MapUtils.compact(newProperties);
-    JSONObject propertiesJSON = new JSONObject();
+    final Map<String, Object> compactProperties = MapUtils.compact(newProperties);
+    final JSONObject propertiesJSON = new JSONObject();
     for (Map.Entry<String, Object> entry : compactProperties.entrySet()) {
       propertiesJSON.put(entry.getKey(), entry.getValue());
     }
     trackingEvent.put("properties", propertiesJSON);
-    JSONArray trackingArray = new JSONArray();
+    final JSONArray trackingArray = new JSONArray();
     trackingArray.put(trackingEvent);
 
     return Base64Utils.encodeUrlSafe(trackingArray.toString().getBytes());
   }
 
-  private void logTrackingError(@NonNull String eventName) {
+  private void logTrackingError(@NonNull final String eventName) {
     Log.e(KoalaTrackingClient.class.toString(), "Failed to track event: " + eventName);
     Fabric.getLogger().e(KoalaTrackingClient.class.toString(), "Failed to track event: " + eventName);
   }

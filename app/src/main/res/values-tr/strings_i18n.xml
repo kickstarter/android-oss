@@ -373,36 +373,36 @@ bağış yok.</string>
     <string name="Send" formatted="false">Gönder</string>
     <string name="Share" formatted="false">Paylaş</string>
     <string name="Share_an_update_about_your_project" formatted="false">Projenle alakalı bir güncelleme paylaş…</string>
-    <string name="Share_this_live_stream" formatted="false">Share this live stream.</string>
-    <string name="Share_this_project_on_Facebook" formatted="false">Share this project on Facebook.</string>
-    <string name="Share_this_project_on_Twitter" formatted="false">Share this project on Twitter.</string>
-    <string name="Share_update" formatted="false">Share update</string>
-    <string name="Shipping" formatted="false">Shipping</string>
-    <string name="Shipping_addresses" formatted="false">Shipping addresses</string>
-    <string name="Ships_to" formatted="false">Ships to:</string>
-    <string name="Show_password" formatted="false">Show password</string>
-    <string name="Shows_list_of_subcategories" formatted="false">Shows list of subcategories.</string>
-    <string name="Sign_up_newsletter" formatted="false">Sign up for Projects We Love to receive a weekly mix of noteworthy projects, handpicked by our team.</string>
-    <string name="Signs_up_with_Email" formatted="false">Signs up with Email.</string>
-    <string name="Something_catch_your_eye" formatted="false">Something\n
-catch your eye?</string>
-    <string name="Something_went_wrong_please_try_again" formatted="false">Something went wrong, please try again.</string>
-    <string name="Start_the_request" formatted="false">Start the request</string>
-    <string name="Starting_soon" formatted="false">Starting soon</string>
-    <string name="Status" formatted="false">Status</string>
-    <string name="Stay_up_to_date" formatted="false">Stay up to date?</string>
-    <string name="Stay_up_to_date_newsletter" formatted="false">Stay up to date with our favorite projects, and any news and events that are on our radar.</string>
-    <string name="Stay_updated_on_this_project" formatted="false">Stay updated on this project?</string>
-    <string name="Subscribe" formatted="false">Subscribe</string>
-    <string name="Subscribed" formatted="false">Subscribed</string>
-    <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Subscribes to upcoming live streams.</string>
-    <string name="Survey" formatted="false">Survey</string>
-    <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Tap the heart icon on a project to get notified 48 hours before it ends.</string>
-    <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Tap the heart on each project page to save it. We’ll remind you 48 hours before the project ends.</string>
-    <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Tap the star icon on a project to get notified 48 hours before it ends.</string>
-    <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Tap the star on each project page to save it. We’ll remind you 48 hours before the project ends.</string>
-    <string name="Thank_you_exclamation" formatted="false">Thank you!</string>
-    <string name="Thank_you_for_supporting_this_project" formatted="false">Thank you for supporting this project.</string>
+    <string name="Share_this_live_stream" formatted="false">Bu canlı yayını paylaş.</string>
+    <string name="Share_this_project_on_Facebook" formatted="false">Bunu Facebook\'ta paylaş.</string>
+    <string name="Share_this_project_on_Twitter" formatted="false">Twitter\'da paylaş.</string>
+    <string name="Share_update" formatted="false">Güncelleme paylaş</string>
+    <string name="Shipping" formatted="false">Kargolama</string>
+    <string name="Shipping_addresses" formatted="false">Kargolanacak adres</string>
+    <string name="Ships_to" formatted="false">Kargolanacak kişi:</string>
+    <string name="Show_password" formatted="false">Şifreyi göster</string>
+    <string name="Shows_list_of_subcategories" formatted="false">Alt kategori listesini göster.</string>
+    <string name="Sign_up_newsletter" formatted="false">Projeler için kayıt olun, Ekibimiz tarafından özenle seçilmiş, kayda değer projelerin haftalık bir karışımını göndermeyi seviyoruz.</string>
+    <string name="Signs_up_with_Email" formatted="false">Email ile kayıt olur.</string>
+    <string name="Something_catch_your_eye" formatted="false">Gözüne\n
+bir şey mi çarptı?</string>
+    <string name="Something_went_wrong_please_try_again" formatted="false">Bir şeyler ters gitti, lütfen tekrar deneyin.</string>
+    <string name="Start_the_request" formatted="false">İsteğe başla</string>
+    <string name="Starting_soon" formatted="false">Yakında başlanacak</string>
+    <string name="Status" formatted="false">Durum</string>
+    <string name="Stay_up_to_date" formatted="false">Haberdar olmak ister misiniz?</string>
+    <string name="Stay_up_to_date_newsletter" formatted="false">Favori projelerinle ilgili haberdar ol ve radarımızda ki projeler ve haberlerle.</string>
+    <string name="Stay_updated_on_this_project" formatted="false">Bu projeden haberdar ol?</string>
+    <string name="Subscribe" formatted="false">Takip</string>
+    <string name="Subscribed" formatted="false">Takip edildi</string>
+    <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Gelecek canlı yayınları takip eder.</string>
+    <string name="Survey" formatted="false">Anket</string>
+    <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Bitmeden 48 saat içinde haber almak için kalp ikonuna dokun.</string>
+    <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Kaydetmek için kalp ikonuna dokun. Proje bitmeden 48 saat içinde haber vereceğin.</string>
+    <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Proje bitmeden 48 saat içinde bildirim almak için yıldız ikonuna tıkla.</string>
+    <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Kaydetmek için yıldız ikonuna tıkla. Proje bitmeden 48 saat içinde haber vereceğiz.</string>
+    <string name="Thank_you_exclamation" formatted="false">Teşekkürler!</string>
+    <string name="Thank_you_for_supporting_this_project" formatted="false">Bu projeyi desteklediğin için teşekkürler.</string>
     <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">The email associated with this Facebook account is already registered to another Kickstarter user.</string>
     <string name="The_live_stream_failed_to_connect" formatted="false">The live stream failed to connect</string>
     <string name="The_live_stream_was_interrupted" formatted="false">The live stream was interrupted</string>

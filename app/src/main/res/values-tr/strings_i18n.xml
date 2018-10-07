@@ -231,149 +231,148 @@ daha güzel.</string>
     <string name="Live_with_creator_name" formatted="false">&lt;b>%{creator_name}&lt;/b> ile canlı</string>
     <string name="Loading" formatted="false">Yükleniyor</string>
     <string name="Location" formatted="false">Konum</string>
-    <string name="Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you" formatted="false">Log in or sign up to save this project. We’ll remind you 48 hours before it ends.</string>
-    <string name="Log_in_or_sign_up_to_subscribe" formatted="false">Log in or sign up to subscribe</string>
-    <string name="Log_in_to_leave_a_comment" formatted="false">Log in to leave a comment.</string>
-    <string name="Log_out" formatted="false">Log out</string>
-    <string name="Love_film_We_do_too" formatted="false">Love film? We do, too.</string>
-    <string name="Make_a_pledge_without_a_reward" formatted="false">Make a pledge without a reward</string>
-    <string name="Making_this_change" formatted="false">Making this change will allow you to see project goal and pledge amounts converted to your chosen currency.</string>
-    <string name="Manage_your_pledge" formatted="false">Manage your pledge</string>
-    <string name="Manage_your_pledge_below" formatted="false">Manage your pledge below</string>
-    <string name="Manage_your_reward" formatted="false">Manage your reward</string>
-    <string name="Message_backer" formatted="false">Message backer</string>
-    <string name="Message_creator" formatted="false">Message creator</string>
-    <string name="Message_user_name" formatted="false">Message %{user_name}…</string>
-    <string name="Messages" formatted="false">Messages</string>
-    <string name="Name" formatted="false">Name</string>
-    <string name="Never" formatted="false">Never</string>
-    <string name="New_password" formatted="false">New password</string>
-    <string name="New_pledge_activity" formatted="false">New pledge activity</string>
-    <string name="New_work_and_big_ideas_from_established_and" formatted="false">New work and big ideas from established and emerging artists.</string>
-    <string name="News_events" formatted="false">Big news and events happening near you, delivered just a few times a year.</string>
-    <string name="Newsletters" formatted="false">Newsletters</string>
-    <string name="No_Results" formatted="false">No Results</string>
-    <string name="No_comments_yet" formatted="false">No comments yet.</string>
-    <string name="No_messages" formatted="false">No messages</string>
-    <string name="No_one_has_posted_an_update_yet" formatted="false">No one has posted an update yet.</string>
-    <string name="No_pledges_from_friends_yet" formatted="false">No pledges\n
-from friends yet.</string>
-    <string name="No_replay_is_available_for_this_live_stream" formatted="false">No replay is available for this live stream.</string>
-    <string name="No_saved_projects" formatted="false">No saved projects</string>
-    <string name="No_unread_messages" formatted="false">No unread messages</string>
-    <string name="Not_delivered" formatted="false">Not delivered</string>
-    <string name="Not_followed" formatted="false">Not followed</string>
-    <string name="Not_now" formatted="false">Not Now</string>
-    <string name="Notifications" formatted="false">Notifications</string>
-    <string name="Once_you_back_a_project_well_share" formatted="false">Once you back a project, we’ll share personalized recommendations in this space.</string>
-    <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Only %{amount_of_time} left to watch this.</string>
-    <string name="Opens_comments" formatted="false">Opens comments.</string>
-    <string name="Opens_creator_profile" formatted="false">Opens creator profile.</string>
-    <string name="Opens_email_composer" formatted="false">Opens email composer.</string>
-    <string name="Opens_filters" formatted="false">Opens filters.</string>
-    <string name="Opens_help_sheet" formatted="false">Opens help sheet.</string>
-    <string name="Opens_message_composer" formatted="false">Opens message composer.</string>
-    <string name="Opens_pledge_info" formatted="false">Opens pledge info.</string>
-    <string name="Opens_project" formatted="false">Opens project.</string>
-    <string name="Opens_rewards" formatted="false">Opens rewards.</string>
-    <string name="Opens_shipping_options" formatted="false">Opens shipping options.</string>
-    <string name="Opens_update" formatted="false">Opens update.</string>
-    <string name="Or_select_a_different_reward_below_colon" formatted="false">Or select a different reward below:</string>
-    <string name="Other_payment_methods" formatted="false">Other payment methods</string>
-    <string name="Other_projects_you_might_like" formatted="false">Other projects you might like.</string>
-    <string name="Password_visibility" formatted="false">Password visibility</string>
-    <string name="Past_live_stream" formatted="false">Past live stream</string>
-    <string name="Payment_method_was_successfully_charged" formatted="false">Payment method was successfully charged.</string>
-    <string name="Payment_methods" formatted="false">Payment methods</string>
-    <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Please enter an amount of %{amount} or less.</string>
-    <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Please enter an amount of %{amount} or more.</string>
-    <string name="Please_log_in_or_sign_up_to_back_this_project" formatted="false">Please log in or sign up to back this project.</string>
-    <string name="Please_log_in_or_sign_up_to_message_this_creator" formatted="false">Please log in or sign up to message this creator.</string>
-    <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Please log in or sign up to participate in this live stream chat.</string>
-    <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Please log in or sign up to subscribe to this live stream.</string>
-    <string name="Pledge" formatted="false">Pledge</string>
-    <string name="Pledge_activity" formatted="false">Pledge activity</string>
-    <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Pledge any amount to help bring this project to life.</string>
-    <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Pledge to projects and view all your saved and backed projects in one place.</string>
-    <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Pledge to your favorites, then view all the projects you’ve backed here.</string>
-    <string name="Pledge_was_dropped" formatted="false">Pledge was dropped.</string>
-    <string name="Pledge_without_a_reward" formatted="false">Pledge without a reward</string>
-    <string name="Pledged_on_date" formatted="false">&lt;b>Pledged&lt;/b> on %{pledge_date}</string>
-    <string name="Popular" formatted="false">Popular</string>
-    <string name="Popular_Projects" formatted="false">Popular Projects</string>
-    <string name="Preparing_your_personal_data" formatted="false">Preparing your personal data...</string>
-    <string name="Privacy" formatted="false">Privacy</string>
-    <string name="Private_profile" formatted="false">Private profile</string>
-    <string name="Private_profile_more_info" formatted="false">Private profile more info</string>
+    <string name="Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you" formatted="false">Bu projeyi kaydetmek için üye ol veya giriş yap. Proje sona ermeden 48 saat içinde sana haber vereceğiz</string>
+    <string name="Log_in_or_sign_up_to_subscribe" formatted="false">Takip etmek için kayıt ol veya giriş yap</string>
+    <string name="Log_in_to_leave_a_comment" formatted="false">Yorum yapmak için giriş yap.</string>
+    <string name="Log_out" formatted="false">Çıkış yap</string>
+    <string name="Love_film_We_do_too" formatted="false">Filmi sevdin mi? Biz de sevdik.</string>
+    <string name="Make_a_pledge_without_a_reward" formatted="false">Ödülsüz bağış yap</string>
+    <string name="Making_this_change" formatted="false">Bu değişikliği yaparak proje hedefini ve bağışları seçtiğin kurda göreceksin.</string>
+    <string name="Manage_your_pledge" formatted="false">Bağışını yönet</string>
+    <string name="Manage_your_pledge_below" formatted="false">Aşağıdan bağışını yönet</string>
+    <string name="Manage_your_reward" formatted="false">Ödülünü yönet</string>
+    <string name="Message_backer" formatted="false">Destekçiye mesaj at</string>
+    <string name="Message_creator" formatted="false">Kurucuya mesaj at</string>
+    <string name="Message_user_name" formatted="false">%{user_name}… a mesaj</string>
+    <string name="Messages" formatted="false">Mesajlar</string>
+    <string name="Name" formatted="false">İsim</string>
+    <string name="Never" formatted="false">Asla</string>
+    <string name="New_password" formatted="false">Yeni şifre</string>
+    <string name="New_pledge_activity" formatted="false">Yeni bağış etkinliği</string>
+    <string name="New_work_and_big_ideas_from_established_and" formatted="false">Tüm sanatçıların büyük fikirleri.</string>
+    <string name="News_events" formatted="false">Sana yakın büyük haberler ve etkinlikler, yılda bir kaç kez olur.</string>
+    <string name="Newsletters" formatted="false">Bülten</string>
+    <string name="No_Results" formatted="false">Sonuç yok</string>
+    <string name="No_comments_yet" formatted="false">Henüz yorum yok.</string>
+    <string name="No_messages" formatted="false">Mesaj yok</string>
+    <string name="No_one_has_posted_an_update_yet" formatted="false">Henüz kimse bir güncelleme paylaşmadı.</string>
+    <string name="No_pledges_from_friends_yet" formatted="false">Henüz arkadaşlardan\n
+bağış yok.</string>
+    <string name="No_replay_is_available_for_this_live_stream" formatted="false">Bu canlı yayın tekrar oynatılamaz.</string>
+    <string name="No_saved_projects" formatted="false">Kayıtlı proje yok</string>
+    <string name="No_unread_messages" formatted="false">Okunmamış mesaj yok</string>
+    <string name="Not_delivered" formatted="false">Teslim edilmedi</string>
+    <string name="Not_followed" formatted="false">Takip edilmedi</string>
+    <string name="Not_now" formatted="false">Şimdi değil</string>
+    <string name="Notifications" formatted="false">Bildirimler</string>
+    <string name="Once_you_back_a_project_well_share" formatted="false">Bir proeyi desteklediğinde, kişisel önerlerini burada yayınlarız.</string>
+    <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Bunu izlemek için sadece %{amount_of_time} kaldı.</string>
+    <string name="Opens_comments" formatted="false">Yorumları açar.</string>
+    <string name="Opens_creator_profile" formatted="false">Kurucu profilini açar.</string>
+    <string name="Opens_email_composer" formatted="false">E posta düzenleyicisini açar.</string>
+    <string name="Opens_filters" formatted="false">Filtreleri açar.</string>
+    <string name="Opens_help_sheet" formatted="false">Yardım kısmını açar.</string>
+    <string name="Opens_message_composer" formatted="false">Mesaj düzenleyicisini açar.</string>
+    <string name="Opens_pledge_info" formatted="false">Bağış bilgisini açar.</string>
+    <string name="Opens_project" formatted="false">Projeyi açar.</string>
+    <string name="Opens_rewards" formatted="false">Ödülleri açar.</string>
+    <string name="Opens_shipping_options" formatted="false">Kargolama seçeneklerini açar.</string>
+    <string name="Opens_update" formatted="false">Güncellemeyi açar.</string>
+    <string name="Or_select_a_different_reward_below_colon" formatted="false">Veya aşağıdan farklı bir ödül seç:</string>
+    <string name="Other_payment_methods" formatted="false">Diğer ödeme yöntemleri</string>
+    <string name="Other_projects_you_might_like" formatted="false">Beğenebileceğin diğer projeler.</string>
+    <string name="Password_visibility" formatted="false">Şifre görünürlüğü</string>
+    <string name="Past_live_stream" formatted="false">Geçmiş canlı yayınlar</string>
+    <string name="Payment_method_was_successfully_charged" formatted="false">Ödeme yöntemi başarıyla değiştirildi.</string>
+    <string name="Payment_methods" formatted="false">Ödeme yöntemleri</string>
+    <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Lütfen %{amount} veya daha az giriniz.</string>
+    <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Lütfen %{amount} veya daha fazla giriniz.</string>
+    <string name="Please_log_in_or_sign_up_to_back_this_project" formatted="false">Bu projeyi desteklemek için lütfen kayıt olun veya giriş yapın.</string>
+    <string name="Please_log_in_or_sign_up_to_message_this_creator" formatted="false">Proje kurucusuna mesaj atmak için giriş yapın veya üye olun.</string>
+    <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Canlı yayın sohbetine katılmak için lütfen üye olun veya giriş yapın.</string>
+    <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Canlı yayını takip etmek için lütfen giriş yapın veya üye olun.</string>
+    <string name="Pledge" formatted="false">Bağış</string>
+    <string name="Pledge_activity" formatted="false">Bağış akışı</string>
+    <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Bu projeyi hayata geçirmek için istediğin kadar bağış yap.</string>
+    <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Projelere bağış yap ve tüm kaydettiğin ve bağış yaptığın projeleri tek yerde gör.</string>
+    <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Favorilerine bağış yap, bağış yaptıklarını burada göreceksin.</string>
+    <string name="Pledge_was_dropped" formatted="false">Bağış iptal oldu.</string>
+    <string name="Pledge_without_a_reward" formatted="false">Ödülsüz bağış</string>
+    <string name="Pledged_on_date" formatted="false">%{pledge_date} tarihinde &lt;b>bağış yapıldı&lt;/b></string>
+    <string name="Popular" formatted="false">Popüler</string>
+    <string name="Popular_Projects" formatted="false">Popüler Projeler</string>
+    <string name="Preparing_your_personal_data" formatted="false">Kişisel verilerin hazırlanıyor...</string>
+    <string name="Privacy" formatted="false">Gizlilik</string>
+    <string name="Private_profile" formatted="false">Kişisel profil</string>
+    <string name="Private_profile_more_info" formatted="false">Kişisel profil daha fazla bilgi</string>
     <string name="Private_profile_more_info_content" formatted="false">Kickstarter profiles are private by default. To make your profile public and visible to the world, turn this off.</string>
-    <string name="Project_Cancelled" formatted="false">Project Cancelled.</string>
-    <string name="Project_Suspended" formatted="false">Project Suspended.</string>
-    <string name="Project_activity" formatted="false">Project activity</string>
-    <string name="Project_cancelled" formatted="false">Project cancelled</string>
-    <string name="Project_reminders" formatted="false">Project reminders</string>
-    <string name="Project_saved" formatted="false">Project saved.</string>
+    <string name="Project_Cancelled" formatted="false">Proje iptal edildi.</string>
+    <string name="Project_Suspended" formatted="false">Proje durduruldu.</string>
+    <string name="Project_activity" formatted="false">Proje akışı</string>
+    <string name="Project_cancelled" formatted="false">Proje iptal edildi.</string>
+    <string name="Project_reminders" formatted="false">Proje hatırlatıcıları</string>
+    <string name="Project_saved" formatted="false">Proje kayıt edildi.</string>
     <string name="Project_updates" formatted="false">Project updates</string>
-    <string name="Projects_We_Love" formatted="false">Projects We Love</string>
-    <string name="Projects_youve_backed" formatted="false">Projects you\'ve backed</string>
-    <string name="Projects_youve_launched" formatted="false">Projects you\'ve launched</string>
-    <string name="Public_comment" formatted="false">Public comment</string>
-    <string name="Pursue_daring_ideas" formatted="false">Pursue\n
-daring ideas.</string>
-    <string name="Push_notifications" formatted="false">Push notifications</string>
-    <string name="Rate_us_in_the_App_Store" formatted="false">Rate us in the App Store</string>
-    <string name="Read_more_about_the_campaign" formatted="false">Read more about the campaign</string>
-    <string name="Read_more_about_the_campaign_arrow" formatted="false">Read more about the campaign  →</string>
-    <string name="Receive_a_reminder_forty_eight_hours_before_this_project_ends" formatted="false">Receive a reminder 48 hours before this and any other saved project ends by enabling notifications.</string>
-    <string name="Receive_project_updates_and_more" formatted="false">Receive project updates and more by enabling notifications.</string>
-    <string name="Receive_project_updates_messages_and_more" formatted="false">Receive project updates, messages, and more by enabling notifications.</string>
-    <string name="Recent_live_stream" formatted="false">Recent live stream</string>
-    <string name="Recommendations" formatted="false">Recommendations</string>
-    <string name="Recommendations_More_Info" formatted="false">Recommendations More Info</string>
-    <string name="Recommended" formatted="false">Recommended</string>
-    <string name="Recommended_For_You" formatted="false">Recommended For You</string>
-    <string name="Recorded_Live" formatted="false">Recorded Live</string>
-    <string name="Recorded_live_with_creator_name" formatted="false">Recorded live with &lt;b>%{creator_name}&lt;/b></string>
-    <string name="Replay" formatted="false">Replay</string>
-    <string name="Replay_available_for_time_more_units" formatted="false">Replay available for %{time} more %{units}</string>
-    <string name="Replay_live_stream_with_creator_name" formatted="false">Replay live stream with&lt;br>&lt;b>%{creator_name}&lt;/b></string>
-    <string name="Replay_past_live_stream" formatted="false">Replay past live stream</string>
-    <string name="Replay_past_live_streams" formatted="false">Replay past live streams</string>
-    <string name="Reply_to_user_name" formatted="false">Reply to %{user_name}…</string>
-    <string name="Request_my_personal_data" formatted="false">Request my personal data</string>
-    <string name="Resend_verification_email" formatted="false">Re-send verification email</string>
-    <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Reward Surveys</string>
-    <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Reward Surveys</string>
-    <string name="Reward_Surveys_one" formatted="false">Reward Survey</string>
-    <string name="Reward_Surveys_two" formatted="false">%{reward_survey_count} Reward Surveys</string>
-    <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} Reward Surveys</string>
-    <string name="Reward_delivered" formatted="false">Reward delivered?</string>
-    <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Reward&lt;/b> estimated for delivery in %{delivery_date}</string>
-    <string name="Reward_selected" formatted="false">Reward selected</string>
-    <string name="Reward_surveys" formatted="false">Reward surveys</string>
-    <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} rewards:</string>
-    <string name="Rewards_count_rewards_colon_many" formatted="false">%{rewards_count} rewards:</string>
-    <string name="Rewards_count_rewards_colon_one" formatted="false">%{rewards_count} reward:</string>
-    <string name="Rewards_count_rewards_colon_two" formatted="false">%{rewards_count} rewards:</string>
-    <string name="Rewards_count_rewards_colon_zero" formatted="false">%{rewards_count} rewards:</string>
-    <string name="Rewards_count_rewards_few" formatted="false">%{rewards_count} rewards</string>
-    <string name="Rewards_count_rewards_many" formatted="false">%{rewards_count} rewards</string>
-    <string name="Rewards_count_rewards_one" formatted="false">%{rewards_count} reward</string>
-    <string name="Rewards_count_rewards_two" formatted="false">%{rewards_count} rewards</string>
-    <string name="Rewards_count_rewards_zero" formatted="false">%{rewards_count} rewards</string>
-    <string name="Save" formatted="false">Save</string>
-    <string name="Save_projects" formatted="false">Save projects</string>
-    <string name="Save_this_project" formatted="false">Save this project</string>
-    <string name="Saved" formatted="false">Saved</string>
-    <string name="Saved_projects" formatted="false">Saved projects</string>
-    <string name="Saves_project" formatted="false">Saves project.</string>
-    <string name="Say_something_kind" formatted="false">Say something kind...</string>
-    <string name="See_all_category_name_projects" formatted="false">See all %{category_name} projects</string>
-    <string name="Select_another_project" formatted="false">Select another project</string>
-    <string name="Select_this_reward" formatted="false">Select this reward</string>
-    <string name="Select_this_reward_instead" formatted="false">Select this reward instead</string>
-    <string name="Send" formatted="false">Send</string>
-    <string name="Share" formatted="false">Share</string>
-    <string name="Share_an_update_about_your_project" formatted="false">Share an update about your project…</string>
+    <string name="Projects_We_Love" formatted="false">Sevdiğimiz projeler</string>
+    <string name="Projects_youve_backed" formatted="false">Desteklediğin projeled</string>
+    <string name="Projects_youve_launched" formatted="false">Yayınladığın projeler</string>
+    <string name="Public_comment" formatted="false">Herkese açık yorum</string>
+    <string name="Pursue_daring_ideas" formatted="false">Cesur fikirler peşinde.</string>
+    <string name="Push_notifications" formatted="false">Bildirimler</string>
+    <string name="Rate_us_in_the_App_Store" formatted="false">Bizi App Store\'da değerlendirin</string>
+    <string name="Read_more_about_the_campaign" formatted="false">Kampanya hakkınd daha fazla oku</string>
+    <string name="Read_more_about_the_campaign_arrow" formatted="false">Kampanya hakkında daha fazla oku  →</string>
+    <string name="Receive_a_reminder_forty_eight_hours_before_this_project_ends" formatted="false">Bu veya daha önce kaydedilmiş bir proje bitmeden 48 saat içinde bildirim al.</string>
+    <string name="Receive_project_updates_and_more" formatted="false">Bildirimleri açarak proje ile ilgili bildirimleri al.</string>
+    <string name="Receive_project_updates_messages_and_more" formatted="false">Bildirimleri açarak proje güncellemelerini al.</string>
+    <string name="Recent_live_stream" formatted="false">Geçmiş bildirimler</string>
+    <string name="Recommendations" formatted="false">Öneriler</string>
+    <string name="Recommendations_More_Info" formatted="false">Öneriler Daha Fazla Bilgi</string>
+    <string name="Recommended" formatted="false">Önerilenler</string>
+    <string name="Recommended_For_You" formatted="false">Senin için önerilenler</string>
+    <string name="Recorded_Live" formatted="false">Canlı kayıt edildi</string>
+    <string name="Recorded_live_with_creator_name" formatted="false">&lt;b>%{creator_name}&lt;/b> ile canlı kayıt</string>
+    <string name="Replay" formatted="false">Tekrar Oynat</string>
+    <string name="Replay_available_for_time_more_units" formatted="false">Tekrar oynatma %{time} %{units} daha etkin</string>
+    <string name="Replay_live_stream_with_creator_name" formatted="false">&lt;br>&lt;b>%{creator_name}&lt;/b> ile canlı yayını tekrar oynat</string>
+    <string name="Replay_past_live_stream" formatted="false">Geçmiş canlı yayını oynat</string>
+    <string name="Replay_past_live_streams" formatted="false">Geçmiş canlı yayınları oynat</string>
+    <string name="Reply_to_user_name" formatted="false">%{user_name}… \'a yanıtl</string>
+    <string name="Request_my_personal_data" formatted="false">Kişisel verilerimi iste</string>
+    <string name="Resend_verification_email" formatted="false">Doğrulama epostasını tekrar gönder</string>
+    <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Ödül Anketileri</string>
+    <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Ödül Anketleri</string>
+    <string name="Reward_Surveys_one" formatted="false">Ödül Anketi</string>
+    <string name="Reward_Surveys_two" formatted="false">%{reward_survey_count} Ödül Anketleri</string>
+    <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} Ödül Anketi</string>
+    <string name="Reward_delivered" formatted="false">Ödül teslim edildi mi?</string>
+    <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Ödül&lt;/b> %{delivery_date} içinde teslim edilecek</string>
+    <string name="Reward_selected" formatted="false">Ödül seçildi</string>
+    <string name="Reward_surveys" formatted="false">Ödül Anketleri</string>
+    <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} ödül:</string>
+    <string name="Rewards_count_rewards_colon_many" formatted="false">%{rewards_count} ödül:</string>
+    <string name="Rewards_count_rewards_colon_one" formatted="false">%{rewards_count} ödül:</string>
+    <string name="Rewards_count_rewards_colon_two" formatted="false">%{rewards_count} ödül:</string>
+    <string name="Rewards_count_rewards_colon_zero" formatted="false">%{rewards_count} ödül:</string>
+    <string name="Rewards_count_rewards_few" formatted="false">%{rewards_count} ödül</string>
+    <string name="Rewards_count_rewards_many" formatted="false">%{rewards_count} ödül</string>
+    <string name="Rewards_count_rewards_one" formatted="false">%{rewards_count} ödül</string>
+    <string name="Rewards_count_rewards_two" formatted="false">%{rewards_count} ödül</string>
+    <string name="Rewards_count_rewards_zero" formatted="false">%{rewards_count} ödül</string>
+    <string name="Save" formatted="false">Kaydet</string>
+    <string name="Save_projects" formatted="false">Projeleri kaydet</string>
+    <string name="Save_this_project" formatted="false">Bu projeyi kaydet</string>
+    <string name="Saved" formatted="false">Kaydedildi</string>
+    <string name="Saved_projects" formatted="false">Kaydedilmiş projeler</string>
+    <string name="Saves_project" formatted="false">Projeyi kaydeder.</string>
+    <string name="Say_something_kind" formatted="false">Güzel bir şey söyle...</string>
+    <string name="See_all_category_name_projects" formatted="false">Tüm %{category_name} projelerini gör</string>
+    <string name="Select_another_project" formatted="false">Başka kategori seç</string>
+    <string name="Select_this_reward" formatted="false">Bu ödülü seç</string>
+    <string name="Select_this_reward_instead" formatted="false">Bu ödülü seç</string>
+    <string name="Send" formatted="false">Gönder</string>
+    <string name="Share" formatted="false">Paylaş</string>
+    <string name="Share_an_update_about_your_project" formatted="false">Projenle alakalı bir güncelleme paylaş…</string>
     <string name="Share_this_live_stream" formatted="false">Share this live stream.</string>
     <string name="Share_this_project_on_Facebook" formatted="false">Share this project on Facebook.</string>
     <string name="Share_this_project_on_Twitter" formatted="false">Share this project on Twitter.</string>
@@ -1354,104 +1353,104 @@ saved</string>
     <string name="rewards_title_about_amount_usd" formatted="false">About %{reward_amount} USD</string>
     <string name="rewards_title_pledge_reward_currency_or_more" formatted="false">Pledge %{reward_currency} or more</string>
     <string name="search_by_creator" formatted="false">by %{creator_name}</string>
-    <string name="search_most_popular" formatted="false">Most Popular</string>
-    <string name="seconds" formatted="false">seconds</string>
-    <string name="signup_button" formatted="false">Sign up</string>
-    <string name="signup_button_email" formatted="false">Sign up with email</string>
-    <string name="signup_error_something_wrong" formatted="false">Something went wrong.</string>
-    <string name="signup_error_title" formatted="false">Sign up error</string>
-    <string name="signup_input_fields_email" formatted="false">Email</string>
-    <string name="signup_input_fields_full_name" formatted="false">Full name</string>
-    <string name="signup_input_fields_password" formatted="false">Password</string>
-    <string name="signup_input_fields_password_min_characters" formatted="false">Password (minimum 6 characters)</string>
+    <string name="search_most_popular" formatted="false">En Populer</string>
+    <string name="seconds" formatted="false">Saniyeler</string>
+    <string name="signup_button" formatted="false">Kaydol</string>
+    <string name="signup_button_email" formatted="false">Email ile kaydol</string>
+    <string name="signup_error_something_wrong" formatted="false">Bir seyler yolunda gitmedi.</string>
+    <string name="signup_error_title" formatted="false">Kaydolma hatasi</string>
+    <string name="signup_input_fields_email" formatted="false">Eposta</string>
+    <string name="signup_input_fields_full_name" formatted="false">Tum isim</string>
+    <string name="signup_input_fields_password" formatted="false">Sifre</string>
+    <string name="signup_input_fields_password_min_characters" formatted="false">Sifre(en az 6 karakter)</string>
     <string name="signup_navbar_title" formatted="false">Sign up</string>
-    <string name="signup_newsletter_full_opt_out" formatted="false">Receive Kickstarter\'s weekly newsletter and other occasional updates by email. You can opt out of these messages at any time by using the link in the email and as otherwise set out in our Privacy Policy.</string>
-    <string name="social_buttons_cancel" formatted="false">Cancel</string>
-    <string name="social_buttons_post" formatted="false">Post</string>
-    <string name="social_buttons_send" formatted="false">Send</string>
-    <string name="social_error_could_not_post_try_again" formatted="false">Couldn\'t post. Try again later.</string>
-    <string name="social_error_could_not_send_message_backer" formatted="false">Couldn\'t send message. Try again.</string>
-    <string name="social_error_could_not_send_message_creator" formatted="false">Couldn\'t send message. Try again.</string>
-    <string name="social_error_no_internet_connection" formatted="false">No internet connection. Try again later.</string>
-    <string name="social_following_button_check_out_some_projects" formatted="false">Check out some projects!</string>
-    <string name="social_following_friend_buttons_follow" formatted="false">Follow</string>
-    <string name="social_following_friend_buttons_following" formatted="false">Following</string>
-    <string name="social_following_friend_projects_count_backed_few" formatted="false">%{backed_count} backed</string>
-    <string name="social_following_friend_projects_count_backed_many" formatted="false">%{backed_count} backed</string>
-    <string name="social_following_friend_projects_count_backed_one" formatted="false">1 backed</string>
-    <string name="social_following_friend_projects_count_backed_two" formatted="false">2 backed</string>
-    <string name="social_following_friend_projects_count_backed_zero" formatted="false">0 backed</string>
-    <string name="social_following_friend_projects_count_created_few" formatted="false">%{created_count} created</string>
-    <string name="social_following_friend_projects_count_created_many" formatted="false">%{created_count} created</string>
-    <string name="social_following_friend_projects_count_created_one" formatted="false">1 created</string>
-    <string name="social_following_friend_projects_count_created_two" formatted="false">2 created</string>
-    <string name="social_following_friend_projects_count_created_zero" formatted="false">0 created</string>
-    <string name="social_following_header_accessibility_button_close_facebook_connect_header_label" formatted="false">Close Facebook connect header</string>
-    <string name="social_following_header_accessibility_button_close_find_friends_header_label" formatted="false">Close find friends header</string>
-    <string name="social_following_header_button_find_your_friends" formatted="false">Find your friends</string>
-    <string name="social_following_header_connect_with_facebook_to_follow" formatted="false">Connect with Facebook to follow friends and get notified when they back or launch projects.</string>
-    <string name="social_following_header_connect_with_your_friends_to_find_projects" formatted="false">Follow your Facebook friends and get notified when they back or launch projects.</string>
-    <string name="social_following_header_friends_recommend_the_best_projects" formatted="false">Discover more projects.</string>
-    <string name="social_following_navigation_title_follow_your_friends" formatted="false">Follow friends</string>
-    <string name="social_following_nice_youre_about_to_follow_all_friends" formatted="false">Nice! You\'re about to follow all of your friends.</string>
-    <string name="social_following_stats_backed_projects" formatted="false">Backed projects</string>
-    <string name="social_following_stats_button_follow_all_friends_few" formatted="false">Follow all %{remote_friends_count} friends</string>
-    <string name="social_following_stats_button_follow_all_friends_many" formatted="false">Follow all %{remote_friends_count} friends</string>
-    <string name="social_following_stats_button_follow_all_friends_two" formatted="false">Follow all 2 friends</string>
-    <string name="social_following_stats_friends" formatted="false">Friends</string>
-    <string name="social_message_creator" formatted="false">Message creator</string>
-    <string name="social_private_message" formatted="false">Private message</string>
-    <string name="social_public_comment" formatted="false">Public comment</string>
-    <string name="social_update" formatted="false">Update</string>
-    <string name="social_update_number" formatted="false">Update #%{update_number}</string>
-    <string name="social_update_sequence_and_title" formatted="false">Update #%{update_number}: %{update_title}</string>
-    <string name="support_email_body" formatted="false">How can we help you? Please try to be as specific as possible.\n
+    <string name="signup_newsletter_full_opt_out" formatted="false">Kickstarter\'ın haftalık bülteni ve diğer zaman zaman güncellemeleri e-posta ile alın. Bu mesajları, e-postadaki bağlantıyı kullanarak ve Gizlilik Politikamızda belirtilen şekilde kullanarak istediğiniz zaman devre dışı bırakabilirsiniz.</string>
+    <string name="social_buttons_cancel" formatted="false">Iptal et</string>
+    <string name="social_buttons_post" formatted="false">Gonderi</string>
+    <string name="social_buttons_send" formatted="false">Gonder</string>
+    <string name="social_error_could_not_post_try_again" formatted="false">Gonderilemedi.Daha sonra tekrar deneyiniz.</string>
+    <string name="social_error_could_not_send_message_backer" formatted="false">Mesaj gonderilemedi.Tekrar deneyiniz.</string>
+    <string name="social_error_could_not_send_message_creator" formatted="false">Mesaj gonderilemedi.Tekrar deneyiniz.</string>
+    <string name="social_error_no_internet_connection" formatted="false">Internet baglantisi yok.Daha sonra tekrar deneyiniz.</string>
+    <string name="social_following_button_check_out_some_projects" formatted="false">Bazı projelere göz atın!</string>
+    <string name="social_following_friend_buttons_follow" formatted="false">Takip et</string>
+    <string name="social_following_friend_buttons_following" formatted="false">Takip ediyor</string>
+    <string name="social_following_friend_projects_count_backed_few" formatted="false">%{backed_count} desteklendi</string>
+    <string name="social_following_friend_projects_count_backed_many" formatted="false">%{backed_count} desteklendi</string>
+    <string name="social_following_friend_projects_count_backed_one" formatted="false">1 desteklendi</string>
+    <string name="social_following_friend_projects_count_backed_two" formatted="false">2 desteklendi</string>
+    <string name="social_following_friend_projects_count_backed_zero" formatted="false">0 desteklendi</string>
+    <string name="social_following_friend_projects_count_created_few" formatted="false">%{created_count} oluşturuldu</string>
+    <string name="social_following_friend_projects_count_created_many" formatted="false">%{created_count} oluşturuldu</string>
+    <string name="social_following_friend_projects_count_created_one" formatted="false">1 oluşturuldu</string>
+    <string name="social_following_friend_projects_count_created_two" formatted="false">2 oluşturuldu</string>
+    <string name="social_following_friend_projects_count_created_zero" formatted="false">0 oluşturuldu</string>
+    <string name="social_following_header_accessibility_button_close_facebook_connect_header_label" formatted="false">Facebook bağlantı başlığını kapat</string>
+    <string name="social_following_header_accessibility_button_close_find_friends_header_label" formatted="false">Arkadaş bul başlığını kapat</string>
+    <string name="social_following_header_button_find_your_friends" formatted="false">Arkadaşlarını Bul</string>
+    <string name="social_following_header_connect_with_facebook_to_follow" formatted="false">Arkadaşlarınızı takip etmek ve projeleri geri döndüklerinde veya başlattıklarında haberdar olmak için Facebook ile bağlantı kurun.</string>
+    <string name="social_following_header_connect_with_your_friends_to_find_projects" formatted="false">Facebook arkadaşlarınızı takip edin ve projeleri geri döndüklerinde veya başlattıklarında bildirim alın.</string>
+    <string name="social_following_header_friends_recommend_the_best_projects" formatted="false">Daha fazla proje kesfedin.</string>
+    <string name="social_following_navigation_title_follow_your_friends" formatted="false">Arkadaslarini takip et.</string>
+    <string name="social_following_nice_youre_about_to_follow_all_friends" formatted="false">Güzel! Tüm arkadaşlarınızı takip etmek üzeresiniz.</string>
+    <string name="social_following_stats_backed_projects" formatted="false">Desteklenen projeler</string>
+    <string name="social_following_stats_button_follow_all_friends_few" formatted="false">Tum %{remote_friends_count} arkadaşı takip et.</string>
+    <string name="social_following_stats_button_follow_all_friends_many" formatted="false">Tum %{remote_friends_count} arkadaşı takip et.</string>
+    <string name="social_following_stats_button_follow_all_friends_two" formatted="false">İki arkadaşının hepsini takip et.</string>
+    <string name="social_following_stats_friends" formatted="false">Arkadaşlar</string>
+    <string name="social_message_creator" formatted="false">Kurucuya mesaj</string>
+    <string name="social_private_message" formatted="false">Ozel mesaj</string>
+    <string name="social_public_comment" formatted="false">Halka acik yorum</string>
+    <string name="social_update" formatted="false">Güncelle</string>
+    <string name="social_update_number" formatted="false">Güncelle #%{update_number}</string>
+    <string name="social_update_sequence_and_title" formatted="false">Güncelle #%{update_number}: %{update_title}</string>
+    <string name="support_email_body" formatted="false">Nasıl yardım edebiliriz? Lütfen mümkün olduğunca spesifik olmaya çalışın.\n
 \n
 \n
 \n
 \n
 --------\n
 </string>
-    <string name="support_email_button_ok" formatted="false">OK</string>
-    <string name="support_email_chooser" formatted="false">Select email application:</string>
-    <string name="support_email_noemail_message" formatted="false">Looks like you don’t have an e-mail account on your device. Please contact us at app@kickstarter.com.</string>
-    <string name="support_email_noemail_message_android" formatted="false">Looks like you don’t have an e-mail account on your device. Please contact us at android@kickstarter.com.</string>
-    <string name="support_email_noemail_title" formatted="false">Support</string>
-    <string name="support_email_subject" formatted="false">Hello Kickstarter App Support</string>
+    <string name="support_email_button_ok" formatted="false">TAMAM</string>
+    <string name="support_email_chooser" formatted="false">E-posta uygulamasını seçin:</string>
+    <string name="support_email_noemail_message" formatted="false">Cihazınızda e-posta Hesabınız yok gibi görünüyor. Lütfen  app@kickstarter.com hesabından bize ulaşın.</string>
+    <string name="support_email_noemail_message_android" formatted="false"> Cihazınızda e-posta Hesabınız yok gibi görünüyor.Lütfen android@kickstarter.com hesabından bize ulaşın.</string>
+    <string name="support_email_noemail_title" formatted="false">Destek</string>
+    <string name="support_email_subject" formatted="false">Hello Kickstarter Uygulama Desteği</string>
     <string name="support_email_to" formatted="false">app@kickstarter.com</string>
     <string name="support_email_to_android" formatted="false">android@kickstarter.com</string>
-    <string name="tabbar_activity" formatted="false">Activity</string>
-    <string name="tabbar_dashboard" formatted="false">Dashboard</string>
-    <string name="tabbar_discover" formatted="false">Discover</string>
-    <string name="tabbar_login" formatted="false">Log in</string>
-    <string name="tabbar_me" formatted="false">Me</string>
-    <string name="tabbar_profile" formatted="false">Profile</string>
-    <string name="tabbar_search" formatted="false">Search</string>
-    <string name="tabbar_search_projects" formatted="false">Search projects</string>
-    <string name="two_factor_buttons_resend" formatted="false">Resend</string>
-    <string name="two_factor_buttons_submit" formatted="false">Submit</string>
-    <string name="two_factor_code_placeholder" formatted="false">Enter code</string>
-    <string name="two_factor_error_message" formatted="false">The code provided does not match.</string>
-    <string name="two_factor_message" formatted="false">Please enter your verification code to continue.</string>
-    <string name="two_factor_title" formatted="false">Verify</string>
-    <string name="unread_count_unread" formatted="false">%{unread_count} unread</string>
-    <string name="update_comments_creator" formatted="false">Creator</string>
-    <string name="update_comments_empty_state_backer_button" formatted="false">Leave a comment</string>
-    <string name="update_comments_empty_state_backer_message" formatted="false">Aw, how sad. Be the first backer to leave a comment on this update.</string>
-    <string name="update_comments_empty_state_backer_title" formatted="false">No comments</string>
-    <string name="update_comments_empty_state_logged_out_button" formatted="false">Leave a comment</string>
-    <string name="update_comments_empty_state_logged_out_message" formatted="false">Aw, how sad. Become a backer to leave a comment.</string>
-    <string name="update_comments_empty_state_logged_out_title" formatted="false">No comments</string>
-    <string name="update_comments_empty_state_non_backer_button" formatted="false">Leave a comment</string>
-    <string name="update_comments_empty_state_non_backer_message" formatted="false">Aw, how sad. Become a backer to leave a comment.</string>
-    <string name="update_comments_empty_state_non_backer_title" formatted="false">No comments</string>
-    <string name="update_comments_you" formatted="false">You</string>
-    <string name="updates_count_updates_few" formatted="false">%{updates_count} updates</string>
-    <string name="updates_count_updates_many" formatted="false">%{updates_count} updates</string>
-    <string name="updates_count_updates_one" formatted="false">%{updates_count} update</string>
-    <string name="updates_count_updates_two" formatted="false">%{updates_count} updates</string>
-    <string name="updates_count_updates_zero" formatted="false">%{updates_count} updates</string>
+    <string name="tabbar_activity" formatted="false">Akış</string>
+    <string name="tabbar_dashboard" formatted="false">gösterge paneli</string>
+    <string name="tabbar_discover" formatted="false">Keşfet</string>
+    <string name="tabbar_login" formatted="false">Giriş yap</string>
+    <string name="tabbar_me" formatted="false">Ben</string>
+    <string name="tabbar_profile" formatted="false">Profil</string>
+    <string name="tabbar_search" formatted="false">Arama</string>
+    <string name="tabbar_search_projects" formatted="false">Projeleri araştır</string>
+    <string name="two_factor_buttons_resend" formatted="false">Tekrar gonder</string>
+    <string name="two_factor_buttons_submit" formatted="false">Gönder</string>
+    <string name="two_factor_code_placeholder" formatted="false">Kodu gir</string>
+    <string name="two_factor_error_message" formatted="false">Girilen kod eşleşmiyor.</string>
+    <string name="two_factor_message" formatted="false">Devam etmek için lütfen doğrulama kodunuzu girin.</string>
+    <string name="two_factor_title" formatted="false">Dogrula</string>
+    <string name="unread_count_unread" formatted="false">%{unread_count} okunmamış</string>
+    <string name="update_comments_creator" formatted="false">yaratıcı</string>
+    <string name="update_comments_empty_state_backer_button" formatted="false">Yorum yap</string>
+    <string name="update_comments_empty_state_backer_message" formatted="false">Ah, ne kadar üzücü. Bu güncellemeye yorum yapan ilk destekçi olun.</string>
+    <string name="update_comments_empty_state_backer_title" formatted="false">Yorum yok</string>
+    <string name="update_comments_empty_state_logged_out_button" formatted="false">Yorum yap</string>
+    <string name="update_comments_empty_state_logged_out_message" formatted="false">Ah, ne kadar üzücü. Yorum bırakmak için destekçi ol.</string>
+    <string name="update_comments_empty_state_logged_out_title" formatted="false">Yorum yok</string>
+    <string name="update_comments_empty_state_non_backer_button" formatted="false">Yorum yap</string>
+    <string name="update_comments_empty_state_non_backer_message" formatted="false">Ah, ne kadar üzücü. Yorum bırakmak için destekçi ol.</string>
+    <string name="update_comments_empty_state_non_backer_title" formatted="false">Yorum yok</string>
+    <string name="update_comments_you" formatted="false">Sen</string>
+    <string name="updates_count_updates_few" formatted="false">%{updates_count} güncelleme</string>
+    <string name="updates_count_updates_many" formatted="false">%{updates_count} güncelleme</string>
+    <string name="updates_count_updates_one" formatted="false">%{updates_count} güncelleme</string>
+    <string name="updates_count_updates_two" formatted="false">%{updates_count} güncelleme</string>
+    <string name="updates_count_updates_zero" formatted="false">%{updates_count} güncelleme</string>
     <string name="via_custom" formatted="false">via custom</string>
-    <string name="via_external" formatted="false">via external</string>
-    <string name="via_kickstarter" formatted="false">via Kickstarter</string>
+    <string name="via_external" formatted="false">dışarıdan</string>
+    <string name="via_kickstarter" formatted="false">Kickstarter üzerinden</string>
 </resources>

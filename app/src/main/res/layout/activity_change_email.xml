@@ -40,7 +40,7 @@
           android:textSize="@dimen/caption_1" />
 
         <TextView
-          android:id="@+id/user_current_email_text_view"
+          android:id="@+id/current_email"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginBottom="@dimen/grid_2"
@@ -62,7 +62,7 @@
           android:layout_marginTop="@dimen/grid_3">
 
           <android.support.design.widget.TextInputEditText
-            android:id="@+id/new_email_edit_text"
+            android:id="@+id/new_email"
             style="@style/ChangeEmailPassTextInputEditText"
             android:hint="@string/login_placeholder_email"
             android:inputType="textEmailAddress"
@@ -77,7 +77,7 @@
           app:passwordToggleTint="@color/password_toggle">
 
           <android.support.design.widget.TextInputEditText
-            android:id="@+id/current_password_edit_text"
+            android:id="@+id/current_password"
             style="@style/ChangeEmailPassTextInputEditTextMarginTop"
             android:hint="@string/Current_password"
             android:inputType="textPassword" />

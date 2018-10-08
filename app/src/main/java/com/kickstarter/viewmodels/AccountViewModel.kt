@@ -55,6 +55,7 @@ interface AccountViewModel {
 
             this.apolloClient.userPrivacy()
                     .map { it.me()?.chosenCurrency() }
+                    .compose(Transformers.neverError())
                     .map { ObjectUtils.coalesce(it, CurrencyCode.USD.rawValue()) }
                     .compose(bindToLifecycle())
                     .subscribe { this.chosenCurrency.onNext(it) }

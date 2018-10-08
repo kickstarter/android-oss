@@ -3,6 +3,7 @@
   Other resources: https://kickstarter.wiki/pages/android-links.html#styles
 -->
 <resources>
+
   <style name="None">
   </style>
 
@@ -27,7 +28,7 @@
   </style>
 
   <!-- Activities -->
-  <style name="ActivityFeedActivity" parent="KSTheme"/>
+  <style name="ActivityFeedActivity" parent="KSTheme" />
 
   <style name="CheckoutActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
@@ -93,6 +94,18 @@
   <style name="ProgressBar" parent="Base.Widget.AppCompat.ProgressBar">
     <item name="android:indeterminateOnly">false</item>
     <item name="android:progressDrawable">@drawable/progress_bar_green_horizontal</item>
+  </style>
+
+  <style name="AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButtonStyle</item>
+    <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButtonStyle</item>
+    <item name="colorAccent">@color/text_secondary</item>
+    <item name="android:background">@drawable/dialog_alert_rounded</item>
+  </style>
+
+  <style name="AlertDialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+    <item name="android:textColor">@color/accent</item>
+    <item name="android:textAllCaps">true</item>
   </style>
 
   <style name="Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -204,7 +217,7 @@
     <item name="android:layout_alignParentRight">true</item>
   </style>
 
-  <style name="EndSettingsWidget" parent="EndSettingsWidgetBase"/>
+  <style name="EndSettingsWidget" parent="EndSettingsWidgetBase" />
 
   <style name="KSSettingsPhoneIcon" parent="EndSettingsWidget">
     <item name="android:focusable">true</item>
@@ -294,7 +307,7 @@
     <item name="android:textStyle">normal</item>
     <item name="android:fontFamily">@string/font_family_sans_serif</item>
   </style>
-  
+
   <style name="TextSecondary">
     <item name="android:textColor">@color/text_secondary</item>
     <item name="android:textStyle">normal</item>
@@ -350,7 +363,7 @@
   <style name="BodyPrimaryMedium" parent="BodyPrimary">
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
-  
+
   <style name="BodySecondary" parent="TextSecondary">
     <item name="android:textSize">@dimen/body</item>
     <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
@@ -512,7 +525,7 @@
     <item name="android:foreground">@drawable/click_indicator_light</item>
   </style>
 
-  <style name="NewsLetterTextView" >
+  <style name="NewsLetterTextView">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:gravity">center_vertical</item>
@@ -546,9 +559,9 @@
   </style>
 
   <style name="ChangeEmailPassTextInputEditTextMarginTop" parent="ChangeEmailPassTextInputEditText">
-   <item name="android:layout_marginTop">@dimen/grid_1</item>
+    <item name="android:layout_marginTop">@dimen/grid_1</item>
   </style>
-  
+
   <style name="TextInputPasswordLayout">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>

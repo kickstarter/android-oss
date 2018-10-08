@@ -95,6 +95,17 @@
     <item name="android:progressDrawable">@drawable/progress_bar_green_horizontal</item>
   </style>
 
+  <style name="AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButtonStyle</item>
+    <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButtonStyle</item>
+    <item name="colorAccent">@color/text_secondary</item>
+  </style>
+
+  <style name="AlertDialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+    <item name="android:textColor">@color/ksr_green_500</item>
+    <item name="android:textAllCaps">true</item>
+  </style>
+
   <style name="Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
     <item name="colorAccent">@color/text_secondary</item>
   </style>

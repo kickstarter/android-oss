@@ -88,7 +88,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
 
     private fun lazyFollowingOptOutConfirmationDialog(): AlertDialog {
         if (this.showCurrencyChangeDialog == null) {
-            this.showCurrencyChangeDialog = AlertDialog.Builder(this)
+            this.showCurrencyChangeDialog = AlertDialog.Builder(this, R.style.AlertDialog)
                     .setCancelable(false)
                     .setTitle(getString(R.string.Change_currency))
                     .setMessage(getString(R.string.This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency)
@@ -96,10 +96,10 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
                     .setNegativeButton(R.string.Cancel) { _, _ ->
                         setSpinnerSelection(currentCurrencySelection!!.rawValue())
                     }
-                    .setPositiveButton(R.string.Yes_change_currency, { _, _ ->
+                    .setPositiveButton(R.string.Yes_change_currency) { _, _ ->
                         this.viewModel.inputs.onSelectedCurrency(newCurrencySelection!!)
                         setSpinnerSelection(newCurrencySelection!!.rawValue())
-                    })
+                    }
                     .create()
         }
         return this.showCurrencyChangeDialog!!

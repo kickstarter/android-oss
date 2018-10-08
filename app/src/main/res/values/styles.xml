@@ -104,7 +104,7 @@
   </style>
 
   <style name="AlertDialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-    <item name="android:textColor">@color/ksr_green_500</item>
+    <item name="android:textColor">@color/accent</item>
     <item name="android:textAllCaps">true</item>
   </style>
 

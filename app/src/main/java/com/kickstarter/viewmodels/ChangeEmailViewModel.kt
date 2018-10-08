@@ -5,7 +5,7 @@ import android.support.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.StringUtils
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.activities.ChangeEmailActivity
@@ -30,6 +30,9 @@ interface ChangeEmailViewModel {
         /** Emits the logged in user's email address.  */
         fun currentEmail(): Observable<String>
 
+        /** Emits a string to display when user could not be found.  */
+        fun error(): Observable<String>
+
         /** Emits a boolean that determines if the save button should be enabled.  */
         fun saveButtonIsEnabled(): Observable<Boolean>
 
@@ -40,16 +43,10 @@ interface ChangeEmailViewModel {
         fun success(): Observable<Void>
     }
 
-    interface Errors {
-        /** Emits a string to display when user could not be found.  */
-        fun error(): Observable<String>
-    }
-
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ChangeEmailActivity>(environment), Inputs, Outputs, Errors {
+    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ChangeEmailActivity>(environment), Inputs, Outputs {
 
         val inputs: Inputs = this
         val outputs: Outputs = this
-        val errors: Errors = this
 
         private val newEmail = PublishSubject.create<String>()
         private val currentPassword = PublishSubject.create<String>()
@@ -67,6 +64,7 @@ interface ChangeEmailViewModel {
         init {
 
             this.apolloClient.userPrivacy()
+                    .compose(neverError())
                     .compose(bindToLifecycle())
                     .subscribe {
                         this@ViewModel.currentEmail.onNext(it.me()?.email())
@@ -88,7 +86,7 @@ interface ChangeEmailViewModel {
                     .share()
 
             updateEmailNotification
-                    .compose(Transformers.errors())
+                    .compose(errors())
                     .subscribe({ this.error.onNext(it.localizedMessage) })
 
             updateEmailNotification

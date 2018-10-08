@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.kickstarter.R
+import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.showErrorSnackbar
 import com.kickstarter.extensions.showSuccessSnackbar
 import com.kickstarter.libs.BaseActivity
@@ -23,18 +24,17 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_change_email)
+        setSupportActionBar(change_email_toolbar)
 
-        save_email_button.setOnClickListener {
-            this.viewModel.inputs.updateEmailClicked()
-            clearPasswordAndEmail()
-        }
+        new_email.onChange { this.viewModel.inputs.email(it)}
+        current_password.onChange { this.viewModel.inputs.password(it)}
 
         this.viewModel.outputs.currentEmail()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { current_email.text = it }
 
-        this.viewModel.errors.error()
+        this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showErrorSnackbar(change_email_layout, it) }
@@ -75,11 +75,6 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
         val save = menu.findItem(R.id.save)
         save.isEnabled = saveEnabled
         return super.onPrepareOptionsMenu(menu)
-    }
-
-    private fun clearPasswordAndEmail() {
-        new_email.text = null
-        current_password.text = null
     }
 
     private fun updateMenu(saveEnabled: Boolean) {

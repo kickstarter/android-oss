@@ -27,16 +27,6 @@ class AccountViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testError() {
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
-                return  Observable.error(Exception("Oops"))
-            }
-        }).build())
-
-    }
-
-    @Test
     fun testUserCurrency() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {

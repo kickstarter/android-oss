@@ -26,7 +26,7 @@ interface AccountViewModel {
         /** Emits the current user's chosen Currency. */
         fun chosenCurrency(): Observable<String>
 
-        /** Emits whenever there is an error.  */
+        /** Emits whenever there is an error updating the user's currency.  */
         fun error(): Observable<String>
 
         /** Emits when the progress bar should be visible. */

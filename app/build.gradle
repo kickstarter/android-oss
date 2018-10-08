@@ -175,10 +175,6 @@ buildscript {
     }
 }
 
-apollo {
-    customTypeMapping['Email'] = "java.lang.String"
-}
-
 afterEvaluate {
     buildFabricPropertiesIfNeeded()
 }

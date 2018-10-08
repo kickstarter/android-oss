@@ -35,7 +35,6 @@ import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.PushNotifications;
-import com.kickstarter.libs.graphql.EmailAdapter;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreference;
@@ -89,7 +88,6 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
-import type.CustomType;
 
 @Module
 public final class ApplicationModule {
@@ -175,7 +173,6 @@ public final class ApplicationModule {
 
     return ApolloClient.builder()
       .serverUrl(webEndpoint + "/graph")
-      .addCustomTypeAdapter(CustomType.EMAIL, new EmailAdapter())
       .okHttpClient(okHttpClient)
       .build();
   }

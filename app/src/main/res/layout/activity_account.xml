@@ -3,6 +3,7 @@
   android:id="@+id/account_container"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@color/ksr_grey_100"
@@ -21,75 +22,98 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <LinearLayout
+    <FrameLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical">
+      android:layout_height="wrap_content">
 
       <LinearLayout
-        style="@style/SettingsLinearRow"
-        android:layout_marginBottom="@dimen/grid_3"
-        android:layout_marginTop="@dimen/grid_3">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <TextView
-          android:id="@+id/change_email_row"
-          style="@style/SettingsSingleRow"
-          android:text="@string/Change_email" />
+        <LinearLayout
+          style="@style/SettingsLinearRow"
+          android:layout_marginBottom="@dimen/grid_3"
+          android:layout_marginTop="@dimen/grid_3">
 
-        <TextView
-          android:id="@+id/change_password_row"
-          style="@style/SettingsSingleRow"
-          android:text="@string/Change_password" />
+          <TextView
+            android:id="@+id/change_email_row"
+            style="@style/SettingsSingleRow"
+            android:text="@string/Change_email" />
+
+          <TextView
+            android:id="@+id/change_password_row"
+            style="@style/SettingsSingleRow"
+            android:text="@string/Change_password" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          style="@style/SettingsLinearRow">
+
+          <TextView
+            android:id="@+id/privacy_row"
+            style="@style/SettingsSingleRow"
+            android:text="@string/Privacy" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_3">
+
+          <TextView
+            android:id="@+id/payment_methods_row"
+            style="@style/SettingsSingleRow"
+            android:text="@string/Payment_methods" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_3">
+
+          <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/grid_2"
+            android:gravity="center_vertical"
+            android:text="@string/Currency" />
+
+          <Spinner
+            android:id="@+id/currency_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/grid_1">
+
+          </Spinner>
+
+        </LinearLayout>
+
 
       </LinearLayout>
 
-      <LinearLayout
-        style="@style/SettingsLinearRow">
+      <FrameLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:visibility="gone"
+        tools:visibility="visible">
 
-        <TextView
-          android:id="@+id/privacy_row"
-          style="@style/SettingsSingleRow"
-          android:text="@string/Privacy" />
-
-      </LinearLayout>
-
-      <LinearLayout
-        style="@style/SettingsLinearRow"
-        android:layout_marginTop="@dimen/grid_3">
-
-        <TextView
-          android:id="@+id/payment_methods_row"
-          style="@style/SettingsSingleRow"
-          android:text="@string/Payment_methods" />
-
-      </LinearLayout>
-
-      <LinearLayout
-        style="@style/SettingsLinearRow"
-        android:layout_marginTop="@dimen/grid_3">
-
-        <TextView
+        <ProgressBar
+          style="?android:attr/progressBarStyleHorizontal"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:layout_marginStart="@dimen/activity_horizontal_margin"
-          android:layout_marginTop="@dimen/grid_2"
-          android:gravity="center_vertical"
-          android:text="@string/Currency" />
+          android:layout_height="@dimen/grid_5"
+          android:layout_gravity="center"
+          android:indeterminate="true" />
 
-        <Spinner
-          android:id="@+id/currency_spinner"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:layout_marginStart="@dimen/activity_horizontal_margin"
-          android:layout_marginTop="@dimen/grid_1">
+      </FrameLayout>
 
-        </Spinner>
-
-      </LinearLayout>
-
-    </LinearLayout>
+    </FrameLayout>
 
   </ScrollView>
 

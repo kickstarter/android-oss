@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.activities.AccountActivity
 import rx.Observable
@@ -25,13 +26,13 @@ interface AccountViewModel {
         /** Emits the current user's chosen Currency. */
         fun chosenCurrency(): Observable<String>
 
-        /** Emits a string to display when network could not be found.  */
+        /** Emits whenever there is an error.  */
         fun error(): Observable<String>
 
         /** Emits when the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
 
-        /** Emits when the currency update was unsuccessful. */
+        /** Emits when the currency update was successful. */
         fun success(): Observable<String>
     }
 
@@ -54,6 +55,7 @@ interface AccountViewModel {
 
             this.apolloClient.userPrivacy()
                     .map { it.me()?.chosenCurrency() }
+                    .map { ObjectUtils.coalesce(it, CurrencyCode.USD.rawValue()) }
                     .compose(bindToLifecycle())
                     .subscribe { this.chosenCurrency.onNext(it) }
 

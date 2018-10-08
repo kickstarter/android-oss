@@ -14,8 +14,8 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.AccountViewModel
+import kotlinx.android.synthetic.main.account_toolbar.*
 import kotlinx.android.synthetic.main.activity_account.*
-import kotlinx.android.synthetic.main.change_password_toolbar.*
 import rx.android.schedulers.AndroidSchedulers
 import type.CurrencyCode
 
@@ -41,7 +41,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { showErrorSnackbar(change_password_toolbar, it) }
+                .subscribe { showErrorSnackbar(account_toolbar, it) }
 
         this.viewModel.outputs.progressBarIsVisible()
                 .compose(bindToLifecycle())
@@ -56,45 +56,6 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         change_email_row.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
         change_password_row.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
         privacy_row.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
-    }
-
-    private fun setSpinnerSelection(currencyCode: String) {
-        currentCurrencySelection = CurrencyCode.safeValueOf(currencyCode)
-        currency_spinner.setSelection(currentCurrencySelection!!.ordinal)
-    }
-
-    private fun setUpSpinner() {
-        val arrayAdapter = ArrayAdapter<String>(this, R.layout.item_spinner, getListOfCurrencies())
-        arrayAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
-        currency_spinner.adapter = arrayAdapter
-
-        currency_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, postion: Int, id: Long) {
-                if (currentCurrencySelection != null && currentCurrencySelection!!.ordinal != postion) {
-                    newCurrencySelection = CurrencyCode.values()[postion]
-                    lazyFollowingOptOutConfirmationDialog().show()
-                }
-            }
-        }
-    }
-
-    private fun lazyFollowingOptOutConfirmationDialog(): AlertDialog {
-        if (this.showCurrencyChangeDialog == null) {
-            this.showCurrencyChangeDialog = AlertDialog.Builder(this)
-                    .setCancelable(false)
-                    .setTitle(getString(R.string.Change_currency))
-                    .setNegativeButton(R.string.Cancel) { _, _ ->
-                        setSpinnerSelection(currentCurrencySelection!!.rawValue())
-                    }
-                    .setPositiveButton(R.string.Yes_change_currency, { _, _ ->
-                        this.viewModel.inputs.onSelectedCurrency(newCurrencySelection!!)
-                        setSpinnerSelection(newCurrencySelection!!.rawValue())
-                    })
-                    .create()
-        }
-        return this.showCurrencyChangeDialog!!
     }
 
     private fun getListOfCurrencies(): List<String> {
@@ -122,6 +83,45 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
             CurrencyCode.SGD -> getString(R.string.Currency_SGD)
             CurrencyCode.USD -> getString(R.string.Currency_USD)
             else -> CurrencyCode.`$UNKNOWN`.rawValue()
+        }
+    }
+
+    private fun lazyFollowingOptOutConfirmationDialog(): AlertDialog {
+        if (this.showCurrencyChangeDialog == null) {
+            this.showCurrencyChangeDialog = AlertDialog.Builder(this)
+                    .setCancelable(false)
+                    .setTitle(getString(R.string.Change_currency))
+                    .setNegativeButton(R.string.Cancel) { _, _ ->
+                        setSpinnerSelection(currentCurrencySelection!!.rawValue())
+                    }
+                    .setPositiveButton(R.string.Yes_change_currency, { _, _ ->
+                        this.viewModel.inputs.onSelectedCurrency(newCurrencySelection!!)
+                        setSpinnerSelection(newCurrencySelection!!.rawValue())
+                    })
+                    .create()
+        }
+        return this.showCurrencyChangeDialog!!
+    }
+
+    private fun setSpinnerSelection(currencyCode: String) {
+        currentCurrencySelection = CurrencyCode.safeValueOf(currencyCode)
+        currency_spinner.setSelection(currentCurrencySelection!!.ordinal)
+    }
+
+    private fun setUpSpinner() {
+        val arrayAdapter = ArrayAdapter<String>(this, R.layout.item_spinner, getListOfCurrencies())
+        arrayAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
+        currency_spinner.adapter = arrayAdapter
+
+        currency_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, postion: Int, id: Long) {
+                if (currentCurrencySelection != null && currentCurrencySelection!!.ordinal != postion) {
+                    newCurrencySelection = CurrencyCode.values()[postion]
+                    lazyFollowingOptOutConfirmationDialog().show()
+                }
+            }
         }
     }
 }

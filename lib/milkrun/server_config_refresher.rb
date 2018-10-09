@@ -37,7 +37,7 @@ module Milkrun
     end
 
     def host
-      local ? "http://api.ksr.dev/" : "https://#{Secrets::Api::Endpoint::PRODUCTION}"
+      local ? "http://api.ksr.test/" : "https://#{Secrets::Api::Endpoint::PRODUCTION}"
     end
 
     def oauth_token

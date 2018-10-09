@@ -32,16 +32,16 @@ interface ChangeEmailViewModel {
         /** Emits the logged in user's email address.  */
         fun currentEmail(): Observable<String>
 
-        /** Emits a boolean that determines if the email error should be shown.  */
+        /** Emits a boolean that determines if the email address error should be shown.  */
         fun emailErrorIsVisible(): Observable<Boolean>
 
-        /** Emits a string to display when user could not be found.  */
+        /** Emits a string to display when email update fails.  */
         fun error(): Observable<String>
 
-        /** Emits a boolean that determines if a network call is in progress.  */
+        /** Emits a boolean that determines if update email call to server is executing.  */
         fun progressBarIsVisible(): Observable<Boolean>
 
-        /** Emits a boolean that determines if the save button should be enabled.  */
+        /** Emits a boolean that determines if the email and password are valid.  */
         fun saveButtonIsEnabled(): Observable<Boolean>
 
         /** Emits when the user's email is changed successfully. */
@@ -129,13 +129,13 @@ interface ChangeEmailViewModel {
 
         override fun emailErrorIsVisible(): Observable<Boolean> = this.emailErrorIsVisible
 
-        override fun saveButtonIsEnabled(): Observable<Boolean> = this.saveButtonIsEnabled
+        override fun error(): Observable<String> = this.error
 
         override fun progressBarIsVisible(): Observable<Boolean> = this.showProgressBar
 
-        override fun success(): Observable<Void> = this.success
+        override fun saveButtonIsEnabled(): Observable<Boolean> = this.saveButtonIsEnabled
 
-        override fun error(): Observable<String> = this.error
+        override fun success(): Observable<Void> = this.success
 
         private fun updateEmail(changeEmail: ChangeEmail): Observable<UpdateUserEmailMutation.Data> {
             return this.apolloClient.updateUserEmail(changeEmail.email, changeEmail.password)

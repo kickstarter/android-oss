@@ -32,17 +32,17 @@ interface ChangeEmailViewModel {
         /** Emits the logged in user's email address.  */
         fun currentEmail(): Observable<String>
 
-        /** Emits a string to display when user could not be found.  */
-        fun error(): Observable<String>
-
         /** Emits a boolean that determines if the email error should be shown.  */
         fun emailErrorIsVisible(): Observable<Boolean>
 
-        /** Emits a boolean that determines if the save button should be enabled.  */
-        fun saveButtonIsEnabled(): Observable<Boolean>
+        /** Emits a string to display when user could not be found.  */
+        fun error(): Observable<String>
 
         /** Emits a boolean that determines if a network call is in progress.  */
         fun progressBarIsVisible(): Observable<Boolean>
+
+        /** Emits a boolean that determines if the save button should be enabled.  */
+        fun saveButtonIsEnabled(): Observable<Boolean>
 
         /** Emits when the user's email is changed successfully. */
         fun success(): Observable<Void>

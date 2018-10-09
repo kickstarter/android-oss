@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.kickstarter.ui.toolbars.KSToolbar
-  android:id="@+id/change_email_toolbar"
-  style="@style/Toolbar"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  style="@style/Toolbar"
+  android:id="@+id/change_email_toolbar"
+  tools:showIn="@layout/activity_change_email"
   app:contentInsetLeft="0dp"
-  app:contentInsetStart="0dp"
-  tools:showIn="@layout/activity_change_email">
+  app:contentInsetStart="0dp">
 
   <RelativeLayout
     android:layout_width="match_parent"

@@ -3,13 +3,13 @@ package com.kickstarter.ui.activities
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.kickstarter.R
 import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.showErrorSnackbar
 import com.kickstarter.extensions.showSuccessSnackbar
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.ChangeEmailViewModel
 import kotlinx.android.synthetic.main.activity_change_email.*
@@ -29,10 +29,24 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
         new_email.onChange { this.viewModel.inputs.email(it)}
         current_password.onChange { this.viewModel.inputs.password(it)}
 
+        new_email.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            this@ChangeEmailActivity.viewModel.inputs.emailFocus(hasFocus)
+        }
+
         this.viewModel.outputs.currentEmail()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { current_email.text = it }
+
+        this.viewModel.outputs.emailErrorIsVisible()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    when {
+                        it -> new_email_container.error = getString(R.string.Got_it)
+                        else -> new_email_container.error = null
+                    }
+                }
 
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
@@ -41,10 +55,15 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
 
         this.viewModel.outputs.saveButtonIsEnabled()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { updateMenu(it) }
 
-        this.viewModel.outputs.showProgressBar()
+        this.viewModel.outputs.progressBarIsVisible()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { updateMenu(!it) }
+
+        this.viewModel.outputs.progressBarIsVisible()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(progress_bar, !it) }

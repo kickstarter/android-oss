@@ -4,7 +4,6 @@ import UpdateUserEmailMutation
 import android.support.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.StringUtils
 import com.kickstarter.services.ApolloClientType
@@ -18,6 +17,9 @@ interface ChangeEmailViewModel {
     interface Inputs {
         /** Call when the new email field changes.  */
         fun email(email: String)
+
+        /** Call when the new email field focus changes.  */
+        fun emailFocus(hasFocus: Boolean)
 
         /** Call when the current password field changes.  */
         fun password(password: String)
@@ -33,11 +35,14 @@ interface ChangeEmailViewModel {
         /** Emits a string to display when user could not be found.  */
         fun error(): Observable<String>
 
+        /** Emits a boolean that determines if the email error should be shown.  */
+        fun emailErrorIsVisible(): Observable<Boolean>
+
         /** Emits a boolean that determines if the save button should be enabled.  */
         fun saveButtonIsEnabled(): Observable<Boolean>
 
         /** Emits a boolean that determines if a network call is in progress.  */
-        fun showProgressBar(): Observable<Boolean>
+        fun progressBarIsVisible(): Observable<Boolean>
 
         /** Emits when the user's email is changed successfully. */
         fun success(): Observable<Void>
@@ -48,11 +53,13 @@ interface ChangeEmailViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
-        private val newEmail = PublishSubject.create<String>()
-        private val currentPassword = PublishSubject.create<String>()
+        private val email = PublishSubject.create<String>()
+        private val emailFocus = PublishSubject.create<Boolean>()
+        private val password = PublishSubject.create<String>()
         private val updateEmailClicked = PublishSubject.create<Void>()
 
         private val currentEmail = BehaviorSubject.create<String>()
+        private val emailErrorIsVisible = BehaviorSubject.create<Boolean>()
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val showProgressBar = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<Void>()
@@ -66,11 +73,16 @@ interface ChangeEmailViewModel {
             this.apolloClient.userPrivacy()
                     .compose(neverError())
                     .compose(bindToLifecycle())
-                    .subscribe {
-                        this@ViewModel.currentEmail.onNext(it.me()?.email())
-                    }
+                    .subscribe { currentEmail.onNext(it.me()?.email()) }
 
-            val changeEmail = Observable.combineLatest(this.newEmail, this.currentPassword,
+            this.emailFocus
+                    .compose(combineLatestPair<Boolean, String>(this.email))
+                    .map { !it.first && it.second.isNotEmpty() && !StringUtils.isEmail(it.second) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe { this.emailErrorIsVisible.onNext(it) }
+
+            val changeEmail = Observable.combineLatest(this.email, this.password,
                     { email, password -> ChangeEmail(email, password) })
 
             changeEmail
@@ -80,7 +92,7 @@ interface ChangeEmailViewModel {
                     .subscribe { this.saveButtonIsEnabled.onNext(it) }
 
             val updateEmailNotification = changeEmail
-                    .compose(Transformers.takeWhen<ChangeEmail, Void>(this.updateEmailClicked))
+                    .compose(takeWhen<ChangeEmail, Void>(this.updateEmailClicked))
                     .switchMap { updateEmail(it).materialize() }
                     .compose(bindToLifecycle())
                     .share()
@@ -98,11 +110,15 @@ interface ChangeEmailViewModel {
         }
 
         override fun email(email: String) {
-            this.newEmail.onNext(email)
+            this.email.onNext(email)
+        }
+
+        override fun emailFocus(hasFocus: Boolean) {
+            this.emailFocus.onNext(hasFocus)
         }
 
         override fun password(password: String) {
-            this.currentPassword.onNext(password)
+            this.password.onNext(password)
         }
 
         override fun updateEmailClicked() {
@@ -111,9 +127,11 @@ interface ChangeEmailViewModel {
 
         override fun currentEmail(): Observable<String> = this.currentEmail
 
+        override fun emailErrorIsVisible(): Observable<Boolean> = this.emailErrorIsVisible
+
         override fun saveButtonIsEnabled(): Observable<Boolean> = this.saveButtonIsEnabled
 
-        override fun showProgressBar(): Observable<Boolean> = this.showProgressBar
+        override fun progressBarIsVisible(): Observable<Boolean> = this.showProgressBar
 
         override fun success(): Observable<Void> = this.success
 

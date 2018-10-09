@@ -57,9 +57,10 @@
         android:layout_marginTop="@dimen/grid_2">
 
         <android.support.design.widget.TextInputLayout
+          android:id="@+id/new_email_container"
           style="@style/TextInputPasswordLayout"
           android:layout_marginBottom="0dp"
-          android:layout_marginTop="@dimen/grid_3">
+          app:errorEnabled="true">
 
           <android.support.design.widget.TextInputEditText
             android:id="@+id/new_email"
@@ -72,13 +73,14 @@
 
         <android.support.design.widget.TextInputLayout
           style="@style/TextInputPasswordLayout"
+          android:layout_marginTop="0dp"
           app:hintTextAppearance="@style/BodySecondary"
           app:passwordToggleEnabled="true"
           app:passwordToggleTint="@color/password_toggle">
 
           <android.support.design.widget.TextInputEditText
             android:id="@+id/current_password"
-            style="@style/ChangeEmailPassTextInputEditTextMarginTop"
+            style="@style/ChangeEmailPassTextInputEditText"
             android:hint="@string/Current_password"
             android:inputType="textPassword" />
 
@@ -88,10 +90,10 @@
 
       <ProgressBar
         android:id="@+id/progress_bar"
-        android:visibility="gone"
-        android:layout_gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
     </LinearLayout>
 

@@ -121,6 +121,7 @@ backers</string>
   <string name="Either_the_pledge_or_the_project_was_canceled" formatted="false">Either the pledge or the project was canceled before the deadline.</string>
   <string name="Email" formatted="false">Email</string>
   <string name="Email_frequency" formatted="false">Email frequency</string>
+  <string name="Email_must_be_a_valid_email_address" formatted="false">Email must be a valid email address.</string>
   <string name="Email_notifications" formatted="false">Email notifications</string>
   <string name="Email_unverified" formatted="false">This email address is unverified.</string>
   <string name="Ending_soon" formatted="false">Ending Soon</string>

@@ -7,8 +7,8 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.kickstarter.R
+import com.kickstarter.extensions.showConfirmationSnackbar
 import com.kickstarter.extensions.showErrorSnackbar
-import com.kickstarter.extensions.showSuccessSnackbar
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -51,7 +51,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         this.viewModel.outputs.success()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { showSuccessSnackbar(account_container, R.string.Got_it_your_changes_have_been_saved) }
+                .subscribe { showConfirmationSnackbar(account_container, R.string.Got_it_your_changes_have_been_saved) }
 
         change_email_row.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
         change_password_row.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }

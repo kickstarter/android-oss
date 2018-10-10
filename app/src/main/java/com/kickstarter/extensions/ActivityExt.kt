@@ -16,18 +16,26 @@ fun Activity.startActivityWithSlideLeftTransition(intent: Intent) {
     this.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 
+fun Activity.showConfirmationSnackbar(anchor: View, stringResId: Int) {
+    showConfirmationSnackbar(anchor, getString(stringResId))
+}
+
+fun showConfirmationSnackbar(anchor: View, message: String) {
+    Snackbar.make(anchor, message, Snackbar.LENGTH_LONG).confirmation().show()
+}
+
 fun Activity.showErrorSnackbar(anchor: View, stringResId: Int) {
     showErrorSnackbar(anchor, getString(stringResId))
 }
 
-fun Activity.showErrorSnackbar(anchor: View, message: String) {
-    Snackbar.make(anchor, message, Snackbar.LENGTH_LONG).error(this).show()
+fun showErrorSnackbar(anchor: View, message: String) {
+    Snackbar.make(anchor, message, Snackbar.LENGTH_LONG).error().show()
 }
 
-fun Activity.showSuccessSnackbar(anchor: View, stringResId: Int) {
-    showSuccessSnackbar(anchor, getString(stringResId))
+fun Activity.showHeadsUpSnackbar(anchor: View, stringResId: Int) {
+    showErrorSnackbar(anchor, getString(stringResId))
 }
 
-fun Activity.showSuccessSnackbar(anchor: View, message: String) {
-    Snackbar.make(anchor, message, Snackbar.LENGTH_LONG).success(this).show()
+fun showHeadsUpSnackbar(anchor: View, message: String) {
+    Snackbar.make(anchor, message, Snackbar.LENGTH_LONG).headsUp().show()
 }

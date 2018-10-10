@@ -252,7 +252,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
   }
 
   private void setBackingInfoView(final @NonNull Pair<Backing, Project> backingAndProject) {
-    final String pledgeAmount = this.ksCurrency.format(backingAndProject.first.amount(), backingAndProject.second);
+    final String pledgeAmount = this.ksCurrency.format(backingAndProject.first.amount(), backingAndProject.second, this.environment().currentUser().getUser());
     final String pledgeDate = DateTimeUtils.relative(this, this.ksString, backingAndProject.first.pledgedAt());
 
     this.backingAmountTextViewText.setText(

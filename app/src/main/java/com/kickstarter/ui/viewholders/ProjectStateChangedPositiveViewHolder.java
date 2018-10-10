@@ -84,7 +84,7 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
       case Activity.CATEGORY_LAUNCH:
         final DateTime launchedAt = coalesce(project.launchedAt(), new DateTime());
         this.cardView.setCardBackgroundColor(this.blueDarken10Color);
-        this.leftStatFirstTextView.setText(this.ksCurrency.format(project.goal(), project));
+        this.leftStatFirstTextView.setText(this.ksCurrency.format(project.goal(), project, this.environment().currentUser().getUser()));
         this.leftStatSecondTextView.setText(this.goalString);
         this.rightStatFirstTextView.setText(this.launchedString);
         this.rightStatSecondTextView.setText(DateTimeUtils.mediumDate(launchedAt));
@@ -98,11 +98,11 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
         break;
       case Activity.CATEGORY_SUCCESS:
         this.cardView.setCardBackgroundColor(this.greenDarken10Color);
-        this.leftStatFirstTextView.setText(this.ksCurrency.format(project.pledged(), project));
+        this.leftStatFirstTextView.setText(this.ksCurrency.format(project.pledged(), project, this.environment().currentUser().getUser()));
         this.leftStatSecondTextView.setText(this.ksString.format(
           this.pledgedOfGoalString,
           "goal",
-          this.ksCurrency.format(project.goal(), project, true)
+          this.ksCurrency.format(project.goal(), project, true, this.environment().currentUser().getUser())
         ));
         this.rightStatFirstTextView.setText(this.fundedString);
         this.rightStatSecondTextView.setText(DateTimeUtils.mediumDate(activity().createdAt()));

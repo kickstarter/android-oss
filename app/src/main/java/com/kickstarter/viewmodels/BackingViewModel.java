@@ -125,10 +125,12 @@ public interface BackingViewModel {
   final class ViewModel extends ActivityViewModel<BackingActivity> implements Inputs, Outputs {
     private final ApiClientType client;
     private final KSCurrency ksCurrency;
+    private static Environment environment = null;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
+      this.environment = environment;
       this.client = environment.apiClient();
       this.ksCurrency = environment.ksCurrency();
 
@@ -260,7 +262,7 @@ public interface BackingViewModel {
 
       project
         .compose(zipPair(shippableBacking))
-        .map(pb -> this.ksCurrency.format(pb.second.shippingAmount(), pb.first))
+        .map(pb -> this.ksCurrency.format(pb.second.shippingAmount(), pb.first, environment.currentUser().getUser()))
         .compose(bindToLifecycle())
         .subscribe(this.shippingAmountTextViewText);
 
@@ -321,7 +323,7 @@ public interface BackingViewModel {
     private static @NonNull Pair<String, String> backingAmountAndDate(final @NonNull KSCurrency ksCurrency,
       final @NonNull Project project, final @NonNull Backing backing) {
 
-      final String amount = ksCurrency.format(backing.amount(), project);
+      final String amount = ksCurrency.format(backing.amount(), project, environment.currentUser().getUser());
       final String date = DateTimeUtils.fullDate(backing.pledgedAt());
 
       return Pair.create(amount, date);
@@ -330,7 +332,7 @@ public interface BackingViewModel {
     private static @NonNull Pair<String, String> rewardMinimumAndDescription(final @NonNull KSCurrency ksCurrency,
       final @NonNull Project project, final @NonNull Reward reward) {
 
-      final String minimum = ksCurrency.format(reward.minimum(), project);
+      final String minimum = ksCurrency.format(reward.minimum(), project, environment.currentUser().getUser());
       return Pair.create(minimum, reward.description());
     }
 

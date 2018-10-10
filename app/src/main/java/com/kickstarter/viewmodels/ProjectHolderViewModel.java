@@ -208,7 +208,7 @@ public interface ProjectHolderViewModel {
         .map(Category::name);
 
       this.goalStringForTextView = project
-        .map(p -> this.ksCurrency.format(p.goal(), p, false, true, RoundingMode.DOWN));
+        .map(p -> this.ksCurrency.format(p.goal(), p, false, true, RoundingMode.DOWN, environment.currentUser().getUser()));
 
       this.locationTextViewText = project
         .map(Project::location)
@@ -223,7 +223,7 @@ public interface ProjectHolderViewModel {
       this.playButtonIsGone = project.map(Project::hasVideo).map(BooleanUtils::negate);
 
       this.pledgedTextViewText = project
-        .map(p -> this.ksCurrency.format(p.pledged(), p, false, true, RoundingMode.DOWN));
+        .map(p -> this.ksCurrency.format(p.pledged(), p, false, false, RoundingMode.DOWN, environment.currentUser().getUser()));
 
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)
@@ -231,7 +231,7 @@ public interface ProjectHolderViewModel {
 
       this.projectDisclaimerGoalNotReachedString = project
         .filter(p -> p.deadline() != null && p.isLive() && !p.isFunded())
-        .map(p -> Pair.create(this.ksCurrency.format(p.goal(), p, true), p.deadline()));
+        .map(p -> Pair.create(this.ksCurrency.format(p.goal(), p, true, environment.currentUser().getUser()), p.deadline()));
 
       this.projectDisclaimerTextViewIsGone = project.map(p -> p.deadline() == null || !p.isLive());
 
@@ -297,8 +297,8 @@ public interface ProjectHolderViewModel {
 
       this.usdConversionPledgedAndGoalText = project
         .map(p -> {
-          final String pledged = this.ksCurrency.format(p.pledged(), p);
-          final String goal = this.ksCurrency.format(p.goal(), p);
+          final String pledged = this.ksCurrency.format(p.pledged(), p, environment.currentUser().getUser());
+          final String goal = this.ksCurrency.format(p.goal(), p, environment.currentUser().getUser());
           return Pair.create(pledged, goal);
         });
     }

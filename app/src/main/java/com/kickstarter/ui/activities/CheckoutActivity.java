@@ -312,7 +312,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewM
       this.ksString.format(
         this.pledgeDisclaimerString,
         "charge_amount",
-        this.ksCurrency.format(Float.valueOf(payload.cart().totalPrice()), this.project)
+        this.ksCurrency.format(Float.valueOf(payload.cart().totalPrice()), this.project, this.environment().currentUser().getUser())
       )
     ));
 

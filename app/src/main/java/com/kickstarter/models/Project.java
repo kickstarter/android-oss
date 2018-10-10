@@ -36,6 +36,7 @@ public abstract class Project implements Parcelable {
   public abstract boolean currencyTrailingCode();
   public abstract @Nullable DateTime featuredAt();
   public abstract @Nullable List<User> friends();
+  public abstract Float fx_rate();
   public abstract @Nullable DateTime deadline();
   public abstract float goal();
   public abstract long id(); // in the Kickstarter app, this is project.pid not project.id
@@ -76,6 +77,7 @@ public abstract class Project implements Parcelable {
     public abstract Builder deadline(DateTime __);
     public abstract Builder featuredAt(DateTime __);
     public abstract Builder friends(List<User> __);
+    public abstract Builder fx_rate(Float __);
     public abstract Builder goal(float __);
     public abstract Builder id(long __);
     public abstract Builder isBacking(boolean __);

@@ -131,7 +131,7 @@ public interface RewardViewModel {
       this.ksCurrency = environment.ksCurrency();
 
       final Observable<String> formattedMinimum = this.projectAndReward
-        .map(pr -> this.ksCurrency.format(pr.second.minimum(), pr.first, environment.currentUser().getUser()));
+        .map(pr -> this.ksCurrency.format(pr.second.minimum(), pr.first));
 
       final Observable<Boolean> isSelectable = this.projectAndReward
         .map(pr -> isSelectable(pr.first, pr.second));
@@ -248,7 +248,7 @@ public interface RewardViewModel {
         .distinctUntilChanged();
 
       this.usdConversionTextViewText = this.projectAndReward
-        .map(pr -> this.ksCurrency.format(pr.second.minimum(), pr.first, true, true, RoundingMode.UP, environment.currentUser().getUser()))
+        .map(pr -> this.ksCurrency.format(pr.second.minimum(), pr.first, true, true, RoundingMode.UP))
         .compose(takeWhen(shouldDisplayUsdConversion.filter(BooleanUtils::isTrue)));
 
       this.whiteOverlayIsInvisible = this.projectAndReward

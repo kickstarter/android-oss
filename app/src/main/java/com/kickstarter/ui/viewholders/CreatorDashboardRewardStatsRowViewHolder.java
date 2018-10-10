@@ -67,13 +67,13 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
 
   private void setPledgedColumnValue(final @NonNull Pair<Project, Float> projectAndPledgedForReward) {
     final String goalString = this.ksCurrency
-      .format(projectAndPledgedForReward.second, projectAndPledgedForReward.first, this.environment().currentUser().getUser());
+      .format(projectAndPledgedForReward.second, projectAndPledgedForReward.first);
     this.amountForRewardPledgedTextView.setText(goalString);
   }
 
   private void setRewardMinimumText(final @NonNull Pair<Project, Integer> projectAndMinimumForReward) {
     final String minimumString = IntegerUtils.isZero(projectAndMinimumForReward.second) ?
-      this.noRewardString : this.ksCurrency.format(projectAndMinimumForReward.second, projectAndMinimumForReward.first, this.environment().currentUser().getUser());
+      this.noRewardString : this.ksCurrency.format(projectAndMinimumForReward.second, projectAndMinimumForReward.first);
     this.rewardMinimumTextView.setText(minimumString);
   }
 }

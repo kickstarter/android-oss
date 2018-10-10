@@ -7,6 +7,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.UserCurrency;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.ListUtils;
@@ -168,10 +169,12 @@ public interface ProjectHolderViewModel {
 
   final class ViewModel extends ActivityViewModel<ProjectViewHolder> implements Inputs, Outputs {
     private final KSCurrency ksCurrency;
+    private final UserCurrency userCurrency;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
       this.ksCurrency = environment.ksCurrency();
+      this.userCurrency = new UserCurrency(environment.currentUser().getUser(), environment.currentConfig());
 
       final Observable<Project> project = this.projectAndCountry.map(PairUtils::first);
       final Observable<ProjectUtils.Metadata> projectMetadata = project.map(ProjectUtils::metadataForProject);
@@ -208,7 +211,7 @@ public interface ProjectHolderViewModel {
         .map(Category::name);
 
       this.goalStringForTextView = project
-        .map(p -> this.ksCurrency.format(p.goal(), p, false, true, RoundingMode.DOWN, environment.currentUser().getUser()));
+        .map(p -> this.userCurrency.format(p.goal(), p, false, RoundingMode.DOWN));
 
       this.locationTextViewText = project
         .map(Project::location)
@@ -223,7 +226,7 @@ public interface ProjectHolderViewModel {
       this.playButtonIsGone = project.map(Project::hasVideo).map(BooleanUtils::negate);
 
       this.pledgedTextViewText = project
-        .map(p -> this.ksCurrency.format(p.pledged(), p, false, false, RoundingMode.DOWN, environment.currentUser().getUser()));
+        .map(p -> this.userCurrency.format(p.pledged(), p, false, RoundingMode.DOWN));
 
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)
@@ -231,7 +234,7 @@ public interface ProjectHolderViewModel {
 
       this.projectDisclaimerGoalNotReachedString = project
         .filter(p -> p.deadline() != null && p.isLive() && !p.isFunded())
-        .map(p -> Pair.create(this.ksCurrency.format(p.goal(), p, true, environment.currentUser().getUser()), p.deadline()));
+        .map(p -> Pair.create(this.ksCurrency.format(p.goal(), p, true), p.deadline()));
 
       this.projectDisclaimerTextViewIsGone = project.map(p -> p.deadline() == null || !p.isLive());
 
@@ -297,8 +300,8 @@ public interface ProjectHolderViewModel {
 
       this.usdConversionPledgedAndGoalText = project
         .map(p -> {
-          final String pledged = this.ksCurrency.format(p.pledged(), p, environment.currentUser().getUser());
-          final String goal = this.ksCurrency.format(p.goal(), p, environment.currentUser().getUser());
+          final String pledged = this.userCurrency.format(p.pledged(), p);
+          final String goal = this.userCurrency.format(p.goal(), p);
           return Pair.create(pledged, goal);
         });
     }

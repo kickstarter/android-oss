@@ -21,23 +21,21 @@ public final class KSCurrency {
    * Returns a currency string appropriate to the user's locale and location relative to a project.
    *
    * @param initialValue Value to display, local to the project's currency.
-   * @param project The project to use to look up currency information.
+   * @param project      The project to use to look up currency information.
    */
-  public @NonNull
-  String format(final float initialValue, final @NonNull Project project) {
+  public @NonNull String format(final float initialValue, final @NonNull Project project) {
     return format(initialValue, project, false, false, RoundingMode.DOWN);
   }
 
   /**
    * Returns a currency string appropriate to the user's locale and location relative to a project.
    *
-   * @param initialValue Value to display, local to the project's currency.
-   * @param project The project to use to look up currency information.
+   * @param initialValue        Value to display, local to the project's currency.
+   * @param project             The project to use to look up currency information.
    * @param excludeCurrencyCode If true, hide the currency code, even if that makes the returned value ambiguous.
-   * This is used when space is constrained and the currency code can be determined elsewhere.
+   *                            This is used when space is constrained and the currency code can be determined elsewhere.
    */
-  public @NonNull
-  String format(final float initialValue, final @NonNull Project project,
+  public @NonNull String format(final float initialValue, final @NonNull Project project,
     final boolean excludeCurrencyCode) {
 
     return format(initialValue, project, excludeCurrencyCode, false, RoundingMode.DOWN);
@@ -46,15 +44,14 @@ public final class KSCurrency {
   /**
    * Returns a currency string appropriate to the user's locale and location relative to a project.
    *
-   * @param initialValue Value to display, local to the project's currency.
-   * @param project The project to use to look up currency information.
+   * @param initialValue        Value to display, local to the project's currency.
+   * @param project             The project to use to look up currency information.
    * @param excludeCurrencyCode If true, hide the currency code, even if that makes the returned value ambiguous.
-   * This is used when space is constrained and the currency code can be determined elsewhere.
-   * @param preferUSD Attempt to convert a project from it's local currency to USD, if the user is located in
-   * the US.
+   *                            This is used when space is constrained and the currency code can be determined elsewhere.
+   * @param preferUSD           Attempt to convert a project from it's local currency to USD, if the user is located in
+   *                            the US.
    */
-  public @NonNull
-  String format(final float initialValue, final @NonNull Project project,
+  public @NonNull String format(final float initialValue, final @NonNull Project project,
     final boolean excludeCurrencyCode, final boolean preferUSD, final @NonNull RoundingMode roundingMode) {
 
     final CurrencyOptions currencyOptions = currencyOptions(initialValue, project, preferUSD);
@@ -74,13 +71,11 @@ public final class KSCurrency {
    * Build {@link CurrencyOptions} based on the project and whether we would prefer to show USD. Even if USD is preferred,
    * we only show USD if the user is in the US.
    */
-  private @NonNull
-  CurrencyOptions currencyOptions(final float value, final @NonNull Project project,
+  private @NonNull CurrencyOptions currencyOptions(final float value, final @NonNull Project project,
     final boolean preferUSD) {
 
     final Config config = this.currentConfig.getConfig();
     final Float staticUsdRate = project.staticUsdRate();
-    final Float fxRate = project.fx_rate();
     if (preferUSD && config.countryCode().equals("US") && staticUsdRate != null) {
       return CurrencyOptions.builder()
         .country("US")

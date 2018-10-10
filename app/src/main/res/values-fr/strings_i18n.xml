@@ -121,6 +121,7 @@ contributeurs</string>
   <string name="Either_the_pledge_or_the_project_was_canceled" formatted="false">Soit l\'engagement soit le projet a été annulé avant la date limite.</string>
   <string name="Email" formatted="false">E-mail</string>
   <string name="Email_frequency" formatted="false">Fréquence d\'envoi des e-mails</string>
+  <string name="Email_must_be_a_valid_email_address" formatted="false">Email must be a valid email address.</string>
   <string name="Email_notifications" formatted="false">Notifications par e-mail</string>
   <string name="Email_unverified" formatted="false">Adresse e-mail non vérifiée.</string>
   <string name="Ending_soon" formatted="false">Campagnes bientôt terminées</string>

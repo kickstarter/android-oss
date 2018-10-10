@@ -69,8 +69,6 @@
 
   <!-- Discovery drawer -->
   <dimen name="discovery_drawer_filter_padding_y">14dp</dimen>
-  <dimen name="discovery_drawer_status_bar_height">0dp</dimen>
-  <dimen name="discovery_drawer_status_bar_height_negative">0dp</dimen>
 
   <!-- Layout padding -->
   <dimen name="activity_padding_x">0dp</dimen>

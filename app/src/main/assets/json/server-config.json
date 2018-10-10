@@ -134,6 +134,7 @@
       "Either_the_pledge_or_the_project_was_canceled": "Either the pledge or the project was canceled before the deadline.",
       "Email": "Email",
       "Email_frequency": "Email frequency",
+      "Email_must_be_a_valid_email_address": "Email must be a valid email address.",
       "Email_notifications": "Email notifications",
       "Email_unverified": "This email address is unverified.",
       "Ending_soon": "Ending Soon",
@@ -2196,6 +2197,7 @@
       "Either_the_pledge_or_the_project_was_canceled": "Entweder der Finanzierungsbeitrag wurde zurückgezogen oder das Projekt wurde abgebrochen, bevor die Frist abgelaufen war.",
       "Email": "E-Mail",
       "Email_frequency": "Häufigkeit der E-Mails",
+      "Email_must_be_a_valid_email_address": "Email must be a valid email address.",
       "Email_notifications": "Benachrichtigung per E-Mail",
       "Email_unverified": "Diese E-Mail-Adresse wurde noch nicht verifiziert.",
       "Ending_soon": "Endet bald",
@@ -4258,6 +4260,7 @@
       "Either_the_pledge_or_the_project_was_canceled": "Se canceló la contribución o el proyecto antes de que el plazo terminara.",
       "Email": "Correo electrónico",
       "Email_frequency": "Frecuencia de aviso por correo electrónico",
+      "Email_must_be_a_valid_email_address": "Email must be a valid email address.",
       "Email_notifications": "Notificaciones por correo electrónico",
       "Email_unverified": "Esta dirección de correo electrónico no está verificada.",
       "Ending_soon": "Finaliza pronto",
@@ -6320,6 +6323,7 @@
       "Either_the_pledge_or_the_project_was_canceled": "Soit l'engagement soit le projet a été annulé avant la date limite.",
       "Email": "E-mail",
       "Email_frequency": "Fréquence d'envoi des e-mails",
+      "Email_must_be_a_valid_email_address": "Email must be a valid email address.",
       "Email_notifications": "Notifications par e-mail",
       "Email_unverified": "Adresse e-mail non vérifiée.",
       "Ending_soon": "Campagnes bientôt terminées",
@@ -8382,6 +8386,7 @@
       "Either_the_pledge_or_the_project_was_canceled": "プレッジもプロジェクトも期限前にキャンセル済",
       "Email": "メールアドレス",
       "Email_frequency": "通知頻度",
+      "Email_must_be_a_valid_email_address": "Email must be a valid email address.",
       "Email_notifications": "メール通知設定",
       "Email_unverified": "このメールアドレスは認証されていません。",
       "Ending_soon": "終了直前",
@@ -10506,7 +10511,7 @@
   "ab_experiments": {
     "project_dashboard": "with_dashboard",
     "new_project_header": "experimental",
-    "stripe_elements_sepa": "experimental"
+    "stripe_elements_sepa": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

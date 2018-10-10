@@ -120,6 +120,7 @@
   <string name="Either_the_pledge_or_the_project_was_canceled" formatted="false">プレッジもプロジェクトも期限前にキャンセル済</string>
   <string name="Email" formatted="false">メールアドレス</string>
   <string name="Email_frequency" formatted="false">通知頻度</string>
+  <string name="Email_must_be_a_valid_email_address" formatted="false">Email must be a valid email address.</string>
   <string name="Email_notifications" formatted="false">メール通知設定</string>
   <string name="Email_unverified" formatted="false">このメールアドレスは認証されていません。</string>
   <string name="Ending_soon" formatted="false">終了直前</string>

@@ -125,12 +125,10 @@ public interface BackingViewModel {
   final class ViewModel extends ActivityViewModel<BackingActivity> implements Inputs, Outputs {
     private final ApiClientType client;
     private final KSCurrency ksCurrency;
-    private static Environment environment = null;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.environment = environment;
       this.client = environment.apiClient();
       this.ksCurrency = environment.ksCurrency();
 

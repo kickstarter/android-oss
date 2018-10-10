@@ -93,7 +93,7 @@ public final class KSCurrency {
         .country(project.country())
         .currencyCode(project.currency())
         .currencySymbol(project.currencySymbol())
-        .value(value * fxRate)
+        .value(value)
         .build();
     }
   }

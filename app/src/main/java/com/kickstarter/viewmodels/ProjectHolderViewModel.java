@@ -635,6 +635,5 @@ public interface ProjectHolderViewModel {
     public @NonNull Observable<Pair<String, String>> usdConversionPledgedAndGoalText() {
       return this.usdConversionPledgedAndGoalText;
     }
-
   }
 }

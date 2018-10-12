@@ -2,10 +2,10 @@ package com.kickstarter.libs
 
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.models.Project
-import com.kickstarter.models.User
+import type.CurrencyCode
 import java.math.RoundingMode
 
-class UserCurrency(private val user: User, private val currentConfigType: CurrentConfigType) {
+class UserCurrency(private val currentConfigType: CurrentConfigType) {
 
     /**
      * Returns a currency string appropriate to the user's locale and location relative to a project.
@@ -13,8 +13,8 @@ class UserCurrency(private val user: User, private val currentConfigType: Curren
      * @param initialValue Value to display, local to the project's currency.
      * @param project The project to use to look up currency information.
      */
-    fun format(initialValue: Float, project: Project): String {
-        return format(initialValue, project, false, RoundingMode.DOWN)
+    fun format(initialValue: Float, project: Project, symbol: String): String {
+        return format(initialValue, project, false, RoundingMode.DOWN, symbol)
     }
 
     /**
@@ -26,9 +26,9 @@ class UserCurrency(private val user: User, private val currentConfigType: Curren
      * This is used when space is constrained and the currency code can be determined elsewhere.
      */
     fun format(initialValue: Float, project: Project,
-               excludeCurrencyCode: Boolean): String {
+               excludeCurrencyCode: Boolean, symbol: String): String {
 
-        return format(initialValue, project, excludeCurrencyCode, RoundingMode.DOWN)
+        return format(initialValue, project, excludeCurrencyCode, RoundingMode.DOWN, symbol)
     }
 
     /**
@@ -38,13 +38,11 @@ class UserCurrency(private val user: User, private val currentConfigType: Curren
      * @param project The project to use to look up currency information.
      * @param excludeCurrencyCode If true, hide the currency code, even if that makes the returned value ambiguous.
      * This is used when space is constrained and the currency code can be determined elsewhere.
-     * @param preferUSD Attempt to convert a project from it's local currency to USD, if the user is located in
-     * the US.
      */
     fun format(initialValue: Float, project: Project,
-               excludeCurrencyCode: Boolean, roundingMode: RoundingMode): String {
+               excludeCurrencyCode: Boolean, roundingMode: RoundingMode, symbol: String): String {
 
-        val currencyOptions = userCurrencyOptions(initialValue, project)
+        val currencyOptions = userCurrencyOptions(initialValue, project, symbol)
 
         val showCurrencyCode = showCurrencyCode(currencyOptions, excludeCurrencyCode)
 
@@ -57,37 +55,46 @@ class UserCurrency(private val user: User, private val currentConfigType: Curren
         return NumberUtils.format(currencyOptions.value(), numberOptions)
     }
 
-    private fun userCurrencyOptions(value: Float, project: Project): KSCurrency.CurrencyOptions {
-
+    private fun userCurrencyOptions(value: Float, project: Project, symbol: String): KSCurrency.CurrencyOptions {
         val fxRate = project.fx_rate()
+        val config = this.currentConfigType.getConfig()
 
-        return KSCurrency.CurrencyOptions.builder()
-                .country(project.country())
-                .currencyCode("")
-                .currencySymbol(currencySymbol(user))
-                .value(value * fxRate!!)
-                .build()
+        return if (config.countryCode() == "XX") {
+            KSCurrency.CurrencyOptions.builder()
+                    .country(project.country())
+                    .currencyCode("")
+                    .currencySymbol("US$ ")
+                    .value(value * fxRate!!)
+                    .build()
+        } else {
+            KSCurrency.CurrencyOptions.builder()
+                    .country(project.country())
+                    .currencyCode("")
+                    .currencySymbol(currencySymbol(symbol))
+                    .value(value * fxRate!!)
+                    .build()
+        }
 
     }
 
-    private fun currencySymbol(user: User): String {
+    private fun currencySymbol(chosenCurrency: String): String {
         val symbol: String
 
-        when (user.chosenCurrency()) {
-            "AUD" -> symbol = "AU$ "
-            "CAD" -> symbol = "CA$ "
-            "CHF" -> symbol = "CHF "
-            "DKK" -> symbol = "DKK "
-            "EUR" -> symbol = "€ "
-            "GBP" -> symbol = "£ "
-            "HKD" -> symbol = "HK$ "
-            "JPY" -> symbol = "¥ "
-            "MXN" -> symbol = "MX$ "
-            "NOK" -> symbol = "NOK "
-            "NZD" -> symbol = "NZ$ "
-            "SEK" -> symbol = "SEK "
-            "SGD" -> symbol = "S$ "
-            "USD" -> symbol = "$ "
+        when (chosenCurrency) {
+            CurrencyCode.AUD.rawValue() -> symbol = "AU$ "
+            CurrencyCode.CAD.rawValue() -> symbol = "CA$ "
+            CurrencyCode.CHF.rawValue() -> symbol = "CHF "
+            CurrencyCode.DKK.rawValue() -> symbol = "DKK "
+            CurrencyCode.EUR.rawValue() -> symbol = "€ "
+            CurrencyCode.GBP.rawValue() -> symbol = "£ "
+            CurrencyCode.HKD.rawValue() -> symbol = "HK$ "
+            CurrencyCode.JPY.rawValue() -> symbol = "¥ "
+            CurrencyCode.MXN.rawValue() -> symbol = "MX$ "
+            CurrencyCode.NOK.rawValue() -> symbol = "NOK "
+            CurrencyCode.NZD.rawValue() -> symbol = "NZ$ "
+            CurrencyCode.SEK.rawValue() -> symbol = "SEK "
+            CurrencyCode.SGD.rawValue() -> symbol = "S$ "
+            CurrencyCode.USD.rawValue() -> symbol = "$ "
 
             else -> symbol = "$ "
         }
@@ -104,6 +111,7 @@ class UserCurrency(private val user: User, private val currentConfigType: Curren
         }
 
         val config = this.currentConfigType.config
+
         val currencyIsDupe = config.currencyNeedsCode(currencyOptions.currencySymbol())
         val userIsUS = config.countryCode() == "US"
         val projectIsUS = currencyOptions.country() == "US"

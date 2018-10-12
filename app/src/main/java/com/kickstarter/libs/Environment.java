@@ -38,6 +38,7 @@ public abstract class Environment implements Parcelable {
   public abstract PlayServicesCapability playServicesCapability();
   public abstract Scheduler scheduler();
   public abstract SharedPreferences sharedPreferences();
+  public abstract UserCurrency userCurrency();
   public abstract WebClientType webClient();
   public abstract String webEndpoint();
 
@@ -63,6 +64,7 @@ public abstract class Environment implements Parcelable {
     public abstract Builder playServicesCapability(PlayServicesCapability __);
     public abstract Builder scheduler(Scheduler __);
     public abstract Builder sharedPreferences(SharedPreferences __);
+    public abstract Builder userCurrency(UserCurrency __);
     public abstract Builder webClient(WebClientType __);
     public abstract Builder webEndpoint(String __);
     public abstract Environment build();

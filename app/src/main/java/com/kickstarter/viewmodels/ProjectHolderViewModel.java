@@ -5,9 +5,11 @@ import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.UserCurrency;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.ListUtils;
@@ -21,6 +23,7 @@ import com.kickstarter.models.Location;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 
 import org.joda.time.DateTime;
@@ -29,7 +32,9 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+import type.CurrencyCode;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
@@ -38,143 +43,243 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 public interface ProjectHolderViewModel {
 
   interface Inputs {
-    /** Call to configure view holder with a project and the config country. */
+    /**
+     * Call to configure view holder with a project and the config country.
+     */
     void configureWith(Pair<Project, String> projectAndCountry);
 
-    /** Call when the project social view group is clicked. */
+    /**
+     * Call when the project social view group is clicked.
+     */
     void projectSocialViewGroupClicked();
   }
 
   interface Outputs {
-    /** Emits the creator's avatar photo url for display. */
+    /**
+     * Emits the creator's avatar photo url for display.
+     */
     Observable<String> avatarPhotoUrl();
 
-    /** Emits the backers count string for display. */
+    /**
+     * Emits the backers count string for display.
+     */
     Observable<String> backersCountTextViewText();
 
-    /** Emits when the backing view group should be gone. */
+    /**
+     * Emits when the backing view group should be gone.
+     */
     Observable<Boolean> backingViewGroupIsGone();
 
-    /** Emits the project blurb for display. */
+    /**
+     * Emits the project blurb for display.
+     */
     Observable<String> blurbTextViewText();
 
-    /** Emits the project category for display. */
+    /**
+     * Emits the project category for display.
+     */
     Observable<String> categoryTextViewText();
 
-    /** Emits teh comments count for display. */
+    /**
+     * Emits teh comments count for display.
+     */
     Observable<String> commentsCountTextViewText();
 
-    /** Emits the project creator's name for display. */
+    /**
+     * Emits the project creator's name for display.
+     */
     Observable<String> creatorNameTextViewText();
 
-    /** Emits the deadline countdown text for display. */
+    /**
+     * Emits the deadline countdown text for display.
+     */
     Observable<String> deadlineCountdownTextViewText();
 
-    /** Emits root category to display in the featured metadata. */
+    /**
+     * Emits root category to display in the featured metadata.
+     */
     Observable<String> featuredTextViewRootCategory();
 
-    /** Emits the featured view group should be gone. */
+    /**
+     * Emits the featured view group should be gone.
+     */
     Observable<Boolean> featuredViewGroupIsGone();
 
-    /** Emits the goal string for display. */
+    /**
+     * Emits the goal string for display.
+     */
     Observable<String> goalStringForTextView();
 
-    /** Emits the location for display. */
+    /**
+     * Emits the location for display.
+     */
     Observable<String> locationTextViewText();
 
-    /** Emits the percentage funded amount for display in the progress bar. */
+    /**
+     * Emits the percentage funded amount for display in the progress bar.
+     */
     Observable<Integer> percentageFundedProgress();
 
-    /** Emits when the progress bar should be gone. */
+    /**
+     * Emits when the progress bar should be gone.
+     */
     Observable<Boolean> percentageFundedProgressBarIsGone();
 
-    /** Emits when the play button should be gone. */
+    /**
+     * Emits when the play button should be gone.
+     */
     Observable<Boolean> playButtonIsGone();
 
-    /** Emits the pledged amount for display. */
+    /**
+     * Emits the pledged amount for display.
+     */
     Observable<String> pledgedTextViewText();
 
-    /** Emits the date time to be displayed in the disclaimer. */
+    /**
+     * Emits the date time to be displayed in the disclaimer.
+     */
     Observable<DateTime> projectDisclaimerGoalReachedDateTime();
 
-    /** Emits a string and date time for an unsuccessful project disclaimer. */
+    /**
+     * Emits a string and date time for an unsuccessful project disclaimer.
+     */
     Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString();
 
-    /** Emits when the disclaimer view should be gone. */
+    /**
+     * Emits when the disclaimer view should be gone.
+     */
     Observable<Boolean> projectDisclaimerTextViewIsGone();
 
-    /** Emits the background drawable for the metadata view group. */
+    /**
+     * Emits the background drawable for the metadata view group.
+     */
     Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt();
 
-    /** Emits when the metadata view group should be gone. */
+    /**
+     * Emits when the metadata view group should be gone.
+     */
     Observable<Boolean> projectMetadataViewGroupIsGone();
 
-    /** Emits the project name for display. */
+    /**
+     * Emits the project name for display.
+     */
     Observable<String> projectNameTextViewText();
 
-    /** Emits the project for display. */
+    /**
+     * Emits the project for display.
+     */
     Observable<Project> projectOutput();
 
-    /** Emits the project photo for display. */
+    /**
+     * Emits the project photo for display.
+     */
     Observable<Photo> projectPhoto();
 
-    /** Emits when the social image view should be gone. */
+    /**
+     * Emits when the social image view should be gone.
+     */
     Observable<Boolean> projectSocialImageViewIsGone();
 
-    /** Emits the social image view url for display. */
+    /**
+     * Emits the social image view url for display.
+     */
     Observable<String> projectSocialImageViewUrl();
 
-    /** Emits the list of friends to display display in the facepile. */
+    /**
+     * Emits the list of friends to display display in the facepile.
+     */
     Observable<List<User>> projectSocialTextViewFriends();
 
-    /**  Emits when the social view group should be gone. */
+    /**
+     * Emits when the social view group should be gone.
+     */
     Observable<Boolean> projectSocialViewGroupIsGone();
 
-    /** Emits the state background color int for display. */
+    /**
+     * Emits the state background color int for display.
+     */
     Observable<Integer> projectStateViewGroupBackgroundColorInt();
 
-    /** Emits when the project state view group should be gone. */
+    /**
+     * Emits when the project state view group should be gone.
+     */
     Observable<Boolean> projectStateViewGroupIsGone();
 
-    /** Emits when we should set default stats margins. */
+    /**
+     * Emits when we should set default stats margins.
+     */
     Observable<Boolean> shouldSetDefaultStatsMargins();
 
-    /** Emits when we should set the canceled state view. */
+    /**
+     * Emits when we should set the canceled state view.
+     */
     Observable<Void> setCanceledProjectStateView();
 
-    /** Emits when we should set an on click listener to the social view. */
+    /**
+     * Emits when we should set an on click listener to the social view.
+     */
     Observable<Void> setProjectSocialClickListener();
 
-    /** Emits when we should set the successful state view. */
+    /**
+     * Emits when we should set the successful state view.
+     */
     Observable<DateTime> setSuccessfulProjectStateView();
 
-    /** Emits when we should set the suspended state view. */
+    /**
+     * Emits when we should set the suspended state view.
+     */
     Observable<Void> setSuspendedProjectStateView();
 
-    /** Emits when we should set the unsuccessful state view. */
+    /**
+     * Emits when we should set the unsuccessful state view.
+     */
     Observable<DateTime> setUnsuccessfulProjectStateView();
 
-    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectSocialActivity}. */
+    /**
+     * Emits when we should start the {@link com.kickstarter.ui.activities.ProjectSocialActivity}.
+     */
     Observable<Project> startProjectSocialActivity();
 
-    /** Emits the updates count for display. s*/
+    /**
+     * Emits the updates count for display. s
+     */
     Observable<String> updatesCountTextViewText();
 
-    /** Emits the usd conversion text for display. */
+    /**
+     * Emits the usd conversion text for display.
+     */
     Observable<Pair<String, String>> usdConversionPledgedAndGoalText();
 
-    /** Emits when the usd conversion view should be gone. */
+    /**
+     * Emits when the usd conversion view should be gone.
+     */
     Observable<Boolean> usdConversionTextViewIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectViewHolder> implements Inputs, Outputs {
+    private final ApiClientType client;
     private final KSCurrency ksCurrency;
     private final UserCurrency userCurrency;
+    private final CurrentUserType currentUser;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
+
+      this.client = environment.apiClient();
+      this.currentUser = environment.currentUser();
       this.ksCurrency = environment.ksCurrency();
-      this.userCurrency = new UserCurrency(environment.currentUser().getUser(), environment.currentConfig());
+      this.userCurrency = environment.userCurrency();
+
+      this.client.fetchCurrentUser()
+        .retry(2)
+        .compose(Transformers.neverError())
+        .compose(bindToLifecycle())
+        .filter(ObjectUtils::isNotNull)
+        .subscribe(this.currentUser::refresh);
+
+      final Observable<String> chosenCurrency = this.currentUser.observable()
+        .map(user -> ObjectUtils.isNotNull(user) ? user.chosenCurrency() : CurrencyCode.USD.rawValue())
+        .map(value -> ObjectUtils.coalesce(value, CurrencyCode.USD.rawValue()));
 
       final Observable<Project> project = this.projectAndCountry.map(PairUtils::first);
       final Observable<ProjectUtils.Metadata> projectMetadata = project.map(ProjectUtils::metadataForProject);
@@ -210,8 +315,12 @@ public interface ProjectHolderViewModel {
         .filter(ObjectUtils::isNotNull)
         .map(Category::name);
 
-      this.goalStringForTextView = project
-        .map(p -> this.userCurrency.format(p.goal(), p, false, RoundingMode.DOWN));
+      final Observable<Pair<Project, String>> projectAndChosenCurrency = project
+        .compose(combineLatestPair(chosenCurrency));
+
+      this.goalStringForTextView = projectAndChosenCurrency
+        .map(p -> this.userCurrency.format(p.first.goal(), p.first, false, RoundingMode.DOWN,
+          p.second));
 
       this.locationTextViewText = project
         .map(Project::location)
@@ -225,8 +334,10 @@ public interface ProjectHolderViewModel {
 
       this.playButtonIsGone = project.map(Project::hasVideo).map(BooleanUtils::negate);
 
-      this.pledgedTextViewText = project
-        .map(p -> this.userCurrency.format(p.pledged(), p, false, RoundingMode.DOWN));
+
+      this.pledgedTextViewText = projectAndChosenCurrency
+        .map(p -> this.userCurrency.format(p.first.pledged(), p.first,
+          false, RoundingMode.DOWN, p.second));
 
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)
@@ -306,6 +417,8 @@ public interface ProjectHolderViewModel {
         });
     }
 
+    private final BehaviorSubject<String> chosenCurrency = BehaviorSubject.create();
+
     private final PublishSubject<Pair<Project, String>> projectAndCountry = PublishSubject.create();
     private final PublishSubject<Void> projectSocialViewGroupClicked = PublishSubject.create();
 
@@ -353,132 +466,221 @@ public interface ProjectHolderViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override public void configureWith(final @NonNull Pair<Project, String> projectAndCountry) {
+    @Override
+    public void configureWith(final @NonNull Pair<Project, String> projectAndCountry) {
       this.projectAndCountry.onNext(projectAndCountry);
     }
-    @Override public void projectSocialViewGroupClicked() {
+    @Override
+    public void projectSocialViewGroupClicked() {
       this.projectSocialViewGroupClicked.onNext(null);
     }
 
-    @Override public @NonNull Observable<String> avatarPhotoUrl() {
+    @Override
+    public @NonNull
+    Observable<String> avatarPhotoUrl() {
       return this.avatarPhotoUrl;
     }
-    @Override public @NonNull Observable<Boolean> backingViewGroupIsGone() {
+    @Override
+    public @NonNull
+    Observable<Boolean> backingViewGroupIsGone() {
       return this.backingViewGroupIsGone;
     }
-    @Override public @NonNull Observable<String> backersCountTextViewText() {
+    @Override
+    public @NonNull
+    Observable<String> backersCountTextViewText() {
       return this.backersCountTextViewText;
     }
-    @Override public @NonNull Observable<String> blurbTextViewText() {
+    @Override
+    public @NonNull
+    Observable<String> blurbTextViewText() {
       return this.blurbTextViewText;
     }
-    @Override public @NonNull Observable<String> categoryTextViewText() {
+    @Override
+    public @NonNull
+    Observable<String> categoryTextViewText() {
       return this.categoryTextViewText;
     }
-    @Override public @NonNull Observable<String> commentsCountTextViewText() {
+    @Override
+    public @NonNull
+    Observable<String> commentsCountTextViewText() {
       return this.commentsCountTextViewText;
     }
-    @Override public @NonNull Observable<String> creatorNameTextViewText() {
+    @Override
+    public @NonNull
+    Observable<String> creatorNameTextViewText() {
       return this.creatorNameTextViewText;
     }
-    @Override public @NonNull Observable<String> deadlineCountdownTextViewText() {
+    @Override
+    public @NonNull
+    Observable<String> deadlineCountdownTextViewText() {
       return this.deadlineCountdownTextViewText;
     }
-    @Override public @NonNull Observable<String> featuredTextViewRootCategory() {
+    @Override
+    public @NonNull
+    Observable<String> featuredTextViewRootCategory() {
       return this.featuredTextViewRootCategory;
     }
-    @Override public @NonNull Observable<Boolean> featuredViewGroupIsGone() {
+    @Override
+    public @NonNull
+    Observable<Boolean> featuredViewGroupIsGone() {
       return this.featuredViewGroupIsGone;
     }
-    @Override public @NonNull Observable<String> goalStringForTextView() {
+    @Override
+    public @NonNull
+    Observable<String> goalStringForTextView() {
       return this.goalStringForTextView;
     }
-    @Override public @NonNull Observable<String> locationTextViewText() {
+    @Override
+    public @NonNull
+    Observable<String> locationTextViewText() {
       return this.locationTextViewText;
     }
-    @Override public @NonNull Observable<Integer> percentageFundedProgress() {
+    @Override
+    public @NonNull
+    Observable<Integer> percentageFundedProgress() {
       return this.percentageFundedProgress;
     }
-    @Override public @NonNull Observable<Boolean> percentageFundedProgressBarIsGone() {
+    @Override
+    public @NonNull
+    Observable<Boolean> percentageFundedProgressBarIsGone() {
       return this.percentageFundedProgressBarIsGone;
     }
-    @Override public @NonNull Observable<Boolean> playButtonIsGone() {
+    @Override
+    public @NonNull
+    Observable<Boolean> playButtonIsGone() {
       return this.playButtonIsGone;
     }
-    @Override public @NonNull Observable<String> pledgedTextViewText() {
+    @Override
+    public @NonNull
+    Observable<String> pledgedTextViewText() {
       return this.pledgedTextViewText;
     }
-    @Override public @NonNull Observable<DateTime> projectDisclaimerGoalReachedDateTime() {
+    @Override
+    public @NonNull
+    Observable<DateTime> projectDisclaimerGoalReachedDateTime() {
       return this.projectDisclaimerGoalReachedDateTime;
     }
-    @Override public @NonNull Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString() {
+    @Override
+    public @NonNull
+    Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString() {
       return this.projectDisclaimerGoalNotReachedString;
     }
-    @Override public @NonNull Observable<Boolean> projectDisclaimerTextViewIsGone() {
+    @Override
+    public @NonNull
+    Observable<Boolean> projectDisclaimerTextViewIsGone() {
       return this.projectDisclaimerTextViewIsGone;
     }
-    @Override public @NonNull Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt() {
+    @Override
+    public @NonNull
+    Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt() {
       return this.projectMetadataViewGroupBackgroundDrawableInt;
     }
-    @Override public @NonNull Observable<Boolean> projectMetadataViewGroupIsGone() {
+    @Override
+    public @NonNull
+    Observable<Boolean> projectMetadataViewGroupIsGone() {
       return this.projectMetadataViewGroupIsGone;
     }
-    @Override public @NonNull Observable<String> projectNameTextViewText() {
+    @Override
+    public @NonNull
+    Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
     }
-    @Override public @NonNull Observable<Project> projectOutput() {
+    @Override
+    public @NonNull
+    Observable<Project> projectOutput() {
       return this.projectOutput;
     }
-    @Override public @NonNull Observable<Photo> projectPhoto() {
+    @Override
+    public @NonNull
+    Observable<Photo> projectPhoto() {
       return this.projectPhoto;
     }
-    @Override public @NonNull Observable<Boolean> projectSocialImageViewIsGone() {
+    @Override
+    public @NonNull
+    Observable<Boolean> projectSocialImageViewIsGone() {
       return this.projectSocialImageViewIsGone;
     }
-    @Override public @NonNull Observable<String> projectSocialImageViewUrl() {
+    @Override
+    public @NonNull
+    Observable<String> projectSocialImageViewUrl() {
       return this.projectSocialImageViewUrl;
     }
-    @Override public @NonNull Observable<List<User>> projectSocialTextViewFriends() {
+    @Override
+    public @NonNull
+    Observable<List<User>> projectSocialTextViewFriends() {
       return this.projectSocialTextViewFriends;
     }
-    @Override public @NonNull Observable<Boolean> projectSocialViewGroupIsGone() {
+    @Override
+    public @NonNull
+    Observable<Boolean> projectSocialViewGroupIsGone() {
       return this.projectSocialViewGroupIsGone;
     }
-    @Override public @NonNull Observable<Integer> projectStateViewGroupBackgroundColorInt() {
+    @Override
+    public @NonNull
+    Observable<Integer> projectStateViewGroupBackgroundColorInt() {
       return this.projectStateViewGroupBackgroundColorInt;
     }
-    @Override public @NonNull Observable<Boolean> projectStateViewGroupIsGone() {
+    @Override
+    public @NonNull
+    Observable<Boolean> projectStateViewGroupIsGone() {
       return this.projectStateViewGroupIsGone;
     }
-    @Override public @NonNull Observable<Project> startProjectSocialActivity() {
+    @Override
+    public @NonNull
+    Observable<Project> startProjectSocialActivity() {
       return this.startProjectSocialActivity;
     }
-    @Override public @NonNull Observable<Void> setCanceledProjectStateView() {
+    @Override
+    public @NonNull
+    Observable<Void> setCanceledProjectStateView() {
       return this.setCanceledProjectStateView;
     }
-    @Override public @NonNull Observable<Void> setProjectSocialClickListener() {
+    @Override
+    public @NonNull
+    Observable<Void> setProjectSocialClickListener() {
       return this.setProjectSocialClickListener;
     }
-    @Override public @NonNull Observable<DateTime> setSuccessfulProjectStateView() {
+    @Override
+    public @NonNull
+    Observable<DateTime> setSuccessfulProjectStateView() {
       return this.setSuccessfulProjectStateView;
     }
-    @Override public @NonNull Observable<Void> setSuspendedProjectStateView() {
+    @Override
+    public @NonNull
+    Observable<Void> setSuspendedProjectStateView() {
       return this.setSuspendedProjectStateView;
     }
-    @Override public @NonNull Observable<DateTime> setUnsuccessfulProjectStateView() {
+    @Override
+    public @NonNull
+    Observable<DateTime> setUnsuccessfulProjectStateView() {
       return this.setUnsuccessfulProjectStateView;
     }
-    @Override public @NonNull Observable<Boolean> shouldSetDefaultStatsMargins() {
+    @Override
+    public @NonNull
+    Observable<Boolean> shouldSetDefaultStatsMargins() {
       return this.shouldSetDefaultStatsMargins;
     }
-    @Override public @NonNull Observable<String> updatesCountTextViewText() {
+    @Override
+    public @NonNull
+    Observable<String> updatesCountTextViewText() {
       return this.updatesCountTextViewText;
     }
-    @Override public @NonNull Observable<Boolean> usdConversionTextViewIsGone() {
+    @Override
+    public @NonNull
+    Observable<Boolean> usdConversionTextViewIsGone() {
       return this.usdConversionTextViewIsGone;
     }
-    @Override public @NonNull Observable<Pair<String, String>> usdConversionPledgedAndGoalText() {
+    @Override
+    public @NonNull
+    Observable<Pair<String, String>> usdConversionPledgedAndGoalText() {
       return this.usdConversionPledgedAndGoalText;
+    }
+
+    private String getChosenCurrency(User user, Project project) {
+      if (user != null) {
+        return user.chosenCurrency();
+      }
+      return project.currency();
     }
   }
 }

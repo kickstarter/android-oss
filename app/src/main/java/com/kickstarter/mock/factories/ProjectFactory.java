@@ -33,6 +33,7 @@ public final class ProjectFactory {
       .currency("USD")
       .currencySymbol("$")
       .currencyTrailingCode(true)
+      .fx_rate(1.0f)
       .goal(100.0f)
       .id(IdFactory.id())
       .name("Some Name")

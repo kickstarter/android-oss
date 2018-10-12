@@ -476,211 +476,165 @@ public interface ProjectHolderViewModel {
     }
 
     @Override
-    public @NonNull
-    Observable<String> avatarPhotoUrl() {
+    public @NonNull Observable<String> avatarPhotoUrl() {
       return this.avatarPhotoUrl;
     }
     @Override
-    public @NonNull
-    Observable<Boolean> backingViewGroupIsGone() {
+    public @NonNull Observable<Boolean> backingViewGroupIsGone() {
       return this.backingViewGroupIsGone;
     }
     @Override
-    public @NonNull
-    Observable<String> backersCountTextViewText() {
+    public @NonNull Observable<String> backersCountTextViewText() {
       return this.backersCountTextViewText;
     }
     @Override
-    public @NonNull
-    Observable<String> blurbTextViewText() {
+    public @NonNull Observable<String> blurbTextViewText() {
       return this.blurbTextViewText;
     }
     @Override
-    public @NonNull
-    Observable<String> categoryTextViewText() {
+    public @NonNull Observable<String> categoryTextViewText() {
       return this.categoryTextViewText;
     }
     @Override
-    public @NonNull
-    Observable<String> commentsCountTextViewText() {
+    public @NonNull Observable<String> commentsCountTextViewText() {
       return this.commentsCountTextViewText;
     }
     @Override
-    public @NonNull
-    Observable<String> creatorNameTextViewText() {
+    public @NonNull Observable<String> creatorNameTextViewText() {
       return this.creatorNameTextViewText;
     }
     @Override
-    public @NonNull
-    Observable<String> deadlineCountdownTextViewText() {
+    public @NonNull Observable<String> deadlineCountdownTextViewText() {
       return this.deadlineCountdownTextViewText;
     }
     @Override
-    public @NonNull
-    Observable<String> featuredTextViewRootCategory() {
+    public @NonNull Observable<String> featuredTextViewRootCategory() {
       return this.featuredTextViewRootCategory;
     }
     @Override
-    public @NonNull
-    Observable<Boolean> featuredViewGroupIsGone() {
+    public @NonNull Observable<Boolean> featuredViewGroupIsGone() {
       return this.featuredViewGroupIsGone;
     }
     @Override
-    public @NonNull
-    Observable<String> goalStringForTextView() {
+    public @NonNull Observable<String> goalStringForTextView() {
       return this.goalStringForTextView;
     }
     @Override
-    public @NonNull
-    Observable<String> locationTextViewText() {
+    public @NonNull Observable<String> locationTextViewText() {
       return this.locationTextViewText;
     }
     @Override
-    public @NonNull
-    Observable<Integer> percentageFundedProgress() {
+    public @NonNull Observable<Integer> percentageFundedProgress() {
       return this.percentageFundedProgress;
     }
     @Override
-    public @NonNull
-    Observable<Boolean> percentageFundedProgressBarIsGone() {
+    public @NonNull Observable<Boolean> percentageFundedProgressBarIsGone() {
       return this.percentageFundedProgressBarIsGone;
     }
     @Override
-    public @NonNull
-    Observable<Boolean> playButtonIsGone() {
+    public @NonNull Observable<Boolean> playButtonIsGone() {
       return this.playButtonIsGone;
     }
     @Override
-    public @NonNull
-    Observable<String> pledgedTextViewText() {
+    public @NonNull Observable<String> pledgedTextViewText() {
       return this.pledgedTextViewText;
     }
     @Override
-    public @NonNull
-    Observable<DateTime> projectDisclaimerGoalReachedDateTime() {
+    public @NonNull Observable<DateTime> projectDisclaimerGoalReachedDateTime() {
       return this.projectDisclaimerGoalReachedDateTime;
     }
     @Override
-    public @NonNull
-    Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString() {
+    public @NonNull Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString() {
       return this.projectDisclaimerGoalNotReachedString;
     }
     @Override
-    public @NonNull
-    Observable<Boolean> projectDisclaimerTextViewIsGone() {
+    public @NonNull Observable<Boolean> projectDisclaimerTextViewIsGone() {
       return this.projectDisclaimerTextViewIsGone;
     }
     @Override
-    public @NonNull
-    Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt() {
+    public @NonNull Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt() {
       return this.projectMetadataViewGroupBackgroundDrawableInt;
     }
     @Override
-    public @NonNull
-    Observable<Boolean> projectMetadataViewGroupIsGone() {
+    public @NonNull Observable<Boolean> projectMetadataViewGroupIsGone() {
       return this.projectMetadataViewGroupIsGone;
     }
     @Override
-    public @NonNull
-    Observable<String> projectNameTextViewText() {
+    public @NonNull Observable<String> projectNameTextViewText() {
       return this.projectNameTextViewText;
     }
     @Override
-    public @NonNull
-    Observable<Project> projectOutput() {
+    public @NonNull Observable<Project> projectOutput() {
       return this.projectOutput;
     }
     @Override
-    public @NonNull
-    Observable<Photo> projectPhoto() {
+    public @NonNull Observable<Photo> projectPhoto() {
       return this.projectPhoto;
     }
     @Override
-    public @NonNull
-    Observable<Boolean> projectSocialImageViewIsGone() {
+    public @NonNull Observable<Boolean> projectSocialImageViewIsGone() {
       return this.projectSocialImageViewIsGone;
     }
     @Override
-    public @NonNull
-    Observable<String> projectSocialImageViewUrl() {
+    public @NonNull Observable<String> projectSocialImageViewUrl() {
       return this.projectSocialImageViewUrl;
     }
     @Override
-    public @NonNull
-    Observable<List<User>> projectSocialTextViewFriends() {
+    public @NonNull Observable<List<User>> projectSocialTextViewFriends() {
       return this.projectSocialTextViewFriends;
     }
     @Override
-    public @NonNull
-    Observable<Boolean> projectSocialViewGroupIsGone() {
+    public @NonNull Observable<Boolean> projectSocialViewGroupIsGone() {
       return this.projectSocialViewGroupIsGone;
     }
     @Override
-    public @NonNull
-    Observable<Integer> projectStateViewGroupBackgroundColorInt() {
+    public @NonNull Observable<Integer> projectStateViewGroupBackgroundColorInt() {
       return this.projectStateViewGroupBackgroundColorInt;
     }
     @Override
-    public @NonNull
-    Observable<Boolean> projectStateViewGroupIsGone() {
+    public @NonNull Observable<Boolean> projectStateViewGroupIsGone() {
       return this.projectStateViewGroupIsGone;
     }
     @Override
-    public @NonNull
-    Observable<Project> startProjectSocialActivity() {
+    public @NonNull Observable<Project> startProjectSocialActivity() {
       return this.startProjectSocialActivity;
     }
     @Override
-    public @NonNull
-    Observable<Void> setCanceledProjectStateView() {
+    public @NonNull Observable<Void> setCanceledProjectStateView() {
       return this.setCanceledProjectStateView;
     }
     @Override
-    public @NonNull
-    Observable<Void> setProjectSocialClickListener() {
+    public @NonNull Observable<Void> setProjectSocialClickListener() {
       return this.setProjectSocialClickListener;
     }
     @Override
-    public @NonNull
-    Observable<DateTime> setSuccessfulProjectStateView() {
+    public @NonNull Observable<DateTime> setSuccessfulProjectStateView() {
       return this.setSuccessfulProjectStateView;
     }
     @Override
-    public @NonNull
-    Observable<Void> setSuspendedProjectStateView() {
+    public @NonNull Observable<Void> setSuspendedProjectStateView() {
       return this.setSuspendedProjectStateView;
     }
     @Override
-    public @NonNull
-    Observable<DateTime> setUnsuccessfulProjectStateView() {
+    public @NonNull Observable<DateTime> setUnsuccessfulProjectStateView() {
       return this.setUnsuccessfulProjectStateView;
     }
     @Override
-    public @NonNull
-    Observable<Boolean> shouldSetDefaultStatsMargins() {
+    public @NonNull Observable<Boolean> shouldSetDefaultStatsMargins() {
       return this.shouldSetDefaultStatsMargins;
     }
     @Override
-    public @NonNull
-    Observable<String> updatesCountTextViewText() {
+    public @NonNull Observable<String> updatesCountTextViewText() {
       return this.updatesCountTextViewText;
     }
     @Override
-    public @NonNull
-    Observable<Boolean> usdConversionTextViewIsGone() {
+    public @NonNull Observable<Boolean> usdConversionTextViewIsGone() {
       return this.usdConversionTextViewIsGone;
     }
     @Override
-    public @NonNull
-    Observable<Pair<String, String>> usdConversionPledgedAndGoalText() {
+    public @NonNull Observable<Pair<String, String>> usdConversionPledgedAndGoalText() {
       return this.usdConversionPledgedAndGoalText;
     }
 
-    private String getChosenCurrency(User user, Project project) {
-      if (user != null) {
-        return user.chosenCurrency();
-      }
-      return project.currency();
-    }
   }
 }

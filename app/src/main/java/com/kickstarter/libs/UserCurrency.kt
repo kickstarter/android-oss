@@ -56,7 +56,8 @@ class UserCurrency(private val currentConfigType: CurrentConfigType) {
     }
 
     /** Show's the project in the user's preferred currency. If the user has no preferred currency the project is shown
-     * in $US as a default.*/
+     * in $US as a default.
+     */
     private fun userCurrencyOptions(value: Float, project: Project, symbol: String): KSCurrency.CurrencyOptions {
         val fxRate = project.fx_rate()
         val config = this.currentConfigType.getConfig()

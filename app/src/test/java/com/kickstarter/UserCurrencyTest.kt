@@ -36,12 +36,12 @@ class UserCurrencyTest: TestCase() {
         Assert.assertEquals("£ 100", currency.format(100.0f, ProjectFactory.ukProject(), CurrencyCode.GBP.rawValue()))
     }
 
-//    fun testFormatCurrency_withUserInUK() {
-//        val currency = createUserCurrency("UK")
-//        Assert.assertEquals("$100 USD", currency.format(100.0f, ProjectFactory.project()))
-//        Assert.assertEquals("$100 CAD", currency.format(100.0f, ProjectFactory.caProject()))
-//        Assert.assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject()))
-//    }
+    fun testFormatCurrency_withUserInUK() {
+        val currency = createUserCurrency("UK")
+        Assert.assertEquals("$ 100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
+        Assert.assertEquals("CA$ 100", currency.format(100.0f, ProjectFactory.caProject(), CurrencyCode.CAD.rawValue()))
+        Assert.assertEquals("£ 100", currency.format(100.0f, ProjectFactory.ukProject(), CurrencyCode.GBP.rawValue()))
+    }
 
     fun testFormatCurrency_withUserInUnlaunchedCountry() {
         val currency = createUserCurrency("XX")

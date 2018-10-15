@@ -347,7 +347,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
         .build()
     );
 
-    this.clearPages.assertValues(Arrays.asList(0, 1, 2, 3), Arrays.asList(0, 2, 3, 4));
+    this.clearPages.assertValues(Arrays.asList(0, 1, 2, 3), Arrays.asList(0, 2, 3));
   }
 
   @Test

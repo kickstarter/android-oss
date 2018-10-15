@@ -16,6 +16,7 @@ import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 
 import org.joda.time.DateTime;
@@ -31,7 +32,7 @@ public interface ProjectCardHolderViewModel {
 
   interface Inputs {
     /** Call to configure view model with a project. */
-    void configureWith(Project project);
+    void configureWith(Pair<Project, DiscoveryParams> projectAndDiscoveryParams);
 
     /** Call when the project card has been clicked. */
     void projectCardClicked();
@@ -65,6 +66,8 @@ public interface ProjectCardHolderViewModel {
     Observable<Boolean> projectCardStatsViewGroupIsGone();
     Observable<DateTime> projectFailedAt();
     Observable<Boolean> projectStateViewGroupIsGone();
+    Observable<String> projectSubcategory();
+    Observable<Boolean> projectSubcategoryIsGone();
     Observable<DateTime> projectSuccessfulAt();
     Observable<DateTime> projectSuspendedAt();
     Observable<String> rootCategoryNameForFeatured();
@@ -184,6 +187,16 @@ public interface ProjectCardHolderViewModel {
         .map(ProjectUtils::isCompleted)
         .map(BooleanUtils::negate);
 
+      this.projectSubcategory = this.project
+        .map(Project::category)
+        .filter(ObjectUtils::isNotNull)
+        .map(Category::name);
+
+      this.projectSubcategoryIsGone = this.category
+        .filter(ObjectUtils::isNotNull)
+        .map(Category::isRoot)
+        .map(BooleanUtils::negate);
+
       this.projectSuccessfulAt = this.project
         .filter(p -> p.state().equals(Project.STATE_SUCCESSFUL))
         .map(Project::stateChangedAt)
@@ -207,6 +220,7 @@ public interface ProjectCardHolderViewModel {
       this.setDefaultTopPadding = this.metadataViewGroupIsGone;
     }
 
+    private final PublishSubject<Category> category = PublishSubject.create();
     private final PublishSubject<Project> project = PublishSubject.create();
     private final PublishSubject<Void> projectCardClicked = PublishSubject.create();
 
@@ -237,6 +251,8 @@ public interface ProjectCardHolderViewModel {
     private final Observable<Boolean> projectStateViewGroupIsGone;
     private final Observable<DateTime> projectCanceledAt;
     private final Observable<DateTime> projectFailedAt;
+    private final Observable<String> projectSubcategory;
+    private final Observable<Boolean> projectSubcategoryIsGone;
     private final Observable<DateTime> projectSuccessfulAt;
     private final Observable<DateTime> projectSuspendedAt;
     private final Observable<String> rootCategoryNameForFeatured;
@@ -246,8 +262,9 @@ public interface ProjectCardHolderViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override public void configureWith(final @NonNull Project project) {
-      this.project.onNext(project);
+    @Override public void configureWith(final @NonNull Pair<Project, DiscoveryParams> projectAndCategory) {
+      this.project.onNext(projectAndCategory.first);
+      this.category.onNext(projectAndCategory.second.category());
     }
     @Override public void projectCardClicked() {
       this.projectCardClicked.onNext(null);
@@ -329,6 +346,14 @@ public interface ProjectCardHolderViewModel {
     }
     @Override public @NonNull Observable<Boolean> projectStateViewGroupIsGone() {
       return this.projectStateViewGroupIsGone;
+    }
+    @Override
+    public Observable<String> projectSubcategory() {
+      return this.projectSubcategory;
+    }
+    @Override
+    public Observable<Boolean> projectSubcategoryIsGone() {
+      return this.projectSubcategoryIsGone;
     }
     @Override public @NonNull Observable<DateTime> projectCanceledAt() {
       return this.projectCanceledAt;

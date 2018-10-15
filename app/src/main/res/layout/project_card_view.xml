@@ -96,6 +96,8 @@
         android:layout_marginStart="@dimen/grid_4"
         android:layout_marginEnd="@dimen/grid_4"/>
 
+      <include layout="@layout/project_card_category"/>
+
     </LinearLayout>
 
   </android.support.v7.widget.CardView>

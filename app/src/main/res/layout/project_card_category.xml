@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginBottom="@dimen/grid_4"
+  android:layout_marginEnd="@dimen/grid_4"
+  android:layout_marginStart="@dimen/grid_4"
+  android:layout_marginTop="@dimen/grid_1"
+  android:orientation="horizontal">
+
+  <LinearLayout
+    android:id="@+id/subcategory_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/grid_5"
+    android:gravity="center_vertical">
+
+    <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:contentDescription="@null"
+      android:layout_marginEnd="@dimen/grid_1"
+      android:src="@drawable/icon__compass" />
+
+    <TextView
+      android:id="@+id/subcategory_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:maxLines="1"
+      tools:text="Product Design" />
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_toEndOf="@id/subcategory_container"
+    android:id="@+id/project_we_love"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
+
+    <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:contentDescription="@null"
+      android:layout_marginEnd="@dimen/grid_1"
+      android:src="@drawable/icon__small_k" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:maxLines="1"
+      android:text="@string/Projects_We_Love" />
+  </LinearLayout>
+</RelativeLayout>

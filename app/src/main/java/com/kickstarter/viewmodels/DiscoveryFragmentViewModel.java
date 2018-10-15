@@ -32,6 +32,7 @@ import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -68,7 +69,7 @@ public interface DiscoveryFragmentViewModel {
     Observable<Activity> activity();
 
     /** Emits a list of projects to display.*/
-    Observable<List<Project>> projectList();
+    Observable<List<Pair<Project, DiscoveryParams>>> projectList();
 
     /** Emits a boolean that determines if the saved empty view should be shown. */
     Observable<Boolean> shouldShowEmptySavedView();
@@ -135,11 +136,14 @@ public interface DiscoveryFragmentViewModel {
         .compose(takePairWhen(this.projectCardClicked))
         .map(pp -> RefTagUtils.projectAndRefTagFromParamsAndProject(pp.first, pp.second));
 
-      Observable.combineLatest(
+      Observable<List<Project>> projects = Observable.combineLatest(
         paginator.paginatedData(),
         this.rootCategories,
         DiscoveryUtils::fillRootCategoryForFeaturedProjects
-      )
+      );
+
+      Observable.combineLatest(projects, selectedParams,
+        this::combineProjectsAndParams)
         .compose(bindToLifecycle())
         .subscribe(this.projectList);
 
@@ -211,6 +215,14 @@ public interface DiscoveryFragmentViewModel {
         .compose(bindToLifecycle())
         .subscribe(p -> this.koala.trackViewedUpdate(p, KoalaContext.Update.ACTIVITY_SAMPLE));
     }
+    private List<Pair<Project, DiscoveryParams>> combineProjectsAndParams(List<Project> p, DiscoveryParams params) {
+
+      final ArrayList<Pair<Project, DiscoveryParams>> projectAndParams = new ArrayList<>(p.size());
+      for (int i = 0; i < p.size(); i++) {
+        projectAndParams.add(Pair.create(p.get(i), params));
+      }
+      return projectAndParams;
+    }
 
     private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {
       return activity != null && activity.id() != this.activitySamplePreference.get();
@@ -252,7 +264,7 @@ public interface DiscoveryFragmentViewModel {
 
     private final BehaviorSubject<Activity> activity = BehaviorSubject.create();
     private final BehaviorSubject<Void> heartContainerClicked = BehaviorSubject.create();
-    private final BehaviorSubject<List<Project>> projectList = BehaviorSubject.create();
+    private final BehaviorSubject<List<Pair<Project, DiscoveryParams>>> projectList = BehaviorSubject.create();
     private final Observable<Boolean> showActivityFeed;
     private final Observable<Boolean> showLoginTout;
     private final BehaviorSubject<Boolean> shouldShowEmptySavedView = BehaviorSubject.create();
@@ -310,7 +322,7 @@ public interface DiscoveryFragmentViewModel {
     @Override public @NonNull Observable<Activity> activity() {
       return this.activity;
     }
-    @Override public @NonNull Observable<List<Project>> projectList() {
+    @Override public @NonNull Observable<List<Pair<Project, DiscoveryParams>>> projectList() {
       return this.projectList;
     }
     @Override public @NonNull Observable<Boolean> showActivityFeed() {

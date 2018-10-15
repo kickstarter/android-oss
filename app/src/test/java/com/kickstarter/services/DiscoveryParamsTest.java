@@ -80,10 +80,6 @@ public final class DiscoveryParamsTest extends KSRobolectricTestCase {
     final Uri endingSoonUri = Uri.parse("https://www.kickstarter.com/discover/ending-soon");
     assertEquals(endingSoonParams, DiscoveryParams.fromUri(endingSoonUri));
 
-    final DiscoveryParams mostFundedParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.MOST_FUNDED).build();
-    final Uri mostFundedUri = Uri.parse("https://www.kickstarter.com/discover/most-funded");
-    assertEquals(mostFundedParams, DiscoveryParams.fromUri(mostFundedUri));
-
     final DiscoveryParams newestParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.NEWEST).staffPicks(true).build();
     final Uri newestUri = Uri.parse("https://www.kickstarter.com/discover/newest");
     assertEquals(newestParams, DiscoveryParams.fromUri(newestUri));

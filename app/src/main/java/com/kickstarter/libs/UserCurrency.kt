@@ -83,6 +83,12 @@ class UserCurrency(private val currentConfigType: CurrentConfigType) {
     /** Returns the proper currency symbol based on the user's chosenCurrency preference.  */
     private fun currencySymbol(chosenCurrency: String): String {
         val symbol: String
+        val config = this.currentConfigType.getConfig()
+
+        if (config.countryCode() == "US" && chosenCurrency == CurrencyCode.USD.rawValue()) {
+            symbol = "$ "
+            return symbol
+        }
 
         when (chosenCurrency) {
             CurrencyCode.AUD.rawValue() -> symbol = "AU$ "

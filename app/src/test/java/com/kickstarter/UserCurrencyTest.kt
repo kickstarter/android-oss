@@ -7,7 +7,6 @@ import com.kickstarter.mock.factories.ProjectFactory
 import junit.framework.Assert
 import junit.framework.TestCase
 import type.CurrencyCode
-import java.math.RoundingMode
 
 class UserCurrencyTest: TestCase() {
 
@@ -31,14 +30,14 @@ class UserCurrencyTest: TestCase() {
 
     fun testFormatCurrency_withUserInCA() {
         val currency = createUserCurrency("CA")
-        Assert.assertEquals("$ 100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
+        Assert.assertEquals("US$ 100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
         Assert.assertEquals("CA$ 100", currency.format(100.0f, ProjectFactory.caProject(), CurrencyCode.CAD.rawValue()))
         Assert.assertEquals("£ 100", currency.format(100.0f, ProjectFactory.ukProject(), CurrencyCode.GBP.rawValue()))
     }
 
     fun testFormatCurrency_withUserInUK() {
         val currency = createUserCurrency("UK")
-        Assert.assertEquals("$ 100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
+        Assert.assertEquals("US$ 100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
         Assert.assertEquals("CA$ 100", currency.format(100.0f, ProjectFactory.caProject(), CurrencyCode.CAD.rawValue()))
         Assert.assertEquals("£ 100", currency.format(100.0f, ProjectFactory.ukProject(), CurrencyCode.GBP.rawValue()))
     }
@@ -48,21 +47,6 @@ class UserCurrencyTest: TestCase() {
         Assert.assertEquals("US$ 100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
         Assert.assertEquals("US$ 100", currency.format(100.0f, ProjectFactory.caProject(), CurrencyCode.USD.rawValue()))
         Assert.assertEquals("US$ 100", currency.format(100.0f, ProjectFactory.ukProject(), CurrencyCode.USD.rawValue()))
-    }
-
-    fun testFormatCurrency_withCurrencyCodeExcluded() {
-        val currency = createUserCurrency("CA")
-        Assert.assertEquals("CA$ 100", currency.format(100.0f, ProjectFactory.project(), true, CurrencyCode.CAD.rawValue()))
-    }
-
-    fun testFormatCurrency_withUserInUSAndUSDPreferred() {
-        val currency = createUserCurrency("US")
-        Assert.assertEquals("$ 100", currency.format(100.0f, ProjectFactory.ukProject(), false,  RoundingMode.DOWN, CurrencyCode.USD.rawValue()))
-    }
-
-    fun testFormatCurrency_withUserInUKAndUSDPreferred() {
-        val currency = createUserCurrency("UK")
-        Assert.assertEquals("£ 100", currency.format(100.0f, ProjectFactory.ukProject(), false, RoundingMode.DOWN, CurrencyCode.GBP.rawValue()))
     }
 
     fun testFormatCurrency_roundsDown() {

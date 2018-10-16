@@ -229,7 +229,7 @@ public interface ProjectHolderViewModel {
         .map(Category::name);
 
       final Observable<Pair<Project, String>> projectAndChosenCurrency = project
-        .compose(combineLatestPair(chosenCurrency));
+        .compose(combineLatestPair(this.chosenCurrency));
 
       this.goalStringForTextView = projectAndChosenCurrency
         .map(p -> this.userCurrency.format(p.first.goal(), p.first, false, RoundingMode.DOWN,

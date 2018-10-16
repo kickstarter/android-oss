@@ -74,7 +74,7 @@ class UserCurrency(private val currentConfigType: CurrentConfigType) {
                     .country(project.country())
                     .currencyCode("")
                     .currencySymbol(currencySymbol(symbol))
-                    .value(value * fxRate!!)
+                    .value(value * fxRate)
                     .build()
         }
 
@@ -98,9 +98,9 @@ class UserCurrency(private val currentConfigType: CurrentConfigType) {
             CurrencyCode.NZD.rawValue() -> symbol = "NZ$ "
             CurrencyCode.SEK.rawValue() -> symbol = "SEK "
             CurrencyCode.SGD.rawValue() -> symbol = "S$ "
-            CurrencyCode.USD.rawValue() -> symbol = "$ "
+            CurrencyCode.USD.rawValue() -> symbol = "US$ "
 
-            else -> symbol = "$ "
+            else -> symbol = "US$ "
         }
         return symbol
     }

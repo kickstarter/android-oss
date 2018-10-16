@@ -19,7 +19,6 @@ public abstract class User implements Parcelable {
   public abstract @Nullable Boolean artsCultureNewsletter();
   public abstract Avatar avatar();
   public abstract @Nullable Integer backedProjectsCount();
-  public abstract @Nullable String chosenCurrency();
   public abstract @Nullable Integer createdProjectsCount();
   public abstract @Nullable Boolean filmNewsletter();
   public abstract @Nullable Boolean gamesNewsletter();
@@ -61,7 +60,6 @@ public abstract class User implements Parcelable {
     public abstract Builder artsCultureNewsletter(Boolean __);
     public abstract Builder avatar(Avatar __);
     public abstract Builder backedProjectsCount(Integer __);
-    public abstract Builder chosenCurrency(String __);
     public abstract Builder createdProjectsCount(Integer __);
     public abstract Builder filmNewsletter(Boolean __);
     public abstract Builder gamesNewsletter(Boolean __);

@@ -8,7 +8,7 @@ import java.math.RoundingMode
 class UserCurrency(private val currentConfigType: CurrentConfigType) {
 
     /**
-     * Returns a currency string appropriate to the user's locale and location relative to a project.
+     * Returns a currency string appropriate to the user's locale and preferred currency.
      *
      * @param initialValue Value to display, local to the project's currency.
      * @param project The project to use to look up currency information.
@@ -18,7 +18,7 @@ class UserCurrency(private val currentConfigType: CurrentConfigType) {
     }
 
     /**
-     * Returns a currency string appropriate to the user's locale and location relative to a project.
+     * Returns a currency string appropriate to the user's locale and preferred currency.
      *
      * @param initialValue Value to display, local to the project's currency.
      * @param project The project to use to look up currency information.
@@ -32,7 +32,7 @@ class UserCurrency(private val currentConfigType: CurrentConfigType) {
     }
 
     /**
-     * Returns a currency string appropriate to the user's locale and location relative to a project.
+     * Returns a currency string appropriate to the user's locale and preferred currency.
      *
      * @param initialValue Value to display, local to the project's currency.
      * @param project The project to use to look up currency information.

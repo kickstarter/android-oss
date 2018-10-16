@@ -188,7 +188,7 @@ public interface ProjectHolderViewModel {
       this.ksCurrency = environment.ksCurrency();
       this.userCurrency = environment.userCurrency();
 
-      this.apolloClient.userPrivacy().repeat()
+      this.apolloClient.userPrivacy()
         .map(currency -> Objects.requireNonNull(currency.me()).chosenCurrency())
         .compose(Transformers.neverError())
         .map(c -> ObjectUtils.coalesce(c, CurrencyCode.USD.rawValue()))

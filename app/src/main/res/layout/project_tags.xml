@@ -13,44 +13,52 @@
     android:id="@+id/subcategory_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_centerVertical="true"
     android:layout_marginEnd="@dimen/grid_5"
     android:gravity="center_vertical">
 
     <ImageView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:contentDescription="@null"
       android:layout_marginEnd="@dimen/grid_1"
+      android:contentDescription="@null"
       android:src="@drawable/icon__compass" />
 
     <TextView
       android:id="@+id/subcategory_text_view"
+      style="@style/ProjectCardFootnote"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:ellipsize="end"
-      android:maxLines="1"
-      tools:text="Product Design" />
+      tools:text="This is a really long project subcategory" />
   </LinearLayout>
 
   <LinearLayout
-    android:layout_toEndOf="@id/subcategory_container"
-    android:id="@+id/project_we_love"
+    android:id="@+id/project_we_love_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical">
+    android:layout_centerVertical="true"
+    android:layout_toEndOf="@id/subcategory_container"
+    android:gravity="center_vertical"
+    tools:ignore="RelativeOverlap">
 
     <ImageView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:contentDescription="@null"
       android:layout_marginEnd="@dimen/grid_1"
+      android:contentDescription="@null"
       android:src="@drawable/icon__small_k" />
 
     <TextView
+      style="@style/ProjectCardFootnote"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:ellipsize="end"
-      android:maxLines="1"
       android:text="@string/Projects_We_Love" />
   </LinearLayout>
+
+  <ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentEnd="true"
+    android:contentDescription="@null"
+    android:src="@drawable/gradient_tag" />
 </RelativeLayout>

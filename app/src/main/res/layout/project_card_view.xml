@@ -96,7 +96,9 @@
         android:layout_marginStart="@dimen/grid_4"
         android:layout_marginEnd="@dimen/grid_4"/>
 
-      <include layout="@layout/project_card_category"/>
+      <include
+        android:id="@+id/project_card_tags"
+        layout="@layout/project_tags" />
 
     </LinearLayout>
 

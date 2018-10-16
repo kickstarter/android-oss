@@ -43,7 +43,6 @@ import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 public final class ProjectCardViewHolder extends KSViewHolder {
   private final ProjectCardHolderViewModel.ViewModel viewModel;
   private final KSString ksString;
-  private final Delegate delegate;
 
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
@@ -69,6 +68,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_card_view_group) ViewGroup projectCardViewGroup;
   protected @Bind(R.id.project_card_stats_view_group) ViewGroup projectCardStatsViewGroup;
   protected @Bind(R.id.project_metadata_view_group) ViewGroup projectMetadataViewGroup;
+  protected @Bind(R.id.project_card_tags) ViewGroup projectTagContainerIsGone;
+  protected @Bind(R.id.project_we_love_container) ViewGroup projectWeLoveContainer;
   protected @Bind(R.id.subcategory_container) ViewGroup subcategoryContainer;
   protected @Bind(R.id.subcategory_text_view) TextView subcategoryTextView;
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
@@ -97,7 +98,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
   public ProjectCardViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
-    this.delegate = delegate;
     this.ksString = environment().ksString();
     this.viewModel = new ProjectCardHolderViewModel.ViewModel(environment());
 
@@ -220,7 +220,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.projectStateViewGroup));
 
-    this.viewModel.outputs.projectSubcategory()
+    this.viewModel.outputs.projectSubcategoryName()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setSubcategoryTextView);
@@ -239,6 +239,16 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setSuspendedAtTextView);
+
+    this.viewModel.outputs.projectTagContainerIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.projectTagContainerIsGone));
+
+    this.viewModel.outputs.projectWeLoveIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.projectWeLoveContainer));
 
     this.viewModel.outputs.rootCategoryNameForFeatured()
       .compose(bindToLifecycle())

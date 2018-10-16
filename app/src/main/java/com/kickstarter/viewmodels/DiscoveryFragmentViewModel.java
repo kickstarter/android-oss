@@ -136,13 +136,13 @@ public interface DiscoveryFragmentViewModel {
         .compose(takePairWhen(this.projectCardClicked))
         .map(pp -> RefTagUtils.projectAndRefTagFromParamsAndProject(pp.first, pp.second));
 
-      Observable<List<Project>> projects = Observable.combineLatest(
+      final Observable<List<Project>> projects = Observable.combineLatest(
         paginator.paginatedData(),
         this.rootCategories,
-        DiscoveryUtils::fillRootCategoryForFeaturedProjects
-      );
+        DiscoveryUtils::fillRootCategoryForFeaturedProjects);
 
-      Observable.combineLatest(projects, selectedParams,
+      Observable.combineLatest(projects,
+        selectedParams.distinctUntilChanged(),
         this::combineProjectsAndParams)
         .compose(bindToLifecycle())
         .subscribe(this.projectList);
@@ -215,11 +215,11 @@ public interface DiscoveryFragmentViewModel {
         .compose(bindToLifecycle())
         .subscribe(p -> this.koala.trackViewedUpdate(p, KoalaContext.Update.ACTIVITY_SAMPLE));
     }
-    private List<Pair<Project, DiscoveryParams>> combineProjectsAndParams(List<Project> p, DiscoveryParams params) {
 
-      final ArrayList<Pair<Project, DiscoveryParams>> projectAndParams = new ArrayList<>(p.size());
-      for (int i = 0; i < p.size(); i++) {
-        projectAndParams.add(Pair.create(p.get(i), params));
+    private List<Pair<Project, DiscoveryParams>> combineProjectsAndParams(final @NonNull List<Project> projects, final @NonNull DiscoveryParams params) {
+      final ArrayList<Pair<Project, DiscoveryParams>> projectAndParams = new ArrayList<>(projects.size());
+      for (int i = 0; i < projects.size(); i++) {
+        projectAndParams.add(Pair.create(projects.get(i), params));
       }
       return projectAndParams;
     }

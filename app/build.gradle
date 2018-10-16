@@ -148,6 +148,7 @@ android {
             java.srcDir file('src/androidTest/java')
             java.srcDir file('src/androidTest/kotlin')
         }
+        test.java.srcDirs += 'src/test/kotlin'
         main.java.srcDirs += 'src/main/kotlin'
     }
 

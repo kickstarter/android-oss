@@ -386,7 +386,6 @@ public interface ProjectHolderViewModel {
     @Override public void projectSocialViewGroupClicked() {
       this.projectSocialViewGroupClicked.onNext(null);
     }
-
     @Override public @NonNull Observable<String> avatarPhotoUrl() {
       return this.avatarPhotoUrl;
     }

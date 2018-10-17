@@ -356,8 +356,7 @@ public interface ProjectHolderViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override
-    public void configureWith(final @NonNull Pair<Project, String> projectAndCountry) {
+    @Override public void configureWith(final @NonNull Pair<Project, String> projectAndCountry) {
       this.projectAndCountry.onNext(projectAndCountry);
     }
     @Override public void projectSocialViewGroupClicked() {

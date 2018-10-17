@@ -56,7 +56,8 @@ class UserCurrency(private val currentConfigType: CurrentConfigType) {
     }
 
     /** Show's the project in the user's preferred currency. If the user has no preferred currency the project is shown
-     * in $US as a default.
+     * in $ as a default if the user is in the US. If the user is loacated outside of the US the default will show as
+     * $US.
      */
     private fun userCurrencyOptions(value: Float, project: Project, symbol: String): KSCurrency.CurrencyOptions {
         val fxRate = project.fx_rate()
@@ -66,7 +67,7 @@ class UserCurrency(private val currentConfigType: CurrentConfigType) {
             KSCurrency.CurrencyOptions.builder()
                     .country(project.country())
                     .currencyCode("")
-                    .currencySymbol("US$ ")
+                    .currencySymbol("US$")
                     .value(value * fxRate!!)
                     .build()
         } else {
@@ -86,27 +87,27 @@ class UserCurrency(private val currentConfigType: CurrentConfigType) {
         val config = this.currentConfigType.getConfig()
 
         if (config.countryCode() == "US" && chosenCurrency == CurrencyCode.USD.rawValue()) {
-            symbol = "$ "
+            symbol = "$"
             return symbol
         }
 
         when (chosenCurrency) {
-            CurrencyCode.AUD.rawValue() -> symbol = "AU$ "
-            CurrencyCode.CAD.rawValue() -> symbol = "CA$ "
-            CurrencyCode.CHF.rawValue() -> symbol = "CHF "
-            CurrencyCode.DKK.rawValue() -> symbol = "DKK "
-            CurrencyCode.EUR.rawValue() -> symbol = "€ "
-            CurrencyCode.GBP.rawValue() -> symbol = "£ "
-            CurrencyCode.HKD.rawValue() -> symbol = "HK$ "
-            CurrencyCode.JPY.rawValue() -> symbol = "¥ "
-            CurrencyCode.MXN.rawValue() -> symbol = "MX$ "
-            CurrencyCode.NOK.rawValue() -> symbol = "NOK "
-            CurrencyCode.NZD.rawValue() -> symbol = "NZ$ "
-            CurrencyCode.SEK.rawValue() -> symbol = "SEK "
-            CurrencyCode.SGD.rawValue() -> symbol = "S$ "
-            CurrencyCode.USD.rawValue() -> symbol = "US$ "
+            CurrencyCode.AUD.rawValue() -> symbol = "AU$"
+            CurrencyCode.CAD.rawValue() -> symbol = "CA$"
+            CurrencyCode.CHF.rawValue() -> symbol = "CHF"
+            CurrencyCode.DKK.rawValue() -> symbol = "DKK"
+            CurrencyCode.EUR.rawValue() -> symbol = "€"
+            CurrencyCode.GBP.rawValue() -> symbol = "£"
+            CurrencyCode.HKD.rawValue() -> symbol = "HK$"
+            CurrencyCode.JPY.rawValue() -> symbol = "¥"
+            CurrencyCode.MXN.rawValue() -> symbol = "MX$"
+            CurrencyCode.NOK.rawValue() -> symbol = "NOK"
+            CurrencyCode.NZD.rawValue() -> symbol = "NZ$"
+            CurrencyCode.SEK.rawValue() -> symbol = "SEK"
+            CurrencyCode.SGD.rawValue() -> symbol = "S$"
+            CurrencyCode.USD.rawValue() -> symbol = "US$"
 
-            else -> symbol = "US$ "
+            else -> symbol = "US$"
         }
         return symbol
     }

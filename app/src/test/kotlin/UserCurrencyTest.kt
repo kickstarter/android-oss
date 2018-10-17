@@ -23,38 +23,38 @@ class UserCurrencyTest: TestCase() {
 
     fun testFormatCurrency_withUserInUS() {
         val currency = createUserCurrency("US")
-        Assert.assertEquals("$ 100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
-        Assert.assertEquals("CA$ 100", currency.format(100.0f, ProjectFactory.caProject(), CurrencyCode.CAD.rawValue()))
-        Assert.assertEquals("£ 100", currency.format(100.0f, ProjectFactory.ukProject(), CurrencyCode.GBP.rawValue()))
+        Assert.assertEquals("$100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
+        Assert.assertEquals("CA$100", currency.format(100.0f, ProjectFactory.caProject(), CurrencyCode.CAD.rawValue()))
+        Assert.assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject(), CurrencyCode.GBP.rawValue()))
     }
 
     fun testFormatCurrency_withUserInCA() {
         val currency = createUserCurrency("CA")
-        Assert.assertEquals("US$ 100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
-        Assert.assertEquals("CA$ 100", currency.format(100.0f, ProjectFactory.caProject(), CurrencyCode.CAD.rawValue()))
-        Assert.assertEquals("£ 100", currency.format(100.0f, ProjectFactory.ukProject(), CurrencyCode.GBP.rawValue()))
+        Assert.assertEquals("US$100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
+        Assert.assertEquals("CA$100", currency.format(100.0f, ProjectFactory.caProject(), CurrencyCode.CAD.rawValue()))
+        Assert.assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject(), CurrencyCode.GBP.rawValue()))
     }
 
     fun testFormatCurrency_withUserInUK() {
         val currency = createUserCurrency("UK")
-        Assert.assertEquals("US$ 100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
-        Assert.assertEquals("CA$ 100", currency.format(100.0f, ProjectFactory.caProject(), CurrencyCode.CAD.rawValue()))
-        Assert.assertEquals("£ 100", currency.format(100.0f, ProjectFactory.ukProject(), CurrencyCode.GBP.rawValue()))
+        Assert.assertEquals("US$100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
+        Assert.assertEquals("CA$100", currency.format(100.0f, ProjectFactory.caProject(), CurrencyCode.CAD.rawValue()))
+        Assert.assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject(), CurrencyCode.GBP.rawValue()))
     }
 
     fun testFormatCurrency_withUserInUnlaunchedCountry() {
         val currency = createUserCurrency("XX")
-        Assert.assertEquals("US$ 100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
-        Assert.assertEquals("US$ 100", currency.format(100.0f, ProjectFactory.caProject(), CurrencyCode.USD.rawValue()))
-        Assert.assertEquals("US$ 100", currency.format(100.0f, ProjectFactory.ukProject(), CurrencyCode.USD.rawValue()))
+        Assert.assertEquals("US$100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
+        Assert.assertEquals("US$100", currency.format(100.0f, ProjectFactory.caProject(), CurrencyCode.USD.rawValue()))
+        Assert.assertEquals("US$100", currency.format(100.0f, ProjectFactory.ukProject(), CurrencyCode.USD.rawValue()))
     }
 
     fun testFormatCurrency_roundsDown() {
         val currency = createUserCurrency("US")
         val project = ProjectFactory.project()
-        Assert.assertEquals("$ 100", currency.format(100.4f, project, CurrencyCode.USD.rawValue()))
-        Assert.assertEquals("$ 100", currency.format(100.5f, project, CurrencyCode.USD.rawValue()))
-        Assert.assertEquals("$ 101", currency.format(101.5f, project, CurrencyCode.USD.rawValue()))
-        Assert.assertEquals("$ 100", currency.format(100.9f, project, CurrencyCode.USD.rawValue()))
+        Assert.assertEquals("$100", currency.format(100.4f, project, CurrencyCode.USD.rawValue()))
+        Assert.assertEquals("$100", currency.format(100.5f, project, CurrencyCode.USD.rawValue()))
+        Assert.assertEquals("$101", currency.format(101.5f, project, CurrencyCode.USD.rawValue()))
+        Assert.assertEquals("$100", currency.format(100.9f, project, CurrencyCode.USD.rawValue()))
     }
 }

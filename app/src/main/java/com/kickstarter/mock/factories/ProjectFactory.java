@@ -32,6 +32,7 @@ public final class ProjectFactory {
       .createdAt(DateTime.now())
       .currency("USD")
       .currencySymbol("$")
+      .current_currency("USD")
       .currencyTrailingCode(true)
       .fx_rate(1.0f)
       .goal(100.0f)

@@ -8,7 +8,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.UserCurrency;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.ListUtils;
@@ -22,19 +21,15 @@ import com.kickstarter.models.Location;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 
 import org.joda.time.DateTime;
 
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Objects;
 
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
-import type.CurrencyCode;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
@@ -129,14 +124,10 @@ public interface ProjectHolderViewModel {
     /** Emits the social image view url for display. */
     Observable<String> projectSocialImageViewUrl();
 
-    /**
-     * Emits the list of friends to display display in the facepile.
-     */
+    /** Emits the list of friends to display display in the facepile.*/
     Observable<List<User>> projectSocialTextViewFriends();
 
-    /**
-     * Emits when the social view group should be gone.
-     */
+    /** Emits when the social view group should be gone. */
     Observable<Boolean> projectSocialViewGroupIsGone();
 
     /** Emits the state background color int for display. */
@@ -177,22 +168,14 @@ public interface ProjectHolderViewModel {
   }
 
   final class ViewModel extends ActivityViewModel<ProjectViewHolder> implements Inputs, Outputs {
-    private final ApolloClientType apolloClient;
     private final KSCurrency ksCurrency;
     private final UserCurrency userCurrency;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.apolloClient = environment.apolloClient();
       this.ksCurrency = environment.ksCurrency();
       this.userCurrency = environment.userCurrency();
-
-      this.apolloClient.userPrivacy()
-        .map(currency -> Objects.requireNonNull(currency.me()).chosenCurrency())
-        .compose(Transformers.neverError())
-        .map(c -> ObjectUtils.coalesce(c, CurrencyCode.USD.rawValue()))
-        .subscribe(this.chosenCurrency::onNext);
 
       final Observable<Project> project = this.projectAndCountry.map(PairUtils::first);
       final Observable<ProjectUtils.Metadata> projectMetadata = project.map(ProjectUtils::metadataForProject);
@@ -228,12 +211,9 @@ public interface ProjectHolderViewModel {
         .filter(ObjectUtils::isNotNull)
         .map(Category::name);
 
-      final Observable<Pair<Project, String>> projectAndChosenCurrency = project
-        .compose(combineLatestPair(this.chosenCurrency));
-
-      this.goalStringForTextView = projectAndChosenCurrency
-        .map(p -> this.userCurrency.format(p.first.goal(), p.first, false, RoundingMode.DOWN,
-          p.second));
+      this.goalStringForTextView = project
+        .map(p -> this.userCurrency.format(p.goal(), p, false, RoundingMode.DOWN,
+          p.current_currency()));
 
       this.locationTextViewText = project
         .map(Project::location)
@@ -247,10 +227,9 @@ public interface ProjectHolderViewModel {
 
       this.playButtonIsGone = project.map(Project::hasVideo).map(BooleanUtils::negate);
 
-
-      this.pledgedTextViewText = projectAndChosenCurrency
-        .map(p -> this.userCurrency.format(p.first.pledged(), p.first,
-          false, RoundingMode.DOWN, p.second));
+      this.pledgedTextViewText = project
+        .map(p -> this.userCurrency.format(p.pledged(), p,
+          false, RoundingMode.DOWN, p.current_currency()));
 
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)
@@ -329,8 +308,6 @@ public interface ProjectHolderViewModel {
           return Pair.create(pledged, goal);
         });
     }
-
-    private final BehaviorSubject<String> chosenCurrency = BehaviorSubject.create();
 
     private final PublishSubject<Pair<Project, String>> projectAndCountry = PublishSubject.create();
     private final PublishSubject<Void> projectSocialViewGroupClicked = PublishSubject.create();
@@ -444,8 +421,7 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<Boolean> projectDisclaimerTextViewIsGone() {
       return this.projectDisclaimerTextViewIsGone;
     }
-    @Override
-    public @NonNull Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt() {
+    @Override public @NonNull Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt() {
       return this.projectMetadataViewGroupBackgroundDrawableInt;
     }
     @Override public @NonNull Observable<Boolean> projectMetadataViewGroupIsGone() {

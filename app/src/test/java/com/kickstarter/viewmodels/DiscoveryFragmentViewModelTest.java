@@ -84,7 +84,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
         .build()
     );
 
-    // Projects are cleared, new projects load.
+    // Projects are cleared, new projects load with new params.
     this.hasProjects.assertValues(true, false, true, true);
     this.koalaTest.assertValues("Discover List View", "Discover List View");
 

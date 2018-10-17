@@ -364,8 +364,6 @@
     <item name="android:maxLines">1</item>
   </style>
 
-
-
   <style name="BodyPrimary" parent="TextPrimary">
     <item name="android:textSize">@dimen/body</item>
     <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>

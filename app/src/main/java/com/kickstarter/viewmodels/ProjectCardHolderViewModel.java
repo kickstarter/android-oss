@@ -267,11 +267,8 @@ public interface ProjectCardHolderViewModel {
 
       this.projectSubcategoryIsGone = this.discoveryParams
         .map(DiscoveryParams::category)
-        .filter(ObjectUtils::isNotNull)
-        .map(Category::isRoot)
-        .compose(combineLatestPair(projectCategory.map(Category::parentId).map(ObjectUtils::isNotNull)))
-        .map(rootsPair -> rootsPair.first && rootsPair.second)
-        .map(BooleanUtils::negate)
+        .compose(combineLatestPair(projectCategory))
+        .map(this::areParamsAllOrSameCategoryAsProject)
         .distinctUntilChanged();
 
       this.projectSubcategoryName = projectCategory
@@ -309,6 +306,10 @@ public interface ProjectCardHolderViewModel {
         .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.SAVING);
 
       this.setDefaultTopPadding = this.metadataViewGroupIsGone;
+    }
+
+    private boolean areParamsAllOrSameCategoryAsProject(Pair<Category, Category> categoryPair) {
+      return ObjectUtils.isNotNull(categoryPair.first) ? categoryPair.first.id() == categoryPair.second.id() : false;
     }
 
     private final PublishSubject<DiscoveryParams> discoveryParams = PublishSubject.create();

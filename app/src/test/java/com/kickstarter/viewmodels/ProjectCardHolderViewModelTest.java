@@ -433,7 +433,6 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
   public void testProjectSubcategoryIsGone() {
     setUpEnvironment(environment());
     final Project artProject = ProjectFactory.project().toBuilder().category(CategoryFactory.artCategory()).build();
-    final Project musicProject = ProjectFactory.project();
     final Project ceramicsProject = ProjectFactory.project().toBuilder().category(CategoryFactory.ceramicsCategory()).build();
 
     final DiscoveryParams allProjects = DiscoveryParams.builder().build();
@@ -441,12 +440,12 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
     final DiscoveryParams ceramicsProjects = DiscoveryParams.builder().category(CategoryFactory.ceramicsCategory()).build();
 
     //Root category is shown for project without subcategory when viewing all projects.
-    this.vm.inputs.configureWith(Pair.create(musicProject, allProjects));
-    this.projectSubcategoryIsGone.assertNoValues();
+    this.vm.inputs.configureWith(Pair.create(artProject, allProjects));
+    this.projectSubcategoryIsGone.assertValue(false);
 
     //Subcategory is shown when viewing all projects.
     this.vm.inputs.configureWith(Pair.create(ceramicsProject, allProjects));
-    this.projectSubcategoryIsGone.assertNoValues();
+    this.projectSubcategoryIsGone.assertValue(false);
 
     this.vm.inputs.configureWith(Pair.create(ceramicsProject, artProjects));
     this.projectSubcategoryIsGone.assertValue(false);
@@ -454,13 +453,16 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.configureWith(Pair.create(ceramicsProject, ceramicsProjects));
     this.projectSubcategoryIsGone.assertValues(false, true);
 
+    this.vm.inputs.configureWith(Pair.create(ceramicsProject, artProjects));
+    this.projectSubcategoryIsGone.assertValues(false, true, false);
+
     this.vm.inputs.configureWith(Pair.create(artProject, artProjects));
-    this.projectSubcategoryIsGone.assertValues(false, true);
+    this.projectSubcategoryIsGone.assertValues(false, true, false, true);
   }
 
   @Test
   public void testProjectSubcategoryName() {
-    Category category = CategoryFactory.ceramicsCategory();
+    final Category category = CategoryFactory.ceramicsCategory();
     final Project project = ProjectFactory.project().toBuilder().category(category).build();
     setUpEnvironment(environment());
 
@@ -494,6 +496,78 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
     this.projectSuspendedAt.assertValues(project.stateChangedAt());
+  }
+
+  @Test
+  public void testProjectTagContainerIsGone() {
+    setUpEnvironment(environment());
+
+    final Project artProject = ProjectFactory.project().toBuilder().category(CategoryFactory.artCategory()).build();
+    final Project ceramicsProject = ProjectFactory.project().toBuilder().category(CategoryFactory.ceramicsCategory()).build();
+    final Project ceramicsStaffPickProject = ProjectFactory.staffPick().toBuilder().category(CategoryFactory.ceramicsCategory()).build();
+    final Project artStaffPickProject = ProjectFactory.staffPick().toBuilder().category(CategoryFactory.artCategory()).build();
+    final DiscoveryParams allProjects = DiscoveryParams.builder().build();
+    final DiscoveryParams artProjects = DiscoveryParams.builder().category(CategoryFactory.artCategory()).build();
+    final DiscoveryParams staffPicks = DiscoveryParams.builder().staffPicks(true).build();
+    final DiscoveryParams ceramicsProjects = DiscoveryParams.builder().category(CategoryFactory.ceramicsCategory()).build();
+
+    this.vm.inputs.configureWith(Pair.create(artProject, allProjects));
+    this.projectTagContainerIsGone.assertValue(false);
+
+    this.vm.inputs.configureWith(Pair.create(artStaffPickProject, allProjects));
+    this.projectTagContainerIsGone.assertValue(false);
+
+    this.vm.inputs.configureWith(Pair.create(artProject, artProjects));
+    this.projectTagContainerIsGone.assertValues(false, true);
+
+    this.vm.inputs.configureWith(Pair.create(artStaffPickProject, artProjects));
+    this.projectTagContainerIsGone.assertValues(false, true, false);
+
+    this.vm.inputs.configureWith(Pair.create(ceramicsProject, artProjects));
+    this.projectTagContainerIsGone.assertValues(false, true, false);
+
+    this.vm.inputs.configureWith(Pair.create(ceramicsStaffPickProject, artProjects));
+    this.projectTagContainerIsGone.assertValues(false, true, false);
+
+    this.vm.inputs.configureWith(Pair.create(ceramicsStaffPickProject, ceramicsProjects));
+    this.projectTagContainerIsGone.assertValues(false, true, false);
+
+    this.vm.inputs.configureWith(Pair.create(ceramicsProject, ceramicsProjects));
+    this.projectTagContainerIsGone.assertValues(false, true, false, true);
+
+    this.vm.inputs.configureWith(Pair.create(ceramicsProject, staffPicks));
+    this.projectTagContainerIsGone.assertValues(false, true, false, true, false);
+
+    this.vm.inputs.configureWith(Pair.create(ceramicsStaffPickProject, staffPicks));
+    this.projectTagContainerIsGone.assertValues(false, true, false, true, false);
+
+    this.vm.inputs.configureWith(Pair.create(artProject, staffPicks));
+    this.projectTagContainerIsGone.assertValues(false, true, false, true, false);
+
+    this.vm.inputs.configureWith(Pair.create(artStaffPickProject, staffPicks));
+    this.projectTagContainerIsGone.assertValues(false, true, false, true, false);
+  }
+
+  @Test
+  public void testProjectWeLoveIsGone() {
+    setUpEnvironment(environment());
+
+    final Project project = ProjectFactory.project();
+    final Project staffPickProject = ProjectFactory.staffPick();
+    final DiscoveryParams allProjects = DiscoveryParams.builder().build();
+    final DiscoveryParams staffPicks = DiscoveryParams.builder().staffPicks(true).build();
+
+    this.vm.inputs.configureWith(Pair.create(project, allProjects));
+    this.projectWeLoveIsGone.assertValue(true);
+
+    this.vm.inputs.configureWith(Pair.create(staffPickProject, allProjects));
+    this.projectWeLoveIsGone.assertValues(true, false);
+
+    this.vm.inputs.configureWith(Pair.create(staffPickProject, staffPicks));
+    this.projectWeLoveIsGone.assertValues(true, false, true);
+
+    this.vm.inputs.configureWith(Pair.create(project, staffPicks));
+    this.projectWeLoveIsGone.assertValues(true, false, true, false);
   }
 
   @Test

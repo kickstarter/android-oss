@@ -33,7 +33,7 @@ public abstract class Project implements Parcelable {
   public abstract User creator();
   public abstract String currency(); // e.g.: USD
   public abstract String currencySymbol(); // e.g.: $
-  public abstract String current_currency();
+  public abstract String current_currency(); // e.g.: User's Preferred currency USD
   public abstract boolean currencyTrailingCode();
   public abstract @Nullable DateTime featuredAt();
   public abstract @Nullable List<User> friends();

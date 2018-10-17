@@ -308,7 +308,7 @@ public interface ProjectCardHolderViewModel {
       this.setDefaultTopPadding = this.metadataViewGroupIsGone;
     }
 
-    private boolean areParamsAllOrSameCategoryAsProject(Pair<Category, Category> categoryPair) {
+    private boolean areParamsAllOrSameCategoryAsProject(final @NonNull Pair<Category, Category> categoryPair) {
       return ObjectUtils.isNotNull(categoryPair.first) ? categoryPair.first.id() == categoryPair.second.id() : false;
     }
 

@@ -32,7 +32,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 public interface ProjectCardHolderViewModel {
 
   interface Inputs {
-    /** Call to configure view model with a project. */
+    /** Call to configure view model with a project and current discovery params. */
     void configureWith(Pair<Project, DiscoveryParams> projectAndDiscoveryParams);
 
     /** Call when the project card has been clicked. */

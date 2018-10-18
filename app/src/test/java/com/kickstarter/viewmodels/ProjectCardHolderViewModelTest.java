@@ -552,12 +552,12 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
   public void testProjectWeLoveIsGone() {
     setUpEnvironment(environment());
 
-    final Project project = ProjectFactory.project();
+    final Project musicProject = ProjectFactory.project();
     final Project staffPickProject = ProjectFactory.staffPick();
     final DiscoveryParams allProjects = DiscoveryParams.builder().build();
     final DiscoveryParams staffPicks = DiscoveryParams.builder().staffPicks(true).build();
 
-    this.vm.inputs.configureWith(Pair.create(project, allProjects));
+    this.vm.inputs.configureWith(Pair.create(musicProject, allProjects));
     this.projectWeLoveIsGone.assertValue(true);
 
     this.vm.inputs.configureWith(Pair.create(staffPickProject, allProjects));
@@ -565,9 +565,6 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.configureWith(Pair.create(staffPickProject, staffPicks));
     this.projectWeLoveIsGone.assertValues(true, false, true);
-
-    this.vm.inputs.configureWith(Pair.create(project, staffPicks));
-    this.projectWeLoveIsGone.assertValues(true, false, true, false);
   }
 
   @Test

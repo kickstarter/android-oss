@@ -89,6 +89,13 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/grid_4" />
 
+        <include
+          android:id="@+id/project_card_tags"
+          layout="@layout/project_tags"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/grid_1" />
+
       </LinearLayout>
 
     </LinearLayout>

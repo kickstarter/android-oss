@@ -50,6 +50,7 @@ public abstract class Project implements Parcelable {
   public abstract @Nullable Photo photo();
   public abstract @Nullable List<Reward> rewards();
   public abstract @Nullable String slug();
+  public abstract @Nullable Boolean staffPick();
   public abstract @State String state();
   public abstract @Nullable DateTime stateChangedAt();
   public abstract @Nullable Float staticUsdRate();
@@ -89,6 +90,7 @@ public abstract class Project implements Parcelable {
     public abstract Builder photo(Photo __);
     public abstract Builder rewards(List<Reward> __);
     public abstract Builder slug(String __);
+    public abstract Builder staffPick(Boolean __);
     public abstract Builder staticUsdRate(Float __);
     public abstract Builder state(@State String __);
     public abstract Builder stateChangedAt(DateTime __);

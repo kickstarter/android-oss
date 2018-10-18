@@ -38,6 +38,7 @@ public final class ProjectFactory {
       .name("Some Name")
       .pledged(50.0f)
       .photo(PhotoFactory.photo())
+      .staffPick(false)
       .state(Project.STATE_LIVE)
       .staticUsdRate(1.0f)
       .slug(slug)
@@ -214,6 +215,14 @@ public final class ProjectFactory {
       .toBuilder()
       .name("savedProject")
       .isStarred(true)
+      .build();
+  }
+
+  public static Project staffPick() {
+    return project()
+      .toBuilder()
+      .name("staffPickProject")
+      .staffPick(true)
       .build();
   }
 }

@@ -10,17 +10,6 @@ import type.CurrencyCode
 
 class UserCurrencyTest: TestCase() {
 
-    private fun createUserCurrency(countryCode: String): UserCurrency {
-        val config = ConfigFactory.config().toBuilder()
-                .countryCode(countryCode)
-                .build()
-
-        val currentConfig = MockCurrentConfig()
-        currentConfig.config(config)
-
-        return UserCurrency(currentConfig)
-    }
-
     fun testFormatCurrency_withUserInUS() {
         val currency = createUserCurrency("US")
         Assert.assertEquals("$100", currency.format(100.0f, ProjectFactory.project(), CurrencyCode.USD.rawValue()))
@@ -57,4 +46,16 @@ class UserCurrencyTest: TestCase() {
         Assert.assertEquals("$101", currency.format(101.5f, project, CurrencyCode.USD.rawValue()))
         Assert.assertEquals("$100", currency.format(100.9f, project, CurrencyCode.USD.rawValue()))
     }
+
+    private fun createUserCurrency(countryCode: String): UserCurrency {
+        val config = ConfigFactory.config().toBuilder()
+                .countryCode(countryCode)
+                .build()
+
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        return UserCurrency(currentConfig)
+    }
+
 }

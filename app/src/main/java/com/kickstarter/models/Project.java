@@ -33,11 +33,11 @@ public abstract class Project implements Parcelable {
   public abstract User creator();
   public abstract String currency(); // e.g.: USD
   public abstract String currencySymbol(); // e.g.: $
-  public abstract String current_currency(); // e.g.: User's Preferred currency USD
+  public abstract String currentCurrency(); // e.g.: User's Preferred currency USD
   public abstract boolean currencyTrailingCode();
   public abstract @Nullable DateTime featuredAt();
   public abstract @Nullable List<User> friends();
-  public abstract Float fx_rate();
+  public abstract Float fxRate();
   public abstract @Nullable DateTime deadline();
   public abstract float goal();
   public abstract long id(); // in the Kickstarter app, this is project.pid not project.id
@@ -74,12 +74,12 @@ public abstract class Project implements Parcelable {
     public abstract Builder creator(User __);
     public abstract Builder currency(String __);
     public abstract Builder currencySymbol(String __);
-    public abstract Builder current_currency(String __);
+    public abstract Builder currentCurrency(String __);
     public abstract Builder currencyTrailingCode(boolean __);
     public abstract Builder deadline(DateTime __);
     public abstract Builder featuredAt(DateTime __);
     public abstract Builder friends(List<User> __);
-    public abstract Builder fx_rate(Float __);
+    public abstract Builder fxRate(Float __);
     public abstract Builder goal(float __);
     public abstract Builder id(long __);
     public abstract Builder isBacking(boolean __);

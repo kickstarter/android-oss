@@ -12,9 +12,12 @@ class UserCurrency(private val currentConfigType: CurrentConfigType) {
      *
      * @param initialValue Value to display, local to the project's currency.
      * @param project The project to use to look up currency information.
+     * @param excludeCurrencyCode If true, hide the currency code, even if that makes the returned value ambiguous.
+     * This is used when space is constrained and the currency code can be determined elsewhere.
      */
     fun format(initialValue: Float, project: Project, symbol: String): String {
-        return format(initialValue, project, false, RoundingMode.DOWN, symbol)
+
+        return format(initialValue, project, RoundingMode.DOWN, symbol)
     }
 
     /**
@@ -25,29 +28,11 @@ class UserCurrency(private val currentConfigType: CurrentConfigType) {
      * @param excludeCurrencyCode If true, hide the currency code, even if that makes the returned value ambiguous.
      * This is used when space is constrained and the currency code can be determined elsewhere.
      */
-    fun format(initialValue: Float, project: Project,
-               excludeCurrencyCode: Boolean, symbol: String): String {
-
-        return format(initialValue, project, excludeCurrencyCode, RoundingMode.DOWN, symbol)
-    }
-
-    /**
-     * Returns a currency string appropriate to the user's locale and preferred currency.
-     *
-     * @param initialValue Value to display, local to the project's currency.
-     * @param project The project to use to look up currency information.
-     * @param excludeCurrencyCode If true, hide the currency code, even if that makes the returned value ambiguous.
-     * This is used when space is constrained and the currency code can be determined elsewhere.
-     */
-    fun format(initialValue: Float, project: Project,
-               excludeCurrencyCode: Boolean, roundingMode: RoundingMode, symbol: String): String {
+    fun format(initialValue: Float, project: Project, roundingMode: RoundingMode, symbol: String): String {
 
         val currencyOptions = userCurrencyOptions(initialValue, project, symbol)
 
-        val showCurrencyCode = showCurrencyCode(currencyOptions, excludeCurrencyCode)
-
         val numberOptions = NumberOptions.builder()
-                .currencyCode(if (showCurrencyCode) currencyOptions.currencyCode() else "")
                 .currencySymbol(currencyOptions.currencySymbol())
                 .roundingMode(roundingMode)
                 .build()
@@ -60,7 +45,7 @@ class UserCurrency(private val currentConfigType: CurrentConfigType) {
      * $US.
      */
     private fun userCurrencyOptions(value: Float, project: Project, symbol: String): KSCurrency.CurrencyOptions {
-        val fxRate = project.fx_rate()
+        val fxRate = project.fxRate()
         val config = this.currentConfigType.getConfig()
 
         return if (config.countryCode() == "XX") {
@@ -110,23 +95,5 @@ class UserCurrency(private val currentConfigType: CurrentConfigType) {
             else -> symbol = "US$"
         }
         return symbol
-    }
-
-    /**
-     * Determines whether the currency code should be shown. If the currency is ambiguous (e.g. CAD and USD both use `$`),
-     * we show the currency code if the user is not in the US, or the project is not in the US.
-     */
-    private fun showCurrencyCode(currencyOptions: KSCurrency.CurrencyOptions, excludeCurrencyCode: Boolean): Boolean {
-        if (excludeCurrencyCode) {
-            return false
-        }
-
-        val config = this.currentConfigType.config
-
-        val currencyIsDupe = config.currencyNeedsCode(currencyOptions.currencySymbol())
-        val userIsUS = config.countryCode() == "US"
-        val projectIsUS = currencyOptions.country() == "US"
-
-        return currencyIsDupe && !userIsUS || currencyIsDupe && !projectIsUS
     }
 }

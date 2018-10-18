@@ -212,8 +212,7 @@ public interface ProjectHolderViewModel {
         .map(Category::name);
 
       this.goalStringForTextView = project
-        .map(p -> this.userCurrency.format(p.goal(), p, false, RoundingMode.DOWN,
-          p.current_currency()));
+        .map(p -> this.userCurrency.format(p.goal(), p, RoundingMode.DOWN, p.currentCurrency()));
 
       this.locationTextViewText = project
         .map(Project::location)
@@ -228,8 +227,7 @@ public interface ProjectHolderViewModel {
       this.playButtonIsGone = project.map(Project::hasVideo).map(BooleanUtils::negate);
 
       this.pledgedTextViewText = project
-        .map(p -> this.userCurrency.format(p.pledged(), p,
-          false, RoundingMode.DOWN, p.current_currency()));
+        .map(p -> this.userCurrency.format(p.pledged(), p, RoundingMode.DOWN, p.currentCurrency()));
 
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)

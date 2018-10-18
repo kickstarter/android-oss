@@ -55,7 +55,7 @@
           android:layout_height="?android:attr/actionBarSize"
           android:layout_gravity="bottom"
           app:tabBackground="@drawable/click_indicator_light"
-          app:tabMode="scrollable"
+          app:tabMode="fixed"
           app:tabSelectedTextColor="@color/text_primary"
           app:tabTextAppearance="@style/TabTextAppearance"
           app:tabTextColor="@color/black_alpha_30" />

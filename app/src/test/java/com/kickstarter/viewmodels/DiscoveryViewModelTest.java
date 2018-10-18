@@ -325,7 +325,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     this.clearPages.assertNoValues();
 
-    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 4);
+    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 3);
 
     this.clearPages.assertNoValues();
 
@@ -336,7 +336,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
         .build()
     );
 
-    this.clearPages.assertValues(Arrays.asList(0, 1, 2, 3));
+    this.clearPages.assertValues(Arrays.asList(0, 1, 2));
 
     this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
@@ -347,7 +347,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
         .build()
     );
 
-    this.clearPages.assertValues(Arrays.asList(0, 1, 2, 3), Arrays.asList(0, 2, 3, 4));
+    this.clearPages.assertValues(Arrays.asList(0, 1, 2), Arrays.asList(0, 2, 3));
   }
 
   @Test

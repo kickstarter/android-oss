@@ -34,7 +34,7 @@ interface ChangePasswordViewModel {
         /** Emits when the password update was unsuccessful. */
         fun error(): Observable<String>
 
-        /** Emits when the user types a new password less than 6 characters. */
+        /** Emits a string resource to display when the user's new password entries are invalid. */
         fun passwordWarning(): Observable<Int>
 
         /** Emits when the progress bar should be visible. */

@@ -151,7 +151,6 @@ interface ChangePasswordViewModel {
                         && this.confirmPassword == this.newPassword
             }
 
-            private fun isNotEmptyAndAtLeast6Chars(password: String) = !password.isEmpty() && password.length >= MINIMUM_PASSWORD_LENGTH
             fun warning(): Int? {
                 return if (newPassword.isNotEmpty() && newPassword.length in 1 until MINIMUM_PASSWORD_LENGTH)
                     R.string.Password_min_length_message
@@ -159,6 +158,8 @@ interface ChangePasswordViewModel {
                     R.string.Passwords_matching_message
                 else null
             }
+
+            private fun isNotEmptyAndAtLeast6Chars(password: String) = !password.isEmpty() && password.length >= MINIMUM_PASSWORD_LENGTH
         }
     }
 }

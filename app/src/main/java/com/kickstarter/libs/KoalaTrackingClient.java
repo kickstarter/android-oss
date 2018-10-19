@@ -2,9 +2,9 @@ package com.kickstarter.libs;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -16,7 +16,9 @@ import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.libs.utils.MapUtils;
 import com.kickstarter.models.User;
-import com.kickstarter.services.KoalaService;
+import com.kickstarter.services.KoalaBackgroundService;
+import com.kickstarter.services.firebase.DispatcherKt;
+import com.kickstarter.ui.IntentKey;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,20 +30,15 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import io.fabric.sdk.android.Fabric;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public final class KoalaTrackingClient extends TrackingClientType {
-  public static final String TAG = KoalaTrackingClient.class.toString();
+  private static final String TAG = KoalaTrackingClient.class.getSimpleName();
   @Inject CurrentUserType currentUser;
   @Inject AndroidPayCapability androidPayCapability;
   @Inject Build build;
   @Nullable private User loggedInUser;
   private final @NonNull Context context;
-
-  private final @NonNull KoalaService service;
 
   // Cached values
   private @Nullable Boolean isGooglePlayServicesAvailable;
@@ -50,7 +47,6 @@ public final class KoalaTrackingClient extends TrackingClientType {
     final @ApplicationContext @NonNull Context context,
     final @NonNull CurrentUserType currentUser,
     final @NonNull AndroidPayCapability androidPayCapability,
-    final @NonNull KoalaService koalaService,
     final @NonNull Build build) {
 
     this.context = context;
@@ -60,8 +56,6 @@ public final class KoalaTrackingClient extends TrackingClientType {
 
     // Cache the most recent logged in user for default Koala properties.
     this.currentUser.observable().subscribe(u -> this.loggedInUser = u);
-
-    this.service = koalaService;
   }
 
   @Override
@@ -70,35 +64,19 @@ public final class KoalaTrackingClient extends TrackingClientType {
     newProperties.putAll(defaultProperties());
 
     try {
-      this.service
-        .track(getTrackingDataString(eventName, newProperties))
-        .subscribeOn(Schedulers.io())
-        .subscribe(handleResponse(eventName),
-          handleError(eventName));
+      final String trackingDataString = getTrackingDataString(eventName, newProperties);
+      final Bundle bundle = new Bundle();
+      bundle.putString(IntentKey.KOALA_EVENT_NAME, eventName);
+      bundle.putString(IntentKey.KOALA_EVENT, trackingDataString);
+
+      final String uniqueJobName = KoalaBackgroundService.BASE_JOB_NAME + System.currentTimeMillis();
+      DispatcherKt.dispatchJob(this.context, KoalaBackgroundService.class, uniqueJobName, bundle);
     } catch (JSONException e) {
-      logTrackingError(eventName);
+      if (this.build.isDebug()) {
+        Timber.e("Failed to encode event: " + eventName);
+      }
+      Fabric.getLogger().e(KoalaTrackingClient.TAG, "Failed to encode event: " + eventName);
     }
-  }
-
-  private @NonNull Action1<Throwable> handleError(final @NonNull String eventName) {
-    return __ -> {
-      if (this.build.isDebug()) {
-        logTrackingError(eventName);
-      }
-    };
-  }
-
-
-  private @NonNull Action1<Response<ResponseBody>> handleResponse(final @NonNull String eventName) {
-    return response -> {
-      if (this.build.isDebug()) {
-        if (response.isSuccessful()) {
-          Log.d(TAG, "Successfully tracked event: " + eventName);
-        } else {
-          logTrackingError(eventName);
-        }
-      }
-    };
   }
 
   private String getTrackingDataString(final @NonNull String eventName, final @NonNull Map<String, Object> newProperties) throws JSONException {
@@ -115,11 +93,6 @@ public final class KoalaTrackingClient extends TrackingClientType {
     trackingArray.put(trackingEvent);
 
     return Base64Utils.encodeUrlSafe(trackingArray.toString().getBytes());
-  }
-
-  private void logTrackingError(@NonNull final String eventName) {
-    Log.e(KoalaTrackingClient.class.toString(), "Failed to track event: " + eventName);
-    Fabric.getLogger().e(KoalaTrackingClient.class.toString(), "Failed to track event: " + eventName);
   }
 
   @NonNull

@@ -8,6 +8,6 @@ import rx.Observable
 
 interface KoalaService {
 
-    @POST("/track")
+    @POST("/native/track")
     fun track(@Query("data") data: String) : Observable<Response<ResponseBody>>
 }

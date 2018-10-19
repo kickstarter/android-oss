@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import UpdateUserPasswordMutation
 import android.support.annotation.NonNull
+import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.*
@@ -33,11 +34,8 @@ interface ChangePasswordViewModel {
         /** Emits when the password update was unsuccessful. */
         fun error(): Observable<String>
 
-        /** Emits when the user types a password confirmation that doesn't match the new password. */
-        fun passwordConfirmationWarningIsVisible(): Observable<Boolean>
-
         /** Emits when the user types a new password less than 6 characters. */
-        fun passwordLengthWarningIsVisible(): Observable<Boolean>
+        fun passwordWarning(): Observable<Int>
 
         /** Emits when the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
@@ -57,8 +55,7 @@ interface ChangePasswordViewModel {
         private val newPassword = PublishSubject.create<String>()
 
         private val error = BehaviorSubject.create<String>()
-        private val passwordConfirmationWarningIsVisible = BehaviorSubject.create<Boolean>()
-        private val passwordLengthWarningIsVisible = BehaviorSubject.create<Boolean>()
+        private val passwordWarning = BehaviorSubject.create<Int>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<String>()
@@ -70,27 +67,19 @@ interface ChangePasswordViewModel {
 
         init {
 
-            val changePassword = Observable.combineLatest(this.currentPassword,
-                    this.confirmPassword,
-                    this.newPassword,
+            val changePassword = Observable.combineLatest(this.currentPassword.startWith(""),
+                    this.newPassword.startWith(""),
+                    this.confirmPassword.startWith(""),
                     { current, new, confirm -> ChangePassword(current, new, confirm) })
 
-            this.newPassword
-                    .map<Boolean> { it.length in 1 until MINIMUM_PASSWORD_LENGTH }
+            changePassword
+                    .map { it.warning() }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.passwordLengthWarningIsVisible)
-
-            this.confirmPassword
-                    .compose(combineLatestPair<String, String>(this.newPassword))
-                    .filter { it.first.isNotEmpty() }
-                    .map<Boolean> { it.second != it.first }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.passwordConfirmationWarningIsVisible)
+                    .subscribe(this.passwordWarning)
 
             changePassword
-                    .map { cp -> cp.isValid() }
+                    .map { it.isValid() }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.saveButtonIsEnabled)
@@ -138,12 +127,8 @@ interface ChangePasswordViewModel {
             return this.error
         }
 
-        override fun passwordConfirmationWarningIsVisible(): Observable<Boolean> {
-            return this.passwordConfirmationWarningIsVisible
-        }
-
-        override fun passwordLengthWarningIsVisible(): Observable<Boolean> {
-            return this.passwordLengthWarningIsVisible
+        override fun passwordWarning(): Observable<Int> {
+            return this.passwordWarning
         }
 
         override fun progressBarIsVisible(): Observable<Boolean> {
@@ -167,6 +152,13 @@ interface ChangePasswordViewModel {
             }
 
             private fun isNotEmptyAndAtLeast6Chars(password: String) = !password.isEmpty() && password.length >= MINIMUM_PASSWORD_LENGTH
+            fun warning(): Int? {
+                return if (newPassword.isNotEmpty() && newPassword.length in 1 until MINIMUM_PASSWORD_LENGTH)
+                    R.string.Password_min_length_message
+                else if (confirmPassword.isNotEmpty() && confirmPassword != newPassword)
+                    R.string.Passwords_matching_message
+                else null
+            }
         }
     }
 }

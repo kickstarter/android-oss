@@ -121,7 +121,7 @@ patrocinadores</string>
   <string name="Either_the_pledge_or_the_project_was_canceled" formatted="false">Se canceló la contribución o el proyecto antes de que el plazo terminara.</string>
   <string name="Email" formatted="false">Correo electrónico</string>
   <string name="Email_frequency" formatted="false">Frecuencia de aviso por correo electrónico</string>
-  <string name="Email_must_be_a_valid_email_address" formatted="false">Email must be a valid email address.</string>
+  <string name="Email_must_be_a_valid_email_address" formatted="false">El correo electrónico debe tener una dirección de correo electrónico válida.</string>
   <string name="Email_notifications" formatted="false">Notificaciones por correo electrónico</string>
   <string name="Email_unverified" formatted="false">Esta dirección de correo electrónico no está verificada.</string>
   <string name="Ending_soon" formatted="false">Finaliza pronto</string>
@@ -282,7 +282,9 @@ patrocinadores</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">También puedes seleccionar una de las siguientes recompensas:</string>
   <string name="Other_payment_methods" formatted="false">Otros métodos de pago</string>
   <string name="Other_projects_you_might_like" formatted="false">Otros proyectos que te pueden gustar.</string>
+  <string name="Password_min_length_message" formatted="false">Tu contraseña debe tener al menos 6 caracteres.</string>
   <string name="Password_visibility" formatted="false">Visibilidad de la contraseña</string>
+  <string name="Passwords_matching_message" formatted="false">Las nuevas contraseñas deben coincidir.</string>
   <string name="Past_live_stream" formatted="false">Live Stream pasado</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Cargo efectuado a método de pago indicado.</string>
   <string name="Payment_methods" formatted="false">Métodos de pago</string>

@@ -281,7 +281,9 @@ Unterstützer</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">Oder eine andere Belohnung wählen:</string>
   <string name="Other_payment_methods" formatted="false">Weitere Zahlungsmethoden</string>
   <string name="Other_projects_you_might_like" formatted="false">Ähnliche Projekte:</string>
+  <string name="Password_min_length_message" formatted="false">Your password must be at least 6 characters long.</string>
   <string name="Password_visibility" formatted="false">Passwort-Anzeige</string>
+  <string name="Passwords_matching_message" formatted="false">New passwords must match.</string>
   <string name="Past_live_stream" formatted="false">Früherer Live-Stream</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Zahlungsmethode wurde erfolgreich belastet.</string>
   <string name="Payment_methods" formatted="false">Zahlungsmethoden</string>

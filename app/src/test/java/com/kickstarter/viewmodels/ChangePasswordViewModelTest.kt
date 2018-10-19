@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import UpdateUserPasswordMutation
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.services.MockApolloClient
 import org.junit.Test
@@ -12,8 +13,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ChangePasswordViewModel.ViewModel
 
     private val error = TestSubscriber<String>()
-    private val passwordConfirmationWarningIsVisible = TestSubscriber<Boolean>()
-    private val passwordLengthWarningIsVisible = TestSubscriber<Boolean>()
+    private val passwordWarning = TestSubscriber<Int>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val saveButtonIsEnabled = TestSubscriber<Boolean>()
     private val success = TestSubscriber<String>()
@@ -22,8 +22,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm = ChangePasswordViewModel.ViewModel(environment)
 
         this.vm.outputs.error().subscribe(this.error)
-        this.vm.outputs.passwordConfirmationWarningIsVisible().subscribe(this.passwordConfirmationWarningIsVisible)
-        this.vm.outputs.passwordLengthWarningIsVisible().subscribe(this.passwordLengthWarningIsVisible)
+        this.vm.outputs.passwordWarning().subscribe(this.passwordWarning)
         this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
         this.vm.outputs.saveButtonIsEnabled().subscribe(this.saveButtonIsEnabled)
         this.vm.outputs.success().subscribe(this.success)
@@ -45,29 +44,21 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPasswordConfirmationWarningIsVisible() {
+    fun testPasswordWarning() {
         setUpEnvironment(environment())
 
         this.vm.inputs.newPassword("password")
-
-        this.passwordConfirmationWarningIsVisible.assertNoValues()
-        this.vm.inputs.confirmPassword("p")
-        this.passwordConfirmationWarningIsVisible.assertValues(true)
-        this.vm.inputs.confirmPassword("password")
-        this.passwordConfirmationWarningIsVisible.assertValues(true, false)
-    }
-
-    @Test
-    fun testPasswordLengthWarningIsVisible() {
-        setUpEnvironment(environment())
-
-        this.passwordLengthWarningIsVisible.assertNoValues()
+        this.passwordWarning.assertValue(null)
         this.vm.inputs.newPassword("p")
-        this.passwordLengthWarningIsVisible.assertValues(true)
-        this.vm.inputs.newPassword("passw")
-        this.passwordLengthWarningIsVisible.assertValues(true)
+        this.passwordWarning.assertValues(null, R.string.Password_min_length_message)
         this.vm.inputs.newPassword("password")
-        this.passwordLengthWarningIsVisible.assertValues(true, false)
+        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null)
+        this.vm.inputs.confirmPassword("p")
+        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message)
+        this.vm.inputs.confirmPassword("passw")
+        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message)
+        this.vm.inputs.confirmPassword("password")
+        this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message, null)
     }
 
     @Test
@@ -88,11 +79,11 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.currentPassword("password")
         this.vm.inputs.newPassword("password")
         this.vm.inputs.confirmPassword("password")
-        this.saveButtonIsEnabled.assertValue(true)
+        this.saveButtonIsEnabled.assertValues(false, true)
         this.vm.inputs.confirmPassword("pass")
-        this.saveButtonIsEnabled.assertValues(true, false)
+        this.saveButtonIsEnabled.assertValues(false, true, false)
         this.vm.inputs.confirmPassword("passwerd")
-        this.saveButtonIsEnabled.assertValues(true, false)
+        this.saveButtonIsEnabled.assertValues(false,true, false)
     }
 
     @Test

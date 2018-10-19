@@ -280,7 +280,9 @@
   <string name="Or_select_a_different_reward_below_colon" formatted="false">別のリワードをみる：</string>
   <string name="Other_payment_methods" formatted="false">その他の支払方法</string>
   <string name="Other_projects_you_might_like" formatted="false">おすすめをさらに見る</string>
+  <string name="Password_min_length_message" formatted="false">Your password must be at least 6 characters long.</string>
   <string name="Password_visibility" formatted="false">パスワードの表示/非表示</string>
+  <string name="Passwords_matching_message" formatted="false">New passwords must match.</string>
   <string name="Past_live_stream" formatted="false">過去のプロジェクト</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">支払い方法が登録されました。</string>
   <string name="Payment_methods" formatted="false">お支払い方法</string>

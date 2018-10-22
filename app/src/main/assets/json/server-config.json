@@ -316,6 +316,8 @@
       "Other_payment_methods": "Other payment methods",
       "Other_projects_you_might_like": "Other projects you might like.",
       "percentage_funded": "%{percentage} funded",
+      "Password_min_length_message": "Your password must be at least 6 characters long.",
+      "Passwords_matching_message": "New passwords must match.",
       "Password_visibility": "Password visibility",
       "Past_live_stream": "Past live stream",
       "Payment_methods": "Payment methods",
@@ -2379,6 +2381,8 @@
       "Other_payment_methods": "Weitere Zahlungsmethoden",
       "Other_projects_you_might_like": "Ähnliche Projekte:",
       "percentage_funded": "%{percentage} finanziert",
+      "Password_min_length_message": "Your password must be at least 6 characters long.",
+      "Passwords_matching_message": "New passwords must match.",
       "Password_visibility": "Passwort-Anzeige",
       "Past_live_stream": "Früherer Live-Stream",
       "Payment_methods": "Zahlungsmethoden",
@@ -4260,7 +4264,7 @@
       "Either_the_pledge_or_the_project_was_canceled": "Se canceló la contribución o el proyecto antes de que el plazo terminara.",
       "Email": "Correo electrónico",
       "Email_frequency": "Frecuencia de aviso por correo electrónico",
-      "Email_must_be_a_valid_email_address": "Email must be a valid email address.",
+      "Email_must_be_a_valid_email_address": "El correo electrónico debe tener una dirección de correo electrónico válida.",
       "Email_notifications": "Notificaciones por correo electrónico",
       "Email_unverified": "Esta dirección de correo electrónico no está verificada.",
       "Ending_soon": "Finaliza pronto",
@@ -4442,6 +4446,8 @@
       "Other_payment_methods": "Otros métodos de pago",
       "Other_projects_you_might_like": "Otros proyectos que te pueden gustar.",
       "percentage_funded": "%{percentage} financiado",
+      "Password_min_length_message": "Tu contraseña debe tener al menos 6 caracteres.",
+      "Passwords_matching_message": "Las nuevas contraseñas deben coincidir.",
       "Password_visibility": "Visibilidad de la contraseña",
       "Past_live_stream": "Live Stream pasado",
       "Payment_methods": "Métodos de pago",
@@ -6505,6 +6511,8 @@
       "Other_payment_methods": "Autres moyens de paiement",
       "Other_projects_you_might_like": "Autre projets qui pourraient vous intéresser",
       "percentage_funded": "Financé à %{percentage}",
+      "Password_min_length_message": "Your password must be at least 6 characters long.",
+      "Passwords_matching_message": "New passwords must match.",
       "Password_visibility": "Visibilité du mot de passe",
       "Past_live_stream": "Diffusion en direct passée",
       "Payment_methods": "Moyens de paiement ",
@@ -8568,6 +8576,8 @@
       "Other_payment_methods": "その他の支払方法",
       "Other_projects_you_might_like": "おすすめをさらに見る",
       "percentage_funded": "%{percentage} 達成",
+      "Password_min_length_message": "Your password must be at least 6 characters long.",
+      "Passwords_matching_message": "New passwords must match.",
       "Password_visibility": "パスワードの表示/非表示",
       "Past_live_stream": "過去のプロジェクト",
       "Payment_methods": "お支払い方法",
@@ -10326,6 +10336,7 @@
     "ios_live_stream_discovery": true,
     "ios_live_stream_chat": true,
     "ios_backer_dashboard": true,
+    "new_project_build_reward_scheduling": true,
     "message_spam": true,
     "drip_iterate": true,
     "creator_search": true
@@ -10511,7 +10522,7 @@
   "ab_experiments": {
     "project_dashboard": "with_dashboard",
     "new_project_header": "experimental",
-    "stripe_elements_sepa": "control"
+    "stripe_elements_sepa": "experimental"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

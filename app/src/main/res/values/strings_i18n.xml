@@ -283,7 +283,9 @@ from friends yet.</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">Or select a different reward below:</string>
   <string name="Other_payment_methods" formatted="false">Other payment methods</string>
   <string name="Other_projects_you_might_like" formatted="false">Other projects you might like.</string>
+  <string name="Password_min_length_message" formatted="false">Your password must be at least 6 characters long.</string>
   <string name="Password_visibility" formatted="false">Password visibility</string>
+  <string name="Passwords_matching_message" formatted="false">New passwords must match.</string>
   <string name="Past_live_stream" formatted="false">Past live stream</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Payment method was successfully charged.</string>
   <string name="Payment_methods" formatted="false">Payment methods</string>

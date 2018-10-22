@@ -38,22 +38,12 @@ class ChangePasswordActivity : BaseActivity<ChangePasswordViewModel.ViewModel>()
                 .compose(Transformers.observeForUI())
                 .subscribe { ViewUtils.setGone(progress_bar, !it) }
 
-        this.viewModel.outputs.passwordConfirmationWarningIsVisible()
+        this.viewModel.outputs.passwordWarning()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe {
                     warning.text = when {
-                        it -> getString(R.string.Confirm_password)
-                        else -> null
-                    }
-                }
-
-        this.viewModel.outputs.passwordLengthWarningIsVisible()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {
-                    warning.text = when {
-                        it -> getString(R.string.signup_input_fields_password_min_characters)
+                        it != null -> getString(it)
                         else -> null
                     }
                 }

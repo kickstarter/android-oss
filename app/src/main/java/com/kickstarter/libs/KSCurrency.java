@@ -74,7 +74,7 @@ public final class KSCurrency {
    * @param initialValue Value to display, local to the project's currency.
    * @param project The project to use to look up currency information.
    */
-  public String formatWithUserPreference(final float initialValue, final @NonNull Project project, String symbol) {
+  public String formatWithUserPreference(final float initialValue, final @NonNull Project project, final String symbol) {
 
     return formatWithUserPreference(initialValue, project, RoundingMode.DOWN, symbol);
   }
@@ -85,7 +85,7 @@ public final class KSCurrency {
    * @param initialValue Value to display, local to the project's currency.
    * @param project The project to use to look up currency information.
    */
-  public String formatWithUserPreference(final float initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode, String symbol) {
+  public String formatWithUserPreference(final float initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode, final String symbol) {
 
     final CurrencyOptions currencyOptions = userCurrencyOptions(initialValue, project, symbol);
 
@@ -127,20 +127,22 @@ public final class KSCurrency {
    * in $ as a default if the user is in the US. If the user is located outside of the US the default will show as
    * $US.
    */
-  private @NonNull CurrencyOptions userCurrencyOptions(final float value, final @NonNull Project project, String symbol) {
+  private @NonNull CurrencyOptions userCurrencyOptions(final float value, final @NonNull Project project, final String symbol) {
     final Config config = this.currentConfig.getConfig();
     final Float fxRate = project.fxRate();
 
     return CurrencyOptions.builder()
-      .country(project.country())
-      .currencyCode("")
-      .currencySymbol(config.countryCode().equals("XX") ? "US$" : getSymbolForCurrency(symbol))
-      .value(value * fxRate)
-      .build();
+        .country(project.country())
+        .currencyCode("")
+        .currencySymbol(config.countryCode().equals("XX") ? "US$" : getSymbolForCurrency(symbol))
+        .value(value * fxRate)
+        .build();
   }
 
-  /** Returns the proper currency symbol based on the user's chosenCurrency preference.  */
-  private String getSymbolForCurrency(String chosenCurrency) {
+  /**
+   * Returns the proper currency symbol based on the user's chosenCurrency preference.
+   */
+  private String getSymbolForCurrency(final String chosenCurrency) {
     final String symbol;
     final Config config = this.currentConfig.getConfig();
 
@@ -148,8 +150,8 @@ public final class KSCurrency {
       symbol = "$";
       return symbol;
     } else if (config.countryCode().equals("XX")) {
-       symbol = "US$";
-       return symbol;
+      symbol = "US$";
+      return symbol;
     }
 
     if (chosenCurrency.equals(CurrencyCode.AUD.rawValue())) {
@@ -164,9 +166,9 @@ public final class KSCurrency {
       return "€";
     } else if (chosenCurrency.equals(CurrencyCode.GBP.rawValue())) {
       return "£";
-    }else if (chosenCurrency.equals(CurrencyCode.HKD.rawValue())) {
+    } else if (chosenCurrency.equals(CurrencyCode.HKD.rawValue())) {
       return "HK$";
-    }else if (chosenCurrency.equals(CurrencyCode.JPY.rawValue())) {
+    } else if (chosenCurrency.equals(CurrencyCode.JPY.rawValue())) {
       return "¥";
     } else if (chosenCurrency.equals(CurrencyCode.MXN.rawValue())) {
       return "MX$";
@@ -180,7 +182,7 @@ public final class KSCurrency {
       return "S$";
     } else if (chosenCurrency.equals(CurrencyCode.USD.rawValue())) {
       return "US$";
-    } else  {
+    } else {
       symbol = "US$";
     }
     return symbol;

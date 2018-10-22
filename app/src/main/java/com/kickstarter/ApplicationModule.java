@@ -35,7 +35,6 @@ import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.PushNotifications;
-import com.kickstarter.libs.UserCurrency;
 import com.kickstarter.libs.graphql.EmailAdapter;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
@@ -121,7 +120,6 @@ public final class ApplicationModule {
     final @NonNull Logout logout,
     final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
-    final @NonNull UserCurrency userCurrency,
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull WebClientType webClient,
     final @NonNull @WebEndpoint String webEndpoint) {
@@ -147,7 +145,6 @@ public final class ApplicationModule {
       .playServicesCapability(playServicesCapability)
       .scheduler(scheduler)
       .sharedPreferences(sharedPreferences)
-      .userCurrency(userCurrency)
       .webClient(webClient)
       .webEndpoint(webEndpoint)
       .build();
@@ -526,11 +523,6 @@ public final class ApplicationModule {
   @Singleton
   SharedPreferences provideSharedPreferences() {
     return PreferenceManager.getDefaultSharedPreferences(this.application);
-  }
-
-  @Provides
-  @Singleton UserCurrency providesUserCurrency(final @NonNull CurrentConfigType currentConfigType) {
-    return new UserCurrency(currentConfigType);
   }
 
   @Provides

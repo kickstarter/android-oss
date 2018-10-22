@@ -7,7 +7,6 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
-import com.kickstarter.libs.UserCurrency;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.ListUtils;
@@ -169,13 +168,11 @@ public interface ProjectHolderViewModel {
 
   final class ViewModel extends ActivityViewModel<ProjectViewHolder> implements Inputs, Outputs {
     private final KSCurrency ksCurrency;
-    private final UserCurrency userCurrency;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.ksCurrency = environment.ksCurrency();
-      this.userCurrency = environment.userCurrency();
 
       final Observable<Project> project = this.projectAndCountry.map(PairUtils::first);
       final Observable<ProjectUtils.Metadata> projectMetadata = project.map(ProjectUtils::metadataForProject);
@@ -212,7 +209,7 @@ public interface ProjectHolderViewModel {
         .map(Category::name);
 
       this.goalStringForTextView = project
-        .map(p -> this.userCurrency.format(p.goal(), p, RoundingMode.DOWN, p.currentCurrency()));
+        .map(p -> this.ksCurrency.formatWithUserPreference(p.goal(), p, RoundingMode.DOWN, p.currentCurrency()));
 
       this.locationTextViewText = project
         .map(Project::location)
@@ -227,7 +224,7 @@ public interface ProjectHolderViewModel {
       this.playButtonIsGone = project.map(Project::hasVideo).map(BooleanUtils::negate);
 
       this.pledgedTextViewText = project
-        .map(p -> this.userCurrency.format(p.pledged(), p, RoundingMode.DOWN, p.currentCurrency()));
+        .map(p -> this.ksCurrency.formatWithUserPreference(p.pledged(), p, RoundingMode.DOWN, p.currentCurrency()));
 
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)

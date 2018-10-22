@@ -9,6 +9,7 @@ import com.kickstarter.models.Project;
 import java.math.RoundingMode;
 
 import auto.parcel.AutoParcel;
+import type.CurrencyCode;
 
 public final class KSCurrency {
   private final CurrentConfigType currentConfig;
@@ -68,6 +69,35 @@ public final class KSCurrency {
   }
 
   /**
+   * Returns a currency string appropriate to the user's locale and preferred currency.
+   *
+   * @param initialValue Value to display, local to the project's currency.
+   * @param project The project to use to look up currency information.
+   */
+  public String formatWithUserPreference(final float initialValue, final @NonNull Project project, String symbol) {
+
+    return formatWithUserPreference(initialValue, project, RoundingMode.DOWN, symbol);
+  }
+
+  /**
+   * Returns a currency string appropriate to the user's locale and preferred currency.
+   *
+   * @param initialValue Value to display, local to the project's currency.
+   * @param project The project to use to look up currency information.
+   */
+  public String formatWithUserPreference(final float initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode, String symbol) {
+
+    final CurrencyOptions currencyOptions = userCurrencyOptions(initialValue, project, symbol);
+
+    final NumberOptions numberOptions = NumberOptions.builder()
+      .currencySymbol(currencyOptions.currencySymbol())
+      .roundingMode(roundingMode)
+      .build();
+
+    return NumberUtils.format(currencyOptions.value(), numberOptions);
+  }
+
+  /**
    * Build {@link CurrencyOptions} based on the project and whether we would prefer to show USD. Even if USD is preferred,
    * we only show USD if the user is in the US.
    */
@@ -91,6 +121,69 @@ public final class KSCurrency {
         .value(value)
         .build();
     }
+  }
+
+  /** Show's the project in the user's preferred currency. If the user has no preferred currency the project is shown
+   * in $ as a default if the user is in the US. If the user is located outside of the US the default will show as
+   * $US.
+   */
+  private @NonNull CurrencyOptions userCurrencyOptions(final float value, final @NonNull Project project, String symbol) {
+    final Config config = this.currentConfig.getConfig();
+    final Float fxRate = project.fxRate();
+
+    return CurrencyOptions.builder()
+      .country(project.country())
+      .currencyCode("")
+      .currencySymbol(config.countryCode().equals("XX") ? "US$" : getSymbolForCurrency(symbol))
+      .value(value * fxRate)
+      .build();
+  }
+
+  /** Returns the proper currency symbol based on the user's chosenCurrency preference.  */
+  private String getSymbolForCurrency(String chosenCurrency) {
+    final String symbol;
+    final Config config = this.currentConfig.getConfig();
+
+    if (config.countryCode().equals("US") && chosenCurrency.equals(CurrencyCode.USD.rawValue())) {
+      symbol = "$";
+      return symbol;
+    } else if (config.countryCode().equals("XX")) {
+       symbol = "US$";
+       return symbol;
+    }
+
+    if (chosenCurrency.equals(CurrencyCode.AUD.rawValue())) {
+      return "AU$";
+    } else if (chosenCurrency.equals(CurrencyCode.CAD.rawValue())) {
+      return "CA$";
+    } else if (chosenCurrency.equals(CurrencyCode.CHF.rawValue())) {
+      return "CHF";
+    } else if (chosenCurrency.equals(CurrencyCode.DKK.rawValue())) {
+      return "DKK";
+    } else if (chosenCurrency.equals(CurrencyCode.EUR.rawValue())) {
+      return "€";
+    } else if (chosenCurrency.equals(CurrencyCode.GBP.rawValue())) {
+      return "£";
+    }else if (chosenCurrency.equals(CurrencyCode.HKD.rawValue())) {
+      return "HK$";
+    }else if (chosenCurrency.equals(CurrencyCode.JPY.rawValue())) {
+      return "¥";
+    } else if (chosenCurrency.equals(CurrencyCode.MXN.rawValue())) {
+      return "MX$";
+    } else if (chosenCurrency.equals(CurrencyCode.NOK.rawValue())) {
+      return "NOK";
+    } else if (chosenCurrency.equals(CurrencyCode.NZD.rawValue())) {
+      return "NZ$";
+    } else if (chosenCurrency.equals(CurrencyCode.SEK.rawValue())) {
+      return "SEK";
+    } else if (chosenCurrency.equals(CurrencyCode.SGD.rawValue())) {
+      return "S$";
+    } else if (chosenCurrency.equals(CurrencyCode.USD.rawValue())) {
+      return "US$";
+    } else  {
+      symbol = "US$";
+    }
+    return symbol;
   }
 
   /**

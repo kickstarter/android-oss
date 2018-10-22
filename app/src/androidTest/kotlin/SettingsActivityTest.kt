@@ -1,3 +1,4 @@
+
 import android.content.Intent
 import android.support.test.espresso.intent.Intents
 import android.support.test.espresso.intent.Intents.intended
@@ -43,6 +44,7 @@ class SettingsActivityTest {
     @Test
     fun testLogoutClick() {
         events.clickOnView(R.id.log_out_row)
+        events.clickOnButtonInDialog("Log out")
         checkThat.nextOpenActivityIs(DiscoveryActivity::class.java)
     }
 

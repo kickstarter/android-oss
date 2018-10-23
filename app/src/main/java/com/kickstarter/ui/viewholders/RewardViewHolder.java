@@ -58,7 +58,7 @@ public final class RewardViewHolder extends KSViewHolder {
   protected @BindString(R.string.rewards_info_limited_rewards_remaining_left_of_reward_limit) String limitedRewardsRemainingString;
   protected @BindString(R.string.rewards_title_pledge_reward_currency_or_more) String pledgeRewardCurrencyOrMoreString;
   protected @BindString(R.string.project_back_button) String projectBackButtonString;
-  protected @BindString(R.string.rewards_title_about_amount_usd) String usdConversionString;
+  protected @BindString(R.string.About_reward_amount) String usdConversionString;
 
   public RewardViewHolder(final @NonNull View view) {
     super(view);

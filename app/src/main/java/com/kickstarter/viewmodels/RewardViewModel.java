@@ -22,7 +22,6 @@ import com.kickstarter.ui.viewholders.RewardViewHolder;
 
 import org.joda.time.DateTime;
 
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -243,13 +242,12 @@ public interface RewardViewModel {
         .map(Reward::title)
         .filter(ObjectUtils::isNotNull);
 
-      this.usdConversionTextViewIsGone = shouldDisplayUsdConversion
-        .map(BooleanUtils::negate)
-        .distinctUntilChanged();
+      this.usdConversionTextViewIsGone = this.projectAndReward
+        .map(p -> !p.first.currency().equals(p.first.currentCurrency()) )
+        .map(BooleanUtils::negate);
 
       this.usdConversionTextViewText = this.projectAndReward
-        .map(pr -> this.ksCurrency.format(pr.second.minimum(), pr.first, true, true, RoundingMode.UP))
-        .compose(takeWhen(shouldDisplayUsdConversion.filter(BooleanUtils::isTrue)));
+        .map(pr -> this.ksCurrency.formatWithUserPreference(pr.second.minimum(), pr.first, pr.first.currentCurrency()));
 
       this.whiteOverlayIsInvisible = this.projectAndReward
         .map(pr -> RewardUtils.isLimitReached(pr.second) && !BackingUtils.isBacked(pr.first, pr.second))

@@ -8,7 +8,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.utils.BooleanUtils;
-import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -292,8 +291,8 @@ public interface ProjectHolderViewModel {
         .filter(ObjectUtils::isNotNull)
         .map(NumberUtils::format);
 
-      this.usdConversionTextViewIsGone = this.projectAndCountry
-        .map(pc -> I18nUtils.isCountryUS(pc.second) && !I18nUtils.isCountryUS(pc.first.country()))
+      this.usdConversionTextViewIsGone = project
+        .map(pc -> !pc.currency().equals(pc.currentCurrency()))
         .map(BooleanUtils::negate);
 
       this.usdConversionPledgedAndGoalText = project

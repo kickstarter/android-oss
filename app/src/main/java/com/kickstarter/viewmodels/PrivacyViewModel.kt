@@ -80,6 +80,7 @@ interface PrivacyViewModel {
 
             currentUser
                     .take(1)
+                    .filter { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe({ this.userOutput.onNext(it) })
 

@@ -9,6 +9,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.ListUtils
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UserUtils
 import com.kickstarter.models.User
 import com.kickstarter.ui.activities.NewsletterActivity
@@ -92,12 +93,15 @@ interface NewsletterViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.currentUser::refresh)
 
-            this.currentUser.observable()
+            val currentUser = this.currentUser.observable()
+                    .filter { ObjectUtils.isNotNull(it) }
+
+            currentUser
                     .take(1)
                     .compose(bindToLifecycle())
                     .subscribe(this.userOutput::onNext)
 
-            this.currentUser.observable()
+            currentUser
                     .compose<Pair<User, Pair<Boolean, Newsletter>>>(takePairWhen<User, Pair<Boolean, Newsletter>>(this.newsletterInput))
                     .filter { us -> requiresDoubleOptIn(us.first, us.second.first) }
                     .map { us -> us.second.second }
@@ -109,7 +113,7 @@ interface NewsletterViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.koala::trackNewsletterToggle)
 
-            this.currentUser.observable()
+            currentUser
                     .map { isSubscribedToAllNewsletters(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.subscribeAll::onNext)

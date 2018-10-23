@@ -423,11 +423,11 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   public void testConversionHiddenForProject() {
     // Set the project currency and the user's chosen currency to the same value
     setUpEnvironment(environment());
-    final Project projectC = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("USD").build();
+    final Project project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("USD").build();
     final Reward reward = RewardFactory.reward();
 
     // the conversion should be hidden.
-    this.vm.inputs.projectAndReward(projectC, reward);
+    this.vm.inputs.projectAndReward(project, reward);
     this.usdConversionTextViewText.assertValueCount(1);
     this.usdConversionSectionIsGone.assertValue(true);
   }
@@ -436,11 +436,11 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   public void testConversionShownForProject() {
     // Set the project currency and the user's chosen currency to different values
     setUpEnvironment(environment());
-    final Project projectC = ProjectFactory.project().toBuilder().currency("CAD").currentCurrency("USD").build();
+    final Project project = ProjectFactory.project().toBuilder().currency("CAD").currentCurrency("USD").build();
     final Reward reward = RewardFactory.reward();
 
     // USD conversion should shown.
-    this.vm.inputs.projectAndReward(projectC, reward);
+    this.vm.inputs.projectAndReward(project, reward);
     this.usdConversionTextViewText.assertValueCount(1);
     this.usdConversionSectionIsGone.assertValue(false);
   }
@@ -455,11 +455,10 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     // Set project's country to CA and reward minimum to $0.30.
     final Project project = ProjectFactory.caProject();
-    final Project projectC = ProjectFactory.project().toBuilder().country("CA").currency("CAD").currentCurrency("USD").build();
     final Reward reward = RewardFactory.reward().toBuilder().minimum(0.3f).build();
 
     // USD conversion should be rounded up.
-    this.vm.inputs.projectAndReward(projectC, reward);
+    this.vm.inputs.projectAndReward(project, reward);
     this.usdConversionTextViewText.assertValue("$1");
   }
 

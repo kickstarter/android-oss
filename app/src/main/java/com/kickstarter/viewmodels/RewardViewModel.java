@@ -243,7 +243,7 @@ public interface RewardViewModel {
         .filter(ObjectUtils::isNotNull);
 
       this.usdConversionTextViewIsGone = this.projectAndReward
-        .map(p -> !p.first.currency().equals(p.first.currentCurrency()) )
+        .map(p -> !p.first.currency().equals(p.first.currentCurrency()))
         .map(BooleanUtils::negate);
 
       this.usdConversionTextViewText = this.projectAndReward

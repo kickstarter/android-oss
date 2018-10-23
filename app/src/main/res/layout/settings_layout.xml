@@ -3,11 +3,11 @@
 <LinearLayout
   android:id="@+id/new_settings_layout"
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@color/ksr_grey_100"
-  android:orientation="vertical"
-  xmlns:tools="http://schemas.android.com/tools">
+  android:orientation="vertical">
 
   <android.support.design.widget.AppBarLayout
     android:layout_width="match_parent"
@@ -29,11 +29,12 @@
 
       <LinearLayout
         android:id="@+id/edit_profile_row"
-        android:background="@color/white"
-        android:foreground="@drawable/click_indicator_light"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_12"
-        android:orientation="horizontal">
+        android:background="@color/white"
+        android:foreground="@drawable/click_indicator_light"
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <ImageView
           android:id="@+id/profile_picture_image_view"
@@ -42,7 +43,7 @@
           android:layout_marginStart="@dimen/activity_horizontal_margin"
           android:layout_marginTop="@dimen/activity_horizontal_margin"
           android:src="@color/ksr_green_500"
-          tools:ignore="ContentDescription"/>
+          tools:ignore="ContentDescription" />
 
         <LinearLayout
           android:layout_width="0dp"

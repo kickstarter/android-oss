@@ -8,8 +8,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.kickstarter.R
 import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.showErrorSnackbar
 import com.kickstarter.extensions.showConfirmationSnackbar
+import com.kickstarter.extensions.showErrorSnackbar
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ViewUtils
@@ -57,6 +57,14 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showErrorSnackbar(change_email_layout, it) }
+
+        this.viewModel.outputs.isEmailVerified()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    ViewUtils.setGone(email_verification_text_view, it)
+                    ViewUtils.setGone(resend_email_row, it)
+                }
 
         this.viewModel.outputs.saveButtonIsEnabled()
                 .compose(bindToLifecycle())

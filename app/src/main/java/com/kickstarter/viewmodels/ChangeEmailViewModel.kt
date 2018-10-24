@@ -38,6 +38,9 @@ interface ChangeEmailViewModel {
         /** Emits a string to display when email update fails.  */
         fun error(): Observable<String>
 
+        /** Emits a boolean to display if the user's email is verified. */
+        fun isEmailVerified(): Observable<Boolean>
+
         /** Emits a boolean that determines if update email call to server is executing.  */
         fun progressBarIsVisible(): Observable<Boolean>
 
@@ -60,6 +63,7 @@ interface ChangeEmailViewModel {
 
         private val currentEmail = BehaviorSubject.create<String>()
         private val emailErrorIsVisible = BehaviorSubject.create<Boolean>()
+        private val isEmailVerified = PublishSubject.create<Boolean>()
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val showProgressBar = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<Void>()
@@ -73,7 +77,10 @@ interface ChangeEmailViewModel {
             this.apolloClient.userPrivacy()
                     .compose(neverError())
                     .compose(bindToLifecycle())
-                    .subscribe { currentEmail.onNext(it.me()?.email()) }
+                    .subscribe {
+                        currentEmail.onNext(it.me()?.email())
+                        isEmailVerified.onNext(it.me()?.isEmailVerified())
+                    }
 
             this.emailFocus
                     .compose(combineLatestPair<Boolean, String>(this.email))
@@ -130,6 +137,8 @@ interface ChangeEmailViewModel {
         override fun emailErrorIsVisible(): Observable<Boolean> = this.emailErrorIsVisible
 
         override fun error(): Observable<String> = this.error
+
+        override fun isEmailVerified(): Observable<Boolean> = this.isEmailVerified
 
         override fun progressBarIsVisible(): Observable<Boolean> = this.showProgressBar
 

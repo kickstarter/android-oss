@@ -133,6 +133,49 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testConversionHiddenForProject() {
+    // Set the project currency and the user's chosen currency to the same value
+    setUpEnvironment(environment());
+    final Project project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("USD").build();
+    final Reward reward = RewardFactory.reward();
+
+    // the conversion should be hidden.
+    this.vm.inputs.projectAndReward(project, reward);
+    this.usdConversionTextViewText.assertValueCount(1);
+    this.usdConversionSectionIsGone.assertValue(true);
+  }
+
+  @Test
+  public void testConversionShownForProject() {
+    // Set the project currency and the user's chosen currency to different values
+    setUpEnvironment(environment());
+    final Project project = ProjectFactory.project().toBuilder().currency("CAD").currentCurrency("USD").build();
+    final Reward reward = RewardFactory.reward();
+
+    // USD conversion should shown.
+    this.vm.inputs.projectAndReward(project, reward);
+    this.usdConversionTextViewText.assertValueCount(1);
+    this.usdConversionSectionIsGone.assertValue(false);
+  }
+
+  @Test
+  public void testConversionTextRoundsUp() {
+    // Set user's country to US.
+    final Config config = ConfigFactory.configForUSUser();
+    final Environment environment = environment();
+    environment.currentConfig().config(config);
+    setUpEnvironment(environment);
+
+    // Set project's country to CA and reward minimum to $0.30.
+    final Project project = ProjectFactory.caProject();
+    final Reward reward = RewardFactory.reward().toBuilder().minimum(0.3f).build();
+
+    // USD conversion should be rounded up.
+    this.vm.inputs.projectAndReward(project, reward);
+    this.usdConversionTextViewText.assertValue("$1");
+  }
+
+  @Test
   public void testDescriptionTextViewText() {
     final Project project = ProjectFactory.project();
     final Reward reward = RewardFactory.reward();
@@ -417,49 +460,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectAndReward(project, rewardWithShipping);
     this.shippingSummaryTextViewText.assertValue(rewardWithShipping.shippingSummary());
     this.shippingSummarySectionIsGone.assertValues(true, false);
-  }
-
-  @Test
-  public void testConversionHiddenForProject() {
-    // Set the project currency and the user's chosen currency to the same value
-    setUpEnvironment(environment());
-    final Project project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("USD").build();
-    final Reward reward = RewardFactory.reward();
-
-    // the conversion should be hidden.
-    this.vm.inputs.projectAndReward(project, reward);
-    this.usdConversionTextViewText.assertValueCount(1);
-    this.usdConversionSectionIsGone.assertValue(true);
-  }
-
-  @Test
-  public void testConversionShownForProject() {
-    // Set the project currency and the user's chosen currency to different values
-    setUpEnvironment(environment());
-    final Project project = ProjectFactory.project().toBuilder().currency("CAD").currentCurrency("USD").build();
-    final Reward reward = RewardFactory.reward();
-
-    // USD conversion should shown.
-    this.vm.inputs.projectAndReward(project, reward);
-    this.usdConversionTextViewText.assertValueCount(1);
-    this.usdConversionSectionIsGone.assertValue(false);
-  }
-
-  @Test
-  public void testUsdConversionTextRoundsUp() {
-    // Set user's country to US.
-    final Config config = ConfigFactory.configForUSUser();
-    final Environment environment = environment();
-    environment.currentConfig().config(config);
-    setUpEnvironment(environment);
-
-    // Set project's country to CA and reward minimum to $0.30.
-    final Project project = ProjectFactory.caProject();
-    final Reward reward = RewardFactory.reward().toBuilder().minimum(0.3f).build();
-
-    // USD conversion should be rounded up.
-    this.vm.inputs.projectAndReward(project, reward);
-    this.usdConversionTextViewText.assertValue("$1");
   }
 
   @Test

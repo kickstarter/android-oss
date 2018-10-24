@@ -76,7 +76,7 @@ public final class KSCurrency {
    */
   public String formatWithUserPreference(final float initialValue, final @NonNull Project project, final String symbol) {
 
-    return formatWithUserPreference(initialValue, project, RoundingMode.DOWN, symbol);
+    return formatWithUserPreference(initialValue, project, RoundingMode.UP, symbol);
   }
 
   /**

@@ -73,18 +73,7 @@ public final class KSCurrency {
    *
    * @param initialValue Value to display, local to the project's currency.
    * @param project The project to use to look up currency information.
-   * @param symbol The currency symbol that should be shown next to the pledge and goal amounts.
-   */
-  public String formatWithUserPreference(final float initialValue, final @NonNull Project project, final String symbol) {
-
-    return formatWithUserPreference(initialValue, project, RoundingMode.DOWN, symbol);
-  }
-
-  /**
-   * Returns a currency string appropriate to the user's locale and preferred currency.
-   *
-   * @param initialValue Value to display, local to the project's currency.
-   * @param project The project to use to look up currency information.
+   * @param roundingMode This determines whether we should round the values down or up.
    * @param symbol The currency symbol that should be shown next to the pledge and goal amounts.
    */
   public String formatWithUserPreference(final float initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode, final String symbol) {

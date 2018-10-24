@@ -39,8 +39,8 @@
         android:value=".ui.activities.DiscoveryActivity" />
     </activity>
     <activity android:name=".ui.activities.ChangeEmailActivity" />
-    <activity android:name=".ui.activities.ChangePasswordActivity"/>
-    <activity android:name=".ui.activities.EditProfileActivity"/>
+    <activity android:name=".ui.activities.ChangePasswordActivity" />
+    <activity android:name=".ui.activities.EditProfileActivity" />
     <activity
       android:name=".ui.activities.CheckoutActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
@@ -417,6 +417,8 @@
       android:name="com.google.android.gms.wallet.api.enabled"
       android:value="true" />
 
+    <activity android:name=".ui.activities.PaymentMethodsActivity">
+    </activity>
   </application>
 
 </manifest>

@@ -10522,7 +10522,7 @@
   "ab_experiments": {
     "project_dashboard": "with_dashboard",
     "new_project_header": "experimental",
-    "stripe_elements_sepa": "experimental"
+    "stripe_elements_sepa": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

@@ -41,7 +41,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             val ps = PublishSubject.create<UpdateUserEmailMutation.Data>()
             service.mutate(UpdateUserEmailMutation.builder()
                     .email(email)
-                    .current_password(currentPassword)
+                    .currentPassword(currentPassword)
                     .build())
                     .enqueue(object : ApolloCall.Callback<UpdateUserEmailMutation.Data>() {
                         override fun onFailure(exception: ApolloException) {
@@ -64,9 +64,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         return Observable.defer {
             val ps = PublishSubject.create<UpdateUserPasswordMutation.Data>()
             service.mutate(UpdateUserPasswordMutation.builder()
-                    .current_password(currentPassword)
+                    .currentPassword(currentPassword)
                     .password(newPassword)
-                    .password_confirmation(confirmPassword)
+                    .passwordConfirmation(confirmPassword)
                     .build())
                     .enqueue(object : ApolloCall.Callback<UpdateUserPasswordMutation.Data>() {
                         override fun onFailure(exception: ApolloException) {

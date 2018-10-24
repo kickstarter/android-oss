@@ -178,12 +178,12 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.titleTextView::setText);
 
-    this.viewModel.outputs.usdConversionTextViewIsGone()
+    this.viewModel.outputs.conversionTextViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.usdConversionTextView));
 
-    this.viewModel.outputs.usdConversionTextViewText()
+    this.viewModel.outputs.conversionTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setUsdConversionTextView);

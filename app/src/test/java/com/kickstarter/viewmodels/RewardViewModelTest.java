@@ -27,6 +27,8 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> allGoneTextViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<Integer> backersTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backersTextViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> conversionTextViewText = TestSubscriber.create();
+  private final TestSubscriber<Boolean> conversionSectionIsGone = TestSubscriber.create();
   private final TestSubscriber<String> descriptionTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> estimatedDeliveryDateSectionIsGone = new TestSubscriber<>();
   private final TestSubscriber<DateTime> estimatedDeliveryDateTextViewText = new TestSubscriber<>();
@@ -46,8 +48,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Pair<Project, Reward>> startCheckoutActivity = new TestSubscriber<>();
   private final TestSubscriber<Boolean> titleTextViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> titleTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<String> usdConversionTextViewText = TestSubscriber.create();
-  private final TestSubscriber<Boolean> usdConversionSectionIsGone = TestSubscriber.create();
   private final TestSubscriber<Boolean> whiteOverlayIsInvisible = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
@@ -55,6 +55,8 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.allGoneTextViewIsGone().subscribe(this.allGoneTextViewIsGone);
     this.vm.outputs.backersTextViewIsGone().subscribe(this.backersTextViewIsGone);
     this.vm.outputs.backersTextViewText().subscribe(this.backersTextViewText);
+    this.vm.outputs.conversionTextViewText().subscribe(this.conversionTextViewText);
+    this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionSectionIsGone);
     this.vm.outputs.descriptionTextViewText().subscribe(this.descriptionTextViewText);
     this.vm.outputs.estimatedDeliveryDateSectionIsGone().subscribe(this.estimatedDeliveryDateSectionIsGone);
     this.vm.outputs.estimatedDeliveryDateTextViewText().subscribe(this.estimatedDeliveryDateTextViewText);
@@ -74,8 +76,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.startCheckoutActivity().subscribe(this.startCheckoutActivity);
     this.vm.outputs.titleTextViewIsGone().subscribe(this.titleTextViewIsGone);
     this.vm.outputs.titleTextViewText().subscribe(this.titleTextViewText);
-    this.vm.outputs.usdConversionTextViewText().subscribe(this.usdConversionTextViewText);
-    this.vm.outputs.usdConversionTextViewIsGone().subscribe(this.usdConversionSectionIsGone);
     this.vm.outputs.whiteOverlayIsInvisible().subscribe(this.whiteOverlayIsInvisible);
   }
 
@@ -141,8 +141,8 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     // the conversion should be hidden.
     this.vm.inputs.projectAndReward(project, reward);
-    this.usdConversionTextViewText.assertValueCount(1);
-    this.usdConversionSectionIsGone.assertValue(true);
+    this.conversionTextViewText.assertValueCount(1);
+    this.conversionSectionIsGone.assertValue(true);
   }
 
   @Test
@@ -154,8 +154,8 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     // USD conversion should shown.
     this.vm.inputs.projectAndReward(project, reward);
-    this.usdConversionTextViewText.assertValueCount(1);
-    this.usdConversionSectionIsGone.assertValue(false);
+    this.conversionTextViewText.assertValueCount(1);
+    this.conversionSectionIsGone.assertValue(false);
   }
 
   @Test
@@ -172,7 +172,7 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     // USD conversion should be rounded up.
     this.vm.inputs.projectAndReward(project, reward);
-    this.usdConversionTextViewText.assertValue("$1");
+    this.conversionTextViewText.assertValue("$1");
   }
 
   @Test

@@ -348,12 +348,12 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.updatesCountTextView::setText);
 
-    this.viewModel.outputs.usdConversionPledgedAndGoalText()
+    this.viewModel.outputs.conversionPledgedAndGoalText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setConvertedUsdView);
 
-    this.viewModel.outputs.usdConversionTextViewIsGone()
+    this.viewModel.outputs.conversionTextViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.usdConversionTextView));

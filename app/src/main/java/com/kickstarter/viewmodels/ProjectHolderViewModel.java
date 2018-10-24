@@ -62,6 +62,12 @@ public interface ProjectHolderViewModel {
     /** Emits teh comments count for display. */
     Observable<String> commentsCountTextViewText();
 
+    /** Emits the usd conversion text for display. */
+    Observable<Pair<String, String>> conversionPledgedAndGoalText();
+
+    /** Emits when the usd conversion view should be gone. */
+    Observable<Boolean> conversionTextViewIsGone();
+
     /** Emits the project creator's name for display. */
     Observable<String> creatorNameTextViewText();
 
@@ -157,12 +163,6 @@ public interface ProjectHolderViewModel {
 
     /** Emits the updates count for display. */
     Observable<String> updatesCountTextViewText();
-
-    /** Emits the usd conversion text for display. */
-    Observable<Pair<String, String>> usdConversionPledgedAndGoalText();
-
-    /** Emits when the usd conversion view should be gone. */
-    Observable<Boolean> usdConversionTextViewIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectViewHolder> implements Inputs, Outputs {
@@ -190,6 +190,17 @@ public interface ProjectHolderViewModel {
         .map(Project::commentsCount)
         .filter(ObjectUtils::isNotNull)
         .map(NumberUtils::format);
+
+      this.conversionTextViewIsGone = project
+        .map(pc -> !pc.currency().equals(pc.currentCurrency()))
+        .map(BooleanUtils::negate);
+
+      this.conversionPledgedAndGoalText = project
+        .map(p -> {
+          final String pledged = this.ksCurrency.format(p.pledged(), p);
+          final String goal = this.ksCurrency.format(p.goal(), p);
+          return Pair.create(pledged, goal);
+        });
 
       this.creatorNameTextViewText = project.map(p -> p.creator().name());
       this.deadlineCountdownTextViewText = project.map(ProjectUtils::deadlineCountdownValue).map(NumberUtils::format);
@@ -290,17 +301,6 @@ public interface ProjectHolderViewModel {
         .map(Project::updatesCount)
         .filter(ObjectUtils::isNotNull)
         .map(NumberUtils::format);
-
-      this.usdConversionTextViewIsGone = project
-        .map(pc -> !pc.currency().equals(pc.currentCurrency()))
-        .map(BooleanUtils::negate);
-
-      this.usdConversionPledgedAndGoalText = project
-        .map(p -> {
-          final String pledged = this.ksCurrency.format(p.pledged(), p);
-          final String goal = this.ksCurrency.format(p.goal(), p);
-          return Pair.create(pledged, goal);
-        });
     }
 
     private final PublishSubject<Pair<Project, String>> projectAndCountry = PublishSubject.create();
@@ -312,6 +312,8 @@ public interface ProjectHolderViewModel {
     private final Observable<String> blurbTextViewText;
     private final Observable<String> categoryTextViewText;
     private final Observable<String> commentsCountTextViewText;
+    private final Observable<Boolean> conversionTextViewIsGone;
+    private final Observable<Pair<String, String>> conversionPledgedAndGoalText;
     private final Observable<String> creatorNameTextViewText;
     private final Observable<String> deadlineCountdownTextViewText;
     private final Observable<String> featuredTextViewRootCategory;
@@ -344,8 +346,6 @@ public interface ProjectHolderViewModel {
     private final Observable<Project> startProjectSocialActivity;
     private final Observable<Boolean> shouldSetDefaultStatsMargins;
     private final Observable<String> updatesCountTextViewText;
-    private final Observable<Boolean> usdConversionTextViewIsGone;
-    private final Observable<Pair<String, String>> usdConversionPledgedAndGoalText;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -373,6 +373,12 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<String> commentsCountTextViewText() {
       return this.commentsCountTextViewText;
+    }
+    @Override public @NonNull Observable<Boolean> conversionTextViewIsGone() {
+      return this.conversionTextViewIsGone;
+    }
+    @Override public @NonNull Observable<Pair<String, String>> conversionPledgedAndGoalText() {
+      return this.conversionPledgedAndGoalText;
     }
     @Override public @NonNull Observable<String> creatorNameTextViewText() {
       return this.creatorNameTextViewText;
@@ -470,12 +476,6 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<String> updatesCountTextViewText() {
       return this.updatesCountTextViewText;
-    }
-    @Override public @NonNull Observable<Boolean> usdConversionTextViewIsGone() {
-      return this.usdConversionTextViewIsGone;
-    }
-    @Override public @NonNull Observable<Pair<String, String>> usdConversionPledgedAndGoalText() {
-      return this.usdConversionPledgedAndGoalText;
     }
   }
 }

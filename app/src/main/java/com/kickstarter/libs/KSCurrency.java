@@ -73,10 +73,11 @@ public final class KSCurrency {
    *
    * @param initialValue Value to display, local to the project's currency.
    * @param project The project to use to look up currency information.
+   * @param symbol The currency symbol that should be shown next to the pledge and goal amounts.
    */
   public String formatWithUserPreference(final float initialValue, final @NonNull Project project, final String symbol) {
 
-    return formatWithUserPreference(initialValue, project, RoundingMode.UP, symbol);
+    return formatWithUserPreference(initialValue, project, RoundingMode.DOWN, symbol);
   }
 
   /**
@@ -84,6 +85,7 @@ public final class KSCurrency {
    *
    * @param initialValue Value to display, local to the project's currency.
    * @param project The project to use to look up currency information.
+   * @param symbol The currency symbol that should be shown next to the pledge and goal amounts.
    */
   public String formatWithUserPreference(final float initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode, final String symbol) {
 
@@ -128,13 +130,12 @@ public final class KSCurrency {
    * $US.
    */
   private @NonNull CurrencyOptions userCurrencyOptions(final float value, final @NonNull Project project, final String symbol) {
-    final Config config = this.currentConfig.getConfig();
     final Float fxRate = project.fxRate();
 
     return CurrencyOptions.builder()
         .country(project.country())
         .currencyCode("")
-        .currencySymbol(config.countryCode().equals("XX") ? "US$" : getSymbolForCurrency(symbol))
+        .currencySymbol(getSymbolForCurrency(symbol))
         .value(value * fxRate)
         .build();
   }

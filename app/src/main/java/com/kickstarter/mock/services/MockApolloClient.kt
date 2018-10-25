@@ -1,5 +1,6 @@
 package com.kickstarter.mock.services
 
+import SendEmailVerificationMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
@@ -9,6 +10,11 @@ import rx.Observable
 import type.CurrencyCode
 
 open class MockApolloClient : ApolloClientType {
+    override fun sendVerificationEmail(uid: String): Observable<SendEmailVerificationMutation.Data> {
+        return Observable.just(SendEmailVerificationMutation.Data(SendEmailVerificationMutation.UserSendEmailVerification("",
+                "12345")))
+    }
+
     override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
         return Observable.just(UpdateUserCurrencyMutation.Data(UpdateUserCurrencyMutation.UpdateUserProfile("",
                 UpdateUserCurrencyMutation.User("", "USD"))))
@@ -26,7 +32,7 @@ open class MockApolloClient : ApolloClientType {
 
     override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
         return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "Some Name",
-                "some@email.com",  true, "USD")))
+                "some@email.com",  true, "USD", "")))
     }
 }
 

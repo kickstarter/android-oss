@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import SendEmailVerificationMutation
 import UpdateUserEmailMutation
 import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
@@ -16,6 +17,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     private val currentEmail = TestSubscriber<String>()
     private val emailErrorIsVisible = TestSubscriber<Boolean>()
     private val error = TestSubscriber<String>()
+    private val id = TestSubscriber<String>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val saveButtonIsEnabled = TestSubscriber<Boolean>()
     private val success = TestSubscriber<Void>()
@@ -36,7 +38,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                 return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "rashad@test.com", "")))
+                        "rashad@test.com", true, "", "1234")))
             }
         }).build())
 
@@ -98,6 +100,19 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         this.saveButtonIsEnabled.assertValues(true, false, true)
         this.vm.inputs.password("passw")
         this.saveButtonIsEnabled.assertValues(true, false, true, false)
+    }
+
+    @Test
+    fun testSendVerificationEmail() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun sendVerificationEmail(uid: String): Observable<SendEmailVerificationMutation.Data> {
+                return Observable.just(SendEmailVerificationMutation.Data(SendEmailVerificationMutation
+                        .UserSendEmailVerification("", "1234")))
+            }
+        }).build())
+
+        this.vm.inputs.sendVerificationEmail()
+        this.success.assertValueCount(1)
     }
 
     @Test

@@ -31,6 +31,7 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
 
         new_email.onChange { this.viewModel.inputs.email(it) }
         current_password.onChange { this.viewModel.inputs.password(it) }
+        resend_email_row.setOnClickListener { this.viewModel.inputs.sendVerificationEmail() }
 
         new_email.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             this@ChangeEmailActivity.viewModel.inputs.emailFocus(hasFocus)

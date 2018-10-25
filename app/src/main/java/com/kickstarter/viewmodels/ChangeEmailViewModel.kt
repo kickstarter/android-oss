@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import SendEmailVerificationMutation
 import UpdateUserEmailMutation
 import android.support.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
@@ -23,6 +24,9 @@ interface ChangeEmailViewModel {
 
         /** Call when the current password field changes.  */
         fun password(password: String)
+
+        /** Call when the send verification button is clicked. */
+        fun sendVerificationEmail()
 
         /** Call when save button has been clicked.  */
         fun updateEmailClicked()
@@ -59,10 +63,12 @@ interface ChangeEmailViewModel {
         private val email = PublishSubject.create<String>()
         private val emailFocus = PublishSubject.create<Boolean>()
         private val password = PublishSubject.create<String>()
+        private val sendVerificationEmailClick = PublishSubject.create<Void>()
         private val updateEmailClicked = PublishSubject.create<Void>()
 
         private val currentEmail = BehaviorSubject.create<String>()
         private val emailErrorIsVisible = BehaviorSubject.create<Boolean>()
+        private val id = BehaviorSubject.create<String>()
         private val isEmailVerified = BehaviorSubject.create<Boolean>()
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val showProgressBar = BehaviorSubject.create<Boolean>()
@@ -80,6 +86,7 @@ interface ChangeEmailViewModel {
                     .subscribe {
                         currentEmail.onNext(it.me()?.email())
                         isEmailVerified.onNext(it.me()?.isEmailVerified())
+                        id.onNext(it.me()?.id())
                     }
 
             this.emailFocus
@@ -114,6 +121,20 @@ interface ChangeEmailViewModel {
                         this.currentEmail.onNext(it.updateUserAccount()?.user()?.email())
                         this.success.onNext(null)
                     })
+
+            val sendEmailNotification = this.sendVerificationEmailClick
+                    .compose(combineLatestPair<Void, String>(this.id))
+                    .compose(bindToLifecycle())
+                    .switchMap { sendEmailVerification(it.second).materialize() }
+                    .share()
+
+            sendEmailNotification
+                    .compose(errors())
+                    .subscribe { this.error.onNext(it.localizedMessage) }
+
+            sendEmailNotification
+                    .compose(values())
+                    .subscribe { this.success.onNext(null) }
         }
 
         override fun email(email: String) {
@@ -132,6 +153,10 @@ interface ChangeEmailViewModel {
             this.updateEmailClicked.onNext(null)
         }
 
+        override fun sendVerificationEmail() {
+            this.sendVerificationEmailClick.onNext(null)
+        }
+
         override fun currentEmail(): Observable<String> = this.currentEmail
 
         override fun emailErrorIsVisible(): Observable<Boolean> = this.emailErrorIsVisible
@@ -145,6 +170,12 @@ interface ChangeEmailViewModel {
         override fun saveButtonIsEnabled(): Observable<Boolean> = this.saveButtonIsEnabled
 
         override fun success(): Observable<Void> = this.success
+
+        private fun sendEmailVerification(uid: String): Observable<SendEmailVerificationMutation.Data> {
+            return this.apolloClient.sendVerificationEmail(uid)
+                    .doOnSubscribe { this.showProgressBar.onNext(true) }
+                    .doAfterTerminate { this.showProgressBar.onNext(false) }
+        }
 
         private fun updateEmail(changeEmail: ChangeEmail): Observable<UpdateUserEmailMutation.Data> {
             return this.apolloClient.updateUserEmail(changeEmail.email, changeEmail.password)

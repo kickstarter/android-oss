@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -261,7 +262,7 @@ public interface DiscoveryViewModel {
         .subscribe(__ -> this.koala.trackOpenedAppBanner());
     }
 
-    private DiscoveryParams getDefaultParams(final User user) {
+    private DiscoveryParams getDefaultParams(final @Nullable User user) {
       if (user != null && isFalse(user.optedOutOfRecommendations())) {
         return DiscoveryParams.builder().recommended(true).backed(-1).build();
       }

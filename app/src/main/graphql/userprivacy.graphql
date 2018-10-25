@@ -31,3 +31,9 @@ mutation UpdateUserPassword($current_password: String!, $password: String!, $pas
     }
   }
 }
+
+mutation sendEmailVerification($userId: ID!) {
+  userSendEmailVerification (input: {userId: $userId}) {
+    clientMutationId
+  }
+}

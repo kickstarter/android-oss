@@ -63,7 +63,7 @@ interface ChangeEmailViewModel {
 
         private val currentEmail = BehaviorSubject.create<String>()
         private val emailErrorIsVisible = BehaviorSubject.create<Boolean>()
-        private val isEmailVerified = PublishSubject.create<Boolean>()
+        private val isEmailVerified = BehaviorSubject.create<Boolean>()
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val showProgressBar = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<Void>()

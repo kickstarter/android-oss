@@ -8,7 +8,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.utils.BooleanUtils;
-import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -62,6 +61,12 @@ public interface ProjectHolderViewModel {
 
     /** Emits teh comments count for display. */
     Observable<String> commentsCountTextViewText();
+
+    /** Emits the usd conversion text for display. */
+    Observable<Pair<String, String>> conversionPledgedAndGoalText();
+
+    /** Emits when the usd conversion view should be gone. */
+    Observable<Boolean> conversionTextViewIsGone();
 
     /** Emits the project creator's name for display. */
     Observable<String> creatorNameTextViewText();
@@ -123,10 +128,10 @@ public interface ProjectHolderViewModel {
     /** Emits the social image view url for display. */
     Observable<String> projectSocialImageViewUrl();
 
-    /** Emits the list of friends to display display in the facepile. */
+    /** Emits the list of friends to display display in the facepile.*/
     Observable<List<User>> projectSocialTextViewFriends();
 
-    /**  Emits when the social view group should be gone. */
+    /** Emits when the social view group should be gone. */
     Observable<Boolean> projectSocialViewGroupIsGone();
 
     /** Emits the state background color int for display. */
@@ -156,14 +161,8 @@ public interface ProjectHolderViewModel {
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectSocialActivity}. */
     Observable<Project> startProjectSocialActivity();
 
-    /** Emits the updates count for display. s*/
+    /** Emits the updates count for display. */
     Observable<String> updatesCountTextViewText();
-
-    /** Emits the usd conversion text for display. */
-    Observable<Pair<String, String>> usdConversionPledgedAndGoalText();
-
-    /** Emits when the usd conversion view should be gone. */
-    Observable<Boolean> usdConversionTextViewIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectViewHolder> implements Inputs, Outputs {
@@ -171,6 +170,7 @@ public interface ProjectHolderViewModel {
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
+
       this.ksCurrency = environment.ksCurrency();
 
       final Observable<Project> project = this.projectAndCountry.map(PairUtils::first);
@@ -191,6 +191,17 @@ public interface ProjectHolderViewModel {
         .filter(ObjectUtils::isNotNull)
         .map(NumberUtils::format);
 
+      this.conversionTextViewIsGone = project
+        .map(pc -> !pc.currency().equals(pc.currentCurrency()))
+        .map(BooleanUtils::negate);
+
+      this.conversionPledgedAndGoalText = project
+        .map(p -> {
+          final String pledged = this.ksCurrency.format(p.pledged(), p);
+          final String goal = this.ksCurrency.format(p.goal(), p);
+          return Pair.create(pledged, goal);
+        });
+
       this.creatorNameTextViewText = project.map(p -> p.creator().name());
       this.deadlineCountdownTextViewText = project.map(ProjectUtils::deadlineCountdownValue).map(NumberUtils::format);
 
@@ -208,7 +219,7 @@ public interface ProjectHolderViewModel {
         .map(Category::name);
 
       this.goalStringForTextView = project
-        .map(p -> this.ksCurrency.format(p.goal(), p, false, true, RoundingMode.DOWN));
+        .map(p -> this.ksCurrency.formatWithUserPreference(p.goal(), p, RoundingMode.DOWN, p.currentCurrency()));
 
       this.locationTextViewText = project
         .map(Project::location)
@@ -223,7 +234,7 @@ public interface ProjectHolderViewModel {
       this.playButtonIsGone = project.map(Project::hasVideo).map(BooleanUtils::negate);
 
       this.pledgedTextViewText = project
-        .map(p -> this.ksCurrency.format(p.pledged(), p, false, true, RoundingMode.DOWN));
+        .map(p -> this.ksCurrency.formatWithUserPreference(p.pledged(), p, RoundingMode.DOWN, p.currentCurrency()));
 
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)
@@ -290,17 +301,6 @@ public interface ProjectHolderViewModel {
         .map(Project::updatesCount)
         .filter(ObjectUtils::isNotNull)
         .map(NumberUtils::format);
-
-      this.usdConversionTextViewIsGone = this.projectAndCountry
-        .map(pc -> I18nUtils.isCountryUS(pc.second) && !I18nUtils.isCountryUS(pc.first.country()))
-        .map(BooleanUtils::negate);
-
-      this.usdConversionPledgedAndGoalText = project
-        .map(p -> {
-          final String pledged = this.ksCurrency.format(p.pledged(), p);
-          final String goal = this.ksCurrency.format(p.goal(), p);
-          return Pair.create(pledged, goal);
-        });
     }
 
     private final PublishSubject<Pair<Project, String>> projectAndCountry = PublishSubject.create();
@@ -312,6 +312,8 @@ public interface ProjectHolderViewModel {
     private final Observable<String> blurbTextViewText;
     private final Observable<String> categoryTextViewText;
     private final Observable<String> commentsCountTextViewText;
+    private final Observable<Boolean> conversionTextViewIsGone;
+    private final Observable<Pair<String, String>> conversionPledgedAndGoalText;
     private final Observable<String> creatorNameTextViewText;
     private final Observable<String> deadlineCountdownTextViewText;
     private final Observable<String> featuredTextViewRootCategory;
@@ -344,8 +346,6 @@ public interface ProjectHolderViewModel {
     private final Observable<Project> startProjectSocialActivity;
     private final Observable<Boolean> shouldSetDefaultStatsMargins;
     private final Observable<String> updatesCountTextViewText;
-    private final Observable<Boolean> usdConversionTextViewIsGone;
-    private final Observable<Pair<String, String>> usdConversionPledgedAndGoalText;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -356,7 +356,6 @@ public interface ProjectHolderViewModel {
     @Override public void projectSocialViewGroupClicked() {
       this.projectSocialViewGroupClicked.onNext(null);
     }
-
     @Override public @NonNull Observable<String> avatarPhotoUrl() {
       return this.avatarPhotoUrl;
     }
@@ -375,9 +374,16 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<String> commentsCountTextViewText() {
       return this.commentsCountTextViewText;
     }
+    @Override public @NonNull Observable<Boolean> conversionTextViewIsGone() {
+      return this.conversionTextViewIsGone;
+    }
+    @Override public @NonNull Observable<Pair<String, String>> conversionPledgedAndGoalText() {
+      return this.conversionPledgedAndGoalText;
+    }
     @Override public @NonNull Observable<String> creatorNameTextViewText() {
       return this.creatorNameTextViewText;
     }
+
     @Override public @NonNull Observable<String> deadlineCountdownTextViewText() {
       return this.deadlineCountdownTextViewText;
     }
@@ -470,12 +476,6 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<String> updatesCountTextViewText() {
       return this.updatesCountTextViewText;
-    }
-    @Override public @NonNull Observable<Boolean> usdConversionTextViewIsGone() {
-      return this.usdConversionTextViewIsGone;
-    }
-    @Override public @NonNull Observable<Pair<String, String>> usdConversionPledgedAndGoalText() {
-      return this.usdConversionPledgedAndGoalText;
     }
   }
 }

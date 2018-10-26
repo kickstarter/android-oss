@@ -21,6 +21,8 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import rx.observers.TestSubscriber;
 
 public class DiscoveryViewModelTest extends KSRobolectricTestCase {
@@ -310,6 +312,33 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testDefaultParams_withUserLoggedOut() {
+    setUpDefaultParamsTest(null);
+
+    this.updateParams.assertValues(
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build()
+    );
+  }
+
+  @Test
+  public void testDefaultParams_withUserLoggedIn_optedIn() {
+    setUpDefaultParamsTest(UserFactory.user());
+
+    this.updateParams.assertValues(
+      DiscoveryParams.builder().recommended(true).backed(-1).sort(DiscoveryParams.Sort.HOME).build()
+    );
+  }
+
+  @Test
+  public void testDefaultParams_withUserLoggedIn_optedOut() {
+    setUpDefaultParamsTest(UserFactory.noRecommendations());
+
+    this.updateParams.assertValues(
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build()
+    );
+  }
+
+  @Test
   public void testClearingPages() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
@@ -384,5 +413,24 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Root categories should not emit again for the same position.
     this.rootCategories.assertValueCount(2);
     this.position.assertValues(0, 1);
+  }
+
+  private void setUpDefaultParamsTest(final @Nullable User user) {
+    final Environment.Builder environmentBuilder = environment().toBuilder();
+
+    if (user != null) {
+      final MockCurrentUser currentUser = new MockCurrentUser(user);
+      environmentBuilder.currentUser(currentUser);
+    }
+
+    this.vm = new DiscoveryViewModel.ViewModel(environmentBuilder.build());
+    this.vm.outputs.updateParamsForPage().subscribe(this.updateParams);
+
+    // Start initial activity.
+    final Intent intent = new Intent(Intent.ACTION_MAIN);
+    this.vm.intent(intent);
+
+    // Initial HOME page selected.
+    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
   }
 }

@@ -28,33 +28,29 @@
         layout="@layout/horizontal_line_1dp_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_behavior="com.kickstarter.ui.toolbars.AlphaBehavior" />
 
       <android.support.design.widget.AppBarLayout
         android:id="@+id/discovery_sort_app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="0dp">
+        android:layout_height="wrap_content">
 
         <android.support.design.widget.CollapsingToolbarLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:minHeight="?android:attr/actionBarSize"
-          app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways">
+          app:layout_scrollFlags="scroll|enterAlways">
 
           <include
             layout="@layout/discovery_toolbar"
             android:layout_width="match_parent"
-            android:background="@color/white"
-            android:layout_height="?android:attr/actionBarSize"
-            app:layout_collapseMode="pin" />
+            android:layout_height="?android:attr/actionBarSize" />
 
           <com.kickstarter.ui.views.SortTabLayout
             android:id="@+id/discovery_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="?android:attr/actionBarSize"
-            app:layout_collapseMode="none"
             app:tabBackground="@drawable/click_indicator_light"
             app:tabMode="fixed"
             app:tabSelectedTextColor="@color/text_primary"

@@ -9,7 +9,6 @@
   android:elevation="0.1dp"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  app:layout_collapseMode="parallax"
   tools:ignore="UnusedAttribute"
   tools:showIn="@layout/discovery_layout">
 

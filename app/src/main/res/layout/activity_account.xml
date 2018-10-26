@@ -59,12 +59,13 @@
         </LinearLayout>
 
         <LinearLayout
+          android:id="@+id/payment_methods_row"
           style="@style/SettingsLinearRow"
           android:layout_marginTop="@dimen/grid_3"
-          android:visibility="gone">
+          android:visibility="gone"
+          tools:visibility="visible">
 
           <TextView
-            android:id="@+id/payment_methods_row"
             style="@style/SettingsSingleRow"
             android:text="@string/Payment_methods" />
 

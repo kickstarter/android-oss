@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical">
+
+
+  <ImageView
+    android:id="@+id/credit_card_logo_image_view"
+    android:layout_width="64dp"
+    android:layout_height="40dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="20dp"
+    android:contentDescription="@null"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+    android:id="@+id/credit_card_last_four_text_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    app:layout_constraintStart_toEndOf="@+id/credit_card_logo_image_view"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:text="Card ending in xxxx" />
+
+  <TextView
+    android:id="@+id/credit_card_expiration_date_text_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="12dp"
+    app:layout_constraintEnd_toStartOf="@+id/delete_card_image_view"
+    app:layout_constraintHorizontal_bias="0.07"
+    app:layout_constraintStart_toEndOf="@+id/credit_card_logo_image_view"
+    app:layout_constraintTop_toBottomOf="@+id/credit_card_last_four_text_view"
+    tools:text="Expires 03/19" />
+
+  <ImageView
+    android:id="@+id/delete_card_image_view"
+    android:layout_width="30dp"
+    android:layout_height="30dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="28dp"
+    android:contentDescription="@null"
+    app:srcCompat="@drawable/icon_trash"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.86"
+    app:layout_constraintStart_toEndOf="@+id/credit_card_last_four_text_view"
+    app:layout_constraintTop_toTopOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>

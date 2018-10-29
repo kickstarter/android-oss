@@ -7,6 +7,7 @@
   <string name="Account" formatted="false">Cuenta</string>
   <string name="Add" formatted="false">Añadir</string>
   <string name="Add_attachments" formatted="false">Agregar anexos …</string>
+  <string name="Add_new_card" formatted="false">Añadir una nueva tarjeta</string>
   <string name="All_Art_Projects" formatted="false">Todos los proyectos de la categoría Arte</string>
   <string name="All_Comics_Projects" formatted="false">Todos los proyectos de la categoría Comics</string>
   <string name="All_Crafts_Projects" formatted="false">Todos los proyectos de la categoría Artesanías</string>
@@ -28,6 +29,7 @@
   <string name="Amount_previous_amount" formatted="false">Monto actual: %{amount}, monto previo: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Monto: %{amount}, %{reward}</string>
   <string name="Amounts_shown" formatted="false">Los montos mostrados son una conversión aproximada. Si el proyecto tiene éxito, tu contribución se recaudará en la moneda nativa del proyecto, que también se mostrará.</string>
+  <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Para tu comodidad, aquí se enumeran (de manera absolutamente segura) los métodos de pago que guardaste en Kickstarter.</string>
   <string name="App_version" formatted="false">Versión de la aplicación</string>
   <string name="Are_you_sure" formatted="false">¿Estás seguro?</string>
   <string name="Ask_me_anything" formatted="false">¡Pregúntame!</string>
@@ -53,8 +55,12 @@ patrocinadores</string>
   <string name="Biography" formatted="false">Biografía</string>
   <string name="Bookmarks" formatted="false">Marcadores</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Dale vida a proyectos creativos.</string>
+  <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">Cancelar</string>
   <string name="Cancel_your_pledge" formatted="false">Cancela tu contribución</string>
+  <string name="Card_ending_in_last_four" formatted="false">Tarjeta que termina en %{last_four}</string>
+  <string name="Card_number" formatted="false">Número de tarjeta</string>
+  <string name="Cardholder_name" formatted="false">Nombre del titular de la tarjeta</string>
   <string name="Change_currency" formatted="false">Cambiar la moneda</string>
   <string name="Change_email" formatted="false">Cambiar correo electrónico</string>
   <string name="Change_password" formatted="false">Cambiar contraseña</string>
@@ -88,6 +94,7 @@ patrocinadores</string>
   <string name="Creator_name_was_streaming_live_on_Kickstarter" formatted="false">%{creator_name} estuvo transmitiendo en vivo en Kickstarter</string>
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} estará trasnmitiendo en vivo en Kickstarter %{in_duration}</string>
   <string name="Creator_tips" formatted="false">Consejos para el creador</string>
+  <string name="Credit_card_expiration" formatted="false">Caduca %{expiration_date}</string>
   <string name="Currency" formatted="false">Moneda</string>
   <string name="Currency_AUD" formatted="false">$ Dólar australiano (AUD)</string>
   <string name="Currency_CAD" formatted="false">$ Dólar canadiense (CAD)</string>
@@ -127,6 +134,7 @@ patrocinadores</string>
   <string name="Ending_soon" formatted="false">Finaliza pronto</string>
   <string name="Estimated_delivery" formatted="false">Entrega estimada:</string>
   <string name="Expands_subcategories" formatted="false">Muestra más subcategorías.</string>
+  <string name="Expiration" formatted="false">Vencimiento</string>
   <string name="Expired_date_at_time" formatted="false">Venció el %{date} a la(s) %{time}</string>
   <string name="Expires_date_at_time" formatted="false">Vence el %{date} a la(s) %{time}</string>
   <string name="Explore" formatted="false">Explora</string>
@@ -238,6 +246,7 @@ patrocinadores</string>
   <string name="Log_in_to_leave_a_comment" formatted="false">Inicia sesión para dejar un comentario.</string>
   <string name="Log_out" formatted="false">Cerrar sesión</string>
   <string name="Love_film_We_do_too" formatted="false">¿Te encanta el cine? A nosotros también.</string>
+  <string name="MMYY" formatted="false">MM/AA</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">Contribuir sin recompensa</string>
   <string name="Making_this_change" formatted="false">Hacer este cambio te permitirá ver la meta del proyecto y los montos de las contribuciones convertidos a la moneda elegida.</string>
   <string name="Manage_your_pledge" formatted="false">Administra tu contribución</string>
@@ -369,11 +378,13 @@ patrocinadores</string>
   <string name="Saved_projects" formatted="false">Proyectos guardados</string>
   <string name="Saves_project" formatted="false">Guarda este proyecto.</string>
   <string name="Say_something_kind" formatted="false">Di algo amable...</string>
+  <string name="Security_code" formatted="false">Código de seguridad</string>
   <string name="See_all_category_name_projects" formatted="false">Ver todos los proyectos de %{category_name}</string>
   <string name="Select_another_project" formatted="false">Selecciona otro proyecto</string>
   <string name="Select_this_reward" formatted="false">Seleccionar esta recompensa</string>
   <string name="Select_this_reward_instead" formatted="false">Selecciona esta recompensa</string>
   <string name="Send" formatted="false">Enviar</string>
+  <string name="Send_verfication_email" formatted="false">Enviar correo de verificación</string>
   <string name="Share" formatted="false">Compartir</string>
   <string name="Share_an_update_about_your_project" formatted="false">Comparte una actualización de tu proyecto …</string>
   <string name="Share_this_live_stream" formatted="false">Compartir este Live-Stream.</string>
@@ -447,6 +458,7 @@ patrocinadores</string>
   <string name="Watch_live" formatted="false">Ver en vivo</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">La búsqueda "%{search_term}" no dio resultados.</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">Utilizamos tu actividad internamente para hacerte recomendaciones. Desactiva las recomendaciones si no quieres recibirlas.</string>
+  <string name="We_ve_been_unable_to_send_email" formatted="false">No pudimos enviar el correo electrónico a esta dirección. Asegúrate de que esté escrita correctamente.</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">No se pudo conectar al chat de live stream.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">No se pudieron cargar los destinos de envío.\n
 Por favor inténtalo de nuevo más tarde.</string>
@@ -477,6 +489,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Youre_a_backer" formatted="false">¡Eres un patrocinador!</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Estás a punto de crear una nueva cuenta de Kickstarter usando el correo electrónico associado a tu cuenta de Facebook. Por favor confírmalo antes de proceder.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Hiciste una contribución a este proyecto. El plazo de financiamiento todavía no ha terminado.</string>
+  <string name="Zip_code" formatted="false">Código postal</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">Actividad</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">Abre actividades.</string>
   <string name="accessibility_dashboard_buttons_messages" formatted="false">Mensajes</string>

@@ -1,10 +1,13 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import com.kickstarter.R
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.viewmodels.PaymentMethodsViewModel
 
-class PaymentMethodsActivity : AppCompatActivity() {
+@RequiresActivityViewModel(PaymentMethodsViewModel.ViewModel::class)
+class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

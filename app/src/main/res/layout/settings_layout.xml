@@ -34,7 +34,8 @@
         android:background="@color/white"
         android:foreground="@drawable/click_indicator_light"
         android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <ImageView
           android:id="@+id/profile_picture_image_view"
@@ -43,7 +44,7 @@
           android:layout_marginStart="@dimen/activity_horizontal_margin"
           android:layout_marginTop="@dimen/activity_horizontal_margin"
           android:contentDescription="@null"
-          android:src="@color/ksr_green_500" />
+          tools:src="@color/ksr_green_500" />
 
         <LinearLayout
           android:layout_width="0dp"

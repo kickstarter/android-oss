@@ -138,6 +138,7 @@ interface NewCardFragmentViewModel {
             }
 
             private fun isNotEmptyAndTwoWords(s: String): Boolean {
+                //todo, this will pass "izzy "
                 return isNotEmpty(s) && s.split(" ").size > 1
             }
         }

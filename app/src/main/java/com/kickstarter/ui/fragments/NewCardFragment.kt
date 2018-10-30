@@ -1,0 +1,141 @@
+package com.kickstarter.ui.fragments
+
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.*
+import com.kickstarter.R
+import com.kickstarter.extensions.onChange
+import com.kickstarter.extensions.showConfirmationSnackbar
+import com.kickstarter.extensions.showErrorSnackbar
+import com.kickstarter.libs.BaseFragment
+import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.viewmodels.NewCardFragmentViewModel
+import com.stripe.android.view.CardInputListener
+import kotlinx.android.synthetic.main.fragment_new_card.*
+
+@RequiresFragmentViewModel(NewCardFragmentViewModel.ViewModel::class)
+class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
+    private var saveEnabled = false
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.fragment_new_card, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        (activity as AppCompatActivity).setSupportActionBar(new_card_toolbar)
+        setHasOptionsMenu(true)
+
+        this.viewModel.outputs.cardFocusIsEnabled()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { card_focus.setImageResource(when {
+                    it -> R.drawable.divider_green_horizontal
+                    else -> R.drawable.divider_dark_grey_500_horizontal
+                }) }
+
+        this.viewModel.outputs.progressBarIsVisible()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { ViewUtils.setGone(progress_bar, !it) }
+
+        this.viewModel.outputs.saveButtonIsEnabled()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { updateMenu(it) }
+
+        this.viewModel.outputs.success()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { showConfirmationSnackbar(new_card_toolbar, it) }
+
+        this.viewModel.outputs.error()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { showErrorSnackbar(new_card_toolbar, it) }
+
+        cardholder_name.onChange { this.viewModel.inputs.name(it) }
+        postal_code.onChange { this.viewModel.inputs.postalCode(it) }
+        addListeners()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.save -> {
+                this.viewModel.inputs.saveCardClicked()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.save, menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        val save = menu.findItem(R.id.save)
+        save.isEnabled = saveEnabled
+
+    }
+
+    private fun addListeners() {
+        card_input_widget.clearFocus()
+        cardholder_name.onFocusChangeListener = cardFocusChangeListener
+        postal_code.onFocusChangeListener = cardFocusChangeListener
+        card_input_widget.setCardNumberTextWatcher(cardValidityWatcher)
+        card_input_widget.setCvcNumberTextWatcher(cardValidityWatcher)
+        card_input_widget.setExpiryDateTextWatcher(cardValidityWatcher)
+
+        card_input_widget.setCardInputListener(object : CardInputListener {
+            override fun onFocusChange(focusField: String?) {
+                this@NewCardFragment.viewModel.inputs.cardFocus(true)
+            }
+
+            override fun onPostalCodeComplete() {
+            }
+
+            override fun onCardComplete() {
+                cardChanged()
+            }
+
+            override fun onExpirationComplete() {
+                cardChanged()
+            }
+
+            override fun onCvcComplete() {
+                cardChanged()
+            }
+        })
+    }
+
+    private fun cardChanged() {
+        this.viewModel.inputs.card(card_input_widget.card)
+    }
+
+    private fun updateMenu(saveEnabled: Boolean) {
+        this.saveEnabled = saveEnabled
+        activity?.invalidateOptionsMenu()
+    }
+
+    private val cardValidityWatcher = object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            cardChanged()
+        }
+    }
+
+    private val cardFocusChangeListener = View.OnFocusChangeListener { _, _ -> this@NewCardFragment.viewModel.inputs.cardFocus(false) }
+}

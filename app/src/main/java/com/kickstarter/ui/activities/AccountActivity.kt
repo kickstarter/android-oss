@@ -55,6 +55,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
 
         change_email_row.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
         change_password_row.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
+        payment_methods_row.setOnClickListener { startActivity(Intent(this, PaymentMethodsActivity::class.java)) }
         privacy_row.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
     }
 

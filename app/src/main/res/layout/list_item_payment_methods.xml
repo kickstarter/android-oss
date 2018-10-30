@@ -4,7 +4,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
+  android:layout_height="@dimen/grid_12"
   android:orientation="vertical">
 
 
@@ -15,11 +15,14 @@
     android:layout_marginStart="16dp"
     android:layout_marginTop="20dp"
     android:contentDescription="@null"
+    android:scaleType="fitXY"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    app:layout_constraintTop_toTopOf="parent"
+    tools:src="@drawable/amex_md" />
 
   <TextView
     android:id="@+id/credit_card_last_four_text_view"
+    style="@style/CalloutPrimary"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
@@ -32,28 +35,33 @@
     android:id="@+id/credit_card_expiration_date_text_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
     android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="12dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginTop="8dp"
+    app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toStartOf="@+id/delete_card_image_view"
-    app:layout_constraintHorizontal_bias="0.07"
+    app:layout_constraintHorizontal_bias="0.054"
     app:layout_constraintStart_toEndOf="@+id/credit_card_logo_image_view"
     app:layout_constraintTop_toBottomOf="@+id/credit_card_last_four_text_view"
+    app:layout_constraintVertical_bias="0.0"
     tools:text="Expires 03/19" />
 
   <ImageView
     android:id="@+id/delete_card_image_view"
     android:layout_width="30dp"
     android:layout_height="30dp"
-    android:layout_marginEnd="8dp"
+    android:layout_marginEnd="16dp"
     android:layout_marginStart="8dp"
-    android:layout_marginTop="28dp"
+    android:layout_marginTop="24dp"
+    android:scaleType="fitXY"
     android:contentDescription="@null"
-    app:srcCompat="@drawable/icon_trash"
+    app:layout_constraintBottom_toTopOf="@+id/credit_card_expiration_date_text_view"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.86"
+    app:layout_constraintHorizontal_bias="0.852"
     app:layout_constraintStart_toEndOf="@+id/credit_card_last_four_text_view"
-    app:layout_constraintTop_toTopOf="parent" />
+    app:layout_constraintTop_toTopOf="parent"
+    app:srcCompat="@drawable/icon_trash" />
 
 
 </android.support.constraint.ConstraintLayout>

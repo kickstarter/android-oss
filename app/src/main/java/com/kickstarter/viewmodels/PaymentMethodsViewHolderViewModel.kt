@@ -52,6 +52,9 @@ interface PaymentMethodsViewHolderViewModel {
             this.card.map { expiration -> expiration.expirationDate() }
                     .subscribe { this.expirationDate.onNext(it) }
 
+            this.card.map { id -> id.id() }
+                    .subscribe { this.id.onNext(it) }
+
             this.card.map { last -> last.lastFour() }
                     .subscribe { this.lastFour.onNext(it) }
 

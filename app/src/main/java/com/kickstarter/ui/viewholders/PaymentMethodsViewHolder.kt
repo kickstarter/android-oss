@@ -44,14 +44,6 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate)
                     setExpirationDateTextView(it)
                 }
 
-        //TODO: Write object to hold id
-        this.vm.outputs.id()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-
-                }
-
         this.vm.outputs.lastFour()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())

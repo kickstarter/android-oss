@@ -8,7 +8,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.viewmodels.PaymentMethodsViewHolderViewModel
 import kotlinx.android.synthetic.main.list_item_payment_methods.view.*
-import type.CreditCardType
 import type.CreditCardTypes
 import java.text.SimpleDateFormat
 import java.util.*
@@ -67,11 +66,11 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate)
 
     private fun setCreditCardType(cardType: CreditCardTypes): Int {
         return when (cardType) {
-            CreditCardType.AMEX -> R.drawable.amex_md
-            CreditCardType.DISCOVER -> R.drawable.discover_md
-            CreditCardType.JCB -> R.drawable.jcb_md
-            CreditCardType.MASTERCARD -> R.drawable.mastercard_md
-            CreditCardType.VISA -> R.drawable.visa_md
+            CreditCardTypes.AMEX -> R.drawable.amex_md
+            CreditCardTypes.DISCOVER -> R.drawable.discover_md
+            CreditCardTypes.JCB -> R.drawable.jcb_md
+            CreditCardTypes.MASTERCARD -> R.drawable.mastercard_md
+            CreditCardTypes.VISA -> R.drawable.visa_md
             else -> R.drawable.generic_bank_md
         }
     }

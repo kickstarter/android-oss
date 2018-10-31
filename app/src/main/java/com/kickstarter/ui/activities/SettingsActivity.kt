@@ -3,6 +3,8 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.view.View
+import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.extensions.startActivityWithSlideUpTransition
 import com.kickstarter.libs.*
@@ -28,6 +30,10 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_layout)
+
+        if (BuildConfig.DEBUG) {
+            edit_profile_row.visibility = View.VISIBLE
+        }
 
         this.build = environment().build()
         this.currentUser = environment().currentUser()

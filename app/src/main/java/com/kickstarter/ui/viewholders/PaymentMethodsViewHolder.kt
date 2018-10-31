@@ -20,16 +20,12 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate)
     private val creditCardExpirationString = this.context().getString(R.string.Credit_card_expiration)
     private val cardEndingInString = this.context().getString(R.string.Card_ending_in_last_four)
 
-
-    interface Delegate {
-
-    }
+    interface Delegate
 
     init {
 
         ButterKnife.bind(this, view)
 
-        //TODO: Write method to map image to the card type
         this.vm.outputs.type()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())

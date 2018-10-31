@@ -18,5 +18,4 @@ class PaymentMethodsAdapter(private val delegate: PaymentMethodsViewHolder.Deleg
         addSection(cards)
         notifyDataSetChanged()
     }
-
 }

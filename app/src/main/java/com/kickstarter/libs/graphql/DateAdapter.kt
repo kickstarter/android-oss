@@ -21,5 +21,4 @@ class DateAdapter: CustomTypeAdapter<Date> {
             throw RuntimeException(exception)
         }
     }
-
 }

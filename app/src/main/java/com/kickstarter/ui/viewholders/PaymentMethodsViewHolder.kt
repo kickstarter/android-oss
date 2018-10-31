@@ -74,7 +74,7 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate)
             CreditCardType.DISCOVER -> R.drawable.discover_md
             CreditCardType.JCB -> R.drawable.jcb_md
             CreditCardType.MASTERCARD -> R.drawable.mastercard_md
-            CreditCardType.VISA -> R.drawable.visa_sm
+            CreditCardType.VISA -> R.drawable.visa_md
             else -> R.drawable.generic_bank_md
         }
     }

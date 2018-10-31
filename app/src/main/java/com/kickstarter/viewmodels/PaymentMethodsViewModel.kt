@@ -33,6 +33,5 @@ interface PaymentMethodsViewModel {
         }
 
         override fun getCards(): Observable<MutableList<UserPaymentsQuery.Node>> = this.cards
-
     }
 }

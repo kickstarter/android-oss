@@ -9,7 +9,7 @@ import rx.Observable
 import rx.observers.TestSubscriber
 import type.CreditCardPaymentType
 import type.CreditCardState
-import type.CreditCardType
+import type.CreditCardTypes
 import java.util.*
 
 class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
@@ -31,7 +31,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(UserPaymentsQuery.Data(UserPaymentsQuery.Me("",
                         UserPaymentsQuery.StoredCards("", List(1
                         ) { _ -> UserPaymentsQuery.Node("","5555", Date(), "9876",
-                                CreditCardState.ACTIVE, CreditCardPaymentType.CREDIT_CARD, CreditCardType.MASTERCARD )}))))
+                                CreditCardState.ACTIVE, CreditCardPaymentType.CREDIT_CARD, CreditCardTypes.MASTERCARD )}))))
             }
         }).build())
 

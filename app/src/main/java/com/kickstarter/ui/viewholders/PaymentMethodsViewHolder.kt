@@ -9,6 +9,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.viewmodels.PaymentMethodsViewHolderViewModel
 import kotlinx.android.synthetic.main.list_item_payment_methods.view.*
 import type.CreditCardType
+import type.CreditCardTypes
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -64,7 +65,7 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate)
         itemView.credit_card_last_four_text_view?.text = this.ksString.format(this.cardEndingInString, "last_four", lastFour)
     }
 
-    private fun setCreditCardType(cardType: CreditCardType): Int {
+    private fun setCreditCardType(cardType: CreditCardTypes): Int {
         return when (cardType) {
             CreditCardType.AMEX -> R.drawable.amex_md
             CreditCardType.DISCOVER -> R.drawable.discover_md

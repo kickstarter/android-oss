@@ -7,7 +7,7 @@ import org.junit.Test
 import rx.observers.TestSubscriber
 import type.CreditCardPaymentType
 import type.CreditCardState
-import type.CreditCardType
+import type.CreditCardTypes
 import java.util.*
 
 class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
@@ -17,7 +17,7 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
     private val expirationDate = TestSubscriber<Date>()
     private val lastFour = TestSubscriber<String>()
     private val paymentType = TestSubscriber<CreditCardPaymentType>()
-    private val type = TestSubscriber<CreditCardType>()
+    private val type = TestSubscriber<CreditCardTypes>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = PaymentMethodsViewHolderViewModel.ViewModel(environment)
@@ -33,7 +33,7 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.addCards(UserPaymentsQuery.Node("", "", Date(), "", CreditCardState.ACTIVE,
-                CreditCardPaymentType.CREDIT_CARD, CreditCardType.DISCOVER))
+                CreditCardPaymentType.CREDIT_CARD, CreditCardTypes.DISCOVER))
 
         this.expirationDate.assertValue(Date())
     }
@@ -43,7 +43,7 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.addCards(UserPaymentsQuery.Node("", "", Date(), "1234",
-                CreditCardState.ACTIVE, CreditCardPaymentType.CREDIT_CARD, CreditCardType.MASTERCARD))
+                CreditCardState.ACTIVE, CreditCardPaymentType.CREDIT_CARD, CreditCardTypes.MASTERCARD))
 
         this.lastFour.assertValue("1234")
     }
@@ -53,7 +53,7 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.addCards(UserPaymentsQuery.Node("", "", Date(), "",
-                CreditCardState.ACTIVE, CreditCardPaymentType.ANDROID_PAY, CreditCardType.VISA))
+                CreditCardState.ACTIVE, CreditCardPaymentType.ANDROID_PAY, CreditCardTypes.VISA))
 
         this.paymentType.assertValue(CreditCardPaymentType.ANDROID_PAY)
     }
@@ -63,8 +63,8 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.addCards(UserPaymentsQuery.Node("", "", Date(), "",
-                CreditCardState.ACTIVE, CreditCardPaymentType.BANK_ACCOUNT, CreditCardType.DISCOVER))
+                CreditCardState.ACTIVE, CreditCardPaymentType.BANK_ACCOUNT, CreditCardTypes.DISCOVER))
 
-        this.type.assertValue(CreditCardType.DISCOVER)
+        this.type.assertValue(CreditCardTypes.DISCOVER)
     }
 }

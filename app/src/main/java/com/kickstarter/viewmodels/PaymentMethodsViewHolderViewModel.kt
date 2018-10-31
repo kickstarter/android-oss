@@ -8,7 +8,7 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import type.CreditCardPaymentType
-import type.CreditCardType
+import type.CreditCardTypes
 import java.util.*
 
 interface PaymentMethodsViewHolderViewModel {
@@ -32,7 +32,7 @@ interface PaymentMethodsViewHolderViewModel {
         fun paymentType(): Observable<CreditCardPaymentType>
 
         /** Emits the card issuer ex) Visa or Mastercard. */
-        fun type(): Observable<CreditCardType>
+        fun type(): Observable<CreditCardTypes>
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<PaymentMethodsViewHolder>(environment), Inputs, Outputs {
@@ -43,7 +43,7 @@ interface PaymentMethodsViewHolderViewModel {
         private val id = BehaviorSubject.create<String>()
         private val lastFour = BehaviorSubject.create<String>()
         private val paymentType = BehaviorSubject.create<CreditCardPaymentType>()
-        private val type = BehaviorSubject.create<CreditCardType>()
+        private val type = BehaviorSubject.create<CreditCardTypes>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -78,6 +78,6 @@ interface PaymentMethodsViewHolderViewModel {
 
         override fun paymentType(): Observable<CreditCardPaymentType> = this.paymentType
 
-        override fun type(): Observable<CreditCardType> = this.type
+        override fun type(): Observable<CreditCardTypes> = this.type
     }
 }

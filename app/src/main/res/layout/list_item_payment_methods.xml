@@ -12,7 +12,7 @@
     android:layout_width="@dimen/credit_card_logo_width"
     android:layout_height="@dimen/credit_card_logo_height"
     android:layout_marginStart="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="@dimen/credit_card_logo_margin_top"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
     android:contentDescription="@null"
     android:scaleType="fitXY"
     app:layout_constraintStart_toStartOf="parent"
@@ -36,17 +36,18 @@
 
   <TextView
     android:id="@+id/credit_card_expiration_date_text_view"
-    style="@style/BodySecondary"
+    style="@style/TextSecondary"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/payment_methods_list_item_8dp"
     android:layout_marginStart="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="@dimen/credit_card_last_expiration_date_margin_top"
+    android:layout_marginTop="@dimen/payment_methods_list_item_8dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toStartOf="@+id/delete_card_image_view"
     app:layout_constraintHorizontal_bias="0.0"
     app:layout_constraintStart_toEndOf="@+id/credit_card_logo_image_view"
-    app:layout_constraintTop_toBottomOf="@+id/credit_card_last_four_text_view"
+    app:layout_constraintTop_toTopOf="@+id/credit_card_last_four_text_view"
+    app:layout_constraintVertical_bias="0.619"
     tools:text="Expires 03/19" />
 
   <ImageView

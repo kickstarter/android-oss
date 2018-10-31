@@ -59,7 +59,7 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate)
     }
 
     private fun setExpirationDateTextView(date: Date) {
-        val sdf = SimpleDateFormat("MM/yyyy")
+        val sdf = SimpleDateFormat("MM/yyyy", Locale.getDefault())
         val formattedDate = sdf.format(date).toString()
         itemView.credit_card_expiration_date_text_view?.text = this.ksString.format(this.creditCardExpirationString, "expiration_date", formattedDate)
     }

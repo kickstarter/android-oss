@@ -9,6 +9,8 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.viewmodels.PaymentMethodsViewHolderViewModel
 import kotlinx.android.synthetic.main.list_item_payment_methods.view.*
 import type.CreditCardType
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate) : KSViewHolder(view) {
 
@@ -32,15 +34,14 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate)
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    itemView.credit_card_logo_image_view.setImageResource(setCreditCardType(it.rawValue()))
+                    itemView.credit_card_logo_image_view.setImageResource(setCreditCardType(it))
                 }
 
         this.vm.outputs.expirationDate()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    itemView.credit_card_expiration_date_text_view.text = it.toString()
-//                    setExpirationDateTextView(it)
+                    setExpirationDateTextView(it)
                 }
 
         //TODO: Write object to hold id
@@ -55,8 +56,7 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate)
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    itemView.credit_card_last_four_text_view?.text = it
-//                    setLastFourTextView(it)
+                    setLastFourTextView(it)
                 }
 
     }
@@ -66,21 +66,23 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate)
         this.vm.inputs.addCards(cards)
     }
 
-//    private fun setLastFourTextView(lastFour: String) {
-//        this.lastFourNumbers?.text = this.ksString.format(this.cardEndingInString, lastFour)
-//    }
-//
-//    private fun setExpirationDateTextView(expirationDate: String) {
-//        this.expirationDate?.text = this.ksString.format(this.creditCardExpirationString, expirationDate)
-//    }
+    private fun setExpirationDateTextView(date: Date) {
+        val sdf = SimpleDateFormat("MM/yyyy")
+        val formattedDate = sdf.format(date).toString()
+        itemView.credit_card_expiration_date_text_view?.text = this.ksString.format(this.creditCardExpirationString, "expiration_date", formattedDate)
+    }
 
-    private fun setCreditCardType(cardType: String) :Int {
+    private fun setLastFourTextView(lastFour: String) {
+        itemView.credit_card_last_four_text_view?.text = this.ksString.format(this.cardEndingInString, "last_four", lastFour)
+    }
+
+    private fun setCreditCardType(cardType: CreditCardType): Int {
         return when (cardType) {
-            CreditCardType.AMEX.rawValue() -> R.drawable.amex_md
-            CreditCardType.DISCOVER.rawValue() -> R.drawable.discover_md
-            CreditCardType.JCB.rawValue() -> R.drawable.jcb_md
-            CreditCardType.MASTERCARD.rawValue() -> R.drawable.mastercard_md
-            CreditCardType.VISA.rawValue() -> R.drawable.visa_sm
+            CreditCardType.AMEX -> R.drawable.amex_md
+            CreditCardType.DISCOVER -> R.drawable.discover_md
+            CreditCardType.JCB -> R.drawable.jcb_md
+            CreditCardType.MASTERCARD -> R.drawable.mastercard_md
+            CreditCardType.VISA -> R.drawable.visa_sm
             else -> R.drawable.generic_bank_md
         }
     }

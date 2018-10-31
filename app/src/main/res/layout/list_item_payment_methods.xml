@@ -7,13 +7,12 @@
   android:layout_height="@dimen/grid_12"
   android:orientation="vertical">
 
-
   <ImageView
     android:id="@+id/credit_card_logo_image_view"
-    android:layout_width="64dp"
-    android:layout_height="40dp"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="20dp"
+    android:layout_width="@dimen/credit_card_logo_width"
+    android:layout_height="@dimen/credit_card_logo_height"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/credit_card_logo_margin_top"
     android:contentDescription="@null"
     android:scaleType="fitXY"
     app:layout_constraintStart_toStartOf="parent"
@@ -22,45 +21,47 @@
 
   <TextView
     android:id="@+id/credit_card_last_four_text_view"
-    style="@style/CalloutPrimary"
+    style="@style/TextPrimary"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="16dp"
+    android:layout_marginEnd="@dimen/payment_methods_list_item_8dp"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    app:layout_constraintEnd_toStartOf="@+id/delete_card_image_view"
+    app:layout_constraintHorizontal_bias="0.0"
     app:layout_constraintStart_toEndOf="@+id/credit_card_logo_image_view"
     app:layout_constraintTop_toTopOf="parent"
     tools:text="Card ending in xxxx" />
 
   <TextView
     android:id="@+id/credit_card_expiration_date_text_view"
+    style="@style/BodySecondary"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="12dp"
-    android:layout_marginTop="8dp"
+    android:layout_marginBottom="@dimen/payment_methods_list_item_8dp"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/credit_card_last_expiration_date_margin_top"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toStartOf="@+id/delete_card_image_view"
-    app:layout_constraintHorizontal_bias="0.054"
+    app:layout_constraintHorizontal_bias="0.0"
     app:layout_constraintStart_toEndOf="@+id/credit_card_logo_image_view"
     app:layout_constraintTop_toBottomOf="@+id/credit_card_last_four_text_view"
-    app:layout_constraintVertical_bias="0.0"
     tools:text="Expires 03/19" />
 
   <ImageView
     android:id="@+id/delete_card_image_view"
-    android:layout_width="30dp"
-    android:layout_height="30dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="24dp"
-    android:scaleType="fitXY"
+    android:layout_width="@dimen/delete_card_image_width"
+    android:layout_height="@dimen/delete_card_image_height"
+    android:layout_marginBottom="@dimen/payment_methods_list_item_8dp"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/delete_card_image_margin_top"
     android:contentDescription="@null"
-    app:layout_constraintBottom_toTopOf="@+id/credit_card_expiration_date_text_view"
+    android:scaleType="fitXY"
+    app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.852"
-    app:layout_constraintStart_toEndOf="@+id/credit_card_last_four_text_view"
+    app:layout_constraintHorizontal_bias=".5"
     app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.0"
     app:srcCompat="@drawable/icon_trash" />
 
 

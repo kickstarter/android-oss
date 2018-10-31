@@ -8,7 +8,7 @@ import java.util.*
 
 class DateAdapter: CustomTypeAdapter<Date> {
 
-    val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
+    private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
 
     override fun encode(value: Date): CustomTypeValue<*> {
         return CustomTypeValue.GraphQLString(DATE_FORMAT.format(value))

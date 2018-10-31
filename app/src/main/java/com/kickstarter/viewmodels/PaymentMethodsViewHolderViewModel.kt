@@ -14,13 +14,11 @@ import java.util.*
 interface PaymentMethodsViewHolderViewModel {
 
     interface Inputs {
-
+        /** Adding a card from the list of cards in the activity. */
         fun addCards(creditCard: UserPaymentsQuery.Node)
-
     }
 
     interface Outputs {
-
         /** Emits the expiration date for a credit card. */
         fun expirationDate(): Observable<Date>
 
@@ -51,9 +49,8 @@ interface PaymentMethodsViewHolderViewModel {
         val outputs: Outputs = this
 
         init {
-
             this.card.map { expiration -> expiration.expirationDate() }
-                    .subscribe { this.expirationDate.onNext(it)}
+                    .subscribe { this.expirationDate.onNext(it) }
 
             this.card.map { last -> last.lastFour() }
                     .subscribe { this.lastFour.onNext(it) }

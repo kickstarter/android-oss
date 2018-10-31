@@ -63,7 +63,7 @@
     app:layout_constraintHorizontal_bias=".5"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintVertical_bias="0.0"
-    app:srcCompat="@drawable/icon_trash" />
+    android:background="@drawable/icon_trash" />
 
 
 </android.support.constraint.ConstraintLayout>

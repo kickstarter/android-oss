@@ -18,12 +18,14 @@ public abstract class Config implements Parcelable {
   public abstract String countryCode();
   public abstract @Nullable Map<String, Boolean> features();
   public abstract List<LaunchedCountry> launchedCountries();
+  public abstract Stripe stripe();
 
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder countryCode(String __);
     public abstract Builder features(Map<String, Boolean> __);
     public abstract Builder launchedCountries(List<LaunchedCountry> __);
+    public abstract Builder stripe(Stripe __);
     public abstract Config build();
   }
 
@@ -46,6 +48,24 @@ public abstract class Config implements Parcelable {
 
     public static Builder builder() {
       return new AutoParcel_Config_LaunchedCountry.Builder();
+    }
+
+    public abstract Builder toBuilder();
+  }
+
+  @AutoGson
+  @AutoParcel
+  public abstract static class Stripe implements Parcelable {
+    public abstract String publishableKey();
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder publishableKey(String __);
+      public abstract Stripe build();
+    }
+
+    public static Builder builder() {
+      return new AutoParcel_Config_Stripe.Builder();
     }
 
     public abstract Builder toBuilder();

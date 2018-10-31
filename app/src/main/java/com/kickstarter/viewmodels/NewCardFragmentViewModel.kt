@@ -1,6 +1,8 @@
 package com.kickstarter.viewmodels
 
+import UpdateUserPasswordMutation
 import android.support.annotation.NonNull
+import com.kickstarter.libs.CurrentConfigType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.services.ApolloClientType
@@ -63,6 +65,7 @@ interface NewCardFragmentViewModel {
         val outputs: NewCardFragmentViewModel.Outputs = this
 
         private val apolloClient: ApolloClientType = this.environment.apolloClient()
+        private val currentConfig: CurrentConfigType = this.environment.currentConfig()
 
         init {
             val cardForm = Observable.combineLatest(this.name.startWith(""),
@@ -80,6 +83,21 @@ interface NewCardFragmentViewModel {
             this.cardFocus
                     .subscribe { this.cardFocusIsEnabled.onNext(it) }
 
+
+//            this.currentConfig.observable()
+//                    .map { it.stripe() }
+//                    .filter { ObjectUtils.isNotNull(it) }
+//                    .map { it.publishableKey() }
+//                    .filter { ObjectUtils.isNotNull(it) }
+//                    .compose(takeWhen<String, Void>(this.saveCardClicked))
+//                    .compose(combineLatestPair<String, CardForm>(cardForm))
+//                    .switchMap { saveCard(it) }
+
+
+        }
+
+        private fun saveCard(tokenAndForm: Pair<String, CardForm>): Observable<UpdateUserPasswordMutation.Data> {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
         override fun card(card: Card?) {

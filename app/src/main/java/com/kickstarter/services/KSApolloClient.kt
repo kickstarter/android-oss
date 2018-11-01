@@ -24,6 +24,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         }
 
                         override fun onResponse(response: Response<UserPaymentsQuery.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors().first().message()))
+                            }
                             ps.onNext(response.data())
                             ps.onCompleted()
                         }

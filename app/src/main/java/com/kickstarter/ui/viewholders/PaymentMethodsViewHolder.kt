@@ -6,7 +6,7 @@ import android.view.View
 import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.viewmodels.PaymentMethodsViewHolderViewModel
-import kotlinx.android.synthetic.main.list_item_payment_methods.view.*
+import kotlinx.android.synthetic.main.item_payment_method.view.*
 
 class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate) : KSViewHolder(view) {
 

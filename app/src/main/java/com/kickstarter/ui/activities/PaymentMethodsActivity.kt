@@ -8,7 +8,7 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import com.kickstarter.viewmodels.PaymentMethodsViewModel
-import kotlinx.android.synthetic.main.activity_payment_method.*
+import kotlinx.android.synthetic.main.activity_payment_methods.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(PaymentMethodsViewModel.ViewModel::class)
@@ -18,9 +18,9 @@ class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_payment_method)
+        setContentView(R.layout.activity_settings_payment_methods)
 
-        setupRecyclerview()
+        setupRecyclerView()
 
         this.viewModel.outputs.getCards()
                 .compose(bindToLifecycle())
@@ -31,7 +31,7 @@ class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>()
 
     private fun setCards(cards: MutableList<UserPaymentsQuery.Node>) = this.adapter.populateCards(cards)
 
-    private fun setupRecyclerview() {
+    private fun setupRecyclerView() {
         this.adapter = PaymentMethodsAdapter(this.viewModel)
         recycler_view.adapter = this.adapter
         recycler_view.layoutManager = LinearLayoutManager(this)

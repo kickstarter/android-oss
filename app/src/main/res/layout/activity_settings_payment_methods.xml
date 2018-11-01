@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
   android:id="@+id/activity_payment_methods_layout"
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_100"
-  android:orientation="vertical">
+  android:background="@color/ksr_grey_100">
 
   <android.support.design.widget.AppBarLayout
     android:layout_width="match_parent"
@@ -17,7 +18,8 @@
 
   <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
       android:layout_width="match_parent"
@@ -32,15 +34,14 @@
 
       <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
-        android:layout_weight="1"
-        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/item_payment_method" />
 
       <LinearLayout
-        android:layout_marginTop="@dimen/grid_1"
         android:id="@+id/add_new_card_row"
-        style="@style/SettingsLinearRow">
+        style="@style/SettingsLinearRow"
+        android:layout_marginTop="@dimen/grid_1">
 
         <TextView
           style="@style/CalloutPrimaryMedium"
@@ -59,4 +60,4 @@
 
   </ScrollView>
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

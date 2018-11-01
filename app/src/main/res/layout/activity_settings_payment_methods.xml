@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
-  android:id="@+id/activity_payment_methods_layout"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
@@ -39,7 +38,7 @@
         tools:listitem="@layout/item_payment_method" />
 
       <LinearLayout
-        android:id="@+id/add_new_card_row"
+        android:id="@+id/add_new_card"
         style="@style/SettingsLinearRow"
         android:layout_marginTop="@dimen/grid_1">
 

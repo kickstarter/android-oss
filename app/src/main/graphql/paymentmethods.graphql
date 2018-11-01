@@ -1,6 +1,0 @@
-mutation SavePaymentMethod($paymentType: PaymentTypes!, $stripeToken: String!, $stripeCardId: String!) {
-  createPaymentSource(input: {paymentType: $paymentType, stripeToken: $stripeToken, stripeCardId: $stripeCardId}) {
-      errorMessage
-      isSuccessful
-  }
-}

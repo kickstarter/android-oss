@@ -1,5 +1,6 @@
 package com.kickstarter.services
 
+import DeletePaymentSourceMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
@@ -14,6 +15,29 @@ import rx.subjects.PublishSubject
 import type.CurrencyCode
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
+    override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<DeletePaymentSourceMutation.Data>()
+            service.mutate(DeletePaymentSourceMutation.builder()
+                    .paymentSourceId(paymentSourceId)
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<DeletePaymentSourceMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<DeletePaymentSourceMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors().first().message()))
+                            }
+                            ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
     override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<UserPaymentsQuery.Data>()

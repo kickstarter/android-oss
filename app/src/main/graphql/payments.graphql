@@ -12,3 +12,10 @@ query UserPayments {
     }
   }
 }
+
+mutation DeletePaymentSource($paymentSourceId: String!)  {
+  paymentSourceDelete(input: {paymentSourceId: $paymentSourceId}) {
+    clientMutationId
+  }
+}
+

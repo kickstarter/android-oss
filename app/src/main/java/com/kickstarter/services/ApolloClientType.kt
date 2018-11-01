@@ -1,5 +1,6 @@
 package com.kickstarter.services
 
+import DeletePaymentSourceMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
@@ -9,6 +10,8 @@ import rx.Observable
 import type.CurrencyCode
 
 interface ApolloClientType {
+    fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
+
     fun getStoredCards(): Observable<UserPaymentsQuery.Data>
 
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>

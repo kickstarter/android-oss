@@ -8,15 +8,18 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.viewmodels.PaymentMethodsViewHolderViewModel
 import kotlinx.android.synthetic.main.list_item_payment_methods.view.*
 
-class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate) : KSViewHolder(view) {
+class PaymentMethodsViewHolder(@NonNull view: View, @NonNull val delegate: Delegate) : KSViewHolder(view) {
 
+    private lateinit var id: String
     private val ksString = environment().ksString()
     private val vm: PaymentMethodsViewHolderViewModel.ViewModel = PaymentMethodsViewHolderViewModel.ViewModel(environment())
 
     private val creditCardExpirationString = this.context().getString(R.string.Credit_card_expiration)
     private val cardEndingInString = this.context().getString(R.string.Card_ending_in_last_four)
 
-    interface Delegate
+    interface Delegate {
+        fun deleteCardButtonClicked(paymentMethodsViewHolder: PaymentMethodsViewHolder, paymentSourceId: String)
+    }
 
     init {
 
@@ -34,6 +37,13 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate)
                     setExpirationDateTextView(it)
                 }
 
+        this.vm.outputs.id()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    id = it
+                }
+
         this.vm.outputs.lastFour()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -41,6 +51,7 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate)
                     setLastFourTextView(it)
                 }
 
+        this.delegate.deleteCardButtonClicked(this, id)
     }
 
     override fun bindData(data: Any?) {

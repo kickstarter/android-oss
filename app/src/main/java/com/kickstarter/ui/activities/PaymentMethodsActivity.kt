@@ -27,7 +27,7 @@ class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>()
 
         setUpRecyclerView()
 
-        this.viewModel.outputs.getCards()
+        this.viewModel.outputs.cards()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { setCards(it) }
@@ -40,6 +40,7 @@ class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>()
         super.onActivityResult(requestCode, resultCode, intent)
         if (requestCode == ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD && resultCode == Activity.RESULT_OK) {
             showConfirmationSnackbar(payment_methods_toolbar, R.string.Got_it_your_changes_have_been_saved)
+            this@PaymentMethodsActivity.viewModel.inputs.refreshCards()
         }
     }
 

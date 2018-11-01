@@ -52,7 +52,7 @@
           android:layout_marginTop="@dimen/grid_2"
           android:text="@string/Add_new_card"
           android:textAllCaps="true"
-          android:textColor="@color/ksr_green_700" />
+          android:textColor="@color/ksr_green_500" />
       </LinearLayout>
 
     </LinearLayout>

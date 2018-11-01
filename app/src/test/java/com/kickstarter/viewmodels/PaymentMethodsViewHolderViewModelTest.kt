@@ -11,6 +11,8 @@ import type.CreditCardState
 import type.CreditCardTypes
 import java.util.*
 
+
+
 class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PaymentMethodsViewHolderViewModel.ViewModel
@@ -32,8 +34,10 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCardExpirationDate() {
         setUpEnvironment(environment())
+        val calendar = GregorianCalendar(2019, 2, 1)
+        val date: Date = calendar.time
 
-        this.vm.inputs.card(UserPaymentsQuery.Node("", "", Date(), "", CreditCardState.ACTIVE,
+        this.vm.inputs.card(UserPaymentsQuery.Node("", "", date, "", CreditCardState.ACTIVE,
                 CreditCardPaymentType.CREDIT_CARD, CreditCardTypes.DISCOVER))
 
         this.expirationDate.assertValue("03/2019")

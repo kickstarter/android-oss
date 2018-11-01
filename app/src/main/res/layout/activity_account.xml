@@ -49,10 +49,10 @@
         </LinearLayout>
 
         <LinearLayout
+          android:id="@+id/privacy_row"
           style="@style/SettingsLinearRow">
 
           <TextView
-            android:id="@+id/privacy_row"
             style="@style/SettingsSingleRow"
             android:text="@string/Privacy" />
 

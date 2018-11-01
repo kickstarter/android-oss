@@ -4,6 +4,7 @@ import SavePaymentMethodMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
+import UserPaymentsQuery
 import UserPrivacyQuery
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
@@ -15,6 +16,27 @@ import type.CurrencyCode
 import type.PaymentTypes
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
+    override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<UserPaymentsQuery.Data>()
+            service.query(UserPaymentsQuery.builder().build())
+                    .enqueue(object : ApolloCall.Callback<UserPaymentsQuery.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<UserPaymentsQuery.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors().first().message()))
+                            }
+                            ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
     override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<SavePaymentMethodMutation.Data>()

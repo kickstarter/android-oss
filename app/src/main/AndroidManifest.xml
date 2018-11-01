@@ -39,8 +39,8 @@
         android:value=".ui.activities.DiscoveryActivity" />
     </activity>
     <activity android:name=".ui.activities.ChangeEmailActivity" />
-    <activity android:name=".ui.activities.ChangePasswordActivity"/>
-    <activity android:name=".ui.activities.EditProfileActivity"/>
+    <activity android:name=".ui.activities.ChangePasswordActivity" />
+    <activity android:name=".ui.activities.EditProfileActivity" />
     <activity
       android:name=".ui.activities.CheckoutActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
@@ -192,6 +192,7 @@
     <activity android:name=".ui.activities.NewCardActivity" />
     <activity android:name=".ui.activities.NewsletterActivity" />
     <activity android:name=".ui.activities.NotificationsActivity" />
+    <activity android:name=".ui.activities.PaymentMethodsActivity"/>
     <activity android:name=".ui.activities.PrivacyActivity" />
     <activity
       android:name=".ui.activities.ProjectNotificationSettingsActivity"

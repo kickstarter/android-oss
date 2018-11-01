@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  android:id="@+id/activity_payment_methods_layout"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/ksr_grey_100"
+  android:orientation="vertical">
+
+  <android.support.design.widget.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/payment_methods_toolbar" />
+
+  </android.support.design.widget.AppBarLayout>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <TextView
+        style="@style/NewsLetterTextView"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_3"
+        android:text="@string/Any_payment_methods_you_saved_to_Kickstarter" />
+
+      <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+      <LinearLayout
+        android:layout_marginTop="@dimen/grid_1"
+        android:id="@+id/add_new_card_row"
+        style="@style/SettingsLinearRow">
+
+        <TextView
+          style="@style/CalloutPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:layout_marginTop="@dimen/grid_2"
+          android:text="@string/Add_new_card"
+          android:textAllCaps="true"
+          android:textColor="@color/ksr_green_700" />
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </ScrollView>
+
+</LinearLayout>

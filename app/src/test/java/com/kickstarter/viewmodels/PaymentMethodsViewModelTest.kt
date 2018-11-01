@@ -25,6 +25,17 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testError() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
+                return Observable.error(Throwable("Network Error"))
+            }
+        }).build())
+
+        this.cards.assertNoValues()
+    }
+
+    @Test
     fun testGetCards() {
         val node = UserPaymentsQuery.Node("", "5555", Date(), "9876",
                 CreditCardState.ACTIVE, CreditCardPaymentType.CREDIT_CARD, CreditCardTypes.MASTERCARD)

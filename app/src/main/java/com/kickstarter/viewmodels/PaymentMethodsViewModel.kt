@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import UserPaymentsQuery
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers.neverError
 import com.kickstarter.ui.activities.PaymentMethodsActivity
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import rx.Observable
@@ -26,6 +27,7 @@ interface PaymentMethodsViewModel {
         init {
             this.client.getStoredCards()
                     .compose(bindToLifecycle())
+                    .compose(neverError())
                     .map { cards -> cards.me()?.storedCards()?.nodes() }
                     .subscribe { this.cards.onNext(it) }
         }

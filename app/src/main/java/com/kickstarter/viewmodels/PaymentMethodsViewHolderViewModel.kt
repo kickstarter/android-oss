@@ -47,15 +47,15 @@ interface PaymentMethodsViewHolderViewModel {
         private val paymentType = BehaviorSubject.create<CreditCardPaymentType>()
         private val type = BehaviorSubject.create<Int>()
 
+        private val sdf = SimpleDateFormat("MM/yyyy", Locale.getDefault())
+
+
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
             this.card.map { expiration -> expiration.expirationDate() }
-                    .map {
-                        val sdf = SimpleDateFormat("MM/yyyy", Locale.getDefault())
-                        sdf.format(it).toString()
-                    }
+                    .map { sdf.format(it).toString() }
                     .subscribe { this.expirationDate.onNext(it) }
 
             this.card.map { id -> id.id() }

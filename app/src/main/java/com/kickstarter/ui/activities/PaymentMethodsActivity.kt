@@ -32,7 +32,7 @@ class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { setCards(it) }
 
-        add_new_card.setOnClickListener { startActivityForResult(Intent(this, PaymentMethodsActivity::class.java), ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD) }
+        add_new_card.setOnClickListener { startActivityForResult(Intent(this, NewCardActivity::class.java), ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD) }
 
     }
 

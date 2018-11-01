@@ -35,6 +35,7 @@ import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.PushNotifications;
+import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.EmailAdapter;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
@@ -174,6 +175,7 @@ public final class ApplicationModule {
     final OkHttpClient okHttpClient = builder.build();
 
     return ApolloClient.builder()
+      .addCustomTypeAdapter(CustomType.DATE, new DateAdapter())
       .addCustomTypeAdapter(CustomType.EMAIL, new EmailAdapter())
       .serverUrl(webEndpoint + "/graph")
       .okHttpClient(okHttpClient)

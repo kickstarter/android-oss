@@ -1,0 +1,14 @@
+query UserPayments {
+  me {
+    storedCards {
+      nodes {
+        id
+        expirationDate
+        lastFour
+        state
+        paymentType
+        type
+      }
+    }
+  }
+}

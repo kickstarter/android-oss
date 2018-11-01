@@ -1,5 +1,6 @@
 package com.kickstarter.ui.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
@@ -7,7 +8,6 @@ import android.text.TextWatcher
 import android.view.*
 import com.kickstarter.R
 import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.showConfirmationSnackbar
 import com.kickstarter.extensions.showErrorSnackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
@@ -19,7 +19,12 @@ import kotlinx.android.synthetic.main.fragment_new_card.*
 
 @RequiresFragmentViewModel(NewCardFragmentViewModel.ViewModel::class)
 class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
+    interface OnCardSavedListener {
+        fun cardSaved()
+    }
+
     private var saveEnabled = false
+    private var onCardSavedListener: OnCardSavedListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -52,7 +57,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.success()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { showConfirmationSnackbar(new_card_toolbar, it) }
+                .subscribe { onCardSavedListener?.cardSaved() }
 
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
@@ -71,6 +76,14 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        onCardSavedListener = context as? OnCardSavedListener
+        if (onCardSavedListener == null) {
+            throw ClassCastException("$context must implement OnArticleSelectedListener")
         }
     }
 

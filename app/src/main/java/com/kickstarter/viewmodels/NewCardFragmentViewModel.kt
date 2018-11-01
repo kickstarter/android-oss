@@ -1,16 +1,23 @@
 package com.kickstarter.viewmodels
 
-import UpdateUserPasswordMutation
+import SavePaymentMethodMutation
 import android.support.annotation.NonNull
-import com.kickstarter.libs.CurrentConfigType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.fragments.NewCardFragment
+import com.stripe.android.Stripe
+import com.stripe.android.TokenCallback
 import com.stripe.android.model.Card
+import com.stripe.android.model.Token
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import type.PaymentTypes
+import java.lang.Exception
 
 interface NewCardFragmentViewModel {
     interface Inputs {
@@ -65,17 +72,18 @@ interface NewCardFragmentViewModel {
         val outputs: NewCardFragmentViewModel.Outputs = this
 
         private val apolloClient: ApolloClientType = this.environment.apolloClient()
-        private val currentConfig: CurrentConfigType = this.environment.currentConfig()
+        private val stripe: Stripe = this.environment.stripe()
 
         init {
             val cardForm = Observable.combineLatest(this.name.startWith(""),
-                    this.card.startWith(null,null),
+                    this.card.startWith(null, null),
                     this.postalCode.startWith(""),
                     { name, card, postalCode -> CardForm(name, card, postalCode) })
                     .skip(1)
 
-            cardForm
+            val cardIsValid = cardForm
                     .map { it.isValid() }
+            cardIsValid
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.saveButtonIsEnabled)
@@ -83,21 +91,58 @@ interface NewCardFragmentViewModel {
             this.cardFocus
                     .subscribe { this.cardFocusIsEnabled.onNext(it) }
 
+            val tokenNotification = cardForm
+                    .compose<CardForm>(takeWhen(this.saveCardClicked))
+                    .switchMap { createToken(it).materialize() }
+                    .compose(bindToLifecycle())
+                    .share()
 
-//            this.currentConfig.observable()
-//                    .map { it.stripe() }
-//                    .filter { ObjectUtils.isNotNull(it) }
-//                    .map { it.publishableKey() }
-//                    .filter { ObjectUtils.isNotNull(it) }
-//                    .compose(takeWhen<String, Void>(this.saveCardClicked))
-//                    .compose(combineLatestPair<String, CardForm>(cardForm))
-//                    .switchMap { saveCard(it) }
+            tokenNotification
+                    .compose(Transformers.errors())
+                    .subscribe({ this.error.onNext(it.localizedMessage) })
 
+            val saveCardNotification = tokenNotification
+                    .compose(values())
+                    .switchMap { saveCard(it).materialize() }
+                    .compose(bindToLifecycle())
+                    .share()
+
+            saveCardNotification
+                    .compose(values())
+                    .subscribe { this.success.onNext(null) }
+
+            saveCardNotification
+                    .compose(Transformers.errors())
+                    .subscribe { this.error.onNext(it.localizedMessage) }
 
         }
 
-        private fun saveCard(tokenAndForm: Pair<String, CardForm>): Observable<UpdateUserPasswordMutation.Data> {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        private fun createToken(cardForm: CardForm): Observable<Token> {
+            val card = cardForm.card!!
+            card.name = cardForm.name
+            card.addressZip = cardForm.postalCode
+            return Observable.defer {
+                val ps = PublishSubject.create<Token>()
+                this.stripe.createToken(card, object : TokenCallback {
+                    override fun onSuccess(token: Token?) {
+                        ps.onNext(token)
+                        ps.hasCompleted()
+                    }
+
+                    override fun onError(error: Exception?) {
+                        ps.onError(error)
+                    }
+                })
+                return@defer ps
+            }
+                    .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
+                    .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
+        }
+
+        private fun saveCard(token: Token): Observable<SavePaymentMethodMutation.Data> {
+            return this.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, token.card.id)
+                    .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
+                    .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }
 
         override fun card(card: Card?) {

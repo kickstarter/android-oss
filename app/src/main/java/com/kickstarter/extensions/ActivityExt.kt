@@ -33,7 +33,7 @@ fun showErrorSnackbar(anchor: View, message: String) {
 }
 
 fun Activity.showHeadsUpSnackbar(anchor: View, stringResId: Int) {
-    showErrorSnackbar(anchor, getString(stringResId))
+    showHeadsUpSnackbar(anchor, getString(stringResId))
 }
 
 fun showHeadsUpSnackbar(anchor: View, message: String) {

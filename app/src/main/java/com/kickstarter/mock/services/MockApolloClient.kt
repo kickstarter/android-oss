@@ -1,5 +1,6 @@
 package com.kickstarter.mock.services
 
+import SavePaymentMethodMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
@@ -7,8 +8,13 @@ import UserPrivacyQuery
 import com.kickstarter.services.ApolloClientType
 import rx.Observable
 import type.CurrencyCode
+import type.PaymentTypes
 
 open class MockApolloClient : ApolloClientType {
+    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data> {
+        return Observable.just(SavePaymentMethodMutation.Data(SavePaymentMethodMutation.CreatePaymentSource("", null , true)))
+    }
+
     override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
         return Observable.just(UpdateUserCurrencyMutation.Data(UpdateUserCurrencyMutation.UpdateUserProfile("",
                 UpdateUserCurrencyMutation.User("", "USD"))))

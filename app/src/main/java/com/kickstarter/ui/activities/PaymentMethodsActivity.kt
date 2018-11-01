@@ -4,7 +4,6 @@ import UserPaymentsQuery
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import com.kickstarter.R
-import com.kickstarter.extensions.showErrorSnackbar
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
@@ -22,11 +21,6 @@ class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>()
         setContentView(R.layout.activity_payment_method)
 
         setupRecyclerview()
-
-        this.viewModel.outputs.error()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showErrorSnackbar(activity_payment_methods_layout, it) }
 
         this.viewModel.outputs.getCards()
                 .compose(bindToLifecycle())

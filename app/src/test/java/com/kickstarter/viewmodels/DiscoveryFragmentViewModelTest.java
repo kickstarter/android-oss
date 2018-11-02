@@ -39,7 +39,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
   private final TestSubscriber<Activity> activityTest = new TestSubscriber<>();
   private final TestSubscriber<Boolean> hasProjects = new TestSubscriber<>();
-  private final TestSubscriber<List<Project>> projects = new TestSubscriber<>();
+  private final TestSubscriber<List<Pair<Project, DiscoveryParams>>> projects = new TestSubscriber<>();
   private final TestSubscriber<Boolean> shouldShowEmptySavedView = new TestSubscriber<>();
   private final TestSubscriber<Boolean> shouldShowOnboardingViewTest = new TestSubscriber<>();
   private final TestSubscriber<Boolean> showActivityFeed = new TestSubscriber<>();
@@ -84,12 +84,12 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
         .build()
     );
 
-    // Projects are cleared, new projects load.
-    this.hasProjects.assertValues(true, false, true);
+    // Projects are cleared, new projects load with new params.
+    this.hasProjects.assertValues(true, false, true, true);
     this.koalaTest.assertValues("Discover List View", "Discover List View");
 
     this.vm.inputs.clearPage();
-    this.hasProjects.assertValues(true, false, true, false);
+    this.hasProjects.assertValues(true, false, true, true, false);
   }
 
   @Test
@@ -104,7 +104,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     // Popular tab clicked.
     this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());
-    this.projects.assertValueCount(2);
+    this.projects.assertValueCount(3);
     this.koalaTest.assertValues("Discover List View", "Discover List View");
   }
 
@@ -160,8 +160,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     // Saved projects params.
     this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().starred(1).build());
 
-    // Projects are cleared, new projects load.
-    this.hasProjects.assertValues(true, false, true, false, true);
+    // Projects are cleared, new projects load with updated params.
+    this.hasProjects.assertValues(true, false, true, false, true, true);
     this.shouldShowEmptySavedView.assertValues(false);
   }
 
@@ -202,8 +202,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     // Saved projects params.
     this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().starred(1).build());
 
-    // Projects are cleared, new projects load.
-    this.hasProjects.assertValues(true, false, true, false, false);
+    // Projects are cleared, new projects load with updated params.
+    this.hasProjects.assertValues(true, false, true, false, false, false);
     this.shouldShowEmptySavedView.assertValues(false, true);
   }
 

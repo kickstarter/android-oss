@@ -3,11 +3,13 @@ package com.kickstarter.ui.adapters;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
@@ -57,7 +59,7 @@ public final class DiscoveryAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  public void takeProjects(final @NonNull List<Project> projects) {
+  public void takeProjects(final @NonNull List<Pair<Project, DiscoveryParams>> projects) {
     setSection(SECTION_PROJECT_CARD_VIEW, projects);
     notifyDataSetChanged();
   }

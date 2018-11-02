@@ -32,12 +32,15 @@ public final class ProjectFactory {
       .createdAt(DateTime.now())
       .currency("USD")
       .currencySymbol("$")
+      .currentCurrency("USD")
       .currencyTrailingCode(true)
+      .fxRate(1.0f)
       .goal(100.0f)
       .id(IdFactory.id())
       .name("Some Name")
       .pledged(50.0f)
       .photo(PhotoFactory.photo())
+      .staffPick(false)
       .state(Project.STATE_LIVE)
       .staticUsdRate(1.0f)
       .slug(slug)
@@ -214,6 +217,14 @@ public final class ProjectFactory {
       .toBuilder()
       .name("savedProject")
       .isStarred(true)
+      .build();
+  }
+
+  public static Project staffPick() {
+    return project()
+      .toBuilder()
+      .name("staffPickProject")
+      .staffPick(true)
       .build();
   }
 }

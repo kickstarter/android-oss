@@ -62,6 +62,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.blurb) TextView blurbTextView;
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.comments_count) TextView commentsCountTextView;
+  protected @Bind(R.id.usd_conversion_text_view) TextView conversionTextView;
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
   protected @Bind(R.id.deadline_countdown_text_view) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit_text_view) TextView deadlineCountdownUnitTextView;
@@ -88,7 +89,6 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
   protected @Bind(R.id.view_pledge_button) @Nullable Button viewPledgeButton;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
-  protected @Bind(R.id.usd_conversion_text_view) TextView usdConversionTextView;
 
   protected @BindColor(R.color.green_alpha_20) int greenAlpha50Color;
   protected @BindColor(R.color.ksr_grey_400) int ksrGrey400;
@@ -348,15 +348,15 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.updatesCountTextView::setText);
 
-    this.viewModel.outputs.usdConversionPledgedAndGoalText()
+    this.viewModel.outputs.conversionPledgedAndGoalText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::setConvertedUsdView);
+      .subscribe(this::setConvertedCurrencyView);
 
-    this.viewModel.outputs.usdConversionTextViewIsGone()
+    this.viewModel.outputs.conversionTextViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.usdConversionTextView));
+      .subscribe(ViewUtils.setGone(this.conversionTextView));
   }
 
   @Override
@@ -366,8 +366,8 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(projectAndCountry);
   }
 
-  private void setConvertedUsdView(final @NonNull Pair<String, String> pledgedAndGoal) {
-    this.usdConversionTextView.setText(
+  private void setConvertedCurrencyView(final @NonNull Pair<String, String> pledgedAndGoal) {
+    this.conversionTextView.setText(
       this.ksString.format(
         this.convertedFromString, "pledged", pledgedAndGoal.first, "goal", pledgedAndGoal.second
       )

@@ -177,8 +177,8 @@ public final class ApplicationModule {
     final OkHttpClient okHttpClient = builder.build();
 
     return ApolloClient.builder()
-      .serverUrl(webEndpoint + "/graph")
       .addCustomTypeAdapter(CustomType.EMAIL, new EmailAdapter())
+      .serverUrl(webEndpoint + "/graph")
       .okHttpClient(okHttpClient)
       .build();
   }

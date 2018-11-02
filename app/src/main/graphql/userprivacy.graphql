@@ -2,11 +2,12 @@ query UserPrivacy {
   me {
     name
     email
+    chosenCurrency
   }
 }
 
-mutation UpdateUserEmail($email: Email!, $current_password: String!) {
-  updateUserAccount(input: {email: $email, current_password: $current_password}) {
+mutation UpdateUserEmail($email: Email!, $currentPassword: String!) {
+  updateUserAccount(input: {email: $email, currentPassword: $currentPassword}) {
     user {
       name
       email
@@ -14,8 +15,16 @@ mutation UpdateUserEmail($email: Email!, $current_password: String!) {
   }
 }
 
-mutation UpdateUserPassword($current_password: String!, $password: String!, $password_confirmation: String!) {
-  updateUserAccount(input: {current_password: $current_password, password: $password, password_confirmation: $password_confirmation}) {
+mutation UpdateUserCurrency($chosenCurrency: CurrencyCode!) {
+  updateUserProfile(input: {chosenCurrency: $chosenCurrency}) {
+    user {
+    chosenCurrency
+    }
+  }
+}
+
+mutation UpdateUserPassword($currentPassword: String!, $password: String!, $passwordConfirmation: String!) {
+  updateUserAccount(input: {currentPassword: $currentPassword, password: $password, passwordConfirmation: $passwordConfirmation}) {
     user {
       email
     }

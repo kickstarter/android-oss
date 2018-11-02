@@ -21,7 +21,7 @@ public final class MockTrackingClient extends TrackingClientType {
   public static class Event {
     private final String name;
     private final Map<String, Object> properties;
-    public Event(final String name, final Map<String, Object> properties) {
+    Event(final String name, final Map<String, Object> properties) {
       this.name = name;
       this.properties = properties;
     }

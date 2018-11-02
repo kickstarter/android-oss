@@ -23,6 +23,30 @@ class KoalaTest : KSRobolectricTestCase() {
         propertiesTest.assertValue(expectedProperties)
     }
 
+    @Test
+    fun testDefaultPropertiesWithLoggedInUser() {
+        val user = UserFactory.user()
+                .toBuilder()
+                .backedProjectsCount(3)
+                .createdProjectsCount(2)
+                .starredProjectsCount(10)
+                .build()
+        val client = MockTrackingClient(MockCurrentUser(user))
+        client.eventNames.subscribe(this.namesTest)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val koala = Koala(client)
+
+        koala.trackAppOpen()
+        namesTest.assertValue("App Open")
+        val expectedProperties = getDefaultExpectedProperties()
+        expectedProperties["user_logged_in"] = true
+        expectedProperties["user_uid"] = true
+        expectedProperties["user_backed_projects_count"] = 3
+        expectedProperties["user_created_projects_count"] = 2
+        expectedProperties["user_starred_projects_count"] = 10
+        propertiesTest.assertValue(expectedProperties)
+    }
+
     private fun getDefaultExpectedProperties(): HashMap<String, Any> {
         val expectedProperties = HashMap<String, Any>()
         expectedProperties["android_pay_capable"] = false

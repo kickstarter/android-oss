@@ -12,14 +12,14 @@ class KoalaTest : KSRobolectricTestCase() {
 
     @Test
     fun testDefaultProperties() {
-        val client = MockTrackingClient(MockCurrentUser(UserFactory.user()))
+        val client = MockTrackingClient(MockCurrentUser())
         client.eventNames.subscribe(this.namesTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
 
         koala.trackAppOpen()
-        namesTest.assertValue("App Open")
         val expectedProperties = getDefaultExpectedProperties()
+        namesTest.assertValue("App Open")
         propertiesTest.assertValue(expectedProperties)
     }
 
@@ -27,6 +27,7 @@ class KoalaTest : KSRobolectricTestCase() {
     fun testDefaultPropertiesWithLoggedInUser() {
         val user = UserFactory.user()
                 .toBuilder()
+                .id(15)
                 .backedProjectsCount(3)
                 .createdProjectsCount(2)
                 .starredProjectsCount(10)
@@ -37,13 +38,14 @@ class KoalaTest : KSRobolectricTestCase() {
         val koala = Koala(client)
 
         koala.trackAppOpen()
-        namesTest.assertValue("App Open")
         val expectedProperties = getDefaultExpectedProperties()
         expectedProperties["user_logged_in"] = true
-        expectedProperties["user_uid"] = true
+        expectedProperties["user_uid"] = 15
         expectedProperties["user_backed_projects_count"] = 3
         expectedProperties["user_created_projects_count"] = 2
         expectedProperties["user_starred_projects_count"] = 10
+
+        namesTest.assertValue("App Open")
         propertiesTest.assertValue(expectedProperties)
     }
 
@@ -66,7 +68,7 @@ class KoalaTest : KSRobolectricTestCase() {
         expectedProperties["mp_lib"] = "android"
         expectedProperties["os"] = "Android"
         expectedProperties["os_version"] = "9"
-        expectedProperties["time"] = System.currentTimeMillis()
+        expectedProperties["time"] = MockTrackingClient.DEFAULT_TIME
         expectedProperties["user_logged_in"] = false
         return expectedProperties
     }

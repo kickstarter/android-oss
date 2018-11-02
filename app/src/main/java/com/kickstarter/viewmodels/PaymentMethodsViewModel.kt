@@ -4,6 +4,9 @@ import DeletePaymentSourceMutation
 import UserPaymentsQuery
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.ui.activities.PaymentMethodsActivity
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
@@ -37,6 +40,10 @@ interface PaymentMethodsViewModel {
         private val cards = BehaviorSubject.create<MutableList<UserPaymentsQuery.Node>>()
         private val deleteCardClicked = PublishSubject.create<String>()
 
+        private val success = BehaviorSubject.create<String>()
+
+        private val error = BehaviorSubject.create<String>()
+
         private val client = environment.apolloClient()
 
         val outputs: Outputs = this
@@ -46,6 +53,21 @@ interface PaymentMethodsViewModel {
                     .compose(bindToLifecycle())
                     .map { cards -> cards.me()?.storedCards()?.nodes() }
                     .subscribe { this.cards.onNext(it) }
+
+            val deleteCardNotification = this.deleteCardClicked
+                    .compose(combineLatestPair<Void, String>(this.))
+                    .switchMap { deletePaymentSource(it.second).materialize() }
+                    .compose(bindToLifecycle())
+                    .share()
+
+            deleteCardNotification
+                    .compose(values())
+                    .map { it.paymentSourceDelete()?.clientMutationId() }
+                    .subscribe { this.success.onNext(it) }
+
+            deleteCardNotification
+                    .compose(Transformers.errors())
+                    .subscribe { this.error.onNext(it.localizedMessage) }
         }
 
         override fun deleteCard(paymentSourceId: String) = this.deleteCardClicked.onNext(paymentSourceId)
@@ -60,14 +82,9 @@ interface PaymentMethodsViewModel {
 
         override fun getCards(): Observable<MutableList<UserPaymentsQuery.Node>> = this.cards
 
+        override fun error(): Observable<String> = this.error
 
-        override fun error(): Observable<String> {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun success(): Observable<String> {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
+        override fun success(): Observable<String> = this.success
 
         private fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
             return this.client.deletePaymentSource(paymentSourceId)

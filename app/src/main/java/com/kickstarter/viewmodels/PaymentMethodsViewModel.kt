@@ -5,8 +5,7 @@ import UserPaymentsQuery
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.ui.activities.PaymentMethodsActivity
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
@@ -44,6 +43,7 @@ interface PaymentMethodsViewModel {
 
         private val deleteCardClicked = PublishSubject.create<String>()
 
+        private val showDeleteCardDialog = BehaviorSubject.create<Void>()
         private val success = BehaviorSubject.create<String>()
 
         private val error = BehaviorSubject.create<String>()
@@ -55,6 +55,7 @@ interface PaymentMethodsViewModel {
 
         init {
             this.client.getStoredCards()
+                    .compose(neverError())
                     .compose(bindToLifecycle())
                     .map { cards -> cards.me()?.storedCards()?.nodes() }
                     .subscribe { this.cards.onNext(it) }
@@ -81,15 +82,13 @@ interface PaymentMethodsViewModel {
             return this.deleteCardClicked(paymentSourceId)
         }
 
-        override fun confirmDeleteCardClicked() {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
+        override fun confirmDeleteCardClicked() = this.confirmDeleteCardClicked.onNext(null)
 
         override fun getCards(): Observable<MutableList<UserPaymentsQuery.Node>> = this.cards
 
         override fun error(): Observable<String> = this.error
 
-        override fun showDeleteCardDialog(): Observable<Void> = this.confirmDeleteCardClicked
+        override fun showDeleteCardDialog(): Observable<Void> = this.showDeleteCardDialog
 
         override fun success(): Observable<String> = this.success
 

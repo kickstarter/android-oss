@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.list_item_payment_methods.view.*
 
 class PaymentMethodsViewHolder(@NonNull view: View, @NonNull val delegate: Delegate) : KSViewHolder(view) {
 
-    private lateinit var id: String
     private val ksString = environment().ksString()
     private val vm: PaymentMethodsViewHolderViewModel.ViewModel = PaymentMethodsViewHolderViewModel.ViewModel(environment())
 
@@ -37,13 +36,12 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull val delegate: Deleg
                     setExpirationDateTextView(it)
                 }
 
-        this.vm.outputs.id()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    this.delegate.deleteCardButtonClicked(this, it)
-
-                }
+//        this.vm.outputs.id()
+//                .compose(bindToLifecycle())
+//                .compose(observeForUI())
+//                .subscribe {
+//                    this.delegate.deleteCardButtonClicked(this, it)
+//                }
 
         this.vm.outputs.lastFour()
                 .compose(bindToLifecycle())
@@ -52,7 +50,10 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull val delegate: Deleg
                     setLastFourTextView(it)
                 }
 
-        itemView.delete_card.setOnClickListener { this.vm.inputs.deleteCardClick() }
+        itemView.delete_card.setOnClickListener {
+            this.vm.inputs.deleteCardClick()
+        }
+
     }
 
     override fun bindData(data: Any?) {

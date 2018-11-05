@@ -36,12 +36,12 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull val delegate: Deleg
                     setExpirationDateTextView(it)
                 }
 
-//        this.vm.outputs.id()
-//                .compose(bindToLifecycle())
-//                .compose(observeForUI())
-//                .subscribe {
-//                    this.delegate.deleteCardButtonClicked(this, it)
-//                }
+        this.vm.outputs.id()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    this.delegate.deleteCardButtonClicked(this, it)
+                }
 
         this.vm.outputs.lastFour()
                 .compose(bindToLifecycle())

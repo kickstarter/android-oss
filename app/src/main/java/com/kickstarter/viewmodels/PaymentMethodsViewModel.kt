@@ -60,6 +60,8 @@ interface PaymentMethodsViewModel {
                     .map { cards -> cards.me()?.storedCards()?.nodes() }
                     .subscribe { this.cards.onNext(it) }
 
+            this.deleteCardClicked.subscribe { this.showDeleteCardDialog.onNext(null) }
+
             val deleteCardNotification = this.deleteCardClicked
                     .compose<String>(takeWhen(this.confirmDeleteCardClicked))
                     .switchMap { deletePaymentSource(it).materialize() }

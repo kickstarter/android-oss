@@ -29,12 +29,12 @@ class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { setCards(it) }
 
-//        this.viewModel.outputs.showDeleteCardDialog()
-//                .compose(bindToLifecycle())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe {
-//                    lazyDeleteCardConfirmationDialog().show()
-//                }
+        this.viewModel.outputs.showDeleteCardDialog()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    lazyDeleteCardConfirmationDialog().show()
+                }
 
     }
 

@@ -4,6 +4,7 @@ import UserPaymentsQuery
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -18,6 +19,8 @@ interface PaymentMethodsViewHolderViewModel {
     interface Inputs {
         /** Adding a card from the list of cards in the activity. */
         fun card(creditCard: UserPaymentsQuery.Node)
+
+        fun deleteCardClick()
     }
 
     interface Outputs {
@@ -40,6 +43,7 @@ interface PaymentMethodsViewHolderViewModel {
     class ViewModel(environment: Environment) : ActivityViewModel<PaymentMethodsViewHolder>(environment), Inputs, Outputs {
 
         private val card = PublishSubject.create<UserPaymentsQuery.Node>()
+        private val deleteCardClick = PublishSubject.create<Void>()
 
         private val expirationDate = BehaviorSubject.create<String>()
         private val id = BehaviorSubject.create<String>()
@@ -59,6 +63,7 @@ interface PaymentMethodsViewHolderViewModel {
                     .subscribe { this.expirationDate.onNext(it) }
 
             this.card.map { id -> id.id() }
+                    .compose<String>(takeWhen(this.deleteCardClick))
                     .subscribe { this.id.onNext(it) }
 
             this.card.map { last -> last.lastFour() }
@@ -76,6 +81,8 @@ interface PaymentMethodsViewHolderViewModel {
         override fun card(creditCard: UserPaymentsQuery.Node) {
             this.card.onNext(creditCard)
         }
+
+        override fun deleteCardClick() = this.deleteCardClick.onNext(null)
 
         override fun expirationDate(): Observable<String> = this.expirationDate
 

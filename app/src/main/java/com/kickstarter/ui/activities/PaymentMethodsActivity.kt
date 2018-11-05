@@ -29,6 +29,13 @@ class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { setCards(it) }
 
+        this.viewModel.outputs.showDeleteCardDialog()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    lazyDeleteCardConfirmationDialog().show()
+                }
+
     }
 
     private fun setCards(cards: MutableList<UserPaymentsQuery.Node>) = this.adapter.populateCards(cards)
@@ -46,10 +53,10 @@ class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>()
                     .setTitle("Remove this card")
                     .setMessage("Are you sure you wish to remove this card from your payment method options?")
                     .setNegativeButton("No Nevermind") { _, _ ->
+                        lazyDeleteCardConfirmationDialog().dismiss()
                     }
                     .setPositiveButton("Yes, Remove") { _, _ ->
-                        TODO("Set the card id")
-                        this.viewModel.inputs.deleteCard()
+                        this.viewModel.inputs.confirmDeleteCardClicked()
                     }
                     .create()
         }

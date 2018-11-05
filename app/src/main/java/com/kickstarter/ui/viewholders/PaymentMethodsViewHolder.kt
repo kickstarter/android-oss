@@ -41,7 +41,8 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull val delegate: Deleg
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    id = it
+                    this.delegate.deleteCardButtonClicked(this, it)
+
                 }
 
         this.vm.outputs.lastFour()
@@ -51,7 +52,7 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull val delegate: Deleg
                     setLastFourTextView(it)
                 }
 
-        this.delegate.deleteCardButtonClicked(this, id)
+        itemView.delete_card.setOnClickListener { this.vm.inputs.deleteCardClick() }
     }
 
     override fun bindData(data: Any?) {

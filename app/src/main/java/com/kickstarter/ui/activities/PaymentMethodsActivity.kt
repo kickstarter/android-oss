@@ -24,8 +24,6 @@ class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>()
 
         setupRecyclerview()
 
-        t
-
         this.viewModel.outputs.getCards()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -51,6 +49,7 @@ class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>()
                     }
                     .setPositiveButton("Yes, Remove") { _, _ ->
                         TODO("Set the card id")
+                        this.viewModel.inputs.deleteCard()
                     }
                     .create()
         }

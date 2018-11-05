@@ -46,6 +46,7 @@ interface PaymentMethodsViewModel {
 
         private val client = environment.apolloClient()
 
+        val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {

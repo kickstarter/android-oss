@@ -21,7 +21,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(environment: Environment) {
         this.vm = PaymentMethodsViewModel.ViewModel(environment)
 
-        this.vm.outputs.getCards().subscribe(this.cards)
+        this.vm.outputs.cards().subscribe(this.cards)
     }
 
     @Test

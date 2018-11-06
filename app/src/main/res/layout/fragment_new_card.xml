@@ -1,20 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-  android:id="@+id/change_password_layout"
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_100"
-  android:orientation="vertical">
+  android:background="@color/ksr_grey_100">
 
   <android.support.design.widget.AppBarLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/change_password_toolbar" />
+    <com.kickstarter.ui.toolbars.KSToolbar
+      android:id="@+id/new_card_toolbar"
+      style="@style/Toolbar"
+      app:contentInsetLeft="0dp"
+      app:contentInsetStart="0dp">
 
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.kickstarter.ui.views.IconButton
+          android:id="@+id/back_button"
+          style="@style/ToolbarIconBackButton" />
+
+        <TextView
+          style="@style/ToolbarTitle"
+          android:text="@string/Add_new_card"/>
+      </RelativeLayout>
+
+    </com.kickstarter.ui.toolbars.KSToolbar>
   </android.support.design.widget.AppBarLayout>
 
   <ScrollView
@@ -29,65 +46,64 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/grid_3"
         android:orientation="vertical">
 
         <LinearLayout
-          style="@style/SettingsLinearRow"
-          android:layout_marginTop="@dimen/grid_3">
+          style="@style/SettingsLinearRow">
 
           <android.support.design.widget.TextInputLayout
             style="@style/TextInputLayout"
             android:layout_marginBottom="0dp"
-            android:layout_marginTop="@dimen/grid_3"
             app:hintTextAppearance="@style/BodySecondary"
             app:passwordToggleEnabled="true">
 
             <android.support.design.widget.TextInputEditText
-              android:id="@+id/current_password"
+              android:id="@+id/cardholder_name"
               style="@style/ChangeEmailPassTextInputEditText"
-              android:hint="@string/Current_password"
-              android:inputType="textPassword"
+              android:hint="@string/Name"
+              android:inputType="textPersonName"
               android:maxLines="1" />
 
           </android.support.design.widget.TextInputLayout>
 
+          <com.stripe.android.view.CardInputWidget
+            android:id="@+id/card_input_widget"
+            style="@style/CardInputWidget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+          <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp">
+
+            <ImageView
+              android:contentDescription="@null"
+              android:id="@+id/card_focus"
+              android:src="@drawable/divider_dark_grey_500_horizontal"
+              android:layout_marginStart="@dimen/grid_3"
+              android:layout_marginEnd="@dimen/grid_3"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"/>
+
+          </FrameLayout>
+
           <android.support.design.widget.TextInputLayout
             style="@style/TextInputLayout"
-            android:layout_marginBottom="0dp"
             app:hintTextAppearance="@style/BodySecondary"
             app:passwordToggleEnabled="true">
 
             <android.support.design.widget.TextInputEditText
-              android:id="@+id/new_password"
+              android:id="@+id/postal_code"
               style="@style/ChangeEmailPassTextInputEditText"
-              android:hint="@string/New_password"
-              android:inputType="textPassword" />
-
-          </android.support.design.widget.TextInputLayout>
-
-          <android.support.design.widget.TextInputLayout
-            style="@style/TextInputLayout"
-            app:hintTextAppearance="@style/BodySecondary"
-            app:passwordToggleEnabled="true">
-
-            <android.support.design.widget.TextInputEditText
-              android:id="@+id/confirm_password"
-              style="@style/ChangeEmailPassTextInputEditTextMarginTop"
-              android:hint="@string/Confirm_password"
-              android:inputType="textPassword" />
+              android:hint="@string/Zip_code"
+              android:inputType="phone"
+              android:maxLines="1" />
 
           </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
 
-        <TextView
-          android:id="@+id/warning"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/activity_vertical_margin"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:layout_marginStart="@dimen/activity_horizontal_margin"
-          android:layout_marginTop="@dimen/activity_vertical_margin" />
       </LinearLayout>
 
       <FrameLayout
@@ -95,7 +111,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/progress_bar_height"
         android:visibility="gone"
-        tools:visibility="invisible">
+        tools:visibility="visible">
 
         <ProgressBar
           style="?android:attr/progressBarStyleHorizontal"
@@ -107,7 +123,6 @@
       </FrameLayout>
 
     </FrameLayout>
-
   </ScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

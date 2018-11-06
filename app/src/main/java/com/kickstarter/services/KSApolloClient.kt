@@ -1,6 +1,7 @@
 package com.kickstarter.services
 
 import DeletePaymentSourceMutation
+import SavePaymentMethodMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
@@ -13,6 +14,7 @@ import com.apollographql.apollo.exception.ApolloException
 import rx.Observable
 import rx.subjects.PublishSubject
 import type.CurrencyCode
+import type.PaymentTypes
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
@@ -53,6 +55,37 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             }
                             ps.onNext(response.data())
                             ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<SavePaymentMethodMutation.Data>()
+            service.mutate(SavePaymentMethodMutation.builder()
+                    .paymentType(paymentTypes)
+                    .stripeToken(stripeToken)
+                    .stripeCardId(cardId)
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<SavePaymentMethodMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<SavePaymentMethodMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors().first().message()))
+                            }
+                            //why wouldn't this just be an error?
+                            val createPaymentSource = response.data()?.createPaymentSource()
+                            if (!createPaymentSource?.isSuccessful!!) {
+                                ps.onError(Exception(createPaymentSource.errorMessage()))
+                            } else {
+                                ps.onNext(response.data())
+                                ps.onCompleted()
+                            }
                         }
                     })
             return@defer ps

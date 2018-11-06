@@ -26,7 +26,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.vm = PaymentMethodsViewModel.ViewModel(environment)
 
         this.vm.outputs.error().subscribe(this.error)
-        this.vm.outputs.getCards().subscribe(this.cards)
+        this.vm.outputs.cards().subscribe(this.cards)
         this.vm.outputs.showDeleteCardDialog().subscribe(this.showDeleteCardDialog)
         this.vm.outputs.success().subscribe(this.success)
     }
@@ -45,7 +45,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testErrors() {
+    fun testError() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
                 return Observable.error(Throwable("error"))

@@ -1,6 +1,7 @@
 package com.kickstarter.mock.services
 
 import DeletePaymentSourceMutation
+import SavePaymentMethodMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
@@ -13,6 +14,7 @@ import type.CreditCardState
 import type.CreditCardTypes
 import type.CurrencyCode
 import java.util.*
+import type.*
 
 open class MockApolloClient : ApolloClientType {
     override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
@@ -22,9 +24,13 @@ open class MockApolloClient : ApolloClientType {
 
     override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
         return Observable.just(UserPaymentsQuery.Data(UserPaymentsQuery.Me("",
-                UserPaymentsQuery.StoredCards("", List<UserPaymentsQuery.Node>(1
-                ) { _ -> UserPaymentsQuery.Node("","4333", Date(), "1234",
+                UserPaymentsQuery.StoredCards("", List(1)
+                { _ -> UserPaymentsQuery.Node("","4333", Date(), "1234",
                         CreditCardState.ACTIVE, CreditCardPaymentType.CREDIT_CARD, CreditCardTypes.VISA )}))))
+    }
+
+    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data> {
+        return Observable.just(SavePaymentMethodMutation.Data(SavePaymentMethodMutation.CreatePaymentSource("", null , true)))
     }
 
     override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {

@@ -14,6 +14,7 @@ import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
 interface PaymentMethodsViewModel {
+
     interface Inputs {
         /** Delete a payment source from the list. */
         fun deleteCardClicked(paymentSourceId: String)
@@ -26,11 +27,11 @@ interface PaymentMethodsViewModel {
     }
 
     interface Outputs {
+        /** Emits a list of stored cards for a user. */
+        fun cards(): Observable<MutableList<UserPaymentsQuery.Node>>
+
         /** Emits whenever there is an error updating the user's currency.  */
         fun error(): Observable<String>
-
-        /** Emits a list of stored cards for a user. */
-        fun getCards(): Observable<MutableList<UserPaymentsQuery.Node>>
 
         fun showDeleteCardDialog(): Observable<Void>
 
@@ -40,17 +41,14 @@ interface PaymentMethodsViewModel {
 
     class ViewModel(environment: Environment) : ActivityViewModel<PaymentMethodsActivity>(environment), PaymentMethodsAdapter.Delegate, Inputs, Outputs {
 
-
-        private val cards = BehaviorSubject.create<MutableList<UserPaymentsQuery.Node>>()
         private val confirmDeleteCardClicked = BehaviorSubject.create<Void>()
+        private val deleteCardClicked = PublishSubject.create<String>()
         private val refreshCards = PublishSubject.create<Void>()
 
-        private val deleteCardClicked = PublishSubject.create<String>()
-
+        private val cards = BehaviorSubject.create<MutableList<UserPaymentsQuery.Node>>()
+        private val error = BehaviorSubject.create<String>()
         private val showDeleteCardDialog = BehaviorSubject.create<Void>()
         private val success = BehaviorSubject.create<String>()
-
-        private val error = BehaviorSubject.create<String>()
 
         private val client = environment.apolloClient()
 
@@ -92,7 +90,7 @@ interface PaymentMethodsViewModel {
 
         override fun confirmDeleteCardClicked() = this.confirmDeleteCardClicked.onNext(null)
 
-        override fun getCards(): Observable<MutableList<UserPaymentsQuery.Node>> = this.cards
+        override fun cards(): Observable<MutableList<UserPaymentsQuery.Node>> = this.cards
 
         override fun error(): Observable<String> = this.error
 

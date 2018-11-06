@@ -63,7 +63,7 @@
 
           <android.support.design.widget.TextInputLayout
             android:id="@+id/new_email_container"
-            style="@style/TextInputPasswordLayout"
+            style="@style/TextInputLayout"
             android:layout_marginBottom="0dp"
             app:errorEnabled="true">
 
@@ -77,7 +77,7 @@
           </android.support.design.widget.TextInputLayout>
 
           <android.support.design.widget.TextInputLayout
-            style="@style/TextInputPasswordLayout"
+            style="@style/TextInputLayout"
             android:layout_marginTop="0dp"
             app:hintTextAppearance="@style/BodySecondary"
             app:passwordToggleEnabled="true"
@@ -98,7 +98,7 @@
       <FrameLayout
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="@dimen/progress_bar_height"
         android:visibility="gone"
         tools:visibility="visible">
 

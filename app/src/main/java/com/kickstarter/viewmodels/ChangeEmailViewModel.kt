@@ -42,6 +42,10 @@ interface ChangeEmailViewModel {
         /** Emits a string to display when email update fails.  */
         fun error(): Observable<String>
 
+        fun isCreator(): Observable<Boolean>
+
+        fun isDeliverable(): Observable<Boolean>
+
         /** Emits a boolean to display if the user's email is verified. */
         fun isEmailVerified(): Observable<Boolean>
 
@@ -68,7 +72,8 @@ interface ChangeEmailViewModel {
 
         private val currentEmail = BehaviorSubject.create<String>()
         private val emailErrorIsVisible = BehaviorSubject.create<Boolean>()
-        private val id = BehaviorSubject.create<String>()
+        private val isCreator = BehaviorSubject.create<Boolean>()
+        private val isDeliverable = BehaviorSubject.create<Boolean>()
         private val isEmailVerified = BehaviorSubject.create<Boolean>()
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val showProgressBar = BehaviorSubject.create<Boolean>()
@@ -84,9 +89,10 @@ interface ChangeEmailViewModel {
                     .compose(neverError())
                     .compose(bindToLifecycle())
                     .subscribe {
-                        currentEmail.onNext(it.me()?.email())
-                        isEmailVerified.onNext(it.me()?.isEmailVerified())
-                        id.onNext(it.me()?.id())
+                        this.currentEmail.onNext(it.me()?.email())
+                        this.isCreator.onNext(it.me()?.isCreator())
+                        this.isDeliverable.onNext(it.me()?.isDeliverable())
+                        this.isEmailVerified.onNext(it.me()?.isEmailVerified())
                     }
 
             this.emailFocus
@@ -96,8 +102,8 @@ interface ChangeEmailViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.emailErrorIsVisible.onNext(it) }
 
-            val changeEmail = Observable.combineLatest(this.email, this.password,
-                    { email, password -> ChangeEmail(email, password) })
+            val changeEmail = Observable.combineLatest(this.email, this.password
+            ) { email, password -> ChangeEmail(email, password) }
 
             changeEmail
                     .map { ce -> ce.isValid() }
@@ -113,19 +119,18 @@ interface ChangeEmailViewModel {
 
             updateEmailNotification
                     .compose(errors())
-                    .subscribe({ this.error.onNext(it.localizedMessage) })
+                    .subscribe { this.error.onNext(it.localizedMessage) }
 
             updateEmailNotification
                     .compose(values())
-                    .subscribe({
+                    .subscribe {
                         this.currentEmail.onNext(it.updateUserAccount()?.user()?.email())
                         this.success.onNext(null)
-                    })
+                    }
 
             val sendEmailNotification = this.sendVerificationEmailClick
-                    .compose(combineLatestPair<Void, String>(this.id))
                     .compose(bindToLifecycle())
-                    .switchMap { sendEmailVerification(it.second).materialize() }
+                    .switchMap { sendEmailVerification().materialize() }
                     .share()
 
             sendEmailNotification
@@ -163,6 +168,10 @@ interface ChangeEmailViewModel {
 
         override fun error(): Observable<String> = this.error
 
+        override fun isCreator(): Observable<Boolean> = this.isCreator
+
+        override fun isDeliverable(): Observable<Boolean> = this.isDeliverable
+
         override fun isEmailVerified(): Observable<Boolean> = this.isEmailVerified
 
         override fun progressBarIsVisible(): Observable<Boolean> = this.showProgressBar
@@ -171,8 +180,8 @@ interface ChangeEmailViewModel {
 
         override fun success(): Observable<Void> = this.success
 
-        private fun sendEmailVerification(uid: String): Observable<SendEmailVerificationMutation.Data> {
-            return this.apolloClient.sendVerificationEmail(uid)
+        private fun sendEmailVerification(): Observable<SendEmailVerificationMutation.Data> {
+            return this.apolloClient.sendVerificationEmail()
                     .doOnSubscribe { this.showProgressBar.onNext(true) }
                     .doAfterTerminate { this.showProgressBar.onNext(false) }
         }

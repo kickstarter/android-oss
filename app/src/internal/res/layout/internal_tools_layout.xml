@@ -225,12 +225,6 @@
 
         </TableRow>
       </TableLayout>
-
-      <Button
-        android:id="@+id/test_apollo"
-        style="@style/SecondaryButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
     </LinearLayout>
   </LinearLayout>
 </ScrollView>

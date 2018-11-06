@@ -10,7 +10,7 @@ import rx.Observable
 import type.CurrencyCode
 
 open class MockApolloClient : ApolloClientType {
-    override fun sendVerificationEmail(uid: String): Observable<SendEmailVerificationMutation.Data> {
+    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
         return Observable.just(SendEmailVerificationMutation.Data(SendEmailVerificationMutation.UserSendEmailVerification("",
                 "12345")))
     }
@@ -22,7 +22,7 @@ open class MockApolloClient : ApolloClientType {
 
     override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
         return Observable.just(UpdateUserPasswordMutation.Data(UpdateUserPasswordMutation.UpdateUserAccount("",
-                UpdateUserPasswordMutation.User("", "some@email.com"))))
+                UpdateUserPasswordMutation.User("", "some@email.com", true))))
     }
 
     override fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data> {
@@ -32,7 +32,7 @@ open class MockApolloClient : ApolloClientType {
 
     override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
         return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "Some Name",
-                "some@email.com",  true, "USD", "")))
+                "some@email.com", true, true, true, "USD", "")))
     }
 }
 

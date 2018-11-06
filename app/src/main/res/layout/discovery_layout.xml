@@ -24,41 +24,33 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-      <include
-        layout="@layout/horizontal_line_1dp_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="com.kickstarter.ui.toolbars.AlphaBehavior" />
-
       <android.support.design.widget.AppBarLayout
         android:id="@+id/discovery_sort_app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="@dimen/card_no_elevation">
+        android:layout_height="wrap_content">
 
         <android.support.design.widget.CollapsingToolbarLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          app:layout_scrollFlags="scroll">
+          app:layout_scrollFlags="scroll|enterAlways">
 
           <include
             layout="@layout/discovery_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:layout_gravity="top" />
+            android:layout_height="?android:attr/actionBarSize" />
+
+          <com.kickstarter.ui.views.SortTabLayout
+            android:id="@+id/discovery_tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="?android:attr/actionBarSize"
+            app:tabBackground="@drawable/click_indicator_light"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="@color/text_primary"
+            app:tabTextAppearance="@style/TabTextAppearance"
+            app:tabTextColor="@color/black_alpha_30" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
-
-        <com.kickstarter.ui.views.SortTabLayout
-          android:id="@+id/discovery_tab_layout"
-          android:layout_width="match_parent"
-          android:layout_height="?android:attr/actionBarSize"
-          android:layout_gravity="bottom"
-          app:tabBackground="@drawable/click_indicator_light"
-          app:tabMode="fixed"
-          app:tabSelectedTextColor="@color/text_primary"
-          app:tabTextAppearance="@style/TabTextAppearance"
-          app:tabTextColor="@color/black_alpha_30" />
 
       </android.support.design.widget.AppBarLayout>
 

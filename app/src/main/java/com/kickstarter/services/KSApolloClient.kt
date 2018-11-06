@@ -14,11 +14,10 @@ import rx.subjects.PublishSubject
 import type.CurrencyCode
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
-    override fun sendVerificationEmail(uid: String): Observable<SendEmailVerificationMutation.Data> {
+    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<SendEmailVerificationMutation.Data>()
             service.mutate(SendEmailVerificationMutation.builder()
-                    .userId(uid)
                     .build())
                     .enqueue(object : ApolloCall.Callback<SendEmailVerificationMutation.Data>() {
                         override fun onFailure(exception: ApolloException) {

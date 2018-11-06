@@ -16,6 +16,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.ChangeEmailViewModel
 import kotlinx.android.synthetic.main.activity_change_email.*
 import kotlinx.android.synthetic.main.change_email_toolbar.*
+import kotlinx.android.synthetic.main.two_factor_form_view.*
 import rx.android.schedulers.AndroidSchedulers
 
 
@@ -58,6 +59,20 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showErrorSnackbar(change_email_layout, it) }
+
+        this.viewModel.outputs.isCreator()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    resend_button.text = getString(R.string.Send_verfication_email)
+                }
+
+        this.viewModel.outputs.isDeliverable()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    ViewUtils.setGone(email_verification_text_view, it!)
+                }
 
         this.viewModel.outputs.isEmailVerified()
                 .compose(bindToLifecycle())

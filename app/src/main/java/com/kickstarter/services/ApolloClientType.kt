@@ -9,7 +9,7 @@ import rx.Observable
 import type.CurrencyCode
 
 interface ApolloClientType {
-    fun sendVerificationEmail(uid: String): Observable<SendEmailVerificationMutation.Data>
+    fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
 
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
 

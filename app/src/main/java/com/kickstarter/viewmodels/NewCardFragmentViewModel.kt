@@ -69,11 +69,11 @@ interface NewCardFragmentViewModel {
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<Void>()
 
-        val inputs: NewCardFragmentViewModel.Inputs = this
-        val outputs: NewCardFragmentViewModel.Outputs = this
+        val inputs: Inputs = this
+        val outputs: Outputs = this
 
-        private val apolloClient: ApolloClientType = this.environment.apolloClient()
-        private val stripe: Stripe = this.environment.stripe()
+        private val apolloClient = this.environment.apolloClient()
+        private val stripe = this.environment.stripe()
 
         init {
             val cardForm = Observable.combineLatest(this.name.startWith(""),
@@ -119,32 +119,6 @@ interface NewCardFragmentViewModel {
             card.name = cardForm.name
             card.addressZip = cardForm.postalCode
             return card
-        }
-
-        private fun createTokenAndSaveCard(card: Card): Observable<Void> {
-            return Observable.defer {
-                val ps = PublishSubject.create<Void>()
-                this.stripe.createToken(card, object : TokenCallback {
-                    override fun onSuccess(token: Token) {
-                        saveCard(token, ps)
-                    }
-
-                    override fun onError(error: Exception?) {
-                        ps.onError(error)
-                    }
-                })
-                return@defer ps
-            }
-                    .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
-                    .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
-        }
-
-        private fun saveCard(token: Token, ps: PublishSubject<Void>) {
-            this.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, token.card.id)
-                    .subscribe({
-                        ps.onNext(null)
-                        ps.onCompleted()
-                    }, { ps.onError(it) })
         }
 
         override fun card(card: Card?) {
@@ -201,6 +175,32 @@ interface NewCardFragmentViewModel {
             private fun isNotEmpty(s: String): Boolean {
                 return !s.isEmpty()
             }
+        }
+
+        private fun createTokenAndSaveCard(card: Card): Observable<Void> {
+            return Observable.defer {
+                val ps = PublishSubject.create<Void>()
+                this.stripe.createToken(card, object : TokenCallback {
+                    override fun onSuccess(token: Token) {
+                        saveCard(token, ps)
+                    }
+
+                    override fun onError(error: Exception?) {
+                        ps.onError(error)
+                    }
+                })
+                return@defer ps
+            }
+                    .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
+                    .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
+        }
+
+        private fun saveCard(token: Token, ps: PublishSubject<Void>) {
+            this.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, token.card.id)
+                    .subscribe({
+                        ps.onNext(null)
+                        ps.onCompleted()
+                    }, { ps.onError(it) })
         }
     }
 }

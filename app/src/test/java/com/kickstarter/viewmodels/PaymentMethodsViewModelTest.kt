@@ -32,6 +32,19 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testAPIError() {
+        val apolloClient = object : MockApolloClient() {
+            override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
+                return Observable.error(Exception("oops"))
+            }
+        }
+
+        setUpEnvironment(environment().toBuilder().apolloClient(apolloClient).build())
+
+        this.vm.inputs.confirmDeleteCardClicked()
+    }
+
+    @Test
     fun testErrors() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
@@ -48,6 +61,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.error.assertNoValues()
 
         this.vm.inputs.deleteCardClicked("error")
+        this.vm.confirmDeleteCardClicked()
         this.error.assertValue("error")
     }
 
@@ -82,7 +96,8 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         }).build())
 
         this.cards.assertValue(Collections.singletonList(node))
-        this.vm.inputs.deleteCardClicked(node.id()!!)
+        this.vm.inputs.deleteCardClicked("5555")
+        this.vm.inputs.confirmDeleteCardClicked()
         this.cards.assertValueCount(0)
         this.success.assertValueCount(1)
 

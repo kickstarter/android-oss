@@ -20,6 +20,9 @@ interface PaymentMethodsViewModel {
 
         /** Invokes when the user clicks the delete button. */
         fun confirmDeleteCardClicked()
+
+        /** Call when a new card has been added and the list needs to be updated. */
+        fun refreshCards()
     }
 
     interface Outputs {
@@ -40,6 +43,7 @@ interface PaymentMethodsViewModel {
 
         private val cards = BehaviorSubject.create<MutableList<UserPaymentsQuery.Node>>()
         private val confirmDeleteCardClicked = BehaviorSubject.create<Void>()
+        private val refreshCards = PublishSubject.create<Void>()
 
         private val deleteCardClicked = PublishSubject.create<String>()
 
@@ -54,10 +58,8 @@ interface PaymentMethodsViewModel {
         val outputs: Outputs = this
 
         init {
-            this.client.getStoredCards()
-                    .compose(neverError())
-                    .compose(bindToLifecycle())
-                    .map { cards -> cards.me()?.storedCards()?.nodes() }
+
+            getListOfStoredCards()
                     .subscribe { this.cards.onNext(it) }
 
             this.deleteCardClicked.subscribe { this.showDeleteCardDialog.onNext(null) }
@@ -76,6 +78,10 @@ interface PaymentMethodsViewModel {
             deleteCardNotification
                     .compose(Transformers.errors())
                     .subscribe { this.error.onNext(it.localizedMessage) }
+
+            this.refreshCards
+                    .switchMap { getListOfStoredCards() }
+                    .subscribe { this.cards.onNext(it) }
         }
 
         override fun deleteCardClicked(paymentSourceId: String) = this.deleteCardClicked.onNext(paymentSourceId)
@@ -90,9 +96,18 @@ interface PaymentMethodsViewModel {
 
         override fun error(): Observable<String> = this.error
 
+        override fun refreshCards() = this.refreshCards.onNext(null)
+
         override fun showDeleteCardDialog(): Observable<Void> = this.showDeleteCardDialog
 
         override fun success(): Observable<String> = this.success
+
+        private fun getListOfStoredCards(): Observable<MutableList<UserPaymentsQuery.Node>> {
+            return this.client.getStoredCards()
+                    .compose(bindToLifecycle())
+                    .compose(neverError())
+                    .map { cards -> cards.me()?.storedCards()?.nodes() }
+        }
 
         private fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
             return this.client.deletePaymentSource(paymentSourceId)

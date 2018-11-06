@@ -1,7 +1,7 @@
 package com.kickstarter.viewmodels
 
-import SavePaymentMethodMutation
 import android.support.annotation.NonNull
+import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -33,12 +33,13 @@ interface NewCardFragmentViewModel {
         /** Call when the user clicks the save icon. */
         fun saveCardClicked()
 
+        /** Call when the card input has focus. */
         fun cardFocus(hasFocus: Boolean)
     }
 
     interface Outputs {
-        /** Emits when the card focus view should be enabled. */
-        fun cardFocusIsEnabled(): Observable<Boolean>
+        /** Emits when the drawable to be shown when the card widget has focus. */
+        fun cardWidgetFocusDrawable(): Observable<Int>
 
         /** Emits when the password update was unsuccessful. */
         fun error(): Observable<String>
@@ -50,7 +51,7 @@ interface NewCardFragmentViewModel {
         fun saveButtonIsEnabled(): Observable<Boolean>
 
         /** Emits when the card was saved successfully. */
-        fun success(): Observable<String>
+        fun success(): Observable<Void>
 
     }
 
@@ -62,11 +63,11 @@ interface NewCardFragmentViewModel {
         private val postalCode = PublishSubject.create<String>()
         private val saveCardClicked = PublishSubject.create<Void>()
 
-        private val cardFocusIsEnabled = BehaviorSubject.create<Boolean>()
+        private val cardWidgetFocusDrawable = BehaviorSubject.create<Int>()
         private val error = BehaviorSubject.create<String>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
-        private val success = BehaviorSubject.create<String>()
+        private val success = BehaviorSubject.create<Void>()
 
         val inputs: NewCardFragmentViewModel.Inputs = this
         val outputs: NewCardFragmentViewModel.Outputs = this
@@ -81,29 +82,25 @@ interface NewCardFragmentViewModel {
                     { name, card, postalCode -> CardForm(name, card, postalCode) })
                     .skip(1)
 
-            val cardIsValid = cardForm
+            cardForm
                     .map { it.isValid() }
-            cardIsValid
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.saveButtonIsEnabled)
 
             this.cardFocus
-                    .subscribe { this.cardFocusIsEnabled.onNext(it) }
+                    .map {
+                        when {
+                            it -> R.drawable.divider_green_horizontal
+                            else -> R.drawable.divider_dark_grey_500_horizontal
+                        }
+                    }
+                    .subscribe { this.cardWidgetFocusDrawable.onNext(it) }
 
-            val tokenNotification = cardForm
+            val saveCardNotification = cardForm
                     .compose<CardForm>(takeWhen(this.saveCardClicked))
-                    .switchMap { createToken(it).materialize() }
-                    .compose(bindToLifecycle())
-                    .share()
-
-            tokenNotification
-                    .compose(Transformers.errors())
-                    .subscribe({ this.error.onNext(it.localizedMessage) })
-
-            val saveCardNotification = tokenNotification
-                    .compose(values())
-                    .switchMap { saveCard(it).materialize() }
+                    .map { storeNameAndPostalCode(it) }
+                    .switchMap { createTokenAndSaveCard(it).materialize() }
                     .compose(bindToLifecycle())
                     .share()
 
@@ -117,16 +114,19 @@ interface NewCardFragmentViewModel {
 
         }
 
-        private fun createToken(cardForm: CardForm): Observable<Token> {
+        private fun storeNameAndPostalCode(cardForm: CardForm): Card {
             val card = cardForm.card!!
             card.name = cardForm.name
             card.addressZip = cardForm.postalCode
+            return card
+        }
+
+        private fun createTokenAndSaveCard(card: Card): Observable<Void> {
             return Observable.defer {
-                val ps = PublishSubject.create<Token>()
+                val ps = PublishSubject.create<Void>()
                 this.stripe.createToken(card, object : TokenCallback {
-                    override fun onSuccess(token: Token?) {
-                        ps.onNext(token)
-                        ps.hasCompleted()
+                    override fun onSuccess(token: Token) {
+                        saveCard(token, ps)
                     }
 
                     override fun onError(error: Exception?) {
@@ -139,10 +139,9 @@ interface NewCardFragmentViewModel {
                     .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }
 
-        private fun saveCard(token: Token): Observable<SavePaymentMethodMutation.Data> {
-            return this.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, token.card.id)
-                    .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
-                    .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
+        private fun saveCard(token: Token, ps: PublishSubject<Void>) {
+            this.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, token.card.id)
+                    .subscribe({ ps.onCompleted() }, { ps.onError(it) })
         }
 
         override fun card(card: Card?) {
@@ -165,8 +164,8 @@ interface NewCardFragmentViewModel {
             this.saveCardClicked.onNext(null)
         }
 
-        override fun cardFocusIsEnabled(): Observable<Boolean> {
-            return this.cardFocusIsEnabled
+        override fun cardWidgetFocusDrawable(): Observable<Int> {
+            return this.cardWidgetFocusDrawable
         }
 
         override fun error(): Observable<String> {
@@ -181,13 +180,13 @@ interface NewCardFragmentViewModel {
             return this.saveButtonIsEnabled
         }
 
-        override fun success(): Observable<String> {
+        override fun success(): Observable<Void> {
             return this.success
         }
 
         data class CardForm(val name: String, val card: Card?, val postalCode: String) {
             fun isValid(): Boolean {
-                return isNotEmptyAndTwoWords(this.name)
+                return isNotEmpty(this.name)
                         && isNotEmpty(this.postalCode)
                         && isValidCard(this.card)
             }
@@ -198,11 +197,6 @@ interface NewCardFragmentViewModel {
 
             private fun isNotEmpty(s: String): Boolean {
                 return !s.isEmpty()
-            }
-
-            private fun isNotEmptyAndTwoWords(s: String): Boolean {
-                //todo, this will pass "izzy "
-                return isNotEmpty(s) && s.split(" ").size > 1
             }
         }
     }

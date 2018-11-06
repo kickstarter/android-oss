@@ -36,13 +36,10 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         (activity as AppCompatActivity).setSupportActionBar(new_card_toolbar)
         setHasOptionsMenu(true)
 
-        this.viewModel.outputs.cardFocusIsEnabled()
+        this.viewModel.outputs.cardWidgetFocusDrawable()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { card_focus.setImageResource(when {
-                    it -> R.drawable.divider_green_horizontal
-                    else -> R.drawable.divider_dark_grey_500_horizontal
-                }) }
+                .subscribe { card_focus.setImageResource(it) }
 
         this.viewModel.outputs.progressBarIsVisible()
                 .compose(bindToLifecycle())
@@ -96,7 +93,6 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         super.onPrepareOptionsMenu(menu)
         val save = menu.findItem(R.id.save)
         save.isEnabled = saveEnabled
-
     }
 
     private fun addListeners() {

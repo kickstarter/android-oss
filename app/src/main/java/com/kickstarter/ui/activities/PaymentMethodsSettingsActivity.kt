@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.payment_methods_toolbar.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(PaymentMethodsViewModel.ViewModel::class)
-class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>() {
+class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>() {
 
     private lateinit var adapter: PaymentMethodsAdapter
     private var showDeleteCardDialog: AlertDialog? = null
@@ -63,7 +63,7 @@ class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>()
         super.onActivityResult(requestCode, resultCode, intent)
         if (requestCode == ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD && resultCode == Activity.RESULT_OK) {
             showConfirmationSnackbar(payment_methods_toolbar, R.string.Got_it_your_changes_have_been_saved)
-            this@PaymentMethodsActivity.viewModel.inputs.refreshCards()
+            this@PaymentMethodsSettingsActivity.viewModel.inputs.refreshCards()
         }
     }
 

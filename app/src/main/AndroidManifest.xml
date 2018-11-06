@@ -192,7 +192,7 @@
     <activity android:name=".ui.activities.NewCardActivity" />
     <activity android:name=".ui.activities.NewsletterActivity" />
     <activity android:name=".ui.activities.NotificationsActivity" />
-    <activity android:name=".ui.activities.PaymentMethodsActivity"/>
+    <activity android:name=".ui.activities.PaymentMethodsSettingsActivity"/>
     <activity android:name=".ui.activities.PrivacyActivity" />
     <activity
       android:name=".ui.activities.ProjectNotificationSettingsActivity"

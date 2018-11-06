@@ -6,7 +6,7 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.*
-import com.kickstarter.ui.activities.PaymentMethodsActivity
+import com.kickstarter.ui.activities.PaymentMethodsSettingsActivity
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
 import rx.Observable
@@ -39,7 +39,7 @@ interface PaymentMethodsViewModel {
         fun success(): Observable<String>
     }
 
-    class ViewModel(environment: Environment) : ActivityViewModel<PaymentMethodsActivity>(environment), PaymentMethodsAdapter.Delegate, Inputs, Outputs {
+    class ViewModel(environment: Environment) : ActivityViewModel<PaymentMethodsSettingsActivity>(environment), PaymentMethodsAdapter.Delegate, Inputs, Outputs {
 
         private val confirmDeleteCardClicked = BehaviorSubject.create<Void>()
         private val deleteCardClicked = PublishSubject.create<String>()

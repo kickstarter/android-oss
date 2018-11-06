@@ -7,6 +7,7 @@
   <string name="Account" formatted="false">Konto</string>
   <string name="Add" formatted="false">Hinzufügen</string>
   <string name="Add_attachments" formatted="false">Anhänge hinzufügen ...</string>
+  <string name="Add_new_card" formatted="false">Kreditkarte hinzufügen</string>
   <string name="All_Art_Projects" formatted="false">Alle Projekte der Kategorie Kunst</string>
   <string name="All_Comics_Projects" formatted="false">Alle Projekte der Kategorie Comics</string>
   <string name="All_Crafts_Projects" formatted="false">Alle Projekte der Kategorie Kunsthandwerk</string>
@@ -28,6 +29,7 @@
   <string name="Amount_previous_amount" formatted="false">Jetziger Betrag: %{amount}, vorheriger Betrag: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Betrag: %{amount}, %{reward}</string>
   <string name="Amounts_shown" formatted="false">Die angezeigten Beträge stellen nur eine ungefähre Umrechnung dar. Nach erfolgreicher Finanzierung des Projekts wird dein Finanzierungsbeitrag in der Währung des Erstellungslandes abgebucht. Dieser Betrag wird ebenso angezeigt.</string>
+  <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Sämtliche auf Kickstarter gespeicherten Zahlungsmethoden sind hier (sicher) hinterlegt.</string>
   <string name="App_version" formatted="false">App-Version</string>
   <string name="Are_you_sure" formatted="false">Bist du sicher?</string>
   <string name="Ask_me_anything" formatted="false">Frage stellen</string>
@@ -53,8 +55,12 @@ Unterstützer</string>
   <string name="Biography" formatted="false">Biografie</string>
   <string name="Bookmarks" formatted="false">Bookmarks</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Kreative Projekte werden Wirklichkeit!</string>
+  <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">Abbrechen</string>
   <string name="Cancel_your_pledge" formatted="false">Deinen Beitrag zurückziehen</string>
+  <string name="Card_ending_in_last_four" formatted="false">Kartennummer endet auf %{last_four}</string>
+  <string name="Card_number" formatted="false">Kartennummer</string>
+  <string name="Cardholder_name" formatted="false">Name des Karteninhabers</string>
   <string name="Change_currency" formatted="false">Währung ändern</string>
   <string name="Change_email" formatted="false">E-Mail-Adresse ändern</string>
   <string name="Change_password" formatted="false">Passwort ändern</string>
@@ -88,6 +94,7 @@ Unterstützer</string>
   <string name="Creator_name_was_streaming_live_on_Kickstarter" formatted="false">Der Stream von %{creator_name} war gerade live auf Kickstarter</string>
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} wird in %{in_duration} live auf Kickstarter streamen</string>
   <string name="Creator_tips" formatted="false">Tpps für Projektgründer</string>
+  <string name="Credit_card_expiration" formatted="false">Ablaufdatum: %{expiration_date}</string>
   <string name="Currency" formatted="false">Währung</string>
   <string name="Currency_AUD" formatted="false">$ Australischer Dollar (AUD)</string>
   <string name="Currency_CAD" formatted="false">$ Kanadischer Dollar (CAD)</string>
@@ -121,12 +128,13 @@ Unterstützer</string>
   <string name="Either_the_pledge_or_the_project_was_canceled" formatted="false">Entweder der Finanzierungsbeitrag wurde zurückgezogen oder das Projekt wurde abgebrochen, bevor die Frist abgelaufen war.</string>
   <string name="Email" formatted="false">E-Mail</string>
   <string name="Email_frequency" formatted="false">Häufigkeit der E-Mails</string>
-  <string name="Email_must_be_a_valid_email_address" formatted="false">Email must be a valid email address.</string>
+  <string name="Email_must_be_a_valid_email_address" formatted="false">E-Mail-Adresse muss gültig sein.</string>
   <string name="Email_notifications" formatted="false">Benachrichtigung per E-Mail</string>
   <string name="Email_unverified" formatted="false">Diese E-Mail-Adresse wurde noch nicht verifiziert.</string>
   <string name="Ending_soon" formatted="false">Endet bald</string>
   <string name="Estimated_delivery" formatted="false">Voraussichtliche Lieferung:</string>
   <string name="Expands_subcategories" formatted="false">Erweitert die Anzeige der Unterkategorien.</string>
+  <string name="Expiration" formatted="false">Verfallsdatum</string>
   <string name="Expired_date_at_time" formatted="false">Abgelaufen am %{date} um %{time}</string>
   <string name="Expires_date_at_time" formatted="false">Läuft am %{date} um %{time} ab</string>
   <string name="Explore" formatted="false">Erkunden</string>
@@ -237,6 +245,7 @@ Unterstützer</string>
   <string name="Log_in_to_leave_a_comment" formatted="false">Melde dich an, um einen Kommentar zu hinterlassen.</string>
   <string name="Log_out" formatted="false">Abmelden</string>
   <string name="Love_film_We_do_too" formatted="false">Du bist Kino-Fan? Wir auch.</string>
+  <string name="MMYY" formatted="false">MM/JJ</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">Ohne Belohnung unterstützen</string>
   <string name="Making_this_change" formatted="false">Wenn du die Währung wechselst, werden das Finanzierungsziel und die Finanzierungsbeiträge in der von dir gewählten Währung angezeigt.</string>
   <string name="Manage_your_pledge" formatted="false">Meinen Beitrag verwalten</string>
@@ -281,9 +290,9 @@ Unterstützer</string>
   <string name="Or_select_a_different_reward_below_colon" formatted="false">Oder eine andere Belohnung wählen:</string>
   <string name="Other_payment_methods" formatted="false">Weitere Zahlungsmethoden</string>
   <string name="Other_projects_you_might_like" formatted="false">Ähnliche Projekte:</string>
-  <string name="Password_min_length_message" formatted="false">Your password must be at least 6 characters long.</string>
+  <string name="Password_min_length_message" formatted="false">Dein Passwort muss mindestens 6 Zeichen lang sein.</string>
   <string name="Password_visibility" formatted="false">Passwort-Anzeige</string>
-  <string name="Passwords_matching_message" formatted="false">New passwords must match.</string>
+  <string name="Passwords_matching_message" formatted="false">Neues Passwort stimmt nicht überein.</string>
   <string name="Past_live_stream" formatted="false">Früherer Live-Stream</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Zahlungsmethode wurde erfolgreich belastet.</string>
   <string name="Payment_methods" formatted="false">Zahlungsmethoden</string>
@@ -368,11 +377,13 @@ Unterstützer</string>
   <string name="Saved_projects" formatted="false">Gespeicherte Projekte</string>
   <string name="Saves_project" formatted="false">Speichert dieses Projekt.</string>
   <string name="Say_something_kind" formatted="false">Sag etwas Nettes ...</string>
+  <string name="Security_code" formatted="false">Sicherheitscode</string>
   <string name="See_all_category_name_projects" formatted="false">Alle %{category_name}-Projekte anzeigen</string>
   <string name="Select_another_project" formatted="false">Wähle ein anderes Projekt aus</string>
   <string name="Select_this_reward" formatted="false">Diese Belohnung wählen</string>
   <string name="Select_this_reward_instead" formatted="false">Diese Belohnung auswählen</string>
   <string name="Send" formatted="false">Senden</string>
+  <string name="Send_verfication_email" formatted="false">Verifizeirungs-E-Mail senden</string>
   <string name="Share" formatted="false">Teilen</string>
   <string name="Share_an_update_about_your_project" formatted="false">Teile einen Update zu deinem Projekt …</string>
   <string name="Share_this_live_stream" formatted="false">Live-Stream teilen.</string>
@@ -446,11 +457,13 @@ Unterstützer</string>
   <string name="Watch_live" formatted="false">Live ansehen</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">Es wurden keine Ergebnisse für die Suche "%{search_term}" gefunden.</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">Deine Aktivitäten werden intern genutzt, um dir Empfehlungen zu unterbreiten. Um dies zu deaktivieren, wähle "Empfehlungen" einfach ab.</string>
+  <string name="We_ve_been_unable_to_send_email" formatted="false">Wir konnten keine E-Mails an diese Adresse senden. Bitte prüfe, ob sie richtig eingegeben wurde.</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">Es konnte leider keine Verbindung zum Chat des Live-Streams hergestellt werden.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">Das Laden der Versandadressen war leider nicht möglich.\n
 Bitte versuche es später noch einmal.</string>
   <string name="Websites" formatted="false">Webseiten</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Willkommen in unserer Bibliothek. Viel Spaß beim Stöbern.</string>
+  <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">Sobald du dein Passwort geändert hast, wirst du aufgefordert, dich erneut auf der Kickstarter App anzumelden.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Wir werden dir 48 Stunden vor Ablauf dieses Projekts eine Benachrichtigung senden, sowie für alle Projekte, die du in Zukunft speicherst. Um alle gespeicherten Projekte anzusehen, gehe bitte zu deiner Profilseite.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Wenn die Funktion Folgen gewählt wurde, kannst du die Aktivitäten von anderen einsehen und diese sehen deine Aktivitäten. Wenn die Funktion abgewählt wurde, werden diese Daten endgültig gelöscht.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail</string>
@@ -476,6 +489,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="Youre_a_backer" formatted="false">Du unterstützt das Projekt!</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Du wirst hiermit ein neues Kickstarter-Konto mit deiner Facebook-E-Mail-Adresse anlegen. Bitte bestätige diesen Vorgang.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Du hast einen Finazierungsbeitrag zu diesem Projekt geleistet. Die Frist für die Finanzierung ist noch nicht abgelaufen.</string>
+  <string name="Zip_code" formatted="false">Postleitzahl</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">Aktivität</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">Öffnet Sparte Aktivität.</string>
   <string name="accessibility_dashboard_buttons_messages" formatted="false">Nachrichten</string>

@@ -141,7 +141,10 @@ interface NewCardFragmentViewModel {
 
         private fun saveCard(token: Token, ps: PublishSubject<Void>) {
             this.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, token.card.id)
-                    .subscribe({ ps.onCompleted() }, { ps.onError(it) })
+                    .subscribe({
+                        ps.onNext(null)
+                        ps.onCompleted()
+                    }, { ps.onError(it) })
         }
 
         override fun card(card: Card?) {

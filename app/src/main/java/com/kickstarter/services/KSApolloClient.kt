@@ -54,8 +54,14 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             if (response.hasErrors()) {
                                 ps.onError(Exception(response.errors().first().message()))
                             }
-                            ps.onNext(response.data())
-                            ps.onCompleted()
+                            //why wouldn't this just be an error?
+                            val createPaymentSource = response.data()?.createPaymentSource()
+                            if (!createPaymentSource?.isSuccessful!!) {
+                                ps.onError(Exception(createPaymentSource.errorMessage()))
+                            } else {
+                                ps.onNext(response.data())
+                                ps.onCompleted()
+                            }
                         }
                     })
             return@defer ps

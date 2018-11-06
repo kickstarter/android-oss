@@ -4,12 +4,12 @@ import UserPaymentsQuery
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.extensions.showConfirmationSnackbar
 import com.kickstarter.extensions.showErrorSnackbar
 import com.kickstarter.libs.ActivityRequestCodes
-import android.support.v7.app.AlertDialog
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
@@ -38,7 +38,7 @@ class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>()
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showErrorSnackbar(activity_payment_methods_layout, it)
+                .subscribe { showErrorSnackbar(payment_methods_toolbar, it)
                 }
 
         this.viewModel.outputs.showDeleteCardDialog()
@@ -52,7 +52,7 @@ class PaymentMethodsActivity : BaseActivity<PaymentMethodsViewModel.ViewModel>()
         this.viewModel.success()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showConfirmationSnackbar(activity_payment_methods_layout,
+                .subscribe { showConfirmationSnackbar(payment_methods_toolbar,
                         "You've successfully deleted your card") }
 
         add_new_card.setOnClickListener { startActivityForResult(Intent(this, NewCardActivity::class.java), ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD) }

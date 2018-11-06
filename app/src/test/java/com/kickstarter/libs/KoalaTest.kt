@@ -2,13 +2,15 @@ package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.factories.UserFactory
+import junit.framework.Assert
+import org.joda.time.DateTime
 import org.junit.Test
-import rx.observers.TestSubscriber
+import rx.subjects.BehaviorSubject
 
 class KoalaTest : KSRobolectricTestCase() {
 
-    private val namesTest = TestSubscriber.create<String>()
-    private val propertiesTest = TestSubscriber.create<Map<String, Any>>()
+    private val namesTest = BehaviorSubject.create<String>()
+    private val propertiesTest = BehaviorSubject.create<Map<String, Any>>()
 
     @Test
     fun testDefaultProperties() {
@@ -19,8 +21,8 @@ class KoalaTest : KSRobolectricTestCase() {
 
         koala.trackAppOpen()
         val expectedProperties = getDefaultExpectedProperties()
-        namesTest.assertValue("App Open")
-        propertiesTest.assertValue(expectedProperties)
+        Assert.assertEquals(namesTest.value, "App Open")
+        Assert.assertEquals(propertiesTest.value, expectedProperties)
     }
 
     @Test
@@ -45,8 +47,8 @@ class KoalaTest : KSRobolectricTestCase() {
         expectedProperties["user_created_projects_count"] = 2
         expectedProperties["user_starred_projects_count"] = 10
 
-        namesTest.assertValue("App Open")
-        propertiesTest.assertValue(expectedProperties)
+        Assert.assertEquals(namesTest.value, "App Open")
+        Assert.assertEquals(propertiesTest.value, expectedProperties)
     }
 
     private fun getDefaultExpectedProperties(): HashMap<String, Any> {
@@ -68,7 +70,7 @@ class KoalaTest : KSRobolectricTestCase() {
         expectedProperties["mp_lib"] = "android"
         expectedProperties["os"] = "Android"
         expectedProperties["os_version"] = "9"
-        expectedProperties["time"] = MockTrackingClient.DEFAULT_TIME
+        expectedProperties["time"] = DateTime.parse("2018-11-02T18:42:05Z").millis
         expectedProperties["user_logged_in"] = false
         return expectedProperties
     }

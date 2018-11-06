@@ -13,7 +13,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public final class MockTrackingClient extends TrackingClientType {
-  public static final long DEFAULT_TIME = DateTime.parse("2018-11-02T18:42:05Z").getMillis();
+  private static final long DEFAULT_TIME = DateTime.parse("2018-11-02T18:42:05Z").getMillis();
   @Nullable private User loggedInUser;
 
 

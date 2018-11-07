@@ -6,7 +6,6 @@ query UserPrivacy {
     isDeliverable
     isEmailVerified
     chosenCurrency
-    id
   }
 }
 

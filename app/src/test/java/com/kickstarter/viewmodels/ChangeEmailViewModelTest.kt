@@ -44,7 +44,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                 return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
                         "rashad@test.com", true, true, true, ""
-                        , "1234")))
+                )))
             }
         }).build())
 

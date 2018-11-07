@@ -22,37 +22,27 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull val delegate: Deleg
 
     init {
 
-        this.vm.outputs.type()
+        this.vm.outputs.cardIssuer()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    itemView.credit_card_logo.setImageResource(it)
-                }
+                .subscribe { itemView.credit_card_logo.setImageResource(it) }
 
         this.vm.outputs.expirationDate()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    setExpirationDateTextView(it)
-                }
+                .subscribe { setExpirationDateTextView(it) }
 
         this.vm.outputs.id()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    this.delegate.deleteCardButtonClicked(this, it)
-                }
+                .subscribe { this.delegate.deleteCardButtonClicked(this, it) }
 
         this.vm.outputs.lastFour()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    setLastFourTextView(it)
-                }
+                .subscribe { setLastFourTextView(it) }
 
-        itemView.delete_card.setOnClickListener {
-            this.vm.inputs.deleteCardClick()
-        }
+        itemView.delete_card.setOnClickListener { this.vm.inputs.deleteIconClicked() }
 
     }
 

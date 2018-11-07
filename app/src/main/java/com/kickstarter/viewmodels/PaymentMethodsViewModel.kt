@@ -16,10 +16,10 @@ import rx.subjects.PublishSubject
 interface PaymentMethodsViewModel {
 
     interface Inputs {
-        /** Invokes when the user clicks the delete button. */
+        /** Call when the user confirms they want to delete card. */
         fun confirmDeleteCardClicked()
 
-        /** Delete a payment source from the list. */
+        /** Call when the user clicks the delete icon. */
         fun deleteCardClicked(paymentSourceId: String)
 
         /** Call when a card has been added or removed and the list needs to be updated. */

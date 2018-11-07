@@ -33,6 +33,9 @@ interface PaymentMethodsViewModel {
         /** Emits whenever there is an error deleting a stored card.  */
         fun error(): Observable<String>
 
+        /** Emits when the progress bar should be visible (during a network call). */
+        fun progressBarIsVisible(): Observable<Boolean>
+
         /** Emits whenever the user tries to delete a card.  */
         fun showDeleteCardDialog(): Observable<Void>
 
@@ -42,12 +45,13 @@ interface PaymentMethodsViewModel {
 
     class ViewModel(environment: Environment) : ActivityViewModel<PaymentMethodsSettingsActivity>(environment), PaymentMethodsAdapter.Delegate, Inputs, Outputs {
 
-        private val confirmDeleteCardClicked = BehaviorSubject.create<Void>()
+        private val confirmDeleteCardClicked = PublishSubject.create<Void>()
         private val deleteCardClicked = PublishSubject.create<String>()
         private val refreshCards = PublishSubject.create<Void>()
 
         private val cards = BehaviorSubject.create<MutableList<UserPaymentsQuery.Node>>()
         private val error = BehaviorSubject.create<String>()
+        private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
         private val showDeleteCardDialog = BehaviorSubject.create<Void>()
         private val success = BehaviorSubject.create<String>()
 
@@ -100,6 +104,7 @@ interface PaymentMethodsViewModel {
 
         override fun error(): Observable<String> = this.error
 
+        override fun progressBarIsVisible(): Observable<Boolean> = this.progressBarIsVisible
 
         override fun showDeleteCardDialog(): Observable<Void> = this.showDeleteCardDialog
 
@@ -107,6 +112,8 @@ interface PaymentMethodsViewModel {
 
         private fun getListOfStoredCards(): Observable<MutableList<UserPaymentsQuery.Node>> {
             return this.client.getStoredCards()
+                    .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
+                    .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
                     .compose(bindToLifecycle())
                     .compose(neverError())
                     .map { cards -> cards.me()?.storedCards()?.nodes() }
@@ -114,6 +121,8 @@ interface PaymentMethodsViewModel {
 
         private fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
             return this.client.deletePaymentSource(paymentSourceId)
+                    .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
+                    .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }
 
     }

@@ -48,11 +48,12 @@
 
   <ImageView
     android:id="@+id/delete_card"
-    android:layout_width="@dimen/delete_card_image_width"
-    android:layout_height="@dimen/delete_card_image_height"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
-    android:background="@drawable/icon_trash"
     android:contentDescription="@null"
-    android:scaleType="fitXY" />
+    android:foreground="@drawable/circular_click_indicator_light"
+    android:padding="@dimen/grid_2"
+    android:src="@drawable/icon_trash" />
 
 </LinearLayout>

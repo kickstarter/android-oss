@@ -32,6 +32,7 @@
   <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Sämtliche auf Kickstarter gespeicherten Zahlungsmethoden sind hier (sicher) hinterlegt.</string>
   <string name="App_version" formatted="false">App-Version</string>
   <string name="Are_you_sure" formatted="false">Bist du sicher?</string>
+  <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">Are you sure you wish to remove this card from your payment method options?</string>
   <string name="Ask_me_anything" formatted="false">Frage stellen</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Kann noch %{time} %{units} angesehen werden</string>
   <string name="Back" formatted="false">Zurück</string>
@@ -265,6 +266,7 @@ Unterstützer</string>
   <string name="No_Results" formatted="false">Keine Ergebnisse</string>
   <string name="No_comments_yet" formatted="false">Bisher noch keine Kommentare.</string>
   <string name="No_messages" formatted="false">Keine Nachrichten</string>
+  <string name="No_nevermind" formatted="false">No, nevermind</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Es wurden noch keine Updates gepostet.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Es gibt noch keine Beiträge von Freunden.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Keine Wiedergabe verügbar für diesen Live-Stream.</string>
@@ -343,6 +345,7 @@ Unterstützer</string>
   <string name="Recommended_For_You" formatted="false">Empfehlungen für dich</string>
   <string name="Recorded_Live" formatted="false">Live aufgenommen</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Live aufgenommen von &lt;b>%{creator_name}&lt;/b></string>
+  <string name="Remove_this_card" formatted="false">Remove this card</string>
   <string name="Replay" formatted="false">Wiedergabe</string>
   <string name="Replay_available_for_time_more_units" formatted="false">Wiedergabe verfügbar für weitere %{time} %{units}</string>
   <string name="Replay_live_stream_with_creator_name" formatted="false">Wiedergabe des Live-Streams von&lt;br>&lt;b>%{creator_name}&lt;/b></string>
@@ -383,7 +386,7 @@ Unterstützer</string>
   <string name="Select_this_reward" formatted="false">Diese Belohnung wählen</string>
   <string name="Select_this_reward_instead" formatted="false">Diese Belohnung auswählen</string>
   <string name="Send" formatted="false">Senden</string>
-  <string name="Send_verfication_email" formatted="false">Send verification email</string>
+  <string name="Send_verfication_email" formatted="false">Verifizeirungs-E-Mail senden</string>
   <string name="Share" formatted="false">Teilen</string>
   <string name="Share_an_update_about_your_project" formatted="false">Teile einen Update zu deinem Projekt …</string>
   <string name="Share_this_live_stream" formatted="false">Live-Stream teilen.</string>
@@ -457,17 +460,19 @@ Unterstützer</string>
   <string name="Watch_live" formatted="false">Live ansehen</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">Es wurden keine Ergebnisse für die Suche "%{search_term}" gefunden.</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">Deine Aktivitäten werden intern genutzt, um dir Empfehlungen zu unterbreiten. Um dies zu deaktivieren, wähle "Empfehlungen" einfach ab.</string>
-  <string name="We_ve_been_unable_to_send_email" formatted="false">We\'ve been unable to send email to this address. Please make sure it is typed correctly.</string>
+  <string name="We_ve_been_unable_to_send_email" formatted="false">Wir konnten keine E-Mails an diese Adresse senden. Bitte prüfe, ob sie richtig eingegeben wurde.</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">Es konnte leider keine Verbindung zum Chat des Live-Streams hergestellt werden.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">Das Laden der Versandadressen war leider nicht möglich.\n
 Bitte versuche es später noch einmal.</string>
   <string name="Websites" formatted="false">Webseiten</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Willkommen in unserer Bibliothek. Viel Spaß beim Stöbern.</string>
+  <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">Sobald du dein Passwort geändert hast, wirst du aufgefordert, dich erneut auf der Kickstarter App anzumelden.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Wir werden dir 48 Stunden vor Ablauf dieses Projekts eine Benachrichtigung senden, sowie für alle Projekte, die du in Zukunft speicherst. Um alle gespeicherten Projekte anzusehen, gehe bitte zu deiner Profilseite.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Wenn die Funktion Folgen gewählt wurde, kannst du die Aktivitäten von anderen einsehen und diese sehen deine Aktivitäten. Wenn die Funktion abgewählt wurde, werden diese Daten endgültig gelöscht.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail</string>
   <string name="Write_a_bio" formatted="false">Schreibe eine kurze Biografie, ein oder zwei Sätze genügen.</string>
   <string name="Yes_change_currency" formatted="false">Ja, Währung ändern</string>
+  <string name="Yes_remove" formatted="false">Yes, remove</string>
   <string name="Yes_turn_off" formatted="false">Ja, deaktivieren</string>
   <string name="You_Launched" formatted="false">Dein Projekt ist live!</string>
   <string name="You_backed_this_project" formatted="false">Du hast dieses Projekt unterstützt.</string>

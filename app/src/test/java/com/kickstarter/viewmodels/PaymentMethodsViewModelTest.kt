@@ -19,6 +19,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
 
     private val cards = TestSubscriber<MutableList<UserPaymentsQuery.Node>>()
     private val error = TestSubscriber<String>()
+    private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val showDeleteCardDialog = TestSubscriber<Void>()
     private val success = TestSubscriber<String>()
 
@@ -27,6 +28,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
 
         this.vm.outputs.error().subscribe(this.error)
         this.vm.outputs.cards().subscribe(this.cards)
+        this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
         this.vm.outputs.showDeleteCardDialog().subscribe(this.showDeleteCardDialog)
         this.vm.outputs.success().subscribe(this.success)
     }
@@ -70,6 +72,18 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.deleteCardClicked("id")
         this.vm.confirmDeleteCardClicked()
         this.error.assertValue("eek")
+    }
+
+    @Test
+    fun testProgressBarIsVisible() {
+        setUpEnvironment(environment())
+
+        //getting the cards initially
+        this.progressBarIsVisible.assertValues(false)
+        this.vm.inputs.deleteCardClicked("id")
+        this.vm.inputs.confirmDeleteCardClicked()
+        //make the call to delete and reload the cards
+        this.progressBarIsVisible.assertValues( false, true, false)
     }
 
     @Test

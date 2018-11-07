@@ -12,6 +12,7 @@ import com.kickstarter.extensions.showErrorSnackbar
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import com.kickstarter.viewmodels.PaymentMethodsViewModel
 import kotlinx.android.synthetic.main.activity_settings_payment_methods.*
@@ -40,6 +41,11 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showErrorSnackbar(payment_methods_toolbar, it) }
 
+        this.viewModel.outputs.progressBarIsVisible()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { ViewUtils.setGone(progress_bar, !it) }
+
         this.viewModel.outputs.showDeleteCardDialog()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -50,7 +56,8 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showConfirmationSnackbar(payment_methods_toolbar, R.string.Got_it_your_changes_have_been_saved) }
 
-        add_new_card.setOnClickListener { startActivityForResult(Intent(this, NewCardActivity::class.java), ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD) }
+        add_new_card.setOnClickListener { startActivityForResult(Intent(this, NewCardActivity::class.java),
+                ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD) }
 
     }
 
@@ -74,14 +81,10 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
         if (this.showDeleteCardDialog == null) {
             this.showDeleteCardDialog = AlertDialog.Builder(this, R.style.AlertDialog)
                     .setCancelable(false)
-                    .setTitle("Remove this card")
-                    .setMessage("Are you sure you wish to remove this card from your payment method options?")
-                    .setNegativeButton("No Nevermind") { _, _ ->
-                        lazyDeleteCardConfirmationDialog().dismiss()
-                    }
-                    .setPositiveButton("Yes, Remove") { _, _ ->
-                        this.viewModel.inputs.confirmDeleteCardClicked()
-                    }
+                    .setTitle(R.string.Remove_this_card)
+                    .setMessage(R.string.Are_you_sure_you_wish_to_remove_this_card)
+                    .setNegativeButton(R.string.No_nevermind) { _, _ -> lazyDeleteCardConfirmationDialog().dismiss() }
+                    .setPositiveButton(R.string.Yes_remove) { _, _ -> this.viewModel.inputs.confirmDeleteCardClicked() }
                     .create()
         }
         return this.showDeleteCardDialog!!

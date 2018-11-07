@@ -42,8 +42,10 @@ interface ChangeEmailViewModel {
         /** Emits a string to display when email update fails.  */
         fun error(): Observable<String>
 
+        /** Emits a boolean to determine if the user is a creator. */
         fun isCreator(): Observable<Boolean>
 
+        /** Emits a boolean to determine if a user's email is deliverable. */
         fun isDeliverable(): Observable<Boolean>
 
         /** Emits a boolean to display if the user's email is verified. */

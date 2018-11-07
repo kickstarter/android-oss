@@ -1,5 +1,6 @@
 package com.kickstarter.services
 
+import DeletePaymentSourceMutation
 import SavePaymentMethodMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
@@ -11,6 +12,8 @@ import type.CurrencyCode
 import type.PaymentTypes
 
 interface ApolloClientType {
+    fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
+
     fun getStoredCards(): Observable<UserPaymentsQuery.Data>
 
     fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data>

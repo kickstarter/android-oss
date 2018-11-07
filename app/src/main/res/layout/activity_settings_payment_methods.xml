@@ -20,42 +20,64 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <LinearLayout
+    <FrameLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical">
-
-      <TextView
-        style="@style/NewsLetterTextView"
-        android:layout_marginBottom="@dimen/grid_2"
-        android:layout_marginTop="@dimen/grid_3"
-        android:text="@string/Any_payment_methods_you_saved_to_Kickstarter" />
-
-      <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/item_payment_method" />
+      android:layout_height="wrap_content">
 
       <LinearLayout
-        android:id="@+id/add_new_card"
-        style="@style/SettingsLinearRow"
-        android:layout_marginTop="@dimen/grid_1">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
-          style="@style/CalloutPrimaryMedium"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          style="@style/NewsLetterTextView"
           android:layout_marginBottom="@dimen/grid_2"
-          android:layout_marginEnd="@dimen/activity_horizontal_margin"
-          android:layout_marginStart="@dimen/activity_horizontal_margin"
-          android:layout_marginTop="@dimen/grid_2"
-          android:text="@string/Add_new_card"
-          android:textAllCaps="true"
-          android:textColor="@color/ksr_green_500" />
+          android:layout_marginTop="@dimen/grid_3"
+          android:text="@string/Any_payment_methods_you_saved_to_Kickstarter" />
+
+        <android.support.v7.widget.RecyclerView
+          android:id="@+id/recycler_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          tools:listitem="@layout/item_payment_method" />
+
+        <LinearLayout
+          android:id="@+id/add_new_card"
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_1">
+
+          <TextView
+            style="@style/CalloutPrimaryMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_2"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/grid_2"
+            android:text="@string/Add_new_card"
+            android:textAllCaps="true"
+            android:textColor="@color/ksr_green_500" />
+        </LinearLayout>
+
       </LinearLayout>
 
-    </LinearLayout>
+      <FrameLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/progress_bar_height"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ProgressBar
+          style="?android:attr/progressBarStyleHorizontal"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_5"
+          android:layout_gravity="center"
+          android:indeterminate="true" />
+
+      </FrameLayout>
+
+    </FrameLayout>
 
   </ScrollView>
 

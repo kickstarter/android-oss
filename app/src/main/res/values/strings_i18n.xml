@@ -32,6 +32,7 @@
   <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Any payment methods you\'ve saved to Kickstarter are listed here (securely) for your convenience.</string>
   <string name="App_version" formatted="false">App version</string>
   <string name="Are_you_sure" formatted="false">Are you sure?</string>
+  <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">Are you sure you wish to remove this card from your payment method options?</string>
   <string name="Ask_me_anything" formatted="false">Ask me anything</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Available to watch for %{time} more %{units}</string>
   <string name="Back" formatted="false">Back</string>
@@ -266,6 +267,7 @@ with friends.</string>
   <string name="No_Results" formatted="false">No Results</string>
   <string name="No_comments_yet" formatted="false">No comments yet.</string>
   <string name="No_messages" formatted="false">No messages</string>
+  <string name="No_nevermind" formatted="false">No, nevermind</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">No one has posted an update yet.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">No pledges\n
 from friends yet.</string>
@@ -346,6 +348,7 @@ daring ideas.</string>
   <string name="Recommended_For_You" formatted="false">Recommended For You</string>
   <string name="Recorded_Live" formatted="false">Recorded Live</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Recorded live with &lt;b>%{creator_name}&lt;/b></string>
+  <string name="Remove_this_card" formatted="false">Remove this card</string>
   <string name="Replay" formatted="false">Replay</string>
   <string name="Replay_available_for_time_more_units" formatted="false">Replay available for %{time} more %{units}</string>
   <string name="Replay_live_stream_with_creator_name" formatted="false">Replay live stream with&lt;br>&lt;b>%{creator_name}&lt;/b></string>
@@ -467,11 +470,13 @@ catch your eye?</string>
 Please try again later.</string>
   <string name="Websites" formatted="false">Websites</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Welcome to our library. Peruse the stacks with us.</string>
+  <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">We\'ll ask you to sign back into the Kickstarter app once you\'ve changed your password.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">We’ll remind you 48 hours before this project ends, and you\'ll get a reminder about all projects you save moving forward. To view everything you’ve saved, visit your profile.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">When following is on, you can follow the activity of others and others can follow your activity. Turn following off to permanently delete this data.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">When you save a project we’ll send you a reminder 48 hours before it ends</string>
   <string name="Write_a_bio" formatted="false">Write a short bio. Just a sentence or two is great.</string>
   <string name="Yes_change_currency" formatted="false">Yes, Change currency</string>
+  <string name="Yes_remove" formatted="false">Yes, remove</string>
   <string name="Yes_turn_off" formatted="false">Yes, turn off</string>
   <string name="You_Launched" formatted="false">You Launched!</string>
   <string name="You_backed_this_project" formatted="false">You backed this project.</string>

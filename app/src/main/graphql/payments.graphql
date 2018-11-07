@@ -13,6 +13,12 @@ query UserPayments {
   }
 }
 
+mutation DeletePaymentSource($paymentSourceId: String!)  {
+  paymentSourceDelete(input: {paymentSourceId: $paymentSourceId}) {
+    clientMutationId
+  }
+}
+
 mutation SavePaymentMethod($paymentType: PaymentTypes!, $stripeToken: String!, $stripeCardId: String!) {
   createPaymentSource(input: {paymentType: $paymentType, stripeToken: $stripeToken, stripeCardId: $stripeCardId}) {
       errorMessage

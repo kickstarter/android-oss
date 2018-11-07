@@ -11,24 +11,22 @@ import type.CreditCardState
 import type.CreditCardTypes
 import java.util.*
 
-
-
 class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PaymentMethodsViewHolderViewModel.ViewModel
 
+    private val cardIssuer = TestSubscriber<Int>()
     private val expirationDate = TestSubscriber<String>()
     private val lastFour = TestSubscriber<String>()
     private val paymentType = TestSubscriber<CreditCardPaymentType>()
-    private val type = TestSubscriber<Int>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = PaymentMethodsViewHolderViewModel.ViewModel(environment)
 
+        this.vm.outputs.cardIssuer().subscribe(this.cardIssuer)
         this.vm.outputs.expirationDate().subscribe(this.expirationDate)
         this.vm.outputs.lastFour().subscribe(this.lastFour)
         this.vm.outputs.paymentType().subscribe(this.paymentType)
-        this.vm.outputs.type().subscribe(this.type)
     }
 
     @Test
@@ -70,6 +68,6 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.card(UserPaymentsQuery.Node("", "", Date(), "",
                 CreditCardState.ACTIVE, CreditCardPaymentType.BANK_ACCOUNT, CreditCardTypes.DISCOVER))
 
-        this.type.assertValue(R.drawable.discover_md)
+        this.cardIssuer.assertValue(R.drawable.discover_md)
     }
 }

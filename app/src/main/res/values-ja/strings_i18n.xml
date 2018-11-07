@@ -7,7 +7,7 @@
   <string name="Account" formatted="false">アカウント</string>
   <string name="Add" formatted="false">追加</string>
   <string name="Add_attachments" formatted="false">添付ファイルを追加...</string>
-  <string name="Add_new_card" formatted="false">Add a new card</string>
+  <string name="Add_new_card" formatted="false">新しいカードを追加</string>
   <string name="All_Art_Projects" formatted="false">全てのアートプロジェクト</string>
   <string name="All_Comics_Projects" formatted="false">全てのコミックプロジェクト</string>
   <string name="All_Crafts_Projects" formatted="false">全ての工芸プロジェクト</string>
@@ -29,9 +29,10 @@
   <string name="Amount_previous_amount" formatted="false">金額: %{amount}, 以前の金額: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">金額：%{amount}、%{reward}</string>
   <string name="Amounts_shown" formatted="false">表示されている金額は、おおよその換算金額ですのでご注意ください。プロジェクトが成功した場合、プレッジはプロジェクトをローンチした国の通貨で集められ、その換算額も表示されます。</string>
-  <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Any payment methods you\'ve saved to Kickstarter are listed here (securely) for your convenience.</string>
+  <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Kickstarter に保存されたお支払い方法は、こちらに (安全に) リストアップされます。</string>
   <string name="App_version" formatted="false">アプリ版</string>
   <string name="Are_you_sure" formatted="false">オフにしてもよろしいですか？</string>
+  <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">Are you sure you wish to remove this card from your payment method options?</string>
   <string name="Ask_me_anything" formatted="false">お問い合わせ</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">さらに%{time} の%{units} を見ることができます</string>
   <string name="Back" formatted="false">バック</string>
@@ -57,9 +58,9 @@
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">キャンセル</string>
   <string name="Cancel_your_pledge" formatted="false">プレッジを取り消す</string>
-  <string name="Card_ending_in_last_four" formatted="false">Card ending in %{last_four}</string>
-  <string name="Card_number" formatted="false">Card number</string>
-  <string name="Cardholder_name" formatted="false">Cardholder name</string>
+  <string name="Card_ending_in_last_four" formatted="false">下4桁が %{last_four} のカード</string>
+  <string name="Card_number" formatted="false">カード番号</string>
+  <string name="Cardholder_name" formatted="false">カード名義</string>
   <string name="Change_currency" formatted="false">通貨の変更</string>
   <string name="Change_email" formatted="false">メールアドレスを変更</string>
   <string name="Change_password" formatted="false">パスワードを変更</string>
@@ -93,7 +94,7 @@
   <string name="Creator_name_was_streaming_live_on_Kickstarter" formatted="false">%{creator_name} はライブ配信を行いました</string>
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} は%{in_duration} にライブ配信を行います</string>
   <string name="Creator_tips" formatted="false">アドバイス</string>
-  <string name="Credit_card_expiration" formatted="false">Expires %{expiration_date}</string>
+  <string name="Credit_card_expiration" formatted="false">有効期限 %{expiration_date}</string>
   <string name="Currency" formatted="false">通貨</string>
   <string name="Currency_AUD" formatted="false">$ オーストラリアドル (AUD)</string>
   <string name="Currency_CAD" formatted="false">$ カナダドル (CAD)</string>
@@ -133,7 +134,7 @@
   <string name="Ending_soon" formatted="false">終了直前</string>
   <string name="Estimated_delivery" formatted="false">配達予定日：</string>
   <string name="Expands_subcategories" formatted="false">サブカテゴリーを表示</string>
-  <string name="Expiration" formatted="false">Expiration</string>
+  <string name="Expiration" formatted="false">有効期限</string>
   <string name="Expired_date_at_time" formatted="false">有効期限: %{date} %{time}</string>
   <string name="Expires_date_at_time" formatted="false">有効期限: %{date} %{time}</string>
   <string name="Explore" formatted="false">さがす</string>
@@ -244,7 +245,7 @@
   <string name="Log_in_to_leave_a_comment" formatted="false">ログインしてコメントを残す。</string>
   <string name="Log_out" formatted="false">ログアウト</string>
   <string name="Love_film_We_do_too" formatted="false">映画ファン？そんなあなたに必須のニュースレター。</string>
-  <string name="MMYY" formatted="false">MM/YY</string>
+  <string name="MMYY" formatted="false">月月/年年</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">リワードなしでプレッジ</string>
   <string name="Making_this_change" formatted="false">この変更によって、プロジェクトゴールとプレッジ額が選択された通貨で表示されます。</string>
   <string name="Manage_your_pledge" formatted="false">プレッジを変更</string>
@@ -264,6 +265,7 @@
   <string name="No_Results" formatted="false">該当結果なし</string>
   <string name="No_comments_yet" formatted="false">まだコメントはありません。</string>
   <string name="No_messages" formatted="false">メッセージがありません。</string>
+  <string name="No_nevermind" formatted="false">No, nevermind</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">まだアップデートの投稿はありません。</string>
   <string name="No_pledges_from_friends_yet" formatted="false">友達からのプレッジはありません。</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">このライブ配信を再生することはできません</string>
@@ -343,6 +345,7 @@
   <string name="Recommended_For_You" formatted="false">あなたへのおすすめ</string>
   <string name="Recorded_Live" formatted="false">配信済ライブ</string>
   <string name="Recorded_live_with_creator_name" formatted="false">配信された&lt;b>%{creator_name}&lt;/b>のライブ</string>
+  <string name="Remove_this_card" formatted="false">Remove this card</string>
   <string name="Replay" formatted="false">リプレイ</string>
   <string name="Replay_available_for_time_more_units" formatted="false">あと%{time}%{units} リプレイ可能</string>
   <string name="Replay_live_stream_with_creator_name" formatted="false">&lt;b>%{creator_name}&lt;/b>のライブ配信を再生</string>
@@ -377,13 +380,13 @@
   <string name="Saved_projects" formatted="false">プロジェクトを保存</string>
   <string name="Saves_project" formatted="false">プロジェクトを保存</string>
   <string name="Say_something_kind" formatted="false">言葉に注意</string>
-  <string name="Security_code" formatted="false">Security code</string>
+  <string name="Security_code" formatted="false">セキュリティーコード</string>
   <string name="See_all_category_name_projects" formatted="false">%{category_name} プロジェクトをすべて見る</string>
   <string name="Select_another_project" formatted="false">他のプロジェクトを選ぶ</string>
   <string name="Select_this_reward" formatted="false">このリワードを選ぶ</string>
   <string name="Select_this_reward_instead" formatted="false">このリワードを選択</string>
   <string name="Send" formatted="false">送信</string>
-  <string name="Send_verfication_email" formatted="false">Send verification email</string>
+  <string name="Send_verfication_email" formatted="false">認証メールを送信する</string>
   <string name="Share" formatted="false">シェア</string>
   <string name="Share_an_update_about_your_project" formatted="false">アップデートをシェアしよう</string>
   <string name="Share_this_live_stream" formatted="false">ライブ配信をシェアする</string>
@@ -457,17 +460,19 @@
   <string name="Watch_live" formatted="false">ライブをみる</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">「%{search_term}」に一致するものがありませんでした。</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">あなたのアクティビティをもとにおすすめの提供を行っています。オプトアウトするにはおすすめ機能をオフにしてください。</string>
-  <string name="We_ve_been_unable_to_send_email" formatted="false">We\'ve been unable to send email to this address. Please make sure it is typed correctly.</string>
+  <string name="We_ve_been_unable_to_send_email" formatted="false">このアドレスにメールを送信できませんでした。メールアドレスが正確に入力されていることをご確認ください。</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">ライブ配信への接続に失敗。</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">配送先の読込に失敗。\n
 再度お試しください。</string>
   <string name="Websites" formatted="false">ウェブサイト</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Kickstarter ライブラリーへようこそ。色んなストーリーを一緒に読み漁ろう！</string>
+  <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">We\'ll ask you to sign back into the Kickstarter app once you\'ve changed your password.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">終了48時間前に通知が届きます。保存アイテムをみるにはプロフィールをご覧ください。</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">フォローがオンになっていると、他の人のアクティビティをフォローすることができ、また、他の人もあなたのアクティビティをフォローすることができます。このようなデータを永久に削除するためにはフォローをオフにしてください。</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">プロジェクトを保存し、終了の48時間前にリマインドする。</string>
   <string name="Write_a_bio" formatted="false">簡単な自己紹介を書いてください。ほんの１～２文で構いません。</string>
   <string name="Yes_change_currency" formatted="false">はい、通貨を変更します</string>
+  <string name="Yes_remove" formatted="false">Yes, remove</string>
   <string name="Yes_turn_off" formatted="false">はい、オフにします</string>
   <string name="You_Launched" formatted="false">発表されました！</string>
   <string name="You_backed_this_project" formatted="false">バック済</string>
@@ -488,7 +493,7 @@
   <string name="Youre_a_backer" formatted="false">バッカーになりました！</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Facebookのメールアドレスで新しいアカウントを作成しようとしています。再度確認してください。</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">このプレッジ済のプロジェクトは、現在もファンド中</string>
-  <string name="Zip_code" formatted="false">Zip code</string>
+  <string name="Zip_code" formatted="false">郵便番号</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">アクティビティ</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">アクティビティをみる</string>
   <string name="accessibility_dashboard_buttons_messages" formatted="false">メッセージ</string>

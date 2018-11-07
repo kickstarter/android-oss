@@ -8,7 +8,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.viewmodels.PaymentMethodsViewHolderViewModel
 import kotlinx.android.synthetic.main.item_payment_method.view.*
 
-class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate) : KSViewHolder(view) {
+class PaymentMethodsViewHolder(@NonNull view: View, @NonNull val delegate: Delegate) : KSViewHolder(view) {
 
     private val ksString = environment().ksString()
     private val vm: PaymentMethodsViewHolderViewModel.ViewModel = PaymentMethodsViewHolderViewModel.ViewModel(environment())
@@ -16,30 +16,33 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull delegate: Delegate)
     private val creditCardExpirationString = this.context().getString(R.string.Credit_card_expiration)
     private val cardEndingInString = this.context().getString(R.string.Card_ending_in_last_four)
 
-    interface Delegate
+    interface Delegate {
+        fun deleteCardButtonClicked(paymentMethodsViewHolder: PaymentMethodsViewHolder, paymentSourceId: String)
+    }
 
     init {
 
-        this.vm.outputs.type()
+        this.vm.outputs.cardIssuer()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    itemView.credit_card_logo.setImageResource(it)
-                }
+                .subscribe { itemView.credit_card_logo.setImageResource(it) }
 
         this.vm.outputs.expirationDate()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    setExpirationDateTextView(it)
-                }
+                .subscribe { setExpirationDateTextView(it) }
+
+        this.vm.outputs.id()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.delegate.deleteCardButtonClicked(this, it) }
 
         this.vm.outputs.lastFour()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    setLastFourTextView(it)
-                }
+                .subscribe { setLastFourTextView(it) }
+
+        itemView.delete_card.setOnClickListener { this.vm.inputs.deleteIconClicked() }
 
     }
 

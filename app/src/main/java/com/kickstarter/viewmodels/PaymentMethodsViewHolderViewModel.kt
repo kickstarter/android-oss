@@ -4,6 +4,7 @@ import UserPaymentsQuery
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -16,11 +17,17 @@ import java.util.*
 interface PaymentMethodsViewHolderViewModel {
 
     interface Inputs {
-        /** Adding a card from the list of cards in the activity. */
+        /** Supply the view holder with the list item. */
         fun card(creditCard: UserPaymentsQuery.Node)
+
+        /** Call when the user clicks the delete icon. */
+        fun deleteIconClicked()
     }
 
     interface Outputs {
+        /** Emits the card issuer (ex Visa, Mastercard, AMEX). */
+        fun cardIssuer(): Observable<Int>
+
         /** Emits the expiration date for a credit card. */
         fun expirationDate(): Observable<String>
 
@@ -30,25 +37,22 @@ interface PaymentMethodsViewHolderViewModel {
         /** Emits the last four digits of the credit card. */
         fun lastFour(): Observable<String>
 
-        /** Emits the payment type ex) Credit_Card or Bank_Account. */
+        /** Emits the payment type(Credit_Card or Bank_Account). */
         fun paymentType(): Observable<CreditCardPaymentType>
-
-        /** Emits the card issuer ex) Visa or Mastercard. */
-        fun type(): Observable<Int>
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<PaymentMethodsViewHolder>(environment), Inputs, Outputs {
 
         private val card = PublishSubject.create<UserPaymentsQuery.Node>()
+        private val deleteCardClick = PublishSubject.create<Void>()
 
+        private val cardIssuer = BehaviorSubject.create<Int>()
         private val expirationDate = BehaviorSubject.create<String>()
         private val id = BehaviorSubject.create<String>()
         private val lastFour = BehaviorSubject.create<String>()
         private val paymentType = BehaviorSubject.create<CreditCardPaymentType>()
-        private val type = BehaviorSubject.create<Int>()
 
         private val sdf = SimpleDateFormat("MM/yyyy", Locale.getDefault())
-
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -59,6 +63,7 @@ interface PaymentMethodsViewHolderViewModel {
                     .subscribe { this.expirationDate.onNext(it) }
 
             this.card.map { id -> id.id() }
+                    .compose<String>(takeWhen(this.deleteCardClick))
                     .subscribe { this.id.onNext(it) }
 
             this.card.map { last -> last.lastFour() }
@@ -69,13 +74,17 @@ interface PaymentMethodsViewHolderViewModel {
 
             this.card.map { type -> type.type() }
                     .map { setCreditCardType(it) }
-                    .subscribe { this.type.onNext(it) }
+                    .subscribe { this.cardIssuer.onNext(it) }
 
         }
 
         override fun card(creditCard: UserPaymentsQuery.Node) {
             this.card.onNext(creditCard)
         }
+
+        override fun deleteIconClicked() = this.deleteCardClick.onNext(null)
+
+        override fun cardIssuer(): Observable<Int> = this.cardIssuer
 
         override fun expirationDate(): Observable<String> = this.expirationDate
 
@@ -84,8 +93,6 @@ interface PaymentMethodsViewHolderViewModel {
         override fun lastFour(): Observable<String> = this.lastFour
 
         override fun paymentType(): Observable<CreditCardPaymentType> = this.paymentType
-
-        override fun type(): Observable<Int> = this.type
 
         private fun setCreditCardType(cardType: CreditCardTypes): Int {
             return when (cardType) {

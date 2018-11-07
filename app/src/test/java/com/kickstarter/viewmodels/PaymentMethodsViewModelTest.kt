@@ -32,88 +32,60 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testAPIError() {
-        val apolloClient = object : MockApolloClient() {
+    fun testCards() {
+        val node = UserPaymentsQuery.Node("", "5555", Date(), "9876",
+                CreditCardState.ACTIVE, CreditCardPaymentType.CREDIT_CARD, CreditCardTypes.MASTERCARD)
+
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
+                return Observable.just(UserPaymentsQuery.Data(UserPaymentsQuery.Me("",
+                        UserPaymentsQuery.StoredCards("", List(1
+                        ) { _ -> node }))))
+            }
+        }).build())
+
+        this.cards.assertValue(Collections.singletonList(node))
+    }
+
+    @Test
+    fun testErrorGettingCards() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
                 return Observable.error(Exception("oops"))
             }
-        }
-
-        setUpEnvironment(environment().toBuilder().apolloClient(apolloClient).build())
-
-        this.vm.inputs.confirmDeleteCardClicked()
-    }
-
-    @Test
-    fun testError() {
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
-                return Observable.error(Throwable("error"))
-            }
-
-            override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
-                return Observable.error(Throwable("error"))
-            }
         }).build())
-
 
         this.cards.assertNoValues()
         this.error.assertNoValues()
+    }
 
-        this.vm.inputs.deleteCardClicked("error")
+    @Test
+    fun testErrorDeletingCard() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
+                return Observable.error(Throwable("eek"))
+            }
+        }).build())
+
+        this.vm.inputs.deleteCardClicked("id")
         this.vm.confirmDeleteCardClicked()
-        this.error.assertValue("error")
-    }
-
-
-    @Test
-    fun testGetCards() {
-        val node = UserPaymentsQuery.Node("", "5555", Date(), "9876",
-                CreditCardState.ACTIVE, CreditCardPaymentType.CREDIT_CARD, CreditCardTypes.MASTERCARD)
-
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
-                return Observable.just(UserPaymentsQuery.Data(UserPaymentsQuery.Me("",
-                        UserPaymentsQuery.StoredCards("", List(1
-                        ) { _ -> node }))))
-            }
-        }).build())
-
-        this.cards.assertValue(Collections.singletonList(node))
+        this.error.assertValue("eek")
     }
 
     @Test
-    fun testDeleteCards() {
-        val node = UserPaymentsQuery.Node("", "5555", Date(), "9876",
-                CreditCardState.ACTIVE, CreditCardPaymentType.CREDIT_CARD, CreditCardTypes.MASTERCARD)
+    fun testShowDeleteCardDialog() {
+        setUpEnvironment(environment())
 
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
-                return Observable.just(UserPaymentsQuery.Data(UserPaymentsQuery.Me("",
-                        UserPaymentsQuery.StoredCards("", List(1
-                        ) { _ -> node }))))
-            }
-        }).build())
-
-        this.cards.assertValue(Collections.singletonList(node))
         this.vm.inputs.deleteCardClicked("5555")
-        this.vm.inputs.confirmDeleteCardClicked()
-        this.cards.assertValueCount(0)
-        this.success.assertValueCount(1)
-
+        this.showDeleteCardDialog.assertValueCount(1)
     }
 
     @Test
     fun testSuccess() {
-        val node = UserPaymentsQuery.Node("", "5555", Date(), "9876",
-                CreditCardState.ACTIVE, CreditCardPaymentType.CREDIT_CARD, CreditCardTypes.MASTERCARD)
+        setUpEnvironment(environment())
 
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
-                return super.deletePaymentSource(paymentSourceId)
-            }
-        }).build())
-
-        this.cards.assertValueCount(1)
+        this.vm.inputs.deleteCardClicked("id")
+        this.vm.inputs.confirmDeleteCardClicked()
+        this.success.assertValueCount(1)
     }
 }

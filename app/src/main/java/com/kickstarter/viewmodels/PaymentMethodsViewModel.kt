@@ -16,13 +16,13 @@ import rx.subjects.PublishSubject
 interface PaymentMethodsViewModel {
 
     interface Inputs {
-        /** Delete a payment source from the list. */
-        fun deleteCardClicked(paymentSourceId: String)
-
         /** Invokes when the user clicks the delete button. */
         fun confirmDeleteCardClicked()
 
-        /** Call when a new card has been added and the list needs to be updated. */
+        /** Delete a payment source from the list. */
+        fun deleteCardClicked(paymentSourceId: String)
+
+        /** Call when a card has been added or removed and the list needs to be updated. */
         fun refreshCards()
     }
 
@@ -30,12 +30,13 @@ interface PaymentMethodsViewModel {
         /** Emits a list of stored cards for a user. */
         fun cards(): Observable<MutableList<UserPaymentsQuery.Node>>
 
-        /** Emits whenever there is an error updating the user's currency.  */
+        /** Emits whenever there is an error deleting a stored card.  */
         fun error(): Observable<String>
 
+        /** Emits whenever the user tries to delete a card.  */
         fun showDeleteCardDialog(): Observable<Void>
 
-        /** Emits when the currency update was successful. */
+        /** Emits when the card was successfully deleted. */
         fun success(): Observable<String>
     }
 
@@ -82,19 +83,20 @@ interface PaymentMethodsViewModel {
                     .subscribe { this.cards.onNext(it) }
         }
 
-        override fun deleteCardClicked(paymentSourceId: String) = this.deleteCardClicked.onNext(paymentSourceId)
-
         override fun deleteCardButtonClicked(paymentMethodsViewHolder: PaymentMethodsViewHolder, paymentSourceId: String) {
             return this.deleteCardClicked(paymentSourceId)
         }
 
         override fun confirmDeleteCardClicked() = this.confirmDeleteCardClicked.onNext(null)
 
+        override fun deleteCardClicked(paymentSourceId: String) = this.deleteCardClicked.onNext(paymentSourceId)
+
+        override fun refreshCards() = this.refreshCards.onNext(null)
+
         override fun cards(): Observable<MutableList<UserPaymentsQuery.Node>> = this.cards
 
         override fun error(): Observable<String> = this.error
 
-        override fun refreshCards() = this.refreshCards.onNext(null)
 
         override fun showDeleteCardDialog(): Observable<Void> = this.showDeleteCardDialog
 

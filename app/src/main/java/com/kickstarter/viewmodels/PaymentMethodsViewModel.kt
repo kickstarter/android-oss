@@ -104,7 +104,7 @@ interface PaymentMethodsViewModel {
 
         override fun error(): Observable<String> = this.error
 
-        override fun progressBarIsVisible(): Observable<Boolean> = this.progressBarIsVisible
+        override fun progressBarIsVisible(): Observable<Boolean> = this.progressBarIsVisible.distinctUntilChanged()
 
         override fun showDeleteCardDialog(): Observable<Void> = this.showDeleteCardDialog
 

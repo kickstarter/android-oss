@@ -84,8 +84,10 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     fun testSuccess() {
         setUpEnvironment(environment())
 
+        this.cards.assertValueCount(1)
         this.vm.inputs.deleteCardClicked("id")
         this.vm.inputs.confirmDeleteCardClicked()
         this.success.assertValueCount(1)
+        this.cards.assertValueCount(2)
     }
 }

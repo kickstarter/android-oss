@@ -72,7 +72,10 @@ interface PaymentMethodsViewModel {
             deleteCardNotification
                     .compose(values())
                     .map { it.paymentSourceDelete()?.clientMutationId() }
-                    .subscribe { this.success.onNext(it) }
+                    .subscribe {
+                        this.refreshCards.onNext(null)
+                        this.success.onNext(it)
+                    }
 
             deleteCardNotification
                     .compose(Transformers.errors())

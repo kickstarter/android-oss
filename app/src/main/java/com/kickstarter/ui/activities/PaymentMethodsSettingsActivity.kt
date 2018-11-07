@@ -38,22 +38,17 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showErrorSnackbar(payment_methods_toolbar, it)
-                }
+                .subscribe { showErrorSnackbar(payment_methods_toolbar, it) }
 
         this.viewModel.outputs.showDeleteCardDialog()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    lazyDeleteCardConfirmationDialog().show()
-                    this.viewModel.inputs.refreshCards()
-                }
+                .subscribe { lazyDeleteCardConfirmationDialog().show() }
 
         this.viewModel.success()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showConfirmationSnackbar(payment_methods_toolbar,
-                        "You've successfully deleted your card") }
+                .subscribe { showConfirmationSnackbar(payment_methods_toolbar, R.string.Got_it_your_changes_have_been_saved) }
 
         add_new_card.setOnClickListener { startActivityForResult(Intent(this, NewCardActivity::class.java), ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD) }
 

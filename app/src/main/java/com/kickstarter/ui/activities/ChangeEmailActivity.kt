@@ -59,25 +59,10 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showErrorSnackbar(change_email_layout, it) }
 
-        this.viewModel.outputs.isCreator()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    verification_text_view.text = getString(R.string.Send_verfication_email)
-                }
-
-        this.viewModel.outputs.isDeliverable()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    ViewUtils.setGone(email_verification_text_view, !it)
-                }
-
         this.viewModel.outputs.isEmailVerified()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    ViewUtils.setGone(email_verification_text_view, it)
                     ViewUtils.setGone(resend_email_row, it)
                 }
 
@@ -105,6 +90,25 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { clearForm() }
+
+        this.viewModel.outputs.warningText()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    if(it !=null) {
+                        email_warning_text_view.text = getString(it)
+                        email_warning_text_view.visibility = View.VISIBLE
+                    } else {
+                        ViewUtils.setGone(email_warning_text_view, true)
+                    }
+                }
+
+        this.viewModel.outputs.warningTextColor()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    email_warning_text_view.setTextColor(it)
+                }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

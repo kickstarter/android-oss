@@ -140,4 +140,6 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         this.currentEmail.assertValues("some@email.com", "rashad@gmail.com")
         this.success.assertValueCount(1)
     }
+
+    //TODO write test for when you're a backer, creator, when email is unverified, when it's undeliverable
 }

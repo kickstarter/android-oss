@@ -2,7 +2,9 @@ package com.kickstarter.viewmodels
 
 import SendEmailVerificationMutation
 import UpdateUserEmailMutation
+import UserPrivacyQuery
 import android.support.annotation.NonNull
+import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.*
@@ -59,6 +61,10 @@ interface ChangeEmailViewModel {
 
         /** Emits when the user's email is changed successfully. */
         fun success(): Observable<Void>
+
+        fun warningText(): Observable<Int>
+
+        fun warningTextColor(): Observable<Int>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ChangeEmailActivity>(environment), Inputs, Outputs {
@@ -80,6 +86,8 @@ interface ChangeEmailViewModel {
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val showProgressBar = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<Void>()
+        private val warningText = BehaviorSubject.create<Int>()
+        private val warningTextColor = BehaviorSubject.create<Int>()
 
         private val error = BehaviorSubject.create<String>()
 
@@ -87,7 +95,9 @@ interface ChangeEmailViewModel {
 
         init {
 
-            this.apolloClient.userPrivacy()
+            val userPrivacy = this.apolloClient.userPrivacy()
+
+            userPrivacy
                     .compose(neverError())
                     .compose(bindToLifecycle())
                     .subscribe {
@@ -96,6 +106,14 @@ interface ChangeEmailViewModel {
                         this.isDeliverable.onNext(it.me()?.isDeliverable())
                         this.isEmailVerified.onNext(it.me()?.isEmailVerified())
                     }
+
+            userPrivacy
+                    .map { getWarningText(it) }
+                    .subscribe { this.warningText.onNext(it) }
+
+            userPrivacy
+                    .map { getWarningTextColor(it) }
+                    .subscribe { this.warningTextColor.onNext(it) }
 
             this.emailFocus
                     .compose(combineLatestPair<Boolean, String>(this.email))
@@ -144,6 +162,24 @@ interface ChangeEmailViewModel {
                     .subscribe { this.success.onNext(null) }
         }
 
+        private fun getWarningTextColor(userPrivacyData: UserPrivacyQuery.Data?): Int? {
+            return if (!userPrivacyData?.me()?.isDeliverable!!) {
+                R.color.ksr_red_400
+            } else {
+                R.color.ksr_dark_grey_400
+            }
+        }
+
+        private fun getWarningText(userPrivacyData: UserPrivacyQuery.Data?): Int? {
+            return if (!userPrivacyData?.me()?.isDeliverable!!) {
+                R.string.We_ve_been_unable_to_send_email
+            } else if (!userPrivacyData.me()?.isEmailVerified!!) {
+                R.string.Email_unverified
+            } else {
+                null
+            }
+        }
+
         override fun email(email: String) {
             this.email.onNext(email)
         }
@@ -181,6 +217,10 @@ interface ChangeEmailViewModel {
         override fun saveButtonIsEnabled(): Observable<Boolean> = this.saveButtonIsEnabled
 
         override fun success(): Observable<Void> = this.success
+
+        override fun warningText(): Observable<Int> = this.warningText
+
+        override fun warningTextColor(): Observable<Int> = this.warningTextColor
 
         private fun sendEmailVerification(): Observable<SendEmailVerificationMutation.Data> {
             return this.apolloClient.sendVerificationEmail()

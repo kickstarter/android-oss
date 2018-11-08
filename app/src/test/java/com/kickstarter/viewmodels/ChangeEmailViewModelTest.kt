@@ -18,7 +18,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     private val currentEmail = TestSubscriber<String>()
     private val emailErrorIsVisible = TestSubscriber<Boolean>()
     private val error = TestSubscriber<String>()
-    private val isEmailVerified = TestSubscriber<Boolean>()
+    private val sendVerificationIsVisible = TestSubscriber<Boolean>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val saveButtonIsEnabled = TestSubscriber<Boolean>()
     private val success = TestSubscriber<Void>()
@@ -32,7 +32,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.currentEmail().subscribe(this.currentEmail)
         this.vm.outputs.emailErrorIsVisible().subscribe(this.emailErrorIsVisible)
         this.vm.outputs.error().subscribe(this.error)
-        this.vm.outputs.isEmailVerified().subscribe(this.isEmailVerified)
+        this.vm.outputs.sendVerificationIsVisible().subscribe(this.sendVerificationIsVisible)
         this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
         this.vm.outputs.saveButtonIsEnabled().subscribe(this.saveButtonIsEnabled)
         this.vm.outputs.success().subscribe(this.success)
@@ -52,7 +52,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         }).build())
 
         this.currentEmail.assertValue("rashad@test.com")
-        this.isEmailVerified.assertValue(true)
+        this.sendVerificationIsVisible.assertValue(true)
     }
 
     @Test
@@ -91,7 +91,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         }).build())
 
         this.currentEmail.assertValue("rashad@test.com")
-        this.isEmailVerified.assertValue(false)
+        this.sendVerificationIsVisible.assertValue(false)
 
         this.warningText.assertValue(R.string.Email_unverified)
         this.warningTextColor.assertValue(R.color.ksr_dark_grey_400)
@@ -108,7 +108,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         }).build())
 
         this.currentEmail.assertValue("rashad@test.com")
-        this.isEmailVerified.assertValue(false)
+        this.sendVerificationIsVisible.assertValue(false)
 
         this.warningText.assertValue(R.string.We_ve_been_unable_to_send_email)
         this.warningTextColor.assertValue(R.color.ksr_red_400)
@@ -125,7 +125,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         }).build())
 
         this.currentEmail.assertValue("rashad@test.com")
-        this.isEmailVerified.assertValue(true)
+        this.sendVerificationIsVisible.assertValue(true)
 
         this.warningText.assertValue(null)
         this.warningTextColor.assertValue(R.color.ksr_dark_grey_400)
@@ -143,7 +143,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         }).build())
 
         this.currentEmail.assertValue("rashad@test.com")
-        this.isEmailVerified.assertValue(true)
+        this.sendVerificationIsVisible.assertValue(true)
 
         this.warningText.assertValue(null)
         this.warningTextColor.assertValue(R.color.ksr_dark_grey_400)

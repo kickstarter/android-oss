@@ -45,7 +45,7 @@ interface ChangeEmailViewModel {
         fun error(): Observable<String>
 
         /** Emits a boolean to display if the user's email is verified. */
-        fun sendVerificationIsVisible(): Observable<Boolean>
+        fun sendVerificationIsHidden(): Observable<Boolean>
 
         /** Emits a boolean that determines if update email call to server is executing.  */
         fun progressBarIsVisible(): Observable<Boolean>
@@ -79,7 +79,7 @@ interface ChangeEmailViewModel {
 
         private val currentEmail = BehaviorSubject.create<String>()
         private val emailErrorIsVisible = BehaviorSubject.create<Boolean>()
-        private val sendVerificationIsVisible = BehaviorSubject.create<Boolean>()
+        private val sendVerificationIsHidden = BehaviorSubject.create<Boolean>()
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val showProgressBar = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<Void>()
@@ -100,7 +100,7 @@ interface ChangeEmailViewModel {
                     .compose(bindToLifecycle())
                     .subscribe {
                         this.currentEmail.onNext(it.me()?.email())
-                        this.sendVerificationIsVisible.onNext(it.me()?.isEmailVerified())
+                        this.sendVerificationIsHidden.onNext(it.me()?.isEmailVerified())
                     }
 
             userPrivacy
@@ -188,7 +188,7 @@ interface ChangeEmailViewModel {
 
         override fun error(): Observable<String> = this.error
 
-        override fun sendVerificationIsVisible(): Observable<Boolean> = this.sendVerificationIsVisible
+        override fun sendVerificationIsHidden(): Observable<Boolean> = this.sendVerificationIsHidden
 
         override fun progressBarIsVisible(): Observable<Boolean> = this.showProgressBar
 

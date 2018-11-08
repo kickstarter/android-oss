@@ -4,6 +4,7 @@ import SendEmailVerificationMutation
 import UpdateUserEmailMutation
 import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.services.MockApolloClient
 import org.junit.Test
@@ -23,6 +24,8 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val saveButtonIsEnabled = TestSubscriber<Boolean>()
     private val success = TestSubscriber<Void>()
+    private val warningText = TestSubscriber<Int>()
+    private val warningTextColor = TestSubscriber<Int>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ChangeEmailViewModel.ViewModel(environment)
@@ -36,6 +39,8 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
         this.vm.outputs.saveButtonIsEnabled().subscribe(this.saveButtonIsEnabled)
         this.vm.outputs.success().subscribe(this.success)
+        this.vm.outputs.warningText().subscribe(this.warningText)
+        this.vm.outputs.warningTextColor().subscribe(this.warningTextColor)
     }
 
     @Test
@@ -68,22 +73,91 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testError() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.error(Throwable("beep"))
-            }
-
             override fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data> {
                 return Observable.error(Throwable("boop"))
             }
         }).build())
 
-        this.currentEmail.assertNoValues()
-        this.error.assertNoValues()
-
         this.vm.inputs.email("test@email.com")
         this.vm.inputs.password("password")
         this.vm.inputs.updateEmailClicked()
         this.error.assertValue("boop")
+    }
+
+    @Test
+    fun testIsEmailUnverified() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
+                        "rashad@test.com", true, true, false, ""
+                )))
+            }
+        }).build())
+
+        this.currentEmail.assertValue("rashad@test.com")
+        this.isCreator.assertValue(true)
+        this.isEmailVerified.assertValue(false)
+        this.isDeliverable.assertValue(true)
+
+        this.warningText.assertValue(R.string.Email_unverified)
+        this.warningTextColor.assertValue(R.color.ksr_dark_grey_400)
+    }
+
+    @Test
+    fun testIsEmailUndeliverable() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
+                        "rashad@test.com", true, false, false, ""
+                )))
+            }
+        }).build())
+
+        this.currentEmail.assertValue("rashad@test.com")
+        this.isCreator.assertValue(true)
+        this.isEmailVerified.assertValue(false)
+        this.isDeliverable.assertValue(false)
+
+        this.warningText.assertValue(R.string.We_ve_been_unable_to_send_email)
+        this.warningTextColor.assertValue(R.color.ksr_red_400)
+    }
+
+    @Test
+    fun testIsUserABacker() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
+                        "rashad@test.com", false, true, true, ""
+                )))
+            }
+        }).build())
+
+        this.currentEmail.assertValue("rashad@test.com")
+        this.isCreator.assertValue(false)
+        this.isEmailVerified.assertValue(true)
+        this.isDeliverable.assertValue(true)
+
+        this.warningText.assertValue(null)
+        this.warningTextColor.assertValue(R.color.ksr_dark_grey_400)
+    }
+
+    @Test
+    fun testIsUserACreator() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
+                        "rashad@test.com", true, true, true, ""
+                )))
+            }
+        }).build())
+
+        this.currentEmail.assertValue("rashad@test.com")
+        this.isCreator.assertValue(true)
+        this.isEmailVerified.assertValue(true)
+        this.isDeliverable.assertValue(true)
+
+        this.warningText.assertValue(null)
+        this.warningTextColor.assertValue(R.color.ksr_dark_grey_400)
     }
 
     @Test
@@ -141,5 +215,4 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         this.success.assertValueCount(1)
     }
 
-    //TODO write test for when you're a backer, creator, when email is unverified, when it's undeliverable
 }

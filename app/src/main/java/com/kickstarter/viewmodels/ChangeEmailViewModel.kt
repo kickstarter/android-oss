@@ -162,24 +162,6 @@ interface ChangeEmailViewModel {
                     .subscribe { this.success.onNext(null) }
         }
 
-        private fun getWarningTextColor(userPrivacyData: UserPrivacyQuery.Data?): Int? {
-            return if (!userPrivacyData?.me()?.isDeliverable!!) {
-                R.color.ksr_red_400
-            } else {
-                R.color.ksr_dark_grey_400
-            }
-        }
-
-        private fun getWarningText(userPrivacyData: UserPrivacyQuery.Data?): Int? {
-            return if (!userPrivacyData?.me()?.isDeliverable!!) {
-                R.string.We_ve_been_unable_to_send_email
-            } else if (!userPrivacyData.me()?.isEmailVerified!!) {
-                R.string.Email_unverified
-            } else {
-                null
-            }
-        }
-
         override fun email(email: String) {
             this.email.onNext(email)
         }
@@ -221,6 +203,24 @@ interface ChangeEmailViewModel {
         override fun warningText(): Observable<Int> = this.warningText
 
         override fun warningTextColor(): Observable<Int> = this.warningTextColor
+
+        private fun getWarningTextColor(userPrivacyData: UserPrivacyQuery.Data?): Int? {
+            return if (!userPrivacyData?.me()?.isDeliverable!!) {
+                R.color.ksr_red_400
+            } else {
+                R.color.ksr_dark_grey_400
+            }
+        }
+
+        private fun getWarningText(userPrivacyData: UserPrivacyQuery.Data?): Int? {
+            return if (!userPrivacyData?.me()?.isDeliverable!!) {
+                R.string.We_ve_been_unable_to_send_email
+            } else if (!userPrivacyData.me()?.isEmailVerified!!) {
+                R.string.Email_unverified
+            } else {
+                null
+            }
+        }
 
         private fun sendEmailVerification(): Observable<SendEmailVerificationMutation.Data> {
             return this.apolloClient.sendVerificationEmail()

@@ -44,12 +44,6 @@ interface ChangeEmailViewModel {
         /** Emits a string to display when email update fails.  */
         fun error(): Observable<String>
 
-        /** Emits a boolean to determine if the user is a creator. */
-        fun isCreator(): Observable<Boolean>
-
-        /** Emits a boolean to determine if a user's email is deliverable. */
-        fun isDeliverable(): Observable<Boolean>
-
         /** Emits a boolean to display if the user's email is verified. */
         fun isEmailVerified(): Observable<Boolean>
 
@@ -62,8 +56,13 @@ interface ChangeEmailViewModel {
         /** Emits when the user's email is changed successfully. */
         fun success(): Observable<Void>
 
+        /** Emits the text for the verification button depending on whether the user is a backer or creator. */
+        fun verificationEmailButtonText(): Observable<Int>
+
+        /** Emits the warning text string depending on is an email is undeliverable or un-verified for creators. */
         fun warningText(): Observable<Int>
 
+        /** Emits the text color for the warning text depending on if the email is undeliverable or unverified. */
         fun warningTextColor(): Observable<Int>
     }
 
@@ -80,14 +79,13 @@ interface ChangeEmailViewModel {
 
         private val currentEmail = BehaviorSubject.create<String>()
         private val emailErrorIsVisible = BehaviorSubject.create<Boolean>()
-        private val isCreator = BehaviorSubject.create<Boolean>()
-        private val isDeliverable = BehaviorSubject.create<Boolean>()
         private val isEmailVerified = BehaviorSubject.create<Boolean>()
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val showProgressBar = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<Void>()
         private val warningText = BehaviorSubject.create<Int>()
         private val warningTextColor = BehaviorSubject.create<Int>()
+        private val verificationEmailButtonText = BehaviorSubject.create<Int>()
 
         private val error = BehaviorSubject.create<String>()
 
@@ -102,8 +100,6 @@ interface ChangeEmailViewModel {
                     .compose(bindToLifecycle())
                     .subscribe {
                         this.currentEmail.onNext(it.me()?.email())
-                        this.isCreator.onNext(it.me()?.isCreator())
-                        this.isDeliverable.onNext(it.me()?.isDeliverable())
                         this.isEmailVerified.onNext(it.me()?.isEmailVerified())
                     }
 
@@ -114,6 +110,10 @@ interface ChangeEmailViewModel {
             userPrivacy
                     .map { getWarningTextColor(it) }
                     .subscribe { this.warningTextColor.onNext(it) }
+
+            userPrivacy
+                    .map { getVerificationText(it) }
+                    .subscribe { this.verificationEmailButtonText.onNext(it) }
 
             this.emailFocus
                     .compose(combineLatestPair<Boolean, String>(this.email))
@@ -188,10 +188,6 @@ interface ChangeEmailViewModel {
 
         override fun error(): Observable<String> = this.error
 
-        override fun isCreator(): Observable<Boolean> = this.isCreator
-
-        override fun isDeliverable(): Observable<Boolean> = this.isDeliverable
-
         override fun isEmailVerified(): Observable<Boolean> = this.isEmailVerified
 
         override fun progressBarIsVisible(): Observable<Boolean> = this.showProgressBar
@@ -203,6 +199,8 @@ interface ChangeEmailViewModel {
         override fun warningText(): Observable<Int> = this.warningText
 
         override fun warningTextColor(): Observable<Int> = this.warningTextColor
+
+        override fun verificationEmailButtonText(): Observable<Int> = this.verificationEmailButtonText
 
         private fun getWarningTextColor(userPrivacyData: UserPrivacyQuery.Data?): Int? {
             return if (!userPrivacyData?.me()?.isDeliverable!!) {
@@ -219,6 +217,14 @@ interface ChangeEmailViewModel {
                 R.string.Email_unverified
             } else {
                 null
+            }
+        }
+
+        private fun getVerificationText(userPrivacy: UserPrivacyQuery.Data?): Int? {
+            return if (!userPrivacy?.me()?.isCreator!!) {
+                R.string.Send_verfication_email
+            } else {
+                R.string.Resend_verification_email
             }
         }
 

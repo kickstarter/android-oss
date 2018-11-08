@@ -95,7 +95,7 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    if(it !=null) {
+                    if (it != null) {
                         email_warning_text_view.text = getString(it)
                         email_warning_text_view.visibility = View.VISIBLE
                     } else {
@@ -108,6 +108,13 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     email_warning_text_view.setTextColor(it)
+                }
+
+        this.viewModel.outputs.verificationEmailButtonText()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    verification_text_view.text = getString(it)
                 }
     }
 

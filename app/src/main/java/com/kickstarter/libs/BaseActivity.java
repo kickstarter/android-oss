@@ -94,8 +94,6 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
 
     this.viewModel.intent(getIntent());
 
-    final IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-    this.registerReceiver(this.connectivityReceiver, filter);
   }
 
   /**
@@ -119,6 +117,10 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
       .compose(bindUntilEvent(ActivityEvent.STOP))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> goBack());
+
+    final IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+    this.registerReceiver(this.connectivityReceiver, filter);
+    ConnectivityReceiver.setConnectivityReceiverListener(this);
   }
 
   @CallSuper
@@ -132,8 +134,6 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     if (this.viewModel != null) {
       this.viewModel.onResume(this);
     }
-
-    KSApplication.getInstance().setConnectivityListener(this);
   }
 
   @CallSuper
@@ -146,6 +146,8 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     if (this.viewModel != null) {
       this.viewModel.onPause();
     }
+
+    this.unregisterReceiver(this.connectivityReceiver);
   }
 
   @CallSuper

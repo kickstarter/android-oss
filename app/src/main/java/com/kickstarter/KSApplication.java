@@ -16,7 +16,6 @@ import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.libs.utils.Secrets;
-import com.kickstarter.services.ConnectivityReceiver;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -37,7 +36,6 @@ import timber.log.Timber;
 
 public class KSApplication extends MultiDexApplication {
   private ApplicationComponent component;
-  public static KSApplication instance;
   private RefWatcher refWatcher;
   @Inject protected CookieManager cookieManager;
   @Inject protected PushNotifications pushNotifications;
@@ -46,8 +44,6 @@ public class KSApplication extends MultiDexApplication {
   @CallSuper
   public void onCreate() {
     super.onCreate();
-
-    instance = this;
 
     MultiDex.install(this);
 
@@ -94,14 +90,6 @@ public class KSApplication extends MultiDexApplication {
 
   public boolean isInUnitTests() {
     return false;
-  }
-
-  public static synchronized KSApplication getInstance() {
-    return instance;
-  }
-
-  public void setConnectivityListener(final ConnectivityReceiver.ConnectivityReceiverListener listener) {
-    ConnectivityReceiver.connectivityReceiverListener = listener;
   }
 
   private void setVisitorCookie() {

@@ -173,8 +173,6 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
         this.viewModel = null;
       }
     }
-
-    this.unregisterReceiver(this.connectivityReceiver);
   }
 
   /**

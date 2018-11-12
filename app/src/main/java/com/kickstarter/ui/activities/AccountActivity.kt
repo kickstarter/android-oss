@@ -20,8 +20,6 @@ import kotlinx.android.synthetic.main.activity_account.*
 import rx.android.schedulers.AndroidSchedulers
 import type.CurrencyCode
 
-
-
 @RequiresActivityViewModel(AccountViewModel.ViewModel::class)
 class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
 

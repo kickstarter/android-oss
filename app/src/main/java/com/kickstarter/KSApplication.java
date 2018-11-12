@@ -100,7 +100,7 @@ public class KSApplication extends MultiDexApplication {
     return instance;
   }
 
-  public void setConnectivityListener(ConnectivityReceiver.ConnectivityReceiverListener listener) {
+  public void setConnectivityListener(final ConnectivityReceiver.ConnectivityReceiverListener listener) {
     ConnectivityReceiver.connectivityReceiverListener = listener;
   }
 

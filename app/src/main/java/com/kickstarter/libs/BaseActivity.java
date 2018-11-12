@@ -15,6 +15,7 @@ import android.util.Pair;
 import com.kickstarter.ApplicationComponent;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.extensions.ActivityExtKt;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.BundleUtils;
 import com.kickstarter.services.ConnectivityReceiver;
@@ -30,8 +31,6 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-
-import static com.kickstarter.extensions.ActivityExtKt.showNetworkErrorSnackbar;
 
 public abstract class BaseActivity<ViewModelType extends ActivityViewModel> extends AppCompatActivity implements ActivityLifecycleProvider,
   ActivityLifecycleType, ConnectivityReceiver.ConnectivityReceiverListener {
@@ -96,7 +95,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     this.viewModel.intent(getIntent());
 
     final IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-    this.registerReceiver(connectivityReceiver, filter);
+    this.registerReceiver(this.connectivityReceiver, filter);
   }
 
   /**
@@ -173,18 +172,17 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
       }
     }
 
-    this.unregisterReceiver(connectivityReceiver);
+    this.unregisterReceiver(this.connectivityReceiver);
   }
 
   /**
    * @deprecated Use {@link #back()} instead.
-   * <p>
    * In rare situations, onBackPressed can be triggered after {@link #onSaveInstanceState(Bundle)} has been called.
    * This causes an {@link IllegalStateException} in the fragment manager's `checkStateLoss` method, because the
    * UI state has changed after being saved. The sequence of events might look like this:
-   * <p>
+   *
    * onSaveInstanceState -> onStop -> onBackPressed
-   * <p>
+   *
    * To avoid that situation, we need to ignore calls to `onBackPressed` after the activity has been saved. Since
    * the activity is stopped after `onSaveInstanceState` is called, we can create an observable of back events,
    * and a subscription that calls super.onBackPressed() only when the activity has not been stopped.
@@ -202,9 +200,9 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
    * so whatever Activity the user navigates to while disconnected the error will display.
    */
   @Override
-  public void onNetworkConnectionChanged(boolean isConnected) {
+  public void onNetworkConnectionChanged(final boolean isConnected) {
     if (!isConnected) {
-      showNetworkErrorSnackbar(findViewById(android.R.id.content), getString(R.string.Your_device_is_offline));
+      ActivityExtKt.showNetworkErrorSnackbar(findViewById(android.R.id.content), getString(R.string.Your_device_is_offline));
     }
   }
   /**
@@ -218,14 +216,12 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
    * Override in subclasses for custom exit transitions. First item in pair is the enter animation,
    * second item in pair is the exit animation.
    */
-  protected @Nullable
-  Pair<Integer, Integer> exitTransition() {
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
     return null;
   }
 
   @CallSuper
-  @Override
-  protected void onSaveInstanceState(final @NonNull Bundle outState) {
+  @Override protected void onSaveInstanceState(final @NonNull Bundle outState) {
     super.onSaveInstanceState(outState);
     Timber.d("onSaveInstanceState %s", this.toString());
 
@@ -246,16 +242,14 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   /**
    * Returns the {@link KSApplication} instance.
    */
-  protected @NonNull
-  KSApplication application() {
+  protected @NonNull KSApplication application() {
     return (KSApplication) getApplication();
   }
 
   /**
    * Convenience method to return a Dagger component.
    */
-  protected @NonNull
-  ApplicationComponent component() {
+  protected @NonNull ApplicationComponent component() {
     return application().component();
   }
 
@@ -263,8 +257,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
    * Returns the application's {@link Environment}.
    */
   @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-  public @NonNull
-  Environment environment() {
+  public @NonNull Environment environment() {
     return component().environment();
   }
 

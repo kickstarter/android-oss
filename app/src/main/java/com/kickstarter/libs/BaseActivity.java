@@ -9,11 +9,14 @@ import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
+import android.view.View;
 
 import com.kickstarter.ApplicationComponent;
 import com.kickstarter.KSApplication;
+import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.BundleUtils;
+import com.kickstarter.services.ConnectivityReceiver;
 import com.kickstarter.ui.data.ActivityResult;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -27,8 +30,10 @@ import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
+import static com.kickstarter.extensions.ActivityExtKt.showNetworkErrorSnackbar;
+
 public abstract class BaseActivity<ViewModelType extends ActivityViewModel> extends AppCompatActivity implements ActivityLifecycleProvider,
-  ActivityLifecycleType {
+  ActivityLifecycleType, ConnectivityReceiver.ConnectivityReceiverListener {
 
   private final PublishSubject<Void> back = PublishSubject.create();
   private final BehaviorSubject<ActivityEvent> lifecycle = BehaviorSubject.create();
@@ -123,6 +128,8 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     if (this.viewModel != null) {
       this.viewModel.onResume(this);
     }
+
+    KSApplication.getInstance().setConnectivityListener(this);
   }
 
   @CallSuper
@@ -182,6 +189,11 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     back();
   }
 
+  @Override
+  public void onNetworkConnectionChanged(boolean isConnected) {
+    //TODO Show NetWorkError SnackBar
+//    showNetworkErrorSnack(isConnected,);
+  }
   /**
    * Call when the user wants triggers a back event, e.g. clicking back in a toolbar or pressing the device back button.
    */
@@ -268,6 +280,12 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
           viewModelClass,
           BundleUtils.maybeGetBundle(viewModelEnvelope, VIEW_MODEL_KEY));
       }
+    }
+  }
+
+  private void showNetworkErrorSnack(boolean isConnected, View view) {
+    if (!isConnected) {
+      showNetworkErrorSnackbar(this, view, R.string.Daily_digest);
     }
   }
 }

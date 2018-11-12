@@ -93,7 +93,6 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     assignViewModel(savedInstanceState);
 
     this.viewModel.intent(getIntent());
-
   }
 
   /**
@@ -177,15 +176,16 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
 
   /**
    * @deprecated Use {@link #back()} instead.
-   * In rare situations, onBackPressed can be triggered after {@link #onSaveInstanceState(Bundle)} has been called.
-   * This causes an {@link IllegalStateException} in the fragment manager's `checkStateLoss` method, because the
-   * UI state has changed after being saved. The sequence of events might look like this:
    *
-   * onSaveInstanceState -> onStop -> onBackPressed
+   *             In rare situations, onBackPressed can be triggered after {@link #onSaveInstanceState(Bundle)} has been called.
+   *             This causes an {@link IllegalStateException} in the fragment manager's `checkStateLoss` method, because the
+   *             UI state has changed after being saved. The sequence of events might look like this:
    *
-   * To avoid that situation, we need to ignore calls to `onBackPressed` after the activity has been saved. Since
-   * the activity is stopped after `onSaveInstanceState` is called, we can create an observable of back events,
-   * and a subscription that calls super.onBackPressed() only when the activity has not been stopped.
+   *             onSaveInstanceState -> onStop -> onBackPressed
+   *
+   *             To avoid that situation, we need to ignore calls to `onBackPressed` after the activity has been saved. Since
+   *             the activity is stopped after `onSaveInstanceState` is called, we can create an observable of back events,
+   *             and a subscription that calls super.onBackPressed() only when the activity has not been stopped.
    */
   @CallSuper
   @Override
@@ -221,7 +221,8 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   }
 
   @CallSuper
-  @Override protected void onSaveInstanceState(final @NonNull Bundle outState) {
+  @Override
+  protected void onSaveInstanceState(final @NonNull Bundle outState) {
     super.onSaveInstanceState(outState);
     Timber.d("onSaveInstanceState %s", this.toString());
 

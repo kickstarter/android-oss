@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import com.kickstarter.BuildConfig
 import timber.log.Timber
 
 class ConnectivityReceiver : BroadcastReceiver() {
@@ -20,7 +21,9 @@ class ConnectivityReceiver : BroadcastReceiver() {
 
         connectivityReceiverListener.onNetworkConnectionChanged(isConnected)
 
-        Timber.d("$isConnected Network changed")
+        if (BuildConfig.DEBUG) {
+            Timber.d("$isConnected Network changed")
+        }
     }
 
     interface ConnectivityReceiverListener {

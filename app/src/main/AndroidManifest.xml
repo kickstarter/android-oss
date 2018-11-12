@@ -389,15 +389,6 @@
         <action android:name="com.android.vending.INSTALL_REFERRER" />
       </intent-filter>
     </receiver>
-
-    <receiver
-      android:name=".services.ConnectivityReceiver"
-      android:enabled="true">
-      <intent-filter>
-        <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-      </intent-filter>
-    </receiver>
-
     <!-- META-DATA -->
 
     <meta-data

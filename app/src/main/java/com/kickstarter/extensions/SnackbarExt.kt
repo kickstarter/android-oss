@@ -23,7 +23,7 @@ fun Snackbar.headsUp(): Snackbar {
 }
 
 fun Snackbar.networkError(): Snackbar {
-    style(true, Gravity.CENTER, R.color.ksr_teal_500, R.drawable.bg_snackbar_heads_up)
+    style(true, Gravity.CENTER, R.color.ksr_soft_black, R.drawable.bg_snackbar_network_error)
     return this
 }
 

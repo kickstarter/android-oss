@@ -10,12 +10,10 @@ import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.extensions.showConfirmationSnackbar
 import com.kickstarter.extensions.showErrorSnackbar
-import com.kickstarter.extensions.showNetworkErrorSnackbar
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.services.ConnectivityReceiver
 import com.kickstarter.viewmodels.AccountViewModel
 import kotlinx.android.synthetic.main.account_toolbar.*
 import kotlinx.android.synthetic.main.activity_account.*
@@ -39,7 +37,6 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
             payment_methods_row.visibility = View.VISIBLE
         }
 
-        checkConnection()
         setUpSpinner()
 
         this.viewModel.outputs.chosenCurrency()
@@ -67,19 +64,6 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         change_email_row.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
         change_password_row.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
         privacy_row.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
-    }
-
-    override fun onNetworkConnectionChanged(isConnected: Boolean) {
-        if (!isConnected) {
-            showNetworkErrorSnackbar(account_container, "You're device is offline. Content may not be displayed until you reconnect.")
-        }
-    }
-
-    private fun checkConnection() {
-        val isConnected = ConnectivityReceiver.isConnected()
-        if (!isConnected) {
-            showNetworkErrorSnackbar(account_container, "You're device is offline. Content may not be displayed until you reconnect.")
-        }
     }
 
     private fun getListOfCurrencies(): List<String> {

@@ -1,6 +1,8 @@
 package com.kickstarter.libs;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.AnimRes;
 import android.support.annotation.CallSuper;
@@ -9,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
-import android.view.View;
 
 import com.kickstarter.ApplicationComponent;
 import com.kickstarter.KSApplication;
@@ -39,6 +40,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   private final BehaviorSubject<ActivityEvent> lifecycle = BehaviorSubject.create();
   private static final String VIEW_MODEL_KEY = "viewModel";
   private final CompositeSubscription subscriptions = new CompositeSubscription();
+  private final ConnectivityReceiver connectivityReceiver = new ConnectivityReceiver();
   protected ViewModelType viewModel;
 
   /**
@@ -92,6 +94,9 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     assignViewModel(savedInstanceState);
 
     this.viewModel.intent(getIntent());
+
+    final IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+    this.registerReceiver(connectivityReceiver, filter);
   }
 
   /**
@@ -167,20 +172,22 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
         this.viewModel = null;
       }
     }
+
+    this.unregisterReceiver(connectivityReceiver);
   }
 
   /**
    * @deprecated Use {@link #back()} instead.
-   *
-   *             In rare situations, onBackPressed can be triggered after {@link #onSaveInstanceState(Bundle)} has been called.
-   *             This causes an {@link IllegalStateException} in the fragment manager's `checkStateLoss` method, because the
-   *             UI state has changed after being saved. The sequence of events might look like this:
-   *
-   *             onSaveInstanceState -> onStop -> onBackPressed
-   *
-   *             To avoid that situation, we need to ignore calls to `onBackPressed` after the activity has been saved. Since
-   *             the activity is stopped after `onSaveInstanceState` is called, we can create an observable of back events,
-   *             and a subscription that calls super.onBackPressed() only when the activity has not been stopped.
+   * <p>
+   * In rare situations, onBackPressed can be triggered after {@link #onSaveInstanceState(Bundle)} has been called.
+   * This causes an {@link IllegalStateException} in the fragment manager's `checkStateLoss` method, because the
+   * UI state has changed after being saved. The sequence of events might look like this:
+   * <p>
+   * onSaveInstanceState -> onStop -> onBackPressed
+   * <p>
+   * To avoid that situation, we need to ignore calls to `onBackPressed` after the activity has been saved. Since
+   * the activity is stopped after `onSaveInstanceState` is called, we can create an observable of back events,
+   * and a subscription that calls super.onBackPressed() only when the activity has not been stopped.
    */
   @CallSuper
   @Override
@@ -189,10 +196,16 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     back();
   }
 
+  /** This is called when a user loses data or Wi-Fi connection.
+   * When the user loses connection we will show our network error Snackbar.
+   * We're also using (findViewById(android.R.id.content) to get the root view of our activity
+   * so whatever Activity the user navigates to while disconnected the error will display.
+   */
   @Override
   public void onNetworkConnectionChanged(boolean isConnected) {
-    //TODO Show NetWorkError SnackBar
-//    showNetworkErrorSnack(isConnected,);
+    if (!isConnected) {
+      showNetworkErrorSnackbar(findViewById(android.R.id.content), getString(R.string.Your_device_is_offline));
+    }
   }
   /**
    * Call when the user wants triggers a back event, e.g. clicking back in a toolbar or pressing the device back button.
@@ -205,7 +218,8 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
    * Override in subclasses for custom exit transitions. First item in pair is the enter animation,
    * second item in pair is the exit animation.
    */
-  protected @Nullable Pair<Integer, Integer> exitTransition() {
+  protected @Nullable
+  Pair<Integer, Integer> exitTransition() {
     return null;
   }
 
@@ -232,14 +246,16 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   /**
    * Returns the {@link KSApplication} instance.
    */
-  protected @NonNull KSApplication application() {
+  protected @NonNull
+  KSApplication application() {
     return (KSApplication) getApplication();
   }
 
   /**
    * Convenience method to return a Dagger component.
    */
-  protected @NonNull ApplicationComponent component() {
+  protected @NonNull
+  ApplicationComponent component() {
     return application().component();
   }
 
@@ -247,7 +263,8 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
    * Returns the application's {@link Environment}.
    */
   @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-  public  @NonNull Environment environment() {
+  public @NonNull
+  Environment environment() {
     return component().environment();
   }
 
@@ -280,12 +297,6 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
           viewModelClass,
           BundleUtils.maybeGetBundle(viewModelEnvelope, VIEW_MODEL_KEY));
       }
-    }
-  }
-
-  private void showNetworkErrorSnack(boolean isConnected, View view) {
-    if (!isConnected) {
-      showNetworkErrorSnackbar(this, view, R.string.Daily_digest);
     }
   }
 }

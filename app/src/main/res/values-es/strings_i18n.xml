@@ -32,6 +32,7 @@
   <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Para tu comodidad, aquí se enumeran (de manera absolutamente segura) los métodos de pago que guardaste en Kickstarter.</string>
   <string name="App_version" formatted="false">Versión de la aplicación</string>
   <string name="Are_you_sure" formatted="false">¿Estás seguro?</string>
+  <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">Are you sure you wish to remove this card from your payment method options?</string>
   <string name="Ask_me_anything" formatted="false">¡Pregúntame!</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Disponible para reproducción %{time} %{units} más</string>
   <string name="Back" formatted="false">Atrás</string>
@@ -258,6 +259,7 @@ patrocinadores</string>
   <string name="Messages" formatted="false">Mensajes</string>
   <string name="Name" formatted="false">Nombre</string>
   <string name="Never" formatted="false">Nunca</string>
+  <string name="New_email" formatted="false">New email</string>
   <string name="New_password" formatted="false">Contraseña nueva</string>
   <string name="New_pledge_activity" formatted="false">Nueva actividad de contribución</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">Nuevos trabajos y grandes ideas de artistas establecidos y emergentes.</string>
@@ -266,6 +268,7 @@ patrocinadores</string>
   <string name="No_Results" formatted="false">Sin resultados</string>
   <string name="No_comments_yet" formatted="false">No hay comentarios todavia.</string>
   <string name="No_messages" formatted="false">No hay mensajes</string>
+  <string name="No_nevermind" formatted="false">No, nevermind</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Todavía no se han publicado actualizaciones.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Todavía no hay contribuciones de amigos.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Este Live Stream no cuenta con repetición.</string>
@@ -344,6 +347,7 @@ patrocinadores</string>
   <string name="Recommended_For_You" formatted="false">Recomendaciones para ti</string>
   <string name="Recorded_Live" formatted="false">Grabado en vivo</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Grabado en vivo por &lt;b>%{creator_name}&lt;/b></string>
+  <string name="Remove_this_card" formatted="false">Remove this card</string>
   <string name="Replay" formatted="false">Repetición</string>
   <string name="Replay_available_for_time_more_units" formatted="false">Repetición disponible por %{time} %{units} más</string>
   <string name="Replay_live_stream_with_creator_name" formatted="false">Repetir live stream de&lt;br>&lt;b>%{creator_name}&lt;/b></string>
@@ -470,6 +474,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Cuando guardes un proyecto, te enviaremos un recordatorio por correo electrónico 48 horas antes de que finalice</string>
   <string name="Write_a_bio" formatted="false">Escribe una biografía breve mediante una oración o dos.</string>
   <string name="Yes_change_currency" formatted="false">Sí, cambiar la moneda</string>
+  <string name="Yes_remove" formatted="false">Yes, remove</string>
   <string name="Yes_turn_off" formatted="false">Sí, desactivar</string>
   <string name="You_Launched" formatted="false">¡Tu proyecto fue publicado!</string>
   <string name="You_backed_this_project" formatted="false">Patrocinaste este proyecto.</string>
@@ -477,6 +482,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Contribuiste&lt;/b> el %{pledge_date}</string>
   <string name="You_saved_this_project" formatted="false">Uno de tus proyectos guardados.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Tu mensaje no fue enviado.</string>
+  <string name="Your_device_is_offline" formatted="false">Your device is offline. Content may not be displayed until you reconnect.</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Tus amigos todavía no han hecho contribuciones, pero en cuanto lo hagan, se verán reflejadas aquí.</string>
   <string name="Your_name_displayed" formatted="false">Tu nombre siempre se muestra en tu perfil.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Se efectuó el cargo a tu método de pago.</string>

@@ -137,17 +137,20 @@ public final class KSCurrency {
     final Config config = this.currentConfig.getConfig();
 
     if (config.countryCode().equals("US") && chosenCurrency.equals(CurrencyCode.USD.rawValue())) {
-      symbol = "$";
+      symbol = "$ ";
+      return symbol;
+    }  else if (config.countryCode().equals("US") && !chosenCurrency.equals(CurrencyCode.USD.rawValue())) {
+      symbol = "US$ ";
       return symbol;
     } else if (config.countryCode().equals("XX")) {
-      symbol = "US$";
+      symbol = "US$ ";
       return symbol;
     }
 
     if (chosenCurrency.equals(CurrencyCode.AUD.rawValue())) {
-      return "AU$";
+      return "AU$ ";
     } else if (chosenCurrency.equals(CurrencyCode.CAD.rawValue())) {
-      return "CA$";
+      return "CA$ ";
     } else if (chosenCurrency.equals(CurrencyCode.CHF.rawValue())) {
       return "CHF";
     } else if (chosenCurrency.equals(CurrencyCode.DKK.rawValue())) {
@@ -157,23 +160,23 @@ public final class KSCurrency {
     } else if (chosenCurrency.equals(CurrencyCode.GBP.rawValue())) {
       return "£";
     } else if (chosenCurrency.equals(CurrencyCode.HKD.rawValue())) {
-      return "HK$";
+      return "HK$ ";
     } else if (chosenCurrency.equals(CurrencyCode.JPY.rawValue())) {
       return "¥";
     } else if (chosenCurrency.equals(CurrencyCode.MXN.rawValue())) {
-      return "MX$";
+      return "MX$ ";
     } else if (chosenCurrency.equals(CurrencyCode.NOK.rawValue())) {
       return "NOK";
     } else if (chosenCurrency.equals(CurrencyCode.NZD.rawValue())) {
-      return "NZ$";
+      return "NZ$ ";
     } else if (chosenCurrency.equals(CurrencyCode.SEK.rawValue())) {
       return "SEK";
     } else if (chosenCurrency.equals(CurrencyCode.SGD.rawValue())) {
-      return "S$";
+      return "S$ ";
     } else if (chosenCurrency.equals(CurrencyCode.USD.rawValue())) {
-      return "US$";
+      return "US$ ";
     } else {
-      symbol = "US$";
+      symbol = "US$ ";
     }
     return symbol;
   }

@@ -91,7 +91,7 @@ interface PaymentMethodsViewModel {
         }
 
         override fun deleteCardButtonClicked(paymentMethodsViewHolder: PaymentMethodsViewHolder, paymentSourceId: String) {
-            return this.deleteCardClicked(paymentSourceId)
+            deleteCardClicked(paymentSourceId)
         }
 
         override fun confirmDeleteCardClicked() = this.confirmDeleteCardClicked.onNext(null)

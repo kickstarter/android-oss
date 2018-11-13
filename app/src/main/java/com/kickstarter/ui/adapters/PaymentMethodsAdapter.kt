@@ -1,12 +1,15 @@
 package com.kickstarter.ui.adapters
 
 import UserPaymentsQuery
+import android.support.v7.util.DiffUtil
 import android.view.View
 import com.kickstarter.R
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
 
-class PaymentMethodsAdapter(private val delegate: PaymentMethodsViewHolder.Delegate): KSAdapter() {
+const val SECTION_CARDS = 0
+
+class PaymentMethodsAdapter(private val delegate: PaymentMethodsViewHolder.Delegate, diffCallback: DiffUtil.ItemCallback<Any>): KSListAdapter(diffCallback) {
 
     init {
         addSection(emptyList<Any>())
@@ -19,7 +22,7 @@ class PaymentMethodsAdapter(private val delegate: PaymentMethodsViewHolder.Deleg
     override fun viewHolder(layout: Int, view: View): KSViewHolder = PaymentMethodsViewHolder(view, delegate)
 
     fun populateCards(cards: MutableList<UserPaymentsQuery.Node>) {
-        setSection(0, cards)
-        notifyDataSetChanged()
+        setSection(SECTION_CARDS, cards)
+        submitList(items())
     }
 }

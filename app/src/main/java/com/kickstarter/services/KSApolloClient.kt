@@ -1,10 +1,5 @@
 package com.kickstarter.services
 
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.exception.ApolloException
-import rx.subjects.PublishSubject
-import type.CurrencyCode
 import DeletePaymentSourceMutation
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
@@ -13,8 +8,13 @@ import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPaymentsQuery
 import UserPrivacyQuery
+import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.exception.ApolloException
 import rx.Observable
+import rx.subjects.PublishSubject
+import type.CurrencyCode
 import type.PaymentTypes
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
@@ -31,30 +31,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         }
 
                         override fun onResponse(response: Response<DeletePaymentSourceMutation.Data>) {
-                            if (response.hasErrors()) {
-                                ps.onError(Exception(response.errors().first().message()))
-                            }
-                            ps.onNext(response.data())
-                            ps.onCompleted()
-                        }
-                    })
-            return@defer ps
-        }
-    }
-
-    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
-        return Observable.defer {
-            val ps = PublishSubject.create<SendEmailVerificationMutation.Data>()
-            service.mutate(SendEmailVerificationMutation.builder()
-                    .build())
-                    .enqueue(object : ApolloCall.Callback<SendEmailVerificationMutation.Data>() {
-
-                        override fun onFailure(exception: ApolloException) {
-                            ps.onError(exception)
-                        }
-
-                        override fun onResponse(response: Response<SendEmailVerificationMutation.Data>) {
-
                             if (response.hasErrors()) {
                                 ps.onError(Exception(response.errors().first().message()))
                             }
@@ -117,6 +93,31 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             return@defer ps
         }
     }
+
+    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<SendEmailVerificationMutation.Data>()
+            service.mutate(SendEmailVerificationMutation.builder()
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<SendEmailVerificationMutation.Data>() {
+
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<SendEmailVerificationMutation.Data>) {
+
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors().first().message()))
+                            }
+                            ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
 
     override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
         return Observable.defer {
@@ -194,16 +195,16 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         return Observable.defer {
             val ps = PublishSubject.create<UserPrivacyQuery.Data>()
             service.query(UserPrivacyQuery.builder().build())
-                        .enqueue(object : ApolloCall.Callback<UserPrivacyQuery.Data>() {
-                            override fun onFailure(exception: ApolloException) {
-                                ps.onError(exception)
-                            }
+                    .enqueue(object : ApolloCall.Callback<UserPrivacyQuery.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
 
-                            override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
-                                ps.onNext(response.data())
-                                ps.onCompleted()
-                            }
-                        })
+                        override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
+                            ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+                    })
             return@defer ps
         }
     }

@@ -118,7 +118,6 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> goBack());
 
-    this.registerReceiver(this.connectivityReceiver, this.filter);
     ConnectivityReceiver.setConnectivityReceiverListener(this);
   }
 

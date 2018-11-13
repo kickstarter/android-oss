@@ -37,6 +37,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
 
   private final PublishSubject<Void> back = PublishSubject.create();
   private final BehaviorSubject<ActivityEvent> lifecycle = BehaviorSubject.create();
+  private final IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
   private static final String VIEW_MODEL_KEY = "viewModel";
   private final CompositeSubscription subscriptions = new CompositeSubscription();
   private final ConnectivityReceiver connectivityReceiver = new ConnectivityReceiver();
@@ -117,8 +118,6 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> goBack());
 
-    final IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-    this.registerReceiver(this.connectivityReceiver, filter);
     ConnectivityReceiver.setConnectivityReceiverListener(this);
   }
 
@@ -133,6 +132,8 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     if (this.viewModel != null) {
       this.viewModel.onResume(this);
     }
+
+    this.registerReceiver(this.connectivityReceiver, this.filter);
   }
 
   @CallSuper

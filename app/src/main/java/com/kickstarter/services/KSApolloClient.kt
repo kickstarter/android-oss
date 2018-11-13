@@ -1,22 +1,24 @@
 package com.kickstarter.services
 
+import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.exception.ApolloException
+import rx.subjects.PublishSubject
+import type.CurrencyCode
 import DeletePaymentSourceMutation
 import SavePaymentMethodMutation
+import SendEmailVerificationMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPaymentsQuery
 import UserPrivacyQuery
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.exception.ApolloException
 import rx.Observable
-import rx.subjects.PublishSubject
-import type.CurrencyCode
 import type.PaymentTypes
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
+
     override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<DeletePaymentSourceMutation.Data>()
@@ -29,6 +31,30 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         }
 
                         override fun onResponse(response: Response<DeletePaymentSourceMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors().first().message()))
+                            }
+                            ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<SendEmailVerificationMutation.Data>()
+            service.mutate(SendEmailVerificationMutation.builder()
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<SendEmailVerificationMutation.Data>() {
+
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<SendEmailVerificationMutation.Data>) {
+
                             if (response.hasErrors()) {
                                 ps.onError(Exception(response.errors().first().message()))
                             }

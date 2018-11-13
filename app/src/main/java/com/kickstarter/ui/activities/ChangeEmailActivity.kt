@@ -8,8 +8,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.kickstarter.R
 import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.showErrorSnackbar
 import com.kickstarter.extensions.showConfirmationSnackbar
+import com.kickstarter.extensions.showErrorSnackbar
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ViewUtils
@@ -31,6 +31,7 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
 
         new_email.onChange { this.viewModel.inputs.email(it) }
         current_password.onChange { this.viewModel.inputs.password(it) }
+        resend_email_row.setOnClickListener { this.viewModel.inputs.sendVerificationEmail() }
 
         new_email.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             this@ChangeEmailActivity.viewModel.inputs.emailFocus(hasFocus)
@@ -58,6 +59,13 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showErrorSnackbar(change_email_layout, it) }
 
+        this.viewModel.outputs.sendVerificationIsHidden()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    ViewUtils.setGone(resend_email_row, it)
+                }
+
         this.viewModel.outputs.saveButtonIsEnabled()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -82,6 +90,32 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { clearForm() }
+
+        this.viewModel.outputs.warningText()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    if (it != null) {
+                        email_warning_text_view.text = getString(it)
+                        email_warning_text_view.visibility = View.VISIBLE
+                    } else {
+                        ViewUtils.setGone(email_warning_text_view, true)
+                    }
+                }
+
+        this.viewModel.outputs.warningTextColor()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    email_warning_text_view.setTextColor(it)
+                }
+
+        this.viewModel.outputs.verificationEmailButtonText()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    verification_text_view.text = getString(it)
+                }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

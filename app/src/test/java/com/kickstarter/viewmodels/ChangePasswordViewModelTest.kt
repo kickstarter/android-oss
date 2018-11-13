@@ -83,7 +83,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.confirmPassword("pass")
         this.saveButtonIsEnabled.assertValues(false, true, false)
         this.vm.inputs.confirmPassword("passwerd")
-        this.saveButtonIsEnabled.assertValues(false,true, false)
+        this.saveButtonIsEnabled.assertValues(false, true, false)
     }
 
     @Test
@@ -91,7 +91,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
                 return Observable.just(UpdateUserPasswordMutation.Data(UpdateUserPasswordMutation.UpdateUserAccount("",
-                        UpdateUserPasswordMutation.User("", "test@email.com"))))
+                        UpdateUserPasswordMutation.User("", "test@email.com", false))))
             }
         }).build())
 

@@ -39,3 +39,11 @@ fun Activity.showHeadsUpSnackbar(anchor: View, stringResId: Int) {
 fun showHeadsUpSnackbar(anchor: View, message: String) {
     Snackbar.make(anchor, message, Snackbar.LENGTH_LONG).headsUp().show()
 }
+
+fun Activity.showNetworkErrorSnackbar(anchor: View, stringResId: Int) {
+    showErrorSnackbar(anchor, getString(stringResId))
+}
+
+fun showNetworkErrorSnackbar(anchor: View, message: String) {
+    Snackbar.make(anchor, message, Snackbar.LENGTH_LONG).networkError().show()
+}

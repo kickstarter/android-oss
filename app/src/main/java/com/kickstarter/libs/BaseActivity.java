@@ -1,6 +1,8 @@
 package com.kickstarter.libs;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.AnimRes;
 import android.support.annotation.CallSuper;
@@ -12,8 +14,11 @@ import android.util.Pair;
 
 import com.kickstarter.ApplicationComponent;
 import com.kickstarter.KSApplication;
+import com.kickstarter.R;
+import com.kickstarter.extensions.ActivityExtKt;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.BundleUtils;
+import com.kickstarter.services.ConnectivityReceiver;
 import com.kickstarter.ui.data.ActivityResult;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -28,12 +33,14 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public abstract class BaseActivity<ViewModelType extends ActivityViewModel> extends AppCompatActivity implements ActivityLifecycleProvider,
-  ActivityLifecycleType {
+  ActivityLifecycleType, ConnectivityReceiver.ConnectivityReceiverListener {
 
   private final PublishSubject<Void> back = PublishSubject.create();
   private final BehaviorSubject<ActivityEvent> lifecycle = BehaviorSubject.create();
+  private final IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
   private static final String VIEW_MODEL_KEY = "viewModel";
   private final CompositeSubscription subscriptions = new CompositeSubscription();
+  private final ConnectivityReceiver connectivityReceiver = new ConnectivityReceiver();
   protected ViewModelType viewModel;
 
   /**
@@ -110,6 +117,8 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
       .compose(bindUntilEvent(ActivityEvent.STOP))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> goBack());
+
+    ConnectivityReceiver.setConnectivityReceiverListener(this);
   }
 
   @CallSuper
@@ -123,6 +132,8 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     if (this.viewModel != null) {
       this.viewModel.onResume(this);
     }
+
+    this.registerReceiver(this.connectivityReceiver, this.filter);
   }
 
   @CallSuper
@@ -135,6 +146,8 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     if (this.viewModel != null) {
       this.viewModel.onPause();
     }
+
+    this.unregisterReceiver(this.connectivityReceiver);
   }
 
   @CallSuper
@@ -182,6 +195,17 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     back();
   }
 
+  /** This is called when a user loses data or Wi-Fi connection.
+   * When the user loses connection we will show our network error Snackbar.
+   * We're also using (findViewById(android.R.id.content) to get the root view of our activity
+   * so whatever Activity the user navigates to while disconnected the error will display.
+   */
+  @Override
+  public void onNetworkConnectionChanged(final boolean isConnected) {
+    if (!isConnected) {
+      ActivityExtKt.showNetworkErrorSnackbar(findViewById(android.R.id.content), getString(R.string.Your_device_is_offline));
+    }
+  }
   /**
    * Call when the user wants triggers a back event, e.g. clicking back in a toolbar or pressing the device back button.
    */
@@ -235,7 +259,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
    * Returns the application's {@link Environment}.
    */
   @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-  public  @NonNull Environment environment() {
+  public @NonNull Environment environment() {
     return component().environment();
   }
 

@@ -2,6 +2,7 @@ package com.kickstarter.services
 
 import DeletePaymentSourceMutation
 import SavePaymentMethodMutation
+import SendEmailVerificationMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
@@ -17,6 +18,7 @@ import type.CurrencyCode
 import type.PaymentTypes
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
+
     override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<DeletePaymentSourceMutation.Data>()
@@ -91,6 +93,31 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             return@defer ps
         }
     }
+
+    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<SendEmailVerificationMutation.Data>()
+            service.mutate(SendEmailVerificationMutation.builder()
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<SendEmailVerificationMutation.Data>() {
+
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<SendEmailVerificationMutation.Data>) {
+
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors().first().message()))
+                            }
+                            ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
 
     override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
         return Observable.defer {
@@ -168,16 +195,16 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         return Observable.defer {
             val ps = PublishSubject.create<UserPrivacyQuery.Data>()
             service.query(UserPrivacyQuery.builder().build())
-                        .enqueue(object : ApolloCall.Callback<UserPrivacyQuery.Data>() {
-                            override fun onFailure(exception: ApolloException) {
-                                ps.onError(exception)
-                            }
+                    .enqueue(object : ApolloCall.Callback<UserPrivacyQuery.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
 
-                            override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
-                                ps.onNext(response.data())
-                                ps.onCompleted()
-                            }
-                        })
+                        override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
+                            ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+                    })
             return@defer ps
         }
     }

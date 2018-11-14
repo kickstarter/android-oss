@@ -129,7 +129,7 @@ public interface RewardViewModel {
       this.ksCurrency = environment.ksCurrency();
 
       final Observable<String> formattedMinimum = this.projectAndReward
-        .map(pr -> this.ksCurrency.formatWithUserPreference(pr.second.minimum(), pr.first, RoundingMode.DOWN, pr.first.currency()));
+        .map(pr -> this.ksCurrency.formatWithUserPreference(pr.second.minimum(), pr.first, RoundingMode.UP, pr.first.currency()));
 
       final Observable<Boolean> isSelectable = this.projectAndReward
         .map(pr -> isSelectable(pr.first, pr.second));

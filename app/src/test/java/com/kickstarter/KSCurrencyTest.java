@@ -21,10 +21,10 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("$100 CAD", currency.format(100.0f, ProjectFactory.caProject()));
     assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject()));
 
-    assertEquals("$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.project(), RoundingMode.DOWN, CurrencyCode.USD.rawValue()));
+    assertEquals("$100", currency.formatWithUserPreference(100.0f, ProjectFactory.project(), RoundingMode.DOWN, CurrencyCode.USD.rawValue()));
     assertEquals("CA$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.caProject(), RoundingMode.DOWN, CurrencyCode.CAD.rawValue()));
     assertEquals("£100", currency.formatWithUserPreference(100.0f, ProjectFactory.ukProject(), RoundingMode.DOWN, CurrencyCode.GBP.rawValue()));
-    assertEquals("$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.ukProject(), RoundingMode.DOWN, CurrencyCode.USD.rawValue()));
+    assertEquals("$100", currency.formatWithUserPreference(100.0f, ProjectFactory.ukProject(), RoundingMode.DOWN, CurrencyCode.USD.rawValue()));
   }
 
   public void testFormatCurrency_withUserInCA() {

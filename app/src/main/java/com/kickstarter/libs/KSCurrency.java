@@ -137,7 +137,7 @@ public final class KSCurrency {
     final Config config = this.currentConfig.getConfig();
 
     if (config.countryCode().equals("US") && chosenCurrency.equals(CurrencyCode.USD.rawValue())) {
-      symbol = "$ ";
+      symbol = "$";
       return symbol;
     } else if (config.countryCode().equals("XX")) {
       symbol = "US$ ";

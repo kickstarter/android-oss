@@ -69,6 +69,26 @@ public final class KSCurrency {
   }
 
   /**
+   * Returns a currency string appropriate to the user's locale, chosenCurrency and project preferred currency.
+   *
+   * @param initialValue Value to display, local to the project's currency.
+   * @param project The project to use to look up currency information.
+   * @param roundingMode This determines whether we should round the values down or up.
+   * @param symbol The currency symbol that should be shown next to the pledge and goal amounts.
+   */
+  public String formatWithRewardPreference(final float initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode, final String symbol) {
+
+    final CurrencyOptions currencyOptions = rewardCurrencyOptions(initialValue, project, symbol);
+
+    final NumberOptions numberOptions = NumberOptions.builder()
+      .currencySymbol(currencyOptions.currencySymbol())
+      .roundingMode(roundingMode)
+      .build();
+
+    return NumberUtils.format(currencyOptions.value(), numberOptions);
+  }
+
+  /**
    * Returns a currency string appropriate to the user's locale and preferred currency.
    *
    * @param initialValue Value to display, local to the project's currency.
@@ -112,6 +132,20 @@ public final class KSCurrency {
         .value(value)
         .build();
     }
+  }
+
+  /** Show's the pledge amount for a project's Reward in the project's currency. If the user's preference is USD and
+   * the user is located in the US then $ will show for the currency symbol. If the user has a preference of USD
+   * and is located outside of the US and the project is a US based project the currency symbol will show as $US
+   */
+  private @NonNull CurrencyOptions rewardCurrencyOptions(final float value, final @NonNull Project project, final String symbol) {
+
+    return CurrencyOptions.builder()
+      .country(project.country())
+      .currencyCode("")
+      .currencySymbol(getSymbolForCurrency(symbol))
+      .value(value)
+      .build();
   }
 
   /** Show's the project in the user's preferred currency. If the user has no preferred currency the project is shown

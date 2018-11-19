@@ -197,8 +197,8 @@ public interface ProjectHolderViewModel {
 
       this.conversionPledgedAndGoalText = project
         .map(p -> {
-          final String pledged = this.ksCurrency.formatWithRewardPreference(p.pledged(), p, RoundingMode.DOWN);
-          final String goal = this.ksCurrency.formatWithRewardPreference(p.goal(), p, RoundingMode.DOWN);
+          final String pledged = this.ksCurrency.formatWithProjectCurrency(p.pledged(), p, RoundingMode.DOWN);
+          final String goal = this.ksCurrency.formatWithProjectCurrency(p.goal(), p, RoundingMode.DOWN);
           return Pair.create(pledged, goal);
         });
 
@@ -219,7 +219,7 @@ public interface ProjectHolderViewModel {
         .map(Category::name);
 
       this.goalStringForTextView = project
-        .map(p -> this.ksCurrency.formatWithUserPreference(p.goal(), p, RoundingMode.DOWN, p.currentCurrency()));
+        .map(p -> this.ksCurrency.formatWithUserPreference(p.goal(), p, RoundingMode.DOWN));
 
       this.locationTextViewText = project
         .map(Project::location)
@@ -234,7 +234,7 @@ public interface ProjectHolderViewModel {
       this.playButtonIsGone = project.map(Project::hasVideo).map(BooleanUtils::negate);
 
       this.pledgedTextViewText = project
-        .map(p -> this.ksCurrency.formatWithUserPreference(p.pledged(), p, RoundingMode.DOWN, p.currentCurrency()));
+        .map(p -> this.ksCurrency.formatWithUserPreference(p.pledged(), p, RoundingMode.DOWN));
 
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)

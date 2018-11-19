@@ -395,6 +395,18 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testMinimumTextViewTextCAD() {
+    final Project project = ProjectFactory.caProject();
+    final Reward reward = RewardFactory.reward().toBuilder()
+      .minimum(10)
+      .build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectAndReward(project, reward);
+    this.minimumTextViewText.assertValue("CA$ 10");
+  }
+
+  @Test
   public void testRewardsItems() {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment());

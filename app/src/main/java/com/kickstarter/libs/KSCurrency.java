@@ -75,9 +75,9 @@ public final class KSCurrency {
    * @param project The project to use to look up currency information.
    * @param roundingMode This determines whether we should round the values down or up.
    */
-  public String formatWithRewardPreference(final float initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode) {
+  public String formatWithProjectCurrency(final float initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode) {
 
-    final CurrencyOptions currencyOptions = rewardCurrencyOptions(initialValue, project);
+    final CurrencyOptions currencyOptions = projectCurrencyOptions(initialValue, project);
 
     final NumberOptions numberOptions = NumberOptions.builder()
       .currencySymbol(currencyOptions.currencySymbol())
@@ -93,11 +93,10 @@ public final class KSCurrency {
    * @param initialValue Value to display, local to the project's currency.
    * @param project The project to use to look up currency information.
    * @param roundingMode This determines whether we should round the values down or up.
-   * @param symbol The currency symbol that should be shown next to the pledge and goal amounts.
    */
-  public String formatWithUserPreference(final float initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode, final String symbol) {
+  public String formatWithUserPreference(final float initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode) {
 
-    final CurrencyOptions currencyOptions = userCurrencyOptions(initialValue, project, symbol);
+    final CurrencyOptions currencyOptions = userCurrencyOptions(initialValue, project);
 
     final NumberOptions numberOptions = NumberOptions.builder()
       .currencySymbol(currencyOptions.currencySymbol())
@@ -137,12 +136,17 @@ public final class KSCurrency {
    * the user is located in the US then $ will show for the currency symbol. If the user has a preference of USD
    * and is located outside of the US and the project is a US based project the currency symbol will show as $US
    */
-  private @NonNull CurrencyOptions rewardCurrencyOptions(final float value, final @NonNull Project project) {
+  private @NonNull CurrencyOptions projectCurrencyOptions(final float value, final @NonNull Project project) {
+    final Config config = this.currentConfig.getConfig();
+
+    boolean shouldShowDollar = (config.countryCode().equals("US") && project.currency().equals(CurrencyCode.USD.rawValue())
+      && project.currentCurrency().equals(CurrencyCode.USD.rawValue()));
+
 
     return CurrencyOptions.builder()
       .country(project.country())
       .currencyCode("")
-      .currencySymbol(getSymbolForRewardCurrency(project))
+      .currencySymbol(shouldShowDollar ? "$" : getSymbolForCurrency(project.currency()))
       .value(value)
       .build();
   }
@@ -151,13 +155,16 @@ public final class KSCurrency {
    * in $ as a default if the user is in the US. If the user is located outside of the US the default will show as
    * $US.
    */
-  private @NonNull CurrencyOptions userCurrencyOptions(final float value, final @NonNull Project project, final String symbol) {
+  private @NonNull CurrencyOptions userCurrencyOptions(final float value, final @NonNull Project project) {
+    final Config config = this.currentConfig.getConfig();
     final Float fxRate = project.fxRate();
+
+   boolean shouldShowDollar = config.countryCode().equals("US") && project.currentCurrency().equals(CurrencyCode.USD.rawValue());
 
     return CurrencyOptions.builder()
       .country(project.country())
       .currencyCode("")
-      .currencySymbol(getSymbolForCurrency(symbol))
+      .currencySymbol(shouldShowDollar ? "$": getSymbolForCurrency(project.currentCurrency()))
       .value(value * fxRate)
       .build();
   }
@@ -169,10 +176,7 @@ public final class KSCurrency {
     final String symbol;
     final Config config = this.currentConfig.getConfig();
 
-    if (config.countryCode().equals("US") && chosenCurrency.equals(CurrencyCode.USD.rawValue())) {
-      symbol = "$";
-      return symbol;
-    } else if (config.countryCode().equals("XX")) {
+    if (config.countryCode().equals("XX")) {
       symbol = "US$ ";
       return symbol;
     }
@@ -210,55 +214,6 @@ public final class KSCurrency {
     }
     return symbol;
   }
-
-  /** Returns the proper currency symbol for the reward pledge amount **/
-  private String getSymbolForRewardCurrency(final Project project) {
-    final String symbol;
-    final Config config = this.currentConfig.getConfig();
-
-    if (config.countryCode().equals("US") && project.currency().equals(CurrencyCode.USD.rawValue())
-      && project.currentCurrency().equals(CurrencyCode.USD.rawValue())) {
-      symbol = "$";
-      return symbol;
-    } else if (config.countryCode().equals("XX")) {
-      symbol = "US$ ";
-      return symbol;
-    }
-
-    if (project.currency().equals(CurrencyCode.AUD.rawValue())) {
-      return "AU$ ";
-    } else if (project.currency().equals(CurrencyCode.CAD.rawValue())) {
-      return "CA$ ";
-    } else if (project.currency().equals(CurrencyCode.CHF.rawValue())) {
-      return "CHF";
-    } else if (project.currency().equals(CurrencyCode.DKK.rawValue())) {
-      return "DKK";
-    } else if (project.currency().equals(CurrencyCode.EUR.rawValue())) {
-      return "€";
-    } else if (project.currency().equals(CurrencyCode.GBP.rawValue())) {
-      return "£";
-    } else if (project.currency().equals(CurrencyCode.HKD.rawValue())) {
-      return "HK$ ";
-    } else if (project.currency().equals(CurrencyCode.JPY.rawValue())) {
-      return "¥";
-    } else if (project.currency().equals(CurrencyCode.MXN.rawValue())) {
-      return "MX$ ";
-    } else if (project.currency().equals(CurrencyCode.NOK.rawValue())) {
-      return "NOK";
-    } else if (project.currency().equals(CurrencyCode.NZD.rawValue())) {
-      return "NZ$ ";
-    } else if (project.currency().equals(CurrencyCode.SEK.rawValue())) {
-      return "SEK";
-    } else if (project.currency().equals(CurrencyCode.SGD.rawValue())) {
-      return "S$ ";
-    } else if (project.currency().equals(CurrencyCode.USD.rawValue())) {
-      return "US$ ";
-    } else {
-      symbol = "US$ ";
-    }
-    return symbol;
-  }
-
 
   /**
    * Determines whether the currency code should be shown. If the currency is ambiguous (e.g. CAD and USD both use `$`),

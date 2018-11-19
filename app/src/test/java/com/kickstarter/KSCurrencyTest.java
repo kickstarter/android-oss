@@ -22,7 +22,6 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("$100", currency.formatWithUserPreference(100.0f, ProjectFactory.project(), RoundingMode.DOWN));
     assertEquals("CA$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.caProject(), RoundingMode.DOWN));
     assertEquals("£100", currency.formatWithUserPreference(100.0f, ProjectFactory.ukProject(), RoundingMode.DOWN));
-    assertEquals("$100", currency.formatWithUserPreference(100.0f, ProjectFactory.ukProject(), RoundingMode.DOWN));
   }
 
   public void testFormatCurrency_withUserInCA() {
@@ -32,9 +31,8 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject()));
 
     assertEquals("US$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.project(), RoundingMode.DOWN));
-    assertEquals("CA$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.caProject(), RoundingMode.DOWN));
-    assertEquals("US$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.caProject(), RoundingMode.DOWN));
     assertEquals("£100", currency.formatWithUserPreference(100.0f, ProjectFactory.ukProject(), RoundingMode.DOWN));
+    assertEquals("CA$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.caProject(), RoundingMode.DOWN));
   }
 
   public void testFormatCurrency_withUserInUK() {
@@ -43,8 +41,7 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("$100 CAD", currency.format(100.0f, ProjectFactory.caProject()));
     assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject()));
 
-    assertEquals("CA$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.ukProject(), RoundingMode.DOWN));
-    assertEquals("US$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.caProject(), RoundingMode.DOWN));
+    assertEquals("CA$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.caProject(), RoundingMode.DOWN));
     assertEquals("£100", currency.formatWithUserPreference(100.0f, ProjectFactory.ukProject(), RoundingMode.DOWN));
   }
 

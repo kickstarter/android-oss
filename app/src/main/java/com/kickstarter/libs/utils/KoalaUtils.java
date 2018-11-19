@@ -124,10 +124,8 @@ public final class KoalaUtils {
         put("pledged", project.pledged());
         put("percent_raised", project.percentageFunded() / 100.0f);
         put("has_video", project.video() != null);
-        put("hours_remaining", ProjectUtils.timeInSecondsUntilDeadline(project) / 60.0f / 60.0f);
-
-        // TODO: Implement `duration`
-        // put("duration", project.duration());
+        put("hours_remaining", (int) Math.ceil(ProjectUtils.timeInSecondsUntilDeadline(project) / 60.0f / 60.0f));
+        put("duration", Math.round(ProjectUtils.timeInSecondsOfDuration(project)));
 
         final Category category = project.category();
         if (category != null) {
@@ -142,18 +140,20 @@ public final class KoalaUtils {
         if (location != null) {
           put("location", location.name());
         }
-
-        putAll(userProperties(project.creator(), "creator_"));
-
-        if (loggedInUser != null) {
-          put("user_is_project_creator", ProjectUtils.userIsCreator(project, loggedInUser));
-          put("user_is_backer", project.isBacking());
-          put("user_has_starred", project.isStarred());
-        }
       }
     };
 
-    return MapUtils.prefixKeys(properties, prefix);
+    final Map<String, Object> prefixedMap = MapUtils.prefixKeys(properties, prefix);
+
+    prefixedMap.putAll(userProperties(project.creator(), "creator_"));
+
+    if (loggedInUser != null) {
+      prefixedMap.put("user_is_project_creator", ProjectUtils.userIsCreator(project, loggedInUser));
+      prefixedMap.put("user_is_backer", project.isBacking());
+      prefixedMap.put("user_has_starred", project.isStarred());
+    }
+
+    return prefixedMap;
   }
 
   public static @NonNull Map<String, Object> activityProperties(final @NonNull Activity activity) {

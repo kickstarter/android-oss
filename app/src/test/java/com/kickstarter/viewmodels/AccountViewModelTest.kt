@@ -67,8 +67,30 @@ class AccountViewModelTest : KSRobolectricTestCase() {
             }
         }).build())
 
-        this.chosenCurrency.assertValue("MXN")
         this.showEmailErrorIcon.assertValue(true)
     }
 
+    @Test
+    fun testShowEmailErrorIconForBackerUndeliverable() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
+                        "",  true, false, true, "MXN")))
+            }
+        }).build())
+
+        this.showEmailErrorIcon.assertValue(true)
+    }
+
+    @Test
+    fun testShowEmailErrorIconForCreatorUnverified() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
+                        "",  true, false, false, "MXN")))
+            }
+        }).build())
+
+        this.showEmailErrorIcon.assertValue(true)
+    }
 }

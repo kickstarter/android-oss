@@ -112,9 +112,9 @@ interface AccountViewModel {
         }
 
         private fun showEmailErrorImage(userPrivacy: UserPrivacyQuery.Data?): Boolean? {
-            return if (userPrivacy?.me()?.isCreator!! && !userPrivacy.me()?.isDeliverable!!) {
+            return if (userPrivacy?.me()?.isCreator!! && !userPrivacy.me()?.isDeliverable!! || !userPrivacy.me()?.isEmailVerified!!) {
                 return true
-            } else if (!userPrivacy.me()?.isDeliverable!!) {
+            } else if (!userPrivacy.me()?.isDeliverable!! && !userPrivacy.me()?.isEmailVerified!!) {
                 return true
             } else {
                 false

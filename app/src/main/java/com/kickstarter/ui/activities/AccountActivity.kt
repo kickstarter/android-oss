@@ -54,7 +54,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(progress_bar, !it) }
 
-        this.viewModel.outputs.showErrorIcon()
+        this.viewModel.outputs.showEmailErrorIcon()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(email_error_icon, !it) }

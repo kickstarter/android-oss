@@ -33,7 +33,8 @@ interface AccountViewModel {
         /** Emits when the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
 
-        fun showErrorIcon(): Observable<Boolean>
+        /** Emits a boolean determining when we should show the email error icon. */
+        fun showEmailErrorIcon(): Observable<Boolean>
 
         /** Emits when the currency update was successful. */
         fun success(): Observable<String>
@@ -48,7 +49,7 @@ interface AccountViewModel {
 
         private val chosenCurrency = BehaviorSubject.create<String>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
-        private val showErrorIcon = BehaviorSubject.create<Boolean>()
+        private val showEmailErrorIcon = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<String>()
 
         private val error = BehaviorSubject.create<String>()
@@ -67,8 +68,8 @@ interface AccountViewModel {
                     .subscribe { this.chosenCurrency.onNext(it) }
 
             userPrivacy
-                    .map { showErrorImage(it) }
-                    .subscribe { this.showErrorIcon.onNext(it) }
+                    .map { showEmailErrorImage(it) }
+                    .subscribe { this.showEmailErrorIcon.onNext(it) }
 
             val updateCurrencyNotification = this.onSelectedCurrency
                     .compose(combineLatestPair<CurrencyCode, String>(this.chosenCurrency))
@@ -104,13 +105,13 @@ interface AccountViewModel {
             return this.progressBarIsVisible
         }
 
-        override fun showErrorIcon(): Observable<Boolean> = this.showErrorIcon
+        override fun showEmailErrorIcon(): Observable<Boolean> = this.showEmailErrorIcon
 
         override fun success(): BehaviorSubject<String> {
             return this.success
         }
 
-        private fun showErrorImage(userPrivacy: UserPrivacyQuery.Data?): Boolean? {
+        private fun showEmailErrorImage(userPrivacy: UserPrivacyQuery.Data?): Boolean? {
             return if (userPrivacy?.me()?.isCreator!! && !userPrivacy.me()?.isDeliverable!!) {
                 return true
             } else if (!userPrivacy.me()?.isDeliverable!!) {

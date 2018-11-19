@@ -139,8 +139,9 @@ public final class KSCurrency {
   private @NonNull CurrencyOptions projectCurrencyOptions(final float value, final @NonNull Project project) {
     final Config config = this.currentConfig.getConfig();
 
-    boolean shouldShowDollar = (config.countryCode().equals("US") && project.currency().equals(CurrencyCode.USD.rawValue())
-      && project.currentCurrency().equals(CurrencyCode.USD.rawValue()));
+    final boolean shouldShowDollar = config.countryCode().equals("US") &&
+      project.currency().equals(CurrencyCode.USD.rawValue())
+      && project.currentCurrency().equals(CurrencyCode.USD.rawValue());
 
 
     return CurrencyOptions.builder()
@@ -159,7 +160,8 @@ public final class KSCurrency {
     final Config config = this.currentConfig.getConfig();
     final Float fxRate = project.fxRate();
 
-   boolean shouldShowDollar = config.countryCode().equals("US") && project.currentCurrency().equals(CurrencyCode.USD.rawValue());
+    final boolean shouldShowDollar = config.countryCode().equals("US") &&
+      project.currentCurrency().equals(CurrencyCode.USD.rawValue());
 
     return CurrencyOptions.builder()
       .country(project.country())

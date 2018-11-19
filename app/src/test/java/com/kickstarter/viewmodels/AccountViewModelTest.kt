@@ -16,6 +16,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     private val chosenCurrency = TestSubscriber<String>()
     private val error = TestSubscriber<String>()
+    private val showErrorIcon = TestSubscriber<Boolean>()
     private val success = TestSubscriber<String>()
 
     private fun setUpEnvironment(environment: Environment) {
@@ -23,6 +24,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
         this.vm.outputs.chosenCurrency().subscribe(this.chosenCurrency)
         this.vm.outputs.error().subscribe(this.error)
+        this.vm.outputs.showErrorIcon().subscribe(this.showErrorIcon)
         this.vm.outputs.success().subscribe(this.success)
     }
 
@@ -36,6 +38,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         }).build())
 
         this.chosenCurrency.assertValue("MXN")
+        this.showErrorIcon.assertValue(false)
     }
 
     @Test
@@ -53,6 +56,19 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         this.success.assertValue(CurrencyCode.AUD.rawValue())
         this.vm.inputs.onSelectedCurrency(CurrencyCode.AUD)
         this.chosenCurrency.assertValues("USD", CurrencyCode.AUD.rawValue())
+    }
+
+    @Test
+    fun testShowErrorIcon() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
+                        "",  true, false, true, "MXN")))
+            }
+        }).build())
+
+        this.chosenCurrency.assertValue("MXN")
+        this.showErrorIcon.assertValue(true)
     }
 
 }

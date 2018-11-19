@@ -36,10 +36,30 @@
           android:layout_marginBottom="@dimen/grid_3"
           android:layout_marginTop="@dimen/grid_3">
 
-          <TextView
-            android:id="@+id/change_email_row"
-            style="@style/SettingsSingleRow"
-            android:text="@string/Change_email" />
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+              android:id="@+id/change_email_row"
+              style="@style/SettingsSingleRow"
+              android:layout_width="0dp"
+              android:layout_weight="1"
+              android:text="@string/Change_email" />
+
+            <ImageView
+              android:id="@+id/email_error_icon"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/activity_horizontal_margin"
+              android:layout_marginEnd="@dimen/activity_horizontal_margin"
+              android:layout_marginTop="@dimen/activity_horizontal_margin"
+              android:layout_weight="0"
+              android:contentDescription="@null"
+              android:scaleType="centerCrop"
+              android:src="@drawable/ic_email_error" />
+          </LinearLayout>
 
           <TextView
             android:id="@+id/change_password_row"

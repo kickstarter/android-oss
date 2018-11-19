@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import UpdateUserCurrencyMutation
+import UserPrivacyQuery
 import android.support.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
@@ -32,6 +33,8 @@ interface AccountViewModel {
         /** Emits when the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
 
+        fun showErrorIcon(): Observable<Boolean>
+
         /** Emits when the currency update was successful. */
         fun success(): Observable<String>
     }
@@ -45,6 +48,7 @@ interface AccountViewModel {
 
         private val chosenCurrency = BehaviorSubject.create<String>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
+        private val showErrorIcon = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<String>()
 
         private val error = BehaviorSubject.create<String>()
@@ -53,12 +57,18 @@ interface AccountViewModel {
 
         init {
 
-            this.apolloClient.userPrivacy()
+            val userPrivacy = this.apolloClient.userPrivacy()
+
+            userPrivacy
                     .map { it.me()?.chosenCurrency() }
                     .compose(Transformers.neverError())
                     .map { ObjectUtils.coalesce(it, CurrencyCode.USD.rawValue()) }
                     .compose(bindToLifecycle())
                     .subscribe { this.chosenCurrency.onNext(it) }
+
+            userPrivacy
+                    .map { showErrorImage(it) }
+                    .subscribe { this.showErrorIcon.onNext(it) }
 
             val updateCurrencyNotification = this.onSelectedCurrency
                     .compose(combineLatestPair<CurrencyCode, String>(this.chosenCurrency))
@@ -94,8 +104,20 @@ interface AccountViewModel {
             return this.progressBarIsVisible
         }
 
+        override fun showErrorIcon(): Observable<Boolean> = this.showErrorIcon
+
         override fun success(): BehaviorSubject<String> {
             return this.success
+        }
+
+        private fun showErrorImage(userPrivacy: UserPrivacyQuery.Data?): Boolean? {
+            return if (userPrivacy?.me()?.isCreator!! && !userPrivacy.me()?.isDeliverable!!) {
+                return true
+            } else if (!userPrivacy.me()?.isDeliverable!!) {
+                return true
+            } else {
+                false
+            }
         }
 
         private fun updateUserCurrency(currencyCode: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {

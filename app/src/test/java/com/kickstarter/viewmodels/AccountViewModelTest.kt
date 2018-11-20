@@ -60,10 +60,13 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowEmailErrorIcon() {
+        val isCreator = true
+        val isDeliverable = false
+        val isEmailVerified = true
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                 return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "",  true, false, true, "MXN")))
+                        "",  isCreator, isDeliverable, isEmailVerified, "MXN")))
             }
         }).build())
 
@@ -72,10 +75,13 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowEmailErrorIconForBackerUndeliverable() {
+        val isCreator = true
+        val isDeliverable = false
+        val isEmailVerified = true
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                 return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "",  true, false, true, "MXN")))
+                        "",  isCreator, isDeliverable, isEmailVerified, "MXN")))
             }
         }).build())
 
@@ -84,10 +90,13 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowEmailErrorIconGoneForBackerUndeliverable() {
+        val isCreator = false
+        val isDeliverable = true
+        val isEmailVerified = true
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                 return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "",  false, true, true, "MXN")))
+                        "",  isCreator, isDeliverable, isEmailVerified, "MXN")))
             }
         }).build())
 
@@ -96,10 +105,13 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowEmailErrorIconForCreatorUnverified() {
+        val isCreator = true
+        val isDeliverable = false
+        val isEmailVerified = false
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                 return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "",  true, false, false, "MXN")))
+                        "",  isCreator, isDeliverable, isEmailVerified, "MXN")))
             }
         }).build())
 

@@ -99,7 +99,7 @@ interface ChangePasswordViewModel {
                     .compose(values())
                     .map { it.updateUserAccount()?.user()?.email() }
                     .subscribe {
-                        this.success
+                        this.success.onNext(it)
                         logCustomEvent("Changed Password")
                     }
 

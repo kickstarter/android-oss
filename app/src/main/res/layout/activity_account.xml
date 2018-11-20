@@ -52,10 +52,9 @@
               android:id="@+id/email_error_icon"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_marginBottom="@dimen/activity_horizontal_margin"
+              android:layout_gravity="center_vertical"
+              android:visibility="gone"
               android:layout_marginEnd="@dimen/activity_horizontal_margin"
-              android:layout_marginTop="@dimen/activity_horizontal_margin"
-              android:layout_weight="0"
               android:contentDescription="@null"
               android:scaleType="centerCrop"
               android:src="@drawable/ic_email_error" />

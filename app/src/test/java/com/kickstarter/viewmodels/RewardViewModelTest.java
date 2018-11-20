@@ -172,7 +172,7 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     // USD conversion should be rounded up.
     this.vm.inputs.projectAndReward(project, reward);
-    this.conversionTextViewText.assertValue("$1");
+    this.conversionTextViewText.assertValue("CA$ 1");
   }
 
   @Test
@@ -392,6 +392,18 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.projectAndReward(project, reward);
     this.minimumTextViewText.assertValue("$10");
+  }
+
+  @Test
+  public void testMinimumTextViewTextCAD() {
+    final Project project = ProjectFactory.caProject();
+    final Reward reward = RewardFactory.reward().toBuilder()
+      .minimum(10)
+      .build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectAndReward(project, reward);
+    this.minimumTextViewText.assertValue("CA$ 10");
   }
 
   @Test

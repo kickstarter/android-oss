@@ -170,6 +170,19 @@ public final class ProjectFactory {
       .toBuilder()
       .name("caProject")
       .country("CA")
+      .currentCurrency("CAD")
+      .currencySymbol("$")
+      .currency("CAD")
+      .staticUsdRate(0.75f)
+      .build();
+  }
+
+  public static @NonNull Project mxCurrencyCAProject() {
+    return project()
+      .toBuilder()
+      .name("mxCurrencyCAProject")
+      .country("CA")
+      .currentCurrency("MX$")
       .currencySymbol("$")
       .currency("CAD")
       .staticUsdRate(0.75f)
@@ -181,6 +194,7 @@ public final class ProjectFactory {
       .toBuilder()
       .name("ukProject")
       .country("UK")
+      .currentCurrency("GBP")
       .currencySymbol("£")
       .currency("GBP")
       .staticUsdRate(1.5f)

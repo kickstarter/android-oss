@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities
 import android.os.Bundle
 import android.support.annotation.NonNull
 import com.kickstarter.R
+import com.kickstarter.extensions.logCustomEvent
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
@@ -27,6 +28,8 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_newsletter)
+
+        logCustomEvent("Viewed Newsletters")
 
         this.build = environment().build()
         this.currentUserType = environment().currentUser()

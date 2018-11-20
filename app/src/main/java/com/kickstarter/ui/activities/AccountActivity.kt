@@ -8,6 +8,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
+import com.kickstarter.extensions.logCustomEvent
 import com.kickstarter.extensions.showConfirmationSnackbar
 import com.kickstarter.extensions.showErrorSnackbar
 import com.kickstarter.libs.BaseActivity
@@ -30,6 +31,8 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
+
+        logCustomEvent("Viewed Account")
 
         if (BuildConfig.DEBUG) {
             payment_methods_row.visibility = View.VISIBLE

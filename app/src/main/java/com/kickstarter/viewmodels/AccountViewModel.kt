@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import UpdateUserCurrencyMutation
 import android.support.annotation.NonNull
+import com.kickstarter.extensions.logCustomEvent
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -74,6 +75,7 @@ interface AccountViewModel {
                     .subscribe {
                         this.chosenCurrency.onNext(it)
                         this.success.onNext(it)
+                        logCustomEvent("Selected Chosen Currency")
                     }
 
             updateCurrencyNotification

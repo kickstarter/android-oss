@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.kickstarter.R
+import com.kickstarter.extensions.logCustomEvent
 import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.showConfirmationSnackbar
 import com.kickstarter.extensions.showErrorSnackbar
@@ -28,6 +29,8 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_change_email)
         setSupportActionBar(change_email_toolbar)
+
+        logCustomEvent("Viewed Change Email")
 
         new_email.onChange { this.viewModel.inputs.email(it) }
         current_password.onChange { this.viewModel.inputs.password(it) }

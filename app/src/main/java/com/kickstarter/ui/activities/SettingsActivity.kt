@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog
 import android.view.View
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
+import com.kickstarter.extensions.logCustomEvent
 import com.kickstarter.extensions.startActivityWithSlideUpTransition
 import com.kickstarter.libs.*
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
@@ -30,6 +31,8 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_layout)
+
+        logCustomEvent("Viewed Settings")
 
         if (BuildConfig.DEBUG) {
             edit_profile_row.visibility = View.VISIBLE

@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import UpdateUserPasswordMutation
 import android.support.annotation.NonNull
 import com.kickstarter.R
+import com.kickstarter.extensions.logCustomEvent
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.*
@@ -97,7 +98,10 @@ interface ChangePasswordViewModel {
             changePasswordNotification
                     .compose(values())
                     .map { it.updateUserAccount()?.user()?.email() }
-                    .subscribe(this.success)
+                    .subscribe {
+                        this.success
+                        logCustomEvent("Changed Password")
+                    }
 
         }
 

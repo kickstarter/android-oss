@@ -8,6 +8,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import com.kickstarter.R
+import com.kickstarter.extensions.logCustomEvent
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.AnimationUtils
@@ -54,6 +55,8 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notifications)
+
+        logCustomEvent("Viewed Notifications")
 
         this.viewModel.outputs.creatorDigestFrequencyIsGone()
                 .compose(bindToLifecycle())

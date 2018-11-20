@@ -177,6 +177,18 @@ public final class ProjectFactory {
       .build();
   }
 
+  public static @NonNull Project mxCurrencyCAProject() {
+    return project()
+      .toBuilder()
+      .name("mxCurrencyCAProject")
+      .country("CA")
+      .currentCurrency("MX$")
+      .currencySymbol("$")
+      .currency("CAD")
+      .staticUsdRate(0.75f)
+      .build();
+  }
+
   public static @NonNull Project ukProject() {
     return project()
       .toBuilder()

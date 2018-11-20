@@ -172,7 +172,7 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     // USD conversion should be rounded up.
     this.vm.inputs.projectAndReward(project, reward);
-    this.conversionTextViewText.assertValue("$1");
+    this.conversionTextViewText.assertValue("CA$ 1");
   }
 
   @Test

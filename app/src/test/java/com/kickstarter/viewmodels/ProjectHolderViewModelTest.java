@@ -498,7 +498,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testUsdConversionForNonUSProject() {
-    final Project project = ProjectFactory.caProject();
+    // Use a CA project with a CAD currency
+    final Project project = ProjectFactory.mxCurrencyCAProject();
     final Config config = ConfigFactory.configForUSUser();
     final MockCurrentConfig currentConfig = new MockCurrentConfig();
     currentConfig.config(config);

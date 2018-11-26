@@ -1,5 +1,10 @@
 package com.kickstarter.services
 
+import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.exception.ApolloException
+import rx.subjects.PublishSubject
+
 import DeletePaymentSourceMutation
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
@@ -8,12 +13,8 @@ import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPaymentsQuery
 import UserPrivacyQuery
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.exception.ApolloException
 import rx.Observable
-import rx.subjects.PublishSubject
 import type.CurrencyCode
 import type.PaymentTypes
 
@@ -100,13 +101,11 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             service.mutate(SendEmailVerificationMutation.builder()
                     .build())
                     .enqueue(object : ApolloCall.Callback<SendEmailVerificationMutation.Data>() {
-
                         override fun onFailure(exception: ApolloException) {
                             ps.onError(exception)
                         }
 
                         override fun onResponse(response: Response<SendEmailVerificationMutation.Data>) {
-
                             if (response.hasErrors()) {
                                 ps.onError(Exception(response.errors().first().message()))
                             }
@@ -117,7 +116,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             return@defer ps
         }
     }
-
 
     override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
         return Observable.defer {

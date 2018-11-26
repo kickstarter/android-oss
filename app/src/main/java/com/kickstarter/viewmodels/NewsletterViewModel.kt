@@ -135,6 +135,7 @@ interface NewsletterViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.userOutput)
 
+            this.koala.trackViewedNewsletter()
         }
 
         override fun sendAllNewsletter(checked: Boolean) {

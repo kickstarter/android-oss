@@ -1,5 +1,8 @@
 package com.kickstarter.mock.services
 
+import com.kickstarter.services.ApolloClientType
+import type.CurrencyCode
+
 import DeletePaymentSourceMutation
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
@@ -8,7 +11,6 @@ import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPaymentsQuery
 import UserPrivacyQuery
-import com.kickstarter.services.ApolloClientType
 import rx.Observable
 import type.*
 import java.util.*

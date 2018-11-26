@@ -27,6 +27,7 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.BackingActivity;
 
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -260,7 +261,7 @@ public interface BackingViewModel {
 
       project
         .compose(zipPair(shippableBacking))
-        .map(pb -> this.ksCurrency.format(pb.second.shippingAmount(), pb.first))
+        .map(pb -> this.ksCurrency.formatWithProjectCurrency(pb.second.shippingAmount(), pb.first, RoundingMode.UP))
         .compose(bindToLifecycle())
         .subscribe(this.shippingAmountTextViewText);
 
@@ -321,7 +322,7 @@ public interface BackingViewModel {
     private static @NonNull Pair<String, String> backingAmountAndDate(final @NonNull KSCurrency ksCurrency,
       final @NonNull Project project, final @NonNull Backing backing) {
 
-      final String amount = ksCurrency.format(backing.amount(), project);
+      final String amount = ksCurrency.formatWithProjectCurrency(backing.amount(), project, RoundingMode.UP);
       final String date = DateTimeUtils.fullDate(backing.pledgedAt());
 
       return Pair.create(amount, date);
@@ -330,7 +331,7 @@ public interface BackingViewModel {
     private static @NonNull Pair<String, String> rewardMinimumAndDescription(final @NonNull KSCurrency ksCurrency,
       final @NonNull Project project, final @NonNull Reward reward) {
 
-      final String minimum = ksCurrency.format(reward.minimum(), project);
+      final String minimum = ksCurrency.formatWithProjectCurrency(reward.minimum(), project, RoundingMode.UP);
       return Pair.create(minimum, reward.description());
     }
 

@@ -6,6 +6,7 @@ import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.KoalaEvent
 import com.kickstarter.mock.services.MockApolloClient
 import org.junit.Test
 import rx.Observable
@@ -53,6 +54,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
         this.currentEmail.assertValue("rashad@test.com")
         this.sendVerificationIsHidden.assertValue(true)
+        this.koalaTest.assertValue(KoalaEvent.VIEWED_CHANGE_EMAIL)
     }
 
     @Test
@@ -186,6 +188,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.sendVerificationEmail()
         this.success.assertValueCount(1)
+        this.koalaTest.assertValues(KoalaEvent.VIEWED_CHANGE_EMAIL, KoalaEvent.RESENT_VERIFICATION_EMAIL)
     }
 
     @Test
@@ -215,6 +218,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.updateEmailClicked()
         this.currentEmail.assertValues("some@email.com", "rashad@gmail.com")
         this.success.assertValueCount(1)
+        this.koalaTest.assertValues(KoalaEvent.VIEWED_CHANGE_EMAIL, KoalaEvent.CHANGED_EMAIL)
     }
 
 }

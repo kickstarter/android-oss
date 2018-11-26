@@ -134,8 +134,6 @@ interface NewsletterViewModel {
                     .compose<User>(takeWhen<User, Throwable>(this.unableToSavePreferenceError))
                     .compose(bindToLifecycle())
                     .subscribe(this.userOutput)
-
-            this.koala.trackViewedNewsletter()
         }
 
         override fun sendAllNewsletter(checked: Boolean) {

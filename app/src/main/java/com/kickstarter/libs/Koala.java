@@ -374,11 +374,6 @@ public final class Koala {
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_CHANGE_PASSWORD);
   }
 
-  public void trackViewedNewsletter() {
-    this.client.track(KoalaEvent.VIEWED_NEWSLETTER);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_NEWSLETTER);
-  }
-
   public void trackViewedNotifications() {
     this.client.track(KoalaEvent.VIEWED_NOTIFICATIONS);
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_NOTIFICATIONS);

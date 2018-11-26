@@ -2,8 +2,6 @@ package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
 
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.SignUpEvent;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
@@ -127,10 +125,6 @@ public interface SignupViewModel {
     private void success(final @NonNull AccessTokenEnvelope envelope) {
       this.currentUser.login(envelope.user(), envelope.accessToken());
       this.signupSuccess.onNext(null);
-
-      Answers.getInstance().logSignUp(new SignUpEvent()
-        .putMethod("submit")
-        .putSuccess(true));
     }
 
     private final PublishSubject<String> email = PublishSubject.create();

@@ -4,6 +4,7 @@ import UpdateUserPasswordMutation
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.KoalaEvent
 import com.kickstarter.mock.services.MockApolloClient
 import org.junit.Test
 import rx.Observable
@@ -59,6 +60,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message)
         this.vm.inputs.confirmPassword("password")
         this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message, null)
+        this.koalaTest.assertValue(KoalaEvent.VIEWED_CHANGE_PASSWORD)
     }
 
     @Test
@@ -100,5 +102,6 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.confirmPassword("password")
         this.vm.inputs.changePasswordClicked()
         this.success.assertValue("test@email.com")
+        this.koalaTest.assertValues(KoalaEvent.VIEWED_CHANGE_PASSWORD, KoalaEvent.CHANGED_PASSWORD)
     }
 }

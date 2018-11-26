@@ -2,8 +2,6 @@ package com.kickstarter.viewmodels
 
 import android.support.annotation.NonNull
 import android.util.Pair
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.LoginEvent
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
@@ -182,10 +180,6 @@ interface LoginViewModel {
         private fun success(envelope: AccessTokenEnvelope) {
             this.currentUser.login(envelope.user(), envelope.accessToken())
             this.loginSuccess.onNext(null)
-
-            Answers.getInstance().logLogin(LoginEvent()
-                    .putMethod("loginClick")
-                    .putSuccess(true))
         }
 
         override fun backOrCloseButtonClicked() = this.backOrCloseButtonClicked.onNext(null)

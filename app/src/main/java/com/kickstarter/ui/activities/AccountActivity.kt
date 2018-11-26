@@ -57,7 +57,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         this.viewModel.outputs.showEmailErrorIcon()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(email_error_icon, it) }
+                .subscribe { ViewUtils.setGone(email_error_icon, !it) }
 
         this.viewModel.outputs.success()
                 .compose(bindToLifecycle())

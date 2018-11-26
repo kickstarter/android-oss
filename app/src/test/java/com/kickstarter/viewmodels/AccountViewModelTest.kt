@@ -4,7 +4,6 @@ import UpdateUserCurrencyMutation
 import UserPrivacyQuery
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KoalaEvent
 import com.kickstarter.mock.services.MockApolloClient
 import org.junit.Test
 import rx.Observable
@@ -39,7 +38,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         }).build())
 
         this.chosenCurrency.assertValue("MXN")
-        this.koalaTest.assertValue(KoalaEvent.VIEWED_ACCOUNT)
+        this.koalaTest.assertValue("Viewed Account")
         this.showEmailErrorIcon.assertValue(false)
     }
 
@@ -58,7 +57,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         this.success.assertValue(CurrencyCode.AUD.rawValue())
         this.vm.inputs.onSelectedCurrency(CurrencyCode.AUD)
         this.chosenCurrency.assertValues("USD", CurrencyCode.AUD.rawValue())
-        this.koalaTest.assertValues(KoalaEvent.VIEWED_ACCOUNT, KoalaEvent.SELECTED_CHOSEN_CURRENCY)
+        this.koalaTest.assertValues("Viewed Account", "Selected Chosen Currency")
     }
 
     @Test

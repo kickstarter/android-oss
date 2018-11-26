@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.KoalaEvent
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.User
@@ -72,7 +71,7 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.currentUserTest.assertValue(user)
-        this.koalaTest.assertValue(KoalaEvent.VIEWED_NOTIFICATIONS)
+        this.koalaTest.assertValue("Viewed Notifications")
     }
 
     @Test

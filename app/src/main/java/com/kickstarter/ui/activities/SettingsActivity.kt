@@ -31,7 +31,6 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_layout)
 
-
         if (BuildConfig.DEBUG) {
             edit_profile_row.visibility = View.VISIBLE
         }

@@ -379,6 +379,11 @@ public final class Koala {
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_NOTIFICATIONS);
   }
 
+  public void trackViewedNewsletter() {
+    this.client.track(KoalaEvent.VIEWED_NEWSLETTER);
+    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_NEWSLETTER);
+  }
+
   public void trackViewedPaymentMethods() {
     this.client.track(KoalaEvent.VIEWED_PAYMENT_METHODS);
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_PAYMENT_METHODS);

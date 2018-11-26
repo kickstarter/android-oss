@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels
 import UpdateUserPasswordMutation
 import android.support.annotation.NonNull
 import com.kickstarter.R
-import com.kickstarter.extensions.logCustomEvent
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.*
@@ -100,9 +99,10 @@ interface ChangePasswordViewModel {
                     .map { it.updateUserAccount()?.user()?.email() }
                     .subscribe {
                         this.success.onNext(it)
-                        logCustomEvent("Changed Password")
+                        this.koala.trackChangedPassword()
                     }
 
+            this.koala.trackViewedChangedPassword()
         }
 
         private fun submit(changePassword: ChangePasswordViewModel.ViewModel.ChangePassword): Observable<UpdateUserPasswordMutation.Data> {

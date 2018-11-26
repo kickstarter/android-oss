@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.kickstarter.R
-import com.kickstarter.extensions.logCustomEvent
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.BooleanUtils.isFalse
@@ -30,8 +29,6 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_privacy)
-
-        logCustomEvent("Viewed Privacy")
 
         this.viewModel.outputs.hideConfirmFollowingOptOutPrompt()
                 .compose(bindToLifecycle())

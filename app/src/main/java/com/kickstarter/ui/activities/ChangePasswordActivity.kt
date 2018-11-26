@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.kickstarter.R
-import com.kickstarter.extensions.logCustomEvent
 import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.showErrorSnackbar
 import com.kickstarter.libs.BaseActivity
@@ -31,8 +30,6 @@ class ChangePasswordActivity : BaseActivity<ChangePasswordViewModel.ViewModel>()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_change_password)
         setSupportActionBar(change_password_toolbar)
-
-        logCustomEvent("Viewed Change Password")
 
         this.logout = environment().logout()
 

@@ -5,7 +5,6 @@ import UpdateUserEmailMutation
 import UserPrivacyQuery
 import android.support.annotation.NonNull
 import com.kickstarter.R
-import com.kickstarter.extensions.logCustomEvent
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.*
@@ -147,7 +146,7 @@ interface ChangeEmailViewModel {
                     .subscribe {
                         this.currentEmail.onNext(it.updateUserAccount()?.user()?.email())
                         this.success.onNext(null)
-                        logCustomEvent("Changed Email")
+                        this.koala.trackChangedEmail()
                     }
 
             val sendEmailNotification = this.sendVerificationEmailClick
@@ -163,8 +162,10 @@ interface ChangeEmailViewModel {
                     .compose(values())
                     .subscribe {
                         this.success.onNext(null)
-                        logCustomEvent("Resent Verification Email")
+                        this.koala.trackResentVerificationEmail()
                     }
+
+            this.koala.trackViewedChangedEmail()
         }
 
         override fun email(email: String) {

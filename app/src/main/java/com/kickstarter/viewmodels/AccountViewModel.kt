@@ -112,9 +112,12 @@ interface AccountViewModel {
         }
 
         private fun showEmailErrorImage(userPrivacy: UserPrivacyQuery.Data?): Boolean? {
-            return if (!userPrivacy?.me()?.isDeliverable!!) {
+            val creator = userPrivacy?.me()?.isCreator ?: false
+            val deliverable = userPrivacy?.me()?.isDeliverable ?: false
+
+            return if (!deliverable) {
                 return true
-            } else if (userPrivacy?.me()?.isCreator!! && !userPrivacy.me()?.isEmailVerified!!) {
+            } else if (creator && !deliverable) {
                 return true
             } else {
                 false

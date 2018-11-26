@@ -38,6 +38,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         }).build())
 
         this.chosenCurrency.assertValue("MXN")
+        this.koalaTest.assertValue("Viewed Account")
         this.showEmailErrorIcon.assertValue(false)
     }
 
@@ -56,6 +57,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         this.success.assertValue(CurrencyCode.AUD.rawValue())
         this.vm.inputs.onSelectedCurrency(CurrencyCode.AUD)
         this.chosenCurrency.assertValues("USD", CurrencyCode.AUD.rawValue())
+        this.koalaTest.assertValues("Viewed Account", "Selected Chosen Currency")
     }
 
     @Test

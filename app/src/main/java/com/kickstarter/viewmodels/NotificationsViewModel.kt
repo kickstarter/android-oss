@@ -146,6 +146,8 @@ interface NotificationsViewModel {
                     .compose<User>(takeWhen<User, Throwable>(this.unableToSavePreferenceError))
                     .compose(bindToLifecycle())
                     .subscribe(this.userOutput)
+
+            this.koala.trackViewedNotifications()
         }
 
         override fun notifyMobileOfBackings(checked: Boolean) {

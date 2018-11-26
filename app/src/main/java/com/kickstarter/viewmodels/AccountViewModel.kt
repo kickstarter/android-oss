@@ -85,12 +85,14 @@ interface AccountViewModel {
                     .subscribe {
                         this.chosenCurrency.onNext(it)
                         this.success.onNext(it)
+                        this.koala.trackSelectedChosenCurrency()
                     }
 
             updateCurrencyNotification
                     .compose(Transformers.errors())
                     .subscribe { this.error.onNext(it.localizedMessage) }
 
+            this.koala.trackViewedAccount()
         }
 
         override fun onSelectedCurrency(currencyCode: CurrencyCode) {

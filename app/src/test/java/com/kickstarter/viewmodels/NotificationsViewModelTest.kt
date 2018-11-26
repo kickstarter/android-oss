@@ -1,8 +1,8 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.User
 import org.junit.Test
 import rx.observers.TestSubscriber
@@ -71,6 +71,7 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.currentUserTest.assertValue(user)
+        this.koalaTest.assertValue("Viewed Notifications")
     }
 
     @Test

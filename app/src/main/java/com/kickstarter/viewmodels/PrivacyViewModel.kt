@@ -126,6 +126,8 @@ interface PrivacyViewModel {
                     .compose<Boolean>(bindToLifecycle<Boolean>())
                     .filter({ optOut -> !optOut })
                     .subscribe({ _ -> this.hideConfirmFollowingOptOutPrompt.onNext(null) })
+
+            this.koala.trackViewedPrivacy()
         }
 
         override fun optIntoFollowing(checked: Boolean) {

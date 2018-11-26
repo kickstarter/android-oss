@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import UpdateUserCurrencyMutation
+import UserPrivacyQuery
 import android.support.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
@@ -32,6 +33,9 @@ interface AccountViewModel {
         /** Emits when the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
 
+        /** Emits a boolean determining when we should show the email error icon. */
+        fun showEmailErrorIcon(): Observable<Boolean>
+
         /** Emits when the currency update was successful. */
         fun success(): Observable<String>
     }
@@ -45,6 +49,7 @@ interface AccountViewModel {
 
         private val chosenCurrency = BehaviorSubject.create<String>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
+        private val showEmailErrorIcon = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<String>()
 
         private val error = BehaviorSubject.create<String>()
@@ -53,12 +58,18 @@ interface AccountViewModel {
 
         init {
 
-            this.apolloClient.userPrivacy()
+            val userPrivacy = this.apolloClient.userPrivacy()
+
+            userPrivacy
                     .map { it.me()?.chosenCurrency() }
                     .compose(Transformers.neverError())
                     .map { ObjectUtils.coalesce(it, CurrencyCode.USD.rawValue()) }
                     .compose(bindToLifecycle())
                     .subscribe { this.chosenCurrency.onNext(it) }
+
+            userPrivacy
+                    .map { showEmailErrorImage(it) }
+                    .subscribe { this.showEmailErrorIcon.onNext(it) }
 
             val updateCurrencyNotification = this.onSelectedCurrency
                     .compose(combineLatestPair<CurrencyCode, String>(this.chosenCurrency))
@@ -96,8 +107,23 @@ interface AccountViewModel {
             return this.progressBarIsVisible
         }
 
+        override fun showEmailErrorIcon(): Observable<Boolean> = this.showEmailErrorIcon
+
         override fun success(): BehaviorSubject<String> {
             return this.success
+        }
+
+        private fun showEmailErrorImage(userPrivacy: UserPrivacyQuery.Data?): Boolean? {
+            val creator = userPrivacy?.me()?.isCreator ?: false
+            val deliverable = userPrivacy?.me()?.isDeliverable ?: false
+
+            return if (!deliverable) {
+                return true
+            } else if (creator && !deliverable) {
+                return true
+            } else {
+                false
+            }
         }
 
         private fun updateUserCurrency(currencyCode: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {

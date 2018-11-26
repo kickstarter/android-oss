@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.google.android.exoplayer2.C;
@@ -44,8 +45,10 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
   private ExoPlayer player;
   private long playerPosition;
   private TrackSelector trackSelector;
+  protected TrackSelectionHelper trackSelectionHelper;
 
 
+  protected @Bind(R.id.closed_captions) Button closedCaptionsButton;
   protected @Bind(R.id.video_player_layout) View rootView;
   protected @Bind(R.id.player_view) PlayerView playerView;
   protected @Bind(R.id.loading_indicator) ProgressBar loadingIndicatorProgressBar;
@@ -111,6 +114,8 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
   private void preparePlayer(final @NonNull String videoUrl) {
     final TrackSelection.Factory adaptiveTrackSelectionFactory = new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
     this.trackSelector = new DefaultTrackSelector(adaptiveTrackSelectionFactory);
+    this.trackSelectionHelper = new TrackSelectionHelper(trackSelector, adaptiveTrackSelectionFactory);
+
 
     this.player = ExoPlayerFactory.newSimpleInstance(this, this.trackSelector);
     this.playerView.setPlayer(this.player);
@@ -132,6 +137,39 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
         return new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
       default:
         return new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
+    }
+
+    handleSubtitles();
+  }
+
+  private void handleSubtitles() {
+    MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
+    if (mappedTrackInfo == null) {
+      return;
+    }
+
+    for (int i = 0; i < mappedTrackInfo.length; i++) {
+      TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(i);
+      if (trackGroups.length != 0) {
+        switch (this.player.getRendererType(i)) {
+          case C.TRACK_TYPE_TEXT:
+            closedCaptionsButton.setTag(i);
+            closedCaptionsButton.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
+                if (mappedTrackInfo != null) {
+                  trackSelectionHelper.showSelectionDialog(
+                    this, "Text", mappedTrackInfo, closedCaptionsButton.getTag());
+                }
+              }
+            });
+            break;
+          default:
+            continue;
+        }
+
+      }
     }
   }
 

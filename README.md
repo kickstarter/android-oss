@@ -60,7 +60,7 @@ We do too, and we’re [hiring](https://www.kickstarter.com/jobs?ref=gh_android_
 ## License
 
 ```
-Copyright 2017 Kickstarter, PBC
+Copyright 2018 Kickstarter, PBC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -299,12 +299,12 @@ public final class Koala {
 
   // SETTINGS
   public void trackChangedEmail() {
-    this.client.track(KoalaEvent.CHANGED_EMAIL);
+    this.client.track(KoalaEvent.CHANGED_EMAIL, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.CHANGED_EMAIL);
   }
 
   public void trackChangedPassword() {
-    this.client.track(KoalaEvent.CHANGED_PASSWORD);
+    this.client.track(KoalaEvent.CHANGED_PASSWORD, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.CHANGED_PASSWORD);
   }
   public void trackContactEmailClicked() {
@@ -312,17 +312,17 @@ public final class Koala {
   }
 
   public void trackDeletePaymentMethod() {
-    this.client.track(KoalaEvent.DELETED_PAYMENT_METHOD);
+    this.client.track(KoalaEvent.DELETED_PAYMENT_METHOD, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.DELETED_PAYMENT_METHOD);
   }
 
   public void trackErroredDeletePaymentMethod() {
-    this.client.track(KoalaEvent.ERRORED_DELETE_PAYMENT_METHOD);
+    this.client.track(KoalaEvent.ERRORED_DELETE_PAYMENT_METHOD, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.ERRORED_DELETE_PAYMENT_METHOD);
   }
 
   public void trackFailedPaymentMethodCreation() {
-    this.client.track(KoalaEvent.FAILED_PAYMENT_METHOD_CREATION);
+    this.client.track(KoalaEvent.FAILED_PAYMENT_METHOD_CREATION, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.FAILED_PAYMENT_METHOD_CREATION);
   }
 
@@ -335,62 +335,62 @@ public final class Koala {
   }
 
   public void trackResentVerificationEmail() {
-    this.client.track(KoalaEvent.RESENT_VERIFICATION_EMAIL);
+    this.client.track(KoalaEvent.RESENT_VERIFICATION_EMAIL, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.RESENT_VERIFICATION_EMAIL);
   }
 
   public void trackSavedPaymentMethod() {
-    this.client.track(KoalaEvent.SAVED_PAYMENT_METHOD);
+    this.client.track(KoalaEvent.SAVED_PAYMENT_METHOD, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.SAVED_PAYMENT_METHOD);
   }
 
-  public void trackSelectedChosenCurrency() {
-    this.client.track(KoalaEvent.SELECTED_CHOSEN_CURRENCY);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.SELECTED_CHOSEN_CURRENCY);
+  public void trackSelectedChosenCurrency(String selectedCurrency) {
+    this.client.trackEventType(KoalaEvent.SELECTED_CHOSEN_CURRENCY, this.client.defaultProperties(), selectedCurrency);
+    AnswersExtKt.fabricLogCustomEventWithAttributes(KoalaEvent.SELECTED_CHOSEN_CURRENCY, "currency", selectedCurrency);
   }
 
   public void trackSettingsView() {
-    this.client.track("Settings View");
+    this.client.track("Settings View",this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_SETTINGS);
   }
 
   public void trackViewedAccount() {
-    this.client.track(KoalaEvent.VIEWED_ACCOUNT);
+    this.client.track(KoalaEvent.VIEWED_ACCOUNT, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_ACCOUNT);
   }
 
   public void trackViewedAddNewCard() {
-    this.client.track(KoalaEvent.VIEWED_ADD_NEW_CARD);
+    this.client.track(KoalaEvent.VIEWED_ADD_NEW_CARD, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_ADD_NEW_CARD);
   }
 
   public void trackViewedChangedEmail() {
-    this.client.track(KoalaEvent.VIEWED_CHANGE_EMAIL);
+    this.client.track(KoalaEvent.VIEWED_CHANGE_EMAIL, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_CHANGE_EMAIL);
   }
 
   public void trackViewedChangedPassword() {
-    this.client.track(KoalaEvent.VIEWED_CHANGE_PASSWORD);
+    this.client.track(KoalaEvent.VIEWED_CHANGE_PASSWORD, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_CHANGE_PASSWORD);
   }
 
   public void trackViewedNotifications() {
-    this.client.track(KoalaEvent.VIEWED_NOTIFICATIONS);
+    this.client.track(KoalaEvent.VIEWED_NOTIFICATIONS, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_NOTIFICATIONS);
   }
 
   public void trackViewedNewsletter() {
-    this.client.track(KoalaEvent.VIEWED_NEWSLETTER);
+    this.client.track(KoalaEvent.VIEWED_NEWSLETTER, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_NEWSLETTER);
   }
 
   public void trackViewedPaymentMethods() {
-    this.client.track(KoalaEvent.VIEWED_PAYMENT_METHODS);
+    this.client.track(KoalaEvent.VIEWED_PAYMENT_METHODS, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_PAYMENT_METHODS);
   }
 
   public void trackViewedPrivacy() {
-    this.client.track(KoalaEvent.VIEWED_PRIVACY);
+    this.client.track(KoalaEvent.VIEWED_PRIVACY, this.client.defaultProperties());
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_PRIVACY);
   }
 

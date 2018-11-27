@@ -7,6 +7,7 @@ import java.util.Map;
 
 public abstract class TrackingClientType {
   public abstract void track(final String eventName, final Map<String, Object> properties);
+  public abstract void trackEventType(final String eventName, final Map<String, Object> properties, final String eventType);
 
   public final void track(final String eventName) {
     track(eventName, new HashMap<>());

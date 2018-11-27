@@ -18,9 +18,7 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.kickstarter.R;
@@ -38,13 +36,10 @@ import butterknife.ButterKnife;
 
 @RequiresActivityViewModel(VideoViewModel.ViewModel.class)
 public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> {
-  private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
-
   private Build build;
   private ExoPlayer player;
   private long playerPosition;
-  private TrackSelector trackSelector;
-
+  private DefaultTrackSelector trackSelector;
 
   protected @Bind(R.id.video_player_layout) View rootView;
   protected @Bind(R.id.player_view) PlayerView playerView;
@@ -109,7 +104,7 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
   }
 
   private void preparePlayer(final @NonNull String videoUrl) {
-    final TrackSelection.Factory adaptiveTrackSelectionFactory = new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
+    final TrackSelection.Factory adaptiveTrackSelectionFactory = new AdaptiveTrackSelection.Factory();
     this.trackSelector = new DefaultTrackSelector(adaptiveTrackSelectionFactory);
 
     this.player = ExoPlayerFactory.newSimpleInstance(this, this.trackSelector);
@@ -145,8 +140,8 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
     }
   }
 
-  private @NonNull Player.DefaultEventListener eventListener =
-    new Player.DefaultEventListener() {
+  private @NonNull Player.EventListener eventListener =
+    new Player.EventListener() {
       @Override
       public void onPlayerStateChanged(final boolean playWhenReady, final int playbackState) {
         onStateChanged(playbackState);

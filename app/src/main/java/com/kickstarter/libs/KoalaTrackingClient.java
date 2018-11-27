@@ -72,15 +72,6 @@ public final class KoalaTrackingClient extends TrackingClientType {
     hashMap.put("device_fingerprint", this.mixpanel.getDistinctId());
     hashMap.put("android_uuid", this.mixpanel.getDistinctId());
     hashMap.put("android_pay_capable", this.androidPayCapability.isCapable());
-    hashMap.put("manufacturer", android.os.Build.MANUFACTURER);
-    hashMap.put("app_version", android.os.Build.VERSION.RELEASE);
-    hashMap.put("model", android.os.Build.MODEL);
-    hashMap.put("brand", android.os.Build.BRAND);
-    hashMap.put("product", android.os.Build.PRODUCT);
-    hashMap.put("os_version", android.os.Build.VERSION.SDK_INT);
-    hashMap.put("mp_lib", "kickstarter_android");
-    hashMap.put("koala_lib", "kickstarter_android");
-    hashMap.put("time", Build.TIME);
 
     return hashMap;
   }

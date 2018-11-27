@@ -39,21 +39,27 @@
           android:id="@+id/recycler_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          tools:listitem="@layout/item_payment_method" />
+          tools:listitem="@layout/item_payment_method"
+          tools:visibility="gone" />
 
         <LinearLayout
           android:id="@+id/add_new_card"
-          style="@style/SettingsLinearRow"
-          android:layout_marginTop="@dimen/grid_1">
+          style="@style/SettingsLinearRow">
+
+          <View
+            android:id="@+id/payments_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginEnd="@dimen/grid_12"
+            android:background="@color/ksr_grey_300"
+            android:visibility="gone" />
 
           <TextView
             style="@style/CalloutPrimaryMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_2"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/grid_2"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:gravity="center_vertical"
             android:text="@string/Add_new_card"
             android:textAllCaps="true"
             android:textColor="@color/ksr_green_500" />

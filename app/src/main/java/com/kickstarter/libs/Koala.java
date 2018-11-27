@@ -344,7 +344,7 @@ public final class Koala {
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.SAVED_PAYMENT_METHOD);
   }
 
-  public void trackSelectedChosenCurrency(String selectedCurrency) {
+  public void trackSelectedChosenCurrency(final String selectedCurrency) {
     this.client.track(KoalaEvent.SELECTED_CHOSEN_CURRENCY);
     AnswersExtKt.fabricLogCustomEventWithAttributes(KoalaEvent.SELECTED_CHOSEN_CURRENCY, "currency", selectedCurrency);
   }

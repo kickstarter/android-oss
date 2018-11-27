@@ -2121,11 +2121,7 @@
       "Any_payment_methods_you_saved_to_Kickstarter": "Sämtliche auf Kickstarter gespeicherten Zahlungsmethoden sind hier (sicher) hinterlegt.",
       "App_version": "App-Version",
       "Are_you_sure": "Bist du sicher?",
-<<<<<<< HEAD
-      "Are_you_sure_you_wish_to_remove_this_card": "Are you sure you wish to remove this card from your payment method options?",
-=======
       "Are_you_sure_you_wish_to_remove_this_card": "Bist du sicher, dass du diese Karte aus deinen Zahlungsmethoden entfernen möchtest?",
->>>>>>> master
       "Ask_me_anything": "Frage stellen",
       "Available_to_watch_for_time_more_units": "Kann noch %{time} %{units} angesehen werden",
       "Back": "Zurück",
@@ -2387,21 +2383,13 @@
       "Newsletters": "Newsletter",
       "News_events": "Ein paar Mal pro Jahr: Neuigkeiten und Events in deiner Nähe.",
       "Never": "Niemals",
-<<<<<<< HEAD
-      "New_email": "New email",
-=======
       "New_email": "Neue E-Mail",
->>>>>>> master
       "New_password": "Neues Passwort",
       "New_pledge_activity": "Neue Finanzierungsbeiträge",
       "New_work_and_big_ideas_from_established_and": "Neue Arbeiten und großartige Ideen von etablierten und neuen Künstlern.",
       "No_comments_yet": "Bisher noch keine Kommentare.",
       "No_messages": "Keine Nachrichten",
-<<<<<<< HEAD
-      "No_nevermind": "No, nevermind",
-=======
       "No_nevermind": "Nein, ich habe es mir anders überlegt",
->>>>>>> master
       "No_one_has_posted_an_update_yet": "Es wurden noch keine Updates gepostet.",
       "No_pledges_from_friends_yet": "Es gibt noch keine Beiträge von Freunden.",
       "No_replay_is_available_for_this_live_stream": "Keine Wiedergabe verügbar für diesen Live-Stream.",
@@ -2505,11 +2493,7 @@
       "Recommended_For_You": "Empfehlungen für dich",
       "Recorded_live_with_creator_name": "Live aufgenommen von <b>%{creator_name}</b>",
       "Recorded_Live": "Live aufgenommen",
-<<<<<<< HEAD
-      "Remove_this_card": "Remove this card",
-=======
       "Remove_this_card": "Karte entfernen",
->>>>>>> master
       "Replay": "Wiedergabe",
       "Replay_available_for_time_more_units": "Wiedergabe verfügbar für weitere %{time} %{units}",
       "Replay_live_stream_with_creator_name": "Wiedergabe des Live-Streams von<br><b>%{creator_name}</b>",
@@ -2654,11 +2638,7 @@
       "When_you_save_a_project_we_ll_send_you_a_reminder": "Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail",
       "Write_a_bio": "Schreibe eine kurze Biografie, ein oder zwei Sätze genügen.",
       "Yes_change_currency": "Ja, Währung ändern",
-<<<<<<< HEAD
-      "Yes_remove": "Yes, remove",
-=======
       "Yes_remove": "Ja, entfernen",
->>>>>>> master
       "Yes_turn_off": "Ja, deaktivieren",
       "You_backed_this_project": "Du hast dieses Projekt unterstützt.",
       "You_have_successfully_backed_project_html": "Dank deiner Unterstützung ist <b>%{project_name}</b> seiner Verwirklichung einen Schritt näher. Sag es weiter!",
@@ -4230,11 +4210,7 @@
       "Any_payment_methods_you_saved_to_Kickstarter": "Para tu comodidad, aquí se enumeran (de manera absolutamente segura) los métodos de pago que guardaste en Kickstarter.",
       "App_version": "Versión de la aplicación",
       "Are_you_sure": "¿Estás seguro?",
-<<<<<<< HEAD
-      "Are_you_sure_you_wish_to_remove_this_card": "Are you sure you wish to remove this card from your payment method options?",
-=======
       "Are_you_sure_you_wish_to_remove_this_card": "¿Estás seguro de que deseas eliminar esta tarjeta de tus opciones de métodos de pago?",
->>>>>>> master
       "Ask_me_anything": "¡Pregúntame!",
       "Available_to_watch_for_time_more_units": "Disponible para reproducción %{time} %{units} más",
       "Back": "Atrás",
@@ -4496,21 +4472,13 @@
       "Newsletters": "Boletines informativos",
       "News_events": "Unas cuantas veces al año: Noticias sobresalientes y eventos cerca de ti.",
       "Never": "Nunca",
-<<<<<<< HEAD
-      "New_email": "New email",
-=======
       "New_email": "Nuevo correo electrónico",
->>>>>>> master
       "New_password": "Contraseña nueva",
       "New_pledge_activity": "Nueva actividad de contribución",
       "New_work_and_big_ideas_from_established_and": "Nuevos trabajos y grandes ideas de artistas establecidos y emergentes.",
       "No_comments_yet": "No hay comentarios todavia.",
       "No_messages": "No hay mensajes",
-<<<<<<< HEAD
-      "No_nevermind": "No, nevermind",
-=======
       "No_nevermind": "No, ignorar",
->>>>>>> master
       "No_one_has_posted_an_update_yet": "Todavía no se han publicado actualizaciones.",
       "No_pledges_from_friends_yet": "Todavía no hay contribuciones de amigos.",
       "No_replay_is_available_for_this_live_stream": "Este Live Stream no cuenta con repetición.",
@@ -4614,11 +4582,7 @@
       "Recommended_For_You": "Recomendaciones para ti",
       "Recorded_live_with_creator_name": "Grabado en vivo por <b>%{creator_name}</b>",
       "Recorded_Live": "Grabado en vivo",
-<<<<<<< HEAD
-      "Remove_this_card": "Remove this card",
-=======
       "Remove_this_card": "Eliminar esta tarjeta",
->>>>>>> master
       "Replay": "Repetición",
       "Replay_available_for_time_more_units": "Repetición disponible por %{time} %{units} más",
       "Replay_live_stream_with_creator_name": "Repetir live stream de<br><b>%{creator_name}</b>",
@@ -4763,11 +4727,7 @@
       "When_you_save_a_project_we_ll_send_you_a_reminder": "Cuando guardes un proyecto, te enviaremos un recordatorio por correo electrónico 48 horas antes de que finalice",
       "Write_a_bio": "Escribe una biografía breve mediante una oración o dos.",
       "Yes_change_currency": "Sí, cambiar la moneda",
-<<<<<<< HEAD
-      "Yes_remove": "Yes, remove",
-=======
       "Yes_remove": "Sí, eliminar",
->>>>>>> master
       "Yes_turn_off": "Sí, desactivar",
       "You_backed_this_project": "Patrocinaste este proyecto.",
       "You_have_successfully_backed_project_html": "Has patrocinado <b>%{project_name}</b> con éxito. Gracias a ti, este proyecto está ahora un paso más cerca de hacerse realidad. ¡Corre la voz!",
@@ -6339,11 +6299,7 @@
       "Any_payment_methods_you_saved_to_Kickstarter": "Voici une liste (sécurisée) de tous les moyens de paiement que vous avez ajoutés à votre compte Kickstarter.",
       "App_version": "Version de l'application",
       "Are_you_sure": "Êtes-vous certain ?",
-<<<<<<< HEAD
-      "Are_you_sure_you_wish_to_remove_this_card": "Are you sure you wish to remove this card from your payment method options?",
-=======
       "Are_you_sure_you_wish_to_remove_this_card": "Êtes-vous certain de vouloir supprimer cette carte de vos moyens de paiement ?",
->>>>>>> master
       "Ask_me_anything": "Posez-moi une question !",
       "Available_to_watch_for_time_more_units": "Plus que %{time}%{units} pour regarder cette diffusion",
       "Back": "Retour",
@@ -6605,21 +6561,13 @@
       "Newsletters": "Lettres d'information",
       "News_events": "Les grandes nouvelles et événements près de chez vous, quelques fois par an.",
       "Never": "Jamais",
-<<<<<<< HEAD
-      "New_email": "New email",
-=======
       "New_email": "Nouvelle adresse e-mail",
->>>>>>> master
       "New_password": "Nouveau mot de passe",
       "New_pledge_activity": "Nouveaux engagements",
       "New_work_and_big_ideas_from_established_and": "Grandes idées et nouveaux travaux signés par des artistes établis et émergents.",
       "No_comments_yet": "Pas de commentaires.",
       "No_messages": "Pas de messages",
-<<<<<<< HEAD
-      "No_nevermind": "No, nevermind",
-=======
       "No_nevermind": "Non, j'ai changé d'avis",
->>>>>>> master
       "No_one_has_posted_an_update_yet": "Pas d'actus publiées pour le moment.",
       "No_pledges_from_friends_yet": "Mes amis \nn'ont rien soutenu.",
       "No_replay_is_available_for_this_live_stream": "Pas de rediffusion possible pour cette diffusion en direct.",
@@ -6723,11 +6671,7 @@
       "Recommended_For_You": "Rien que pour vous",
       "Recorded_live_with_creator_name": "Enregistré en direct avec <b>%{creator_name}</b>",
       "Recorded_Live": "Enregistré en direct",
-<<<<<<< HEAD
-      "Remove_this_card": "Remove this card",
-=======
       "Remove_this_card": "Supprimer cette carte",
->>>>>>> master
       "Replay": "Rediffuser",
       "Replay_available_for_time_more_units": "Rediffusion encore disponible pendant %{time} %{units}",
       "Replay_live_stream_with_creator_name": "Revoir la diffusion en direct de <br><b>%{creator_name}</b>",
@@ -6872,11 +6816,7 @@
       "When_you_save_a_project_we_ll_send_you_a_reminder": "Pour chaque projet que vous enregistrez, nous vous enverrons un rappel 48 heures avant la fin de sa campagne.",
       "Write_a_bio": "Une petite biographie d'une phrase ou deux.",
       "Yes_change_currency": "Oui, changer de devise",
-<<<<<<< HEAD
-      "Yes_remove": "Yes, remove",
-=======
       "Yes_remove": "Oui, supprimer",
->>>>>>> master
       "Yes_turn_off": "Oui, désactiver",
       "You_backed_this_project": "Vous avez soutenu ce projet.",
       "You_have_successfully_backed_project_html": "Vous vous êtes engagé à soutenir le projet <b>%{project_name}</b>. Ce projet se rapproche tout doucement de son objectif grâce à vous. Parlez-en à votre entourage !",
@@ -8448,11 +8388,7 @@
       "Any_payment_methods_you_saved_to_Kickstarter": "Kickstarter に保存されたお支払い方法は、こちらに (安全に) リストアップされます。",
       "App_version": "アプリ版",
       "Are_you_sure": "オフにしてもよろしいですか？",
-<<<<<<< HEAD
-      "Are_you_sure_you_wish_to_remove_this_card": "Are you sure you wish to remove this card from your payment method options?",
-=======
       "Are_you_sure_you_wish_to_remove_this_card": "このカードをお支払い方法から削除してもよろしいですか？",
->>>>>>> master
       "Ask_me_anything": "お問い合わせ",
       "Available_to_watch_for_time_more_units": "さらに%{time} の%{units} を見ることができます",
       "Back": "バック",
@@ -8720,11 +8656,7 @@
       "New_work_and_big_ideas_from_established_and": "新進アーティストや著名アーティストの最新プロジェクトやアイデアをご紹介。",
       "No_comments_yet": "まだコメントはありません。",
       "No_messages": "メッセージがありません。",
-<<<<<<< HEAD
-      "No_nevermind": "No, nevermind",
-=======
       "No_nevermind": "いいえ、削除しません",
->>>>>>> master
       "No_one_has_posted_an_update_yet": "まだアップデートの投稿はありません。",
       "No_pledges_from_friends_yet": "友達からのプレッジはありません。",
       "No_replay_is_available_for_this_live_stream": "このライブ配信を再生することはできません",
@@ -8829,7 +8761,11 @@
       "Recorded_live_with_creator_name": "配信された<b>%{creator_name}</b>のライブ",
       "Recorded_Live": "配信済ライブ",
 <<<<<<< HEAD
+<<<<<<< HEAD
       "Remove_this_card": "Remove this card",
+=======
+      "Remove_this_card": "このカードを削除",
+>>>>>>> master
 =======
       "Remove_this_card": "このカードを削除",
 >>>>>>> master
@@ -8967,11 +8903,7 @@
       "We_couldnt_find_anything_for_search_term": "「%{search_term}」に一致するものがありませんでした。",
       "Websites": "ウェブサイト",
       "Welcome_to_our_library_Peruse_the_stacks_with_us": "Kickstarter ライブラリーへようこそ。色んなストーリーを一緒に読み漁ろう！",
-<<<<<<< HEAD
-      "Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password": "We'll ask you to sign back into the Kickstarter app once you've changed your password.",
-=======
       "Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password": "パスワードを変更したら、Kickstarter アプリにもう一度サインインし直すように促されます。",
->>>>>>> master
       "Well_remind_you_forty_eight_hours_before_this_project_ends": "終了48時間前に通知が届きます。保存アイテムをみるにはプロフィールをご覧ください。",
       "We_use_your_activity_internally_to_make_recommendations_for_you": "あなたのアクティビティをもとにおすすめの提供を行っています。オプトアウトするにはおすすめ機能をオフにしてください。",
       "We_were_unable_to_connect_to_the_live_stream_chat": "ライブ配信への接続に失敗。",
@@ -8981,11 +8913,7 @@
       "When_you_save_a_project_we_ll_send_you_a_reminder": "プロジェクトを保存し、終了の48時間前にリマインドする。",
       "Write_a_bio": "簡単な自己紹介を書いてください。ほんの１～２文で構いません。",
       "Yes_change_currency": "はい、通貨を変更します",
-<<<<<<< HEAD
-      "Yes_remove": "Yes, remove",
-=======
       "Yes_remove": "はい、削除します",
->>>>>>> master
       "Yes_turn_off": "はい、オフにします",
       "You_backed_this_project": "バック済",
       "You_have_successfully_backed_project_html": "<b>%{project_name}</b>へのバックが完了しました。このプロジェクトは、成功に一歩近づきました！ありがとうございます。",
@@ -10722,12 +10650,8 @@
   ],
   "ab_experiments": {
     "project_dashboard": "with_dashboard",
-<<<<<<< HEAD
-    "new_project_header": "experimental"
-=======
     "new_project_header": "experimental",
     "es_backing_locations_upgrade": "control"
->>>>>>> master
   },
   "stripe": {
     "publishable_key": "pk_test_L0x4mLeycKEvj9YuNSkHM35T"

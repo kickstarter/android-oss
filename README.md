@@ -1,4 +1,4 @@
-# Kickstarter for Android™
+<a href="https://www.kickstarter.com"><img src=".github/ksr-wordmark.svg" width="100%" alt="Kickstarter for Android™"/>
 
 [![CircleCI](https://circleci.com/gh/kickstarter/android-oss.svg?style=svg)](https://circleci.com/gh/kickstarter/android-oss)
 
@@ -10,8 +10,6 @@ and maybe even _create_ an issue or two.
 
 We've also open sourced our iOS app, written in Swift:
 [check it out here](https://github.com/kickstarter/ios-oss). Read more about our journey to open source [here](https://kickstarter.engineering/open-sourcing-our-android-and-ios-apps-6891be909fcd#.o1fe86s6w).
-
-![Kickstarter for Android](.github/app.png)
 
 ## Getting Started
 

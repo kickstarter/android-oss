@@ -34,21 +34,27 @@
           android:layout_height="wrap_content"
           app:layout_scrollFlags="scroll|enterAlways">
 
-          <include
-            layout="@layout/discovery_toolbar"
+          <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize" />
+            android:layout_height="wrap_content">
 
-          <com.kickstarter.ui.views.SortTabLayout
-            android:id="@+id/discovery_tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="?android:attr/actionBarSize"
-            app:tabBackground="@drawable/click_indicator_light"
-            app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/text_primary"
-            app:tabTextAppearance="@style/TabTextAppearance"
-            app:tabTextColor="@color/black_alpha_30" />
+            <include
+              layout="@layout/discovery_toolbar"
+              android:layout_width="match_parent"
+              android:layout_height="?android:attr/actionBarSize" />
+
+            <com.kickstarter.ui.views.SortTabLayout
+              android:id="@+id/discovery_tab_layout"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              app:tabBackground="@drawable/click_indicator_light"
+              app:tabMode="fixed"
+              app:tabSelectedTextColor="@color/text_primary"
+              app:tabTextAppearance="@style/TabTextAppearance"
+              app:tabTextColor="@color/black_alpha_30" />
+
+          </LinearLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 

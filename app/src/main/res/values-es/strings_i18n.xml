@@ -32,7 +32,7 @@
   <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Para tu comodidad, aquí se enumeran (de manera absolutamente segura) los métodos de pago que guardaste en Kickstarter.</string>
   <string name="App_version" formatted="false">Versión de la aplicación</string>
   <string name="Are_you_sure" formatted="false">¿Estás seguro?</string>
-  <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">Are you sure you wish to remove this card from your payment method options?</string>
+  <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">¿Estás seguro de que deseas eliminar esta tarjeta de tus opciones de métodos de pago?</string>
   <string name="Ask_me_anything" formatted="false">¡Pregúntame!</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Disponible para reproducción %{time} %{units} más</string>
   <string name="Back" formatted="false">Atrás</string>
@@ -259,7 +259,7 @@ patrocinadores</string>
   <string name="Messages" formatted="false">Mensajes</string>
   <string name="Name" formatted="false">Nombre</string>
   <string name="Never" formatted="false">Nunca</string>
-  <string name="New_email" formatted="false">New email</string>
+  <string name="New_email" formatted="false">Nuevo correo electrónico</string>
   <string name="New_password" formatted="false">Contraseña nueva</string>
   <string name="New_pledge_activity" formatted="false">Nueva actividad de contribución</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">Nuevos trabajos y grandes ideas de artistas establecidos y emergentes.</string>
@@ -268,7 +268,7 @@ patrocinadores</string>
   <string name="No_Results" formatted="false">Sin resultados</string>
   <string name="No_comments_yet" formatted="false">No hay comentarios todavia.</string>
   <string name="No_messages" formatted="false">No hay mensajes</string>
-  <string name="No_nevermind" formatted="false">No, nevermind</string>
+  <string name="No_nevermind" formatted="false">No, ignorar</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Todavía no se han publicado actualizaciones.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Todavía no hay contribuciones de amigos.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Este Live Stream no cuenta con repetición.</string>
@@ -347,7 +347,7 @@ patrocinadores</string>
   <string name="Recommended_For_You" formatted="false">Recomendaciones para ti</string>
   <string name="Recorded_Live" formatted="false">Grabado en vivo</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Grabado en vivo por &lt;b>%{creator_name}&lt;/b></string>
-  <string name="Remove_this_card" formatted="false">Remove this card</string>
+  <string name="Remove_this_card" formatted="false">Eliminar esta tarjeta</string>
   <string name="Replay" formatted="false">Repetición</string>
   <string name="Replay_available_for_time_more_units" formatted="false">Repetición disponible por %{time} %{units} más</string>
   <string name="Replay_live_stream_with_creator_name" formatted="false">Repetir live stream de&lt;br>&lt;b>%{creator_name}&lt;/b></string>
@@ -403,6 +403,7 @@ patrocinadores</string>
   <string name="Sign_up_newsletter" formatted="false">Suscríbete a Nuestros favoritos para recibir una combinación semanal de proyectos destacados, seleccionados por el equipo de Kickstarter.</string>
   <string name="Signs_up_with_Email" formatted="false">Registro con correo electrónico.</string>
   <string name="Something_catch_your_eye" formatted="false">¿Algo que te haya llamado la atención?</string>
+  <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">Hubo un error y no pudimos eliminar tu método de pago. Inténtalo de nuevo.</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Ocurrió un error. Inténtalo nuevamente más tarde.</string>
   <string name="Start_the_request" formatted="false">Comenzar la recopilación de datos</string>
   <string name="Starting_soon" formatted="false">Comienza en breve</string>
@@ -474,7 +475,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Cuando guardes un proyecto, te enviaremos un recordatorio por correo electrónico 48 horas antes de que finalice</string>
   <string name="Write_a_bio" formatted="false">Escribe una biografía breve mediante una oración o dos.</string>
   <string name="Yes_change_currency" formatted="false">Sí, cambiar la moneda</string>
-  <string name="Yes_remove" formatted="false">Yes, remove</string>
+  <string name="Yes_remove" formatted="false">Sí, eliminar</string>
   <string name="Yes_turn_off" formatted="false">Sí, desactivar</string>
   <string name="You_Launched" formatted="false">¡Tu proyecto fue publicado!</string>
   <string name="You_backed_this_project" formatted="false">Patrocinaste este proyecto.</string>
@@ -495,6 +496,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Your_shipping_destination" formatted="false">Tu destino de envío</string>
   <string name="Youre_a_backer" formatted="false">¡Eres un patrocinador!</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Estás a punto de crear una nueva cuenta de Kickstarter usando el correo electrónico associado a tu cuenta de Facebook. Por favor confírmalo antes de proceder.</string>
+  <string name="Youre_offline" formatted="false">You’re offline. Once your device reconnects, navigate around the app to refresh.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Hiciste una contribución a este proyecto. El plazo de financiamiento todavía no ha terminado.</string>
   <string name="Zip_code" formatted="false">Código postal</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">Actividad</string>
@@ -1193,6 +1195,8 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_newsletter_happening" formatted="false">Eventos</string>
   <string name="profile_settings_newsletter_happening_now" formatted="false">Happening ahora</string>
   <string name="profile_settings_newsletter_invent" formatted="false">Invenciones</string>
+  <string name="profile_settings_newsletter_music" formatted="false">Kickstarter Music</string>
+  <string name="profile_settings_newsletter_music_newsletter" formatted="false">Sign up to receive a biweekly newsletter full of Mongolian woodwind orchestras, soundtracks to horror movies that don’t exist, operas about insects, and other things you can only find here on Kickstarter Music.</string>
   <string name="profile_settings_newsletter_news_event" formatted="false">Novedades y eventos</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">Hemos enviado una confirmación a la dirección de correo electrónico asociada con tu cuenta. Por favor checa tu bandeja de entrada y confirma la subscripción a %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">¡Sólo un último paso!</string>

@@ -32,7 +32,7 @@
   <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Kickstarter に保存されたお支払い方法は、こちらに (安全に) リストアップされます。</string>
   <string name="App_version" formatted="false">アプリ版</string>
   <string name="Are_you_sure" formatted="false">オフにしてもよろしいですか？</string>
-  <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">Are you sure you wish to remove this card from your payment method options?</string>
+  <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">このカードをお支払い方法から削除してもよろしいですか？</string>
   <string name="Ask_me_anything" formatted="false">お問い合わせ</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">さらに%{time} の%{units} を見ることができます</string>
   <string name="Back" formatted="false">バック</string>
@@ -266,7 +266,7 @@
   <string name="No_Results" formatted="false">該当結果なし</string>
   <string name="No_comments_yet" formatted="false">まだコメントはありません。</string>
   <string name="No_messages" formatted="false">メッセージがありません。</string>
-  <string name="No_nevermind" formatted="false">No, nevermind</string>
+  <string name="No_nevermind" formatted="false">いいえ、削除しません</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">まだアップデートの投稿はありません。</string>
   <string name="No_pledges_from_friends_yet" formatted="false">友達からのプレッジはありません。</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">このライブ配信を再生することはできません</string>
@@ -346,7 +346,7 @@
   <string name="Recommended_For_You" formatted="false">あなたへのおすすめ</string>
   <string name="Recorded_Live" formatted="false">配信済ライブ</string>
   <string name="Recorded_live_with_creator_name" formatted="false">配信された&lt;b>%{creator_name}&lt;/b>のライブ</string>
-  <string name="Remove_this_card" formatted="false">Remove this card</string>
+  <string name="Remove_this_card" formatted="false">このカードを削除</string>
   <string name="Replay" formatted="false">リプレイ</string>
   <string name="Replay_available_for_time_more_units" formatted="false">あと%{time}%{units} リプレイ可能</string>
   <string name="Replay_live_stream_with_creator_name" formatted="false">&lt;b>%{creator_name}&lt;/b>のライブ配信を再生</string>
@@ -402,6 +402,7 @@
   <string name="Sign_up_newsletter" formatted="false">Projects We Love に登録して、私たち Kickstarter チームが選別した注目プロジェクトに関する情報を週に1度受け取りましょう。</string>
   <string name="Signs_up_with_Email" formatted="false">Eメールでサインアップする。</string>
   <string name="Something_catch_your_eye" formatted="false">何か目にとまるものはありましたか？</string>
+  <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">Something went wrong and we were unable to remove your payment method, please try again.</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">なにかが間違っています。もう一度お試しください。</string>
   <string name="Start_the_request" formatted="false">データの収集を開始する</string>
   <string name="Starting_soon" formatted="false">もう少しで始まります。</string>
@@ -467,13 +468,13 @@
 再度お試しください。</string>
   <string name="Websites" formatted="false">ウェブサイト</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Kickstarter ライブラリーへようこそ。色んなストーリーを一緒に読み漁ろう！</string>
-  <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">We\'ll ask you to sign back into the Kickstarter app once you\'ve changed your password.</string>
+  <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">パスワードを変更したら、Kickstarter アプリにもう一度サインインし直すように促されます。</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">終了48時間前に通知が届きます。保存アイテムをみるにはプロフィールをご覧ください。</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">フォローがオンになっていると、他の人のアクティビティをフォローすることができ、また、他の人もあなたのアクティビティをフォローすることができます。このようなデータを永久に削除するためにはフォローをオフにしてください。</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">プロジェクトを保存し、終了の48時間前にリマインドする。</string>
   <string name="Write_a_bio" formatted="false">簡単な自己紹介を書いてください。ほんの１～２文で構いません。</string>
   <string name="Yes_change_currency" formatted="false">はい、通貨を変更します</string>
-  <string name="Yes_remove" formatted="false">Yes, remove</string>
+  <string name="Yes_remove" formatted="false">はい、削除します</string>
   <string name="Yes_turn_off" formatted="false">はい、オフにします</string>
   <string name="You_Launched" formatted="false">発表されました！</string>
   <string name="You_backed_this_project" formatted="false">バック済</string>
@@ -494,6 +495,7 @@
   <string name="Your_shipping_destination" formatted="false">配送地域</string>
   <string name="Youre_a_backer" formatted="false">バッカーになりました！</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Facebookのメールアドレスで新しいアカウントを作成しようとしています。再度確認してください。</string>
+  <string name="Youre_offline" formatted="false">You’re offline. Once your device reconnects, navigate around the app to refresh.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">このプレッジ済のプロジェクトは、現在もファンド中</string>
   <string name="Zip_code" formatted="false">郵便番号</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">アクティビティ</string>
@@ -1193,6 +1195,8 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="profile_settings_newsletter_happening" formatted="false">出来事</string>
   <string name="profile_settings_newsletter_happening_now" formatted="false">Happening Now</string>
   <string name="profile_settings_newsletter_invent" formatted="false">インベント</string>
+  <string name="profile_settings_newsletter_music" formatted="false">Kickstarter Music</string>
+  <string name="profile_settings_newsletter_music_newsletter" formatted="false">Sign up to receive a biweekly newsletter full of Mongolian woodwind orchestras, soundtracks to horror movies that don’t exist, operas about insects, and other things you can only find here on Kickstarter Music.</string>
   <string name="profile_settings_newsletter_news_event" formatted="false">ニュース＆イベント</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">登録されているアドレス宛に認証メールを送信しました！%{newsletter} を購読するには、メールを確認してください。</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">あと少し！</string>

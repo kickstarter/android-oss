@@ -12,7 +12,7 @@ import com.kickstarter.extensions.showConfirmationSnackbar
 import com.kickstarter.extensions.showErrorSnackbar
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.AccountViewModel
 import kotlinx.android.synthetic.main.account_toolbar.*
@@ -46,17 +46,22 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
 
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .compose(observeForUI())
                 .subscribe { showErrorSnackbar(account_toolbar, it) }
 
         this.viewModel.outputs.progressBarIsVisible()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(progress_bar, !it) }
+
+        this.viewModel.outputs.showEmailErrorIcon()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(email_error_icon, !it) }
 
         this.viewModel.outputs.success()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .compose(observeForUI())
                 .subscribe { showConfirmationSnackbar(account_container, R.string.Got_it_your_changes_have_been_saved) }
 
         change_email_row.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }

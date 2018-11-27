@@ -203,7 +203,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   @Override
   public void onNetworkConnectionChanged(final boolean isConnected) {
     if (!isConnected) {
-      ActivityExtKt.showNetworkErrorSnackbar(findViewById(android.R.id.content), getString(R.string.Your_device_is_offline));
+      ActivityExtKt.showNetworkErrorSnackbar(findViewById(android.R.id.content), getString(R.string.Youre_offline));
     }
   }
   /**

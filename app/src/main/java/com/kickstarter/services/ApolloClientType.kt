@@ -14,6 +14,7 @@ import rx.Observable
 import type.PaymentTypes
 
 interface ApolloClientType {
+
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
 
     fun getStoredCards(): Observable<UserPaymentsQuery.Data>

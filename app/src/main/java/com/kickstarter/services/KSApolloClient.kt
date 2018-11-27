@@ -100,13 +100,11 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             service.mutate(SendEmailVerificationMutation.builder()
                     .build())
                     .enqueue(object : ApolloCall.Callback<SendEmailVerificationMutation.Data>() {
-
                         override fun onFailure(exception: ApolloException) {
                             ps.onError(exception)
                         }
 
                         override fun onResponse(response: Response<SendEmailVerificationMutation.Data>) {
-
                             if (response.hasErrors()) {
                                 ps.onError(Exception(response.errors().first().message()))
                             }
@@ -117,7 +115,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             return@defer ps
         }
     }
-
 
     override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
         return Observable.defer {

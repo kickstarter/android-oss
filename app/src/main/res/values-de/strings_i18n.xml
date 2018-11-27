@@ -482,6 +482,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Finanzierungsbeitrag geleistet&lt;/b> im %{pledge_date}</string>
   <string name="You_saved_this_project" formatted="false">Du hast dieses Projekt gespeichert.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Deine Chat-Nachricht konnte leider nicht gesendet werden.</string>
+  <string name="Your_device_is_offline" formatted="false">Your device is offline. Content may not be displayed until you reconnect.</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Deine Freunde haben bisher noch kein Projekt unterstützt. Aber sobald sie das tun, wird es hier angezeigt.</string>
   <string name="Your_name_displayed" formatted="false">Dein Name wird auf deinem Profil angezeigt.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Deine Zahlungsmethode wurde erfolgreich belastet.</string>

@@ -483,6 +483,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Votre engagement&lt;/b> du %{pledge_date}</string>
   <string name="You_saved_this_project" formatted="false">Vous avez enregistré ce projet.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Votre message n\'a pas été envoyé.</string>
+  <string name="Your_device_is_offline" formatted="false">Your device is offline. Content may not be displayed until you reconnect.</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Vos amis n\'ont encore rien soutenu, mais dès qu\'ils s\'y seront mis, leurs engagements s\'afficheront ici.</string>
   <string name="Your_name_displayed" formatted="false">Votre nom s\'affichera toujours sur votre profil.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Votre moyen de paiement a bien été débité.</string>

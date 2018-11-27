@@ -486,6 +486,7 @@ Please try again later.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>You pledged&lt;/b> on %{pledge_date}</string>
   <string name="You_saved_this_project" formatted="false">You saved this project.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Your chat message wasn\'t sent successfully.</string>
+  <string name="Your_device_is_offline" formatted="false">Your device is offline. Content may not be displayed until you reconnect.</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Your friends haven’t backed any projects yet, but once they do, you’ll see them listed here.</string>
   <string name="Your_name_displayed" formatted="false">Your name is always displayed on your profile.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Your payment method was successfully charged.</string>

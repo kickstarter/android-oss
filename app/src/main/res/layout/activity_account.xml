@@ -68,10 +68,10 @@
         </LinearLayout>
 
         <LinearLayout
+          android:id="@+id/privacy_row"
           style="@style/SettingsLinearRow">
 
           <TextView
-            android:id="@+id/privacy_row"
             style="@style/SettingsSingleRow"
             android:text="@string/Privacy" />
 
@@ -122,7 +122,7 @@
       <FrameLayout
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="@dimen/progress_bar_height"
         android:visibility="gone"
         tools:visibility="visible">
 

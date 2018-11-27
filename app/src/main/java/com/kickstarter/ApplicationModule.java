@@ -35,6 +35,7 @@ import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.PushNotifications;
+import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.EmailAdapter;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
@@ -71,6 +72,7 @@ import com.kickstarter.services.interceptors.GraphQLInterceptor;
 import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
+import com.stripe.android.Stripe;
 
 import org.joda.time.DateTime;
 
@@ -121,6 +123,7 @@ public final class ApplicationModule {
     final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
     final @NonNull SharedPreferences sharedPreferences,
+    final @NonNull Stripe stripe,
     final @NonNull WebClientType webClient,
     final @NonNull @WebEndpoint String webEndpoint) {
 
@@ -145,6 +148,7 @@ public final class ApplicationModule {
       .playServicesCapability(playServicesCapability)
       .scheduler(scheduler)
       .sharedPreferences(sharedPreferences)
+      .stripe(stripe)
       .webClient(webClient)
       .webEndpoint(webEndpoint)
       .build();
@@ -174,6 +178,7 @@ public final class ApplicationModule {
     final OkHttpClient okHttpClient = builder.build();
 
     return ApolloClient.builder()
+      .addCustomTypeAdapter(CustomType.DATE, new DateAdapter())
       .addCustomTypeAdapter(CustomType.EMAIL, new EmailAdapter())
       .serverUrl(webEndpoint + "/graph")
       .okHttpClient(okHttpClient)
@@ -531,5 +536,14 @@ public final class ApplicationModule {
   @NonNull
   static StringPreferenceType provideUserPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, SharedPreferenceKey.USER);
+  }
+
+  @Provides
+  @Singleton
+  Stripe provideStripe(final @ApplicationContext @NonNull Context context, final @NonNull ApiEndpoint apiEndpoint) {
+    final String stripePublishableKey = apiEndpoint == ApiEndpoint.PRODUCTION
+      ? Secrets.StripePublishableKey.PRODUCTION
+      : Secrets.StripePublishableKey.STAGING;
+    return new Stripe(context, stripePublishableKey);
   }
 }

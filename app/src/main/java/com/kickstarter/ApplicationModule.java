@@ -363,7 +363,7 @@ public final class ApplicationModule {
   @Singleton
   static Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
     final @NonNull AndroidPayCapability androidPayCapability) {
-    return new Koala(new KoalaTrackingClient(context, currentUser, androidPayCapability));
+    return new Koala(new KoalaTrackingClient(context, currentUser, androidPayCapability), context);
   }
 
   @Provides

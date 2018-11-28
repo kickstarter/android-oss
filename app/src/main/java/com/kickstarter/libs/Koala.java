@@ -1,9 +1,11 @@
 package com.kickstarter.libs;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.extensions.AnswersExtKt;
+import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -19,9 +21,11 @@ import java.util.Map;
 
 public final class Koala {
   private final @NonNull TrackingClientType client;
+  private final @NonNull Context context;
 
-  public Koala(final @NonNull TrackingClientType client) {
+  public Koala(final @NonNull TrackingClientType client, final @ApplicationContext @NonNull Context context ) {
     this.client = client;
+    this.context = context;
   }
 
   public @NonNull TrackingClientType client() {
@@ -347,6 +351,7 @@ public final class Koala {
   public void trackSelectedChosenCurrency(final String selectedCurrency) {
     this.client.track(KoalaEvent.SELECTED_CHOSEN_CURRENCY);
     AnswersExtKt.fabricLogCustomEventWithAttributes(KoalaEvent.SELECTED_CHOSEN_CURRENCY, "currency", selectedCurrency);
+    AnswersExtKt.firebaseCustomEventWithParams(this.context,KoalaEvent.SELECTED_CHOSEN_CURRENCY, "currency", selectedCurrency );
   }
 
   public void trackSettingsView() {

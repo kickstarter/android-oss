@@ -28,8 +28,7 @@ public final class Koala {
     this.context = context;
   }
 
-  public @NonNull
-  TrackingClientType client() {
+  public @NonNull TrackingClientType client() {
     return this.client;
   }
 

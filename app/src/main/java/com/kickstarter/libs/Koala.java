@@ -357,7 +357,12 @@ public final class Koala {
   }
 
   public void trackSelectedChosenCurrency(final String selectedCurrency) {
-    this.client.track(KoalaEvent.SELECTED_CHOSEN_CURRENCY);
+    this.client.track(KoalaEvent.SELECTED_CHOSEN_CURRENCY, new HashMap<String, Object>() {
+      {
+        put("user_chosen_currency", selectedCurrency);
+      }
+    });
+
     AnswersExtKt.fabricLogCustomEventWithAttributes(KoalaEvent.SELECTED_CHOSEN_CURRENCY, "currency", selectedCurrency);
     AnswersExtKt.firebaseCustomEventWithParams(this.context, KoalaEvent.SELECTED_CHOSEN_CURRENCY, "currency", selectedCurrency);
   }
@@ -371,7 +376,7 @@ public final class Koala {
   public void trackViewedAccount() {
     this.client.track(KoalaEvent.VIEWED_ACCOUNT);
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_ACCOUNT);
-    AnswersExtKt.firebaseCustomEvent(this.context, KoalaEvent.VIEWED_ACCOUNT);
+    AnswersExtKt.firebaseCustomEvent(this.context, "Viewed_Account");
   }
 
   public void trackViewedAddNewCard() {
@@ -383,7 +388,7 @@ public final class Koala {
   public void trackViewedChangedEmail() {
     this.client.track(KoalaEvent.VIEWED_CHANGE_EMAIL);
     AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_CHANGE_EMAIL);
-    AnswersExtKt.firebaseCustomEvent(this.context, KoalaEvent.VIEWED_CHANGE_EMAIL);
+    AnswersExtKt.firebaseCustomEvent(this.context, "Viewed_Change_Email");
   }
 
   public void trackViewedChangedPassword() {

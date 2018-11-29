@@ -215,12 +215,14 @@
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
   <string name="Its_better_with_friends" formatted="false">友達にとってより良い。</string>
+  <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">It\'s like the radio but nothing sucks and also it\'s a newsletter.</string>
   <string name="Join_our_secret_society" formatted="false">この秘密の世界にあなたも浸ってみませんか。</string>
   <string name="Joining_the_live_stream" formatted="false">ライブ配信に参加</string>
   <string name="Just_for_you" formatted="false">あなたのために。</string>
   <string name="Keep_in_touch_after_your_campaign" formatted="false">キャンペーン終了後もニュースレターで最新情報をチェックし、次のプロジェクトに備えましょう。</string>
   <string name="Keep_reading" formatted="false">続きを読む</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">ライブ配信を通知</string>
+  <string name="Kickstarter_Music" formatted="false">Kickstarter Music</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (達成した時)</string>
   <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarterはオンラインストアではありません。</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。</string>
@@ -257,7 +259,7 @@
   <string name="Messages" formatted="false">メッセージ</string>
   <string name="Name" formatted="false">名前</string>
   <string name="Never" formatted="false">通知を受けない</string>
-  <string name="New_email" formatted="false">New email</string>
+  <string name="New_email" formatted="false">新しいメールアドレス</string>
   <string name="New_password" formatted="false">新しいパスワード</string>
   <string name="New_pledge_activity" formatted="false">新しいプレッジ</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">新進アーティストや著名アーティストの最新プロジェクトやアイデアをご紹介。</string>
@@ -402,7 +404,7 @@
   <string name="Sign_up_newsletter" formatted="false">Projects We Love に登録して、私たち Kickstarter チームが選別した注目プロジェクトに関する情報を週に1度受け取りましょう。</string>
   <string name="Signs_up_with_Email" formatted="false">Eメールでサインアップする。</string>
   <string name="Something_catch_your_eye" formatted="false">何か目にとまるものはありましたか？</string>
-  <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">Something went wrong and we were unable to remove your payment method, please try again.</string>
+  <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">何らかのエラーにより、お支払い方法を削除できませんでした。もう一度お試しください。</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">なにかが間違っています。もう一度お試しください。</string>
   <string name="Start_the_request" formatted="false">データの収集を開始する</string>
   <string name="Starting_soon" formatted="false">もう少しで始まります。</string>
@@ -494,7 +496,7 @@
   <string name="Your_shipping_destination" formatted="false">配送地域</string>
   <string name="Youre_a_backer" formatted="false">バッカーになりました！</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Facebookのメールアドレスで新しいアカウントを作成しようとしています。再度確認してください。</string>
-  <string name="Youre_offline" formatted="false">You’re offline. Once your device reconnects, navigate around the app to refresh.</string>
+  <string name="Youre_offline" formatted="false">現在オフライン中です。デバイスが再接続し次第、アプリをリフレッシュしてください。</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">このプレッジ済のプロジェクトは、現在もファンド中</string>
   <string name="Zip_code" formatted="false">郵便番号</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">アクティビティ</string>
@@ -1195,7 +1197,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="profile_settings_newsletter_happening_now" formatted="false">Happening Now</string>
   <string name="profile_settings_newsletter_invent" formatted="false">インベント</string>
   <string name="profile_settings_newsletter_music" formatted="false">Kickstarter Music</string>
-  <string name="profile_settings_newsletter_music_newsletter" formatted="false">Sign up to receive a biweekly newsletter full of Mongolian woodwind orchestras, soundtracks to horror movies that don’t exist, operas about insects, and other things you can only find here on Kickstarter Music.</string>
+  <string name="profile_settings_newsletter_music_newsletter" formatted="false">モンゴルの木管楽器を使ったオーケストラから、存在しないホラー映画のサウンドトラック、昆虫についてのオペラなど、その他にも Kickstarter Music でしか見つからないユニークな内容を隔週でお届けします。ぜひご登録ください！</string>
   <string name="profile_settings_newsletter_news_event" formatted="false">ニュース＆イベント</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">登録されているアドレス宛に認証メールを送信しました！%{newsletter} を購読するには、メールを確認してください。</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">あと少し！</string>

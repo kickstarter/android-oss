@@ -32,8 +32,8 @@
         android:orientation="vertical">
 
         <LinearLayout
+          android:id="@+id/password_required_container"
           style="@style/SettingsLinearRow"
-          android:layout_marginBottom="@dimen/grid_3"
           android:layout_marginTop="@dimen/grid_3">
 
           <LinearLayout
@@ -53,10 +53,8 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_gravity="center_vertical"
-              android:visibility="gone"
               android:layout_marginEnd="@dimen/activity_horizontal_margin"
               android:contentDescription="@null"
-              android:scaleType="centerCrop"
               android:src="@drawable/ic_email_error" />
           </LinearLayout>
 
@@ -68,7 +66,8 @@
         </LinearLayout>
 
         <LinearLayout
-          style="@style/SettingsLinearRow">
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_3">
 
           <TextView
             android:id="@+id/privacy_row"

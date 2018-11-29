@@ -16,7 +16,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     private val chosenCurrency = TestSubscriber<String>()
     private val error = TestSubscriber<String>()
-    private val showChangePassword = TestSubscriber<Boolean>()
+    private val passwordRequiredContainerIsVisible = TestSubscriber<Boolean>()
     private val showEmailErrorIcon = TestSubscriber<Boolean>()
     private val success = TestSubscriber<String>()
 
@@ -25,7 +25,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
         this.vm.outputs.chosenCurrency().subscribe(this.chosenCurrency)
         this.vm.outputs.error().subscribe(this.error)
-        this.vm.outputs.showChangePassword().subscribe(this.showChangePassword)
+        this.vm.outputs.passwordRequiredContainerIsVisible().subscribe(this.passwordRequiredContainerIsVisible)
         this.vm.outputs.showEmailErrorIcon().subscribe(this.showEmailErrorIcon)
         this.vm.outputs.success().subscribe(this.success)
     }
@@ -111,7 +111,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowChangePassword() {
+    fun testPasswordRequiredContainerIsVisible_hasPassword() {
         val hasPassword = true
         val isCreator = false
         val isDeliverable = true
@@ -123,11 +123,11 @@ class AccountViewModelTest : KSRobolectricTestCase() {
             }
         }).build())
 
-        this.showEmailErrorIcon.assertValue(false)
+        this.passwordRequiredContainerIsVisible.assertValue(true)
     }
 
     @Test
-    fun testShowChangePasswordHidden() {
+    fun testPasswordRequiredContainerIsVisible_noPassword() {
         val hasPassword = false
         val isCreator = false
         val isDeliverable = true
@@ -139,7 +139,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
             }
         }).build())
 
-        this.showChangePassword.assertValue(true)
+        this.passwordRequiredContainerIsVisible.assertValue(false)
     }
 
     @Test

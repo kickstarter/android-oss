@@ -37,6 +37,11 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { setCards(it) }
 
+        this.viewModel.outputs.dividerIsVisible()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { ViewUtils.setGone(payments_divider, !it) }
+
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())

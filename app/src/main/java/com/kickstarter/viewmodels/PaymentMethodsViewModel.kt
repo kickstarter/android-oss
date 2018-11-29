@@ -30,6 +30,9 @@ interface PaymentMethodsViewModel {
         /** Emits a list of stored cards for a user. */
         fun cards(): Observable<MutableList<UserPaymentsQuery.Node>>
 
+        /** Emits when the divider should be visible (if there are cards). */
+        fun dividerIsVisible(): Observable<Boolean>
+
         /** Emits whenever there is an error deleting a stored card.  */
         fun error(): Observable<String>
 
@@ -50,6 +53,7 @@ interface PaymentMethodsViewModel {
         private val refreshCards = PublishSubject.create<Void>()
 
         private val cards = BehaviorSubject.create<MutableList<UserPaymentsQuery.Node>>()
+        private val dividerIsVisible = BehaviorSubject.create<Boolean>()
         private val error = BehaviorSubject.create<String>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
         private val showDeleteCardDialog = BehaviorSubject.create<Void>()
@@ -65,7 +69,12 @@ interface PaymentMethodsViewModel {
             getListOfStoredCards()
                     .subscribe { this.cards.onNext(it) }
 
-            this.deleteCardClicked.subscribe { this.showDeleteCardDialog.onNext(null) }
+            this.cards
+                    .map { it.isNotEmpty()  }
+                    .subscribe { this.dividerIsVisible.onNext(it)}
+
+            this.deleteCardClicked
+                    .subscribe { this.showDeleteCardDialog.onNext(null) }
 
             val deleteCardNotification = this.deleteCardClicked
                     .compose<String>(takeWhen(this.confirmDeleteCardClicked))
@@ -101,6 +110,8 @@ interface PaymentMethodsViewModel {
         override fun refreshCards() = this.refreshCards.onNext(null)
 
         override fun cards(): Observable<MutableList<UserPaymentsQuery.Node>> = this.cards
+
+        override fun dividerIsVisible(): Observable<Boolean> = this.dividerIsVisible
 
         override fun error(): Observable<String> = this.error
 

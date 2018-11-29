@@ -18,6 +18,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: PaymentMethodsViewModel.ViewModel
 
     private val cards = TestSubscriber<MutableList<UserPaymentsQuery.Node>>()
+    private val dividerIsVisible = TestSubscriber<Boolean>()
     private val error = TestSubscriber<String>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val showDeleteCardDialog = TestSubscriber<Void>()
@@ -28,6 +29,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
 
         this.vm.outputs.error().subscribe(this.error)
         this.vm.outputs.cards().subscribe(this.cards)
+        this.vm.outputs.dividerIsVisible().subscribe(this.dividerIsVisible)
         this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
         this.vm.outputs.showDeleteCardDialog().subscribe(this.showDeleteCardDialog)
         this.vm.outputs.success().subscribe(this.success)
@@ -41,12 +43,30 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
                 return Observable.just(UserPaymentsQuery.Data(UserPaymentsQuery.Me("",
-                        UserPaymentsQuery.StoredCards("", List(1
-                        ) { _ -> node }))))
+                        UserPaymentsQuery.StoredCards("", List(1) { _ -> node }))))
             }
         }).build())
 
         this.cards.assertValue(Collections.singletonList(node))
+    }
+
+    @Test
+    fun testDividerIsVisible_hasCards() {
+        setUpEnvironment(environment())
+
+        this.dividerIsVisible.assertValues(true)
+    }
+
+    @Test
+    fun testDividerIsVisible_noCards() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
+                return Observable.just(UserPaymentsQuery.Data(UserPaymentsQuery.Me("",
+                        UserPaymentsQuery.StoredCards("", Collections.emptyList()))))
+            }
+        }).build())
+
+        this.dividerIsVisible.assertValues(false)
     }
 
     @Test

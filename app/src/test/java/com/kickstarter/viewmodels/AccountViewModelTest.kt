@@ -16,6 +16,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     private val chosenCurrency = TestSubscriber<String>()
     private val error = TestSubscriber<String>()
+    private val showChangePassword = TestSubscriber<Boolean>()
     private val showEmailErrorIcon = TestSubscriber<Boolean>()
     private val success = TestSubscriber<String>()
 
@@ -24,6 +25,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
         this.vm.outputs.chosenCurrency().subscribe(this.chosenCurrency)
         this.vm.outputs.error().subscribe(this.error)
+        this.vm.outputs.showChangePassword().subscribe(this.showChangePassword)
         this.vm.outputs.showEmailErrorIcon().subscribe(this.showEmailErrorIcon)
         this.vm.outputs.success().subscribe(this.success)
     }
@@ -33,7 +35,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                 return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "",  true, true, true, "MXN")))
+                        "",  true, true, true, true, "MXN")))
             }
         }).build())
 
@@ -62,13 +64,14 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowEmailErrorIcon() {
+        val hasPassword = true
         val isCreator = true
         val isDeliverable = false
         val isEmailVerified = true
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                 return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "",  isCreator, isDeliverable, isEmailVerified, "MXN")))
+                        "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")))
             }
         }).build())
 
@@ -77,13 +80,14 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowEmailErrorIconForBackerUndeliverable() {
+        val hasPassword = true
         val isCreator = false
         val isDeliverable = false
         val isEmailVerified = false
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                 return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "",  isCreator, isDeliverable, isEmailVerified, "MXN")))
+                        "",  hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")))
             }
         }).build())
 
@@ -92,13 +96,14 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowEmailErrorIconGoneForBackerUnverified() {
+        val hasPassword = true
         val isCreator = false
         val isDeliverable = true
         val isEmailVerified = true
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                 return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "",  isCreator, isDeliverable, isEmailVerified, "MXN")))
+                        "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")))
             }
         }).build())
 
@@ -106,14 +111,47 @@ class AccountViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowEmailErrorIconGoneForBackerDeliverable() {
+    fun testShowChangePassword() {
+        val hasPassword = true
         val isCreator = false
         val isDeliverable = true
         val isEmailVerified = false
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                 return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "",  isCreator, isDeliverable, isEmailVerified, "MXN")))
+                        "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")))
+            }
+        }).build())
+
+        this.showEmailErrorIcon.assertValue(false)
+    }
+
+    @Test
+    fun testShowChangePasswordHidden() {
+        val hasPassword = false
+        val isCreator = false
+        val isDeliverable = true
+        val isEmailVerified = false
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
+                        "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")))
+            }
+        }).build())
+
+        this.showChangePassword.assertValue(true)
+    }
+
+    @Test
+    fun testShowEmailErrorIconGoneForBackerDeliverable() {
+        val hasPassword = true
+        val isCreator = false
+        val isDeliverable = true
+        val isEmailVerified = false
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
+                        "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")))
             }
         }).build())
 
@@ -122,13 +160,14 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowEmailErrorIconForCreatorUnverified() {
+        val hasPassword = true
         val isCreator = true
         val isDeliverable = false
         val isEmailVerified = false
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
                 return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "",  isCreator, isDeliverable, isEmailVerified, "MXN")))
+                        "",  hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")))
             }
         }).build())
 

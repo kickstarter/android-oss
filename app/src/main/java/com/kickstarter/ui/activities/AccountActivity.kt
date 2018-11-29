@@ -54,6 +54,11 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(progress_bar, !it) }
 
+        this.viewModel.outputs.showChangePassword()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(change_password_row, it) }
+
         this.viewModel.outputs.showEmailErrorIcon()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())

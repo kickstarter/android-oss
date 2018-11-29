@@ -33,6 +33,9 @@ interface AccountViewModel {
         /** Emits when the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
 
+        /** Emits true when the user has a password. (Facebook users don't have passwords). */
+        fun showChangePassword(): Observable<Boolean>
+
         /** Emits a boolean determining when we should show the email error icon. */
         fun showEmailErrorIcon(): Observable<Boolean>
 
@@ -49,6 +52,7 @@ interface AccountViewModel {
 
         private val chosenCurrency = BehaviorSubject.create<String>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
+        private val showChangePassword = BehaviorSubject.create<Boolean>()
         private val showEmailErrorIcon = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<String>()
 
@@ -66,6 +70,10 @@ interface AccountViewModel {
                     .map { ObjectUtils.coalesce(it, CurrencyCode.USD.rawValue()) }
                     .compose(bindToLifecycle())
                     .subscribe { this.chosenCurrency.onNext(it) }
+
+            userPrivacy
+                    .map { showChangePassword(it) }
+                    .subscribe { this.showChangePassword.onNext(it) }
 
             userPrivacy
                     .map { showEmailErrorImage(it) }
@@ -107,10 +115,17 @@ interface AccountViewModel {
             return this.progressBarIsVisible
         }
 
+        override fun showChangePassword(): Observable<Boolean> = this.showChangePassword
+
         override fun showEmailErrorIcon(): Observable<Boolean> = this.showEmailErrorIcon
 
         override fun success(): BehaviorSubject<String> {
             return this.success
+        }
+
+        private fun showChangePassword(userPrivacy: UserPrivacyQuery.Data?) : Boolean?{
+            val hasPassword = userPrivacy?.me()?.hasPassword() ?: false
+            return !hasPassword
         }
 
         private fun showEmailErrorImage(userPrivacy: UserPrivacyQuery.Data?): Boolean? {

@@ -209,7 +209,9 @@ interface ChangeEmailViewModel {
         override fun verificationEmailButtonText(): Observable<Int> = this.verificationEmailButtonText
 
         private fun getWarningTextColor(userPrivacyData: UserPrivacyQuery.Data?): Int? {
-            return if (!userPrivacyData?.me()?.isDeliverable!!) {
+            val deliverable = userPrivacyData?.me()?.isDeliverable ?: false
+
+            return if (!deliverable) {
                 R.color.ksr_red_400
             } else {
                 R.color.ksr_dark_grey_400
@@ -217,9 +219,12 @@ interface ChangeEmailViewModel {
         }
 
         private fun getWarningText(userPrivacyData: UserPrivacyQuery.Data?): Int? {
-            return if (!userPrivacyData?.me()?.isDeliverable!!) {
+            val deliverable = userPrivacyData?.me()?.isDeliverable ?: false
+            val isEmailVerified = userPrivacyData?.me()?.isEmailVerified ?: false
+
+            return if (!deliverable) {
                 R.string.We_ve_been_unable_to_send_email
-            } else if (!userPrivacyData.me()?.isEmailVerified!!) {
+            } else if (!isEmailVerified) {
                 R.string.Email_unverified
             } else {
                 null
@@ -227,7 +232,9 @@ interface ChangeEmailViewModel {
         }
 
         private fun getVerificationText(userPrivacy: UserPrivacyQuery.Data?): Int? {
-            return if (!userPrivacy?.me()?.isCreator!!) {
+            val creator = userPrivacy?.me()?.isCreator ?: false
+
+            return if (!creator) {
                 R.string.Send_verfication_email
             } else {
                 R.string.Resend_verification_email

@@ -55,7 +55,9 @@
               android:layout_gravity="center_vertical"
               android:layout_marginEnd="@dimen/activity_horizontal_margin"
               android:contentDescription="@null"
-              android:src="@drawable/ic_email_error" />
+              android:src="@drawable/ic_email_error"
+              android:visibility="gone"
+              tools:visibility="visible" />
           </LinearLayout>
 
           <TextView

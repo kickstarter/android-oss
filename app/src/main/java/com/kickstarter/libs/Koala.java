@@ -3,7 +3,6 @@ package com.kickstarter.libs;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.extensions.AnswersExtKt;
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -301,12 +300,10 @@ public final class Koala {
   // SETTINGS
   public void trackChangedEmail() {
     this.client.track(KoalaEvent.CHANGED_EMAIL);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.CHANGED_EMAIL);
   }
 
   public void trackChangedPassword() {
     this.client.track(KoalaEvent.CHANGED_PASSWORD);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.CHANGED_PASSWORD);
   }
   public void trackContactEmailClicked() {
     this.client.track("Contact Email Clicked");
@@ -314,17 +311,14 @@ public final class Koala {
 
   public void trackDeletePaymentMethod() {
     this.client.track(KoalaEvent.DELETED_PAYMENT_METHOD);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.DELETED_PAYMENT_METHOD);
   }
 
   public void trackErroredDeletePaymentMethod() {
     this.client.track(KoalaEvent.ERRORED_DELETE_PAYMENT_METHOD);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.ERRORED_DELETE_PAYMENT_METHOD);
   }
 
   public void trackFailedPaymentMethodCreation() {
     this.client.track(KoalaEvent.FAILED_PAYMENT_METHOD_CREATION);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.FAILED_PAYMENT_METHOD_CREATION);
   }
 
   public void trackNewsletterToggle(final boolean sendNewsletter) {
@@ -337,12 +331,10 @@ public final class Koala {
 
   public void trackResentVerificationEmail() {
     this.client.track(KoalaEvent.RESENT_VERIFICATION_EMAIL);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.RESENT_VERIFICATION_EMAIL);
   }
 
   public void trackSavedPaymentMethod() {
     this.client.track(KoalaEvent.SAVED_PAYMENT_METHOD);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.SAVED_PAYMENT_METHOD);
   }
 
   public void trackSelectedChosenCurrency(final String selectedCurrency) {
@@ -351,53 +343,42 @@ public final class Koala {
         put("user_chosen_currency", selectedCurrency);
       }
     });
-
-    AnswersExtKt.fabricLogCustomEventWithAttributes(KoalaEvent.SELECTED_CHOSEN_CURRENCY, "currency", selectedCurrency);
   }
 
   public void trackSettingsView() {
     this.client.track("Settings View");
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_SETTINGS);
   }
 
   public void trackViewedAccount() {
     this.client.track(KoalaEvent.VIEWED_ACCOUNT);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_ACCOUNT);
   }
 
   public void trackViewedAddNewCard() {
     this.client.track(KoalaEvent.VIEWED_ADD_NEW_CARD);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_ADD_NEW_CARD);
   }
 
   public void trackViewedChangedEmail() {
     this.client.track(KoalaEvent.VIEWED_CHANGE_EMAIL);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_CHANGE_EMAIL);
   }
 
   public void trackViewedChangedPassword() {
     this.client.track(KoalaEvent.VIEWED_CHANGE_PASSWORD);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_CHANGE_PASSWORD);
   }
 
   public void trackViewedNotifications() {
     this.client.track(KoalaEvent.VIEWED_NOTIFICATIONS);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_NOTIFICATIONS);
   }
 
   public void trackViewedNewsletter() {
     this.client.track(KoalaEvent.VIEWED_NEWSLETTER);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_NEWSLETTER);
   }
 
   public void trackViewedPaymentMethods() {
     this.client.track(KoalaEvent.VIEWED_PAYMENT_METHODS);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_PAYMENT_METHODS);
   }
 
   public void trackViewedPrivacy() {
     this.client.track(KoalaEvent.VIEWED_PRIVACY);
-    AnswersExtKt.fabricLogCustomEvent(KoalaEvent.VIEWED_PRIVACY);
   }
 
   // CHECKOUT

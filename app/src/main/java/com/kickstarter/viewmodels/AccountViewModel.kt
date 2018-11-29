@@ -93,7 +93,7 @@ interface AccountViewModel {
                     .subscribe {
                         this.chosenCurrency.onNext(it)
                         this.success.onNext(it)
-                        this.koala.trackSelectedChosenCurrency()
+                        this.koala.trackSelectedChosenCurrency(it)
                     }
 
             updateCurrencyNotification

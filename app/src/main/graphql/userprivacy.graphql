@@ -2,6 +2,7 @@ query UserPrivacy {
   me {
     name
     email
+    hasPassword
     isCreator
     isDeliverable
     isEmailVerified

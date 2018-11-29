@@ -40,9 +40,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         this.viewModel.outputs.chosenCurrency()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    setSpinnerSelection(it)
-                }
+                .subscribe { setSpinnerSelection(it)  }
 
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
@@ -53,6 +51,11 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(progress_bar, !it) }
+
+        this.viewModel.outputs.passwordRequiredContainerIsVisible()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(password_required_container, !it) }
 
         this.viewModel.outputs.showEmailErrorIcon()
                 .compose(bindToLifecycle())

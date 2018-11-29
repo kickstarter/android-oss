@@ -13,14 +13,3 @@ fun fabricLogCustomEvent(customEvent: String) {
 fun fabricLogCustomEventWithAttributes(customEvent: String, key: String, attribute: String) {
     Answers.getInstance().logCustom(CustomEvent(customEvent).putCustomAttribute(key, attribute))
 }
-
-fun firebaseCustomEvent(context: Context, eventName: String) {
-    val bundle = Bundle()
-    FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle)
-}
-
-fun firebaseCustomEventWithParams(context: Context, eventName: String, key: String, eventAttribute: String) {
-    val bundle = Bundle()
-    bundle.putString(key, eventAttribute)
-    FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle)
-}

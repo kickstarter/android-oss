@@ -59,6 +59,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message)
         this.vm.inputs.confirmPassword("password")
         this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message, null)
+        this.koalaTest.assertValue( "Viewed Change Password")
     }
 
     @Test
@@ -83,7 +84,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.confirmPassword("pass")
         this.saveButtonIsEnabled.assertValues(false, true, false)
         this.vm.inputs.confirmPassword("passwerd")
-        this.saveButtonIsEnabled.assertValues(false,true, false)
+        this.saveButtonIsEnabled.assertValues(false, true, false)
     }
 
     @Test
@@ -91,7 +92,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
                 return Observable.just(UpdateUserPasswordMutation.Data(UpdateUserPasswordMutation.UpdateUserAccount("",
-                        UpdateUserPasswordMutation.User("", "test@email.com"))))
+                        UpdateUserPasswordMutation.User("", "test@email.com", false))))
             }
         }).build())
 
@@ -100,5 +101,6 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.confirmPassword("password")
         this.vm.inputs.changePasswordClicked()
         this.success.assertValue("test@email.com")
+        this.koalaTest.assertValues( "Viewed Change Password", "Changed Password")
     }
 }

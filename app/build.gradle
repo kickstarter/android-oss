@@ -158,9 +158,9 @@ android {
     }
 
     configurations.all {
-        resolutionStrategy.force 'com.android.support:appcompat-v7:27.1.0'
-        resolutionStrategy.force 'com.android.support:animated-vector-drawable:27.1.0'
-        resolutionStrategy.force 'com.android.support:customtabs:27.1.0'
+        resolutionStrategy.force 'com.android.support:appcompat-v7:27.1.1'
+        resolutionStrategy.force 'com.android.support:animated-vector-drawable:27.1.1'
+        resolutionStrategy.force 'com.android.support:customtabs:27.1.1'
     }
 
 }
@@ -171,12 +171,14 @@ buildscript {
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
     dependencies {
-        classpath 'com.apollographql.apollo:apollo-gradle-plugin:0.5.0'
+        classpath 'com.apollographql.apollo:apollo-gradle-plugin:1.0.1-SNAPSHOT'
     }
 }
 
 apollo {
-    customTypeMapping['Email'] = "java.lang.String"
+    customTypeMapping = [
+            "Email" : "java.lang.String"
+    ]
 }
 
 afterEvaluate {
@@ -206,13 +208,13 @@ repositories {
 }
 
 // library versions
-final apollo = "0.5.0"
+final apollo = "1.0.0-alpha3"
 final auto_parcel_version = "0.3.1"
 final butterknife_version = "7.0.1"
 final constraint_layout_version = "1.1.0"
-final crashlytics_version = "2.9.4@aar"
+final crashlytics_version = "2.9.6@aar"
 final dagger_version = "2.11"
-final exoplayer_version = "2.7.0"
+final exoplayer_version = "2.9.1"
 final facebook_version = "4.33.0"
 final firebase_version = "16.0.0"
 final firebase_job_dispatcher_version = "0.8.5"
@@ -231,7 +233,7 @@ final rx_binding_version = "0.3.0"
 final rx_java_version = "1.1.5"
 final rx_lifecycle_version = "0.3.0"
 final stripe_version = "6.1.2"
-final support_version = "27.1.0"
+final support_version = "27.1.1"
 final support_annotations_version = "27.1.1"
 final timber_version = "3.0.1"
 

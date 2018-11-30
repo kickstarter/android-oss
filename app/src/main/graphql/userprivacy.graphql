@@ -2,6 +2,10 @@ query UserPrivacy {
   me {
     name
     email
+    hasPassword
+    isCreator
+    isDeliverable
+    isEmailVerified
     chosenCurrency
   }
 }
@@ -27,6 +31,13 @@ mutation UpdateUserPassword($currentPassword: String!, $password: String!, $pass
   updateUserAccount(input: {currentPassword: $currentPassword, password: $password, passwordConfirmation: $passwordConfirmation}) {
     user {
       email
+      isEmailVerified
     }
   }
+}
+
+mutation sendEmailVerification {
+ userSendEmailVerification(input: {}) {
+        clientMutationId
+    }
 }

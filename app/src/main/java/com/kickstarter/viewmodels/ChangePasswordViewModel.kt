@@ -97,8 +97,12 @@ interface ChangePasswordViewModel {
             changePasswordNotification
                     .compose(values())
                     .map { it.updateUserAccount()?.user()?.email() }
-                    .subscribe(this.success)
+                    .subscribe {
+                        this.success.onNext(it)
+                        this.koala.trackChangedPassword()
+                    }
 
+            this.koala.trackViewedChangedPassword()
         }
 
         private fun submit(changePassword: ChangePasswordViewModel.ViewModel.ChangePassword): Observable<UpdateUserPasswordMutation.Data> {

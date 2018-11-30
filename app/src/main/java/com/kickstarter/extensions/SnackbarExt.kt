@@ -22,6 +22,11 @@ fun Snackbar.headsUp(): Snackbar {
     return this
 }
 
+fun Snackbar.networkError(): Snackbar {
+    style(true, Gravity.CENTER, R.color.ksr_soft_black, R.drawable.bg_snackbar_network_error)
+    return this
+}
+
 fun Snackbar.adjustMargins() {
     val params = this.view.layoutParams as ViewGroup.MarginLayoutParams
     val grid1 = context.resources.getDimensionPixelSize(R.dimen.grid_1)

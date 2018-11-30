@@ -32,14 +32,34 @@
         android:orientation="vertical">
 
         <LinearLayout
+          android:id="@+id/password_required_container"
           style="@style/SettingsLinearRow"
-          android:layout_marginBottom="@dimen/grid_3"
           android:layout_marginTop="@dimen/grid_3">
 
-          <TextView
+          <LinearLayout
             android:id="@+id/change_email_row"
-            style="@style/SettingsSingleRow"
-            android:text="@string/Change_email" />
+            style="@style/SettingsLinearRow"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/grid_3">
+
+            <TextView
+              style="@style/CalloutPrimary"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:text="@string/Change_email" />
+
+            <ImageView
+              android:id="@+id/email_error_icon"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:contentDescription="@null"
+              android:scaleType="centerCrop"
+              android:src="@drawable/ic_email_error"
+              android:visibility="gone"
+              tools:visibility="visible" />
+          </LinearLayout>
 
           <TextView
             android:id="@+id/change_password_row"
@@ -49,7 +69,8 @@
         </LinearLayout>
 
         <LinearLayout
-          style="@style/SettingsLinearRow">
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_3">
 
           <TextView
             android:id="@+id/privacy_row"

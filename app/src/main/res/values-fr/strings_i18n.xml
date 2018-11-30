@@ -216,12 +216,14 @@ contributeurs</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">La préparation de vos données personnelles peut prendre jusqu\'à 24 heures. Nous vous enverrons des instructions de téléchargement à l\'adresse e-mail associée à ce compte une fois que tout sera prêt. Si vous ne recevez rien, revenez ici pour réessayer.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">C\'est un outil qui permet de donner vie à des projets créatifs.</string>
   <string name="Its_better_with_friends" formatted="false">On est mieux ensemble.</string>
+  <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">It\'s like the radio but nothing sucks and also it\'s a newsletter.</string>
   <string name="Join_our_secret_society" formatted="false">Notre société secrète n\'attend que vous.</string>
   <string name="Joining_the_live_stream" formatted="false">Connexion à la diffusion en direct en cours</string>
   <string name="Just_for_you" formatted="false">Rien que pour vous.</string>
   <string name="Keep_in_touch_after_your_campaign" formatted="false">Une façon de garder le contact après votre campagne et de prévoir votre prochain projet.</string>
   <string name="Keep_reading" formatted="false">Plus</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Soyez informé des prochaines diffusions en direct</string>
+  <string name="Kickstarter_Music" formatted="false">Kickstarter Music</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (si le projet est financé)</string>
   <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter n\'est pas un magasin.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Activez vos notifications pour savoir quand un créateur ou un contributeur vous envoie un message.</string>
@@ -1194,7 +1196,7 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_settings_newsletter_happening_now" formatted="false">Happening Now</string>
   <string name="profile_settings_newsletter_invent" formatted="false">Inventions</string>
   <string name="profile_settings_newsletter_music" formatted="false">Kickstarter Music</string>
-  <string name="profile_settings_newsletter_music_newsletter" formatted="false">Sign up to receive a biweekly newsletter full of Mongolian woodwind orchestras, soundtracks to horror movies that don’t exist, operas about insects, and other things you can only find here on Kickstarter Music.</string>
+  <string name="profile_settings_newsletter_music_newsletter" formatted="false">Une lettre d\'information bimensuelle où vous retrouverez un orchestre d\'instruments à vent mongoliens, la bande-son d\'un film d\'horreur inexistant, un opéra sur les insectes et d\'autres choses à la fois insolites et inédites.</string>
   <string name="profile_settings_newsletter_news_event" formatted="false">Actualités et événements</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">Nous vous avons envoyé un e-mail de confirmation à l\'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">Dernière étape !</string>

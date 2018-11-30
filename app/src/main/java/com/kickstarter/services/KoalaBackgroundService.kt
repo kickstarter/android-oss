@@ -27,11 +27,10 @@ class KoalaBackgroundService : JobService() {
     override fun onStartJob(job: JobParameters?): Boolean {
         val extras = job?.extras
         val eventName = extras?.get(IntentKey.KOALA_EVENT_NAME) as String
-        val eventProperties = extras.get(IntentKey.KOALA_EVENT) as String
-        koala.track(eventProperties)
+        koala.track(extras.get(IntentKey.KOALA_EVENT) as String)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    logResponse(it, eventProperties)
+                    logResponse(it, eventName)
                     jobFinished(job, !it.isSuccessful)
 
                 }, {

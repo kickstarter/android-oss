@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -59,13 +60,18 @@ public final class KoalaTrackingClient extends TrackingClientType {
   @Override
   public void track(final @NonNull String eventName, final @NonNull Map<String, Object> additionalProperties) {
     try {
-      final String trackingDataString = getTrackingDataString(eventName, combinedProperties(additionalProperties));
+      final String trackingData = getTrackingData(eventName, combinedProperties(additionalProperties));
+      final String encodedTrackingData = Base64Utils.encodeUrlSafe(trackingData
+        .getBytes());
       final Bundle bundle = new Bundle();
       bundle.putString(IntentKey.KOALA_EVENT_NAME, eventName);
-      bundle.putString(IntentKey.KOALA_EVENT, trackingDataString);
+      bundle.putString(IntentKey.KOALA_EVENT, encodedTrackingData);
 
       final String uniqueJobName = KoalaBackgroundService.BASE_JOB_NAME + System.currentTimeMillis();
       DispatcherKt.dispatchJob(this.context, KoalaBackgroundService.class, uniqueJobName, bundle);
+      if (this.build.isDebug()) {
+        Log.d(TAG, "Queued event:" + trackingData);
+      }
     } catch (JSONException e) {
       if (this.build.isDebug()) {
         Timber.e("Failed to encode event: " + eventName);
@@ -74,7 +80,7 @@ public final class KoalaTrackingClient extends TrackingClientType {
     }
   }
 
-  private String getTrackingDataString(final @NonNull String eventName, final @NonNull Map<String, Object> newProperties) throws JSONException {
+  private String getTrackingData(final @NonNull String eventName, final @NonNull Map<String, Object> newProperties) throws JSONException {
     final JSONObject trackingEvent = new JSONObject();
     trackingEvent.put("event", eventName);
 
@@ -87,7 +93,7 @@ public final class KoalaTrackingClient extends TrackingClientType {
     final JSONArray trackingArray = new JSONArray();
     trackingArray.put(trackingEvent);
 
-    return Base64Utils.encodeUrlSafe(trackingArray.toString().getBytes());
+    return trackingArray.toString();
   }
 
   @Override

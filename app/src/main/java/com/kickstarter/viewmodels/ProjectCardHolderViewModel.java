@@ -225,7 +225,6 @@ public interface ProjectCardHolderViewModel {
         .map(gone -> gone ? R.drawable.rect_white_grey_stroke : R.drawable.rect_green_grey_stroke);
 
       this.nameAndBlurbText = this.project
-        .filter(p -> ObjectUtils.isNull(p.name()))
         .map(p -> Pair.create(p.name(), p.blurb()));
 
       this.notifyDelegateOfProjectClick = this.project

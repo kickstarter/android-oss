@@ -134,7 +134,7 @@ public final class Koala {
    */
   @Deprecated
   public void trackLoadedOlderProjectComments(final @NonNull Project project) {
-    this.client.track(KoalaEvent.PROJECT_COMMENT_LOAD_OLDER, KoalaUtils.projectProperties(project, client.loggedInUser()));
+    this.client.track(KoalaEvent.PROJECT_COMMENT_LOAD_OLDER, KoalaUtils.projectProperties(project, this.client.loggedInUser()));
   }
 
   public void trackPostedComment(final @NonNull Project project, final @Nullable Update update,
@@ -533,7 +533,7 @@ public final class Koala {
 
   // VIDEO
   public void trackVideoStart(final @NonNull Project project) {
-    this.client.track("Project Video Start", KoalaUtils.projectProperties(project, client.loggedInUser()));
+    this.client.track("Project Video Start", KoalaUtils.projectProperties(project, this.client.loggedInUser()));
   }
 
   // PROJECT UPDATES

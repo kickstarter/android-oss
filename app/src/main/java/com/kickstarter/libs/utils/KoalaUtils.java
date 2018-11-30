@@ -34,7 +34,6 @@ public final class KoalaUtils {
         put("term", params.term());
         put("sort", params.sort() != null ? String.valueOf(params.sort()) : "");
 
-
         final Category category = params.category();
         if (category != null) {
           putAll(categoryProperties(category));

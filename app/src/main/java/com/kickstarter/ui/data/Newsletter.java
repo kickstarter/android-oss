@@ -8,6 +8,7 @@ public enum Newsletter {
   GAMES,
   HAPPENING,
   INVENT,
+  MUSIC,
   PROMO,
   READS,
   WEEKLY

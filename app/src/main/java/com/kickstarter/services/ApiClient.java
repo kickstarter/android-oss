@@ -500,6 +500,7 @@ public final class ApiClient implements ApiClientType {
           .gamesNewsletter(isTrue(user.gamesNewsletter()) ? 1 : 0)
           .happeningNewsletter(isTrue(user.happeningNewsletter()) ? 1 : 0)
           .inventNewsletter(isTrue(user.inventNewsletter()) ? 1 : 0)
+          .musicNewsletter(isTrue(user.musicNewsletter()) ? 1 : 0)
           .promoNewsletter(isTrue(user.promoNewsletter()) ? 1 : 0)
           .publishingNewsletter(isTrue(user.publishingNewsletter()) ? 1 : 0)
           .showPublicProfile(isTrue(user.showPublicProfile()) ? 1 : 0)

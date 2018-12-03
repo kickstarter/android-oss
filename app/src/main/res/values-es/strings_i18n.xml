@@ -217,12 +217,14 @@ patrocinadores</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">Puede demorar hasta 24 horas recopilar tus datos. Cuando estén listos, te enviaremos instrucciones para descargar tus datos al correo electrónico asociado con esta cuenta. Si no recibes noticias nuestras, vuelve aquí e inténtalo de nuevo.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">Es una plataforma para dar vida a proyectos creativos.</string>
   <string name="Its_better_with_friends" formatted="false">Todo en la vida es mejor con amigos ...</string>
+  <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">Es como la radio, pero sin malas noticias y, además, es un boletín informativo.</string>
   <string name="Join_our_secret_society" formatted="false">Únete a nuestra sociedad secreta.</string>
   <string name="Joining_the_live_stream" formatted="false">Abriendo conexión a Live Stream</string>
   <string name="Just_for_you" formatted="false">Sólo para ti.</string>
   <string name="Keep_in_touch_after_your_campaign" formatted="false">Mantente en contacto después de tu campaña y planifica tu próximo proyecto.</string>
   <string name="Keep_reading" formatted="false">Leer más</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Recibe info sobre live streams futuros</string>
+  <string name="Kickstarter_Music" formatted="false">Kickstarter Music</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (si la financiación es exitosa)</string>
   <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter no es una tienda.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Entérate cuando los creadores y patrocinadores te envíen mensajes habilitando las notificaciones.</string>
@@ -496,7 +498,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Your_shipping_destination" formatted="false">Tu destino de envío</string>
   <string name="Youre_a_backer" formatted="false">¡Eres un patrocinador!</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Estás a punto de crear una nueva cuenta de Kickstarter usando el correo electrónico associado a tu cuenta de Facebook. Por favor confírmalo antes de proceder.</string>
-  <string name="Youre_offline" formatted="false">You’re offline. Once your device reconnects, navigate around the app to refresh.</string>
+  <string name="Youre_offline" formatted="false">Estás desconectado. Cuando tu dispositivo se vuelva a conectar, ve a la aplicación para actualizarla.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Hiciste una contribución a este proyecto. El plazo de financiamiento todavía no ha terminado.</string>
   <string name="Zip_code" formatted="false">Código postal</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">Actividad</string>
@@ -1196,7 +1198,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_newsletter_happening_now" formatted="false">Happening ahora</string>
   <string name="profile_settings_newsletter_invent" formatted="false">Invenciones</string>
   <string name="profile_settings_newsletter_music" formatted="false">Kickstarter Music</string>
-  <string name="profile_settings_newsletter_music_newsletter" formatted="false">Sign up to receive a biweekly newsletter full of Mongolian woodwind orchestras, soundtracks to horror movies that don’t exist, operas about insects, and other things you can only find here on Kickstarter Music.</string>
+  <string name="profile_settings_newsletter_music_newsletter" formatted="false">Suscríbete para recibir un boletín quincenal lleno de orquestas de viento de Mongolia, bandas sonoras de películas de terror que no existen, óperas sobre insectos, y otras cosas que sólo podrás encontrar aquí en Kickstarter Music.</string>
   <string name="profile_settings_newsletter_news_event" formatted="false">Novedades y eventos</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">Hemos enviado una confirmación a la dirección de correo electrónico asociada con tu cuenta. Por favor checa tu bandeja de entrada y confirma la subscripción a %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">¡Sólo un último paso!</string>

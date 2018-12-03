@@ -56,6 +56,6 @@ open class MockApolloClient : ApolloClientType {
 
     override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
         return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "Some Name",
-                "some@email.com", true, true, true, "USD")))
+                "some@email.com", true, true, true, true, "USD")))
     }
 }

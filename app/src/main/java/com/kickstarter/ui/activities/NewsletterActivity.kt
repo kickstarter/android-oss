@@ -58,6 +58,7 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
         games_we_love_switch.setOnClickListener { viewModel.inputs.sendGamesNewsletter(games_we_love_switch.isChecked) }
         happening_switch.setOnClickListener { viewModel.inputs.sendHappeningNewsletter(happening_switch.isChecked) }
         invent_switch.setOnClickListener { viewModel.inputs.sendInventNewsletter(invent_switch.isChecked) }
+        music_switch.setOnClickListener { viewModel.inputs.sendMusicNewsletter(music_switch.isChecked) }
         news_events_switch.setOnClickListener { viewModel.inputs.sendPromoNewsletter(news_events_switch.isChecked) }
         projects_we_love_switch.setOnClickListener { viewModel.inputs.sendWeeklyNewsletter(projects_we_love_switch.isChecked) }
         reads_switch.setOnClickListener { viewModel.inputs.sendReadsNewsletter(reads_switch.isChecked) }
@@ -71,6 +72,7 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
         SwitchCompatUtils.setCheckedWithoutAnimation(games_we_love_switch, isTrue(user.gamesNewsletter()))
         SwitchCompatUtils.setCheckedWithoutAnimation(happening_switch, isTrue(user.happeningNewsletter()))
         SwitchCompatUtils.setCheckedWithoutAnimation(invent_switch, isTrue(user.inventNewsletter()))
+        SwitchCompatUtils.setCheckedWithoutAnimation(music_switch, isTrue(user.musicNewsletter()))
         SwitchCompatUtils.setCheckedWithoutAnimation(news_events_switch, isTrue(user.promoNewsletter()))
         SwitchCompatUtils.setCheckedWithoutAnimation(projects_we_love_switch, isTrue(user.weeklyNewsletter()))
         SwitchCompatUtils.setCheckedWithoutAnimation(reads_switch, isTrue(user.publishingNewsletter()))
@@ -85,6 +87,7 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
             Newsletter.GAMES -> getString(R.string.profile_settings_newsletter_games)
             Newsletter.HAPPENING -> getString(R.string.profile_settings_newsletter_happening)
             Newsletter.INVENT -> getString(R.string.profile_settings_newsletter_invent)
+            Newsletter.MUSIC -> getString(R.string.Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter)
             Newsletter.PROMO -> getString(R.string.profile_settings_newsletter_promo)
             Newsletter.READS -> getString(R.string.profile_settings_newsletter_publishing)
             Newsletter.WEEKLY -> getString(R.string.profile_settings_newsletter_weekly)

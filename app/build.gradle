@@ -171,13 +171,13 @@ buildscript {
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
     dependencies {
-        classpath 'com.apollographql.apollo:apollo-gradle-plugin:0.5.0'
+        classpath 'com.apollographql.apollo:apollo-gradle-plugin:1.0.1-SNAPSHOT'
     }
 }
 
 apollo {
-    customTypeMapping['Email'] = "java.lang.String"
-    customTypeMapping['Date'] = "java.util.Date"
+    customTypeMapping = ["Email" : "java.lang.String"]
+    customTypeMapping = ["Date" : "java.util.Date"]
 }
 
 afterEvaluate {
@@ -207,7 +207,7 @@ repositories {
 }
 
 // library versions
-final apollo = "0.5.0"
+final apollo = "1.0.0-alpha3"
 final auto_parcel_version = "0.3.1"
 final butterknife_version = "7.0.1"
 final constraint_layout_version = "1.1.3"

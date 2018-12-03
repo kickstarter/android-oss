@@ -33,6 +33,7 @@ public abstract class SettingsBody {
   public abstract int gamesNewsletter();
   public abstract int happeningNewsletter();
   public abstract int inventNewsletter();
+  public abstract int musicNewsletter();
   public abstract int promoNewsletter();
   public abstract int publishingNewsletter();
   public abstract int weeklyNewsletter();
@@ -65,6 +66,7 @@ public abstract class SettingsBody {
     public abstract Builder gamesNewsletter(int __);
     public abstract Builder happeningNewsletter(int __);
     public abstract Builder inventNewsletter(int __);
+    public abstract Builder musicNewsletter(int __);
     public abstract Builder promoNewsletter(int __);
     public abstract Builder publishingNewsletter(int __);
     public abstract Builder weeklyNewsletter(int __);

@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities
 
 import android.content.Context
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -106,16 +107,12 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
         this.viewModel.outputs.warningTextColor()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    email_warning_text_view.setTextColor(it)
-                }
+                .subscribe { email_warning_text_view.setTextColor(ContextCompat.getColor(this@ChangeEmailActivity, it)) }
 
         this.viewModel.outputs.verificationEmailButtonText()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    verification_text_view.text = getString(it)
-                }
+                .subscribe { verification_text_view.text = getString(it) }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

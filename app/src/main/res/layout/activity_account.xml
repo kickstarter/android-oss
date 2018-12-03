@@ -32,19 +32,21 @@
         android:orientation="vertical">
 
         <LinearLayout
+          android:id="@+id/password_required_container"
           style="@style/SettingsLinearRow"
-          android:layout_marginBottom="@dimen/grid_3"
           android:layout_marginTop="@dimen/grid_3">
 
           <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:id="@+id/change_email_row"
+            style="@style/SettingsLinearRow"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/grid_3">
 
             <TextView
-              android:id="@+id/change_email_row"
-              style="@style/SettingsSingleRow"
+              style="@style/CalloutPrimary"
               android:layout_width="0dp"
+              android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/Change_email" />
 
@@ -52,12 +54,11 @@
               android:id="@+id/email_error_icon"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_gravity="center_vertical"
-              android:visibility="gone"
-              android:layout_marginEnd="@dimen/activity_horizontal_margin"
               android:contentDescription="@null"
               android:scaleType="centerCrop"
-              android:src="@drawable/ic_email_error" />
+              android:src="@drawable/ic_email_error"
+              android:visibility="gone"
+              tools:visibility="visible" />
           </LinearLayout>
 
           <TextView
@@ -69,7 +70,8 @@
 
         <LinearLayout
           android:id="@+id/privacy_row"
-          style="@style/SettingsLinearRow">
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_3">
 
           <TextView
             style="@style/SettingsSingleRow"

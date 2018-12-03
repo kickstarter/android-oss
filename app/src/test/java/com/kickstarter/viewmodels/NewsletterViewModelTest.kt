@@ -165,6 +165,27 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testMusictNewsletter() {
+        val user = UserFactory.user().toBuilder().musicNewsletter(false).build()
+
+        setUpEnvironment(user)
+
+        this.vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest)
+
+        this.currentUserTest.assertValues(user)
+
+        this.vm.inputs.sendMusicNewsletter(true)
+        this.koalaTest.assertValues("Viewed Newsletter","Newsletter Subscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().musicNewsletter(true).build())
+
+        this.vm.inputs.sendMusicNewsletter(false)
+        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe", "Newsletter Unsubscribe")
+        this.currentUserTest.assertValues(user, user.toBuilder().musicNewsletter(true).build(), user)
+
+        this.showOptInPromptTest.assertNoValues()
+    }
+
+    @Test
     fun testPromoNewsletter() {
         val user = UserFactory.user().toBuilder().promoNewsletter(false).build()
 
@@ -210,7 +231,7 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     fun testSubscribeAll() {
         val user = UserFactory.user().toBuilder().alumniNewsletter(true).artsCultureNewsletter(true)
                 .filmNewsletter(true).gamesNewsletter(true).inventNewsletter(true)
-                .happeningNewsletter(true).promoNewsletter(true).publishingNewsletter(true)
+                .happeningNewsletter(true).musicNewsletter(true).promoNewsletter(true).publishingNewsletter(true)
                 .weeklyNewsletter(false).build()
 
         setUpEnvironment(user)

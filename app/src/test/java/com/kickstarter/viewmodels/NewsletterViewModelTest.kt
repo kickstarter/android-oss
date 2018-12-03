@@ -231,7 +231,7 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     fun testSubscribeAll() {
         val user = UserFactory.user().toBuilder().alumniNewsletter(true).artsCultureNewsletter(true)
                 .filmNewsletter(true).gamesNewsletter(true).inventNewsletter(true)
-                .happeningNewsletter(true).promoNewsletter(true).publishingNewsletter(true)
+                .happeningNewsletter(true).musicNewsletter(true).promoNewsletter(true).publishingNewsletter(true)
                 .weeklyNewsletter(false).build()
 
         setUpEnvironment(user)

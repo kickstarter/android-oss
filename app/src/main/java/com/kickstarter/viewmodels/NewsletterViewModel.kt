@@ -42,6 +42,9 @@ interface NewsletterViewModel {
         /** Call when the user toggles the invent switch */
         fun sendInventNewsletter(checked: Boolean)
 
+        /** Call when the user toggles the music switch */
+        fun sendMusicNewsletter(checked: Boolean)
+
         /** Call when the user toggles the Kickstarter News & Events newsletter switch.  */
         fun sendPromoNewsletter(checked: Boolean)
 
@@ -146,6 +149,7 @@ interface NewsletterViewModel {
                     .gamesNewsletter(checked)
                     .happeningNewsletter(checked)
                     .inventNewsletter(checked)
+                    .musicNewsletter(checked)
                     .promoNewsletter(checked)
                     .publishingNewsletter(checked)
                     .weeklyNewsletter(checked)
@@ -183,6 +187,11 @@ interface NewsletterViewModel {
             this.newsletterInput.onNext(Pair(checked, Newsletter.INVENT))
         }
 
+        override fun sendMusicNewsletter(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().musicNewsletter(checked).build())
+            this.newsletterInput.onNext(Pair(checked, Newsletter.MUSIC))
+        }
+
         override fun sendPromoNewsletter(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().promoNewsletter(checked).build())
             this.newsletterInput.onNext(Pair(checked, Newsletter.PROMO))
@@ -214,8 +223,8 @@ interface NewsletterViewModel {
             return isTrue(user.alumniNewsletter()) && isTrue(user.artsCultureNewsletter()) &&
             isTrue(user.filmNewsletter()) && isTrue(user.gamesNewsletter()) &&
                     isTrue(user.happeningNewsletter()) && isTrue(user.inventNewsletter()) &&
-                    isTrue(user.promoNewsletter()) && isTrue(user.publishingNewsletter()) &&
-                    isTrue(user.weeklyNewsletter())
+                    isTrue(user.musicNewsletter()) && isTrue(user.promoNewsletter()) &&
+                    isTrue(user.publishingNewsletter()) && isTrue(user.weeklyNewsletter())
         }
 
         private fun requiresDoubleOptIn(user: User, checked: Boolean) = UserUtils.isLocationGermany(user) && checked

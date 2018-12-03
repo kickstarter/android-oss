@@ -176,8 +176,8 @@ buildscript {
 }
 
 apollo {
-    customTypeMapping['Email'] = "java.lang.String"
-    customTypeMapping['Date'] = "java.util.Date"
+    customTypeMapping = ["Email" : "java.lang.String"]
+    customTypeMapping = ["Date" : "java.util.Date"]
 }
 
 afterEvaluate {

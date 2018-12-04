@@ -114,8 +114,10 @@
             <android.support.design.widget.TextInputEditText
               android:id="@+id/current_password"
               style="@style/ChangeEmailPassTextInputEditText"
+              android:autofillHints="password"
               android:hint="@string/Current_password"
-              android:inputType="textPassword" />
+              android:inputType="textPassword"
+              tools:targetApi="o" />
 
           </android.support.design.widget.TextInputLayout>
 

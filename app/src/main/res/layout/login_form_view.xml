@@ -2,6 +2,7 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:gravity="center_horizontal"
@@ -16,11 +17,13 @@
     <android.support.design.widget.TextInputEditText
       android:id="@+id/email"
       style="@style/CalloutPrimary"
+      android:autofillHints="email"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:hint="@string/login_placeholder_email"
       android:inputType="textEmailAddress"
-      android:maxLines="1" />
+      android:maxLines="1"
+      tools:targetApi="o" />
 
   </android.support.design.widget.TextInputLayout>
 
@@ -35,11 +38,13 @@
     <android.support.design.widget.TextInputEditText
       android:id="@+id/password"
       style="@style/CalloutPrimary"
+      android:autofillHints="password"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/grid_2"
       android:hint="@string/login_placeholder_password"
-      android:inputType="textPassword" />
+      android:inputType="textPassword"
+      tools:targetApi="o" />
 
   </android.support.design.widget.TextInputLayout>
 

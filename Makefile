@@ -25,14 +25,6 @@ secrets:
 	cp vendor/native-secrets/ruby/secrets.rb lib/milkrun/secrets.rb || true
 	cp vendor/native-secrets/fonts/ss-kickstarter.otf app/src/main/assets/fonts/ss-kickstarter.otf || true
 
-	# Copy kola configs over. Fallback to examples if they don't exist.
-	mkdir -p app/src/debug/res/values/
-	mkdir -p app/src/main/res/values/
-	cp vendor/native-secrets/android/koala_endpoint_debug.xml app/src/debug/res/values/koala_endpoint.xml \
-		|| cp config/koala_endpoint.xml.example app/src/debug/res/values/koala_endpoint.xml
-	cp vendor/native-secrets/android/koala_endpoint.xml app/src/main/res/values/koala_endpoint.xml \
-		|| cp config/koala_endpoint.xml.example app/src/main/res/values/koala_endpoint.xml
-
   # Copy crashlytics over. Fallback to examples if they don't exist
 	cp vendor/native-secrets/android/fabric.properties app/fabric.properties || cp config/fabric.properties.example app/fabric.properties
 

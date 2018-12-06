@@ -26,13 +26,13 @@ public final class KoalaUtils {
 
     final Map<String, Object> properties = Collections.unmodifiableMap(new HashMap<String, Object>() {
       {
-        put("staff_picks", params.staffPicks());
-        put("starred", params.starred());
-        put("social", params.social());
+        put("everything", BooleanUtils.isTrue(params.isAllProjects()));
+        put("recommended", BooleanUtils.isTrue(params.recommended()));
+        put("social", BooleanUtils.isIntTrue(params.social()));
+        put("staff_picks", BooleanUtils.isTrue(params.staffPicks()));
+        put("starred", BooleanUtils.isIntTrue(params.starred()));
         put("term", params.term());
         put("sort", params.sort() != null ? String.valueOf(params.sort()) : "");
-        put("page", params.page());
-        put("per_page", params.perPage());
 
         final Category category = params.category();
         if (category != null) {
@@ -46,7 +46,12 @@ public final class KoalaUtils {
       }
     });
 
-    return MapUtils.prefixKeys(properties, prefix);
+    final Map<String, Object> prefixedProperties = MapUtils.prefixKeys(properties, prefix);
+
+    prefixedProperties.put("page", params.page());
+    prefixedProperties.put("per_page", params.perPage());
+
+    return prefixedProperties;
   }
 
   public static @NonNull Map<String, Object> categoryProperties(final @NonNull Category category) {
@@ -56,7 +61,7 @@ public final class KoalaUtils {
   public static @NonNull Map<String, Object> categoryProperties(final @NonNull Category category, final @NonNull String prefix) {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
-        put("id", String.valueOf(category.id()));
+        put("id", category.id());
         put("name", String.valueOf(category.name()));
       }
     };
@@ -101,33 +106,27 @@ public final class KoalaUtils {
     return MapUtils.prefixKeys(properties, prefix);
   }
 
-  public static @NonNull Map<String, Object> projectProperties(final @NonNull Project project) {
-    return projectProperties(project, "project_");
-  }
-
-  public static @NonNull Map<String, Object> projectProperties(final @NonNull Project project, final @NonNull String prefix) {
-    return projectProperties(project, null, prefix);
+  public static @NonNull Map<String, Object> projectProperties(final @NonNull Project project, final @Nullable User loggedInUser) {
+    return projectProperties(project, loggedInUser, "project_");
   }
 
   public static @NonNull Map<String, Object> projectProperties(final @NonNull Project project, final @Nullable User loggedInUser, final @NonNull String prefix) {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
         put("backers_count", project.backersCount());
+        put("comments_count", project.commentsCount());
         put("country", project.country());
+        put("duration", Math.round(ProjectUtils.timeInSecondsOfDuration(project)));
         put("currency", project.currency());
         put("goal", project.goal());
-        put("pid", project.id());
+        put("has_video", project.video() != null);
+        put("hours_remaining", (int) Math.ceil(ProjectUtils.timeInSecondsUntilDeadline(project) / 60.0f / 60.0f));
         put("name", project.name());
+        put("percent_raised", project.percentageFunded() / 100.0f);
+        put("pid", project.id());
+        put("pledged", project.pledged());
         put("state", project.state());
         put("update_count", project.updatesCount());
-        put("comments_count", project.commentsCount());
-        put("pledged", project.pledged());
-        put("percent_raised", project.percentageFunded() / 100.0f);
-        put("has_video", project.video() != null);
-        put("hours_remaining", ProjectUtils.timeInSecondsUntilDeadline(project) / 60.0f / 60.0f);
-
-        // TODO: Implement `duration`
-        // put("duration", project.duration());
 
         final Category category = project.category();
         if (category != null) {
@@ -142,25 +141,27 @@ public final class KoalaUtils {
         if (location != null) {
           put("location", location.name());
         }
-
-        putAll(userProperties(project.creator(), "creator_"));
-
-        if (loggedInUser != null) {
-          put("user_is_project_creator", ProjectUtils.userIsCreator(project, loggedInUser));
-          put("user_is_backer", project.isBacking());
-          put("user_has_starred", project.isStarred());
-        }
       }
     };
 
-    return MapUtils.prefixKeys(properties, prefix);
+    final Map<String, Object> prefixedMap = MapUtils.prefixKeys(properties, prefix);
+
+    prefixedMap.putAll(userProperties(project.creator(), "creator_"));
+
+    if (loggedInUser != null) {
+      prefixedMap.put("user_is_project_creator", ProjectUtils.userIsCreator(project, loggedInUser));
+      prefixedMap.put("user_is_backer", project.isBacking());
+      prefixedMap.put("user_has_starred", project.isStarred());
+    }
+
+    return prefixedMap;
   }
 
-  public static @NonNull Map<String, Object> activityProperties(final @NonNull Activity activity) {
-    return activityProperties(activity, "activity_");
+  public static @NonNull Map<String, Object> activityProperties(final @NonNull Activity activity, final @Nullable User loggedInUser) {
+    return activityProperties(activity, loggedInUser, "activity_");
   }
 
-  public static @NonNull Map<String, Object> activityProperties(final @NonNull Activity activity, final @NonNull String prefix) {
+  public static @NonNull Map<String, Object> activityProperties(final @NonNull Activity activity, final @Nullable User loggedInUser, final @NonNull String prefix) {
     Map<String, Object> properties = new HashMap<String, Object>() {
       {
         put("category", activity.category());
@@ -171,39 +172,38 @@ public final class KoalaUtils {
 
     final Project project = activity.project();
     if (project != null) {
-      properties.putAll(projectProperties(project));
+      properties.putAll(projectProperties(project, loggedInUser));
 
       final Update update = activity.update();
       if (update != null) {
-        properties.putAll(updateProperties(project, update));
+        properties.putAll(updateProperties(project, update, loggedInUser));
       }
     }
 
     return properties;
   }
 
-  public static @NonNull Map<String, Object> updateProperties(final @NonNull Project project, final @NonNull Update update) {
-    return updateProperties(project, update, "update_");
+  public static @NonNull Map<String, Object> updateProperties(final @NonNull Project project, final @NonNull Update update, final @Nullable User loggedInUser) {
+    return updateProperties(project, update, loggedInUser, "update_");
   }
 
-  public static @NonNull Map<String, Object> updateProperties(final @NonNull Project project, final @NonNull Update update, final @NonNull String prefix) {
+  public static @NonNull Map<String, Object> updateProperties(final @NonNull Project project, final @NonNull Update update, final @Nullable User loggedInUser, final @NonNull String prefix) {
     Map<String, Object> properties = new HashMap<String, Object>() {
       {
-        put("id", update.id());
-        put("title", update.title());
-        put("visible", update.visible());
         put("comments_count", update.commentsCount());
-
-        // TODO: add `public` to `Update` model
-        // put("public")
-        // TODO: how to convert update.publishedAt() to seconds since 1970
-        // put("published_at", update.publishedAt())
+        put("has_liked", update.hasLiked());
+        put("id", update.id());
+        put("likes_count", update.likesCount());
+        put("title", update.title());
+        put("sequence", update.sequence());
+        put("visible", update.visible());
+        put("published_at", update.publishedAt());
       }
     };
 
     properties = MapUtils.prefixKeys(properties, prefix);
 
-    properties.putAll(projectProperties(project));
+    properties.putAll(projectProperties(project, loggedInUser));
 
     return properties;
   }

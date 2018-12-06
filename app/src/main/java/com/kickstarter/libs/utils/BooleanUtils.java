@@ -23,6 +23,13 @@ public final class BooleanUtils {
   }
 
   /**
+   * Returns `false` if the integer is `0` or `null`, and `true` otherwise.
+   */
+  public static boolean isIntTrue(final @Nullable Integer integer) {
+    return integer != null && integer != 0;
+  }
+
+  /**
    * Returns `true` if the boolean is `null` or `false`, and `true` otherwise.
    */
   public static boolean isFalse(final @Nullable Boolean bool) {

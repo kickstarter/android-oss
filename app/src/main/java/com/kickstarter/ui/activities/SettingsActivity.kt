@@ -40,7 +40,8 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         this.ksString = environment().ksString()
         this.logout = environment().logout()
 
-        version_name_text_view.text = this.build.versionName()
+        version_name_text_view.text = ksString.format(getString(R.string.profile_settings_version_number),
+                "version_number", this.build.versionName())
 
         this.viewModel.outputs.avatarImageViewUrl()
                 .compose(bindToLifecycle())

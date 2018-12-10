@@ -19,6 +19,7 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 @RequiresActivityViewModel(ProjectNotificationViewModel.ViewModel.class)
@@ -49,7 +50,7 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
 
     this.viewModel.outputs.enabledSwitch()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(SwitchCompatUtils.setCheckedWithoutAnimation(this.enabledSwitch));
 
     this.viewModel.outputs.showUnableToSaveProjectNotificationError()

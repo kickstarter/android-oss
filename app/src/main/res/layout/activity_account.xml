@@ -54,7 +54,7 @@
               android:id="@+id/email_error_icon"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:contentDescription="@null"
+              android:contentDescription="@string/Email_unverified"
               android:scaleType="centerCrop"
               android:src="@drawable/ic_email_error"
               android:visibility="gone"
@@ -110,9 +110,9 @@
             style="@style/Base.Widget.AppCompat.Spinner.Underlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_1"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/grid_1">
+            android:layout_marginStart="@dimen/activity_horizontal_margin">
 
           </Spinner>
 

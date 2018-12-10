@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
-  android:layout_width="@dimen/grid_6"
-  android:layout_height="@dimen/grid_6">
+  android:layout_width="@dimen/grid_8"
+  android:layout_height="@dimen/grid_8">
 
   <com.kickstarter.ui.views.IconButton
     android:background="@drawable/click_indicator_light"

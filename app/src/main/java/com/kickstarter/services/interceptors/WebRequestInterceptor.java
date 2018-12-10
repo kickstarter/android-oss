@@ -2,7 +2,6 @@ package com.kickstarter.services.interceptors;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.kickstarter.libs.AndroidPayCapability;
 import com.kickstarter.libs.Build;
@@ -44,8 +43,6 @@ public final class WebRequestInterceptor implements Interceptor {
   }
 
   private Request request(final @NonNull Request initialRequest) {
-    Log.d(WebRequestInterceptor.class.getSimpleName(), "testtest " + initialRequest.url().toString() + " " + initialRequest.header("User-Agent"));
-
     if (!shouldIntercept(initialRequest)) {
       return initialRequest;
     }
@@ -63,9 +60,7 @@ public final class WebRequestInterceptor implements Interceptor {
       requestBuilder.addHeader("Kickstarter-Android-Pay", "1");
     }
 
-    Request build = requestBuilder.build();
-    Log.d(WebRequestInterceptor.class.getSimpleName(), "testtest " + build.url().toString() + " " + build.header("User-Agent"));
-    return build;
+    return requestBuilder.build();
   }
 
   private boolean shouldIntercept(final @NonNull Request request) {

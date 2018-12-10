@@ -2,7 +2,6 @@ package com.kickstarter.services.interceptors;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.services.KSUri;
@@ -32,19 +31,14 @@ public final class ApiRequestInterceptor implements Interceptor {
   }
 
   private Request request(final @NonNull Request initialRequest) {
-    Log.d(ApiRequestInterceptor.class.getSimpleName(), "testtest " + initialRequest.url().toString() + " " + initialRequest.header("User-Agent"));
-
     if (!shouldIntercept(initialRequest)) {
       return initialRequest;
     }
 
-    Request accept = initialRequest.newBuilder()
+    return initialRequest.newBuilder()
       .header("Accept", "application/json")
       .url(url(initialRequest.url()))
       .build();
-    Log.d(ApiRequestInterceptor.class.getSimpleName(), "testtest " + accept.url().toString() + " " + accept.header("User-Agent"));
-
-    return accept;
   }
 
   private HttpUrl url(final @NonNull HttpUrl initialHttpUrl) {

@@ -69,6 +69,7 @@
         </LinearLayout>
 
         <LinearLayout
+          android:id="@+id/privacy_row"
           style="@style/SettingsLinearRow"
           android:layout_marginTop="@dimen/grid_3">
 

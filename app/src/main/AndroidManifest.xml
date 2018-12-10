@@ -366,6 +366,13 @@
         <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
       </intent-filter>
     </service>
+    <service
+      android:name=".services.KoalaBackgroundService"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+      </intent-filter>
+    </service>
 
     <!-- Unsubscribes the device from Firebase. -->
     <service
@@ -382,38 +389,12 @@
       android:exported="true"
       tools:ignore="ExportedContentProvider" />
 
-    <!-- See https://mixpanel.com/help/reference/android#referrer_tracking -->
-    <receiver
-      android:name="com.mixpanel.android.mpmetrics.InstallReferrerReceiver"
-      android:exported="true"
-      tools:ignore="ExportedReceiver">
-      <intent-filter>
-        <action android:name="com.android.vending.INSTALL_REFERRER" />
-      </intent-filter>
-    </receiver>
-
     <!-- META-DATA -->
 
     <meta-data
       android:name="com.facebook.sdk.ApplicationId"
       android:value="@string/facebook_app_id" />
 
-    <!-- Mixpanel configuration, see https://github.com/mixpanel/mixpanel-android/blob/87b85d4b5917cdf94118f72b1538b489546a53ec/src/main/java/com/mixpanel/android/mpmetrics/MPConfig.java -->
-    <meta-data
-      android:name="com.mixpanel.android.MPConfig.EventsEndpoint"
-      android:value="@string/koala_endpoint" />
-    <meta-data
-      android:name="com.mixpanel.android.MPConfig.DebugFlushInterval"
-      android:value="1000" />
-    <meta-data
-      android:name="com.mixpanel.android.MPConfig.EnableDebugLogging"
-      android:value="true" />
-    <meta-data
-      android:name="com.mixpanel.android.MPConfig.AutoShowMixpanelUpdates"
-      android:value="false" />
-    <meta-data
-      android:name="com.mixpanel.android.MPConfig.DisableAppOpenEvent"
-      android:value="false" />
     <meta-data
       android:name="com.google.android.gms.wallet.api.enabled"
       android:value="true" />
@@ -421,3 +402,4 @@
   </application>
 
 </manifest>
+

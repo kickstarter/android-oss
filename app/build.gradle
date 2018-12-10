@@ -171,7 +171,7 @@ buildscript {
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
     dependencies {
-        classpath 'com.apollographql.apollo:apollo-gradle-plugin:1.0.1-SNAPSHOT'
+        classpath 'com.apollographql.apollo:apollo-gradle-plugin:0.5.0'
     }
 }
 
@@ -207,7 +207,7 @@ repositories {
 }
 
 // library versions
-final apollo = "1.0.0-alpha3"
+final apollo = "0.5.0"
 final auto_parcel_version = "0.3.1"
 final butterknife_version = "7.0.1"
 final constraint_layout_version = "1.1.3"
@@ -221,7 +221,6 @@ final firebase_messaging_version = "17.3.0"
 final joda_time_version = "2.7.2"
 final jsoup_version = "1.8.2"
 final leak_canary_version = "1.3.1"
-final mixpanel_version = "4.6.4"
 final multidex_version = "1.0.1"
 final okhttp_version = "3.5.0"
 final picasso_version = "2.5.2"
@@ -287,7 +286,6 @@ dependencies {
     implementation "com.jakewharton.rxbinding:rxbinding-support-v4:$rx_binding_version"
     implementation "net.danlew:android.joda:$joda_time_version"
     implementation "org.jsoup:jsoup:$jsoup_version"
-    implementation "com.mixpanel.android:mixpanel-android:$mixpanel_version"
     implementation "com.android.support.constraint:constraint-layout:$constraint_layout_version"
     implementation("com.crashlytics.sdk.android:crashlytics:$crashlytics_version") {
         transitive = true

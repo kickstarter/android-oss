@@ -8,6 +8,7 @@ import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
+import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.data.LoginReason;
@@ -60,7 +61,7 @@ public final class Koala {
 
   // BACKING
   public void trackViewedPledgeInfo(final @NonNull Project project) {
-    this.client.track(KoalaEvent.VIEWED_PLEDGE_INFO, KoalaUtils.projectProperties(project));
+    this.client.track(KoalaEvent.VIEWED_PLEDGE_INFO, KoalaUtils.projectProperties(project, this.client.loggedInUser()));
   }
 
   // DISCOVERY
@@ -90,7 +91,7 @@ public final class Koala {
    */
   public void trackProjectShow(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
 
-    final Map<String, Object> properties = KoalaUtils.projectProperties(project);
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
 
     if (intentRefTag != null) {
       properties.put("ref_tag", intentRefTag.tag());
@@ -108,7 +109,7 @@ public final class Koala {
 
   // PROJECT STAR
   public void trackProjectStar(final @NonNull Project project) {
-    final Map<String, Object> props = KoalaUtils.projectProperties(project);
+    final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
 
     // Deprecated events
     this.client.track(project.isStarred() ? KoalaEvent.PROJECT_STAR : KoalaEvent.PROJECT_UNSTAR, props);
@@ -120,9 +121,10 @@ public final class Koala {
   public void trackLoadedOlderComments(final @NonNull Project project, final @Nullable Update update,
     final @NonNull KoalaContext.Comments context) {
 
+    final User loggedInUser = this.client.loggedInUser();
     final Map<String, Object> props = update == null
-      ? KoalaUtils.projectProperties(project)
-      : KoalaUtils.updateProperties(project, update);
+      ? KoalaUtils.projectProperties(project, loggedInUser)
+      : KoalaUtils.updateProperties(project, update, loggedInUser);
     props.put("context", context.getTrackingString());
 
     this.client.track(KoalaEvent.LOADED_OLDER_COMMENTS, props);
@@ -133,15 +135,16 @@ public final class Koala {
    */
   @Deprecated
   public void trackLoadedOlderProjectComments(final @NonNull Project project) {
-    this.client.track(KoalaEvent.PROJECT_COMMENT_LOAD_OLDER, KoalaUtils.projectProperties(project));
+    this.client.track(KoalaEvent.PROJECT_COMMENT_LOAD_OLDER, KoalaUtils.projectProperties(project, this.client.loggedInUser()));
   }
 
   public void trackPostedComment(final @NonNull Project project, final @Nullable Update update,
     final @NonNull KoalaContext.CommentDialog context) {
 
+    final User loggedInUser = this.client.loggedInUser();
     final Map<String, Object> props = update == null
-      ? KoalaUtils.projectProperties(project)
-      : KoalaUtils.updateProperties(project, update);
+      ? KoalaUtils.projectProperties(project, loggedInUser)
+      : KoalaUtils.updateProperties(project, update, loggedInUser);
     props.put("context", context.getTrackingString());
 
     this.client.track(KoalaEvent.POSTED_COMMENT, props);
@@ -152,7 +155,7 @@ public final class Koala {
    */
   @Deprecated
   public void trackProjectCommentCreate(final @NonNull Project project) {
-    this.client.track(KoalaEvent.PROJECT_COMMENT_CREATE, KoalaUtils.projectProperties(project));
+    this.client.track(KoalaEvent.PROJECT_COMMENT_CREATE, KoalaUtils.projectProperties(project, this.client.loggedInUser()));
   }
 
   /**
@@ -160,15 +163,16 @@ public final class Koala {
    */
   @Deprecated
   public void trackProjectCommentsView(final @NonNull Project project) {
-    this.client.track(KoalaEvent.PROJECT_COMMENT_VIEW, KoalaUtils.projectProperties(project));
+    this.client.track(KoalaEvent.PROJECT_COMMENT_VIEW, KoalaUtils.projectProperties(project, this.client.loggedInUser()));
   }
 
   public void trackViewedComments(final @NonNull Project project, final @Nullable Update update,
     final @NonNull KoalaContext.Comments context) {
 
+    final User loggedInUser = this.client.loggedInUser();
     final Map<String, Object> props = update == null
-      ? KoalaUtils.projectProperties(project)
-      : KoalaUtils.updateProperties(project, update);
+      ? KoalaUtils.projectProperties(project, loggedInUser)
+      : KoalaUtils.updateProperties(project, update, loggedInUser);
 
     props.put("context", context.getTrackingString());
     this.client.track(KoalaEvent.VIEWED_COMMENTS, props);
@@ -222,7 +226,7 @@ public final class Koala {
   }
 
   public void trackActivityTapped(final @NonNull Activity activity) {
-    this.client.track(KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaUtils.activityProperties(activity));
+    this.client.track(KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaUtils.activityProperties(activity, this.client.loggedInUser()));
   }
 
   // SESSION EVENTS
@@ -468,13 +472,13 @@ public final class Koala {
   }
 
   public void trackCheckoutFinishJumpToProject(final @NonNull Project project) {
-    final Map<String, Object> props = KoalaUtils.projectProperties(project);
+    final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
     this.client.track("Checkout Finished Discover Open Project", props);
   }
 
   // SHARE
   public void trackShowProjectShareSheet(final @NonNull Project project) {
-    final Map<String, Object> props = KoalaUtils.projectProperties(project);
+    final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
     props.put("context", KoalaContext.Share.PROJECT);
 
     // deprecated
@@ -521,14 +525,14 @@ public final class Koala {
 
   // MESSAGES
   public void trackSentMessage(final @NonNull Project project, final @NonNull KoalaContext.Message context) {
-    final Map<String, Object> props = KoalaUtils.projectProperties(project);
+    final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
     props.put("context", context.getTrackingString());
 
     this.client.track(KoalaEvent.SENT_MESSAGE, props);
   }
 
   public void trackViewedMailbox(final @NonNull Mailbox mailbox, final @Nullable Project project, final @Nullable RefTag intentRefTag) {
-    final Map<String, Object> props = project == null ? Collections.emptyMap() : KoalaUtils.projectProperties(project);
+    final Map<String, Object> props = project == null ? Collections.emptyMap() : KoalaUtils.projectProperties(project, this.client.loggedInUser());
 
     if (intentRefTag != null) {
       props.put("ref_tag", intentRefTag.tag());
@@ -545,7 +549,7 @@ public final class Koala {
   }
 
   public void trackViewedMessageThread(final @NonNull Project project) {
-    this.client.track(KoalaEvent.VIEWED_MESSAGE_THREAD, KoalaUtils.projectProperties(project));
+    this.client.track(KoalaEvent.VIEWED_MESSAGE_THREAD, KoalaUtils.projectProperties(project, this.client.loggedInUser()));
   }
 
   // PROFILE
@@ -571,18 +575,18 @@ public final class Koala {
 
   // VIDEO
   public void trackVideoStart(final @NonNull Project project) {
-    this.client.track("Project Video Start", KoalaUtils.projectProperties(project));
+    this.client.track("Project Video Start", KoalaUtils.projectProperties(project, this.client.loggedInUser()));
   }
 
   // PROJECT UPDATES
   public void trackViewedUpdate(final @NonNull Project project, final @NonNull KoalaContext.Update context) {
-    final Map<String, Object> props = KoalaUtils.projectProperties(project);
+    final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
     props.put("context", context.getTrackingString());
     this.client.track(KoalaEvent.VIEWED_UPDATE, props);
   }
 
   public void trackViewedUpdates(final @NonNull Project project) {
-    this.client.track(KoalaEvent.VIEWED_UPDATES, KoalaUtils.projectProperties(project));
+    this.client.track(KoalaEvent.VIEWED_UPDATES, KoalaUtils.projectProperties(project, this.client.loggedInUser()));
   }
 
   // PUSH NOTIFICATIONS
@@ -606,7 +610,7 @@ public final class Koala {
 
   // WEBVIEWS
   public void trackOpenedExternalLink(final @NonNull Project project, final @NonNull KoalaContext.ExternalLink context) {
-    final Map<String, Object> props = KoalaUtils.projectProperties(project);
+    final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
     props.put("context", context.getTrackingString());
 
     this.client.track(KoalaEvent.OPENED_EXTERNAL_LINK, props);
@@ -625,13 +629,13 @@ public final class Koala {
   }
 
   public void trackSwitchedProjects(final @NonNull Project project) {
-    final Map<String, Object> properties = KoalaUtils.projectProperties(project);
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
 
     this.client.track(KoalaEvent.SWITCHED_PROJECTS, properties);
   }
 
   public void trackViewedProjectDashboard(final @NonNull Project project) {
-    final Map<String, Object> properties = KoalaUtils.projectProperties(project);
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
 
     this.client.track(KoalaEvent.VIEWED_PROJECT_DASHBOARD, properties);
   }

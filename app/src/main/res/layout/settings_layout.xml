@@ -139,7 +139,7 @@
       <LinearLayout
         android:id="@+id/rate_us_row"
         style="@style/SettingsLinearRow"
-        android:layout_marginBottom="@dimen/grid_3">
+        android:layout_marginBottom="@dimen/grid_12">
 
         <LinearLayout
           style="@style/SettingsSingleRow"

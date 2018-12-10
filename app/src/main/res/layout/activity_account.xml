@@ -54,7 +54,7 @@
               android:id="@+id/email_error_icon"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:contentDescription="@null"
+              android:contentDescription="@string/Email_unverified"
               android:scaleType="centerCrop"
               android:src="@drawable/ic_email_error"
               android:visibility="gone"

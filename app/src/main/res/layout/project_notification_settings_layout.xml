@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:orientation="vertical">
 
-  <include layout="@layout/project_notification_settings_toolbar"/>
+  <android.support.design.widget.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/project_notification_settings_toolbar" />
+
+  </android.support.design.widget.AppBarLayout>
 
   <android.support.v7.widget.RecyclerView
     android:id="@+id/project_notification_settings_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="@dimen/form_margin_x"
-    android:layout_marginEnd="@dimen/form_margin_x"/>
+    tools:listitem="@layout/project_notification_view" />
 
 </LinearLayout>

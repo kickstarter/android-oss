@@ -9,6 +9,7 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.ui.activities.DeepLinkActivity;
 
@@ -60,7 +61,7 @@ public interface DeepLinkViewModel {
         .ofType(Uri.class);
 
       uriFromIntent
-        .filter(uri -> uri.getLastPathSegment().equals("projects"))
+        .filter(this::lastPathSegmentIsProjects)
         .compose(ignoreValues())
         .compose(bindToLifecycle())
         .subscribe(this.startDiscoveryActivity::onNext);
@@ -69,7 +70,8 @@ public interface DeepLinkViewModel {
         .subscribe(__ -> koala.trackContinueUserActivityAndOpenedDeepLink());
 
       uriFromIntent
-        .filter(uri -> KSUri.isProjectUri(uri, uri.toString()))
+        .filter(uri -> KSUri.isProjectUri(uri, Secrets.WebEndpoint.PRODUCTION))
+        .filter(uri -> !KSUri.isProjectPreviewUri(uri, Secrets.WebEndpoint.PRODUCTION))
         .compose(bindToLifecycle())
         .subscribe(this.startProjectActivity::onNext);
 
@@ -100,13 +102,23 @@ public interface DeepLinkViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.startBrowser::onNext);
 
-      uriFromIntent
-        .filter(uri -> !uri.getLastPathSegment().equals("projects") && !KSUri.isProjectUri(uri, uri.toString()))
+      final Observable<Uri> projectPreview = uriFromIntent
+        .filter(uri -> KSUri.isProjectPreviewUri(uri, Secrets.WebEndpoint.PRODUCTION));
+
+      final Observable<Uri> unsupportedDeepLink = uriFromIntent
+        .filter(uri -> !lastPathSegmentIsProjects(uri))
+        .filter(uri -> !KSUri.isProjectUri(uri, Secrets.WebEndpoint.PRODUCTION));
+
+      Observable.merge(projectPreview, unsupportedDeepLink)
         .map(Uri::toString)
         .filter(url -> !TextUtils.isEmpty(url))
         .compose(ignoreValues())
         .compose(bindToLifecycle())
         .subscribe(this.requestPackageManager::onNext);
+    }
+
+    private boolean lastPathSegmentIsProjects(final @NonNull Uri uri) {
+      return uri.getLastPathSegment().equals("projects");
     }
 
     private final PublishSubject<PackageManager> packageManager = PublishSubject.create();

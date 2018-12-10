@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-  package="com.kickstarter"
+<manifest package="com.kickstarter"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools">
 
   <!-- PERMISSIONS -->
 
   <uses-permission android:name="android.permission.INTERNET" />
-  <!-- We need coarse location to find projects near a user. Could also see people being uncomfortable with providing
-    this permission though, since location is not core to the app. -->
+  <!--
+    We need coarse location to find projects near a user. Could also see people being uncomfortable with providing
+    this permission though, since location is not core to the app.
+    -->
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-  <!-- WAKE_LOCK keeps the processor from sleeping when a GCM message is received -->
-  <uses-permission android:name="android.permission.WAKE_LOCK" />
   <!-- RECEIVE allows the app to register to receive GCM messages -->
   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-  <!-- Prevent other apps from registering and receiving our app's messages -->
-  <permission android:name="${applicationId}.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-  <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
 
   <!-- Mixpanel library requires this permission -->
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -28,241 +24,181 @@
     android:icon="@mipmap/ic_launcher"
     android:label="@string/app_name"
     android:supportsRtl="false"
-    android:theme="@style/KSTheme">
+    android:theme="@style/KSTheme"
+    tools:replace="android:supportsRtl">
 
     <!-- ACTIVITIES -->
 
+    <activity android:name=".ui.activities.AccountActivity" />
     <activity
       android:name=".ui.activities.ActivityFeedActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/ActivityFeedActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity"
-        />
-
+        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-
+    <activity android:name=".ui.activities.ChangeEmailActivity" />
+    <activity android:name=".ui.activities.ChangePasswordActivity"/>
+    <activity android:name=".ui.activities.EditProfileActivity"/>
     <activity
       android:name=".ui.activities.CheckoutActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@style/CheckoutActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ProjectActivity"
-        />
-
+        android:value=".ui.activities.ProjectActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.CommentsActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@style/CommentsActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ProjectActivity"
-        />
-
+        android:value=".ui.activities.ProjectActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.CreatorDashboardActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/ProjectActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity"
-        />
-
+        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.DiscoveryActivity"
       android:label="@string/app_name"
       android:launchMode="singleTop"
       android:theme="@style/DiscoveryActivity">
-
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
+
         <category android:name="android.intent.category.LAUNCHER" />
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
 
-      <!-- Setting autoVerify to true in any intent filter for the manifest enables the app for
-        23+ app links: https://www.youtube.com/watch?v=LQoohRwojmw -->
+      <!--
+        Setting autoVerify to true in any intent filter for the manifest enables the app for
+        23+ app links: https://www.youtube.com/watch?v=LQoohRwojmw
+            -->
       <intent-filter
         android:autoVerify="true"
         tools:ignore="UnusedAttribute">
         <action android:name="android.intent.action.VIEW" />
+
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
+
         <data
           android:host="www.kickstarter.com"
-          android:scheme="https"
-          android:pathPrefix="/discover" />
+          android:pathPrefix="/discover"
+          android:scheme="https" />
       </intent-filter>
-
       <intent-filter
         android:autoVerify="true"
         tools:ignore="UnusedAttribute">
         <action android:name="android.intent.action.VIEW" />
+
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
+
         <data
           android:host="www.kickstarter.com"
           android:scheme="ksr" />
       </intent-filter>
-
     </activity>
-
     <activity
       android:name=".ui.activities.DownloadBetaActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity"
-        />
-
+        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.WebViewActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/WebViewActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity"
-        />
-
+        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.ResetPasswordActivity"
       android:parentActivityName=".ui.activities.LoginActivity"
       android:theme="@style/Login">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.LoginActivity"
-        />
-
+        android:value=".ui.activities.LoginActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.HelpActivity"
-      android:theme="@style/HelpActivity"
-      />
-
+      android:theme="@style/HelpActivity" />
+    <activity android:name=".ui.activities.HelpSettingsActivity" />
     <activity
       android:name=".ui.activities.HelpActivity$CookiePolicy"
-      android:theme="@style/HelpActivity"
-      />
-
-    <activity
-      android:name=".ui.activities.HelpActivity$Faq"
-      android:theme="@style/HelpActivity"
-      />
-
-    <activity
-      android:name=".ui.activities.HelpActivity$HowItWorks"
-      android:theme="@style/HelpActivity"
-      />
-
+      android:theme="@style/HelpActivity" />
     <activity
       android:name=".ui.activities.HelpActivity$Privacy"
-      android:theme="@style/HelpActivity"
-      />
-
+      android:theme="@style/HelpActivity" />
     <activity
       android:name=".ui.activities.HelpActivity$Terms"
-      android:theme="@style/HelpActivity"
-      />
-
+      android:theme="@style/HelpActivity" />
     <activity
       android:name=".ui.activities.FacebookConfirmationActivity"
       android:parentActivityName="com.facebook.FacebookActivity"
       android:theme="@style/Login">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value="com.facebook.FacebookActivity"
-        />
-
+        android:value="com.facebook.FacebookActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.ProfileActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity"
-        />
-
+        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.LoginActivity"
       android:parentActivityName=".ui.activities.LoginToutActivity"
       android:theme="@style/Login">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.LoginToutActivity"
-        />
-
+        android:value=".ui.activities.LoginToutActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.LoginToutActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/Login">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity"
-        />
-
+        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.MessagesActivity"
-      android:windowSoftInputMode="adjustResize"
-      android:parentActivityName=".ui.activities.MessageThreadsActivity">
-
+      android:parentActivityName=".ui.activities.MessageThreadsActivity"
+      android:windowSoftInputMode="adjustResize">
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.MessageThreadsActivity" />
-
     </activity>
-
     <activity
       android:name=".ui.activities.MessageThreadsActivity"
       android:parentActivityName=".ui.activities.ProfileActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.ProfileActivity" />
-
     </activity>
-
+    <activity android:name=".ui.activities.NewsletterActivity" />
+    <activity android:name=".ui.activities.NotificationsActivity" />
+    <activity android:name=".ui.activities.PrivacyActivity" />
     <activity
       android:name=".ui.activities.ProjectNotificationSettingsActivity"
       android:parentActivityName=".ui.activities.SettingsActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.SettingsActivity"
-        />
-
+        android:value=".ui.activities.SettingsActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.ProjectActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
@@ -271,84 +207,63 @@
       <!-- Parent activity meta-data to support 4.0 and lower -->
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity"
-        />
+        android:value=".ui.activities.DiscoveryActivity" />
 
       <intent-filter>
         <action android:name="android.intent.action.VIEW" />
+
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
+
         <data
           android:host="www.kickstarter.com"
-          android:scheme="ksr"
-          android:pathPrefix="/projects/" />
+          android:pathPrefix="/projects/"
+          android:scheme="ksr" />
       </intent-filter>
     </activity>
-
     <activity
       android:name=".ui.activities.ProjectSocialActivity"
       android:parentActivityName=".ui.activities.ProjectActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ProjectActivity"
-        />
-
+        android:value=".ui.activities.ProjectActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.ProjectUpdatesActivity"
       android:parentActivityName=".ui.activities.ProjectActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ProjectActivity"/>
-
+        android:value=".ui.activities.ProjectActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.SearchActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/SearchActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity"
-        />
-
+        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.SettingsActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity"
-        />
-
+        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.SignupActivity"
       android:parentActivityName=".ui.activities.LoginToutActivity"
       android:theme="@style/Login">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.LoginToutActivity"
-        />
-
+        android:value=".ui.activities.LoginToutActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.SurveyResponseActivity"
       android:parentActivityName=".ui.activities.ActivityFeedActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.ActivityFeedActivity" />
-
     </activity>
 
     <!-- TODO: Maybe the parent should be the project? -->
@@ -356,179 +271,133 @@
       android:name=".ui.activities.ThanksActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/ThanksActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity"
-        />
-
+        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.TwoFactorActivity"
       android:parentActivityName=".ui.activities.LoginActivity"
       android:theme="@style/Login">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.LoginActivity"
-        />
-
+        android:value=".ui.activities.LoginActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.UpdateActivity"
       android:parentActivityName=".ui.activities.ProjectUpdatesActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.ProjectUpdatesActivity" />
-
     </activity>
-
     <activity
       android:name=".ui.activities.VideoActivity"
+      android:configChanges="keyboardHidden|screenSize"
       android:parentActivityName=".ui.activities.ProjectActivity"
-      android:theme="@style/VideoPlayerActivity"
       android:screenOrientation="sensorLandscape"
-      android:configChanges="keyboardHidden|screenSize">
-
+      android:theme="@style/VideoPlayerActivity">
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ProjectActivity"
-        />
-
+        android:value=".ui.activities.ProjectActivity" />
     </activity>
-
     <activity
       android:name=".ui.activities.BackingActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@style/BackingActivity">
-
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ProjectActivity"
-        />
-
+        android:value=".ui.activities.ProjectActivity" />
     </activity>
-
     <activity
       android:name="com.facebook.FacebookActivity"
-      android:parentActivityName=".ui.activities.ProjectActivity"
       android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+      android:label="@string/app_name"
+      android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@android:style/Theme.Translucent.NoTitleBar"
-      android:label="@string/app_name">
-
+      tools:replace="android:theme">
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.LoginToutActivity"
-        />
-
+        android:value=".ui.activities.LoginToutActivity" />
     </activity>
-
-    <activity
-      android:name=".ui.activities.DeepLinkActivity">
-
+    <activity android:name=".ui.activities.DeepLinkActivity">
       <intent-filter
         android:autoVerify="true"
         tools:ignore="UnusedAttribute">
         <action android:name="android.intent.action.VIEW" />
+
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
+
         <data
           android:host="www.kickstarter.com"
-          android:scheme="https"
-          android:pathPrefix="/projects" />
+          android:pathPrefix="/projects"
+          android:scheme="https" />
       </intent-filter>
     </activity>
 
     <!-- SERVICES, PROVIDERS, RECEIVERS -->
 
-    <!-- Sets up the app to send, receive, register with GCM. -->
-    <receiver
-      android:name="com.google.android.gms.gcm.GcmReceiver"
-      android:exported="true"
-      android:permission="com.google.android.c2dm.permission.SEND" >
-      <intent-filter>
-        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-        <!-- The registration action is only needed for pre-4.4 KitKat devices -->
-        <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-        <category android:name="${applicationId}" />
-      </intent-filter>
-    </receiver>
 
-    <!-- Receives new message events from GCM. -->
+    <!-- Receives new message events from Firebase. -->
     <service
-      android:name=".services.gcm.MessageService"
-      android:exported="false" >
+      android:name=".services.firebase.MessageService"
+      android:exported="false">
       <intent-filter>
-        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+        <action android:name="com.google.firebase.MESSAGING_EVENT" />
       </intent-filter>
     </service>
 
-    <!-- Processes token refresh events from GCM (e.g. token expired). Registers a new token. -->
+    <!-- Processes token refresh events from Friebase (e.g. token expired). Registers a new token. -->
     <service
-      android:name=".services.gcm.TokenListenerService"
+      android:name=".services.firebase.TokenListenerService"
       android:exported="false">
       <intent-filter>
-        <action android:name="com.google.android.gms.iid.InstanceID"/>
+        <action android:name="com.google.firebase.MESSAGING_EVENT" />
       </intent-filter>
     </service>
 
-    <!-- Registers new tokens with the app, sets up device subscription with GCM. -->
+    <!-- Registers new tokens with the app, sets up device subscription with Firebase. -->
     <service
-      android:name=".services.gcm.RegisterService"
+      android:name=".services.firebase.RegisterService"
       android:exported="false">
+      <intent-filter>
+        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+      </intent-filter>
+    </service>
+    <service
+      android:name=".services.KoalaBackgroundService"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+      </intent-filter>
     </service>
 
-    <!-- Unsubscribes the device from GCM. -->
+    <!-- Unsubscribes the device from Firebase. -->
     <service
-      android:name=".services.gcm.UnregisterService"
+      android:name=".services.firebase.UnregisterService"
       android:exported="false">
+      <intent-filter>
+        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+      </intent-filter>
     </service>
 
     <provider
-      tools:ignore="ExportedContentProvider"
-      android:authorities="com.facebook.app.FacebookContentProvider${applicationId}"
       android:name="com.facebook.FacebookContentProvider"
-      android:exported="true"/>
-
-    <activity android:name="net.hockeyapp.android.UpdateActivity" />
-
-    <!-- See https://mixpanel.com/help/reference/android#referrer_tracking -->
-    <receiver
-      tools:ignore="ExportedReceiver"
-      android:name="com.mixpanel.android.mpmetrics.InstallReferrerReceiver"
-      android:exported="true">
-      <intent-filter>
-        <action android:name="com.android.vending.INSTALL_REFERRER" />
-      </intent-filter>
-    </receiver>
+      android:authorities="com.facebook.app.FacebookContentProvider${applicationId}"
+      android:exported="true"
+      tools:ignore="ExportedContentProvider" />
 
     <!-- META-DATA -->
 
-    <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-
-    <!-- Mixpanel configuration, see https://github.com/mixpanel/mixpanel-android/blob/87b85d4b5917cdf94118f72b1538b489546a53ec/src/main/java/com/mixpanel/android/mpmetrics/MPConfig.java -->
     <meta-data
-      android:name="com.mixpanel.android.MPConfig.EventsEndpoint"
-      android:value="@string/koala_endpoint" />
-    <meta-data
-      android:name="com.mixpanel.android.MPConfig.DebugFlushInterval"
-      android:value="1000" />
-    <meta-data
-      android:name="com.mixpanel.android.MPConfig.EnableDebugLogging"
-      android:value="true" />
-    <meta-data
-      android:name="com.mixpanel.android.MPConfig.AutoShowMixpanelUpdates"
-      android:value="false" />
-    <meta-data
-      android:name="com.mixpanel.android.MPConfig.DisableAppOpenEvent"
-      android:value="false" />
+      android:name="com.facebook.sdk.ApplicationId"
+      android:value="@string/facebook_app_id" />
 
     <meta-data
       android:name="com.google.android.gms.wallet.api.enabled"
       android:value="true" />
+
   </application>
 
 </manifest>
+

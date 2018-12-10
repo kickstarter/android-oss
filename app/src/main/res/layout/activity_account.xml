@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+  android:id="@+id/account_container"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/ksr_grey_100"
+  android:orientation="vertical">
+
+  <android.support.design.widget.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/account_toolbar" />
+
+  </android.support.design.widget.AppBarLayout>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+          android:id="@+id/password_required_container"
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_3">
+
+          <LinearLayout
+            android:id="@+id/change_email_row"
+            style="@style/SettingsLinearRow"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/grid_3">
+
+            <TextView
+              style="@style/CalloutPrimary"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:text="@string/Change_email" />
+
+            <ImageView
+              android:id="@+id/email_error_icon"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:contentDescription="@string/Email_unverified"
+              android:scaleType="centerCrop"
+              android:src="@drawable/ic_email_error"
+              android:visibility="gone"
+              tools:visibility="visible" />
+          </LinearLayout>
+
+          <TextView
+            android:id="@+id/change_password_row"
+            style="@style/SettingsSingleRow"
+            android:text="@string/Change_password" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_3">
+
+          <TextView
+            android:id="@+id/privacy_row"
+            style="@style/SettingsSingleRow"
+            android:text="@string/Privacy" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/payment_methods_row"
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_3"
+          android:visibility="gone"
+          tools:visibility="visible">
+
+          <TextView
+            style="@style/SettingsSingleRow"
+            android:text="@string/Payment_methods" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_3">
+
+          <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/grid_2"
+            android:gravity="center_vertical"
+            android:text="@string/Currency" />
+
+          <Spinner
+            android:id="@+id/currency_spinner"
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_1"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin">
+
+          </Spinner>
+
+        </LinearLayout>
+
+
+      </LinearLayout>
+
+      <FrameLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ProgressBar
+          style="?android:attr/progressBarStyleHorizontal"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_5"
+          android:layout_gravity="center"
+          android:indeterminate="true" />
+
+      </FrameLayout>
+
+    </FrameLayout>
+
+  </ScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

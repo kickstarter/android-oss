@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
+import com.apollographql.apollo.ApolloClient;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -34,6 +35,7 @@ import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.PushNotifications;
+import com.kickstarter.libs.graphql.EmailAdapter;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreference;
@@ -47,21 +49,28 @@ import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.GamesNewsletterPreference;
+import com.kickstarter.libs.qualifiers.KoalaEndpoint;
+import com.kickstarter.libs.qualifiers.KoalaRetrofit;
 import com.kickstarter.libs.qualifiers.PackageNameString;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.libs.utils.Secrets;
-import com.kickstarter.libs.utils.SocketUtils;
+import com.kickstarter.mock.services.MockApiClient;
+import com.kickstarter.mock.services.MockApolloClient;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
+import com.kickstarter.services.ApolloClientType;
+import com.kickstarter.services.KSApolloClient;
 import com.kickstarter.services.KSWebViewClient;
+import com.kickstarter.services.KoalaService;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.WebClientType;
 import com.kickstarter.services.WebService;
 import com.kickstarter.services.interceptors.ApiRequestInterceptor;
+import com.kickstarter.services.interceptors.GraphQLInterceptor;
 import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
@@ -83,6 +92,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
+import type.CustomType;
 
 @Module
 public final class ApplicationModule {
@@ -97,6 +107,7 @@ public final class ApplicationModule {
   static Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
     final @NonNull AndroidPayCapability androidPayCapability,
     final @NonNull ApiClientType apiClient,
+    final @NonNull ApolloClientType apolloClient,
     final @NonNull Build build,
     final @NonNull BuildCheck buildCheck,
     final @NonNull CookieManager cookieManager,
@@ -114,12 +125,13 @@ public final class ApplicationModule {
     final @NonNull Scheduler scheduler,
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull WebClientType webClient,
-    final @NonNull String webEndpoint) {
+    final @NonNull @WebEndpoint String webEndpoint) {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
       .androidPayCapability(androidPayCapability)
       .apiClient(apiClient)
+      .apolloClient(apolloClient)
       .build(build)
       .buildCheck(buildCheck)
       .cookieManager(cookieManager)
@@ -145,7 +157,37 @@ public final class ApplicationModule {
   @Singleton
   @NonNull
   static ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
-    return new ApiClient(apiService, gson);
+    return Secrets.IS_OSS ? new MockApiClient() : new ApiClient(apiService, gson);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static ApolloClient provideApolloClient(final @NonNull Build build, final @NonNull HttpLoggingInterceptor httpLoggingInterceptor,
+    final @NonNull GraphQLInterceptor graphQLInterceptor, @NonNull @WebEndpoint final String webEndpoint) {
+
+    final OkHttpClient.Builder builder = new OkHttpClient.Builder()
+      .addInterceptor(graphQLInterceptor);
+
+    // Only log in debug mode to avoid leaking sensitive information.
+    if (build.isDebug()) {
+      builder.addInterceptor(httpLoggingInterceptor);
+    }
+
+    final OkHttpClient okHttpClient = builder.build();
+
+    return ApolloClient.builder()
+      .addCustomTypeAdapter(CustomType.EMAIL, new EmailAdapter())
+      .serverUrl(webEndpoint + "/graph")
+      .okHttpClient(okHttpClient)
+      .build();
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static ApolloClientType provideApolloClientType(final @NonNull ApolloClient apolloClient) {
+    return Secrets.IS_OSS ? new MockApolloClient() : new KSApolloClient(apolloClient);
   }
 
   @Provides
@@ -182,6 +224,16 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
+  @KoalaRetrofit
+  @NonNull
+  static Retrofit provideKoalaRetrofit(@NonNull @KoalaEndpoint final String koalaEndpoint,
+    final @NonNull Gson gson,
+    final @NonNull OkHttpClient okHttpClient) {
+    return createRetrofit(koalaEndpoint, gson, okHttpClient);
+  }
+
+  @Provides
+  @Singleton
   @NonNull
   static ApiRequestInterceptor provideApiRequestInterceptor(final @NonNull String clientId,
     final @NonNull CurrentUserType currentUser, final @NonNull ApiEndpoint endpoint) {
@@ -191,8 +243,22 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
+  static GraphQLInterceptor provideGraphQLInterceptor(final @NonNull CurrentUserType currentUser) {
+    return new GraphQLInterceptor(currentUser);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
   static ApiService provideApiService(final @ApiRetrofit @NonNull Retrofit retrofit) {
     return retrofit.create(ApiService.class);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static KoalaService provideKoalaService(final @KoalaRetrofit @NonNull Retrofit retrofit) {
+    return retrofit.create(KoalaService.class);
   }
 
   @Provides
@@ -253,7 +319,7 @@ public final class ApplicationModule {
 
   private static @NonNull Retrofit createRetrofit(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
     return new Retrofit.Builder()
-      .client(SocketUtils.enableTLS1_2OnPreLollipop(okHttpClient))
+      .client(okHttpClient)
       .baseUrl(baseUrl)
       .addConverterFactory(GsonConverterFactory.create(gson))
       .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -316,8 +382,8 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   static Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-    final @NonNull AndroidPayCapability androidPayCapability) {
-    return new Koala(new KoalaTrackingClient(context, currentUser, androidPayCapability));
+    final @NonNull AndroidPayCapability androidPayCapability, final @NonNull Build build) {
+    return new Koala(new KoalaTrackingClient(context, currentUser, androidPayCapability, build));
   }
 
   @Provides
@@ -402,6 +468,16 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
+  @KoalaEndpoint
+  @NonNull
+  static String provideKoalaEndpoint(final @NonNull ApiEndpoint apiEndpoint) {
+    return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
+      Secrets.KoalaEndpoint.PRODUCTION :
+      Secrets.KoalaEndpoint.STAGING;
+  }
+
+  @Provides
+  @Singleton
   static Font provideFont(final @NonNull AssetManager assetManager) {
     return new Font(assetManager);
   }
@@ -445,8 +521,8 @@ public final class ApplicationModule {
   @Singleton
   @NonNull
   static PushNotifications providePushNotifications(final @ApplicationContext @NonNull Context context,
-    final @NonNull ApiClientType client, final @NonNull DeviceRegistrarType deviceRegistrar) {
-    return new PushNotifications(context, client, deviceRegistrar);
+    final @NonNull ApiClientType client) {
+    return new PushNotifications(context, client);
   }
 
   @Provides

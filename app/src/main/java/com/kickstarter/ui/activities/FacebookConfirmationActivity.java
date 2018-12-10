@@ -17,7 +17,6 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.toolbars.LoginToolbar;
-import com.kickstarter.ui.views.LoginPopupMenu;
 import com.kickstarter.viewmodels.FacebookConfirmationViewModel;
 
 import butterknife.Bind;
@@ -76,11 +75,6 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
   @OnClick(R.id.create_new_account_button)
   public void createNewAccountClick() {
     this.viewModel.inputs.createNewAccountClick();
-  }
-
-  @OnClick(R.id.disclaimer)
-  public void disclaimerClick() {
-    new LoginPopupMenu(this, this.helpButton).show();
   }
 
   @OnClick(R.id.login_button)

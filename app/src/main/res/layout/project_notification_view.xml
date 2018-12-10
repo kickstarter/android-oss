@@ -1,32 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content">
+  android:layout_height="wrap_content"
+  android:gravity="center_vertical"
+  android:orientation="horizontal"
+  android:padding="@dimen/activity_vertical_margin">
 
-  <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+  <TextView
+    android:id="@+id/project_name"
+    style="@style/TextPrimary"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/activity_vertical_margin"
+    android:layout_weight="1"
+    tools:text="A Project With A Really Long Title: You Should Back It" />
 
-    <TextView
-      android:id="@+id/project_name"
-      style="@style/BodyPrimary"
-      android:ellipsize="end"
-      android:layout_toStartOf="@+id/enabled_switch"
-      android:layout_marginEnd="@dimen/grid_2"
-      android:maxLines="1"
-      android:paddingTop="@dimen/feed_padding_y"
-      android:paddingBottom="@dimen/feed_padding_y"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
-
-    <android.support.v7.widget.SwitchCompat
-      android:id="@+id/enabled_switch"
-      style="@style/EndSettingsWidget"/>
-
-  </RelativeLayout>
-
-  <include layout="@layout/horizontal_line_1dp_view"/>
+  <android.support.v7.widget.SwitchCompat
+    android:id="@+id/enabled_switch"
+    style="@style/EndSettingsWidget"
+    android:layout_height="wrap_content" />
 
 </LinearLayout>

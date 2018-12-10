@@ -18,13 +18,16 @@
       android:id="@+id/back_button"/>
 
     <EditText
-      style="@style/ToolbarTitle"
       android:id="@+id/search_edit_text"
+      style="@style/ToolbarTitle"
+      android:layout_width="match_parent"
+      android:layout_toStartOf="@+id/clear_button"
       android:background="@color/transparent"
-      android:maxLength="25"
-      android:inputType="textNoSuggestions"
-      android:maxLines="1"
       android:hint="@string/tabbar_search"
+      android:inputType="textNoSuggestions"
+      android:maxLength="60"
+      android:maxLines="1"
+      android:minHeight="@dimen/grid_8"
       android:textCursorDrawable="@null" />
 
     <com.kickstarter.ui.views.IconButton

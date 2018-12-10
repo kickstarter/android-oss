@@ -1,6 +1,6 @@
 package com.kickstarter.libs.utils;
 
-import com.kickstarter.factories.RewardFactory;
+import com.kickstarter.mock.factories.RewardFactory;
 import com.kickstarter.models.Reward;
 
 import junit.framework.TestCase;

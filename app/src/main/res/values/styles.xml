@@ -3,6 +3,7 @@
   Other resources: https://kickstarter.wiki/pages/android-links.html#styles
 -->
 <resources>
+
   <style name="None">
   </style>
 
@@ -27,7 +28,7 @@
   </style>
 
   <!-- Activities -->
-  <style name="ActivityFeedActivity" parent="KSTheme"/>
+  <style name="ActivityFeedActivity" parent="KSTheme" />
 
   <style name="CheckoutActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
@@ -93,6 +94,18 @@
   <style name="ProgressBar" parent="Base.Widget.AppCompat.ProgressBar">
     <item name="android:indeterminateOnly">false</item>
     <item name="android:progressDrawable">@drawable/progress_bar_green_horizontal</item>
+  </style>
+
+  <style name="AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButtonStyle</item>
+    <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButtonStyle</item>
+    <item name="colorAccent">@color/text_secondary</item>
+    <item name="android:background">@drawable/dialog_alert_rounded</item>
+  </style>
+
+  <style name="AlertDialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+    <item name="android:textColor">@color/accent</item>
+    <item name="android:textAllCaps">true</item>
   </style>
 
   <style name="Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -177,12 +190,22 @@
   <style name="KSSettingsMailIcon">
     <item name="android:src">@drawable/icon__mail</item>
     <item name="android:focusable">true</item>
+    <item name="android:layout_height">@dimen/grid_6</item>
+    <item name="android:layout_width">@dimen/grid_6</item>
+    <item name="android:background">@drawable/circle_gray_outline</item>
+    <item name="android:foreground">@drawable/circular_click_indicator_light</item>
+  </style>
+
+  <style name="SettingsInfoIcon">
+    <item name="android:src">@drawable/icon__info</item>
+    <item name="android:focusable">true</item>
     <item name="android:layout_centerVertical">true</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_width">@dimen/settings_icon_fixed_width</item>
     <item name="android:gravity">center</item>
     <item name="android:paddingTop">@dimen/grid_1_half</item>
     <item name="android:background">@drawable/click_indicator_light</item>
+    <item name="android:tint">@color/ksr_grey_500</item>
   </style>
 
   <style name="EndSettingsWidgetBase">
@@ -194,15 +217,15 @@
     <item name="android:layout_alignParentRight">true</item>
   </style>
 
-  <style name="EndSettingsWidget" parent="EndSettingsWidgetBase"/>
+  <style name="EndSettingsWidget" parent="EndSettingsWidgetBase" />
 
   <style name="KSSettingsPhoneIcon" parent="EndSettingsWidget">
     <item name="android:focusable">true</item>
-    <item name="android:layout_marginRight">@dimen/grid_1</item>
-    <item name="android:layout_height">match_parent</item>
-    <item name="android:layout_width">@dimen/settings_icon_fixed_width</item>
-    <item name="android:background">@drawable/click_indicator_light</item>
-    <item name="android:text">@string/phone_android_icon</item>
+    <item name="android:layout_height">@dimen/grid_6</item>
+    <item name="android:layout_width">@dimen/grid_6</item>
+    <item name="android:background">@drawable/circle_gray_outline</item>
+    <item name="android:foreground">@drawable/circular_click_indicator_light</item>
+    <item name="android:src">@drawable/icon__phone</item>
   </style>
 
   <style name="SettingsClickableSection">
@@ -218,13 +241,18 @@
     <item name="android:layout_weight">1</item>
     <item name="android:layout_width">0dp</item>
     <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
+    <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
+    <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
   </style>
 
   <style name="SettingsSectionTitle" parent="BodySecondary">
-    <item name="android:layout_marginTop">@dimen/grid_7</item>
+    <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
     <item name="android:layout_marginBottom">@dimen/grid_2</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
+    <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
   </style>
 
   <!-- Toolbars -->
@@ -279,7 +307,7 @@
     <item name="android:textStyle">normal</item>
     <item name="android:fontFamily">@string/font_family_sans_serif</item>
   </style>
-  
+
   <style name="TextSecondary">
     <item name="android:textColor">@color/text_secondary</item>
     <item name="android:textStyle">normal</item>
@@ -327,6 +355,15 @@
     <item name="android:textSize">@dimen/footnote</item>
   </style>
 
+  <style name="FootnoteSecondaryMedium" parent="FootnoteSecondary">
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  </style>
+
+  <style name="ProjectCardFootnote" parent="FootnoteSecondaryMedium">
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+    <item name="android:maxLines">1</item>
+  </style>
+
   <style name="BodyPrimary" parent="TextPrimary">
     <item name="android:textSize">@dimen/body</item>
     <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
@@ -335,7 +372,7 @@
   <style name="BodyPrimaryMedium" parent="BodyPrimary">
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
-  
+
   <style name="BodySecondary" parent="TextSecondary">
     <item name="android:textSize">@dimen/body</item>
     <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
@@ -468,6 +505,77 @@
     <item name="android:layout_width">@dimen/grid_4</item>
     <item name="android:layout_height">@dimen/grid_4</item>
     <item name="android:layout_marginEnd">@dimen/grid_1</item>
+  </style>
+
+  <style name="SettingsSingleRow" parent="CalloutPrimary">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:padding">@dimen/grid_3</item>
+    <item name="android:foreground">@drawable/click_indicator_light</item>
+  </style>
+
+  <style name="SettingsLinearRow" parent="CalloutPrimary">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:divider">@drawable/divider_grey_500_horizontal</item>
+    <item name="android:showDividers">end</item>
+    <item name="android:orientation">vertical</item>
+    <item name="android:foreground">@drawable/click_indicator_light</item>
+    <item name="android:background">@color/white</item>
+  </style>
+
+  <style name="NewsletterSingleRow" parent="CalloutPrimary">
+    <item name="android:layout_weight">1</item>
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:padding">@dimen/grid_3</item>
+    <item name="android:foreground">@drawable/click_indicator_light</item>
+  </style>
+
+  <style name="NewsLetterTextView">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:layout_marginBottom">@dimen/grid_4</item>
+    <item name="android:layout_marginTop">@dimen/grid_2</item>
+    <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
+    <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
+    <item name="android:textColor">@color/ksr_dark_grey_400</item>
+  </style>
+
+  <style name="NewsLetterSwitch" parent="EndSettingsWidget">
+    <item name="android:layout_marginEnd">@dimen/grid_1</item>
+  </style>
+
+  <style name="SettingsNotificationRow">
+    <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
+    <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:orientation">horizontal</item>
+    <item name="android:clipChildren">false</item>
+    <item name="android:clipToPadding">false</item>
+  </style>
+
+  <style name="ChangeEmailPassTextInputEditText" parent="CalloutPrimary">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+  </style>
+
+  <style name="ChangeEmailPassTextInputEditTextMarginTop" parent="ChangeEmailPassTextInputEditText">
+    <item name="android:layout_marginTop">@dimen/grid_1</item>
+  </style>
+
+  <style name="TextInputPasswordLayout">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginBottom">@dimen/grid_2</item>
+    <item name="android:layout_marginTop">@dimen/grid_2</item>
+    <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
+    <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
   </style>
 
 </resources>

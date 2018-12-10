@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/new_help_layout"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/ksr_grey_100"
+  android:orientation="vertical">
+
+  <android.support.design.widget.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/help_toolbar" />
+
+  </android.support.design.widget.AppBarLayout>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <LinearLayout
+        style="@style/SettingsLinearRow"
+        android:layout_marginTop="@dimen/grid_2">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+            android:id="@+id/help_center"
+            style="@style/SettingsSingleRow"
+            android:text="@string/Help_center" />
+
+          <TextView
+            android:id="@+id/contact"
+            style="@style/SettingsSingleRow"
+            android:text="@string/profile_settings_about_contact" />
+        </LinearLayout>
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_2">
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+              android:id="@+id/terms_of_use"
+              style="@style/SettingsSingleRow"
+              android:text="@string/profile_settings_about_terms" />
+
+            <TextView
+              android:id="@+id/privacy_policy"
+              style="@style/SettingsSingleRow"
+              android:text="@string/profile_settings_about_privacy" />
+
+            <TextView
+              android:id="@+id/cookie_policy"
+              style="@style/SettingsSingleRow"
+              android:text="@string/profile_settings_about_cookie" />
+          </LinearLayout>
+
+        </LinearLayout>
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </ScrollView>
+
+</LinearLayout>
+

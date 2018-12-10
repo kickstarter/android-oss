@@ -5,9 +5,9 @@ import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
-import com.kickstarter.factories.ProjectFactory;
-import com.kickstarter.factories.ProjectStatsEnvelopeFactory;
-import com.kickstarter.factories.UserFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
+import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;

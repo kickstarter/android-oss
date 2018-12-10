@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.SurveyResponseFactory;
+import com.kickstarter.mock.factories.SurveyResponseFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.ui.IntentKey;

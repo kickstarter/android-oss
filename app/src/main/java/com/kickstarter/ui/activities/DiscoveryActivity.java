@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -13,9 +14,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageButton;
 
+import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.security.ProviderInstaller;
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
+import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
@@ -60,11 +67,10 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
 
   protected @BindString(R.string.A_newer_build_is_available) String aNewerBuildIsAvailableString;
   protected @BindString(R.string.Upgrade_app) String upgradeAppString;
-  protected @BindString(R.string.Home) String homeString;
+  protected @BindString(R.string.discovery_sort_types_magic) String magicString;
   protected @BindString(R.string.Popular) String popularString;
   protected @BindString(R.string.discovery_sort_types_newest) String newestString;
   protected @BindString(R.string.Ending_soon) String endingSoonString;
-  protected @BindString(R.string.discovery_sort_types_most_funded) String mostFundedString;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -80,8 +86,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     this.drawerRecyclerView.setAdapter(this.drawerAdapter);
 
     final List<String> viewPagerTitles = Arrays.asList(
-      this.homeString, this.popularString, this.newestString, this.endingSoonString, this.mostFundedString
-    );
+      this.magicString, this.popularString, this.newestString, this.endingSoonString);
 
     this.pagerAdapter = new DiscoveryPagerAdapter(
       getSupportFragmentManager(), createFragments(viewPagerTitles.size()), viewPagerTitles, this.viewModel.inputs
@@ -89,6 +94,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
 
     this.sortViewPager.setAdapter(this.pagerAdapter);
     this.sortTabLayout.setupWithViewPager(this.sortViewPager);
+    addTabSelectedListenerToTabLayout();
 
     this.viewModel.outputs.creatorDashboardButtonIsGone()
       .compose(bindToLifecycle())
@@ -160,6 +166,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.viewModel.inputs::openDrawer);
+
+    updateAndroidSecurityProvider();
   }
 
   private static @NonNull List<DiscoveryFragment> createFragments(final int pages) {
@@ -172,6 +180,23 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
 
   public @NonNull DrawerLayout discoveryLayout() {
     return this.discoveryLayout;
+  }
+
+  private void addTabSelectedListenerToTabLayout() {
+    this.sortTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+      @Override
+      public void onTabSelected(final TabLayout.Tab tab) {
+
+      }
+      @Override
+      public void onTabUnselected(final TabLayout.Tab tab) {
+
+      }
+      @Override
+      public void onTabReselected(final TabLayout.Tab tab) {
+        DiscoveryActivity.this.pagerAdapter.scrollToTop(tab.getPosition());
+      }
+    });
   }
 
   private void startLoginToutActivity() {
@@ -188,8 +213,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
   }
 
   private void startSettingsActivity() {
-    final Intent intent = new Intent(this, SettingsActivity.class)
-      .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
+    final Intent intent = new Intent(this, SettingsActivity.class);
+    intent.putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
     startActivity(intent);
   }
 
@@ -206,5 +231,20 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       })
       .setIcon(android.R.drawable.ic_dialog_alert)
       .show();
+  }
+
+  private void updateAndroidSecurityProvider() {
+    if (!ApiCapabilities.tls1_2IsEnabledByDefault()) {
+      // https://stackoverflow.com/questions/29916962/javax-net-ssl-sslhandshakeexception-javax-net-ssl-sslprotocolexception-ssl-han/36892715#36892715
+      try {
+        ProviderInstaller.installIfNeeded(this);
+      } catch (GooglePlayServicesRepairableException e) {
+        // Thrown when Google Play Services is not installed, up-to-date, or enabled
+        // Show dialog to allow users to install, update, or otherwise enable Google Play services.
+        GooglePlayServicesUtil.getErrorDialog(e.getConnectionStatusCode(), this, 0);
+      } catch (GooglePlayServicesNotAvailableException e) {
+        Crashlytics.logException(e);
+      }
+    }
   }
 }

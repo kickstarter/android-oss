@@ -1,0 +1,8 @@
+# The Appfile can be used to specify information that's used across all fastlane
+# tools, like your username or the app's bundle identifier.
+#
+# For more details, check out the documentation at:
+# https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Appfile.md
+
+# app_identifier "com.your.app" # the bundle identifier of your app
+# apple_id "apple@fastlane.tools" # Your Apple ID

@@ -17,6 +17,7 @@ import java.util.TreeMap;
 
 import rx.Observable;
 
+import static com.kickstarter.libs.utils.BooleanUtils.isFalse;
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 public final class DiscoveryDrawerUtils {
@@ -136,13 +137,17 @@ public final class DiscoveryDrawerUtils {
    */
   private static @NonNull List<NavigationDrawerData.Section> topSections(final @Nullable User user) {
     final List<DiscoveryParams> filters = ListUtils.empty();
+    final boolean userIsLoggedIn = user != null;
+
+    if (userIsLoggedIn && isFalse(user.optedOutOfRecommendations())) {
+      filters.add(DiscoveryParams.builder().recommended(true).backed(-1).build());
+    }
 
     filters.add(DiscoveryParams.builder().build());
     filters.add(DiscoveryParams.builder().staffPicks(true).build());
 
-    if (user != null) {
+    if (userIsLoggedIn) {
       filters.add(DiscoveryParams.builder().starred(1).build());
-      filters.add(DiscoveryParams.builder().recommended(true).backed(-1).build());
 
       if (isTrue(user.social())) {
         filters.add(DiscoveryParams.builder().social(1).build());

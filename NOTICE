@@ -1399,42 +1399,6 @@ Copyright 2015 Google, Inc. All Rights Reserved.
    END OF TERMS AND CONDITIONS
 
 
-# Mixpanel Android
-
-Android library for Mixpanel analytics.
-
-https://github.com/mixpanel/mixpanel-android
-
-
-Copyright 2012 Mixpanel, Inc.
-
-Please see the project README file for additional information.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this work except in compliance with the License.
-You may obtain a copy of the License below, or at:
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-
-See LICENSE File for details. The Base64Coder,
-ConfigurationChecker, and StackBlurManager classes, and the entirety of the
- com.mixpanel.android.java_websocket package used by this
-software have been licensed from non-Mixpanel sources and modified
-for use in the library. Please see the relevant source files, and the
-LICENSE file in the com.mixpanel.android.java_websocket package for details.
-
-The StackBlurManager class uses an algorithm by Mario Klingemann <mario@quansimondo.com>
-You can learn more about the algorithm at
-http://www.quasimondo.com/StackBlurForCanvas/StackBlurDemo.html.
-
-
 # Mockito
 
 Mocking framework for Java.

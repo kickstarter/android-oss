@@ -12,7 +12,6 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.utils.AnimationUtils;
-import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.HelpViewModel;
@@ -29,9 +28,8 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
   public static final int HELP_TYPE_PRIVACY = 1;
   public static final int HELP_TYPE_HOW_IT_WORKS = 2;
   public static final int HELP_TYPE_COOKIE_POLICY = 3;
-  public static final int HELP_TYPE_FAQ = 4;
 
-  @IntDef({HELP_TYPE_TERMS, HELP_TYPE_PRIVACY, HELP_TYPE_HOW_IT_WORKS, HELP_TYPE_COOKIE_POLICY, HELP_TYPE_FAQ})
+  @IntDef({HELP_TYPE_TERMS, HELP_TYPE_PRIVACY, HELP_TYPE_HOW_IT_WORKS, HELP_TYPE_COOKIE_POLICY})
   @Retention(RetentionPolicy.SOURCE)
   public @interface HelpType {}
 
@@ -58,21 +56,9 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
     }
   }
 
-  public static class HowItWorks extends HelpActivity {
-    public HowItWorks() {
-      helpType(HELP_TYPE_HOW_IT_WORKS);
-    }
-  }
-
   public static class CookiePolicy extends HelpActivity {
     public CookiePolicy() {
       helpType(HELP_TYPE_COOKIE_POLICY);
-    }
-  }
-
-  public static class Faq extends HelpActivity {
-    public Faq() {
-      helpType(HELP_TYPE_FAQ);
     }
   }
 
@@ -81,7 +67,7 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
     super.onCreate(savedInstanceState);
     setContentView(R.layout.help_layout);
     ButterKnife.bind(this);
-    this.webEndpoint = Secrets.WebEndpoint.PRODUCTION;
+    this.webEndpoint = environment().webEndpoint();
 
     final String url = getUrlForHelpType(this.helpType);
     this.kickstarterWebView.loadUrl(url);
@@ -102,9 +88,6 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
         break;
       case HELP_TYPE_COOKIE_POLICY:
         builder.appendEncodedPath("cookies");
-        break;
-      case HELP_TYPE_FAQ:
-        builder.appendEncodedPath("help/faq/kickstarter+basics");
         break;
     }
     return builder.toString();

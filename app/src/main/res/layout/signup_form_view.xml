@@ -2,90 +2,92 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:gravity="center_horizontal">
+  android:focusable="true"
+  android:focusableInTouchMode="true"
+  android:gravity="center_horizontal"
+  android:orientation="vertical">
 
   <android.support.design.widget.TextInputLayout
-    app:hintTextAppearance="@style/BodySecondary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_2">
+    android:layout_marginTop="@dimen/grid_2"
+    app:hintTextAppearance="@style/BodySecondary">
 
-    <EditText
+    <android.support.design.widget.TextInputEditText
       android:id="@+id/name"
+      style="@style/CalloutPrimary"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:hint="@string/Name"
       android:inputType="textPersonName|textCapWords"
-      android:maxLines="1"
-      style="@style/CalloutPrimary"
-      android:hint="@string/Name" />
+      android:maxLines="1" />
 
   </android.support.design.widget.TextInputLayout>
 
   <android.support.design.widget.TextInputLayout
-    app:hintTextAppearance="@style/BodySecondary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_1">
+    android:layout_marginTop="@dimen/grid_1"
+    app:hintTextAppearance="@style/BodySecondary">
 
-    <EditText
+    <android.support.design.widget.TextInputEditText
       android:id="@+id/email"
+      style="@style/CalloutPrimary"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:hint="@string/login_placeholder_email"
       android:inputType="textEmailAddress"
-      android:maxLines="1"
-      style="@style/CalloutPrimary"
-      android:hint="@string/login_placeholder_email" />
+      android:maxLines="1" />
 
   </android.support.design.widget.TextInputLayout>
 
   <android.support.design.widget.TextInputLayout
-    app:hintTextAppearance="@style/BodySecondary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_1">
+    android:layout_marginTop="@dimen/grid_1"
+    app:hintTextAppearance="@style/BodySecondary"
+    app:passwordToggleEnabled="true"
+    app:passwordToggleTint="@color/password_toggle">
 
-    <EditText
+    <android.support.design.widget.TextInputEditText
       android:id="@+id/password"
+      style="@style/CalloutPrimary"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/grid_2"
+      android:hint="@string/signup_input_fields_password_min_characters"
       android:inputType="textPassword"
-      android:maxLines="1"
-      style="@style/CalloutPrimary"
-      android:hint="@string/signup_input_fields_password_min_characters" />
+      android:maxLines="1" />
 
   </android.support.design.widget.TextInputLayout>
 
   <android.support.v7.widget.SwitchCompat
     android:id="@+id/newsletter_switch"
+    style="@style/Caption1Secondary"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    style="@style/Caption1Secondary"
     android:layout_marginBottom="@dimen/grid_1"
-    android:text="@string/signup_newsletter_full"/>
+    android:text="@string/signup_newsletter_full_opt_out" />
 
   <Button
     android:id="@+id/signup_button"
     style="@style/PrimaryButton"
-    android:enabled="false"
-    android:layout_marginTop="@dimen/grid_2"
-    android:layout_marginBottom="@dimen/grid_2"
     android:layout_width="match_parent"
+    android:layout_marginBottom="@dimen/grid_2"
+    android:layout_marginTop="@dimen/grid_2"
+    android:enabled="false"
     android:text="@string/signup_button" />
 
   <com.kickstarter.ui.views.HtmlTextView
-    style="@style/Caption1Secondary"
     android:id="@+id/disclaimer"
-    android:background="@drawable/click_indicator_light_masked"
+    style="@style/Caption1Secondary"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
     android:layout_marginBottom="@dimen/grid_1"
-    android:padding="@dimen/grid_1"
-    android:text="@string/login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" />
+    android:background="@drawable/click_indicator_light_masked"
+    android:gravity="center_horizontal"
+    android:text="@string/login_tout_disclaimer_agree_to_terms_html" />
 
 </LinearLayout>
-

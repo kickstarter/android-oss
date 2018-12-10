@@ -3,7 +3,7 @@ package com.kickstarter.services;
 import android.net.Uri;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.CategoryFactory;
+import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.models.Category;
 
 import org.junit.Test;
@@ -79,10 +79,6 @@ public final class DiscoveryParamsTest extends KSRobolectricTestCase {
     final DiscoveryParams endingSoonParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.ENDING_SOON).build();
     final Uri endingSoonUri = Uri.parse("https://www.kickstarter.com/discover/ending-soon");
     assertEquals(endingSoonParams, DiscoveryParams.fromUri(endingSoonUri));
-
-    final DiscoveryParams mostFundedParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.MOST_FUNDED).build();
-    final Uri mostFundedUri = Uri.parse("https://www.kickstarter.com/discover/most-funded");
-    assertEquals(mostFundedParams, DiscoveryParams.fromUri(mostFundedUri));
 
     final DiscoveryParams newestParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.NEWEST).staffPicks(true).build();
     final Uri newestUri = Uri.parse("https://www.kickstarter.com/discover/newest");

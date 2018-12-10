@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content">
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
 
   <LinearLayout
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <include layout="@layout/login_toolbar"
-      android:id="@+id/sign_up_with_facebook_toolbar"/>
+    <include
+      android:id="@+id/sign_up_with_facebook_toolbar"
+      layout="@layout/login_toolbar" />
 
     <LinearLayout
-      android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingStart="@dimen/form_margin_x"
-      android:paddingEnd="@dimen/form_margin_x" >
+      android:orientation="vertical"
+      android:paddingEnd="@dimen/form_margin_x"
+      android:paddingStart="@dimen/form_margin_x">
 
       <TextView
         style="@style/BodySecondary"
-        android:text="@string/facebook_confirmation_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_4"
         android:layout_marginTop="@dimen/grid_4"
-        android:layout_marginBottom="@dimen/grid_4"/>
+        android:text="@string/facebook_confirmation_detail" />
 
       <TextView
         android:id="@+id/email"
@@ -35,45 +36,35 @@
 
       <android.support.v7.widget.SwitchCompat
         android:id="@+id/newsletter_switch"
+        style="@style/BodySecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:switchPadding="@dimen/grid_1"
-        style="@style/BodySecondary"
-        android:layout_marginTop="@dimen/grid_4"
         android:layout_marginBottom="@dimen/grid_2"
-        android:text="@string/signup_newsletter_full"/>
+        android:layout_marginTop="@dimen/grid_4"
+        android:switchPadding="@dimen/grid_1"
+        android:text="@string/signup_newsletter_full_opt_out" />
 
       <Button
         android:id="@+id/create_new_account_button"
         style="@style/PrimaryButton"
-        android:layout_marginTop="@dimen/grid_1"
-        android:layout_marginBottom="@dimen/grid_2"
         android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_1"
         android:text="@string/facebook_confirmation_button" />
 
-      <com.kickstarter.ui.views.HtmlTextView
-        android:id="@+id/disclaimer"
-        style="@style/Caption1Secondary"
-        android:text="@string/login_tout_disclaimer_by_signing_up_you_agree_to_terms_html"
-        android:gravity="center"
-        android:background="@drawable/click_indicator_light_masked"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_8"/>
-
       <TextView
-        android:text="@string/facebook_confirmation_wrong_account_title"
         style="@style/BodySecondary"
-        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/facebook_confirmation_wrong_account_title" />
 
       <Button
         android:id="@+id/login_button"
         style="@style/BorderButton"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/grid_2"
         android:layout_marginBottom="@dimen/grid_1"
+        android:layout_marginTop="@dimen/grid_2"
         android:text="@string/login_buttons_log_in_email" />
 
     </LinearLayout>

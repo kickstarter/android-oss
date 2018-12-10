@@ -69,8 +69,6 @@
 
   <!-- Discovery drawer -->
   <dimen name="discovery_drawer_filter_padding_y">14dp</dimen>
-  <dimen name="discovery_drawer_status_bar_height">0dp</dimen>
-  <dimen name="discovery_drawer_status_bar_height_negative">0dp</dimen>
 
   <!-- Layout padding -->
   <dimen name="activity_padding_x">0dp</dimen>
@@ -132,7 +130,7 @@
   <dimen name="text_view_corner_radius">@dimen/grid_1_half</dimen>
 
   <!-- Toolbars -->
-  <dimen name="toolbar_elevation">@dimen/grid_1_half</dimen>
+  <dimen name="ks_toolbar_elevation">@dimen/grid_1_half</dimen>
 
   <!-- Activity feed view -->
   <dimen name="activity_feed_view_margin_top">0dp</dimen>
@@ -152,5 +150,9 @@
 
   <!-- Sort tabs -->
   <dimen name="sort_tab_divider_margin_top_negative">-0.5dp</dimen>
+
+  <!-- Default screen margins, per the Android Design guidelines. -->
+  <dimen name="activity_horizontal_margin">16dp</dimen>
+  <dimen name="activity_vertical_margin">16dp</dimen>
 
 </resources>

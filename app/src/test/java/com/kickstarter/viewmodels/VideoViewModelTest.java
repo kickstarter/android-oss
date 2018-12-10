@@ -3,8 +3,8 @@ package com.kickstarter.viewmodels;
 import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.ProjectFactory;
-import com.kickstarter.factories.VideoFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.VideoFactory;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 

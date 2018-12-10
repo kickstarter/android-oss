@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context="com.kickstarter.ui.activities.PrivacyActivity">
+
+  <android.support.design.widget.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.kickstarter.ui.toolbars.KSToolbar
+      style="@style/Toolbar"
+      app:contentInsetLeft="0dp"
+      app:contentInsetStart="0dp">
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.kickstarter.ui.views.IconButton
+          android:id="@+id/back_button"
+          style="@style/ToolbarIconBackButton" />
+
+        <TextView
+          style="@style/ToolbarTitle"
+          android:text="@string/Privacy" />
+      </RelativeLayout>
+
+    </com.kickstarter.ui.toolbars.KSToolbar>
+  </android.support.design.widget.AppBarLayout>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ksr_grey_100"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.kickstarter.ui.activities.PrivacyActivity">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <LinearLayout
+        style="@style/SettingsLinearRow"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/NewsletterSingleRow"
+            android:text="@string/Following" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/following_switch"
+            style="@style/NewsLetterSwitch" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <TextView
+        style="@style/NewsLetterTextView"
+        android:text="@string/When_following_is_on_you_can_follow_the_acticity_of_others" />
+
+      <LinearLayout
+        style="@style/SettingsLinearRow">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/NewsletterSingleRow"
+            android:text="@string/Recommendations" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/recommendations_switch"
+            style="@style/NewsLetterSwitch" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <TextView
+        style="@style/NewsLetterTextView"
+        android:text="@string/We_use_your_activity_internally_to_make_recommendations_for_you" />
+
+      <LinearLayout
+        android:id="@+id/private_profile_row"
+        style="@style/SettingsLinearRow">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/NewsletterSingleRow"
+            android:text="@string/Private_profile" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/private_profile_switch"
+            style="@style/NewsLetterSwitch" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <TextView
+        android:id="@+id/private_profile_text_view"
+        style="@style/NewsLetterTextView"
+        android:layout_marginBottom="@dimen/grid_1"
+        android:layout_marginTop="@dimen/grid_2"
+        android:text="@string/If_your_profile_is_private" />
+
+      <TextView
+        android:id="@+id/public_profile_text_view"
+        style="@style/NewsLetterTextView"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:text="@string/If_your_profile_is_public" />
+
+      <LinearLayout
+        android:id="@+id/settings_request_data"
+        style="@style/SettingsLinearRow"
+        android:layout_marginTop="@dimen/grid_2">
+
+        <LinearLayout
+          style="@style/SettingsSingleRow"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+            style="@style/CalloutPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Request_my_personal_data" />
+        </LinearLayout>
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/settings_delete_account"
+        style="@style/SettingsLinearRow"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
+
+        <LinearLayout
+          style="@style/SettingsSingleRow"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+            style="@style/CalloutPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Delete_my_Kickstarter_Account"
+            android:textColor="@color/ksr_red_400" />
+        </LinearLayout>
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </ScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

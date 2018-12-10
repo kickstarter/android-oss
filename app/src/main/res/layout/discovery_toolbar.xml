@@ -6,16 +6,15 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_height="wrap_content"
-  android:elevation="0dp"
+  android:elevation="0.1dp"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  app:layout_collapseMode="parallax"
   tools:ignore="UnusedAttribute"
   tools:showIn="@layout/discovery_layout">
 
   <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
+    android:layout_height="?android:attr/actionBarSize"
     android:baselineAligned="false"
     android:gravity="center_vertical"
     android:orientation="horizontal">

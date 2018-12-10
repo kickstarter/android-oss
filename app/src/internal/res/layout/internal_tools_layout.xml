@@ -224,13 +224,7 @@
             android:layout_column="1" />
 
         </TableRow>
-
       </TableLayout>
-
-
     </LinearLayout>
-
   </LinearLayout>
-
-
 </ScrollView>

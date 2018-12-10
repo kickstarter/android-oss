@@ -17,6 +17,8 @@ public final class IntentKey {
   public static final String INTERNAL_BUILD_ENVELOPE = "com.kickstarter.kickstarter.intent_internal_build_envelope";
   public static final String IS_FROM_MESSAGES_ACTIVITY = "com.kickstarter.kickstarter.intent_is_from_messages_activity";
   public static final String KOALA_CONTEXT = "com.kickstarter.kickstarter.intent_koala_context";
+  public static final String KOALA_EVENT = "com.kickstarter.kickstarter.intent_koala_event";
+  public static final String KOALA_EVENT_NAME = "com.kickstarter.kickstarter.intent_koala_event_name";
   public static final String LOGIN_REASON = "com.kickstarter.kickstarter.intent_login_reason";
   public static final String MASKED_WALLET = "com.kickstarter.kickstarter.masked_wallet";
   public static final String MESSAGE_THREAD = "com.kickstarter.kickstarter.intent_message_thread";

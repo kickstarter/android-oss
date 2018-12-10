@@ -30,8 +30,6 @@ public final class DiscoveryUtils {
         return 2;
       case ENDING_SOON:
         return 3;
-      case MOST_FUNDED:
-        return 4;
       default:
         return 0;
     }

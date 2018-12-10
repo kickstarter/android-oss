@@ -5,16 +5,16 @@ import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
-import com.kickstarter.factories.CategoryFactory;
-import com.kickstarter.factories.ConfigFactory;
-import com.kickstarter.factories.LocationFactory;
-import com.kickstarter.factories.ProjectFactory;
-import com.kickstarter.factories.UserFactory;
-import com.kickstarter.factories.VideoFactory;
+import com.kickstarter.mock.factories.CategoryFactory;
+import com.kickstarter.mock.factories.ConfigFactory;
+import com.kickstarter.mock.factories.LocationFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.UserFactory;
+import com.kickstarter.mock.factories.VideoFactory;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
-import com.kickstarter.libs.MockCurrentConfig;
+import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
@@ -116,8 +116,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.setUnsuccessfulProjectStateView().subscribe(this.setUnsuccessfulProjectStateView);
     this.vm.outputs.startProjectSocialActivity().subscribe(this.startProjectSocialActivity);
     this.vm.outputs.updatesCountTextViewText().subscribe(this.updatesCountTextViewText);
-    this.vm.outputs.usdConversionPledgedAndGoalText().subscribe(this.usdConversionPledgedAndGoalText);
-    this.vm.outputs.usdConversionTextViewIsGone().subscribe(this.usdConversionTextViewIsGone);
+    this.vm.outputs.conversionPledgedAndGoalText().subscribe(this.usdConversionPledgedAndGoalText);
+    this.vm.outputs.conversionTextViewIsGone().subscribe(this.usdConversionTextViewIsGone);
   }
 
   @Test
@@ -498,7 +498,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testUsdConversionForNonUSProject() {
-    final Project project = ProjectFactory.caProject();
+    // Use a CA project with a MX$ currency
+    final Project project = ProjectFactory.mxCurrencyCAProject();
     final Config config = ConfigFactory.configForUSUser();
     final MockCurrentConfig currentConfig = new MockCurrentConfig();
     currentConfig.config(config);

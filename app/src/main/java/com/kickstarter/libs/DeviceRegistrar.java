@@ -1,17 +1,21 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.utils.PlayServicesCapability;
-import com.kickstarter.services.gcm.RegisterService;
-import com.kickstarter.services.gcm.UnregisterService;
+import com.kickstarter.services.firebase.DispatcherKt;
+import com.kickstarter.services.firebase.RegisterService;
+import com.kickstarter.services.firebase.UnregisterService;
+
+
 
 public final class DeviceRegistrar implements DeviceRegistrarType {
   private final @NonNull PlayServicesCapability playServicesCapability;
   private @ApplicationContext @NonNull Context context;
+
+  public static final String TOPIC_GLOBAL = "global";
 
   public DeviceRegistrar(final @NonNull PlayServicesCapability playServicesCapability,
     final @ApplicationContext @NonNull Context context) {
@@ -26,8 +30,7 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
     if (!this.playServicesCapability.isCapable()) {
       return;
     }
-
-    this.context.startService(new Intent(this.context, RegisterService.class));
+    DispatcherKt.dispatchJob(this.context, RegisterService.class, RegisterService.REGISTER_SERVICE);
   }
 
   /**
@@ -37,7 +40,6 @@ public final class DeviceRegistrar implements DeviceRegistrarType {
     if (!this.playServicesCapability.isCapable()) {
       return;
     }
-
-    this.context.startService(new Intent(this.context, UnregisterService.class));
+    DispatcherKt.dispatchJob(this.context, UnregisterService.class, UnregisterService.UNREGISTER_SERVICE);
   }
 }

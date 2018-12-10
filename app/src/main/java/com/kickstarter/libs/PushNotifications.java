@@ -1,11 +1,14 @@
 package com.kickstarter.libs;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -36,6 +39,8 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -47,22 +52,29 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 
 public final class PushNotifications {
+  private static final String CHANNEL_FOLLOWING = "FOLLOWING";
+  private static final String CHANNEL_MESSAGES = "MESSAGES";
+  private static final String CHANNEL_PROJECT_ACTIVITY = "PROJECT_ACTIVITY";
+  private static final String CHANNEL_PROJECT_REMINDER = "PROJECT_REMINDER";
+  private static final String CHANNEL_PROJECT_UPDATES = "PROJECT_UPDATES";
+  private static final String CHANNEL_SURVEY = "SURVEY";
+  private static final String[] NOTIFICATION_CHANNELS = {CHANNEL_FOLLOWING, CHANNEL_MESSAGES, CHANNEL_PROJECT_ACTIVITY,
+    CHANNEL_PROJECT_REMINDER, CHANNEL_PROJECT_UPDATES, CHANNEL_SURVEY};
+
   private final @ApplicationContext Context context;
   private final ApiClientType client;
-  private final DeviceRegistrarType deviceRegistrar;
 
   private final PublishSubject<PushNotificationEnvelope> notifications = PublishSubject.create();
   private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-  public PushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client,
-    final @NonNull DeviceRegistrarType deviceRegistrar) {
-
+  public PushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client) {
     this.context = context;
     this.client = client;
-    this.deviceRegistrar = deviceRegistrar;
   }
 
   public void initialize() {
+    createNotificationChannels();
+
     this.subscriptions.add(
       this.notifications
         .onBackpressureBuffer()
@@ -125,12 +137,44 @@ public final class PushNotifications {
           )
         )
     );
-
-    this.deviceRegistrar.registerDevice();
   }
 
   public void add(final @NonNull PushNotificationEnvelope envelope) {
     this.notifications.onNext(envelope);
+  }
+
+  private void createNotificationChannels() {
+    // Create the NotificationChannel, but only on API 26+ because
+    // the NotificationChannel class is new and not in the support library
+    if (ApiCapabilities.canCreateNotificationChannels()) {
+      final List<NotificationChannel> channels = getListOfNotificationChannels();
+      // Register the channels with the system; you can't change the importance
+      // or other notification behaviors after this
+      final NotificationManager notificationManager = this.context.getSystemService(NotificationManager.class);
+      if (ObjectUtils.isNotNull(notificationManager)) {
+        notificationManager.createNotificationChannels(channels);
+      }
+    }
+  }
+
+  @TargetApi(Build.VERSION_CODES.O)
+  private @NonNull List<NotificationChannel> getListOfNotificationChannels() {
+    final List<NotificationChannel> channels = new ArrayList<>(NOTIFICATION_CHANNELS.length);
+    channels.add(getNotificationChannel(CHANNEL_MESSAGES, R.string.Messages, NotificationManager.IMPORTANCE_DEFAULT));
+    channels.add(getNotificationChannel(CHANNEL_PROJECT_ACTIVITY, R.string.Project_activity, NotificationManager.IMPORTANCE_DEFAULT));
+    channels.add(getNotificationChannel(CHANNEL_PROJECT_REMINDER, R.string.Project_reminders, NotificationManager.IMPORTANCE_DEFAULT));
+    channels.add(getNotificationChannel(CHANNEL_PROJECT_UPDATES, R.string.Project_updates, NotificationManager.IMPORTANCE_DEFAULT));
+    final NotificationChannel followingChannel = getNotificationChannel(CHANNEL_FOLLOWING, R.string.Following, NotificationManager.IMPORTANCE_DEFAULT);
+    followingChannel.setDescription(this.context.getString(R.string.When_following_is_on_you_can_follow_the_acticity_of_others));
+    channels.add(followingChannel);
+    channels.add(getNotificationChannel(CHANNEL_SURVEY, R.string.Reward_surveys, NotificationManager.IMPORTANCE_HIGH));
+    return channels;
+  }
+
+  @TargetApi(Build.VERSION_CODES.O)
+  private @NonNull NotificationChannel getNotificationChannel(final @NonNull String channelId, final int nameResId, final int importance) {
+    final CharSequence name = this.context.getString(nameResId);
+    return new NotificationChannel(channelId, name, importance);
   }
 
   private void displayNotificationFromFriendFollowActivity(final @NonNull PushNotificationEnvelope envelope) {
@@ -141,8 +185,9 @@ public final class PushNotifications {
       return;
     }
 
-    final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
+    final Notification notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_FOLLOWING)
       .setLargeIcon(fetchBitmap(activity.userPhoto(), true))
+      .setContentIntent(friendFollowActivityIntent(envelope))
       .build();
     notificationManager().notify(envelope.signature(), notification);
   }
@@ -156,7 +201,7 @@ public final class PushNotifications {
       return;
     }
 
-    final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
+    final Notification notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_MESSAGES)
       .setContentIntent(messageThreadIntent(envelope, messageThread))
       .build();
 
@@ -178,7 +223,7 @@ public final class PushNotifications {
 
     final String projectParam = ObjectUtils.toString(projectId);
 
-    NotificationCompat.Builder notificationBuilder = notificationBuilder(gcm.title(), gcm.alert())
+    NotificationCompat.Builder notificationBuilder = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_PROJECT_ACTIVITY)
       .setContentIntent(projectContentIntent(envelope, projectParam));
     if (projectPhoto != null) {
       notificationBuilder = notificationBuilder.setLargeIcon(fetchBitmap(projectPhoto, false));
@@ -196,7 +241,7 @@ public final class PushNotifications {
       return;
     }
 
-    final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
+    final Notification notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_PROJECT_REMINDER)
       .setContentIntent(projectContentIntent(envelope, ObjectUtils.toString(project.id())))
       .setLargeIcon(fetchBitmap(project.photo(), false))
       .build();
@@ -214,7 +259,7 @@ public final class PushNotifications {
       return;
     }
 
-    final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
+    final Notification notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_SURVEY)
       .setContentIntent(surveyResponseContentIntent(envelope, surveyResponse))
       .build();
     notificationManager().notify(envelope.signature(), notification);
@@ -240,11 +285,21 @@ public final class PushNotifications {
 
     final String projectParam = ObjectUtils.toString(projectId);
 
-    final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
+    final Notification notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_PROJECT_UPDATES)
       .setContentIntent(projectUpdateContentIntent(envelope, update, projectParam))
       .setLargeIcon(fetchBitmap(activity.projectPhoto(), false))
       .build();
     notificationManager().notify(envelope.signature(), notification);
+  }
+
+
+  private @NonNull PendingIntent friendFollowActivityIntent(final @NonNull PushNotificationEnvelope envelope) {
+    final Intent messageThreadIntent = new Intent(this.context, ActivityFeedActivity.class);
+
+    final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
+      .addNextIntentWithParentStack(messageThreadIntent);
+
+    return taskStackBuilder.getPendingIntent(envelope.signature(), PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
   private @NonNull PendingIntent messageThreadIntent(final @NonNull PushNotificationEnvelope envelope,
@@ -261,9 +316,9 @@ public final class PushNotifications {
   }
 
   private @NonNull NotificationCompat.Builder notificationBuilder(final @NonNull String title,
-    final @NonNull String text) {
+    final @NonNull String text, final @NonNull String channelId) {
 
-    return new NotificationCompat.Builder(this.context)
+    return new NotificationCompat.Builder(this.context, channelId)
       .setSmallIcon(R.drawable.ic_kickstarter_micro_k)
       .setColor(ContextCompat.getColor(this.context, R.color.ksr_green_800))
       .setContentText(text)
@@ -277,7 +332,8 @@ public final class PushNotifications {
 
     final Intent projectIntent = new Intent(this.context, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT_PARAM, projectParam)
-      .putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, envelope);
+      .putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, envelope)
+      .putExtra(IntentKey.REF_TAG, RefTag.push());
 
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
       .addNextIntentWithParentStack(projectIntent);
@@ -289,7 +345,8 @@ public final class PushNotifications {
     final @NonNull Update update, final @NonNull String projectParam) {
 
     final Intent projectIntent = new Intent(this.context, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT_PARAM, projectParam);
+      .putExtra(IntentKey.PROJECT_PARAM, projectParam)
+      .putExtra(IntentKey.REF_TAG, RefTag.push());
 
     final Intent updateIntent = new Intent(this.context, UpdateActivity.class)
       .putExtra(IntentKey.PROJECT_PARAM, projectParam)

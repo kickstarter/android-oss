@@ -21,6 +21,10 @@ public final class StringUtils {
     return !isEmpty(str);
   }
 
+  public static boolean isValidPassword(final @Nullable String str) {
+    return !isEmpty(str) && str.length() > 5;
+  }
+
   /**
    * Returns a string with only the first character capitalized.
    */

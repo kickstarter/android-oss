@@ -16,6 +16,7 @@ import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 
 import org.joda.time.DateTime;
@@ -26,49 +27,125 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.coalesce;
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 
 public interface ProjectCardHolderViewModel {
 
   interface Inputs {
-    /** Call to configure view model with a project. */
-    void configureWith(Project project);
+    /** Call to configure view model with a project and current discovery params. */
+    void configureWith(Pair<Project, DiscoveryParams> projectAndDiscoveryParams);
 
     /** Call when the project card has been clicked. */
     void projectCardClicked();
   }
 
   interface Outputs {
+    /** Emits the project's number of backers. */
     Observable<String> backersCountTextViewText();
+
+    /** Emits to determine if backing view should be shown. */
     Observable<Boolean> backingViewGroupIsGone();
+
+    /** Emits the a string representing how much time the project has remaining. */
     Observable<String> deadlineCountdownText();
+
+    /** Emits to determine if featured view should be shown. */
     Observable<Boolean> featuredViewGroupIsGone();
+
+    /** Emits list of friends who have also backed this project. */
     Observable<List<User>> friendsForNamepile();
+
+    /** Emits to determine if second face in facepile should be shown. */
     Observable<Boolean> friendAvatar2IsGone();
+
+    /** Emits to determine if third face in facepile should be shown. */
     Observable<Boolean> friendAvatar3IsGone();
+
+    /** Emits URL string of first friend's avatar. */
     Observable<String> friendAvatarUrl1();
+
+    /** Emits URL string of second friend's avatar. */
     Observable<String> friendAvatarUrl2();
+
+    /** Emits URL string of third friend's avatar. */
     Observable<String> friendAvatarUrl3();
+
+    /** Emits to determine if project has a photo to display. */
     Observable<Boolean> imageIsInvisible();
+
+    /** Emits to determine if friends who have also backed should be shown. */
     Observable<Boolean> friendBackingViewIsHidden();
-    Observable<Boolean> fundingUnsuccessfulViewGroupIsGone();
+
+    /** Emits to determine if successful funding state should be shown. */
     Observable<Boolean> fundingSuccessfulViewGroupIsGone();
+
+    /** Emits to determine if unsuccessful funding state should be shown. */
+    Observable<Boolean> fundingUnsuccessfulViewGroupIsGone();
+
+    /** Emits to determine if metadata container should be shown. */
     Observable<Boolean> metadataViewGroupIsGone();
+
+    /** Emits background drawable resource ID of metadata container. */
     Observable<Integer> metadataViewGroupBackgroundDrawable();
+
+    /** Emits project to be used for calculating countdown. */
     Observable<Project> projectForDeadlineCountdownDetail();
+
+    /** Emits percentage representing project funding. */
     Observable<Integer> percentageFundedForProgressBar();
+
+    /** Emits to determine if funded progress bar should be shown. */
     Observable<Boolean> percentageFundedProgressBarIsGone();
+
+    /** Emits string representation of project funding percentage. */
     Observable<String> percentageFundedTextViewText();
+
+    /** Emits URL string of project cover photo. */
     Observable<String> photoUrl();
+
+    /** Emits project name and blurb. */
     Observable<Pair<String, String>> nameAndBlurbText();
+
+    /** Emits when project card is clicked. */
     Observable<Project> notifyDelegateOfProjectClick();
+
+    /** Emits time project was canceled. */
     Observable<DateTime> projectCanceledAt();
+
+    /** Emits to determine if stats container should be shown. */
     Observable<Boolean> projectCardStatsViewGroupIsGone();
+
+    /** Emits time project was unsuccessfully funded. */
     Observable<DateTime> projectFailedAt();
+
+    /** Emits to determine if state container should be shown. */
     Observable<Boolean> projectStateViewGroupIsGone();
+
+    /** Emits to determine if project (sub)category tag should be shown. */
+    Observable<Boolean> projectSubcategoryIsGone();
+
+    /** Emits project (sub)category. */
+    Observable<String> projectSubcategoryName();
+
+    /** Emits time project was successfully funded. */
     Observable<DateTime> projectSuccessfulAt();
+
+    /** Emits time project was suspended. */
     Observable<DateTime> projectSuspendedAt();
+
+    /** Emits to determine if project tags container should be shown. */
+    Observable<Boolean> projectTagContainerIsGone();
+
+    /** Emits to determine if project we love tag container should be shown. */
+    Observable<Boolean> projectWeLoveIsGone();
+
+    /** Emits project's root category. */
     Observable<String> rootCategoryNameForFeatured();
+
+    /** Emits to determine if saved container should shown. */
     Observable<Boolean> savedViewGroupIsGone();
+
+    /** Emits to determine if padding should be added to top of view. */
     Observable<Boolean> setDefaultTopPadding();
   }
 
@@ -184,6 +261,19 @@ public interface ProjectCardHolderViewModel {
         .map(ProjectUtils::isCompleted)
         .map(BooleanUtils::negate);
 
+      final Observable<Category> projectCategory = this.project
+        .map(Project::category)
+        .filter(ObjectUtils::isNotNull);
+
+      this.projectSubcategoryIsGone = this.discoveryParams
+        .map(DiscoveryParams::category)
+        .compose(combineLatestPair(projectCategory))
+        .map(this::areParamsAllOrSameCategoryAsProject)
+        .distinctUntilChanged();
+
+      this.projectSubcategoryName = projectCategory
+        .map(Category::name);
+
       this.projectSuccessfulAt = this.project
         .filter(p -> p.state().equals(Project.STATE_SUCCESSFUL))
         .map(Project::stateChangedAt)
@@ -194,9 +284,20 @@ public interface ProjectCardHolderViewModel {
         .map(Project::stateChangedAt)
         .compose(coalesce(new DateTime()));
 
-      this.rootCategoryNameForFeatured = this.project
-        .map(Project::category)
-        .filter(ObjectUtils::isNotNull)
+      this.projectWeLoveIsGone = this.project
+        .map(Project::staffPick)
+        .compose(coalesce(false))
+        .compose(combineLatestPair(this.discoveryParams.map(DiscoveryParams::staffPicks).compose(coalesce(false))))
+        .map(staffPickPair -> staffPickPair.first && !staffPickPair.second)
+        .map(BooleanUtils::negate)
+        .distinctUntilChanged();
+
+      this.projectTagContainerIsGone = Observable.combineLatest(this.projectSubcategoryIsGone,
+        this.projectWeLoveIsGone,
+        Pair::create).map(pair -> pair.first && pair.second)
+        .distinctUntilChanged();
+
+      this.rootCategoryNameForFeatured = projectCategory
         .map(Category::root)
         .filter(ObjectUtils::isNotNull)
         .map(Category::name);
@@ -207,6 +308,11 @@ public interface ProjectCardHolderViewModel {
       this.setDefaultTopPadding = this.metadataViewGroupIsGone;
     }
 
+    private boolean areParamsAllOrSameCategoryAsProject(final @NonNull Pair<Category, Category> categoryPair) {
+      return ObjectUtils.isNotNull(categoryPair.first) ? categoryPair.first.id() == categoryPair.second.id() : false;
+    }
+
+    private final PublishSubject<DiscoveryParams> discoveryParams = PublishSubject.create();
     private final PublishSubject<Project> project = PublishSubject.create();
     private final PublishSubject<Void> projectCardClicked = PublishSubject.create();
 
@@ -237,8 +343,12 @@ public interface ProjectCardHolderViewModel {
     private final Observable<Boolean> projectStateViewGroupIsGone;
     private final Observable<DateTime> projectCanceledAt;
     private final Observable<DateTime> projectFailedAt;
+    private final Observable<String> projectSubcategoryName;
+    private final Observable<Boolean> projectSubcategoryIsGone;
     private final Observable<DateTime> projectSuccessfulAt;
     private final Observable<DateTime> projectSuspendedAt;
+    private final Observable<Boolean> projectTagContainerIsGone;
+    private final Observable<Boolean> projectWeLoveIsGone;
     private final Observable<String> rootCategoryNameForFeatured;
     private final Observable<Boolean> savedViewGroupIsGone;
     private final Observable<Boolean> setDefaultTopPadding;
@@ -246,8 +356,9 @@ public interface ProjectCardHolderViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override public void configureWith(final @NonNull Project project) {
-      this.project.onNext(project);
+    @Override public void configureWith(final @NonNull Pair<Project, DiscoveryParams> projectAndDiscoveryParams) {
+      this.project.onNext(projectAndDiscoveryParams.first);
+      this.discoveryParams.onNext(projectAndDiscoveryParams.second);
     }
     @Override public void projectCardClicked() {
       this.projectCardClicked.onNext(null);
@@ -330,6 +441,12 @@ public interface ProjectCardHolderViewModel {
     @Override public @NonNull Observable<Boolean> projectStateViewGroupIsGone() {
       return this.projectStateViewGroupIsGone;
     }
+    @Override public @NonNull Observable<Boolean> projectSubcategoryIsGone() {
+      return this.projectSubcategoryIsGone;
+    }
+    @Override public @NonNull Observable<String> projectSubcategoryName() {
+      return this.projectSubcategoryName;
+    }
     @Override public @NonNull Observable<DateTime> projectCanceledAt() {
       return this.projectCanceledAt;
     }
@@ -341,6 +458,12 @@ public interface ProjectCardHolderViewModel {
     }
     @Override public @NonNull Observable<DateTime> projectSuspendedAt() {
       return this.projectSuspendedAt;
+    }
+    @Override public @NonNull Observable<Boolean> projectTagContainerIsGone() {
+      return this.projectTagContainerIsGone;
+    }
+    @Override public @NonNull Observable<Boolean> projectWeLoveIsGone() {
+      return this.projectWeLoveIsGone;
     }
     @Override public @NonNull Observable<String> rootCategoryNameForFeatured() {
       return this.rootCategoryNameForFeatured;

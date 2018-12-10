@@ -45,7 +45,7 @@ public abstract class DiscoveryParams implements Parcelable {
   public abstract @Nullable String term();
 
   public enum Sort {
-    HOME, POPULAR, NEWEST, ENDING_SOON, MOST_FUNDED;
+    HOME, POPULAR, NEWEST, ENDING_SOON;
     @Override
     public @NonNull String toString() {
       switch (this) {
@@ -57,8 +57,6 @@ public abstract class DiscoveryParams implements Parcelable {
           return "newest";
         case ENDING_SOON:
           return "end_date";
-        case MOST_FUNDED:
-          return "most_funded";
       }
       return "";
     }
@@ -73,8 +71,6 @@ public abstract class DiscoveryParams implements Parcelable {
           return NEWEST;
         case "end_date":
           return ENDING_SOON;
-        case "most_funded":
-          return MOST_FUNDED;
       }
       return HOME;
     }
@@ -89,8 +85,6 @@ public abstract class DiscoveryParams implements Parcelable {
           return "_newest";
         case ENDING_SOON:
           return "_ending_soon";
-        case MOST_FUNDED:
-          return "_most_funded";
         default:
           return "";
       }
@@ -141,10 +135,6 @@ public abstract class DiscoveryParams implements Parcelable {
 
     if (KSUri.isDiscoverScopePath(uri.getPath(), "ending-soon")) {
       builder = builder.sort(Sort.ENDING_SOON);
-    }
-
-    if (KSUri.isDiscoverScopePath(uri.getPath(), "most-funded")) {
-      builder = builder.sort(Sort.MOST_FUNDED);
     }
 
     if (KSUri.isDiscoverScopePath(uri.getPath(), "newest")) {
@@ -462,6 +452,15 @@ public abstract class DiscoveryParams implements Parcelable {
    */
   public boolean isAllProjects() {
     return isFalse(staffPicks()) && (starred() == null || starred() != 1) && (backed() == null || backed() != 1)
+      && (social() == null || social() != 1) && category() == null && location() == null && isFalse(recommended());
+  }
+
+  /**
+   * Determines if params are for Saved Projects, i.e. discovery with starred params.
+   * @return true if is Saved Projects.
+   */
+  public boolean isSavedProjects() {
+    return isTrue(starred() != null && starred() == 1) && isFalse(staffPicks()) && (backed() == null || backed() != 1)
       && (social() == null || social() != 1) && category() == null && location() == null && isFalse(recommended());
   }
 

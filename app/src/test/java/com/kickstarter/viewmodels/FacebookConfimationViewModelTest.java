@@ -4,14 +4,14 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.ApiExceptionFactory;
-import com.kickstarter.factories.ConfigFactory;
+import com.kickstarter.mock.factories.ApiExceptionFactory;
+import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
-import com.kickstarter.libs.MockCurrentConfig;
+import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.MockApiClient;
+import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
@@ -91,27 +91,9 @@ public class FacebookConfimationViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testToggleSendNewsLetter_ForUSUser() {
+  public void testToggleSendNewsLetter_isNotChecked() {
     final CurrentConfigType currentConfig = new MockCurrentConfig();
     currentConfig.config(ConfigFactory.config().toBuilder().countryCode("US").build());
-    final Environment environment = environment().toBuilder().currentConfig(currentConfig).build();
-    this.vm = new FacebookConfirmationViewModel.ViewModel(environment);
-
-    this.vm.outputs.sendNewslettersIsChecked().subscribe(this.sendNewslettersIsChecked);
-    this.sendNewslettersIsChecked.assertValue(true);
-
-    this.vm.inputs.sendNewslettersClick(false);
-    this.vm.inputs.sendNewslettersClick(true);
-
-    this.sendNewslettersIsChecked.assertValues(true, false, true);
-    this.koalaTest.assertValues(KoalaEvent.FACEBOOK_CONFIRM, KoalaEvent.USER_SIGNUP,
-      KoalaEvent.SIGNUP_NEWSLETTER_TOGGLE, KoalaEvent.SIGNUP_NEWSLETTER_TOGGLE);
-  }
-
-  @Test
-  public void testToggleSendNewsLetter_ForNonUSUser() {
-    final CurrentConfigType currentConfig = new MockCurrentConfig();
-    currentConfig.config(ConfigFactory.config().toBuilder().countryCode("MX").build());
     final Environment environment = environment().toBuilder().currentConfig(currentConfig).build();
     this.vm = new FacebookConfirmationViewModel.ViewModel(environment);
 

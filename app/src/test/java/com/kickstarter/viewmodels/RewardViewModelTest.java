@@ -4,12 +4,11 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.factories.ConfigFactory;
-import com.kickstarter.factories.ProjectFactory;
-import com.kickstarter.factories.RewardFactory;
 import com.kickstarter.libs.Config;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.mock.factories.ConfigFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.RewardFactory;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.models.RewardsItem;
@@ -28,6 +27,8 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> allGoneTextViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<Integer> backersTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backersTextViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> conversionTextViewText = TestSubscriber.create();
+  private final TestSubscriber<Boolean> conversionSectionIsGone = TestSubscriber.create();
   private final TestSubscriber<String> descriptionTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> estimatedDeliveryDateSectionIsGone = new TestSubscriber<>();
   private final TestSubscriber<DateTime> estimatedDeliveryDateTextViewText = new TestSubscriber<>();
@@ -47,8 +48,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Pair<Project, Reward>> startCheckoutActivity = new TestSubscriber<>();
   private final TestSubscriber<Boolean> titleTextViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> titleTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<String> usdConversionTextViewText = TestSubscriber.create();
-  private final TestSubscriber<Boolean> usdConversionSectionIsGone = TestSubscriber.create();
   private final TestSubscriber<Boolean> whiteOverlayIsInvisible = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
@@ -56,6 +55,8 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.allGoneTextViewIsGone().subscribe(this.allGoneTextViewIsGone);
     this.vm.outputs.backersTextViewIsGone().subscribe(this.backersTextViewIsGone);
     this.vm.outputs.backersTextViewText().subscribe(this.backersTextViewText);
+    this.vm.outputs.conversionTextViewText().subscribe(this.conversionTextViewText);
+    this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionSectionIsGone);
     this.vm.outputs.descriptionTextViewText().subscribe(this.descriptionTextViewText);
     this.vm.outputs.estimatedDeliveryDateSectionIsGone().subscribe(this.estimatedDeliveryDateSectionIsGone);
     this.vm.outputs.estimatedDeliveryDateTextViewText().subscribe(this.estimatedDeliveryDateTextViewText);
@@ -75,8 +76,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.startCheckoutActivity().subscribe(this.startCheckoutActivity);
     this.vm.outputs.titleTextViewIsGone().subscribe(this.titleTextViewIsGone);
     this.vm.outputs.titleTextViewText().subscribe(this.titleTextViewText);
-    this.vm.outputs.usdConversionTextViewText().subscribe(this.usdConversionTextViewText);
-    this.vm.outputs.usdConversionTextViewIsGone().subscribe(this.usdConversionSectionIsGone);
     this.vm.outputs.whiteOverlayIsInvisible().subscribe(this.whiteOverlayIsInvisible);
   }
 
@@ -131,6 +130,49 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     // Show reward backer count.
     this.vm.inputs.projectAndReward(project, rewardWithBackers);
     this.backersTextViewText.assertValue(100);
+  }
+
+  @Test
+  public void testConversionHiddenForProject() {
+    // Set the project currency and the user's chosen currency to the same value
+    setUpEnvironment(environment());
+    final Project project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("USD").build();
+    final Reward reward = RewardFactory.reward();
+
+    // the conversion should be hidden.
+    this.vm.inputs.projectAndReward(project, reward);
+    this.conversionTextViewText.assertValueCount(1);
+    this.conversionSectionIsGone.assertValue(true);
+  }
+
+  @Test
+  public void testConversionShownForProject() {
+    // Set the project currency and the user's chosen currency to different values
+    setUpEnvironment(environment());
+    final Project project = ProjectFactory.project().toBuilder().currency("CAD").currentCurrency("USD").build();
+    final Reward reward = RewardFactory.reward();
+
+    // USD conversion should shown.
+    this.vm.inputs.projectAndReward(project, reward);
+    this.conversionTextViewText.assertValueCount(1);
+    this.conversionSectionIsGone.assertValue(false);
+  }
+
+  @Test
+  public void testConversionTextRoundsUp() {
+    // Set user's country to US.
+    final Config config = ConfigFactory.configForUSUser();
+    final Environment environment = environment();
+    environment.currentConfig().config(config);
+    setUpEnvironment(environment);
+
+    // Set project's country to CA and reward minimum to $0.30.
+    final Project project = ProjectFactory.caProject();
+    final Reward reward = RewardFactory.reward().toBuilder().minimum(0.3f).build();
+
+    // USD conversion should be rounded up.
+    this.vm.inputs.projectAndReward(project, reward);
+    this.conversionTextViewText.assertValue("CA$ 1");
   }
 
   @Test
@@ -353,6 +395,18 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testMinimumTextViewTextCAD() {
+    final Project project = ProjectFactory.caProject();
+    final Reward reward = RewardFactory.reward().toBuilder()
+      .minimum(10)
+      .build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectAndReward(project, reward);
+    this.minimumTextViewText.assertValue("CA$ 10");
+  }
+
+  @Test
   public void testRewardsItems() {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment());
@@ -418,75 +472,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectAndReward(project, rewardWithShipping);
     this.shippingSummaryTextViewText.assertValue(rewardWithShipping.shippingSummary());
     this.shippingSummarySectionIsGone.assertValues(true, false);
-  }
-
-  @Test
-  public void testUsdConversionForNonUSProject() {
-    // Set user's country to US.
-    final Config config = ConfigFactory.configForUSUser();
-    final Environment environment = environment();
-    final CurrentConfigType currentConfig = environment.currentConfig();
-    environment.currentConfig().config(config);
-    setUpEnvironment(environment);
-
-    // Set project's country to CA.
-    final Project project = ProjectFactory.caProject();
-    final Reward reward = RewardFactory.reward();
-
-    // USD conversion should be shown.
-    this.vm.inputs.projectAndReward(project, reward);
-    this.usdConversionTextViewText.assertValueCount(1);
-    this.usdConversionSectionIsGone.assertValue(false);
-
-    // Set user's country to CA (any country except the US is fine).
-    currentConfig.config(ConfigFactory.configForCAUser());
-
-    // USD conversion should now be hidden.
-    this.usdConversionTextViewText.assertValueCount(1);
-    this.usdConversionSectionIsGone.assertValues(false, true);
-  }
-
-  @Test
-  public void testUsdConversionNotShownForUSProject() {
-    // Set user's country to US.
-    final Config config = ConfigFactory.configForUSUser();
-    final Environment environment = environment();
-    final CurrentConfigType currentConfig = environment.currentConfig();
-    environment.currentConfig().config(config);
-    setUpEnvironment(environment);
-
-    // Set project's country to US.
-    final Project project = ProjectFactory.project().toBuilder().country("US").build();
-    final Reward reward = RewardFactory.reward();
-
-    // USD conversion should not be shown.
-    this.vm.inputs.projectAndReward(project, reward);
-    this.usdConversionTextViewText.assertNoValues();
-    this.usdConversionSectionIsGone.assertValue(true);
-
-    // Set user's country to CA.
-    currentConfig.config(ConfigFactory.configForCAUser());
-
-    // USD conversion should still not be shown (distinct until changed).
-    this.usdConversionTextViewText.assertNoValues();
-    this.usdConversionSectionIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testUsdConversionTextRoundsUp() {
-    // Set user's country to US.
-    final Config config = ConfigFactory.configForUSUser();
-    final Environment environment = environment();
-    environment.currentConfig().config(config);
-    setUpEnvironment(environment);
-
-    // Set project's country to CA and reward minimum to $0.30.
-    final Project project = ProjectFactory.caProject();
-    final Reward reward = RewardFactory.reward().toBuilder().minimum(0.3f).build();
-
-    // USD conversion should be rounded up.
-    this.vm.inputs.projectAndReward(project, reward);
-    this.usdConversionTextViewText.assertValue("$1");
   }
 
   @Test

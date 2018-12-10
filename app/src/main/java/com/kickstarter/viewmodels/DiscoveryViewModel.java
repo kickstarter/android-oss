@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -42,6 +43,7 @@ import rx.subjects.PublishSubject;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+import static com.kickstarter.libs.utils.BooleanUtils.isFalse;
 
 public interface DiscoveryViewModel {
 
@@ -60,7 +62,7 @@ public interface DiscoveryViewModel {
     /** Emits a boolean that determines if the drawer is open or not. */
     Observable<Boolean> drawerIsOpen();
 
-    /** Emits a booelan that determines if the sort tab layout should be expanded/collapsed. */
+    /** Emits a boolean that determines if the sort tab layout should be expanded/collapsed. */
     Observable<Boolean> expandSortTabLayout();
 
     /** Emits when params change so that the tool bar can adjust accordingly. */
@@ -137,7 +139,8 @@ public interface DiscoveryViewModel {
         .take(1)
         .map(Intent::getAction)
         .filter(Intent.ACTION_MAIN::equals)
-        .map(__ -> DiscoveryParams.builder().build())
+        .compose(combineLatestPair(currentUser))
+        .map(intentAndUser -> getDefaultParams(intentAndUser.second))
         .share();
 
       final Observable<DiscoveryParams> paramsFromIntent = intent()
@@ -257,6 +260,13 @@ public interface DiscoveryViewModel {
         .filter(IntentMapper::appBannerIsSet)
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackOpenedAppBanner());
+    }
+
+    private DiscoveryParams getDefaultParams(final @Nullable User user) {
+      if (user != null && isFalse(user.optedOutOfRecommendations())) {
+        return DiscoveryParams.builder().recommended(true).backed(-1).build();
+      }
+      return DiscoveryParams.builder().build();
     }
 
     private final PublishSubject<NavigationDrawerData.Section.Row> childFilterRowClick = PublishSubject.create();

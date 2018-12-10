@@ -1,0 +1,43 @@
+query UserPrivacy {
+  me {
+    name
+    email
+    hasPassword
+    isCreator
+    isDeliverable
+    isEmailVerified
+    chosenCurrency
+  }
+}
+
+mutation UpdateUserEmail($email: Email!, $currentPassword: String!) {
+  updateUserAccount(input: {email: $email, currentPassword: $currentPassword}) {
+    user {
+      name
+      email
+    }
+  }
+}
+
+mutation UpdateUserCurrency($chosenCurrency: CurrencyCode!) {
+  updateUserProfile(input: {chosenCurrency: $chosenCurrency}) {
+    user {
+    chosenCurrency
+    }
+  }
+}
+
+mutation UpdateUserPassword($currentPassword: String!, $password: String!, $passwordConfirmation: String!) {
+  updateUserAccount(input: {currentPassword: $currentPassword, password: $password, passwordConfirmation: $passwordConfirmation}) {
+    user {
+      email
+      isEmailVerified
+    }
+  }
+}
+
+mutation sendEmailVerification {
+ userSendEmailVerification(input: {}) {
+        clientMutationId
+    }
+}

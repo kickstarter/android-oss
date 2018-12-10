@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  android:id="@+id/change_email_layout"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/ksr_grey_100"
+  android:orientation="vertical">
+
+  <android.support.design.widget.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/change_email_toolbar" />
+
+  </android.support.design.widget.AppBarLayout>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_3">
+
+          <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/grid_2"
+            android:gravity="center_vertical"
+            android:text="@string/Current_email"
+            android:textSize="@dimen/caption_1" />
+
+          <TextView
+            android:id="@+id/current_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_2"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/grid_1"
+            android:textColor="@color/ksr_dark_grey_400"
+            android:textSize="@dimen/callout" />
+
+          <TextView
+            android:id="@+id/email_warning_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_2"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/grid_1"
+            android:text="@string/Email_unverified"
+            android:textColor="@color/ksr_dark_grey_400"
+            android:textSize="@dimen/caption_1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/resend_email_row"
+          style="@style/SettingsLinearRow">
+
+          <TextView
+            android:id="@+id/verification_text_view"
+            style="@style/CalloutPrimaryMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:text="@string/Resend_verification_email"
+            android:textAllCaps="true"
+            android:textColor="@color/ksr_green_700" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_2">
+
+          <android.support.design.widget.TextInputLayout
+            android:id="@+id/new_email_container"
+            style="@style/TextInputPasswordLayout"
+            android:layout_marginBottom="0dp"
+            app:errorEnabled="true">
+
+            <android.support.design.widget.TextInputEditText
+              android:id="@+id/new_email"
+              style="@style/ChangeEmailPassTextInputEditText"
+              android:hint="@string/login_placeholder_email"
+              android:inputType="textEmailAddress"
+              android:maxLines="1" />
+
+          </android.support.design.widget.TextInputLayout>
+
+          <android.support.design.widget.TextInputLayout
+            style="@style/TextInputPasswordLayout"
+            android:layout_marginTop="0dp"
+            app:hintTextAppearance="@style/BodySecondary"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/password_toggle">
+
+            <android.support.design.widget.TextInputEditText
+              android:id="@+id/current_password"
+              style="@style/ChangeEmailPassTextInputEditText"
+              android:hint="@string/Current_password"
+              android:inputType="textPassword" />
+
+          </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <FrameLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ProgressBar
+          style="?android:attr/progressBarStyleHorizontal"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_5"
+          android:layout_gravity="center"
+          android:indeterminate="true" />
+
+      </FrameLayout>
+
+    </FrameLayout>
+
+  </ScrollView>
+
+</LinearLayout>

@@ -1,11 +1,11 @@
 package com.kickstarter;
 
-import com.kickstarter.factories.ConfigFactory;
-import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.KSCurrency;
-import com.kickstarter.libs.MockCurrentConfig;
+import com.kickstarter.mock.MockCurrentConfig;
+import com.kickstarter.mock.factories.ConfigFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.models.Project;
 
 import junit.framework.TestCase;
@@ -18,6 +18,10 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("$100", currency.format(100.0f, ProjectFactory.project()));
     assertEquals("$100 CAD", currency.format(100.0f, ProjectFactory.caProject()));
     assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject()));
+
+    assertEquals("$100", currency.formatWithUserPreference(100.0f, ProjectFactory.project(), RoundingMode.DOWN));
+    assertEquals("CA$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.caProject(), RoundingMode.DOWN));
+    assertEquals("£100", currency.formatWithUserPreference(100.0f, ProjectFactory.ukProject(), RoundingMode.DOWN));
   }
 
   public void testFormatCurrency_withUserInCA() {
@@ -25,6 +29,10 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("$100 USD", currency.format(100.0f, ProjectFactory.project()));
     assertEquals("$100 CAD", currency.format(100.0f, ProjectFactory.caProject()));
     assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject()));
+
+    assertEquals("US$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.project(), RoundingMode.DOWN));
+    assertEquals("£100", currency.formatWithUserPreference(100.0f, ProjectFactory.ukProject(), RoundingMode.DOWN));
+    assertEquals("CA$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.caProject(), RoundingMode.DOWN));
   }
 
   public void testFormatCurrency_withUserInUK() {
@@ -32,6 +40,9 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("$100 USD", currency.format(100.0f, ProjectFactory.project()));
     assertEquals("$100 CAD", currency.format(100.0f, ProjectFactory.caProject()));
     assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject()));
+
+    assertEquals("CA$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.caProject(), RoundingMode.DOWN));
+    assertEquals("£100", currency.formatWithUserPreference(100.0f, ProjectFactory.ukProject(), RoundingMode.DOWN));
   }
 
   public void testFormatCurrency_withUserInUnlaunchedCountry() {
@@ -39,6 +50,10 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("$100 USD", currency.format(100.0f, ProjectFactory.project()));
     assertEquals("$100 CAD", currency.format(100.0f, ProjectFactory.caProject()));
     assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject()));
+
+    assertEquals("US$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.project(), RoundingMode.DOWN));
+    assertEquals("US$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.caProject(), RoundingMode.DOWN));
+    assertEquals("US$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.ukProject(), RoundingMode.DOWN));
   }
 
   public void testFormatCurrency_withCurrencyCodeExcluded() {

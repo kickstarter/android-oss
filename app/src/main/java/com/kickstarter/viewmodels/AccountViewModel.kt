@@ -90,6 +90,7 @@ interface AccountViewModel {
             updateCurrencyNotification
                     .compose(values())
                     .map { it.updateUserProfile()?.user()?.chosenCurrency() }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .subscribe {
                         this.chosenCurrency.onNext(it)
                         this.success.onNext(it)

@@ -21,6 +21,7 @@ allprojects {
         maven {
             url 'https://oss.sonatype.org/content/repositories/snapshots/'
         }
+        maven { url 'https://dl.bintray.com/google/exoplayer' }
     }
 }
 

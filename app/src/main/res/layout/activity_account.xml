@@ -74,7 +74,6 @@
           android:layout_marginTop="@dimen/grid_3">
 
           <TextView
-            android:id="@+id/privacy_row"
             style="@style/SettingsSingleRow"
             android:text="@string/Privacy" />
 

@@ -9,7 +9,6 @@ import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.libs.MockTrackingClient;
-import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.mock.services.MockApolloClient;
 import com.kickstarter.mock.services.MockStripe;

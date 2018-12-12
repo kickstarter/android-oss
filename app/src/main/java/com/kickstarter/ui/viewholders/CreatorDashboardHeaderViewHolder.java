@@ -82,7 +82,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
     this.viewModel.outputs.messagesButtonIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.messagesButton));
+      .subscribe(gone -> ViewUtils.setGone(this.messagesButton, gone));
 
     this.viewModel.outputs.otherProjectsButtonIsGone()
       .compose(bindToLifecycle())

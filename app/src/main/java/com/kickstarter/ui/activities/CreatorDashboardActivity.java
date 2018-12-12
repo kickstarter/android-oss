@@ -67,7 +67,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.viewModel.outputs.progressBarIsVisible()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe (visible -> ViewUtils.setGone(progressBar, !visible));
+      .subscribe(visible -> ViewUtils.setGone(this.progressBar, !visible));
 
     this.viewModel.outputs.projectAndStats()
       .compose(bindToLifecycle())

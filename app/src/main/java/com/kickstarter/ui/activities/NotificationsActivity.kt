@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.util.Pair
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -13,6 +14,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.AnimationUtils
 import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.IntegerUtils.intValueOrZero
+import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.User
 import com.kickstarter.viewmodels.NotificationsViewModel
@@ -176,6 +178,8 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         }
 
     }
+
+    override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
 
     private fun displayPreferences(user: User) {
         project_notifications_count.text = intValueOrZero(user.backedProjectsCount()).toString()

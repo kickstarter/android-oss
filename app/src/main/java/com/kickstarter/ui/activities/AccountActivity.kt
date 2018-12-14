@@ -11,6 +11,7 @@ import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.extensions.showConfirmationSnackbar
 import com.kickstarter.extensions.showErrorSnackbar
+import com.kickstarter.extensions.startActivityWithSlideUpTransition
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
@@ -69,9 +70,9 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
                 .compose(observeForUI())
                 .subscribe { showConfirmationSnackbar(account_container, R.string.Got_it_your_changes_have_been_saved) }
 
-        change_email_row.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
-        change_password_row.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
-        privacy_row.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
+        change_email_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, ChangeEmailActivity::class.java)) }
+        change_password_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, ChangePasswordActivity::class.java)) }
+        privacy_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, PrivacyActivity::class.java)) }
     }
 
     override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()

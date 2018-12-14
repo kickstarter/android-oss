@@ -12,7 +12,6 @@ buildscript {
         classpath 'com.google.gms:google-services:4.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.heapanalytics.android:heap-android-gradle:${heap_version}"
-
     }
 }
 

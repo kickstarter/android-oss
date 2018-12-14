@@ -41,6 +41,7 @@
       android:id="@+id/resend_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:padding="@dimen/grid_2"
       android:layout_weight="1"
       android:layout_marginEnd="@dimen/grid_1"
       android:text="@string/two_factor_buttons_resend" />

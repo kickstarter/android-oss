@@ -39,4 +39,32 @@ public final class SwipeRefresher {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(layout::setRefreshing);
   }
+
+  /**
+   *
+   * @param fragment Activity to bind lifecycle events for.
+   * @param layout Layout to subscribe to for refresh events, send signals when no longer refreshing.
+   * @param refreshAction Action to call when a refresh event is emitted, likely a viewModel input.
+   * @param isRefreshing Observable that emits events when the refreshing status changes.
+   */
+  public SwipeRefresher(final @NonNull BaseFragment<? extends FragmentViewModel> fragment,
+    final @NonNull SwipeRefreshLayout layout,
+    final @NonNull Action0 refreshAction,
+    final @NonNull Func0<Observable<Boolean>> isRefreshing) {
+
+    // Iterate through colors in loading spinner while waiting for refresh
+    layout.setColorSchemeResources(R.color.ksr_green_500, R.color.ksr_green_700, R.color.ksr_green_800);
+
+    // Emits when user has signaled to refresh layout
+    RxSwipeRefreshLayout.refreshes(layout)
+      .compose(fragment.bindToLifecycle())
+      .subscribe(__ -> refreshAction.call());
+
+    // Emits when the refreshing status changes. Hides loading spinner when feed is no longer refreshing.
+    isRefreshing.call()
+      .filter(refreshing -> !refreshing)
+      .compose(fragment.bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(layout::setRefreshing);
+  }
 }

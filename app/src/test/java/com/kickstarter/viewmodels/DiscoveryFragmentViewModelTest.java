@@ -66,6 +66,23 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testRefresh() {
+    setUpEnvironment(environment());
+
+    // Load initial params and root categories from activity.
+    setUpInitialHomeAllProjectsParams();
+
+    // Should emit current fragment's projects.
+    this.hasProjects.assertValues(true);
+    this.koalaTest.assertValues("Discover List View");
+
+    //Page is cleared and refreshed
+    this.vm.inputs.refresh();
+    this.hasProjects.assertValues(true, false, true);
+
+  }
+
+  @Test
   public void testProjectsEmitWithNewCategoryParams() {
     setUpEnvironment(environment());
 

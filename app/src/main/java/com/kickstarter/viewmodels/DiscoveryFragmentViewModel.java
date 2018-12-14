@@ -43,6 +43,7 @@ import rx.subjects.PublishSubject;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 public interface DiscoveryFragmentViewModel {
@@ -60,6 +61,9 @@ public interface DiscoveryFragmentViewModel {
     /** Call when params from Discovery Activity change. */
     void paramsFromActivity(final DiscoveryParams params);
 
+    /** Call when the projects should be refreshed. */
+    void refresh();
+
     /**  Call when we should load the root categories. */
     void rootCategories(final List<Category> rootCategories);
   }
@@ -67,6 +71,9 @@ public interface DiscoveryFragmentViewModel {
   interface Outputs {
     /**  Emits an activity for the activity sample view. */
     Observable<Activity> activity();
+
+    /** Emits a boolean indicating whether projects are being fetched from the API. */
+    Observable<Boolean> isFetchingProjects();
 
     /** Emits a list of projects to display.*/
     Observable<List<Pair<Project, DiscoveryParams>>> projectList();
@@ -117,10 +124,15 @@ public interface DiscoveryFragmentViewModel {
         (__, params) -> params
       );
 
+      final Observable<DiscoveryParams> startOverWith = Observable.merge(
+        selectedParams,
+        selectedParams.compose(takeWhen(this.refresh))
+      );
+
       final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
           .nextPage(this.nextPage)
-          .startOverWith(selectedParams)
+          .startOverWith(startOverWith)
           .envelopeToListOfData(DiscoverEnvelope::projects)
           .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
           .loadWithParams(this.apiClient::fetchProjects)
@@ -128,6 +140,10 @@ public interface DiscoveryFragmentViewModel {
           .clearWhenStartingOver(true)
           .concater(ListUtils::concatDistinct)
           .build();
+
+      paginator.isFetching()
+        .compose(bindToLifecycle())
+        .subscribe(this.isFetchingProjects);
 
       final Observable<Pair<Project, RefTag>> activitySampleProjectClick = this.activitySampleProjectClick
         .map(p -> Pair.create(p, RefTag.activitySample()));
@@ -260,10 +276,12 @@ public interface DiscoveryFragmentViewModel {
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<DiscoveryParams> paramsFromActivity = PublishSubject.create();
     private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
+    private final PublishSubject<Void> refresh = PublishSubject.create();
     private final PublishSubject<List<Category>> rootCategories = PublishSubject.create();
 
     private final BehaviorSubject<Activity> activity = BehaviorSubject.create();
     private final BehaviorSubject<Void> heartContainerClicked = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> isFetchingProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Pair<Project, DiscoveryParams>>> projectList = BehaviorSubject.create();
     private final Observable<Boolean> showActivityFeed;
     private final Observable<Boolean> showLoginTout;
@@ -300,6 +318,9 @@ public interface DiscoveryFragmentViewModel {
     @Override public void projectCardViewHolderClicked(final @NonNull Project project) {
       this.projectCardClicked.onNext(project);
     }
+    @Override public void refresh() {
+      this.refresh.onNext(null);
+    }
     @Override public void rootCategories(final @NonNull List<Category> rootCategories) {
       this.rootCategories.onNext(rootCategories);
     }
@@ -321,6 +342,9 @@ public interface DiscoveryFragmentViewModel {
 
     @Override public @NonNull Observable<Activity> activity() {
       return this.activity;
+    }
+    @Override public @NonNull Observable<Boolean> isFetchingProjects() {
+      return this.isFetchingProjects;
     }
     @Override public @NonNull Observable<List<Pair<Project, DiscoveryParams>>> projectList() {
       return this.projectList;

@@ -8,7 +8,7 @@ import com.kickstarter.R
 
 fun Activity.startActivityWithSlideUpTransition(intent: Intent) {
     this.startActivity(intent)
-    this.overridePendingTransition(R.anim.settings_bottom_slide, R.anim.fade_out)
+    this.overridePendingTransition(R.anim.settings_bottom_slide, R.anim.settings_top_slide)
 }
 
 fun Activity.startActivityWithSlideLeftTransition(intent: Intent) {

@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.RefTagUtils;
 import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Activity;
@@ -143,7 +144,7 @@ public interface DiscoveryFragmentViewModel {
 
       Observable.combineLatest(projects,
         selectedParams.distinctUntilChanged(),
-        this::combineProjectsAndParams)
+        ProjectUtils::combineProjectsAndParams)
         .compose(bindToLifecycle())
         .subscribe(this.projectList);
 

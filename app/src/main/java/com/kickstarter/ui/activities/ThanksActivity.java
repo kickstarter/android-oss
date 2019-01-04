@@ -54,7 +54,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel.ViewModel
     this.ksString = environment().ksString();
 
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+    layoutManager.setOrientation(RecyclerView.VERTICAL);
     this.recyclerView.setLayoutManager(layoutManager);
 
     final ThanksAdapter adapter = new ThanksAdapter(this.viewModel.inputs);

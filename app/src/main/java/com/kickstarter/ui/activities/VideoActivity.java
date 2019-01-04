@@ -122,11 +122,10 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
     final Uri videoUri = Uri.parse(videoUrl);
     final int fileType = Util.inferContentType(videoUri);
 
-    switch (fileType) {
-      case C.TYPE_HLS:
-        return new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
-      default:
-        return new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
+    if (fileType == C.TYPE_HLS) {
+      return new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
+    } else {
+      return new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
     }
   }
 

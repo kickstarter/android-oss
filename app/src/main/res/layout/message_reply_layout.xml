@@ -1,55 +1,56 @@
 <RelativeLayout
+  android:id="@+id/message_reply_layout"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/message_reply_layout"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
   android:layout_alignParentBottom="true"
   android:layout_gravity="bottom"
-  android:background="@color/white"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content">
+  android:background="@color/white">
 
   <View
     android:id="@+id/divider_view"
-    android:background="@color/ksr_grey_500"
     android:layout_width="match_parent"
-    android:layout_height="0.5dp"/>
+    android:layout_height="0.5dp"
+    android:background="@color/ksr_grey_500" />
 
   <RelativeLayout
-    android:layout_below="@id/divider_view"
-    android:layout_marginStart="@dimen/grid_4"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_below="@id/divider_view"
+    android:layout_marginStart="@dimen/grid_4">
 
     <EditText
       android:id="@+id/message_edit_text"
       style="@style/BodySecondary"
-      android:textColorHint="@color/text_secondary"
-      android:textColor="@color/text_primary"
-      android:textCursorDrawable="@null"
-      android:background="@color/transparent"
-      android:inputType="textCapSentences"
-      android:layout_toStartOf="@+id/send_message_button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:minHeight="@dimen/message_reply_layout_height"
+      android:layout_toStartOf="@+id/send_message_button"
+      android:background="@color/transparent"
       android:ellipsize="end"
+      android:importantForAutofill="no"
+      android:inputType="textCapSentences"
+      android:minHeight="@dimen/message_reply_layout_height"
+      android:textColor="@color/text_primary"
+      android:textColorHint="@color/text_secondary"
+      android:textCursorDrawable="@null"
       tools:hint="Message Blob..."
-      tools:ignore="LabelFor"/>
+      tools:ignore="LabelFor,UnusedAttribute" />
 
     <Button
       android:id="@+id/send_message_button"
-      android:background="@drawable/click_indicator_light_masked"
-      android:layout_alignParentEnd="true"
-      android:paddingStart="0dp"
-      android:paddingEnd="0dp"
-      android:enabled="false"
-      android:focusable="true"
-      android:clickable="true"
-      android:layout_centerVertical="true"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textColor="@color/navy_600_enabled_dark_grey_400_disabled_color"
-      android:text="@string/social_buttons_send"/>
+      android:layout_alignParentEnd="true"
+      android:layout_centerVertical="true"
+      android:background="@drawable/click_indicator_light_masked"
+      android:clickable="true"
+      android:enabled="false"
+      android:focusable="true"
+      android:paddingEnd="0dp"
+      android:paddingStart="0dp"
+      android:text="@string/social_buttons_send"
+      android:textColor="@color/navy_600_enabled_dark_grey_400_disabled_color" />
 
   </RelativeLayout>
 

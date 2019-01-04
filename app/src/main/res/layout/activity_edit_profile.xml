@@ -55,7 +55,7 @@
           android:layout_marginEnd="155dp"
           android:scaleType="centerCrop"
           android:src="@drawable/edit_icon"
-          tools:ignore="ContentDescription"/>
+          tools:ignore="ContentDescription" />
 
       </FrameLayout>
 
@@ -78,13 +78,15 @@
           android:id="@+id/name_edit_text"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:hint="@string/Name"
           android:layout_marginEnd="@dimen/activity_horizontal_margin"
           android:layout_marginStart="@dimen/activity_horizontal_margin"
           android:layout_marginTop="@dimen/grid_1"
+          android:hint="@string/Name"
           android:imeOptions="actionNext"
+          android:importantForAutofill="no"
           android:inputType="textPersonName"
-          android:maxLines="1" />
+          android:maxLines="1"
+          tools:ignore="UnusedAttribute" />
 
         <TextView
           style="@style/NewsLetterTextView"
@@ -109,8 +111,10 @@
           android:layout_marginTop="@dimen/grid_1"
           android:hint="@string/Introduce_yourself"
           android:imeOptions="actionNext"
+          android:importantForAutofill="no"
           android:inputType="text"
-          android:maxLines="3" />
+          android:maxLines="3"
+          tools:ignore="UnusedAttribute" />
 
         <TextView
           style="@style/NewsLetterTextView"
@@ -130,11 +134,13 @@
           android:id="@+id/location_edit_text"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:inputType="text"
-          android:hint="@string/Location"
           android:layout_marginEnd="@dimen/activity_horizontal_margin"
           android:layout_marginStart="@dimen/activity_horizontal_margin"
-          android:layout_marginTop="@dimen/grid_1" />
+          android:layout_marginTop="@dimen/grid_1"
+          android:hint="@string/Location"
+          android:importantForAutofill="no"
+          android:inputType="text"
+          tools:ignore="UnusedAttribute" />
 
       </LinearLayout>
 

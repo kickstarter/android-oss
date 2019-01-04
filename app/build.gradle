@@ -275,7 +275,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.trello:rxlifecycle:$rx_lifecycle_version"
     implementation "com.trello:rxlifecycle-components:$rx_lifecycle_version"
-    implementation "io.reactivex:rxandroid:$rx_android_version"
+    implementation 'io.reactivex:rxandroid:1.2.1'
     implementation "io.reactivex:rxjava:$rx_java_version"
     implementation "com.jakewharton.rxbinding:rxbinding:$rx_binding_version"
     implementation "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:$rx_binding_version"

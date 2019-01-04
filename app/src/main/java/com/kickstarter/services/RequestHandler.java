@@ -1,9 +1,9 @@
 package com.kickstarter.services;
 
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.webkit.WebView;
 
+import androidx.annotation.NonNull;
 import okhttp3.Request;
 
 public final class RequestHandler {

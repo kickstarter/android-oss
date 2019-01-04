@@ -1,12 +1,13 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wallet.Wallet;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.utils.PlayServicesCapability;
+
+import androidx.annotation.NonNull;
 
 public final class AndroidPayCapability {
   private boolean isCapable;

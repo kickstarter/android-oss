@@ -1,7 +1,6 @@
 package com.kickstarter.services;
 
 import android.net.Uri;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.Secrets;
@@ -9,6 +8,8 @@ import com.kickstarter.libs.utils.UriUtilsKt;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import androidx.annotation.NonNull;
 
 public final class KSUri {
   private KSUri() {}

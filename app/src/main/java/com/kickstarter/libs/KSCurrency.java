@@ -1,13 +1,13 @@
 package com.kickstarter.libs;
 
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 
 import java.math.RoundingMode;
 
+import androidx.annotation.NonNull;
 import auto.parcel.AutoParcel;
 import type.CurrencyCode;
 

@@ -76,7 +76,5 @@ app/src/main/java/com/kickstarter/libs/WebViewJavascriptInterface.java
 app/src/main/java/com/kickstarter/services/KSWebViewClient.java
 vendor/native-secrets
 app/src/**/google-services.json
-app/src/main/java/com/kickstarter/libs/TLSSocketFactory.java
-app/src/main/java/com/kickstarter/libs/utils/SocketUtils.java
 fabric.properties
 slack.properties

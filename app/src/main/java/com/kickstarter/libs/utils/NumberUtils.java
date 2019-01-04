@@ -1,7 +1,5 @@
 package com.kickstarter.libs.utils;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.libs.NumberOptions;
 
 import java.math.RoundingMode;
@@ -9,6 +7,8 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
 
 public final class NumberUtils {
   private NumberUtils() {}

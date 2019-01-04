@@ -1,8 +1,5 @@
 package com.kickstarter.ui.adapters;
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 
@@ -20,6 +17,10 @@ import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 
 import java.util.Collections;
 import java.util.List;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class DiscoveryAdapter extends KSAdapter {
   private static final int SECTION_ONBOARDING_VIEW = 0;

@@ -1,8 +1,8 @@
 package com.kickstarter.viewmodels
 
 import android.content.SharedPreferences
-import android.support.annotation.NonNull
 import android.util.Pair
+import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*

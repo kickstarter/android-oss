@@ -1,7 +1,6 @@
 package com.kickstarter.libs.utils;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.kickstarter.R;
@@ -10,6 +9,8 @@ import com.kickstarter.models.User;
 
 import java.util.Arrays;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public final class SocialUtils {
   private SocialUtils() {}

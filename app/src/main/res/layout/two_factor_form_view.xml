@@ -14,7 +14,7 @@
     android:textColor="@color/ksr_dark_grey_400"
     android:text="@string/two_factor_message" />
 
-  <android.support.design.widget.TextInputLayout
+  <com.google.android.material.textfield.TextInputLayout
     app:hintTextAppearance="@style/BodySecondary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -28,7 +28,7 @@
       style="@style/CalloutPrimary"
       android:hint="@string/two_factor_code_placeholder" />
 
-  </android.support.design.widget.TextInputLayout>
+  </com.google.android.material.textfield.TextInputLayout>
 
   <LinearLayout
     android:layout_width="match_parent"

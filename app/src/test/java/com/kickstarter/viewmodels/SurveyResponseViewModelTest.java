@@ -1,16 +1,16 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.mock.factories.SurveyResponseFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.mock.factories.SurveyResponseFactory;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
 
+import androidx.annotation.NonNull;
 import okhttp3.Request;
 import rx.observers.TestSubscriber;
 

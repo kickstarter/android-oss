@@ -1,8 +1,5 @@
 package com.kickstarter.libs;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -16,6 +13,9 @@ import com.kickstarter.ui.data.Mailbox;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class Koala {
   private final @NonNull TrackingClientType client;

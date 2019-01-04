@@ -1,8 +1,6 @@
 package com.kickstarter.libs.utils;
 
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.RefTag;
@@ -16,6 +14,9 @@ import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class RefTagUtils {
   private RefTagUtils() {}

@@ -2,13 +2,13 @@ package com.kickstarter.libs;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.trello.rxlifecycle.FragmentEvent;
 
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;

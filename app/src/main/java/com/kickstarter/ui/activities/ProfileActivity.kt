@@ -3,18 +3,14 @@ package com.kickstarter.ui.activities
 import android.annotation.TargetApi
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.libs.ApiCapabilities
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
@@ -23,10 +19,6 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProfileAdapter
 import com.kickstarter.viewmodels.ProfileViewModel
 import com.squareup.picasso.Picasso
-
-import butterknife.OnClick
-
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import kotlinx.android.synthetic.main.profile_layout.*
 import kotlinx.android.synthetic.main.profile_toolbar.*
 
@@ -44,7 +36,9 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         recycler_view.layoutManager = GridLayoutManager(this, spanCount)
         recycler_view.adapter = this.adapter
 
-        this.paginator = RecyclerViewPaginator(recycler_view, { this.viewModel.inputs.nextPage() })
+        this.paginator = RecyclerViewPaginator(recycler_view) {
+            this.viewModel.inputs.nextPage()
+        }
 
         this.viewModel.outputs.avatarImageViewUrl()
                 .compose(bindToLifecycle())

@@ -1,11 +1,10 @@
 package com.kickstarter.libs;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.User;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.Observable;
 
 public abstract class CurrentUserType {

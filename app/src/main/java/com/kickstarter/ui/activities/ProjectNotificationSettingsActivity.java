@@ -1,9 +1,6 @@
 package com.kickstarter.ui.activities;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 
 import com.kickstarter.R;
@@ -13,6 +10,9 @@ import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.adapters.ProjectNotificationSettingsAdapter;
 import com.kickstarter.viewmodels.ProjectNotificationSettingsViewModel;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;

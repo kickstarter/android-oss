@@ -1,8 +1,5 @@
 package com.kickstarter.ui.viewholders;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,6 +11,9 @@ import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.viewmodels.ProjectNotificationViewModel;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;

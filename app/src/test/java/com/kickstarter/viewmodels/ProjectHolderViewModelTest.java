@@ -1,23 +1,22 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
+import com.kickstarter.libs.Config;
+import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ProgressBarUtils;
+import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.mock.factories.VideoFactory;
-import com.kickstarter.libs.Config;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KSCurrency;
-import com.kickstarter.mock.MockCurrentConfig;
-import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.ProgressBarUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Photo;
@@ -31,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
 
 public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {

@@ -1,8 +1,8 @@
 package com.kickstarter.mock.factories;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.models.RewardsItem;
+
+import androidx.annotation.NonNull;
 
 public final class RewardsItemFactory {
   private RewardsItemFactory() {}

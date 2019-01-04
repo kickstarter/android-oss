@@ -1,9 +1,9 @@
 package com.kickstarter.libs;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.kickstarter.libs.utils.Secrets;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public enum ApiEndpoint {
   PRODUCTION("Production", Secrets.Api.Endpoint.PRODUCTION),

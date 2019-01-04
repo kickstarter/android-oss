@@ -1,8 +1,3 @@
-import android.support.annotation.NonNull;
-import android.support.test.filters.SmallTest;
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
-
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Environment;
@@ -17,6 +12,11 @@ import org.junit.runner.RunWith;
 import java.net.CookieManager;
 import java.net.CookieStore;
 import java.net.URI;
+
+import androidx.annotation.NonNull;
+import androidx.test.filters.SmallTest;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.ActivityTestRule;
 
 @RunWith(AndroidJUnit4.class)
 @SmallTest

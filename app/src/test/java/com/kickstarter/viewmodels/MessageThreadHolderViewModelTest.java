@@ -1,16 +1,15 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.mock.factories.MessageThreadFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.mock.factories.MessageThreadFactory;
 import com.kickstarter.models.MessageThread;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
 
 public final class MessageThreadHolderViewModelTest extends KSRobolectricTestCase {

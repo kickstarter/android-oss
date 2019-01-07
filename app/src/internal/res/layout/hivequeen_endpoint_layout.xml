@@ -7,7 +7,7 @@
   android:layout_height="match_parent"
   android:padding="@dimen/grid_3">
 
-  <android.support.design.widget.TextInputLayout
+  <com.google.android.material.textfield.TextInputLayout
     app:hintTextAppearance="@style/BodySecondary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
       android:hint="@string/Enter_Hivequeen_name"
       android:inputType="text" />
 
-  </android.support.design.widget.TextInputLayout>
+  </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>
 

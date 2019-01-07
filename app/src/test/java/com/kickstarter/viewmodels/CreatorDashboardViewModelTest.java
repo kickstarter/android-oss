@@ -1,18 +1,17 @@
 package com.kickstarter.viewmodels;
 
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
-import com.kickstarter.mock.factories.ProjectsEnvelopeFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.models.Project;
+import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
+import com.kickstarter.mock.factories.ProjectsEnvelopeFactory;
 import com.kickstarter.mock.services.MockApiClient;
+import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 
@@ -22,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 

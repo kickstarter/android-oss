@@ -1,7 +1,7 @@
 package com.kickstarter.viewmodels
 
 import UpdateUserPasswordMutation
-import android.support.annotation.NonNull
+import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment

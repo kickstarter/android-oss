@@ -5,7 +5,7 @@
   android:layout_height="wrap_content"
   xmlns:tools="http://schemas.android.com/tools">
 
-  <android.support.v7.widget.CardView
+  <androidx.cardview.widget.CardView
     style="@style/ActivitySampleCard">
 
     <LinearLayout
@@ -78,6 +78,6 @@
 
     </LinearLayout>
 
-  </android.support.v7.widget.CardView>
+  </androidx.cardview.widget.CardView>
 
 </LinearLayout>

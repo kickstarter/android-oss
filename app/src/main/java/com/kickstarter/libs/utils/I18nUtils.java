@@ -1,8 +1,8 @@
 package com.kickstarter.libs.utils;
 
-import android.support.annotation.NonNull;
-
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
 
 public final class I18nUtils {
   private I18nUtils() {}

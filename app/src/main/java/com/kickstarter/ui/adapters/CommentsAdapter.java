@@ -1,7 +1,5 @@
 package com.kickstarter.ui.adapters;
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.View;
 
@@ -18,6 +16,8 @@ import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 import rx.Observable;
 
 public final class CommentsAdapter extends KSAdapter {

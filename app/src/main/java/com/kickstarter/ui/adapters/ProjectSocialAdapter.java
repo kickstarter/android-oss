@@ -1,7 +1,5 @@
 package com.kickstarter.ui.adapters;
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.kickstarter.R;
@@ -11,6 +9,9 @@ import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import com.kickstarter.ui.viewholders.ProjectSocialViewHolder;
 
 import java.util.Collections;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 
 public final class ProjectSocialAdapter extends KSAdapter {
   private final Delegate delegate;

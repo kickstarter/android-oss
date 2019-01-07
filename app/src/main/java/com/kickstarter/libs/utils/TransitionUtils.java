@@ -2,10 +2,11 @@ package com.kickstarter.libs.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.R;
+
+import androidx.annotation.NonNull;
 
 public final class TransitionUtils {
   private TransitionUtils() {}

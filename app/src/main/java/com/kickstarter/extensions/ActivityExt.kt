@@ -2,8 +2,8 @@ package com.kickstarter.extensions
 
 import android.app.Activity
 import android.content.Intent
-import android.support.design.widget.Snackbar
 import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import com.kickstarter.R
 
 fun Activity.startActivityWithSlideUpTransition(intent: Intent) {

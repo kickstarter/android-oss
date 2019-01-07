@@ -1,10 +1,10 @@
 package com.kickstarter.extensions
 
-import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 import com.kickstarter.R
 
 fun Snackbar.confirmation(): Snackbar {
@@ -36,7 +36,7 @@ fun Snackbar.adjustMargins() {
 }
 
 private fun Snackbar.getTextView(): TextView {
-    return view.findViewById(android.support.design.R.id.snackbar_text) as TextView
+    return view.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
 }
 
 private fun Snackbar.setBackground(backgroundId: Int) {

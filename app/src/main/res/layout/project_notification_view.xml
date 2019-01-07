@@ -17,7 +17,7 @@
     android:layout_weight="1"
     tools:text="A Project With A Really Long Title: You Should Back It" />
 
-  <android.support.v7.widget.SwitchCompat
+  <androidx.appcompat.widget.SwitchCompat
     android:id="@+id/enabled_switch"
     style="@style/EndSettingsWidget"
     android:layout_height="wrap_content" />

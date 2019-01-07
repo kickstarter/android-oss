@@ -1,9 +1,9 @@
 package com.kickstarter.libs.utils;
 
-import android.support.annotation.NonNull;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
 
 public final class MapUtils {
   private MapUtils() {}

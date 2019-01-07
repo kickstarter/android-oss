@@ -1,11 +1,11 @@
 package com.kickstarter.libs.utils;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.models.Reward;
 import com.kickstarter.models.RewardsItem;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 

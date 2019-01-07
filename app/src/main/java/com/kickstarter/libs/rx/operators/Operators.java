@@ -1,11 +1,10 @@
 package com.kickstarter.libs.rx.operators;
 
-import android.support.annotation.NonNull;
-
 import com.google.gson.Gson;
 import com.kickstarter.services.ApiException;
 import com.kickstarter.services.ResponseException;
 
+import androidx.annotation.NonNull;
 import rx.Subscriber;
 
 public final class Operators {

@@ -1,12 +1,12 @@
 package com.kickstarter.libs;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.User;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
 
 public abstract class TrackingClientType {
   public abstract void track(final String eventName, final Map<String, Object> additionalProperties);

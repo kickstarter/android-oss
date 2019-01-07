@@ -1,10 +1,14 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.libs.CurrentUserType;
+import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaContext;
+import com.kickstarter.libs.KoalaEvent;
+import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.mock.factories.ApiExceptionFactory;
 import com.kickstarter.mock.factories.BackingFactory;
 import com.kickstarter.mock.factories.MessageFactory;
@@ -12,17 +16,12 @@ import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory;
 import com.kickstarter.mock.factories.MessageThreadFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UserFactory;
-import com.kickstarter.libs.CurrentUserType;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaContext;
-import com.kickstarter.libs.KoalaEvent;
-import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.data.MessageSubject;
@@ -32,6 +31,7 @@ import org.junit.Test;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 

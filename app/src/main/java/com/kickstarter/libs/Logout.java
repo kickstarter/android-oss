@@ -1,10 +1,10 @@
 package com.kickstarter.libs;
 
-import android.support.annotation.NonNull;
-
 import com.facebook.login.LoginManager;
 
 import java.net.CookieManager;
+
+import androidx.annotation.NonNull;
 
 public final class Logout {
   private final CookieManager cookieManager;

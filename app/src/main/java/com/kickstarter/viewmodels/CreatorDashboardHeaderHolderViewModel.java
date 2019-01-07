@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels;
 
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.R;
@@ -19,6 +18,7 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 

@@ -1,13 +1,12 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.viewholders.ProjectNotificationViewHolder;
 
+import androidx.annotation.NonNull;
 import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;

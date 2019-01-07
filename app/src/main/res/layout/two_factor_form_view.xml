@@ -2,57 +2,60 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:orientation="vertical"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:orientation="vertical">
 
   <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_1"
     android:layout_marginBottom="@dimen/grid_5"
-    android:textColor="@color/ksr_dark_grey_400"
-    android:text="@string/two_factor_message" />
+    android:layout_marginTop="@dimen/grid_1"
+    android:text="@string/two_factor_message"
+    android:textColor="@color/ksr_dark_grey_400" />
 
-  <android.support.design.widget.TextInputLayout
-    app:hintTextAppearance="@style/BodySecondary"
+  <com.google.android.material.textfield.TextInputLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:hintTextAppearance="@style/BodySecondary">
 
     <EditText
       android:id="@+id/code"
+      style="@style/CalloutPrimary"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:hint="@string/two_factor_code_placeholder"
+      android:importantForAutofill="no"
       android:inputType="number"
       android:maxLines="1"
-      style="@style/CalloutPrimary"
-      android:hint="@string/two_factor_code_placeholder" />
+      tools:ignore="UnusedAttribute" />
 
-  </android.support.design.widget.TextInputLayout>
+  </com.google.android.material.textfield.TextInputLayout>
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_4"
-    android:layout_marginBottom="@dimen/grid_1">
+    android:layout_marginBottom="@dimen/grid_1"
+    android:layout_marginTop="@dimen/grid_4">
 
     <Button
-      style="@style/BorderButton"
       android:id="@+id/resend_button"
+      style="@style/BorderButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:padding="@dimen/grid_2"
-      android:layout_weight="1"
       android:layout_marginEnd="@dimen/grid_1"
+      android:layout_weight="1"
+      android:padding="@dimen/grid_2"
       android:text="@string/two_factor_buttons_resend" />
 
     <Button
-      style="@style/PrimaryButton"
       android:id="@+id/login_button"
+      style="@style/PrimaryButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_weight="1"
       android:layout_marginStart="@dimen/grid_1"
+      android:layout_weight="1"
       android:enabled="false"
       android:text="@string/two_factor_buttons_submit" />
 

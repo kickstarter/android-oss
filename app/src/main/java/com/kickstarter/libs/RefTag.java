@@ -1,10 +1,10 @@
 package com.kickstarter.libs;
 
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.services.DiscoveryParams;
 
+import androidx.annotation.NonNull;
 import auto.parcel.AutoParcel;
 
 /**

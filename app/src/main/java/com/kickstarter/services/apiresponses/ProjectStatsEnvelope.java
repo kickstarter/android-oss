@@ -1,8 +1,6 @@
 package com.kickstarter.services.apiresponses;
 
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.ReferrerType;
 import com.kickstarter.libs.qualifiers.AutoGson;
@@ -12,6 +10,8 @@ import org.joda.time.DateTime;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import auto.parcel.AutoParcel;
 
 @AutoGson

@@ -1,17 +1,16 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.mock.factories.ApiExceptionFactory;
 import com.kickstarter.mock.factories.ProjectNotificationFactory;
-import com.kickstarter.libs.Environment;
+import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.services.ApiClientType;
-import com.kickstarter.mock.services.MockApiClient;
 
 import org.junit.Test;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 

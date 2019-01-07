@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:orientation="vertical">
 
-  <include layout="@layout/post_comment_toolbar"/>
+  <include layout="@layout/post_comment_toolbar" />
 
   <EditText
     android:id="@+id/comment_body"
-    android:padding="@dimen/grid_1"
-    android:gravity="top"
-    android:inputType="textCapSentences|textMultiLine|textAutoCorrect"
     android:layout_width="match_parent"
-    android:background="@color/white"
     android:layout_height="@dimen/grid_27"
-    tools:ignore="LabelFor">
-    <requestFocus/>
+    android:background="@color/white"
+    android:gravity="top"
+    android:importantForAutofill="no"
+    android:inputType="textCapSentences|textMultiLine|textAutoCorrect"
+    android:padding="@dimen/grid_1"
+    tools:ignore="LabelFor,UnusedAttribute">
+
+    <requestFocus />
 
   </EditText>
 

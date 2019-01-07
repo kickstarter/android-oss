@@ -1,8 +1,6 @@
 package com.kickstarter.ui.adapters;
 
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.View;
 
@@ -14,6 +12,8 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 
 import java.util.List;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 import rx.Observable;
 
 public class CreatorDashboardRewardStatsAdapter extends KSAdapter {

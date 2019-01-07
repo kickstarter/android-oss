@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -17,6 +16,7 @@ import com.kickstarter.ui.adapters.CreatorDashboardBottomSheetAdapter;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;

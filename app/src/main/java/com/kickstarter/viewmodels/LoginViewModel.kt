@@ -1,7 +1,7 @@
 package com.kickstarter.viewmodels
 
-import android.support.annotation.NonNull
 import android.util.Pair
+import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment

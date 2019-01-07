@@ -1,13 +1,14 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.services.firebase.DispatcherKt;
 import com.kickstarter.services.firebase.RegisterService;
 import com.kickstarter.services.firebase.UnregisterService;
+
+import androidx.annotation.NonNull;
 
 
 

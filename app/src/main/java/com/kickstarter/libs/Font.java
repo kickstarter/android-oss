@@ -2,7 +2,7 @@ package com.kickstarter.libs;
 
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class Font {
   private Typeface maisonNeueBookTypeface;

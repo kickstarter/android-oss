@@ -1,9 +1,9 @@
 package com.kickstarter.libs.utils;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
 import rx.functions.Action1;
 
 public final class SwitchCompatUtils {

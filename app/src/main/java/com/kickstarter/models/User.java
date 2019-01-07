@@ -2,14 +2,14 @@ package com.kickstarter.models;
 
 import android.content.res.Resources;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import org.jetbrains.annotations.NotNull;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import auto.parcel.AutoParcel;
 
 @AutoGson

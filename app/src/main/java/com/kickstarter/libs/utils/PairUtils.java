@@ -1,7 +1,8 @@
 package com.kickstarter.libs.utils;
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
+
+import androidx.annotation.NonNull;
 
 public final class PairUtils {
   private PairUtils() {}

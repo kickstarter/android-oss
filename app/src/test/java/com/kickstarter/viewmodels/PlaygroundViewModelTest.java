@@ -1,11 +1,11 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
 
 import org.junit.Test;
+
+import androidx.annotation.NonNull;
 
 public final class PlaygroundViewModelTest extends KSRobolectricTestCase {
 

@@ -1,10 +1,10 @@
 package com.kickstarter.libs.utils;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.User;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class CommentUtils {
   private CommentUtils() {

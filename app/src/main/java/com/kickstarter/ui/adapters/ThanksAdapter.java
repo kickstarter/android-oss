@@ -1,7 +1,5 @@
 package com.kickstarter.ui.adapters;
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.kickstarter.R;
@@ -15,6 +13,9 @@ import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
 import com.kickstarter.ui.viewholders.ThanksShareViewHolder;
 
 import java.util.Collections;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 
 public final class ThanksAdapter extends KSAdapter {
   private static final int SECTION_SHARE_VIEW = 0;

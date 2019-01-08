@@ -44,8 +44,8 @@ fun Snackbar.setTextColor(colorId: Int): Snackbar {
     return this
 }
 
-fun Snackbar.style(gravity: Int, textColorId: Int, backgroundId: Int) {
+fun Snackbar.style(gravity: Int, textColorId: Int, backgroundColorId: Int) {
     setTextGravity(gravity)
     setTextColor(textColorId)
-    setBackgroundColor(backgroundId)
+    setBackgroundColor(backgroundColorId)
 }

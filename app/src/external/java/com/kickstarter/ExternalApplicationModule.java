@@ -1,6 +1,6 @@
 package com.kickstarter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.BuildCheck;

@@ -1,11 +1,10 @@
 package com.kickstarter.libs;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.services.WebClientType;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 
+import androidx.annotation.NonNull;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 

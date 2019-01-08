@@ -1,8 +1,5 @@
 package com.kickstarter.services;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
@@ -41,6 +38,8 @@ import com.kickstarter.services.apiresponses.StarEnvelope;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;

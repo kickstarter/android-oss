@@ -1,7 +1,6 @@
 package com.kickstarter;
 
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.BuildCheck;
@@ -13,6 +12,7 @@ import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.NonNull;
 import dagger.Module;
 import dagger.Provides;
 

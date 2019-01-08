@@ -1,7 +1,6 @@
 package com.kickstarter.services.apiresponses;
 
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.models.Message;
@@ -10,6 +9,7 @@ import com.kickstarter.models.User;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import auto.parcel.AutoParcel;
 
 @AutoGson

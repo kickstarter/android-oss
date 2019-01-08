@@ -2,9 +2,10 @@ package com.kickstarter.libs.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.ui.activities.DiscoveryActivity;
+
+import androidx.annotation.NonNull;
 
 public final class ApplicationUtils {
   private ApplicationUtils() {}

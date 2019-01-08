@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -12,10 +11,12 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.ui.activities.CreatorDashboardActivity;
+import com.kickstarter.ui.adapters.CreatorDashboardAdapter;
 import com.kickstarter.ui.adapters.CreatorDashboardBottomSheetAdapter;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -26,9 +27,9 @@ import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 
 public interface CreatorDashboardViewModel {
-  interface Inputs extends CreatorDashboardBottomSheetAdapter.Delegate {
-    /** Call when a project is clicked to pass to delegate. */
-    void projectSelectionInput(Project project);
+  interface Inputs extends CreatorDashboardBottomSheetAdapter.Delegate, CreatorDashboardAdapter.Delegate {
+    /** Call when project selection should be shown. */
+    void projectsListButtonClicked();
   }
 
   interface Outputs {
@@ -37,6 +38,11 @@ public interface CreatorDashboardViewModel {
 
     /** Emits when project dropdown should be shown. */
     Observable<List<Project>> projectsForBottomSheet();
+
+    /** Emits when progress bar should be visible (during network calls). */
+    Observable<Boolean> progressBarIsVisible();
+
+    Observable<Void> openBottomSheet();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardActivity> implements Inputs, Outputs {
@@ -65,7 +71,9 @@ public interface CreatorDashboardViewModel {
         .filter(ObjectUtils::isNotNull);
 
       final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = currentProject
-        .switchMap(this.client::fetchProjectStats)
+        .switchMap(project -> this.client.fetchProjectStats(project)
+          .doOnSubscribe(() -> this.progressBarIsVisible.onNext(true))
+          .doAfterTerminate(() -> this.progressBarIsVisible.onNext(false)))
         .share()
         .materialize();
 
@@ -87,9 +95,17 @@ public interface CreatorDashboardViewModel {
         .distinctUntilChanged()
         .subscribe(this.projectAndStats);
 
+      this.projectsListButtonClicked
+        .compose(bindToLifecycle())
+        .subscribe(this.openBottomSheet);
+
       this.projectSelectionInput
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackSwitchedProjects);
+
+      this.projectsListButtonClicked
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.koala.trackOpenedProjectSwitcher());
 
       currentProject
         .compose(bindToLifecycle())
@@ -97,7 +113,10 @@ public interface CreatorDashboardViewModel {
     }
 
     private final PublishSubject<Project> projectSelectionInput = PublishSubject.create();
+    private final PublishSubject<Void> projectsListButtonClicked = PublishSubject.create();
 
+    private final BehaviorSubject<Void> openBottomSheet = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> progressBarIsVisible = BehaviorSubject.create();
     private final BehaviorSubject<Pair<Project, ProjectStatsEnvelope>> projectAndStats = BehaviorSubject.create();
     private final Observable<List<Project>> projectsForBottomSheet;
 
@@ -108,7 +127,17 @@ public interface CreatorDashboardViewModel {
     public void projectSelectionInput(final @NonNull Project project) {
       this.projectSelectionInput.onNext(project);
     }
+    @Override
+    public void projectsListButtonClicked() {
+      this.projectsListButtonClicked.onNext(null);
+    }
 
+    @Override public @NonNull Observable<Void> openBottomSheet() {
+      return this.openBottomSheet;
+    }
+    @Override public Observable<Boolean> progressBarIsVisible() {
+      return this.progressBarIsVisible;
+    }
     @Override public @NonNull Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats() {
       return this.projectAndStats;
     }

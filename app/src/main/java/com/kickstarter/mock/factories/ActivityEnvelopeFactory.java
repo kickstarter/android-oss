@@ -1,11 +1,11 @@
 package com.kickstarter.mock.factories;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.models.Activity;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public final class ActivityEnvelopeFactory {
   private ActivityEnvelopeFactory() {}

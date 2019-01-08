@@ -1,7 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
@@ -23,6 +21,7 @@ import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;

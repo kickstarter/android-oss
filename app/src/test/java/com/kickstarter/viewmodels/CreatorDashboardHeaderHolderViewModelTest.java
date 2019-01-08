@@ -1,13 +1,9 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
-import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
@@ -15,6 +11,9 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
+import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
@@ -22,6 +21,7 @@ import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
 
 public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTestCase {

@@ -1,10 +1,10 @@
 package com.kickstarter.libs;
 
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 
 import java.math.RoundingMode;
 
+import androidx.annotation.Nullable;
 import auto.parcel.AutoParcel;
 
 @AutoParcel

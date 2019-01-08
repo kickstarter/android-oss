@@ -1,8 +1,8 @@
 package com.kickstarter.libs.rx.transformers;
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 
 public final class ZipPairTransformer<T, R> implements Observable.Transformer<T, Pair<T, R>> {

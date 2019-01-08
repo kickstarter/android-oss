@@ -21,13 +21,13 @@
 
 package com.kickstarter.libs;
 
-import android.support.annotation.NonNull;
-
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.kickstarter.libs.qualifiers.AutoGson;
+
+import androidx.annotation.NonNull;
 
 public final class AutoParcelAdapterFactory implements TypeAdapterFactory {
   @SuppressWarnings("unchecked")

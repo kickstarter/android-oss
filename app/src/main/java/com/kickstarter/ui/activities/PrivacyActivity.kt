@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.util.Pair
+import androidx.appcompat.app.AlertDialog
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel

@@ -1,8 +1,8 @@
 package com.kickstarter.services;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
+
+import androidx.annotation.NonNull;
 
 /**
  * An exception class wrapping an {@link ErrorEnvelope}.

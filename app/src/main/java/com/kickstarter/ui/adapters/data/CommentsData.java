@@ -1,14 +1,13 @@
 package com.kickstarter.ui.adapters.data;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import auto.parcel.AutoParcel;
 
 @AutoParcel

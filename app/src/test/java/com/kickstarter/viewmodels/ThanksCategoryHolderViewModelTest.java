@@ -1,15 +1,14 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.models.Category;
 import com.kickstarter.ui.viewholders.ThanksCategoryHolderViewModel;
 
 import org.junit.Test;
 
+import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
 
 public final class ThanksCategoryHolderViewModelTest extends KSRobolectricTestCase {

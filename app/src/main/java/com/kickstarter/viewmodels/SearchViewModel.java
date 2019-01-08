@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -18,6 +17,7 @@ import com.kickstarter.ui.activities.SearchActivity;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.Scheduler;
 import rx.subjects.BehaviorSubject;

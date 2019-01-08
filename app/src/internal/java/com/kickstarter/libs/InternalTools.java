@@ -1,10 +1,11 @@
 package com.kickstarter.libs;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.R;
 import com.kickstarter.ui.activities.InternalToolsActivity;
+
+import androidx.annotation.NonNull;
 
 public final class InternalTools implements InternalToolsType {
   @Override

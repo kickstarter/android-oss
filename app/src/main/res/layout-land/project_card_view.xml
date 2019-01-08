@@ -6,7 +6,7 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
 
-  <android.support.v7.widget.CardView
+  <androidx.cardview.widget.CardView
     android:id="@+id/project_card_view"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -100,7 +100,7 @@
 
     </LinearLayout>
 
-  </android.support.v7.widget.CardView>
+  </androidx.cardview.widget.CardView>
 
   <include
     layout="@layout/friend_row_backing_group"

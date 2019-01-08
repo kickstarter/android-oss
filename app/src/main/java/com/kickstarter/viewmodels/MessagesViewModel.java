@@ -1,7 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -31,6 +29,8 @@ import com.kickstarter.ui.data.MessagesData;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;

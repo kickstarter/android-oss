@@ -1,7 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ApiPaginator;
@@ -15,6 +13,7 @@ import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.RefTagUtils;
 import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Activity;
@@ -36,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -143,7 +144,7 @@ public interface DiscoveryFragmentViewModel {
 
       Observable.combineLatest(projects,
         selectedParams.distinctUntilChanged(),
-        this::combineProjectsAndParams)
+        ProjectUtils::combineProjectsAndParams)
         .compose(bindToLifecycle())
         .subscribe(this.projectList);
 

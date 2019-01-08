@@ -7,6 +7,7 @@ import android.util.Pair
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AlertDialog
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.extensions.showConfirmationSnackbar

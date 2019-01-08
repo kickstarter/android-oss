@@ -1,8 +1,6 @@
 package com.kickstarter.ui.activities;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 
@@ -15,6 +13,8 @@ import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.WebViewViewModel;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;

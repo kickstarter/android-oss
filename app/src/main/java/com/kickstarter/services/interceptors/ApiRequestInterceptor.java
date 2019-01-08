@@ -1,13 +1,13 @@
 package com.kickstarter.services.interceptors;
 
 import android.net.Uri;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.services.KSUri;
 
 import java.io.IOException;
 
+import androidx.annotation.NonNull;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.Request;

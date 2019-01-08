@@ -1,7 +1,5 @@
 package com.kickstarter.libs.rx.operators;
 
-import android.support.annotation.NonNull;
-
 import com.google.gson.Gson;
 import com.kickstarter.services.ApiException;
 import com.kickstarter.services.ResponseException;
@@ -9,6 +7,7 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import java.io.IOException;
 
+import androidx.annotation.NonNull;
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;

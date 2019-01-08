@@ -10,7 +10,7 @@
   android:paddingEnd="@dimen/search_padding_x"
   android:paddingStart="@dimen/search_padding_x">
 
-  <android.support.v7.widget.CardView
+  <androidx.cardview.widget.CardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_2"
@@ -101,7 +101,7 @@
 
     </RelativeLayout>
 
-  </android.support.v7.widget.CardView>
+  </androidx.cardview.widget.CardView>
 
   <include layout="@layout/horizontal_line_1dp_view"
     android:layout_width="match_parent"

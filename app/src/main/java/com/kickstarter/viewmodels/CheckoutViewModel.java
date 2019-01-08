@@ -1,7 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.google.android.gms.wallet.FullWallet;
@@ -20,6 +18,8 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.CheckoutActivity;
 import com.kickstarter.ui.data.ActivityResult;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;

@@ -153,7 +153,7 @@
               android:layout_height="wrap_content"
               android:text="@string/project_view_pledge_includes" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
               android:id="@+id/backing_rewards_item_recycler_view"
               android:layout_width="match_parent"
               android:layout_height="wrap_content" />

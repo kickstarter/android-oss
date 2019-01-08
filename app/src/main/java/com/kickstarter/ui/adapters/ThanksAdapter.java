@@ -1,10 +1,10 @@
 package com.kickstarter.ui.adapters;
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.data.ThanksData;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -13,6 +13,9 @@ import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
 import com.kickstarter.ui.viewholders.ThanksShareViewHolder;
 
 import java.util.Collections;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 
 public final class ThanksAdapter extends KSAdapter {
   private static final int SECTION_SHARE_VIEW = 0;
@@ -55,7 +58,7 @@ public final class ThanksAdapter extends KSAdapter {
 
   public void takeData(final @NonNull ThanksData data) {
     setSection(SECTION_SHARE_VIEW, Collections.singletonList(data.getBackedProject()));
-    setSection(SECTION_RECOMMENDED_PROJECTS_VIEW, data.getRecommendedProjects());
+    setSection(SECTION_RECOMMENDED_PROJECTS_VIEW, ProjectUtils.combineProjectsAndParams(data.getRecommendedProjects(), DiscoveryParams.builder().build()));
     setSection(SECTION_CATEGORY_VIEW, Collections.singletonList(data.getCategory()));
     notifyDataSetChanged();
   }

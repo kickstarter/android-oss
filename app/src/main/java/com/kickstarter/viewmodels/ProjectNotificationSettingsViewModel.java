@@ -1,7 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -11,6 +9,7 @@ import com.kickstarter.ui.activities.ProjectNotificationSettingsActivity;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 

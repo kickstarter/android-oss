@@ -1,16 +1,13 @@
 package com.kickstarter;
 
 import android.content.Context;
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-import android.support.multidex.MultiDex;
-import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.heapanalytics.android.Heap;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.PushNotifications;
@@ -31,6 +28,10 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.multidex.MultiDex;
+import androidx.multidex.MultiDexApplication;
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
@@ -50,6 +51,7 @@ public class KSApplication extends MultiDexApplication {
     // Only log for internal builds
     if (BuildConfig.FLAVOR_AUDIENCE.equals("internal")) {
       Timber.plant(new Timber.DebugTree());
+      Heap.init(getApplicationContext(), Secrets.Heap.INTERNAL);
     }
 
     if (!isInUnitTests() && ApiCapabilities.canDetectMemoryLeaks()) {

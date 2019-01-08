@@ -1,6 +1,6 @@
 package com.kickstarter.ui.data;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public enum LoginReason {
   DEFAULT,

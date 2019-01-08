@@ -1,7 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -10,6 +8,7 @@ import com.kickstarter.ui.viewholders.CreatorDashboardBottomSheetViewHolder;
 
 import org.joda.time.DateTime;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 

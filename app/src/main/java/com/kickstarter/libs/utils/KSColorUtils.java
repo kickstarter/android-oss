@@ -2,14 +2,15 @@ package com.kickstarter.libs.utils;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
-import android.support.annotation.FloatRange;
-import android.support.annotation.IntRange;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.ColorUtils;
 
 import com.kickstarter.R;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+import androidx.annotation.FloatRange;
+import androidx.annotation.IntRange;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 
 public final class KSColorUtils {
   private KSColorUtils() {}

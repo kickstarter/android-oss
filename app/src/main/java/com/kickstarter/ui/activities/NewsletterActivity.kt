@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities
 import android.os.Bundle
 import android.support.annotation.NonNull
 import android.util.Pair
+import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build

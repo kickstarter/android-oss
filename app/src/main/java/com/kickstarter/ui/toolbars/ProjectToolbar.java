@@ -1,13 +1,13 @@
 package com.kickstarter.ui.toolbars;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 

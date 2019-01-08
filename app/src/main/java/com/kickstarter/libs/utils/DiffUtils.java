@@ -1,11 +1,11 @@
 package com.kickstarter.libs.utils;
 
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import auto.parcel.AutoParcel;
 import rx.functions.Func2;
 

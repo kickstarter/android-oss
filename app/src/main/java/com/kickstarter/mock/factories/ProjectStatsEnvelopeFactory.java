@@ -1,7 +1,5 @@
 package com.kickstarter.mock.factories;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.libs.ReferrerType;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 
@@ -9,6 +7,8 @@ import org.joda.time.DateTime;
 
 import java.util.Collections;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public final class ProjectStatsEnvelopeFactory {
   private ProjectStatsEnvelopeFactory() {}

@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities
 
 import android.os.Bundle
 import androidx.annotation.NonNull
+import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
@@ -10,6 +11,7 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.SwitchCompatUtils
+import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.User
 import com.kickstarter.ui.data.Newsletter
@@ -64,6 +66,8 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
         reads_switch.setOnClickListener { viewModel.inputs.sendReadsNewsletter(reads_switch.isChecked) }
         subscribe_all_switch.setOnClickListener { viewModel.inputs.sendAllNewsletter(subscribe_all_switch.isChecked) }
     }
+
+    override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
 
     private fun displayPreferences(@NonNull user: User) {
         SwitchCompatUtils.setCheckedWithoutAnimation(alumni_switch, isTrue(user.alumniNewsletter()))

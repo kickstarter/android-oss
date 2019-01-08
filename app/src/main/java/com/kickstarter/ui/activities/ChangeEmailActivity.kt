@@ -2,7 +2,7 @@ package com.kickstarter.ui.activities
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.util.Pair
 import android.view.Menu
 import android.view.MenuItem

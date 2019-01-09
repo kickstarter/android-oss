@@ -12,6 +12,7 @@ import com.kickstarter.R;
 import com.kickstarter.extensions.ActivityExtKt;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.BundleUtils;
+import com.kickstarter.libs.utils.chrome.CustomTabActivityHelper;
 import com.kickstarter.services.ConnectivityReceiver;
 import com.kickstarter.ui.data.ActivityResult;
 import com.trello.rxlifecycle.ActivityEvent;
@@ -41,6 +42,8 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   private static final String VIEW_MODEL_KEY = "viewModel";
   private final CompositeSubscription subscriptions = new CompositeSubscription();
   private final ConnectivityReceiver connectivityReceiver = new ConnectivityReceiver();
+  private final CustomTabActivityHelper customTabActivityHelper = new CustomTabActivityHelper();
+
   protected ViewModelType viewModel;
 
   /**
@@ -119,6 +122,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
       .subscribe(__ -> goBack());
 
     ConnectivityReceiver.setConnectivityReceiverListener(this);
+    customTabActivityHelper.bindCustomTabsService(this);
   }
 
   @CallSuper
@@ -155,6 +159,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   protected void onStop() {
     this.lifecycle.onNext(ActivityEvent.STOP);
     super.onStop();
+    customTabActivityHelper.unbindCustomTabsService(this);
     Timber.d("onStop %s", this.toString());
   }
 

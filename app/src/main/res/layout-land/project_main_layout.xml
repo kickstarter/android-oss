@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-  android:orientation="vertical"
-  xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/project_scroll_view"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:background="@color/white"
   android:layout_height="wrap_content"
-  xmlns:tools="http://schemas.android.com/tools">
+  android:background="@color/white"
+  android:orientation="vertical">
 
-  <include layout="@layout/project_media_header"/>
+  <include layout="@layout/project_media_header" />
 
   <LinearLayout
     android:id="@+id/project_info"
-    android:orientation="vertical"
-    android:background="@color/white"
-    android:layout_marginStart="@dimen/project_padding_x"
-    android:layout_marginEnd="@dimen/project_padding_x"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/project_padding_x"
+    android:layout_marginStart="@dimen/project_padding_x"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <ProgressBar
-      style="@style/ProgressBar"
-      android:visibility="visible"
       android:id="@+id/percentage_funded"
+      style="@style/ProgressBar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:minHeight="@dimen/progress_bar_min_height"
       android:layout_marginTop="@dimen/grid_4"
-      android:progress="50" />
+      android:minHeight="@dimen/progress_bar_min_height"
+      android:progress="50"
+      android:visibility="visible" />
 
     <LinearLayout
       android:id="@+id/project_state_view_group"
-      android:visibility="gone"
-      android:gravity="center_vertical"
-      android:layout_marginTop="@dimen/grid_4"
-      android:layout_marginBottom="@dimen/grid_2"
-      android:paddingTop="@dimen/grid_2"
-      android:paddingStart="@dimen/grid_4"
-      android:paddingEnd="@dimen/grid_4"
-      android:paddingBottom="@dimen/grid_2"
-      android:orientation="vertical"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_2"
+      android:layout_marginTop="@dimen/grid_4"
+      android:gravity="center_vertical"
+      android:orientation="vertical"
+      android:paddingBottom="@dimen/grid_2"
+      android:paddingEnd="@dimen/grid_4"
+      android:paddingStart="@dimen/grid_4"
+      android:paddingTop="@dimen/grid_2"
+      android:visibility="gone">
 
       <TextView
         android:id="@+id/project_state_header_text_view"
@@ -61,83 +61,84 @@
 
     <RelativeLayout
       android:id="@+id/project_stats_view"
-      android:orientation="vertical"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_5"
       android:layout_marginTop="@dimen/grid_3"
-      android:layout_marginBottom="@dimen/grid_5">
+      android:orientation="vertical">
 
-      <include layout="@layout/project_stats_view"
-        android:id="@+id/stats_view"/>
+      <include
+        android:id="@+id/stats_view"
+        layout="@layout/project_stats_view" />
 
       <RelativeLayout
         android:id="@+id/project_action_buttons"
-        android:layout_alignTop="@id/stats_view"
-        android:layout_alignParentEnd="true"
-        android:focusable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/stats_view"
+        android:focusable="true"
         tools:ignore="InconsistentLayout">
 
         <Button
-          style="@style/PrimaryButton"
           android:id="@+id/back_project_button"
-          android:visibility="visible"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           android:text="@string/project_back_button"
           tools:ignore="InconsistentLayout" />
 
         <Button
-          style="@style/SecondaryButton"
           android:id="@+id/manage_pledge_button"
-          android:visibility="gone"
+          style="@style/SecondaryButton"
           android:text="@string/project_manage_button"
+          android:visibility="gone"
           tools:ignore="InconsistentLayout" />
 
         <Button
-          style="@style/SecondaryButton"
           android:id="@+id/view_pledge_button"
-          android:visibility="gone"
+          style="@style/SecondaryButton"
           android:text="@string/project_view_button"
+          android:visibility="gone"
           tools:ignore="InconsistentLayout" />
 
       </RelativeLayout>
 
       <TextView
         android:id="@+id/usd_conversion_text_view"
-        android:visibility="gone"
-        android:layout_below="@id/stats_view"
         style="@style/BodySecondary"
-        android:layout_marginTop="@dimen/grid_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/stats_view"
+        android:layout_marginTop="@dimen/grid_2"
+        android:visibility="gone"
         tools:text="Converted from" />
 
     </RelativeLayout>
 
     <LinearLayout
       android:id="@+id/project_social_view"
-      android:orientation="horizontal"
-      android:gravity="center_vertical"
-      android:visibility="gone"
-      android:paddingTop="@dimen/grid_1"
-      android:paddingBottom="@dimen/grid_1"
-      android:layout_marginBottom="@dimen/grid_4"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_4"
+      android:gravity="center_vertical"
+      android:orientation="horizontal"
+      android:paddingBottom="@dimen/grid_1"
+      android:paddingTop="@dimen/grid_1"
+      android:visibility="gone">
 
       <ImageView
         android:id="@+id/project_social_image"
-        android:visibility="gone"
         android:layout_width="@dimen/project_social_photo_height"
         android:layout_height="@dimen/project_social_photo_height"
+        android:visibility="gone"
         tools:ignore="ContentDescription" />
 
       <TextView
         android:id="@+id/project_social_text"
         style="@style/BodyPrimaryMedium"
-        android:layout_marginStart="@dimen/grid_4"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/grid_4" />
 
     </LinearLayout>
 

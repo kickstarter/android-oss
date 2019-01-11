@@ -73,8 +73,8 @@
 
   <Button
     android:id="@+id/signup_button"
-    style="@style/PrimaryButton"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/grid_2"
     android:layout_marginTop="@dimen/grid_2"
     android:enabled="false"

@@ -12,8 +12,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/grid_5"
     android:layout_marginTop="@dimen/grid_1"
-    android:text="@string/two_factor_message"
-    android:textColor="@color/ksr_dark_grey_400" />
+    android:text="@string/two_factor_message" />
 
   <com.google.android.material.textfield.TextInputLayout
     android:layout_width="match_parent"
@@ -57,7 +56,8 @@
       android:layout_marginStart="@dimen/grid_1"
       android:layout_weight="1"
       android:enabled="false"
-      android:text="@string/two_factor_buttons_submit" />
+      android:text="@string/two_factor_buttons_submit"
+      tools:ignore="ButtonStyle" />
 
   </LinearLayout>
 

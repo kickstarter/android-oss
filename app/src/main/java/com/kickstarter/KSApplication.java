@@ -7,7 +7,6 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.heapanalytics.android.Heap;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.PushNotifications;
@@ -51,7 +50,6 @@ public class KSApplication extends MultiDexApplication {
     // Only log for internal builds
     if (BuildConfig.FLAVOR_AUDIENCE.equals("internal")) {
       Timber.plant(new Timber.DebugTree());
-      Heap.init(getApplicationContext(), Secrets.Heap.INTERNAL);
     }
 
     if (!isInUnitTests() && ApiCapabilities.canDetectMemoryLeaks()) {

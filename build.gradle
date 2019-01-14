@@ -1,6 +1,5 @@
 buildscript {
     ext.kotlin_version = '1.2.71'
-    ext.heap_version = '0.8.1'
 
     repositories {
         jcenter()
@@ -11,7 +10,6 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.2.1'
         classpath 'com.google.gms:google-services:4.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.heapanalytics.android:heap-android-gradle:${heap_version}"
     }
 }
 

@@ -14,7 +14,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.apollographql.android'
-apply plugin: 'com.heapanalytics.android'
 apply from: 'quality.gradle'
 
 static def getVersionCodeTimestamp() {
@@ -93,7 +92,6 @@ android {
             debuggable true
             applicationIdSuffix '.debug'
             signingConfig signingConfigs.debug
-            ext.heap = ["enabled": true]
         }
     }
 
@@ -259,7 +257,6 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer:$exoplayer_version"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    implementation "com.heapanalytics.android:heap-android-client:${heap_version}"
     implementation "com.jakewharton:butterknife:$butterknife_version"
     implementation "com.jakewharton:process-phoenix:$phoenix_version"
     implementation "com.jakewharton.timber:timber:$timber_version"

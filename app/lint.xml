@@ -59,8 +59,5 @@
     <ignore path="src/main/res/anim/fade_out.xml" />
     <ignore path="src/main/res/anim/slide_in_bottom.xml" />
     <ignore path="src/main/res/menu/login_help_menu.xml" />
-
-    <!-- Currently only used for Internal -->
-    <ignore regexp="com.heapanalytics.android.buildConfigPkgName|com.heapanalytics.android.pluginApplied" />
   </issue>
 </lint>

@@ -17,7 +17,6 @@ object CustomTabsHelper {
     private const val BETA_PACKAGE = "com.chrome.beta"
     private const val DEV_PACKAGE = "com.chrome.dev"
     private const val LOCAL_PACKAGE = "com.google.android.apps.chrome"
-    private const val EXTRA_CUSTOM_TABS_KEEP_ALIVE = "android.support.customtabs.extra.KEEP_ALIVE"
     private const val ACTION_CUSTOM_TABS_CONNECTION = "android.support.customtabs.action.CustomTabsService"
 
     private var packageNameToUse: String? = null
@@ -26,12 +25,6 @@ object CustomTabsHelper {
      * @return All possible chrome package names that provide custom tabs feature.
      */
     val packages = arrayOf("", STABLE_PACKAGE, BETA_PACKAGE, DEV_PACKAGE, LOCAL_PACKAGE)
-
-    fun addKeepAliveExtra(context: Context, intent: Intent) {
-        val keepAliveIntent = Intent().setClassName(
-                context.packageName, KeepAliveService::class.java.canonicalName)
-        intent.putExtra(EXTRA_CUSTOM_TABS_KEEP_ALIVE, keepAliveIntent)
-    }
 
     /**
      * Goes through all apps that handle VIEW intents and have a warmup service. Picks
@@ -72,7 +65,7 @@ object CustomTabsHelper {
         if (packagesSupportingCustomTabs.isEmpty()) {
             packageNameToUse = null
         } else if (packagesSupportingCustomTabs.size == 1) {
-            packageNameToUse = packagesSupportingCustomTabs.get(0)
+            packageNameToUse = packagesSupportingCustomTabs[0]
         } else if (!TextUtils.isEmpty(defaultViewHandlerPackageName)
                 && !hasSpecializedHandlerIntents(context, activityIntent)
                 && packagesSupportingCustomTabs.contains(defaultViewHandlerPackageName)) {
@@ -103,6 +96,7 @@ object CustomTabsHelper {
             if (handlers == null || handlers.size == 0) {
                 return false
             }
+
             for (resolveInfo in handlers) {
                 val filter = resolveInfo.filter ?: continue
                 if (filter.countDataAuthorities() == 0 || filter.countDataPaths() == 0) continue

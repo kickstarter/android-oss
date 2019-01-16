@@ -122,7 +122,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
       .subscribe(__ -> goBack());
 
     ConnectivityReceiver.setConnectivityReceiverListener(this);
-    customTabActivityHelper.bindCustomTabsService(this);
+    this.customTabActivityHelper.bindCustomTabsService(this);
   }
 
   @CallSuper
@@ -159,7 +159,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   protected void onStop() {
     this.lifecycle.onNext(ActivityEvent.STOP);
     super.onStop();
-    customTabActivityHelper.unbindCustomTabsService(this);
+    this.customTabActivityHelper.unbindCustomTabsService(this);
     Timber.d("onStop %s", this.toString());
   }
 

@@ -2,7 +2,6 @@ package com.kickstarter.libs.utils.chrome
 
 import android.app.Activity
 import android.net.Uri
-import android.os.Bundle
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsServiceConnection
@@ -46,14 +45,6 @@ class CustomTabActivityHelper : ServiceConnectionCallback {
     }
 
     /**
-     * Register a Callback to be called when connected or disconnected from the Custom Tabs Service.
-     * @param connectionCallback
-     */
-    fun setConnectionCallback(connectionCallback: ConnectionCallback) {
-        this.connectionCallback = connectionCallback
-    }
-
-    /**
      * Binds the Activity to the Custom Tabs Service.
      * @param activity the activity to be binded to the service.
      */
@@ -64,18 +55,6 @@ class CustomTabActivityHelper : ServiceConnectionCallback {
 
         customTabsServiceConnection = ServiceConnection(this)
         CustomTabsClient.bindCustomTabsService(activity, packageName, customTabsServiceConnection)
-    }
-
-    /**
-     * @see {@link CustomTabsSession.mayLaunchUrl
-     * @return true if call to mayLaunchUrl was accepted.
-     */
-    fun mayLaunchUrl(uri: Uri, extras: Bundle, otherLikelyBundles: List<Bundle>): Boolean {
-        if (customTabsClient == null) return false
-
-        val session = session ?: return false
-
-        return session.mayLaunchUrl(uri, extras, otherLikelyBundles)
     }
 
     override fun onServiceConnected(client: CustomTabsClient) {
@@ -134,7 +113,7 @@ class CustomTabActivityHelper : ServiceConnectionCallback {
                           fallback: CustomTabFallback?) {
             val packageName = CustomTabsHelper.getPackageNameToUse(activity)
 
-            //If we cant find a package name, it means theres no browser that supports
+            //If we cant find a package name, it means there's no browser that supports
             //Chrome Custom Tabs installed. So, we fallback to the webview
             if (packageName == null) {
                 fallback?.openUri(activity, uri)

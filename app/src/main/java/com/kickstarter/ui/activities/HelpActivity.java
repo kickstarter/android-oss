@@ -1,8 +1,5 @@
 package com.kickstarter.ui.activities;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +9,6 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.utils.AnimationUtils;
-import com.kickstarter.libs.utils.chrome.CustomTabActivityHelper;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.HelpViewModel;
@@ -23,8 +19,6 @@ import java.lang.annotation.RetentionPolicy;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.core.content.ContextCompat;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -76,23 +70,8 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
     this.webEndpoint = environment().webEndpoint();
 
     final String url = getUrlForHelpType(this.helpType);
-//    this.kickstarterWebView.loadUrl(url);
-//    this.kickstarterWebView.client().setDelegate(this);
-
-    CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_arrow_right);
-    builder.setCloseButtonIcon(icon);
-    builder.setShowTitle(true);
-    builder.setToolbarColor(ContextCompat.getColor(this, R.color.white));
-    builder.setExitAnimations(this, R.anim.settings_slide_in_from_bottom, R.anim.settings_slide_out_from_top);
-    CustomTabsIntent customTabsIntent = builder.build();
-
-
-    CustomTabActivityHelper.Companion.openCustomTab(this, customTabsIntent, Uri.parse(url), (activity, uri) -> {
-      Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-      activity.startActivity(intent);
-    });
-
+    this.kickstarterWebView.loadUrl(url);
+    this.kickstarterWebView.client().setDelegate(this);
   }
 
   protected String getUrlForHelpType(final @HelpType int helpType) {

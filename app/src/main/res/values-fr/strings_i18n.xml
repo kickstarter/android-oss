@@ -499,7 +499,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Vous êtes sur le point de créer un nouveau compte Kickstarter avec l\'adresse e-mail que vous utilisez sur Facebook. Veuillez confirmer avant de continuer.</string>
   <string name="Youre_offline" formatted="false">You’re offline. Once your device reconnects, navigate around the app to refresh.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Vous vous êtes engagé à soutenir ce projet et sa campagne de financement n\'est pas terminée.</string>
-  <string name="Zip_code" formatted="false">Code postal</string>
+  <string name="Zip_postal_code" formatted="false">Zip/Postal code</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">Activité</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">Ouvre l\'activité.</string>
   <string name="accessibility_dashboard_buttons_messages" formatted="false">Messages</string>

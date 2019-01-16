@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities;
 
 import android.annotation.TargetApi;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -57,6 +58,10 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
       .compose(Transformers.takeWhen(lifecycle().filter(ActivityEvent.RESUME::equals)))
       .compose(bindToLifecycle())
       .subscribe(this::preparePlayer);
+
+    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
   }
 
   @Override

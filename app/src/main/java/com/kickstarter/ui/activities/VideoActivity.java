@@ -57,7 +57,6 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
       .compose(Transformers.takeWhen(lifecycle().filter(ActivityEvent.RESUME::equals)))
       .compose(bindToLifecycle())
       .subscribe(this::preparePlayer);
-
   }
 
   @Override

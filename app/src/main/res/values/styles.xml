@@ -16,7 +16,6 @@
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowActionBar">false</item>
     <item name="android:windowAnimationStyle">@null</item>
-    <item name="android:windowIsTranslucent">true</item>
 
     <item name="colorPrimary">@color/primary</item>
     <item name="colorPrimaryDark">@color/primary_dark</item>
@@ -59,6 +58,10 @@
 
   <style name="SearchActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
+  </style>
+
+  <style name="SettingsActivitiesTransitions" parent="KSTheme">
+    <item name="android:windowIsTranslucent">true</item>
   </style>
 
   <style name="ThanksActivity" parent="KSTheme">

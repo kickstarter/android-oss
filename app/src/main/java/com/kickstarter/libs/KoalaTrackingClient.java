@@ -153,7 +153,7 @@ public final class KoalaTrackingClient extends TrackingClientType {
 
   @Override
   protected Long time() {
-    return System.currentTimeMillis();
+    return System.currentTimeMillis() / 1000;
   }
 
   @Override

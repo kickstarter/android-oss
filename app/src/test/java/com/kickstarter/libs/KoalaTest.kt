@@ -243,7 +243,7 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals("android", expectedProperties["mp_lib"])
         assertEquals("Android", expectedProperties["os"])
         assertEquals("9", expectedProperties["os_version"])
-        assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis, expectedProperties["time"])
+        assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["time"])
         assertEquals(user != null, expectedProperties["user_logged_in"])
     }
 

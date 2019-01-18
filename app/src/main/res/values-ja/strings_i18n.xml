@@ -215,7 +215,7 @@
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
   <string name="Its_better_with_friends" formatted="false">友達にとってより良い。</string>
-  <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">It\'s like the radio but nothing sucks and also it\'s a newsletter.</string>
+  <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">ラジオみたいな (でもつまらない内容をダラダラと語ったりしない) ニュースレター。</string>
   <string name="Join_our_secret_society" formatted="false">この秘密の世界にあなたも浸ってみませんか。</string>
   <string name="Joining_the_live_stream" formatted="false">ライブ配信に参加</string>
   <string name="Just_for_you" formatted="false">あなたのために。</string>
@@ -498,7 +498,7 @@
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Facebookのメールアドレスで新しいアカウントを作成しようとしています。再度確認してください。</string>
   <string name="Youre_offline" formatted="false">現在オフライン中です。デバイスが再接続し次第、アプリをリフレッシュしてください。</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">このプレッジ済のプロジェクトは、現在もファンド中</string>
-  <string name="Zip_postal_code" formatted="false">Zip/Postal code</string>
+  <string name="Zip_postal_code" formatted="false">郵便番号</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">アクティビティ</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">アクティビティをみる</string>
   <string name="accessibility_dashboard_buttons_messages" formatted="false">メッセージ</string>

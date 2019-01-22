@@ -3,11 +3,6 @@ package com.kickstarter.ui.fragments;
 import android.animation.AnimatorSet;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +38,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -60,7 +56,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
   protected @Bind(R.id.discovery_empty_view) View emptyView;
   protected @Bind(R.id.discovery_hearts_container) View heartsContainer;
   protected @Bind(R.id.discovery_recycler_view) RecyclerView recyclerView;
-  protected @Bind(R.id.comments_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+  protected @Bind(R.id.disco_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
   public DiscoveryFragment() {}
 

@@ -4,9 +4,9 @@ import UserPaymentsQuery
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.LinearLayoutManager
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.extensions.showConfirmationSnackbar
 import com.kickstarter.extensions.showErrorSnackbar
@@ -79,13 +79,14 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
 
     private fun setUpRecyclerView() {
         this.adapter = PaymentMethodsAdapter(this.viewModel, object: DiffUtil.ItemCallback<Any>() {
-            override fun areItemsTheSame(oldItem: Any?, newItem: Any?): Boolean {
+            override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
                 return (oldItem as UserPaymentsQuery.Node).id() == (newItem as UserPaymentsQuery.Node).id()
             }
 
-            override fun areContentsTheSame(oldItem: Any?, newItem: Any?): Boolean {
+            override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
                 return (oldItem as UserPaymentsQuery.Node).id() == (newItem as UserPaymentsQuery.Node).id()
             }
+
 
         })
         recycler_view.adapter = this.adapter

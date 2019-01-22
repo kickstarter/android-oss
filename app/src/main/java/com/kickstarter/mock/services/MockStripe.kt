@@ -1,7 +1,7 @@
 package com.kickstarter.mock.services
 
 import android.content.Context
-import android.support.annotation.NonNull
+import androidx.annotation.NonNull
 import com.kickstarter.mock.factories.CardFactory
 import com.stripe.android.Stripe
 import com.stripe.android.TokenCallback

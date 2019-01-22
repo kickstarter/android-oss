@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@color/ksr_grey_100">
 
-  <android.support.design.widget.AppBarLayout
+  <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -32,7 +32,7 @@
       </RelativeLayout>
 
     </com.kickstarter.ui.toolbars.KSToolbar>
-  </android.support.design.widget.AppBarLayout>
+  </com.google.android.material.appbar.AppBarLayout>
 
   <ScrollView
     android:layout_width="match_parent"
@@ -52,20 +52,20 @@
         <LinearLayout
           style="@style/SettingsLinearRow">
 
-          <android.support.design.widget.TextInputLayout
+          <com.google.android.material.textfield.TextInputLayout
             style="@style/TextInputLayout"
             android:layout_marginBottom="0dp"
             app:hintTextAppearance="@style/BodySecondary"
             app:passwordToggleEnabled="true">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/cardholder_name"
               style="@style/ChangeEmailPassTextInputEditText"
               android:hint="@string/Name"
               android:inputType="textPersonName"
               android:maxLines="1" />
 
-          </android.support.design.widget.TextInputLayout>
+          </com.google.android.material.textfield.TextInputLayout>
 
           <com.stripe.android.view.CardInputWidget
             android:id="@+id/card_input_widget"
@@ -88,19 +88,19 @@
 
           </FrameLayout>
 
-          <android.support.design.widget.TextInputLayout
+          <com.google.android.material.textfield.TextInputLayout
             style="@style/TextInputLayout"
             app:hintTextAppearance="@style/BodySecondary"
             app:passwordToggleEnabled="true">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/postal_code"
               style="@style/ChangeEmailPassTextInputEditText"
-              android:hint="@string/Zip_code"
+              android:hint="@string/Zip_postal_code"
               android:inputType="phone"
               android:maxLines="1" />
 
-          </android.support.design.widget.TextInputLayout>
+          </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
@@ -125,4 +125,4 @@
     </FrameLayout>
   </ScrollView>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

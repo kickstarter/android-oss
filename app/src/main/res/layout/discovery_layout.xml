@@ -48,11 +48,9 @@
               android:id="@+id/discovery_tab_layout"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              app:tabBackground="@drawable/click_indicator_light"
-              app:tabMode="fixed"
-              app:tabSelectedTextColor="@color/text_primary"
-              app:tabTextAppearance="@style/TabTextAppearance"
-              app:tabTextColor="@color/black_alpha_30" />
+              app:tabMode="scrollable"
+              app:tabSelectedTextColor="@color/primary"
+              app:tabTextColor="@color/ksr_soft_black" />
 
           </LinearLayout>
 

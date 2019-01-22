@@ -9,7 +9,7 @@
     style="@style/ActivitySampleCard">
 
     <LinearLayout
-      android:background="@drawable/rect_white_grey_stroke"
+      android:background="@color/white"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:paddingTop="@dimen/grid_3"

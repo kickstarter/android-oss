@@ -1,8 +1,5 @@
 package com.kickstarter.libs.utils;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
@@ -14,6 +11,9 @@ import com.kickstarter.services.DiscoveryParams;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class KoalaUtils {
   private KoalaUtils() {}

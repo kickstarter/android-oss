@@ -7,7 +7,7 @@
   android:layout_height="wrap_content"
   android:layout_width="match_parent">
 
-  <android.support.v7.widget.CardView
+  <androidx.cardview.widget.CardView
     android:id="@+id/message_thread_card_view"
     android:focusable="true"
     android:foreground="@drawable/message_thread_click_indicator"
@@ -100,7 +100,7 @@
 
     </RelativeLayout>
 
-  </android.support.v7.widget.CardView>
+  </androidx.cardview.widget.CardView>
 
   <ImageView
     android:id="@+id/unread_indicator_image_view"

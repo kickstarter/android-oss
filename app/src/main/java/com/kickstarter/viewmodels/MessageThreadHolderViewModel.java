@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels;
 
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
@@ -15,6 +14,7 @@ import com.kickstarter.ui.viewholders.MessageThreadViewHolder;
 
 import org.joda.time.DateTime;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 

@@ -39,14 +39,14 @@ if (file('signing.gradle').exists()) {
 }
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.kickstarter"
         minSdkVersion 17
-        targetSdkVersion 27
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        targetSdkVersion 28
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "GIT_SHA", "\"${commitSha()}\""
         buildConfigField "String", "BUILD_DATE", "\"${commitTime()}\""
@@ -209,53 +209,47 @@ repositories {
 final apollo = "0.5.0"
 final auto_parcel_version = "0.3.1"
 final butterknife_version = "7.0.1"
-final constraint_layout_version = "1.1.0"
 final crashlytics_version = "2.9.6@aar"
 final dagger_version = "2.11"
 final exoplayer_version = "2.9.1"
 final facebook_version = "4.33.0"
-final firebase_version = "16.0.0"
+final firebase_version = "16.0.6"
 final firebase_job_dispatcher_version = "0.8.5"
-final firebase_messaging_version = "17.3.0"
+final firebase_messaging_version = "17.3.4"
 final joda_time_version = "2.7.2"
 final jsoup_version = "1.8.2"
 final leak_canary_version = "1.3.1"
-final multidex_version = "1.0.1"
 final okhttp_version = "3.5.0"
 final picasso_version = "2.5.2"
 final phoenix_version = "1.0.2"
-final play_services_version = "15.0.1"
+final play_services_version = "16.0.1"
 final retrofit_version = "2.3.0"
 final rx_android_version = "1.2.0"
-final rx_binding_version = "0.3.0"
+final rx_binding_version = "0.4.0"
 final rx_java_version = "1.1.5"
 final rx_lifecycle_version = "0.3.0"
-final stripe_version = "6.1.2"
-final support_version = "27.1.1"
-final support_annotations_version = "27.1.1"
+final stripe_version = "8.1.0"
 final timber_version = "3.0.1"
 
 // Test support versions
-final espresso_version = "3.0.2"
 final junit_version = "4.12"
 final mockito_version = "2.8.9"
 final robolectric_version = "3.8"
 final robolectric_shadows_version = "3.0"
 final robolectric_shadows_support_version = "3.4-rc2"
-final test_rules_version = "1.0.2"
-final test_support_annotations_version = "27.1.1"
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "com.android.support:appcompat-v7:$support_version"
-    implementation "com.android.support:cardview-v7:$support_version"
-    implementation "com.android.support:design:$support_version"
-    implementation "com.android.support:multidex:$multidex_version"
-    implementation "com.android.support:recyclerview-v7:$support_version"
-    implementation "com.android.support:support-annotations:$support_annotations_version"
+    implementation 'androidx.annotation:annotation:1.0.1'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation "com.facebook.android:facebook-android-sdk:$facebook_version"
     implementation "com.github.frankiesardo:auto-parcel:$auto_parcel_version"
     kapt "com.github.frankiesardo:auto-parcel-processor:$auto_parcel_version"
+    implementation 'com.google.android.material:material:1.1.0-alpha02'
     implementation "com.google.firebase:firebase-core:$firebase_version"
     implementation "com.firebase:firebase-jobdispatcher:$firebase_job_dispatcher_version"
     implementation "com.google.firebase:firebase-messaging:$firebase_messaging_version"
@@ -278,14 +272,13 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.trello:rxlifecycle:$rx_lifecycle_version"
     implementation "com.trello:rxlifecycle-components:$rx_lifecycle_version"
-    implementation "io.reactivex:rxandroid:$rx_android_version"
+    implementation 'io.reactivex:rxandroid:1.2.1'
     implementation "io.reactivex:rxjava:$rx_java_version"
     implementation "com.jakewharton.rxbinding:rxbinding:$rx_binding_version"
     implementation "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:$rx_binding_version"
     implementation "com.jakewharton.rxbinding:rxbinding-support-v4:$rx_binding_version"
     implementation "net.danlew:android.joda:$joda_time_version"
     implementation "org.jsoup:jsoup:$jsoup_version"
-    implementation "com.android.support.constraint:constraint-layout:$constraint_layout_version"
     implementation("com.crashlytics.sdk.android:crashlytics:$crashlytics_version") {
         transitive = true
     }
@@ -299,11 +292,11 @@ dependencies {
     testImplementation "org.robolectric:shadows-multidex:$robolectric_shadows_version"
     testImplementation "org.robolectric:shadows-play-services:$robolectric_shadows_version"
     testImplementation "org.robolectric:shadows-support-v4:$robolectric_shadows_support_version"
-    androidTestImplementation "com.android.support.test:rules:$test_rules_version"
-    androidTestImplementation "com.android.support.test:runner:$test_rules_version"
-    androidTestImplementation "com.android.support:support-annotations:$test_support_annotations_version"
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:$espresso_version"
-    androidTestImplementation "com.android.support.test.espresso:espresso-intents:$espresso_version"
+    androidTestImplementation 'androidx.annotation:annotation:1.0.1'
+    androidTestImplementation "androidx.test.ext:junit:1.1.0"
+    androidTestImplementation 'androidx.test:rules:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.1'
 }
 
 // SHA and timestamp caching courtesy of https://github.com/gdg-x/frisbee/blob/develop/app/build.gradle#L193-L218

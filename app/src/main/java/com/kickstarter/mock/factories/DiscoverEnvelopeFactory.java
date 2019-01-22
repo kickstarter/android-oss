@@ -1,11 +1,11 @@
 package com.kickstarter.mock.factories;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public final class DiscoverEnvelopeFactory {
   private DiscoverEnvelopeFactory() {}

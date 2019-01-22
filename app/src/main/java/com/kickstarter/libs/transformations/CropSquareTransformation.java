@@ -21,9 +21,10 @@
 package com.kickstarter.libs.transformations;
 
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
 
 import com.squareup.picasso.Transformation;
+
+import androidx.annotation.NonNull;
 
 public class CropSquareTransformation implements Transformation {
   @Override public @NonNull Bitmap transform(final @NonNull Bitmap source) {

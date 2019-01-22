@@ -3,7 +3,6 @@ package com.kickstarter.ui.views;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.PopupMenu;
 
@@ -11,6 +10,8 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.ui.activities.HelpActivity;
+
+import androidx.annotation.NonNull;
 
 public class LoginPopupMenu extends PopupMenu {
 

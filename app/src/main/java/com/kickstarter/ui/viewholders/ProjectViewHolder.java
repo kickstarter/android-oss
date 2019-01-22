@@ -2,9 +2,6 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -33,6 +30,9 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.BindDimen;

@@ -1,7 +1,5 @@
 package com.kickstarter.mock.services;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.Config;
@@ -49,6 +47,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 

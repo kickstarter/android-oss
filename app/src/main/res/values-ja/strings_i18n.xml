@@ -215,7 +215,7 @@
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
   <string name="Its_better_with_friends" formatted="false">友達にとってより良い。</string>
-  <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">It\'s like the radio but nothing sucks and also it\'s a newsletter.</string>
+  <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">ラジオみたいな (でもつまらない内容をダラダラと語ったりしない) ニュースレター。</string>
   <string name="Join_our_secret_society" formatted="false">この秘密の世界にあなたも浸ってみませんか。</string>
   <string name="Joining_the_live_stream" formatted="false">ライブ配信に参加</string>
   <string name="Just_for_you" formatted="false">あなたのために。</string>
@@ -322,7 +322,7 @@
   <string name="Private_profile_more_info" formatted="false">プライベート設定のプロフィール詳細</string>
   <string name="Private_profile_more_info_content" formatted="false">Kickstarter でのプロフィールはデフォルト設定ではプライベート (非公開) となっています。プロフィールを公開したい場合はこの設定をオフにしてください。</string>
   <string name="Project_Cancelled" formatted="false">プロジェクトが取り消されました。</string>
-  <string name="Project_Suspended" formatted="false">中止プロジェクト</string>
+  <string name="Project_Suspended" formatted="false">プロジェクトは停止されました。</string>
   <string name="Project_activity" formatted="false">プロジェクトのアクティビティ</string>
   <string name="Project_cancelled" formatted="false">プロジェクトが取り消されました。</string>
   <string name="Project_reminders" formatted="false">プロジェクトのリマインダー</string>
@@ -432,7 +432,7 @@
   <string name="There_was_a_problem_with_this_payment" formatted="false">支払いに問題があります。</string>
   <string name="This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency" formatted="false">これにより、プロジェクトのファンディングゴールとプレッジ金額をご希望の通貨で表示することができます。</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">このFacebookアカウントはすでに他のKickstarterユーザーとつながっています</string>
-  <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">このプロジェクトは%{date} までに、少なくとも%{amount}プレッジされるでしょう。</string>
+  <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">%{date} までに %{amount} 以上のプレッジが集まれば、このプロジェクトは資金を得ることができます。</string>
   <string name="Time_left_left" formatted="false">あと%{time_left}</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">上部の「さがす」をタップし、お気に入りカテゴリにアクセス。</string>
   <string name="To_read_this_project_update_you_must_be_a_backer" formatted="false">このアップデートはバッカー専用です。 続行するにはログインまたはサインアップしてください。</string>
@@ -498,7 +498,7 @@
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Facebookのメールアドレスで新しいアカウントを作成しようとしています。再度確認してください。</string>
   <string name="Youre_offline" formatted="false">現在オフライン中です。デバイスが再接続し次第、アプリをリフレッシュしてください。</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">このプレッジ済のプロジェクトは、現在もファンド中</string>
-  <string name="Zip_code" formatted="false">郵便番号</string>
+  <string name="Zip_postal_code" formatted="false">郵便番号</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">アクティビティ</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">アクティビティをみる</string>
   <string name="accessibility_dashboard_buttons_messages" formatted="false">メッセージ</string>
@@ -578,11 +578,11 @@
   <string name="activity_project_state_change_funded" formatted="false">達成</string>
   <string name="activity_project_state_change_goal" formatted="false">目標金額</string>
   <string name="activity_project_state_change_launched" formatted="false">発表済み</string>
-  <string name="activity_project_state_change_pledged_of_goal" formatted="false">達成額 (%{goal} 中)</string>
+  <string name="activity_project_state_change_pledged_of_goal" formatted="false">の達成額 (%{goal} 中)</string>
   <string name="activity_project_state_change_project_was_cancelled_by_creator" formatted="false">%{project_name} はクリエーターによりキャンセルされました。</string>
   <string name="activity_project_state_change_project_was_not_successfully_funded" formatted="false">%{project_name} はファンドを達成できませんでした。</string>
   <string name="activity_project_state_change_project_was_successfully_funded" formatted="false">%{project_name} はファンドを達成しました</string>
-  <string name="activity_project_state_change_project_was_suspended" formatted="false">%{project_name} は中断されました</string>
+  <string name="activity_project_state_change_project_was_suspended" formatted="false">%{project_name} は停止されました。</string>
   <string name="activity_project_state_change_you_launched_a_project" formatted="false">あなたは%{project_name} を発表しました</string>
   <string name="activity_project_update_update_count" formatted="false">アップデート #%{update_count}</string>
   <string name="activity_project_update_update_count_backer_only" formatted="false">#%{update_count} - バッカーのみ</string>
@@ -619,14 +619,14 @@
   <string name="creator_project_preview_subtitle_funded_on_deadline" formatted="false">%{deadline} に達成　</string>
   <string name="creator_project_preview_subtitle_funding_canceled" formatted="false">募集をキャンセル</string>
   <string name="creator_project_preview_subtitle_funding_unsuccessful_on_deadline" formatted="false">%{deadline} までに失敗</string>
-  <string name="creator_project_preview_subtitle_project_suspended" formatted="false">停止中プロジェクト</string>
+  <string name="creator_project_preview_subtitle_project_suspended" formatted="false">プロジェクト停止済み</string>
   <string name="dashboard_accessibility_label_share_project" formatted="false">プロジェクトをシェア</string>
   <string name="dashboard_activity_backing_info" formatted="false">バッカー情報</string>
   <string name="dashboard_activity_no_reward_selected" formatted="false">選択中のリワードはありません</string>
   <string name="dashboard_activity_pledge_info" formatted="false">プレッジ情報</string>
   <string name="dashboard_activity_project_name_launched" formatted="false">%{launch_date} に&lt;b>%{project_name}&lt;/b> が&lt;b>%{goal}&lt;/b> を目標として発表されました。</string>
   <string name="dashboard_activity_project_name_was_canceled" formatted="false">%{cancellation_date} に&lt;b>%{project_name}&lt;/b> はキャンセルされました</string>
-  <string name="dashboard_activity_project_name_was_suspended" formatted="false">%{suspension_date} に&lt;b>%{project_name}&lt;/b> は中断されました</string>
+  <string name="dashboard_activity_project_name_was_suspended" formatted="false">%{suspension_date} に&lt;b>%{project_name}&lt;/b> は停止されました</string>
   <string name="dashboard_activity_project_name_was_unsuccessful" formatted="false">%{unsuccessful_date} に&lt;b>%{project_name}&lt;/b> は失敗しました</string>
   <string name="dashboard_activity_reply" formatted="false">返信</string>
   <string name="dashboard_activity_reward_name" formatted="false">&lt;b>リワード&lt;/b>%{reward_name}</string>
@@ -653,7 +653,7 @@
   <string name="dashboard_creator_project_currently_live" formatted="false">現在のライブ</string>
   <string name="dashboard_creator_project_funded_on_deadline" formatted="false">%{deadline} に達成</string>
   <string name="dashboard_creator_project_funding_canceled" formatted="false">キャンセル</string>
-  <string name="dashboard_creator_project_funding_suspended" formatted="false">中断</string>
+  <string name="dashboard_creator_project_funding_suspended" formatted="false">ファンディング停止済み</string>
   <string name="dashboard_creator_project_funding_unsuccessful" formatted="false">失敗</string>
   <string name="dashboard_error_could_not_load_projects" formatted="false">プロジェクトを読み込めません</string>
   <string name="dashboard_graphs_funding_accessibility_live_stat_value_few" formatted="false">%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切</string>
@@ -938,8 +938,8 @@
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">%{date} にファンディング失敗</string>
   <string name="discovery_baseball_card_status_banner_successful" formatted="false">資金調達に成功</string>
   <string name="discovery_baseball_card_status_banner_successful_date" formatted="false">%{date} に目標達成</string>
-  <string name="discovery_baseball_card_status_banner_suspended" formatted="false">%{date} に募集一時停止中</string>
-  <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">%{date} に募集一時停止中</string>
+  <string name="discovery_baseball_card_status_banner_suspended" formatted="false">%{date} にプロジェクト停止済み</string>
+  <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">%{date} にプロジェクト停止済み</string>
   <string name="discovery_baseball_card_time_left_to_go" formatted="false">%{time_left} で締切</string>
   <string name="discovery_category" formatted="false">カテゴリー</string>
   <string name="discovery_empty_states_saved_logged_in_button" formatted="false">さがす</string>
@@ -1155,7 +1155,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="profile_projects_empty_state_message_no_backed_projects_yet" formatted="false">まだバックしていません</string>
   <string name="profile_projects_status_canceled" formatted="false">キャンセル済</string>
   <string name="profile_projects_status_successful" formatted="false">成功</string>
-  <string name="profile_projects_status_suspended" formatted="false">停止中</string>
+  <string name="profile_projects_status_suspended" formatted="false">停止済み</string>
   <string name="profile_projects_status_unsuccessful" formatted="false">失敗</string>
   <string name="profile_projects_time_left_to_go" formatted="false">%{time_left} で締切</string>
   <string name="profile_settings_about_contact" formatted="false">お問い合わせ</string>
@@ -1287,7 +1287,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="project_creator_by_creator" formatted="false">by %{creator_name}</string>
   <string name="project_creator_by_creator_html" formatted="false">by &lt;u>%{creator_name}&lt;/u></string>
   <string name="project_creator_youre_a_backer" formatted="false">\u0020• あなたはバッカーです</string>
-  <string name="project_disclaimer_goal_not_reached" formatted="false">このプロジェクトは少なくとも%{goal_currency} を%{deadline} までにプレッジできるでしょう。</string>
+  <string name="project_disclaimer_goal_not_reached" formatted="false">%{deadline} までに %{goal_currency} 以上のプレッジが集まれば、このプロジェクトは資金を得ることができます。</string>
   <string name="project_disclaimer_goal_reached" formatted="false">%{deadline} までにファンド達成できるでしょう。</string>
   <string name="project_friends_backing_title_friends" formatted="false">友達</string>
   <string name="project_manage_button" formatted="false">プレッジを管理</string>
@@ -1314,8 +1314,8 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="project_status_funded" formatted="false">達成</string>
   <string name="project_status_funding_canceled" formatted="false">ファンディングキャンセル済</string>
   <string name="project_status_funding_project_canceled_by_creator" formatted="false">このファンドはキャンセルされました</string>
-  <string name="project_status_funding_project_suspended" formatted="false">このプロジェクトへのファンドは停止中です</string>
-  <string name="project_status_funding_suspended" formatted="false">ファンディング中断</string>
+  <string name="project_status_funding_project_suspended" formatted="false">このプロジェクトは停止されました。</string>
+  <string name="project_status_funding_suspended" formatted="false">ファンディング停止済み</string>
   <string name="project_status_funding_unsuccessful" formatted="false">ファンディング失敗</string>
   <string name="project_status_project_funding_goal_not_reached" formatted="false">%{deadline} までにプロジェクトのファンド目標に達しませんでした。</string>
   <string name="project_status_project_purged_only_visible_to_staff" formatted="false">このプロジェクトは削除され、非公開になりました</string>

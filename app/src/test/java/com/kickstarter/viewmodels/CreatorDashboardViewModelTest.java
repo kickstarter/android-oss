@@ -1,18 +1,17 @@
 package com.kickstarter.viewmodels;
 
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
-import com.kickstarter.mock.factories.ProjectsEnvelopeFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.models.Project;
+import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
+import com.kickstarter.mock.factories.ProjectsEnvelopeFactory;
 import com.kickstarter.mock.services.MockApiClient;
+import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 
@@ -22,22 +21,24 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
   private CreatorDashboardViewModel.ViewModel vm;
 
+  private final TestSubscriber<Void> openBottomSheet = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, ProjectStatsEnvelope>> projectAndStats = new TestSubscriber<>();
   private final TestSubscriber<List<Project>> projectsForBottomSheet = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardViewModel.ViewModel(environment);
+    this.vm.outputs.openBottomSheet().subscribe(this.openBottomSheet);
     this.vm.outputs.projectAndStats().subscribe(this.projectAndStats);
     this.vm.outputs.projectsForBottomSheet().subscribe(this.projectsForBottomSheet);
   }
 
-  @Test
   public void testProjectAndStats() {
     final List<Project> projects = Collections.singletonList(ProjectFactory.project());
 
@@ -113,5 +114,13 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectSelectionInput(project2);
     this.projectAndStats.assertValues(Pair.create(project1, ProjectStatsEnvelopeFactory.projectStatsEnvelope()), Pair.create(project2, ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
     this.koalaTest.assertValues(KoalaEvent.VIEWED_PROJECT_DASHBOARD, KoalaEvent.SWITCHED_PROJECTS, KoalaEvent.VIEWED_PROJECT_DASHBOARD);
+  }
+
+  @Test
+  public void testProjectsListButtonClicked() {
+    setUpEnvironment(environment());
+    this.vm.inputs.projectsListButtonClicked();
+    this.openBottomSheet.assertValueCount(1);
+    this.koalaTest.assertValue(KoalaEvent.OPENED_PROJECT_SWITCHER);
   }
 }

@@ -62,7 +62,7 @@ backers</string>
   <string name="Card_ending_in_last_four" formatted="false">Card ending in %{last_four}</string>
   <string name="Card_number" formatted="false">Card number</string>
   <string name="Cardholder_name" formatted="false">Cardholder name</string>
-  <string name="Change_currency" formatted="false">Change currency</string>
+  <string name="Change_currency" formatted="false">Change currency?</string>
   <string name="Change_email" formatted="false">Change email</string>
   <string name="Change_password" formatted="false">Change password</string>
   <string name="Change_payment_method" formatted="false">Change payment method</string>
@@ -172,7 +172,7 @@ backers</string>
   <string name="Follow_your_Facebook_friends_and_keep_up_with_the_projects" formatted="false">Follow your Facebook friends and keep up with the projects they back and launch.</string>
   <string name="Followed" formatted="false">Followed</string>
   <string name="Following" formatted="false">Following</string>
-  <string name="Following_Disabled_Info" formatted="false">Following must be on to find Facebook friends. Following can be changed in Settings > Privacy.</string>
+  <string name="Following_Disabled_Info" formatted="false">Following must be on to find Facebook friends. Change your account privacy settings to enable this feature.</string>
   <string name="Following_More_Info" formatted="false">Following More Info</string>
   <string name="Follows_friend_name" formatted="false">Follows %{friend_name}.</string>
   <string name="Friend_backed_art_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed an &lt;i>Art&lt;/i> project.</string>
@@ -502,7 +502,7 @@ Please try again later.</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">You\'re about to create a new Kickstarter account with the email address you use for Facebook. Please confirm that it’s correct before proceeding.</string>
   <string name="Youre_offline" formatted="false">You’re offline. Once your device reconnects, navigate around the app to refresh.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">You’ve pledged to support this project and it’s currently still funding.</string>
-  <string name="Zip_code" formatted="false">Zip code</string>
+  <string name="Zip_postal_code" formatted="false">Zip/Postal code</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">Activity</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">Opens activity.</string>
   <string name="accessibility_dashboard_buttons_messages" formatted="false">Messages</string>

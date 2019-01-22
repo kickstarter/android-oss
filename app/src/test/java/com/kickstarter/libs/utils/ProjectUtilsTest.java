@@ -1,14 +1,28 @@
 package com.kickstarter.libs.utils;
 
+import android.util.Pair;
+
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.DiscoveryParams;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import java.util.Collections;
+
 public final class ProjectUtilsTest extends KSRobolectricTestCase {
+
+  @Test
+  public void testCombineProjectsAndParams() {
+    final Project project = ProjectFactory.project();
+    final DiscoveryParams discoveryParams = DiscoveryParams.builder().build();
+    assertEquals(ProjectUtils.combineProjectsAndParams(Collections.singletonList(project), discoveryParams),
+      Collections.singletonList(Pair.create(project, discoveryParams)));
+  }
+
   @Test
   public void testIsCompleted() {
     assertTrue(ProjectUtils.isCompleted(ProjectFactory.successfulProject()));

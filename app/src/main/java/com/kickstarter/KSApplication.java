@@ -1,10 +1,6 @@
 package com.kickstarter;
 
 import android.content.Context;
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-import android.support.multidex.MultiDex;
-import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
@@ -31,6 +27,10 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.multidex.MultiDex;
+import androidx.multidex.MultiDexApplication;
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 

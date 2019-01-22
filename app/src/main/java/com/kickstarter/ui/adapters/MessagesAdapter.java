@@ -1,7 +1,5 @@
 package com.kickstarter.ui.adapters;
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.kickstarter.R;
@@ -15,6 +13,8 @@ import org.joda.time.DateTime;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 import rx.Observable;
 
 public final class MessagesAdapter extends KSAdapter {

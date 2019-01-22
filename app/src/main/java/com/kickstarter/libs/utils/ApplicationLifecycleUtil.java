@@ -5,8 +5,6 @@ import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.KSApplication;
@@ -19,6 +17,9 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class ApplicationLifecycleUtil implements Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
   protected @Inject Koala koala;

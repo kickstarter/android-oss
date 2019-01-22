@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
@@ -19,6 +17,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import auto.parcel.AutoParcel;
 
 import static com.kickstarter.libs.utils.BooleanUtils.isFalse;

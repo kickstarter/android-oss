@@ -1,10 +1,9 @@
 package com.kickstarter.libs.rx.transformers;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.services.ApiException;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.subjects.PublishSubject;

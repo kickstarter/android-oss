@@ -1,10 +1,9 @@
 package com.kickstarter.mock;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 

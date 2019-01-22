@@ -9,13 +9,13 @@
   android:background="@color/ksr_grey_100"
   android:orientation="vertical">
 
-  <android.support.design.widget.AppBarLayout
+  <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <include layout="@layout/settings_toolbar" />
 
-  </android.support.design.widget.AppBarLayout>
+  </com.google.android.material.appbar.AppBarLayout>
 
   <ScrollView
     android:layout_width="match_parent"

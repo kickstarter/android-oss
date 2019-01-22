@@ -60,6 +60,10 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
+  <style name="SettingsActivitiesTransitions" parent="KSTheme">
+    <item name="android:windowIsTranslucent">true</item>
+  </style>
+
   <style name="ThanksActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
   </style>

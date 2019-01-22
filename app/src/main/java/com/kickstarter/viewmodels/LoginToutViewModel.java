@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.facebook.CallbackManager;
@@ -23,6 +22,7 @@ import com.kickstarter.ui.data.LoginReason;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;

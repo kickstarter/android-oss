@@ -1,11 +1,12 @@
 package com.kickstarter.libs.utils;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.kickstarter.KSApplication;
+
+import androidx.annotation.NonNull;
 
 public final class PlayServicesCapability {
   private final boolean isCapable;

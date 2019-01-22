@@ -1,12 +1,11 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.ThanksShareViewHolder;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;

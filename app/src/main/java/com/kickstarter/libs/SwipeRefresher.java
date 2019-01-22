@@ -1,7 +1,7 @@
 package com.kickstarter.libs;
 
-import android.support.annotation.NonNull;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.annotation.NonNull;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.jakewharton.rxbinding.support.v4.widget.RxSwipeRefreshLayout;
 import com.kickstarter.R;

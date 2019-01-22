@@ -1,10 +1,10 @@
 package com.kickstarter.mock.factories;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.models.Message;
 
 import org.joda.time.DateTime;
+
+import androidx.annotation.NonNull;
 
 public final class MessageFactory {
   private MessageFactory() {}

@@ -2,10 +2,11 @@ package com.kickstarter.mock.factories;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 
 import com.google.android.gms.wallet.WalletConstants;
 import com.kickstarter.ui.data.ActivityResult;
+
+import androidx.annotation.NonNull;
 
 public final class ActivityResultFactory {
   private ActivityResultFactory() {}

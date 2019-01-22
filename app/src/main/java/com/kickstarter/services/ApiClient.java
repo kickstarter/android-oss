@@ -1,8 +1,5 @@
 package com.kickstarter.services;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.google.gson.Gson;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.rx.operators.ApiErrorOperator;
@@ -48,6 +45,8 @@ import com.kickstarter.ui.data.MessageSubject;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import retrofit2.Response;
 import rx.Observable;
 import rx.schedulers.Schedulers;

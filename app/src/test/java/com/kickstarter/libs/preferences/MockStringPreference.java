@@ -1,9 +1,9 @@
 package com.kickstarter.libs.preferences;
 
-import android.support.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public final class MockStringPreference implements StringPreferenceType {
   private final List<String> values = new ArrayList<>();

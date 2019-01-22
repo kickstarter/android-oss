@@ -1,22 +1,22 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.UpdateFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.UpdateFactory;
+import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
-import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
 
+import androidx.annotation.NonNull;
 import okhttp3.Request;
 import rx.Observable;
 import rx.observers.TestSubscriber;

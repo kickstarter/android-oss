@@ -1,13 +1,13 @@
 package com.kickstarter.mock.factories;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.models.User;
 
 import org.joda.time.DateTime;
+
+import androidx.annotation.NonNull;
 
 public final class BackingFactory {
   private BackingFactory() {}

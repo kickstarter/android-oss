@@ -22,7 +22,7 @@
     android:paddingStart="@dimen/grid_2"
     android:text="@string/How_backers_found_your_project" />
 
-  <android.support.constraint.ConstraintLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/referrer_breakdown_chart_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -250,7 +250,7 @@
       app:layout_constraintEnd_toEndOf="@+id/pledged_via_custom_bar"
       app:layout_constraintTop_toTopOf="@+id/pledged_via_custom_bar" />
 
-  </android.support.constraint.ConstraintLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 
   <TextView
     android:id="@+id/dashboard_referrer_breakdown_empty_text_view"

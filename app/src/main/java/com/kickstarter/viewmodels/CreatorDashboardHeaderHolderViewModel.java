@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels;
 
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.R;
@@ -19,9 +18,11 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface CreatorDashboardHeaderHolderViewModel {
@@ -91,7 +92,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
       this.currentProject = this.projectAndStats
         .map(PairUtils::first);
 
-      this.messagesButtonIsGone = Observable.zip(this.currentProject, user, Pair::create)
+      this.messagesButtonIsGone = this.currentProject
+        .compose(combineLatestPair(user))
         .map(projectAndUser -> projectAndUser.first.creator().id() != projectAndUser.second.id());
 
       this.percentageFunded = this.currentProject

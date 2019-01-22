@@ -22,12 +22,13 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /** An implementation of {@link BaseAdapter} which uses the new/bind pattern for its views. */
 public abstract class BindableAdapter<T> extends BaseAdapter {

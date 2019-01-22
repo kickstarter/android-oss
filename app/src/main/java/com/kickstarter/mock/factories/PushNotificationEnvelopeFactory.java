@@ -1,9 +1,9 @@
 package com.kickstarter.mock.factories;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.models.pushdata.GCM;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
+
+import androidx.annotation.NonNull;
 
 public final class PushNotificationEnvelopeFactory {
   private PushNotificationEnvelopeFactory() {}

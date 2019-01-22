@@ -1,16 +1,16 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.mock.factories.PushNotificationEnvelopeFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
+import com.kickstarter.mock.factories.PushNotificationEnvelopeFactory;
 import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
 
+import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
 
 public final class WebViewViewModelTest extends KSRobolectricTestCase {

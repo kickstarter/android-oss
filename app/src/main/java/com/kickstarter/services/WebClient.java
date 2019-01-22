@@ -1,9 +1,8 @@
 package com.kickstarter.services;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 
+import androidx.annotation.NonNull;
 import retrofit2.Response;
 import rx.Observable;
 import rx.schedulers.Schedulers;

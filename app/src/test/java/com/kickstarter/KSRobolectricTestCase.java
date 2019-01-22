@@ -1,14 +1,13 @@
 package com.kickstarter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.MockCurrentUser;
-import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.libs.MockTrackingClient;
+import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.mock.services.MockApolloClient;
 import com.kickstarter.mock.services.MockStripe;
@@ -23,12 +22,12 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
+import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
 
 @RunWith(KSRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = ShadowMultiDex.class, sdk = KSRobolectricGradleTestRunner.DEFAULT_SDK)
+@Config(constants = BuildConfig.class, shadows = ShadowAndroidXMultiDex.class, sdk = KSRobolectricGradleTestRunner.DEFAULT_SDK)
 public abstract class KSRobolectricTestCase extends TestCase {
   private TestKSApplication application;
   public TestSubscriber<String> koalaTest;

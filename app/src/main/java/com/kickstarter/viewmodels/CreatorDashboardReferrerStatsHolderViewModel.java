@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels;
 
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -18,6 +17,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 

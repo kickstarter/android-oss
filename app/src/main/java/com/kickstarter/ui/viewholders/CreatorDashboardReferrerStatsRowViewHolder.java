@@ -1,10 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +12,10 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.viewmodels.CreatorDashboardReferrerStatsRowHolderViewModel;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 

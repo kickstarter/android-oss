@@ -1,10 +1,10 @@
 package com.kickstarter.mock.factories;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 
 import java.util.Collections;
+
+import androidx.annotation.NonNull;
 
 public final class CommentsEnvelopeFactory {
   private CommentsEnvelopeFactory() {}

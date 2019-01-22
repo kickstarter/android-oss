@@ -1,6 +1,6 @@
 package com.kickstarter.libs;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.kickstarter.services.WebClientType;
 import com.kickstarter.viewmodels.DiscoveryViewModel;

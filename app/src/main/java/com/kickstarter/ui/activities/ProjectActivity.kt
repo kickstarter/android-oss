@@ -2,10 +2,9 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
 import android.util.Pair
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
@@ -52,7 +51,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
         this.adapter = ProjectAdapter(this.viewModel)
         project_recycler_view.adapter = this.adapter
-        project_recycler_view.layoutManager = LinearLayoutManager(this)
+        project_recycler_view.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
 
         this.viewModel.outputs.heartDrawableId()
                 .compose(bindToLifecycle())

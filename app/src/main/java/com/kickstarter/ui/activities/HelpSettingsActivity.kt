@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.extensions.startActivityWithSlideLeftTransition
 import com.kickstarter.libs.BaseActivity
@@ -11,6 +12,7 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.Secrets
+import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.models.User
 import com.kickstarter.viewmodels.HelpSettingsViewModel
 import kotlinx.android.synthetic.main.activity_help_settings.*
@@ -60,6 +62,8 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
             startActivityWithSlideLeftTransition(Intent(this, HelpActivity.Terms::class.java))
         }
     }
+
+    override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
 
     private fun composeContactEmail(user: User) {
         val debugInfo = Arrays.asList(

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
@@ -8,13 +8,13 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <android.support.design.widget.AppBarLayout
+  <com.google.android.material.appbar.AppBarLayout
     android:id="@+id/messages_app_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:elevation="0dp">
 
-    <android.support.design.widget.CollapsingToolbarLayout
+    <com.google.android.material.appbar.CollapsingToolbarLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/white"
@@ -56,7 +56,7 @@
 
       <include layout="@layout/messages_toolbar"/>
 
-    </android.support.design.widget.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     <View
       android:background="@color/white"
@@ -65,9 +65,9 @@
 
     <include layout="@layout/messages_backing_info_view"/>
 
-  </android.support.design.widget.AppBarLayout>
+  </com.google.android.material.appbar.AppBarLayout>
 
-  <android.support.v7.widget.RecyclerView
+  <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/messages_recycler_view"
     android:background="@color/white"
     android:scrollbars="vertical"
@@ -88,4 +88,4 @@
     android:id="@+id/message_reply_layout"
     layout="@layout/message_reply_layout" />
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,6 +1,6 @@
 package com.kickstarter.libs.rx.transformers;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import rx.Notification;
 import rx.Observable;

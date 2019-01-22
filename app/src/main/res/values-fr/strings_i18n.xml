@@ -216,7 +216,7 @@ contributeurs</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">La préparation de vos données personnelles peut prendre jusqu\'à 24 heures. Nous vous enverrons des instructions de téléchargement à l\'adresse e-mail associée à ce compte une fois que tout sera prêt. Si vous ne recevez rien, revenez ici pour réessayer.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">C\'est un outil qui permet de donner vie à des projets créatifs.</string>
   <string name="Its_better_with_friends" formatted="false">On est mieux ensemble.</string>
-  <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">It\'s like the radio but nothing sucks and also it\'s a newsletter.</string>
+  <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">Un peu comme la radio, mais en mieux. Une lettre d\'information, quoi.</string>
   <string name="Join_our_secret_society" formatted="false">Notre société secrète n\'attend que vous.</string>
   <string name="Joining_the_live_stream" formatted="false">Connexion à la diffusion en direct en cours</string>
   <string name="Just_for_you" formatted="false">Rien que pour vous.</string>
@@ -498,9 +498,9 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Your_shipping_destination" formatted="false">Destination d\'expédition</string>
   <string name="Youre_a_backer" formatted="false">Vous êtes contributeur !</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Vous êtes sur le point de créer un nouveau compte Kickstarter avec l\'adresse e-mail que vous utilisez sur Facebook. Veuillez confirmer avant de continuer.</string>
-  <string name="Youre_offline" formatted="false">You’re offline. Once your device reconnects, navigate around the app to refresh.</string>
+  <string name="Youre_offline" formatted="false">Vous êtes hors ligne. Dès que votre appareil se sera reconnecté, naviguez dans l\'application pour la rafraîchir.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Vous vous êtes engagé à soutenir ce projet et sa campagne de financement n\'est pas terminée.</string>
-  <string name="Zip_code" formatted="false">Code postal</string>
+  <string name="Zip_postal_code" formatted="false">Code postal</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">Activité</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">Ouvre l\'activité.</string>
   <string name="accessibility_dashboard_buttons_messages" formatted="false">Messages</string>

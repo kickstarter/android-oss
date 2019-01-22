@@ -1,8 +1,6 @@
 package com.kickstarter.ui.intentmappers;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -15,6 +13,8 @@ import com.kickstarter.ui.IntentKey;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.Observable;
 
 public final class DiscoveryIntentMapper {

@@ -1,33 +1,32 @@
 package com.kickstarter.ui.activities;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ToolbarUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
+import com.kickstarter.ui.adapters.CreatorDashboardAdapter;
 import com.kickstarter.ui.adapters.CreatorDashboardBottomSheetAdapter;
-import com.kickstarter.ui.fragments.CreatorDashboardFragment;
 import com.kickstarter.viewmodels.CreatorDashboardViewModel;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
@@ -35,12 +34,15 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboardViewModel.ViewModel> {
 
   private CreatorDashboardBottomSheetAdapter bottomSheetAdapter;
+  private CreatorDashboardAdapter adapter;
   private BottomSheetBehavior bottomSheetBehavior;
 
   protected @Bind(R.id.creator_dashboard_app_bar) AppBarLayout appBarLayout;
   protected @Bind(R.id.creator_dashboard_project_name_small) TextView collapsedToolbarTitle;
+  protected @Bind(R.id.creator_dashboard_recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.creator_dashboard_bottom_sheet_recycler_view) RecyclerView bottomSheetRecyclerView;
   protected @Bind(R.id.creator_dashboard_bottom_sheet_scrim) View bottomSheetScrim;
+  protected @Bind(R.id.creator_dashboard_progress_bar) ProgressBar progressBar;
   protected @Bind(R.id.creator_dashboard_project_name) TextView projectNameTextView;
 
   @Override
@@ -48,6 +50,11 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     super.onCreate(savedInstanceState);
     setContentView(R.layout.creator_dashboard_layout);
     ButterKnife.bind(this);
+
+    this.adapter = new CreatorDashboardAdapter(this.viewModel.inputs);
+    this.recyclerView.setAdapter(this.adapter);
+    final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+    this.recyclerView.setLayoutManager(layoutManager);
 
     // Set up the bottom sheet recycler view.
     this.bottomSheetAdapter = new CreatorDashboardBottomSheetAdapter(this.viewModel.inputs);
@@ -57,10 +64,15 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
 
     ToolbarUtils.INSTANCE.fadeAndTranslateToolbarTitleOnExpand(this.appBarLayout, this.collapsedToolbarTitle);
 
+    this.viewModel.outputs.progressBarIsVisible()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(visible -> ViewUtils.setGone(this.progressBar, !visible));
+
     this.viewModel.outputs.projectAndStats()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::createProjectDashboardFragment);
+      .subscribe(projectAndStats -> this.adapter.takeProjectAndStats(projectAndStats));
 
     this.viewModel.outputs.projectAndStats()
       .compose(bindToLifecycle())
@@ -81,6 +93,11 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
        .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> newProjectClicked());
+
+    this.viewModel.outputs.openBottomSheet()
+       .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> toggleBottomSheetClick());
 
     createAndSetBottomSheetCallback();
   }
@@ -134,14 +151,6 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
   private void hideBottomSheet() {
     this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     this.bottomSheetScrim.setVisibility(View.GONE);
-  }
-
-  private void createProjectDashboardFragment(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStats) {
-    final FragmentManager fragmentManager = getSupportFragmentManager();
-    final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    final CreatorDashboardFragment fragment = CreatorDashboardFragment.newInstance(projectAndStats);
-    fragmentTransaction.replace(R.id.creator_dashboard_coordinator_view, fragment);
-    fragmentTransaction.commit();
   }
 
   public void toggleBottomSheetClick() {

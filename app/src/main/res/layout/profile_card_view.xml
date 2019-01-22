@@ -10,7 +10,7 @@
   android:background="@drawable/rect_white_grey_stroke"
   android:layout_margin="@dimen/grid_2">
 
-  <android.support.v7.widget.CardView
+  <androidx.cardview.widget.CardView
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     card_view:cardCornerRadius="@dimen/card_corner_radius"
     card_view:cardBackgroundColor="@color/white"
@@ -108,6 +108,6 @@
 
     </RelativeLayout>
 
-  </android.support.v7.widget.CardView>
+  </androidx.cardview.widget.CardView>
 
 </LinearLayout>

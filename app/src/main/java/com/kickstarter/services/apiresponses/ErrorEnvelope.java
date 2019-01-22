@@ -1,9 +1,6 @@
 package com.kickstarter.services.apiresponses;
 
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.ListUtils;
@@ -13,6 +10,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringDef;
 import auto.parcel.AutoParcel;
 
 @AutoGson

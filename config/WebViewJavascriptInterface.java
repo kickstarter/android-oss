@@ -1,6 +1,6 @@
 package com.kickstarter.libs;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.webkit.JavascriptInterface;
 
 import com.kickstarter.services.KSWebViewClient;

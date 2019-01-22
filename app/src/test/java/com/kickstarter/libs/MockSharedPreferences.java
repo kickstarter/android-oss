@@ -1,10 +1,11 @@
 package com.kickstarter.libs;
 
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
 
 import java.util.Map;
 import java.util.Set;
+
+import androidx.annotation.Nullable;
 
 // TODO: Finish this implementation by storing all the shared prefs data into arrays/maps.
 public class MockSharedPreferences implements SharedPreferences {

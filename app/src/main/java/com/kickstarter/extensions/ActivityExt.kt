@@ -2,13 +2,13 @@ package com.kickstarter.extensions
 
 import android.app.Activity
 import android.content.Intent
-import android.support.design.widget.Snackbar
 import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import com.kickstarter.R
 
 fun Activity.startActivityWithSlideUpTransition(intent: Intent) {
     this.startActivity(intent)
-    this.overridePendingTransition(R.anim.settings_bottom_slide, R.anim.fade_out)
+    this.overridePendingTransition(R.anim.settings_slide_in_from_bottom, R.anim.settings_slide_out_from_top)
 }
 
 fun Activity.startActivityWithSlideLeftTransition(intent: Intent) {

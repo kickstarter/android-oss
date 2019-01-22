@@ -2,25 +2,23 @@ package com.kickstarter.viewmodels;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
-import com.kickstarter.mock.factories.MessageThreadFactory;
-import com.kickstarter.mock.factories.MessageThreadsEnvelopeFactory;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.mock.factories.MessageThreadFactory;
+import com.kickstarter.mock.factories.MessageThreadsEnvelopeFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.UserFactory;
+import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
-import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.data.Mailbox;
@@ -30,6 +28,8 @@ import org.junit.Test;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 

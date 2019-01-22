@@ -1,9 +1,8 @@
 package com.kickstarter.libs.rx.transformers;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.libs.utils.ThreadUtils;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;

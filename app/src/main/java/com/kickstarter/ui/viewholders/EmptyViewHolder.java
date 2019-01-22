@@ -1,7 +1,8 @@
 package com.kickstarter.ui.viewholders;
 
-import android.support.annotation.Nullable;
 import android.view.View;
+
+import androidx.annotation.Nullable;
 
 public final class EmptyViewHolder extends KSViewHolder {
   public EmptyViewHolder(final View view) {

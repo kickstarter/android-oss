@@ -1,19 +1,18 @@
 package com.kickstarter.libs;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.kickstarter.models.User;
 
 import org.joda.time.DateTime;
 
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public final class MockTrackingClient extends TrackingClientType {
-  private static final long DEFAULT_TIME = DateTime.parse("2018-11-02T18:42:05Z").getMillis();
+  private static final long DEFAULT_TIME = DateTime.parse("2018-11-02T18:42:05Z").getMillis() / 1000;
   @Nullable private User loggedInUser;
 
 

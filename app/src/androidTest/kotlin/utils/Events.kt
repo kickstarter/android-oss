@@ -1,10 +1,10 @@
 package utils
-import android.support.annotation.IdRes
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.matcher.RootMatchers.isDialog
-import android.support.test.espresso.matcher.ViewMatchers.withId
-import android.support.test.espresso.matcher.ViewMatchers.withText
+import androidx.annotation.IdRes
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import android.widget.Button
 import org.hamcrest.core.AllOf.allOf
 import org.hamcrest.core.IsInstanceOf.instanceOf

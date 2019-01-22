@@ -1,14 +1,15 @@
 package com.kickstarter.libs.utils;
 
 import android.annotation.TargetApi;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 
 public final class StatusBarUtils {
   private StatusBarUtils() {}

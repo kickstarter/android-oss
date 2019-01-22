@@ -1,6 +1,6 @@
 package com.kickstarter.libs.utils;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public final class ExceptionUtils {
   private ExceptionUtils() {}

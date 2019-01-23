@@ -105,7 +105,7 @@
           </com.google.android.material.textfield.TextInputLayout>
 
           <com.google.android.material.textfield.TextInputLayout
-            style="@style/TextInputLayout"
+            style="@style/TextInputPasswordLayout"
             android:layout_marginTop="0dp"
             app:hintTextAppearance="@style/BodySecondary"
             app:passwordToggleEnabled="true"

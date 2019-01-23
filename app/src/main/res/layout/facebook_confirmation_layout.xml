@@ -46,7 +46,7 @@
 
       <Button
         android:id="@+id/create_new_account_button"
-        style="@style/PrimaryButton"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_marginBottom="@dimen/grid_2"
         android:layout_marginTop="@dimen/grid_1"

@@ -9,7 +9,7 @@
 
   <style name="KSTheme" parent="KSThemeBase" />
 
-  <style name="KSThemeBase" parent="Theme.AppCompat.Light.NoActionBar">
+  <style name="KSThemeBase" parent="Theme.MaterialComponents.Light.NoActionBar">
     <item name="popupMenuStyle">@style/PopupMenu</item>
     <item name="alertDialogTheme">@style/Dialog</item>
 
@@ -19,12 +19,14 @@
 
     <item name="colorPrimary">@color/primary</item>
     <item name="colorPrimaryDark">@color/primary_dark</item>
-    <item name="colorAccent">@color/accent</item>
+    <item name="colorAccent">@color/primary</item>
+    <item name="colorSurface">@color/white</item>
     <item name="android:textColorLink">@color/accent</item>
     <item name="android:textColorPrimary">@color/text_primary</item>
     <item name="android:textColorSecondary">@color/text_secondary</item>
     <item name="android:windowBackground">@color/window_background</item>
-    <item name="android:textAllCaps">false</item>
+    <item name="materialButtonStyle">@style/Button</item>
+    <item name="toolbarStyle">@style/Toolbar</item>
   </style>
 
   <!-- Activities -->
@@ -83,13 +85,8 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="TabTextAppearance">
-    <item name="android:textAllCaps">false</item>
-    <item name="android:textSize">@dimen/body</item>
-  </style>
-
   <!-- Widgets -->
-  <style name="PopupMenu" parent="Base.Widget.AppCompat.PopupMenu">
+  <style name="PopupMenu" parent="Widget.MaterialComponents.PopupMenu">
     <item name="android:popupBackground">@drawable/dialog_alert_rounded</item>
     <item name="android:dropDownVerticalOffset">@dimen/popup_menu_vertical_offset</item>
     <item name="android:dropDownHorizontalOffset">@dimen/popup_menu_horizontal_offset</item>
@@ -100,88 +97,73 @@
     <item name="android:progressDrawable">@drawable/progress_bar_green_horizontal</item>
   </style>
 
-  <style name="AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-    <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButtonStyle</item>
-    <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButtonStyle</item>
+  <style name="Dialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+    <item name="colorAccent">@color/text_secondary</item>
+    <item name="colorPrimary">@color/accent</item>
+  </style>
+
+  <style name="AlertDialog" parent="Dialog">
+
     <item name="colorAccent">@color/text_secondary</item>
     <item name="android:background">@drawable/dialog_alert_rounded</item>
   </style>
 
-  <style name="AlertDialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-    <item name="android:textColor">@color/accent</item>
-    <item name="android:textAllCaps">true</item>
-  </style>
-
-  <style name="Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-    <item name="colorAccent">@color/text_secondary</item>
-  </style>
-
-  <style name="Button" parent="Base.Widget.AppCompat.Button">
+  <style name="ButtonBase" parent="Widget.MaterialComponents.Button">
     <item name="android:textColor">@drawable/button_text_white</item>
     <item name="android:layout_centerInParent">true</item>
     <item name="android:singleLine">true</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:paddingStart">@dimen/grid_3</item>
-    <item name="android:paddingEnd">@dimen/grid_3</item>
     <item name="android:textSize">@dimen/callout</item>
-    <item name="android:fontFamily">@string/font_family_sans_serif</item>
     <item name="android:minHeight">@dimen/grid_8</item>
+    <item name="android:paddingTop">@dimen/grid_2</item>
+    <item name="android:paddingBottom">@dimen/grid_2</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
   </style>
 
-  <style name="BorderButton" parent="Base.Widget.AppCompat.Button.Borderless">
-    <item name="android:background">@drawable/button_white_border_dark_gray</item>
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:textColor">@color/ksr_soft_black</item>
-    <item name="android:layout_centerInParent">true</item>
-    <item name="android:singleLine">true</item>
-    <item name="android:layout_height">wrap_content</item>
-    <item name="android:padding">@dimen/grid_3</item>
-    <item name="android:textSize">@dimen/callout</item>
-    <item name="android:fontFamily">@string/font_family_sans_serif</item>
-  </style>
-
-  <style name="PrimaryButton" parent="Button">
-    <item name="android:background">@drawable/button_green</item>
-  </style>
+  <style name="Button" parent="ButtonBase"/>
 
   <style name="SecondaryButton" parent="Button">
-    <item name="android:background">@drawable/button_blue</item>
+    <item name="backgroundTint">@color/button_secondary</item>
   </style>
 
   <style name="TertiaryButton" parent="Button">
-    <item name="android:background">@drawable/button_gray</item>
+    <item name="backgroundTint">@color/button_tertiary</item>
     <item name="android:textColor">@color/ksr_soft_black</item>
   </style>
 
-  <style name="ShareButton" parent="TertiaryButton">
+  <style name="BorderButton" parent="TertiaryButton"/>
+
+  <style name="ShareButton" parent="SecondaryButton">
     <item name="android:ellipsize">none</item>
     <item name="android:layout_gravity">center</item>
-    <item name="android:textAllCaps">false</item>
   </style>
 
   <style name="TwitterButton" parent="ShareButton">
-    <item name="android:drawableStart">@drawable/ic_social_twitter</item>
+    <item name="icon">@drawable/ic_social_twitter</item>
     <item name="android:text">@string/project_checkout_share_buttons_tweet</item>
   </style>
 
   <style name="FacebookShareButton" parent="ShareButton">
-    <item name="android:drawableStart">@drawable/ic_social_facebook_share</item>
+    <item name="icon">@drawable/ic_social_facebook_share</item>
     <item name="android:text">@string/project_checkout_share_buttons_share</item>
   </style>
 
-  <style name="FacebookButton" parent="BorderButton">
+  <style name="FacebookButton" parent="Button">
+    <item name="android:layout_height">wrap_content</item>
     <item name="android:textColor">@color/white</item>
-    <item name="android:background">@drawable/button_facebook</item>
-    <item name="android:drawableStart">@drawable/ic_social_facebook</item>
+    <item name="backgroundTint">@color/facebook_blue</item>
+    <item name="icon">@drawable/ic_social_facebook</item>
     <item name="android:text">@string/login_tout_buttons_log_in_with_facebook</item>
   </style>
 
   <style name="ProjectActionButton" parent="Button">
+    <item name="cornerRadius">0dp</item>
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">@dimen/project_action_button_height</item>
-    <item name="android:textSize">@dimen/callout</item>
-    <item name="android:fontFamily">@string/font_family_sans_serif</item>
+    <item name="android:insetBottom">0dp</item>
+    <item name="android:insetTop">0dp</item>
+    <item name="android:textAllCaps">false</item>
   </style>
 
   <style name="ActivitySampleSeeAllButton" parent="BorderButton">
@@ -260,18 +242,18 @@
   </style>
 
   <!-- Toolbars -->
-  <style name="ToolbarBase" parent="Base.Widget.AppCompat.Toolbar">
+  <style name="ToolbarBase" parent="Widget.MaterialComponents.Toolbar">
     <item name="android:background">@color/white</item>
-    <item name="android:foregroundGravity">center_vertical</item>
-    <item name="android:layout_height">?attr/actionBarSize</item>
     <item name="android:layout_width">match_parent</item>
+    <item name="android:foregroundGravity">center_vertical</item>
+    <item name="android:layout_height">wrap_content</item>
   </style>
 
   <style name="Toolbar" parent="ToolbarBase" />
 
   <style name="ToolbarIcon">
     <item name="android:background">@drawable/click_indicator_light</item>
-    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_height">56dp</item>
     <item name="android:layout_width">@dimen/button_icon_fixed_width</item>
     <item name="android:maxWidth">@dimen/button_icon_fixed_width</item>
     <item name="android:gravity">center</item>
@@ -286,23 +268,26 @@
     <item name="android:contentDescription">@string/general_navigation_accessibility_button_navigate_back_label</item>
   </style>
 
-  <style name="ToolbarTitleBase" parent="Headline">
-    <item name="android:layout_height">wrap_content</item>
+  <style name="ToolbarTitleBase" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <item name="android:layout_height">56dp</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_centerVertical">true</item>
-    <item name="android:color">@color/ksr_soft_black</item>
-    <item name="android:textColorHint">@color/ksr_dark_grey_400</item>
+    <item name="android:gravity">center_vertical</item>
     <item name="android:layout_marginStart">@dimen/grid_12</item>
   </style>
 
   <style name="ToolbarTitle" parent="ToolbarTitleBase" />
 
   <style name="ToolbarVectorIcon">
-    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_height">56dp</item>
     <item name="android:layout_width">@dimen/button_icon_fixed_width</item>
     <item name="android:background">@drawable/click_indicator_light</item>
     <item name="android:gravity">center</item>
     <item name="android:layout_centerVertical">true</item>
+  </style>
+
+  <style name="AppBarLayout" parent="Widget.Design.AppBarLayout">
+    <item name="android:background">@color/white</item>
   </style>
 
   <!-- Typography -->

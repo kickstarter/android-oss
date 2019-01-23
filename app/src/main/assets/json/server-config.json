@@ -559,7 +559,6 @@
       "You_pledged_on_date": "<b>You pledged</b> on %{pledge_date}",
       "You_saved_this_project": "You saved this project.",
       "Your_chat_message_wasnt_sent_successfully": "Your chat message wasn't sent successfully.",
-      "Your_device_is_offline": "Your device is offline. Content may not be displayed until you reconnect.",
       "Your_friends_havent_backed_any_projects_yet": "Your friends haven’t backed any projects yet, but once they do, you’ll see them listed here.",
       "Your_name_displayed": "Your name is always displayed on your profile.",
       "Your_payment_method_was_successfully_charged": "Your payment method was successfully charged.",
@@ -2650,7 +2649,6 @@
       "You_pledged_on_date": "<b>Finanzierungsbeitrag geleistet</b> im %{pledge_date}",
       "You_saved_this_project": "Du hast dieses Projekt gespeichert.",
       "Your_chat_message_wasnt_sent_successfully": "Deine Chat-Nachricht konnte leider nicht gesendet werden.",
-      "Your_device_is_offline": "Your device is offline. Content may not be displayed until you reconnect.",
       "Your_friends_havent_backed_any_projects_yet": "Deine Freunde haben bisher noch kein Projekt unterstützt. Aber sobald sie das tun, wird es hier angezeigt.",
       "Your_name_displayed": "Dein Name wird auf deinem Profil angezeigt.",
       "Your_payment_method_was_successfully_charged": "Deine Zahlungsmethode wurde erfolgreich belastet.",
@@ -4741,7 +4739,6 @@
       "You_pledged_on_date": "<b>Contribuiste</b> el %{pledge_date}",
       "You_saved_this_project": "Uno de tus proyectos guardados.",
       "Your_chat_message_wasnt_sent_successfully": "Tu mensaje no fue enviado.",
-      "Your_device_is_offline": "Your device is offline. Content may not be displayed until you reconnect.",
       "Your_friends_havent_backed_any_projects_yet": "Tus amigos todavía no han hecho contribuciones, pero en cuanto lo hagan, se verán reflejadas aquí.",
       "Your_name_displayed": "Tu nombre siempre se muestra en tu perfil.",
       "Your_payment_method_was_successfully_charged": "Se efectuó el cargo a tu método de pago.",
@@ -6832,7 +6829,6 @@
       "You_pledged_on_date": "<b>Votre engagement</b> du %{pledge_date}",
       "You_saved_this_project": "Vous avez enregistré ce projet.",
       "Your_chat_message_wasnt_sent_successfully": "Votre message n'a pas été envoyé.",
-      "Your_device_is_offline": "Your device is offline. Content may not be displayed until you reconnect.",
       "Your_friends_havent_backed_any_projects_yet": "Vos amis n'ont encore rien soutenu, mais dès qu'ils s'y seront mis, leurs engagements s'afficheront ici.",
       "Your_name_displayed": "Votre nom s'affichera toujours sur votre profil.",
       "Your_payment_method_was_successfully_charged": "Votre moyen de paiement a bien été débité.",
@@ -11013,7 +11009,6 @@
       "You_pledged_on_date": "%{pledge_date} に<b>プレッジ</b>",
       "You_saved_this_project": "保存済みです",
       "Your_chat_message_wasnt_sent_successfully": "メッセージの送信に失敗。",
-      "Your_device_is_offline": "Your device is offline. Content may not be displayed until you reconnect.",
       "Your_friends_havent_backed_any_projects_yet": "バックした友達はまだいませんが、今後こちらに表示されます。",
       "Your_name_displayed": "あなたの名前はプロフィールに常に表示されます。",
       "Your_payment_method_was_successfully_charged": "支払方法の登録完了。",
@@ -14838,7 +14833,7 @@
     "checkout_account_page": "control"
   },
   "stripe": {
-    "publishable_key": "pk_test_L0x4mLeycKEvj9YuNSkHM35T"
+    "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"
   },
   "colors": {
     "green-light": {

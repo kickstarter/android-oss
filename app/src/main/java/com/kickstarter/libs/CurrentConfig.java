@@ -1,7 +1,6 @@
 package com.kickstarter.libs;
 
 import android.content.res.AssetManager;
-import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.kickstarter.libs.preferences.StringPreferenceType;
@@ -11,6 +10,7 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import java.io.IOException;
 import java.io.InputStream;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;

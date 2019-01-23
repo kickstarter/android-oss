@@ -2,11 +2,6 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
@@ -25,6 +20,11 @@ import com.kickstarter.ui.activities.CheckoutActivity;
 import com.kickstarter.ui.adapters.RewardsItemAdapter;
 import com.kickstarter.viewmodels.RewardViewModel;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;

@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 
 import com.apollographql.apollo.ApolloClient;
 import com.google.gson.FieldNamingPolicy;
@@ -83,6 +82,7 @@ import java.net.CookieManager;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.NonNull;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.CookieJar;

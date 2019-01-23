@@ -1,8 +1,5 @@
 package com.kickstarter.ui.adapters.data;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.User;
@@ -10,6 +7,8 @@ import com.kickstarter.services.DiscoveryParams;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import auto.parcel.AutoParcel;
 
 @AutoParcel

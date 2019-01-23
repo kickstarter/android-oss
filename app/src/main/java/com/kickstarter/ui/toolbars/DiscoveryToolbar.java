@@ -2,9 +2,6 @@ package com.kickstarter.ui.toolbars;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.GravityCompat;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -17,6 +14,9 @@ import com.kickstarter.ui.activities.CreatorDashboardActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.SearchActivity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

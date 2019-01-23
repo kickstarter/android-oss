@@ -1,8 +1,5 @@
 package com.kickstarter.ui.adapters;
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +10,12 @@ import com.kickstarter.libs.utils.ExceptionUtils;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.trello.rxlifecycle.ActivityEvent;
 
-
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   private List<List<Object>> sections = new ArrayList<>();

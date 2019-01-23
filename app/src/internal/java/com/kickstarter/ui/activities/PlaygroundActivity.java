@@ -1,12 +1,13 @@
 package com.kickstarter.ui.activities;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.ui.viewmodels.PlaygroundViewModel;
+
+import androidx.annotation.Nullable;
 
 @RequiresActivityViewModel(PlaygroundViewModel.ViewModel.class)
 public final class PlaygroundActivity extends BaseActivity<PlaygroundViewModel.ViewModel> {

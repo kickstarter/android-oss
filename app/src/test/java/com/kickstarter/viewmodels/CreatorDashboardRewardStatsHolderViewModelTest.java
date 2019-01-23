@@ -1,13 +1,12 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.PairUtils;
+import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 
@@ -18,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
 
 public class CreatorDashboardRewardStatsHolderViewModelTest extends KSRobolectricTestCase {

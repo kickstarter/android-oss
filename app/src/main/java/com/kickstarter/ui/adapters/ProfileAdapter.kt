@@ -1,8 +1,7 @@
 package com.kickstarter.ui.adapters
 
-import android.support.annotation.LayoutRes
 import android.view.View
-
+import androidx.annotation.LayoutRes
 import com.kickstarter.R
 import com.kickstarter.models.Empty
 import com.kickstarter.models.Project
@@ -10,8 +9,6 @@ import com.kickstarter.ui.viewholders.EmptyProfileViewHolder
 import com.kickstarter.ui.viewholders.EmptyViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.ProfileCardViewHolder
-
-import java.util.Collections
 
 class ProfileAdapter(private val delegate: Delegate) : KSAdapter() {
 

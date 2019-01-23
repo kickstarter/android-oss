@@ -1,11 +1,11 @@
 package com.kickstarter.libs.models;
 
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.kickstarter.libs.qualifiers.AutoGson;
 
+import androidx.annotation.NonNull;
 import auto.parcel.AutoParcel;
 
 /**

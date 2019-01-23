@@ -3,7 +3,7 @@ package com.kickstarter.viewmodels
 import SendEmailVerificationMutation
 import UpdateUserEmailMutation
 import UserPrivacyQuery
-import android.support.annotation.NonNull
+import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment

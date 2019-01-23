@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.kickstarter.ui.toolbars.SearchToolbar
+  android:id="@+id/search_toolbar"
+  style="@style/Toolbar"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  style="@style/Toolbar"
-  android:id="@+id/search_toolbar"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   tools:showIn="@layout/search_layout">
@@ -14,8 +14,8 @@
     android:layout_height="match_parent">
 
     <com.kickstarter.ui.views.IconButton
-      style="@style/ToolbarIconBackButton"
-      android:id="@+id/back_button"/>
+      android:id="@+id/back_button"
+      style="@style/ToolbarIconBackButton" />
 
     <EditText
       android:id="@+id/search_edit_text"
@@ -24,20 +24,22 @@
       android:layout_toStartOf="@+id/clear_button"
       android:background="@color/transparent"
       android:hint="@string/tabbar_search"
+      android:importantForAutofill="no"
       android:inputType="textNoSuggestions"
       android:maxLength="60"
       android:maxLines="1"
       android:minHeight="@dimen/grid_8"
-      android:textCursorDrawable="@null" />
+      android:textCursorDrawable="@null"
+      tools:ignore="UnusedAttribute" />
 
     <com.kickstarter.ui.views.IconButton
-      style="@style/ToolbarIcon"
       android:id="@+id/clear_button"
-      android:focusable="true"
-      android:clickable="true"
+      style="@style/ToolbarIcon"
       android:layout_alignParentEnd="true"
-      android:text="@string/close_icon"
-      android:contentDescription="@string/accessibility_discovery_buttons_close" />
+      android:clickable="true"
+      android:contentDescription="@string/accessibility_discovery_buttons_close"
+      android:focusable="true"
+      android:text="@string/close_icon" />
 
   </RelativeLayout>
 

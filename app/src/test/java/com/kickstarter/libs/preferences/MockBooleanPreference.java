@@ -1,9 +1,9 @@
 package com.kickstarter.libs.preferences;
 
-import android.support.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public final class MockBooleanPreference implements BooleanPreferenceType {
   private final @NonNull List<Boolean> values = new ArrayList<Boolean>();

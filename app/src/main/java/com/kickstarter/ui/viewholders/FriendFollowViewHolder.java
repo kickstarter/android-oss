@@ -1,7 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,6 +10,7 @@ import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
+import androidx.annotation.NonNull;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;

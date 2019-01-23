@@ -2,8 +2,6 @@ package com.kickstarter.libs;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.utils.BundleUtils;
@@ -14,6 +12,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class ActivityViewModelManager {
   private static final String VIEW_MODEL_ID_KEY = "view_model_id";

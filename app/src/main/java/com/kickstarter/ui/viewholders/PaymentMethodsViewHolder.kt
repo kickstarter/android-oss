@@ -1,8 +1,8 @@
 package com.kickstarter.ui.viewholders
 
 import UserPaymentsQuery
-import android.support.annotation.NonNull
 import android.view.View
+import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.viewmodels.PaymentMethodsViewHolderViewModel

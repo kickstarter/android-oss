@@ -1,6 +1,6 @@
 package com.kickstarter.services;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * An exception class wrapping a {@link retrofit2.Response}.

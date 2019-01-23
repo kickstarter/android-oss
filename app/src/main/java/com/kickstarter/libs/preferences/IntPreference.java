@@ -22,7 +22,7 @@
 package com.kickstarter.libs.preferences;
 
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public final class IntPreference implements IntPreferenceType {
   private final SharedPreferences sharedPreferences;

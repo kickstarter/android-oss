@@ -2,7 +2,7 @@ package com.kickstarter.viewmodels
 
 import UpdateUserCurrencyMutation
 import UserPrivacyQuery
-import android.support.annotation.NonNull
+import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers

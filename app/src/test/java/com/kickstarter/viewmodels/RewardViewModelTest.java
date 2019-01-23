@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
@@ -18,6 +17,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
 
 import static java.util.Collections.emptyList;

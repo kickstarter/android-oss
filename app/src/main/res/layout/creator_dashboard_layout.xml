@@ -4,24 +4,25 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <android.support.design.widget.CoordinatorLayout
+  <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <include layout="@layout/creator_dashboard_toolbar" />
 
     <ProgressBar
+      android:id="@+id/creator_dashboard_progress_bar"
       android:layout_gravity="center"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
-    <FrameLayout
-      android:id="@+id/creator_dashboard_coordinator_view"
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/creator_dashboard_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-  </android.support.design.widget.CoordinatorLayout>
+  </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
   <View
     android:id="@+id/creator_dashboard_bottom_sheet_scrim"
@@ -33,12 +34,12 @@
     android:focusable="true"
     android:visibility="gone" />
 
-  <android.support.design.widget.CoordinatorLayout
+  <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:layout_width="match_parent"
     android:layout_marginTop="?attr/actionBarSize"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/creator_dashboard_bottom_sheet_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -47,6 +48,6 @@
       app:behavior_peekHeight="0dp"
       app:layout_behavior="@string/bottom_sheet_behavior" />
 
-  </android.support.design.widget.CoordinatorLayout>
+  </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </merge>

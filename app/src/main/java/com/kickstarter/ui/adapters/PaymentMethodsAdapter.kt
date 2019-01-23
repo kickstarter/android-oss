@@ -1,8 +1,8 @@
 package com.kickstarter.ui.adapters
 
 import UserPaymentsQuery
-import android.support.v7.util.DiffUtil
 import android.view.View
+import androidx.recyclerview.widget.DiffUtil
 import com.kickstarter.R
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
@@ -7,7 +7,7 @@
   android:layout_height="match_parent"
   tools:context="com.kickstarter.ui.activities.PrivacyActivity">
 
-  <android.support.design.widget.AppBarLayout
+  <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -32,7 +32,7 @@
       </RelativeLayout>
 
     </com.kickstarter.ui.toolbars.KSToolbar>
-  </android.support.design.widget.AppBarLayout>
+  </com.google.android.material.appbar.AppBarLayout>
 
   <ScrollView
     android:layout_width="match_parent"
@@ -60,7 +60,7 @@
             style="@style/NewsletterSingleRow"
             android:text="@string/Following" />
 
-          <android.support.v7.widget.SwitchCompat
+          <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/following_switch"
             style="@style/NewsLetterSwitch" />
 
@@ -84,7 +84,7 @@
             style="@style/NewsletterSingleRow"
             android:text="@string/Recommendations" />
 
-          <android.support.v7.widget.SwitchCompat
+          <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/recommendations_switch"
             style="@style/NewsLetterSwitch" />
 
@@ -109,7 +109,7 @@
             style="@style/NewsletterSingleRow"
             android:text="@string/Private_profile" />
 
-          <android.support.v7.widget.SwitchCompat
+          <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/private_profile_switch"
             style="@style/NewsLetterSwitch" />
 
@@ -174,4 +174,4 @@
 
   </ScrollView>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

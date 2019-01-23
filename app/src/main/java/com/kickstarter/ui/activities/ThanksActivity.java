@@ -2,11 +2,6 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 
 import com.kickstarter.R;
@@ -24,6 +19,11 @@ import com.kickstarter.viewmodels.ThanksViewModel;
 
 import java.util.concurrent.TimeUnit;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -54,7 +54,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel.ViewModel
     this.ksString = environment().ksString();
 
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+    layoutManager.setOrientation(RecyclerView.VERTICAL);
     this.recyclerView.setLayoutManager(layoutManager);
 
     final ThanksAdapter adapter = new ThanksAdapter(this.viewModel.inputs);

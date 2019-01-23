@@ -1,7 +1,6 @@
 package com.kickstarter.services.interceptors;
 
 import android.net.Uri;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.AndroidPayCapability;
 import com.kickstarter.libs.Build;
@@ -11,6 +10,7 @@ import com.kickstarter.services.KSUri;
 
 import java.io.IOException;
 
+import androidx.annotation.NonNull;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;

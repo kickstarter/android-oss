@@ -1,7 +1,7 @@
 
-import android.support.test.espresso.intent.rule.IntentsTestRule
-import android.support.test.filters.SmallTest
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.SmallTest
 import com.kickstarter.R
 import com.kickstarter.ui.activities.NotificationsActivity
 import com.kickstarter.ui.activities.ProjectNotificationSettingsActivity

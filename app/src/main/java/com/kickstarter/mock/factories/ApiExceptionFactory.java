@@ -1,7 +1,5 @@
 package com.kickstarter.mock.factories;
 
-import android.support.annotation.NonNull;
-
 import com.google.gson.Gson;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiException;
@@ -9,6 +7,7 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import java.util.Collections;
 
+import androidx.annotation.NonNull;
 import okhttp3.ResponseBody;
 import rx.Observable;
 

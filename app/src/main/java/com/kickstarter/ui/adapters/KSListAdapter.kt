@@ -1,11 +1,11 @@
 package com.kickstarter.ui.adapters
 
-import android.support.annotation.LayoutRes
-import android.support.v7.recyclerview.extensions.ListAdapter
-import android.support.v7.util.DiffUtil
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import com.crashlytics.android.Crashlytics
 import com.kickstarter.BuildConfig
 import com.kickstarter.libs.utils.ExceptionUtils

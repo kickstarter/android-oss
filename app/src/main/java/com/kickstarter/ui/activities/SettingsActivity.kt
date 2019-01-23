@@ -2,8 +2,8 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.extensions.startActivityWithSlideUpTransition
@@ -115,9 +115,9 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
             this.logoutConfirmationDialog = AlertDialog.Builder(this)
                     .setTitle(getString(R.string.profile_settings_logout_alert_title))
                     .setMessage(getString(R.string.profile_settings_logout_alert_message))
-                    .setPositiveButton(getString(R.string.profile_settings_logout_alert_confirm_button)) { dialog, which -> this.viewModel.inputs.confirmLogoutClicked() }
-                    .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button)) { dialog, which -> this.viewModel.inputs.closeLogoutConfirmationClicked() }
-                    .setOnCancelListener { dialog -> this.viewModel.inputs.closeLogoutConfirmationClicked() }
+                    .setPositiveButton(getString(R.string.profile_settings_logout_alert_confirm_button)) { _, _ -> this.viewModel.inputs.confirmLogoutClicked() }
+                    .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button)) { _, _ -> this.viewModel.inputs.closeLogoutConfirmationClicked() }
+                    .setOnCancelListener { this.viewModel.inputs.closeLogoutConfirmationClicked() }
                     .create()
         }
         return this.logoutConfirmationDialog!!

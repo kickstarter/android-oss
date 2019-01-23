@@ -7,13 +7,13 @@
   android:background="@color/ksr_grey_100"
   android:orientation="vertical">
 
-  <android.support.design.widget.AppBarLayout
+  <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <include layout="@layout/newsletter_toolbar" />
 
-  </android.support.design.widget.AppBarLayout>
+  </com.google.android.material.appbar.AppBarLayout>
 
   <ScrollView
     android:layout_width="match_parent"
@@ -44,7 +44,7 @@
             style="@style/NewsletterSingleRow"
             android:text="@string/profile_settings_newsletter_subscribe_all" />
 
-          <android.support.v7.widget.SwitchCompat
+          <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/subscribe_all_switch"
             style="@style/NewsLetterSwitch" />
 
@@ -66,7 +66,7 @@
             style="@style/NewsletterSingleRow"
             android:text="@string/Projects_We_Love" />
 
-          <android.support.v7.widget.SwitchCompat
+          <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/projects_we_love_switch"
             style="@style/NewsLetterSwitch" />
 
@@ -90,7 +90,7 @@
             style="@style/NewsletterSingleRow"
             android:text="@string/profile_settings_newsletter_happening" />
 
-          <android.support.v7.widget.SwitchCompat
+          <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/happening_switch"
             style="@style/NewsLetterSwitch" />
 
@@ -114,7 +114,7 @@
             style="@style/NewsletterSingleRow"
             android:text="@string/profile_settings_newsletter_news_event" />
 
-          <android.support.v7.widget.SwitchCompat
+          <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/news_events_switch"
             style="@style/NewsLetterSwitch" />
 
@@ -138,7 +138,7 @@
             style="@style/NewsletterSingleRow"
             android:text="@string/profile_settings_newsletter_games" />
 
-          <android.support.v7.widget.SwitchCompat
+          <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/games_we_love_switch"
             style="@style/NewsLetterSwitch" />
 
@@ -162,7 +162,7 @@
             style="@style/NewsletterSingleRow"
             android:text="@string/profile_settings_newsletter_invent" />
 
-          <android.support.v7.widget.SwitchCompat
+          <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/invent_switch"
             style="@style/NewsLetterSwitch" />
 
@@ -186,7 +186,7 @@
             style="@style/NewsletterSingleRow"
             android:text="@string/profile_settings_newsletter_arts_news" />
 
-          <android.support.v7.widget.SwitchCompat
+          <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/arts_news_switch"
             style="@style/NewsLetterSwitch" />
 
@@ -211,7 +211,7 @@
             style="@style/NewsletterSingleRow"
             android:text="@string/profile_settings_newsletter_film" />
 
-          <android.support.v7.widget.SwitchCompat
+          <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/films_switch"
             style="@style/NewsLetterSwitch" />
 
@@ -235,7 +235,7 @@
             style="@style/NewsletterSingleRow"
             android:text="@string/Kickstarter_Music" />
 
-          <android.support.v7.widget.SwitchCompat
+          <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/music_switch"
             style="@style/NewsLetterSwitch" />
 
@@ -259,7 +259,7 @@
             style="@style/NewsletterSingleRow"
             android:text="@string/profile_settings_newsletter_publishing" />
 
-          <android.support.v7.widget.SwitchCompat
+          <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/reads_switch"
             style="@style/NewsLetterSwitch" />
 
@@ -283,7 +283,7 @@
             style="@style/NewsletterSingleRow"
             android:text="@string/profile_settings_newsletter_alumni" />
 
-          <android.support.v7.widget.SwitchCompat
+          <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/alumni_switch"
             style="@style/NewsLetterSwitch" />
 

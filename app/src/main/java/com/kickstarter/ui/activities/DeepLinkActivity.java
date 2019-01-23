@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RefTag;
@@ -15,6 +13,9 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.DeepLinkViewModel;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 

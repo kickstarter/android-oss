@@ -1,8 +1,6 @@
 package com.kickstarter.models;
 
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
 
@@ -11,6 +9,8 @@ import org.joda.time.DateTime;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.StringDef;
 import auto.parcel.AutoParcel;
 
 @AutoGson

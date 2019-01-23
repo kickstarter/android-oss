@@ -1,7 +1,5 @@
 package com.kickstarter.services.firebase;
 
-import android.support.annotation.NonNull;
-
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -15,6 +13,7 @@ import com.kickstarter.services.ApiClientType;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 public class RegisterService extends JobService {

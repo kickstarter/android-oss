@@ -500,7 +500,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Estás a punto de crear una nueva cuenta de Kickstarter usando el correo electrónico associado a tu cuenta de Facebook. Por favor confírmalo antes de proceder.</string>
   <string name="Youre_offline" formatted="false">Estás desconectado. Cuando tu dispositivo se vuelva a conectar, ve a la aplicación para actualizarla.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Hiciste una contribución a este proyecto. El plazo de financiamiento todavía no ha terminado.</string>
-  <string name="Zip_code" formatted="false">Código postal</string>
+  <string name="Zip_postal_code" formatted="false">Código postal</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">Actividad</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">Abre actividades.</string>
   <string name="accessibility_dashboard_buttons_messages" formatted="false">Mensajes</string>

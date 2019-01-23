@@ -2,9 +2,6 @@ package com.kickstarter.ui.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.SwitchCompat;
 import android.util.Pair;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +17,9 @@ import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
 import com.kickstarter.viewmodels.SignupViewModel;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;

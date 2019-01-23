@@ -1,8 +1,8 @@
 package com.kickstarter.mock.factories;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.models.Photo;
+
+import androidx.annotation.NonNull;
 
 public final class PhotoFactory {
   private PhotoFactory() {}

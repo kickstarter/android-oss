@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -9,6 +8,7 @@ import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.SurveyResponseActivity;
 
+import androidx.annotation.NonNull;
 import okhttp3.Request;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;

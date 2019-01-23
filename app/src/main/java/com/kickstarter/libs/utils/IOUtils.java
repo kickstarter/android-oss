@@ -1,10 +1,10 @@
 package com.kickstarter.libs.utils;
 
-import android.support.annotation.NonNull;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import androidx.annotation.NonNull;
 
 public final class IOUtils {
   private IOUtils() {}

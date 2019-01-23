@@ -1,11 +1,11 @@
 package com.kickstarter.mock.factories;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.libs.Config;
 
 import java.util.Arrays;
 import java.util.Collections;
+
+import androidx.annotation.NonNull;
 
 public final class ConfigFactory {
   private ConfigFactory() {}

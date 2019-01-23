@@ -31,7 +31,6 @@ import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -231,14 +230,10 @@ public interface DiscoveryFragmentViewModel {
         .filter(ObjectUtils::isNotNull)
         .compose(bindToLifecycle())
         .subscribe(p -> this.koala.trackViewedUpdate(p, KoalaContext.Update.ACTIVITY_SAMPLE));
-    }
 
-    private List<Pair<Project, DiscoveryParams>> combineProjectsAndParams(final @NonNull List<Project> projects, final @NonNull DiscoveryParams params) {
-      final ArrayList<Pair<Project, DiscoveryParams>> projectAndParams = new ArrayList<>(projects.size());
-      for (int i = 0; i < projects.size(); i++) {
-        projectAndParams.add(Pair.create(projects.get(i), params));
-      }
-      return projectAndParams;
+      this.refresh
+        .compose(bindToLifecycle())
+        .subscribe(v -> this.koala.trackDiscoveryRefreshTriggered());
     }
 
     private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {

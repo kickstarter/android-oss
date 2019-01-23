@@ -56,7 +56,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
   protected @Bind(R.id.discovery_empty_view) View emptyView;
   protected @Bind(R.id.discovery_hearts_container) View heartsContainer;
   protected @Bind(R.id.discovery_recycler_view) RecyclerView recyclerView;
-  protected @Bind(R.id.disco_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+  protected @Bind(R.id.discovery_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
   public DiscoveryFragment() {}
 

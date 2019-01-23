@@ -5,7 +5,7 @@
   android:layout_height="match_parent">
 
   <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-    android:id="@+id/disco_swipe_refresh_layout"
+    android:id="@+id/discovery_swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 

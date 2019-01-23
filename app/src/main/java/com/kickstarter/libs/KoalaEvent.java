@@ -46,6 +46,7 @@ public final class KoalaEvent {
   public static final String SIGNUP_NEWSLETTER_TOGGLE = "Signup Newsletter Toggle";
   public static final String STARRED_PROJECT = "Starred Project";
   public static final String SWITCHED_PROJECTS = "Switched Projects";
+  public static final String TRIGGERED_REFRESH = "Triggered Refresh";
   public static final String TWO_FACTOR_AUTH_CONFIRM_VIEW = "Two-factor Authentication Confirm View";
   public static final String TWO_FACTOR_AUTH_RESEND_CODE = "Two-factor Authentication Resend Code";
   public static final String UNSTARRED_PROJECT = "Unstarred Project";

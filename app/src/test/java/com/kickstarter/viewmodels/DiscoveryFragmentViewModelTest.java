@@ -79,7 +79,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     //Page is cleared and refreshed
     this.vm.inputs.refresh();
     this.hasProjects.assertValues(true, false, true);
-
+    this.koalaTest.assertValues("Discover List View", "Triggered Refresh");
   }
 
   @Test

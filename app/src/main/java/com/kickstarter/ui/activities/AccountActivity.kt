@@ -78,8 +78,6 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
 
     override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
 
-    override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
-
     private fun getListOfCurrencies(): List<String> {
         val strings = arrayListOf<String>()
         for (currency in CurrencyCode.values()) {

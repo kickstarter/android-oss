@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <style name="KSTheme" parent="KSThemeBase">
-    <item name="android:colorControlHighlight">@color/accent_alpha_20</item>
     <item name="android:statusBarColor">@color/status_bar</item>
 
     <item name="android:windowContentTransitions">true</item>

@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
+  android:id="@+id/messages_coordinator_layout"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/messages_coordinator_layout"
-  android:fitsSystemWindows="true"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:fitsSystemWindows="true">
 
   <com.google.android.material.appbar.AppBarLayout
     android:id="@+id/messages_app_bar_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:elevation="0dp">
+    android:layout_height="wrap_content">
 
     <com.google.android.material.appbar.CollapsingToolbarLayout
       android:layout_width="match_parent"
@@ -24,56 +23,56 @@
       tools:ignore="UnusedAttribute">
 
       <LinearLayout
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/grid_10"
-        android:layout_marginStart="@dimen/grid_8"
-        android:layout_marginEnd="@dimen/grid_8"
-        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/grid_8"
+        android:layout_marginStart="@dimen/grid_8"
+        android:layout_marginTop="@dimen/grid_10"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_collapseMode="parallax">
 
         <TextView
           android:id="@+id/messages_project_name_text_view"
           style="@style/Headline"
-          android:fontFamily="@string/font_family_maison_neue_book"
-          android:ellipsize="end"
-          android:gravity="center"
-          android:layout_marginBottom="@dimen/grid_2"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          tools:text="This Cool Project I Backed"/>
+          android:layout_marginBottom="@dimen/grid_2"
+          android:ellipsize="end"
+          android:fontFamily="@string/font_family_maison_neue_book"
+          android:gravity="center"
+          tools:text="This Cool Project I Backed" />
 
         <TextView
           android:id="@+id/messages_creator_name_text_view"
-          android:layout_marginBottom="@dimen/grid_5"
           style="@style/FootnotePrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          tools:text="by Some Creator"/>
+          android:layout_marginBottom="@dimen/grid_5"
+          tools:text="by Some Creator" />
 
       </LinearLayout>
 
-      <include layout="@layout/messages_toolbar"/>
+      <include layout="@layout/messages_toolbar" />
 
     </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     <View
-      android:background="@color/white"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/grid_1"/>
+      android:layout_height="@dimen/grid_1"
+      android:background="@color/white" />
 
-    <include layout="@layout/messages_backing_info_view"/>
+    <include layout="@layout/messages_backing_info_view" />
 
   </com.google.android.material.appbar.AppBarLayout>
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/messages_recycler_view"
-    android:background="@color/white"
-    android:scrollbars="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:clipToPadding="false"
+    android:scrollbars="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:ignore="RtlSymmetry" />
 
@@ -82,7 +81,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:layout_anchor="@id/messages_recycler_view"
-    app:layout_anchorGravity="center"/>
+    app:layout_anchorGravity="center" />
 
   <include
     android:id="@+id/message_reply_layout"

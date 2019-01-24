@@ -45,8 +45,8 @@
 
   <Button
     android:id="@+id/login_button"
-    style="@style/PrimaryButton"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_2"
     android:enabled="false"
     android:text="@string/login_buttons_log_in" />

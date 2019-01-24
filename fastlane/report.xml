@@ -5,27 +5,27 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: Verifying fastlane version" time="0.015451">
+      <testcase classname="fastlane.lanes" name="0: Verifying fastlane version" time="0.015133">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: default_platform" time="0.001874">
+      <testcase classname="fastlane.lanes" name="1: default_platform" time="0.002051">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: build_android_app" time="77.769442">
+      <testcase classname="fastlane.lanes" name="2: build_android_app" time="31.268332">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: crashlytics" time="2.59525">
+      <testcase classname="fastlane.lanes" name="3: crashlytics" time="4.998731">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: slack" time="0.476255">
+      <testcase classname="fastlane.lanes" name="4: slack" time="0.460398">
         
       </testcase>
     

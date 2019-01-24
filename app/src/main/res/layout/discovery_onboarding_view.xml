@@ -11,9 +11,9 @@
   <include layout="@layout/logo_call_to_action" />
 
   <Button
-    style="@style/BorderButton"
     android:id="@+id/login_tout_button"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/grid_5"
     android:layout_marginRight="@dimen/grid_5"
     android:layout_marginTop="@dimen/grid_4"

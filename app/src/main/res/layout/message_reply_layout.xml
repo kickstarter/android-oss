@@ -18,7 +18,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@id/divider_view"
-    android:layout_marginStart="@dimen/grid_4">
+    android:layout_marginEnd="@dimen/activity_vertical_margin"
+    android:layout_marginStart="@dimen/activity_vertical_margin">
 
     <EditText
       android:id="@+id/message_edit_text"
@@ -43,14 +44,9 @@
       android:layout_height="wrap_content"
       android:layout_alignParentEnd="true"
       android:layout_centerVertical="true"
-      android:background="@drawable/click_indicator_light_masked"
-      android:clickable="true"
       android:enabled="false"
       android:focusable="true"
-      android:paddingEnd="0dp"
-      android:paddingStart="0dp"
-      android:text="@string/social_buttons_send"
-      android:textColor="@color/navy_600_enabled_dark_grey_400_disabled_color" />
+      android:text="@string/social_buttons_send" />
 
   </RelativeLayout>
 

@@ -72,11 +72,8 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
 
         change_email_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, ChangeEmailActivity::class.java)) }
         change_password_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, ChangePasswordActivity::class.java)) }
+        payment_methods_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, PaymentMethodsSettingsActivity::class.java)) }
         privacy_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, PrivacyActivity::class.java)) }
-        change_email_row.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
-        change_password_row.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
-        payment_methods_row.setOnClickListener { startActivity(Intent(this, PaymentMethodsSettingsActivity::class.java)) }
-        privacy_row.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
     }
 
     override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()

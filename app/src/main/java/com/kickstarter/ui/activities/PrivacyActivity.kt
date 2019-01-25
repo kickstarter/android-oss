@@ -50,16 +50,16 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
         this.viewModel.outputs.user()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.displayPreferences(it) })
+                .subscribe { this.displayPreferences(it) }
 
         this.viewModel.outputs.hidePrivateProfileRow()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe( {
+                .subscribe {
                     ViewUtils.setGone(private_profile_row, it)
                     ViewUtils.setGone(private_profile_text_view, it)
                     ViewUtils.setGone(public_profile_text_view, it)
-                })
+                }
 
         following_switch.setOnClickListener { this.viewModel.inputs.optIntoFollowing(following_switch.isChecked) }
         private_profile_switch.setOnClickListener { this.viewModel.inputs.showPublicProfile(private_profile_switch.isChecked) }
@@ -83,7 +83,7 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
                     .setTitle(getString(R.string.Are_you_sure))
                     .setMessage(getString(R.string.If_you_turn_following_off))
                     .setNegativeButton(this.cancelString) { _, _ -> this.viewModel.inputs.optOutOfFollowing(false) }
-                    .setPositiveButton(this.yesTurnOffString, { _, _ -> this.viewModel.inputs.optOutOfFollowing(true) })
+                    .setPositiveButton(this.yesTurnOffString) { _, _ -> this.viewModel.inputs.optOutOfFollowing(true) }
                     .create()
         }
         return this.followingConfirmationDialog!!

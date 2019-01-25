@@ -35,21 +35,21 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel.ViewModel>() {
         this.viewModel.outputs.user()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.displayPreferences(it) })
+                .subscribe { this.displayPreferences(it) }
 
         this.viewModel.outputs.userName()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe({ name_edit_text.setText(it, TextView.BufferType.EDITABLE) })
+                .subscribe { name_edit_text.setText(it, TextView.BufferType.EDITABLE) }
 
         this.viewModel.outputs.hidePrivateProfileRow()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+                .subscribe {
                     ViewUtils.setGone(private_profile_row, it)
                     ViewUtils.setGone(private_profile_text_view, it)
                     ViewUtils.setGone(public_profile_text_view, it)
-                })
+                }
 
         private_profile_switch.setOnClickListener {
             this.viewModel.inputs.showPublicProfile(private_profile_switch.isChecked)

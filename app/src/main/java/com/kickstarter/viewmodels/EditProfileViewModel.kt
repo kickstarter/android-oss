@@ -86,6 +86,7 @@ interface EditProfileViewModel {
 
             updateUserNotification
                     .compose(errors())
+                    .compose(bindToLifecycle())
                     .subscribe(this.unableToSavePreferenceError)
 
             this.userInput

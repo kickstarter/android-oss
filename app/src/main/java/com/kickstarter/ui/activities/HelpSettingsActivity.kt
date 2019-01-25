@@ -1,9 +1,9 @@
 package com.kickstarter.ui.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Browser
 import android.text.TextUtils
 import android.util.Pair
 import androidx.browser.customtabs.CustomTabsIntent
@@ -14,7 +14,6 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.TransitionUtils
-import com.kickstarter.libs.utils.chrome.CustomTabActivityHelper
 import com.kickstarter.models.User
 import com.kickstarter.viewmodels.HelpSettingsViewModel
 import kotlinx.android.synthetic.main.activity_help_settings.*
@@ -98,13 +97,11 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         builder.setShowTitle(true)
         builder.setToolbarColor(ContextCompat.getColor(this, R.color.primary))
 
-        val customTabsIntent = builder.build()
+        val headers = Bundle()
+        headers.putString("text/html", "head")
 
-        CustomTabActivityHelper.openCustomTab(this, customTabsIntent, Uri.parse(url), object : CustomTabActivityHelper.CustomTabFallback {
-            override fun openUri(activity: Activity, uri: Uri) {
-                val intent = Intent(Intent.ACTION_VIEW, uri)
-                activity.startActivity(intent)
-            }
-        })
+        val customTabsIntent = builder.build()
+        customTabsIntent.intent.putExtra(Browser.EXTRA_HEADERS, headers)
+        customTabsIntent.launchUrl(this, Uri.parse(url))
     }
 }

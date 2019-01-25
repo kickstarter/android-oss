@@ -5,13 +5,14 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.NotificationsActivity
+import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -118,7 +119,7 @@ interface NotificationsViewModel {
             currentUser
                     .take(1)
                     .compose(bindToLifecycle())
-                    .subscribe({ this.userOutput.onNext(it) })
+                    .subscribe { this.userOutput.onNext(it) }
 
             this.creatorDigestFrequencyIsGone = currentUser
                     .compose(bindToLifecycle())
@@ -130,10 +131,18 @@ interface NotificationsViewModel {
                     .map { IntegerUtils.isZero(it.createdProjectsCount()?: 0) }
                     .distinctUntilChanged()
 
-            this.userInput
-                    .concatMap<User>({ this.updateSettings(it) })
+            val updateSettingsNotification = this.userInput
+                    .concatMap { this.updateSettings(it) }
+
+            updateSettingsNotification
+                    .compose(values())
                     .compose(bindToLifecycle())
-                    .subscribe({ this.success(it) })
+                    .subscribe { this.success(it) }
+
+            updateSettingsNotification
+                    .compose(errors())
+                    .compose(bindToLifecycle())
+                    .subscribe(this.unableToSavePreferenceError)
 
             this.userInput
                     .compose(bindToLifecycle())
@@ -141,8 +150,8 @@ interface NotificationsViewModel {
 
             this.userOutput
                     .window(2, 1)
-                    .flatMap<List<User>>({ it.toList() })
-                    .map<User>({ ListUtils.first(it) })
+                    .flatMap<List<User>> { it.toList() }
+                    .map<User> { ListUtils.first(it) }
                     .compose<User>(takeWhen<User, Throwable>(this.unableToSavePreferenceError))
                     .compose(bindToLifecycle())
                     .subscribe(this.userOutput)
@@ -237,9 +246,10 @@ interface NotificationsViewModel {
             this.updateSuccess.onNext(null)
         }
 
-        private fun updateSettings(user: User): Observable<User> {
+        private fun updateSettings(user: User): Observable<Notification<User>> {
             return this.client.updateUserSettings(user)
-                    .compose(Transformers.pipeErrorsTo(this.unableToSavePreferenceError))
+                    .materialize()
+                    .share()
         }
     }
 }

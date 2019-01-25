@@ -25,7 +25,7 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
-        this.viewModel.outputs.avatarImageViewUrl()
+        this.viewModel.outputs.userAvatarUrl()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { url ->
@@ -37,7 +37,7 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ this.displayPreferences(it) })
 
-        this.viewModel.outputs.userNameTextViewText()
+        this.viewModel.outputs.userName()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe({ name_edit_text.setText(it, TextView.BufferType.EDITABLE) })

@@ -22,10 +22,6 @@ import rx.subjects.PublishSubject
 interface LoginViewModel {
 
     interface Inputs {
-
-        /** Call when the back or close button has been clicked.  */
-        fun backOrCloseButtonClicked()
-
         /** Call when the email field changes.  */
         fun email(email: String)
 
@@ -67,7 +63,6 @@ interface LoginViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<LoginActivity>(environment), Inputs, Outputs {
 
-        private val backOrCloseButtonClicked = PublishSubject.create<Void>()
         private val emailEditTextChanged = PublishSubject.create<String>()
         private val logInButtonClicked = PublishSubject.create<Void>()
         private val passwordEditTextChanged = PublishSubject.create<String>()
@@ -191,8 +186,6 @@ interface LoginViewModel {
             this.currentUser.login(envelope.user(), envelope.accessToken())
             this.loginSuccess.onNext(null)
         }
-
-        override fun backOrCloseButtonClicked() = this.backOrCloseButtonClicked.onNext(null)
 
         override fun email(email: String) = this.emailEditTextChanged.onNext(email)
 

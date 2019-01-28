@@ -32,6 +32,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
 
     private val subscribeString = R.string.profile_settings_accessibility_subscribe_notifications
     private val subscribeMobileString = R.string.profile_settings_accessibility_subscribe_mobile_notifications
+    private val unableToSaveString = R.string.profile_settings_error
     private val unsubscribeMobileString = R.string.profile_settings_accessibility_unsubscribe_mobile_notifications
     private val unsubscribeString = R.string.profile_settings_accessibility_unsubscribe_notifications
 
@@ -60,122 +61,29 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         this.viewModel.outputs.creatorDigestFrequencyIsGone()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ ViewUtils.setGone(email_frequency_row, it) })
+                .subscribe { ViewUtils.setGone(email_frequency_row, it) }
 
         this.viewModel.outputs.creatorNotificationsAreGone()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ ViewUtils.setGone(creator_notifications_section, it) })
+                .subscribe { ViewUtils.setGone(creator_notifications_section, it) }
 
         this.viewModel.outputs.user()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.displayPreferences(it) })
+                .subscribe { this.displayPreferences(it) }
+
+        this.viewModel.errors.unableToSavePreferenceError()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { _ -> ViewUtils.showToast(this, getString(this.unableToSaveString)) }
 
         val emailFrequencyStrings = User.EmailFrequency.getStrings(this.resources)
         val arrayAdapter = ArrayAdapter<String>(this, R.layout.item_spinner, emailFrequencyStrings)
         arrayAdapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
         email_frequency_spinner.adapter = arrayAdapter
 
-        manage_project_notifications.setOnClickListener {
-            startProjectNotificationsSettingsActivity()
-        }
-
-        backings_mail_icon.setOnClickListener {
-            this.viewModel.inputs.notifyOfBackings(!this.notifyOfBackings)
-        }
-
-        backings_phone_icon.setOnClickListener {
-            this.viewModel.inputs.notifyMobileOfBackings(!this.notifyMobileOfBackings)
-        }
-
-        backings_row.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(backings_phone_icon, backings_mail_icon)
-        }
-
-        comments_mail_icon.setOnClickListener {
-            this.viewModel.inputs.notifyOfComments(!this.notifyOfComments)
-        }
-
-        comments_phone_icon.setOnClickListener {
-            this.viewModel.inputs.notifyMobileOfComments(!this.notifyMobileOfComments)
-        }
-
-        comments_row.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(comments_phone_icon, comments_mail_icon)
-        }
-
-        creator_edu_mail_icon.setOnClickListener {
-            this.viewModel.inputs.notifyOfCreatorEdu(!this.notifyOfCreatorEdu)
-        }
-
-        creator_edu_phone_icon.setOnClickListener {
-            this.viewModel.inputs.notifyMobileOfCreatorEdu(!this.notifyMobileOfCreatorEdu)
-        }
-
-        creator_edu_row.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(creator_edu_phone_icon, creator_edu_mail_icon)
-        }
-
-        friend_activity_mail_icon.setOnClickListener {
-            this.viewModel.inputs.notifyOfFriendActivity(!this.notifyOfFriendActivity)
-        }
-
-        friend_activity_phone_icon.setOnClickListener {
-            this.viewModel.inputs.notifyMobileOfFriendActivity(!this.notifyMobileOfFriendActivity)
-        }
-
-        friends_back_project_row.setOnClickListener {
-                AnimationUtils.notificationBounceAnimation(friend_activity_phone_icon, friend_activity_mail_icon)
-        }
-
-        messages_mail_icon.setOnClickListener {
-            this.viewModel.inputs.notifyOfMessages(!this.notifyOfMessages)
-        }
-
-        messages_phone_icon.setOnClickListener {
-            this.viewModel.inputs.notifyMobileOfMessages(!this.notifyMobileOfMessages)
-        }
-
-        messages_notification_row.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(messages_phone_icon, messages_mail_icon)
-        }
-
-        new_followers_mail_icon.setOnClickListener {
-            this.viewModel.inputs.notifyOfFollower(!this.notifyOfFollower)
-        }
-
-        new_followers_phone_icon.setOnClickListener {
-            this.viewModel.inputs.notifyMobileOfFollower(!this.notifyMobileOfFollower)
-        }
-
-        new_followers_row.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(new_followers_phone_icon, new_followers_mail_icon)
-        }
-
-        post_likes_mail_icon.setOnClickListener {
-            this.viewModel.inputs.notifyOfPostLikes(!this.notifyOfPostLikes)
-        }
-
-        post_likes_phone_icon.setOnClickListener {
-            this.viewModel.inputs.notifyMobileOfPostLikes(!this.notifyMobileOfPostLikes)
-        }
-
-        post_likes_row.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(post_likes_phone_icon, post_likes_mail_icon)
-        }
-
-        project_updates_mail_icon.setOnClickListener {
-            this.viewModel.inputs.notifyOfUpdates(!this.notifyOfUpdates)
-        }
-
-        project_updates_phone_icon.setOnClickListener {
-            this.viewModel.inputs.notifyMobileOfUpdates(!this.notifyMobileOfUpdates)
-        }
-
-        project_updates_row.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(project_updates_phone_icon, project_updates_mail_icon)
-        }
+        setUpClickListeners()
 
     }
 
@@ -245,7 +153,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         this.notifyOfFollower = isTrue(user.notifyOfFollower())
 
         toggleImageButtonIconColor(new_followers_phone_icon, this.notifyMobileOfFollower, true)
-        toggleImageButtonIconColor(new_followers_mail_icon,  this.notifyOfFollower)
+        toggleImageButtonIconColor(new_followers_mail_icon, this.notifyOfFollower)
     }
 
     private fun displayFriendActivityNotificationSettings(user: User) {
@@ -253,7 +161,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         this.notifyOfFriendActivity = isTrue(user.notifyOfFriendActivity())
 
         toggleImageButtonIconColor(friend_activity_phone_icon, this.notifyMobileOfFriendActivity, true)
-        toggleImageButtonIconColor(friend_activity_mail_icon,  this.notifyOfFriendActivity)
+        toggleImageButtonIconColor(friend_activity_mail_icon, this.notifyOfFriendActivity)
     }
 
     private fun displayMessagesNotificationSettings(user: User) {
@@ -303,6 +211,108 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             contentDescription = getString(this.subscribeString)
         }
         view.contentDescription = contentDescription
+    }
+
+    private fun setUpClickListeners() {
+        manage_project_notifications.setOnClickListener {
+            startProjectNotificationsSettingsActivity()
+        }
+
+        backings_mail_icon.setOnClickListener {
+            this.viewModel.inputs.notifyOfBackings(!this.notifyOfBackings)
+        }
+
+        backings_phone_icon.setOnClickListener {
+            this.viewModel.inputs.notifyMobileOfBackings(!this.notifyMobileOfBackings)
+        }
+
+        backings_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(backings_phone_icon, backings_mail_icon)
+        }
+
+        comments_mail_icon.setOnClickListener {
+            this.viewModel.inputs.notifyOfComments(!this.notifyOfComments)
+        }
+
+        comments_phone_icon.setOnClickListener {
+            this.viewModel.inputs.notifyMobileOfComments(!this.notifyMobileOfComments)
+        }
+
+        comments_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(comments_phone_icon, comments_mail_icon)
+        }
+
+        creator_edu_mail_icon.setOnClickListener {
+            this.viewModel.inputs.notifyOfCreatorEdu(!this.notifyOfCreatorEdu)
+        }
+
+        creator_edu_phone_icon.setOnClickListener {
+            this.viewModel.inputs.notifyMobileOfCreatorEdu(!this.notifyMobileOfCreatorEdu)
+        }
+
+        creator_edu_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(creator_edu_phone_icon, creator_edu_mail_icon)
+        }
+
+        friend_activity_mail_icon.setOnClickListener {
+            this.viewModel.inputs.notifyOfFriendActivity(!this.notifyOfFriendActivity)
+        }
+
+        friend_activity_phone_icon.setOnClickListener {
+            this.viewModel.inputs.notifyMobileOfFriendActivity(!this.notifyMobileOfFriendActivity)
+        }
+
+        friends_back_project_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(friend_activity_phone_icon, friend_activity_mail_icon)
+        }
+
+        messages_mail_icon.setOnClickListener {
+            this.viewModel.inputs.notifyOfMessages(!this.notifyOfMessages)
+        }
+
+        messages_phone_icon.setOnClickListener {
+            this.viewModel.inputs.notifyMobileOfMessages(!this.notifyMobileOfMessages)
+        }
+
+        messages_notification_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(messages_phone_icon, messages_mail_icon)
+        }
+
+        new_followers_mail_icon.setOnClickListener {
+            this.viewModel.inputs.notifyOfFollower(!this.notifyOfFollower)
+        }
+
+        new_followers_phone_icon.setOnClickListener {
+            this.viewModel.inputs.notifyMobileOfFollower(!this.notifyMobileOfFollower)
+        }
+
+        new_followers_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(new_followers_phone_icon, new_followers_mail_icon)
+        }
+
+        post_likes_mail_icon.setOnClickListener {
+            this.viewModel.inputs.notifyOfPostLikes(!this.notifyOfPostLikes)
+        }
+
+        post_likes_phone_icon.setOnClickListener {
+            this.viewModel.inputs.notifyMobileOfPostLikes(!this.notifyMobileOfPostLikes)
+        }
+
+        post_likes_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(post_likes_phone_icon, post_likes_mail_icon)
+        }
+
+        project_updates_mail_icon.setOnClickListener {
+            this.viewModel.inputs.notifyOfUpdates(!this.notifyOfUpdates)
+        }
+
+        project_updates_phone_icon.setOnClickListener {
+            this.viewModel.inputs.notifyMobileOfUpdates(!this.notifyMobileOfUpdates)
+        }
+
+        project_updates_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(project_updates_phone_icon, project_updates_mail_icon)
+        }
     }
 
     private fun startProjectNotificationsSettingsActivity() {

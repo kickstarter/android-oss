@@ -1,5 +1,6 @@
 package com.kickstarter.services
 
+import CreatePasswordMutation
 import SendEmailVerificationMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
@@ -14,6 +15,31 @@ import rx.subjects.PublishSubject
 import type.CurrencyCode
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
+    override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
+        return Observable.defer{
+            val ps = PublishSubject.create<CreatePasswordMutation.Data>()
+        service.mutate(CreatePasswordMutation.builder()
+                .password(password)
+                .passwordConfirmation(confirmPassword)
+                .build())
+                .enqueue(object : ApolloCall.Callback<CreatePasswordMutation.Data>() {
+                    override fun onFailure(exception: ApolloException) {
+                        ps.onError(exception)
+                    }
+
+                    override fun onResponse(response: Response<CreatePasswordMutation.Data>) {
+                        if (response.hasErrors()) {
+                            ps.onError(java.lang.Exception(response.errors().first().message()))
+                        }
+                        ps.onNext(response.data())
+                        ps.onCompleted()
+                    }
+
+                })
+            return@defer ps
+        }
+    }
+
     override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<SendEmailVerificationMutation.Data>()

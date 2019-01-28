@@ -1,6 +1,6 @@
 package com.kickstarter.viewmodels
 
-import UpdateUserPasswordMutation
+import CreatePasswordMutation
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
@@ -91,12 +91,12 @@ interface CreatePasswordViewModel {
 
             createNewPasswordNotification
                     .compose(values())
-                    .map { it.updateUserAccount()?.user()?.email() }
-                    .subscribe { this.success.onNext(it) }
+                    .map { it.updateUserAccount()?.user()?.hasPassword() }
+                    .subscribe { this.success.onNext(null) }
         }
 
-        private fun submit(createPassword: CreatePasswordViewModel.ViewModel.CreatePassword): Observable<UpdateUserPasswordMutation.Data> {
-            return this.apolloClient.updateUserPassword(createPassword.currentPassword, createPassword.newPassword, createPassword.confirmPassword)
+        private fun submit(createPassword: CreatePasswordViewModel.ViewModel.CreatePassword): Observable<CreatePasswordMutation.Data> {
+            return this.apolloClient.createPassword(createPassword.newPassword, createPassword.confirmPassword)
                     .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
                     .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }

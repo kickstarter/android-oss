@@ -1,5 +1,6 @@
 package com.kickstarter.services
 
+import CreatePasswordMutation
 import SendEmailVerificationMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
@@ -9,6 +10,8 @@ import rx.Observable
 import type.CurrencyCode
 
 interface ApolloClientType {
+    fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
+
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
 
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>

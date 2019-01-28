@@ -41,7 +41,6 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   private static final String VIEW_MODEL_KEY = "viewModel";
   private final CompositeSubscription subscriptions = new CompositeSubscription();
   private final ConnectivityReceiver connectivityReceiver = new ConnectivityReceiver();
-
   protected ViewModelType viewModel;
 
   /**

@@ -82,6 +82,14 @@ public final class Koala {
     this.client.track("Discover Modal Selected Filter", KoalaUtils.discoveryParamsProperties(params));
   }
 
+  public void trackDiscoveryRefreshTriggered() {
+    this.client.track(KoalaEvent.TRIGGERED_REFRESH, new HashMap<String, Object>() {
+      {
+        put("type", "swipe");
+      }
+    });
+  }
+
   /**
    * Tracks a project show event.
    *

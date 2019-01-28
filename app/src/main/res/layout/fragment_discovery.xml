@@ -4,11 +4,18 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/discovery_recycler_view"
+  <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:id="@+id/discovery_swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:listitem="@layout/project_card_view" />
+    android:layout_height="wrap_content">
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/discovery_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      tools:listitem="@layout/project_card_view" />
+
+  </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
   <LinearLayout
     android:id="@+id/discovery_empty_view"

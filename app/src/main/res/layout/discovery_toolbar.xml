@@ -37,9 +37,10 @@
 
       <TextView
         android:id="@+id/filter_text_view"
-        style="@style/Headline"
+        style="@style/ToolbarTitle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="0dp"
         android:background="@drawable/button_selector"
         android:ellipsize="end"
         android:gravity="center_vertical"
@@ -58,20 +59,20 @@
       <ImageButton
         android:id="@+id/creator_dashboard_button"
         style="@style/ToolbarVectorIcon"
-        android:src="@drawable/icon__graph_line"
-        android:contentDescription="@string/tabbar_dashboard"/>
+        android:contentDescription="@string/tabbar_dashboard"
+        android:src="@drawable/icon__graph_line" />
 
       <ImageButton
         android:id="@+id/activity_feed_button"
         style="@style/ToolbarIcon"
-        android:src="@drawable/icon__bolt"
-        android:contentDescription="@string/tabbar_activity"/>
+        android:contentDescription="@string/tabbar_activity"
+        android:src="@drawable/icon__bolt" />
 
       <ImageButton
         android:id="@+id/search_button"
         style="@style/ToolbarIcon"
-        android:src="@drawable/icon__search"
-        android:contentDescription="@string/tabbar_search"/>
+        android:contentDescription="@string/tabbar_search"
+        android:src="@drawable/icon__search" />
 
     </LinearLayout>
 

@@ -2,6 +2,8 @@ require "cgi"
 
 module Milkrun
   class I18nStringResources
+    SUPPORTED_LOCALES = %w(de en es fr ja)
+
     def create
       locales.each do |country_code, translations|
         File.open(resource_path(country_code), 'w') do |f|
@@ -50,7 +52,7 @@ module Milkrun
     end
 
     def locales
-      @locales ||= config["locales"]
+      @locales ||= config["locales"].select { |locale, _| SUPPORTED_LOCALES.include?(locale) }
     end
 
     def resource_path(country_code)

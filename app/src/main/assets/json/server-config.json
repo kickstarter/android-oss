@@ -2330,7 +2330,7 @@
       "It_may_take_up_to_24_hours_to_collect_your_data": "Die Zusammenstellung deiner Daten kann bis zu 24 Stunden dauern. Sobald sie zum Download bereitstehen, werden wir dir eine Anleitung dazu per E-Mail schicken. Solltest du nichts von uns hören, versuche es von hier aus noch einmal.",
       "Its_a_way_to_bring_creative_projects_to_life": "Es ist eine Plattform, um kreative Projekte ins Leben zu rufen.",
       "Its_better_with_friends": "Gemeinsam mehr erreichen",
-      "Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter": "It's like the radio but nothing sucks and also it's a newsletter.",
+      "Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter": "Fast wie Radio, nur ohne die schlechten Nachrichten - unser Newsletter!",
       "Join_our_secret_society": "Sei dabei bei unserem Geheimbund.",
       "Joining_the_live_stream": "Verbindung zum Live-Stream wird aufgebaut",
       "Just_for_you": "Nur für dich.",
@@ -2663,7 +2663,7 @@
       "Youre_about_to_create_a_new_Kickstarter_account": "Du wirst hiermit ein neues Kickstarter-Konto mit deiner Facebook-E-Mail-Adresse anlegen. Bitte bestätige diesen Vorgang.",
       "Youre_offline": "Du bist Offline. Sobald du wieder Online bist, navigiere in der App, um sie zu aktualisieren.",
       "Youve_pledged_to_support_this_project": "Du hast einen Finazierungsbeitrag zu diesem Projekt geleistet. Die Frist für die Finanzierung ist noch nicht abgelaufen.",
-      "Zip_postal_code": "Zip/Postal code",
+      "Zip_postal_code": "Postleitzahl",
       "tabbar": {
         "discover": "Entdecken",
         "activity": "Aktivität",
@@ -6510,7 +6510,7 @@
       "It_may_take_up_to_24_hours_to_collect_your_data": "La préparation de vos données personnelles peut prendre jusqu'à 24 heures. Nous vous enverrons des instructions de téléchargement à l'adresse e-mail associée à ce compte une fois que tout sera prêt. Si vous ne recevez rien, revenez ici pour réessayer.",
       "Its_a_way_to_bring_creative_projects_to_life": "C'est un outil qui permet de donner vie à des projets créatifs.",
       "Its_better_with_friends": "On est mieux ensemble.",
-      "Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter": "It's like the radio but nothing sucks and also it's a newsletter.",
+      "Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter": "Un peu comme la radio, mais en mieux. Une lettre d'information, quoi.",
       "Join_our_secret_society": "Notre société secrète n'attend que vous.",
       "Joining_the_live_stream": "Connexion à la diffusion en direct en cours",
       "Just_for_you": "Rien que pour vous.",
@@ -6841,9 +6841,9 @@
       "Your_shipping_destination": "Destination d'expédition",
       "Youre_a_backer": "Vous êtes contributeur !",
       "Youre_about_to_create_a_new_Kickstarter_account": "Vous êtes sur le point de créer un nouveau compte Kickstarter avec l'adresse e-mail que vous utilisez sur Facebook. Veuillez confirmer avant de continuer.",
-      "Youre_offline": "You’re offline. Once your device reconnects, navigate around the app to refresh.",
+      "Youre_offline": "Vous êtes hors ligne. Dès que votre appareil se sera reconnecté, naviguez dans l'application pour la rafraîchir.",
       "Youve_pledged_to_support_this_project": "Vous vous êtes engagé à soutenir ce projet et sa campagne de financement n'est pas terminée.",
-      "Zip_postal_code": "Zip/Postal code",
+      "Zip_postal_code": "Code postal",
       "tabbar": {
         "discover": "Découvrir",
         "activity": "Activité",
@@ -10690,7 +10690,7 @@
       "It_may_take_up_to_24_hours_to_collect_your_data": "データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。",
       "Its_a_way_to_bring_creative_projects_to_life": "クリエイティブなプロジェクトに生命を。",
       "Its_better_with_friends": "友達にとってより良い。",
-      "Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter": "It's like the radio but nothing sucks and also it's a newsletter.",
+      "Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter": "ラジオみたいな (でもつまらない内容をダラダラと語ったりしない) ニュースレター。",
       "Join_our_secret_society": "この秘密の世界にあなたも浸ってみませんか。",
       "Joining_the_live_stream": "ライブ配信に参加",
       "Just_for_you": "あなたのために。",
@@ -11023,7 +11023,7 @@
       "Youre_about_to_create_a_new_Kickstarter_account": "Facebookのメールアドレスで新しいアカウントを作成しようとしています。再度確認してください。",
       "Youre_offline": "現在オフライン中です。デバイスが再接続し次第、アプリをリフレッシュしてください。",
       "Youve_pledged_to_support_this_project": "このプレッジ済のプロジェクトは、現在もファンド中",
-      "Zip_postal_code": "Zip/Postal code",
+      "Zip_postal_code": "郵便番号",
       "tabbar": {
         "discover": "さがす",
         "activity": "アクティビティ",
@@ -14646,7 +14646,7 @@
     "drip_iterate": true,
     "project_post_interface": true,
     "creator_search": true,
-    "old_projects_youve_created": true,
+    "jumio_v4": true,
     "rich_editor_hosted_media_uploads": true
   },
   "launched_countries": [
@@ -14830,8 +14830,7 @@
   "ab_experiments": {
     "project_dashboard": "with_dashboard",
     "new_project_header": "experimental",
-    "es_backing_locations_upgrade": "experimental",
-    "checkout_account_page": "experimental"
+    "checkout_account_page": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

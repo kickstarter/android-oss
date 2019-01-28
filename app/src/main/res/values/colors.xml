@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <!-- Theme colors -->
-  <color name="primary">@color/white</color>
-  <color name="primary_dark">@color/black_alpha_17</color>
-  <color name="accent">@color/ksr_green_500</color>
+  <color name="primary">@color/ksr_green_500</color>
+  <color name="primary_dark">@color/ksr_green_700</color>
+  <color name="accent">@color/primary</color>
   <color name="text_primary">@color/ksr_soft_black</color>
   <color name="text_secondary">@color/ksr_dark_grey_500</color>
   <color name="window_background">@color/white</color>

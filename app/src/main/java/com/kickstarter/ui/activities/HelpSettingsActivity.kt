@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Browser
 import android.text.TextUtils
 import android.util.Pair
 import androidx.browser.customtabs.CustomTabsIntent
@@ -47,21 +46,10 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
                     .subscribe(this::composeContactEmail)
         }
 
-        cookie_policy.setOnClickListener{
-            loadChromePages("cookies")
-        }
-
-        help_center.setOnClickListener {
-            loadChromePages("help")
-        }
-
-        privacy_policy.setOnClickListener {
-            loadChromePages("privacy")
-        }
-
-        terms_of_use.setOnClickListener {
-            loadChromePages("terms-of-use")
-        }
+        cookie_policy.setOnClickListener{ loadChromePages("cookies") }
+        help_center.setOnClickListener { loadChromePages("help") }
+        privacy_policy.setOnClickListener { loadChromePages("privacy") }
+        terms_of_use.setOnClickListener { loadChromePages("terms-of-use") }
     }
 
     override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
@@ -97,11 +85,7 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         builder.setShowTitle(true)
         builder.setToolbarColor(ContextCompat.getColor(this, R.color.primary))
 
-        val headers = Bundle()
-        headers.putString("text/html", "head")
-
         val customTabsIntent = builder.build()
-        customTabsIntent.intent.putExtra(Browser.EXTRA_HEADERS, headers)
         customTabsIntent.launchUrl(this, Uri.parse(url))
     }
 }

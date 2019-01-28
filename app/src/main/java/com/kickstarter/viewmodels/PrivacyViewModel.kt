@@ -5,12 +5,15 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.errors
+import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.PrivacyActivity
+import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -82,7 +85,7 @@ interface PrivacyViewModel {
                     .take(1)
                     .filter { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle())
-                    .subscribe({ this.userOutput.onNext(it) })
+                    .subscribe { this.userOutput.onNext(it) }
 
             currentUser
                     .compose(bindToLifecycle())
@@ -90,10 +93,18 @@ interface PrivacyViewModel {
                     .map { user -> IntegerUtils.isNonZero(user.createdProjectsCount()) }
                     .subscribe(this.hidePrivateProfileRow)
 
-            this.userInput
-                    .concatMap<User>({ this.updateSettings(it) })
+            val updateSettingsNotification = this.userInput
+                    .concatMap { this.updateSettings(it) }
+
+            updateSettingsNotification
+                    .compose(values())
                     .compose(bindToLifecycle())
-                    .subscribe({ this.success(it) })
+                    .subscribe { this.success(it) }
+
+            updateSettingsNotification
+                    .compose(errors())
+                    .compose(bindToLifecycle())
+                    .subscribe(this.unableToSavePreferenceError)
 
             this.userInput
                     .compose(bindToLifecycle())
@@ -101,31 +112,31 @@ interface PrivacyViewModel {
 
             this.userOutput
                     .window(2, 1)
-                    .flatMap<List<User>>({ it.toList() })
-                    .map<User>({ ListUtils.first(it) })
+                    .flatMap<List<User>> { it.toList() }
+                    .map<User> { ListUtils.first(it) }
                     .compose<User>(Transformers.takeWhen<User, Throwable>(this.unableToSavePreferenceError))
                     .compose(bindToLifecycle())
                     .subscribe(this.userOutput)
 
             this.optIntoFollowing
                     .compose<Boolean>(bindToLifecycle<Boolean>())
-                    .filter({ checked -> checked })
-                    .subscribe({ _ -> this.userInput.onNext(this.userOutput.value.toBuilder().social(true).build()) })
+                    .filter { checked -> checked }
+                    .subscribe { _ -> this.userInput.onNext(this.userOutput.value.toBuilder().social(true).build()) }
 
             this.optIntoFollowing
                     .compose<Boolean>(bindToLifecycle<Boolean>())
-                    .filter({ checked -> !checked })
-                    .subscribe({ _ -> this.showConfirmFollowingOptOutPrompt.onNext(null) })
+                    .filter { checked -> !checked }
+                    .subscribe { _ -> this.showConfirmFollowingOptOutPrompt.onNext(null) }
 
             this.optOutOfFollowing
                     .compose<Boolean>(bindToLifecycle<Boolean>())
-                    .filter({ optOut -> optOut })
-                    .subscribe({ _ -> this.userInput.onNext(this.userOutput.value.toBuilder().social(false).build()) })
+                    .filter { optOut -> optOut }
+                    .subscribe { _ -> this.userInput.onNext(this.userOutput.value.toBuilder().social(false).build()) }
 
             this.optOutOfFollowing
                     .compose<Boolean>(bindToLifecycle<Boolean>())
-                    .filter({ optOut -> !optOut })
-                    .subscribe({ _ -> this.hideConfirmFollowingOptOutPrompt.onNext(null) })
+                    .filter { optOut -> !optOut }
+                    .subscribe { _ -> this.hideConfirmFollowingOptOutPrompt.onNext(null) }
 
             this.koala.trackViewedPrivacy()
         }
@@ -163,9 +174,10 @@ interface PrivacyViewModel {
             this.updateSuccess.onNext(null)
         }
 
-        private fun updateSettings(user: User): Observable<User> {
+        private fun updateSettings(user: User): Observable<Notification<User>> {
             return this.client.updateUserSettings(user)
-                    .compose(Transformers.pipeErrorsTo(this.unableToSavePreferenceError))
+                    .materialize()
+                    .share()
         }
     }
 }

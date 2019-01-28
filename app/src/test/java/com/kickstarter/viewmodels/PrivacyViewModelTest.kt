@@ -1,10 +1,13 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.models.User
 import org.junit.Test
+import rx.Observable
 import rx.observers.TestSubscriber
 
 class PrivacyViewModelTest : KSRobolectricTestCase() {
@@ -14,18 +17,19 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
     private val hideConfirmFollowingOptOutPrompt = TestSubscriber<Void>()
     private val hidePrivateProfile = TestSubscriber<Boolean>()
     private val showConfirmFollowingOptOutPrompt = TestSubscriber<Void>()
+    private val unableToSavePreferenceError = TestSubscriber<String>()
 
-    private fun setUpEnvironment(user: User) {
+    private fun setUpEnvironment(user: User, environment: Environment = environment()) {
         val currentUser = MockCurrentUser(user)
-        val environment = environment().toBuilder()
-                .currentUser(currentUser)
-                .build()
 
-        this.vm = PrivacyViewModel.ViewModel(environment)
+        this.vm = PrivacyViewModel.ViewModel(environment.toBuilder()
+                .currentUser(currentUser)
+                .build())
 
         currentUser.observable().subscribe(this.currentUserTest)
         this.vm.outputs.hideConfirmFollowingOptOutPrompt().subscribe(this.hideConfirmFollowingOptOutPrompt)
         this.vm.outputs.showConfirmFollowingOptOutPrompt().subscribe(this.showConfirmFollowingOptOutPrompt)
+        this.vm.errors.unableToSavePreferenceError().subscribe(this.unableToSavePreferenceError)
     }
 
     @Test
@@ -119,5 +123,17 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.optedOutOfRecommendations(false)
         this.currentUserTest.assertValues(user, user.toBuilder().optedOutOfRecommendations(false).build(), user)
+    }
+
+    @Test
+    fun testUnableToSavePreferenceError() {
+        setUpEnvironment(UserFactory.user(), environment().toBuilder().apiClient(object : MockApiClient() {
+            override fun updateUserSettings(user: User): Observable<User> {
+                return Observable.error(Throwable("Error"))
+            }
+        }).build())
+
+        this.vm.inputs.showPublicProfile(true)
+        this.unableToSavePreferenceError.assertValueCount(1)
     }
 }

@@ -491,7 +491,6 @@ public final class ApiClient implements ApiClientType {
           .notifyOfFollower(isTrue(user.notifyOfFollower()))
           .notifyOfFriendActivity(isTrue(user.notifyOfFriendActivity()))
           .notifyOfMessages(isTrue(user.notifyOfMessages()))
-          .notifyOfPostLikes(isTrue(user.notifyOfPostLikes()))
           .notifyOfUpdates(isTrue(user.notifyOfUpdates()))
           .alumniNewsletter(isTrue(user.alumniNewsletter()) ? 1 : 0)
           .artsCultureNewsletter(isTrue(user.artsCultureNewsletter()) ? 1 : 0)

@@ -113,6 +113,7 @@
   <string name="Current_email" formatted="false">現在のメールアドレス</string>
   <string name="Current_password" formatted="false">現在のパスワード</string>
   <string name="Daily_digest" formatted="false">デイリーダイジェスト</string>
+  <string name="Daily_summary" formatted="false">Daily summary</string>
   <string name="Data_will_appear_here_once" formatted="false">誰かがプロジェクトをバック（支援）すると、ここにデータが表示されます。</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Kickstarter アカウントを削除</string>
   <string name="Delivered" formatted="false">発送済</string>
@@ -442,6 +443,7 @@
   <string name="Top_ten_pledge_sources" formatted="false">プレッジソースのトップ10</string>
   <string name="Top_ten_rewards" formatted="false">リワードのトップ10</string>
   <string name="Total_pledged" formatted="false">プレッジ総計</string>
+  <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>
   <string name="Unable_to_request" formatted="false">データをリクエストできません。</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} のフォロー解除</string>
   <string name="Unfollows_friend_name" formatted="false">%{friend_name} のフォロー解除</string>
@@ -450,6 +452,7 @@
   <string name="Unsubscribe" formatted="false">購読キャンセル済み</string>
   <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">ライブ配信の購読を停止</string>
   <string name="Unsuccessfully_Funded" formatted="false">資金調達失敗</string>
+  <string name="Unsupported_card_type" formatted="false">残念ながらこのタイプのカードには対応しておりません。別のカードにてもう一度お試しください。</string>
   <string name="Upcoming_live_stream" formatted="false">ライブ配信が開始します</string>
   <string name="Upcoming_live_streams" formatted="false">ライブ配信が開始します</string>
   <string name="Upcoming_with_creator_name" formatted="false">&lt;br/>&lt;b>%{creator_name}&lt;/b>が近日配信</string>

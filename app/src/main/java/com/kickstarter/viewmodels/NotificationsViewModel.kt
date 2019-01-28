@@ -65,9 +65,6 @@ interface NotificationsViewModel {
         /** Call when the notify of messages toggle changes.  */
         fun notifyOfMessages(checked: Boolean)
 
-        /** Call when the notify of post likes toggle changes.  */
-        fun notifyOfPostLikes(checked: Boolean)
-
         /** Call when the notify of project updates toggle changes.  */
         fun notifyOfUpdates(checked: Boolean)
     }
@@ -221,10 +218,6 @@ interface NotificationsViewModel {
 
         override fun notifyOfMessages(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfMessages(checked).build())
-        }
-
-        override fun notifyOfPostLikes(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfPostLikes(checked).build())
         }
 
         override fun notifyOfUpdates(checked: Boolean) {

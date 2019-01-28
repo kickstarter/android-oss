@@ -114,6 +114,7 @@ patrocinadores</string>
   <string name="Current_email" formatted="false">Correo electrónico actual</string>
   <string name="Current_password" formatted="false">Contraseña actual</string>
   <string name="Daily_digest" formatted="false">Resumen diario</string>
+  <string name="Daily_summary" formatted="false">Daily summary</string>
   <string name="Data_will_appear_here_once" formatted="false">Los datos aparecerán aquí una vez que alguien patrocine tu proyecto.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Eliminar mi cuenta de Kickstarter</string>
   <string name="Delivered" formatted="false">Entregado</string>
@@ -443,6 +444,7 @@ patrocinadores</string>
   <string name="Top_ten_pledge_sources" formatted="false">Las 10 principales fuentes de contribución</string>
   <string name="Top_ten_rewards" formatted="false">Las 10 mejores recompensas</string>
   <string name="Total_pledged" formatted="false">Contribuciones en total</string>
+  <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>
   <string name="Unable_to_request" formatted="false">No se pueden solicitar datos.</string>
   <string name="Unfollow_friend_name" formatted="false">Dejar de seguir a %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Dejar de seguir a %{friend_name}.</string>
@@ -451,6 +453,7 @@ patrocinadores</string>
   <string name="Unsubscribe" formatted="false">Anular suscripción</string>
   <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">Desactiva subscripción a futuros Live-Streams.</string>
   <string name="Unsuccessfully_Funded" formatted="false">Financiación falló.</string>
+  <string name="Unsupported_card_type" formatted="false">No aceptamos este tipo de tarjeta. Intenta de nuevo con otra.</string>
   <string name="Upcoming_live_stream" formatted="false">Futuro Live-Stream</string>
   <string name="Upcoming_live_streams" formatted="false">Live streams futuros</string>
   <string name="Upcoming_with_creator_name" formatted="false">Próximamente: Video de &lt;br/>&lt;b>%{creator_name}&lt;/b></string>

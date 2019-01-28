@@ -114,6 +114,7 @@ backers</string>
   <string name="Current_email" formatted="false">Current email</string>
   <string name="Current_password" formatted="false">Current password</string>
   <string name="Daily_digest" formatted="false">Daily digest</string>
+  <string name="Daily_summary" formatted="false">Daily summary</string>
   <string name="Data_will_appear_here_once" formatted="false">Data will appear here once somebody backs your project.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter account</string>
   <string name="Delivered" formatted="false">Delivered</string>
@@ -446,6 +447,7 @@ catch your eye?</string>
   <string name="Top_ten_pledge_sources" formatted="false">Top 10 pledge sources</string>
   <string name="Top_ten_rewards" formatted="false">Top 10 rewards</string>
   <string name="Total_pledged" formatted="false">Total pledged</string>
+  <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>
   <string name="Unable_to_request" formatted="false">Unable to request data.</string>
   <string name="Unfollow_friend_name" formatted="false">Unfollow %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Unfollows %{friend_name}.</string>
@@ -454,6 +456,7 @@ catch your eye?</string>
   <string name="Unsubscribe" formatted="false">Unsubscribe</string>
   <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">Unsubscribes from upcoming live streams.</string>
   <string name="Unsuccessfully_Funded" formatted="false">Unsuccessfully Funded.</string>
+  <string name="Unsupported_card_type" formatted="false">We don\'t accept this card type. Please try again with another one.</string>
   <string name="Upcoming_live_stream" formatted="false">Upcoming live stream</string>
   <string name="Upcoming_live_streams" formatted="false">Upcoming live streams</string>
   <string name="Upcoming_with_creator_name" formatted="false">Upcoming with&lt;br/>&lt;b>%{creator_name}&lt;/b></string>

@@ -1,3 +1,5 @@
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 apply plugin: 'checkstyle'
 
 check.dependsOn 'checkstyle'

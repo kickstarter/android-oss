@@ -85,6 +85,7 @@ backers</string>
   <string name="Couldnt_add_attachment" formatted="false">Couldn\'t add attachment</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Couldn‘t open live stream. Try again later.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Couldn\'t remove attachment</string>
+  <string name="Create_password" formatted="false">Create password</string>
   <string name="Created_projects_projects_count" formatted="false">Created projects %{projects_count}</string>
   <string name="Creator" formatted="false">Creator</string>
   <string name="Creator_name_is_live_now" formatted="false">&lt;b>%{creator_name}&lt;/b> is live now</string>
@@ -114,6 +115,7 @@ backers</string>
   <string name="Current_email" formatted="false">Current email</string>
   <string name="Current_password" formatted="false">Current password</string>
   <string name="Daily_digest" formatted="false">Daily digest</string>
+  <string name="Daily_summary" formatted="false">Daily summary</string>
   <string name="Data_will_appear_here_once" formatted="false">Data will appear here once somebody backs your project.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter account</string>
   <string name="Delivered" formatted="false">Delivered</string>
@@ -446,6 +448,7 @@ catch your eye?</string>
   <string name="Top_ten_pledge_sources" formatted="false">Top 10 pledge sources</string>
   <string name="Top_ten_rewards" formatted="false">Top 10 rewards</string>
   <string name="Total_pledged" formatted="false">Total pledged</string>
+  <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>
   <string name="Unable_to_request" formatted="false">Unable to request data.</string>
   <string name="Unfollow_friend_name" formatted="false">Unfollow %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Unfollows %{friend_name}.</string>
@@ -454,6 +457,7 @@ catch your eye?</string>
   <string name="Unsubscribe" formatted="false">Unsubscribe</string>
   <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">Unsubscribes from upcoming live streams.</string>
   <string name="Unsuccessfully_Funded" formatted="false">Unsuccessfully Funded.</string>
+  <string name="Unsupported_card_type" formatted="false">We don\'t accept this card type. Please try again with another one.</string>
   <string name="Upcoming_live_stream" formatted="false">Upcoming live stream</string>
   <string name="Upcoming_live_streams" formatted="false">Upcoming live streams</string>
   <string name="Upcoming_with_creator_name" formatted="false">Upcoming with&lt;br/>&lt;b>%{creator_name}&lt;/b></string>
@@ -500,6 +504,7 @@ Please try again later.</string>
   <string name="Your_shipping_destination" formatted="false">Your shipping destination</string>
   <string name="Youre_a_backer" formatted="false">You’re a backer!</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">You\'re about to create a new Kickstarter account with the email address you use for Facebook. Please confirm that it’s correct before proceeding.</string>
+  <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">You\'re connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.</string>
   <string name="Youre_offline" formatted="false">You’re offline. Once your device reconnects, navigate around the app to refresh.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">You’ve pledged to support this project and it’s currently still funding.</string>
   <string name="Zip_postal_code" formatted="false">Zip/Postal code</string>

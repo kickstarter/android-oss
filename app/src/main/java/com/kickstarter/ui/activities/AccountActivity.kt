@@ -58,7 +58,10 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         this.viewModel.outputs.passwordRequiredContainerIsVisible()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(password_required_container, !it) }
+                .subscribe {
+                    ViewUtils.setGone(create_password_container, !it)
+                    ViewUtils.setGone(password_required_container, it)
+                }
 
         this.viewModel.outputs.showEmailErrorIcon()
                 .compose(bindToLifecycle())
@@ -70,6 +73,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
                 .compose(observeForUI())
                 .subscribe { showConfirmationSnackbar(account_container, R.string.Got_it_your_changes_have_been_saved) }
 
+        create_password_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, CreatePasswordActivity::class.java)) }
         change_email_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, ChangeEmailActivity::class.java)) }
         change_password_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, ChangePasswordActivity::class.java)) }
         privacy_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, PrivacyActivity::class.java)) }

@@ -1,5 +1,6 @@
 package com.kickstarter.mock.services
 
+import CreatePasswordMutation
 import SendEmailVerificationMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
@@ -10,6 +11,11 @@ import rx.Observable
 import type.CurrencyCode
 
 open class MockApolloClient : ApolloClientType {
+    override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
+        return Observable.just(CreatePasswordMutation.Data(CreatePasswordMutation.UpdateUserAccount("",
+                CreatePasswordMutation.User("", true))))
+    }
+
     override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
         return Observable.just(SendEmailVerificationMutation.Data(SendEmailVerificationMutation.UserSendEmailVerification("",
                 "12345")))

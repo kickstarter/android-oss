@@ -7,9 +7,7 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.fragments.NewCardFragment
-import com.stripe.android.Stripe
 import com.stripe.android.TokenCallback
 import com.stripe.android.model.Card
 import com.stripe.android.model.Token
@@ -17,7 +15,6 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import type.PaymentTypes
-import java.lang.Exception
 
 interface NewCardFragmentViewModel {
     interface Inputs {
@@ -38,6 +35,9 @@ interface NewCardFragmentViewModel {
     }
 
     interface Outputs {
+        /** Emits when the drawable to be shown when the card widget has focus. */
+        fun allowedCardWarningIsVisible(): Observable<Boolean>
+
         /** Emits when the drawable to be shown when the card widget has focus. */
         fun cardWidgetFocusDrawable(): Observable<Int>
 
@@ -78,8 +78,7 @@ interface NewCardFragmentViewModel {
         init {
             val cardForm = Observable.combineLatest(this.name.startWith(""),
                     this.card.startWith(null, null),
-                    this.postalCode.startWith(""),
-                    { name, card, postalCode -> CardForm(name, card, postalCode) })
+                    this.postalCode.startWith("")) { name, card, postalCode -> CardForm(name, card, postalCode) }
                     .skip(1)
 
             cardForm
@@ -87,6 +86,12 @@ interface NewCardFragmentViewModel {
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.saveButtonIsEnabled)
+
+            cardForm
+                    .map { it.isAllowedCard() }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.allowedCardWarningIsVisible)
 
             this.cardFocus
                     .map {
@@ -162,14 +167,25 @@ interface NewCardFragmentViewModel {
         }
 
         data class CardForm(val name: String, val card: Card?, val postalCode: String) {
+            private val allowedCardTypes = arrayOf(Card.AMERICAN_EXPRESS,
+                    Card.DINERS_CLUB,
+                    Card.DISCOVER,
+                    Card.JCB,
+                    Card.MASTERCARD,
+                    Card.VISA)
+
+            fun isAllowedCard(): Boolean {
+                return this.card != null && this.card.brand in allowedCardTypes
+            }
+
             fun isValid(): Boolean {
                 return isNotEmpty(this.name)
                         && isNotEmpty(this.postalCode)
-                        && isValidCard(this.card)
+                        && isValidCard()
             }
 
-            private fun isValidCard(card: Card?): Boolean {
-                return card != null && card.validateNumber() && card.validateExpiryDate() && card.validateCVC()
+            private fun isValidCard(): Boolean {
+                return this.card != null && isAllowedCard() && this.card.validateNumber() && this.card.validateExpiryDate() && card.validateCVC()
             }
 
             private fun isNotEmpty(s: String): Boolean {

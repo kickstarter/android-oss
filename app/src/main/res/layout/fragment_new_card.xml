@@ -53,15 +53,13 @@
           style="@style/SettingsLinearRow">
 
           <com.google.android.material.textfield.TextInputLayout
-            style="@style/TextInputLayout"
+            style="@style/UnderlineTextInputLayout"
             android:layout_marginBottom="0dp"
-            app:hintTextAppearance="@style/BodySecondary"
-            app:passwordToggleEnabled="true">
+            android:hint="@string/Name">
 
             <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/cardholder_name"
               style="@style/ChangeEmailPassTextInputEditText"
-              android:hint="@string/Name"
               android:inputType="textPersonName"
               android:maxLines="1" />
 
@@ -89,14 +87,12 @@
           </FrameLayout>
 
           <com.google.android.material.textfield.TextInputLayout
-            style="@style/TextInputLayout"
-            app:hintTextAppearance="@style/BodySecondary"
-            app:passwordToggleEnabled="true">
+            style="@style/UnderlineTextInputLayout"
+            android:hint="@string/Zip_postal_code">
 
             <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/postal_code"
               style="@style/ChangeEmailPassTextInputEditText"
-              android:hint="@string/Zip_postal_code"
               android:inputType="phone"
               android:maxLines="1" />
 

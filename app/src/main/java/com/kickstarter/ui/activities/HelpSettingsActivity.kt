@@ -14,16 +14,25 @@ import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.models.User
+import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.viewmodels.HelpSettingsViewModel
 import kotlinx.android.synthetic.main.activity_help_settings.*
 import rx.android.schedulers.AndroidSchedulers
 import java.util.*
+
+
+
+const val COOKIES = "cookies"
+const val HELP = "help"
+const val PRIVACY = "privacy"
+const val TERMS = "terms-of-use"
 
 @RequiresActivityViewModel(HelpSettingsViewModel.ViewModel::class)
 class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
 
     private lateinit var build: Build
     private lateinit var currentUser: CurrentUserType
+    private lateinit var packageNameToUse: String
 
     private val mailto = R.string.mailto
     private val supportEmail = R.string.support_email_to_android
@@ -46,10 +55,10 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
                     .subscribe(this::composeContactEmail)
         }
 
-        cookie_policy.setOnClickListener{ loadChromePages("cookies") }
-        help_center.setOnClickListener { loadChromePages("help") }
-        privacy_policy.setOnClickListener { loadChromePages("privacy") }
-        terms_of_use.setOnClickListener { loadChromePages("terms-of-use") }
+        cookie_policy.setOnClickListener { startChromeTab(COOKIES) }
+        help_center.setOnClickListener { startChromeTab(HELP) }
+        privacy_policy.setOnClickListener { startChromeTab(PRIVACY) }
+        terms_of_use.setOnClickListener { startChromeTab(TERMS) }
     }
 
     override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
@@ -75,7 +84,7 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         }
     }
 
-    private fun loadChromePages(endpoint: String) {
+    private fun startChromeTab(endpoint: String) {
         val webEndpointBuilder = Uri.parse(this.environment().webEndpoint()).buildUpon()
         webEndpointBuilder.appendEncodedPath(endpoint)
 
@@ -86,6 +95,14 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         builder.setToolbarColor(ContextCompat.getColor(this, R.color.primary))
 
         val customTabsIntent = builder.build()
-        customTabsIntent.launchUrl(this, Uri.parse(url))
+
+        ChromeTabsHelperActivity.openCustomTab(this, customTabsIntent, Uri.parse(url), object :
+                ChromeTabsHelperActivity.CustomTabFallback {
+
+            override fun openUri(activity: android.app.Activity, uri: Uri) {
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                activity.startActivity(intent)
+            }
+        })
     }
 }

@@ -32,7 +32,6 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
 
     private lateinit var build: Build
     private lateinit var currentUser: CurrentUserType
-    private lateinit var packageNameToUse: String
 
     private val mailto = R.string.mailto
     private val supportEmail = R.string.support_email_to_android

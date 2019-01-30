@@ -15,6 +15,7 @@ import type.PaymentTypes
 class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: NewCardFragmentViewModel.ViewModel
+    private val allowedCardWarningIsVisible = TestSubscriber<Boolean>()
     private val cardWidgetFocusDrawable = TestSubscriber<Int>()
     private val error = TestSubscriber<String>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
@@ -23,11 +24,29 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = NewCardFragmentViewModel.ViewModel(environment)
+        this.vm.outputs.allowedCardWarningIsVisible().subscribe(this.allowedCardWarningIsVisible)
         this.vm.outputs.cardWidgetFocusDrawable().subscribe(this.cardWidgetFocusDrawable)
         this.vm.outputs.error().subscribe(this.error)
         this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
         this.vm.outputs.saveButtonIsEnabled().subscribe(this.saveButtonIsEnabled)
         this.vm.outputs.success().subscribe(this.success)
+    }
+
+    @Test
+    fun testAllowedCardWarningIsVisible() {
+        setUpEnvironment(environment())
+
+        //Union Pay
+        this.vm.inputs.cardNumber("620")
+        this.allowedCardWarningIsVisible.assertValue(true)
+
+        //Visa
+        this.vm.inputs.cardNumber("424")
+        this.allowedCardWarningIsVisible.assertValues(true, false)
+
+        //Unknown
+        this.vm.inputs.cardNumber("000")
+        this.allowedCardWarningIsVisible.assertValues(true, false, true)
     }
 
     @Test

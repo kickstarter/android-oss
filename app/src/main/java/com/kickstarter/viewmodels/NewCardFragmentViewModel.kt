@@ -7,9 +7,9 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
-import com.kickstarter.services.ApolloClientType
+import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.ui.fragments.NewCardFragment
-import com.stripe.android.Stripe
+import com.stripe.android.CardUtils
 import com.stripe.android.TokenCallback
 import com.stripe.android.model.Card
 import com.stripe.android.model.Token
@@ -17,12 +17,14 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import type.PaymentTypes
-import java.lang.Exception
 
 interface NewCardFragmentViewModel {
     interface Inputs {
         /** Call when the card validity changes. */
         fun card(card: Card?)
+
+        /** Call when the card number text changes. */
+        fun cardNumber(cardNumber: String)
 
         /** Call when the name field changes. */
         fun name(name: String)
@@ -38,6 +40,9 @@ interface NewCardFragmentViewModel {
     }
 
     interface Outputs {
+        /** Emits when the drawable to be shown when the card widget has focus. */
+        fun allowedCardWarningIsVisible(): Observable<Boolean>
+
         /** Emits when the drawable to be shown when the card widget has focus. */
         fun cardWidgetFocusDrawable(): Observable<Int>
 
@@ -59,10 +64,12 @@ interface NewCardFragmentViewModel {
 
         private val card = PublishSubject.create<Card?>()
         private val cardFocus = PublishSubject.create<Boolean>()
+        private val cardNumber = PublishSubject.create<String>()
         private val name = PublishSubject.create<String>()
         private val postalCode = PublishSubject.create<String>()
         private val saveCardClicked = PublishSubject.create<Void>()
 
+        private val allowedCardWarningIsVisible = BehaviorSubject.create<Boolean>()
         private val cardWidgetFocusDrawable = BehaviorSubject.create<Int>()
         private val error = BehaviorSubject.create<String>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
@@ -78,8 +85,8 @@ interface NewCardFragmentViewModel {
         init {
             val cardForm = Observable.combineLatest(this.name.startWith(""),
                     this.card.startWith(null, null),
-                    this.postalCode.startWith(""),
-                    { name, card, postalCode -> CardForm(name, card, postalCode) })
+                    this.cardNumber.startWith(""),
+                    this.postalCode.startWith("")) { name, card, cardNumber, postalCode -> CardForm(name, card, cardNumber, postalCode) }
                     .skip(1)
 
             cardForm
@@ -87,6 +94,13 @@ interface NewCardFragmentViewModel {
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.saveButtonIsEnabled)
+
+            cardForm
+                    .map { it.isAllowedCard() }
+                    .map { BooleanUtils.negate(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.allowedCardWarningIsVisible)
 
             this.cardFocus
                     .map {
@@ -129,6 +143,10 @@ interface NewCardFragmentViewModel {
             this.cardFocus.onNext(hasFocus)
         }
 
+        override fun cardNumber(cardNumber: String) {
+            this.cardNumber.onNext(cardNumber)
+        }
+
         override fun name(name: String) {
             this.name.onNext(name)
         }
@@ -139,6 +157,10 @@ interface NewCardFragmentViewModel {
 
         override fun saveCardClicked() {
             this.saveCardClicked.onNext(null)
+        }
+
+        override fun allowedCardWarningIsVisible(): Observable<Boolean> {
+            return this.allowedCardWarningIsVisible
         }
 
         override fun cardWidgetFocusDrawable(): Observable<Int> {
@@ -161,15 +183,26 @@ interface NewCardFragmentViewModel {
             return this.success
         }
 
-        data class CardForm(val name: String, val card: Card?, val postalCode: String) {
+        data class CardForm(val name: String, val card: Card?, val cardNumber: String, val postalCode: String) {
+            private val allowedCardTypes = arrayOf(Card.AMERICAN_EXPRESS,
+                    Card.DINERS_CLUB,
+                    Card.DISCOVER,
+                    Card.JCB,
+                    Card.MASTERCARD,
+                    Card.VISA)
+
+            fun isAllowedCard(): Boolean {
+                return this.cardNumber.length < 3 || CardUtils.getPossibleCardType(this.cardNumber) in allowedCardTypes
+            }
+
             fun isValid(): Boolean {
                 return isNotEmpty(this.name)
                         && isNotEmpty(this.postalCode)
-                        && isValidCard(this.card)
+                        && isValidCard()
             }
 
-            private fun isValidCard(card: Card?): Boolean {
-                return card != null && card.validateNumber() && card.validateExpiryDate() && card.validateCVC()
+            private fun isValidCard(): Boolean {
+                return this.card != null && isAllowedCard() && this.card.validateNumber() && this.card.validateExpiryDate() && card.validateCVC()
             }
 
             private fun isNotEmpty(s: String): Boolean {

@@ -36,6 +36,11 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         (activity as AppCompatActivity).setSupportActionBar(new_card_toolbar)
         setHasOptionsMenu(true)
 
+        this.viewModel.outputs.allowedCardWarningIsVisible()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { ViewUtils.setGone(allowed_card_warning, !it) }
+
         this.viewModel.outputs.cardWidgetFocusDrawable()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
@@ -99,10 +104,9 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         card_input_widget.clearFocus()
         cardholder_name.onFocusChangeListener = cardFocusChangeListener
         postal_code.onFocusChangeListener = cardFocusChangeListener
-        card_input_widget.setCardNumberTextWatcher(cardValidityWatcher)
+        card_input_widget.setCardNumberTextWatcher(cardNumberWatcher)
         card_input_widget.setCvcNumberTextWatcher(cardValidityWatcher)
         card_input_widget.setExpiryDateTextWatcher(cardValidityWatcher)
-
         card_input_widget.setCardInputListener(object : CardInputListener {
             override fun onFocusChange(focusField: String?) {
                 this@NewCardFragment.viewModel.inputs.cardFocus(true)
@@ -143,6 +147,18 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             cardChanged()
+        }
+    }
+
+    private val cardNumberWatcher = object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            this@NewCardFragment.viewModel.inputs.cardNumber(s?.toString() ?: "")
         }
     }
 

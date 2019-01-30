@@ -28,7 +28,7 @@
 
         <TextView
           style="@style/ToolbarTitle"
-          android:text="@string/Add_new_card"/>
+          android:text="@string/Add_new_card" />
       </RelativeLayout>
 
     </com.kickstarter.ui.toolbars.KSToolbar>
@@ -46,22 +46,20 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/grid_3"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="@dimen/grid_3">
 
         <LinearLayout
           style="@style/SettingsLinearRow">
 
           <com.google.android.material.textfield.TextInputLayout
-            style="@style/TextInputLayout"
+            style="@style/UnderlineTextInputLayout"
             android:layout_marginBottom="0dp"
-            app:hintTextAppearance="@style/BodySecondary"
-            app:passwordToggleEnabled="true">
+            android:hint="@string/Name">
 
             <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/cardholder_name"
               style="@style/ChangeEmailPassTextInputEditText"
-              android:hint="@string/Name"
               android:inputType="textPersonName"
               android:maxLines="1" />
 
@@ -78,31 +76,38 @@
             android:layout_height="2dp">
 
             <ImageView
-              android:contentDescription="@null"
               android:id="@+id/card_focus"
-              android:src="@drawable/divider_dark_grey_500_horizontal"
-              android:layout_marginStart="@dimen/grid_3"
-              android:layout_marginEnd="@dimen/grid_3"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"/>
+              android:layout_height="wrap_content"
+              android:layout_marginEnd="@dimen/grid_3"
+              android:layout_marginStart="@dimen/grid_3"
+              android:contentDescription="@null"
+              android:src="@drawable/divider_dark_grey_500_horizontal" />
 
           </FrameLayout>
 
           <com.google.android.material.textfield.TextInputLayout
-            style="@style/TextInputLayout"
-            app:hintTextAppearance="@style/BodySecondary"
-            app:passwordToggleEnabled="true">
+            style="@style/UnderlineTextInputLayout"
+            android:hint="@string/Zip_postal_code">
 
             <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/postal_code"
               style="@style/ChangeEmailPassTextInputEditText"
-              android:hint="@string/Zip_postal_code"
               android:inputType="phone"
               android:maxLines="1" />
 
           </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
+
+        <TextView
+          android:id="@+id/allowed_card_warning"
+          style="@style/Warning"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/Unsupported_card_type"
+          android:visibility="gone"
+          tools:visibility="visible" />
 
       </LinearLayout>
 

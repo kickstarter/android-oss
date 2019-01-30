@@ -13,6 +13,7 @@ import com.kickstarter.extensions.showConfirmationSnackbar
 import com.kickstarter.extensions.showErrorSnackbar
 import com.kickstarter.extensions.startActivityWithSlideUpTransition
 import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.TransitionUtils
@@ -30,9 +31,14 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
     private var newCurrencySelection: CurrencyCode? = null
     private var showCurrencyChangeDialog: AlertDialog? = null
 
+    private var userEmail: String? = null
+    private lateinit var ksString: KSString
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
+
+        this.ksString = environment().ksString()
 
         if (BuildConfig.DEBUG) {
             payment_methods_row.visibility = View.VISIBLE
@@ -43,7 +49,14 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         this.viewModel.outputs.chosenCurrency()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setSpinnerSelection(it)  }
+                .subscribe { setSpinnerSelection(it) }
+
+        this.viewModel.outputs.email()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    create_password_text_view.text = this.ksString.format(getString(R.string.Youre_connected_via_Facebook_email_Create_a_password_for_this_account), "email", it)
+                }
 
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
@@ -59,8 +72,8 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    ViewUtils.setGone(create_password_container, !it)
-                    ViewUtils.setGone(password_required_container, it)
+                    ViewUtils.setGone(create_password_container, it)
+                    ViewUtils.setGone(password_required_container, !it)
                 }
 
         this.viewModel.outputs.showEmailErrorIcon()
@@ -148,5 +161,11 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
                 }
             }
         }
+    }
+
+    private fun showCreatePassOrChangeEmail(show: Boolean) {
+        ViewUtils.setGone(create_password_container, !show)
+        create_password_text_view.text = this.ksString.format(getString(R.string.Youre_connected_via_Facebook_email_Create_a_password_for_this_account), "email", this.userEmail)
+        ViewUtils.setGone(password_required_container, show)
     }
 }

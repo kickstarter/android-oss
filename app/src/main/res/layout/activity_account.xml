@@ -50,6 +50,7 @@
         </LinearLayout>
 
         <TextView
+          android:id="@+id/create_password_text_view"
           style="@style/TextInputPasswordLayout"
           android:text="@string/Youre_connected_via_Facebook_email_Create_a_password_for_this_account"
           android:layout_width="wrap_content"

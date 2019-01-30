@@ -63,6 +63,7 @@ interface NewCardFragmentViewModel {
         private val postalCode = PublishSubject.create<String>()
         private val saveCardClicked = PublishSubject.create<Void>()
 
+        private val allowedCardWarningIsVisible = BehaviorSubject.create<Boolean>()
         private val cardWidgetFocusDrawable = BehaviorSubject.create<Int>()
         private val error = BehaviorSubject.create<String>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
@@ -144,6 +145,10 @@ interface NewCardFragmentViewModel {
 
         override fun saveCardClicked() {
             this.saveCardClicked.onNext(null)
+        }
+
+        override fun allowedCardWarningIsVisible(): Observable<Boolean> {
+            return this.allowedCardWarningIsVisible
         }
 
         override fun cardWidgetFocusDrawable(): Observable<Int> {

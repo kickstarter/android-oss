@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.kickstarter.ui.toolbars.KSToolbar
+  android:id="@+id/profile_toolbar"
+  style="@style/Toolbar"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  tools:showIn="@layout/profile_layout"
-  style="@style/Toolbar"
-  android:id="@+id/profile_toolbar"
-  android:elevation="0dp"
   android:gravity="top"
-  android:layout_height="@dimen/grid_13"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   app:layout_collapseMode="pin"
-  tools:ignore="UnusedAttribute">
+  tools:ignore="UnusedAttribute"
+  tools:showIn="@layout/profile_layout">
 
   <RelativeLayout
     android:layout_width="match_parent"
@@ -20,18 +18,18 @@
     android:orientation="horizontal">
 
     <com.kickstarter.ui.views.IconTextView
-      style="@style/ToolbarIconBackButton"
-      android:id="@+id/back_button" />
+      android:id="@+id/back_button"
+      style="@style/ToolbarIconBackButton" />
 
     <ImageButton
-      style="@style/ToolbarVectorIcon"
-      android:src="@drawable/icon__mail"
       android:id="@+id/messages_button"
-      android:focusable="true"
-      android:paddingStart="@dimen/grid_2"
-      android:paddingEnd="@dimen/grid_2"
+      style="@style/ToolbarVectorIcon"
       android:layout_alignParentEnd="true"
-      android:contentDescription="@string/accessibility_dashboard_buttons_messages" />
+      android:contentDescription="@string/accessibility_dashboard_buttons_messages"
+      android:focusable="true"
+      android:paddingEnd="@dimen/grid_2"
+      android:paddingStart="@dimen/grid_2"
+      android:src="@drawable/icon__mail" />
 
   </RelativeLayout>
 

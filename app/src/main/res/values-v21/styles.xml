@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <style name="KSTheme" parent="KSThemeBase">
-    <item name="android:colorControlHighlight">@color/accent_alpha_20</item>
     <item name="android:statusBarColor">@color/status_bar</item>
 
     <item name="android:windowContentTransitions">true</item>
@@ -21,10 +20,6 @@
     <item name="android:layout_alignParentEnd">true</item>
   </style>
 
-  <style name="Toolbar" parent="ToolbarBase">
-    <item name="android:elevation">1dp</item>
-  </style>
-
   <style name="ToolbarTitle" parent="ToolbarTitleBase">
     <item name="android:layout_marginStart">@dimen/grid_9</item>
   </style>
@@ -39,18 +34,8 @@
     <item name="android:layout_marginEnd">@dimen/grid_2</item>
   </style>
 
-  <style name="Button" parent="Base.Widget.AppCompat.Button">
-    <item name="android:textColor">@drawable/button_text_white</item>
-    <item name="android:layout_centerInParent">true</item>
-    <item name="android:singleLine">true</item>
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:layout_height">wrap_content</item>
-    <item name="android:paddingStart">@dimen/grid_3</item>
-    <item name="android:paddingEnd">@dimen/grid_3</item>
-    <item name="android:textSize">@dimen/callout</item>
-    <item name="android:fontFamily">@string/font_family_sans_serif</item>
-    <item name="android:minHeight">@dimen/grid_8</item>
-    <item name="android:stateListAnimator">@null</item>
+  <style name="Button" parent="ButtonBase">
+    <item name="android:letterSpacing">0.0</item>
   </style>
 
   <!-- Rewards -->

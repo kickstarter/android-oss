@@ -57,7 +57,6 @@
       android:text="@string/A_request_has_been_made_to_download_the_latest_build" />
 
     <Button
-      style="@style/PrimaryButton"
       android:id="@+id/open_downloads_button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

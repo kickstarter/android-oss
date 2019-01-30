@@ -22,6 +22,5 @@
     android:gravity="center_horizontal"
     android:paddingEnd="@dimen/grid_5"
     android:paddingStart="@dimen/grid_5"
-    android:text="@string/discovery_onboarding_title_bring_creative_projects_to_life"
-    android:textColor="@color/ksr_dark_grey_500" />
+    android:text="@string/discovery_onboarding_title_bring_creative_projects_to_life" />
 </LinearLayout>

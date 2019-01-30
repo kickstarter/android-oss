@@ -7,6 +7,7 @@
   android:layout_height="match_parent">
 
   <com.google.android.material.appbar.AppBarLayout
+    style="@style/AppBarLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -15,90 +16,91 @@
       android:layout_height="wrap_content"
       app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-      <include layout="@layout/profile_toolbar" />
-
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:paddingBottom="@dimen/grid_2"
-        android:orientation="vertical">
+        android:paddingTop="56dp">
 
         <ImageView
           android:id="@+id/avatar_image_view"
-          android:background="@drawable/avatar_stroke"
-          android:layout_gravity="center_horizontal"
           android:layout_width="@dimen/profile_avatar_width"
           android:layout_height="@dimen/profile_avatar_height"
-          android:layout_marginTop="@dimen/grid_2"
+          android:layout_gravity="center_horizontal"
           android:layout_marginBottom="@dimen/grid_2"
+          android:layout_marginTop="@dimen/grid_2"
+          android:background="@drawable/avatar_stroke"
           android:scaleType="centerCrop"
           tools:ignore="ContentDescription" />
 
         <TextView
-          style="@style/Title2Medium"
           android:id="@+id/user_name_text_view"
-          android:gravity="center_horizontal"
+          style="@style/Title2Medium"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:paddingStart="@dimen/grid_4"
+          android:gravity="center_horizontal"
           android:paddingEnd="@dimen/grid_4"
+          android:paddingStart="@dimen/grid_4"
           android:text="@string/update_comments_you" />
 
         <LinearLayout
-          android:gravity="center_horizontal"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:paddingStart="@dimen/grid_1"
+          android:gravity="center_horizontal"
+          android:orientation="horizontal"
           android:paddingEnd="@dimen/grid_1"
-          android:orientation="horizontal">
+          android:paddingStart="@dimen/grid_1">
 
           <TextView
+            android:id="@+id/created_count_text_view"
             style="@style/CalloutPrimary"
-            android:id="@+id/created_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/grid_1_half"
             android:paddingEnd="@dimen/grid_1_half"
-            android:text="@string/profile_projects_created_projects"
-            android:textColor="@color/text_secondary" />
+            android:paddingStart="@dimen/grid_1_half"
+            tools:text="0" />
 
           <TextView
+            android:id="@+id/created_text_view"
             style="@style/CalloutPrimary"
-            android:id="@+id/created_count_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/grid_1_half"
-            tools:text="0" />
+            android:text="@string/profile_projects_created_projects"
+            android:textColor="@color/text_secondary" />
 
           <View
             android:id="@+id/divider_view"
-            android:background="@color/black_alpha_10"
             android:layout_width="1dp"
             android:layout_height="@dimen/grid_3"
-            android:layout_marginStart="@dimen/grid_1"
             android:layout_marginEnd="@dimen/grid_1"
-            android:layout_marginTop="3dp"/>
+            android:layout_marginStart="@dimen/grid_1"
+            android:layout_marginTop="3dp"
+            android:background="@color/black_alpha_10" />
 
           <TextView
+            android:id="@+id/backed_count_text_view"
             style="@style/CalloutPrimary"
-            android:id="@+id/backed_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/grid_1_half"
             android:paddingEnd="@dimen/grid_1_half"
+            android:paddingStart="@dimen/grid_1_half"
+            tools:text="0" />
+
+          <TextView
+            android:id="@+id/backed_text_view"
+            style="@style/CalloutPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/profile_projects_backed_projects"
             android:textColor="@color/text_secondary" />
-
-          <TextView
-            style="@style/CalloutPrimary"
-            android:id="@+id/backed_count_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="0" />
 
         </LinearLayout>
 
       </LinearLayout>
+
+      <include layout="@layout/profile_toolbar" />
 
     </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -108,9 +110,9 @@
     android:id="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/grid_4"
     android:clipChildren="false"
     android:clipToPadding="false"
+    android:paddingBottom="@dimen/grid_4"
     android:scrollbars="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:ignore="RtlSymmetry" />

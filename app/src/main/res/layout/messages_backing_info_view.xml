@@ -1,52 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+  android:id="@+id/backing_info_view"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/backing_info_view"
-  android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@color/white"
+  android:orientation="vertical"
   tools:showIn="@layout/messages_layout">
 
-  <RelativeLayout
-    android:background="@color/white"
-    android:paddingStart="@dimen/grid_3"
-    android:paddingEnd="0dp"
-    android:gravity="center_vertical"
+  <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_10">
-
-    <Button
-      android:id="@+id/messages_view_pledge_button"
-      android:textSize="@dimen/footnote"
-      android:background="@drawable/click_indicator_light_masked"
-      android:textColor="@color/ksr_text_green_700"
-      android:textStyle="bold"
-      android:layout_height="match_parent"
-      android:layout_width="wrap_content"
-      android:paddingStart="@dimen/grid_3"
-      android:paddingEnd="@dimen/grid_3"
-      android:layout_alignParentEnd="true"
-      tools:text="View pledge"/>
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/grid_1"
+    android:paddingEnd="@dimen/grid_3"
+    android:paddingStart="@dimen/grid_3"
+    android:paddingTop="@dimen/grid_1">
 
     <TextView
       android:id="@+id/backing_amount_text_view"
       style="@style/FootnotePrimary"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      tools:text="$42 pledged on June 9, 2017" />
+
+    <Button
+      android:id="@+id/messages_view_pledge_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_alignBaseline="@+id/messages_view_pledge_button"
-      android:layout_alignBottom="@+id/messages_view_pledge_button"
-      android:layout_alignParentStart="true"
-      android:layout_toStartOf="@+id/messages_view_pledge_button"
-      tools:text="$42 pledged on June 9, 2017"/>
+      tools:text="View pledge" />
 
-  </RelativeLayout>
+  </LinearLayout>
 
   <include
     layout="@layout/horizontal_line_0_5dp_view"
-    android:layout_height="wrap_content"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     app:layout_scrollFlags="scroll|enterAlways" />
 
 </LinearLayout>

@@ -85,6 +85,7 @@ contributeurs</string>
   <string name="Couldnt_add_attachment" formatted="false">Impossible d\'ajouter la pièce jointe</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Impossible d\'ouvrir la diffusion en direct. Veuillez réessayer plus tard.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Impossible de supprimer la pièce jointe</string>
+  <string name="Create_password" formatted="false">Create password</string>
   <string name="Created_projects_projects_count" formatted="false">Projets créés : %{projects_count}</string>
   <string name="Creator" formatted="false">Créateur</string>
   <string name="Creator_name_is_live_now" formatted="false">&lt;b>%{creator_name}&lt;/b> est en direct en ce moment</string>
@@ -114,6 +115,7 @@ contributeurs</string>
   <string name="Current_email" formatted="false">Adresse e-mail actuelle</string>
   <string name="Current_password" formatted="false">Mot de passe actuel</string>
   <string name="Daily_digest" formatted="false">Résumé quotidien</string>
+  <string name="Daily_summary" formatted="false">Une fois par jour</string>
   <string name="Data_will_appear_here_once" formatted="false">Ces données seront visibles dès que vous aurez reçu votre première contribution.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Supprimer mon compte Kickstarter</string>
   <string name="Delivered" formatted="false">Distribué</string>
@@ -443,6 +445,7 @@ n\'ont rien soutenu.</string>
   <string name="Top_ten_pledge_sources" formatted="false">Vos 10 principales sources de contributions</string>
   <string name="Top_ten_rewards" formatted="false">Les 10 récompenses qui ont le plus de succès</string>
   <string name="Total_pledged" formatted="false">Total engagé</string>
+  <string name="Twice_a_day_summary" formatted="false">Deux fois par jour</string>
   <string name="Unable_to_request" formatted="false">Demande de données impossible.</string>
   <string name="Unfollow_friend_name" formatted="false">Ne plus suivre %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Désabonnement des actus de %{friend_name}.</string>
@@ -451,6 +454,7 @@ n\'ont rien soutenu.</string>
   <string name="Unsubscribe" formatted="false">Se désabonner</string>
   <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">Désabonnement des diffusions en direct à venir.</string>
   <string name="Unsuccessfully_Funded" formatted="false">Non financé.</string>
+  <string name="Unsupported_card_type" formatted="false">Ce type n\'est pas accepté. Veuillez réessayer avec une autre carte.</string>
   <string name="Upcoming_live_stream" formatted="false">Diffusion en direct à venir</string>
   <string name="Upcoming_live_streams" formatted="false">Diffusions en direct à venir</string>
   <string name="Upcoming_with_creator_name" formatted="false">&lt;br/>&lt;b>%{creator_name}&lt;/b> bientôt en direct</string>
@@ -485,7 +489,6 @@ Veuillez réessayer ultérieurement.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Votre engagement&lt;/b> du %{pledge_date}</string>
   <string name="You_saved_this_project" formatted="false">Vous avez enregistré ce projet.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Votre message n\'a pas été envoyé.</string>
-  <string name="Your_device_is_offline" formatted="false">Your device is offline. Content may not be displayed until you reconnect.</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Vos amis n\'ont encore rien soutenu, mais dès qu\'ils s\'y seront mis, leurs engagements s\'afficheront ici.</string>
   <string name="Your_name_displayed" formatted="false">Votre nom s\'affichera toujours sur votre profil.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Votre moyen de paiement a bien été débité.</string>
@@ -498,6 +501,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Your_shipping_destination" formatted="false">Destination d\'expédition</string>
   <string name="Youre_a_backer" formatted="false">Vous êtes contributeur !</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Vous êtes sur le point de créer un nouveau compte Kickstarter avec l\'adresse e-mail que vous utilisez sur Facebook. Veuillez confirmer avant de continuer.</string>
+  <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">You\'re connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.</string>
   <string name="Youre_offline" formatted="false">Vous êtes hors ligne. Dès que votre appareil se sera reconnecté, naviguez dans l\'application pour la rafraîchir.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Vous vous êtes engagé à soutenir ce projet et sa campagne de financement n\'est pas terminée.</string>
   <string name="Zip_postal_code" formatted="false">Code postal</string>

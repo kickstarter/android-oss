@@ -7,7 +7,9 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.ui.fragments.NewCardFragment
+import com.stripe.android.CardUtils
 import com.stripe.android.TokenCallback
 import com.stripe.android.model.Card
 import com.stripe.android.model.Token
@@ -20,6 +22,9 @@ interface NewCardFragmentViewModel {
     interface Inputs {
         /** Call when the card validity changes. */
         fun card(card: Card?)
+
+        /** Call when the card number text changes. */
+        fun cardNumber(cardNumber: String)
 
         /** Call when the name field changes. */
         fun name(name: String)
@@ -59,6 +64,7 @@ interface NewCardFragmentViewModel {
 
         private val card = PublishSubject.create<Card?>()
         private val cardFocus = PublishSubject.create<Boolean>()
+        private val cardNumber = PublishSubject.create<String>()
         private val name = PublishSubject.create<String>()
         private val postalCode = PublishSubject.create<String>()
         private val saveCardClicked = PublishSubject.create<Void>()
@@ -79,7 +85,8 @@ interface NewCardFragmentViewModel {
         init {
             val cardForm = Observable.combineLatest(this.name.startWith(""),
                     this.card.startWith(null, null),
-                    this.postalCode.startWith("")) { name, card, postalCode -> CardForm(name, card, postalCode) }
+                    this.cardNumber.startWith(""),
+                    this.postalCode.startWith("")) { name, card, cardNumber, postalCode -> CardForm(name, card, cardNumber, postalCode) }
                     .skip(1)
 
             cardForm
@@ -90,6 +97,7 @@ interface NewCardFragmentViewModel {
 
             cardForm
                     .map { it.isAllowedCard() }
+                    .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.allowedCardWarningIsVisible)
@@ -135,6 +143,10 @@ interface NewCardFragmentViewModel {
             this.cardFocus.onNext(hasFocus)
         }
 
+        override fun cardNumber(cardNumber: String) {
+            this.cardNumber.onNext(cardNumber)
+        }
+
         override fun name(name: String) {
             this.name.onNext(name)
         }
@@ -171,7 +183,7 @@ interface NewCardFragmentViewModel {
             return this.success
         }
 
-        data class CardForm(val name: String, val card: Card?, val postalCode: String) {
+        data class CardForm(val name: String, val card: Card?, val cardNumber: String, val postalCode: String) {
             private val allowedCardTypes = arrayOf(Card.AMERICAN_EXPRESS,
                     Card.DINERS_CLUB,
                     Card.DISCOVER,
@@ -180,7 +192,7 @@ interface NewCardFragmentViewModel {
                     Card.VISA)
 
             fun isAllowedCard(): Boolean {
-                return this.card != null && this.card.brand in allowedCardTypes
+                return this.cardNumber.length < 3 || CardUtils.getPossibleCardType(this.cardNumber) in allowedCardTypes
             }
 
             fun isValid(): Boolean {

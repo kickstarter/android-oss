@@ -432,6 +432,14 @@
     <item name="android:fontFamily">@string/font_family_maison_neue_book</item>
   </style>
 
+  <style name="Warning" parent="TextPrimary">
+    <item name="android:layout_marginTop">@dimen/grid_1</item>
+    <item name="android:layout_marginBottom">@dimen/grid_2</item>
+    <item name="android:layout_marginStart">@dimen/activity_vertical_margin</item>
+    <item name="android:layout_marginEnd">@dimen/activity_vertical_margin</item>
+    <item name="android:textColor">@color/ksr_red_400</item>
+  </style>
+
   <!-- Cards -->
   <style name="ActivityFeedCardBase">
     <item name="android:foreground">@drawable/click_indicator_light</item>

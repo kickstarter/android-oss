@@ -44,7 +44,6 @@ public abstract class User implements Parcelable {
   public abstract @Nullable Boolean notifyOfFollower();
   public abstract @Nullable Boolean notifyOfFriendActivity();
   public abstract @Nullable Boolean notifyOfMessages();
-  public abstract @Nullable Boolean notifyOfPostLikes();
   public abstract @Nullable Boolean notifyOfUpdates();
   public abstract @Nullable Boolean optedOutOfRecommendations();
   public abstract @Nullable Boolean promoNewsletter();
@@ -86,7 +85,6 @@ public abstract class User implements Parcelable {
     public abstract Builder notifyOfFollower(Boolean __);
     public abstract Builder notifyOfFriendActivity(Boolean __);
     public abstract Builder notifyOfMessages(Boolean __);
-    public abstract Builder notifyOfPostLikes(Boolean __);
     public abstract Builder notifyOfUpdates(Boolean __);
     public abstract Builder optedOutOfRecommendations(Boolean __);
     public abstract Builder promoNewsletter(Boolean __);
@@ -110,8 +108,8 @@ public abstract class User implements Parcelable {
   public abstract Builder toBuilder();
 
   public enum EmailFrequency {
-    INDIVIDUAL(R.string.Individual_Emails),
-    DIGEST(R.string.Daily_digest);
+    TWICE_A_DAY_SUMMARY(R.string.Twice_a_day_summary),
+    DAILY_SUMMARY(R.string.Daily_summary);
 
     private int stringResId;
 

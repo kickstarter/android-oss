@@ -114,6 +114,7 @@ Unterstützer</string>
   <string name="Current_email" formatted="false">Derzeitige E-Mail</string>
   <string name="Current_password" formatted="false">Derzeitiges Passwort</string>
   <string name="Daily_digest" formatted="false">Tägliche Zusammenfassung</string>
+  <string name="Daily_summary" formatted="false">Daily summary</string>
   <string name="Data_will_appear_here_once" formatted="false">Info wird hier angezeigt, sobald jemand dein Projekt unterstützt.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Mein Kickstarter-Konto löschen</string>
   <string name="Delivered" formatted="false">Verschickt</string>
@@ -442,6 +443,7 @@ Unterstützer</string>
   <string name="Top_ten_pledge_sources" formatted="false">Top 10 Quellen deiner Beiträge</string>
   <string name="Top_ten_rewards" formatted="false">Top 10-Belohnungen</string>
   <string name="Total_pledged" formatted="false">Anzahl der Beiträge insgesamt</string>
+  <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>
   <string name="Unable_to_request" formatted="false">Daten konnten nicht angefordert werden.</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} nicht mehr folgen</string>
   <string name="Unfollows_friend_name" formatted="false">%{friend_name} nicht mehr folgen.</string>
@@ -450,6 +452,7 @@ Unterstützer</string>
   <string name="Unsubscribe" formatted="false">Abo abbestellen</string>
   <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">Abo für zukünftige Live-Streams abbestellen.</string>
   <string name="Unsuccessfully_Funded" formatted="false">Finanzierung fehlgeschlagen.</string>
+  <string name="Unsupported_card_type" formatted="false">Dieser Kartentyp wird nicht von uns anerkannt. Bitte versuche es mit einer anderen Karte erneut.</string>
   <string name="Upcoming_live_stream" formatted="false">Nächster Live-Stream</string>
   <string name="Upcoming_live_streams" formatted="false">Zukünftige Live-Streams</string>
   <string name="Upcoming_with_creator_name" formatted="false">Demnächst: Video von &lt;br/>&lt;b>%{creator_name}&lt;/b></string>

@@ -114,6 +114,7 @@ contributeurs</string>
   <string name="Current_email" formatted="false">Adresse e-mail actuelle</string>
   <string name="Current_password" formatted="false">Mot de passe actuel</string>
   <string name="Daily_digest" formatted="false">Résumé quotidien</string>
+  <string name="Daily_summary" formatted="false">Daily summary</string>
   <string name="Data_will_appear_here_once" formatted="false">Ces données seront visibles dès que vous aurez reçu votre première contribution.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Supprimer mon compte Kickstarter</string>
   <string name="Delivered" formatted="false">Distribué</string>
@@ -443,6 +444,7 @@ n\'ont rien soutenu.</string>
   <string name="Top_ten_pledge_sources" formatted="false">Vos 10 principales sources de contributions</string>
   <string name="Top_ten_rewards" formatted="false">Les 10 récompenses qui ont le plus de succès</string>
   <string name="Total_pledged" formatted="false">Total engagé</string>
+  <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>
   <string name="Unable_to_request" formatted="false">Demande de données impossible.</string>
   <string name="Unfollow_friend_name" formatted="false">Ne plus suivre %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Désabonnement des actus de %{friend_name}.</string>
@@ -451,6 +453,7 @@ n\'ont rien soutenu.</string>
   <string name="Unsubscribe" formatted="false">Se désabonner</string>
   <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">Désabonnement des diffusions en direct à venir.</string>
   <string name="Unsuccessfully_Funded" formatted="false">Non financé.</string>
+  <string name="Unsupported_card_type" formatted="false">Ce type n\'est pas accepté. Veuillez réessayer avec une autre carte.</string>
   <string name="Upcoming_live_stream" formatted="false">Diffusion en direct à venir</string>
   <string name="Upcoming_live_streams" formatted="false">Diffusions en direct à venir</string>
   <string name="Upcoming_with_creator_name" formatted="false">&lt;br/>&lt;b>%{creator_name}&lt;/b> bientôt en direct</string>

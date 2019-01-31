@@ -15,6 +15,7 @@ package com.kickstarter.models.chrome
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// https://github.com/GoogleChrome/custom-tabs-client
 
 import android.content.Context
 import android.content.Intent

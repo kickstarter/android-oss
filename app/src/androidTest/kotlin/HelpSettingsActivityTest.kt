@@ -1,6 +1,5 @@
 
 import android.content.Intent
-import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -18,17 +17,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import utils.Events
-import utils.Matchers
 
 
 @RunWith(AndroidJUnit4::class)
 class HelpSettingsActivityTest {
 
     private val events = Events()
-    private val COOKIES = "https://kickstarter.com/cookies"
-    private val HELP = "https://kickstarter.com/help"
-    private val PRIVACY = "https://kickstarter.com/privacy"
-    private val TERMS = "https://kickstarter.com/terms-of-use"
 
     @Rule
     @JvmField
@@ -54,49 +48,34 @@ class HelpSettingsActivityTest {
     @Test
     fun testCookiePolicyClick() {
         events.clickOnView(R.id.cookie_policy)
-        val uri = Uri.parse("https://kickstarter.com/cookies")
-        val customTabsIntent = CustomTabsIntent.Builder().build()
-        customTabsIntent.launchUrl(activityRule.activity, uri)
-
         intended(allOf(
                 IntentMatchers.hasAction(Intent.ACTION_VIEW),
-                IntentMatchers.hasData(COOKIES)))
+                IntentMatchers.hasData("https://www.kickstarter.com/cookies")))
     }
 
     @Test
     fun testHelpCenterClick() {
         events.clickOnView(R.id.help_center)
-        val uri = Uri.parse("https://kickstarter.com/help")
-        val customTabsIntent = CustomTabsIntent.Builder().build()
-        customTabsIntent.launchUrl(activityRule.activity, uri)
-
         intended(allOf(
                 IntentMatchers.hasAction(Intent.ACTION_VIEW),
-                IntentMatchers.hasData(HELP)))
+                IntentMatchers.hasData("https://www.kickstarter.com/help")))
     }
 
     @Test
     fun testPrivacyPolicyClick() {
         events.clickOnView(R.id.privacy_policy)
-        val uri = Uri.parse("https://kickstarter.com/privacy")
-        val customTabsIntent = CustomTabsIntent.Builder().build()
-        customTabsIntent.launchUrl(activityRule.activity, uri)
-
         intended(allOf(
                 IntentMatchers.hasAction(Intent.ACTION_VIEW),
-                IntentMatchers.hasData(PRIVACY)))
+                IntentMatchers.hasData("https://www.kickstarter.com/privacy")))
     }
 
     @Test
     fun testTermsClick() {
         events.clickOnView(R.id.terms_of_use)
-        val uri = Uri.parse("https://kickstarter.com/terms-of-use")
-        val customTabsIntent = CustomTabsIntent.Builder().build()
-        customTabsIntent.launchUrl(activityRule.activity, uri)
 
         intended(allOf(
                 IntentMatchers.hasAction(Intent.ACTION_VIEW),
-                IntentMatchers.hasData(TERMS)))
+                IntentMatchers.hasData("https://www.kickstarter.com/terms-of-use")))
     }
 
     @Test

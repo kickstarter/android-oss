@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,24 +9,21 @@ import android.util.Pair
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import com.kickstarter.R
+import com.kickstarter.extensions.startActivityWithSlideLeftTransition
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.models.User
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
+import com.kickstarter.ui.activities.HelpActivity.*
 import com.kickstarter.viewmodels.HelpSettingsViewModel
 import kotlinx.android.synthetic.main.activity_help_settings.*
 import rx.android.schedulers.AndroidSchedulers
 import java.util.*
 
-
-
-const val COOKIES = "cookies"
-const val HELP = "help"
-const val PRIVACY = "privacy"
-const val TERMS = "terms-of-use"
 
 @RequiresActivityViewModel(HelpSettingsViewModel.ViewModel::class)
 class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
@@ -54,13 +52,31 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
                     .subscribe(this::composeContactEmail)
         }
 
-        cookie_policy.setOnClickListener { startChromeTab(COOKIES) }
-        help_center.setOnClickListener { startChromeTab(HELP) }
-        privacy_policy.setOnClickListener { startChromeTab(PRIVACY) }
-        terms_of_use.setOnClickListener { startChromeTab(TERMS) }
+        cookie_policy.setOnClickListener {
+            startChromeTab(buildHelpUrl(COOKIES), Intent(this, HelpActivity.CookiePolicy::class.java))
+        }
+
+        help_center.setOnClickListener {
+            startChromeTab(Secrets.HelpCenter.ENDPOINT, null)
+        }
+
+        privacy_policy.setOnClickListener {
+            startChromeTab(buildHelpUrl(PRIVACY), Intent(this, HelpActivity.PRIVACY::class.java))
+        }
+
+        terms_of_use.setOnClickListener {
+            startChromeTab(buildHelpUrl(TERMS_OF_USE), Intent(this, HelpActivity.Terms::class.java))
+        }
     }
 
     override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
+
+    private fun buildHelpUrl(endpoint: String): String {
+        val webEndpointBuilder = Uri.parse(this.environment().webEndpoint()).buildUpon()
+        webEndpointBuilder.appendEncodedPath(endpoint)
+
+        return webEndpointBuilder.build().toString()
+    }
 
     private fun composeContactEmail(user: User) {
         val debugInfo = Arrays.asList(
@@ -83,11 +99,8 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         }
     }
 
-    private fun startChromeTab(endpoint: String) {
-        val webEndpointBuilder = Uri.parse(this.environment().webEndpoint()).buildUpon()
-        webEndpointBuilder.appendEncodedPath(endpoint)
-
-        val url = webEndpointBuilder.build().toString()
+    private fun startChromeTab(url: String, helpActivityIntent: Intent?) {
+        val uri = Uri.parse(url)
         val builder = CustomTabsIntent.Builder()
 
         builder.setShowTitle(true)
@@ -95,13 +108,19 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
 
         val customTabsIntent = builder.build()
 
-        ChromeTabsHelperActivity.openCustomTab(this, customTabsIntent, Uri.parse(url), object :
+        ChromeTabsHelperActivity.openCustomTab(this, customTabsIntent, uri, object :
                 ChromeTabsHelperActivity.CustomTabFallback {
 
-            override fun openUri(activity: android.app.Activity, uri: Uri) {
-                val intent = Intent(Intent.ACTION_VIEW, uri)
-                activity.startActivity(intent)
+            override fun openUri(activity: Activity, uri: Uri) {
+                if (helpActivityIntent != null) {
+                    activity.startActivityWithSlideLeftTransition(helpActivityIntent)
+                } else {
+                    // We're not handling users without browsers, We'll monitor on Fabric.
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    activity.startActivity(intent)
+                }
             }
         })
     }
+
 }

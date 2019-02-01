@@ -23,7 +23,6 @@ public abstract class SettingsBody {
   public abstract boolean notifyOfFollower();
   public abstract boolean notifyOfFriendActivity();
   public abstract boolean notifyOfMessages();
-  public abstract boolean notifyOfPostLikes();
   public abstract boolean notifyOfUpdates();
   public abstract int showPublicProfile();
   public abstract int social();
@@ -56,7 +55,6 @@ public abstract class SettingsBody {
     public abstract Builder notifyOfFollower(boolean __);
     public abstract Builder notifyOfFriendActivity(boolean __);
     public abstract Builder notifyOfMessages(boolean __);
-    public abstract Builder notifyOfPostLikes(boolean __);
     public abstract Builder notifyOfUpdates(boolean __);
     public abstract Builder showPublicProfile(int __);
     public abstract Builder social(int __);

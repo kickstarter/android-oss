@@ -14,6 +14,7 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseFragment;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel;
 import com.kickstarter.libs.utils.AnimationUtils;
 import com.kickstarter.libs.utils.ViewUtils;
@@ -37,6 +38,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -54,6 +56,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
   protected @Bind(R.id.discovery_empty_view) View emptyView;
   protected @Bind(R.id.discovery_hearts_container) View heartsContainer;
   protected @Bind(R.id.discovery_recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.discovery_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
   public DiscoveryFragment() {}
 
@@ -76,6 +79,9 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     this.recyclerView.setAdapter(adapter);
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this.recyclerView.getContext());
     this.recyclerView.setLayoutManager(layoutManager);
+    new SwipeRefresher(
+      this, this.swipeRefreshLayout, this.viewModel.inputs::refresh, this.viewModel.outputs::isFetchingProjects
+    );
     this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage);
 
     this.viewModel.outputs.activity()

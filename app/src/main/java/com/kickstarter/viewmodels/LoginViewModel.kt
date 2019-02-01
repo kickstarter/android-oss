@@ -5,9 +5,9 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.StringUtils
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
@@ -22,10 +22,6 @@ import rx.subjects.PublishSubject
 interface LoginViewModel {
 
     interface Inputs {
-
-        /** Call when the back or close button has been clicked.  */
-        fun backOrCloseButtonClicked()
-
         /** Call when the email field changes.  */
         fun email(email: String)
 
@@ -67,7 +63,6 @@ interface LoginViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<LoginActivity>(environment), Inputs, Outputs {
 
-        private val backOrCloseButtonClicked = PublishSubject.create<Void>()
         private val emailEditTextChanged = PublishSubject.create<String>()
         private val logInButtonClicked = PublishSubject.create<Void>()
         private val passwordEditTextChanged = PublishSubject.create<String>()
@@ -132,7 +127,7 @@ interface LoginViewModel {
                     .subscribe(this.showChangedPasswordSnackbar)
 
             this.resetPasswordConfirmationDialogDismissed
-                    .map<Boolean>({ BooleanUtils.negate(it) })
+                    .map<Boolean> { BooleanUtils.negate(it) }
                     .compose<Pair<Boolean, Pair<String, LoginReason>>>(combineLatestPair(emailAndReason))
                     .map { Pair.create(it.first, it.second.first) }
                     .compose(bindToLifecycle())
@@ -142,23 +137,33 @@ interface LoginViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.logInButtonIsEnabled)
 
-            emailAndPassword
+            val loginNotification = emailAndPassword
                     .compose(takeWhen<Pair<String, String>, Void>(this.logInButtonClicked))
                     .switchMap { ep -> submit(ep.first, ep.second) }
+
+            loginNotification
+                    .compose(values())
                     .compose(bindToLifecycle())
-                    .subscribe({ this.success(it) })
+                    .subscribe { this.success(it) }
+
+            loginNotification
+                    .compose(errors())
+                    .map { ErrorEnvelope.fromThrowable(it) }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.loginError)
 
             this.loginSuccess
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackLoginSuccess() }
 
             this.genericLoginError = this.loginError
-                    .filter({ it.isGenericLoginError })
-                    .map({ it.errorMessage() })
+                    .filter { it.isGenericLoginError }
+                    .map { it.errorMessage() }
 
             this.invalidloginError = this.loginError
-                    .filter({ it.isInvalidLoginError })
-                    .map({ it.errorMessage() })
+                    .filter { it.isInvalidLoginError }
+                    .map { it.errorMessage() }
 
             this.invalidloginError
                     .mergeWith(this.genericLoginError)
@@ -166,7 +171,7 @@ interface LoginViewModel {
                     .subscribe { this.koala.trackLoginError() }
 
             this.tfaChallenge = this.loginError
-                    .filter({ it.isTfaRequiredError })
+                    .filter { it.isTfaRequiredError }
                     .map { null }
         }
 
@@ -174,15 +179,13 @@ interface LoginViewModel {
 
         private fun submit(email: String, password: String) =
                 this.client.login(email, password)
-                        .compose(Transformers.pipeApiErrorsTo(this.loginError))
-                        .compose(neverError())
+                        .materialize()
+                        .share()
 
         private fun success(envelope: AccessTokenEnvelope) {
             this.currentUser.login(envelope.user(), envelope.accessToken())
             this.loginSuccess.onNext(null)
         }
-
-        override fun backOrCloseButtonClicked() = this.backOrCloseButtonClicked.onNext(null)
 
         override fun email(email: String) = this.emailEditTextChanged.onNext(email)
 

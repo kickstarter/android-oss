@@ -5,8 +5,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -14,6 +13,7 @@ import com.kickstarter.libs.utils.UserUtils
 import com.kickstarter.models.User
 import com.kickstarter.ui.activities.NewsletterActivity
 import com.kickstarter.ui.data.Newsletter
+import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -75,11 +75,13 @@ interface NewsletterViewModel {
 
         private val client = environment.apiClient()
         private val currentUser = environment.currentUser()
+
         private val newsletterInput = PublishSubject.create<Pair<Boolean, Newsletter>>()
-        private val showOptInPrompt = PublishSubject.create<Newsletter>()
-        private val subscribeAll = BehaviorSubject.create<Boolean>()
         private val userInput = PublishSubject.create<User>()
         private val updateSuccess = PublishSubject.create<Void>()
+
+        private val showOptInPrompt = BehaviorSubject.create<Newsletter>()
+        private val subscribeAll = BehaviorSubject.create<Boolean>()
         private val userOutput = BehaviorSubject.create<User>()
 
         private val unableToSavePreferenceError = PublishSubject.create<Throwable>()
@@ -121,10 +123,18 @@ interface NewsletterViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.subscribeAll::onNext)
 
-            this.userInput
-                    .concatMap { updateSettings(it) }
+            val updateUserNotification = this.userInput
+                    .concatMap<Notification<User>> { this.updateSettings(it) }
+
+            updateUserNotification
+                    .compose(values())
                     .compose(bindToLifecycle())
-                    .subscribe { success(it) }
+                    .subscribe { this.success(it) }
+
+            updateUserNotification
+                    .compose(errors())
+                    .compose(bindToLifecycle())
+                    .subscribe(this.unableToSavePreferenceError)
 
             this.userInput
                     .compose(bindToLifecycle())
@@ -132,8 +142,8 @@ interface NewsletterViewModel {
 
             this.userOutput
                     .window(2, 1)
-                    .flatMap<List<User>>({ it.toList() })
-                    .map<User>({ ListUtils.first(it) })
+                    .flatMap<List<User>> { it.toList() }
+                    .map<User> { ListUtils.first(it) }
                     .compose<User>(takeWhen<User, Throwable>(this.unableToSavePreferenceError))
                     .compose(bindToLifecycle())
                     .subscribe(this.userOutput)
@@ -211,7 +221,7 @@ interface NewsletterViewModel {
 
         override fun subscribeAll(): Observable<Boolean> = this.subscribeAll
 
-        override fun user() = this.userOutput
+        override fun user(): Observable<User> = this.userOutput
 
         override fun unableToSavePreferenceError() : Observable<String> {
            return this.unableToSavePreferenceError
@@ -234,9 +244,10 @@ interface NewsletterViewModel {
             this.updateSuccess.onNext(null)
         }
 
-        private fun updateSettings(user: User): Observable<User> {
+        private fun updateSettings(user: User): Observable<Notification<User>> {
             return this.client.updateUserSettings(user)
-                    .compose(Transformers.pipeErrorsTo<User>(this.unableToSavePreferenceError))
+                    .materialize()
+                    .share()
         }
     }
 }

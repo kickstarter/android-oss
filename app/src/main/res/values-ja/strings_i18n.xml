@@ -84,7 +84,6 @@
   <string name="Couldnt_add_attachment" formatted="false">添付ファイルを追加できませんでした</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">ライブ配信を開けませんでした。後ほどお試しください。</string>
   <string name="Couldnt_remove_attachment" formatted="false">添付ファイルを削除できませんでした</string>
-  <string name="Create_password" formatted="false">Create password</string>
   <string name="Created_projects_projects_count" formatted="false">%{projects_count} のプロジェクト作成済</string>
   <string name="Creator" formatted="false">クリエイター</string>
   <string name="Creator_name_is_live_now" formatted="false">&lt;b>%{creator_name}&lt;/b>が進行中</string>
@@ -114,7 +113,7 @@
   <string name="Current_email" formatted="false">現在のメールアドレス</string>
   <string name="Current_password" formatted="false">現在のパスワード</string>
   <string name="Daily_digest" formatted="false">デイリーダイジェスト</string>
-  <string name="Daily_summary" formatted="false">1日1回の概要</string>
+  <string name="Daily_summary" formatted="false">Daily summary</string>
   <string name="Data_will_appear_here_once" formatted="false">誰かがプロジェクトをバック（支援）すると、ここにデータが表示されます。</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Kickstarter アカウントを削除</string>
   <string name="Delivered" formatted="false">発送済</string>
@@ -444,7 +443,7 @@
   <string name="Top_ten_pledge_sources" formatted="false">プレッジソースのトップ10</string>
   <string name="Top_ten_rewards" formatted="false">リワードのトップ10</string>
   <string name="Total_pledged" formatted="false">プレッジ総計</string>
-  <string name="Twice_a_day_summary" formatted="false">1日2回の概要</string>
+  <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>
   <string name="Unable_to_request" formatted="false">データをリクエストできません。</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} のフォロー解除</string>
   <string name="Unfollows_friend_name" formatted="false">%{friend_name} のフォロー解除</string>
@@ -500,7 +499,6 @@
   <string name="Your_shipping_destination" formatted="false">配送地域</string>
   <string name="Youre_a_backer" formatted="false">バッカーになりました！</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Facebookのメールアドレスで新しいアカウントを作成しようとしています。再度確認してください。</string>
-  <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">You\'re connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.</string>
   <string name="Youre_offline" formatted="false">現在オフライン中です。デバイスが再接続し次第、アプリをリフレッシュしてください。</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">このプレッジ済のプロジェクトは、現在もファンド中</string>
   <string name="Zip_postal_code" formatted="false">郵便番号</string>

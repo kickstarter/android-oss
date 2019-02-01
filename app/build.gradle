@@ -246,6 +246,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
     implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.browser:browser:1.0.0'
     implementation "com.facebook.android:facebook-android-sdk:$facebook_version"
     implementation "com.github.frankiesardo:auto-parcel:$auto_parcel_version"
     kapt "com.github.frankiesardo:auto-parcel-processor:$auto_parcel_version"

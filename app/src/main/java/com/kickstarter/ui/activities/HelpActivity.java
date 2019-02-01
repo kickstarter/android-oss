@@ -28,6 +28,10 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
   public static final int HELP_TYPE_PRIVACY = 1;
   public static final int HELP_TYPE_HOW_IT_WORKS = 2;
   public static final int HELP_TYPE_COOKIE_POLICY = 3;
+  public static final String TERMS_OF_USE = "terms-of-use";
+  public static final String PRIVACY = "privacy";
+  public static final String HELLO = "hello";
+  public static final String COOKIES = "cookies";
 
   @IntDef({HELP_TYPE_TERMS, HELP_TYPE_PRIVACY, HELP_TYPE_HOW_IT_WORKS, HELP_TYPE_COOKIE_POLICY})
   @Retention(RetentionPolicy.SOURCE)
@@ -78,16 +82,16 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
     final Uri.Builder builder = Uri.parse(this.webEndpoint).buildUpon();
     switch (helpType) {
       case HELP_TYPE_TERMS:
-        builder.appendEncodedPath("terms-of-use");
+        builder.appendEncodedPath(TERMS_OF_USE);
         break;
       case HELP_TYPE_PRIVACY:
-        builder.appendEncodedPath("privacy");
+        builder.appendEncodedPath(PRIVACY);
         break;
       case HELP_TYPE_HOW_IT_WORKS:
-        builder.appendEncodedPath("hello");
+        builder.appendEncodedPath(HELLO);
         break;
       case HELP_TYPE_COOKIE_POLICY:
-        builder.appendEncodedPath("cookies");
+        builder.appendEncodedPath(COOKIES);
         break;
     }
     return builder.toString();

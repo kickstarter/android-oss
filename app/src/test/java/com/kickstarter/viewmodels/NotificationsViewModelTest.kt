@@ -1,10 +1,13 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.models.User
 import org.junit.Test
+import rx.Observable
 import rx.observers.TestSubscriber
 
 class NotificationsViewModelTest : KSRobolectricTestCase() {
@@ -13,19 +16,20 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
     private val creatorDigestFrequencyIsGone = TestSubscriber<Boolean>()
     private val creatorNotificationsAreGone = TestSubscriber<Boolean>()
     private val currentUserTest = TestSubscriber<User>()
+    private val unableToSavePreferenceError = TestSubscriber<String>()
 
-    private fun setUpEnvironment(user: User) {
+    private fun setUpEnvironment(user: User, environment: Environment = environment()) {
         val currentUser = MockCurrentUser(user)
-        val environment = environment().toBuilder()
-                .currentUser(currentUser)
-                .build()
 
         currentUser.observable().subscribe(this.currentUserTest)
 
-        this.vm = NotificationsViewModel.ViewModel(environment)
+        this.vm = NotificationsViewModel.ViewModel(environment.toBuilder()
+                .currentUser(currentUser)
+                .build())
 
         this.vm.outputs.creatorDigestFrequencyIsGone().subscribe(this.creatorDigestFrequencyIsGone)
         this.vm.outputs.creatorNotificationsAreGone().subscribe(this.creatorNotificationsAreGone)
+        this.vm.errors.unableToSavePreferenceError().subscribe(this.unableToSavePreferenceError)
     }
 
     @Test
@@ -236,16 +240,6 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testNotifyOfPostLikes() {
-        val user = UserFactory.user().toBuilder().notifyOfPostLikes(false).build()
-
-        setUpEnvironment(user)
-
-        this.vm.inputs.notifyOfPostLikes(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyOfPostLikes(true).build())
-    }
-
-    @Test
     fun testNotifyOfUpdates() {
         val user = UserFactory.user().toBuilder().notifyOfUpdates(false).build()
 
@@ -253,5 +247,19 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.notifyOfUpdates(true)
         this.currentUserTest.assertValues(user, user.toBuilder().notifyOfUpdates(true).build())
+    }
+
+    @Test
+    fun testUnableToSavePreferenceError() {
+        val user = UserFactory.user().toBuilder().notifyOfUpdates(false).build()
+
+        setUpEnvironment(user, environment().toBuilder().apiClient(object : MockApiClient() {
+            override fun updateUserSettings(user: User): Observable<User> {
+                return Observable.error(Throwable("Error"))
+            }
+        }).build())
+
+        this.vm.inputs.notifyMobileOfBackings(true)
+        this.unableToSavePreferenceError.assertValueCount(1)
     }
 }

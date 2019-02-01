@@ -5,12 +5,15 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.errors
+import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.EditProfileActivity
+import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -23,17 +26,17 @@ interface EditProfileViewModel {
     }
 
     interface Outputs {
-        /** Emits the user avatar image to be displayed.  */
-        fun avatarImageViewUrl(): Observable<String>
-
         /** Emits when the user is a creator and we need to hide the private profile row. */
         fun hidePrivateProfileRow(): Observable<Boolean>
 
-        /** Emits user containing settings state.  */
+        /** Emits current user.  */
         fun user(): Observable<User>
 
-        /** Emits the user name to be displayed.  */
-        fun userNameTextViewText(): Observable<String>
+        /** Emits the user's avatar URL.  */
+        fun userAvatarUrl(): Observable<String>
+
+        /** Emits the user's name.  */
+        fun userName(): Observable<String>
     }
 
     interface Errors {
@@ -47,19 +50,20 @@ interface EditProfileViewModel {
         private val currentUser: CurrentUserType = environment.currentUser()
 
         private val userInput = PublishSubject.create<User>()
-        private val unableToSavePreferenceError = PublishSubject.create<Throwable>()
-        private val updateSuccess = PublishSubject.create<Void>()
 
         private var hidePrivateProfileRow = BehaviorSubject.create<Boolean>()
-        private val userOutput = BehaviorSubject.create<User>()
-
-        private val avatarImageViewUrl: Observable<String>
-        private val userNameTextViewText: Observable<String>
+        private val unableToSavePreferenceError = PublishSubject.create<Throwable>()
+        private val updateSuccess = PublishSubject.create<Void>()
+        private val user = BehaviorSubject.create<User>()
+        private val userAvatarUrl = BehaviorSubject.create<String>()
+        private val userName = BehaviorSubject.create<String>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
+
+            val currentUser = this.currentUser.observable()
 
             this.client.fetchCurrentUser()
                     .retry(2)
@@ -67,29 +71,35 @@ interface EditProfileViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.currentUser.refresh(it) }
 
-            this.currentUser.observable()
+            currentUser
                     .take(1)
                     .compose(bindToLifecycle())
-                    .subscribe({ this.userOutput.onNext(it) })
+                    .subscribe { this.user.onNext(it) }
+
+            val updateUserNotification = this.userInput
+                    .concatMap<Notification<User>> { this.updateSettings(it) }
+
+            updateUserNotification
+                    .compose(values())
+                    .compose(bindToLifecycle())
+                    .subscribe { this.success(it) }
+
+            updateUserNotification
+                    .compose(errors())
+                    .compose(bindToLifecycle())
+                    .subscribe(this.unableToSavePreferenceError)
 
             this.userInput
-                    .concatMap<User>({ this.updateSettings(it) })
                     .compose(bindToLifecycle())
-                    .subscribe({ this.success(it) })
+                    .subscribe(this.user)
 
-            this.userInput
-                    .compose(bindToLifecycle())
-                    .subscribe(this.userOutput)
-
-            this.userOutput
+            this.user
                     .window(2, 1)
-                    .flatMap<List<User>>({ it.toList() })
-                    .map<User>({ ListUtils.first(it) })
+                    .flatMap<List<User>> { it.toList() }
+                    .map<User> { ListUtils.first(it) }
                     .compose<User>(Transformers.takeWhen<User, Throwable>(this.unableToSavePreferenceError))
                     .compose(bindToLifecycle())
-                    .subscribe(this.userOutput)
-
-            val currentUser = this.currentUser.observable()
+                    .subscribe(this.user)
 
             currentUser
                     .compose(bindToLifecycle())
@@ -97,37 +107,41 @@ interface EditProfileViewModel {
                     .map { user -> IntegerUtils.isNonZero(user.createdProjectsCount()) }
                     .subscribe(this.hidePrivateProfileRow)
 
-            this.avatarImageViewUrl = this.currentUser.loggedInUser().map { u -> u.avatar().medium() }
+            currentUser
+                    .map { u -> u.avatar().medium() }
+                    .subscribe(this.userAvatarUrl)
 
-            this.userNameTextViewText = this.currentUser.loggedInUser().map({ it.name() })
+            currentUser
+                    .map { it.name() }
+                    .subscribe(this.userName)
 
-            this.koala.trackSettingsView()
         }
 
-        override fun avatarImageViewUrl() = this.avatarImageViewUrl
+        override fun userAvatarUrl(): Observable<String> = this.userAvatarUrl
 
         override fun hidePrivateProfileRow(): Observable<Boolean> = this.hidePrivateProfileRow
 
         override fun showPublicProfile(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder().showPublicProfile(!checked).build())
+            this.userInput.onNext(this.user.value.toBuilder().showPublicProfile(!checked).build())
         }
 
         override fun unableToSavePreferenceError(): Observable<String> = this.unableToSavePreferenceError
                 .takeUntil(this.updateSuccess)
                 .map { _ -> null }
 
-        override fun user(): Observable<User> = this.userOutput
+        override fun user(): Observable<User> = this.user
 
-        override fun userNameTextViewText() = this.userNameTextViewText
+        override fun userName(): Observable<String> = this.userName
 
         private fun success(user: User) {
             this.currentUser.refresh(user)
             this.updateSuccess.onNext(null)
         }
 
-        private fun updateSettings(user: User): Observable<User> {
+        private fun updateSettings(user: User): Observable<Notification<User>>? {
             return this.client.updateUserSettings(user)
-                    .compose(Transformers.pipeErrorsTo(this.unableToSavePreferenceError))
+                    .materialize()
+                    .share()
         }
     }
 }

@@ -13,7 +13,7 @@ import type.CurrencyCode
 open class MockApolloClient : ApolloClientType {
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
         return Observable.just(CreatePasswordMutation.Data(CreatePasswordMutation.UpdateUserAccount("",
-                CreatePasswordMutation.User("", true))))
+                CreatePasswordMutation.User("", "sample@ksr.com", true))))
     }
 
     override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {

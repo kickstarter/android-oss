@@ -54,6 +54,9 @@ interface LoginViewModel {
         /** Emits when a user has successfully changed their password and needs to login again.  */
         fun showChangedPasswordSnackbar(): Observable<Void>
 
+        /** Emits when a user has successfully created their psssword and needs to login again. */
+        fun showCreatedPasswordSnackback(): Observable<Void>
+
         /** Emits a boolean to determine whether reset password dialog should be shown.  */
         fun showResetPasswordSuccessDialog(): Observable<Pair<Boolean, String>>
 
@@ -74,6 +77,7 @@ interface LoginViewModel {
         private val loginSuccess = PublishSubject.create<Void>()
         private val prefillEmail = BehaviorSubject.create<String>()
         private val showChangedPasswordSnackbar = BehaviorSubject.create<Void>()
+        private val showCreatedPasswordSnackbar = BehaviorSubject.create<Void>()
         private val showResetPasswordSuccessDialog = BehaviorSubject.create<Pair<Boolean, String>>()
         private val tfaChallenge: Observable<Void>
 
@@ -125,6 +129,14 @@ interface LoginViewModel {
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
                     .subscribe(this.showChangedPasswordSnackbar)
+
+            emailAndReason
+                    .map { it.second }
+                    .ofType(LoginReason::class.java)
+                    .filter{ LoginReason.CREATE_PASSWORD == it }
+                    .compose(ignoreValues())
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showCreatedPasswordSnackbar)
 
             this.resetPasswordConfirmationDialogDismissed
                     .map<Boolean> { BooleanUtils.negate(it) }
@@ -208,6 +220,8 @@ interface LoginViewModel {
         override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail
 
         override fun showChangedPasswordSnackbar(): Observable<Void> = this.showChangedPasswordSnackbar
+
+        override fun showCreatedPasswordSnackback(): Observable<Void> = this.showCreatedPasswordSnackbar
 
         override fun showResetPasswordSuccessDialog(): BehaviorSubject<Pair<Boolean, String>> = this.showResetPasswordSuccessDialog
 

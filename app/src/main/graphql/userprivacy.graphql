@@ -1,6 +1,7 @@
 mutation CreatePassword($password: String!, $passwordConfirmation: String!) {
   updateUserAccount(input: {password: $password, passwordConfirmation: $passwordConfirmation}) {
     user {
+      email
       hasPassword
     }
   }

@@ -96,7 +96,7 @@ class CreatePasswordActivity : BaseActivity<CreatePasswordViewModel.ViewModel>()
         this.logout.execute()
         ApplicationUtils.startNewDiscoveryActivity(this)
         startActivity(Intent(this, LoginActivity::class.java)
-                .putExtra(IntentKey.LOGIN_REASON, LoginReason.CHANGE_PASSWORD)
+                .putExtra(IntentKey.LOGIN_REASON, LoginReason.CREATE_PASSWORD)
                 .putExtra(IntentKey.EMAIL, email))
     }
 

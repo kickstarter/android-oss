@@ -22,6 +22,7 @@ import com.kickstarter.viewmodels.AccountViewModel
 import kotlinx.android.synthetic.main.account_toolbar.*
 import kotlinx.android.synthetic.main.activity_account.*
 import rx.android.schedulers.AndroidSchedulers
+import timber.log.Timber
 import type.CurrencyCode
 
 @RequiresActivityViewModel(AccountViewModel.ViewModel::class)
@@ -72,6 +73,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
+                    Timber.d("This is: $it")
                     ViewUtils.setGone(create_password_container, it)
                     ViewUtils.setGone(password_required_container, !it)
                 }

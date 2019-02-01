@@ -91,8 +91,11 @@ interface CreatePasswordViewModel {
 
             createNewPasswordNotification
                     .compose(values())
-                    .map { it.updateUserAccount()?.user()?.hasPassword() }
-                    .subscribe { this.success.onNext(null) }
+                    .map { it.updateUserAccount()?.user()?.email() }
+                    .subscribe {
+                        this.success.onNext(it)
+                        this.koala.trackCreatedPassword()
+                    }
         }
 
         private fun submit(createPassword: CreatePasswordViewModel.ViewModel.CreatePassword): Observable<CreatePasswordMutation.Data> {

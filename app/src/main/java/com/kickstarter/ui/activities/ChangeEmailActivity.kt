@@ -10,8 +10,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.kickstarter.R
 import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.showConfirmationSnackbar
-import com.kickstarter.extensions.showErrorSnackbar
+import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.TransitionUtils
@@ -60,7 +59,7 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showErrorSnackbar(change_email_layout, it) }
+                .subscribe { showSnackbar(change_email_layout, it) }
 
         this.viewModel.outputs.sendVerificationIsHidden()
                 .compose(bindToLifecycle())
@@ -87,7 +86,7 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
         this.viewModel.outputs.success()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showConfirmationSnackbar(change_email_layout, R.string.Verification_email_sent) }
+                .subscribe { showSnackbar(change_email_layout, R.string.Verification_email_sent) }
 
         this.viewModel.outputs.success()
                 .compose(bindToLifecycle())

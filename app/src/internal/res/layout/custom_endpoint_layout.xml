@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:orientation="vertical"
   android:padding="@dimen/grid_3">
 
   <com.google.android.material.textfield.TextInputLayout
-    app:hintTextAppearance="@style/BodySecondary"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_1">
+    style="@style/FormTextInputLayout"
+    android:hint="@string/Enter_the_base_url_of_the_api">
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
       android:id="@+id/custom_endpoint_edit_text"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_2"
-      style="@style/CalloutPrimary"
-      android:hint="@string/Enter_the_base_url_of_the_api"
       android:inputType="textUri" />
 
   </com.google.android.material.textfield.TextInputLayout>

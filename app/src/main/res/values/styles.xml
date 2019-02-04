@@ -549,18 +549,30 @@
     <item name="android:clipToPadding">false</item>
   </style>
 
-  <style name="ChangeEmailPassTextInputEditText" parent="CalloutPrimary">
+  <!-- TextInputLayout -->
+  <style name="BaseTextInputLayout">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
-  </style>
-
-  <style name="ChangeEmailPassTextInputEditTextMarginTop" parent="ChangeEmailPassTextInputEditText">
     <item name="android:layout_marginTop">@dimen/grid_1</item>
   </style>
 
-  <style name="TextInputPasswordLayout">
-    <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">wrap_content</item>
+  <style name="FormTextInputLayout" parent="BaseTextInputLayout"/>
+
+  <style name="SettingsTextInputLayout" parent="BaseTextInputLayout">
+    <item name="android:layout_marginBottom">@dimen/grid_2</item>
+    <item name="android:layout_marginTop">@dimen/grid_2</item>
+    <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
+    <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
+  </style>
+
+  <style name="BasePasswordTextInputLayout" parent="BaseTextInputLayout">
+    <item name="passwordToggleEnabled">true</item>
+    <item name="passwordToggleTint">@color/password_toggle</item>
+  </style>
+
+  <style name="FormPasswordTextInputLayout" parent="BasePasswordTextInputLayout"/>
+
+  <style name="SettingsPasswordTextInputLayout" parent="BasePasswordTextInputLayout">
     <item name="android:layout_marginBottom">@dimen/grid_2</item>
     <item name="android:layout_marginTop">@dimen/grid_2</item>
     <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>

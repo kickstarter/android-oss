@@ -10,46 +10,37 @@
   android:orientation="vertical">
 
   <com.google.android.material.textfield.TextInputLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    style="@style/FormTextInputLayout"
     android:layout_marginTop="@dimen/grid_2"
-    app:hintTextAppearance="@style/BodySecondary">
+    android:hint="@string/Name">
 
     <com.google.android.material.textfield.TextInputEditText
       android:id="@+id/name"
       style="@style/CalloutPrimary"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:hint="@string/Name"
       android:inputType="textPersonName|textCapWords"
       android:maxLines="1" />
 
   </com.google.android.material.textfield.TextInputLayout>
 
   <com.google.android.material.textfield.TextInputLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_1"
-    app:hintTextAppearance="@style/BodySecondary">
+    style="@style/FormTextInputLayout"
+    android:hint="@string/login_placeholder_email">
 
     <com.google.android.material.textfield.TextInputEditText
       android:id="@+id/email"
       style="@style/CalloutPrimary"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:hint="@string/login_placeholder_email"
       android:inputType="textEmailAddress"
       android:maxLines="1" />
 
   </com.google.android.material.textfield.TextInputLayout>
 
   <com.google.android.material.textfield.TextInputLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_1"
-    app:hintTextAppearance="@style/BodySecondary"
-    app:passwordToggleEnabled="true"
-    app:passwordToggleTint="@color/password_toggle">
+    style="@style/FormPasswordTextInputLayout"
+    android:hint="@string/signup_input_fields_password_min_characters">
 
     <com.google.android.material.textfield.TextInputEditText
       android:id="@+id/password"
@@ -57,7 +48,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/grid_2"
-      android:hint="@string/signup_input_fields_password_min_characters"
       android:inputType="textPassword"
       android:maxLines="1" />
 

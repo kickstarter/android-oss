@@ -18,7 +18,7 @@ interface CreatePasswordViewModel {
 
     interface Inputs {
 
-        /** Call when the current password field changes.  */
+        /** Call when the confirm password field changes.  */
         fun confirmPassword(confirmPassword: String)
 
         /** Call when the new password field changes.  */

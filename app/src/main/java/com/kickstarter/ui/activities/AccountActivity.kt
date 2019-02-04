@@ -22,7 +22,6 @@ import com.kickstarter.viewmodels.AccountViewModel
 import kotlinx.android.synthetic.main.account_toolbar.*
 import kotlinx.android.synthetic.main.activity_account.*
 import rx.android.schedulers.AndroidSchedulers
-import timber.log.Timber
 import type.CurrencyCode
 
 @RequiresActivityViewModel(AccountViewModel.ViewModel::class)
@@ -32,7 +31,6 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
     private var newCurrencySelection: CurrencyCode? = null
     private var showCurrencyChangeDialog: AlertDialog? = null
 
-    private var userEmail: String? = null
     private lateinit var ksString: KSString
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +71,6 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    Timber.d("This is: $it")
                     ViewUtils.setGone(create_password_container, it)
                     ViewUtils.setGone(password_required_container, !it)
                 }
@@ -165,9 +162,4 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         }
     }
 
-    private fun showCreatePassOrChangeEmail(show: Boolean) {
-        ViewUtils.setGone(create_password_container, !show)
-        create_password_text_view.text = this.ksString.format(getString(R.string.Youre_connected_via_Facebook_email_Create_a_password_for_this_account), "email", this.userEmail)
-        ViewUtils.setGone(password_required_container, show)
-    }
 }

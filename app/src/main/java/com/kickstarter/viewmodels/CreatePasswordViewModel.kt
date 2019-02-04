@@ -94,7 +94,6 @@ interface CreatePasswordViewModel {
                     .map { it.updateUserAccount()?.user()?.email() }
                     .subscribe {
                         this.success.onNext(it)
-                        this.koala.trackCreatedPassword()
                     }
         }
 

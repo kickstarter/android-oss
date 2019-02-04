@@ -87,13 +87,13 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
                 return Observable.just(CreatePasswordMutation.Data(CreatePasswordMutation.UpdateUserAccount("",
-                        CreatePasswordMutation.User("", true))))
+                        CreatePasswordMutation.User("", "test@emai", true))))
             }
         }).build())
 
         this.vm.inputs.newPassword("password")
         this.vm.inputs.confirmPassword("password")
         this.vm.inputs.submitPasswordClicked()
-//        this.success.assertValue("test@emai")
+        this.success.assertValue("test@emai")
     }
 }

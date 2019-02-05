@@ -32,6 +32,7 @@ public class KSToolbar extends Toolbar {
   private @WebEndpoint String webEndpoint;
 
   private final CompositeSubscription subscriptions = new CompositeSubscription();
+  private int grid_1;
 
   public KSToolbar(final @NonNull Context context) {
     super(context);
@@ -56,7 +57,7 @@ public class KSToolbar extends Toolbar {
     super.onDraw(canvas);
 
     if (!isInEditMode() && !this.webEndpoint.equals(Secrets.WebEndpoint.PRODUCTION)) {
-      canvas.drawRect(0, 0, getWidth(), getHeight(), this.backgroundPaint);
+      canvas.drawRect(0, 0, getWidth(), this.grid_1, this.backgroundPaint);
     }
   }
 
@@ -114,6 +115,7 @@ public class KSToolbar extends Toolbar {
       this.backgroundPaint.setColor(ContextCompat.getColor(context, R.color.ksr_dark_grey_400));
 
       this.webEndpoint = environment().webEndpoint();
+      this.grid_1 = getContext().getResources().getDimensionPixelSize(R.dimen.grid_1);
     }
   }
 }

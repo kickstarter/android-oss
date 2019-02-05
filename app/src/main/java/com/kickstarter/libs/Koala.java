@@ -381,7 +381,9 @@ public final class Koala {
     this.client.track(KoalaEvent.VIEWED_CHANGE_PASSWORD);
   }
 
-  public void trackViewedCreatedPassword() { this.client.track(KoalaEvent.VIEWED_CREATE_PASSWORD); }
+  public void trackViewedCreatedPassword() {
+    this.client.track(KoalaEvent.VIEWED_CREATE_PASSWORD);
+  }
 
   public void trackViewedNotifications() {
     this.client.track(KoalaEvent.VIEWED_NOTIFICATIONS);

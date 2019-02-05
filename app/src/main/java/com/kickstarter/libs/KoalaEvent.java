@@ -10,6 +10,7 @@ public final class KoalaEvent {
   public static final String CHANGED_PASSWORD = "Changed Password";
   public static final String CLEARED_SEARCH_TERM = "Cleared Search Term";
   public static final String CONTINUE_USER_ACTIVITY = "Continue User Activity";
+  public static final String CREATED_PASSWORD = "Created Password";
   public static final String DELETED_PAYMENT_METHOD = "Deleted Payment Method";
   public static final String DISCOVER_SEARCH_LEGACY = "Discover Search";
   public static final String DISCOVER_SEARCH_RESULTS_LEGACY = "Discover Search Results";
@@ -56,6 +57,7 @@ public final class KoalaEvent {
   public static final String VIEWED_CHANGE_EMAIL = "Viewed Change Email";
   public static final String VIEWED_CHANGE_PASSWORD = "Viewed Change Password";
   public static final String VIEWED_COMMENTS = "Viewed Comments";
+  public static final String VIEWED_CREATE_PASSWORD = "Viewed Create Password";
   public static final String VIEWED_MESSAGE_INBOX = "Viewed Message Inbox";
   public static final String VIEWED_MESSAGE_THREAD = "Viewed Message Thread";
   public static final String VIEWED_NEWSLETTER = "Viewed Newsletter";

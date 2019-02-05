@@ -94,7 +94,10 @@ interface CreatePasswordViewModel {
                     .map { it.updateUserAccount()?.user()?.email() }
                     .subscribe {
                         this.success.onNext(it)
+                        this.koala.trackCreatedPassword()
                     }
+
+            this.koala.trackViewedCreatedPassword()
         }
 
         private fun submit(createPassword: CreatePasswordViewModel.ViewModel.CreatePassword): Observable<CreatePasswordMutation.Data> {

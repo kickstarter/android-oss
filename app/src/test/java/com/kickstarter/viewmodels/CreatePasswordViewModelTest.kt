@@ -57,6 +57,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message)
         this.vm.inputs.confirmPassword("password")
         this.passwordWarning.assertValues(null, R.string.Password_min_length_message, null, R.string.Passwords_matching_message, null)
+        this.koalaTest.assertValue("Viewed Create Password")
     }
 
     @Test
@@ -95,5 +96,6 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.confirmPassword("password")
         this.vm.inputs.submitPasswordClicked()
         this.success.assertValue("test@emai")
+        this.koalaTest.assertValues( "Viewed Create Password", "Created Password")
     }
 }

@@ -68,13 +68,6 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
                     ViewUtils.setGone(resend_email_row, it)
                 }
 
-        this.viewModel.outputs.sendVerificationIsHidden()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    ViewUtils.setGone(resend_email_row, it)
-                }
-
         this.viewModel.outputs.saveButtonIsEnabled()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())

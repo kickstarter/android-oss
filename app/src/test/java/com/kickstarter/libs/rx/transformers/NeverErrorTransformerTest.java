@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import rx.Observable;
 import rx.observers.TestSubscriber;
-import rx.subjects.PublishSubject;
 
 public class NeverErrorTransformerTest extends KSRobolectricTestCase {
   @Test
@@ -35,28 +34,5 @@ public class NeverErrorTransformerTest extends KSRobolectricTestCase {
     resultTest.assertValues(1, 2, 3);
     resultTest.assertCompleted();
     resultTest.assertNoErrors();
-  }
-
-  @Test
-  public void testNeverError_pipesErrorsToPublishSubject() {
-
-    final RuntimeException exception = new RuntimeException();
-    final Observable<Integer> errorsOnLast = Observable.just(1, 2, 3, 4)
-      .flatMap(i -> i < 4 ? Observable.just(i) : Observable.error(exception));
-    final PublishSubject<Throwable> error = PublishSubject.create();
-    final Observable<Integer> result = errorsOnLast.compose(Transformers.pipeErrorsTo(error));
-
-    final TestSubscriber<Throwable> errorTest = TestSubscriber.create();
-    error.subscribe(errorTest);
-    final TestSubscriber<Integer> resultTest = TestSubscriber.create();
-    result.subscribe(resultTest);
-
-    resultTest.assertValues(1, 2, 3);
-    resultTest.assertCompleted();
-    resultTest.assertNoErrors();
-
-    errorTest.assertValues(exception);
-    errorTest.assertNotCompleted();
-    errorTest.assertNoErrors();
   }
 }

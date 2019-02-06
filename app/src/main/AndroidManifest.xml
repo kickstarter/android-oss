@@ -193,9 +193,13 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.ProfileActivity" />
     </activity>
+    <activity android:name=".ui.activities.NewCardActivity"
+      android:theme="@style/SettingsActivitiesTransitions"/>
     <activity android:name=".ui.activities.NewsletterActivity"
       android:theme="@style/SettingsActivitiesTransitions"/>
     <activity android:name=".ui.activities.NotificationsActivity"
+      android:theme="@style/SettingsActivitiesTransitions"/>
+    <activity android:name=".ui.activities.PaymentMethodsSettingsActivity"
       android:theme="@style/SettingsActivitiesTransitions"/>
     <activity android:name=".ui.activities.PrivacyActivity"
       android:theme="@style/SettingsActivitiesTransitions"/>

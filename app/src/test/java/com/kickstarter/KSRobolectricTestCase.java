@@ -10,6 +10,7 @@ import com.kickstarter.libs.MockTrackingClient;
 import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.mock.services.MockApolloClient;
+import com.kickstarter.mock.services.MockStripe;
 import com.kickstarter.mock.services.MockWebClient;
 
 import junit.framework.TestCase;
@@ -47,6 +48,7 @@ public abstract class KSRobolectricTestCase extends TestCase {
       .apolloClient(new MockApolloClient())
       .currentConfig(new MockCurrentConfig())
       .webClient(new MockWebClient())
+      .stripe(new MockStripe(context(), false))
       .koala(new Koala(testTrackingClient))
       .build();
   }

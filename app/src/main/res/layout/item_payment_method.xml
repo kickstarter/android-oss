@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@color/white"
+  android:orientation="horizontal"
+  android:padding="@dimen/activity_vertical_margin">
+
+  <ImageView
+    android:id="@+id/credit_card_logo"
+    android:layout_width="@dimen/credit_card_logo_width"
+    android:layout_height="@dimen/credit_card_logo_height"
+    android:layout_gravity="center_vertical"
+    android:contentDescription="@null"
+    android:scaleType="fitXY"
+    tools:src="@drawable/amex_md" />
+
+  <LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_weight="1"
+    android:orientation="vertical">
+
+    <TextView
+      android:id="@+id/credit_card_last_four_digits"
+      style="@style/TextPrimary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:ellipsize="middle"
+      android:singleLine="true"
+      android:textSize="@dimen/callout"
+      tools:text="Card ending in xxxx" />
+
+    <TextView
+      android:id="@+id/credit_card_expiration_date"
+      style="@style/TextSecondary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:ellipsize="middle"
+      android:singleLine="true"
+      tools:text="Expires 03/19" />
+  </LinearLayout>
+
+  <ImageView
+    android:id="@+id/delete_card"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:contentDescription="@null"
+    android:foreground="@drawable/circular_click_indicator_light"
+    android:padding="@dimen/grid_2"
+    android:src="@drawable/icon_trash" />
+
+</LinearLayout>

@@ -7,7 +7,7 @@ import android.text.Html
 import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.showConfirmationSnackbar
+import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.extensions.text
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
@@ -72,7 +72,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
         this.viewModel.outputs.showChangedPasswordSnackbar()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { showConfirmationSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }
+                .subscribe { showSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }
 
         this.viewModel.outputs.showResetPasswordSuccessDialog()
                 .compose(bindToLifecycle())

@@ -47,8 +47,8 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull val delegate: Deleg
     }
 
     override fun bindData(data: Any?) {
-        val cards = requireNotNull(data as UserPaymentsQuery.Node)
-        this.vm.inputs.card(cards)
+        val card = requireNotNull(data as UserPaymentsQuery.Node)
+        this.vm.inputs.card(card)
     }
 
     private fun setExpirationDateTextView(date: String) {

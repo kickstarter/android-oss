@@ -78,8 +78,6 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         return webEndpointBuilder.build().toString()
     }
 
-    override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
-
     private fun composeContactEmail(user: User) {
         val debugInfo = Arrays.asList(
                 user.id().toString(),

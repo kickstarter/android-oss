@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
-import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.extensions.startActivityWithSlideUpTransition
@@ -32,10 +31,6 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
-
-        if (BuildConfig.DEBUG) {
-            payment_methods_row.visibility = View.VISIBLE
-        }
 
         setUpSpinner()
 

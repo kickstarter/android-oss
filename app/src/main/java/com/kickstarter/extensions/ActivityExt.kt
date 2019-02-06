@@ -16,34 +16,14 @@ fun Activity.startActivityWithSlideLeftTransition(intent: Intent) {
     this.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 
-fun Activity.showConfirmationSnackbar(anchor: View, stringResId: Int) {
-    showConfirmationSnackbar(anchor, getString(stringResId))
+fun Activity.showSnackbar(anchor: View, stringResId: Int) {
+    showSnackbar(anchor, getString(stringResId))
 }
 
-fun showConfirmationSnackbar(anchor: View, message: String) {
-    Snackbar.make(anchor, message, Snackbar.LENGTH_LONG).confirmation().show()
+fun showSnackbar(anchor: View, message: String) {
+    snackbar(anchor, message).show()
 }
 
-fun Activity.showErrorSnackbar(anchor: View, stringResId: Int) {
-    showErrorSnackbar(anchor, getString(stringResId))
-}
-
-fun showErrorSnackbar(anchor: View, message: String) {
-    Snackbar.make(anchor, message, Snackbar.LENGTH_LONG).error().show()
-}
-
-fun Activity.showHeadsUpSnackbar(anchor: View, stringResId: Int) {
-    showErrorSnackbar(anchor, getString(stringResId))
-}
-
-fun showHeadsUpSnackbar(anchor: View, message: String) {
-    Snackbar.make(anchor, message, Snackbar.LENGTH_LONG).headsUp().show()
-}
-
-fun Activity.showNetworkErrorSnackbar(anchor: View, stringResId: Int) {
-    showErrorSnackbar(anchor, getString(stringResId))
-}
-
-fun showNetworkErrorSnackbar(anchor: View, message: String) {
-    Snackbar.make(anchor, message, Snackbar.LENGTH_LONG).networkError().show()
+fun snackbar(anchor: View, message: String): Snackbar {
+    return Snackbar.make(anchor, message, Snackbar.LENGTH_LONG)
 }

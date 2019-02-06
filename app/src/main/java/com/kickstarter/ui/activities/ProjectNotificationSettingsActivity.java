@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.util.Pair;
 
 import com.kickstarter.R;
+import com.kickstarter.extensions.ActivityExtKt;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.adapters.ProjectNotificationSettingsAdapter;
 import com.kickstarter.viewmodels.ProjectNotificationSettingsViewModel;
 
@@ -44,8 +44,7 @@ public final class ProjectNotificationSettingsActivity extends BaseActivity<Proj
     this.viewModel.outputs.unableToFetchProjectNotificationsError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .map(__ -> this.generalErrorString)
-      .subscribe(ViewUtils.showToast(this));
+      .subscribe(__ -> ActivityExtKt.showSnackbar(this.recyclerView, this.generalErrorString));
   }
 
   @Override

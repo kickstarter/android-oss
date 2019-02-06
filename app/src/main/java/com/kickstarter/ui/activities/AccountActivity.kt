@@ -7,10 +7,8 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
-import com.kickstarter.BuildConfig
 import com.kickstarter.R
-import com.kickstarter.extensions.showConfirmationSnackbar
-import com.kickstarter.extensions.showErrorSnackbar
+import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.extensions.startActivityWithSlideUpTransition
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
@@ -34,10 +32,6 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
 
-        if (BuildConfig.DEBUG) {
-            payment_methods_row.visibility = View.VISIBLE
-        }
-
         setUpSpinner()
 
         this.viewModel.outputs.chosenCurrency()
@@ -48,7 +42,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { showErrorSnackbar(account_toolbar, it) }
+                .subscribe { showSnackbar(account_toolbar, it) }
 
         this.viewModel.outputs.progressBarIsVisible()
                 .compose(bindToLifecycle())
@@ -68,10 +62,11 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         this.viewModel.outputs.success()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { showConfirmationSnackbar(account_container, R.string.Got_it_your_changes_have_been_saved) }
+                .subscribe { showSnackbar(account_container, R.string.Got_it_your_changes_have_been_saved) }
 
         change_email_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, ChangeEmailActivity::class.java)) }
         change_password_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, ChangePasswordActivity::class.java)) }
+        payment_methods_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, PaymentMethodsSettingsActivity::class.java)) }
         privacy_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, PrivacyActivity::class.java)) }
     }
 

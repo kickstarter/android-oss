@@ -8,7 +8,7 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
 import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.showErrorSnackbar
+import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -64,7 +64,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { showErrorSnackbar(new_card_toolbar, it) }
+                .subscribe { showSnackbar(new_card_toolbar, it) }
 
         cardholder_name.onChange { this.viewModel.inputs.name(it) }
         postal_code.onChange { this.viewModel.inputs.postalCode(it) }

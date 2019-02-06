@@ -8,8 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
-import com.kickstarter.extensions.showConfirmationSnackbar
-import com.kickstarter.extensions.showErrorSnackbar
+import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
@@ -45,7 +44,7 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showErrorSnackbar(payment_methods_toolbar, it) }
+                .subscribe { showSnackbar(payment_methods_toolbar, it) }
 
         this.viewModel.outputs.progressBarIsVisible()
                 .compose(bindToLifecycle())
@@ -60,7 +59,7 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
         this.viewModel.success()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showConfirmationSnackbar(payment_methods_toolbar, R.string.Got_it_your_changes_have_been_saved) }
+                .subscribe { showSnackbar(payment_methods_toolbar, R.string.Got_it_your_changes_have_been_saved) }
 
         add_new_card.setOnClickListener { startActivityForResult(Intent(this, NewCardActivity::class.java),
                 ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD) }
@@ -70,7 +69,7 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         if (requestCode == ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD && resultCode == Activity.RESULT_OK) {
-            showConfirmationSnackbar(payment_methods_toolbar, R.string.Got_it_your_changes_have_been_saved)
+            showSnackbar(payment_methods_toolbar, R.string.Got_it_your_changes_have_been_saved)
             this@PaymentMethodsSettingsActivity.viewModel.inputs.refreshCards()
         }
     }

@@ -92,7 +92,7 @@
           <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/new_email_container"
             style="@style/SettingsTextInputLayout"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/grid_2"
             android:hint="@string/login_placeholder_email"
             app:errorEnabled="true">
 

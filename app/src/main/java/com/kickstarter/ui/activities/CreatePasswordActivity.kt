@@ -71,7 +71,7 @@ class CreatePasswordActivity : BaseActivity<CreatePasswordViewModel.ViewModel>()
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.save -> {
-                this.viewModel.inputs.submitPasswordClicked()
+                this.viewModel.inputs.createPasswordClicked()
                 true
             }
             else -> super.onOptionsItemSelected(item)

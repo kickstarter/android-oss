@@ -6,13 +6,13 @@ import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.*
+import com.kickstarter.libs.utils.StringUtils.MINIMUM_PASSWORD_LENGTH
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.activities.ChangePasswordActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
-const val MINIMUM_PASSWORD_LENGTH = 6
 
 interface ChangePasswordViewModel {
 

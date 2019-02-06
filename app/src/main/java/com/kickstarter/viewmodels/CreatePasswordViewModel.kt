@@ -6,13 +6,13 @@ import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.*
+import com.kickstarter.libs.utils.StringUtils.MINIMUM_PASSWORD_LENGTH
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.activities.CreatePasswordActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
-const val CREATE_PASSWORD_MINIMUM_LENGTH = 6
 
 interface CreatePasswordViewModel {
 
@@ -25,7 +25,7 @@ interface CreatePasswordViewModel {
         fun newPassword(newPassword: String)
 
         /** Call when the user clicks the submit password button. */
-        fun submitPasswordClicked()
+        fun createPasswordClicked()
     }
 
     interface Outputs {
@@ -110,7 +110,7 @@ interface CreatePasswordViewModel {
 
         override fun newPassword(newPassword: String) = this.newPassword.onNext(newPassword)
 
-        override fun submitPasswordClicked() = this.submitPasswordClicked.onNext(null)
+        override fun createPasswordClicked() = this.submitPasswordClicked.onNext(null)
 
         override fun error(): Observable<String> = this.error
 
@@ -130,14 +130,14 @@ interface CreatePasswordViewModel {
             }
 
             fun warning(): Int? {
-                return if (newPassword.isNotEmpty() && newPassword.length in 1 until CREATE_PASSWORD_MINIMUM_LENGTH)
+                return if (newPassword.isNotEmpty() && newPassword.length in 1 until MINIMUM_PASSWORD_LENGTH)
                     R.string.Password_min_length_message
                 else if (confirmPassword.isNotEmpty() && confirmPassword != newPassword)
                     R.string.Passwords_matching_message
                 else null
             }
 
-            private fun isNotEmptyAndAtLeast6Chars(password: String) = !password.isEmpty() && password.length >= CREATE_PASSWORD_MINIMUM_LENGTH
+            private fun isNotEmptyAndAtLeast6Chars(password: String) = !password.isEmpty() && password.length >= MINIMUM_PASSWORD_LENGTH
         }
     }
 }

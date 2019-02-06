@@ -74,7 +74,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
                 .compose(observeForUI())
                 .subscribe { showConfirmationSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }
 
-        this.viewModel.outputs.showCreatedPasswordSnackback()
+        this.viewModel.outputs.showCreatedPasswordSnackbar()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { showConfirmationSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }

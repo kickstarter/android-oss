@@ -39,7 +39,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newPassword("passwo")
         this.vm.inputs.confirmPassword("password")
-        this.vm.inputs.submitPasswordClicked()
+        this.vm.inputs.createPasswordClicked()
         this.error.assertValue("Oops")
     }
 
@@ -66,7 +66,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newPassword("password")
         this.vm.inputs.confirmPassword("password")
-        this.vm.inputs.submitPasswordClicked()
+        this.vm.inputs.createPasswordClicked()
         this.progressBarIsVisible.assertValues(true, false)
     }
 
@@ -94,7 +94,7 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newPassword("password")
         this.vm.inputs.confirmPassword("password")
-        this.vm.inputs.submitPasswordClicked()
+        this.vm.inputs.createPasswordClicked()
         this.success.assertValue("test@emai")
         this.koalaTest.assertValues( "Viewed Create Password", "Created Password")
     }

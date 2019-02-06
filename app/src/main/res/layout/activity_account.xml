@@ -51,7 +51,7 @@
 
         <TextView
           android:id="@+id/create_password_text_view"
-          style="@style/TextInputPasswordLayout"
+          style="@style/NewsLetterTextView"
           android:text="@string/Youre_connected_via_Facebook_email_Create_a_password_for_this_account"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />

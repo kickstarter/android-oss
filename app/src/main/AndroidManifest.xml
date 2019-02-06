@@ -63,6 +63,9 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.ProjectActivity" />
     </activity>
+
+    <activity android:name=".ui.activities.CreatePasswordActivity"
+      android:theme="@style/SettingsActivitiesTransitions"/>
     <activity
       android:name=".ui.activities.CreatorDashboardActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
@@ -410,8 +413,6 @@
       android:name="com.google.android.gms.wallet.api.enabled"
       android:value="true" />
 
-    <activity android:name=".ui.activities.CreatePasswordActivity">
-    </activity>
   </application>
 
 </manifest>

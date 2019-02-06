@@ -54,8 +54,8 @@ interface LoginViewModel {
         /** Emits when a user has successfully changed their password and needs to login again.  */
         fun showChangedPasswordSnackbar(): Observable<Void>
 
-        /** Emits when a user has successfully created their psssword and needs to login again. */
-        fun showCreatedPasswordSnackback(): Observable<Void>
+        /** Emits when a user has successfully created their password and needs to login again. */
+        fun showCreatedPasswordSnackbar(): Observable<Void>
 
         /** Emits a boolean to determine whether reset password dialog should be shown.  */
         fun showResetPasswordSuccessDialog(): Observable<Pair<Boolean, String>>
@@ -221,7 +221,7 @@ interface LoginViewModel {
 
         override fun showChangedPasswordSnackbar(): Observable<Void> = this.showChangedPasswordSnackbar
 
-        override fun showCreatedPasswordSnackback(): Observable<Void> = this.showCreatedPasswordSnackbar
+        override fun showCreatedPasswordSnackbar(): Observable<Void> = this.showCreatedPasswordSnackbar
 
         override fun showResetPasswordSuccessDialog(): BehaviorSubject<Pair<Boolean, String>> = this.showResetPasswordSuccessDialog
 

@@ -118,7 +118,7 @@ interface NotificationsViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.userOutput.onNext(it) }
 
-            this.creatorDigestFrequencyIsGone = currentUser
+            this.creatorDigestFrequencyIsGone = Observable.merge(currentUser, this.userInput)
                     .compose(bindToLifecycle())
                     .map { it.notifyOfBackings() != true  }
                     .distinctUntilChanged()

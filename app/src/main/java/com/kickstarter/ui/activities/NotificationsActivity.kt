@@ -51,7 +51,6 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     private var notifyOfFollower: Boolean = false
     private var notifyOfFriendActivity: Boolean = false
     private var notifyOfMessages: Boolean = false
-    private var notifyOfPostLikes: Boolean = false
     private var notifyOfUpdates: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {

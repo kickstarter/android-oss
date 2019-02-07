@@ -91,30 +91,28 @@
 
           <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/new_email_container"
-            style="@style/TextInputLayout"
-            android:layout_marginBottom="0dp"
+            style="@style/SettingsTextInputLayout"
+            android:layout_marginTop="@dimen/grid_3"
+            android:hint="@string/login_placeholder_email"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/new_email"
-              style="@style/ChangeEmailPassTextInputEditText"
-              android:hint="@string/login_placeholder_email"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
               android:inputType="textEmailAddress"
               android:maxLines="1" />
 
           </com.google.android.material.textfield.TextInputLayout>
 
           <com.google.android.material.textfield.TextInputLayout
-            style="@style/TextInputLayout"
-            android:layout_marginTop="0dp"
-            app:hintTextAppearance="@style/BodySecondary"
-            app:passwordToggleEnabled="true"
-            app:passwordToggleTint="@color/password_toggle">
+            style="@style/SettingsPasswordTextInputLayout"
+            android:hint="@string/Current_password">
 
             <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/current_password"
-              style="@style/ChangeEmailPassTextInputEditText"
-              android:hint="@string/Current_password"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
               android:inputType="textPassword" />
 
           </com.google.android.material.textfield.TextInputLayout>

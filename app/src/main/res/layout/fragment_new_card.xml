@@ -54,12 +54,13 @@
 
           <com.google.android.material.textfield.TextInputLayout
             style="@style/UnderlineTextInputLayout"
-            android:layout_marginBottom="0dp"
+            android:layout_marginTop="@dimen/grid_3"
             android:hint="@string/Name">
 
             <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/cardholder_name"
-              style="@style/ChangeEmailPassTextInputEditText"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
               android:inputType="textPersonName"
               android:maxLines="1" />
 
@@ -92,7 +93,8 @@
 
             <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/postal_code"
-              style="@style/ChangeEmailPassTextInputEditText"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
               android:inputType="phone"
               android:maxLines="1" />
 

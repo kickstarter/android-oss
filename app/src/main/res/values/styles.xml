@@ -121,7 +121,7 @@
     <item name="android:fontFamily">sans-serif-medium</item>
   </style>
 
-  <style name="Button" parent="ButtonBase"/>
+  <style name="Button" parent="ButtonBase" />
 
   <style name="SecondaryButton" parent="Button">
     <item name="backgroundTint">@color/button_secondary</item>
@@ -132,7 +132,7 @@
     <item name="android:textColor">@color/ksr_soft_black</item>
   </style>
 
-  <style name="BorderButton" parent="TertiaryButton"/>
+  <style name="BorderButton" parent="TertiaryButton" />
 
   <style name="ShareButton" parent="SecondaryButton">
     <item name="android:ellipsize">none</item>
@@ -557,20 +557,28 @@
     <item name="android:clipToPadding">false</item>
   </style>
 
-  <style name="ChangeEmailPassTextInputEditText" parent="CalloutPrimary">
-    <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">wrap_content</item>
-  </style>
-
-  <style name="ChangeEmailPassTextInputEditTextMarginTop" parent="ChangeEmailPassTextInputEditText">
-    <item name="android:layout_marginTop">@dimen/grid_1</item>
-  </style>
-
-  <style name="TextInputLayout">
+  <!-- TextInputLayout -->
+  <style name="BaseTextInputLayout">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_marginBottom">@dimen/grid_2</item>
-    <item name="android:layout_marginTop">@dimen/grid_2</item>
+  </style>
+
+  <style name="FormTextInputLayout" parent="BaseTextInputLayout" />
+
+  <style name="SettingsTextInputLayout" parent="BaseTextInputLayout">
+    <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
+    <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
+  </style>
+
+  <style name="BasePasswordTextInputLayout" parent="BaseTextInputLayout">
+    <item name="passwordToggleEnabled">true</item>
+    <item name="passwordToggleTint">@color/password_toggle</item>
+  </style>
+
+  <style name="FormPasswordTextInputLayout" parent="BasePasswordTextInputLayout" />
+
+  <style name="SettingsPasswordTextInputLayout" parent="BasePasswordTextInputLayout">
     <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
     <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
   </style>
@@ -578,13 +586,12 @@
   <style name="UnderlineTextInputLayout" parent="Widget.Design.TextInputLayout">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:layout_marginBottom">@dimen/grid_2</item>
     <item name="android:layout_marginTop">@dimen/grid_2</item>
     <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
     <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
   </style>
 
-  <style name="CardInputWidget" parent="TextInputLayout">
+  <style name="CardInputWidget" parent="UnderlineTextInputLayout">
     <item name="android:layout_marginBottom">0dp</item>
     <item name="cardTint">@color/ksr_dark_grey_500</item>
     <item name="cardTextErrorColor">@color/ksr_red_400</item>

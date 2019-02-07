@@ -1,44 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:gravity="center_horizontal"
   android:orientation="vertical">
 
   <com.google.android.material.textfield.TextInputLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_2"
-    app:hintTextAppearance="@style/BodySecondary">
+    style="@style/FormTextInputLayout"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+    android:hint="@string/login_placeholder_email">
 
     <com.google.android.material.textfield.TextInputEditText
       android:id="@+id/email"
-      style="@style/CalloutPrimary"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:hint="@string/login_placeholder_email"
       android:inputType="textEmailAddress"
       android:maxLines="1" />
 
   </com.google.android.material.textfield.TextInputLayout>
 
   <com.google.android.material.textfield.TextInputLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_1"
-    app:hintTextAppearance="@style/BodySecondary"
-    app:passwordToggleEnabled="true"
-    app:passwordToggleTint="@color/password_toggle">
+    style="@style/FormPasswordTextInputLayout"
+    android:hint="@string/login_placeholder_password">
 
     <com.google.android.material.textfield.TextInputEditText
       android:id="@+id/password"
-      style="@style/CalloutPrimary"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_2"
-      android:hint="@string/login_placeholder_password"
       android:inputType="textPassword" />
 
   </com.google.android.material.textfield.TextInputLayout>

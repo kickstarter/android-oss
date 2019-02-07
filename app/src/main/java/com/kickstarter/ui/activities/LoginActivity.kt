@@ -74,6 +74,11 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
                 .compose(observeForUI())
                 .subscribe { showSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }
 
+        this.viewModel.outputs.showCreatedPasswordSnackbar()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { showSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }
+
         this.viewModel.outputs.showResetPasswordSuccessDialog()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())

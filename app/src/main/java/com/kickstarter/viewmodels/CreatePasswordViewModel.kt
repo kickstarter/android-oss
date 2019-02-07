@@ -1,6 +1,6 @@
 package com.kickstarter.viewmodels
 
-import UpdateUserPasswordMutation
+import CreatePasswordMutation
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
@@ -8,26 +8,24 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.StringUtils.MINIMUM_PASSWORD_LENGTH
 import com.kickstarter.services.ApolloClientType
-import com.kickstarter.ui.activities.ChangePasswordActivity
+import com.kickstarter.ui.activities.CreatePasswordActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
 
-interface ChangePasswordViewModel {
+interface CreatePasswordViewModel {
 
     interface Inputs {
-        /** Call when the user clicks the change password button. */
-        fun changePasswordClicked()
 
-        /** Call when the current password field changes.  */
+        /** Call when the confirm password field changes.  */
         fun confirmPassword(confirmPassword: String)
-
-        /** Call when the current password field changes.  */
-        fun currentPassword(currentPassword: String)
 
         /** Call when the new password field changes.  */
         fun newPassword(newPassword: String)
+
+        /** Call when the user clicks the submit password button. */
+        fun createPasswordClicked()
     }
 
     interface Outputs {
@@ -47,12 +45,11 @@ interface ChangePasswordViewModel {
         fun success(): Observable<String>
     }
 
-    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ChangePasswordActivity>(environment), Inputs, Outputs {
+    class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<CreatePasswordActivity>(environment), Inputs, Outputs {
 
-        private val changePasswordClicked = PublishSubject.create<Void>()
         private val confirmPassword = PublishSubject.create<String>()
-        private val currentPassword = PublishSubject.create<String>()
         private val newPassword = PublishSubject.create<String>()
+        private val submitPasswordClicked = PublishSubject.create<Void>()
 
         private val error = BehaviorSubject.create<String>()
         private val passwordWarning = BehaviorSubject.create<Int>()
@@ -60,97 +57,74 @@ interface ChangePasswordViewModel {
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<String>()
 
-        val inputs: ChangePasswordViewModel.Inputs = this
-        val outputs: ChangePasswordViewModel.Outputs = this
+        val inputs: Inputs = this
+        val outputs: Outputs = this
 
         private val apolloClient: ApolloClientType = this.environment.apolloClient()
 
         init {
 
-            val changePassword = Observable.combineLatest(this.currentPassword.startWith(""),
-                    this.newPassword.startWith(""),
-                    this.confirmPassword.startWith(""),
-                    { current, new, confirm -> ChangePassword(current, new, confirm) })
+            val password = Observable.combineLatest(this.newPassword.startWith(""),
+                    this.confirmPassword.startWith("")) { new, confirm -> CreatePassword(new, confirm)}
 
-            changePassword
+            password
                     .map { it.warning() }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.passwordWarning)
 
-            changePassword
+            password
                     .map { it.isValid() }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.saveButtonIsEnabled)
 
-            val changePasswordNotification = changePassword
-                    .compose(takeWhen<ChangePassword, Void>(this.changePasswordClicked))
-                    .switchMap { cp -> submit(cp).materialize() }
+            val createNewPasswordNotification = password
+                    .compose(takeWhen<CreatePassword, Void>(this.submitPasswordClicked))
+                    .switchMap { np -> submit(np).materialize() }
                     .compose(bindToLifecycle())
                     .share()
 
-            changePasswordNotification
+            createNewPasswordNotification
                     .compose(errors())
-                    .subscribe({ this.error.onNext(it.localizedMessage) })
+                    .subscribe{this.error.onNext(it.localizedMessage)}
 
-            changePasswordNotification
+            createNewPasswordNotification
                     .compose(values())
                     .map { it.updateUserAccount()?.user()?.email() }
                     .subscribe {
                         this.success.onNext(it)
-                        this.koala.trackChangedPassword()
+                        this.koala.trackCreatedPassword()
                     }
 
-            this.koala.trackViewedChangedPassword()
+            this.koala.trackViewedCreatedPassword()
         }
 
-        private fun submit(changePassword: ChangePasswordViewModel.ViewModel.ChangePassword): Observable<UpdateUserPasswordMutation.Data> {
-            return this.apolloClient.updateUserPassword(changePassword.currentPassword, changePassword.newPassword, changePassword.confirmPassword)
+        private fun submit(createPassword: CreatePasswordViewModel.ViewModel.CreatePassword): Observable<CreatePasswordMutation.Data> {
+            return this.apolloClient.createPassword(createPassword.newPassword, createPassword.confirmPassword)
                     .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
                     .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }
 
-        override fun changePasswordClicked() {
-            this.changePasswordClicked.onNext(null)
-        }
+        override fun confirmPassword(confirmPassword: String) = this.confirmPassword.onNext(confirmPassword)
 
-        override fun confirmPassword(confirmPassword: String) {
-            this.confirmPassword.onNext(confirmPassword)
-        }
+        override fun newPassword(newPassword: String) = this.newPassword.onNext(newPassword)
 
-        override fun currentPassword(currentPassword: String) {
-            this.currentPassword.onNext(currentPassword)
-        }
+        override fun createPasswordClicked() = this.submitPasswordClicked.onNext(null)
 
-        override fun newPassword(newPassword: String) {
-            this.newPassword.onNext(newPassword)
-        }
+        override fun error(): Observable<String> = this.error
 
-        override fun error(): Observable<String> {
-            return this.error
-        }
+        override fun passwordWarning(): Observable<Int> = this.passwordWarning
 
-        override fun passwordWarning(): Observable<Int> {
-            return this.passwordWarning
-        }
+        override fun progressBarIsVisible(): Observable<Boolean> = this.progressBarIsVisible
 
-        override fun progressBarIsVisible(): Observable<Boolean> {
-            return this.progressBarIsVisible
-        }
+        override fun saveButtonIsEnabled(): Observable<Boolean> = this.saveButtonIsEnabled
 
-        override fun saveButtonIsEnabled(): Observable<Boolean> {
-            return this.saveButtonIsEnabled
-        }
+        override fun success(): Observable<String> = this.success
 
-        override fun success(): Observable<String> {
-            return this.success
-        }
-
-        data class ChangePassword(val currentPassword: String, val newPassword: String, val confirmPassword: String) {
+        data class CreatePassword(val newPassword: String, val confirmPassword: String) {
             fun isValid(): Boolean {
-                return isNotEmptyAndAtLeast6Chars(this.currentPassword)
-                        && isNotEmptyAndAtLeast6Chars(this.newPassword)
+                return  isNotEmptyAndAtLeast6Chars(this.newPassword)
                         && isNotEmptyAndAtLeast6Chars(this.confirmPassword)
                         && this.confirmPassword == this.newPassword
             }

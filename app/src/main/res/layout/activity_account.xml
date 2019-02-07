@@ -31,6 +31,32 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+      <LinearLayout
+        android:id="@+id/create_password_container"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+          style="@style/SettingsLinearRow"
+          android:layout_marginTop="@dimen/grid_3">
+
+          <TextView
+            android:id="@+id/create_password_row"
+            style="@style/SettingsSingleRow"
+            android:text="@string/Create_password" />
+
+        </LinearLayout>
+
+        <TextView
+          android:id="@+id/create_password_text_view"
+          style="@style/NewsLetterTextView"
+          android:text="@string/Youre_connected_via_Facebook_email_Create_a_password_for_this_account"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+      </LinearLayout>
+
         <LinearLayout
           android:id="@+id/password_required_container"
           style="@style/SettingsLinearRow"

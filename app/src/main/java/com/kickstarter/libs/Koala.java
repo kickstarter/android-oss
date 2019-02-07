@@ -321,6 +321,10 @@ public final class Koala {
     this.client.track("Contact Email Clicked");
   }
 
+  public void trackCreatedPassword() {
+    this.client.track(KoalaEvent.CREATED_PASSWORD);
+  }
+
   public void trackDeletePaymentMethod() {
     this.client.track(KoalaEvent.DELETED_PAYMENT_METHOD);
   }
@@ -375,6 +379,10 @@ public final class Koala {
 
   public void trackViewedChangedPassword() {
     this.client.track(KoalaEvent.VIEWED_CHANGE_PASSWORD);
+  }
+
+  public void trackViewedCreatedPassword() {
+    this.client.track(KoalaEvent.VIEWED_CREATE_PASSWORD);
   }
 
   public void trackViewedNotifications() {

@@ -11,6 +11,7 @@ import com.kickstarter.R
 import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.extensions.startActivityWithSlideUpTransition
 import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.TransitionUtils
@@ -28,16 +29,27 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
     private var newCurrencySelection: CurrencyCode? = null
     private var showCurrencyChangeDialog: AlertDialog? = null
 
+    private lateinit var ksString: KSString
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
+
+        this.ksString = environment().ksString()
 
         setUpSpinner()
 
         this.viewModel.outputs.chosenCurrency()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setSpinnerSelection(it)  }
+                .subscribe { setSpinnerSelection(it) }
+
+        this.viewModel.outputs.email()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    create_password_text_view.text = this.ksString.format(getString(R.string.Youre_connected_via_Facebook_email_Create_a_password_for_this_account), "email", it)
+                }
 
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
@@ -52,7 +64,10 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
         this.viewModel.outputs.passwordRequiredContainerIsVisible()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(password_required_container, !it) }
+                .subscribe {
+                    ViewUtils.setGone(create_password_container, it)
+                    ViewUtils.setGone(password_required_container, !it)
+                }
 
         this.viewModel.outputs.showEmailErrorIcon()
                 .compose(bindToLifecycle())
@@ -64,6 +79,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
                 .compose(observeForUI())
                 .subscribe { showSnackbar(account_container, R.string.Got_it_your_changes_have_been_saved) }
 
+        create_password_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, CreatePasswordActivity::class.java)) }
         change_email_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, ChangeEmailActivity::class.java)) }
         change_password_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, ChangePasswordActivity::class.java)) }
         payment_methods_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, PaymentMethodsSettingsActivity::class.java)) }
@@ -140,4 +156,5 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
             }
         }
     }
+
 }

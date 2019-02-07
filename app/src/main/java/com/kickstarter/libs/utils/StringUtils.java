@@ -8,6 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public final class StringUtils {
+
+  public static final int MINIMUM_PASSWORD_LENGTH = 6;
+
   private StringUtils() {}
 
   public static boolean isEmail(final @NonNull CharSequence str) {

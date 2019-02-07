@@ -29,8 +29,9 @@
 
     <!-- ACTIVITIES -->
 
-    <activity android:name=".ui.activities.AccountActivity"
-      android:theme="@style/SettingsActivitiesTransitions"/>
+    <activity
+      android:name=".ui.activities.AccountActivity"
+      android:theme="@style/SettingsActivitiesTransitions" />
     <activity
       android:name=".ui.activities.ActivityFeedActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
@@ -39,11 +40,13 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-    <activity android:name=".ui.activities.ChangeEmailActivity"
-      android:theme="@style/SettingsActivitiesTransitions"/>
-    <activity android:name=".ui.activities.ChangePasswordActivity"
-      android:theme="@style/SettingsActivitiesTransitions"/>
-    <activity android:name=".ui.activities.EditProfileActivity"/>
+    <activity
+      android:name=".ui.activities.ChangeEmailActivity"
+      android:theme="@style/SettingsActivitiesTransitions" />
+    <activity
+      android:name=".ui.activities.ChangePasswordActivity"
+      android:theme="@style/SettingsActivitiesTransitions" />
+    <activity android:name=".ui.activities.EditProfileActivity" />
     <activity
       android:name=".ui.activities.CheckoutActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
@@ -60,6 +63,9 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.ProjectActivity" />
     </activity>
+
+    <activity android:name=".ui.activities.CreatePasswordActivity"
+      android:theme="@style/SettingsActivitiesTransitions"/>
     <activity
       android:name=".ui.activities.CreatorDashboardActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
@@ -136,8 +142,9 @@
     <activity
       android:name=".ui.activities.HelpActivity"
       android:theme="@style/HelpActivity" />
-    <activity android:name=".ui.activities.HelpSettingsActivity"
-      android:theme="@style/SettingsActivitiesTransitions"/>
+    <activity
+      android:name=".ui.activities.HelpSettingsActivity"
+      android:theme="@style/SettingsActivitiesTransitions" />
     <activity
       android:name=".ui.activities.HelpActivity$CookiePolicy"
       android:theme="@style/HelpActivity" />
@@ -193,15 +200,20 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.ProfileActivity" />
     </activity>
-    <activity android:name=".ui.activities.NewCardActivity"
+    <activity
+      android:name=".ui.activities.NewCardActivity"
       android:theme="@style/SettingsActivitiesTransitions"/>
-    <activity android:name=".ui.activities.NewsletterActivity"
+    <activity
+      android:name=".ui.activities.NewsletterActivity"
       android:theme="@style/SettingsActivitiesTransitions"/>
-    <activity android:name=".ui.activities.NotificationsActivity"
+    <activity
+      android:name=".ui.activities.NotificationsActivity"
       android:theme="@style/SettingsActivitiesTransitions"/>
-    <activity android:name=".ui.activities.PaymentMethodsSettingsActivity"
+    <activity
+      android:name=".ui.activities.PaymentMethodsSettingsActivity"
       android:theme="@style/SettingsActivitiesTransitions"/>
-    <activity android:name=".ui.activities.PrivacyActivity"
+    <activity
+      android:name=".ui.activities.PrivacyActivity"
       android:theme="@style/SettingsActivitiesTransitions"/>
     <activity
       android:name=".ui.activities.ProjectNotificationSettingsActivity"
@@ -403,7 +415,6 @@
     <meta-data
       android:name="com.facebook.sdk.ApplicationId"
       android:value="@string/facebook_app_id" />
-
     <meta-data
       android:name="com.google.android.gms.wallet.api.enabled"
       android:value="true" />
@@ -411,4 +422,3 @@
   </application>
 
 </manifest>
-

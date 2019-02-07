@@ -15,6 +15,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: AccountViewModel.ViewModel
 
     private val chosenCurrency = TestSubscriber<String>()
+    private val email = TestSubscriber<String>()
     private val error = TestSubscriber<String>()
     private val passwordRequiredContainerIsVisible = TestSubscriber<Boolean>()
     private val showEmailErrorIcon = TestSubscriber<Boolean>()
@@ -24,6 +25,7 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         this.vm = AccountViewModel.ViewModel(environment)
 
         this.vm.outputs.chosenCurrency().subscribe(this.chosenCurrency)
+        this.vm.outputs.email().subscribe(this.email)
         this.vm.outputs.error().subscribe(this.error)
         this.vm.outputs.passwordRequiredContainerIsVisible().subscribe(this.passwordRequiredContainerIsVisible)
         this.vm.outputs.showEmailErrorIcon().subscribe(this.showEmailErrorIcon)
@@ -40,6 +42,20 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         }).build())
 
         this.chosenCurrency.assertValue("MXN")
+        this.koalaTest.assertValue("Viewed Account")
+        this.showEmailErrorIcon.assertValue(false)
+    }
+
+    @Test
+    fun testUserEmail() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
+                        "r@ksr.com",  true, true, true, true, "USD")))
+            }
+        }).build())
+
+        this.email.assertValue("r@ksr.com")
         this.koalaTest.assertValue("Viewed Account")
         this.showEmailErrorIcon.assertValue(false)
     }

@@ -27,6 +27,9 @@ interface AccountViewModel {
         /** Emits the current user's chosen Currency. */
         fun chosenCurrency(): Observable<String>
 
+        /** Emits the current user's Email. */
+        fun email(): Observable<String>
+
         /** Emits whenever there is an error updating the user's currency.  */
         fun error(): Observable<String>
 
@@ -51,6 +54,7 @@ interface AccountViewModel {
         private val onSelectedCurrency = PublishSubject.create<CurrencyCode>()
 
         private val chosenCurrency = BehaviorSubject.create<String>()
+        private val email = BehaviorSubject.create<String>()
         private val passwordRequiredContainerIsVisible = BehaviorSubject.create<Boolean>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
         private val showEmailErrorIcon = BehaviorSubject.create<Boolean>()
@@ -70,6 +74,10 @@ interface AccountViewModel {
                     .map { ObjectUtils.coalesce(it, CurrencyCode.USD.rawValue()) }
                     .compose(bindToLifecycle())
                     .subscribe { this.chosenCurrency.onNext(it) }
+
+            userPrivacy
+                    .map { it?.me()?.email() }
+                    .subscribe { this.email.onNext(it) }
 
             userPrivacy
                     .map { it?.me()?.hasPassword() ?: false }
@@ -109,6 +117,8 @@ interface AccountViewModel {
         }
 
         override fun chosenCurrency(): BehaviorSubject<String> = this.chosenCurrency
+
+        override fun email(): Observable<String> = this.email
 
         override fun error(): Observable<String> = this.error
 

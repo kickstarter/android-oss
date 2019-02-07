@@ -85,6 +85,7 @@ contributeurs</string>
   <string name="Couldnt_add_attachment" formatted="false">Impossible d\'ajouter la pièce jointe</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Impossible d\'ouvrir la diffusion en direct. Veuillez réessayer plus tard.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Impossible de supprimer la pièce jointe</string>
+  <string name="Create_password" formatted="false">Create password</string>
   <string name="Created_projects_projects_count" formatted="false">Projets créés : %{projects_count}</string>
   <string name="Creator" formatted="false">Créateur</string>
   <string name="Creator_name_is_live_now" formatted="false">&lt;b>%{creator_name}&lt;/b> est en direct en ce moment</string>
@@ -500,6 +501,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Your_shipping_destination" formatted="false">Destination d\'expédition</string>
   <string name="Youre_a_backer" formatted="false">Vous êtes contributeur !</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Vous êtes sur le point de créer un nouveau compte Kickstarter avec l\'adresse e-mail que vous utilisez sur Facebook. Veuillez confirmer avant de continuer.</string>
+  <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">You\'re connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.</string>
   <string name="Youre_offline" formatted="false">Vous êtes hors ligne. Dès que votre appareil se sera reconnecté, naviguez dans l\'application pour la rafraîchir.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Vous vous êtes engagé à soutenir ce projet et sa campagne de financement n\'est pas terminée.</string>
   <string name="Zip_postal_code" formatted="false">Code postal</string>

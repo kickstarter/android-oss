@@ -26,7 +26,7 @@ class CreatePasswordActivity : BaseActivity<CreatePasswordViewModel.ViewModel>()
 
     private var saveEnabled = false
     private lateinit var logout: Logout
-K
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_password)

@@ -77,7 +77,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
         this.viewModel.outputs.showCreatedPasswordSnackbar()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { showConfirmationSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }
+                .subscribe { showSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }
 
         this.viewModel.outputs.showResetPasswordSuccessDialog()
                 .compose(bindToLifecycle())

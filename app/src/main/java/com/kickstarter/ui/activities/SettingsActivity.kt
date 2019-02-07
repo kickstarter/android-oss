@@ -56,18 +56,18 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         this.viewModel.outputs.showConfirmLogoutPrompt()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ show ->
+                .subscribe { show ->
                     if (show) {
                         lazyLogoutConfirmationDialog().show()
                     } else {
                         lazyLogoutConfirmationDialog().dismiss()
                     }
-                })
+                }
 
         this.viewModel.outputs.userNameTextViewText()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe({ name_text_view.text = it })
+                .subscribe { name_text_view.text = it }
 
         account_row.setOnClickListener {
             startActivityWithSlideUpTransition(Intent(this, AccountActivity::class.java))
@@ -91,10 +91,6 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
 
         notification_row.setOnClickListener {
             startActivityWithSlideUpTransition(Intent(this, NotificationsActivity::class.java))
-        }
-
-        privacy_row.setOnClickListener {
-            startActivityWithSlideUpTransition(Intent(this, PrivacyActivity::class.java))
         }
 
         rate_us_row.setOnClickListener { ViewUtils.openStoreRating(this, this.packageName) }

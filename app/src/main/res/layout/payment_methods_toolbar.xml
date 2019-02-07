@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.kickstarter.ui.toolbars.KSToolbar
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  tools:showIn="@layout/activity_settings_payment_methods"
+  style="@style/Toolbar"
+  android:id="@+id/payment_methods_toolbar"
+  app:contentInsetLeft="0dp"
+  app:contentInsetStart="0dp">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.kickstarter.ui.views.IconButton
+      style="@style/ToolbarIconBackButton"
+      android:id="@+id/back_button" />
+
+    <TextView
+      style="@style/ToolbarTitle"
+      android:id="@+id/title_text_view"
+      android:text="@string/Payment_methods" />
+
+  </RelativeLayout>
+
+</com.kickstarter.ui.toolbars.KSToolbar>

@@ -108,8 +108,8 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         this.notifyOfCreatorDigest = isTrue(user.notifyOfCreatorDigest())
 
         val frequencyIndex = when {
-            notifyOfCreatorDigest -> User.EmailFrequency.DIGEST.ordinal
-            else -> User.EmailFrequency.INDIVIDUAL.ordinal
+            notifyOfCreatorDigest -> User.EmailFrequency.DAILY_SUMMARY.ordinal
+            else -> User.EmailFrequency.TWICE_A_DAY_SUMMARY.ordinal
         }
 
         toggleImageButtonIconColor(backings_phone_icon, this.notifyMobileOfBackings, true)
@@ -126,7 +126,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (frequencyIndex != position) {
-                    viewModel.inputs.notifyOfCreatorDigest(position == User.EmailFrequency.DIGEST.ordinal)
+                    viewModel.inputs.notifyOfCreatorDigest(position == User.EmailFrequency.DAILY_SUMMARY.ordinal)
                 }
             }
         }
@@ -174,10 +174,8 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
 
     private fun displayPostLikesNotificationSettings(user: User) {
         this.notifyMobileOfPostLikes = isTrue(user.notifyMobileOfPostLikes())
-        this.notifyOfPostLikes = isTrue(user.notifyOfPostLikes())
 
         toggleImageButtonIconColor(post_likes_phone_icon, this.notifyMobileOfPostLikes, true)
-        toggleImageButtonIconColor(post_likes_mail_icon, this.notifyOfPostLikes)
     }
 
     private fun displayUpdatesNotificationSettings(user: User) {
@@ -290,16 +288,8 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             AnimationUtils.notificationBounceAnimation(new_followers_phone_icon, new_followers_mail_icon)
         }
 
-        post_likes_mail_icon.setOnClickListener {
-            this.viewModel.inputs.notifyOfPostLikes(!this.notifyOfPostLikes)
-        }
-
         post_likes_phone_icon.setOnClickListener {
             this.viewModel.inputs.notifyMobileOfPostLikes(!this.notifyMobileOfPostLikes)
-        }
-
-        post_likes_row.setOnClickListener {
-            AnimationUtils.notificationBounceAnimation(post_likes_phone_icon, post_likes_mail_icon)
         }
 
         project_updates_mail_icon.setOnClickListener {

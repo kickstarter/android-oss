@@ -10,6 +10,7 @@ import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.WebClientType;
+import com.stripe.android.Stripe;
 
 import java.net.CookieManager;
 
@@ -38,6 +39,7 @@ public abstract class Environment implements Parcelable {
   public abstract PlayServicesCapability playServicesCapability();
   public abstract Scheduler scheduler();
   public abstract SharedPreferences sharedPreferences();
+  public abstract Stripe stripe();
   public abstract WebClientType webClient();
   public abstract String webEndpoint();
 
@@ -63,6 +65,7 @@ public abstract class Environment implements Parcelable {
     public abstract Builder playServicesCapability(PlayServicesCapability __);
     public abstract Builder scheduler(Scheduler __);
     public abstract Builder sharedPreferences(SharedPreferences __);
+    public abstract Builder stripe(Stripe __);
     public abstract Builder webClient(WebClientType __);
     public abstract Builder webEndpoint(String __);
     public abstract Environment build();

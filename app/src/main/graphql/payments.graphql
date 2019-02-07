@@ -1,0 +1,27 @@
+query UserPayments {
+  me {
+    storedCards {
+      nodes {
+        id
+        expirationDate
+        lastFour
+        state
+        paymentType
+        type
+      }
+    }
+  }
+}
+
+mutation DeletePaymentSource($paymentSourceId: String!)  {
+  paymentSourceDelete(input: {paymentSourceId: $paymentSourceId}) {
+    clientMutationId
+  }
+}
+
+mutation SavePaymentMethod($paymentType: PaymentTypes!, $stripeToken: String!, $stripeCardId: String!) {
+  createPaymentSource(input: {paymentType: $paymentType, stripeToken: $stripeToken, stripeCardId: $stripeCardId}) {
+      errorMessage
+      isSuccessful
+  }
+}

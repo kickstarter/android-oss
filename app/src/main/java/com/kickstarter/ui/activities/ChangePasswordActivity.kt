@@ -7,7 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.kickstarter.R
 import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.showErrorSnackbar
+import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
@@ -63,7 +63,7 @@ class ChangePasswordActivity : BaseActivity<ChangePasswordViewModel.ViewModel>()
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { showErrorSnackbar(change_password_toolbar, it) }
+                .subscribe { showSnackbar(change_password_toolbar, it) }
 
         current_password.onChange { this.viewModel.inputs.currentPassword(it) }
         new_password.onChange { this.viewModel.inputs.newPassword(it) }

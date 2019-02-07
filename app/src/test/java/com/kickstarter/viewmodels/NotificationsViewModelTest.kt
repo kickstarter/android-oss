@@ -240,16 +240,6 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testNotifyOfPostLikes() {
-        val user = UserFactory.user().toBuilder().notifyOfPostLikes(false).build()
-
-        setUpEnvironment(user)
-
-        this.vm.inputs.notifyOfPostLikes(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyOfPostLikes(true).build())
-    }
-
-    @Test
     fun testNotifyOfUpdates() {
         val user = UserFactory.user().toBuilder().notifyOfUpdates(false).build()
 

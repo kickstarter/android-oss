@@ -108,9 +108,7 @@
         <LinearLayout
           android:id="@+id/payment_methods_row"
           style="@style/SettingsLinearRow"
-          android:layout_marginTop="@dimen/grid_3"
-          android:visibility="gone"
-          tools:visibility="visible">
+          android:layout_marginTop="@dimen/grid_3">
 
           <TextView
             style="@style/SettingsSingleRow"
@@ -150,7 +148,7 @@
       <FrameLayout
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="@dimen/progress_bar_height"
         android:visibility="gone"
         tools:visibility="visible">
 

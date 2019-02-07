@@ -129,7 +129,7 @@
 
           <TextView
             style="@style/SettingsSectionLabel"
-            android:text="@string/Pledge_activity" />
+            android:text="@string/Project_activity" />
 
           <ImageButton
             android:id="@+id/backings_mail_icon"
@@ -200,11 +200,6 @@
           <TextView
             style="@style/SettingsSectionLabel"
             android:text="@string/profile_settings_creator_likes" />
-
-          <ImageButton
-            android:id="@+id/post_likes_mail_icon"
-            style="@style/KSSettingsMailIcon"
-            android:contentDescription="@null" />
 
           <Space
             android:layout_width="@dimen/grid_2"

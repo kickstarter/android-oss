@@ -1,10 +1,13 @@
 package com.kickstarter.services
 
 import CreatePasswordMutation
+import DeletePaymentSourceMutation
+import SavePaymentMethodMutation
 import SendEmailVerificationMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
+import UserPaymentsQuery
 import UserPrivacyQuery
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
@@ -13,6 +16,7 @@ import com.apollographql.apollo.exception.ApolloException
 import rx.Observable
 import rx.subjects.PublishSubject
 import type.CurrencyCode
+import type.PaymentTypes
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
@@ -36,6 +40,82 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     }
 
                 })
+            return@defer ps
+        }
+    }
+
+
+    override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<DeletePaymentSourceMutation.Data>()
+            service.mutate(DeletePaymentSourceMutation.builder()
+                    .paymentSourceId(paymentSourceId)
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<DeletePaymentSourceMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<DeletePaymentSourceMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors().first().message()))
+                            }
+                            ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<UserPaymentsQuery.Data>()
+            service.query(UserPaymentsQuery.builder().build())
+                    .enqueue(object : ApolloCall.Callback<UserPaymentsQuery.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<UserPaymentsQuery.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors().first().message()))
+                            }
+                            ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data> {
+        return Observable.defer {
+            val ps = PublishSubject.create<SavePaymentMethodMutation.Data>()
+            service.mutate(SavePaymentMethodMutation.builder()
+                    .paymentType(paymentTypes)
+                    .stripeToken(stripeToken)
+                    .stripeCardId(cardId)
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<SavePaymentMethodMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<SavePaymentMethodMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors().first().message()))
+                            }
+                            //why wouldn't this just be an error?
+                            val createPaymentSource = response.data()?.createPaymentSource()
+                            if (!createPaymentSource?.isSuccessful!!) {
+                                ps.onError(Exception(createPaymentSource.errorMessage()))
+                            } else {
+                                ps.onNext(response.data())
+                                ps.onCompleted()
+                            }
+                        }
+                    })
             return@defer ps
         }
     }
@@ -138,16 +218,16 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         return Observable.defer {
             val ps = PublishSubject.create<UserPrivacyQuery.Data>()
             service.query(UserPrivacyQuery.builder().build())
-                        .enqueue(object : ApolloCall.Callback<UserPrivacyQuery.Data>() {
-                            override fun onFailure(exception: ApolloException) {
-                                ps.onError(exception)
-                            }
+                    .enqueue(object : ApolloCall.Callback<UserPrivacyQuery.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
 
-                            override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
-                                ps.onNext(response.data())
-                                ps.onCompleted()
-                            }
-                        })
+                        override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
+                            ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+                    })
             return@defer ps
         }
     }

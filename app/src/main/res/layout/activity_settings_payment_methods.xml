@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/ksr_grey_100">
+
+  <com.google.android.material.appbar.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/payment_methods_toolbar" />
+
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+          style="@style/NewsLetterTextView"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:layout_marginTop="@dimen/grid_3"
+          android:text="@string/Any_payment_methods_you_saved_to_Kickstarter" />
+
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/recycler_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          tools:listitem="@layout/item_payment_method"
+          tools:visibility="gone" />
+
+        <LinearLayout
+          android:id="@+id/add_new_card"
+          style="@style/SettingsLinearRow">
+
+          <View
+            android:id="@+id/payments_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginEnd="@dimen/grid_12"
+            android:background="@color/ksr_grey_300"
+            android:visibility="gone" />
+
+          <TextView
+            style="@style/CalloutPrimaryMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:gravity="center_vertical"
+            android:text="@string/Add_new_card"
+            android:textAllCaps="true"
+            android:textColor="@color/ksr_green_500" />
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <FrameLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/progress_bar_height"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ProgressBar
+          style="?android:attr/progressBarStyleHorizontal"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_5"
+          android:layout_gravity="center"
+          android:indeterminate="true" />
+
+      </FrameLayout>
+
+    </FrameLayout>
+
+  </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

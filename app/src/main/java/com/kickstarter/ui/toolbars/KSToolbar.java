@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import butterknife.Bind;
+import butterknife.BindDimen;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Subscription;
@@ -27,6 +28,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class KSToolbar extends Toolbar {
   protected @Nullable @Bind(R.id.title_text_view) TextView titleTextView;
+  protected @BindDimen(R.dimen.grid_2) float grid_2;
 
   private Paint backgroundPaint;
   private @WebEndpoint String webEndpoint;
@@ -56,7 +58,7 @@ public class KSToolbar extends Toolbar {
     super.onDraw(canvas);
 
     if (!isInEditMode() && !this.webEndpoint.equals(Secrets.WebEndpoint.PRODUCTION)) {
-      canvas.drawRect(0, 0, getWidth(), getHeight(), this.backgroundPaint);
+      canvas.drawRect(0, 0, this.grid_2, getHeight(), this.backgroundPaint);
     }
   }
 
@@ -111,7 +113,7 @@ public class KSToolbar extends Toolbar {
     if (!isInEditMode()) {
       this.backgroundPaint = new Paint();
       this.backgroundPaint.setStyle(Paint.Style.FILL);
-      this.backgroundPaint.setColor(ContextCompat.getColor(context, R.color.ksr_dark_grey_400));
+      this.backgroundPaint.setColor(ContextCompat.getColor(context, R.color.ksr_cobalt_500));
 
       this.webEndpoint = environment().webEndpoint();
     }

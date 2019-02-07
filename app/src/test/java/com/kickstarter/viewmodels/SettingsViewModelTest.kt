@@ -1,8 +1,8 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.User
 import org.junit.Test
 import rx.observers.TestSubscriber
@@ -37,7 +37,7 @@ class SettingsViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.confirmLogoutClicked()
         this.logout.assertValueCount(1)
-        this.koalaTest.assertValues("Settings View", "Logout")
+        this.koalaTest.assertValues("Viewed Settings", "Logout")
     }
 
     @Test

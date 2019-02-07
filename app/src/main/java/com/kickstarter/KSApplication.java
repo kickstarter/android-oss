@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
-import com.facebook.FacebookSdk;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.ApiCapabilities;
@@ -70,7 +69,7 @@ public class KSApplication extends MultiDexApplication {
       setVisitorCookie();
     }
 
-    FacebookSdk.sdkInitialize(this);
+//    FacebookSdk.sdkInitialize(this);
 
     this.pushNotifications.initialize();
 

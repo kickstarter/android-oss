@@ -32,8 +32,7 @@ public final class DiscoveryDrawerUtils {
    * @param expandedCategory The category that correspond to what is currently expanded in the menu.
    * @param user The currently logged in user.
    */
-  public static @NonNull
-  NavigationDrawerData deriveNavigationDrawerData(final @NonNull List<Category> categories,
+  public static @NonNull NavigationDrawerData deriveNavigationDrawerData(final @NonNull List<Category> categories,
     final @NonNull DiscoveryParams selected, final @Nullable Category expandedCategory, final @Nullable User user) {
 
     final NavigationDrawerData.Builder builder = NavigationDrawerData.builder();

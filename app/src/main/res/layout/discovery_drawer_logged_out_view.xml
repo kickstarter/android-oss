@@ -26,15 +26,14 @@
       android:layout_height="wrap_content"
       android:contentDescription="@null"
       android:gravity="center"
-      android:src="@drawable/ic_face"
-      android:text="@string/account_circle" />
+      android:src="@drawable/ic_face" />
 
     <TextView
       android:id="@+id/logged_out_text_view"
       style="@style/BodyPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/grid_1"
+      android:layout_marginStart="@dimen/grid_5"
       android:text="@string/discovery_onboarding_buttons_signup_or_login"
       android:textColor="@color/ksr_dark_grey_500" />
 

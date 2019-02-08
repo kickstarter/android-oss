@@ -4,71 +4,61 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_marginBottom="@dimen/grid_1"
-  android:orientation="vertical"
-  android:theme="@style/ThemeOverlay.AppCompat.Light">
+  android:layout_marginBottom="@dimen/activity_vertical_margin"
+  android:layout_marginEnd="@dimen/activity_horizontal_margin"
+  android:layout_marginStart="@dimen/activity_horizontal_margin"
+  android:layout_marginTop="@dimen/activity_vertical_margin"
+  android:background="@color/discovery_drawer_header"
+  android:baselineAligned="false"
+  android:gravity="center_vertical">
 
   <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_9"
-    android:paddingTop="@dimen/grid_1"
-    android:paddingBottom="@dimen/grid_1"
-    android:background="@color/discovery_drawer_header"
-    android:baselineAligned="false"
-    android:gravity="center_vertical">
+    android:id="@+id/user_container"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:background="@drawable/click_indicator_light"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
 
-    <LinearLayout
-      android:id="@+id/user_container"
-      android:background="@drawable/click_indicator_light"
-      android:orientation="horizontal"
-      android:layout_weight="1"
-      android:paddingStart="@dimen/grid_2"
-      android:paddingEnd="@dimen/grid_2"
-      android:gravity="center_vertical"
-      android:layout_width="0dp"
-      android:layout_height="match_parent">
+    <ImageView
+      android:id="@+id/user_image_view"
+      android:layout_width="@dimen/grid_8"
+      android:layout_height="@dimen/grid_8"
+      android:layout_marginBottom="@dimen/grid_3"
+      android:adjustViewBounds="true"
+      android:contentDescription="@null"
+      tools:src="@drawable/ic_face" />
 
-      <ImageView
-        android:id="@+id/user_image_view"
-        android:adjustViewBounds="true"
-        android:layout_width="@dimen/grid_5"
-        android:layout_height="@dimen/grid_5"
-        tools:ignore="ContentDescription"
-        tools:background="@color/ksr_cobalt_500"/>
-
-      <TextView
-        style="@style/BodyPrimaryMedium"
-        android:id="@+id/user_name_text_view"
-        android:layout_marginStart="@dimen/grid_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/ksr_soft_black"
-        tools:text="Lisa Luo"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-      android:orientation="horizontal"
-      android:gravity="center_vertical"
+    <TextView
+      android:id="@+id/user_name_text_view"
+      style="@style/Title2Medium"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
-
-      <include layout="@layout/internal_tools_button_view" />
-
-      <com.kickstarter.ui.views.IconButton
-        android:background="@drawable/click_indicator_light"
-        android:id="@+id/settings_icon_button"
-        android:layout_height="@dimen/grid_8"
-        android:layout_width="@dimen/grid_8"
-        android:gravity="center"
-        android:textSize="@dimen/icon"
-        android:textColor="@color/ksr_soft_black"
-        android:text="@string/settings_icon" />
-
-    </LinearLayout>
+      android:layout_height="wrap_content"
+      android:textColor="@color/ksr_soft_black"
+      tools:text="Lisa Luo" />
 
   </LinearLayout>
 
-  <include layout="@layout/horizontal_line_0_5dp_view" />
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <include layout="@layout/internal_tools_button_view" />
+
+    <com.kickstarter.ui.views.IconButton
+      android:id="@+id/settings_icon_button"
+      android:layout_width="@dimen/grid_8"
+      android:layout_height="@dimen/grid_8"
+      android:background="@drawable/click_indicator_light"
+      android:gravity="center"
+      android:text="@string/settings_icon"
+      android:textColor="@color/ksr_soft_black"
+      android:textSize="@dimen/icon" />
+
+  </LinearLayout>
 
 </LinearLayout>

@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<TextView
+  android:id="@+id/filter_text_view"
+  style="@style/BodySecondaryMedium"
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/filter_view"
-  android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content">
-
-  <TextView
-    android:id="@+id/filter_text_view"
-    style="@style/CalloutPrimary"
-    android:background="@drawable/click_indicator_light_masked"
-    android:paddingTop="@dimen/discovery_drawer_filter_padding_y"
-    android:paddingBottom="@dimen/discovery_drawer_filter_padding_y"
-    android:paddingStart="@dimen/grid_2"
-    android:paddingEnd="@dimen/grid_1"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
-
-</LinearLayout>
+  android:layout_height="wrap_content"
+  android:layout_marginEnd="@dimen/grid_1"
+  android:layout_marginStart="@dimen/grid_1"
+  android:foreground="@drawable/click_indicator_light_masked"
+  android:paddingBottom="@dimen/grid_2"
+  android:paddingEnd="@dimen/grid_3_half"
+  android:paddingStart="@dimen/grid_3_half"
+  android:paddingTop="@dimen/grid_2" />

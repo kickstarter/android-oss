@@ -1,8 +1,8 @@
 package com.kickstarter.ui.viewholders.discoverydrawer;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -13,6 +13,7 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
@@ -22,12 +23,9 @@ import timber.log.Timber;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class ChildFilterViewHolder extends KSViewHolder {
-  protected @Bind(R.id.filter_view) LinearLayout filterView;
   protected @Bind(R.id.filter_text_view) TextView filterTextView;
-  protected @BindColor(R.color.ksr_soft_black) int ksrSoftBlackColor;
-  protected @BindColor(R.color.ksr_dark_grey_400) int darkGrayColor;
-  protected @BindColor(R.color.discovery_drawer_item_selected) int filterSelectedColor;
-  protected @BindColor(R.color.transparent) int filterUnselectedColor;
+  protected @BindColor(R.color.ksr_dark_grey_400) int ksrDarkGrayColor;
+  protected @BindColor(R.color.accent) int accentColor;
 
   private final KSString ksString;
 
@@ -60,15 +58,12 @@ public final class ChildFilterViewHolder extends KSViewHolder {
     } else {
       this.filterTextView.setText(this.item.params().filterString(context, this.ksString));
     }
-    if (this.item.selected()) {
-      this.filterTextView.setTextAppearance(context, R.style.CalloutPrimaryMedium);
-      this.filterTextView.setTextColor(this.ksrSoftBlackColor);
-    } else {
-      this.filterTextView.setTextAppearance(context, R.style.CalloutPrimary);
-      this.filterTextView.setTextColor(this.darkGrayColor);
-    }
 
-    this.filterView.setBackgroundColor(this.item.selected() ? this.filterSelectedColor : this.filterUnselectedColor);
+    final int textColor = this.item.selected() ? this.accentColor : this.ksrDarkGrayColor;
+    this.filterTextView.setTextColor(textColor);
+
+    final Drawable drawable = this.item.selected() ? ContextCompat.getDrawable(context, R.drawable.drawer_selected) : null;
+    this.filterTextView.setBackground(drawable);
   }
 
   @OnClick(R.id.filter_text_view)

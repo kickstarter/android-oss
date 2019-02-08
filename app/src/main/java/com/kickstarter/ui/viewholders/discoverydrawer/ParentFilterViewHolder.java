@@ -54,8 +54,8 @@ public final class ParentFilterViewHolder extends KSViewHolder {
     }
   }
 
-  @OnClick(R.id.filter_text_view)
-  protected void textViewClick() {
+  @OnClick(R.id.filter_view)
+  protected void rowClick() {
     this.delegate.parentFilterViewHolderRowClick(this, this.item);
   }
 }

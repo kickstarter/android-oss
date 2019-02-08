@@ -120,12 +120,19 @@ interface NewCardFragmentViewModel {
 
             saveCardNotification
                     .compose(values())
-                    .subscribe { this.success.onNext(null) }
+                    .subscribe {
+                        this.success.onNext(null)
+                        this.koala.trackSavedPaymentMethod()
+                    }
 
             saveCardNotification
                     .compose(Transformers.errors())
-                    .subscribe { this.error.onNext(it.localizedMessage) }
+                    .subscribe {
+                        this.error.onNext(it.localizedMessage)
+                        this.koala.trackFailedPaymentMethodCreation()
+                    }
 
+            this.koala.trackViewedAddNewCard()
         }
 
         private fun storeNameAndPostalCode(cardForm: CardForm): Card {

@@ -131,7 +131,7 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
 
     newSections.add(Collections.singletonList(null)); // Divider
 
-    newSections.add(Collections.singletonList(R.string.Collections)); // Divider
+    newSections.add(Collections.singletonList(R.string.Collections));
 
     final List<NavigationDrawerData.Section> topFilterSections = Observable.from(data.sections())
       .filter(NavigationDrawerData.Section::isTopFilter)
@@ -146,6 +146,8 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
     }
 
     newSections.add(Collections.singletonList(null)); // Divider
+
+    newSections.add(Collections.singletonList(R.string.discovery_filters_categories_title));
 
     for (final NavigationDrawerData.Section section : categoryFilterSections) {
       newSections.add(new ArrayList<>(section.rows()));

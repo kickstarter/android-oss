@@ -8,7 +8,7 @@
   android:layout_marginEnd="@dimen/grid_1"
   android:layout_marginStart="@dimen/grid_1"
   android:foreground="@drawable/click_indicator_light_masked"
-  android:paddingBottom="@dimen/grid_2"
+  android:paddingBottom="@dimen/activity_vertical_margin"
   android:paddingEnd="@dimen/grid_3_half"
   android:paddingStart="@dimen/grid_3_half"
-  android:paddingTop="@dimen/grid_2" />
+  android:paddingTop="@dimen/activity_vertical_margin" />

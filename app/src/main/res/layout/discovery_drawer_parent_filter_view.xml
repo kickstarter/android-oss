@@ -17,10 +17,10 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
     android:layout_weight="1"
-    android:paddingBottom="@dimen/grid_2"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingEnd="@dimen/activity_horizontal_margin"
     android:paddingStart="@dimen/grid_3_half"
-    android:paddingTop="@dimen/grid_2"
+    android:paddingTop="@dimen/activity_vertical_margin"
     tools:text="Art" />
 
   <FrameLayout

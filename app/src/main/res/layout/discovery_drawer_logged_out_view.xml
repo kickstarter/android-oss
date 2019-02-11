@@ -18,8 +18,8 @@
     android:background="@drawable/click_indicator_light"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingEnd="@dimen/activity_horizontal_margin"
-    android:paddingStart="@dimen/activity_horizontal_margin">
+    android:paddingEnd="@dimen/grid_5_half"
+    android:paddingStart="@dimen/grid_5_half">
 
     <ImageView
       android:layout_width="wrap_content"

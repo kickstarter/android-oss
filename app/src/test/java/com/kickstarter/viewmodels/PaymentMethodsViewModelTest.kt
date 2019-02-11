@@ -93,7 +93,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.deleteCardClicked("id")
         this.vm.confirmDeleteCardClicked()
         this.error.assertValue("eek")
-        this.koalaTest.assertValue("Errored Delete Payment Method")
+        this.koalaTest.assertValues("Viewed Payment Methods","Errored Delete Payment Method")
     }
 
     @Test
@@ -125,6 +125,6 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.confirmDeleteCardClicked()
         this.success.assertValueCount(1)
         this.cards.assertValueCount(2)
-        this.koalaTest.assertValue("Viewed Payment Methods")
+        this.koalaTest.assertValues("Viewed Payment Methods", "Deleted Payment Method")
     }
 }

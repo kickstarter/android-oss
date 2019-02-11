@@ -85,7 +85,7 @@ contributeurs</string>
   <string name="Couldnt_add_attachment" formatted="false">Impossible d\'ajouter la pièce jointe</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Impossible d\'ouvrir la diffusion en direct. Veuillez réessayer plus tard.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Impossible de supprimer la pièce jointe</string>
-  <string name="Create_password" formatted="false">Créer votre mot de passe</string>
+  <string name="Create_password" formatted="false">Create password</string>
   <string name="Created_projects_projects_count" formatted="false">Projets créés : %{projects_count}</string>
   <string name="Creator" formatted="false">Créateur</string>
   <string name="Creator_name_is_live_now" formatted="false">&lt;b>%{creator_name}&lt;/b> est en direct en ce moment</string>
@@ -115,7 +115,7 @@ contributeurs</string>
   <string name="Current_email" formatted="false">Adresse e-mail actuelle</string>
   <string name="Current_password" formatted="false">Mot de passe actuel</string>
   <string name="Daily_digest" formatted="false">Résumé quotidien</string>
-  <string name="Daily_summary" formatted="false">Une fois par jour</string>
+  <string name="Daily_summary" formatted="false">Daily summary</string>
   <string name="Data_will_appear_here_once" formatted="false">Ces données seront visibles dès que vous aurez reçu votre première contribution.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Supprimer mon compte Kickstarter</string>
   <string name="Delivered" formatted="false">Distribué</string>
@@ -257,7 +257,6 @@ contributeurs</string>
   <string name="Manage_your_pledge_below" formatted="false">Gérer mon engagement</string>
   <string name="Manage_your_reward" formatted="false">Gérer votre récompense</string>
   <string name="Message_backer" formatted="false">Envoyer un message au contributeur</string>
-  <string name="Message_banner_accessibility_Double_tap_to_dismiss" formatted="false">Double tap to dismiss.</string>
   <string name="Message_creator" formatted="false">Envoyer un message au créateur</string>
   <string name="Message_user_name" formatted="false">Envoyer un message à %{user_name}</string>
   <string name="Messages" formatted="false">Messages</string>
@@ -446,7 +445,7 @@ n\'ont rien soutenu.</string>
   <string name="Top_ten_pledge_sources" formatted="false">Vos 10 principales sources de contributions</string>
   <string name="Top_ten_rewards" formatted="false">Les 10 récompenses qui ont le plus de succès</string>
   <string name="Total_pledged" formatted="false">Total engagé</string>
-  <string name="Twice_a_day_summary" formatted="false">Deux fois par jour</string>
+  <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>
   <string name="Unable_to_request" formatted="false">Demande de données impossible.</string>
   <string name="Unfollow_friend_name" formatted="false">Ne plus suivre %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Désabonnement des actus de %{friend_name}.</string>
@@ -502,7 +501,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Your_shipping_destination" formatted="false">Destination d\'expédition</string>
   <string name="Youre_a_backer" formatted="false">Vous êtes contributeur !</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Vous êtes sur le point de créer un nouveau compte Kickstarter avec l\'adresse e-mail que vous utilisez sur Facebook. Veuillez confirmer avant de continuer.</string>
-  <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">Vous êtes connecté par Facebook (%{email}). Si vous souhaitez modifier vos identifiants Kickstarter, veuillez définir le mot de passe de ce compte.</string>
+  <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">You\'re connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.</string>
   <string name="Youre_offline" formatted="false">Vous êtes hors ligne. Dès que votre appareil se sera reconnecté, naviguez dans l\'application pour la rafraîchir.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Vous vous êtes engagé à soutenir ce projet et sa campagne de financement n\'est pas terminée.</string>
   <string name="Zip_postal_code" formatted="false">Code postal</string>
@@ -1142,6 +1141,11 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_category_count_categories_backed_two" formatted="false">2 catégories soutenues</string>
   <string name="profile_category_count_categories_backed_zero" formatted="false">0 catégories soutenues</string>
   <string name="profile_pie_slice_category_name_backed_projects_count" formatted="false">%{category_name} (%{backed_projects_count})</string>
+  <string name="profile_project_count_projects_backed_few" formatted="false">%{project_count} projets soutenus</string>
+  <string name="profile_project_count_projects_backed_many" formatted="false">%{project_count} projets soutenus</string>
+  <string name="profile_project_count_projects_backed_one" formatted="false">1 projet soutenu</string>
+  <string name="profile_project_count_projects_backed_two" formatted="false">2 projets soutenus</string>
+  <string name="profile_project_count_projects_backed_zero" formatted="false">0 projets soutenus</string>
   <string name="profile_projects_backed_project_count_projects_few" formatted="false">%{project_count} PROJETS SOUTENUS</string>
   <string name="profile_projects_backed_project_count_projects_many" formatted="false">%{project_count} PROJETS SOUTENUS</string>
   <string name="profile_projects_backed_project_count_projects_one" formatted="false">1 PROJET SOUTENU</string>

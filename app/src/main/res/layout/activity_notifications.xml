@@ -121,7 +121,7 @@
         <TextView
           style="@style/SettingsSectionTitle"
           android:layout_marginBottom="@dimen/grid_2"
-          android:text="@string/Projects_youve_launched" />
+          android:text="@string/profile_settings_creator_title" />
 
         <LinearLayout
           android:id="@+id/backings_row"

@@ -84,7 +84,7 @@
   <string name="Couldnt_add_attachment" formatted="false">添付ファイルを追加できませんでした</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">ライブ配信を開けませんでした。後ほどお試しください。</string>
   <string name="Couldnt_remove_attachment" formatted="false">添付ファイルを削除できませんでした</string>
-  <string name="Create_password" formatted="false">パスワードを作成</string>
+  <string name="Create_password" formatted="false">Create password</string>
   <string name="Created_projects_projects_count" formatted="false">%{projects_count} のプロジェクト作成済</string>
   <string name="Creator" formatted="false">クリエイター</string>
   <string name="Creator_name_is_live_now" formatted="false">&lt;b>%{creator_name}&lt;/b>が進行中</string>
@@ -114,7 +114,7 @@
   <string name="Current_email" formatted="false">現在のメールアドレス</string>
   <string name="Current_password" formatted="false">現在のパスワード</string>
   <string name="Daily_digest" formatted="false">デイリーダイジェスト</string>
-  <string name="Daily_summary" formatted="false">1日1回の概要</string>
+  <string name="Daily_summary" formatted="false">Daily summary</string>
   <string name="Data_will_appear_here_once" formatted="false">誰かがプロジェクトをバック（支援）すると、ここにデータが表示されます。</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Kickstarter アカウントを削除</string>
   <string name="Delivered" formatted="false">発送済</string>
@@ -256,7 +256,6 @@
   <string name="Manage_your_pledge_below" formatted="false">以下のプレッジを変更</string>
   <string name="Manage_your_reward" formatted="false">リワードの管理</string>
   <string name="Message_backer" formatted="false">バッカーにメッセージする</string>
-  <string name="Message_banner_accessibility_Double_tap_to_dismiss" formatted="false">却下するにはダブルタップ。</string>
   <string name="Message_creator" formatted="false">クリエーターにメッセージする</string>
   <string name="Message_user_name" formatted="false">%{user_name} にメッセージ</string>
   <string name="Messages" formatted="false">メッセージ</string>
@@ -445,7 +444,7 @@
   <string name="Top_ten_pledge_sources" formatted="false">プレッジソースのトップ10</string>
   <string name="Top_ten_rewards" formatted="false">リワードのトップ10</string>
   <string name="Total_pledged" formatted="false">プレッジ総計</string>
-  <string name="Twice_a_day_summary" formatted="false">1日2回の概要</string>
+  <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>
   <string name="Unable_to_request" formatted="false">データをリクエストできません。</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} のフォロー解除</string>
   <string name="Unfollows_friend_name" formatted="false">%{friend_name} のフォロー解除</string>
@@ -501,7 +500,7 @@
   <string name="Your_shipping_destination" formatted="false">配送地域</string>
   <string name="Youre_a_backer" formatted="false">バッカーになりました！</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Facebookのメールアドレスで新しいアカウントを作成しようとしています。再度確認してください。</string>
-  <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">Facebook (%{email}) を通して接続されています。Kickstarter の認識情報を編集するには、このアカウント用にパスワードを作成してください。</string>
+  <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">You\'re connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.</string>
   <string name="Youre_offline" formatted="false">現在オフライン中です。デバイスが再接続し次第、アプリをリフレッシュしてください。</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">このプレッジ済のプロジェクトは、現在もファンド中</string>
   <string name="Zip_postal_code" formatted="false">郵便番号</string>
@@ -1142,6 +1141,11 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="profile_category_count_categories_backed_two" formatted="false">2カテゴリーへバック</string>
   <string name="profile_category_count_categories_backed_zero" formatted="false">0 カテゴリーへバック</string>
   <string name="profile_pie_slice_category_name_backed_projects_count" formatted="false">%{category_name}（%{backed_projects_count}）</string>
+  <string name="profile_project_count_projects_backed_few" formatted="false">%{project_count} 件のバック済プロジェクト</string>
+  <string name="profile_project_count_projects_backed_many" formatted="false">%{project_count} 件のバック済プロジェクト</string>
+  <string name="profile_project_count_projects_backed_one" formatted="false">1件のバック済みプロジェクト</string>
+  <string name="profile_project_count_projects_backed_two" formatted="false">2件のバック済みプロジェクト</string>
+  <string name="profile_project_count_projects_backed_zero" formatted="false">0件のバック済みプロジェクト</string>
   <string name="profile_projects_backed_project_count_projects_few" formatted="false">%{project_count} プロジェクトへバック済</string>
   <string name="profile_projects_backed_project_count_projects_many" formatted="false">%{project_count} プロジェクトへバック済</string>
   <string name="profile_projects_backed_project_count_projects_one" formatted="false">1プロジェクトへバック</string>

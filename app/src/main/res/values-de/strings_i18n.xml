@@ -85,7 +85,7 @@ Unterstützer</string>
   <string name="Couldnt_add_attachment" formatted="false">Anhang konnte nicht hinzugefügt werden</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Live-Stream konnte nicht geöffnet werden. Bitte versuche es später noch einmal.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Anhang konnte nicht entfernt werden</string>
-  <string name="Create_password" formatted="false">Passwort erstellen</string>
+  <string name="Create_password" formatted="false">Create password</string>
   <string name="Created_projects_projects_count" formatted="false">Erstellte Projekte: %{projects_count}</string>
   <string name="Creator" formatted="false">Projektgründer</string>
   <string name="Creator_name_is_live_now" formatted="false">&lt;b>%{creator_name}&lt;/b> ist jetzt live</string>
@@ -115,7 +115,7 @@ Unterstützer</string>
   <string name="Current_email" formatted="false">Derzeitige E-Mail</string>
   <string name="Current_password" formatted="false">Derzeitiges Passwort</string>
   <string name="Daily_digest" formatted="false">Tägliche Zusammenfassung</string>
-  <string name="Daily_summary" formatted="false">Übersicht (einmal täglich)</string>
+  <string name="Daily_summary" formatted="false">Daily summary</string>
   <string name="Data_will_appear_here_once" formatted="false">Info wird hier angezeigt, sobald jemand dein Projekt unterstützt.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Mein Kickstarter-Konto löschen</string>
   <string name="Delivered" formatted="false">Verschickt</string>
@@ -257,7 +257,6 @@ Unterstützer</string>
   <string name="Manage_your_pledge_below" formatted="false">Folgenden Beitrag verwalten</string>
   <string name="Manage_your_reward" formatted="false">Belohnung verwalten</string>
   <string name="Message_backer" formatted="false">Nachricht an Unterstützer senden</string>
-  <string name="Message_banner_accessibility_Double_tap_to_dismiss" formatted="false">Double tap to dismiss.</string>
   <string name="Message_creator" formatted="false">Nachricht an Projektgründer senden</string>
   <string name="Message_user_name" formatted="false">Nachricht senden an %{user_name}…</string>
   <string name="Messages" formatted="false">Nachrichten</string>
@@ -445,7 +444,7 @@ Unterstützer</string>
   <string name="Top_ten_pledge_sources" formatted="false">Top 10 Quellen deiner Beiträge</string>
   <string name="Top_ten_rewards" formatted="false">Top 10-Belohnungen</string>
   <string name="Total_pledged" formatted="false">Anzahl der Beiträge insgesamt</string>
-  <string name="Twice_a_day_summary" formatted="false">Übersicht (zweimal täglich)</string>
+  <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>
   <string name="Unable_to_request" formatted="false">Daten konnten nicht angefordert werden.</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} nicht mehr folgen</string>
   <string name="Unfollows_friend_name" formatted="false">%{friend_name} nicht mehr folgen.</string>
@@ -501,7 +500,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="Your_shipping_destination" formatted="false">Dein Versandziel</string>
   <string name="Youre_a_backer" formatted="false">Du unterstützt das Projekt!</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Du wirst hiermit ein neues Kickstarter-Konto mit deiner Facebook-E-Mail-Adresse anlegen. Bitte bestätige diesen Vorgang.</string>
-  <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">Du bist via Facebook (%{email}) verbunden. Erstelle ein Passwort für dieses Konto, um deine Anmeldedaten für Kickstarter zu ändern.</string>
+  <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">You\'re connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.</string>
   <string name="Youre_offline" formatted="false">Du bist Offline. Sobald du wieder Online bist, navigiere in der App, um sie zu aktualisieren.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Du hast einen Finazierungsbeitrag zu diesem Projekt geleistet. Die Frist für die Finanzierung ist noch nicht abgelaufen.</string>
   <string name="Zip_postal_code" formatted="false">Postleitzahl</string>
@@ -1141,6 +1140,11 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_category_count_categories_backed_two" formatted="false">In 2 Kategorien</string>
   <string name="profile_category_count_categories_backed_zero" formatted="false">In 0 Kategorien</string>
   <string name="profile_pie_slice_category_name_backed_projects_count" formatted="false">%{category_name} (%{backed_projects_count})</string>
+  <string name="profile_project_count_projects_backed_few" formatted="false">%{project_count} unterstützte Projekte</string>
+  <string name="profile_project_count_projects_backed_many" formatted="false">%{project_count} unterstützte Projekte</string>
+  <string name="profile_project_count_projects_backed_one" formatted="false">1 unterstütztes Projekt</string>
+  <string name="profile_project_count_projects_backed_two" formatted="false">2 unterstützte Projekte</string>
+  <string name="profile_project_count_projects_backed_zero" formatted="false">0 unterstützte Projekte</string>
   <string name="profile_projects_backed_project_count_projects_few" formatted="false">HAT %{project_count} PROJEKTE UNTERSTÜTZT</string>
   <string name="profile_projects_backed_project_count_projects_many" formatted="false">HAT %{project_count} PROJEKTE UNTERSTÜTZT</string>
   <string name="profile_projects_backed_project_count_projects_one" formatted="false">HAT 1 PROJEKT UNTERSTÜTZT </string>

@@ -16,14 +16,9 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.apollographql.android'
 apply from: 'quality.gradle'
 
-static def getVersionCodeTimestamp() {
-    def date = new Date()
-    def formattedDate = date.format('yyMMddHHmm')
-    def code = formattedDate.toInteger()
-    return code
-}
-
+def externalPrivateVersion = new File(project.rootDir.path + "/app/external_version_code.txt").text.trim().toInteger()
 def externalPublicVersion = new File(project.rootDir.path + "/app/external_version_name.txt").text.trim()
+def internalPrivateVersion = new File(project.rootDir.path + "/app/internal_version_code.txt").text.trim().toInteger()
 def internalPublicVersion = new File(project.rootDir.path + "/app/internal_version_name.txt").text.trim()
 def isCircle = "true" == System.getenv("CIRCLECI")
 
@@ -112,13 +107,13 @@ android {
         internal {
             dimension "AUDIENCE"
             applicationId "com.kickstarter.kickstarter.internal"
-            versionCode getVersionCodeTimestamp()
+            versionCode internalPrivateVersion
             versionName internalPublicVersion
         }
         external {
             dimension "AUDIENCE"
             applicationId "com.kickstarter.kickstarter"
-            versionCode getVersionCodeTimestamp()
+            versionCode externalPrivateVersion
             versionName externalPublicVersion
         }
     }

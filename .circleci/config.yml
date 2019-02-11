@@ -87,8 +87,47 @@ jobs:
       - attach_workspace:
           at: ~/project
       - run:
-          name: Deploy to Crashlytics Alpha
+          name: Deploy Alpha to Crashlytics
           command: bundle exec fastlane alpha
+
+  create_internal:
+    <<: *base_job
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v5-android-
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: push to internal branch
+          command: make internal
+
+  internal:
+    <<: *base_job
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v5-android-
+      - restore_cache:
+          keys:
+            - v1-bundler-{{ checksum "Gemfile.lock" }}
+            - v1-bundler-
+      - run:
+          name: Bundle install
+          command: bundle check || bundle install --path vendor/bundle
+      - save_cache:
+          key: v1-bundler-{{ checksum "Gemfile.lock" }}
+          paths:
+            - ./vendor/bundle
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Deploy Internal to Crashlytics and S3
+          command: bundle exec fastlane internal
 
 workflows:
   version: 2
@@ -98,13 +137,6 @@ workflows:
       - test:
           requires:
             - build
-      - create_alpha:
-          requires:
-            - build
-            - test
-          filters:
-            branches:
-              only: master
       - alpha:
           requires:
             - build
@@ -112,6 +144,20 @@ workflows:
           filters:
             branches:
               only: alpha
+      - create_internal:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              only: master
+      - internal:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              only: internal
 
 experimental:
   notify:
@@ -119,3 +165,4 @@ experimental:
       only:
         - master
         - alpha
+        - internal

@@ -1,37 +1,13 @@
-# More documentation about how to customize your build
-# can be found here:
-# https://docs.fastlane.tools
 fastlane_version "2.68.0"
 
 $LOAD_PATH << '../lib'
 require 'milkrun'
-
-# This value helps us track success metrics for Fastfiles
-# we automatically generate. Feel free to remove this line
-# once you get things running smoothly!
-generated_fastfile_id "416135f4-dacf-4e7b-958c-f49d4e7dcb71"
+require_relative '../config/initializer'
 
 default_platform :android
 
-# Fastfile actions accept additional configuration, but
-# don't worry, fastlane will prompt you for required
-# info which you can add here later
-
-lane :update_strings do
-  Milkrun::ServerConfigRefresher.new(local: false).refresh
-  Milkrun::I18nStringResources.new.create
-
-  current_branch = git_branch
-
-  push_to_git_remote(
-    remote: "oss",
-    local_branch: current_branch,
-    force: true,
-    tags: false
-  )
-end
-
 lane :alpha do
+  Milkrun::VersionCode.new(audience: 'internal').bump
   gradle(task: "assembleInternalPre21Debug")
 
   crashlytics(
@@ -43,11 +19,12 @@ lane :alpha do
 
   slack(
     slack_url: ENV["slack_webhook"],
-    message: "Alpha build successfully delivered!"
+    message: "Alpha build successfully delivered to Crashlytics!"
     )
 end
 
 lane :external do
+  Milkrun::VersionCode.new(audience: 'external').bump
   build_android_app(task: "assembleExternalPre21Release")
 
   crashlytics(
@@ -64,7 +41,19 @@ lane :external do
 end
 
 lane :internal do
+  audience = 'internal'
+  build_type = 'release'
+  version_code = Milkrun::VersionCode.new(audience: audience).bump
+
   build_android_app(task: "assembleInternalPre21Release")
+
+  path_to_apk = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+  Milkrun::S3Package.new(version_code: version_code, file_path: path_to_apk).upload
+
+  changelog = Milkrun::Changelog.new(audience: audience, build_type: build_type, version_code: version_code)
+  commit_message = last_git_commit[:message]
+  changelog.instance_variable_set(:@changelog, commit_message)
+  changelog.publish
 
   crashlytics(
     api_token: Milkrun::FabricCredentialsExtractor.new.api_key,
@@ -75,6 +64,7 @@ lane :internal do
 
   slack(
     slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
-    message: "Internal release build successfully delivered!"
+    message: "Internal release build successfully delivered to S3 and Crashlytics!"
     )
+
 end

@@ -283,6 +283,11 @@
       "Manage_your_reward": "Manage your reward",
       "Messages": "Messages",
       "Message_backer": "Message backer",
+      "Message_banner": {
+        "accessibility": {
+          "Double_tap_to_dismiss": "Double tap to dismiss."
+        }
+      },
       "Message_creator": "Message creator",
       "Message_user_name": "Message %{user_name}…",
       "minutes": {
@@ -897,13 +902,6 @@
         }
       },
       "profile": {
-        "project_count_projects_backed": {
-          "zero": "0 projects backed",
-          "one": "1 project backed",
-          "two": "2 projects backed",
-          "few": "%{project_count} projects backed",
-          "many": "%{project_count} projects backed"
-        },
         "category_count_categories_backed": {
           "zero": "0 categories backed",
           "one": "1 category backed",
@@ -2183,7 +2181,7 @@
       "Couldnt_add_attachment": "Anhang konnte nicht hinzugefügt werden",
       "Couldnt_open_live_stream_Try_again_later": "Live-Stream konnte nicht geöffnet werden. Bitte versuche es später noch einmal.",
       "Couldnt_remove_attachment": "Anhang konnte nicht entfernt werden",
-      "Create_password": "Create password",
+      "Create_password": "Passwort erstellen",
       "Created_projects_projects_count": "Erstellte Projekte: %{projects_count}",
       "Creator": "Projektgründer",
       "Creator_name_was_live_time_ago": "<b>%{creator_name}</b> war vor %{time_ago} live",
@@ -2214,7 +2212,7 @@
       "Current_email": "Derzeitige E-Mail",
       "Current_password": "Derzeitiges Passwort",
       "CVC": "CVC",
-      "Daily_summary": "Daily summary",
+      "Daily_summary": "Übersicht (einmal täglich)",
       "Daily_digest": "Tägliche Zusammenfassung",
       "Data_will_appear_here_once": "Info wird hier angezeigt, sobald jemand dein Projekt unterstützt.",
       "days": {
@@ -2378,6 +2376,11 @@
       "Manage_your_reward": "Belohnung verwalten",
       "Messages": "Nachrichten",
       "Message_backer": "Nachricht an Unterstützer senden",
+      "Message_banner": {
+        "accessibility": {
+          "Double_tap_to_dismiss": "Double tap to dismiss."
+        }
+      },
       "Message_creator": "Nachricht an Projektgründer senden",
       "Message_user_name": "Nachricht senden an %{user_name}…",
       "minutes": {
@@ -2604,7 +2607,7 @@
       "Top_ten_pledge_sources": "Top 10 Quellen deiner Beiträge",
       "Top_ten_rewards": "Top 10-Belohnungen",
       "Total_pledged": "Anzahl der Beiträge insgesamt",
-      "Twice_a_day_summary": "Twice a day summary",
+      "Twice_a_day_summary": "Übersicht (zweimal täglich)",
       "updates_count_updates": {
         "zero": "%{updates_count} Updates",
         "one": "%{updates_count} Update",
@@ -2670,7 +2673,7 @@
       "Your_shipping_destination": "Dein Versandziel",
       "Youre_a_backer": "Du unterstützt das Projekt!",
       "Youre_about_to_create_a_new_Kickstarter_account": "Du wirst hiermit ein neues Kickstarter-Konto mit deiner Facebook-E-Mail-Adresse anlegen. Bitte bestätige diesen Vorgang.",
-      "Youre_connected_via_Facebook_email_Create_a_password_for_this_account": "You're connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.",
+      "Youre_connected_via_Facebook_email_Create_a_password_for_this_account": "Du bist via Facebook (%{email}) verbunden. Erstelle ein Passwort für dieses Konto, um deine Anmeldedaten für Kickstarter zu ändern.",
       "Youre_offline": "Du bist Offline. Sobald du wieder Online bist, navigiere in der App, um sie zu aktualisieren.",
       "Youve_pledged_to_support_this_project": "Du hast einen Finazierungsbeitrag zu diesem Projekt geleistet. Die Frist für die Finanzierung ist noch nicht abgelaufen.",
       "Zip_postal_code": "Postleitzahl",
@@ -2992,13 +2995,6 @@
         }
       },
       "profile": {
-        "project_count_projects_backed": {
-          "zero": "0 unterstützte Projekte",
-          "one": "1 unterstütztes Projekt",
-          "two": "2 unterstützte Projekte",
-          "few": "%{project_count} unterstützte Projekte",
-          "many": "%{project_count} unterstützte Projekte"
-        },
         "category_count_categories_backed": {
           "zero": "In 0 Kategorien",
           "one": "In 1 Kategorie",
@@ -4278,7 +4274,7 @@
       "Couldnt_add_attachment": "No se pudo añadir el anexo",
       "Couldnt_open_live_stream_Try_again_later": "No se pudo abrir este live stream, por favor inténtalo de nuevo más tarde.",
       "Couldnt_remove_attachment": "No se pudo remover el anexo",
-      "Create_password": "Create password",
+      "Create_password": "Crea contraseña",
       "Created_projects_projects_count": "Proyectos creados: %{projects_count}",
       "Creator": "Creador",
       "Creator_name_was_live_time_ago": "<b>%{creator_name}</b> transmitió en vivo hace %{time_ago}",
@@ -4309,7 +4305,7 @@
       "Current_email": "Correo electrónico actual",
       "Current_password": "Contraseña actual",
       "CVC": "CVC",
-      "Daily_summary": "Daily summary",
+      "Daily_summary": "Resumen diario",
       "Daily_digest": "Resumen diario",
       "Data_will_appear_here_once": "Los datos aparecerán aquí una vez que alguien patrocine tu proyecto.",
       "days": {
@@ -4473,6 +4469,11 @@
       "Manage_your_reward": "Administra tu recompensa",
       "Messages": "Mensajes",
       "Message_backer": "Enviar mensaje a patrocinador",
+      "Message_banner": {
+        "accessibility": {
+          "Double_tap_to_dismiss": "Double tap to dismiss."
+        }
+      },
       "Message_creator": "Enviar mensaje al creador",
       "Message_user_name": "Mensaje a %{user_name}…",
       "minutes": {
@@ -4699,7 +4700,7 @@
       "Top_ten_pledge_sources": "Las 10 principales fuentes de contribución",
       "Top_ten_rewards": "Las 10 mejores recompensas",
       "Total_pledged": "Contribuciones en total",
-      "Twice_a_day_summary": "Twice a day summary",
+      "Twice_a_day_summary": "Resumen dos veces al día",
       "updates_count_updates": {
         "zero": "%{updates_count} actualizaciones",
         "one": "%{updates_count} actualización",
@@ -4765,7 +4766,7 @@
       "Your_shipping_destination": "Tu destino de envío",
       "Youre_a_backer": "¡Eres un patrocinador!",
       "Youre_about_to_create_a_new_Kickstarter_account": "Estás a punto de crear una nueva cuenta de Kickstarter usando el correo electrónico associado a tu cuenta de Facebook. Por favor confírmalo antes de proceder.",
-      "Youre_connected_via_Facebook_email_Create_a_password_for_this_account": "You're connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.",
+      "Youre_connected_via_Facebook_email_Create_a_password_for_this_account": "Estás conectado a través de Facebook (%{email}). Crea una contraseña para esta cuenta para editar tus credenciales de Kickstarter.",
       "Youre_offline": "Estás desconectado. Cuando tu dispositivo se vuelva a conectar, ve a la aplicación para actualizarla.",
       "Youve_pledged_to_support_this_project": "Hiciste una contribución a este proyecto. El plazo de financiamiento todavía no ha terminado.",
       "Zip_postal_code": "Código postal",
@@ -5087,13 +5088,6 @@
         }
       },
       "profile": {
-        "project_count_projects_backed": {
-          "zero": "0 patrocinados",
-          "one": "1 proyecto patrocinado",
-          "two": "2 patrocinados",
-          "few": "%{project_count} patrocinados",
-          "many": "%{project_count} patrocinados"
-        },
         "category_count_categories_backed": {
           "zero": "en 0 categorías",
           "one": "en 1 categoría",
@@ -6373,7 +6367,7 @@
       "Couldnt_add_attachment": "Impossible d'ajouter la pièce jointe",
       "Couldnt_open_live_stream_Try_again_later": "Impossible d'ouvrir la diffusion en direct. Veuillez réessayer plus tard.",
       "Couldnt_remove_attachment": "Impossible de supprimer la pièce jointe",
-      "Create_password": "Create password",
+      "Create_password": "Créer votre mot de passe",
       "Created_projects_projects_count": "Projets créés : %{projects_count}",
       "Creator": "Créateur",
       "Creator_name_was_live_time_ago": "<b>%{creator_name}</b> était en direct %{time_ago}",
@@ -6404,7 +6398,7 @@
       "Current_email": "Adresse e-mail actuelle",
       "Current_password": "Mot de passe actuel",
       "CVC": "Cryptogramme",
-      "Daily_summary": "Daily summary",
+      "Daily_summary": "Une fois par jour",
       "Daily_digest": "Résumé quotidien",
       "Data_will_appear_here_once": "Ces données seront visibles dès que vous aurez reçu votre première contribution.",
       "days": {
@@ -6568,6 +6562,11 @@
       "Manage_your_reward": "Gérer votre récompense",
       "Messages": "Messages",
       "Message_backer": "Envoyer un message au contributeur",
+      "Message_banner": {
+        "accessibility": {
+          "Double_tap_to_dismiss": "Double tap to dismiss."
+        }
+      },
       "Message_creator": "Envoyer un message au créateur",
       "Message_user_name": "Envoyer un message à %{user_name}",
       "minutes": {
@@ -6794,7 +6793,7 @@
       "Top_ten_pledge_sources": "Vos 10 principales sources de contributions",
       "Top_ten_rewards": "Les 10 récompenses qui ont le plus de succès",
       "Total_pledged": "Total engagé",
-      "Twice_a_day_summary": "Twice a day summary",
+      "Twice_a_day_summary": "Deux fois par jour",
       "updates_count_updates": {
         "zero": "%{updates_count} actus",
         "one": "%{updates_count} actu",
@@ -6860,7 +6859,7 @@
       "Your_shipping_destination": "Destination d'expédition",
       "Youre_a_backer": "Vous êtes contributeur !",
       "Youre_about_to_create_a_new_Kickstarter_account": "Vous êtes sur le point de créer un nouveau compte Kickstarter avec l'adresse e-mail que vous utilisez sur Facebook. Veuillez confirmer avant de continuer.",
-      "Youre_connected_via_Facebook_email_Create_a_password_for_this_account": "You're connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.",
+      "Youre_connected_via_Facebook_email_Create_a_password_for_this_account": "Vous êtes connecté par Facebook (%{email}). Si vous souhaitez modifier vos identifiants Kickstarter, veuillez définir le mot de passe de ce compte.",
       "Youre_offline": "Vous êtes hors ligne. Dès que votre appareil se sera reconnecté, naviguez dans l'application pour la rafraîchir.",
       "Youve_pledged_to_support_this_project": "Vous vous êtes engagé à soutenir ce projet et sa campagne de financement n'est pas terminée.",
       "Zip_postal_code": "Code postal",
@@ -7182,13 +7181,6 @@
         }
       },
       "profile": {
-        "project_count_projects_backed": {
-          "zero": "0 projets soutenus",
-          "one": "1 projet soutenu",
-          "two": "2 projets soutenus",
-          "few": "%{project_count} projets soutenus",
-          "many": "%{project_count} projets soutenus"
-        },
         "category_count_categories_backed": {
           "zero": "0 catégories soutenues",
           "one": "1 catégorie soutenue",
@@ -8663,6 +8655,11 @@
       "Manage_your_reward": "Manage your reward",
       "Messages": "Messages",
       "Message_backer": "Message backer",
+      "Message_banner": {
+        "accessibility": {
+          "Double_tap_to_dismiss": "Double tap to dismiss."
+        }
+      },
       "Message_creator": "Message creator",
       "Message_user_name": "Message %{user_name}…",
       "minutes": {
@@ -9277,13 +9274,6 @@
         }
       },
       "profile": {
-        "project_count_projects_backed": {
-          "zero": "0 projects backed",
-          "one": "1 project backed",
-          "two": "2 projects backed",
-          "few": "%{project_count} projects backed",
-          "many": "%{project_count} projects backed"
-        },
         "category_count_categories_backed": {
           "zero": "0 categories backed",
           "one": "1 category backed",
@@ -10563,7 +10553,7 @@
       "Couldnt_add_attachment": "添付ファイルを追加できませんでした",
       "Couldnt_open_live_stream_Try_again_later": "ライブ配信を開けませんでした。後ほどお試しください。",
       "Couldnt_remove_attachment": "添付ファイルを削除できませんでした",
-      "Create_password": "Create password",
+      "Create_password": "パスワードを作成",
       "Created_projects_projects_count": "%{projects_count} のプロジェクト作成済",
       "Creator": "クリエイター",
       "Creator_name_was_live_time_ago": "<b>%{creator_name}</b>は%{time_ago} まで進行中でした",
@@ -10594,7 +10584,7 @@
       "Current_email": "現在のメールアドレス",
       "Current_password": "現在のパスワード",
       "CVC": "CVC",
-      "Daily_summary": "Daily summary",
+      "Daily_summary": "1日1回の概要",
       "Daily_digest": "デイリーダイジェスト",
       "Data_will_appear_here_once": "誰かがプロジェクトをバック（支援）すると、ここにデータが表示されます。",
       "days": {
@@ -10758,6 +10748,11 @@
       "Manage_your_reward": "リワードの管理",
       "Messages": "メッセージ",
       "Message_backer": "バッカーにメッセージする",
+      "Message_banner": {
+        "accessibility": {
+          "Double_tap_to_dismiss": "却下するにはダブルタップ。"
+        }
+      },
       "Message_creator": "クリエーターにメッセージする",
       "Message_user_name": "%{user_name} にメッセージ",
       "minutes": {
@@ -10984,7 +10979,7 @@
       "Top_ten_pledge_sources": "プレッジソースのトップ10",
       "Top_ten_rewards": "リワードのトップ10",
       "Total_pledged": "プレッジ総計",
-      "Twice_a_day_summary": "Twice a day summary",
+      "Twice_a_day_summary": "1日2回の概要",
       "updates_count_updates": {
         "zero": "%{updates_count} 件のアップデート",
         "one": "%{updates_count} 件のアップデート",
@@ -11050,7 +11045,7 @@
       "Your_shipping_destination": "配送地域",
       "Youre_a_backer": "バッカーになりました！",
       "Youre_about_to_create_a_new_Kickstarter_account": "Facebookのメールアドレスで新しいアカウントを作成しようとしています。再度確認してください。",
-      "Youre_connected_via_Facebook_email_Create_a_password_for_this_account": "You're connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.",
+      "Youre_connected_via_Facebook_email_Create_a_password_for_this_account": "Facebook (%{email}) を通して接続されています。Kickstarter の認識情報を編集するには、このアカウント用にパスワードを作成してください。",
       "Youre_offline": "現在オフライン中です。デバイスが再接続し次第、アプリをリフレッシュしてください。",
       "Youve_pledged_to_support_this_project": "このプレッジ済のプロジェクトは、現在もファンド中",
       "Zip_postal_code": "郵便番号",
@@ -11372,13 +11367,6 @@
         }
       },
       "profile": {
-        "project_count_projects_backed": {
-          "zero": "0件のバック済みプロジェクト",
-          "one": "1件のバック済みプロジェクト",
-          "two": "2件のバック済みプロジェクト",
-          "few": "%{project_count} 件のバック済プロジェクト",
-          "many": "%{project_count} 件のバック済プロジェクト"
-        },
         "category_count_categories_backed": {
           "zero": "0 カテゴリーへバック",
           "one": "1カテゴリーへバック",
@@ -12853,6 +12841,11 @@
       "Manage_your_reward": "Manage your reward",
       "Messages": "Messages",
       "Message_backer": "Message backer",
+      "Message_banner": {
+        "accessibility": {
+          "Double_tap_to_dismiss": "Double tap to dismiss."
+        }
+      },
       "Message_creator": "Message creator",
       "Message_user_name": "Message %{user_name}…",
       "minutes": {
@@ -13467,13 +13460,6 @@
         }
       },
       "profile": {
-        "project_count_projects_backed": {
-          "zero": "0 projects backed",
-          "one": "1 project backed",
-          "two": "2 projects backed",
-          "few": "%{project_count} projects backed",
-          "many": "%{project_count} projects backed"
-        },
         "category_count_categories_backed": {
           "zero": "0 categories backed",
           "one": "1 category backed",
@@ -14681,7 +14667,6 @@
     "drip_iterate": true,
     "creator_search": true,
     "jumio_v4": true,
-    "rich_editor_hosted_media_uploads": true,
     "project_build_people_tab": true
   },
   "launched_countries": [
@@ -14863,9 +14848,9 @@
     }
   ],
   "ab_experiments": {
-    "project_dashboard": "with_dashboard",
     "new_project_header": "experimental",
-    "checkout_account_page": "control"
+    "checkout_account_page_v2": "control",
+    "featured_reward": "pinned_image_text_border"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

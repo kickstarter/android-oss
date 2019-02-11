@@ -85,7 +85,7 @@ patrocinadores</string>
   <string name="Couldnt_add_attachment" formatted="false">No se pudo añadir el anexo</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">No se pudo abrir este live stream, por favor inténtalo de nuevo más tarde.</string>
   <string name="Couldnt_remove_attachment" formatted="false">No se pudo remover el anexo</string>
-  <string name="Create_password" formatted="false">Create password</string>
+  <string name="Create_password" formatted="false">Crea contraseña</string>
   <string name="Created_projects_projects_count" formatted="false">Proyectos creados: %{projects_count}</string>
   <string name="Creator" formatted="false">Creador</string>
   <string name="Creator_name_is_live_now" formatted="false">&lt;b>%{creator_name}&lt;/b> está transmitiendo en vivo</string>
@@ -115,7 +115,7 @@ patrocinadores</string>
   <string name="Current_email" formatted="false">Correo electrónico actual</string>
   <string name="Current_password" formatted="false">Contraseña actual</string>
   <string name="Daily_digest" formatted="false">Resumen diario</string>
-  <string name="Daily_summary" formatted="false">Daily summary</string>
+  <string name="Daily_summary" formatted="false">Resumen diario</string>
   <string name="Data_will_appear_here_once" formatted="false">Los datos aparecerán aquí una vez que alguien patrocine tu proyecto.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Eliminar mi cuenta de Kickstarter</string>
   <string name="Delivered" formatted="false">Entregado</string>
@@ -258,6 +258,7 @@ patrocinadores</string>
   <string name="Manage_your_pledge_below" formatted="false">Administra tu contribución:</string>
   <string name="Manage_your_reward" formatted="false">Administra tu recompensa</string>
   <string name="Message_backer" formatted="false">Enviar mensaje a patrocinador</string>
+  <string name="Message_banner_accessibility_Double_tap_to_dismiss" formatted="false">Double tap to dismiss.</string>
   <string name="Message_creator" formatted="false">Enviar mensaje al creador</string>
   <string name="Message_user_name" formatted="false">Mensaje a %{user_name}…</string>
   <string name="Messages" formatted="false">Mensajes</string>
@@ -445,7 +446,7 @@ patrocinadores</string>
   <string name="Top_ten_pledge_sources" formatted="false">Las 10 principales fuentes de contribución</string>
   <string name="Top_ten_rewards" formatted="false">Las 10 mejores recompensas</string>
   <string name="Total_pledged" formatted="false">Contribuciones en total</string>
-  <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>
+  <string name="Twice_a_day_summary" formatted="false">Resumen dos veces al día</string>
   <string name="Unable_to_request" formatted="false">No se pueden solicitar datos.</string>
   <string name="Unfollow_friend_name" formatted="false">Dejar de seguir a %{friend_name}</string>
   <string name="Unfollows_friend_name" formatted="false">Dejar de seguir a %{friend_name}.</string>
@@ -501,7 +502,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Your_shipping_destination" formatted="false">Tu destino de envío</string>
   <string name="Youre_a_backer" formatted="false">¡Eres un patrocinador!</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Estás a punto de crear una nueva cuenta de Kickstarter usando el correo electrónico associado a tu cuenta de Facebook. Por favor confírmalo antes de proceder.</string>
-  <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">You\'re connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.</string>
+  <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">Estás conectado a través de Facebook (%{email}). Crea una contraseña para esta cuenta para editar tus credenciales de Kickstarter.</string>
   <string name="Youre_offline" formatted="false">Estás desconectado. Cuando tu dispositivo se vuelva a conectar, ve a la aplicación para actualizarla.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Hiciste una contribución a este proyecto. El plazo de financiamiento todavía no ha terminado.</string>
   <string name="Zip_postal_code" formatted="false">Código postal</string>
@@ -1141,11 +1142,6 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_category_count_categories_backed_two" formatted="false">en 2 categorías</string>
   <string name="profile_category_count_categories_backed_zero" formatted="false">en 0 categorías</string>
   <string name="profile_pie_slice_category_name_backed_projects_count" formatted="false">%{category_name} (%{backed_projects_count})</string>
-  <string name="profile_project_count_projects_backed_few" formatted="false">%{project_count} patrocinados</string>
-  <string name="profile_project_count_projects_backed_many" formatted="false">%{project_count} patrocinados</string>
-  <string name="profile_project_count_projects_backed_one" formatted="false">1 proyecto patrocinado</string>
-  <string name="profile_project_count_projects_backed_two" formatted="false">2 patrocinados</string>
-  <string name="profile_project_count_projects_backed_zero" formatted="false">0 patrocinados</string>
   <string name="profile_projects_backed_project_count_projects_few" formatted="false">%{project_count} PROYECTOS PATROCINADOS</string>
   <string name="profile_projects_backed_project_count_projects_many" formatted="false">%{project_count} PROYECTOS APOYADOS</string>
   <string name="profile_projects_backed_project_count_projects_one" formatted="false">1 PROYECTO PATROCINADO</string>

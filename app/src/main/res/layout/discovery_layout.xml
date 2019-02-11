@@ -64,7 +64,7 @@
 
   <com.google.android.material.navigation.NavigationView
     android:id="@+id/discovery_navigation_view"
-    android:layout_width="320dp"
+    android:layout_width="304dp"
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:background="@color/white"

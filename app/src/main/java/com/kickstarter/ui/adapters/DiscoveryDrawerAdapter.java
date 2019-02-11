@@ -111,7 +111,7 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
         return new ChildFilterViewHolder(view, this.delegate);
       case R.layout.discovery_drawer_header:
         return new HeaderViewHolder(view);
-      case R.layout.discovery_drawer_divider_view:
+      case R.layout.horizontal_line_1dp_view:
       default:
         return new EmptyViewHolder(view);
     }

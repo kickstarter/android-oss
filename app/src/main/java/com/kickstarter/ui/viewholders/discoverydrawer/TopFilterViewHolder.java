@@ -1,8 +1,8 @@
 package com.kickstarter.ui.viewholders.discoverydrawer;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -11,6 +11,7 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
@@ -19,10 +20,9 @@ import butterknife.OnClick;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class TopFilterViewHolder extends KSViewHolder {
-  protected @Bind(R.id.filter_view) LinearLayout filterView;
   protected @Bind(R.id.filter_text_view) TextView filterTextView;
-  protected @BindColor(R.color.discovery_drawer_item_selected) int filterSelectedColor;
-  protected @BindColor(R.color.transparent) int filterUnselectedColor;
+  protected @BindColor(R.color.ksr_dark_grey_500) int ksrDarkGrayColor;
+  protected @BindColor(R.color.accent) int accentColor;
   private NavigationDrawerData.Section.Row item;
   private Delegate delegate;
 
@@ -46,9 +46,12 @@ public final class TopFilterViewHolder extends KSViewHolder {
     final Context context = context();
 
     this.filterTextView.setText(this.item.params().filterString(context, environment().ksString()));
-    this.filterTextView.setTextAppearance(context, this.item.selected() ? R.style.CalloutPrimaryMedium : R.style.CalloutPrimary);
 
-    this.filterView.setBackgroundColor(this.item.selected() ? this.filterSelectedColor : this.filterUnselectedColor);
+    final int textColor = this.item.selected() ? this.accentColor : this.ksrDarkGrayColor;
+    this.filterTextView.setTextColor(textColor);
+
+    final Drawable drawable = this.item.selected() ? ContextCompat.getDrawable(context, R.drawable.drawer_selected) : null;
+    this.filterTextView.setBackground(drawable);
   }
 
   @OnClick(R.id.filter_text_view)

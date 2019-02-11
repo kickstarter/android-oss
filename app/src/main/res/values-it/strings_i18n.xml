@@ -546,11 +546,6 @@ This is commonly fixed by going to iOS Settings > Facebook and toggling access f
   <string name="profile_category_count_categories_backed_two" formatted="false">2 categories backed</string>
   <string name="profile_category_count_categories_backed_zero" formatted="false">0 categories backed</string>
   <string name="profile_pie_slice_category_name_backed_projects_count" formatted="false">%{category_name} (%{backed_projects_count})</string>
-  <string name="profile_project_count_projects_backed_few" formatted="false">%{project_count} projects backed</string>
-  <string name="profile_project_count_projects_backed_many" formatted="false">%{project_count} projects backed</string>
-  <string name="profile_project_count_projects_backed_one" formatted="false">1 project backed</string>
-  <string name="profile_project_count_projects_backed_two" formatted="false">2 projects backed</string>
-  <string name="profile_project_count_projects_backed_zero" formatted="false">0 projects backed</string>
   <string name="profile_projects_backed_project_count_projects_few" formatted="false">BACKED %{project_count} PROJECTS</string>
   <string name="profile_projects_backed_project_count_projects_many" formatted="false">BACKED %{project_count} PROJECTS</string>
   <string name="profile_projects_backed_project_count_projects_one" formatted="false">BACKED 1 PROJECT</string>

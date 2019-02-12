@@ -297,8 +297,8 @@ public interface DiscoveryViewModel {
     private final Observable<Void> showActivityFeed;
     private final Observable<InternalBuildEnvelope> showBuildCheckAlert;
     private final Observable<Void> showCreatorDashboard;
-    private final Observable<Void> showInternalTools;
     private final Observable<Void> showHelp;
+    private final Observable<Void> showInternalTools;
     private final Observable<Void> showLoginTout;
     private final Observable<Void> showProfile;
     private final Observable<Void> showSettings;
@@ -314,7 +314,7 @@ public interface DiscoveryViewModel {
     @Override public void discoveryPagerAdapterSetPrimaryPage(final @NonNull DiscoveryPagerAdapter adapter, final int position) {
       this.pagerSetPrimaryPage.onNext(position);
     }
-    @Override public void loggedInViewHolderActivityClick(@NonNull LoggedInViewHolder viewHolder) {
+    @Override public void loggedInViewHolderActivityClick(final @NonNull LoggedInViewHolder viewHolder) {
       this.activityFeedClick.onNext(null);
     }
     @Override public void loggedInViewHolderDashboardClick(final @NonNull LoggedInViewHolder viewHolder) {
@@ -329,7 +329,7 @@ public interface DiscoveryViewModel {
     @Override public void loggedInViewHolderSettingsClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
       this.settingsClick.onNext(null);
     }
-    @Override public void loggedOutViewHolderActivityClick(@NonNull LoggedOutViewHolder viewHolder) {
+    @Override public void loggedOutViewHolderActivityClick(final @NonNull LoggedOutViewHolder viewHolder) {
       this.activityFeedClick.onNext(null);
     }
     @Override public void loggedOutViewHolderInternalToolsClick(final @NonNull LoggedOutViewHolder viewHolder) {

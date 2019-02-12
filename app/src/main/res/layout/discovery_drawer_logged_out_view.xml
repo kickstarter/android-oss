@@ -5,21 +5,19 @@
   android:layout_height="wrap_content"
   android:background="@color/discovery_drawer_header"
   android:baselineAligned="false"
-  android:gravity="center_vertical"
-  android:orientation="horizontal"
-  android:paddingBottom="@dimen/grid_3"
-  android:paddingTop="@dimen/grid_3">
+  android:orientation="vertical">
 
   <LinearLayout
     android:id="@+id/logged_out_container"
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_weight="1"
-    android:background="@drawable/click_indicator_light"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="@drawable/click_indicator_light"
     android:gravity="center_vertical"
     android:orientation="horizontal"
+    android:paddingBottom="@dimen/grid_3"
     android:paddingEnd="@dimen/grid_5_half"
-    android:paddingStart="@dimen/grid_5_half">
+    android:paddingStart="@dimen/grid_5_half"
+    android:paddingTop="@dimen/grid_3">
 
     <ImageView
       android:layout_width="wrap_content"
@@ -38,15 +36,22 @@
 
   </LinearLayout>
 
-  <LinearLayout
-    android:id="@+id/internal_tools_container"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+  <include layout="@layout/horizontal_line_1dp_view" />
 
-    <include layout="@layout/internal_tools_button_view" />
+  <include layout="@layout/internal_tools_button_view" />
 
-  </LinearLayout>
+  <TextView
+    style="@style/DrawerTextView"
+    android:id="@+id/drawer_activity"
+    android:text="@string/tabbar_activity"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+
+  <TextView
+    style="@style/DrawerTextView"
+    android:id="@+id/drawer_help"
+    android:text="@string/Help"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
 
 </LinearLayout>

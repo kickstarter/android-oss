@@ -2,7 +2,7 @@
 <!-- This does nothing. A different layout file is provided in internal builds. -->
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/internal_tools_icon_button"
+  android:id="@+id/internal_tools"
   android:visibility="gone"
   android:orientation="vertical"
   android:layout_width="wrap_content"

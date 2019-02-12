@@ -12,7 +12,6 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
-import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.User;
@@ -56,8 +55,6 @@ public interface DiscoveryViewModel {
   }
 
   interface Outputs {
-    /** Emits a boolean that determines whether to show the creator view button. */
-    Observable<Boolean> creatorDashboardButtonIsGone();
 
     /** Emits a boolean that determines if the drawer is open or not. */
     Observable<Boolean> drawerIsOpen();
@@ -83,6 +80,15 @@ public interface DiscoveryViewModel {
 
     /** Emits when a newer build is available and an alert should be shown. */
     Observable<InternalBuildEnvelope> showBuildCheckAlert();
+
+    /** Start activity feed activity. */
+    Observable<Void> showActivityFeed();
+
+    /** Start creator dashboard activity. */
+    Observable<Void> showCreatorDashboard();
+
+    /** Start help activity. */
+    Observable<Void> showHelp();
 
     /** Start internal tools activity. */
     Observable<Void> showInternalTools();
@@ -115,7 +121,10 @@ public interface DiscoveryViewModel {
 
       this.buildCheck.bind(this, this.webClient);
 
+      this.showActivityFeed = this.activityFeedClick;
       this.showBuildCheckAlert = this.newerBuildIsAvailable;
+      this.showCreatorDashboard = this.creatorDashboardClick;
+      this.showHelp = this.loggedOutSettingsClick;
       this.showInternalTools = this.internalToolsClick;
       this.showLoginTout = this.loggedOutLoginToutClick;
       this.showProfile = this.profileClick;
@@ -130,9 +139,6 @@ public interface DiscoveryViewModel {
         this.apiClient.config()
           .compose(Transformers.neverError())
           .subscribe(this.currentConfigType::config));
-
-      this.creatorDashboardButtonIsGone = currentUser
-        .map(user -> BooleanUtils.negate(user != null && IntegerUtils.isNonZero(user.memberProjectsCount())));
 
       // Seed params when we are freshly launching the app with no data.
       final Observable<DiscoveryParams> paramsFromInitialIntent = intent()
@@ -269,9 +275,12 @@ public interface DiscoveryViewModel {
       return DiscoveryParams.builder().build();
     }
 
+    private final PublishSubject<Void> activityFeedClick = PublishSubject.create();
     private final PublishSubject<NavigationDrawerData.Section.Row> childFilterRowClick = PublishSubject.create();
+    private final PublishSubject<Void> creatorDashboardClick = PublishSubject.create();
     private final PublishSubject<Void> internalToolsClick = PublishSubject.create();
     private final PublishSubject<Void> loggedOutLoginToutClick = PublishSubject.create();
+    private final PublishSubject<Void> loggedOutSettingsClick = PublishSubject.create();
     private final PublishSubject<InternalBuildEnvelope> newerBuildIsAvailable = PublishSubject.create();
     private final PublishSubject<Boolean> openDrawer = PublishSubject.create();
     private final PublishSubject<Integer> pagerSetPrimaryPage = PublishSubject.create();
@@ -280,14 +289,16 @@ public interface DiscoveryViewModel {
     private final PublishSubject<Void> settingsClick = PublishSubject.create();
     private final PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
 
-    private final Observable<Boolean> creatorDashboardButtonIsGone;
     private final BehaviorSubject<List<Integer>> clearPages = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> drawerIsOpen = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> expandSortTabLayout = BehaviorSubject.create();
     private final BehaviorSubject<NavigationDrawerData> navigationDrawerData = BehaviorSubject.create();
     private final BehaviorSubject<Pair<List<Category>, Integer>> rootCategoriesAndPosition = BehaviorSubject.create();
+    private final Observable<Void> showActivityFeed;
     private final Observable<InternalBuildEnvelope> showBuildCheckAlert;
+    private final Observable<Void> showCreatorDashboard;
     private final Observable<Void> showInternalTools;
+    private final Observable<Void> showHelp;
     private final Observable<Void> showLoginTout;
     private final Observable<Void> showProfile;
     private final Observable<Void> showSettings;
@@ -303,6 +314,12 @@ public interface DiscoveryViewModel {
     @Override public void discoveryPagerAdapterSetPrimaryPage(final @NonNull DiscoveryPagerAdapter adapter, final int position) {
       this.pagerSetPrimaryPage.onNext(position);
     }
+    @Override public void loggedInViewHolderActivityClick(@NonNull LoggedInViewHolder viewHolder) {
+      this.activityFeedClick.onNext(null);
+    }
+    @Override public void loggedInViewHolderDashboardClick(final @NonNull LoggedInViewHolder viewHolder) {
+      this.creatorDashboardClick.onNext(null);
+    }
     @Override public void loggedInViewHolderInternalToolsClick(final @NonNull LoggedInViewHolder viewHolder) {
       this.internalToolsClick.onNext(null);
     }
@@ -312,11 +329,17 @@ public interface DiscoveryViewModel {
     @Override public void loggedInViewHolderSettingsClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
       this.settingsClick.onNext(null);
     }
+    @Override public void loggedOutViewHolderActivityClick(@NonNull LoggedOutViewHolder viewHolder) {
+      this.activityFeedClick.onNext(null);
+    }
     @Override public void loggedOutViewHolderInternalToolsClick(final @NonNull LoggedOutViewHolder viewHolder) {
       this.internalToolsClick.onNext(null);
     }
     @Override public void loggedOutViewHolderLoginToutClick(final @NonNull LoggedOutViewHolder viewHolder) {
       this.loggedOutLoginToutClick.onNext(null);
+    }
+    @Override public void loggedOutViewHolderHelpClick(final @NonNull LoggedOutViewHolder viewHolder) {
+      this.loggedOutSettingsClick.onNext(null);
     }
     @Override public void newerBuildIsAvailable(final @NonNull InternalBuildEnvelope envelope) {
       this.newerBuildIsAvailable.onNext(envelope);
@@ -334,9 +357,6 @@ public interface DiscoveryViewModel {
     @Override public @NonNull Observable<List<Integer>> clearPages() {
       return this.clearPages;
     }
-    @Override public @NonNull Observable<Boolean> creatorDashboardButtonIsGone() {
-      return this.creatorDashboardButtonIsGone;
-    }
     @Override public @NonNull Observable<Boolean> drawerIsOpen() {
       return this.drawerIsOpen;
     }
@@ -349,8 +369,17 @@ public interface DiscoveryViewModel {
     @Override public @NonNull Observable<Pair<List<Category>, Integer>> rootCategoriesAndPosition() {
       return this.rootCategoriesAndPosition;
     }
+    @Override public @NonNull Observable<Void> showActivityFeed() {
+      return this.showActivityFeed;
+    }
     @Override public @NonNull Observable<InternalBuildEnvelope> showBuildCheckAlert() {
       return this.showBuildCheckAlert;
+    }
+    @Override public @NonNull Observable<Void> showCreatorDashboard() {
+      return this.showCreatorDashboard;
+    }
+    @Override public @NonNull Observable<Void> showHelp() {
+      return this.showHelp;
     }
     @Override public @NonNull Observable<Void> showInternalTools() {
       return this.showInternalTools;

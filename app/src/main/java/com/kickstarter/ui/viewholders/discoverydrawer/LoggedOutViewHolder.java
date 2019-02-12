@@ -14,8 +14,10 @@ public final class LoggedOutViewHolder extends KSViewHolder {
   private Delegate delegate;
 
   public interface Delegate {
+    void loggedOutViewHolderActivityClick(final @NonNull LoggedOutViewHolder viewHolder);
     void loggedOutViewHolderInternalToolsClick(final @NonNull LoggedOutViewHolder viewHolder);
     void loggedOutViewHolderLoginToutClick(final @NonNull LoggedOutViewHolder viewHolder);
+    void loggedOutViewHolderHelpClick(final @NonNull LoggedOutViewHolder viewHolder);
   }
 
   public LoggedOutViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -31,8 +33,17 @@ public final class LoggedOutViewHolder extends KSViewHolder {
   @Override
   public void onBind() {
   }
+  @OnClick(R.id.drawer_activity)
+  public void activityClick() {
+    this.delegate.loggedOutViewHolderActivityClick(this);
+  }
 
-  @Nullable @OnClick(R.id.internal_tools_icon_button)
+  @OnClick(R.id.drawer_help)
+  public void helpClick() {
+    this.delegate.loggedOutViewHolderHelpClick(this);
+  }
+
+  @Nullable @OnClick(R.id.internal_tools)
   public void internalToolsClick() {
     this.delegate.loggedOutViewHolderInternalToolsClick(this);
   }

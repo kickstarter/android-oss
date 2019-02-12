@@ -82,7 +82,7 @@
     <Button
       android:id="@+id/creator_dashboard_project_selector"
       style="@style/SecondaryButton"
-      android:layout_height="@dimen/grid_9"
+      android:layout_height="wrap_content"
       android:layout_width="match_parent"
       android:text="@string/Select_another_project" />
 

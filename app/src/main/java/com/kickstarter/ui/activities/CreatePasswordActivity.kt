@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Pair
 import android.view.Menu
 import android.view.MenuItem
 import com.kickstarter.R
@@ -13,7 +12,6 @@ import com.kickstarter.libs.Logout
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ApplicationUtils
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.LoginReason
@@ -89,8 +87,6 @@ class CreatePasswordActivity : BaseActivity<CreatePasswordViewModel.ViewModel>()
         save.isEnabled = saveEnabled
         return super.onPrepareOptionsMenu(menu)
     }
-
-    override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
 
     private fun logout(email: String) {
         this.logout.execute()

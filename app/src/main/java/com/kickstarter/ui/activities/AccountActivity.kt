@@ -2,19 +2,16 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Pair
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import com.kickstarter.R
 import com.kickstarter.extensions.showSnackbar
-import com.kickstarter.extensions.startActivityWithSlideUpTransition
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.AccountViewModel
 import kotlinx.android.synthetic.main.account_toolbar.*
@@ -79,14 +76,12 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
                 .compose(observeForUI())
                 .subscribe { showSnackbar(account_container, R.string.Got_it_your_changes_have_been_saved) }
 
-        create_password_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, CreatePasswordActivity::class.java)) }
-        change_email_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, ChangeEmailActivity::class.java)) }
-        change_password_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, ChangePasswordActivity::class.java)) }
-        payment_methods_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, PaymentMethodsSettingsActivity::class.java)) }
-        privacy_row.setOnClickListener { startActivityWithSlideUpTransition(Intent(this, PrivacyActivity::class.java)) }
+        create_password_row.setOnClickListener { startActivity(Intent(this, CreatePasswordActivity::class.java)) }
+        change_email_row.setOnClickListener { startActivity(Intent(this, ChangeEmailActivity::class.java)) }
+        change_password_row.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
+        payment_methods_row.setOnClickListener { startActivity(Intent(this, PaymentMethodsSettingsActivity::class.java)) }
+        privacy_row.setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
     }
-
-    override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
 
     private fun getListOfCurrencies(): List<String> {
         val strings = arrayListOf<String>()

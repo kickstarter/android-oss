@@ -6,13 +6,12 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
-import com.kickstarter.extensions.startActivityWithSlideUpTransition
 import com.kickstarter.libs.*
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
-import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
+import com.kickstarter.libs.utils.TransitionUtils.slideUpFromBottom
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.SettingsViewModel
 import com.squareup.picasso.Picasso
@@ -70,15 +69,15 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
                 .subscribe { name_text_view.text = it }
 
         account_row.setOnClickListener {
-            startActivityWithSlideUpTransition(Intent(this, AccountActivity::class.java))
+            startActivity(Intent(this, AccountActivity::class.java))
         }
 
         edit_profile_row.setOnClickListener {
-            startActivityWithSlideUpTransition(Intent(this, EditProfileActivity::class.java))
+            startActivity(Intent(this, EditProfileActivity::class.java))
         }
 
         help_row.setOnClickListener {
-            startActivityWithSlideUpTransition(Intent(this, HelpSettingsActivity::class.java))
+            startActivity(Intent(this, HelpSettingsActivity::class.java))
         }
 
         log_out_row.setOnClickListener {
@@ -86,11 +85,11 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         }
 
         newsletters_row.setOnClickListener {
-            startActivityWithSlideUpTransition(Intent(this, NewsletterActivity::class.java))
+            startActivity(Intent(this, NewsletterActivity::class.java))
         }
 
         notification_row.setOnClickListener {
-            startActivityWithSlideUpTransition(Intent(this, NotificationsActivity::class.java))
+            startActivity(Intent(this, NotificationsActivity::class.java))
         }
 
         rate_us_row.setOnClickListener { ViewUtils.openStoreRating(this, this.packageName) }
@@ -101,7 +100,7 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         ApplicationUtils.startNewDiscoveryActivity(this)
     }
 
-    override fun exitTransition() = slideInFromLeft()
+    override fun exitTransition() = slideUpFromBottom()
 
     /**
      * Lazily creates a logout confirmation dialog and stores it in an instance variable.

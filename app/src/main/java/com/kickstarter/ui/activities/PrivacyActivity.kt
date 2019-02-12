@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Pair
 import androidx.appcompat.app.AlertDialog
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
@@ -12,7 +11,6 @@ import com.kickstarter.libs.utils.BooleanUtils.isFalse
 import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.SwitchCompatUtils
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.User
 import com.kickstarter.viewmodels.PrivacyViewModel
@@ -67,8 +65,6 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
         settings_request_data.setOnClickListener { showPrivacyWebpage(Secrets.Privacy.REQUEST_DATA) }
         settings_delete_account.setOnClickListener { showPrivacyWebpage(Secrets.Privacy.DELETE_ACCOUNT) }
     }
-
-    override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
 
     private fun displayPreferences(user: User) {
         SwitchCompatUtils.setCheckedWithoutAnimation(following_switch, isTrue(user.social()))

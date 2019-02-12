@@ -216,7 +216,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     final Intent intent = new Intent(this, SettingsActivity.class);
     intent.putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
     startActivity(intent);
-    overridePendingTransition(R.anim.settings_slide_in_from_bottom, R.anim.fade_out);
+    overridePendingTransition(0, 0);
   }
 
   private void showBuildAlert(final @NonNull InternalBuildEnvelope envelope) {

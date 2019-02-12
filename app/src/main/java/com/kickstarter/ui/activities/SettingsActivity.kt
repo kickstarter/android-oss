@@ -11,7 +11,6 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ApplicationUtils
-import com.kickstarter.libs.utils.TransitionUtils.slideUpFromBottom
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.SettingsViewModel
 import com.squareup.picasso.Picasso
@@ -99,8 +98,6 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         this.logout.execute()
         ApplicationUtils.startNewDiscoveryActivity(this)
     }
-
-    override fun exitTransition() = slideUpFromBottom()
 
     /**
      * Lazily creates a logout confirmation dialog and stores it in an instance variable.

@@ -4,10 +4,10 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:orientation="vertical"
   android:background="@color/discovery_drawer_header"
   android:baselineAligned="false"
-  android:gravity="center_vertical">
+  android:gravity="center_vertical"
+  android:orientation="vertical">
 
   <LinearLayout
     android:id="@+id/user_container"
@@ -40,36 +40,40 @@
 
   </LinearLayout>
 
-  <include layout="@layout/horizontal_line_1dp_view"/>
+  <include layout="@layout/horizontal_line_1dp_view" />
 
   <include layout="@layout/internal_tools_button_view" />
 
   <TextView
-    style="@style/DrawerTextView"
     android:id="@+id/drawer_profile"
-    android:text="@string/tabbar_profile"
+    style="@style/DrawerTextView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    android:drawableStart="@drawable/ic_person"
+    android:text="@string/tabbar_profile" />
 
   <TextView
-    style="@style/DrawerTextView"
     android:id="@+id/drawer_dashboard"
-    android:text="@string/tabbar_dashboard"
+    style="@style/DrawerTextView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    android:drawableStart="@drawable/ic_dashboard"
+    android:text="@string/tabbar_dashboard" />
 
   <TextView
-    style="@style/DrawerTextView"
     android:id="@+id/drawer_activity"
-    android:text="@string/tabbar_activity"
+    style="@style/DrawerTextView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    android:drawableStart="@drawable/icon__bolt"
+    android:text="@string/tabbar_activity" />
 
   <TextView
-    style="@style/DrawerTextView"
     android:id="@+id/drawer_settings"
-    android:text="@string/profile_buttons_settings"
+    style="@style/DrawerTextView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    android:drawableStart="@drawable/ic_settings"
+    android:text="@string/profile_buttons_settings" />
 
 </LinearLayout>

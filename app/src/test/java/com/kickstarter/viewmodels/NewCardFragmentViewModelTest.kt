@@ -74,6 +74,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.card(CardFactory.card())
         this.vm.inputs.saveCardClicked()
         this.error.assertValue("oops")
+        this.koalaTest.assertValues("Viewed Add New Card","Failed Payment Method Creation")
     }
 
     @Test
@@ -134,5 +135,6 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.card(CardFactory.card())
         this.vm.inputs.saveCardClicked()
         this.success.assertValues()
+        this.koalaTest.assertValues("Viewed Add New Card")
     }
 }

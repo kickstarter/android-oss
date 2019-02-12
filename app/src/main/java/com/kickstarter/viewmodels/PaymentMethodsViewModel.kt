@@ -88,15 +88,21 @@ interface PaymentMethodsViewModel {
                     .subscribe {
                         this.refreshCards.onNext(null)
                         this.success.onNext(it)
+                        this.koala.trackDeletePaymentMethod()
                     }
 
             deleteCardNotification
                     .compose(Transformers.errors())
-                    .subscribe { this.error.onNext(it.localizedMessage) }
+                    .subscribe {
+                        this.error.onNext(it.localizedMessage)
+                        this.koala.trackErroredDeletePaymentMethod()
+                    }
 
             this.refreshCards
                     .switchMap { getListOfStoredCards() }
                     .subscribe { this.cards.onNext(it) }
+
+            this.koala.trackViewedPaymentMethods()
         }
 
         override fun deleteCardButtonClicked(paymentMethodsViewHolder: PaymentMethodsViewHolder, paymentSourceId: String) {

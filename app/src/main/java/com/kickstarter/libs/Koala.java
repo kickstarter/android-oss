@@ -362,7 +362,7 @@ public final class Koala {
   }
 
   public void trackSettingsView() {
-    this.client.track("Settings View");
+    this.client.track(KoalaEvent.VIEWED_SETTINGS);
   }
 
   public void trackViewedAccount() {

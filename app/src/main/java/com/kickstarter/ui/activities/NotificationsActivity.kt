@@ -301,8 +301,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     }
 
     private fun startProjectNotificationsSettingsActivity() {
-        val intent = Intent(this, ProjectNotificationSettingsActivity::class.java)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        startActivity(Intent(this, ProjectNotificationSettingsActivity::class.java))
     }
 
     private fun toggleImageButtonIconColor(imageButton: ImageButton, enabled: Boolean, typeMobile: Boolean = false) {

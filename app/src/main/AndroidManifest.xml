@@ -218,6 +218,7 @@
       android:theme="@style/SettingsActivity"/>
     <activity
       android:name=".ui.activities.ProjectNotificationSettingsActivity"
+      android:theme="@style/SettingsActivity"
       android:parentActivityName=".ui.activities.SettingsActivity">
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"

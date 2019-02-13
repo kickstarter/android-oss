@@ -49,7 +49,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.progressBarIsVisible()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter { activity != null }
+                .filter { this.activity != null }
                 .subscribe {
                     ViewUtils.setGone(progress_bar, !it)
                     updateMenu(!it)

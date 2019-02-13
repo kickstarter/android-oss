@@ -5,17 +5,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Pair
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import com.kickstarter.R
-import com.kickstarter.extensions.startActivityWithSlideLeftTransition
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.Secrets
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.models.User
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.activities.HelpActivity.*
@@ -69,8 +66,6 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         }
     }
 
-    override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
-
     private fun buildHelpUrl(endpoint: String): String {
         val webEndpointBuilder = Uri.parse(this.environment().webEndpoint()).buildUpon()
         webEndpointBuilder.appendEncodedPath(endpoint)
@@ -113,7 +108,7 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
 
             override fun openUri(activity: Activity, uri: Uri) {
                 if (helpActivityIntent != null) {
-                    activity.startActivityWithSlideLeftTransition(helpActivityIntent)
+                    activity.startActivity(helpActivityIntent)
                 } else {
                     // We're not handling users without browsers, We'll monitor on Fabric.
                     val intent = Intent(Intent.ACTION_VIEW, uri)

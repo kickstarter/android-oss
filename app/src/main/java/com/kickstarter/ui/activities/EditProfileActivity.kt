@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
-import android.util.Pair
 import android.widget.TextView
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
@@ -10,7 +9,6 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.SwitchCompatUtils
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.User
 import com.kickstarter.viewmodels.EditProfileViewModel
@@ -56,8 +54,6 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel.ViewModel>() {
         }
 
     }
-
-    override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
 
     private fun displayPreferences(user: User) {
         SwitchCompatUtils.setCheckedWithoutAnimation(private_profile_switch, BooleanUtils.isFalse(user.showPublicProfile()))

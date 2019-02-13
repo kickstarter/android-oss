@@ -2,16 +2,6 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.tabs.TabLayout;
-import androidx.core.view.GravityCompat;
-import androidx.viewpager.widget.ViewPager;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.widget.ImageButton;
 
 import com.crashlytics.android.Crashlytics;
@@ -19,6 +9,8 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.security.ProviderInstaller;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.tabs.TabLayout;
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -41,6 +33,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -216,6 +216,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     final Intent intent = new Intent(this, SettingsActivity.class);
     intent.putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
     startActivity(intent);
+    overridePendingTransition(0, 0);
   }
 
   private void showBuildAlert(final @NonNull InternalBuildEnvelope envelope) {

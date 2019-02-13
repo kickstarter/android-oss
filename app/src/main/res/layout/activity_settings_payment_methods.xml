@@ -44,7 +44,8 @@
 
         <LinearLayout
           android:id="@+id/add_new_card"
-          style="@style/SettingsLinearRow">
+          style="@style/SettingsLinearRow"
+          android:layout_marginBottom="@dimen/grid_3">
 
           <View
             android:id="@+id/payments_divider"
@@ -59,6 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/activity_vertical_margin"
+            android:foreground="@drawable/click_indicator_light"
             android:gravity="center_vertical"
             android:text="@string/Add_new_card"
             android:textAllCaps="true"
@@ -67,21 +69,14 @@
 
       </LinearLayout>
 
-      <FrameLayout
+      <ProgressBar
         android:id="@+id/progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/progress_bar_height"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <ProgressBar
-          style="?android:attr/progressBarStyleHorizontal"
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_5"
-          android:layout_gravity="center"
-          android:indeterminate="true" />
-
-      </FrameLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-6dp"
+        android:indeterminate="true"
+        android:visibility="gone" />
 
     </FrameLayout>
 

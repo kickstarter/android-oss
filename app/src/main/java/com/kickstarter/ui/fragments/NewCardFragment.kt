@@ -49,7 +49,10 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.progressBarIsVisible()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { ViewUtils.setGone(progress_bar, !it) }
+                .subscribe {
+                    ViewUtils.setGone(progress_bar, !it)
+                    updateMenu(!it)
+                }
 
         this.viewModel.outputs.saveButtonIsEnabled()
                 .compose(bindToLifecycle())

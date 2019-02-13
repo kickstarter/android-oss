@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities;
 
 import android.os.Bundle;
-import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.extensions.ActivityExtKt;
@@ -17,8 +16,6 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
-
-import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(ProjectNotificationSettingsViewModel.ViewModel.class)
 public final class ProjectNotificationSettingsActivity extends BaseActivity<ProjectNotificationSettingsViewModel.ViewModel> {
@@ -51,10 +48,5 @@ public final class ProjectNotificationSettingsActivity extends BaseActivity<Proj
   protected void onDestroy() {
     super.onDestroy();
     this.recyclerView.setAdapter(null);
-  }
-
-  @Override
-  protected @Nullable Pair<Integer, Integer> exitTransition() {
-    return slideInFromLeft();
   }
 }

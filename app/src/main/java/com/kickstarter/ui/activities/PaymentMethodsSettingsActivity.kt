@@ -74,24 +74,6 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
         }
     }
 
-    private fun setCards(cards: MutableList<UserPaymentsQuery.Node>) = this.adapter.populateCards(cards)
-
-    private fun setUpRecyclerView() {
-        this.adapter = PaymentMethodsAdapter(this.viewModel, object: DiffUtil.ItemCallback<Any>() {
-            override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                return (oldItem as UserPaymentsQuery.Node).id() == (newItem as UserPaymentsQuery.Node).id()
-            }
-
-            override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-                return (oldItem as UserPaymentsQuery.Node).id() == (newItem as UserPaymentsQuery.Node).id()
-            }
-
-
-        })
-        recycler_view.adapter = this.adapter
-        recycler_view.layoutManager = LinearLayoutManager(this)
-    }
-
     private fun lazyDeleteCardConfirmationDialog(): AlertDialog {
         if (this.showDeleteCardDialog == null) {
             this.showDeleteCardDialog = AlertDialog.Builder(this, R.style.AlertDialog)
@@ -103,6 +85,22 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
                     .create()
         }
         return this.showDeleteCardDialog!!
+    }
+
+    private fun setCards(cards: MutableList<UserPaymentsQuery.Node>) = this.adapter.populateCards(cards)
+
+    private fun setUpRecyclerView() {
+        this.adapter = PaymentMethodsAdapter(this.viewModel, object: DiffUtil.ItemCallback<Any>() {
+            override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+                return (oldItem as UserPaymentsQuery.Node).id() == (newItem as UserPaymentsQuery.Node).id()
+            }
+
+            override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+                return (oldItem as UserPaymentsQuery.Node).id() == (newItem as UserPaymentsQuery.Node).id()
+            }
+        })
+        recycler_view.adapter = this.adapter
+        recycler_view.layoutManager = LinearLayoutManager(this)
     }
 
 }

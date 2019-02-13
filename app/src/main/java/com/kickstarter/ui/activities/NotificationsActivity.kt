@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Pair
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -14,7 +13,6 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.AnimationUtils
 import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.IntegerUtils.intValueOrZero
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.User
 import com.kickstarter.viewmodels.NotificationsViewModel
@@ -85,8 +83,6 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         setUpClickListeners()
 
     }
-
-    override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
 
     private fun displayPreferences(user: User) {
         project_notifications_count.text = intValueOrZero(user.backedProjectsCount()).toString()
@@ -305,8 +301,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
     }
 
     private fun startProjectNotificationsSettingsActivity() {
-        val intent = Intent(this, ProjectNotificationSettingsActivity::class.java)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+        startActivity(Intent(this, ProjectNotificationSettingsActivity::class.java))
     }
 
     private fun toggleImageButtonIconColor(imageButton: ImageButton, enabled: Boolean, typeMobile: Boolean = false) {

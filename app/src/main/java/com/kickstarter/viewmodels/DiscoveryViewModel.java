@@ -145,7 +145,7 @@ public interface DiscoveryViewModel {
         .take(1)
         .map(Intent::getAction)
         .filter(Intent.ACTION_MAIN::equals)
-        .compose(combineLatestPair(currentUser))
+        .compose(combineLatestPair(changedUser))
         .map(intentAndUser -> getDefaultParams(intentAndUser.second))
         .share();
 

@@ -62,8 +62,9 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="SettingsActivitiesTransitions" parent="KSTheme">
+  <style name="SettingsActivity" parent="KSTheme">
     <item name="android:windowIsTranslucent">true</item>
+    <item name="android:windowAnimationStyle">@style/SettingsActivityTransitions</item>
   </style>
 
   <style name="ThanksActivity" parent="KSTheme">
@@ -83,6 +84,14 @@
 
   <style name="BackingActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
+  </style>
+
+  <!-- Activity Transitions-->
+  <style name="SettingsActivityTransitions" parent="android:style/Animation.Activity">
+    <item name="android:activityOpenEnterAnimation">@anim/settings_slide_in_from_bottom</item>
+    <item name="android:activityOpenExitAnimation">@null</item>
+    <item name="android:activityCloseEnterAnimation">@null</item>
+    <item name="android:activityCloseExitAnimation">@anim/settings_slide_out_from_top</item>
   </style>
 
   <!-- Widgets -->

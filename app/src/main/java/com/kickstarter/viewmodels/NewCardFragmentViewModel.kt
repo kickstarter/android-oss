@@ -83,11 +83,10 @@ interface NewCardFragmentViewModel {
         private val stripe = this.environment.stripe()
 
         init {
-            val cardForm = Observable.combineLatest(this.name.startWith(""),
-                    this.card.startWith(null, null),
-                    this.cardNumber.startWith(""),
-                    this.postalCode.startWith("")) { name, card, cardNumber, postalCode -> CardForm(name, card, cardNumber, postalCode) }
-                    .skip(1)
+            val cardForm = Observable.combineLatest(this.name,
+                    this.card,
+                    this.cardNumber,
+                    this.postalCode) { name, card, cardNumber, postalCode -> CardForm(name, card, cardNumber, postalCode) }
 
             cardForm
                     .map { it.isValid() }
@@ -95,8 +94,8 @@ interface NewCardFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.saveButtonIsEnabled)
 
-            cardForm
-                    .map { it.isAllowedCard() }
+            this.cardNumber
+                    .map { CardForm.isAllowedCard(it) }
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
@@ -120,12 +119,19 @@ interface NewCardFragmentViewModel {
 
             saveCardNotification
                     .compose(values())
-                    .subscribe { this.success.onNext(null) }
+                    .subscribe {
+                        this.success.onNext(null)
+                        this.koala.trackSavedPaymentMethod()
+                    }
 
             saveCardNotification
                     .compose(Transformers.errors())
-                    .subscribe { this.error.onNext(it.localizedMessage) }
+                    .subscribe {
+                        this.error.onNext(it.localizedMessage)
+                        this.koala.trackFailedPaymentMethodCreation()
+                    }
 
+            this.koala.trackViewedAddNewCard()
         }
 
         private fun storeNameAndPostalCode(cardForm: CardForm): Card {
@@ -184,16 +190,6 @@ interface NewCardFragmentViewModel {
         }
 
         data class CardForm(val name: String, val card: Card?, val cardNumber: String, val postalCode: String) {
-            private val allowedCardTypes = arrayOf(Card.AMERICAN_EXPRESS,
-                    Card.DINERS_CLUB,
-                    Card.DISCOVER,
-                    Card.JCB,
-                    Card.MASTERCARD,
-                    Card.VISA)
-
-            fun isAllowedCard(): Boolean {
-                return this.cardNumber.length < 3 || CardUtils.getPossibleCardType(this.cardNumber) in allowedCardTypes
-            }
 
             fun isValid(): Boolean {
                 return isNotEmpty(this.name)
@@ -202,11 +198,24 @@ interface NewCardFragmentViewModel {
             }
 
             private fun isValidCard(): Boolean {
-                return this.card != null && isAllowedCard() && this.card.validateNumber() && this.card.validateExpiryDate() && card.validateCVC()
+                return this.card != null && isAllowedCard(this.cardNumber) && this.card.validateNumber() && this.card.validateExpiryDate() && card.validateCVC()
             }
 
             private fun isNotEmpty(s: String): Boolean {
                 return !s.isEmpty()
+            }
+
+            companion object {
+                fun isAllowedCard(cardNumber: String): Boolean {
+                    return cardNumber.length < 3 || CardUtils.getPossibleCardType(cardNumber) in CardForm.allowedCardTypes
+                }
+
+                private val allowedCardTypes = arrayOf(Card.AMERICAN_EXPRESS,
+                        Card.DINERS_CLUB,
+                        Card.DISCOVER,
+                        Card.JCB,
+                        Card.MASTERCARD,
+                        Card.VISA)
             }
         }
 

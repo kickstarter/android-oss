@@ -145,21 +145,14 @@
 
       </LinearLayout>
 
-      <FrameLayout
+      <ProgressBar
         android:id="@+id/progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/progress_bar_height"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <ProgressBar
-          style="?android:attr/progressBarStyleHorizontal"
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_5"
-          android:layout_gravity="center"
-          android:indeterminate="true" />
-
-      </FrameLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-6dp"
+        android:indeterminate="true"
+        android:visibility="gone" />
 
     </FrameLayout>
 

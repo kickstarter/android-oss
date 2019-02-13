@@ -2,18 +2,16 @@ package com.kickstarter.ui.activities
 
 import android.content.Context
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import android.util.Pair
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.ChangeEmailViewModel
 import kotlinx.android.synthetic.main.activity_change_email.*
@@ -140,8 +138,6 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
         save.isEnabled = this.saveEnabled
         return super.onPrepareOptionsMenu(menu)
     }
-
-    override fun exitTransition(): Pair<Int, Int> = TransitionUtils.slideUpFromBottom()
 
     private fun clearForm() {
         new_email.text = null

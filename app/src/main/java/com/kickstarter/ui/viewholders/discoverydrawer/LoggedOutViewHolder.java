@@ -48,7 +48,7 @@ public final class LoggedOutViewHolder extends KSViewHolder {
     this.delegate.loggedOutViewHolderInternalToolsClick(this);
   }
 
-  @OnClick(R.id.logged_out_container)
+  @OnClick(R.id.logged_out_text_view)
   public void loginToutClick() {
     this.delegate.loggedOutViewHolderLoginToutClick(this);
   }

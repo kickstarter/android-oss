@@ -7,51 +7,35 @@
   android:baselineAligned="false"
   android:orientation="vertical">
 
-  <LinearLayout
-    android:id="@+id/logged_out_container"
+  <TextView
+    android:id="@+id/logged_out_text_view"
+    style="@style/DrawerTextView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:drawableStart="@drawable/ic_face"
     android:foreground="@drawable/click_indicator_light"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
     android:paddingBottom="@dimen/grid_3"
-    android:paddingEnd="@dimen/grid_5_half"
-    android:paddingStart="@dimen/grid_5_half"
-    android:paddingTop="@dimen/grid_3">
-
-    <ImageView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:contentDescription="@null"
-      android:gravity="center"
-      android:src="@drawable/ic_face" />
-
-    <TextView
-      android:id="@+id/logged_out_text_view"
-      style="@style/BodySecondaryMedium"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/grid_5"
-      android:text="@string/discovery_onboarding_buttons_signup_or_login" />
-
-  </LinearLayout>
+    android:paddingTop="@dimen/grid_3"
+    android:text="@string/discovery_onboarding_buttons_signup_or_login" />
 
   <include layout="@layout/horizontal_line_1dp_view" />
 
   <include layout="@layout/internal_tools_button_view" />
 
   <TextView
-    style="@style/DrawerTextView"
     android:id="@+id/drawer_activity"
-    android:text="@string/tabbar_activity"
+    style="@style/DrawerTextView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    android:drawableStart="@drawable/icon__bolt"
+    android:text="@string/tabbar_activity" />
 
   <TextView
-    style="@style/DrawerTextView"
     android:id="@+id/drawer_help"
-    android:text="@string/Help"
+    style="@style/DrawerTextView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    android:drawableStart="@drawable/ic_help"
+    android:text="@string/Help" />
 
 </LinearLayout>

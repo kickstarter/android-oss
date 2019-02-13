@@ -11,11 +11,11 @@ import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.NewCardFragmentViewModel
 import com.stripe.android.view.CardInputListener
 import kotlinx.android.synthetic.main.fragment_new_card.*
+import rx.android.schedulers.AndroidSchedulers
 
 @RequiresFragmentViewModel(NewCardFragmentViewModel.ViewModel::class)
 class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
@@ -38,17 +38,18 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
 
         this.viewModel.outputs.allowedCardWarningIsVisible()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(allowed_card_warning, !it) }
 
         this.viewModel.outputs.cardWidgetFocusDrawable()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { card_focus.setImageResource(it) }
 
         this.viewModel.outputs.progressBarIsVisible()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter { this.activity != null }
                 .subscribe {
                     ViewUtils.setGone(progress_bar, !it)
                     updateMenu(!it)
@@ -56,17 +57,17 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
 
         this.viewModel.outputs.saveButtonIsEnabled()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { updateMenu(it) }
 
         this.viewModel.outputs.success()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { onCardSavedListener?.cardSaved() }
 
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showSnackbar(new_card_toolbar, it) }
 
         cardholder_name.onChange { this.viewModel.inputs.name(it) }

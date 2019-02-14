@@ -74,7 +74,7 @@
           android:id="@+id/new_email_container"
           style="@style/SettingsTextInputLayout"
           android:layout_marginTop="@dimen/grid_4"
-          android:hint="@string/login_placeholder_email"
+          android:hint="@string/New_email"
           app:errorEnabled="true">
 
           <com.google.android.material.textfield.TextInputEditText

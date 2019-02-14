@@ -5,8 +5,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:layout_height="wrap_content"
-  android:elevation="0.1dp"
+  android:layout_height="?android:attr/actionBarSize"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   tools:ignore="UnusedAttribute"
@@ -14,67 +13,49 @@
 
   <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/actionBarSize"
+    android:layout_height="match_parent"
     android:baselineAligned="false"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <LinearLayout
+    <ImageButton
+      android:id="@+id/menu_button"
+      style="@style/ToolbarVectorIcon"
+      android:contentDescription="@string/discovery_accessibility_toolbar_buttons_user_menu"
+      android:src="@drawable/ic_menu" />
+
+    <TextView
+      android:id="@+id/filter_text_view"
+      style="@style/ToolbarTitle"
       android:layout_width="0dp"
       android:layout_height="match_parent"
+      android:layout_marginStart="0dp"
       android:layout_weight="1"
-      android:clipChildren="false"
-      android:clipToPadding="false"
-      android:focusable="true"
+      android:background="@drawable/click_indicator_light"
+      android:ellipsize="end"
       android:gravity="center_vertical"
-      android:orientation="horizontal"
-      tools:ignore="RtlSymmetry">
+      android:maxLines="1"
+      android:paddingEnd="@dimen/grid_2"
+      android:paddingStart="@dimen/grid_2"
+      tools:text="Staff Picks" />
 
-      <com.kickstarter.ui.views.IconButton
-        android:id="@+id/menu_button"
-        style="@style/ToolbarIcon"
-        android:text="@string/menu_icon" />
+    <ImageButton
+      android:id="@+id/creator_dashboard_button"
+      style="@style/ToolbarVectorIcon"
+      android:contentDescription="@string/tabbar_dashboard"
+      android:src="@drawable/icon__graph_line" />
 
-      <TextView
-        android:id="@+id/filter_text_view"
-        style="@style/ToolbarTitle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="0dp"
-        android:background="@drawable/button_selector"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:maxLines="1"
-        android:paddingEnd="@dimen/grid_2"
-        android:paddingStart="@dimen/grid_2"
-        tools:text="Staff Picks" />
+    <ImageButton
+      android:id="@+id/activity_feed_button"
+      style="@style/ToolbarIcon"
+      android:contentDescription="@string/tabbar_activity"
+      android:src="@drawable/icon__bolt" />
 
-    </LinearLayout>
-
-    <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:orientation="horizontal">
-
-      <ImageButton
-        android:id="@+id/creator_dashboard_button"
-        style="@style/ToolbarVectorIcon"
-        android:contentDescription="@string/tabbar_dashboard"
-        android:src="@drawable/icon__graph_line" />
-
-      <ImageButton
-        android:id="@+id/activity_feed_button"
-        style="@style/ToolbarIcon"
-        android:contentDescription="@string/tabbar_activity"
-        android:src="@drawable/icon__bolt" />
-
-      <ImageButton
-        android:id="@+id/search_button"
-        style="@style/ToolbarIcon"
-        android:contentDescription="@string/tabbar_search"
-        android:src="@drawable/icon__search" />
-
-    </LinearLayout>
+    <ImageButton
+      android:id="@+id/search_button"
+      style="@style/ToolbarIcon"
+      android:contentDescription="@string/tabbar_search"
+      android:src="@drawable/icon__search" />
 
   </LinearLayout>
 

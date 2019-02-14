@@ -25,7 +25,7 @@ public final class DiscoveryToolbar extends KSToolbar {
   @Bind(R.id.activity_feed_button) ImageButton activityFeedButton;
   @Bind(R.id.creator_dashboard_button) ImageButton creatorDashboardButton;
   @Bind(R.id.filter_text_view) TextView filterTextView;
-  @Bind(R.id.menu_button) TextView menuButton;
+  @Bind(R.id.menu_button) ImageButton menuButton;
   @Bind(R.id.search_button) ImageButton searchButton;
 
   private KSString ksString;

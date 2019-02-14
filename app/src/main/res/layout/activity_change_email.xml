@@ -6,7 +6,6 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_100"
   android:orientation="vertical">
 
   <com.google.android.material.appbar.AppBarLayout
@@ -17,121 +16,101 @@
 
   </com.google.android.material.appbar.AppBarLayout>
 
-  <ScrollView
+  <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <FrameLayout
+    <ScrollView
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="match_parent">
 
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-          style="@style/SettingsLinearRow"
-          android:layout_marginTop="@dimen/grid_3">
+        <com.google.android.material.textfield.TextInputLayout
+          style="@style/SettingsTextInputLayout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="0dp"
+          android:layout_marginTop="@dimen/activity_vertical_margin"
+          android:hint="@string/Current_email">
 
-          <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/grid_2"
-            android:gravity="center_vertical"
-            android:text="@string/Current_email"
-            android:textSize="@dimen/caption_1" />
-
-          <TextView
+          <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/current_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_2"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/grid_1"
-            android:textColor="@color/ksr_dark_grey_400"
-            android:textSize="@dimen/callout" />
+            android:enabled="false"
+            tools:text="test@email.com" />
 
-          <TextView
-            android:id="@+id/email_warning_text_view"
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+          android:id="@+id/email_warning_text_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:paddingEnd="@dimen/grid_2"
+          android:paddingStart="@dimen/grid_2"
+          android:text="@string/Email_unverified"
+          android:textColor="@color/ksr_dark_grey_400"
+          android:textSize="@dimen/caption_1"
+          android:visibility="gone"
+          tools:visibility="visible" />
+
+        <Button
+          android:id="@+id/send_verification_email"
+          style="@style/AlternatePrimaryButton"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:visibility="gone"
+          tools:text="@string/Resend_verification_email"
+          tools:visibility="visible" />
+
+        <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/new_email_container"
+          style="@style/SettingsTextInputLayout"
+          android:layout_marginTop="@dimen/grid_4"
+          android:hint="@string/login_placeholder_email"
+          app:errorEnabled="true">
+
+          <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/new_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_2"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/grid_1"
-            android:text="@string/Email_unverified"
-            android:textColor="@color/ksr_dark_grey_400"
-            android:textSize="@dimen/caption_1" />
+            android:inputType="textEmailAddress"
+            android:maxLines="1" />
 
-        </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
-          android:id="@+id/resend_email_row"
-          style="@style/SettingsLinearRow">
+        <com.google.android.material.textfield.TextInputLayout
+          style="@style/SettingsPasswordTextInputLayout"
+          android:hint="@string/Current_password">
 
-          <TextView
-            android:id="@+id/verification_text_view"
-            style="@style/CalloutPrimaryMedium"
-            android:layout_width="wrap_content"
+          <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/current_password"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:text="@string/Resend_verification_email"
-            android:textAllCaps="true"
-            android:textColor="@color/ksr_green_700" />
+            android:inputType="textPassword" />
 
-        </LinearLayout>
-
-        <LinearLayout
-          style="@style/SettingsLinearRow"
-          android:layout_marginTop="@dimen/grid_2">
-
-          <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/new_email_container"
-            style="@style/SettingsTextInputLayout"
-            android:layout_marginTop="@dimen/grid_3"
-            android:hint="@string/login_placeholder_email"
-            app:errorEnabled="true">
-
-            <com.google.android.material.textfield.TextInputEditText
-              android:id="@+id/new_email"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:inputType="textEmailAddress"
-              android:maxLines="1" />
-
-          </com.google.android.material.textfield.TextInputLayout>
-
-          <com.google.android.material.textfield.TextInputLayout
-            style="@style/SettingsPasswordTextInputLayout"
-            android:hint="@string/Current_password">
-
-            <com.google.android.material.textfield.TextInputEditText
-              android:id="@+id/current_password"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:inputType="textPassword" />
-
-          </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
       </LinearLayout>
+    </ScrollView>
 
-      <ProgressBar
-        android:id="@+id/progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-6dp"
-        android:indeterminate="true"
-        android:visibility="gone" />
+    <ProgressBar
+      android:id="@+id/progress_bar"
+      style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="-6dp"
+      android:indeterminate="true"
+      android:visibility="gone" />
 
-    </FrameLayout>
+  </FrameLayout>
 
-  </ScrollView>
 
 </LinearLayout>

@@ -100,7 +100,7 @@ interface ChangeEmailViewModel {
                     .compose(bindToLifecycle())
                     .subscribe {
                         this.currentEmail.onNext(it.me()?.email())
-                        this.sendVerificationIsHidden.onNext(it.me()?.isEmailVerified())
+                        this.sendVerificationIsHidden.onNext(it.me()?.isEmailVerified)
                     }
 
             userPrivacy

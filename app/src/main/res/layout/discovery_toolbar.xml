@@ -18,44 +18,63 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <ImageButton
-      android:id="@+id/menu_button"
-      style="@style/ToolbarVectorIcon"
-      android:contentDescription="@string/discovery_accessibility_toolbar_buttons_user_menu"
-      android:src="@drawable/ic_menu" />
-
-    <TextView
-      android:id="@+id/filter_text_view"
-      style="@style/ToolbarTitle"
+    <LinearLayout
       android:layout_width="0dp"
       android:layout_height="match_parent"
-      android:layout_marginStart="0dp"
       android:layout_weight="1"
-      android:background="@drawable/click_indicator_light"
-      android:ellipsize="end"
+      android:clipChildren="false"
+      android:clipToPadding="false"
+      android:focusable="true"
       android:gravity="center_vertical"
-      android:maxLines="1"
-      android:paddingEnd="@dimen/grid_2"
-      android:paddingStart="@dimen/grid_2"
-      tools:text="Staff Picks" />
+      android:orientation="horizontal"
+      tools:ignore="RtlSymmetry">
 
-    <ImageButton
-      android:id="@+id/creator_dashboard_button"
-      style="@style/ToolbarVectorIcon"
-      android:contentDescription="@string/tabbar_dashboard"
-      android:src="@drawable/icon__graph_line" />
+      <ImageButton
+        android:id="@+id/menu_button"
+        style="@style/ToolbarVectorIcon"
+        android:contentDescription="@string/discovery_accessibility_toolbar_buttons_user_menu"
+        android:src="@drawable/ic_menu" />
 
-    <ImageButton
-      android:id="@+id/activity_feed_button"
-      style="@style/ToolbarIcon"
-      android:contentDescription="@string/tabbar_activity"
-      android:src="@drawable/icon__bolt" />
+      <TextView
+        android:id="@+id/filter_text_view"
+        style="@style/ToolbarTitle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="0dp"
+        android:background="@drawable/click_indicator_light"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:paddingEnd="@dimen/grid_2"
+        android:paddingStart="@dimen/grid_2"
+        tools:text="Staff Picks" />
 
-    <ImageButton
-      android:id="@+id/search_button"
-      style="@style/ToolbarIcon"
-      android:contentDescription="@string/tabbar_search"
-      android:src="@drawable/icon__search" />
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:orientation="horizontal">
+
+      <ImageButton
+        android:id="@+id/creator_dashboard_button"
+        style="@style/ToolbarVectorIcon"
+        android:contentDescription="@string/tabbar_dashboard"
+        android:src="@drawable/icon__graph_line" />
+
+      <ImageButton
+        android:id="@+id/activity_feed_button"
+        style="@style/ToolbarIcon"
+        android:contentDescription="@string/tabbar_activity"
+        android:src="@drawable/icon__bolt" />
+
+      <ImageButton
+        android:id="@+id/search_button"
+        style="@style/ToolbarIcon"
+        android:contentDescription="@string/tabbar_search"
+        android:src="@drawable/icon__search" />
+
+    </LinearLayout>
 
   </LinearLayout>
 

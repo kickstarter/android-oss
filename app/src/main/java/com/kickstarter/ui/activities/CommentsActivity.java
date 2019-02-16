@@ -70,7 +70,7 @@ public final class CommentsActivity extends BaseActivity<CommentsViewModel.ViewM
     this.recyclerView.setAdapter(this.adapter);
     this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage);
+    this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage, this.viewModel.outputs.isFetchingComments());
     this.swipeRefresher = new SwipeRefresher(
       this, this.swipeRefreshLayout, this.viewModel.inputs::refresh, this.viewModel.outputs::isFetchingComments
     );

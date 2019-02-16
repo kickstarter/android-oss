@@ -2,10 +2,6 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Pair;
 
 import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
@@ -22,6 +18,10 @@ import com.kickstarter.ui.toolbars.SearchToolbar;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 import com.kickstarter.viewmodels.SearchViewModel;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
@@ -44,7 +44,7 @@ public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel
     this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
     this.recyclerView.setAdapter(this.adapter);
 
-    this.paginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage);
+    this.paginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage, this.viewModel.outputs.isFetchingProjects());
 
     RxRecyclerView.scrollEvents(this.recyclerView)
       .compose(bindToLifecycle())

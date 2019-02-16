@@ -140,7 +140,7 @@ public interface DiscoveryViewModel {
         .map(Intent::getAction)
         .filter(Intent.ACTION_MAIN::equals)
         .compose(combineLatestPair(changedUser))
-        .map(intentAndUser -> getDefaultParams(intentAndUser.second))
+        .map(intentAndUser -> DiscoveryParams.getDefaultParams(intentAndUser.second))
         .share();
 
       final Observable<DiscoveryParams> paramsFromIntent = intent()

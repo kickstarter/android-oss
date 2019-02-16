@@ -82,7 +82,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     new SwipeRefresher(
       this, this.swipeRefreshLayout, this.viewModel.inputs::refresh, this.viewModel.outputs::isFetchingProjects
     );
-    this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage);
+    this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage, this.viewModel.outputs.isFetchingProjects());
 
     this.viewModel.outputs.activity()
       .compose(bindToLifecycle())

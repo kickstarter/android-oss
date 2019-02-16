@@ -36,9 +36,8 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         recycler_view.layoutManager = GridLayoutManager(this, spanCount)
         recycler_view.adapter = this.adapter
 
-        this.paginator = RecyclerViewPaginator(recycler_view) {
-            this.viewModel.inputs.nextPage()
-        }
+        this.paginator = RecyclerViewPaginator(recycler_view, { this.viewModel.inputs.nextPage() },
+                this.viewModel.outputs.isFetchingProjects())
 
         this.viewModel.outputs.avatarImageViewUrl()
                 .compose(bindToLifecycle())

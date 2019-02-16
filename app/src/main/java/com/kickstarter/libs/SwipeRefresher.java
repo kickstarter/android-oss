@@ -1,11 +1,10 @@
 package com.kickstarter.libs;
 
-import androidx.annotation.NonNull;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.jakewharton.rxbinding.support.v4.widget.RxSwipeRefreshLayout;
 import com.kickstarter.R;
 
+import androidx.annotation.NonNull;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;

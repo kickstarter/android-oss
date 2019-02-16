@@ -39,6 +39,9 @@ public interface SearchViewModel {
   }
 
   interface Outputs {
+    /** Emits a boolean indicating whether projects are being fetched from the API. */
+    Observable<Boolean> isFetchingProjects();
+
     /** Emits list of popular projects. */
     Observable<List<Project>> popularProjects();
 
@@ -80,6 +83,10 @@ public interface SearchViewModel {
           .loadWithParams(apiClient::fetchProjects)
           .loadWithPaginationPath(apiClient::fetchProjects)
           .build();
+
+      paginator.isFetching()
+        .compose(bindToLifecycle())
+        .subscribe(this.isFetchingProjects);
 
       this.search
         .filter(StringUtils::isEmpty)
@@ -156,6 +163,7 @@ public interface SearchViewModel {
     private final PublishSubject<Project> projectClicked = PublishSubject.create();
     private final PublishSubject<String> search = PublishSubject.create();
 
+    private final BehaviorSubject<Boolean> isFetchingProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
     private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
@@ -175,6 +183,9 @@ public interface SearchViewModel {
 
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
+    }
+    @Override public @NonNull Observable<Boolean> isFetchingProjects() {
+      return this.isFetchingProjects;
     }
     @Override public @NonNull Observable<List<Project>> popularProjects() {
       return this.popularProjects;

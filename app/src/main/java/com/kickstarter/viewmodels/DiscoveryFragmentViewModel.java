@@ -137,7 +137,7 @@ public interface DiscoveryFragmentViewModel {
           .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
           .loadWithParams(this.apiClient::fetchProjects)
           .loadWithPaginationPath(this.apiClient::fetchProjects)
-          .clearWhenStartingOver(true)
+          .clearWhenStartingOver(false)
           .concater(ListUtils::concatDistinct)
           .build();
 
@@ -203,6 +203,7 @@ public interface DiscoveryFragmentViewModel {
       this.currentUser.loggedInUser()
         .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2))
         .compose(combineLatestPair(this.paramsFromActivity))
+        .filter(p -> p.second.toString().equals(DiscoveryParams.getDefaultParams(p.first).toString()))
         .flatMap(__ -> this.fetchActivity())
         .filter(this::activityHasNotBeenSeen)
         .doOnNext(this::saveLastSeenActivityId)

@@ -19,6 +19,7 @@ import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -61,7 +62,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   }
 
   private void setUpInitialHomeAllProjectsParams() {
-    this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
+    this.vm.inputs.paramsFromActivity(DiscoveryParams.getDefaultParams(null));
     this.vm.inputs.rootCategories(CategoryFactory.rootCategories());
   }
 
@@ -78,7 +79,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     //Page is cleared and refreshed
     this.vm.inputs.refresh();
-    this.hasProjects.assertValues(true, false, true);
+    this.hasProjects.assertValues(true, true);
     this.koalaTest.assertValues("Discover List View", "Triggered Refresh");
   }
 
@@ -101,12 +102,12 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
         .build()
     );
 
-    // Projects are cleared, new projects load with new params.
-    this.hasProjects.assertValues(true, false, true, true);
+    // New projects load with new params.
+    this.hasProjects.assertValues(true, true, true);
     this.koalaTest.assertValues("Discover List View", "Discover List View");
 
     this.vm.inputs.clearPage();
-    this.hasProjects.assertValues(true, false, true, true, false);
+    this.hasProjects.assertValues(true, true, true, false);
   }
 
   @Test
@@ -144,10 +145,10 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.projects.assertValueCount(1);
 
     // Log in.
-    currentUser.refresh(UserFactory.user());
+    logUserIn(currentUser);
 
     // Projects should emit again.
-    this.projects.assertValueCount(2);
+    this.projects.assertValueCount(4);
   }
 
   @Test
@@ -168,17 +169,17 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.shouldShowEmptySavedView.assertValue(false);
 
     // Login.
-    currentUser.refresh(UserFactory.user());
+    logUserIn(currentUser);
 
-    // Projects are cleared, new projects load.
-    this.hasProjects.assertValues(true, false, true);
+    // New projects load.
+    this.hasProjects.assertValues(true, true, true, true);
     this.shouldShowEmptySavedView.assertValues(false);
 
     // Saved projects params.
     this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().starred(1).build());
 
-    // Projects are cleared, new projects load with updated params.
-    this.hasProjects.assertValues(true, false, true, false, true, true);
+    // New projects load with updated params.
+    this.hasProjects.assertValues(true, true, true, true, true, true);
     this.shouldShowEmptySavedView.assertValues(false);
   }
 
@@ -210,17 +211,17 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.shouldShowEmptySavedView.assertValue(false);
 
     // Login.
-    currentUser.refresh(UserFactory.user());
+    logUserIn(currentUser);
 
-    // Projects are cleared, new projects load.
-    this.hasProjects.assertValues(true, false, true);
+    // New projects load.
+    this.hasProjects.assertValues(true, true, true, true);
     this.shouldShowEmptySavedView.assertValues(false);
 
     // Saved projects params.
     this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().starred(1).build());
 
     // Projects are cleared, new projects load with updated params.
-    this.hasProjects.assertValues(true, false, true, false, false, false);
+    this.hasProjects.assertValues(true, true, true, true, false, false);
     this.shouldShowEmptySavedView.assertValues(false, true);
   }
 
@@ -254,15 +255,15 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.activityTest.assertValue(null);
 
     // Change params. Onboarding view should not be shown.
-    this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
+    this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.NEWEST).build());
     this.shouldShowOnboardingViewTest.assertValues(true, false);
     this.activityTest.assertValues(null, null);
 
     // Login.
-    currentUser.refresh(UserFactory.user());
+    logUserIn(currentUser);
 
     // Activity sampler should be shown rather than onboarding view.
-    this.shouldShowOnboardingViewTest.assertValues(true, false, false);
+    this.shouldShowOnboardingViewTest.assertValues(true, false, false, false);
     this.activityTest.assertValues(null, null, activity);
 
     // Change params. Activity sampler should not be shown.
@@ -301,5 +302,11 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.showProject.assertNoValues();
     this.vm.inputs.projectCardViewHolderClicked(ProjectFactory.project());
     this.showProject.assertValueCount(1);
+  }
+
+  private void logUserIn(CurrentUserType currentUser) {
+    final User user = UserFactory.user();
+    currentUser.refresh(user);
+    this.vm.inputs.paramsFromActivity(DiscoveryParams.getDefaultParams(user));
   }
 }

@@ -8,7 +8,7 @@ do
   test -e $dest || cp $src $dest
 done
 
-VARIANTS="externalDebug externalRelease internalDebug internalRelease "
+VARIANTS="externalDebug externalRelease internalDebug internalRelease"
 
 cd ..
 

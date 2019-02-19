@@ -30,14 +30,6 @@
 
       <Button
         style="@style/BorderButton"
-        android:id="@+id/submit_bug_report_button"
-        android:layout_width="match_parent"
-        android:layout_marginBottom="@dimen/grid_1"
-        android:text="@string/Submit_feedback"
-        android:layout_marginTop="@dimen/grid_1" />
-
-      <Button
-        style="@style/BorderButton"
         android:id="@+id/push_notifications_button"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/grid_1"

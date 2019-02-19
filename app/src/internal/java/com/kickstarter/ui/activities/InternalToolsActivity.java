@@ -4,10 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
 import android.webkit.URLUtil;
@@ -20,23 +16,20 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Build;
-import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.Secrets;
-import com.kickstarter.models.User;
 import com.kickstarter.ui.viewmodels.InternalToolsViewModel;
 
 import org.joda.time.format.DateTimeFormat;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
@@ -46,7 +39,6 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(InternalToolsViewModel.class)
 public final class InternalToolsActivity extends BaseActivity<InternalToolsViewModel> {
-  private CurrentUserType currentUser;
 
   @Inject @ApiEndpointPreference StringPreferenceType apiEndpointPreference;
   @Inject Build build;
@@ -66,8 +58,6 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     ButterKnife.bind(this);
 
     ((KSApplication) getApplicationContext()).component().inject(this);
-
-    this.currentUser = environment().currentUser();
 
     setupBuildInformationSection();
   }
@@ -106,40 +96,6 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   @OnClick(R.id.change_endpoint_production_button)
   public void changeEndpointProductionButton() {
     setEndpointAndRelaunch(ApiEndpoint.PRODUCTION);
-  }
-
-  @OnClick(R.id.submit_bug_report_button)
-  public void submitBugReportButtonClick() {
-    this.currentUser.observable().take(1).subscribe(this::submitBugReport);
-  }
-
-  private void submitBugReport(final @Nullable User user) {
-    final String email = Secrets.FIELD_REPORT_EMAIL;
-
-    final List<String> debugInfo = Arrays.asList(
-      user != null ? user.name() : "Logged Out",
-      this.build.variant(),
-      this.build.versionName(),
-      this.build.versionCode().toString(),
-      this.build.sha(),
-      Integer.toString(android.os.Build.VERSION.SDK_INT),
-      android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL,
-      Locale.getDefault().getLanguage()
-    );
-
-    final String body = new StringBuilder()
-      .append(TextUtils.join(" | ", debugInfo))
-      .append("\r\n\r\nDescribe the bug and add a subject. Attach images if it helps!\r\n")
-      .append("—————————————\r\n")
-      .toString();
-
-    final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
-      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-      .setType("message/rfc822")
-      .putExtra(Intent.EXTRA_TEXT, body)
-      .putExtra(Intent.EXTRA_EMAIL, new String[]{email});
-
-    startActivity(Intent.createChooser(intent, getString(R.string.Select_email_application)));
   }
 
   private void showCustomEndpointDialog() {

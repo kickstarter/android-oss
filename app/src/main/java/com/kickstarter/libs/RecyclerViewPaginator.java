@@ -42,7 +42,7 @@ public final class RecyclerViewPaginator {
       .filter(item -> item.second != 0)
       .distinctUntilChanged();
 
-    Observable<Boolean> isNotLoading = this.isLoading
+    final Observable<Boolean> isNotLoading = this.isLoading
       .distinctUntilChanged()
       .filter(loading -> !loading);
 

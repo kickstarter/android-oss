@@ -304,7 +304,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.showProject.assertValueCount(1);
   }
 
-  private void logUserIn(CurrentUserType currentUser) {
+  private void logUserIn(final @NonNull CurrentUserType currentUser) {
     final User user = UserFactory.user();
     currentUser.refresh(user);
     this.vm.inputs.paramsFromActivity(DiscoveryParams.getDefaultParams(user));

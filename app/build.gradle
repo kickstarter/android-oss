@@ -39,7 +39,7 @@ android {
 
     defaultConfig {
         applicationId "com.kickstarter"
-        minSdkVersion 17
+        minSdkVersion 23
         targetSdkVersion 28
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

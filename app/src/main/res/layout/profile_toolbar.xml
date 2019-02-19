@@ -9,7 +9,6 @@
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   app:layout_collapseMode="pin"
-  tools:ignore="UnusedAttribute"
   tools:showIn="@layout/profile_layout">
 
   <RelativeLayout

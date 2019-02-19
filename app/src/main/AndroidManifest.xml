@@ -92,8 +92,7 @@
         23+ app links: https://www.youtube.com/watch?v=LQoohRwojmw
             -->
       <intent-filter
-        android:autoVerify="true"
-        tools:ignore="UnusedAttribute">
+        android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />
 
         <category android:name="android.intent.category.DEFAULT" />
@@ -105,8 +104,7 @@
           android:scheme="https" />
       </intent-filter>
       <intent-filter
-        android:autoVerify="true"
-        tools:ignore="UnusedAttribute">
+        android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />
 
         <category android:name="android.intent.category.DEFAULT" />
@@ -347,8 +345,7 @@
     </activity>
     <activity android:name=".ui.activities.DeepLinkActivity">
       <intent-filter
-        android:autoVerify="true"
-        tools:ignore="UnusedAttribute">
+        android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />
 
         <category android:name="android.intent.category.DEFAULT" />

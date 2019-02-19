@@ -8,8 +8,7 @@
   android:id="@+id/login_toolbar"
   android:elevation="0dp"
   app:contentInsetLeft="0dp"
-  app:contentInsetStart="0dp"
-  tools:ignore="UnusedAttribute">
+  app:contentInsetStart="0dp">
 
   <RelativeLayout
     android:layout_width="match_parent"

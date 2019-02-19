@@ -11,8 +11,7 @@
   app:contentInsetStart="0dp"
   app:layout_collapseMode="pin"
   app:layout_scrollFlags="enterAlways"
-  tools:showIn="@layout/message_threads_layout"
-  tools:ignore="UnusedAttribute">
+  tools:showIn="@layout/message_threads_layout">
 
   <RelativeLayout
     android:layout_width="match_parent"

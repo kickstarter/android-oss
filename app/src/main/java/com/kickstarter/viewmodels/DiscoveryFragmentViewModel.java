@@ -200,9 +200,12 @@ public interface DiscoveryFragmentViewModel {
         .mergeWith(this.heartContainerClicked)
         .subscribe(__ -> this.startHeartAnimation.onNext(null));
 
-      this.currentUser.loggedInUser()
+      final Observable<Pair<User, DiscoveryParams>> loggedInUserAndParams = this.currentUser.loggedInUser()
         .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2))
-        .compose(combineLatestPair(this.paramsFromActivity))
+        .compose(combineLatestPair(this.paramsFromActivity));
+
+      // Activity should show on the user's default params
+      loggedInUserAndParams
         .filter(p -> p.second.toString().equals(DiscoveryParams.getDefaultParams(p.first).toString()))
         .flatMap(__ -> this.fetchActivity())
         .filter(this::activityHasNotBeenSeen)
@@ -210,8 +213,9 @@ public interface DiscoveryFragmentViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.activity);
 
-      // Clear activity sample when params change
-      this.paramsFromActivity
+      // Clear activity sample when params change from default
+      loggedInUserAndParams
+        .filter(p -> !p.second.toString().equals(DiscoveryParams.getDefaultParams(p.first).toString()))
         .map(__ -> (Activity) null)
         .compose(bindToLifecycle())
         .subscribe(this.activity);

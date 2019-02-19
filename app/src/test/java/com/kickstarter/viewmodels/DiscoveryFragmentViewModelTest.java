@@ -252,23 +252,23 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     // Should show onboarding view.
     this.shouldShowOnboardingViewTest.assertValues(true);
-    this.activityTest.assertValue(null);
+    this.activityTest.assertNoValues();
 
     // Change params. Onboarding view should not be shown.
     this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.NEWEST).build());
     this.shouldShowOnboardingViewTest.assertValues(true, false);
-    this.activityTest.assertValues(null, null);
+    this.activityTest.assertNoValues();
 
     // Login.
     logUserIn(currentUser);
 
     // Activity sampler should be shown rather than onboarding view.
     this.shouldShowOnboardingViewTest.assertValues(true, false, false, false);
-    this.activityTest.assertValues(null, null, activity);
+    this.activityTest.assertValues(null, activity);
 
     // Change params. Activity sampler should not be shown.
     this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
-    this.activityTest.assertValues(null, null, activity, null);
+    this.activityTest.assertValues(null, activity, null);
   }
 
   @Test

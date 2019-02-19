@@ -27,6 +27,11 @@
     <item name="android:windowBackground">@color/window_background</item>
     <item name="materialButtonStyle">@style/Button</item>
     <item name="toolbarStyle">@style/Toolbar</item>
+    <item name="android:statusBarColor">@color/status_bar</item>
+    <item name="android:windowContentTransitions">true</item>
+    <item name="android:windowAllowEnterTransitionOverlap">true</item>
+    <item name="android:windowAllowReturnTransitionOverlap">true</item>
+    <item name="android:windowLightStatusBar">true</item>
   </style>
 
   <!-- Activities -->
@@ -44,7 +49,9 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="DiscoveryActivity" parent="DiscoveryBase" />
+  <style name="DiscoveryActivity" parent="DiscoveryBase">
+    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+  </style>
 
   <style name="HelpActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
@@ -127,6 +134,7 @@
     <item name="android:paddingTop">@dimen/grid_2</item>
     <item name="android:paddingBottom">@dimen/grid_2</item>
     <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:letterSpacing">0.0</item>
   </style>
 
   <style name="Button" parent="ButtonBase" />
@@ -215,9 +223,10 @@
     <item name="android:layout_width">wrap_content</item>
     <item name="android:gravity">center</item>
     <item name="android:layout_alignParentRight">true</item>
+    <item name="android:layout_alignParentEnd">true</item>
   </style>
 
-  <style name="EndSettingsWidget" parent="EndSettingsWidgetBase" />
+  <style name="EndSettingsWidget" parent="EndSettingsWidgetBase"/>
 
   <style name="KSSettingsPhoneIcon" parent="EndSettingsWidget">
     <item name="android:focusable">true</item>
@@ -287,7 +296,7 @@
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_centerVertical">true</item>
     <item name="android:gravity">center_vertical</item>
-    <item name="android:layout_marginStart">@dimen/grid_12</item>
+    <item name="android:layout_marginStart">@dimen/grid_9</item>
   </style>
 
   <style name="ToolbarTitle" parent="ToolbarTitleBase" />
@@ -478,16 +487,17 @@
     <item name="android:focusable">true</item>
     <item name="android:layout_marginBottom">@dimen/grid_1</item>
     <item name="android:layout_marginTop">@dimen/grid_5</item>
-    <item name="android:layout_marginStart">@dimen/card_margin_x</item>
-    <item name="android:layout_marginEnd">@dimen/card_margin_x</item>
+    <item name="android:layout_marginStart">@dimen/grid_2</item>
+    <item name="android:layout_marginEnd">@dimen/grid_2</item>
   </style>
 
   <style name="ActivitySampleCard" parent="ActivitySampleCardBase" />
 
   <!-- Rewards -->
   <style name="RewardHeadline" parent="Caption2Primary">
-    <item name="android:textColor">@color/ksr_dark_grey_500</item>
+    <item name="android:textColor">@color/ksr_dark_grey_400</item>
     <item name="android:textAllCaps">true</item>
+    <item name="android:letterSpacing">.2</item>
   </style>
 
   <!-- Creator Dashboard -->

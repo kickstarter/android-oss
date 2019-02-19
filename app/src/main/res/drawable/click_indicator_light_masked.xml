@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--todo: figure out how to mask this?-->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:drawable="@color/dark_gray_click" android:state_focused="true" />
-  <item android:drawable="@color/dark_gray_click" android:state_pressed="true" />
-  <item android:drawable="@color/dark_gray_click" android:state_selected="true" />
-  <item android:drawable="@color/transparent" />
-</selector>
+<!--
+  This is a masked ripple. The ripple will clip to the specified view
+  or layout, and not flow into the parent. Ripple bounds are squared.
+
+  Use this for views with multiple parents.
+-->
+<ripple
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:color="@color/ripple_light">
+  <item android:id="@android:id/mask">
+    <color android:color="@color/white"/>
+  </item>
+</ripple>

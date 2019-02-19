@@ -90,20 +90,9 @@ android {
         }
     }
 
-    flavorDimensions "AUDIENCE", "API"
+    flavorDimensions "AUDIENCE"
 
     productFlavors {
-        pre21 {
-            dimension "API"
-            // Don't override the minSdkVersion, just inherit from defaultConfig
-        }
-        min21 {
-            // minSdkVersion 21 speeds up local development by generating multidex output much faster.
-            // It should not be used for release builds. See:
-            // https://developer.android.com/tools/building/multidex.html#dev-build
-            dimension "API"
-            minSdkVersion 21
-        }
         internal {
             dimension "AUDIENCE"
             applicationId "com.kickstarter.kickstarter.internal"

@@ -4,7 +4,7 @@ module Milkrun
   class Lint < Report
     attr_reader :variant
 
-    def initialize(variant: "externalPre21Release")
+    def initialize(variant: "externalRelease")
       @variant = variant
     end
 

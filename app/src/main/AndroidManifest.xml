@@ -14,7 +14,7 @@
   <!-- RECEIVE allows the app to register to receive GCM messages -->
   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
-  <!-- Mixpanel library requires this permission -->
+  <!-- Used to determine if network connection Snackbar should be shown.  -->
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
   <application
@@ -36,9 +36,6 @@
       android:name=".ui.activities.ActivityFeedActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/ActivityFeedActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
     <activity
       android:name=".ui.activities.ChangeEmailActivity"
@@ -52,28 +49,18 @@
       android:name=".ui.activities.CheckoutActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@style/CheckoutActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ProjectActivity" />
     </activity>
     <activity
       android:name=".ui.activities.CommentsActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@style/CommentsActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ProjectActivity" />
     </activity>
-
     <activity android:name=".ui.activities.CreatePasswordActivity"
       android:theme="@style/SettingsActivity"/>
     <activity
       android:name=".ui.activities.CreatorDashboardActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/ProjectActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
     <activity
       android:name=".ui.activities.DiscoveryActivity"
@@ -86,11 +73,6 @@
         <category android:name="android.intent.category.LAUNCHER" />
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
-
-      <!--
-        Setting autoVerify to true in any intent filter for the manifest enables the app for
-        23+ app links: https://www.youtube.com/watch?v=LQoohRwojmw
-            -->
       <intent-filter
         android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />
@@ -118,25 +100,16 @@
     <activity
       android:name=".ui.activities.DownloadBetaActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
     <activity
       android:name=".ui.activities.WebViewActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/WebViewActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
     <activity
       android:name=".ui.activities.ResetPasswordActivity"
       android:parentActivityName=".ui.activities.LoginActivity"
       android:theme="@style/Login">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.LoginActivity" />
     </activity>
     <activity
       android:name=".ui.activities.HelpActivity"
@@ -157,47 +130,29 @@
       android:name=".ui.activities.FacebookConfirmationActivity"
       android:parentActivityName="com.facebook.FacebookActivity"
       android:theme="@style/Login">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value="com.facebook.FacebookActivity" />
     </activity>
     <activity
       android:name=".ui.activities.ProfileActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
     <activity
       android:name=".ui.activities.LoginActivity"
       android:parentActivityName=".ui.activities.LoginToutActivity"
       android:theme="@style/Login">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.LoginToutActivity" />
     </activity>
     <activity
       android:name=".ui.activities.LoginToutActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/Login">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
     <activity
       android:name=".ui.activities.MessagesActivity"
       android:parentActivityName=".ui.activities.MessageThreadsActivity"
       android:windowSoftInputMode="adjustResize">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.MessageThreadsActivity" />
     </activity>
     <activity
       android:name=".ui.activities.MessageThreadsActivity"
       android:parentActivityName=".ui.activities.ProfileActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ProfileActivity" />
     </activity>
     <activity
       android:name=".ui.activities.NewCardActivity"
@@ -218,20 +173,11 @@
       android:name=".ui.activities.ProjectNotificationSettingsActivity"
       android:theme="@style/SettingsActivity"
       android:parentActivityName=".ui.activities.SettingsActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.SettingsActivity" />
     </activity>
     <activity
       android:name=".ui.activities.ProjectActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/ProjectActivity">
-
-      <!-- Parent activity meta-data to support 4.0 and lower -->
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity" />
-
       <intent-filter>
         <action android:name="android.intent.action.VIEW" />
 
@@ -247,72 +193,44 @@
     <activity
       android:name=".ui.activities.ProjectSocialActivity"
       android:parentActivityName=".ui.activities.ProjectActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ProjectActivity" />
     </activity>
     <activity
       android:name=".ui.activities.ProjectUpdatesActivity"
       android:parentActivityName=".ui.activities.ProjectActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ProjectActivity" />
     </activity>
     <activity
       android:name=".ui.activities.SearchActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/SearchActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
     <activity
       android:name=".ui.activities.SettingsActivity"
       android:theme="@style/SettingsActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
     <activity
       android:name=".ui.activities.SignupActivity"
       android:parentActivityName=".ui.activities.LoginToutActivity"
       android:theme="@style/Login">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.LoginToutActivity" />
     </activity>
     <activity
       android:name=".ui.activities.SurveyResponseActivity"
       android:parentActivityName=".ui.activities.ActivityFeedActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ActivityFeedActivity" />
     </activity>
-
     <!-- TODO: Maybe the parent should be the project? -->
     <activity
       android:name=".ui.activities.ThanksActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/ThanksActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.DiscoveryActivity" />
     </activity>
     <activity
       android:name=".ui.activities.TwoFactorActivity"
       android:parentActivityName=".ui.activities.LoginActivity"
       android:theme="@style/Login">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.LoginActivity" />
     </activity>
     <activity
       android:name=".ui.activities.UpdateActivity"
       android:parentActivityName=".ui.activities.ProjectUpdatesActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ProjectUpdatesActivity" />
     </activity>
     <activity
       android:name=".ui.activities.VideoActivity"
@@ -320,17 +238,11 @@
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:screenOrientation="sensorLandscape"
       android:theme="@style/VideoPlayerActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ProjectActivity" />
     </activity>
     <activity
       android:name=".ui.activities.BackingActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@style/BackingActivity">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.ProjectActivity" />
     </activity>
     <activity
       android:name="com.facebook.FacebookActivity"
@@ -339,9 +251,6 @@
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@android:style/Theme.Translucent.NoTitleBar"
       tools:replace="android:theme">
-      <meta-data
-        android:name="android.support.PARENT_ACTIVITY"
-        android:value=".ui.activities.LoginToutActivity" />
     </activity>
     <activity android:name=".ui.activities.DeepLinkActivity">
       <intent-filter

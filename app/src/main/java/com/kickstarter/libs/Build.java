@@ -27,7 +27,7 @@ public final class Build {
   }
 
   public static boolean isInternal() {
-    return BuildConfig.FLAVOR_AUDIENCE.equals("internal");
+    return BuildConfig.FLAVOR.equals("internal");
   }
 
   public static boolean isExternal() {
@@ -62,7 +62,7 @@ public final class Build {
 
   public String variant() {
     // e.g. internalDebug, externalRelease
-    return new StringBuilder().append(BuildConfig.FLAVOR_AUDIENCE)
+    return new StringBuilder().append(BuildConfig.FLAVOR)
       .append(BuildConfig.BUILD_TYPE.substring(0, 1).toUpperCase(Locale.US))
       .append(BuildConfig.BUILD_TYPE.substring(1))
       .toString();

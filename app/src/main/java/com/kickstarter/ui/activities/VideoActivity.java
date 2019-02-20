@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities;
 
-import android.annotation.TargetApi;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +19,6 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.kickstarter.R;
-import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
@@ -80,15 +78,11 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
     }
   }
 
-  @TargetApi(19)
   private int systemUIFlags() {
-    final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+    return View.SYSTEM_UI_FLAG_LAYOUT_STABLE
       | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-      | View.SYSTEM_UI_FLAG_FULLSCREEN;
-
-    return ApiCapabilities.canSetImmersiveSystemUI()
-      ? flags | View.SYSTEM_UI_FLAG_IMMERSIVE
-      : flags;
+      | View.SYSTEM_UI_FLAG_FULLSCREEN
+      | View.SYSTEM_UI_FLAG_IMMERSIVE;
   }
 
   private void onStateChanged(final int playbackState) {

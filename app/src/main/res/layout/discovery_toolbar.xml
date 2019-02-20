@@ -8,7 +8,6 @@
   android:layout_height="?android:attr/actionBarSize"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  tools:ignore="UnusedAttribute"
   tools:showIn="@layout/discovery_layout">
 
   <LinearLayout

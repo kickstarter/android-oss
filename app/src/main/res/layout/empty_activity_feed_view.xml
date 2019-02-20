@@ -2,7 +2,6 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
   card_view:cardBackgroundColor="@color/white"
   android:background="@color/white"
   android:foreground="@color/transparent"
@@ -11,8 +10,7 @@
   android:layout_height="match_parent"
   android:paddingTop="@dimen/grid_6"
   android:paddingBottom="@dimen/grid_8"
-  android:gravity="center"
-  tools:ignore="UnusedAttribute">
+  android:gravity="center">
 
   <com.kickstarter.ui.views.IconTextView
     android:layout_width="wrap_content"

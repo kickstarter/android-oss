@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Highlights the background on focus/press/select. In API 21+ this is unused
-in favor of a ripple effect (see drawable-v21/button_selector.xml).
+  This is an unmasked ripple, it draws into the parent background.
+
+  e.g. if A nests B, and B uses android:background="@drawable/button_selector", then the ripple will
+  extend beyond B into A.
 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:drawable="@color/accent_alpha_20" android:state_focused="true" />
-  <item android:drawable="@color/accent_alpha_20" android:state_pressed="true" />
-  <item android:drawable="@color/accent_alpha_20" android:state_selected="true" />
-  <item android:drawable="@color/transparent" />
-</selector>
+<ripple
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:color="@color/accent_alpha_20" />

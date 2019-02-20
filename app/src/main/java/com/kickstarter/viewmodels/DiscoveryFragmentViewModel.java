@@ -93,6 +93,8 @@ public interface DiscoveryFragmentViewModel {
     /** Emits when the heart animation should play. */
     Observable<Void> startHeartAnimation();
 
+    Observable<Boolean> showProgress();
+
     /** Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
 
@@ -230,6 +232,10 @@ public interface DiscoveryFragmentViewModel {
           isOnboardingVisible(paramsAndLoggedIn.first, paramsAndLoggedIn.second)
         ));
 
+      this.paramsFromActivity.distinctUntilChanged()
+        .compose(bindToLifecycle())
+        .subscribe(params -> this.showProgress.onNext(true));
+
       this.startUpdateActivity
         .map(Activity::project)
         .filter(ObjectUtils::isNotNull)
@@ -286,6 +292,7 @@ public interface DiscoveryFragmentViewModel {
     private final BehaviorSubject<List<Pair<Project, DiscoveryParams>>> projectList = BehaviorSubject.create();
     private final Observable<Boolean> showActivityFeed;
     private final Observable<Boolean> showLoginTout;
+    private final BehaviorSubject<Boolean> showProgress = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shouldShowEmptySavedView = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shouldShowOnboardingView = BehaviorSubject.create();
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
@@ -361,6 +368,10 @@ public interface DiscoveryFragmentViewModel {
     }
     @Override public @NonNull Observable<Void> startHeartAnimation() {
       return this.startHeartAnimation;
+    }
+    @Override
+    public Observable<Boolean> showProgress() {
+      return this.showProgress;
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;

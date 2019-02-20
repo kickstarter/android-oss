@@ -4,17 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 
-import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.security.ProviderInstaller;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
-import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
@@ -166,8 +160,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.viewModel.inputs::openDrawer);
-
-    updateAndroidSecurityProvider();
   }
 
   private static @NonNull List<DiscoveryFragment> createFragments(final int pages) {
@@ -234,18 +226,4 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .show();
   }
 
-  private void updateAndroidSecurityProvider() {
-    if (!ApiCapabilities.tls1_2IsEnabledByDefault()) {
-      // https://stackoverflow.com/questions/29916962/javax-net-ssl-sslhandshakeexception-javax-net-ssl-sslprotocolexception-ssl-han/36892715#36892715
-      try {
-        ProviderInstaller.installIfNeeded(this);
-      } catch (GooglePlayServicesRepairableException e) {
-        // Thrown when Google Play Services is not installed, up-to-date, or enabled
-        // Show dialog to allow users to install, update, or otherwise enable Google Play services.
-        GooglePlayServicesUtil.getErrorDialog(e.getConnectionStatusCode(), this, 0);
-      } catch (GooglePlayServicesNotAvailableException e) {
-        Crashlytics.logException(e);
-      }
-    }
-  }
 }

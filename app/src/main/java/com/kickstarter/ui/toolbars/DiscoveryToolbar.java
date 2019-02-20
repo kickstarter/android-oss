@@ -21,7 +21,7 @@ import butterknife.OnClick;
 
 public final class DiscoveryToolbar extends KSToolbar {
   @Bind(R.id.filter_text_view) TextView filterTextView;
-  @Bind(R.id.menu_button) TextView menuButton;
+  @Bind(R.id.menu_button) ImageButton menuButton;
   @Bind(R.id.search_button) ImageButton searchButton;
 
   private KSString ksString;

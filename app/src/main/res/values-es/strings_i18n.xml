@@ -258,7 +258,7 @@ patrocinadores</string>
   <string name="Manage_your_pledge_below" formatted="false">Administra tu contribución:</string>
   <string name="Manage_your_reward" formatted="false">Administra tu recompensa</string>
   <string name="Message_backer" formatted="false">Enviar mensaje a patrocinador</string>
-  <string name="Message_banner_accessibility_Double_tap_to_dismiss" formatted="false">Double tap to dismiss.</string>
+  <string name="Message_banner_accessibility_Double_tap_to_dismiss" formatted="false">Toca dos veces para descartar.</string>
   <string name="Message_creator" formatted="false">Enviar mensaje al creador</string>
   <string name="Message_user_name" formatted="false">Mensaje a %{user_name}…</string>
   <string name="Messages" formatted="false">Mensajes</string>

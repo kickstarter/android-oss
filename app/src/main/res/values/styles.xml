@@ -118,7 +118,6 @@
   </style>
 
   <style name="ButtonBase" parent="Widget.MaterialComponents.Button">
-    <item name="android:textColor">@drawable/button_text_white</item>
     <item name="android:layout_centerInParent">true</item>
     <item name="android:singleLine">true</item>
     <item name="android:layout_width">wrap_content</item>
@@ -131,6 +130,12 @@
   </style>
 
   <style name="Button" parent="ButtonBase" />
+
+  <style name="AlternatePrimaryButton" parent="Button">
+    <item name="backgroundTint">@color/button_alternate</item>
+    <item name="android:textColor">@color/button_alternate_text</item>
+    <item name="rippleColor">@color/button_alternate_ripple</item>
+  </style>
 
   <style name="SecondaryButton" parent="Button">
     <item name="backgroundTint">@color/button_secondary</item>

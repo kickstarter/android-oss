@@ -4471,7 +4471,7 @@
       "Message_backer": "Enviar mensaje a patrocinador",
       "Message_banner": {
         "accessibility": {
-          "Double_tap_to_dismiss": "Double tap to dismiss."
+          "Double_tap_to_dismiss": "Toca dos veces para descartar."
         }
       },
       "Message_creator": "Enviar mensaje al creador",
@@ -14666,6 +14666,7 @@
     "message_spam": true,
     "drip_iterate": true,
     "creator_search": true,
+    "new_creator_digest": true,
     "jumio_v4": true,
     "project_build_people_tab": true
   },
@@ -14850,7 +14851,8 @@
   "ab_experiments": {
     "new_project_header": "experimental",
     "checkout_account_page_v2": "control",
-    "featured_reward": "control"
+    "featured_reward": "control",
+    "thanks_page": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

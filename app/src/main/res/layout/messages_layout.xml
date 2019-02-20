@@ -19,8 +19,7 @@
       android:background="@color/white"
       android:elevation="@dimen/ks_toolbar_elevation"
       app:contentScrim="@color/white"
-      app:layout_scrollFlags="scroll|exitUntilCollapsed"
-      tools:ignore="UnusedAttribute">
+      app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
       <LinearLayout
         android:layout_width="match_parent"

@@ -29,7 +29,7 @@
       android:adjustViewBounds="true"
       android:background="@drawable/gray_gradient"
       android:scaleType="centerCrop"
-      tools:ignore="ContentDescription,UnusedAttribute" />
+      tools:ignore="ContentDescription" />
 
     <LinearLayout
       android:layout_width="match_parent"

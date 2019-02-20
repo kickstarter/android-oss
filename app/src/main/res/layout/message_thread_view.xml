@@ -112,6 +112,6 @@
     android:layout_marginStart="@dimen/grid_1"
     android:layout_centerVertical="true"
     android:layout_alignParentStart="true"
-    tools:ignore="ContentDescription,UnusedAttribute"/>
+    tools:ignore="ContentDescription"/>
 
 </RelativeLayout>

@@ -131,6 +131,10 @@ public interface DiscoveryFragmentViewModel {
         selectedParams.compose(takeWhen(this.refresh))
       );
 
+      this.paramsFromActivity.distinctUntilChanged()
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.showProgress.onNext(true));
+
       final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
           .nextPage(this.nextPage)
@@ -146,6 +150,11 @@ public interface DiscoveryFragmentViewModel {
       paginator.isFetching()
         .compose(bindToLifecycle())
         .subscribe(this.isFetchingProjects);
+
+      paginator.isFetching()
+        .filter(BooleanUtils::isFalse)
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.showProgress.onNext(false));
 
       final Observable<Pair<Project, RefTag>> activitySampleProjectClick = this.activitySampleProjectClick
         .map(p -> Pair.create(p, RefTag.activitySample()));
@@ -231,10 +240,6 @@ public interface DiscoveryFragmentViewModel {
           paramsAndLoggedIn.first,
           isOnboardingVisible(paramsAndLoggedIn.first, paramsAndLoggedIn.second)
         ));
-
-      this.paramsFromActivity.distinctUntilChanged()
-        .compose(bindToLifecycle())
-        .subscribe(params -> this.showProgress.onNext(true));
 
       this.startUpdateActivity
         .map(Activity::project)

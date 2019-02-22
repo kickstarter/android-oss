@@ -5,8 +5,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:layout_height="wrap_content"
-  android:elevation="0.1dp"
+  android:layout_height="?android:attr/actionBarSize"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   tools:ignore="UnusedAttribute"
@@ -14,7 +13,7 @@
 
   <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/actionBarSize"
+    android:layout_height="match_parent"
     android:baselineAligned="false"
     android:gravity="center_vertical"
     android:orientation="horizontal">
@@ -30,10 +29,11 @@
       android:orientation="horizontal"
       tools:ignore="RtlSymmetry">
 
-      <com.kickstarter.ui.views.IconButton
+      <ImageButton
         android:id="@+id/menu_button"
-        style="@style/ToolbarIcon"
-        android:text="@string/menu_icon" />
+        style="@style/ToolbarVectorIcon"
+        android:contentDescription="@string/discovery_accessibility_toolbar_buttons_user_menu"
+        android:src="@drawable/ic_menu" />
 
       <TextView
         android:id="@+id/filter_text_view"
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="0dp"
-        android:background="@drawable/button_selector"
+        android:background="@drawable/click_indicator_light"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"

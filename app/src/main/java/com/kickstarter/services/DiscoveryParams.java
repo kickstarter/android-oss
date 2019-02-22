@@ -12,6 +12,7 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -444,6 +445,14 @@ public abstract class DiscoveryParams implements Parcelable {
     } else {
       return context.getString(R.string.All_Projects);
     }
+  }
+
+  public static DiscoveryParams getDefaultParams(final @Nullable User user) {
+    final Builder builder = DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME);
+    if (user != null && isFalse(user.optedOutOfRecommendations())) {
+      builder.recommended(true).backed(-1);
+    }
+    return builder.build();
   }
 
   /**

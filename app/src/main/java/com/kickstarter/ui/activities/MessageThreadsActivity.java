@@ -68,7 +68,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     this.recyclerView.setAdapter(this.adapter);
     this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage);
+    this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage, this.viewModel.outputs.isFetchingMessageThreads());
     this.swipeRefresher = new SwipeRefresher(
       this, this.swipeRefreshLayout, this.viewModel.inputs::swipeRefresh, this.viewModel.outputs::isFetchingMessageThreads
     );

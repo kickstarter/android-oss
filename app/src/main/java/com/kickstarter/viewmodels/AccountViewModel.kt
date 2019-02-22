@@ -67,10 +67,11 @@ interface AccountViewModel {
         init {
 
             val userPrivacy = this.apolloClient.userPrivacy()
+                    .compose(Transformers.neverError())
+
 
             userPrivacy
                     .map { it.me()?.chosenCurrency() }
-                    .compose(Transformers.neverError())
                     .map { ObjectUtils.coalesce(it, CurrencyCode.USD.rawValue()) }
                     .compose(bindToLifecycle())
                     .subscribe { this.chosenCurrency.onNext(it) }

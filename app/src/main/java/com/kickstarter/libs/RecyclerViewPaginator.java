@@ -1,24 +1,29 @@
 package com.kickstarter.libs;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Pair;
 
 import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action0;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 
 public final class RecyclerViewPaginator {
   private final @NonNull RecyclerView recyclerView;
   private final @NonNull Action0 nextPage;
+  private Observable<Boolean> isLoading;
   private Subscription subscription;
   private static final int DIRECTION_DOWN = 1;
 
-  public RecyclerViewPaginator(final @NonNull RecyclerView recyclerView, final @NonNull Action0 nextPage) {
+  public RecyclerViewPaginator(final @NonNull RecyclerView recyclerView, final @NonNull Action0 nextPage, final @NonNull Observable<Boolean> isLoading) {
     this.recyclerView = recyclerView;
     this.nextPage = nextPage;
+    this.isLoading = isLoading;
     start();
   }
 
@@ -29,18 +34,25 @@ public final class RecyclerViewPaginator {
   public void start() {
     stop();
 
-    this.subscription = RxRecyclerView.scrollEvents(this.recyclerView)
+    final Observable<Pair<Integer, Integer>> lastVisibleAndCount = RxRecyclerView.scrollEvents(this.recyclerView)
       .filter(__ -> this.recyclerView.canScrollVertically(DIRECTION_DOWN))
       .map(__ -> this.recyclerView.getLayoutManager())
       .ofType(LinearLayoutManager.class)
       .map(this::displayedItemFromLinearLayout)
       .filter(item -> item.second != 0)
-      .filter(this::visibleItemIsCloseToBottom)
-      // NB: We think this operation is suffering from back pressure problems due to the volume of scroll events:
-      // https://rink.hockeyapp.net/manage/apps/239008/crash_reasons/88318986
-      // If it continues to happen we can also try `debounce`.
-      .onBackpressureDrop()
+      .distinctUntilChanged();
+
+    final Observable<Boolean> isNotLoading = this.isLoading
       .distinctUntilChanged()
+      .filter(loading -> !loading);
+
+    final Observable<Pair<Integer, Integer>> loadNextPage = lastVisibleAndCount
+      .compose(combineLatestPair(isNotLoading))
+      .distinctUntilChanged()
+      .map(p -> p.first)
+      .filter(this::visibleItemIsCloseToBottom);
+
+    this.subscription = loadNextPage
       .subscribe(__ -> this.nextPage.call());
   }
 

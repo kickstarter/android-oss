@@ -93,6 +93,8 @@ public interface DiscoveryFragmentViewModel {
     /** Emits when the heart animation should play. */
     Observable<Void> startHeartAnimation();
 
+    Observable<Boolean> showProgress();
+
     /** Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
 
@@ -129,6 +131,10 @@ public interface DiscoveryFragmentViewModel {
         selectedParams.compose(takeWhen(this.refresh))
       );
 
+      this.paramsFromActivity.distinctUntilChanged()
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.showProgress.onNext(true));
+
       final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
           .nextPage(this.nextPage)
@@ -137,13 +143,18 @@ public interface DiscoveryFragmentViewModel {
           .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
           .loadWithParams(this.apiClient::fetchProjects)
           .loadWithPaginationPath(this.apiClient::fetchProjects)
-          .clearWhenStartingOver(true)
+          .clearWhenStartingOver(false)
           .concater(ListUtils::concatDistinct)
           .build();
 
       paginator.isFetching()
         .compose(bindToLifecycle())
         .subscribe(this.isFetchingProjects);
+
+      paginator.isFetching()
+        .filter(BooleanUtils::isFalse)
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.showProgress.onNext(false));
 
       final Observable<Pair<Project, RefTag>> activitySampleProjectClick = this.activitySampleProjectClick
         .map(p -> Pair.create(p, RefTag.activitySample()));
@@ -200,17 +211,22 @@ public interface DiscoveryFragmentViewModel {
         .mergeWith(this.heartContainerClicked)
         .subscribe(__ -> this.startHeartAnimation.onNext(null));
 
-      this.currentUser.loggedInUser()
+      final Observable<Pair<User, DiscoveryParams>> loggedInUserAndParams = this.currentUser.loggedInUser()
         .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2))
-        .compose(combineLatestPair(this.paramsFromActivity))
+        .compose(combineLatestPair(this.paramsFromActivity));
+
+      // Activity should show on the user's default params
+      loggedInUserAndParams
+        .filter(this::isDefaultParams)
         .flatMap(__ -> this.fetchActivity())
         .filter(this::activityHasNotBeenSeen)
         .doOnNext(this::saveLastSeenActivityId)
         .compose(bindToLifecycle())
         .subscribe(this.activity);
 
-      // Clear activity sample when params change
-      this.paramsFromActivity
+      // Clear activity sample when params change from default
+      loggedInUserAndParams
+        .filter(userAndParams -> !isDefaultParams(userAndParams))
         .map(__ -> (Activity) null)
         .compose(bindToLifecycle())
         .subscribe(this.activity);
@@ -248,6 +264,10 @@ public interface DiscoveryFragmentViewModel {
         .compose(neverError());
     }
 
+    private boolean isDefaultParams(final @NonNull Pair<User, DiscoveryParams> userAndParams) {
+      return userAndParams.second.toString().equals(DiscoveryParams.getDefaultParams(userAndParams.first).toString());
+    }
+
     private boolean isOnboardingVisible(final @NonNull DiscoveryParams params, final boolean isLoggedIn) {
       final DiscoveryParams.Sort sort = params.sort();
       final boolean isSortHome = DiscoveryParams.Sort.HOME.equals(sort);
@@ -281,6 +301,7 @@ public interface DiscoveryFragmentViewModel {
     private final BehaviorSubject<List<Pair<Project, DiscoveryParams>>> projectList = BehaviorSubject.create();
     private final Observable<Boolean> showActivityFeed;
     private final Observable<Boolean> showLoginTout;
+    private final BehaviorSubject<Boolean> showProgress = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shouldShowEmptySavedView = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shouldShowOnboardingView = BehaviorSubject.create();
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
@@ -356,6 +377,9 @@ public interface DiscoveryFragmentViewModel {
     }
     @Override public @NonNull Observable<Void> startHeartAnimation() {
       return this.startHeartAnimation;
+    }
+    @Override public @NonNull Observable<Boolean> showProgress() {
+      return this.showProgress;
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;

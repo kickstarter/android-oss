@@ -226,7 +226,7 @@ public interface DiscoveryFragmentViewModel {
 
       // Clear activity sample when params change from default
       loggedInUserAndParams
-        .filter(p -> !p.second.toString().equals(DiscoveryParams.getDefaultParams(p.first).toString()))
+        .filter(this::isDefaultParams)
         .map(__ -> (Activity) null)
         .compose(bindToLifecycle())
         .subscribe(this.activity);
@@ -262,6 +262,10 @@ public interface DiscoveryFragmentViewModel {
         .map(ListUtils::first)
         .filter(ObjectUtils::isNotNull)
         .compose(neverError());
+    }
+
+    private boolean isDefaultParams(Pair<User, DiscoveryParams> userAndParams) {
+      return !userAndParams.second.toString().equals(DiscoveryParams.getDefaultParams(userAndParams.first).toString());
     }
 
     private boolean isOnboardingVisible(final @NonNull DiscoveryParams params, final boolean isLoggedIn) {
@@ -374,8 +378,7 @@ public interface DiscoveryFragmentViewModel {
     @Override public @NonNull Observable<Void> startHeartAnimation() {
       return this.startHeartAnimation;
     }
-    @Override
-    public Observable<Boolean> showProgress() {
+    @Override public @NonNull Observable<Boolean> showProgress() {
       return this.showProgress;
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {

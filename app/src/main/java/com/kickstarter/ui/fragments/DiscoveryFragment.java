@@ -138,7 +138,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     this.viewModel.outputs.showProgress()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(v -> ViewUtils.setGone(this.progressBar, !v));
+      .subscribe(show -> ViewUtils.setGone(this.progressBar, !show));
 
     return view;
   }

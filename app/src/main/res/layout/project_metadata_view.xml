@@ -13,7 +13,6 @@
   android:gravity="center_vertical"
   android:layout_width="wrap_content"
   android:layout_height="@dimen/metadata_label_height"
-  tools:ignore="UnusedAttribute"
   tools:showIn="@layout/project_card_view">
 
   <LinearLayout

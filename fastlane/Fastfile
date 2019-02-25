@@ -8,7 +8,7 @@ default_platform :android
 
 lane :alpha do
   Milkrun::VersionCode.new(audience: 'internal').bump
-  gradle(task: "assembleInternalPre21Debug")
+  gradle(task: "assembleInternalDebug")
 
   crashlytics(
     api_token: ENV["apiKey"],
@@ -25,7 +25,7 @@ end
 
 lane :external do
   Milkrun::VersionCode.new(audience: 'external').bump
-  build_android_app(task: "assembleExternalPre21Release")
+  build_android_app(task: "assembleExternalRelease")
 
   crashlytics(
     api_token: Milkrun::FabricCredentialsExtractor.new.api_key,
@@ -45,7 +45,7 @@ lane :internal do
   build_type = 'release'
   version_code = Milkrun::VersionCode.new(audience: audience).bump
 
-  build_android_app(task: "assembleInternalPre21Release")
+  build_android_app(task: "assembleInternalRelease")
 
   path_to_apk = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
   Milkrun::S3Package.new(version_code: version_code, file_path: path_to_apk).upload

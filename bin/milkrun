@@ -48,7 +48,7 @@ class MilkrunApplication
 Release checklist!
 
 1) Make sure the build passes in CircleCI.
-2) Build and run locally in externalPre21Release mode, test core features on a real device.
+2) Build and run locally in externalRelease mode, test core features on a real device.
 CHECKLIST
         output_path = Milkrun::Build.new(audience: audience, build_type: build_type).compile
         pretty_path = File.join(File.dirname(output_path), "kickstarter-#{version_name}.apk")
@@ -76,7 +76,7 @@ CHECKLIST
 Release checklist!
 
 1) Make sure the build passes in CircleCI.
-2) Build and run locally in internalPre21Release mode, test core features on a real device.
+2) Build and run locally in internalRelease mode, test core features on a real device.
 CHECKLIST
         file_path = Milkrun::Build.new(audience: audience, build_type: build_type).compile
         Milkrun::HockeyApp.new(audience: audience, version_code: version_code, version_name: version_name).create_version

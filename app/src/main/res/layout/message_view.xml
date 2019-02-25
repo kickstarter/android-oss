@@ -48,7 +48,7 @@
       android:layout_marginStart="@dimen/grid_3"
       android:elevation="2dp"
       android:background="@drawable/message_avatar_circle_background"
-      tools:ignore="ContentDescription,UnusedAttribute"/>
+      tools:ignore="ContentDescription"/>
 
   </RelativeLayout>
 

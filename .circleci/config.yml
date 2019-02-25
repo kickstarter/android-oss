@@ -25,7 +25,7 @@ jobs:
           paths:
             - ~/.gradle
             - ~/.android
-      - run: ./gradlew assembleExternalPre21Release
+      - run: ./gradlew assembleExternalRelease
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -42,8 +42,8 @@ jobs:
       - attach_workspace:
           at: ~/project
       - run: ./gradlew checkstyle
-      - run: ./gradlew lintExternalPre21Release
-      - run: ./gradlew testExternalPre21Release -PdisablePreDex
+      - run: ./gradlew lintExternalRelease
+      - run: ./gradlew testExternalRelease -PdisablePreDex
       - store_artifacts:
           path: app/build/reports
           destination: reports

@@ -7,7 +7,6 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
@@ -48,11 +47,11 @@ public class KSApplication extends MultiDexApplication {
     MultiDex.install(this);
 
     // Only log for internal builds
-    if (BuildConfig.FLAVOR_AUDIENCE.equals("internal")) {
+    if (BuildConfig.FLAVOR.equals("internal")) {
       Timber.plant(new Timber.DebugTree());
     }
 
-    if (!isInUnitTests() && ApiCapabilities.canDetectMemoryLeaks()) {
+    if (!isInUnitTests()) {
       this.refWatcher = LeakCanary.install(this);
     }
 

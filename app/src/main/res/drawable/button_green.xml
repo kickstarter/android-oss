@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:state_selected="true">
-    <shape>
-      <solid android:color="@color/green_darken_10"/>
-    </shape>
-  </item>
-  <item android:state_pressed="true">
-    <shape>
-      <solid android:color="@color/green_darken_10"/>
-    </shape>
-  </item>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+  android:color="@color/black_alpha_17">
   <item>
-    <shape>
-      <solid android:color="@color/ksr_green_700"/>
-    </shape>
+    <selector>
+
+      <item android:state_enabled="true">
+        <shape>
+          <solid android:color="@color/ksr_green_700" />
+        </shape>
+      </item>
+
+      <item android:state_enabled="false">
+        <shape>
+          <solid android:color="@color/green_alpha_50" />
+        </shape>
+      </item>
+
+    </selector>
   </item>
-</selector>
+</ripple>

@@ -28,7 +28,6 @@ import rx.observers.TestSubscriber;
 public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private DiscoveryViewModel.ViewModel vm;
   private final TestSubscriber<List<Integer>> clearPages = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> creatorDashboardButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> drawerIsOpen = new TestSubscriber<>();
   private final TestSubscriber<Boolean> expandSortTabLayout = new TestSubscriber<>();
   private final TestSubscriber<Void> navigationDrawerDataEmitted = new TestSubscriber<>();
@@ -38,7 +37,10 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Integer> rotatedUpdatePage = new TestSubscriber<>();
   private final TestSubscriber<DiscoveryParams> rotatedUpdateParams= new TestSubscriber<>();
   private final TestSubscriber<DiscoveryParams> rotatedUpdateToolbarWithParams = new TestSubscriber<>();
+  private final TestSubscriber<Void> showActivityFeed = new TestSubscriber<>();
   private final TestSubscriber<InternalBuildEnvelope> showBuildCheckAlert = new TestSubscriber<>();
+  private final TestSubscriber<Void> showCreatorDashboard = new TestSubscriber<>();
+  private final TestSubscriber<Void> showHelp = new TestSubscriber<>();
   private final TestSubscriber<Void> showInternalTools = new TestSubscriber<>();
   private final TestSubscriber<Void> showLoginTout = new TestSubscriber<>();
   private final TestSubscriber<Void> showProfile = new TestSubscriber<>();
@@ -60,48 +62,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Build check should be shown when newer build is available.
     this.vm.inputs.newerBuildIsAvailable(buildEnvelope);
     this.showBuildCheckAlert.assertValue(buildEnvelope);
-  }
-
-  @Test
-  public void testCreatorDashboardButtonIsGone_isTrue_WhenCreatorOrCollaborator() {
-    final User notCreator = UserFactory.user().toBuilder().memberProjectsCount(0).build();
-    final MockCurrentUser currentUser = new MockCurrentUser(notCreator);
-
-    final Environment env = environment().toBuilder()
-      .currentUser(currentUser)
-      .build();
-
-    this.vm = new DiscoveryViewModel.ViewModel(env);
-    this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
-    this.creatorDashboardButtonIsGone.assertValue(true);
-  }
-
-  @Test
-  public void testCreatorDashboardButtonIsGone_isFalse_WhenCreator() {
-    final User creator = UserFactory.creator();
-    final MockCurrentUser currentUser = new MockCurrentUser(creator);
-
-    final Environment env = environment().toBuilder()
-      .currentUser(currentUser)
-      .build();
-
-    this.vm = new DiscoveryViewModel.ViewModel(env);
-    this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
-    this.creatorDashboardButtonIsGone.assertValue(false);
-  }
-
-  @Test
-  public void testCreatorDashboardButtonIsGone_isFalse_WhenCollaborator() {
-    final User collaborator = UserFactory.collaborator();
-    final MockCurrentUser currentUser = new MockCurrentUser(collaborator);
-
-    final Environment env = environment().toBuilder()
-      .currentUser(currentUser)
-      .build();
-
-    this.vm = new DiscoveryViewModel.ViewModel(env);
-    this.vm.outputs.creatorDashboardButtonIsGone().subscribe(this.creatorDashboardButtonIsGone);
-    this.creatorDashboardButtonIsGone.assertValue(false);
   }
 
   @Test
@@ -221,21 +181,34 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   public void testClickingInterfaceElements() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
+    this.vm.outputs.showActivityFeed().subscribe(this.showActivityFeed);
+    this.vm.outputs.showCreatorDashboard().subscribe(this.showCreatorDashboard);
+    this.vm.outputs.showHelp().subscribe(this.showHelp);
     this.vm.outputs.showInternalTools().subscribe(this.showInternalTools);
     this.vm.outputs.showLoginTout().subscribe(this.showLoginTout);
     this.vm.outputs.showProfile().subscribe(this.showProfile);
     this.vm.outputs.showSettings().subscribe(this.showSettings);
 
+    this.showActivityFeed.assertNoValues();
+    this.showCreatorDashboard.assertNoValues();
+    this.showHelp.assertNoValues();
     this.showInternalTools.assertNoValues();
     this.showLoginTout.assertNoValues();
     this.showProfile.assertNoValues();
     this.showSettings.assertNoValues();
 
+    this.vm.inputs.loggedInViewHolderActivityClick(null);
+    this.vm.inputs.loggedOutViewHolderActivityClick(null);
+    this.vm.inputs.loggedInViewHolderDashboardClick(null);
+    this.vm.inputs.loggedOutViewHolderHelpClick(null);
     this.vm.inputs.loggedInViewHolderInternalToolsClick(null);
     this.vm.inputs.loggedOutViewHolderLoginToutClick(null);
     this.vm.inputs.loggedInViewHolderProfileClick(null, UserFactory.user());
     this.vm.inputs.loggedInViewHolderSettingsClick(null, UserFactory.user());
 
+    this.showActivityFeed.assertValueCount(2);
+    this.showCreatorDashboard.assertValueCount(1);
+    this.showHelp.assertValueCount(1);
     this.showInternalTools.assertValueCount(1);
     this.showLoginTout.assertValueCount(1);
     this.showProfile.assertValueCount(1);

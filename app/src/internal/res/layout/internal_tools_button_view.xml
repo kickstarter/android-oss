@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="@dimen/grid_8"
-  android:layout_height="@dimen/grid_8">
-
-  <com.kickstarter.ui.views.IconButton
-    android:background="@drawable/click_indicator_light"
-    android:id="@+id/internal_tools_icon_button"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:gravity="center"
-    android:textSize="@dimen/icon"
-    android:textColor="@color/ksr_soft_black"
-    android:text="@string/bug_report_icon" />
-
-</LinearLayout>
+<TextView android:id="@+id/internal_tools"
+  style="@style/DrawerTextView"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:drawableStart="@drawable/ic_internal_tools"
+  android:text="@string/internal_tools_internal_tools" />

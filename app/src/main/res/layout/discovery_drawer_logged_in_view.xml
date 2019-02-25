@@ -4,19 +4,19 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_marginBottom="@dimen/activity_vertical_margin"
-  android:layout_marginEnd="@dimen/grid_5_half"
-  android:layout_marginStart="@dimen/grid_5_half"
-  android:layout_marginTop="@dimen/activity_vertical_margin"
   android:background="@color/discovery_drawer_header"
   android:baselineAligned="false"
-  android:gravity="center_vertical">
+  android:gravity="center_vertical"
+  android:orientation="vertical">
 
   <LinearLayout
     android:id="@+id/user_container"
-    android:layout_width="0dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_weight="1"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    android:layout_marginEnd="@dimen/grid_5_half"
+    android:layout_marginStart="@dimen/grid_5_half"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
     android:background="@drawable/click_indicator_light"
     android:gravity="center_vertical"
     android:orientation="vertical">
@@ -40,25 +40,40 @@
 
   </LinearLayout>
 
-  <LinearLayout
-    android:layout_width="wrap_content"
+  <include layout="@layout/horizontal_line_1dp_view" />
+
+  <include layout="@layout/internal_tools_button_view" />
+
+  <TextView
+    android:id="@+id/drawer_profile"
+    style="@style/DrawerTextView"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="top"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:drawableStart="@drawable/ic_person"
+    android:text="@string/tabbar_profile" />
 
-    <include layout="@layout/internal_tools_button_view" />
+  <TextView
+    android:id="@+id/drawer_dashboard"
+    style="@style/DrawerTextView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:drawableStart="@drawable/ic_dashboard"
+    android:text="@string/tabbar_dashboard" />
 
-    <com.kickstarter.ui.views.IconButton
-      android:id="@+id/settings_icon_button"
-      android:layout_width="@dimen/grid_8"
-      android:layout_height="@dimen/grid_8"
-      android:background="@drawable/click_indicator_light"
-      android:gravity="center"
-      android:text="@string/settings_icon"
-      android:textColor="@color/ksr_soft_black"
-      android:textSize="@dimen/icon" />
+  <TextView
+    android:id="@+id/drawer_activity"
+    style="@style/DrawerTextView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:drawableStart="@drawable/icon__bolt"
+    android:text="@string/tabbar_activity" />
 
-  </LinearLayout>
+  <TextView
+    android:id="@+id/drawer_settings"
+    style="@style/DrawerTextView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:drawableStart="@drawable/ic_settings"
+    android:text="@string/profile_buttons_settings" />
 
 </LinearLayout>

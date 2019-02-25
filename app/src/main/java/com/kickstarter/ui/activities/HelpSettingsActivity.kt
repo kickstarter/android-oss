@@ -73,9 +73,9 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         return webEndpointBuilder.build().toString()
     }
 
-    private fun composeContactEmail(user: User) {
+    private fun composeContactEmail(user: User?) {
         val debugInfo = Arrays.asList(
-                user.id().toString(),
+                user?.id()?: getString(R.string.Logged_Out),
                 this.build.versionName(),
                 android.os.Build.VERSION.RELEASE + " (SDK " + Integer.toString(android.os.Build.VERSION.SDK_INT) + ")",
                 android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL

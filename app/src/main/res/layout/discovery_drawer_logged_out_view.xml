@@ -5,48 +5,37 @@
   android:layout_height="wrap_content"
   android:background="@color/discovery_drawer_header"
   android:baselineAligned="false"
-  android:gravity="center_vertical"
-  android:orientation="horizontal"
-  android:paddingBottom="@dimen/grid_3"
-  android:paddingTop="@dimen/grid_3">
+  android:orientation="vertical">
 
-  <LinearLayout
-    android:id="@+id/logged_out_container"
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_weight="1"
-    android:background="@drawable/click_indicator_light"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingEnd="@dimen/grid_5_half"
-    android:paddingStart="@dimen/grid_5_half">
-
-    <ImageView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:contentDescription="@null"
-      android:gravity="center"
-      android:src="@drawable/ic_face" />
-
-    <TextView
-      android:id="@+id/logged_out_text_view"
-      style="@style/BodySecondaryMedium"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/grid_5"
-      android:text="@string/discovery_onboarding_buttons_signup_or_login" />
-
-  </LinearLayout>
-
-  <LinearLayout
-    android:id="@+id/internal_tools_container"
-    android:layout_width="wrap_content"
+  <TextView
+    android:id="@+id/logged_out_text_view"
+    style="@style/DrawerTextView"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:drawableStart="@drawable/ic_face"
+    android:foreground="@drawable/click_indicator_light"
+    android:paddingBottom="@dimen/grid_3"
+    android:paddingTop="@dimen/grid_3"
+    android:text="@string/discovery_onboarding_buttons_signup_or_login" />
 
-    <include layout="@layout/internal_tools_button_view" />
+  <include layout="@layout/horizontal_line_1dp_view" />
 
-  </LinearLayout>
+  <include layout="@layout/internal_tools_button_view" />
+
+  <TextView
+    android:id="@+id/drawer_activity"
+    style="@style/DrawerTextView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:drawableStart="@drawable/icon__bolt"
+    android:text="@string/tabbar_activity" />
+
+  <TextView
+    android:id="@+id/drawer_help"
+    style="@style/DrawerTextView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:drawableStart="@drawable/ic_help"
+    android:text="@string/Help" />
 
 </LinearLayout>

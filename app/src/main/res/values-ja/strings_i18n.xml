@@ -379,7 +379,7 @@
   <string name="Rewards_count_rewards_one" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_two" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_zero" formatted="false">%{rewards_count} 種類のリワード</string>
-  <string name="Save" formatted="false">救う</string>
+  <string name="Save" formatted="false">保存</string>
   <string name="Save_projects" formatted="false">プロジェクトを保存</string>
   <string name="Save_this_project" formatted="false">プロジェクトを保存</string>
   <string name="Saved" formatted="false">保存済</string>

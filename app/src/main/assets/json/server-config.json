@@ -10912,7 +10912,7 @@
         "many": "%{reward_survey_count} リワードのサーベイ"
       },
       "Reward_selected": "選択中のリワード",
-      "Save": "救う",
+      "Save": "保存",
       "Save_this_project": "プロジェクトを保存",
       "Saved": "保存済",
       "Saved_projects": "プロジェクトを保存",
@@ -14850,9 +14850,10 @@
   ],
   "ab_experiments": {
     "new_project_header": "experimental",
-    "checkout_account_page_v2": "control",
-    "featured_reward": "control",
-    "thanks_page": "control"
+    "checkout_account_page_v2": "experimental",
+    "featured_reward": "pinned_image_text_border",
+    "thanks_page": "control",
+    "checkout_ksr_not_a_store_refresh": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

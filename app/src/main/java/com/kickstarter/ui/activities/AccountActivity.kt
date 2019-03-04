@@ -116,8 +116,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
             this.showCurrencyChangeDialog = AlertDialog.Builder(this, R.style.AlertDialog)
                     .setCancelable(false)
                     .setTitle(getString(R.string.Change_currency))
-                    .setMessage(getString(R.string.This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency)
-                            + "\n\n" + getString(R.string.A_successfully_funded_project_will_collect_your_pledge_in_its_native_currency))
+                    .setMessage(getString(R.string.Project_goal_and_pledge))
                     .setNegativeButton(R.string.Cancel) { _, _ ->
                         setSpinnerSelection(currentCurrencySelection!!.rawValue())
                     }

@@ -125,6 +125,7 @@ Unterstützer</string>
   <string name="Discover_the_future_of_Design_and_Tech" formatted="false">Entdecke das Neueste in Design und Technologie.</string>
   <string name="Dismiss" formatted="false">Verwerfen</string>
   <string name="Done" formatted="false">Fertig!</string>
+  <string name="Double_tap_to_toggle_setting" formatted="false">Double tap to toggle setting</string>
   <string name="Download_your_personal_data" formatted="false">Lade deine persönlichen Daten herunter</string>
   <string name="Earth" formatted="false">Erde</string>
   <string name="Edit_profile" formatted="false">Profil bearbeiten</string>
@@ -281,6 +282,10 @@ Unterstützer</string>
   <string name="Not_delivered" formatted="false">Nicht verschickt</string>
   <string name="Not_followed" formatted="false">Nicht abonniert</string>
   <string name="Not_now" formatted="false">Nicht jetzt</string>
+  <string name="Notification_email_notification_off" formatted="false">%{notification}, email notification, off</string>
+  <string name="Notification_email_notification_on" formatted="false">%{notification}, email notification, on</string>
+  <string name="Notification_push_notification_off" formatted="false">%{notification}, push notification, off</string>
+  <string name="Notification_push_notification_on" formatted="false">%{notification}, push notification, on</string>
   <string name="Notifications" formatted="false">Benachrichtigungen</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Wenn du ein Projekt unterstützt, werden wir dir hier maßgeschneiderte Empfehlungen machen.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Nur noch %{amount_of_time} live!</string>
@@ -329,6 +334,7 @@ Unterstützer</string>
   <string name="Project_Suspended" formatted="false">Projekt ausgesetzt.</string>
   <string name="Project_activity" formatted="false">Projektaktivität</string>
   <string name="Project_cancelled" formatted="false">Projekt abgebrochen</string>
+  <string name="Project_goal_and_pledge" formatted="false">Project goal and pledge amounts will be shown in approximate conversions. A successfully funded project will collect your pledge in its native currency.</string>
   <string name="Project_reminders" formatted="false">Projekt-Erinnerungen</string>
   <string name="Project_saved" formatted="false">Projekt gespeichert.</string>
   <string name="Project_updates" formatted="false">Projekt-Updates</string>

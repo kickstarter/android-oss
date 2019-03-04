@@ -124,6 +124,7 @@
   <string name="Discover_the_future_of_Design_and_Tech" formatted="false">デザインとテクノロジーの未来を覗いてみよう。</string>
   <string name="Dismiss" formatted="false">破棄</string>
   <string name="Done" formatted="false">完了</string>
+  <string name="Double_tap_to_toggle_setting" formatted="false">Double tap to toggle setting</string>
   <string name="Download_your_personal_data" formatted="false">自分の個人データをダウンロード</string>
   <string name="Earth" formatted="false">全世界</string>
   <string name="Edit_profile" formatted="false">プロフィールを編集</string>
@@ -280,6 +281,10 @@
   <string name="Not_delivered" formatted="false">未配送</string>
   <string name="Not_followed" formatted="false">フォローしてない</string>
   <string name="Not_now" formatted="false">後で</string>
+  <string name="Notification_email_notification_off" formatted="false">%{notification}, email notification, off</string>
+  <string name="Notification_email_notification_on" formatted="false">%{notification}, email notification, on</string>
+  <string name="Notification_push_notification_off" formatted="false">%{notification}, push notification, off</string>
+  <string name="Notification_push_notification_on" formatted="false">%{notification}, push notification, on</string>
   <string name="Notifications" formatted="false">通知</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">プロジェクトをバックするとこのスペースにあなたへのオススメを表示します</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">あと%{amount_of_time} のみ視聴可能</string>
@@ -328,6 +333,7 @@
   <string name="Project_Suspended" formatted="false">プロジェクトは停止されました。</string>
   <string name="Project_activity" formatted="false">プロジェクトのアクティビティ</string>
   <string name="Project_cancelled" formatted="false">プロジェクトが取り消されました。</string>
+  <string name="Project_goal_and_pledge" formatted="false">Project goal and pledge amounts will be shown in approximate conversions. A successfully funded project will collect your pledge in its native currency.</string>
   <string name="Project_reminders" formatted="false">プロジェクトのリマインダー</string>
   <string name="Project_saved" formatted="false">プロジェクトを保存しました。</string>
   <string name="Project_updates" formatted="false">プロジェクトの更新情報</string>

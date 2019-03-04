@@ -125,6 +125,7 @@ patrocinadores</string>
   <string name="Discover_the_future_of_Design_and_Tech" formatted="false">Descubre el futuro del diseño y la tecnología.</string>
   <string name="Dismiss" formatted="false">Descartar</string>
   <string name="Done" formatted="false">Listo</string>
+  <string name="Double_tap_to_toggle_setting" formatted="false">Double tap to toggle setting</string>
   <string name="Download_your_personal_data" formatted="false">Descarga tus datos personales</string>
   <string name="Earth" formatted="false">Tierra</string>
   <string name="Edit_profile" formatted="false">Editar perfil</string>
@@ -282,6 +283,10 @@ patrocinadores</string>
   <string name="Not_delivered" formatted="false">No entregado</string>
   <string name="Not_followed" formatted="false">No siguiendo</string>
   <string name="Not_now" formatted="false">Ahora no</string>
+  <string name="Notification_email_notification_off" formatted="false">%{notification}, email notification, off</string>
+  <string name="Notification_email_notification_on" formatted="false">%{notification}, email notification, on</string>
+  <string name="Notification_push_notification_off" formatted="false">%{notification}, push notification, off</string>
+  <string name="Notification_push_notification_on" formatted="false">%{notification}, push notification, on</string>
   <string name="Notifications" formatted="false">Notificaciones</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Tu patrocinio de un proyecto nos ayuda a hacerte recomendaciones personalizadas.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Queda poco tiempo para verlo (%{amount_of_time}).</string>
@@ -330,6 +335,7 @@ patrocinadores</string>
   <string name="Project_Suspended" formatted="false">Proyecto suspendido.</string>
   <string name="Project_activity" formatted="false">Actividad del proyecto</string>
   <string name="Project_cancelled" formatted="false">Proyecto cancelado</string>
+  <string name="Project_goal_and_pledge" formatted="false">Project goal and pledge amounts will be shown in approximate conversions. A successfully funded project will collect your pledge in its native currency.</string>
   <string name="Project_reminders" formatted="false">Recordatorios del proyecto</string>
   <string name="Project_saved" formatted="false">Proyecto guardado.</string>
   <string name="Project_updates" formatted="false">Actualizaciones del proyecto</string>

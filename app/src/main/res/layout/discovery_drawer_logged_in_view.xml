@@ -13,10 +13,6 @@
     android:id="@+id/user_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/activity_vertical_margin"
-    android:layout_marginEnd="@dimen/grid_5_half"
-    android:layout_marginStart="@dimen/grid_5_half"
-    android:layout_marginTop="@dimen/activity_vertical_margin"
     android:foreground="@drawable/click_indicator_light"
     android:gravity="center_vertical"
     android:orientation="vertical">
@@ -26,6 +22,9 @@
       android:layout_width="@dimen/grid_8"
       android:layout_height="@dimen/grid_8"
       android:layout_marginBottom="@dimen/grid_3"
+      android:layout_marginEnd="@dimen/grid_5_half"
+      android:layout_marginStart="@dimen/grid_5_half"
+      android:layout_marginTop="@dimen/activity_vertical_margin"
       android:adjustViewBounds="true"
       android:contentDescription="@null"
       tools:src="@drawable/ic_face" />
@@ -35,6 +34,9 @@
       style="@style/Title2Medium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/activity_vertical_margin"
+      android:layout_marginEnd="@dimen/grid_5_half"
+      android:layout_marginStart="@dimen/grid_5_half"
       android:textColor="@color/ksr_soft_black"
       tools:text="Lisa Luo" />
 

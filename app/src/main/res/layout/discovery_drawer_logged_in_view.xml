@@ -17,7 +17,7 @@
     android:layout_marginEnd="@dimen/grid_5_half"
     android:layout_marginStart="@dimen/grid_5_half"
     android:layout_marginTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/click_indicator_light"
+    android:foreground="@drawable/click_indicator_light"
     android:gravity="center_vertical"
     android:orientation="vertical">
 

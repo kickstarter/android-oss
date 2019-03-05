@@ -107,13 +107,10 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
                 ChromeTabsHelperActivity.CustomTabFallback {
 
             override fun openUri(activity: Activity, uri: Uri) {
-                if (helpActivityIntent != null) {
-                    activity.startActivity(helpActivityIntent)
-                } else {
-                    // We're not handling users without browsers, We'll monitor on Fabric.
-                    val intent = Intent(Intent.ACTION_VIEW, uri)
-                    activity.startActivity(intent)
-                }
+                helpActivityIntent?.let { activity.startActivity(helpActivityIntent) }
+                // We're not handling users without browsers, We'll monitor on Fabric.
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                activity.startActivity(intent)
             }
         })
     }

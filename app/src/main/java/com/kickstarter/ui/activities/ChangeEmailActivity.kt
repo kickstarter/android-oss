@@ -95,12 +95,11 @@ class ChangeEmailActivity : BaseActivity<ChangeEmailViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    if (it != null) {
+                    it?.let {
                         email_warning_text_view.text = getString(it)
-                        email_warning_text_view.visibility = View.VISIBLE
-                    } else {
-                        ViewUtils.setGone(email_warning_text_view, true)
-                    }
+                        email_warning_text_view.visibility = View.VISIBLE }
+
+                    ViewUtils.setGone(email_warning_text_view, true)
                 }
 
         this.viewModel.outputs.warningTextColor()

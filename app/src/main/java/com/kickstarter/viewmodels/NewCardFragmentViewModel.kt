@@ -215,6 +215,7 @@ interface NewCardFragmentViewModel {
                         Card.DISCOVER,
                         Card.JCB,
                         Card.MASTERCARD,
+                        Card.UNIONPAY,
                         Card.VISA)
             }
         }

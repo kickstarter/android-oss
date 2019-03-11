@@ -57,6 +57,18 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testCurrentEmailError() {
+        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
+            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                return Observable.error(Throwable("error"))
+            }
+        }).build())
+
+        this.currentEmail.assertNoValues()
+        this.koalaTest.assertValue("Viewed Change Email")
+    }
+
+    @Test
     fun testEmailErrorIsVisible() {
         setUpEnvironment(environment())
 

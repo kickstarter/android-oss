@@ -94,9 +94,9 @@ interface ChangeEmailViewModel {
         init {
 
             val userPrivacy = this.apolloClient.userPrivacy()
+                    .compose(neverError())
 
             userPrivacy
-                    .compose(neverError())
                     .compose(bindToLifecycle())
                     .subscribe {
                         this.currentEmail.onNext(it.me()?.email())
@@ -122,8 +122,8 @@ interface ChangeEmailViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.emailErrorIsVisible.onNext(it) }
 
-            val changeEmail = Observable.combineLatest(this.email, this.password
-            ) { email, password -> ChangeEmail(email, password) }
+            val changeEmail = Observable.combineLatest(this.email, this.password)
+            { email, password -> ChangeEmail(email, password) }
 
             changeEmail
                     .map { ce -> ce.isValid() }

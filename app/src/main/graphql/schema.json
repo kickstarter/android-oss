@@ -657,6 +657,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "excludePids",
+                  "description": "A list of pids corresponding to projects to be excluded from the results",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "Int",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "first",
                   "description": "Returns the first _n_ elements from the list.",
                   "type": {
@@ -3768,22 +3786,6 @@
               "deprecationReason": null
             },
             {
-              "name": "experimental",
-              "description": "If project creator is opted into testing experimental features",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "faqs",
               "description": "List of FAQs of a project",
               "args": [
@@ -3953,6 +3955,22 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "hasSupportingMaterials",
+              "description": "Whether or not the project has supporting materials (Prototype Gallery)",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -5006,6 +5024,12 @@
             },
             {
               "name": "MASTERCARD",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UNION_PAY",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -6554,6 +6578,18 @@
                   "name": "String",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "email",
+              "description": "The email of a collaborator on a project",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -11411,6 +11447,59 @@
                   "name": "ID",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "includedRewards",
+              "description": "All rewards that were marked to recieve a post notification, excluding the no reward tier.",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "RewardConnection",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -18154,7 +18243,7 @@
             },
             {
               "name": "providerName",
-              "description": "Ex: Embedly, Flickr, Kickstarter, Kickstarter Live, Scribd, SoundCloud,\nSpotify, Sketchfab, Twitter, Vimeo, YouTube, Twitch",
+              "description": "Ex: Embedly, Flickr, Kickstarter, Kickstarter Live, Scribd, SoundCloud, Spotify, Sketchfab, Twitter, Vimeo, YouTube",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -20452,6 +20541,12 @@
           "interfaces": null,
           "enumValues": [
             {
+              "name": "DOCUMENT_NAME_MISMATCH",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "FAILED_KEYED_IDENTITY",
               "description": "",
               "isDeprecated": false,
@@ -20482,6 +20577,12 @@
               "deprecationReason": null
             },
             {
+              "name": "SCAN_FAILED_TEST_MODE",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "SCAN_ID_COUNTRY_NOT_SUPPORTED",
               "description": "",
               "isDeprecated": false,
@@ -20507,12 +20608,6 @@
             },
             {
               "name": "SCAN_NOT_UPLOADED",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "SCAN_TEST_MODE",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -21156,6 +21251,12 @@
           "interfaces": null,
           "enumValues": [
             {
+              "name": "accounts_upgrade",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "admin_checkout_debugger",
               "description": "",
               "isDeprecated": false,
@@ -21163,6 +21264,12 @@
             },
             {
               "name": "android_creator_view",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "chargeback_payment_source_settings",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -21205,6 +21312,12 @@
             },
             {
               "name": "drip_manage_push_notifications",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "experimental_creator_section",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -21300,6 +21413,12 @@
               "deprecationReason": null
             },
             {
+              "name": "ksr_live_sunset_messaging",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "message_archiving",
               "description": "",
               "isDeprecated": false,
@@ -21324,13 +21443,13 @@
               "deprecationReason": null
             },
             {
-              "name": "new_project_build_additional_owners",
+              "name": "new_payments_ui",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "new_project_build_editor",
+              "name": "new_project_build_additional_owners",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -21342,7 +21461,31 @@
               "deprecationReason": null
             },
             {
-              "name": "post_sticky_nav",
+              "name": "new_project_preview",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "new_reply_notification",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "new_user_menu",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "post_preview_react",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "project_build_manage_collaborators",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -21360,7 +21503,7 @@
               "deprecationReason": null
             },
             {
-              "name": "rich_editor_hosted_media_uploads",
+              "name": "updates_email_refresh",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -21640,6 +21783,22 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "recommendationsEnabled",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
                   "ofType": null
                 }
               },
@@ -22058,6 +22217,12 @@
             },
             {
               "name": "campus_posts",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "comment_replies",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -24056,7 +24221,7 @@
           "fields": [
             {
               "name": "blurb",
-              "description": "The blurb of this header",
+              "description": "The localized blurb of this header",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -24132,7 +24297,7 @@
             },
             {
               "name": "title",
-              "description": "The title of this header",
+              "description": "The localized title of this header",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -24155,7 +24320,7 @@
           "fields": [
             {
               "name": "content",
-              "description": "The text content of this link",
+              "description": "The localized text content of this link",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -24358,7 +24523,7 @@
             },
             {
               "name": "language",
-              "description": "The primary language of the news item.",
+              "description": "The primary language of the news item. `null` if available in all languages.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -25256,6 +25421,12 @@
           "inputFields": null,
           "interfaces": null,
           "enumValues": [
+            {
+              "name": "DISTANCE",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "END_DATE",
               "description": "",
@@ -27713,6 +27884,33 @@
               "deprecationReason": null
             },
             {
+              "name": "translateEditorialLayout",
+              "description": "Translate an Editorial Layout.",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "TranslateEditorialToolsLayoutTypeInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "TranslateEditorialToolsLayoutTypePayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "unblockDripSubscriber",
               "description": "Unblock a user",
               "args": [
@@ -28220,6 +28418,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "UpdateProjectPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updateProjectCollaborator",
+              "description": "Update a collaborator on a project.",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "UpdateProjectCollaboratorInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UpdateProjectCollaboratorPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -29609,6 +29834,18 @@
           "description": "Intermediary set of changes that have yet to be applied to a backing",
           "fields": [
             {
+              "name": "failedStateReason",
+              "description": "The translated reason that a checkout might have failed",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "id",
               "description": "",
               "args": [],
@@ -29618,6 +29855,22 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "isRacing",
+              "description": "Is true when more than one backer is checking out a limited/scarce reward at once",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
                   "ofType": null
                 }
               },
@@ -29665,8 +29918,24 @@
               "deprecationReason": null
             },
             {
-              "name": "subTotal",
-              "description": "The base amount from a chosen reward",
+              "name": "state",
+              "description": "The current state of the checkout",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "CheckoutState",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "total",
+              "description": "The total amount from a chosen reward, including shipping",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -29690,6 +29959,41 @@
             }
           ],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "CheckoutState",
+          "description": "All available states for a checkout",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "AUTHORIZING",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FAILED",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SUCCESSFUL",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "VERIFYING",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -33727,14 +34031,14 @@
               "defaultValue": null
             },
             {
-              "name": "userId",
-              "description": "ID of the collaborator",
+              "name": "userEmail",
+              "description": "Email of the collaborator",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "ID",
+                  "name": "String",
                   "ofType": null
                 }
               },
@@ -36433,9 +36737,13 @@
               "name": "addressKanaCity",
               "description": "City/Ward of the address",
               "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               },
               "defaultValue": null
             },
@@ -36481,9 +36789,13 @@
               "name": "addressKanaState",
               "description": "Prefecture of the address",
               "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               },
               "defaultValue": null
             },
@@ -36505,9 +36817,13 @@
               "name": "addressKanjiCity",
               "description": "City/Ward of the address",
               "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               },
               "defaultValue": null
             },
@@ -36553,9 +36869,13 @@
               "name": "addressKanjiState",
               "description": "Prefecture of the address",
               "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               },
               "defaultValue": null
             },
@@ -36891,6 +37211,90 @@
                   "name": "Boolean",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "TranslateEditorialToolsLayoutTypeInput",
+          "description": "Autogenerated input type of TranslateEditorialToolsLayoutType",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "revision",
+              "description": "Revision for the Editorial Layout",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "slug",
+              "description": "Slug for the Editorial Layout",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "TranslateEditorialToolsLayoutTypePayload",
+          "description": "Autogenerated return type of TranslateEditorialToolsLayoutType",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "layout",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Layout",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -38863,6 +39267,16 @@
               "defaultValue": null
             },
             {
+              "name": "paymentSourceId",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "risks",
               "description": "",
               "type": {
@@ -38965,6 +39379,130 @@
                 "kind": "OBJECT",
                 "name": "Project",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "UpdateProjectCollaboratorInput",
+          "description": "Autogenerated input type of UpdateProjectCollaborator",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "permissions",
+              "description": "Updated permissions granted to the collaborator",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "CollaboratorPermission",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "projectId",
+              "description": "ID of project updating the collaborator",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "title",
+              "description": "Title of the collaborator",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "userId",
+              "description": "ID of the collaborator",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "UpdateProjectCollaboratorPayload",
+          "description": "Autogenerated return type of UpdateProjectCollaborator",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "project",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Project",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null

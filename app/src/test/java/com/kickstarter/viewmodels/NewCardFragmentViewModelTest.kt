@@ -38,15 +38,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
         //Union Pay
         this.vm.inputs.cardNumber("620")
-        this.allowedCardWarningIsVisible.assertValue(true)
+        this.allowedCardWarningIsVisible.assertValue(false)
 
         //Visa
         this.vm.inputs.cardNumber("424")
-        this.allowedCardWarningIsVisible.assertValues(true, false)
+        this.allowedCardWarningIsVisible.assertValues(false)
 
         //Unknown
         this.vm.inputs.cardNumber("000")
-        this.allowedCardWarningIsVisible.assertValues(true, false, true)
+        this.allowedCardWarningIsVisible.assertValues(false, true)
     }
 
     @Test

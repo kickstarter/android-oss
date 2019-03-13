@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.jakewharton.processphoenix.ProcessPhoenix;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.extensions.PrefManagerKt;
 import com.kickstarter.libs.ApiEndpoint;
+import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.Logout;
@@ -22,6 +22,7 @@ import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.Secrets;
+import com.kickstarter.ui.viewmodels.InternalToolsViewModel;
 
 import org.joda.time.format.DateTimeFormat;
 
@@ -30,7 +31,6 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.SwitchCompat;
 import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
@@ -47,7 +47,6 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   @Inject Logout logout;
 
   @Bind(R.id.build_date) TextView buildDate;
-  @Bind(R.id.horizontal_switch) SwitchCompat horizontalSwitch;
   @Bind(R.id.sha) TextView sha;
   @Bind(R.id.variant) TextView variant;
   @Bind(R.id.version_code) TextView versionCode;
@@ -104,7 +103,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
   @OnClick(R.id.feature_flags_button)
   public void featureFlagsClick() {
-    Intent featureFlagIntent = new Intent(this, FeatureFlagActivity.class);
+    final Intent featureFlagIntent = new Intent(this, FeatureFlagActivity.class);
     startActivity(featureFlagIntent);
   }
 

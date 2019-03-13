@@ -16,6 +16,7 @@ import com.kickstarter.R;
 import com.kickstarter.extensions.PrefManagerKt;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
@@ -42,6 +43,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
   @Inject @ApiEndpointPreference StringPreferenceType apiEndpointPreference;
   @Inject Build build;
+  @Inject Environment environment;
   @Inject Logout logout;
 
   @Bind(R.id.build_date) TextView buildDate;
@@ -62,10 +64,6 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
     setupBuildInformationSection();
 
-    final boolean isRewardEnabled = PrefManagerKt.getHorizontalToggle(this);
-    if (isRewardEnabled) {
-      this.horizontalSwitch.setChecked(true);
-    }
   }
 
   @OnClick(R.id.playground_button)
@@ -104,14 +102,10 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     setEndpointAndRelaunch(ApiEndpoint.PRODUCTION);
   }
 
-  @OnClick(R.id.horizontal_switch)
-  public void enableHoriztonalReward() {
-    enableHoriztonalRewards();
-  }
-
-  private void enableHoriztonalRewards() {
-    final boolean isEnabled = this.horizontalSwitch.isChecked();
-    PrefManagerKt.setHorizontalToggle(this, isEnabled);
+  @OnClick(R.id.feature_flags_button)
+  public void featureFlagsClick() {
+    Intent featureFlagIntent = new Intent(this, FeatureFlagActivity.class);
+    startActivity(featureFlagIntent);
   }
 
   private void showCustomEndpointDialog() {

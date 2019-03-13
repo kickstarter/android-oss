@@ -11,6 +11,22 @@
 
     <include layout="@layout/internal_tools_toolbar" />
 
+    <TextView
+      android:text="@string/Horizontal_rewards"
+      style="@style/CalloutPrimaryMedium"
+      android:layout_marginTop="@dimen/grid_2"
+      android:layout_marginStart="@dimen/activity_horizontal_margin"
+      android:layout_marginEnd="@dimen/activity_horizontal_margin"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
+
+    <androidx.appcompat.widget.SwitchCompat
+      android:id="@+id/horizontal_switch"
+      android:layout_marginStart="@dimen/activity_horizontal_margin"
+      android:layout_marginEnd="@dimen/activity_horizontal_margin"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
+
     <LinearLayout
       android:orientation="vertical"
       android:paddingStart="@dimen/grid_3"

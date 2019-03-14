@@ -386,7 +386,7 @@ public final class ApplicationModule {
   @Singleton
   @HorizontalRewardsPreference
   @NonNull
-  static BooleanPreferenceType provideHorizontalRewards(final @NonNull SharedPreferences sharedPreferences) {
+  static BooleanPreferenceType provideHorizontalRewardsPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new BooleanPreference(sharedPreferences, FeatureKey.INTERNAL_HORIZONTAL_REWARDS);
   }
 

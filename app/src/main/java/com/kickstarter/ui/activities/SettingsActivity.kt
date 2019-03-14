@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import com.kickstarter.BuildConfig
 import com.kickstarter.R
-import com.kickstarter.extensions.getHorizontalToggle
 import com.kickstarter.libs.*
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -16,7 +16,6 @@ import com.kickstarter.viewmodels.SettingsViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.settings_layout.*
 import rx.android.schedulers.AndroidSchedulers
-import timber.log.Timber
 
 @RequiresActivityViewModel(SettingsViewModel.ViewModel::class)
 class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
@@ -31,11 +30,7 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         setContentView(R.layout.settings_layout)
 
 
-        val isEnabledReward = getHorizontalToggle(this)
-
-        Timber.d("Is Reward enabled $isEnabledReward")
-
-        if (isEnabledReward) {
+        if (BuildConfig.DEBUG) {
             edit_profile_row.visibility = View.VISIBLE
         }
 

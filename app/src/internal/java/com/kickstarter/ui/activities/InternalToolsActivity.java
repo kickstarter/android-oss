@@ -16,7 +16,6 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Build;
-import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
@@ -43,7 +42,6 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
   @Inject @ApiEndpointPreference StringPreferenceType apiEndpointPreference;
   @Inject Build build;
-  @Inject Environment environment;
   @Inject Logout logout;
 
   @Bind(R.id.build_date) TextView buildDate;
@@ -62,7 +60,6 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     ((KSApplication) getApplicationContext()).component().inject(this);
 
     setupBuildInformationSection();
-
   }
 
   @OnClick(R.id.playground_button)

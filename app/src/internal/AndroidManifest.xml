@@ -3,9 +3,8 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
 
   <application>
-    <activity android:name=".ui.activities.FeatureFlagActivity">
-    </activity>
     <activity android:name=".ui.activities.InternalToolsActivity" />
+    <activity android:name=".ui.activities.FeatureFlagActivity"/>
     <activity android:name=".ui.activities.PlaygroundActivity" />
   </application>
 

@@ -98,6 +98,12 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     setEndpointAndRelaunch(ApiEndpoint.PRODUCTION);
   }
 
+  @OnClick(R.id.feature_flags_button)
+  public void featureFlagsClick() {
+    final Intent featureFlagIntent = new Intent(this, FeatureFlagActivity.class);
+    startActivity(featureFlagIntent);
+  }
+
   private void showCustomEndpointDialog() {
     final View view = View.inflate(this, R.layout.custom_endpoint_layout, null);
     final EditText customEndpointEditText = ButterKnife.findById(view, R.id.custom_endpoint_edit_text);

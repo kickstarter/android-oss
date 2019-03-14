@@ -12,28 +12,36 @@
     <include layout="@layout/internal_tools_toolbar" />
 
     <LinearLayout
-      android:orientation="vertical"
-      android:paddingStart="@dimen/grid_3"
-      android:paddingEnd="@dimen/grid_3"
-      android:paddingTop="@dimen/grid_2"
-      android:paddingBottom="@dimen/grid_2"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:paddingBottom="@dimen/grid_2"
+      android:paddingEnd="@dimen/grid_3"
+      android:paddingStart="@dimen/grid_3"
+      android:paddingTop="@dimen/grid_2">
 
       <Button
+        android:id="@+id/feature_flags_button"
         style="@style/BorderButton"
-        android:id="@+id/playground_button"
         android:layout_width="match_parent"
         android:layout_marginBottom="@dimen/grid_1"
-        android:text="@string/internal_tools_playground"
-        android:layout_marginTop="@dimen/grid_1" />
+        android:layout_marginTop="@dimen/grid_1"
+        android:text="@string/Feature_flags" />
 
       <Button
+        android:id="@+id/playground_button"
         style="@style/BorderButton"
-        android:id="@+id/push_notifications_button"
         android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/grid_1"
         android:layout_marginTop="@dimen/grid_1"
+        android:text="@string/internal_tools_playground" />
+
+      <Button
+        android:id="@+id/push_notifications_button"
+        style="@style/BorderButton"
+        android:layout_width="match_parent"
         android:layout_marginBottom="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_1"
         android:text="@string/internal_tools_push_notifications" />
 
       <include layout="@layout/horizontal_line_1dp_view" />
@@ -46,35 +54,35 @@
         android:text="@string/Change_endpoint" />
 
       <Button
-        style="@style/BorderButton"
         android:id="@+id/change_endpoint_production_button"
+        style="@style/BorderButton"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/grid_2"
         android:layout_marginBottom="@dimen/grid_1"
+        android:layout_marginTop="@dimen/grid_2"
         android:text="@string/Production" />
 
       <Button
-        style="@style/BorderButton"
         android:id="@+id/change_endpoint_staging_button"
+        style="@style/BorderButton"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_1"
+        android:layout_marginTop="@dimen/grid_1"
         android:text="@string/Staging" />
 
       <Button
-        style="@style/BorderButton"
         android:id="@+id/change_endpoint_hivequeen_button"
+        style="@style/BorderButton"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_1"
+        android:layout_marginTop="@dimen/grid_1"
         android:text="@string/Hivequeen" />
 
       <Button
-        style="@style/BorderButton"
         android:id="@+id/change_endpoint_custom_button"
+        style="@style/BorderButton"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_1"
         android:text="@string/Custom" />
 
       <include layout="@layout/horizontal_line_1dp_view" />
@@ -82,43 +90,43 @@
       <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_1"
+        android:layout_marginTop="@dimen/grid_3"
         android:stretchColumns="*">
 
         <TableRow
-          android:layout_marginTop="@dimen/grid_1"
-          android:layout_marginBottom="@dimen/grid_1"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:weightSum="1" >
+          android:layout_marginBottom="@dimen/grid_1"
+          android:layout_marginTop="@dimen/grid_1"
+          android:weightSum="1">
 
           <TextView
             style="@style/CalloutPrimaryMedium"
-            android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_span="2"
             android:text="@string/Build_information" />
 
         </TableRow>
 
         <TableRow
-          android:layout_marginTop="@dimen/grid_1"
-          android:layout_marginBottom="@dimen/grid_1"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:weightSum="1" >
+          android:layout_marginBottom="@dimen/grid_1"
+          android:layout_marginTop="@dimen/grid_1"
+          android:weightSum="1">
 
           <TextView
             style="@style/BodySecondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/Variant"
-            android:layout_column="0" />
+            android:layout_column="0"
+            android:text="@string/Variant" />
 
           <TextView
-            style="@style/BodyPrimary"
             android:id="@+id/variant"
+            style="@style/BodyPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_column="1" />
@@ -126,22 +134,22 @@
         </TableRow>
 
         <TableRow
-          android:layout_marginTop="@dimen/grid_1"
-          android:layout_marginBottom="@dimen/grid_1"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:weightSum="1" >
+          android:layout_marginBottom="@dimen/grid_1"
+          android:layout_marginTop="@dimen/grid_1"
+          android:weightSum="1">
 
           <TextView
             style="@style/BodySecondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/Version_code"
-            android:layout_column="0" />
+            android:layout_column="0"
+            android:text="@string/Version_code" />
 
           <TextView
-            style="@style/BodyPrimary"
             android:id="@+id/version_code"
+            style="@style/BodyPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_column="1" />
@@ -149,22 +157,22 @@
         </TableRow>
 
         <TableRow
-          android:layout_marginTop="@dimen/grid_1"
-          android:layout_marginBottom="@dimen/grid_1"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:weightSum="1" >
+          android:layout_marginBottom="@dimen/grid_1"
+          android:layout_marginTop="@dimen/grid_1"
+          android:weightSum="1">
 
           <TextView
             style="@style/BodySecondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/Version_name"
-            android:layout_column="0" />
+            android:layout_column="0"
+            android:text="@string/Version_name" />
 
           <TextView
-            style="@style/BodyPrimary"
             android:id="@+id/version_name"
+            style="@style/BodyPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_column="1" />
@@ -172,22 +180,22 @@
         </TableRow>
 
         <TableRow
-          android:layout_marginTop="@dimen/grid_1"
-          android:layout_marginBottom="@dimen/grid_1"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:weightSum="1" >
+          android:layout_marginBottom="@dimen/grid_1"
+          android:layout_marginTop="@dimen/grid_1"
+          android:weightSum="1">
 
           <TextView
             style="@style/BodySecondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/Build_date"
-            android:layout_column="0" />
+            android:layout_column="0"
+            android:text="@string/Build_date" />
 
           <TextView
-            style="@style/BodyPrimary"
             android:id="@+id/build_date"
+            style="@style/BodyPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_column="1" />
@@ -195,22 +203,22 @@
         </TableRow>
 
         <TableRow
-          android:layout_marginTop="@dimen/grid_1"
-          android:layout_marginBottom="@dimen/grid_1"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:weightSum="1" >
+          android:layout_marginBottom="@dimen/grid_1"
+          android:layout_marginTop="@dimen/grid_1"
+          android:weightSum="1">
 
           <TextView
             style="@style/BodySecondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/Sha"
-            android:layout_column="0" />
+            android:layout_column="0"
+            android:text="@string/Sha" />
 
           <TextView
-            style="@style/BodyPrimary"
             android:id="@+id/sha"
+            style="@style/BodyPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_column="1" />

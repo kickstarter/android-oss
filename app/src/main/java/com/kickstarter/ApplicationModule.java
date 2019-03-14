@@ -50,7 +50,7 @@ import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.GamesNewsletterPreference;
-import com.kickstarter.libs.qualifiers.HorizontalRewards;
+import com.kickstarter.libs.qualifiers.HorizontalRewardsPreference;
 import com.kickstarter.libs.qualifiers.KoalaEndpoint;
 import com.kickstarter.libs.qualifiers.KoalaRetrofit;
 import com.kickstarter.libs.qualifiers.PackageNameString;
@@ -117,7 +117,7 @@ public final class ApplicationModule {
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfigType currentConfig,
     final @NonNull CurrentUserType currentUser,
-    final @NonNull @HorizontalRewards BooleanPreferenceType horizontalRewards,
+    final @NonNull @HorizontalRewardsPreference BooleanPreferenceType horizontalRewards,
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
@@ -384,10 +384,10 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  @HorizontalRewards
+  @HorizontalRewardsPreference
   @NonNull
   static BooleanPreferenceType provideHorizontalRewards(final @NonNull SharedPreferences sharedPreferences) {
-    return new BooleanPreference(sharedPreferences, FeatureKey.ENABLE_HORIZONTAL_REWARDS);
+    return new BooleanPreference(sharedPreferences, FeatureKey.INTERNAL_HORIZONTAL_REWARDS);
   }
 
   @Provides

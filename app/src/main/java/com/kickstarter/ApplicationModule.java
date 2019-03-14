@@ -26,6 +26,7 @@ import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.DeviceRegistrarType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
@@ -49,6 +50,7 @@ import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.GamesNewsletterPreference;
+import com.kickstarter.libs.qualifiers.HorizontalRewards;
 import com.kickstarter.libs.qualifiers.KoalaEndpoint;
 import com.kickstarter.libs.qualifiers.KoalaRetrofit;
 import com.kickstarter.libs.qualifiers.PackageNameString;
@@ -115,6 +117,7 @@ public final class ApplicationModule {
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfigType currentConfig,
     final @NonNull CurrentUserType currentUser,
+    final @NonNull @HorizontalRewards BooleanPreferenceType horizontalRewards,
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
@@ -140,6 +143,7 @@ public final class ApplicationModule {
       .cookieManager(cookieManager)
       .currentConfig(currentConfig)
       .currentUser(currentUser)
+      .enableHorizontalRewards(horizontalRewards)
       .gson(gson)
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
@@ -376,6 +380,14 @@ public final class ApplicationModule {
   @NonNull
   static BooleanPreferenceType provideAppRatingPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new BooleanPreference(sharedPreferences, SharedPreferenceKey.HAS_SEEN_APP_RATING);
+  }
+
+  @Provides
+  @Singleton
+  @AppRatingPreference
+  @NonNull
+  static BooleanPreferenceType provideHorizontalRewards(final @NonNull SharedPreferences sharedPreferences) {
+    return new BooleanPreference(sharedPreferences, FeatureKey.ENABLE_HORIZONTAL_REWARDS);
   }
 
   @Provides

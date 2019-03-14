@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+  android:id="@+id/reward_container"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="294dp"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+  <androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:overScrollMode="never">
+
+    <androidx.cardview.widget.CardView
+      android:id="@+id/reward_card"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      app:cardCornerRadius="@dimen/card_radius"
+      app:cardElevation="0dp">
+
+      <LinearLayout
+        android:id="@+id/reward_contents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/card_padding">
+
+        <TextView
+          android:id="@+id/price"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textSize="40sp"
+          android:textStyle="bold"
+          tools:text="$20" />
+
+        <TextView
+          android:id="@+id/title"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:textSize="30sp"
+          tools:text="Beep" />
+
+        <TextView
+          android:id="@+id/description"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/card_padding"
+          android:layout_marginTop="@dimen/card_padding" />
+
+        <com.google.android.material.button.MaterialButton
+          android:id="@+id/placeholder"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="invisible"
+          tools:text="Pledge $10 or more" />
+
+      </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+  </androidx.core.widget.NestedScrollView>
+
+  <com.google.android.material.button.MaterialButton
+    android:id="@+id/reward_pledge"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:layout_marginBottom="@dimen/card_padding"
+    android:layout_marginEnd="@dimen/card_padding"
+    android:layout_marginStart="@dimen/card_padding"
+    tools:text="Pledge $10 or more" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -165,4 +165,16 @@
   <dimen name="delete_card_image_margin_top">24dp</dimen>
   <dimen name="payment_methods_list_item_8dp">8dp</dimen>
 
+  <!-- Horizontal Rewards -->
+  <dimen name="fab_radius">30dp</dimen>
+  <dimen name="reward_margin">16dp</dimen>
+  <dimen name="card_margin">16dp</dimen>
+  <dimen name="card_padding">16dp</dimen>
+  <dimen name="card_radius">12dp</dimen>
+  <dimen name="circle_width">4dp</dimen>
+  <dimen name="circle_radius">4dp</dimen>
+  <dimen name="indicator_radius">4dp</dimen>
+  <dimen name="pledge_margin">24dp</dimen>
+  <dimen name="mini_reward_width">90dp</dimen>
+
 </resources>

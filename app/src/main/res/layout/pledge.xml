@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+  android:id="@+id/pledge_root"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/ksr_grey_100"
+  android:fillViewport="true"
+  android:scrollbars="none"
+  android:visibility="invisible"
+  tools:visibility="visible">
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+      android:id="@+id/reward_snapshot"
+      layout="@layout/item_reward"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/reward_margin"
+      android:contentDescription="Go back to rewards list"
+      tools:layout_height="120dp"
+      tools:layout_width="90dp" />
+
+    <LinearLayout
+      android:id="@+id/pledge_details"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <LinearLayout
+        android:id="@+id/delivery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="120dp"
+        android:orientation="vertical">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/Estimated_delivery"
+          android:textSize="16sp" />
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/Learn_more_about_accountability" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:layout_marginBottom="16dp"
+          android:background="@color/ksr_dark_grey_400" />
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/Your_pledge" />
+
+        <TextView
+          android:id="@+id/pledge_amount"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="end"
+          android:textAppearance="@style/TextAppearance.AppCompat.Large"
+          android:textColor="@color/ksr_green_500"
+          tools:text="$20" />
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/Your_shipping_destination" />
+
+        <TextView
+          android:id="@+id/shipping_amount"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="end"
+          android:textAppearance="@style/TextAppearance.AppCompat.Large"
+          tools:text="$20" />
+
+        <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:layout_marginBottom="16dp"
+          android:layout_marginTop="16dp"
+          android:background="@color/ksr_dark_grey_400" />
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/Total_pledged" />
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="end"
+          android:textAppearance="@style/TextAppearance.AppCompat.Large"
+          android:textColor="@color/ksr_green_500"
+          tools:text="$40" />
+
+        <Button
+          android:id="@+id/google_pay"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:backgroundTint="@android:color/black"
+          android:text="Google Pay" />
+
+      </LinearLayout>
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cards_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="20dp"
+        tools:listitem="@layout/item_card" />
+    </LinearLayout>
+
+
+  </FrameLayout>
+</ScrollView>

@@ -1,9 +1,9 @@
 package com.kickstarter.ui.adapters
 
-import UserPaymentsQuery
 import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import com.kickstarter.R
+import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
 
@@ -21,7 +21,7 @@ class PaymentMethodsAdapter(private val delegate: PaymentMethodsViewHolder.Deleg
 
     override fun viewHolder(layout: Int, view: View): KSViewHolder = PaymentMethodsViewHolder(view, delegate)
 
-    fun populateCards(cards: MutableList<UserPaymentsQuery.Node>) {
+    fun populateCards(cards: List<StoredCard>) {
         setSection(SECTION_CARDS, cards)
         submitList(items())
     }

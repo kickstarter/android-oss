@@ -13,6 +13,7 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import com.kickstarter.viewmodels.PaymentMethodsViewModel
 import kotlinx.android.synthetic.main.activity_settings_payment_methods.*
@@ -87,7 +88,7 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
         return this.showDeleteCardDialog!!
     }
 
-    private fun setCards(cards: MutableList<UserPaymentsQuery.Node>) = this.adapter.populateCards(cards)
+    private fun setCards(cards: List<StoredCard>) = this.adapter.populateCards(cards)
 
     private fun setUpRecyclerView() {
         this.adapter = PaymentMethodsAdapter(this.viewModel, object: DiffUtil.ItemCallback<Any>() {

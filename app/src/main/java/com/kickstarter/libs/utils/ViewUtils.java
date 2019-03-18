@@ -5,9 +5,9 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +21,21 @@ import com.kickstarter.R;
 import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.ConfirmDialog;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.functions.Action1;
 
 public final class ViewUtils {
   private ViewUtils() {}
+
+  public static Bitmap getBitmap(final @NonNull View view, final int width, final int height) {
+    final Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+    final Canvas canvas = new Canvas(bitmap);
+    //idk if this needs to happen if i pass in the size of the view 👀
+    //view.layout(0, 0, width, height);
+    view.draw(canvas);
+    return bitmap;
+  }
 
   public static float getScreenDensity(final @NonNull Context context) {
     return context.getResources().getDisplayMetrics().density;

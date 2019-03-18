@@ -13,6 +13,7 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
+import com.kickstarter.models.StoredCard
 import rx.Observable
 import rx.subjects.PublishSubject
 import type.CurrencyCode
@@ -68,9 +69,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
+    override fun getStoredCards(): Observable<List<StoredCard>> {
         return Observable.defer {
-            val ps = PublishSubject.create<UserPaymentsQuery.Data>()
+            val ps = PublishSubject.create<List<StoredCard>>()
             service.query(UserPaymentsQuery.builder().build())
                     .enqueue(object : ApolloCall.Callback<UserPaymentsQuery.Data>() {
                         override fun onFailure(exception: ApolloException) {
@@ -81,8 +82,22 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             if (response.hasErrors()) {
                                 ps.onError(Exception(response.errors().first().message()))
                             }
-                            ps.onNext(response.data())
-                            ps.onCompleted()
+                            Observable.just(response.data())
+                                    .map { cards -> cards?.me()?.storedCards()?.nodes() }
+                                    .flatMap { list ->
+                                        Observable.from(list).map {
+                                            StoredCard.builder()
+                                                    .expiration(it.expirationDate())
+                                                    .id(it.id() ?: "")
+                                                    .lastFourDigits(it.lastFour())
+                                                    .type(it.type())
+                                                    .build()
+                                        }
+                                                .toList()
+                                    }.subscribe {
+                                        ps.onNext(it)
+                                        ps.onCompleted()
+                                    }
                         }
                     })
             return@defer ps

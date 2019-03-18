@@ -6,8 +6,10 @@ import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.BackingActivity
@@ -19,6 +21,7 @@ import com.kickstarter.ui.viewholders.ProjectViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import timber.log.Timber
 import java.net.CookieManager
 
 interface ProjectViewModel {
@@ -94,6 +97,8 @@ interface ProjectViewModel {
 
         /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
         fun startVideoActivity(): Observable<Project>
+
+        fun getProject(): Observable<Project>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectActivity>(environment), ProjectAdapter.Delegate, Inputs, Outputs {
@@ -128,10 +133,15 @@ interface ProjectViewModel {
         private val startVideoActivity = BehaviorSubject.create<Project>()
         private val startBackingActivity = BehaviorSubject.create<Pair<Project, User>>()
 
+        private val rewards = BehaviorSubject.create<List<Reward>>()
+        private val project = BehaviorSubject.create<Project>()
+
         val inputs: ProjectViewModel.Inputs = this
         val outputs: ProjectViewModel.Outputs = this
 
         init {
+
+            val env = environment.enableHorizontalRewards().get()
 
             val initialProject = intent()
                     .flatMap { i -> ProjectIntentMapper.project(i, this.client) }
@@ -187,6 +197,19 @@ interface ProjectViewModel {
             currentProject
                     .compose<Pair<Project, String>>(combineLatestPair(this.currentConfig.observable().map({ it.countryCode() })))
                     .subscribe(this.projectAndUserCountry)
+
+            currentProject
+                    .compose(bindToLifecycle())
+                    .subscribe { this.project.onNext(it)}
+
+            currentProject
+                    .compose(bindToLifecycle())
+                    .map { p -> p.rewards() }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .subscribe {
+                        this.rewards.onNext(it)
+                        Timber.d("items from server ${rewards.value}")
+                    }
 
             currentProject
                     .compose<Project>(takeWhen(this.shareButtonClicked))
@@ -399,6 +422,8 @@ interface ProjectViewModel {
         override fun startVideoActivity(): Observable<Project> {
             return this.startVideoActivity
         }
+
+        override fun getProject(): Observable<Project> = this.project
 
         private fun saveProject(project: Project): Observable<Project> {
             return this.client.saveProject(project)

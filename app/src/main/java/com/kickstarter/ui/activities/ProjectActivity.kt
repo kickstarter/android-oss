@@ -1,28 +1,37 @@
 package com.kickstarter.ui.activities
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.transition.AutoTransition
+import androidx.transition.Transition
+import androidx.transition.TransitionManager
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.project_layout.*
-import kotlinx.android.synthetic.main.project_main_layout.*
 import kotlinx.android.synthetic.main.project_toolbar.*
 import rx.android.schedulers.AndroidSchedulers
+import timber.log.Timber
 
 @RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
 class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
@@ -39,20 +48,46 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     private val campaignString = R.string.project_subpages_menu_buttons_campaign
     private val creatorString = R.string.project_subpages_menu_buttons_creator
 
+    private val animDuration = 200L
+    private var rewardsExpanded = false
+    private val show: ObjectAnimator = ObjectAnimator.ofFloat(null, View.ALPHA, 0f, 1f)
+    private val hide: ObjectAnimator = ObjectAnimator.ofFloat(null, View.ALPHA, 1f, 0f)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.project_layout)
         this.ksString = environment().ksString()
 
-        project_action_buttons.visibility = when {
-            ViewUtils.isLandscape(this) -> View.GONE
-            else -> View.VISIBLE
+        val isHorizontalRewardsEnabled = this.environment().enableHorizontalRewards().get()
+
+        if (!isHorizontalRewardsEnabled) {
+            rewards_container.visibility = View.GONE
         }
 
-        this.adapter = ProjectAdapter(this.viewModel)
+        rewards_toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+
+//        if (isHorizontalRewardsEnabled) {
+//            RewardsFragment.newInstance()
+//        }
+
+//        project_action_buttons.visibility = when {
+//            ViewUtils.isLandscape(this) -> View.GONE
+//            else -> View.VISIBLE
+//        }
+
+        this.adapter = ProjectAdapter(this.viewModel, isHorizontalRewardsEnabled)
         project_recycler_view.adapter = this.adapter
         project_recycler_view.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+
+        this.viewModel.outputs.getProject()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    setupRewardsFragment(it)
+                }
 
         this.viewModel.outputs.heartDrawableId()
                 .compose(bindToLifecycle())
@@ -119,25 +154,36 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startLoginToutActivity() }
 
-        back_project_button.setOnClickListener {
-            this.viewModel.inputs.backProjectButtonClicked()
-        }
+//        back_project_button.setOnClickListener {
+//            this.viewModel.inputs.backProjectButtonClicked()
+//        }
 
         heart_icon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
         }
 
-        manage_pledge_button.setOnClickListener {
-            this.viewModel.inputs.managePledgeButtonClicked()
+        show.addUpdateListener { valueAnim ->
+            val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
+            val radius = initialRadius * if (rewardsExpanded) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
+            rewards_container.radius = radius
         }
 
-        share_icon.setOnClickListener {
-            this.viewModel.inputs.shareButtonClicked()
+        pledge.setOnClickListener {
+            animateRewards()
+            rewardsExpanded = true
         }
 
-        view_pledge_button.setOnClickListener {
-            this.viewModel.inputs.viewPledgeButtonClicked()
-        }
+//        manage_pledge_button.setOnClickListener {
+//            this.viewModel.inputs.managePledgeButtonClicked()
+//        }
+//
+//        share_icon.setOnClickListener {
+//            this.viewModel.inputs.shareButtonClicked()
+//        }
+//
+//        view_pledge_button.setOnClickListener {
+//            this.viewModel.inputs.viewPledgeButtonClicked()
+//        }
     }
 
     override fun onDestroy() {
@@ -145,9 +191,18 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.project_recycler_view.adapter = null
     }
 
+    private fun setupRewardsFragment(project: Project) {
+        val rewards: List<Reward> = ObjectUtils.coalesce(project.rewards() , listOf<Reward>())
+
+        supportFragmentManager.beginTransaction()
+                .add(R.id.fragment_container, RewardsFragment.newInstance(project, rewards))
+                .commit()
+        Timber.d("items from server ${rewards.size}")
+    }
+
     private fun renderProject(project: Project, configCountry: String) {
         this.adapter.takeProject(project, configCountry)
-        ProjectUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
+//        ProjectUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
     }
 
     private fun startCampaignWebViewActivity(project: Project) {
@@ -228,5 +283,65 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
     override fun exitTransition(): Pair<Int, Int>? {
         return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
+    }
+
+
+    private fun animateRewards() {
+        val set = AnimatorSet()
+        show.target = if (rewardsExpanded) pledge else pledge_container
+        hide.target = if (rewardsExpanded) pledge_container else pledge
+        set.playTogether(show, hide)
+        set.duration = animDuration
+
+        val durationTransition = AutoTransition()
+        durationTransition.duration = animDuration
+        durationTransition.addListener(object : Transition.TransitionListener {
+            override fun onTransitionEnd(transition: Transition) {
+                if (rewardsExpanded) {
+                    pledge.visibility = View.GONE
+                }
+            }
+
+            override fun onTransitionResume(transition: Transition) {
+            }
+
+            override fun onTransitionPause(transition: Transition) {
+            }
+
+            override fun onTransitionCancel(transition: Transition) {
+            }
+
+            override fun onTransitionStart(transition: Transition) {
+                set.start()
+                if (!rewardsExpanded) {
+                    pledge.visibility = View.VISIBLE
+                }
+            }
+        })
+
+        TransitionManager.beginDelayedTransition(root, durationTransition)
+        setRewardConstraints()
+    }
+
+    private fun setRewardConstraints() {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(root)
+        if (rewardsExpanded) {
+            constraintSet.clear(R.id.rewards_container, ConstraintSet.BOTTOM)
+            constraintSet.connect(R.id.rewards_container, ConstraintSet.TOP, R.id.guideline, ConstraintSet.TOP, 0)
+        } else {
+            constraintSet.connect(R.id.rewards_container, ConstraintSet.TOP, R.id.root, ConstraintSet.TOP, 0)
+            constraintSet.connect(R.id.rewards_container, ConstraintSet.BOTTOM, R.id.root, ConstraintSet.BOTTOM, 0)
+        }
+        constraintSet.applyTo(root)
+    }
+
+    override fun onBackPressed() {
+        if (rewardsExpanded) {
+            animateRewards()
+            rewardsExpanded = false
+        } else {
+            super.onBackPressed()
+        }
     }
 }

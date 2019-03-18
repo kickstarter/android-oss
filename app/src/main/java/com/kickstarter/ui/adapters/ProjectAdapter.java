@@ -20,15 +20,17 @@ import rx.Observable;
 
 public final class ProjectAdapter extends KSAdapter {
   private final Delegate delegate;
+  private final Boolean isHorizontalRewardsEnabled;
 
   public interface Delegate extends ProjectViewHolder.Delegate {}
 
-  public ProjectAdapter(final @NonNull Delegate delegate) {
+  public ProjectAdapter(final @NonNull Delegate delegate, final boolean isHorizontalRewardsEnabled) {
     this.delegate = delegate;
+    this.isHorizontalRewardsEnabled = isHorizontalRewardsEnabled;
   }
 
   protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
-    if (sectionRow.section() == 0) {
+    if (isHorizontalRewardsEnabled || sectionRow.section() == 0) {
       return R.layout.project_main_layout;
     } else {
       return R.layout.reward_view;

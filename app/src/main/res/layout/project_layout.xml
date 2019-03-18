@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
+  android:id="@+id/root"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
@@ -57,12 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <fragment
-          android:id="@+id/fragment_new_card"
-          android:name="com.example.izzyoji.checkoutpoc.fragments.RewardsFragment"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          tools:layout="@layout/fragment_rewards" />
+
 
       </FrameLayout>
     </LinearLayout>

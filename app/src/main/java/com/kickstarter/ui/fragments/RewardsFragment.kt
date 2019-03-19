@@ -12,26 +12,20 @@ import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.utils.RewardDecoration
 import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.HorizontalRewardsAdapter
 import com.kickstarter.viewmodels.RewardFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_rewards.*
-import timber.log.Timber
-import java.io.Serializable
 
 @RequiresFragmentViewModel(RewardFragmentViewModel.ViewModel::class)
-class RewardsFragment() : BaseFragment<RewardFragmentViewModel.ViewModel>() {
+class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
 
-    private var rewards = listOf<Reward>()
     private lateinit var project: Project
 
     companion object {
-        private val REWARDS = "Rewards"
         private var PROJECT = "project"
-        fun newInstance(project: Project ,rewards: List<Reward>): RewardsFragment {
+        fun newInstance(project: Project): RewardsFragment {
             val args = Bundle()
             args.putParcelable(PROJECT, project)
-            args.putSerializable(REWARDS, rewards as Serializable)
             val fragment = RewardsFragment()
             fragment.arguments = args
             return fragment
@@ -43,10 +37,7 @@ class RewardsFragment() : BaseFragment<RewardFragmentViewModel.ViewModel>() {
         val args = arguments
         if (args != null) {
             project = args.getParcelable(PROJECT) as Project
-            rewards = args.getSerializable(REWARDS) as List<Reward>
         }
-
-        Timber.d("rewards ${rewards.size}")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -62,16 +53,16 @@ class RewardsFragment() : BaseFragment<RewardFragmentViewModel.ViewModel>() {
 
 
     private fun setupRecyclerView() {
-        setRewardsAdapter(this.rewards)
+        setRewardsAdapter(this.project)
         addItemDecorator()
         addSnapHelper()
     }
 
-    private fun setRewardsAdapter(rewards: List<Reward>) {
+    private fun setRewardsAdapter(project: Project) {
         val rewardsAdapter = HorizontalRewardsAdapter(this.viewModel)
         rewards_recycler.adapter = rewardsAdapter
         rewards_recycler.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        rewardsAdapter.populateRewards(project, rewards)
+        rewardsAdapter.populateRewards(project)
     }
 
     private fun addSnapHelper() {

@@ -50,6 +50,8 @@ class RewardFragmentViewModel {
         /** Set the USD conversion.  */
         fun conversionTextViewText(): Observable<String>
 
+        fun deadlineCountdownTextViewText(): Observable<String>
+
         /** Set the description TextView's text.  */
         fun descriptionTextViewText(): Observable<String>
 
@@ -58,6 +60,9 @@ class RewardFragmentViewModel {
 
         /** Returns `true` if the estimated delivery section should be hidden, `false` otherwise.  */
         fun estimatedDeliveryDateSectionIsGone(): Observable<Boolean>
+
+        /** Returns the formatted string for project deadline. */
+        fun projectAndDeadlineString(): Observable<Project, String>
 
         /** Returns `true` if the separator between the limit and backers TextViews should be hidden, `false` otherwise.  */
         fun limitAndBackersSeparatorIsGone(): Observable<Boolean>
@@ -73,6 +78,8 @@ class RewardFragmentViewModel {
 
         /** Set the minimum TextView's text.  */
         fun minimumTextViewText(): Observable<String>
+
+        fun getProject(): Observable<Project>
 
         /** Returns `true` if the reward description is empty and should be hidden in the UI.  */
         fun rewardDescriptionIsGone(): Observable<Boolean>
@@ -106,6 +113,8 @@ class RewardFragmentViewModel {
 
         /** Returns `true` if the white overlay indicating a reward is disabled should be invisible, `false` otherwise.  */
         fun whiteOverlayIsInvisible(): Observable<Boolean>
+
+
     }
 
     class ViewModel(@NonNull environment: Environment) : FragmentViewModel<RewardsFragment>(environment), HorizontalRewardsAdapter.Delegate ,Inputs, Outputs {
@@ -120,9 +129,11 @@ class RewardFragmentViewModel {
         private val backersTextViewText: Observable<Int>
         private val conversionTextViewText: Observable<String>
         private val conversionTextViewIsGone: Observable<Boolean>
+        private var deadlineCountdownTextViewText: Observable<String>
         private val descriptionTextViewText: Observable<String>
         private val estimatedDeliveryDateTextViewText: Observable<DateTime>
         private val estimatedDeliveryDateSectionIsGone: Observable<Boolean>
+        private val projectAndDeadlineString: Observable<String>
         @get:NonNull
         override val isClickable: Observable<Boolean>
         private val limitAndBackersSeparatorIsGone: Observable<Boolean>
@@ -141,6 +152,7 @@ class RewardFragmentViewModel {
         private val startBackingActivity: Observable<Project>
         private val startCheckoutActivity: Observable<Pair<Project, Reward>>
         private val whiteOverlayIsInvisible: Observable<Boolean>
+        private val project: Observable<Project>
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -158,6 +170,17 @@ class RewardFragmentViewModel {
 
             val project = this.projectAndReward
                     .map { pr -> pr.first }
+
+            this.project = project
+
+            //ProjectUtils.deadlineCountdownDetail(project, context(), this.ksString)
+
+            this.deadlineCountdownTextViewText = project.map { ProjectUtils.deadlineCountdownValue(it) }.map { NumberUtils.format(it) }
+
+            this.projectAndDeadlineString = Observable.zip(
+                    this.project,
+                    this.deadlineCountdownTextViewText
+            ).map(<Pair<Project, String>>  p, d -> (p, d))
 
             val reward = this.projectAndReward
                     .map { pr -> pr.second }
@@ -313,6 +336,8 @@ class RewardFragmentViewModel {
             return this.conversionTextViewText
         }
 
+        override fun deadlineCountdownTextViewText(): Observable<String> = this.deadlineCountdownTextViewText
+
         @NonNull override fun descriptionTextViewText(): Observable<String> {
             return this.descriptionTextViewText
         }
@@ -388,5 +413,7 @@ class RewardFragmentViewModel {
         @NonNull override fun whiteOverlayIsInvisible(): Observable<Boolean> {
             return this.whiteOverlayIsInvisible
         }
+
+        override fun getProject(): Observable<Project> = this.project
     }
 }

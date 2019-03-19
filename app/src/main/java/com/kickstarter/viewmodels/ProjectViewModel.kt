@@ -58,6 +58,8 @@ interface ProjectViewModel {
     }
 
     interface Outputs {
+        fun isHorizontalRewardsEnabled(): Observable<Boolean>
+
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
@@ -119,6 +121,7 @@ interface ProjectViewModel {
         private val updatesTextViewClicked = PublishSubject.create<Void>()
         private val viewPledgeButtonClicked = PublishSubject.create<Void>()
 
+        private val isHorizontalRewardsEnabled = BehaviorSubject.create<Boolean>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
         private val startLoginToutActivity = BehaviorSubject.create<Void>()
@@ -140,8 +143,6 @@ interface ProjectViewModel {
         val outputs: ProjectViewModel.Outputs = this
 
         init {
-
-            val env = environment.enableHorizontalRewards().get()
 
             val initialProject = intent()
                     .flatMap { i -> ProjectIntentMapper.project(i, this.client) }
@@ -200,7 +201,7 @@ interface ProjectViewModel {
 
             currentProject
                     .compose(bindToLifecycle())
-                    .subscribe { this.project.onNext(it)}
+                    .subscribe { this.project.onNext(it) }
 
             currentProject
                     .compose(bindToLifecycle())
@@ -290,6 +291,9 @@ interface ProjectViewModel {
                     .filter({ IntentMapper.appBannerIsSet(it) })
                     .compose(bindToLifecycle())
                     .subscribe { _ -> this.koala.trackOpenedAppBanner() }
+
+            this.isHorizontalRewardsEnabled.onNext(environment.enableHorizontalRewards().get())
+
         }
 
         /**
@@ -374,6 +378,8 @@ interface ProjectViewModel {
         override fun heartDrawableId(): Observable<Int> {
             return this.heartDrawableId
         }
+
+        override fun isHorizontalRewardsEnabled(): Observable<Boolean> = this.isHorizontalRewardsEnabled
 
         override fun projectAndUserCountry(): Observable<Pair<Project, String>> {
             return this.projectAndUserCountry

@@ -18,10 +18,8 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
@@ -31,7 +29,6 @@ import com.kickstarter.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.project_layout.*
 import kotlinx.android.synthetic.main.project_toolbar.*
 import rx.android.schedulers.AndroidSchedulers
-import timber.log.Timber
 
 @RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
 class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
@@ -59,28 +56,26 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         setContentView(R.layout.project_layout)
         this.ksString = environment().ksString()
 
-        val isHorizontalRewardsEnabled = this.environment().enableHorizontalRewards().get()
+        val isHorizontalRewardsEnabled= this.environment().enableHorizontalRewards().get()
 
         if (!isHorizontalRewardsEnabled) {
-            rewards_container.visibility = View.GONE
+            ViewUtils.setGone(rewards_container)
         }
 
         rewards_toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
 
-//        if (isHorizontalRewardsEnabled) {
-//            RewardsFragment.newInstance()
-//        }
-
 //        project_action_buttons.visibility = when {
 //            ViewUtils.isLandscape(this) -> View.GONE
 //            else -> View.VISIBLE
 //        }
 
+
         this.adapter = ProjectAdapter(this.viewModel, isHorizontalRewardsEnabled)
         project_recycler_view.adapter = this.adapter
         project_recycler_view.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+
 
         this.viewModel.outputs.getProject()
                 .compose(bindToLifecycle())
@@ -173,6 +168,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
             rewardsExpanded = true
         }
 
+
 //        manage_pledge_button.setOnClickListener {
 //            this.viewModel.inputs.managePledgeButtonClicked()
 //        }
@@ -192,12 +188,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     }
 
     private fun setupRewardsFragment(project: Project) {
-        val rewards: List<Reward> = ObjectUtils.coalesce(project.rewards() , listOf<Reward>())
-
         supportFragmentManager.beginTransaction()
-                .add(R.id.fragment_container, RewardsFragment.newInstance(project, rewards))
+                .add(R.id.fragment_container, RewardsFragment.newInstance(project))
                 .commit()
-        Timber.d("items from server ${rewards.size}")
     }
 
     private fun renderProject(project: Project, configCountry: String) {

@@ -1,15 +1,14 @@
 package com.kickstarter.ui.adapters
 
+import android.util.Pair
 import android.view.View
 import com.kickstarter.R
 import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
 import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
+import rx.Observable
 
-const val SECTION_REWARDS = 0
-
-class HorizontalRewardsAdapter (val delegate: HorizontalRewardViewHolder.Delegate) : KSAdapter() {
+class HorizontalRewardsAdapter(val delegate: HorizontalRewardViewHolder.Delegate) : KSAdapter() {
 
     init {
         addSection(emptyList<Any>())
@@ -21,7 +20,15 @@ class HorizontalRewardsAdapter (val delegate: HorizontalRewardViewHolder.Delegat
 
     override fun viewHolder(layout: Int, view: View): KSViewHolder = HorizontalRewardViewHolder(view)
 
-    fun populateRewards(project: Project,rewards: List<Reward>) {
-        setSection(SECTION_REWARDS, rewards)
+    fun populateRewards(project: Project) {
+        sections().clear()
+
+        val rewards = project.rewards()
+        if (rewards != null) {
+            addSection(Observable.from(rewards)
+                    .map { reward -> Pair.create(project, reward) }
+                    .toList().toBlocking().single()
+            )
+        }
     }
 }

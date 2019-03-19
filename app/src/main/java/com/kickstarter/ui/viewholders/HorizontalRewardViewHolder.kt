@@ -74,6 +74,9 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
 
         this.viewModel.outputs.getProject()
                 .subscribe {
+
+
+
                     // (project, deadlineString)
                     // ProjectUtils.deadlineCountdownDetail(project, context(), this.ksString) + deadlineString
                     view.horizontal_project_ending_text_view.text = ProjectUtils.deadlineCountdownDetail(it, context(), this.ksString)

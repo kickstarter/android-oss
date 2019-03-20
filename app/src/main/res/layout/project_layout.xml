@@ -22,6 +22,37 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="@id/project_toolbar" />
 
+  <RelativeLayout
+    android:id="@+id/project_action_buttons"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:focusable="true"
+    app:layout_constrainedHeight="false"
+    app:layout_constraintBottom_toBottomOf="parent">
+
+    <Button
+      android:id="@+id/back_project_button"
+      style="@style/ProjectActionButton"
+      android:text="@string/project_back_button"
+      android:visibility="gone"
+      tools:visibility="visible" />
+
+    <Button
+      android:id="@+id/manage_pledge_button"
+      style="@style/ProjectActionButton"
+      android:text="@string/project_manage_button"
+      android:visibility="gone"
+      app:backgroundTint="@color/button_secondary" />
+
+    <Button
+      android:id="@+id/view_pledge_button"
+      style="@style/ProjectActionButton"
+      android:text="@string/project_view_button"
+      android:visibility="gone"
+      app:backgroundTint="@color/button_secondary" />
+  </RelativeLayout>
+
   <androidx.cardview.widget.CardView
     android:id="@+id/rewards_container"
     android:layout_width="match_parent"
@@ -59,12 +90,11 @@
         android:layout_height="match_parent">
 
 
-
       </FrameLayout>
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-      android:id="@+id/pledge"
+      android:id="@+id/horizontal_fragment_pledge_button"
       style="@style/ExtendedFab"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

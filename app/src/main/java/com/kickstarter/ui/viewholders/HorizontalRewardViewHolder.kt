@@ -106,7 +106,6 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
 
     }
 
-
     override fun bindData(data: Any?) {
         val projectAndReward = requireNonNull(data as Pair<Project, Reward>)
         val project = requireNonNull(projectAndReward.first, Project::class.java)
@@ -160,5 +159,4 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
         context.startActivity(intent)
         transition(context, slideInFromRight())
     }
-
 }

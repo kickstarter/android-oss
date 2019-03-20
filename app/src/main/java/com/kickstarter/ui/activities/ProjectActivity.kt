@@ -18,6 +18,7 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -58,19 +59,20 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
         val isHorizontalRewardsEnabled= this.environment().enableHorizontalRewards().get()
 
-        if (!isHorizontalRewardsEnabled) {
-            ViewUtils.setGone(rewards_container)
+        if (isHorizontalRewardsEnabled) {
+            ViewUtils.setGone(project_action_buttons, true)
+        } else {
+            ViewUtils.setGone(rewards_container, true)
         }
 
         rewards_toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
 
-//        project_action_buttons.visibility = when {
-//            ViewUtils.isLandscape(this) -> View.GONE
-//            else -> View.VISIBLE
-//        }
-
+        project_action_buttons.visibility = when {
+            ViewUtils.isLandscape(this) -> View.GONE
+            else -> View.VISIBLE
+        }
 
         this.adapter = ProjectAdapter(this.viewModel, isHorizontalRewardsEnabled)
         project_recycler_view.adapter = this.adapter
@@ -149,9 +151,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startLoginToutActivity() }
 
-//        back_project_button.setOnClickListener {
-//            this.viewModel.inputs.backProjectButtonClicked()
-//        }
+        back_project_button.setOnClickListener {
+            this.viewModel.inputs.backProjectButtonClicked()
+        }
 
         heart_icon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
@@ -163,23 +165,22 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
             rewards_container.radius = radius
         }
 
-        pledge.setOnClickListener {
+        horizontal_fragment_pledge_button.setOnClickListener {
             animateRewards()
             rewardsExpanded = true
         }
 
+        manage_pledge_button.setOnClickListener {
+            this.viewModel.inputs.managePledgeButtonClicked()
+        }
 
-//        manage_pledge_button.setOnClickListener {
-//            this.viewModel.inputs.managePledgeButtonClicked()
-//        }
-//
-//        share_icon.setOnClickListener {
-//            this.viewModel.inputs.shareButtonClicked()
-//        }
-//
-//        view_pledge_button.setOnClickListener {
-//            this.viewModel.inputs.viewPledgeButtonClicked()
-//        }
+        share_icon.setOnClickListener {
+            this.viewModel.inputs.shareButtonClicked()
+        }
+
+        view_pledge_button.setOnClickListener {
+            this.viewModel.inputs.viewPledgeButtonClicked()
+        }
     }
 
     override fun onDestroy() {
@@ -195,7 +196,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
     private fun renderProject(project: Project, configCountry: String) {
         this.adapter.takeProject(project, configCountry)
-//        ProjectUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
+        ProjectUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
     }
 
     private fun startCampaignWebViewActivity(project: Project) {
@@ -281,8 +282,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
     private fun animateRewards() {
         val set = AnimatorSet()
-        show.target = if (rewardsExpanded) pledge else pledge_container
-        hide.target = if (rewardsExpanded) pledge_container else pledge
+        show.target = if (rewardsExpanded) horizontal_fragment_pledge_button else pledge_container
+        hide.target = if (rewardsExpanded) pledge_container else horizontal_fragment_pledge_button
         set.playTogether(show, hide)
         set.duration = animDuration
 
@@ -291,7 +292,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         durationTransition.addListener(object : Transition.TransitionListener {
             override fun onTransitionEnd(transition: Transition) {
                 if (rewardsExpanded) {
-                    pledge.visibility = View.GONE
+                    horizontal_fragment_pledge_button.visibility = View.GONE
                 }
             }
 
@@ -307,7 +308,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
             override fun onTransitionStart(transition: Transition) {
                 set.start()
                 if (!rewardsExpanded) {
-                    pledge.visibility = View.VISIBLE
+                    horizontal_fragment_pledge_button.visibility = View.VISIBLE
                 }
             }
         })

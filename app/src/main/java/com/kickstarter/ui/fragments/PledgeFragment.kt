@@ -15,14 +15,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.FreezeLinearLayoutManager
-import com.kickstarter.libs.ScreenLocation
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.adapters.RewardCardAdapter
+import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
-import com.kickstarter.ui.viewholders.ProjectContextViewHolder
+import com.kickstarter.ui.viewholders.RewardPledgeCardViewHolder
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_pledge.*
 import rx.android.schedulers.AndroidSchedulers
@@ -31,22 +32,11 @@ import rx.android.schedulers.AndroidSchedulers
 class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate {
 
     private lateinit var adapter : RewardCardAdapter
-    private var initialDeliveryHeight: Int? = null
     private val animDuration = 200L
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_pledge, container, false)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setUpCardsRecyclerView()
-
-        this.viewModel.outputs.cards()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.adapter.takeCards(it) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,32 +53,57 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 })
             }
         }
+
+        this.adapter = RewardCardAdapter(this)
+        cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        cards_recycler.adapter = adapter
+        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)))
+
+        this.viewModel.outputs.estimatedDelivery()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe{ pledge_estimated_delivery.text = it }
+
+        this.viewModel.outputs.pledgeAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe{ pledge_amount.text = it }
+
+        this.viewModel.outputs.cards()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.adapter.takeCards(it) }
+
+        this.viewModel.outputs.showThanksActivity()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { fragmentManager?.popBackStack() }
+
+        this.viewModel.outputs.updateSelectedPosition()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.adapter.setSelectedPosition(it) }
     }
 
-    override fun selectCardButtonClicked(viewHolder: ProjectContextViewHolder) {
-
+    override fun closePledgeButtonClicked(position: Int) {
+        this.adapter.resetSelectedPosition(position)
+        (cards_recycler.layoutManager as FreezeLinearLayoutManager).setFrozen(false)
     }
 
-//    override fun addCardClicked() {
-//        Toast.makeText(context, "New card", Toast.LENGTH_SHORT).show()
-//    }
-//
-//    override fun cardSelected(position: Int) {
-//        cards_recycler.scrollToPosition(position)
-//        (cards_recycler.layoutManager as FreezeLinearLayoutManager).setFrozen(true)
-//    }
-//
-//    override fun cardUnselected() {
-//        (cards_recycler.layoutManager as FreezeLinearLayoutManager).setFrozen(false)
-//    }
+    override fun pledgeButtonClicked(viewHolder: RewardPledgeCardViewHolder) {
+        this.viewModel.inputs.pledgeButtonClicked()
+    }
+
+    override fun selectCardButtonClicked(position: Int) {
+        this.viewModel.inputs.selectCardButtonClicked(position)
+        cards_recycler.scrollToPosition(position)
+        (cards_recycler.layoutManager as FreezeLinearLayoutManager).setFrozen(true)
+    }
 
     private fun showPledgeSection() {
-        when (initialDeliveryHeight) {
-            null -> initialDeliveryHeight = (delivery.layoutParams as LinearLayout.LayoutParams).height
-        }
         val initialMargin = resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)
 
-        val reward = arguments?.getSerializable(ArgumentsKey.PLEDGE_REWARD) as Reward?
+        val reward = arguments?.getParcelable(ArgumentsKey.PLEDGE_REWARD) as Reward?
         val location = arguments?.getSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION) as ScreenLocation?
         if (location != null && reward != null) {
             resetPledgeViews(location, reward)
@@ -109,7 +124,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val scaleX = miniRewardWidth.toFloat() / location.width
         val miniRewardHeight = location.height * scaleX
         val deliveryParams = delivery.layoutParams as LinearLayout.LayoutParams
-        deliveryParams.height = Math.max(miniRewardHeight.toInt(), initialDeliveryHeight ?: 0)
+        deliveryParams.height = Math.max(miniRewardHeight.toInt(), delivery.height)
         delivery.layoutParams = deliveryParams
     }
 
@@ -123,12 +138,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         reward_snapshot.pivotX = 0f
         reward_snapshot.pivotY = 0f
 
+//        todo: blocked until rewards work is available
 //        val rewardViewHolder = RewardsAdapter.RewardViewHolder(reward_to_copy)
 //        rewardViewHolder.bind(reward)
 
         reward_to_copy.post {
             pledge_root.visibility = View.VISIBLE
-            reward_snapshot.setImageBitmap(ViewUtils.getBitmap(reward_to_copy, location.width, location.width))
+//            reward_snapshot.setImageBitmap(ViewUtils.getBitmap(reward_to_copy, location.width, location.width))
             reward_to_copy.visibility = View.GONE
         }
     }
@@ -210,23 +226,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         }
     }
 
-    private fun setUpCardsRecyclerView() {
-        setCardsAdapter()
-        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.grid_2)))
-    }
-
-    private fun setCardsAdapter() {
-        this.adapter = RewardCardAdapter(this)
-        cards_recycler.layoutManager = FreezeLinearLayoutManager(cards_recycler.context, LinearLayoutManager.HORIZONTAL, false)
-        cards_recycler.adapter = adapter
-    }
-
     companion object {
 
-        fun newInstance(location: ScreenLocation, reward: Reward): PledgeFragment {
+        fun newInstance(location: ScreenLocation, reward: Reward, project: Project): PledgeFragment {
             val fragment = PledgeFragment()
             val argument = Bundle()
             argument.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)
+            argument.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project)
             argument.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, location)
             fragment.arguments = argument
             return fragment

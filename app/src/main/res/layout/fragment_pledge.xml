@@ -8,7 +8,7 @@
   android:background="@color/ksr_grey_300"
   android:fillViewport="true"
   android:scrollbars="none"
-  android:visibility="visible"
+  android:visibility="invisible"
   tools:visibility="visible">
 
   <FrameLayout
@@ -20,12 +20,14 @@
       android:id="@+id/reward_to_copy"
       layout="@layout/item_reward" />
 
+    <!-- todo: what's the content description? -->
     <ImageView
       android:id="@+id/reward_snapshot"
       android:layout_width="wrap_content"
-      android:elevation="8dp"
       android:layout_height="wrap_content"
-      android:contentDescription="Go back to rewards list" />
+      android:background="@color/white"
+      android:contentDescription="@null"
+      android:elevation="8dp" />
 
     <LinearLayout
       android:id="@+id/pledge_details"
@@ -37,69 +39,133 @@
         android:id="@+id/delivery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="@dimen/grid_4"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="120dp"
+        android:layout_marginTop="16dp"
         android:orientation="vertical">
+
+        <TextView
+          style="@style/CalloutSecondary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/Estimated_delivery" />
+
+        <TextView
+          android:id="@+id/pledge_estimated_delivery"
+          style="@style/CalloutPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_1"
+          tools:text="December 2019" />
+
+        <LinearLayout
+          android:id="@+id/accountability"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Kickstarter_is_not_a_store" />
+
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Its_a_way_to_bring_creative_projects_to_life" />
+
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Learn_more_about_accountability"
+            android:textColor="@color/primary" />
+        </LinearLayout>
 
       </LinearLayout>
 
       <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/activity_vertical_margin"
+        android:paddingStart="@dimen/activity_vertical_margin">
 
-        <include layout="@layout/horizontal_line_1dp_view"/>
+        <include layout="@layout/horizontal_line_1dp_view" />
 
         <TextView
+          style="@style/CalloutPrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/grid_4"
           android:text="@string/Your_pledge_amount" />
 
         <TextView
           android:id="@+id/pledge_amount"
+          style="@style/PledgeCurrencySecondary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="end"
-          android:textAppearance="@style/TextAppearance.AppCompat.Large"
-          android:textColor="@color/ksr_green_700"
           tools:text="$20" />
 
         <TextView
+          style="@style/CalloutPrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/Your_shipping_destination" />
 
         <TextView
           android:id="@+id/shipping_amount"
+          style="@style/PledgeCurrency"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="end"
-          android:textAppearance="@style/TextAppearance.AppCompat.Large"
+          android:layout_marginBottom="@dimen/grid_4"
           tools:text="$20" />
 
-        <include layout="@layout/horizontal_line_1dp_view"/>
+        <include layout="@layout/horizontal_line_1dp_view" />
 
         <TextView
+          style="@style/CalloutPrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          tools:text="Total" />
+          android:layout_marginBottom="@dimen/grid_1"
+          android:layout_marginTop="@dimen/grid_4"
+          android:text="@string/dashboard_graphs_funding_total" />
 
-        <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="end"
-          android:textAppearance="@style/TextAppearance.AppCompat.Large"
-          android:textColor="@color/ksr_green_700"
-          tools:text="$40" />
-
-        <Button
-          android:id="@+id/google_pay"
+        <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:backgroundTint="@android:color/black"
-          tools:text="Google Pay" />
+          android:layout_marginBottom="@dimen/grid_4"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/FootnoteSecondary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="By pledging you agree to Kickstarter’s Terms of Use, Privacy Policy and Cookie Policy." />
+
+          <TextView
+            style="@style/PledgeCurrencySecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:text="$40" />
+
+        </LinearLayout>
+
+        <ImageButton
+          android:id="@+id/google_pay"
+          android:layout_width="match_parent"
+          android:layout_height="48dp"
+          android:background="@drawable/googlepay_button_no_shadow_background"
+          android:contentDescription="@string/googlepay_button_content_description"
+          android:foreground="@drawable/googlepay_button_overlay"
+          android:paddingBottom="12dp"
+          android:paddingTop="14dp"
+          android:scaleType="fitCenter"
+          android:src="@drawable/googlepay_button_content" />
 
       </LinearLayout>
 

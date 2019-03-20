@@ -17,7 +17,7 @@ class FeatureFlagActivity : AppCompatActivity() {
 
         (applicationContext as KSApplication).component().inject(this)
 
-        val enabled = environment.enableHorizontalRewards().get()
+        val enabled = environment.horizontalRewardsEnabled().get()
         if (enabled) {
             horizontal_switch.isChecked = enabled
         }
@@ -27,6 +27,6 @@ class FeatureFlagActivity : AppCompatActivity() {
 
     private fun enableHorizontalScrolling() {
         val isEnabled = horizontal_switch.isChecked
-        this.environment.enableHorizontalRewards().set(isEnabled)
+        this.environment.horizontalRewardsEnabled().set(isEnabled)
     }
 }

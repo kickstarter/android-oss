@@ -1,4 +1,4 @@
-package com.kickstarter.libs
+package com.kickstarter.ui.data
 
 import java.io.Serializable
 

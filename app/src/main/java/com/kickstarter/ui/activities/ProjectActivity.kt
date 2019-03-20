@@ -18,6 +18,8 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.project_layout.*
 import kotlinx.android.synthetic.main.project_toolbar.*
@@ -67,6 +69,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startCampaignWebViewActivity(it) }
+
+        this.viewModel.outputs.showPledgeFragment()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showPledgeFragment(it) }
 
         this.viewModel.outputs.startCommentsActivity()
                 .compose(bindToLifecycle())
@@ -137,6 +144,15 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         view_pledge_button.setOnClickListener {
             this.viewModel.inputs.viewPledgeButtonClicked()
         }
+    }
+
+    private fun showPledgeFragment(pledgeData: PledgeData) {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container,
+                        PledgeFragment.newInstance(pledgeData.rewardScreenLocation, pledgeData.reward, pledgeData.project),
+                        PledgeFragment::class.java.simpleName)
+                .addToBackStack(null)
+                .commit()
     }
 
     override fun onDestroy() {

@@ -4,7 +4,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="260dp"
+  android:layout_width="match_parent"
   android:layout_height="wrap_content"
   app:cardBackgroundColor="@android:color/white"
   app:cardCornerRadius="@dimen/reward_card_radius">
@@ -24,7 +24,7 @@
 
       <!--Content description should be set programmatically in RewardCardsAdapter to the card brand-->
       <ImageView
-        android:id="@+id/reward_card_logo"
+        android:id="@+id/reward_pledge_card_logo"
         android:layout_width="@dimen/credit_card_logo_width"
         android:layout_height="@dimen/credit_card_logo_height"
         android:contentDescription="@null"
@@ -32,34 +32,44 @@
         tools:src="@drawable/mastercard_md" />
 
       <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/grid_2"
         android:orientation="vertical">
 
         <TextView
-          android:id="@+id/reward_card_last_four"
+          android:id="@+id/reward_pledge_card_last_four"
           style="@style/BodyPrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           tools:text="Card ending in 1234" />
 
         <TextView
-          android:id="@+id/reward_card_expiration_date"
+          android:id="@+id/reward_pledge_card_expiration_date"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           tools:text="Expires in 03/2020" />
       </LinearLayout>
 
+      <!--todo what should the content description be?-->
+      <!--todo this button is too smol-->
+      <ImageButton
+        android:id="@+id/close_pledge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close"
+        android:background="@drawable/circle_black_alpha"
+        android:contentDescription="@null" />
+
     </LinearLayout>
 
     <Button
-      android:id="@+id/select_button"
+      android:id="@+id/pledge_button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_2"
-      android:backgroundTint="@android:color/black"
-      android:text="@string/rewards_select_label_select" />
+      android:text="@string/Pledge" />
   </LinearLayout>
 
 </androidx.cardview.widget.CardView>

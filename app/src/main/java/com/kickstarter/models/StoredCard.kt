@@ -7,7 +7,6 @@ import com.kickstarter.libs.qualifiers.AutoGson
 import type.CreditCardTypes
 import java.util.*
 
-@AutoGson
 @AutoParcel
 abstract class StoredCard : Parcelable {
     abstract fun id(): String

@@ -20,6 +20,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:minHeight="@dimen/grid_8"
+      android:visibility="invisible"
       android:orientation="horizontal">
 
       <!--Content description should be set programmatically in RewardCardsAdapter to the card brand-->
@@ -54,12 +55,12 @@
     </LinearLayout>
 
     <Button
-      android:id="@+id/select_button"
+      android:id="@+id/add_card_button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_2"
       android:backgroundTint="@android:color/black"
-      android:text="@string/rewards_select_label_select" />
+      android:text="@string/Add_new_card" />
   </LinearLayout>
 
 </androidx.cardview.widget.CardView>

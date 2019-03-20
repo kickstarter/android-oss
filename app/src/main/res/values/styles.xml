@@ -477,6 +477,14 @@
     <item name="android:textColor">@color/ksr_red_400</item>
   </style>
 
+  <style name="PledgeCurrency" parent="TextPrimary">
+    <item name="android:textSize">@dimen/title_1</item>
+  </style>
+
+  <style name="PledgeCurrencySecondary" parent="PledgeCurrency">
+    <item name="android:textColor">@color/primary</item>
+  </style>
+
   <!-- Cards -->
   <style name="ActivityFeedCardBase">
     <item name="android:foreground">@drawable/click_indicator_light</item>
@@ -634,5 +642,7 @@
     <item name="cardTint">@color/ksr_dark_grey_500</item>
     <item name="cardTextErrorColor">@color/ksr_red_400</item>
   </style>
+
+
 
 </resources>

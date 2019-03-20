@@ -8,14 +8,18 @@ import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.adapters.ProjectAdapter
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.intentmappers.IntentMapper
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.ui.viewholders.ProjectViewHolder
+import com.kickstarter.ui.viewholders.RewardViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -43,6 +47,9 @@ interface ProjectViewModel {
 
         /** Call when the play video button is clicked.  */
         fun playVideoButtonClicked()
+
+        /** Call when the play video button is clicked.  */
+        fun rewardClicked(rewardViewHolder: RewardViewHolder, reward: Reward)
 
         /** Call when the share button is clicked.  */
         fun shareButtonClicked()
@@ -94,6 +101,9 @@ interface ProjectViewModel {
 
         /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
         fun startVideoActivity(): Observable<Project>
+
+        /** Emits when we should start the [com.kickstarter.ui.fragments.PledgeFragment].  */
+        fun showPledgeFragment(): Observable<PledgeData>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectActivity>(environment), ProjectAdapter.Delegate, Inputs, Outputs {
@@ -110,6 +120,7 @@ interface ProjectViewModel {
         private val heartButtonClicked = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
         private val playVideoButtonClicked = PublishSubject.create<Void>()
+        private val rewardClicked = PublishSubject.create<Pair<RewardViewHolder, Reward>>()
         private val shareButtonClicked = PublishSubject.create<Void>()
         private val updatesTextViewClicked = PublishSubject.create<Void>()
         private val viewPledgeButtonClicked = PublishSubject.create<Void>()
@@ -127,6 +138,7 @@ interface ProjectViewModel {
         private val startProjectUpdatesActivity = BehaviorSubject.create<Project>()
         private val startVideoActivity = BehaviorSubject.create<Project>()
         private val startBackingActivity = BehaviorSubject.create<Pair<Project, User>>()
+        private val showPledgeFragment = BehaviorSubject.create<PledgeData>()
 
         val inputs: ProjectViewModel.Inputs = this
         val outputs: ProjectViewModel.Outputs = this
@@ -178,6 +190,12 @@ interface ProjectViewModel {
                     projectOnUserChangeSave,
                     savedProjectOnLoginSuccess
             )
+
+            this.rewardClicked
+                    .compose<Pair<Pair<RewardViewHolder, Reward>, Project>>(combineLatestPair(currentProject))
+                    .map<PledgeData>{ PledgeData(getScreenLocationOfReward(it.first.first), it.first.second, it.second) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showPledgeFragment)
 
             projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
                     .filter { p -> p.isStarred && p.isLive && !p.isApproachingDeadline }
@@ -269,6 +287,17 @@ interface ProjectViewModel {
                     .subscribe { _ -> this.koala.trackOpenedAppBanner() }
         }
 
+        private fun getScreenLocationOfReward(rewardViewHolder: RewardViewHolder): ScreenLocation {
+            val rewardLocation = IntArray(2)
+            val clickedRewardView = rewardViewHolder.itemView
+            clickedRewardView.getLocationInWindow(rewardLocation)
+            val x = clickedRewardView.left.toFloat()
+            val y = clickedRewardView.top.toFloat()
+            val height = clickedRewardView.height
+            val width = clickedRewardView.width
+            return ScreenLocation(0f, 0f, height, width)
+        }
+
         /**
          * A light-weight value to hold two ref tags and a project. Two ref tags are stored: one comes from parceled
          * data in the activity and the other comes from the ref stored in a cookie associated to the project.
@@ -336,6 +365,10 @@ interface ProjectViewModel {
             this.updatesTextViewClicked()
         }
 
+        override fun rewardClicked(rewardViewHolder: RewardViewHolder, reward: Reward) {
+            this.rewardClicked.onNext(Pair(rewardViewHolder, reward))
+        }
+
         override fun shareButtonClicked() {
             this.shareButtonClicked.onNext(null)
         }
@@ -354,6 +387,10 @@ interface ProjectViewModel {
 
         override fun projectAndUserCountry(): Observable<Pair<Project, String>> {
             return this.projectAndUserCountry
+        }
+
+        override fun showPledgeFragment(): Observable<PledgeData> {
+            return this.showPledgeFragment
         }
 
         override fun showSavedPrompt(): Observable<Void> {

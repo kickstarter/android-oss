@@ -37,6 +37,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.transition;
 public final class RewardViewHolder extends KSViewHolder {
   private final RewardViewModel.ViewModel viewModel;
   private final KSString ksString;
+  private final Delegate delegate;
 
   protected @Bind(R.id.reward_all_gone_text_view) TextView allGoneTextView;
   protected @Bind(R.id.reward_backers_text_view) TextView backersTextView;
@@ -59,10 +60,15 @@ public final class RewardViewHolder extends KSViewHolder {
   protected @BindString(R.string.rewards_title_pledge_reward_currency_or_more) String pledgeRewardCurrencyOrMoreString;
   protected @BindString(R.string.project_back_button) String projectBackButtonString;
   protected @BindString(R.string.About_reward_amount) String currencyConversionString;
+  private Reward reward;
 
-  public RewardViewHolder(final @NonNull View view) {
+  public interface Delegate {
+    void rewardClicked(RewardViewHolder rewardViewHolder, Reward reward);
+  }
+
+  public RewardViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
-
+    this.delegate = delegate;
     this.ksString = environment().ksString();
     this.viewModel = new RewardViewModel.ViewModel(environment());
 
@@ -117,6 +123,11 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(pr -> startCheckoutActivity(pr.first, pr.second));
+
+    this.viewModel.outputs.showPledgeFragment()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(pr -> this.delegate.rewardClicked(this, this.reward));
 
     this.viewModel.outputs.startBackingActivity()
       .compose(bindToLifecycle())
@@ -199,7 +210,7 @@ public final class RewardViewHolder extends KSViewHolder {
   public void bindData(final @Nullable Object data) throws Exception {
     final Pair<Project, Reward> projectAndReward = requireNonNull((Pair<Project, Reward>) data);
     final Project project = requireNonNull(projectAndReward.first, Project.class);
-    final Reward reward = requireNonNull(projectAndReward.second, Reward.class);
+    this.reward = requireNonNull(projectAndReward.second, Reward.class);
 
     this.viewModel.inputs.projectAndReward(project, reward);
   }

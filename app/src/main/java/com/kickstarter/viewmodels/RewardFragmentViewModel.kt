@@ -14,9 +14,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.ui.adapters.HorizontalRewardsAdapter
 import com.kickstarter.ui.fragments.RewardsFragment
-import org.joda.time.DateTime
 import rx.Observable
-import rx.functions.Func1
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
 import java.util.*
@@ -54,12 +52,6 @@ class RewardFragmentViewModel {
 
         /** Set the description TextView's text.  */
         fun descriptionTextViewText(): Observable<String>
-
-        /** Set the estimated delivery date TextView's text.  */
-        fun estimatedDeliveryDateTextViewText(): Observable<DateTime>
-
-        /** Returns `true` if the estimated delivery section should be hidden, `false` otherwise.  */
-        fun estimatedDeliveryDateSectionIsGone(): Observable<Boolean>
 
         /** Returns `true` if the separator between the limit and backers TextViews should be hidden, `false` otherwise.  */
         fun limitAndBackersSeparatorIsGone(): Observable<Boolean>
@@ -113,8 +105,8 @@ class RewardFragmentViewModel {
     }
 
     class ViewModel(@NonNull environment: Environment) : FragmentViewModel<RewardsFragment>(environment), HorizontalRewardsAdapter.Delegate ,Inputs, Outputs {
-        private val currentConfig: CurrentConfigType
-        private val ksCurrency: KSCurrency
+        private val currentConfig: CurrentConfigType = environment.currentConfig()
+        private val ksCurrency: KSCurrency = environment.ksCurrency()
 
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
         private val rewardClicked = PublishSubject.create<Void>()
@@ -126,8 +118,6 @@ class RewardFragmentViewModel {
         private val conversionTextViewIsGone: Observable<Boolean>
         private var deadlineCountdownTextViewText: Observable<String>
         private val descriptionTextViewText: Observable<String>
-        private val estimatedDeliveryDateTextViewText: Observable<DateTime>
-        private val estimatedDeliveryDateSectionIsGone: Observable<Boolean>
         @get:NonNull
         override val isClickable: Observable<Boolean>
         private val limitAndBackersSeparatorIsGone: Observable<Boolean>
@@ -152,9 +142,6 @@ class RewardFragmentViewModel {
         val outputs: Outputs = this
 
         init {
-
-            this.currentConfig = environment.currentConfig()
-            this.ksCurrency = environment.ksCurrency()
 
             val formattedMinimum = this.projectAndReward
                     .map { pr -> this.ksCurrency.formatWithProjectCurrency(pr.second.minimum(), pr.first, RoundingMode.UP) }
@@ -186,26 +173,17 @@ class RewardFragmentViewModel {
 
             this.backersTextViewText = reward
                     .filter { r -> RewardUtils.isReward(r) || RewardUtils.hasBackers(r) }
-                    .map<Int>(Func1<Reward, Int> { it.backersCount() })
-                    .filter(Func1<Int, Boolean> { ObjectUtils.isNotNull(it) })
+                    .map<Int>(Reward::backersCount)
+                    .filter { ObjectUtils.isNotNull(it) }
 
             this.conversionTextViewIsGone = this.projectAndReward
                     .map { p -> p.first.currency() != p.first.currentCurrency() }
-                    .map(Func1<Boolean, Boolean> { BooleanUtils.negate(it) })
+                    .map { BooleanUtils.negate(it) }
 
             this.conversionTextViewText = this.projectAndReward
                     .map { pr -> this.ksCurrency.formatWithUserPreference(pr.second.minimum(), pr.first, RoundingMode.UP) }
 
-            this.descriptionTextViewText = reward.map(Func1<Reward, String> { it.description() })
-
-            this.estimatedDeliveryDateTextViewText = reward
-                    .map<DateTime>(Func1<Reward, DateTime> { it.estimatedDeliveryOn() })
-                    .filter(Func1<DateTime, Boolean> { ObjectUtils.isNotNull(it) })
-
-            this.estimatedDeliveryDateSectionIsGone = reward
-                    .map<DateTime>(Func1<Reward, DateTime> { it.estimatedDeliveryOn() })
-                    .map<Boolean>(Func1<DateTime, Boolean> { ObjectUtils.isNull(it) })
-                    .distinctUntilChanged()
+            this.descriptionTextViewText = reward.map(Reward::description)
 
             this.isClickable = isSelectable.distinctUntilChanged()
 
@@ -220,12 +198,12 @@ class RewardFragmentViewModel {
 
             this.limitAndBackersSeparatorIsGone = reward
                     .map { r -> IntegerUtils.isNonZero(r.limit()) && IntegerUtils.isNonZero(r.backersCount()) }
-                    .map<Boolean>(Func1<Boolean, Boolean> { BooleanUtils.negate(it) })
+                    .map<Boolean> { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
 
             this.limitAndRemainingTextViewIsGone = reward
-                    .map<Boolean>(Func1<Reward, Boolean> { RewardUtils.isLimited(it) })
-                    .map<Boolean>(Func1<Boolean, Boolean> { BooleanUtils.negate(it) })
+                    .map<Boolean> { RewardUtils.isLimited(it) }
+                    .map<Boolean> { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
 
             this.limitAndRemainingTextViewText = reward
@@ -250,33 +228,33 @@ class RewardFragmentViewModel {
                     .distinctUntilChanged()
 
             this.selectedHeaderIsGone = rewardIsSelected
-                    .map<Boolean>(Func1<Boolean, Boolean> { BooleanUtils.negate(it) })
+                    .map<Boolean> { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
 
             this.shippingSummaryTextViewText = reward
-                    .filter(Func1<Reward, Boolean> { RewardUtils.isShippable(it) })
-                    .map(Func1<Reward, String> { it.shippingSummary() })
+                    .filter { RewardUtils.isShippable(it) }
+                    .map(Reward::shippingSummary)
 
             this.shippingSummarySectionIsGone = reward
-                    .map<Boolean>(Func1<Reward, Boolean> { RewardUtils.isShippable(it) })
-                    .map<Boolean>(Func1<Boolean, Boolean> { BooleanUtils.negate(it) })
+                    .map<Boolean> { RewardUtils.isShippable(it) }
+                    .map<Boolean> { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
 
             this.titleTextViewIsGone = reward
-                    .map<String>(Func1<Reward, String> { it.title() })
-                    .map(Func1<String, Boolean> { ObjectUtils.isNull(it) })
+                    .map<String> { it.title() }
+                    .map { ObjectUtils.isNull(it) }
 
             this.rewardDescriptionIsGone = reward
-                    .map<String>(Func1<Reward, String> { it.description() })
-                    .map(Func1<String, Boolean> { it.isEmpty() })
+                    .map<String> { it.description() }
+                    .map { it.isEmpty() }
 
             this.titleTextViewText = reward
-                    .map<String>(Func1<Reward, String> { it.title() })
-                    .filter(Func1<String, Boolean> { ObjectUtils.isNotNull(it) })
+                    .map<String> { it.title() }
+                    .filter { ObjectUtils.isNotNull(it) }
 
             this.whiteOverlayIsInvisible = this.projectAndReward
                     .map { pr -> RewardUtils.isLimitReached(pr.second) && !BackingUtils.isBacked(pr.first, pr.second) }
-                    .map<Boolean>(Func1<Boolean, Boolean> { BooleanUtils.negate(it) })
+                    .map<Boolean> { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
         }
 
@@ -299,23 +277,19 @@ class RewardFragmentViewModel {
             this.rewardClicked.onNext(null)
         }
 
-        @NonNull
-        override fun allGoneTextViewIsGone(): Observable<Boolean> {
+        @NonNull override fun allGoneTextViewIsGone(): Observable<Boolean> {
             return this.allGoneTextViewIsGone
         }
 
-        @NonNull
-        override fun backersTextViewIsGone(): Observable<Boolean> {
+        @NonNull override fun backersTextViewIsGone(): Observable<Boolean> {
             return this.backersTextViewIsGone
         }
 
-        @NonNull
-        override fun backersTextViewText(): Observable<Int> {
+        @NonNull override fun backersTextViewText(): Observable<Int> {
             return this.backersTextViewText
         }
 
-        @NonNull
-        override fun conversionTextViewIsGone(): Observable<Boolean> {
+        @NonNull override fun conversionTextViewIsGone(): Observable<Boolean> {
             return this.conversionTextViewIsGone
         }
 
@@ -329,13 +303,7 @@ class RewardFragmentViewModel {
             return this.descriptionTextViewText
         }
 
-        @NonNull override fun estimatedDeliveryDateTextViewText(): Observable<DateTime> {
-            return this.estimatedDeliveryDateTextViewText
-        }
-
-        @NonNull override fun estimatedDeliveryDateSectionIsGone(): Observable<Boolean> {
-            return this.estimatedDeliveryDateSectionIsGone
-        }
+        override fun getProject(): Observable<Project> = this.project
 
         @NonNull override fun limitAndBackersSeparatorIsGone(): Observable<Boolean> {
             return this.limitAndBackersSeparatorIsGone
@@ -401,6 +369,5 @@ class RewardFragmentViewModel {
             return this.whiteOverlayIsInvisible
         }
 
-        override fun getProject(): Observable<Project> = this.project
     }
 }

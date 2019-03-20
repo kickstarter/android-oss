@@ -73,12 +73,14 @@
       <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/rewards_appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
           android:id="@+id/rewards_toolbar"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:background="@color/ksr_grey_500"
           app:navigationIcon="@drawable/ic_down"
           app:title="Back this project" />
 
@@ -100,7 +102,7 @@
       android:layout_height="wrap_content"
       android:layout_marginEnd="16dp"
       android:layout_marginStart="16dp"
-      android:text="back this project"
+      android:text="@string/project_back_button"
       android:visibility="visible"
       app:icon="@null" />
 

@@ -61,9 +61,6 @@ class RewardFragmentViewModel {
         /** Returns `true` if the estimated delivery section should be hidden, `false` otherwise.  */
         fun estimatedDeliveryDateSectionIsGone(): Observable<Boolean>
 
-        /** Returns the formatted string for project deadline. */
-        fun projectAndDeadlineString(): Observable<Project, String>
-
         /** Returns `true` if the separator between the limit and backers TextViews should be hidden, `false` otherwise.  */
         fun limitAndBackersSeparatorIsGone(): Observable<Boolean>
 
@@ -113,8 +110,6 @@ class RewardFragmentViewModel {
 
         /** Returns `true` if the white overlay indicating a reward is disabled should be invisible, `false` otherwise.  */
         fun whiteOverlayIsInvisible(): Observable<Boolean>
-
-
     }
 
     class ViewModel(@NonNull environment: Environment) : FragmentViewModel<RewardsFragment>(environment), HorizontalRewardsAdapter.Delegate ,Inputs, Outputs {
@@ -133,7 +128,6 @@ class RewardFragmentViewModel {
         private val descriptionTextViewText: Observable<String>
         private val estimatedDeliveryDateTextViewText: Observable<DateTime>
         private val estimatedDeliveryDateSectionIsGone: Observable<Boolean>
-        private val projectAndDeadlineString: Observable<String>
         @get:NonNull
         override val isClickable: Observable<Boolean>
         private val limitAndBackersSeparatorIsGone: Observable<Boolean>
@@ -173,14 +167,7 @@ class RewardFragmentViewModel {
 
             this.project = project
 
-            //ProjectUtils.deadlineCountdownDetail(project, context(), this.ksString)
-
             this.deadlineCountdownTextViewText = project.map { ProjectUtils.deadlineCountdownValue(it) }.map { NumberUtils.format(it) }
-
-            this.projectAndDeadlineString = Observable.zip(
-                    this.project,
-                    this.deadlineCountdownTextViewText
-            ).map(<Pair<Project, String>>  p, d -> (p, d))
 
             val reward = this.projectAndReward
                     .map { pr -> pr.second }

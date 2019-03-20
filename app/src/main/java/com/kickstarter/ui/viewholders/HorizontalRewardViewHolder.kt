@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ViewUtils
@@ -74,12 +75,7 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
 
         this.viewModel.outputs.getProject()
                 .subscribe {
-
-
-
-                    // (project, deadlineString)
-                    // ProjectUtils.deadlineCountdownDetail(project, context(), this.ksString) + deadlineString
-                    view.horizontal_project_ending_text_view.text = ProjectUtils.deadlineCountdownDetail(it, context(), this.ksString)
+                    view.horizontal_project_ending_text_view.text = formattedDeadlineString(it)
                 }
     }
 
@@ -90,6 +86,12 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
         val reward = requireNonNull(projectAndReward.second, Reward::class.java)
 
         this.viewModel.inputs.projectAndReward(project, reward)
+    }
+
+    private fun formattedDeadlineString(@NonNull project: Project): String {
+        val detail =  ProjectUtils.deadlineCountdownDetail(project, context(), this.ksString)
+        val value =  ProjectUtils.deadlineCountdownValue(project)
+        return "$value $detail"
     }
 
     private fun setConversionTextView(@NonNull amount: String) {

@@ -30,9 +30,6 @@ class RewardFragmentViewModel {
 
     interface Outputs {
 
-        /** Returns `true` if reward can be clicked, `false` otherwise.  */
-        val isClickable: Observable<Boolean>
-
         /** Returns `true` if the all gone TextView should be gone, `false` otherwise.  */
         fun allGoneTextViewIsGone(): Observable<Boolean>
 
@@ -52,6 +49,9 @@ class RewardFragmentViewModel {
 
         /** Set the description TextView's text.  */
         fun descriptionTextViewText(): Observable<String>
+
+        /** Returns `true` if reward can be clicked, `false` otherwise.  */
+        fun isClickable(): Observable<Boolean>
 
         /** Returns `true` if the separator between the limit and backers TextViews should be hidden, `false` otherwise.  */
         fun limitAndBackersSeparatorIsGone(): Observable<Boolean>
@@ -118,8 +118,7 @@ class RewardFragmentViewModel {
         private val conversionTextViewIsGone: Observable<Boolean>
         private var deadlineCountdownTextViewText: Observable<String>
         private val descriptionTextViewText: Observable<String>
-        @get:NonNull
-        override val isClickable: Observable<Boolean>
+        private val isClickable: Observable<Boolean>
         private val limitAndBackersSeparatorIsGone: Observable<Boolean>
         private val limitAndRemainingTextViewIsGone: Observable<Boolean>
         private val limitAndRemainingTextViewText: Observable<Pair<String, String>>
@@ -304,6 +303,8 @@ class RewardFragmentViewModel {
         }
 
         override fun getProject(): Observable<Project> = this.project
+
+        override fun isClickable(): Observable<Boolean> = this.isClickable
 
         @NonNull override fun limitAndBackersSeparatorIsGone(): Observable<Boolean> {
             return this.limitAndBackersSeparatorIsGone

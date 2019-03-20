@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders
 
+import android.content.Intent
 import android.util.Pair
 import android.view.View
 import androidx.annotation.NonNull
@@ -7,9 +8,14 @@ import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
 import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.TransitionUtils.slideInFromRight
+import com.kickstarter.libs.utils.TransitionUtils.transition
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.BackingActivity
+import com.kickstarter.ui.activities.CheckoutActivity
 import com.kickstarter.viewmodels.RewardFragmentViewModel
 import kotlinx.android.synthetic.main.item_reward.view.*
 
@@ -24,6 +30,7 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
     private val pledgeRewardCurrencyOrMoreString = context().getString(R.string.rewards_title_pledge_reward_currency_or_more)
     private val currencyConversionString = context().getString(R.string.About_reward_amount)
     private val remainingRewardsString = context().getString(R.string.Left_count_left_few)
+    private val projectBackButtonString =  context().getString(R.string.project_back_button)
 
     init {
 
@@ -55,6 +62,11 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(observeForUI())
                 .subscribe { setConversionTextView(it) }
 
+        this.viewModel.outputs.isClickable()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { view.horizontal_reward_pledge_button.isClickable = it }
+
         this.viewModel.outputs.limitAndRemainingTextViewIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -76,6 +88,22 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
                 .subscribe {
                     view.horizontal_project_ending_text_view.text = formattedDeadlineString(it)
                 }
+
+        this.viewModel.outputs.startBackingActivity()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.startBackingActivity(it) }
+
+        this.viewModel.outputs.startCheckoutActivity()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { pr -> startCheckoutActivity(pr.first, pr.second) }
+
+
+        view.horizontal_reward_pledge_button.setOnClickListener {
+            this.viewModel.inputs.rewardClicked()
+        }
+
     }
 
 
@@ -88,8 +116,8 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
     }
 
     private fun formattedDeadlineString(@NonNull project: Project): String {
-        val detail =  ProjectUtils.deadlineCountdownDetail(project, context(), this.ksString)
-        val value =  ProjectUtils.deadlineCountdownValue(project)
+        val detail = ProjectUtils.deadlineCountdownDetail(project, context(), this.ksString)
+        val value = ProjectUtils.deadlineCountdownValue(project)
         return "$value $detail"
     }
 
@@ -101,7 +129,7 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
     }
 
     private fun setMinimumTextView(@NonNull minimum: String) {
-        view.horizontal_reward_pledge.text = (this.ksString.format(
+        view.horizontal_reward_pledge_button.text = (this.ksString.format(
                 this.pledgeRewardCurrencyOrMoreString,
                 "reward_currency", minimum
         ))
@@ -111,6 +139,26 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
         view.horizontal_reward_remaining_text_view.text = (this.ksString.format(
                 this.remainingRewardsString, "left_count", remaining
         ))
+    }
+
+    private fun startBackingActivity(@NonNull project: Project) {
+        val context = context()
+        val intent = Intent(context, BackingActivity::class.java)
+                .putExtra(IntentKey.PROJECT, project)
+
+        context.startActivity(intent)
+        transition(context, slideInFromRight())
+    }
+
+    private fun startCheckoutActivity(@NonNull project: Project, @NonNull reward: Reward) {
+        val context = context()
+        val intent = Intent(context, CheckoutActivity::class.java)
+                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.TOOLBAR_TITLE, this.projectBackButtonString)
+                .putExtra(IntentKey.URL, project.rewardSelectedUrl(reward))
+
+        context.startActivity(intent)
+        transition(context, slideInFromRight())
     }
 
 }

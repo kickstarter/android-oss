@@ -14,7 +14,7 @@
     android:overScrollMode="never">
 
     <androidx.cardview.widget.CardView
-      android:id="@+id/reward_card"
+      android:id="@+id/horizontal_reward_card"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
@@ -107,7 +107,7 @@
   </androidx.core.widget.NestedScrollView>
 
   <com.google.android.material.button.MaterialButton
-    android:id="@+id/horizontal_reward_pledge"
+    android:id="@+id/horizontal_reward_pledge_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"

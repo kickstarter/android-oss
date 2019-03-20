@@ -67,6 +67,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
         rewards_toolbar.setNavigationOnClickListener {
             onBackPressed()
+            project_toolbar.visibility = View.VISIBLE
         }
 
         project_action_buttons.visibility = when {
@@ -293,6 +294,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
             override fun onTransitionEnd(transition: Transition) {
                 if (rewardsExpanded) {
                     horizontal_fragment_pledge_button.visibility = View.GONE
+                    project_toolbar.visibility = View.GONE
                 }
             }
 

@@ -57,14 +57,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         setContentView(R.layout.project_layout)
         this.ksString = environment().ksString()
 
-        val isHorizontalRewardsEnabled= this.environment().enableHorizontalRewards().get()
-
-        if (isHorizontalRewardsEnabled) {
-            ViewUtils.setGone(project_action_buttons, true)
-        } else {
-            ViewUtils.setGone(rewards_container, true)
-        }
-
         rewards_toolbar.setNavigationOnClickListener {
             onBackPressed()
             project_toolbar.visibility = View.VISIBLE
@@ -75,10 +67,16 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
             else -> View.VISIBLE
         }
 
-        this.adapter = ProjectAdapter(this.viewModel, isHorizontalRewardsEnabled)
-        project_recycler_view.adapter = this.adapter
-        project_recycler_view.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        this.viewModel.outputs.viewToHide()
+                .compose(observeForUI())
+                .subscribe {
+                    val view = findViewById<View>(it.first)
+                    ViewUtils.setGone(view, true)
 
+                    this.adapter = ProjectAdapter(this.viewModel, it.second)
+                    project_recycler_view.adapter = this.adapter
+                    project_recycler_view.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+                }
 
         this.viewModel.outputs.getProject()
                 .compose(bindToLifecycle())

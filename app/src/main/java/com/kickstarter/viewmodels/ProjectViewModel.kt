@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.content.SharedPreferences
 import android.util.Pair
+import android.view.View
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.*
@@ -18,6 +19,7 @@ import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.intentmappers.IntentMapper
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.ui.viewholders.ProjectViewHolder
+import kotlinx.android.synthetic.main.project_layout.*
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -101,6 +103,8 @@ interface ProjectViewModel {
         fun startVideoActivity(): Observable<Project>
 
         fun getProject(): Observable<Project>
+
+        fun viewToHide(): Observable<Pair<Int, Boolean>>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectActivity>(environment), ProjectAdapter.Delegate, Inputs, Outputs {
@@ -135,6 +139,7 @@ interface ProjectViewModel {
         private val startProjectUpdatesActivity = BehaviorSubject.create<Project>()
         private val startVideoActivity = BehaviorSubject.create<Project>()
         private val startBackingActivity = BehaviorSubject.create<Pair<Project, User>>()
+        private val viewToHide = BehaviorSubject.create<Pair<Int, Boolean>>()
 
         private val rewards = BehaviorSubject.create<List<Reward>>()
         private val project = BehaviorSubject.create<Project>()
@@ -294,6 +299,15 @@ interface ProjectViewModel {
 
             this.isHorizontalRewardsEnabled.onNext(environment.enableHorizontalRewards().get())
 
+            val viewId = this.isHorizontalRewardsEnabled
+                    .compose(bindToLifecycle())
+                    .map { hiddenViewId(it) }
+
+            Observable.combineLatest(viewId, this.isHorizontalRewardsEnabled)
+              { id, enabled -> Pair.create(id, enabled) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.viewToHide)
+
         }
 
         /**
@@ -431,6 +445,11 @@ interface ProjectViewModel {
 
         override fun getProject(): Observable<Project> = this.project
 
+
+        override fun viewToHide(): Observable<Pair<Int, Boolean>> {
+            return this.viewToHide
+        }
+
         private fun saveProject(project: Project): Observable<Project> {
             return this.client.saveProject(project)
                     .compose(neverError())
@@ -439,6 +458,14 @@ interface ProjectViewModel {
         private fun toggleProjectSave(project: Project): Observable<Project> {
             return this.client.toggleProjectSave(project)
                     .compose(neverError())
+        }
+
+        private fun hiddenViewId(isEnabled: Boolean): Int {
+            return if (isEnabled) {
+                R.id.project_action_buttons
+            } else {
+                R.id.rewards_container
+            }
         }
     }
 }

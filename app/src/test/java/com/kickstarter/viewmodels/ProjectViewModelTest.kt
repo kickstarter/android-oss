@@ -32,6 +32,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val startManagePledgeActivity = TestSubscriber<Project>()
     private val startProjectUpdatesActivity = TestSubscriber<Project>()
     private val startVideoActivity = TestSubscriber<Project>()
+    private val viewToHide = TestSubscriber<Pair<Int, Boolean>>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectViewModel.ViewModel(environment)
@@ -48,6 +49,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startManagePledgeActivity().subscribe(this.startManagePledgeActivity)
         this.vm.outputs.startProjectUpdatesActivity().subscribe(this.startProjectUpdatesActivity)
         this.vm.outputs.startVideoActivity().subscribe(this.startVideoActivity)
+        this.vm.outputs.viewToHide().subscribe(this.viewToHide)
     }
 
     @Test
@@ -257,5 +259,20 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.playVideoButtonClicked()
         this.startVideoActivity.assertValues(project)
+    }
+
+    @Test
+    fun testProjectViewModel_ViewToHide_WhenIsHorizontalRewardsIsDisabled() {
+        setUpEnvironment(environment())
+        this.viewToHide.assertValue(Pair.create(R.id.rewards_container, false))
+    }
+
+    @Test
+    fun testProjectViewModel_ViewToHide_WhenIsHorizontalRewardsIsEnabled() {
+        val environment = environment()
+        environment.enableHorizontalRewards().set(true)
+        setUpEnvironment(environment)
+
+        this.viewToHide.assertValue(Pair.create(R.id.project_action_buttons, true))
     }
 }

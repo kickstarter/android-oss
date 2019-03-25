@@ -29,7 +29,8 @@ public final class ProjectAdapter extends KSAdapter {
     this.isHorizontalRewardsEnabled = isHorizontalRewardsEnabled;
   }
 
-  protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
+  protected @LayoutRes
+  int layout(final @NonNull SectionRow sectionRow) {
     if (isHorizontalRewardsEnabled || sectionRow.section() == 0) {
       return R.layout.project_main_layout;
     } else {
@@ -57,6 +58,10 @@ public final class ProjectAdapter extends KSAdapter {
 
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.project_main_layout) {
+//      if (isHorizontalRewardsEnabled && ViewUtils.isLandscape(view.getContext())) {
+//        View buttonsToHide = view.findViewById(R.id.project_action_buttons);
+//        buttonsToHide.setVisibility(View.GONE);
+//      }
       return new ProjectViewHolder(view, this.delegate);
     }
     return new RewardViewHolder(view);

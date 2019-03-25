@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -78,6 +79,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_photo) ImageView photoImageView;
   protected @Bind(R.id.play_button_overlay) ImageButton playButton;
   protected @Bind(R.id.pledged) TextView pledgedTextView;
+  protected @Bind(R.id.landscape_project_action_buttons) @Nullable RelativeLayout projectActionButtons;
   protected @Bind(R.id.project_metadata_view_group) ViewGroup projectMetadataViewGroup;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.project_social_image) ImageView projectSocialImageView;
@@ -137,6 +139,13 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.ksString = environment().ksString();
 
     ButterKnife.bind(this, view);
+
+    this.viewModel.outputs.isHorizontalRewardsEnabled()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(isEnabled -> {
+        ViewUtils.setGone(projectActionButtons, true);
+      });
 
     this.viewModel.outputs.avatarPhotoUrl()
       .compose(bindToLifecycle())
@@ -276,7 +285,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(friends ->
-         this.projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(context(), friends, this.ksString))
+        this.projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(context(), friends, this.ksString))
       );
 
     this.viewModel.outputs.projectSocialImageViewIsGone()
@@ -361,8 +370,7 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    @SuppressWarnings("unchecked")
-    final Pair<Project, String> projectAndCountry = requireNonNull((Pair<Project, String>) data);
+    @SuppressWarnings("unchecked") final Pair<Project, String> projectAndCountry = requireNonNull((Pair<Project, String>) data);
     this.viewModel.inputs.configureWith(projectAndCountry);
   }
 
@@ -372,7 +380,8 @@ public final class ProjectViewHolder extends KSViewHolder {
         this.convertedFromString, "pledged", pledgedAndGoal.first, "goal", pledgedAndGoal.second
       )
     );
-  };
+  }
+  ;
 
   private void setGoalTextView(final @NonNull String goalString) {
     final String goalText = ViewUtils.isFontScaleLarge(context())
@@ -458,7 +467,8 @@ public final class ProjectViewHolder extends KSViewHolder {
     activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  @Nullable @OnClick(R.id.back_project_button)
+  @Nullable
+  @OnClick(R.id.back_project_button)
   public void backProjectButtonOnClick() {
     this.delegate.projectViewHolderBackProjectClicked(this);
   }
@@ -478,7 +488,8 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.delegate.projectViewHolderCreatorClicked(this);
   }
 
-  @Nullable @OnClick(R.id.manage_pledge_button)
+  @Nullable
+  @OnClick(R.id.manage_pledge_button)
   public void managePledgeOnClick() {
     this.delegate.projectViewHolderManagePledgeClicked(this);
   }
@@ -488,7 +499,8 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.delegate.projectViewHolderVideoStarted(this);
   }
 
-  @Nullable @OnClick(R.id.view_pledge_button)
+  @Nullable
+  @OnClick(R.id.view_pledge_button)
   public void viewPledgeOnClick() {
     this.delegate.projectViewHolderViewPledgeClicked(this);
   }
@@ -526,9 +538,10 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   private void setStatsContentDescription(final @NonNull Project project) {
-    final String backersCountContentDescription = NumberUtils.format(project.backersCount()) + " " +  this.backersString;
+    final String backersCountContentDescription = NumberUtils.format(project.backersCount()) + " " + this.backersString;
     final String pledgedContentDescription = this.pledgedTextView.getText() + " " + this.goalTextView.getText();
-    final String deadlineCountdownContentDescription = this.deadlineCountdownTextView.getText() + " " + this.deadlineCountdownUnitTextView.getText();
+    final String deadlineCountdownContentDescription = this.deadlineCountdownTextView.getText() + " " + this.deadlineCountdownUnitTextView
+      .getText();
 
     this.backersCountTextView.setContentDescription(backersCountContentDescription);
     this.pledgedTextView.setContentDescription(pledgedContentDescription);

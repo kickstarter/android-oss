@@ -27,6 +27,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
@@ -82,6 +83,8 @@ public interface ProjectHolderViewModel {
 
     /** Emits the goal string for display. */
     Observable<String> goalStringForTextView();
+
+    Observable<Boolean> isHorizontalRewardsEnabled();
 
     /** Emits the location for display. */
     Observable<String> locationTextViewText();
@@ -172,6 +175,7 @@ public interface ProjectHolderViewModel {
       super(environment);
 
       this.ksCurrency = environment.ksCurrency();
+      this.isHorizontalRewardsEnabled.onNext(environment.enableHorizontalRewards().get());
 
       final Observable<Project> project = this.projectAndCountry.map(PairUtils::first);
       final Observable<ProjectUtils.Metadata> projectMetadata = project.map(ProjectUtils::metadataForProject);
@@ -306,6 +310,7 @@ public interface ProjectHolderViewModel {
     private final PublishSubject<Pair<Project, String>> projectAndCountry = PublishSubject.create();
     private final PublishSubject<Void> projectSocialViewGroupClicked = PublishSubject.create();
 
+    private final BehaviorSubject<Boolean> isHorizontalRewardsEnabled = BehaviorSubject.create();
     private final Observable<String> avatarPhotoUrl;
     private final Observable<String> backersCountTextViewText;
     private final Observable<Boolean> backingViewGroupIsGone;
@@ -395,6 +400,10 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<String> goalStringForTextView() {
       return this.goalStringForTextView;
+    }
+    @Override
+    public Observable<Boolean> isHorizontalRewardsEnabled() {
+      return this.isHorizontalRewardsEnabled;
     }
     @Override public @NonNull Observable<String> locationTextViewText() {
       return this.locationTextViewText;

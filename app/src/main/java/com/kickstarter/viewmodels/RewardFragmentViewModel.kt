@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import androidx.annotation.NonNull
-import com.kickstarter.libs.CurrentConfigType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSCurrency
@@ -29,16 +28,6 @@ class RewardFragmentViewModel {
     }
 
     interface Outputs {
-
-        /** Returns `true` if the all gone TextView should be gone, `false` otherwise.  */
-        fun allGoneTextViewIsGone(): Observable<Boolean>
-
-        /** Set the backers TextView's text.  */
-        fun backersTextViewText(): Observable<Int>
-
-        /** Returns `true` if the number of backers TextView should be hidden, `false` otherwise.  */
-        fun backersTextViewIsGone(): Observable<Boolean>
-
         /** Returns `true` if the USD conversion section should be hidden, `false` otherwise.  */
         fun conversionTextViewIsGone(): Observable<Boolean>
 
@@ -52,9 +41,6 @@ class RewardFragmentViewModel {
 
         /** Returns `true` if reward can be clicked, `false` otherwise.  */
         fun isClickable(): Observable<Boolean>
-
-        /** Returns `true` if the separator between the limit and backers TextViews should be hidden, `false` otherwise.  */
-        fun limitAndBackersSeparatorIsGone(): Observable<Boolean>
 
         /** Returns `true` if the limit TextView should be hidden, `false` otherwise.  */
         fun limitAndRemainingTextViewIsGone(): Observable<Boolean>
@@ -79,15 +65,6 @@ class RewardFragmentViewModel {
         /** Returns `true` if the items section should be hidden, `false` otherwise.  */
         fun rewardsItemsAreGone(): Observable<Boolean>
 
-        /** Returns `true` if selected header should be hidden, `false` otherwise.  */
-        fun selectedHeaderIsGone(): Observable<Boolean>
-
-        /** Returns `true` if the shipping section should be hidden, `false` otherwise.  */
-        fun shippingSummarySectionIsGone(): Observable<Boolean>
-
-        /** Set the shipping summary TextView's text.  */
-        fun shippingSummaryTextViewText(): Observable<String>
-
         /** Start the [com.kickstarter.ui.activities.BackingActivity] with the project.  */
         fun startBackingActivity(): Observable<Project>
 
@@ -99,19 +76,14 @@ class RewardFragmentViewModel {
 
         /** Use the reward's title to set the title text.  */
         fun titleTextViewText(): Observable<String>
-
-        /** Returns `true` if the white overlay indicating a reward is disabled should be invisible, `false` otherwise.  */
-        fun whiteOverlayIsInvisible(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull environment: Environment) : FragmentViewModel<RewardsFragment>(environment), HorizontalRewardsAdapter.Delegate ,Inputs, Outputs {
-        private val currentConfig: CurrentConfigType = environment.currentConfig()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
 
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
         private val rewardClicked = PublishSubject.create<Void>()
 
-        private val allGoneTextViewIsGone: Observable<Boolean>
         private val backersTextViewIsGone: Observable<Boolean>
         private val backersTextViewText: Observable<Int>
         private val conversionTextViewText: Observable<String>
@@ -129,12 +101,8 @@ class RewardFragmentViewModel {
         private val rewardsItemsAreGone: Observable<Boolean>
         private val titleTextViewIsGone: Observable<Boolean>
         private val titleTextViewText: Observable<String>
-        private val selectedHeaderIsGone: Observable<Boolean>
-        private val shippingSummarySectionIsGone: Observable<Boolean>
-        private val shippingSummaryTextViewText: Observable<String>
         private val startBackingActivity: Observable<Project>
         private val startCheckoutActivity: Observable<Pair<Project, Reward>>
-        private val whiteOverlayIsInvisible: Observable<Boolean>
         private val project: Observable<Project>
 
         val inputs: Inputs = this
@@ -160,11 +128,6 @@ class RewardFragmentViewModel {
 
             val rewardIsSelected = this.projectAndReward
                     .map { pr -> BackingUtils.isBacked(pr.first, pr.second) }
-
-            // Hide 'all gone' header if limit has not been reached, or reward has been backed by user.
-            this.allGoneTextViewIsGone = this.projectAndReward
-                    .map { pr -> !RewardUtils.isLimitReached(pr.second) || BackingUtils.isBacked(pr.first, pr.second) }
-                    .distinctUntilChanged()
 
             this.backersTextViewIsGone = reward
                     .map { r -> RewardUtils.isNoReward(r) || !RewardUtils.hasBackers(r) }
@@ -226,19 +189,6 @@ class RewardFragmentViewModel {
                     .map<Boolean>{ BooleanUtils.negate(it) }
                     .distinctUntilChanged()
 
-            this.selectedHeaderIsGone = rewardIsSelected
-                    .map<Boolean> { BooleanUtils.negate(it) }
-                    .distinctUntilChanged()
-
-            this.shippingSummaryTextViewText = reward
-                    .filter { RewardUtils.isShippable(it) }
-                    .map(Reward::shippingSummary)
-
-            this.shippingSummarySectionIsGone = reward
-                    .map<Boolean> { RewardUtils.isShippable(it) }
-                    .map<Boolean> { BooleanUtils.negate(it) }
-                    .distinctUntilChanged()
-
             this.titleTextViewIsGone = reward
                     .map<String> { it.title() }
                     .map { ObjectUtils.isNull(it) }
@@ -250,11 +200,6 @@ class RewardFragmentViewModel {
             this.titleTextViewText = reward
                     .map<String> { it.title() }
                     .filter { ObjectUtils.isNotNull(it) }
-
-            this.whiteOverlayIsInvisible = this.projectAndReward
-                    .map { pr -> RewardUtils.isLimitReached(pr.second) && !BackingUtils.isBacked(pr.first, pr.second) }
-                    .map<Boolean> { BooleanUtils.negate(it) }
-                    .distinctUntilChanged()
         }
 
         private fun isSelectable(@NonNull project: Project, @NonNull reward: Reward): Boolean {
@@ -276,18 +221,6 @@ class RewardFragmentViewModel {
             this.rewardClicked.onNext(null)
         }
 
-        @NonNull override fun allGoneTextViewIsGone(): Observable<Boolean> {
-            return this.allGoneTextViewIsGone
-        }
-
-        @NonNull override fun backersTextViewIsGone(): Observable<Boolean> {
-            return this.backersTextViewIsGone
-        }
-
-        @NonNull override fun backersTextViewText(): Observable<Int> {
-            return this.backersTextViewText
-        }
-
         @NonNull override fun conversionTextViewIsGone(): Observable<Boolean> {
             return this.conversionTextViewIsGone
         }
@@ -305,10 +238,6 @@ class RewardFragmentViewModel {
         override fun getProject(): Observable<Project> = this.project
 
         override fun isClickable(): Observable<Boolean> = this.isClickable
-
-        @NonNull override fun limitAndBackersSeparatorIsGone(): Observable<Boolean> {
-            return this.limitAndBackersSeparatorIsGone
-        }
 
         @NonNull override fun limitAndRemainingTextViewIsGone(): Observable<Boolean> {
             return this.limitAndRemainingTextViewIsGone
@@ -338,18 +267,6 @@ class RewardFragmentViewModel {
             return this.rewardsItemsAreGone
         }
 
-        @NonNull override fun selectedHeaderIsGone(): Observable<Boolean> {
-            return this.selectedHeaderIsGone
-        }
-
-        @NonNull override fun shippingSummarySectionIsGone(): Observable<Boolean> {
-            return this.shippingSummarySectionIsGone
-        }
-
-        @NonNull override fun shippingSummaryTextViewText(): Observable<String> {
-            return this.shippingSummaryTextViewText
-        }
-
         @NonNull override fun startBackingActivity(): Observable<Project> {
             return this.startBackingActivity
         }
@@ -365,10 +282,5 @@ class RewardFragmentViewModel {
         @NonNull override fun titleTextViewText(): Observable<String> {
             return this.titleTextViewText
         }
-
-        @NonNull override fun whiteOverlayIsInvisible(): Observable<Boolean> {
-            return this.whiteOverlayIsInvisible
-        }
-
     }
 }

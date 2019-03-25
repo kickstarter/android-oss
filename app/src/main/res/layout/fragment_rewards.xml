@@ -11,7 +11,7 @@
     android:id="@+id/rewards_recycler"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ddd"
+    android:background="@color/ksr_grey_400"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:listitem="@layout/item_reward" />
 

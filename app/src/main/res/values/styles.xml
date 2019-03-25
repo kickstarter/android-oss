@@ -636,14 +636,14 @@
   </style>
 
   <style name="ExtendedFab" parent="Widget.MaterialComponents.Button">
-    <item name="android:paddingTop">12dp</item>
-    <item name="android:paddingBottom">12dp</item>
-    <item name="android:paddingStart">24dp</item>
-    <item name="android:paddingEnd">24dp</item>
+    <item name="android:paddingTop">@dimen/grid_2</item>
+    <item name="android:paddingBottom">@dimen/grid_2</item>
+    <item name="android:paddingStart">@dimen/grid_4</item>
+    <item name="android:paddingEnd">@dimen/grid_4</item>
     <item name="cornerRadius">@dimen/fab_radius</item>
-    <item name="android:layout_marginBottom">16dp</item>
-    <item name="android:layout_marginTop">16dp</item>
-    <item name="android:minHeight">60dp</item>
+    <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
+    <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
+    <item name="android:minHeight">@dimen/grid_10</item>
   </style>
 
 </resources>

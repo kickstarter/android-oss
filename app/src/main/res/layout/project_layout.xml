@@ -59,7 +59,7 @@
     android:layout_height="0dp"
     android:layout_alignParentBottom="true"
     app:cardBackgroundColor="@color/ksr_grey_500"
-    app:cardCornerRadius="30dp"
+    app:cardCornerRadius="@dimen/grid_5"
     app:layout_constrainedHeight="false"
     app:layout_constraintTop_toTopOf="@+id/guideline">
 
@@ -100,8 +100,8 @@
       style="@style/ExtendedFab"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="16dp"
-      android:layout_marginStart="16dp"
+      android:layout_marginEnd="@dimen/activity_horizontal_margin"
+      android:layout_marginStart="@dimen/activity_horizontal_margin"
       android:text="@string/project_back_button"
       android:visibility="visible"
       app:icon="@null" />

@@ -27,30 +27,13 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
 
     private val ksString = environment().ksString()
     private var viewModel = RewardFragmentViewModel.ViewModel(environment())
-    private val pledgeRewardCurrencyOrMoreString = context().getString(R.string.rewards_title_pledge_reward_currency_or_more)
+
     private val currencyConversionString = context().getString(R.string.About_reward_amount)
-    private val remainingRewardsString = context().getString(R.string.Left_count_left_few)
+    private val pledgeRewardCurrencyOrMoreString = context().getString(R.string.rewards_title_pledge_reward_currency_or_more)
     private val projectBackButtonString =  context().getString(R.string.project_back_button)
+    private val remainingRewardsString = context().getString(R.string.Left_count_left_few)
 
     init {
-
-        this.viewModel.outputs.descriptionTextViewText()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { view.horiztonal_reward_description_text_view.text = it }
-
-        this.viewModel.outputs.minimumTextViewText()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    view.horizontal_reward_minimum_text_view.text = it
-                    setMinimumTextView(it)
-                }
-
-        this.viewModel.outputs.titleTextViewText()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { view.horizontal_reward_title_text_view.text = it }
 
         this.viewModel.outputs.conversionTextViewIsGone()
                 .compose(bindToLifecycle())
@@ -61,6 +44,18 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setConversionTextView(it) }
+
+        this.viewModel.outputs.currentProject()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    view.horizontal_project_ending_text_view.text = formattedDeadlineString(it)
+                }
+
+        this.viewModel.outputs.descriptionTextViewText()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { view.horiztonal_reward_description_text_view.text = it }
 
         this.viewModel.outputs.isClickable()
                 .compose(bindToLifecycle())
@@ -79,15 +74,18 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
                     setRemainingRewardsTextView(it.second)
                 }
 
-        this.viewModel.outputs.deadlineCountdownTextViewText()
+        this.viewModel.outputs.minimumTextViewText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { view.horizontal_project_ending_text_view.text = it }
-
-        this.viewModel.outputs.getProject()
                 .subscribe {
-                    view.horizontal_project_ending_text_view.text = formattedDeadlineString(it)
+                    view.horizontal_reward_minimum_text_view.text = it
+                    setMinimumTextView(it)
                 }
+
+        this.viewModel.outputs.titleTextViewText()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { view.horizontal_reward_title_text_view.text = it }
 
         this.viewModel.outputs.startBackingActivity()
                 .compose(bindToLifecycle())
@@ -98,7 +96,6 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { pr -> startCheckoutActivity(pr.first, pr.second) }
-
 
         view.horizontal_reward_pledge_button.setOnClickListener {
             this.viewModel.inputs.rewardClicked()

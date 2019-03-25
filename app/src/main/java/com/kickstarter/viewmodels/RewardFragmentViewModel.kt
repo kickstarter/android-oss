@@ -5,18 +5,15 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSCurrency
-import com.kickstarter.libs.rx.transformers.Transformers.coalesce
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.models.RewardsItem
 import com.kickstarter.ui.adapters.HorizontalRewardsAdapter
 import com.kickstarter.ui.fragments.RewardsFragment
 import rx.Observable
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
-import java.util.*
 
 class RewardFragmentViewModel {
     interface Inputs {
@@ -34,7 +31,8 @@ class RewardFragmentViewModel {
         /** Set the USD conversion.  */
         fun conversionTextViewText(): Observable<String>
 
-        fun deadlineCountdownTextViewText(): Observable<String>
+        /** Emits the current project */
+        fun currentProject(): Observable<Project>
 
         /** Set the description TextView's text.  */
         fun descriptionTextViewText(): Observable<String>
@@ -54,13 +52,8 @@ class RewardFragmentViewModel {
         /** Set the minimum TextView's text.  */
         fun minimumTextViewText(): Observable<String>
 
-        fun getProject(): Observable<Project>
-
         /** Returns `true` if the reward description is empty and should be hidden in the UI.  */
         fun rewardDescriptionIsGone(): Observable<Boolean>
-
-        /** Show the rewards items.  */
-        fun rewardsItemList(): Observable<List<RewardsItem>>
 
         /** Returns `true` if the items section should be hidden, `false` otherwise.  */
         fun rewardsItemsAreGone(): Observable<Boolean>
@@ -88,7 +81,7 @@ class RewardFragmentViewModel {
         private val backersTextViewText: Observable<Int>
         private val conversionTextViewText: Observable<String>
         private val conversionTextViewIsGone: Observable<Boolean>
-        private var deadlineCountdownTextViewText: Observable<String>
+        private val currentProject: Observable<Project>
         private val descriptionTextViewText: Observable<String>
         private val isClickable: Observable<Boolean>
         private val limitAndBackersSeparatorIsGone: Observable<Boolean>
@@ -97,13 +90,11 @@ class RewardFragmentViewModel {
         private val limitHeaderIsGone: Observable<Boolean>
         private val minimumTextViewText: Observable<String>
         private val rewardDescriptionIsGone: Observable<Boolean>
-        private val rewardsItemList: Observable<List<RewardsItem>>
         private val rewardsItemsAreGone: Observable<Boolean>
         private val titleTextViewIsGone: Observable<Boolean>
         private val titleTextViewText: Observable<String>
         private val startBackingActivity: Observable<Project>
         private val startCheckoutActivity: Observable<Pair<Project, Reward>>
-        private val project: Observable<Project>
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -119,15 +110,10 @@ class RewardFragmentViewModel {
             val project = this.projectAndReward
                     .map { pr -> pr.first }
 
-            this.project = project
-
-            this.deadlineCountdownTextViewText = project.map { ProjectUtils.deadlineCountdownValue(it) }.map { NumberUtils.format(it) }
+            this.currentProject = project
 
             val reward = this.projectAndReward
                     .map { pr -> pr.second }
-
-            val rewardIsSelected = this.projectAndReward
-                    .map { pr -> BackingUtils.isBacked(pr.first, pr.second) }
 
             this.backersTextViewIsGone = reward
                     .map { r -> RewardUtils.isNoReward(r) || !RewardUtils.hasBackers(r) }
@@ -180,10 +166,6 @@ class RewardFragmentViewModel {
 
             this.minimumTextViewText = formattedMinimum
 
-            this.rewardsItemList = reward
-                    .map<List<RewardsItem>>{ it.rewardsItems() }
-                    .compose(coalesce<List<RewardsItem>>(ArrayList()))
-
             this.rewardsItemsAreGone = reward
                     .map<Boolean>{ RewardUtils.isItemized(it) }
                     .map<Boolean>{ BooleanUtils.negate(it) }
@@ -229,13 +211,11 @@ class RewardFragmentViewModel {
             return this.conversionTextViewText
         }
 
-        override fun deadlineCountdownTextViewText(): Observable<String> = this.deadlineCountdownTextViewText
-
         @NonNull override fun descriptionTextViewText(): Observable<String> {
             return this.descriptionTextViewText
         }
 
-        override fun getProject(): Observable<Project> = this.project
+        override fun currentProject(): Observable<Project> = this.currentProject
 
         override fun isClickable(): Observable<Boolean> = this.isClickable
 
@@ -257,10 +237,6 @@ class RewardFragmentViewModel {
 
         @NonNull override fun rewardDescriptionIsGone(): Observable<Boolean> {
             return this.rewardDescriptionIsGone
-        }
-
-        @NonNull override fun rewardsItemList(): Observable<List<RewardsItem>> {
-            return this.rewardsItemList
         }
 
         @NonNull override fun rewardsItemsAreGone(): Observable<Boolean> {

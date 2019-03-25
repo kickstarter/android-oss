@@ -57,27 +57,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         setContentView(R.layout.project_layout)
         this.ksString = environment().ksString()
 
-        rewards_toolbar.setNavigationOnClickListener {
-            onBackPressed()
-            project_toolbar.visibility = View.VISIBLE
-        }
-
-        project_action_buttons.visibility = when {
-            ViewUtils.isLandscape(this) -> View.GONE
-            else -> View.VISIBLE
-        }
-
-        this.viewModel.outputs.viewToHide()
-                .compose(observeForUI())
-                .subscribe {
-                    val view = findViewById<View>(it.first)
-                    ViewUtils.setGone(view, true)
-
-                    this.adapter = ProjectAdapter(this.viewModel, it.second)
-                    project_recycler_view.adapter = this.adapter
-                    project_recycler_view.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
-                }
-
         this.viewModel.outputs.heartDrawableId()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
@@ -146,18 +125,23 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startLoginToutActivity() }
 
+        this.viewModel.outputs.viewToHide()
+                .compose(observeForUI())
+                .subscribe {
+                    val view = findViewById<View>(it.first)
+                    ViewUtils.setGone(view, true)
+
+                    this.adapter = ProjectAdapter(this.viewModel, it.second)
+                    project_recycler_view.adapter = this.adapter
+                    project_recycler_view.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+                }
+
         back_project_button.setOnClickListener {
             this.viewModel.inputs.backProjectButtonClicked()
         }
 
         heart_icon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
-        }
-
-        show.addUpdateListener { valueAnim ->
-            val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
-            val radius = initialRadius * if (rewardsExpanded) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
-            rewards_container.radius = radius
         }
 
         horizontal_fragment_pledge_button.setOnClickListener {
@@ -169,8 +153,24 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
             this.viewModel.inputs.managePledgeButtonClicked()
         }
 
+        project_action_buttons.visibility = when {
+            ViewUtils.isLandscape(this) -> View.GONE
+            else -> View.VISIBLE
+        }
+
+        rewards_toolbar.setNavigationOnClickListener {
+            onBackPressed()
+            project_toolbar.visibility = View.VISIBLE
+        }
+
         share_icon.setOnClickListener {
             this.viewModel.inputs.shareButtonClicked()
+        }
+
+        show.addUpdateListener { valueAnim ->
+            val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
+            val radius = initialRadius * if (rewardsExpanded) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
+            rewards_container.radius = radius
         }
 
         view_pledge_button.setOnClickListener {
@@ -183,15 +183,66 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.project_recycler_view.adapter = null
     }
 
+    private fun animateRewards() {
+        val set = AnimatorSet()
+        show.target = if (rewardsExpanded) horizontal_fragment_pledge_button else pledge_container
+        hide.target = if (rewardsExpanded) pledge_container else horizontal_fragment_pledge_button
+        set.playTogether(show, hide)
+        set.duration = animDuration
+
+        val durationTransition = AutoTransition()
+        durationTransition.duration = animDuration
+        durationTransition.addListener(object : Transition.TransitionListener {
+            override fun onTransitionEnd(transition: Transition) {
+                if (rewardsExpanded) {
+                    horizontal_fragment_pledge_button.visibility = View.GONE
+                    project_toolbar.visibility = View.GONE
+                }
+            }
+
+            override fun onTransitionResume(transition: Transition) {
+            }
+
+            override fun onTransitionPause(transition: Transition) {
+            }
+
+            override fun onTransitionCancel(transition: Transition) {
+            }
+
+            override fun onTransitionStart(transition: Transition) {
+                set.start()
+                if (!rewardsExpanded) {
+                    horizontal_fragment_pledge_button.visibility = View.VISIBLE
+                }
+            }
+        })
+
+        TransitionManager.beginDelayedTransition(root, durationTransition)
+        setRewardConstraints()
+    }
+
+    private fun renderProject(project: Project, configCountry: String) {
+        this.adapter.takeProject(project, configCountry)
+        ProjectUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
+    }
+
     private fun setupRewardsFragment(project: Project) {
         supportFragmentManager.beginTransaction()
                 .add(R.id.fragment_container, RewardsFragment.newInstance(project))
                 .commit()
     }
 
-    private fun renderProject(project: Project, configCountry: String) {
-        this.adapter.takeProject(project, configCountry)
-        ProjectUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
+    private fun setRewardConstraints() {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(root)
+        if (rewardsExpanded) {
+            constraintSet.clear(R.id.rewards_container, ConstraintSet.BOTTOM)
+            constraintSet.connect(R.id.rewards_container, ConstraintSet.TOP, R.id.guideline, ConstraintSet.TOP, 0)
+        } else {
+            constraintSet.connect(R.id.rewards_container, ConstraintSet.TOP, R.id.root, ConstraintSet.TOP, 0)
+            constraintSet.connect(R.id.rewards_container, ConstraintSet.BOTTOM, R.id.root, ConstraintSet.BOTTOM, 0)
+        }
+        constraintSet.applyTo(root)
     }
 
     private fun startCampaignWebViewActivity(project: Project) {
@@ -272,58 +323,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
     override fun exitTransition(): Pair<Int, Int>? {
         return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
-    }
-
-
-    private fun animateRewards() {
-        val set = AnimatorSet()
-        show.target = if (rewardsExpanded) horizontal_fragment_pledge_button else pledge_container
-        hide.target = if (rewardsExpanded) pledge_container else horizontal_fragment_pledge_button
-        set.playTogether(show, hide)
-        set.duration = animDuration
-
-        val durationTransition = AutoTransition()
-        durationTransition.duration = animDuration
-        durationTransition.addListener(object : Transition.TransitionListener {
-            override fun onTransitionEnd(transition: Transition) {
-                if (rewardsExpanded) {
-                    horizontal_fragment_pledge_button.visibility = View.GONE
-                    project_toolbar.visibility = View.GONE
-                }
-            }
-
-            override fun onTransitionResume(transition: Transition) {
-            }
-
-            override fun onTransitionPause(transition: Transition) {
-            }
-
-            override fun onTransitionCancel(transition: Transition) {
-            }
-
-            override fun onTransitionStart(transition: Transition) {
-                set.start()
-                if (!rewardsExpanded) {
-                    horizontal_fragment_pledge_button.visibility = View.VISIBLE
-                }
-            }
-        })
-
-        TransitionManager.beginDelayedTransition(root, durationTransition)
-        setRewardConstraints()
-    }
-
-    private fun setRewardConstraints() {
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(root)
-        if (rewardsExpanded) {
-            constraintSet.clear(R.id.rewards_container, ConstraintSet.BOTTOM)
-            constraintSet.connect(R.id.rewards_container, ConstraintSet.TOP, R.id.guideline, ConstraintSet.TOP, 0)
-        } else {
-            constraintSet.connect(R.id.rewards_container, ConstraintSet.TOP, R.id.root, ConstraintSet.TOP, 0)
-            constraintSet.connect(R.id.rewards_container, ConstraintSet.BOTTOM, R.id.root, ConstraintSet.BOTTOM, 0)
-        }
-        constraintSet.applyTo(root)
     }
 
     override fun onBackPressed() {

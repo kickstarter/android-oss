@@ -4,7 +4,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="294dp"
+  android:layout_width="@dimen/item_reward_layout_width"
   android:layout_height="wrap_content"
   android:orientation="vertical">
 

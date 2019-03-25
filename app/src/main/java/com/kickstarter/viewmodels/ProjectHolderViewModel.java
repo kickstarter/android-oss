@@ -311,7 +311,6 @@ public interface ProjectHolderViewModel {
     private final PublishSubject<Pair<Project, String>> projectAndCountry = PublishSubject.create();
     private final PublishSubject<Void> projectSocialViewGroupClicked = PublishSubject.create();
 
-    private final BehaviorSubject<Boolean> isHorizontalRewardsEnabled = BehaviorSubject.create();
     private final Observable<String> avatarPhotoUrl;
     private final Observable<String> backersCountTextViewText;
     private final Observable<Boolean> backingViewGroupIsGone;
@@ -325,6 +324,7 @@ public interface ProjectHolderViewModel {
     private final Observable<String> featuredTextViewRootCategory;
     private final Observable<Boolean> featuredViewGroupIsGone;
     private final Observable<String> goalStringForTextView;
+    private final BehaviorSubject<Boolean> isHorizontalRewardsEnabled = BehaviorSubject.create();
     private final Observable<String> locationTextViewText;
     private final Observable<Integer> percentageFundedProgress;
     private final Observable<Boolean> percentageFundedProgressBarIsGone;
@@ -402,8 +402,7 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<String> goalStringForTextView() {
       return this.goalStringForTextView;
     }
-    @Override
-    public Observable<Boolean> isHorizontalRewardsEnabled() {
+    @Override public Observable<Boolean> isHorizontalRewardsEnabled() {
       return this.isHorizontalRewardsEnabled;
     }
     @Override public @NonNull Observable<String> locationTextViewText() {

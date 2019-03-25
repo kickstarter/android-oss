@@ -50,8 +50,7 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
 
         setupRecyclerView()
     }
-
-
+    
     private fun setupRecyclerView() {
         setRewardsAdapter(this.project)
         addItemDecorator()

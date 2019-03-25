@@ -208,7 +208,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.viewModel.outputs.isHorizontalRewardsEnabled()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(isEnabled -> ViewUtils.setGone(this.projectActionButtons, true));
+      .subscribe(isEnabled -> ViewUtils.setGone(this.projectActionButtons, isEnabled));
 
     this.viewModel.outputs.locationTextViewText()
       .compose(bindToLifecycle())

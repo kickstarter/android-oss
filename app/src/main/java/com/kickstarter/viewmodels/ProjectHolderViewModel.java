@@ -84,6 +84,7 @@ public interface ProjectHolderViewModel {
     /** Emits the goal string for display. */
     Observable<String> goalStringForTextView();
 
+    /** Emits a boolean for the horizontal rewards feature flag */
     Observable<Boolean> isHorizontalRewardsEnabled();
 
     /** Emits the location for display. */

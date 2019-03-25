@@ -29,9 +29,8 @@ public final class ProjectAdapter extends KSAdapter {
     this.isHorizontalRewardsEnabled = isHorizontalRewardsEnabled;
   }
 
-  protected @LayoutRes
-  int layout(final @NonNull SectionRow sectionRow) {
-    if (isHorizontalRewardsEnabled || sectionRow.section() == 0) {
+  protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
+    if (this.isHorizontalRewardsEnabled || sectionRow.section() == 0) {
       return R.layout.project_main_layout;
     } else {
       return R.layout.reward_view;
@@ -46,7 +45,7 @@ public final class ProjectAdapter extends KSAdapter {
     sections().add(Collections.singletonList(Pair.create(project, configCountry)));
 
     final List<Reward> rewards = project.rewards();
-    if (rewards != null && !isHorizontalRewardsEnabled) {
+    if (rewards != null && !this.isHorizontalRewardsEnabled) {
       addSection(Observable.from(rewards)
         .filter(RewardUtils::isReward)
         .map(reward -> Pair.create(project, reward))
@@ -58,10 +57,6 @@ public final class ProjectAdapter extends KSAdapter {
 
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.project_main_layout) {
-//      if (isHorizontalRewardsEnabled && ViewUtils.isLandscape(view.getContext())) {
-//        View buttonsToHide = view.findViewById(R.id.project_action_buttons);
-//        buttonsToHide.setVisibility(View.GONE);
-//      }
       return new ProjectViewHolder(view, this.delegate);
     }
     return new RewardViewHolder(view);

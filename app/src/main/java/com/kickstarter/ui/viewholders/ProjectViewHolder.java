@@ -140,13 +140,6 @@ public final class ProjectViewHolder extends KSViewHolder {
 
     ButterKnife.bind(this, view);
 
-    this.viewModel.outputs.isHorizontalRewardsEnabled()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(isEnabled -> {
-        ViewUtils.setGone(projectActionButtons, true);
-      });
-
     this.viewModel.outputs.avatarPhotoUrl()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -211,6 +204,11 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setGoalTextView);
+
+    this.viewModel.outputs.isHorizontalRewardsEnabled()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(isEnabled -> ViewUtils.setGone(this.projectActionButtons, true));
 
     this.viewModel.outputs.locationTextViewText()
       .compose(bindToLifecycle())
@@ -381,7 +379,6 @@ public final class ProjectViewHolder extends KSViewHolder {
       )
     );
   }
-  ;
 
   private void setGoalTextView(final @NonNull String goalString) {
     final String goalText = ViewUtils.isFontScaleLarge(context())

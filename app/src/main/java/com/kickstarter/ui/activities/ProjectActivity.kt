@@ -78,13 +78,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                     project_recycler_view.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
                 }
 
-        this.viewModel.outputs.getProject()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    setupRewardsFragment(it)
-                }
-
         this.viewModel.outputs.heartDrawableId()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
@@ -93,7 +86,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.viewModel.outputs.projectAndUserCountry()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.renderProject(it.first, it.second) }
+                .subscribe {
+                    this.renderProject(it.first, it.second)
+                    this.setupRewardsFragment(it.first)
+                }
 
         this.viewModel.outputs.startCampaignWebViewActivity()
                 .compose(bindToLifecycle())

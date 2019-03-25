@@ -102,8 +102,6 @@ interface ProjectViewModel {
         /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
         fun startVideoActivity(): Observable<Project>
 
-        fun getProject(): Observable<Project>
-
         fun viewToHide(): Observable<Pair<Int, Boolean>>
     }
 
@@ -142,7 +140,6 @@ interface ProjectViewModel {
         private val viewToHide = BehaviorSubject.create<Pair<Int, Boolean>>()
 
         private val rewards = BehaviorSubject.create<List<Reward>>()
-        private val project = BehaviorSubject.create<Project>()
 
         val inputs: ProjectViewModel.Inputs = this
         val outputs: ProjectViewModel.Outputs = this
@@ -203,10 +200,6 @@ interface ProjectViewModel {
             currentProject
                     .compose<Pair<Project, String>>(combineLatestPair(this.currentConfig.observable().map({ it.countryCode() })))
                     .subscribe(this.projectAndUserCountry)
-
-            currentProject
-                    .compose(bindToLifecycle())
-                    .subscribe { this.project.onNext(it) }
 
             currentProject
                     .compose(bindToLifecycle())
@@ -442,9 +435,6 @@ interface ProjectViewModel {
         override fun startVideoActivity(): Observable<Project> {
             return this.startVideoActivity
         }
-
-        override fun getProject(): Observable<Project> = this.project
-
 
         override fun viewToHide(): Observable<Pair<Int, Boolean>> {
             return this.viewToHide

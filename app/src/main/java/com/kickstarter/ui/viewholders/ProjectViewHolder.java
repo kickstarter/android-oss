@@ -387,9 +387,9 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.goalTextView.setText(goalText);
   }
 
-  private void setProjectActionButtonsVisibility(Boolean enabled) {
+  private void setProjectActionButtonsVisibility(final Boolean enabled) {
     if (ViewUtils.isLandscape(context()) && enabled) {
-      ViewUtils.setGone(projectActionButtons, true);
+      ViewUtils.setGone(this.projectActionButtons, true);
     }
   }
 

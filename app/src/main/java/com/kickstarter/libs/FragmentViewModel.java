@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.ui.data.ActivityResult;
 import com.trello.rxlifecycle.FragmentEvent;
 
 import androidx.annotation.CallSuper;
@@ -21,6 +22,7 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
   private final PublishSubject<ViewType> viewChange = PublishSubject.create();
   private final Observable<ViewType> view = this.viewChange.filter(ObjectUtils::isNotNull);
 
+  private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
   private final PublishSubject<Bundle> arguments = PublishSubject.create();
   protected final Koala koala;
 
@@ -32,6 +34,13 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     Timber.d("onCreate %s", this.toString());
     dropView();
+  }
+
+  /**
+   * Takes activity result data from the activity.
+   */
+  public void activityResult(final @NonNull ActivityResult activityResult) {
+    this.activityResult.onNext(activityResult);
   }
 
   /**
@@ -77,6 +86,10 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
   private void dropView() {
     Timber.d("dropView %s", this.toString());
     this.viewChange.onNext(null);
+  }
+
+  protected @NonNull Observable<ActivityResult> activityResult() {
+    return this.activityResult;
   }
 
   protected final @NonNull Observable<ViewType> view() {

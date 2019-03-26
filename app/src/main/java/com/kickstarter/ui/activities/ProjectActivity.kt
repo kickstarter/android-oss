@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Pair
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
@@ -53,7 +54,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
         this.adapter = ProjectAdapter(this.viewModel)
         project_recycler_view.adapter = this.adapter
-        project_recycler_view.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        project_recycler_view.layoutManager = LinearLayoutManager(this)
 
         this.viewModel.outputs.heartDrawableId()
                 .compose(bindToLifecycle())
@@ -147,12 +148,15 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     }
 
     private fun showPledgeFragment(pledgeData: PledgeData) {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container,
-                        PledgeFragment.newInstance(pledgeData.rewardScreenLocation, pledgeData.reward, pledgeData.project),
-                        PledgeFragment::class.java.simpleName)
-                .addToBackStack(null)
-                .commit()
+        if (this.supportFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
+            val pledgeFragment = PledgeFragment.newInstance(pledgeData.rewardScreenLocation, pledgeData.reward, pledgeData.project)
+            this.supportFragmentManager.beginTransaction()
+                    .add(R.id.fragment_container,
+                            pledgeFragment,
+                            PledgeFragment::class.java.simpleName)
+                    .addToBackStack(null)
+                    .commit()
+        }
     }
 
     override fun onDestroy() {

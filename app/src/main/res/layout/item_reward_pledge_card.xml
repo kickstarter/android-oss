@@ -40,7 +40,7 @@
 
         <TextView
           android:id="@+id/reward_pledge_card_last_four"
-          style="@style/BodyPrimaryMedium"
+          style="@style/CreditCardLastFour"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           tools:text="Card ending in 1234" />
@@ -49,6 +49,7 @@
           android:id="@+id/reward_pledge_card_expiration_date"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          style="@style/CreditCardExpiration"
           tools:text="Expires in 03/2020" />
       </LinearLayout>
 

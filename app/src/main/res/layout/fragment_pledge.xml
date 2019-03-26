@@ -1,182 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-  android:id="@+id/pledge_root"
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_300"
-  android:fillViewport="true"
-  android:scrollbars="none"
-  android:visibility="invisible"
-  tools:visibility="visible">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <FrameLayout
+  <androidx.constraintlayout.widget.Guideline
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    app:layout_constraintGuide_begin="@dimen/grid_12"
+    android:orientation="horizontal"/>
 
-    <include
-      android:id="@+id/reward_to_copy"
-      layout="@layout/item_reward" />
+  <ScrollView
+    android:id="@+id/pledge_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ksr_grey_300"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    android:visibility="invisible"
+    tools:visibility="visible">
 
-    <!-- todo: what's the content description? -->
-    <ImageView
-      android:id="@+id/reward_snapshot"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:background="@color/white"
-      android:contentDescription="@null"
-      android:elevation="8dp" />
-
-    <LinearLayout
-      android:id="@+id/pledge_details"
+    <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical">
 
-      <LinearLayout
-        android:id="@+id/delivery"
+      <include
+        android:id="@+id/reward_to_copy"
+        layout="@layout/item_reward" />
+
+      <!-- todo: what's the content description? -->
+      <ImageView
+        android:id="@+id/reward_snapshot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_4"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="16dp"
+        android:background="@color/white"
+        android:contentDescription="@null"
+        android:elevation="8dp" />
+
+      <LinearLayout
+        android:id="@+id/pledge_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-          style="@style/CalloutSecondary"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/Estimated_delivery" />
-
-        <TextView
-          android:id="@+id/pledge_estimated_delivery"
-          style="@style/CalloutPrimaryMedium"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_1"
-          tools:text="December 2019" />
-
         <LinearLayout
-          android:id="@+id/accountability"
+          android:id="@+id/delivery"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_4"
+          android:layout_marginEnd="16dp"
+          android:layout_marginStart="120dp"
+          android:layout_marginTop="16dp"
           android:orientation="vertical">
 
           <TextView
+            style="@style/CalloutSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Kickstarter_is_not_a_store" />
+            android:text="@string/Estimated_delivery" />
 
           <TextView
+            android:id="@+id/pledge_estimated_delivery"
+            style="@style/CalloutPrimaryMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Its_a_way_to_bring_creative_projects_to_life" />
+            android:layout_marginBottom="@dimen/grid_1"
+            tools:text="December 2019" />
 
-          <TextView
+          <LinearLayout
+            android:id="@+id/accountability"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Learn_more_about_accountability"
-            android:textColor="@color/primary" />
+            android:orientation="vertical">
+
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/Kickstarter_is_not_a_store" />
+
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/Its_a_way_to_bring_creative_projects_to_life" />
+
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/Learn_more_about_accountability"
+              android:textColor="@color/primary" />
+          </LinearLayout>
+
         </LinearLayout>
-
-      </LinearLayout>
-
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingEnd="@dimen/activity_vertical_margin"
-        android:paddingStart="@dimen/activity_vertical_margin">
-
-        <include layout="@layout/horizontal_line_1dp_view" />
-
-        <TextView
-          style="@style/CalloutPrimaryMedium"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_4"
-          android:text="@string/Your_pledge_amount" />
-
-        <TextView
-          android:id="@+id/pledge_amount"
-          style="@style/PledgeCurrencySecondary"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="end"
-          tools:text="$20" />
-
-        <TextView
-          style="@style/CalloutPrimaryMedium"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/Your_shipping_destination" />
-
-        <TextView
-          android:id="@+id/shipping_amount"
-          style="@style/PledgeCurrency"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="end"
-          android:layout_marginBottom="@dimen/grid_4"
-          tools:text="$20" />
-
-        <include layout="@layout/horizontal_line_1dp_view" />
-
-        <TextView
-          style="@style/CalloutPrimaryMedium"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_1"
-          android:layout_marginTop="@dimen/grid_4"
-          android:text="@string/dashboard_graphs_funding_total" />
 
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_4"
-          android:orientation="horizontal">
+          android:orientation="vertical"
+          android:paddingEnd="@dimen/activity_vertical_margin"
+          android:paddingStart="@dimen/activity_vertical_margin">
+
+          <include layout="@layout/horizontal_line_1dp_view" />
 
           <TextView
-            style="@style/FootnoteSecondary"
-            android:layout_width="0dp"
+            style="@style/CalloutPrimaryMedium"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="By pledging you agree to Kickstarter’s Terms of Use, Privacy Policy and Cookie Policy." />
+            android:layout_marginTop="@dimen/grid_4"
+            android:text="@string/Your_pledge_amount" />
 
           <TextView
+            android:id="@+id/pledge_amount"
             style="@style/PledgeCurrencySecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            tools:text="$40" />
+            tools:text="$20" />
+
+          <TextView
+            style="@style/CalloutPrimaryMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Your_shipping_destination" />
+
+          <TextView
+            android:id="@+id/shipping_amount"
+            style="@style/PledgeCurrency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginBottom="@dimen/grid_4"
+            tools:text="$20" />
+
+          <include layout="@layout/horizontal_line_1dp_view" />
+
+          <TextView
+            style="@style/CalloutPrimaryMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_1"
+            android:layout_marginTop="@dimen/grid_4"
+            android:text="@string/dashboard_graphs_funding_total" />
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_4"
+            android:orientation="horizontal">
+
+            <TextView
+              style="@style/FootnoteSecondary"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              tools:text="By pledging you agree to Kickstarter’s Terms of Use, Privacy Policy and Cookie Policy." />
+
+            <TextView
+              style="@style/PledgeCurrencySecondary"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="end"
+              tools:text="$40" />
+
+          </LinearLayout>
+
+          <ImageButton
+            android:id="@+id/google_pay"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/googlepay_button_no_shadow_background"
+            android:contentDescription="@string/googlepay_button_content_description"
+            android:foreground="@drawable/googlepay_button_overlay"
+            android:paddingBottom="12dp"
+            android:paddingTop="14dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/googlepay_button_content" />
 
         </LinearLayout>
 
-        <ImageButton
-          android:id="@+id/google_pay"
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/cards_recycler"
           android:layout_width="match_parent"
-          android:layout_height="48dp"
-          android:background="@drawable/googlepay_button_no_shadow_background"
-          android:contentDescription="@string/googlepay_button_content_description"
-          android:foreground="@drawable/googlepay_button_overlay"
-          android:paddingBottom="12dp"
-          android:paddingTop="14dp"
-          android:scaleType="fitCenter"
-          android:src="@drawable/googlepay_button_content" />
-
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          android:paddingBottom="20dp"
+          tools:listitem="@layout/item_reward_credit_card" />
       </LinearLayout>
 
-      <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/cards_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:paddingBottom="20dp"
-        tools:listitem="@layout/item_reward_credit_card" />
-    </LinearLayout>
+    </FrameLayout>
+  </ScrollView>
 
-  </FrameLayout>
-</ScrollView>
+  <androidx.cardview.widget.CardView
+    android:id="@+id/pledge_child_fragment_container"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:background="@color/white"
+    app:layout_constraintTop_toBottomOf="parent"
+    app:cardCornerRadius="@dimen/reward_card_radius" />
+</androidx.constraintlayout.widget.ConstraintLayout>

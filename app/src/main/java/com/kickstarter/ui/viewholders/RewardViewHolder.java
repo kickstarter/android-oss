@@ -212,7 +212,7 @@ public final class RewardViewHolder extends KSViewHolder {
     final Project project = requireNonNull(projectAndReward.first, Project.class);
     this.reward = requireNonNull(projectAndReward.second, Reward.class);
 
-    this.viewModel.inputs.projectAndReward(project, reward);
+    this.viewModel.inputs.projectAndReward(project, this.reward);
   }
 
   private void setBackersTextView(final int count) {

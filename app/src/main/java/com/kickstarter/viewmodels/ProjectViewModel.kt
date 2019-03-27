@@ -64,6 +64,9 @@ interface ProjectViewModel {
          * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
         fun projectAndUserCountry(): Observable<Pair<Project, String>>
 
+        /** Emits the back, manage, or view pledge button */
+        fun setActionButtonId(): Observable<Int>
+
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
 
@@ -98,7 +101,7 @@ interface ProjectViewModel {
         fun startVideoActivity(): Observable<Project>
 
         /** Emits the view id to hide based on the @isHorizontalRewardsEnabled Feature flag value */
-        fun viewToHide(): Observable<Pair<Int, Boolean>>
+        fun viewToShow(): Observable<Pair<Int, Boolean>>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectActivity>(environment), ProjectAdapter.Delegate, Inputs, Outputs {
@@ -122,6 +125,7 @@ interface ProjectViewModel {
         private val isHorizontalRewardsEnabled = BehaviorSubject.create<Boolean>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
+        private val setActionButtonId = BehaviorSubject.create<Int>()
         private val startLoginToutActivity = BehaviorSubject.create<Void>()
         private val showShareSheet = BehaviorSubject.create<Project>()
         private val showSavedPrompt = BehaviorSubject.create<Void>()
@@ -133,7 +137,7 @@ interface ProjectViewModel {
         private val startProjectUpdatesActivity = BehaviorSubject.create<Project>()
         private val startVideoActivity = BehaviorSubject.create<Project>()
         private val startBackingActivity = BehaviorSubject.create<Pair<Project, User>>()
-        private val viewToHide = BehaviorSubject.create<Pair<Int, Boolean>>()
+        private val viewToShow = BehaviorSubject.create<Pair<Int, Boolean>>()
 
         val inputs: ProjectViewModel.Inputs = this
         val outputs: ProjectViewModel.Outputs = this
@@ -279,12 +283,18 @@ interface ProjectViewModel {
 
             val viewId = this.isHorizontalRewardsEnabled
                     .compose(bindToLifecycle())
-                    .map { getViewIdToHide(it) }
+                    .map { getViewIdToShow(it) }
 
             Observable.combineLatest(viewId, this.isHorizontalRewardsEnabled)
-              { id, enabled -> Pair.create(id, enabled) }
+            { id, enabled -> Pair.create(id, enabled) }
                     .compose(bindToLifecycle())
-                    .subscribe(this.viewToHide)
+                    .subscribe(this.viewToShow)
+
+            Observable.combineLatest(currentProject, this.isHorizontalRewardsEnabled)
+            { project, enabled -> Pair.create(project, enabled) }
+                    .compose(bindToLifecycle())
+                    .map { setActionButtons(it.first) }
+                    .subscribe { this.setActionButtonId.onNext(it) }
 
         }
 
@@ -377,6 +387,8 @@ interface ProjectViewModel {
             return this.projectAndUserCountry
         }
 
+        override fun setActionButtonId(): Observable<Int> = this.setActionButtonId
+
         override fun showSavedPrompt(): Observable<Void> {
             return this.showSavedPrompt
         }
@@ -421,15 +433,25 @@ interface ProjectViewModel {
             return this.startVideoActivity
         }
 
-        override fun viewToHide(): Observable<Pair<Int, Boolean>> {
-            return this.viewToHide
+        override fun viewToShow(): Observable<Pair<Int, Boolean>> {
+            return this.viewToShow
         }
 
-        private fun getViewIdToHide(isEnabled: Boolean): Int {
+        private fun getViewIdToShow(isEnabled: Boolean): Int {
             return if (isEnabled) {
                 R.id.rewards_container
             } else {
                 R.id.project_action_buttons
+            }
+        }
+
+        private fun setActionButtons(project: Project): Int {
+            return if (!project.isBacking && project.isLive) {
+                R.id.back_project_button
+            } else if (project.isBacking && project.isLive) {
+                R.id.manage_pledge_button
+            } else {
+                R.id.view_pledge_button
             }
         }
 

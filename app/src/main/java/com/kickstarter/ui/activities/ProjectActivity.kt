@@ -8,6 +8,7 @@ import android.util.Pair
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.AutoTransition
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
@@ -18,7 +19,6 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -85,6 +85,14 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startCreatorBioWebViewActivity(it) }
 
+        this.viewModel.outputs.setActionButtonId()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    val view = findViewById<View>(it)
+                    ViewUtils.setGone(view, false)
+                }
+
         this.viewModel.outputs.showShareSheet()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -125,15 +133,14 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startLoginToutActivity() }
 
-        this.viewModel.outputs.viewToHide()
+        this.viewModel.outputs.viewToShow()
                 .compose(observeForUI())
                 .subscribe {
                     val view = findViewById<View>(it.first)
                     ViewUtils.setGone(view, false)
 
-                    this.adapter = ProjectAdapter(this.viewModel, it.second)
-                    project_recycler_view.adapter = this.adapter
-                    project_recycler_view.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+                    setupProjectAdapter(it.second)
+                    setProjectActionButtonVisibility(it.second)
                 }
 
         back_project_button.setOnClickListener {
@@ -151,11 +158,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
         manage_pledge_button.setOnClickListener {
             this.viewModel.inputs.managePledgeButtonClicked()
-        }
-
-        project_action_buttons.visibility = when {
-            ViewUtils.isLandscape(this) -> View.GONE
-            else -> View.VISIBLE
         }
 
         rewards_toolbar.setNavigationOnClickListener {
@@ -223,13 +225,25 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
     private fun renderProject(project: Project, configCountry: String) {
         this.adapter.takeProject(project, configCountry)
-        ProjectUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
+    }
+
+    private fun setupProjectAdapter(isHorizontalRewardsEnabled: Boolean) {
+        this.adapter = ProjectAdapter(this.viewModel, isHorizontalRewardsEnabled)
+        project_recycler_view.adapter = this.adapter
+        project_recycler_view.layoutManager = LinearLayoutManager(this)
     }
 
     private fun setupRewardsFragment(project: Project) {
         supportFragmentManager.beginTransaction()
                 .add(R.id.fragment_container, RewardsFragment.newInstance(project))
                 .commit()
+    }
+
+    private fun setProjectActionButtonVisibility(isHorizontalRewardsEnabled: Boolean) {
+        project_action_buttons.visibility = when {
+            ViewUtils.isLandscape(this) || isHorizontalRewardsEnabled -> View.GONE
+            else -> View.VISIBLE
+        }
     }
 
     private fun setRewardConstraints() {

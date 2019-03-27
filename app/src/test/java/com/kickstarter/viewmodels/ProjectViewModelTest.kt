@@ -49,7 +49,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startManagePledgeActivity().subscribe(this.startManagePledgeActivity)
         this.vm.outputs.startProjectUpdatesActivity().subscribe(this.startProjectUpdatesActivity)
         this.vm.outputs.startVideoActivity().subscribe(this.startVideoActivity)
-        this.vm.outputs.viewToHide().subscribe(this.viewToHide)
+        this.vm.outputs.viewToShow().subscribe(this.viewToHide)
     }
 
     @Test

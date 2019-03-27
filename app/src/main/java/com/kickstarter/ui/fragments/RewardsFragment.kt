@@ -12,6 +12,7 @@ import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.utils.RewardDecoration
 import com.kickstarter.models.Project
+import com.kickstarter.ui.ArgumentsKey.PROJECT
 import com.kickstarter.ui.adapters.HorizontalRewardsAdapter
 import com.kickstarter.viewmodels.RewardFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_rewards.*
@@ -22,7 +23,6 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
     private lateinit var project: Project
 
     companion object {
-        private var PROJECT = "project"
         fun newInstance(project: Project): RewardsFragment {
             val args = Bundle()
             args.putParcelable(PROJECT, project)
@@ -34,6 +34,7 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val args = arguments
         if (args != null) {
             project = args.getParcelable(PROJECT) as Project

@@ -56,7 +56,7 @@
           tools:text="Beep" />
 
         <TextView
-          android:id="@+id/horiztonal_reward_description_text_view"
+          android:id="@+id/horizontal_reward_description_text_view"
           style="@style/BodyPrimary"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"

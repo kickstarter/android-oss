@@ -9,6 +9,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.adapters.HorizontalRewardsAdapter
 import com.kickstarter.ui.fragments.RewardsFragment
 import rx.Observable
@@ -52,6 +53,9 @@ class RewardFragmentViewModel {
         /** Set the minimum TextView's text.  */
         fun minimumTextViewText(): Observable<String>
 
+        /** Emits the project argument from ProjectActivity. */
+        fun project(): Observable<Project>
+
         /** Returns `true` if the reward description is empty and should be hidden in the UI.  */
         fun rewardDescriptionIsGone(): Observable<Boolean>
 
@@ -89,6 +93,7 @@ class RewardFragmentViewModel {
         private val limitAndRemainingTextViewText: Observable<Pair<String, String>>
         private val limitHeaderIsGone: Observable<Boolean>
         private val minimumTextViewText: Observable<String>
+        private val project: Observable<Project>
         private val rewardDescriptionIsGone: Observable<Boolean>
         private val rewardsItemsAreGone: Observable<Boolean>
         private val titleTextViewIsGone: Observable<Boolean>
@@ -100,6 +105,7 @@ class RewardFragmentViewModel {
         val outputs: Outputs = this
 
         init {
+            this.project = this.arguments().map { args -> args.getParcelable(ArgumentsKey.PROJECT) as Project }
 
             val formattedMinimum = this.projectAndReward
                     .map { pr -> this.ksCurrency.formatWithProjectCurrency(pr.second.minimum(), pr.first, RoundingMode.UP) }
@@ -234,6 +240,8 @@ class RewardFragmentViewModel {
         @NonNull override fun minimumTextViewText(): Observable<String> {
             return this.minimumTextViewText
         }
+
+        override fun project(): Observable<Project> = this.project
 
         @NonNull override fun rewardDescriptionIsGone(): Observable<Boolean> {
             return this.rewardDescriptionIsGone

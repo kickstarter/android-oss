@@ -48,8 +48,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
     private val animDuration = 200L
     private var rewardsExpanded = false
-    private val show: ObjectAnimator = ObjectAnimator.ofFloat(null, View.ALPHA, 0f, 1f)
-    private val hide: ObjectAnimator = ObjectAnimator.ofFloat(null, View.ALPHA, 1f, 0f)
+    private val showRewardsFragment: ObjectAnimator = ObjectAnimator.ofFloat(null, View.ALPHA, 0f, 1f)
+    private val hideRewardsFragment: ObjectAnimator = ObjectAnimator.ofFloat(null, View.ALPHA, 1f, 0f)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,7 +129,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .compose(observeForUI())
                 .subscribe {
                     val view = findViewById<View>(it.first)
-                    ViewUtils.setGone(view, true)
+                    ViewUtils.setGone(view, false)
 
                     this.adapter = ProjectAdapter(this.viewModel, it.second)
                     project_recycler_view.adapter = this.adapter
@@ -146,7 +146,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
         horizontal_fragment_pledge_button.setOnClickListener {
             animateRewards()
-            rewardsExpanded = true
+            this.rewardsExpanded = true
         }
 
         manage_pledge_button.setOnClickListener {
@@ -159,18 +159,18 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         }
 
         rewards_toolbar.setNavigationOnClickListener {
-            onBackPressed()
-            project_toolbar.visibility = View.VISIBLE
+            this.back()
+            this.project_toolbar.visibility = View.VISIBLE
         }
 
         share_icon.setOnClickListener {
             this.viewModel.inputs.shareButtonClicked()
         }
 
-        show.addUpdateListener { valueAnim ->
+        this.showRewardsFragment.addUpdateListener { valueAnim ->
             val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
-            val radius = initialRadius * if (rewardsExpanded) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
-            rewards_container.radius = radius
+            val radius = initialRadius * if (this.rewardsExpanded) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
+            this.rewards_container.radius = radius
         }
 
         view_pledge_button.setOnClickListener {
@@ -185,9 +185,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
     private fun animateRewards() {
         val set = AnimatorSet()
-        show.target = if (rewardsExpanded) horizontal_fragment_pledge_button else pledge_container
-        hide.target = if (rewardsExpanded) pledge_container else horizontal_fragment_pledge_button
-        set.playTogether(show, hide)
+        this.showRewardsFragment.target = if (this.rewardsExpanded) horizontal_fragment_pledge_button else pledge_container
+        this.hideRewardsFragment.target = if (this.rewardsExpanded) pledge_container else horizontal_fragment_pledge_button
+        set.playTogether(this.showRewardsFragment, this.hideRewardsFragment)
         set.duration = animDuration
 
         val durationTransition = AutoTransition()
@@ -235,7 +235,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     private fun setRewardConstraints() {
         val constraintSet = ConstraintSet()
         constraintSet.clone(root)
-        if (rewardsExpanded) {
+        if (this.rewardsExpanded) {
             constraintSet.clear(R.id.rewards_container, ConstraintSet.BOTTOM)
             constraintSet.connect(R.id.rewards_container, ConstraintSet.TOP, R.id.guideline, ConstraintSet.TOP, 0)
         } else {
@@ -325,12 +325,12 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
     }
 
-    override fun onBackPressed() {
-        if (rewardsExpanded) {
+    override fun back() {
+        if (this.rewardsExpanded) {
             animateRewards()
-            rewardsExpanded = false
+            this.rewardsExpanded = false
         } else {
-            super.onBackPressed()
+            super.back()
         }
     }
 }

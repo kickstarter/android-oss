@@ -10,10 +10,6 @@ import rx.Observable
 
 class HorizontalRewardsAdapter(val delegate: HorizontalRewardViewHolder.Delegate) : KSAdapter() {
 
-    init {
-        addSection(emptyList<Any>())
-    }
-
     interface Delegate : HorizontalRewardViewHolder.Delegate
 
     override fun layout(sectionRow: SectionRow): Int = R.layout.item_reward

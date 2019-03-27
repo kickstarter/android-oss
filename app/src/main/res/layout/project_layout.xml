@@ -28,6 +28,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:focusable="true"
+    android:visibility="gone"
     app:layout_constrainedHeight="false"
     app:layout_constraintBottom_toBottomOf="parent">
 
@@ -58,9 +59,10 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_alignParentBottom="true"
-    app:cardBackgroundColor="@color/ksr_grey_500"
-    app:cardCornerRadius="@dimen/grid_5"
+    app:cardBackgroundColor="@color/white"
     app:layout_constrainedHeight="false"
+    android:elevation="@dimen/grid_2"
+    app:cardCornerRadius="@dimen/grid_5"
     app:layout_constraintTop_toTopOf="@+id/guideline">
 
     <LinearLayout
@@ -80,7 +82,7 @@
           android:id="@+id/rewards_toolbar"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:background="@color/ksr_grey_500"
+          android:background="@color/ksr_grey_400"
           app:navigationIcon="@drawable/ic_down"
           app:title="Back this project" />
 
@@ -103,7 +105,6 @@
       android:layout_marginEnd="@dimen/activity_horizontal_margin"
       android:layout_marginStart="@dimen/activity_horizontal_margin"
       android:text="@string/project_back_button"
-      android:visibility="visible"
       app:icon="@null" />
 
   </androidx.cardview.widget.CardView>
@@ -113,6 +114,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    app:layout_constraintGuide_end="100dp" />
+    app:layout_constraintGuide_end="@dimen/reward_fragment_guideline_constraint_end" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

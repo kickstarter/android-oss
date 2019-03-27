@@ -470,35 +470,43 @@ public final class ProjectViewHolder extends KSViewHolder {
     activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  @Nullable @OnClick(R.id.back_project_button) public void backProjectButtonOnClick() {
+  @Nullable @OnClick(R.id.back_project_button)
+  public void backProjectButtonOnClick() {
     this.delegate.projectViewHolderBackProjectClicked(this);
   }
 
-  @OnClick({R.id.blurb_view, R.id.campaign}) public void blurbClick() {
+  @OnClick({R.id.blurb_view, R.id.campaign})
+  public void blurbClick() {
     this.delegate.projectViewHolderBlurbClicked(this);
   }
 
-  @OnClick(R.id.comments) public void commentsClick() {
+  @OnClick(R.id.comments)
+  public void commentsClick() {
     this.delegate.projectViewHolderCommentsClicked(this);
   }
 
-  @OnClick({R.id.creator_name, R.id.creator_info}) public void creatorNameClick() {
+  @OnClick({R.id.creator_name, R.id.creator_info})
+  public void creatorNameClick() {
     this.delegate.projectViewHolderCreatorClicked(this);
   }
 
-  @Nullable @OnClick(R.id.manage_pledge_button) public void managePledgeOnClick() {
+  @Nullable @OnClick(R.id.manage_pledge_button)
+  public void managePledgeOnClick() {
     this.delegate.projectViewHolderManagePledgeClicked(this);
   }
 
-  @OnClick(R.id.play_button_overlay) public void playButtonClick() {
+  @OnClick(R.id.play_button_overlay)
+  public void playButtonClick() {
     this.delegate.projectViewHolderVideoStarted(this);
   }
 
-  @Nullable @OnClick(R.id.view_pledge_button) public void viewPledgeOnClick() {
+  @Nullable @OnClick(R.id.view_pledge_button)
+  public void viewPledgeOnClick() {
     this.delegate.projectViewHolderViewPledgeClicked(this);
   }
 
-  @OnClick(R.id.updates) public void updatesClick() {
+  @OnClick(R.id.updates)
+  public void updatesClick() {
     this.delegate.projectViewHolderUpdatesClicked(this);
   }
 

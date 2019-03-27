@@ -279,7 +279,7 @@ interface ProjectViewModel {
 
             val viewId = this.isHorizontalRewardsEnabled
                     .compose(bindToLifecycle())
-                    .map { hiddenViewId(it) }
+                    .map { getViewIdToHide(it) }
 
             Observable.combineLatest(viewId, this.isHorizontalRewardsEnabled)
               { id, enabled -> Pair.create(id, enabled) }
@@ -425,11 +425,11 @@ interface ProjectViewModel {
             return this.viewToHide
         }
 
-        private fun hiddenViewId(isEnabled: Boolean): Int {
+        private fun getViewIdToHide(isEnabled: Boolean): Int {
             return if (isEnabled) {
-                R.id.project_action_buttons
-            } else {
                 R.id.rewards_container
+            } else {
+                R.id.project_action_buttons
             }
         }
 

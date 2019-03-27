@@ -55,7 +55,7 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
         this.viewModel.outputs.descriptionTextViewText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { view.horiztonal_reward_description_text_view.text = it }
+                .subscribe { view.horizontal_reward_description_text_view.text = it }
 
         this.viewModel.outputs.isClickable()
                 .compose(bindToLifecycle())

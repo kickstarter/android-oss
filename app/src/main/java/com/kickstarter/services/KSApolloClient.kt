@@ -94,10 +94,12 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                                     .build()
                                         }
                                                 .toList()
-                                    }.subscribe {
-                                        ps.onNext(it)
-                                        ps.onCompleted()
                                     }
+
+//                                    .subscribe {
+//                                        ps.onNext(it)
+//                                        ps.onCompleted()
+//                                    }
                         }
                     })
             return@defer ps

@@ -138,7 +138,7 @@ interface ProjectViewModel {
         private val startProjectUpdatesActivity = BehaviorSubject.create<Project>()
         private val startVideoActivity = BehaviorSubject.create<Project>()
         private val startBackingActivity = BehaviorSubject.create<Pair<Project, User>>()
-        private val showPledgeFragment = BehaviorSubject.create<PledgeData>()
+        private val showPledgeFragment = PublishSubject.create<PledgeData>()
 
         val inputs: ProjectViewModel.Inputs = this
         val outputs: ProjectViewModel.Outputs = this
@@ -191,9 +191,9 @@ interface ProjectViewModel {
                     savedProjectOnLoginSuccess
             )
 
-            this.rewardClicked
-                    .compose<Pair<Pair<RewardViewHolder, Reward>, Project>>(combineLatestPair(currentProject))
-                    .map<PledgeData>{ PledgeData(getScreenLocationOfReward(it.first.first), it.first.second, it.second) }
+            currentProject
+                    .compose<Pair<Project, Pair<RewardViewHolder, Reward>>>(takePairWhen(this.rewardClicked))
+                    .map<PledgeData> { PledgeData(getScreenLocationOfReward(it.second.first), it.second.second, it.first) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeFragment)
 

@@ -27,7 +27,7 @@ open class MockApolloClient : ApolloClientType {
     }
 
     override fun getStoredCards(): Observable<List<StoredCard>> {
-        return Observable.just(Collections.singletonList(StoredCardFactory.storedCard()))
+        return Observable.just(Collections.singletonList(StoredCardFactory.discoverCard()))
     }
 
     override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data> {

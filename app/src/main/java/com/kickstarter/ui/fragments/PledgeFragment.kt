@@ -34,7 +34,6 @@ import kotlinx.android.synthetic.main.fragment_pledge.*
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
 class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate {
 
-    private lateinit var adapter : RewardCardAdapter
     private val defaultAnimationDuration = 200L
     private var animDuration = defaultAnimationDuration
 
@@ -56,9 +55,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             })
         }
 
-        this.adapter = RewardCardAdapter(this)
         cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        cards_recycler.adapter = this.adapter
+        cards_recycler.adapter = RewardCardAdapter(this)
         cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)))
 
         this.animDuration = when (savedInstanceState) {
@@ -66,7 +64,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             else -> 0L
         }
 
-        this.viewModel.outputs.animateReward()
+        this.viewModel.outputs.animateRewardCard()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { showPledgeSection(it) }
@@ -80,7 +78,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    this.adapter.setSelectedPosition(it)
+                    (cards_recycler.adapter as RewardCardAdapter).setSelectedPosition(it)
                     cards_recycler.scrollToPosition(it)
                     freezeRecyclerView(true)
                 }
@@ -89,7 +87,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    this.adapter.resetSelectedPosition(it)
+                    (cards_recycler.adapter as RewardCardAdapter).resetSelectedPosition(it)
                     freezeRecyclerView(false)
                 }
 
@@ -101,20 +99,20 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.cards()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.adapter.takeCards(it) }
+                .subscribe { (cards_recycler.adapter as RewardCardAdapter).takeCards(it) }
 
         this.viewModel.outputs.startNewCardActivity()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
                     startActivityForResult(Intent(this.context, NewCardActivity::class.java),
-                        ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD)
+                            ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD)
                 }
+    }
 
-        this.viewModel.outputs.startThanksActivity()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {  }
+    override fun onDetach() {
+        super.onDetach()
+        cards_recycler?.adapter = null
     }
 
     override fun closePledgeButtonClicked(position: Int) {
@@ -133,20 +131,18 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.newCardButtonClicked()
     }
 
-    private fun freezeRecyclerView(freeze : Boolean) {
+    private fun freezeRecyclerView(freeze: Boolean) {
         (cards_recycler.layoutManager as FreezeLinearLayoutManager).setFrozen(freeze)
     }
 
     private fun showPledgeSection(rewardAndLocation: Pair<Reward, ScreenLocation>) {
-        val initialMargin = this.resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)
-
         val location = rewardAndLocation.second
         val reward = rewardAndLocation.first
-        resetPledgeViews(location, reward)
-        revealPledgeSection(location, initialMargin)
+        setInitialViewStates(location, reward)
+        revealPledgeSection(location)
     }
 
-    private fun resetPledgeViews(location: ScreenLocation, reward: Reward) {
+    private fun setInitialViewStates(location: ScreenLocation, reward: Reward) {
         positionRewardSnapshot(location, reward)
 
         setDeliveryHeight(location)
@@ -184,7 +180,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         }
     }
 
-    private fun revealPledgeSection(location: ScreenLocation, initialMargin: Int) {
+    private fun revealPledgeSection(location: ScreenLocation) {
+        val initialMargin = this.resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)
+
         val slideRewardLeft = getRewardMarginAnimator(location.x.toInt(), initialMargin)
 
         val miniRewardWidth = resources.getDimensionPixelSize(R.dimen.mini_reward_width)
@@ -209,7 +207,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val expandReward = getRewardSizeAnimator(reward_snapshot.width, location.width, location).apply {
             addUpdateListener {
                 if (it.animatedFraction == 1f) {
-                    fragmentManager?.popBackStack()
+                    this@PledgeFragment.fragmentManager?.popBackStack()
                 }
             }
         }
@@ -255,9 +253,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     private fun startPledgeAnimatorSet(rewardSizeAnimator: ValueAnimator, rewardMarginAnimator: ValueAnimator, detailsYAnimator: ObjectAnimator?) {
         AnimatorSet().apply {
-            interpolator = FastOutSlowInInterpolator()
+            this.interpolator = FastOutSlowInInterpolator()
+            this.duration = animDuration
             playTogether(rewardSizeAnimator, rewardMarginAnimator, detailsYAnimator)
-            duration = animDuration
             start()
         }
     }

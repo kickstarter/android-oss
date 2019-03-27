@@ -35,15 +35,15 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCards() {
-        val storedCard = StoredCardFactory.storedCard()
+        val card = StoredCardFactory.discoverCard()
 
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
             override fun getStoredCards(): Observable<List<StoredCard>> {
-                return Observable.just(Collections.singletonList(storedCard))
+                return Observable.just(Collections.singletonList(card))
             }
         }).build())
 
-        this.cards.assertValue(Collections.singletonList(storedCard))
+        this.cards.assertValue(Collections.singletonList(card))
         this.koalaTest.assertValue("Viewed Payment Methods")
     }
 

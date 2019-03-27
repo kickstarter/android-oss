@@ -89,8 +89,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    val view = findViewById<View>(it)
-                    ViewUtils.setGone(view, false)
+                    if (it != null) {
+                        val view = findViewById<View>(it)
+                        ViewUtils.setGone(view, false)
+                    }
                 }
 
         this.viewModel.outputs.showShareSheet()

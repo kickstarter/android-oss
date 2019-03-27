@@ -13,6 +13,7 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.adapters.HorizontalRewardsAdapter
 import com.kickstarter.ui.fragments.RewardsFragment
 import rx.Observable
+import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
 
@@ -75,7 +76,7 @@ class RewardFragmentViewModel {
         fun titleTextViewText(): Observable<String>
     }
 
-    class ViewModel(@NonNull environment: Environment) : FragmentViewModel<RewardsFragment>(environment), HorizontalRewardsAdapter.Delegate ,Inputs, Outputs {
+    class ViewModel(@NonNull environment: Environment) : FragmentViewModel<RewardsFragment>(environment), HorizontalRewardsAdapter.Delegate, Inputs, Outputs {
         private val ksCurrency: KSCurrency = environment.ksCurrency()
 
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
@@ -93,7 +94,7 @@ class RewardFragmentViewModel {
         private val limitAndRemainingTextViewText: Observable<Pair<String, String>>
         private val limitHeaderIsGone: Observable<Boolean>
         private val minimumTextViewText: Observable<String>
-        private val project: Observable<Project>
+        private val project = BehaviorSubject.create<Project>()
         private val rewardDescriptionIsGone: Observable<Boolean>
         private val rewardsItemsAreGone: Observable<Boolean>
         private val titleTextViewIsGone: Observable<Boolean>
@@ -105,7 +106,12 @@ class RewardFragmentViewModel {
         val outputs: Outputs = this
 
         init {
-            this.project = this.arguments().map { args -> args.getParcelable(ArgumentsKey.PROJECT) as Project }
+            val projectToShow = arguments()
+                    .map { it.getParcelable(ArgumentsKey.ARGUMENT_REWARD_FRAGMENT_PROJECT) as Project }
+
+            projectToShow
+                    .compose(bindToLifecycle())
+                    .subscribe { this.project.onNext(it) }
 
             val formattedMinimum = this.projectAndReward
                     .map { pr -> this.ksCurrency.formatWithProjectCurrency(pr.second.minimum(), pr.first, RoundingMode.UP) }
@@ -173,8 +179,8 @@ class RewardFragmentViewModel {
             this.minimumTextViewText = formattedMinimum
 
             this.rewardsItemsAreGone = reward
-                    .map<Boolean>{ RewardUtils.isItemized(it) }
-                    .map<Boolean>{ BooleanUtils.negate(it) }
+                    .map<Boolean> { RewardUtils.isItemized(it) }
+                    .map<Boolean> { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
 
             this.titleTextViewIsGone = reward
@@ -209,15 +215,18 @@ class RewardFragmentViewModel {
             this.rewardClicked.onNext(null)
         }
 
-        @NonNull override fun conversionTextViewIsGone(): Observable<Boolean> {
+        @NonNull
+        override fun conversionTextViewIsGone(): Observable<Boolean> {
             return this.conversionTextViewIsGone
         }
 
-        @NonNull override fun conversionTextViewText(): Observable<String> {
+        @NonNull
+        override fun conversionTextViewText(): Observable<String> {
             return this.conversionTextViewText
         }
 
-        @NonNull override fun descriptionTextViewText(): Observable<String> {
+        @NonNull
+        override fun descriptionTextViewText(): Observable<String> {
             return this.descriptionTextViewText
         }
 
@@ -225,45 +234,55 @@ class RewardFragmentViewModel {
 
         override fun isClickable(): Observable<Boolean> = this.isClickable
 
-        @NonNull override fun limitAndRemainingTextViewIsGone(): Observable<Boolean> {
+        @NonNull
+        override fun limitAndRemainingTextViewIsGone(): Observable<Boolean> {
             return this.limitAndRemainingTextViewIsGone
         }
 
-        @NonNull override fun limitAndRemainingTextViewText(): Observable<Pair<String, String>> {
+        @NonNull
+        override fun limitAndRemainingTextViewText(): Observable<Pair<String, String>> {
             return this.limitAndRemainingTextViewText
         }
 
-        @NonNull override fun limitHeaderIsGone(): Observable<Boolean> {
+        @NonNull
+        override fun limitHeaderIsGone(): Observable<Boolean> {
             return this.limitHeaderIsGone
         }
 
-        @NonNull override fun minimumTextViewText(): Observable<String> {
+        @NonNull
+        override fun minimumTextViewText(): Observable<String> {
             return this.minimumTextViewText
         }
 
         override fun project(): Observable<Project> = this.project
 
-        @NonNull override fun rewardDescriptionIsGone(): Observable<Boolean> {
+        @NonNull
+        override fun rewardDescriptionIsGone(): Observable<Boolean> {
             return this.rewardDescriptionIsGone
         }
 
-        @NonNull override fun rewardsItemsAreGone(): Observable<Boolean> {
+        @NonNull
+        override fun rewardsItemsAreGone(): Observable<Boolean> {
             return this.rewardsItemsAreGone
         }
 
-        @NonNull override fun startBackingActivity(): Observable<Project> {
+        @NonNull
+        override fun startBackingActivity(): Observable<Project> {
             return this.startBackingActivity
         }
 
-        @NonNull override fun startCheckoutActivity(): Observable<Pair<Project, Reward>> {
+        @NonNull
+        override fun startCheckoutActivity(): Observable<Pair<Project, Reward>> {
             return this.startCheckoutActivity
         }
 
-        @NonNull override fun titleTextViewIsGone(): Observable<Boolean> {
+        @NonNull
+        override fun titleTextViewIsGone(): Observable<Boolean> {
             return this.titleTextViewIsGone
         }
 
-        @NonNull override fun titleTextViewText(): Observable<String> {
+        @NonNull
+        override fun titleTextViewText(): Observable<String> {
             return this.titleTextViewText
         }
     }

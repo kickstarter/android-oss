@@ -10,9 +10,10 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.kickstarter.R
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.RewardDecoration
 import com.kickstarter.models.Project
-import com.kickstarter.ui.ArgumentsKey.PROJECT
+import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.adapters.HorizontalRewardsAdapter
 import com.kickstarter.viewmodels.RewardFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_rewards.*
@@ -25,7 +26,7 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
     companion object {
         fun newInstance(project: Project): RewardsFragment {
             val args = Bundle()
-            args.putParcelable(PROJECT, project)
+            args.putParcelable(ArgumentsKey.ARGUMENT_REWARD_FRAGMENT_PROJECT, project)
             val fragment = RewardsFragment()
             fragment.arguments = args
             return fragment
@@ -35,10 +36,10 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val args = arguments
-        if (args != null) {
-            project = args.getParcelable(PROJECT) as Project
-        }
+        this.viewModel.outputs.project()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.project = it}
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -48,7 +49,6 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         setupRecyclerView()
     }
     

@@ -192,11 +192,10 @@ class RewardFragmentViewModel {
                     .distinctUntilChanged()
 
             this.reward = reward
-                    .filter { ObjectUtils.isNotNull(it.endsAt())}
-
 
             this.rewardEndDateSectionIsGone = reward
-                    .map { ObjectUtils.isNull(it.endsAt()) }
+                    .map { RewardUtils.hasExpirationDate(it) }
+                    .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
 
             this.titleTextViewIsGone = reward

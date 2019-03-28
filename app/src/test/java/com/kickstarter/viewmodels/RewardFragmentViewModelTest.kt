@@ -22,7 +22,9 @@ class RewardFragmentViewModelTest: KSRobolectricTestCase() {
     private val limitAndRemainingTextViewIsGone = TestSubscriber<Boolean>()
     private val limitAndRemainingTextViewText = TestSubscriber<Pair<String, String>>()
     private val minimumTextViewText = TestSubscriber<String>()
+    private val reward = TestSubscriber<Reward>()
     private val rewardDescriptionIsGone = TestSubscriber<Boolean>()
+    private val rewardEndDateSectionIsGone = TestSubscriber<Boolean>()
     private val rewardsItemsAreGone = TestSubscriber<Boolean>()
     private val startBackingActivity = TestSubscriber<Project>()
     private val startCheckoutActivity = TestSubscriber<Pair<Project, Reward>>()
@@ -38,7 +40,9 @@ class RewardFragmentViewModelTest: KSRobolectricTestCase() {
         this.vm.outputs.limitAndRemainingTextViewText().subscribe(this.limitAndRemainingTextViewText)
         this.vm.outputs.limitAndRemainingTextViewIsGone().subscribe(this.limitAndRemainingTextViewIsGone)
         this.vm.outputs.minimumTextViewText().subscribe(this.minimumTextViewText)
+        this.vm.outputs.reward().subscribe(this.reward)
         this.vm.outputs.rewardDescriptionIsGone().subscribe(this.rewardDescriptionIsGone)
+        this.vm.outputs.rewardEndDateSectionIsGone().subscribe(this.rewardEndDateSectionIsGone)
         this.vm.outputs.rewardsItemsAreGone().subscribe(this.rewardsItemsAreGone)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
         this.vm.outputs.startCheckoutActivity().subscribe(this.startCheckoutActivity)
@@ -256,5 +260,24 @@ class RewardFragmentViewModelTest: KSRobolectricTestCase() {
 
         this.vm.inputs.projectAndReward(project, RewardFactory.noDescription())
         this.rewardDescriptionIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testRewardEndDateSectionIsGone() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.rewardWithEndDate())
+        this.rewardDescriptionIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testReward() {
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.noDescription()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(project, reward)
+        this.reward.assertValue(reward)
     }
 }

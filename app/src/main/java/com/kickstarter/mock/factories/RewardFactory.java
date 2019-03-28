@@ -2,6 +2,8 @@ package com.kickstarter.mock.factories;
 
 import com.kickstarter.models.Reward;
 
+import org.joda.time.DateTime;
+
 import java.util.Arrays;
 
 import androidx.annotation.NonNull;
@@ -85,6 +87,14 @@ public final class RewardFactory {
   public static @NonNull Reward noDescription() {
     return reward().toBuilder()
       .description("")
+      .build();
+  }
+
+  public static @NonNull Reward rewardWithEndDate() {
+    return reward().toBuilder()
+      .shippingEnabled(true)
+      .shippingPreference("unrestricted")
+      .endsAt(DateTime.now())
       .build();
   }
 }

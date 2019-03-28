@@ -74,6 +74,12 @@ public final class RewardUtils {
     return isTrue(reward.shippingEnabled());
   }
 
+  /**
+   * Returns `true` if the reward has a valid expiration date.
+   */
+  public static boolean hasExpirationDate(final @NonNull Reward reward) {
+    return reward.endsAt() != null && reward.endsAt().compareTo(DateTime.now()) > 0;
+  }
 
   /*
    * Returns unit of time remaining in a readable string, e.g. `days to go`, `hours to go`.

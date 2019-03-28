@@ -85,13 +85,13 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
         this.viewModel.outputs.reward()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { view.horizontal_project_ending_text_view.text = formattedDeadlineString(it) }
+                .subscribe { view.horizontal_reward_ending_text_view.text = formattedDeadlineString(it) }
 
         this.viewModel.outputs.rewardEndDateSectionIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    ViewUtils.setGone(view.horizontal_project_ending_text_view, it) }
+                    ViewUtils.setGone(view.horizontal_reward_ending_text_view, it) }
 
         this.viewModel.outputs.titleTextViewText()
                 .compose(bindToLifecycle())

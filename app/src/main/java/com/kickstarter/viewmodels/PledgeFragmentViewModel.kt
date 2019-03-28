@@ -6,6 +6,7 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.*
+import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -74,12 +75,16 @@ interface PledgeFragmentViewModel {
         private val startNewCardActivity = PublishSubject.create<Void>()
 
         private val client = environment.apolloClient()
+        private val currentUser = environment.currentUser()
         private val ksCurrency = environment.ksCurrency()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
+
+            val userIsLoggedIn = this.currentUser.isLoggedIn
+                    .distinctUntilChanged()
 
             val reward = arguments()
                     .map { it.getParcelable(ArgumentsKey.PLEDGE_REWARD) as Reward }
@@ -111,7 +116,9 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.animateReward.onNext(it) }
 
-            getListOfStoredCards()
+            userIsLoggedIn
+                    .filter { BooleanUtils.isTrue(it) }
+                    .switchMap { getListOfStoredCards() }
                     .compose(bindToLifecycle())
                     .subscribe{ this.cards.onNext(it) }
 

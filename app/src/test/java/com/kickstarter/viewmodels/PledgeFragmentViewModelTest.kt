@@ -7,9 +7,11 @@ import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
@@ -62,12 +64,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testCards() {
         val card = StoredCardFactory.discoverCard()
+        val mockCurrentUser = MockCurrentUser(UserFactory.user())
 
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun getStoredCards(): Observable<List<StoredCard>> {
-                return Observable.just(Collections.singletonList(card))
-            }
-        }).build())
+        val environment = environment()
+                .toBuilder()
+                .currentUser(mockCurrentUser)
+                .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(Collections.singletonList(card))
+                    }
+                }).build()
+        setUpEnvironment(environment)
 
         this.cards.assertValue(Collections.singletonList(card))
 

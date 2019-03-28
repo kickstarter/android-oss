@@ -7,7 +7,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
-import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromRight
 import com.kickstarter.libs.utils.TransitionUtils.transition
 import com.kickstarter.libs.utils.ViewUtils
@@ -49,7 +49,7 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    view.horizontal_project_ending_text_view.text = formattedDeadlineString(it)
+
                 }
 
         this.viewModel.outputs.descriptionTextViewText()
@@ -82,6 +82,17 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
                     setMinimumTextView(it)
                 }
 
+        this.viewModel.outputs.reward()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { view.horizontal_project_ending_text_view.text = formattedDeadlineString(it) }
+
+        this.viewModel.outputs.rewardEndDateSectionIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    ViewUtils.setGone(view.horizontal_project_ending_text_view, it) }
+
         this.viewModel.outputs.titleTextViewText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -111,9 +122,9 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
         this.viewModel.inputs.projectAndReward(project, reward)
     }
 
-    private fun formattedDeadlineString(@NonNull project: Project): String {
-        val detail = ProjectUtils.deadlineCountdownDetail(project, context(), this.ksString)
-        val value = ProjectUtils.deadlineCountdownValue(project)
+    private fun formattedDeadlineString(@NonNull reward: Reward): String {
+        val detail = RewardUtils.deadlineCountdownDetail(reward, context(), this.ksString)
+        val value = RewardUtils.deadlineCountdownValue(reward)
         return "$value $detail"
     }
 

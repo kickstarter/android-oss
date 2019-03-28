@@ -60,6 +60,12 @@ class RewardFragmentViewModel {
         /** Returns `true` if the reward description is empty and should be hidden in the UI.  */
         fun rewardDescriptionIsGone(): Observable<Boolean>
 
+        /** Returns the reward. */
+        fun reward(): Observable<Reward>
+
+        /** Returns true if the reward end date should be hidden,`false` otherwise. */
+        fun rewardEndDateSectionIsGone(): Observable<Boolean>
+
         /** Returns `true` if the items section should be hidden, `false` otherwise.  */
         fun rewardsItemsAreGone(): Observable<Boolean>
 
@@ -95,7 +101,9 @@ class RewardFragmentViewModel {
         private val limitHeaderIsGone: Observable<Boolean>
         private val minimumTextViewText: Observable<String>
         private val project = BehaviorSubject.create<Project>()
+        private val reward: Observable<Reward>
         private val rewardDescriptionIsGone: Observable<Boolean>
+        private val rewardEndDateSectionIsGone: Observable<Boolean>
         private val rewardsItemsAreGone: Observable<Boolean>
         private val titleTextViewIsGone: Observable<Boolean>
         private val titleTextViewText: Observable<String>
@@ -183,6 +191,14 @@ class RewardFragmentViewModel {
                     .map<Boolean> { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
 
+            this.reward = reward
+                    .filter { ObjectUtils.isNotNull(it.endsAt())}
+
+
+            this.rewardEndDateSectionIsGone = reward
+                    .map { ObjectUtils.isNull(it.endsAt()) }
+                    .distinctUntilChanged()
+
             this.titleTextViewIsGone = reward
                     .map<String> { it.title() }
                     .map { ObjectUtils.isNull(it) }
@@ -260,6 +276,10 @@ class RewardFragmentViewModel {
         override fun rewardDescriptionIsGone(): Observable<Boolean> {
             return this.rewardDescriptionIsGone
         }
+
+        override fun reward(): Observable<Reward> = this.reward
+
+        override fun rewardEndDateSectionIsGone(): Observable<Boolean> = this.rewardEndDateSectionIsGone
 
         @NonNull
         override fun rewardsItemsAreGone(): Observable<Boolean> {

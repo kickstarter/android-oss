@@ -18,6 +18,7 @@ import static com.kickstarter.libs.utils.IntegerUtils.isZero;
 public abstract class Reward implements Parcelable {
   public abstract @Nullable Integer backersCount();
   public abstract @Nullable String description();
+  public abstract @Nullable DateTime endsAt();
   public abstract long id();
   public abstract @Nullable Integer limit();
   public abstract float minimum();
@@ -33,6 +34,7 @@ public abstract class Reward implements Parcelable {
   public abstract static class Builder {
     public abstract Builder backersCount(Integer __);
     public abstract Builder description(String __);
+    public abstract Builder endsAt(DateTime __);
     public abstract Builder id(long __);
     public abstract Builder limit(Integer __);
     public abstract Builder minimum(float __);

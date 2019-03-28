@@ -7,6 +7,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KoalaEvent
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.preferences.MockBooleanPreference
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
@@ -18,7 +19,7 @@ import org.junit.Test
 import rx.observers.TestSubscriber
 
 class ProjectViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm : ProjectViewModel.ViewModel
+    private lateinit var vm: ProjectViewModel.ViewModel
     private val heartDrawableId = TestSubscriber<Int>()
     private val projectTest = TestSubscriber<Project>()
     private val showShareSheet = TestSubscriber<Project>()
@@ -266,23 +267,25 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testProjectViewModel_ViewToHide_WhenIsHorizontalRewardsIsDisabled() {
         setUpEnvironment(environment())
-        this.viewToShow.assertValue(Pair.create(R.id.rewards_container, false))
+        this.viewToShow.assertValue(Pair.create(R.id.project_action_buttons, false))
     }
 
     @Test
     fun testProjectViewModel_ViewToHide_WhenIsHorizontalRewardsIsEnabled() {
-        val environment = environment()
-        environment.enableHorizontalRewards().set(true)
+        val booleanPreference = MockBooleanPreference(true)
+        val environment = environment().toBuilder()
+                .enableHorizontalRewards(booleanPreference)
+                .build()
         setUpEnvironment(environment)
 
-        this.viewToShow.assertValue(Pair.create(R.id.project_action_buttons, true))
+        this.viewToShow.assertValue(Pair.create(R.id.rewards_container, true))
     }
 
     @Test
     fun testProjectViewModel_SetActionButtonId_NonBacked_Live_Project() {
         setUpEnvironment(environment())
 
-        var project = ProjectFactory.project()
+        val project = ProjectFactory.project()
 
         // Start the view model with a project.
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
@@ -294,7 +297,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testProjectViewModel_SetActionButtonId_Backed_Live_Project() {
         setUpEnvironment(environment())
 
-        var project = ProjectFactory.backedProject()
+        val project = ProjectFactory.backedProject()
 
         // Start the view model with a project.
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
@@ -306,7 +309,10 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testProjectViewModel_SetActionButtonId_Backed_Ended_Project() {
         setUpEnvironment(environment())
 
-        var project = ProjectFactory.successfulProject()
+        val project = ProjectFactory.successfulProject()
+                .toBuilder()
+                .isBacking(true)
+                .build()
 
         // Start the view model with a project.
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
@@ -318,7 +324,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testProjectViewModel_SetActionButtonIdIsNull_NonBacked_Ended_Project() {
         setUpEnvironment(environment())
 
-        var project = ProjectFactory.successfulProject()
+        val project = ProjectFactory.successfulProject()
                 .toBuilder()
                 .isBacking(false)
                 .build()

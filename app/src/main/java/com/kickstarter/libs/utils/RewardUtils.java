@@ -81,7 +81,7 @@ public final class RewardUtils {
     return reward.endsAt() != null && reward.endsAt().compareTo(DateTime.now()) > 0;
   }
 
-  /*
+  /**
    * Returns unit of time remaining in a readable string, e.g. `days to go`, `hours to go`.
    */
   public static @NonNull String deadlineCountdownDetail(final @NonNull Reward reward, final @NonNull Context context,
@@ -92,7 +92,7 @@ public final class RewardUtils {
   }
 
   /**
-   * Returns the most appropriate unit for the time remaining until the project
+   * Returns the most appropriate unit for the time remaining until the reward
    * reaches its deadline.
    *
    * @param  context an Android context.
@@ -113,17 +113,16 @@ public final class RewardUtils {
   }
 
   /**
-   * Returns time until project reaches deadline in seconds, or 0 if the
-   * project has already finished.
+   * Returns time until reward reaches deadline in seconds, or 0 if the
+   * reward has already finished.
    */
   public static @NonNull Long timeInSecondsUntilDeadline(final @NonNull Reward reward) {
     return Math.max(0L,
       new Duration(new DateTime(), reward.endsAt()).getStandardSeconds());
   }
 
-
   /**
-   * Returns time remaining until project reaches deadline in either seconds,
+   * Returns time remaining until reward reaches deadline in either seconds,
    * minutes, hours or days. A time unit is chosen such that the number is
    * readable, e.g. 5 minutes would be preferred to 300 seconds.
    *

@@ -25,6 +25,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val showSavedPromptTest = TestSubscriber<Void>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val savedTest = TestSubscriber<Boolean>()
+    private val setActionButtonId = TestSubscriber<Int>()
     private val startBackingActivity = TestSubscriber<Pair<Project, User>>()
     private val startCampaignWebViewActivity = TestSubscriber<Project>()
     private val startCommentsActivity = TestSubscriber<Project>()
@@ -32,12 +33,13 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val startManagePledgeActivity = TestSubscriber<Project>()
     private val startProjectUpdatesActivity = TestSubscriber<Project>()
     private val startVideoActivity = TestSubscriber<Project>()
-    private val viewToHide = TestSubscriber<Pair<Int, Boolean>>()
+    private val viewToShow = TestSubscriber<Pair<Int, Boolean>>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectViewModel.ViewModel(environment)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
         this.vm.outputs.projectAndUserCountry().map { pc -> pc.first }.subscribe(this.projectTest)
+        this.vm.outputs.setActionButtonId().subscribe(this.setActionButtonId)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
@@ -49,7 +51,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startManagePledgeActivity().subscribe(this.startManagePledgeActivity)
         this.vm.outputs.startProjectUpdatesActivity().subscribe(this.startProjectUpdatesActivity)
         this.vm.outputs.startVideoActivity().subscribe(this.startVideoActivity)
-        this.vm.outputs.viewToShow().subscribe(this.viewToHide)
+        this.vm.outputs.viewToShow().subscribe(this.viewToShow)
     }
 
     @Test
@@ -264,7 +266,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testProjectViewModel_ViewToHide_WhenIsHorizontalRewardsIsDisabled() {
         setUpEnvironment(environment())
-        this.viewToHide.assertValue(Pair.create(R.id.rewards_container, false))
+        this.viewToShow.assertValue(Pair.create(R.id.rewards_container, false))
     }
 
     @Test
@@ -273,6 +275,57 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         environment.enableHorizontalRewards().set(true)
         setUpEnvironment(environment)
 
-        this.viewToHide.assertValue(Pair.create(R.id.project_action_buttons, true))
+        this.viewToShow.assertValue(Pair.create(R.id.project_action_buttons, true))
+    }
+
+    @Test
+    fun testProjectViewModel_SetActionButtonId_NonBacked_Live_Project() {
+        setUpEnvironment(environment())
+
+        var project = ProjectFactory.project()
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.setActionButtonId.assertValue(R.id.back_project_button)
+    }
+
+    @Test
+    fun testProjectViewModel_SetActionButtonId_Backed_Live_Project() {
+        setUpEnvironment(environment())
+
+        var project = ProjectFactory.backedProject()
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.setActionButtonId.assertValue(R.id.manage_pledge_button)
+    }
+
+    @Test
+    fun testProjectViewModel_SetActionButtonId_Backed_Ended_Project() {
+        setUpEnvironment(environment())
+
+        var project = ProjectFactory.successfulProject()
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.setActionButtonId.assertValue(R.id.view_pledge_button)
+    }
+
+    @Test
+    fun testProjectViewModel_SetActionButtonIdIsNull_NonBacked_Ended_Project() {
+        setUpEnvironment(environment())
+
+        var project = ProjectFactory.successfulProject()
+                .toBuilder()
+                .isBacking(false)
+                .build()
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.setActionButtonId.assertValue(null)
     }
 }

@@ -294,6 +294,7 @@ interface ProjectViewModel {
             { project, enabled -> Pair.create(project, enabled) }
                     .compose(bindToLifecycle())
                     .map { setActionButtons(it.first) }
+                    .take(1)
                     .subscribe { this.setActionButtonId.onNext(it) }
 
         }
@@ -445,13 +446,15 @@ interface ProjectViewModel {
             }
         }
 
-        private fun setActionButtons(project: Project): Int {
+        private fun setActionButtons(project: Project): Int? {
             return if (!project.isBacking && project.isLive) {
                 R.id.back_project_button
             } else if (project.isBacking && project.isLive) {
                 R.id.manage_pledge_button
-            } else {
+            } else if (project.isBacking && !project.isLive) {
                 R.id.view_pledge_button
+            } else {
+                return null
             }
         }
 

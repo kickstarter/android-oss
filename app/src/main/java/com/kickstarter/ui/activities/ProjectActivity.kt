@@ -149,7 +149,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
     private fun showPledgeFragment(pledgeData: PledgeData) {
         if (this.supportFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
-            val pledgeFragment = PledgeFragment.newInstance(pledgeData.rewardScreenLocation, pledgeData.reward, pledgeData.project)
+            val pledgeFragment = PledgeFragment.newInstance(pledgeData)
             this.supportFragmentManager.beginTransaction()
                     .add(R.id.fragment_container,
                             pledgeFragment,

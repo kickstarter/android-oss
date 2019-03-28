@@ -20,11 +20,11 @@ import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.NewCardActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
+import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.ui.viewholders.RewardPledgeCardViewHolder
@@ -261,12 +261,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     companion object {
 
-        fun newInstance(location: ScreenLocation, reward: Reward, project: Project): PledgeFragment {
+        fun newInstance(pledgeData : PledgeData): PledgeFragment {
             val fragment = PledgeFragment()
             val argument = Bundle()
-            argument.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)
-            argument.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project)
-            argument.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, location)
+            argument.putParcelable(ArgumentsKey.PLEDGE_REWARD, pledgeData.reward)
+            argument.putParcelable(ArgumentsKey.PLEDGE_PROJECT, pledgeData.project)
+            argument.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, pledgeData.rewardScreenLocation)
             fragment.arguments = argument
             return fragment
         }

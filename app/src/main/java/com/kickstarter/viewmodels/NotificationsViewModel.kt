@@ -50,6 +50,9 @@ interface NotificationsViewModel {
         /** Call when the notify of new comments toggle changes.  */
         fun notifyOfComments(checked: Boolean)
 
+        /** Call when the notify of new comment reply toggle changes.  */
+        fun notifyOfCommentReplies(checked: Boolean)
+
         /** Call when the email frequency spinner selection changes.  */
         fun notifyOfCreatorDigest(checked: Boolean)
 
@@ -198,6 +201,10 @@ interface NotificationsViewModel {
 
         override fun notifyOfComments(checked: Boolean) {
             this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfComments(checked).build())
+        }
+
+        override fun notifyOfCommentReplies(checked: Boolean) {
+            this.userInput.onNext(this.userOutput.value.toBuilder().notifyOfCommentReplies(checked).build())
         }
 
         override fun notifyOfCreatorDigest(checked: Boolean) {

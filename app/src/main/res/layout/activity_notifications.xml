@@ -321,6 +321,25 @@
 
         </LinearLayout>
 
+        <LinearLayout
+          android:id="@+id/comment_replies_row"
+          style="@style/SettingsNotificationRow">
+
+          <TextView
+            style="@style/SettingsSectionLabel"
+            android:text="Comment reply digest" />
+
+          <ImageButton
+            android:id="@+id/comment_replies_mail_icon"
+            style="@style/KSSettingsMailIcon"
+            android:contentDescription="@null" />
+
+          <Space
+            android:layout_width="@dimen/grid_8"
+            android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
       </LinearLayout>
 
     </LinearLayout>

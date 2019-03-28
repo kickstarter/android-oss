@@ -36,6 +36,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
 
     private var notifyMobileOfBackings: Boolean = false
     private var notifyMobileOfComments: Boolean = false
+    private var notifyMobileOfCommentReplies: Boolean = false
     private var notifyMobileOfCreatorEdu: Boolean = false
     private var notifyMobileOfFollower: Boolean = false
     private var notifyMobileOfFriendActivity: Boolean = false
@@ -89,6 +90,7 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
 
         displayBackingsNotificationSettings(user)
         displayCommentsNotificationSettings(user)
+        displayCommentRepliesNotificationSettings(user)
         displayCreatorTipsNotificationSettings(user)
         displayFollowerNotificationSettings(user)
         displayFriendActivityNotificationSettings(user)
@@ -133,6 +135,11 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
 
         toggleImageButtonIconColor(comments_phone_icon, this.notifyMobileOfComments, true)
         toggleImageButtonIconColor(comments_mail_icon, this.notifyOfComments)
+    }
+
+    private fun displayCommentRepliesNotificationSettings(user: User) {
+        this.notifyMobileOfCommentReplies = isTrue(user.notifyOfCommentReplies())
+        toggleImageButtonIconColor(comment_replies_mail_icon, this.notifyMobileOfCommentReplies)
     }
 
     private fun displayCreatorTipsNotificationSettings(user: User) {
@@ -229,6 +236,10 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
 
         comments_phone_icon.setOnClickListener {
             this.viewModel.inputs.notifyMobileOfComments(!this.notifyMobileOfComments)
+        }
+
+        comment_replies_mail_icon.setOnClickListener {
+            this.viewModel.inputs.notifyOfCommentReplies(!this.notifyMobileOfCommentReplies)
         }
 
         comments_row.setOnClickListener {

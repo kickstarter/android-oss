@@ -194,7 +194,7 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
 
   @CallSuper
   @Override
-  public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+  public void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     Timber.d("onActivityResult %s", this.toString());
     this.viewModel.activityResult(ActivityResult.create(requestCode, resultCode, data));

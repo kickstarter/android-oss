@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityRequestCodes
@@ -51,14 +50,11 @@ interface PledgeFragmentViewModel {
         /** Emits the estimated delivery date string of the reward. */
         fun estimatedDelivery(): Observable<String>
 
-        /** Emits when the cards adapter should return position to initial state. */
-        fun hidePledgeCard(): Observable<Int>
-
         /** Emits the pledge amount string of the reward. */
         fun pledgeAmount(): Observable<String>
 
         /** Emits when the cards adapter should update selected position. */
-        fun showPledgeCard(): Observable<Int>
+        fun showPledgeCard(): Observable<Pair<Int, Boolean>>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.NewCardActivity]. */
         fun startNewCardActivity(): Observable<Void>
@@ -74,12 +70,11 @@ interface PledgeFragmentViewModel {
         private val refreshCards = PublishSubject.create<Void>()
         private val selectCardButtonClicked = PublishSubject.create<Int>()
 
-        private val animateReward = PublishSubject.create<Pair<Reward, ScreenLocation>>()
+        private val animateReward = BehaviorSubject.create<Pair<Reward, ScreenLocation>>()
         private val cards = BehaviorSubject.create<List<StoredCard>>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
-        private val hidePledgeCard = BehaviorSubject.create<Int>()
         private val pledgeAmount = BehaviorSubject.create<String>()
-        private val showPledgeCard = BehaviorSubject.create<Int>()
+        private val pledgeCardPosition = BehaviorSubject.create<Pair<Int, Boolean>>()
         private val startNewCardActivity = PublishSubject.create<Void>()
 
         private val client = environment.apolloClient()
@@ -106,44 +101,42 @@ interface PledgeFragmentViewModel {
                     .map { it.estimatedDeliveryOn() }
                     .map { dateTime -> dateTime?.let { DateTimeUtils.estimatedDeliveryOn(it) } }
                     .compose(bindToLifecycle())
-                    .subscribe(this.estimatedDelivery)
+                    .subscribe{ this.estimatedDelivery.onNext(it) }
 
             reward
                     .map { it.minimum() }
                     .compose<Pair<Float, Project>>(combineLatestPair(project))
                     .map<String> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP) }
                     .compose(bindToLifecycle())
-                    .subscribe(this.pledgeAmount)
+                    .subscribe{ this.pledgeAmount.onNext(it) }
 
             rewardAndLocation
                     .compose<Pair<Reward, ScreenLocation>>(takeWhen(this.onGlobalLayout))
                     .compose(bindToLifecycle())
-                    .subscribe(this.animateReward)
+                    .subscribe { this.animateReward.onNext(it) }
 
             getListOfStoredCards()
-                    .subscribe(this.cards)
-
-            this.cards
-                    .subscribe { Log.d("izzytest", "${it.size}") }
+                    .compose(bindToLifecycle())
+                    .subscribe{ this.cards.onNext(it) }
 
             this.selectCardButtonClicked
                     .compose(bindToLifecycle())
-                    .subscribe(this.showPledgeCard)
+                    .subscribe { this.pledgeCardPosition.onNext(Pair(it, true)) }
 
             this.closeCardButtonClicked
                     .compose(bindToLifecycle())
-                    .subscribe(this.hidePledgeCard)
+                    .subscribe { this.pledgeCardPosition.onNext(Pair(it, false)) }
 
             this.newCardButtonClicked
                     .compose(bindToLifecycle())
-                    .subscribe(this.startNewCardActivity)
+                    .subscribe { this.startNewCardActivity.onNext(it) }
 
             activityResult()
                     .filter { it.isRequestCode(ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD) }
                     .filter(ActivityResult::isOk)
                     .switchMap { getListOfStoredCards() }
                     .compose(bindToLifecycle())
-                    .subscribe(this.cards)
+                    .subscribe{ this.cards.onNext(it) }
 
         }
 
@@ -177,11 +170,9 @@ interface PledgeFragmentViewModel {
 
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
 
-        override fun hidePledgeCard(): Observable<Int> = this.hidePledgeCard
-
         override fun pledgeAmount(): Observable<String> = this.pledgeAmount
 
-        override fun showPledgeCard(): Observable<Int> = this.showPledgeCard
+        override fun showPledgeCard(): Observable<Pair<Int, Boolean>> = this.pledgeCardPosition
 
         override fun startNewCardActivity(): Observable<Void> = this.startNewCardActivity
 

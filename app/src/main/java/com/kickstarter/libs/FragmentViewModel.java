@@ -88,7 +88,7 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
     this.viewChange.onNext(null);
   }
 
-  protected @NonNull Observable<ActivityResult> activityResult() {
+  protected final @NonNull Observable<ActivityResult> activityResult() {
     return this.activityResult;
   }
 

@@ -24,9 +24,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val animateRewardCard = TestSubscriber<Pair<Reward, ScreenLocation>>()
     private val cards = TestSubscriber<List<StoredCard>>()
     private val estimatedDelivery = TestSubscriber<String>()
-    private val hidePledgeCard = TestSubscriber<Int>()
     private val pledgeAmount = TestSubscriber<String>()
-    private val showPledgeCard = TestSubscriber<Int>()
+    private val showPledgeCard = TestSubscriber<Pair<Int, Boolean>>()
     private val startNewCardActivity = TestSubscriber<Void>()
 
     private fun setUpEnvironment(environment: Environment) {
@@ -35,7 +34,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.animateRewardCard().subscribe(this.animateRewardCard)
         this.vm.outputs.cards().subscribe(this.cards)
         this.vm.outputs.estimatedDelivery().subscribe(this.estimatedDelivery)
-        this.vm.outputs.hidePledgeCard().subscribe(this.hidePledgeCard)
         this.vm.outputs.pledgeAmount().subscribe(this.pledgeAmount)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.startNewCardActivity().subscribe(this.startNewCardActivity)
@@ -79,13 +77,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testHidePledgeCard() {
-        setUpEnvironment(environment())
-
-        this.vm.inputs.closeCardButtonClicked(3)
-        this.hidePledgeCard.assertValue(3)
-    }
-    @Test
     fun testPledgeAmount() {
         setUpEnvironment(environment())
 
@@ -97,7 +88,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.selectCardButtonClicked(2)
-        this.showPledgeCard.assertValue(2)
+        this.showPledgeCard.assertValuesAndClear(Pair(2, true))
+
+        this.vm.inputs.closeCardButtonClicked(2)
+        this.showPledgeCard.assertValue(Pair(2, false))
     }
 
     @Test

@@ -18,6 +18,7 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.BackingActivity;
 import com.kickstarter.ui.activities.CheckoutActivity;
 import com.kickstarter.ui.adapters.RewardsItemAdapter;
+import com.kickstarter.ui.data.ScreenLocation;
 import com.kickstarter.viewmodels.RewardViewModel;
 
 import androidx.annotation.NonNull;
@@ -63,7 +64,7 @@ public final class RewardViewHolder extends KSViewHolder {
   private Reward reward;
 
   public interface Delegate {
-    void rewardClicked(RewardViewHolder rewardViewHolder, Reward reward);
+    void rewardClicked(ScreenLocation screenLocation, Reward reward);
   }
 
   public RewardViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -127,7 +128,7 @@ public final class RewardViewHolder extends KSViewHolder {
     this.viewModel.outputs.showPledgeFragment()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(pr -> this.delegate.rewardClicked(this, this.reward));
+      .subscribe(pr -> this.delegate.rewardClicked(getScreenLocationOfReward(), this.reward));
 
     this.viewModel.outputs.startBackingActivity()
       .compose(bindToLifecycle())
@@ -261,6 +262,16 @@ public final class RewardViewHolder extends KSViewHolder {
 
     context.startActivity(intent);
     transition(context, slideInFromRight());
+  }
+
+  private ScreenLocation getScreenLocationOfReward()  {
+    final int[] rewardLocation = new int[2];
+    this.itemView.getLocationInWindow(rewardLocation);
+    final float x = this.itemView.getLeft();
+    final float y = this.itemView.getTop();
+    final int height = this.itemView.getHeight();
+    final int width = this.itemView.getWidth();
+    return new ScreenLocation(0f, 0f, height, width);
   }
 
   @Override

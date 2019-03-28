@@ -77,19 +77,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showPledgeCard()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    (cards_recycler.adapter as RewardCardAdapter).setSelectedPosition(it)
-                    cards_recycler.scrollToPosition(it)
-                    freezeRecyclerView(true)
-                }
-
-        this.viewModel.outputs.hidePledgeCard()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    (cards_recycler.adapter as RewardCardAdapter).resetSelectedPosition(it)
-                    freezeRecyclerView(false)
-                }
+                .subscribe { updatePledgeCardSelection(it) }
 
         this.viewModel.outputs.pledgeAmount()
                 .compose(bindToLifecycle())
@@ -131,8 +119,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.newCardButtonClicked()
     }
 
-    private fun freezeRecyclerView(freeze: Boolean) {
-        (cards_recycler.layoutManager as FreezeLinearLayoutManager).setFrozen(freeze)
+    private fun updatePledgeCardSelection(positionAndSelected: Pair<Int, Boolean>) {
+        val position = positionAndSelected.first
+        val selected = positionAndSelected.second
+        if (selected) {
+            (cards_recycler.adapter as RewardCardAdapter).setSelectedPosition(position)
+            cards_recycler.scrollToPosition(position)
+        } else {
+            (cards_recycler.adapter as RewardCardAdapter).resetSelectedPosition(position)
+        }
+        (cards_recycler.layoutManager as FreezeLinearLayoutManager).setFrozen(selected)
     }
 
     private fun showPledgeSection(rewardAndLocation: Pair<Reward, ScreenLocation>) {
@@ -154,8 +150,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val miniRewardWidth = this.resources.getDimensionPixelSize(R.dimen.mini_reward_width)
         val scaleX = miniRewardWidth.toFloat() / location.width
         val miniRewardHeight = location.height * scaleX
+        delivery.measure(View.MeasureSpec.makeMeasureSpec(pledge_details.width, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(pledge_details.height, View.MeasureSpec.UNSPECIFIED))
+        val targetHeight = delivery.measuredHeight
         val deliveryParams = delivery.layoutParams as LinearLayout.LayoutParams
-        deliveryParams.height = Math.max(miniRewardHeight.toInt(), delivery.height)
+        deliveryParams.height = Math.max(miniRewardHeight.toInt(), targetHeight)
         delivery.layoutParams = deliveryParams
     }
 
@@ -185,7 +184,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         val slideRewardLeft = getRewardMarginAnimator(location.x.toInt(), initialMargin)
 
-        val miniRewardWidth = resources.getDimensionPixelSize(R.dimen.mini_reward_width)
+        val miniRewardWidth = this.resources.getDimensionPixelSize(R.dimen.mini_reward_width)
         val shrinkReward = getRewardSizeAnimator(location.width, miniRewardWidth, location)
 
         val slideDetailsUp = getDetailsYAnimator(pledge_root.height.toFloat(), 0f)
@@ -201,7 +200,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun hidePledgeSection(location: ScreenLocation, initialMargin: Int) {
-        this.animDuration = 200L
+        this.animDuration = this.defaultAnimationDuration
         val slideRewardRight = getRewardMarginAnimator(initialMargin, location.x.toInt())
 
         val expandReward = getRewardSizeAnimator(reward_snapshot.width, location.width, location).apply {

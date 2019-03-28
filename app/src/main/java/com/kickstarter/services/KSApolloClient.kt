@@ -72,7 +72,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     override fun getStoredCards(): Observable<List<StoredCard>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<StoredCard>>()
-            service.query(UserPaymentsQuery.builder().build())
+            this.service.query(UserPaymentsQuery.builder().build())
                     .enqueue(object : ApolloCall.Callback<UserPaymentsQuery.Data>() {
                         override fun onFailure(exception: ApolloException) {
                             ps.onError(exception)
@@ -95,11 +95,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                         }
                                                 .toList()
                                     }
-
-//                                    .subscribe {
-//                                        ps.onNext(it)
-//                                        ps.onCompleted()
-//                                    }
+                                    .subscribe {
+                                        ps.onNext(it)
+                                        ps.onCompleted()
+                                    }
                         }
                     })
             return@defer ps

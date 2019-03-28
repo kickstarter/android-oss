@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.utils.BackingUtils;
@@ -123,13 +122,11 @@ public interface RewardViewModel {
   }
 
   final class ViewModel extends ActivityViewModel<RewardViewHolder> implements Inputs, Outputs {
-    private final CurrentConfigType currentConfig;
     private final KSCurrency ksCurrency;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.currentConfig = environment.currentConfig();
       this.ksCurrency = environment.ksCurrency();
 
       final Observable<String> formattedMinimum = this.projectAndReward
@@ -139,9 +136,6 @@ public interface RewardViewModel {
         .map(pr -> isSelectable(pr.first, pr.second));
 
       final Observable<Boolean> horizontalRewardsEnabled = Observable.just(environment.horizontalRewardsEnabled().get());
-
-      final Observable<Project> project = this.projectAndReward
-        .map(pr -> pr.first);
 
       final Observable<Reward> reward = this.projectAndReward
         .map(pr -> pr.second);
@@ -226,7 +220,7 @@ public interface RewardViewModel {
 
       this.rewardsItemList = reward
         .map(Reward::rewardsItems)
-        .compose(coalesce(new ArrayList<RewardsItem>()));
+        .compose(coalesce(new ArrayList<>()));
 
       this.rewardsItemsAreGone = reward
         .map(RewardUtils::isItemized)

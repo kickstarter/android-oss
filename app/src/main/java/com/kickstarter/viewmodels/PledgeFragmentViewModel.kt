@@ -64,7 +64,6 @@ interface PledgeFragmentViewModel {
         private val newCardButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
         private val pledgeButtonClicked = PublishSubject.create<Void>()
-        private val refreshCards = PublishSubject.create<Void>()
         private val selectCardButtonClicked = PublishSubject.create<Int>()
 
         private val animateReward = BehaviorSubject.create<Pair<Reward, ScreenLocation>>()

@@ -3,7 +3,7 @@ package com.kickstarter.ui.viewholders
 import android.view.View
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.models.StoredCard
 import com.kickstarter.viewmodels.RewardCardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward_credit_card.view.*
@@ -24,17 +24,17 @@ class RewardCardViewHolder(val view : View, val delegate : Delegate) : KSViewHol
 
         this.viewModel.outputs.issuerImage()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .compose(observeForUI())
                 .subscribe { view.reward_card_logo.setImageResource(it) }
 
         this.viewModel.outputs.expirationDate()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .compose(observeForUI())
                 .subscribe { setExpirationDateTextView(it) }
 
         this.viewModel.outputs.lastFour()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .compose(observeForUI())
                 .subscribe { setLastFourTextView(it) }
 
         this.view.select_button.setOnClickListener {

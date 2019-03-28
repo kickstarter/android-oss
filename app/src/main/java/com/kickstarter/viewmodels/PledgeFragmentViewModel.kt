@@ -33,9 +33,6 @@ interface PledgeFragmentViewModel {
         /** Call when user clicks the pledge button. */
         fun pledgeButtonClicked()
 
-        /** Call when a new card has been saved and the cards should be refreshed. */
-        fun refreshCards()
-
         /** Call when user selects a card they want to pledge with. */
         fun selectCardButtonClicked(position: Int)
     }
@@ -154,10 +151,6 @@ interface PledgeFragmentViewModel {
 
         override fun pledgeButtonClicked() {
             this.pledgeButtonClicked.onNext(null)
-        }
-
-        override fun refreshCards() {
-            this.refreshCards.onNext(null)
         }
 
         override fun selectCardButtonClicked(position: Int) {

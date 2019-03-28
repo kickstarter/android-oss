@@ -1,8 +1,11 @@
 package com.kickstarter.viewmodels
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
@@ -11,6 +14,7 @@ import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.ScreenLocation
 import org.junit.Test
 import rx.Observable
@@ -65,8 +69,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
             }
         }).build())
 
-        //this test fails....WHY
         this.cards.assertValue(Collections.singletonList(card))
+
+        this.vm.activityResult(ActivityResult.create(ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD, Activity.RESULT_OK, Intent()))
+
+        this.cards.assertValueCount(2)
     }
 
     @Test

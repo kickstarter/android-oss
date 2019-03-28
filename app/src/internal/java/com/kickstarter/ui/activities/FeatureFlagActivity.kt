@@ -22,10 +22,10 @@ class FeatureFlagActivity : AppCompatActivity() {
             horizontal_switch.isChecked = enabled
         }
 
-        horizontal_switch.setOnClickListener { enableHorizontalScrolling() }
+        horizontal_switch.setOnClickListener { enableHorizontalRewards() }
     }
 
-    private fun enableHorizontalScrolling() {
+    private fun enableHorizontalRewards() {
         val isEnabled = horizontal_switch.isChecked
         this.environment.horizontalRewardsEnabled().set(isEnabled)
     }

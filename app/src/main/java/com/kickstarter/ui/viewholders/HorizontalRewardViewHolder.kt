@@ -45,13 +45,6 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(observeForUI())
                 .subscribe { setConversionTextView(it) }
 
-        this.viewModel.outputs.currentProject()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-
-                }
-
         this.viewModel.outputs.descriptionTextViewText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())

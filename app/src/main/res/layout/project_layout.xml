@@ -58,12 +58,13 @@
     android:id="@+id/rewards_container"
     android:layout_width="match_parent"
     android:layout_height="0dp"
-    android:visibility="gone"
     android:layout_alignParentBottom="true"
-    app:cardBackgroundColor="@color/white"
-    app:layout_constrainedHeight="false"
+    app:layout_constraintBottom_toBottomOf="parent"
     android:elevation="@dimen/grid_2"
+    android:visibility="gone"
+    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="@dimen/grid_5"
+    app:layout_constrainedHeight="false"
     app:layout_constraintTop_toTopOf="@+id/guideline">
 
     <LinearLayout

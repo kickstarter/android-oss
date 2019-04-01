@@ -178,5 +178,6 @@
   <dimen name="mini_reward_width">90dp</dimen>
   <dimen name="item_reward_layout_width">294dp</dimen>
   <dimen name="reward_fragment_guideline_constraint_end">100dp</dimen>
+  <dimen name="fragment_rewards_parent_min_height">120dp</dimen>
 
 </resources>

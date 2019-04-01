@@ -10,10 +10,9 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.kickstarter.R
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.RewardDecoration
 import com.kickstarter.models.Project
-import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.adapters.HorizontalRewardsAdapter
 import com.kickstarter.viewmodels.RewardFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_rewards.*
@@ -21,48 +20,29 @@ import kotlinx.android.synthetic.main.fragment_rewards.*
 @RequiresFragmentViewModel(RewardFragmentViewModel.ViewModel::class)
 class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
 
-    private lateinit var project: Project
-
-    companion object {
-        fun newInstance(project: Project): RewardsFragment {
-            val args = Bundle()
-            args.putParcelable(ArgumentsKey.ARGUMENT_REWARD_FRAGMENT_PROJECT, project)
-            val fragment = RewardsFragment()
-            fragment.arguments = args
-            return fragment
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        this.viewModel.outputs.project()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.project = it}
-    }
+    private var rewardsAdapter = HorizontalRewardsAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_rewards, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-    }
-    
-    private fun setupRecyclerView() {
-        setRewardsAdapter(this.project)
-        addItemDecorator()
-        addSnapHelper()
+
+        this.viewModel.outputs.project()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { rewardsAdapter.populateRewards(it) }
+
     }
 
-    private fun setRewardsAdapter(project: Project) {
-        val rewardsAdapter = HorizontalRewardsAdapter(this.viewModel)
+    private fun setupRecyclerView() {
         rewards_recycler.adapter = rewardsAdapter
         rewards_recycler.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        rewardsAdapter.populateRewards(project)
+        addItemDecorator()
+        addSnapHelper()
     }
 
     private fun addSnapHelper() {
@@ -77,5 +57,9 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
         val margin = resources.getDimension(R.dimen.reward_margin).toInt()
         val padding = radius * 2
         rewards_recycler.addItemDecoration(RewardDecoration(margin, activeColor, inactiveColor, radius, padding))
+    }
+
+    fun takeProject(project: Project) {
+        this.viewModel.inputs.project(project)
     }
 }

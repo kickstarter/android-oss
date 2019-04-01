@@ -16,17 +16,13 @@ import com.kickstarter.models.Reward
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.activities.CheckoutActivity
-import com.kickstarter.viewmodels.RewardFragmentViewModel
+import com.kickstarter.viewmodels.HorizontalRewardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward.view.*
 
 class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
 
-    interface Delegate {
-        fun rewardClicked()
-    }
-
     private val ksString = environment().ksString()
-    private var viewModel = RewardFragmentViewModel.ViewModel(environment())
+    private var viewModel = HorizontalRewardViewHolderViewModel.ViewModel(environment())
 
     private val currencyConversionString = context().getString(R.string.About_reward_amount)
     private val pledgeRewardCurrencyOrMoreString = context().getString(R.string.rewards_title_pledge_reward_currency_or_more)

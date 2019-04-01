@@ -236,10 +236,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     }
 
     private fun setupRewardsFragment(project: Project) {
-
-        supportFragmentManager.beginTransaction()
-                .add(R.id.fragment_container, RewardsFragment.newInstance(project))
-                .commit()
+        val rewardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment
+            rewardsFragment.takeProject(project)
     }
 
     private fun setProjectActionButtonVisibility(isHorizontalRewardsEnabled: Boolean) {

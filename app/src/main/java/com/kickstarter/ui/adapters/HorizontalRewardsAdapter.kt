@@ -8,9 +8,7 @@ import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
 import rx.Observable
 
-class HorizontalRewardsAdapter(val delegate: HorizontalRewardViewHolder.Delegate) : KSAdapter() {
-
-    interface Delegate : HorizontalRewardViewHolder.Delegate
+class HorizontalRewardsAdapter : KSAdapter() {
 
     override fun layout(sectionRow: SectionRow): Int = R.layout.item_reward
 

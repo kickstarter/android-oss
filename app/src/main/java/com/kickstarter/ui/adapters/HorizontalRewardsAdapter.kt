@@ -25,6 +25,7 @@ class HorizontalRewardsAdapter(val delegate: HorizontalRewardViewHolder.Delegate
                     .map { reward -> Pair.create(project, reward) }
                     .toList().toBlocking().single()
             )
+            notifyDataSetChanged()
         }
     }
 }

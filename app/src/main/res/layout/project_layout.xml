@@ -90,13 +90,13 @@
 
       </com.google.android.material.appbar.AppBarLayout>
 
-      <FrameLayout
+      <fragment
+        android:name="com.kickstarter.ui.fragments.RewardsFragment"
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-      </FrameLayout>
+      </fragment>
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton

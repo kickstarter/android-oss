@@ -236,6 +236,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     }
 
     private fun setupRewardsFragment(project: Project) {
+
         supportFragmentManager.beginTransaction()
                 .add(R.id.fragment_container, RewardsFragment.newInstance(project))
                 .commit()

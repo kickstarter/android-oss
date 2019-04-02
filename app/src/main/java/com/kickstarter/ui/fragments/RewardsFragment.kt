@@ -38,16 +38,8 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
 
     }
 
-    private fun setupRecyclerView() {
-        rewards_recycler.adapter = rewardsAdapter
-        rewards_recycler.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        addItemDecorator()
-        addSnapHelper()
-    }
-
-    private fun addSnapHelper() {
-        val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(rewards_recycler)
+    fun takeProject(project: Project) {
+        this.viewModel.inputs.project(project)
     }
 
     private fun addItemDecorator() {
@@ -59,7 +51,15 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
         rewards_recycler.addItemDecoration(RewardDecoration(margin, activeColor, inactiveColor, radius, padding))
     }
 
-    fun takeProject(project: Project) {
-        this.viewModel.inputs.project(project)
+    private fun addSnapHelper() {
+        val snapHelper = PagerSnapHelper()
+        snapHelper.attachToRecyclerView(rewards_recycler)
+    }
+
+    private fun setupRecyclerView() {
+        rewards_recycler.adapter = rewardsAdapter
+        rewards_recycler.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        addItemDecorator()
+        addSnapHelper()
     }
 }

@@ -39,12 +39,12 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectViewModel.ViewModel(environment)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
-        this.vm.outputs.projectAndUserCountry().map { pc -> pc.first }.subscribe(this.projectTest)
+        this.vm.outputs.projectAndUserCountry().map { pc -> pc.first.first }.subscribe(this.projectTest)
         this.vm.outputs.setActionButtonId().subscribe(this.setActionButtonId)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
-        this.vm.outputs.projectAndUserCountry().map { pc -> pc.first.isStarred }.subscribe(this.savedTest)
+        this.vm.outputs.projectAndUserCountry().map { pc -> pc.first.first.isStarred }.subscribe(this.savedTest)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
         this.vm.outputs.startCampaignWebViewActivity().subscribe(this.startCampaignWebViewActivity)
         this.vm.outputs.startCommentsActivity().subscribe(this.startCommentsActivity)
@@ -265,13 +265,13 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_ViewToHide_WhenIsHorizontalRewardsIsDisabled() {
+    fun testProjectViewModel_ViewToShow_WhenIsHorizontalRewardsIsDisabled() {
         setUpEnvironment(environment())
         this.viewToShow.assertValue(Pair.create(R.id.project_action_buttons, false))
     }
 
     @Test
-    fun testProjectViewModel_ViewToHide_WhenIsHorizontalRewardsIsEnabled() {
+    fun testProjectViewModel_ViewToShow_WhenIsHorizontalRewardsIsEnabled() {
         val booleanPreference = MockBooleanPreference(true)
         val environment = environment().toBuilder()
                 .enableHorizontalRewards(booleanPreference)

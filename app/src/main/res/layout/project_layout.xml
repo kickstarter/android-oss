@@ -14,13 +14,13 @@
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/project_recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="0dp"
     android:layout_above="@+id/rewards_container"
     android:layout_below="@id/project_toolbar"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="@id/project_toolbar" />
+    app:layout_constraintTop_toBottomOf="@id/project_toolbar" />
 
   <RelativeLayout
     android:id="@+id/project_action_buttons"
@@ -58,8 +58,10 @@
     android:id="@+id/rewards_container"
     android:layout_width="match_parent"
     android:layout_height="0dp"
+    android:visibility="gone"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="30dp"
+    app:cardElevation="@dimen/grid_2"
     app:layout_constrainedHeight="false"
     app:layout_constraintTop_toTopOf="@+id/guideline">
 
@@ -94,16 +96,16 @@
         <fragment
           android:id="@+id/fragment_rewards"
           android:name="com.kickstarter.ui.fragments.RewardsFragment"
-          tools:layout="@layout/fragment_rewards"
           android:layout_width="match_parent"
-          android:layout_height="match_parent"/>
+          android:layout_height="match_parent"
+          tools:layout="@layout/fragment_rewards" />
 
       </FrameLayout>
 
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-      android:id="@+id/horizontal_fragment_pledge_button"
+      android:id="@+id/native_back_this_project_button"
       style="@style/ExtendedFab"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

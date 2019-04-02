@@ -38,8 +38,14 @@ interface ProjectViewModel {
         /** Call when the heart button is clicked.  */
         fun heartButtonClicked()
 
+        /** Call when horizontal rewards fragment should hide */
+        fun hideRewardsFragmentClicked()
+
         /** Call when the manage pledge button is clicked.  */
         fun managePledgeButtonClicked()
+
+        /** Call when the native back project button is clicked.  */
+        fun nativeBackProjectButtonClicked()
 
         /** Call when the play video button is clicked.  */
         fun playVideoButtonClicked()
@@ -55,14 +61,16 @@ interface ProjectViewModel {
     }
 
     interface Outputs {
-        fun isHorizontalRewardsEnabled(): Observable<Boolean>
+
+        /** Emits when horizontal rewards fragment should show */
+        fun showRewardsFragment(): Observable<Boolean>
 
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
         /** Emits a project and country when a new value is available. If the view model is created with a full project
          * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
-        fun projectAndUserCountry(): Observable<Pair<Project, String>>
+        fun projectAndUserCountry(): Observable<Pair<Pair<Project, String>, Boolean>>
 
         /** Emits the back, manage, or view pledge button */
         fun setActionButtonId(): Observable<Int>
@@ -100,7 +108,7 @@ interface ProjectViewModel {
         /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
         fun startVideoActivity(): Observable<Project>
 
-        /** Emits the view id to hide based on the @isHorizontalRewardsEnabled Feature flag value */
+        /** Emits the view id to show based on the @isHorizontalRewardsEnabled Feature flag value */
         fun viewToShow(): Observable<Pair<Int, Boolean>>
     }
 
@@ -116,16 +124,18 @@ interface ProjectViewModel {
         private val commentsTextViewClicked = PublishSubject.create<Void>()
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
         private val heartButtonClicked = PublishSubject.create<Void>()
+        private val hideRewardsFragment = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
+        private val nativeBackProjectButtonClicked = PublishSubject.create<Void>()
         private val playVideoButtonClicked = PublishSubject.create<Void>()
         private val shareButtonClicked = PublishSubject.create<Void>()
         private val updatesTextViewClicked = PublishSubject.create<Void>()
         private val viewPledgeButtonClicked = PublishSubject.create<Void>()
 
-        private val isHorizontalRewardsEnabled = BehaviorSubject.create<Boolean>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
-        private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
+        private val projectAndUserCountry = BehaviorSubject.create<Pair<Pair<Project, String>, Boolean>>()
         private val setActionButtonId = BehaviorSubject.create<Int>()
+        private val showRewardsFragment = BehaviorSubject.create<Boolean>()
         private val startLoginToutActivity = BehaviorSubject.create<Void>()
         private val showShareSheet = BehaviorSubject.create<Project>()
         private val showSavedPrompt = BehaviorSubject.create<Void>()
@@ -154,10 +164,10 @@ interface ProjectViewModel {
                     .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
 
             val refTag = intent()
-                    .flatMap({ ProjectIntentMapper.refTag(it) })
+                    .flatMap { ProjectIntentMapper.refTag(it) }
 
             val pushNotificationEnvelope = intent()
-                    .flatMap({ ProjectIntentMapper.pushNotificationEnvelope(it) })
+                    .flatMap { ProjectIntentMapper.pushNotificationEnvelope(it) }
 
             val loggedInUserOnHeartClick = this.currentUser.observable()
                     .compose<User>(takeWhen(this.heartButtonClicked))
@@ -169,7 +179,7 @@ interface ProjectViewModel {
 
             val projectOnUserChangeSave = initialProject
                     .compose(takeWhen<Project, User>(loggedInUserOnHeartClick))
-                    .switchMap({ this.toggleProjectSave(it) })
+                    .switchMap { this.toggleProjectSave(it) }
                     .share()
 
             loggedOutUserOnHeartClick
@@ -181,7 +191,7 @@ interface ProjectViewModel {
                     .filter { su -> su.second != null }
                     .withLatestFrom<Project, Project>(initialProject) { _, p -> p }
                     .take(1)
-                    .switchMap({ this.saveProject(it) })
+                    .switchMap { this.saveProject(it) }
                     .share()
 
             val currentProject = Observable.merge(
@@ -190,13 +200,16 @@ interface ProjectViewModel {
                     savedProjectOnLoginSuccess
             )
 
+            val horizontalRewardsEnabled = Observable.just(environment.enableHorizontalRewards().get())
+
             projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
                     .filter { p -> p.isStarred && p.isLive && !p.isApproachingDeadline }
                     .compose(ignoreValues())
                     .subscribe(this.showSavedPrompt)
 
             currentProject
-                    .compose<Pair<Project, String>>(combineLatestPair(this.currentConfig.observable().map({ it.countryCode() })))
+                    .compose<Pair<Project, String>>(combineLatestPair(this.currentConfig.observable().map { it.countryCode() }))
+                    .compose<Pair<Pair<Project, String>, Boolean>>(combineLatestPair(horizontalRewardsEnabled))
                     .subscribe(this.projectAndUserCountry)
 
             currentProject
@@ -231,17 +244,27 @@ interface ProjectViewModel {
                     .compose<Project>(takeWhen(this.playVideoButtonClicked))
                     .subscribe(this.startVideoActivity)
 
-            Observable.combineLatest<Project, User, Pair<Project, User>>(currentProject, this.currentUser.observable(), { a, b -> Pair.create(a, b) })
+            Observable.combineLatest<Project, User, Pair<Project, User>>(currentProject, this.currentUser.observable()) { a, b -> Pair.create(a, b) }
                     .compose<Pair<Project, User>>(takeWhen(this.viewPledgeButtonClicked))
                     .subscribe(this.startBackingActivity)
 
+            this.nativeBackProjectButtonClicked
+                    .map { true }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showRewardsFragment)
+
+            this.hideRewardsFragment
+                    .map { false }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showRewardsFragment)
+
             this.showShareSheet
                     .compose(bindToLifecycle())
-                    .subscribe({ this.koala.trackShowProjectShareSheet(it) })
+                    .subscribe { this.koala.trackShowProjectShareSheet(it) }
 
             this.startVideoActivity
                     .compose(bindToLifecycle())
-                    .subscribe({ this.koala.trackVideoStart(it) })
+                    .subscribe { this.koala.trackVideoStart(it) }
 
             currentProject
                     .map { p -> if (p.isStarred) R.drawable.icon__heart else R.drawable.icon__heart_outline }
@@ -250,10 +273,10 @@ interface ProjectViewModel {
             projectOnUserChangeSave
                     .mergeWith(savedProjectOnLoginSuccess)
                     .compose(bindToLifecycle())
-                    .subscribe({ this.koala.trackProjectStar(it) })
+                    .subscribe { this.koala.trackProjectStar(it) }
 
-            Observable.combineLatest<RefTag, RefTag, Project, RefTagsAndProject>(refTag, cookieRefTag, currentProject,
-                    { refTagFromIntent, refTagFromCookie, project -> RefTagsAndProject(refTagFromIntent, refTagFromCookie, project) })
+            Observable.combineLatest<RefTag, RefTag, Project, RefTagsAndProject>(refTag, cookieRefTag, currentProject)
+            { refTagFromIntent, refTagFromCookie, project -> RefTagsAndProject(refTagFromIntent, refTagFromCookie, project) }
                     .take(1)
                     .compose(bindToLifecycle())
                     .subscribe { data ->
@@ -272,29 +295,27 @@ interface ProjectViewModel {
             pushNotificationEnvelope
                     .take(1)
                     .compose(bindToLifecycle())
-                    .subscribe({ this.koala.trackPushNotification(it) })
+                    .subscribe { this.koala.trackPushNotification(it) }
 
             intent()
-                    .filter({ IntentMapper.appBannerIsSet(it) })
+                    .filter { IntentMapper.appBannerIsSet(it) }
                     .compose(bindToLifecycle())
                     .subscribe { _ -> this.koala.trackOpenedAppBanner() }
 
-            this.isHorizontalRewardsEnabled.onNext(environment.enableHorizontalRewards().get())
 
-            val viewId = this.isHorizontalRewardsEnabled
-                    .compose(bindToLifecycle())
+            val viewId = horizontalRewardsEnabled
                     .map { getViewIdToShow(it) }
 
-            Observable.combineLatest(viewId, this.isHorizontalRewardsEnabled)
+            Observable.combineLatest(viewId, horizontalRewardsEnabled)
             { id, enabled -> Pair.create(id, enabled) }
                     .compose(bindToLifecycle())
                     .subscribe(this.viewToShow)
 
-            Observable.combineLatest(currentProject, this.isHorizontalRewardsEnabled)
+            Observable.combineLatest(currentProject, horizontalRewardsEnabled)
             { project, enabled -> Pair.create(project, enabled) }
-                    .compose(bindToLifecycle())
                     .map { setActionButtons(it.first) }
                     .take(1)
+                    .compose(bindToLifecycle())
                     .subscribe { this.setActionButtonId.onNext(it) }
 
         }
@@ -326,8 +347,16 @@ interface ProjectViewModel {
             this.heartButtonClicked.onNext(null)
         }
 
+        override fun hideRewardsFragmentClicked() {
+            this.hideRewardsFragment.onNext(null)
+        }
+
         override fun managePledgeButtonClicked() {
             this.managePledgeButtonClicked.onNext(null)
+        }
+
+        override fun nativeBackProjectButtonClicked() {
+            this.nativeBackProjectButtonClicked.onNext(null)
         }
 
         override fun playVideoButtonClicked() {
@@ -378,13 +407,15 @@ interface ProjectViewModel {
             this.viewPledgeButtonClicked.onNext(null)
         }
 
+        override fun showRewardsFragment(): Observable<Boolean> {
+            return this.showRewardsFragment
+        }
+
         override fun heartDrawableId(): Observable<Int> {
             return this.heartDrawableId
         }
 
-        override fun isHorizontalRewardsEnabled(): Observable<Boolean> = this.isHorizontalRewardsEnabled
-
-        override fun projectAndUserCountry(): Observable<Pair<Project, String>> {
+        override fun projectAndUserCountry(): Observable<Pair<Pair<Project, String>, Boolean>> {
             return this.projectAndUserCountry
         }
 

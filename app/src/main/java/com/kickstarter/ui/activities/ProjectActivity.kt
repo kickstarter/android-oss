@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities
 
+import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
@@ -10,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.AutoTransition
+import androidx.transition.Scene
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.kickstarter.R
@@ -47,7 +49,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     private val creatorString = R.string.project_subpages_menu_buttons_creator
 
     private val animDuration = 200L
-    private var rewardsExpanded = false
     private val showRewardsFragment: ObjectAnimator = ObjectAnimator.ofFloat(null, View.ALPHA, 0f, 1f)
     private val hideRewardsFragment: ObjectAnimator = ObjectAnimator.ofFloat(null, View.ALPHA, 1f, 0f)
 
@@ -55,7 +56,19 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.project_layout)
+
+        this.adapter = ProjectAdapter(this.viewModel)
+        project_recycler_view.adapter = this.adapter
+        project_recycler_view.layoutManager = LinearLayoutManager(this)
+
         this.ksString = environment().ksString()
+
+        this.viewModel.outputs.showRewardsFragment()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe {
+                    animateRewards(it)
+                }
 
         this.viewModel.outputs.heartDrawableId()
                 .compose(bindToLifecycle())
@@ -66,8 +79,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    this.renderProject(it.first, it.second)
-                    this.setupRewardsFragment(it.first)
+                    this.renderProject(it.first.first, it.first.second, it.second)
+                    this.setupRewardsFragment(it.first.first)
                 }
 
         this.viewModel.outputs.startCampaignWebViewActivity()
@@ -141,7 +154,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                     val view = findViewById<View>(it.first)
                     ViewUtils.setGone(view, false)
 
-                    setupProjectAdapter(it.second)
                     setProjectActionButtonVisibility(it.second)
                 }
 
@@ -153,9 +165,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
             this.viewModel.inputs.heartButtonClicked()
         }
 
-        horizontal_fragment_pledge_button.setOnClickListener {
-            animateRewards()
-            this.rewardsExpanded = true
+        native_back_this_project_button.setOnClickListener {
+            this.viewModel.inputs.nativeBackProjectButtonClicked()
         }
 
         manage_pledge_button.setOnClickListener {
@@ -163,18 +174,12 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         }
 
         rewards_toolbar.setNavigationOnClickListener {
-            this.back()
+            this.viewModel.inputs.hideRewardsFragmentClicked()
             this.project_toolbar.visibility = View.VISIBLE
         }
 
         share_icon.setOnClickListener {
             this.viewModel.inputs.shareButtonClicked()
-        }
-
-        this.showRewardsFragment.addUpdateListener { valueAnim ->
-            val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
-            val radius = initialRadius * if (this.rewardsExpanded) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
-            this.rewards_container.radius = radius
         }
 
         view_pledge_button.setOnClickListener {
@@ -187,57 +192,52 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.project_recycler_view.adapter = null
     }
 
-    private fun animateRewards() {
-        val set = AnimatorSet()
-        this.showRewardsFragment.target = if (this.rewardsExpanded) horizontal_fragment_pledge_button else pledge_container
-        this.hideRewardsFragment.target = if (this.rewardsExpanded) pledge_container else horizontal_fragment_pledge_button
-        set.playTogether(this.showRewardsFragment, this.hideRewardsFragment)
-        set.duration = animDuration
+    private fun animateRewards(isExpanded: Boolean) {
+        this.showRewardsFragment.removeAllUpdateListeners()
+        this.showRewardsFragment.addUpdateListener { valueAnim ->
+            val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
+            val radius = initialRadius * if (isExpanded) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
+            this.rewards_container.radius = radius
+        }
 
         val durationTransition = AutoTransition()
         durationTransition.duration = animDuration
-        durationTransition.addListener(object : Transition.TransitionListener {
-            override fun onTransitionEnd(transition: Transition) {
-                if (rewardsExpanded) {
-                    horizontal_fragment_pledge_button.visibility = View.GONE
-                    project_toolbar.visibility = View.GONE
+        TransitionManager.beginDelayedTransition(root, durationTransition)
+
+        val set = AnimatorSet()
+        this.showRewardsFragment.target = if (!isExpanded) native_back_this_project_button else pledge_container
+        this.hideRewardsFragment.target = if (!isExpanded) pledge_container else native_back_this_project_button
+        set.playTogether(this.showRewardsFragment, this.hideRewardsFragment)
+        set.duration = animDuration
+
+        set.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationCancel(animation: Animator?) {}
+
+            override fun onAnimationEnd(animation: Animator?) {
+                if (isExpanded) {
+                    native_back_this_project_button.visibility = View.GONE
                 }
             }
 
-            override fun onTransitionResume(transition: Transition) {
-            }
-
-            override fun onTransitionPause(transition: Transition) {
-            }
-
-            override fun onTransitionCancel(transition: Transition) {
-            }
-
-            override fun onTransitionStart(transition: Transition) {
-                set.start()
-                if (!rewardsExpanded) {
-                    horizontal_fragment_pledge_button.visibility = View.VISIBLE
+            override fun onAnimationStart(animation: Animator?) {
+                setRewardConstraints(isExpanded)
+                if (!isExpanded) {
+                    native_back_this_project_button.visibility = View.VISIBLE
                 }
             }
         })
 
-        TransitionManager.beginDelayedTransition(root, durationTransition)
-        setRewardConstraints()
+        set.start()
     }
 
-    private fun renderProject(project: Project, configCountry: String) {
-        this.adapter.takeProject(project, configCountry)
-    }
-
-    private fun setupProjectAdapter(isHorizontalRewardsEnabled: Boolean) {
-        this.adapter = ProjectAdapter(this.viewModel, isHorizontalRewardsEnabled)
-        project_recycler_view.adapter = this.adapter
-        project_recycler_view.layoutManager = LinearLayoutManager(this)
+    private fun renderProject(project: Project, configCountry: String, isHorizontalRewardsEnabled: Boolean) {
+        this.adapter.takeProject(project, configCountry, isHorizontalRewardsEnabled)
     }
 
     private fun setupRewardsFragment(project: Project) {
         val rewardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment
-            rewardsFragment.takeProject(project)
+        rewardsFragment.takeProject(project)
     }
 
     private fun setProjectActionButtonVisibility(isHorizontalRewardsEnabled: Boolean) {
@@ -247,10 +247,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         }
     }
 
-    private fun setRewardConstraints() {
+    private fun setRewardConstraints(expanded: Boolean) {
         val constraintSet = ConstraintSet()
         constraintSet.clone(root)
-        if (this.rewardsExpanded) {
+        if (!expanded) {
             constraintSet.clear(R.id.rewards_container, ConstraintSet.BOTTOM)
             constraintSet.connect(R.id.rewards_container, ConstraintSet.TOP, R.id.guideline, ConstraintSet.TOP, 0)
         } else {
@@ -341,9 +341,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     }
 
     override fun back() {
-        if (this.rewardsExpanded) {
-            animateRewards()
-            this.rewardsExpanded = false
+        if (native_back_this_project_button.visibility == View.GONE) {
+            this.viewModel.inputs.hideRewardsFragmentClicked()
         } else {
             super.back()
         }

@@ -36,6 +36,7 @@
   <string name="Ask_me_anything" formatted="false">お問い合わせ</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">さらに%{time} の%{units} を見ることができます</string>
   <string name="Back" formatted="false">バック</string>
+  <string name="Back_this_project" formatted="false">このプロジェクトをバックする</string>
   <string name="Back_this_project_below" formatted="false">このプロジェクトをバックする</string>
   <string name="Backed_by_Friends" formatted="false">友達がバックしたプロジェクト</string>
   <string name="Backed_by_people_you_follow" formatted="false">フォロー中の友達がバック</string>
@@ -55,6 +56,7 @@
   <string name="Biography" formatted="false">自己紹介</string>
   <string name="Bookmarks" formatted="false">ブックマーク</string>
   <string name="Bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
+  <string name="By_pledging_you_agree" formatted="false">プレッジすることにより、Kickstarter の利用規約、プライバシーポリシー、Cookie ポリシーに同意したものとみなされます。</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">キャンセル</string>
   <string name="Cancel_your_pledge" formatted="false">プレッジを取り消す</string>
@@ -79,6 +81,7 @@
   <string name="Confirm_password" formatted="false">新しいパスワードの確認</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Facebookとリンクさせ、友達がプロジェクトを作成したりバックしたりした際に通知を受け取る</string>
   <string name="Contact_creator" formatted="false">クリエイターに連絡</string>
+  <string name="Continue" formatted="false">続行する</string>
   <string name="Continue_to_payment" formatted="false">支払いを続ける</string>
   <string name="Continue_to_update_pledge" formatted="false">プレッジをアップデート</string>
   <string name="Couldnt_add_attachment" formatted="false">添付ファイルを追加できませんでした</string>
@@ -124,7 +127,7 @@
   <string name="Discover_the_future_of_Design_and_Tech" formatted="false">デザインとテクノロジーの未来を覗いてみよう。</string>
   <string name="Dismiss" formatted="false">破棄</string>
   <string name="Done" formatted="false">完了</string>
-  <string name="Double_tap_to_toggle_setting" formatted="false">Double tap to toggle setting</string>
+  <string name="Double_tap_to_toggle_setting" formatted="false">ダブルタップして設定を切り替える</string>
   <string name="Download_your_personal_data" formatted="false">自分の個人データをダウンロード</string>
   <string name="Earth" formatted="false">全世界</string>
   <string name="Edit_profile" formatted="false">プロフィールを編集</string>
@@ -136,6 +139,7 @@
   <string name="Email_unverified" formatted="false">このメールアドレスは認証されていません。</string>
   <string name="Ending_soon" formatted="false">終了直前</string>
   <string name="Estimated_delivery" formatted="false">配達予定日：</string>
+  <string name="Estimated_delivery_of" formatted="false">配送予定日</string>
   <string name="Expands_subcategories" formatted="false">サブカテゴリーを表示</string>
   <string name="Expiration" formatted="false">有効期限</string>
   <string name="Expired_date_at_time" formatted="false">有効期限: %{date} %{time}</string>
@@ -227,7 +231,7 @@
   <string name="Keep_up_with_future_live_streams" formatted="false">ライブ配信を通知</string>
   <string name="Kickstarter_Music" formatted="false">Kickstarter Music</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (達成した時)</string>
-  <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarterはオンラインストアではありません。</string>
+  <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter は商品を購入する場ではありません。</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。</string>
   <string name="Learn_more_about_accountability" formatted="false">報告義務に関してさらに詳しく</string>
   <string name="Left_count_left_few" formatted="false">残り%{left_count}</string>
@@ -281,10 +285,10 @@
   <string name="Not_delivered" formatted="false">未配送</string>
   <string name="Not_followed" formatted="false">フォローしてない</string>
   <string name="Not_now" formatted="false">後で</string>
-  <string name="Notification_email_notification_off" formatted="false">%{notification}, email notification, off</string>
-  <string name="Notification_email_notification_on" formatted="false">%{notification}, email notification, on</string>
-  <string name="Notification_push_notification_off" formatted="false">%{notification}, push notification, off</string>
-  <string name="Notification_push_notification_on" formatted="false">%{notification}, push notification, on</string>
+  <string name="Notification_email_notification_off" formatted="false">%{notification}、メール通知、オフ</string>
+  <string name="Notification_email_notification_on" formatted="false">%{notification}、メール通知、オン</string>
+  <string name="Notification_push_notification_off" formatted="false">%{notification}、プッシュ通知、オフ</string>
+  <string name="Notification_push_notification_on" formatted="false">%{notification}、プッシュ通知、オン</string>
   <string name="Notifications" formatted="false">通知</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">プロジェクトをバックするとこのスペースにあなたへのオススメを表示します</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">あと%{amount_of_time} のみ視聴可能</string>
@@ -333,7 +337,7 @@
   <string name="Project_Suspended" formatted="false">プロジェクトは停止されました。</string>
   <string name="Project_activity" formatted="false">プロジェクトのアクティビティ</string>
   <string name="Project_cancelled" formatted="false">プロジェクトが取り消されました。</string>
-  <string name="Project_goal_and_pledge" formatted="false">Project goal and pledge amounts will be shown in approximate conversions. A successfully funded project will collect your pledge in its native currency.</string>
+  <string name="Project_goal_and_pledge" formatted="false">プロジェクトのゴール額とプレッジ額はおおよその換算金額で表示されます。プロジェクトが成功した場合、プレッジはプロジェクトをローンチした国の通貨で集められます。</string>
   <string name="Project_reminders" formatted="false">プロジェクトのリマインダー</string>
   <string name="Project_saved" formatted="false">プロジェクトを保存しました。</string>
   <string name="Project_updates" formatted="false">プロジェクトの更新情報</string>
@@ -364,6 +368,7 @@
   <string name="Replay_past_live_stream" formatted="false">過去のライブ配信をリプレイ</string>
   <string name="Replay_past_live_streams" formatted="false">過去のライブ配信をリプレイ</string>
   <string name="Reply_to_user_name" formatted="false">%{user_nameに返信</string>
+  <string name="Request_my_data" formatted="false">Request my data</string>
   <string name="Request_my_personal_data" formatted="false">自分の個人データをリクエストする</string>
   <string name="Resend_verification_email" formatted="false">認証メールをもう一度送信</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
@@ -394,6 +399,7 @@
   <string name="Say_something_kind" formatted="false">言葉に注意</string>
   <string name="Security_code" formatted="false">セキュリティーコード</string>
   <string name="See_all_category_name_projects" formatted="false">%{category_name} プロジェクトをすべて見る</string>
+  <string name="Select" formatted="false">選択</string>
   <string name="Select_another_project" formatted="false">他のプロジェクトを選ぶ</string>
   <string name="Select_this_reward" formatted="false">このリワードを選ぶ</string>
   <string name="Select_this_reward_instead" formatted="false">このリワードを選択</string>
@@ -450,6 +456,7 @@
   <string name="Top_pledge_sources" formatted="false">プレッジソースのトップ</string>
   <string name="Top_ten_pledge_sources" formatted="false">プレッジソースのトップ10</string>
   <string name="Top_ten_rewards" formatted="false">リワードのトップ10</string>
+  <string name="Total" formatted="false">合計</string>
   <string name="Total_pledged" formatted="false">プレッジ総計</string>
   <string name="Twice_a_day_summary" formatted="false">1日2回の概要</string>
   <string name="Unable_to_request" formatted="false">データをリクエストできません。</string>
@@ -494,6 +501,7 @@
   <string name="You_have_successfully_backed_project_html" formatted="false">&lt;b>%{project_name}&lt;/b>へのバックが完了しました。このプロジェクトは、成功に一歩近づきました！ありがとうございます。</string>
   <string name="You_pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
   <string name="You_saved_this_project" formatted="false">保存済みです</string>
+  <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">ダウンロードの準備が整い次第、%{email} にメールが届きます。</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">メッセージの送信に失敗。</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">バックした友達はまだいませんが、今後こちらに表示されます。</string>
   <string name="Your_name_displayed" formatted="false">あなたの名前はプロフィールに常に表示されます。</string>
@@ -505,6 +513,7 @@
   <string name="Your_reward" formatted="false">リワード</string>
   <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>リワード&lt;/b>の配送予定日は%{delivery_date}</string>
   <string name="Your_shipping_destination" formatted="false">配送地域</string>
+  <string name="Your_shipping_location" formatted="false">配送地域</string>
   <string name="Youre_a_backer" formatted="false">バッカーになりました！</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Facebookのメールアドレスで新しいアカウントを作成しようとしています。再度確認してください。</string>
   <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">Facebook (%{email}) を通して接続されています。Kickstarter の認識情報を編集するには、このアカウント用にパスワードを作成してください。</string>
@@ -576,7 +585,7 @@
   <string name="activity_friend_backed_music_project" formatted="false">%{friend_name} がミュージックプロジェクトにバック</string>
   <string name="activity_friend_backed_photography_project" formatted="false">%{friend_name} がフォトグラフィープロジェクトにバック</string>
   <string name="activity_friend_backed_project_name_by_creator_name" formatted="false">&lt;b>%{friend_name}&lt;/b> は%{project_name} by %{creator_name} をバック中</string>
-  <string name="activity_friend_backed_publishing_project" formatted="false">%{friend_name} がパブリッシングプロジェクトにバック</string>
+  <string name="activity_friend_backed_publishing_project" formatted="false">%{friend_name} が出版プロジェクトをバックしました</string>
   <string name="activity_friend_backed_tech_project" formatted="false">%{friend_name} がテクノロジープロジェクトにバック</string>
   <string name="activity_friend_backed_theater_project" formatted="false">%{friend_name} さんがシアタープロジェクトにバック</string>
   <string name="activity_friend_follow_buttons_follow" formatted="false">フォロー</string>
@@ -950,8 +959,8 @@
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">%{date} にファンディング失敗</string>
   <string name="discovery_baseball_card_status_banner_successful" formatted="false">資金調達に成功</string>
   <string name="discovery_baseball_card_status_banner_successful_date" formatted="false">%{date} に目標達成</string>
-  <string name="discovery_baseball_card_status_banner_suspended" formatted="false">%{date} にプロジェクト停止済み</string>
-  <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">%{date} にプロジェクト停止済み</string>
+  <string name="discovery_baseball_card_status_banner_suspended" formatted="false">%{date} にファンディング停止済み</string>
+  <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">%{date} にファンディング停止済み</string>
   <string name="discovery_baseball_card_time_left_to_go" formatted="false">%{time_left} で締切</string>
   <string name="discovery_category" formatted="false">カテゴリー</string>
   <string name="discovery_empty_states_saved_logged_in_button" formatted="false">さがす</string>
@@ -1210,7 +1219,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">あと少し！</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Kickstarterのニュースとイベント</string>
   <string name="profile_settings_newsletter_publishing" formatted="false">Kickstarter Reads</string>
-  <string name="profile_settings_newsletter_publishing_newsletter" formatted="false">Kickstarter のパブリッシングチームおすすめの新しいプロジェクトやクリエイターストーリー、文学関連イベントなどをお知らせする月刊ニュースレターにぜひサインアップしましょう。</string>
+  <string name="profile_settings_newsletter_publishing_newsletter" formatted="false">Kickstarter の出版チームおすすめの新しいプロジェクトやクリエイターストーリー、文学関連イベントなどをお知らせする月刊ニュースレターにぜひサインアップしましょう。</string>
   <string name="profile_settings_newsletter_subscribe_all" formatted="false">すべてのニュースレターを購読する</string>
   <string name="profile_settings_newsletter_title" formatted="false">ニュースレター</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Projects We Love</string>
@@ -1339,7 +1348,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="project_updates_empty_state_non_backer_message" formatted="false">プロジェクトの更新がバッカーに通知されます。</string>
   <string name="project_updates_empty_state_non_backer_title" formatted="false">更新なし</string>
   <string name="project_view_button" formatted="false">プレッジ内容を見る</string>
-  <string name="project_view_pledge_includes" formatted="false">その他特典</string>
+  <string name="project_view_pledge_includes" formatted="false">リワード内容</string>
   <string name="project_view_pledge_status_canceled" formatted="false">キャンセル済</string>
   <string name="project_view_pledge_status_collected" formatted="false">に目標額に達成しました</string>
   <string name="project_view_pledge_status_dropped" formatted="false">取消</string>
@@ -1366,7 +1375,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="rewards_info_backer_count_backers_two" formatted="false">2バッカー</string>
   <string name="rewards_info_backer_count_backers_zero" formatted="false">0バッカー</string>
   <string name="rewards_info_estimated_delivery" formatted="false">配達予定日</string>
-  <string name="rewards_info_includes" formatted="false">その他特典</string>
+  <string name="rewards_info_includes" formatted="false">リワード内容</string>
   <string name="rewards_info_item_quantity_title_few" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_item_quantity_title_many" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_item_quantity_title_one" formatted="false">%{title}</string>
@@ -1377,7 +1386,6 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="rewards_info_shipping_destinations" formatted="false">配送地域</string>
   <string name="rewards_info_ships_to" formatted="false">配送先：</string>
   <string name="rewards_info_time_left" formatted="false">あと%{time}</string>
-  <string name="rewards_select_label_select" formatted="false">選択</string>
   <string name="rewards_selected_label_you_selected" formatted="false">選択した</string>
   <string name="rewards_shipping_preferences_location_unrestricted" formatted="false">世界各国に配送</string>
   <string name="rewards_title_about_amount_usd" formatted="false">約%{reward_amount} 米ドル</string>

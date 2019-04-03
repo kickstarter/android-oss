@@ -47,7 +47,7 @@ interface ProjectViewModel {
         /** Call when the play video button is clicked.  */
         fun playVideoButtonClicked()
 
-        /** Call when the play video button is clicked.  */
+        /** Call when a reward is clicked.  */
         fun rewardClicked(screenLocation: ScreenLocation, reward: Reward)
 
         /** Call when the share button is clicked.  */

@@ -11,8 +11,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.AutoTransition
-import androidx.transition.Scene
-import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
@@ -20,7 +18,6 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -75,13 +72,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .compose(Transformers.observeForUI())
                 .subscribe { heart_icon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
 
-        this.viewModel.outputs.projectAndUserCountry()
+        this.viewModel.outputs.projectAndUserCountryAndIsFeatureEnabled()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    this.renderProject(it.first.first, it.first.second, it.second)
-                    this.setupRewardsFragment(it.first.first)
-                }
+                .subscribe { displayProjectAndRewards(it) }
 
         this.viewModel.outputs.startCampaignWebViewActivity()
                 .compose(bindToLifecycle())
@@ -148,14 +142,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startLoginToutActivity() }
 
-        this.viewModel.outputs.viewToShow()
-                .compose(observeForUI())
-                .subscribe {
-                    val view = findViewById<View>(it.first)
-                    ViewUtils.setGone(view, false)
-
-                    setProjectActionButtonVisibility(it.second)
-                }
 
         back_project_button.setOnClickListener {
             this.viewModel.inputs.backProjectButtonClicked()
@@ -231,6 +217,16 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         set.start()
     }
 
+    private fun displayProjectAndRewards(projectCountryAndNativeCheckout: Pair<Pair<Project, String>, Boolean>) {
+        this.renderProject(projectCountryAndNativeCheckout.first.first, projectCountryAndNativeCheckout.first.second, projectCountryAndNativeCheckout.second)
+        if (projectCountryAndNativeCheckout.second) {
+            this.setupRewardsFragment(projectCountryAndNativeCheckout.first.first)
+            rewards_container.visibility = View.VISIBLE
+        } else if (!ViewUtils.isLandscape(this)) {
+            project_action_buttons.visibility = View.VISIBLE
+        }
+    }
+
     private fun renderProject(project: Project, configCountry: String, isHorizontalRewardsEnabled: Boolean) {
         this.adapter.takeProject(project, configCountry, isHorizontalRewardsEnabled)
     }
@@ -238,13 +234,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     private fun setupRewardsFragment(project: Project) {
         val rewardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment
         rewardsFragment.takeProject(project)
-    }
-
-    private fun setProjectActionButtonVisibility(isHorizontalRewardsEnabled: Boolean) {
-        project_action_buttons.visibility = when {
-            ViewUtils.isLandscape(this) || isHorizontalRewardsEnabled -> View.GONE
-            else -> View.VISIBLE
-        }
     }
 
     private fun setRewardConstraints(expanded: Boolean) {

@@ -61,7 +61,6 @@ interface ProjectViewModel {
     }
 
     interface Outputs {
-
         /** Emits when horizontal rewards fragment should show */
         fun showRewardsFragment(): Observable<Boolean>
 
@@ -70,7 +69,7 @@ interface ProjectViewModel {
 
         /** Emits a project and country when a new value is available. If the view model is created with a full project
          * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
-        fun projectAndUserCountry(): Observable<Pair<Pair<Project, String>, Boolean>>
+        fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>>
 
         /** Emits the back, manage, or view pledge button */
         fun setActionButtonId(): Observable<Int>
@@ -107,9 +106,6 @@ interface ProjectViewModel {
 
         /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
         fun startVideoActivity(): Observable<Project>
-
-        /** Emits the view id to show based on the @isHorizontalRewardsEnabled Feature flag value */
-        fun viewToShow(): Observable<Pair<Int, Boolean>>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectActivity>(environment), ProjectAdapter.Delegate, Inputs, Outputs {
@@ -133,7 +129,7 @@ interface ProjectViewModel {
         private val viewPledgeButtonClicked = PublishSubject.create<Void>()
 
         private val heartDrawableId = BehaviorSubject.create<Int>()
-        private val projectAndUserCountry = BehaviorSubject.create<Pair<Pair<Project, String>, Boolean>>()
+        private val projectAndUserCountryAndIsFeatureEnabled = BehaviorSubject.create<Pair<Pair<Project, String>, Boolean>>()
         private val setActionButtonId = BehaviorSubject.create<Int>()
         private val showRewardsFragment = BehaviorSubject.create<Boolean>()
         private val startLoginToutActivity = BehaviorSubject.create<Void>()
@@ -147,7 +143,6 @@ interface ProjectViewModel {
         private val startProjectUpdatesActivity = BehaviorSubject.create<Project>()
         private val startVideoActivity = BehaviorSubject.create<Project>()
         private val startBackingActivity = BehaviorSubject.create<Pair<Project, User>>()
-        private val viewToShow = BehaviorSubject.create<Pair<Int, Boolean>>()
 
         val inputs: ProjectViewModel.Inputs = this
         val outputs: ProjectViewModel.Outputs = this
@@ -210,7 +205,7 @@ interface ProjectViewModel {
             currentProject
                     .compose<Pair<Project, String>>(combineLatestPair(this.currentConfig.observable().map { it.countryCode() }))
                     .compose<Pair<Pair<Project, String>, Boolean>>(combineLatestPair(horizontalRewardsEnabled))
-                    .subscribe(this.projectAndUserCountry)
+                    .subscribe(this.projectAndUserCountryAndIsFeatureEnabled)
 
             currentProject
                     .compose<Project>(takeWhen(this.shareButtonClicked))
@@ -302,18 +297,8 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { _ -> this.koala.trackOpenedAppBanner() }
 
-
-            val viewId = horizontalRewardsEnabled
-                    .map { getViewIdToShow(it) }
-
-            Observable.combineLatest(viewId, horizontalRewardsEnabled)
-            { id, enabled -> Pair.create(id, enabled) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.viewToShow)
-
-            Observable.combineLatest(currentProject, horizontalRewardsEnabled)
-            { project, enabled -> Pair.create(project, enabled) }
-                    .map { setActionButtons(it.first) }
+            currentProject
+                    .map { setActionButtons(it) }
                     .take(1)
                     .compose(bindToLifecycle())
                     .subscribe { this.setActionButtonId.onNext(it) }
@@ -415,8 +400,8 @@ interface ProjectViewModel {
             return this.heartDrawableId
         }
 
-        override fun projectAndUserCountry(): Observable<Pair<Pair<Project, String>, Boolean>> {
-            return this.projectAndUserCountry
+        override fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>> {
+            return this.projectAndUserCountryAndIsFeatureEnabled
         }
 
         override fun setActionButtonId(): Observable<Int> = this.setActionButtonId
@@ -465,11 +450,7 @@ interface ProjectViewModel {
             return this.startVideoActivity
         }
 
-        override fun viewToShow(): Observable<Pair<Int, Boolean>> {
-            return this.viewToShow
-        }
-
-        private fun getViewIdToShow(isEnabled: Boolean): Int {
+        private fun getContainerIdToShow(isEnabled: Boolean): Int {
             return if (isEnabled) {
                 R.id.rewards_container
             } else {

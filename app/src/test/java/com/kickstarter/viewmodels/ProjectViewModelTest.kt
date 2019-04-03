@@ -7,7 +7,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KoalaEvent
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.preferences.MockBooleanPreference
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
@@ -27,6 +26,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val savedTest = TestSubscriber<Boolean>()
     private val setActionButtonId = TestSubscriber<Int>()
+    private val showRewardsFragment = TestSubscriber<Boolean>()
     private val startBackingActivity = TestSubscriber<Pair<Project, User>>()
     private val startCampaignWebViewActivity = TestSubscriber<Project>()
     private val startCommentsActivity = TestSubscriber<Project>()
@@ -34,17 +34,17 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val startManagePledgeActivity = TestSubscriber<Project>()
     private val startProjectUpdatesActivity = TestSubscriber<Project>()
     private val startVideoActivity = TestSubscriber<Project>()
-    private val viewToShow = TestSubscriber<Pair<Int, Boolean>>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectViewModel.ViewModel(environment)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
-        this.vm.outputs.projectAndUserCountry().map { pc -> pc.first.first }.subscribe(this.projectTest)
+        this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first }.subscribe(this.projectTest)
         this.vm.outputs.setActionButtonId().subscribe(this.setActionButtonId)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
+        this.vm.outputs.showRewardsFragment().subscribe(this.showRewardsFragment)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
-        this.vm.outputs.projectAndUserCountry().map { pc -> pc.first.first.isStarred }.subscribe(this.savedTest)
+        this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first.isStarred }.subscribe(this.savedTest)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
         this.vm.outputs.startCampaignWebViewActivity().subscribe(this.startCampaignWebViewActivity)
         this.vm.outputs.startCommentsActivity().subscribe(this.startCommentsActivity)
@@ -52,7 +52,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startManagePledgeActivity().subscribe(this.startManagePledgeActivity)
         this.vm.outputs.startProjectUpdatesActivity().subscribe(this.startProjectUpdatesActivity)
         this.vm.outputs.startVideoActivity().subscribe(this.startVideoActivity)
-        this.vm.outputs.viewToShow().subscribe(this.viewToShow)
     }
 
     @Test
@@ -265,23 +264,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_ViewToShow_WhenIsHorizontalRewardsIsDisabled() {
-        setUpEnvironment(environment())
-        this.viewToShow.assertValue(Pair.create(R.id.project_action_buttons, false))
-    }
-
-    @Test
-    fun testProjectViewModel_ViewToShow_WhenIsHorizontalRewardsIsEnabled() {
-        val booleanPreference = MockBooleanPreference(true)
-        val environment = environment().toBuilder()
-                .enableHorizontalRewards(booleanPreference)
-                .build()
-        setUpEnvironment(environment)
-
-        this.viewToShow.assertValue(Pair.create(R.id.rewards_container, true))
-    }
-
-    @Test
     fun testProjectViewModel_SetActionButtonId_NonBacked_Live_Project() {
         setUpEnvironment(environment())
 
@@ -333,5 +315,19 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.setActionButtonId.assertValue(null)
+    }
+
+    @Test
+    fun testProjectViewModel_HideRewardsFragment() {
+        setUpEnvironment(environment())
+        this.vm.inputs.hideRewardsFragmentClicked()
+        this.showRewardsFragment.assertValue(false)
+    }
+
+    @Test
+    fun testProjectViewModel_ShowRewardsFragment() {
+        setUpEnvironment(environment())
+        this.vm.inputs.nativeBackProjectButtonClicked()
+        this.showRewardsFragment.assertValue(true)
     }
 }

@@ -746,7 +746,6 @@ Thank you for your support!</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Shipping destinations</string>
   <string name="rewards_info_ships_to" formatted="false">Ships to</string>
   <string name="rewards_info_time_left" formatted="false">%{time} left</string>
-  <string name="rewards_select_label_select" formatted="false">Select</string>
   <string name="rewards_selected_label_you_selected" formatted="false">You selected</string>
   <string name="rewards_shipping_preferences_location_unrestricted" formatted="false">Shipping anywhere in the world</string>
   <string name="rewards_title_about_amount_usd" formatted="false">About %{reward_amount} USD</string>

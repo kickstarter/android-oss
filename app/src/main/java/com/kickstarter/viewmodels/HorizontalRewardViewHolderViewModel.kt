@@ -68,7 +68,7 @@ interface HorizontalRewardViewHolderViewModel {
         fun startCheckoutActivity(): Observable<Pair<Project, Reward>>
 
         /** Returns `true` if the title TextView should be hidden, `false` otherwise.  */
-        fun titleTextViewIsGone(): Observable<Int>
+        fun titleTextViewIsGone(): Observable<Boolean>
 
         /** Use the reward's title to set the title text.  */
         fun titleTextViewText(): Observable<String>
@@ -95,7 +95,7 @@ interface HorizontalRewardViewHolderViewModel {
         private val rewardDescriptionIsGone: Observable<Boolean>
         private val rewardEndDateSectionIsGone: Observable<Boolean>
         private val rewardsItemsAreGone: Observable<Boolean>
-        private val titleTextViewIsGone = BehaviorSubject.create<Int>()
+        private val titleTextViewIsGone: Observable<Boolean>
         private val titleTextViewText: Observable<String>
         private val startBackingActivity: Observable<Project>
         private val startCheckoutActivity: Observable<Pair<Project, Reward>>
@@ -125,7 +125,7 @@ interface HorizontalRewardViewHolderViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
 
             this.conversionTextViewIsGone = this.projectAndReward
-                    .map { p -> p.first.currency() != p.first.currentCurrency() || RewardUtils.isNoReward(p.second)}
+                    .map { p -> p.first.currency() != p.first.currentCurrency() || RewardUtils.isNoReward(p.second) }
                     .map { BooleanUtils.negate(it) }
 
             this.conversionTextViewText = this.projectAndReward
@@ -184,6 +184,10 @@ interface HorizontalRewardViewHolderViewModel {
             this.rewardDescriptionIsGone = reward
                     .map<String> { it.description() }
                     .map { it.isEmpty() }
+
+            this.titleTextViewIsGone = reward
+                    .map { it.title() }
+                    .map { ObjectUtils.isNull(it) }
 
             this.titleTextViewText = reward
                     .filter { RewardUtils.isReward(it) }
@@ -272,7 +276,7 @@ interface HorizontalRewardViewHolderViewModel {
         }
 
         @NonNull
-        override fun titleTextViewIsGone(): Observable<Int> {
+        override fun titleTextViewIsGone(): Observable<Boolean> {
             return this.titleTextViewIsGone
         }
 

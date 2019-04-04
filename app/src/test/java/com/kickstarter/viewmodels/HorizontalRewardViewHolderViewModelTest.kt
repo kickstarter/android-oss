@@ -145,6 +145,8 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
         this.startCheckoutActivity.assertValue(Pair.create(liveProject, reward))
     }
 
+
+
     @Test
     fun testIsClickable() {
         setUpEnvironment(environment())

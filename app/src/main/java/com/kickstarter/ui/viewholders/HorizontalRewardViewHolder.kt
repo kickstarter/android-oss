@@ -89,7 +89,7 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
         this.viewModel.outputs.titleTextViewIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { view.horizontal_reward_title_text_view.text = context().getString(it) }
+                .subscribe { ViewUtils.setGone(view.horizontal_reward_title_text_view, it) }
 
         this.viewModel.outputs.startBackingActivity()
                 .compose(bindToLifecycle())

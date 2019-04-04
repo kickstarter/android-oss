@@ -81,13 +81,6 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(view.horizontal_reward_ending_text_view, it) }
 
-        this.viewModel.outputs.shouldDisplayNoReward()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    setNoRewardDisplayInfo(it)
-                }
-
         this.viewModel.outputs.titleTextViewText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -111,7 +104,6 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
         view.horizontal_reward_pledge_button.setOnClickListener {
             this.viewModel.inputs.rewardClicked()
         }
-
     }
 
     override fun bindData(data: Any?) {
@@ -166,17 +158,5 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
 
         context.startActivity(intent)
         transition(context, slideInFromRight())
-    }
-
-    private fun setNoRewardDisplayInfo(isNoReward: Boolean) {
-        if (isNoReward) {
-            view.horizontal_reward_minimum_text_view.visibility = View.GONE
-            view.horizontal_reward_pledge_button.text = context().getString(R.string.Pledge_without_a_reward)
-            view.horizontal_reward_title_text_view.text = context().getString(R.string.Make_a_pledge_without_a_reward)
-            view.horizontal_reward_description_text_view.text = context().getString(R.string.Pledge_any_amount_to_help_bring_this_project_to_life)
-        } else {
-            view.horizontal_reward_minimum_text_view.visibility = View.VISIBLE
-        }
-
     }
 }

@@ -49,8 +49,6 @@ interface HorizontalRewardViewHolderViewModel {
         /** Set the minimum TextView's text.  */
         fun minimumTextViewText(): Observable<String>
 
-        fun shouldDisplayNoReward(): Observable<Boolean>
-
         /** Returns `true` if the reward description is empty and should be hidden in the UI.  */
         fun rewardDescriptionIsGone(): Observable<Boolean>
 
@@ -93,7 +91,6 @@ interface HorizontalRewardViewHolderViewModel {
         private val limitAndRemainingTextViewText: Observable<Pair<String, String>>
         private val limitHeaderIsGone: Observable<Boolean>
         private val minimumTextViewText: Observable<String>
-        private val shouldDisplayNoReward = BehaviorSubject.create<Boolean>()
         private val reward: Observable<Reward>
         private val rewardDescriptionIsGone: Observable<Boolean>
         private val rewardEndDateSectionIsGone: Observable<Boolean>
@@ -188,11 +185,6 @@ interface HorizontalRewardViewHolderViewModel {
                     .map<String> { it.description() }
                     .map { it.isEmpty() }
 
-            reward
-                    .map { RewardUtils.isNoReward(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe { this.shouldDisplayNoReward.onNext(it) }
-
             this.titleTextViewText = reward
                     .filter { RewardUtils.isReward(it) }
                     .map<String> { it.title() }
@@ -255,10 +247,6 @@ interface HorizontalRewardViewHolderViewModel {
             return this.minimumTextViewText
         }
 
-        override fun shouldDisplayNoReward(): Observable<Boolean> {
-            return this.shouldDisplayNoReward
-        }
-
         @NonNull
         override fun rewardDescriptionIsGone(): Observable<Boolean> {
             return this.rewardDescriptionIsGone
@@ -292,12 +280,6 @@ interface HorizontalRewardViewHolderViewModel {
         override fun titleTextViewText(): Observable<String> {
             return this.titleTextViewText
         }
-
-//        private fun noRewardTitle(reward: Reward): Int {
-//             if (RewardUtils.isNoReward(reward)) {
-//                return R.string.Make_a_pledge_without_a_reward
-//            }
-//        }
 
     }
 }

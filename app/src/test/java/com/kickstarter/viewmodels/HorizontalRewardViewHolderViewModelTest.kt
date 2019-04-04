@@ -33,13 +33,13 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = HorizontalRewardViewHolderViewModel.ViewModel(environment)
-        this.vm.outputs.conversionTextViewText().subscribe(this.conversionTextViewText)
+        this.vm.outputs.conversionText().subscribe(this.conversionTextViewText)
         this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionSectionIsGone)
-        this.vm.outputs.descriptionTextViewText().subscribe(this.descriptionTextViewText)
+        this.vm.outputs.descriptionText().subscribe(this.descriptionTextViewText)
         this.vm.outputs.isClickable().subscribe(this.isClickable)
-        this.vm.outputs.limitAndRemainingTextViewText().subscribe(this.limitAndRemainingTextViewText)
+        this.vm.outputs.limitAndRemainingText().subscribe(this.limitAndRemainingTextViewText)
         this.vm.outputs.limitAndRemainingTextViewIsGone().subscribe(this.limitAndRemainingTextViewIsGone)
-        this.vm.outputs.minimumTextViewText().subscribe(this.minimumTextViewText)
+        this.vm.outputs.minimumText().subscribe(this.minimumTextViewText)
         this.vm.outputs.reward().subscribe(this.reward)
         this.vm.outputs.rewardDescriptionIsGone().subscribe(this.rewardDescriptionIsGone)
         this.vm.outputs.rewardEndDateSectionIsGone().subscribe(this.rewardEndDateSectionIsGone)
@@ -47,7 +47,7 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
         this.vm.outputs.startCheckoutActivity().subscribe(this.startCheckoutActivity)
         this.vm.outputs.titleTextViewIsGone().subscribe(this.titleTextViewIsGone)
-        this.vm.outputs.titleTextViewText().subscribe(this.titleTextViewText)
+        this.vm.outputs.titleText().subscribe(this.titleTextViewText)
     }
 
     @Test

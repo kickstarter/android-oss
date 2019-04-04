@@ -96,7 +96,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    if (it != null) {
+                    it?.let {
                         val view = findViewById<View>(it)
                         ViewUtils.setGone(view, false)
                     }
@@ -142,7 +142,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startLoginToutActivity() }
 
-
         back_project_button.setOnClickListener {
             this.viewModel.inputs.backProjectButtonClicked()
         }
@@ -161,7 +160,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
         rewards_toolbar.setNavigationOnClickListener {
             this.viewModel.inputs.hideRewardsFragmentClicked()
-            this.project_toolbar.visibility = View.VISIBLE
         }
 
         share_icon.setOnClickListener {
@@ -178,11 +176,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.project_recycler_view.adapter = null
     }
 
-    private fun animateRewards(isExpanded: Boolean) {
+    private fun animateRewards(expanded: Boolean) {
         this.showRewardsFragment.removeAllUpdateListeners()
         this.showRewardsFragment.addUpdateListener { valueAnim ->
             val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
-            val radius = initialRadius * if (isExpanded) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
+            val radius = initialRadius * if (expanded) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
             this.rewards_container.radius = radius
         }
 
@@ -190,31 +188,31 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         durationTransition.duration = animDuration
         TransitionManager.beginDelayedTransition(root, durationTransition)
 
-        val set = AnimatorSet()
-        this.showRewardsFragment.target = if (!isExpanded) native_back_this_project_button else pledge_container
-        this.hideRewardsFragment.target = if (!isExpanded) pledge_container else native_back_this_project_button
-        set.playTogether(this.showRewardsFragment, this.hideRewardsFragment)
-        set.duration = animDuration
+        val rewardAlphaSet = AnimatorSet()
+        this.showRewardsFragment.target = if (!expanded) native_back_this_project_button else pledge_container
+        this.hideRewardsFragment.target = if (!expanded) pledge_container else native_back_this_project_button
+        rewardAlphaSet.playTogether(this.showRewardsFragment, this.hideRewardsFragment)
+        rewardAlphaSet.duration = animDuration
 
-        set.addListener(object : Animator.AnimatorListener {
+        rewardAlphaSet.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
             override fun onAnimationCancel(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
-                if (isExpanded) {
+                if (expanded) {
                     native_back_this_project_button.visibility = View.GONE
                 }
             }
 
             override fun onAnimationStart(animation: Animator?) {
-                setRewardConstraints(isExpanded)
-                if (!isExpanded) {
+                setRewardConstraints(expanded)
+                if (!expanded) {
                     native_back_this_project_button.visibility = View.VISIBLE
                 }
             }
         })
 
-        set.start()
+        rewardAlphaSet.start()
     }
 
     private fun displayProjectAndRewards(projectCountryAndNativeCheckout: Pair<Pair<Project, String>, Boolean>) {

@@ -11,7 +11,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.viewholders.KSViewHolder
 import rx.Observable
-import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
 
@@ -29,10 +28,10 @@ interface HorizontalRewardViewHolderViewModel {
         fun conversionTextViewIsGone(): Observable<Boolean>
 
         /** Set the USD conversion.  */
-        fun conversionTextViewText(): Observable<String>
+        fun conversionText(): Observable<String>
 
         /** Set the description TextView's text.  */
-        fun descriptionTextViewText(): Observable<String>
+        fun descriptionText(): Observable<String>
 
         /** Returns `true` if reward can be clicked, `false` otherwise.  */
         fun isClickable(): Observable<Boolean>
@@ -41,13 +40,13 @@ interface HorizontalRewardViewHolderViewModel {
         fun limitAndRemainingTextViewIsGone(): Observable<Boolean>
 
         /** Set the limit and remaining TextView's text.  */
-        fun limitAndRemainingTextViewText(): Observable<Pair<String, String>>
+        fun limitAndRemainingText(): Observable<Pair<String, String>>
 
         /** Returns `true` if the limit header should be hidden, `false` otherwise.  */
         fun limitHeaderIsGone(): Observable<Boolean>
 
         /** Set the minimum TextView's text.  */
-        fun minimumTextViewText(): Observable<String>
+        fun minimumText(): Observable<String>
 
         /** Returns `true` if the reward description is empty and should be hidden in the UI.  */
         fun rewardDescriptionIsGone(): Observable<Boolean>
@@ -71,7 +70,7 @@ interface HorizontalRewardViewHolderViewModel {
         fun titleTextViewIsGone(): Observable<Boolean>
 
         /** Use the reward's title to set the title text.  */
-        fun titleTextViewText(): Observable<String>
+        fun titleText(): Observable<String>
     }
 
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<KSViewHolder>(environment), Inputs, Outputs {
@@ -81,22 +80,22 @@ interface HorizontalRewardViewHolderViewModel {
         private val rewardClicked = PublishSubject.create<Void>()
 
         private val backersTextViewIsGone: Observable<Boolean>
-        private val backersTextViewText: Observable<Int>
-        private val conversionTextViewText: Observable<String>
+        private val backersText: Observable<Int>
+        private val conversionText: Observable<String>
         private val conversionTextViewIsGone: Observable<Boolean>
-        private val descriptionTextViewText: Observable<String>
+        private val descriptionText: Observable<String>
         private val isClickable: Observable<Boolean>
         private val limitAndBackersSeparatorIsGone: Observable<Boolean>
         private val limitAndRemainingTextViewIsGone: Observable<Boolean>
-        private val limitAndRemainingTextViewText: Observable<Pair<String, String>>
+        private val limitAndRemainingText: Observable<Pair<String, String>>
         private val limitHeaderIsGone: Observable<Boolean>
-        private val minimumTextViewText: Observable<String>
+        private val minimumText: Observable<String>
         private val reward: Observable<Reward>
         private val rewardDescriptionIsGone: Observable<Boolean>
         private val rewardEndDateSectionIsGone: Observable<Boolean>
         private val rewardsItemsAreGone: Observable<Boolean>
         private val titleTextViewIsGone: Observable<Boolean>
-        private val titleTextViewText: Observable<String>
+        private val titleText: Observable<String>
         private val startBackingActivity: Observable<Project>
         private val startCheckoutActivity: Observable<Pair<Project, Reward>>
 
@@ -119,7 +118,7 @@ interface HorizontalRewardViewHolderViewModel {
                     .map { r -> RewardUtils.isNoReward(r) || !RewardUtils.hasBackers(r) }
                     .distinctUntilChanged()
 
-            this.backersTextViewText = reward
+            this.backersText = reward
                     .filter { r -> RewardUtils.isReward(r) || RewardUtils.hasBackers(r) }
                     .map<Int>(Reward::backersCount)
                     .filter { ObjectUtils.isNotNull(it) }
@@ -128,11 +127,11 @@ interface HorizontalRewardViewHolderViewModel {
                     .map { p -> p.first.currency() != p.first.currentCurrency() || RewardUtils.isNoReward(p.second) }
                     .map { BooleanUtils.negate(it) }
 
-            this.conversionTextViewText = this.projectAndReward
+            this.conversionText = this.projectAndReward
                     .filter { RewardUtils.isReward(it.second) }
                     .map { pr -> this.ksCurrency.formatWithUserPreference(pr.second.minimum(), pr.first, RoundingMode.UP) }
 
-            this.descriptionTextViewText = reward
+            this.descriptionText = reward
                     .filter { RewardUtils.isReward(it) }
                     .map { it.description() }
 
@@ -157,7 +156,7 @@ interface HorizontalRewardViewHolderViewModel {
                     .map<Boolean> { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
 
-            this.limitAndRemainingTextViewText = reward
+            this.limitAndRemainingText = reward
                     .map { r -> Pair.create<Int, Int>(r.limit(), r.remaining()) }
                     .filter { lr -> lr.first != null && lr.second != null }
                     .map { rr -> Pair.create(NumberUtils.format(rr.first), NumberUtils.format(rr.second)) }
@@ -167,7 +166,7 @@ interface HorizontalRewardViewHolderViewModel {
                     .map { pr -> !RewardUtils.isLimited(pr.second) || BackingUtils.isBacked(pr.first, pr.second) }
                     .distinctUntilChanged()
 
-            this.minimumTextViewText = formattedMinimum
+            this.minimumText = formattedMinimum
 
             this.rewardsItemsAreGone = reward
                     .map<Boolean> { RewardUtils.isItemized(it) }
@@ -189,7 +188,7 @@ interface HorizontalRewardViewHolderViewModel {
                     .map { it.title() }
                     .map { ObjectUtils.isNull(it) }
 
-            this.titleTextViewText = reward
+            this.titleText = reward
                     .filter { RewardUtils.isReward(it) }
                     .map<String> { it.title() }
                     .filter { ObjectUtils.isNotNull(it) }
@@ -220,13 +219,13 @@ interface HorizontalRewardViewHolderViewModel {
         }
 
         @NonNull
-        override fun conversionTextViewText(): Observable<String> {
-            return this.conversionTextViewText
+        override fun conversionText(): Observable<String> {
+            return this.conversionText
         }
 
         @NonNull
-        override fun descriptionTextViewText(): Observable<String> {
-            return this.descriptionTextViewText
+        override fun descriptionText(): Observable<String> {
+            return this.descriptionText
         }
 
         override fun isClickable(): Observable<Boolean> = this.isClickable
@@ -237,8 +236,8 @@ interface HorizontalRewardViewHolderViewModel {
         }
 
         @NonNull
-        override fun limitAndRemainingTextViewText(): Observable<Pair<String, String>> {
-            return this.limitAndRemainingTextViewText
+        override fun limitAndRemainingText(): Observable<Pair<String, String>> {
+            return this.limitAndRemainingText
         }
 
         @NonNull
@@ -247,8 +246,8 @@ interface HorizontalRewardViewHolderViewModel {
         }
 
         @NonNull
-        override fun minimumTextViewText(): Observable<String> {
-            return this.minimumTextViewText
+        override fun minimumText(): Observable<String> {
+            return this.minimumText
         }
 
         @NonNull
@@ -281,8 +280,8 @@ interface HorizontalRewardViewHolderViewModel {
         }
 
         @NonNull
-        override fun titleTextViewText(): Observable<String> {
-            return this.titleTextViewText
+        override fun titleText(): Observable<String> {
+            return this.titleText
         }
 
     }

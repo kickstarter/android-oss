@@ -36,12 +36,12 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(observeForUI())
                 .subscribe(ViewUtils.setGone(view.horizontal_reward_usd_conversion_text_view))
 
-        this.viewModel.outputs.conversionTextViewText()
+        this.viewModel.outputs.conversionText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setConversionTextView(it) }
 
-        this.viewModel.outputs.descriptionTextViewText()
+        this.viewModel.outputs.descriptionText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { view.horizontal_reward_description_text_view.text = it }
@@ -56,17 +56,16 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(observeForUI())
                 .subscribe(ViewUtils.setGone(view.horizontal_reward_remaining_text_view))
 
-        this.viewModel.outputs.limitAndRemainingTextViewText()
+        this.viewModel.outputs.limitAndRemainingText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setRemainingRewardsTextView(it.second) }
 
-        this.viewModel.outputs.minimumTextViewText()
+        this.viewModel.outputs.minimumText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    view.horizontal_reward_minimum_text_view.text = it
-                    setMinimumTextView(it)
+                    setMinimumText(it)
                 }
 
         this.viewModel.outputs.reward()
@@ -81,7 +80,7 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(view.horizontal_reward_ending_text_view, it) }
 
-        this.viewModel.outputs.titleTextViewText()
+        this.viewModel.outputs.titleText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { view.horizontal_reward_title_text_view.text = it }
@@ -127,7 +126,8 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
         ))
     }
 
-    private fun setMinimumTextView(@NonNull minimum: String) {
+    private fun setMinimumText(@NonNull minimum: String) {
+        view.horizontal_reward_minimum_text_view.text = minimum
         view.horizontal_reward_pledge_button.text = (this.ksString.format(
                 this.pledgeRewardCurrencyOrMoreString,
                 "reward_currency", minimum

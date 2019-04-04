@@ -85,7 +85,7 @@ public interface ProjectHolderViewModel {
     Observable<String> goalStringForTextView();
 
     /** Emits a boolean for the horizontal rewards feature flag */
-    Observable<Boolean> isHorizontalRewardsEnabled();
+    Observable<Boolean> shouldShowActionButtons();
 
     /** Emits the location for display. */
     Observable<String> locationTextViewText();
@@ -402,7 +402,7 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<String> goalStringForTextView() {
       return this.goalStringForTextView;
     }
-    @Override public Observable<Boolean> isHorizontalRewardsEnabled() {
+    @Override public Observable<Boolean> shouldShowActionButtons() {
       return this.isHorizontalRewardsEnabled;
     }
     @Override public @NonNull Observable<String> locationTextViewText() {

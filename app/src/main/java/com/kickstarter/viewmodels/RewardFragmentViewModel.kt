@@ -25,16 +25,14 @@ class RewardFragmentViewModel {
 
         private val projectInput = PublishSubject.create<Project>()
 
-        private val currentProject: Observable<Project>
         private val project = BehaviorSubject.create<Project>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
-            this.currentProject = this.projectInput
 
-            this.currentProject
+             this.projectInput
                     .compose(bindToLifecycle())
                     .subscribe { this.project.onNext(it) }
 

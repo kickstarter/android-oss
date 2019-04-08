@@ -327,7 +327,7 @@
 
           <TextView
             style="@style/SettingsSectionLabel"
-            android:text="Comment reply digest" />
+            android:text="@string/Comment_reply_digest" />
 
           <ImageButton
             android:id="@+id/comment_replies_mail_icon"

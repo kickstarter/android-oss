@@ -190,6 +190,16 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testNotifyOfCommentReplies() {
+        val user = UserFactory.user().toBuilder().notifyOfCommentReplies(false).build()
+
+        setUpEnvironment(user)
+
+        this.vm.inputs.notifyOfCommentReplies(true)
+        this.currentUserTest.assertValues(user, user.toBuilder().notifyOfCommentReplies(true).build())
+    }
+
+    @Test
     fun testNotifyOfCreatorDigest() {
         val user = UserFactory.user().toBuilder().notifyOfCreatorDigest(false).build()
 

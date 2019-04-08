@@ -21,26 +21,26 @@ import type.PaymentTypes
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
-        return Observable.defer{
+        return Observable.defer {
             val ps = PublishSubject.create<CreatePasswordMutation.Data>()
-        service.mutate(CreatePasswordMutation.builder()
-                .password(password)
-                .passwordConfirmation(confirmPassword)
-                .build())
-                .enqueue(object : ApolloCall.Callback<CreatePasswordMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
-
-                    override fun onResponse(response: Response<CreatePasswordMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(java.lang.Exception(response.errors().first().message()))
+            service.mutate(CreatePasswordMutation.builder()
+                    .password(password)
+                    .passwordConfirmation(confirmPassword)
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<CreatePasswordMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
                         }
-                        ps.onNext(response.data())
-                        ps.onCompleted()
-                    }
 
-                })
+                        override fun onResponse(response: Response<CreatePasswordMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(java.lang.Exception(response.errors().first().message()))
+                            }
+                            ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+
+                    })
             return@defer ps
         }
     }
@@ -84,18 +84,21 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             }
                             Observable.just(response.data())
                                     .map { cards -> cards?.me()?.storedCards()?.nodes() }
-                                    .flatMap { list ->
-                                        Observable.from(list).map {
-                                            StoredCard.builder()
-                                                    .expiration(it.expirationDate())
-                                                    .id(it.id() ?: "")
-                                                    .lastFourDigits(it.lastFour())
-                                                    .type(it.type())
-                                                    .build()
-                                        }
-                                                .toList()
-                                    }
-                                    .subscribe {
+                                    .map { list ->
+                                        val storedCards = list?.asSequence()?.map {
+                                            val id = it.id()
+                                            when (id) {
+                                                null -> null
+                                                else -> StoredCard.builder()
+                                                        .expiration(it.expirationDate())
+                                                        .id(id)
+                                                        .lastFourDigits(it.lastFour())
+                                                        .type(it.type())
+                                                        .build()
+                                            }
+                                        }?.toMutableList()
+                                        storedCards?.filterNotNull() ?: listOf()
+                                    }.subscribe{
                                         ps.onNext(it)
                                         ps.onCompleted()
                                     }

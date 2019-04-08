@@ -267,11 +267,11 @@ public final class RewardViewHolder extends KSViewHolder {
   private ScreenLocation getScreenLocationOfReward()  {
     final int[] rewardLocation = new int[2];
     this.itemView.getLocationInWindow(rewardLocation);
-    final float x = this.itemView.getLeft();
-    final float y = this.itemView.getTop();
+    final float x = rewardLocation[0];
+    final float y = rewardLocation[1];
     final int height = this.itemView.getHeight();
     final int width = this.itemView.getWidth();
-    return new ScreenLocation(0f, 0f, height, width);
+    return new ScreenLocation(x, y, height, width);
   }
 
   @Override

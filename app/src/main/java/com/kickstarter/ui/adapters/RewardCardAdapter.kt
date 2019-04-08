@@ -18,16 +18,16 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
     }
 
     override fun layout(sectionRow: SectionRow): Int {
-        if (sections().size == 1) {
-            return R.layout.item_reward_placeholder_card
+        return if (sections().size == 1) {
+            R.layout.item_reward_placeholder_card
         } else {
             if (sectionRow.section() == 0) {
                 if (sectionRow.row() == this.selectedPosition) {
                     return R.layout.item_reward_pledge_card
                 }
-                return R.layout.item_reward_credit_card
+                R.layout.item_reward_credit_card
             } else {
-                return R.layout.item_reward_add_card
+                R.layout.item_reward_add_card
             }
         }
     }

@@ -103,6 +103,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         cards_recycler?.adapter = null
     }
 
+    override fun addNewCardButtonClicked() {
+        this.viewModel.inputs.newCardButtonClicked()
+    }
+
     override fun closePledgeButtonClicked(position: Int) {
         this.viewModel.inputs.closeCardButtonClicked(position)
     }
@@ -115,55 +119,19 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.selectCardButtonClicked(position)
     }
 
-    override fun addNewCardButtonClicked() {
-        this.viewModel.inputs.newCardButtonClicked()
-    }
-
-    private fun updatePledgeCardSelection(positionAndSelected: Pair<Int, Boolean>) {
-        val position = positionAndSelected.first
-        val selected = positionAndSelected.second
-        if (selected) {
-            (cards_recycler.adapter as RewardCardAdapter).setSelectedPosition(position)
-            cards_recycler.scrollToPosition(position)
-        } else {
-            (cards_recycler.adapter as RewardCardAdapter).resetSelectedPosition(position)
-        }
-        (cards_recycler.layoutManager as FreezeLinearLayoutManager).setFrozen(selected)
-    }
-
     private fun showPledgeSection(rewardAndLocation: Pair<Reward, ScreenLocation>) {
         val location = rewardAndLocation.second
         val reward = rewardAndLocation.first
         setInitialViewStates(location, reward)
-        revealPledgeSection(location)
-    }
-
-    private fun setInitialViewStates(location: ScreenLocation, reward: Reward) {
-        positionRewardSnapshot(location, reward)
-
-        setDeliveryHeight(location)
-
-        pledge_details.y = pledge_root.height.toFloat()
-    }
-
-    private fun setDeliveryHeight(location: ScreenLocation) {
-        val miniRewardWidth = this.resources.getDimensionPixelSize(R.dimen.mini_reward_width)
-        val scaleX = miniRewardWidth.toFloat() / location.width
-        val miniRewardHeight = location.height * scaleX
-        delivery.measure(View.MeasureSpec.makeMeasureSpec(pledge_details.width, View.MeasureSpec.UNSPECIFIED),
-                View.MeasureSpec.makeMeasureSpec(pledge_details.height, View.MeasureSpec.UNSPECIFIED))
-        val targetHeight = delivery.measuredHeight
-        val deliveryParams = delivery.layoutParams as LinearLayout.LayoutParams
-        deliveryParams.height = Math.max(miniRewardHeight.toInt(), targetHeight)
-        delivery.layoutParams = deliveryParams
+        startPledgeAnimatorSet(true, location)
     }
 
     private fun positionRewardSnapshot(location: ScreenLocation, reward: Reward) {
         val rewardParams = reward_snapshot.layoutParams as FrameLayout.LayoutParams
         rewardParams.marginStart = location.x.toInt()
         rewardParams.topMargin = location.y.toInt()
-        rewardParams.height = location.height
-        rewardParams.width = location.width
+        rewardParams.height = location.height.toInt()
+        rewardParams.width = location.width.toInt()
         reward_snapshot.layoutParams = rewardParams
         reward_snapshot.pivotX = 0f
         reward_snapshot.pivotY = 0f
@@ -179,89 +147,166 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         }
     }
 
-    private fun revealPledgeSection(location: ScreenLocation) {
-        val initialMargin = this.resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)
+    private fun startPledgeAnimatorSet(reveal: Boolean, location: ScreenLocation) {
+        val initMarginX: Float
+        val initMarginY: Float
+        val finalMarginX: Float
+        val finalMarginY: Float
+        val initHeight: Float
+        val initWidth: Float
+        val finalHeight: Float
+        val finalWidth: Float
+        val initY: Float
+        val finalY: Float
 
-        val slideRewardLeft = getRewardMarginAnimator(location.x.toInt(), initialMargin)
+        val margin = this.resources.getDimensionPixelSize(R.dimen.activity_vertical_margin).toFloat()
+        val miniRewardWidth = Math.max(pledge_root.width / 3, this.resources.getDimensionPixelSize(R.dimen.mini_reward_width)).toFloat()
+        val miniRewardHeight = getMiniRewardHeight(miniRewardWidth, location)
 
-        val miniRewardWidth = this.resources.getDimensionPixelSize(R.dimen.mini_reward_width)
-        val shrinkReward = getRewardSizeAnimator(location.width, miniRewardWidth, location)
-
-        val slideDetailsUp = getDetailsYAnimator(pledge_root.height.toFloat(), 0f)
-
-        reward_snapshot.setOnClickListener { view ->
-            if (!shrinkReward.isRunning) {
-                view.setOnClickListener(null)
-                hidePledgeSection(location, initialMargin)
-            }
+        if (reveal) {
+            initMarginX = location.x
+            initMarginY = location.y
+            finalMarginX = margin
+            finalMarginY = margin
+            initWidth = location.width
+            initHeight = location.height
+            finalWidth = miniRewardWidth
+            finalHeight = miniRewardHeight
+            initY = pledge_root.height.toFloat()
+            finalY = 0f
+            setDeliveryParams(miniRewardWidth, margin)
+        } else {
+            initMarginX = margin
+            initMarginY = margin
+            finalMarginX = location.x
+            finalMarginY = location.y
+            initWidth = miniRewardWidth
+            initHeight = miniRewardHeight
+            finalWidth = location.width
+            finalHeight = location.height
+            initY = 0f
+            finalY = pledge_root.height.toFloat()
         }
 
-        startPledgeAnimatorSet(shrinkReward, slideRewardLeft, slideDetailsUp)
-    }
+        val (startMargin, topMargin) = margin.let {
+            getMarginStartAnimator(initMarginX, finalMarginX) to
+                    getMarginTopAnimator(initMarginY, finalMarginY)
+        }
 
-    private fun hidePledgeSection(location: ScreenLocation, initialMargin: Int) {
-        this.animDuration = this.defaultAnimationDuration
-        val slideRewardRight = getRewardMarginAnimator(initialMargin, location.x.toInt())
+        val (width, height) = location.let {
+            getWidthAnimator(initWidth, finalWidth) to
+                    getHeightAnimator(initHeight, finalHeight)
+        }
 
-        val expandReward = getRewardSizeAnimator(reward_snapshot.width, location.width, location).apply {
-            addUpdateListener {
+        val detailsY = getYAnimator(initY, finalY)
+
+        if (reveal) {
+            reward_snapshot.setOnClickListener {
+                if (!width.isRunning) {
+                    it.setOnClickListener(null)
+                    this.animDuration = this.defaultAnimationDuration
+                    startPledgeAnimatorSet(false, location)
+                }
+            }
+        } else {
+            width.addUpdateListener {
                 if (it.animatedFraction == 1f) {
                     this@PledgeFragment.fragmentManager?.popBackStack()
                 }
             }
         }
 
-        val slideDetailsDown = getDetailsYAnimator(0f, pledge_root.height.toFloat())
-
-        startPledgeAnimatorSet(expandReward, slideRewardRight, slideDetailsDown)
-    }
-
-    private fun getDetailsYAnimator(initialValue: Float, finalValue: Float): ObjectAnimator? {
-        return ObjectAnimator.ofFloat(pledge_details, View.Y, initialValue, finalValue).apply {
-            addUpdateListener {
-                val animatedFraction = it.animatedFraction
-                pledge_details?.alpha = if (finalValue == 0f) animatedFraction else 1 - animatedFraction
-            }
-        }
-    }
-
-    private fun getRewardSizeAnimator(initialValue: Int, finalValue: Int, location: ScreenLocation): ValueAnimator {
-        return ValueAnimator.ofInt(initialValue, finalValue).apply {
-            addUpdateListener {
-                val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
-                val newWidth = it.animatedValue as Int
-                newParams?.width = newWidth
-                val scaleX = newWidth / location.width.toFloat()
-
-                newParams?.height = (scaleX * location.height).toInt()
-                reward_snapshot?.layoutParams = newParams
-            }
-        }
-    }
-
-    private fun getRewardMarginAnimator(initialValue: Int, finalValue: Int): ValueAnimator {
-        return ValueAnimator.ofInt(initialValue, finalValue).apply {
-            addUpdateListener {
-                val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
-                val newMargin = it.animatedValue as Int
-                newParams?.marginStart = newMargin
-                reward_snapshot?.layoutParams = newParams
-            }
-        }
-    }
-
-    private fun startPledgeAnimatorSet(rewardSizeAnimator: ValueAnimator, rewardMarginAnimator: ValueAnimator, detailsYAnimator: ObjectAnimator?) {
         AnimatorSet().apply {
+            playTogether(width, height, startMargin, topMargin, detailsY)
             this.interpolator = FastOutSlowInInterpolator()
             this.duration = animDuration
-            playTogether(rewardSizeAnimator, rewardMarginAnimator, detailsYAnimator)
             start()
         }
+
+    }
+
+    private fun getHeightAnimator(initialValue: Float, finalValue: Float) =
+            ValueAnimator.ofFloat(initialValue, finalValue).apply {
+                addUpdateListener {
+                    val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
+                    val newHeight = it.animatedValue as Float
+                    newParams?.height = newHeight.toInt()
+                    reward_snapshot?.layoutParams = newParams
+                }
+            }
+
+    private fun getMarginStartAnimator(initialValue: Float, finalValue: Float) =
+            ValueAnimator.ofFloat(initialValue, finalValue).apply {
+                addUpdateListener {
+                    val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
+                    val newMargin = it.animatedValue as Float
+                    newParams?.marginStart = newMargin.toInt()
+                    reward_snapshot?.layoutParams = newParams
+                }
+            }
+
+    private fun getMarginTopAnimator(initialValue: Float, finalValue: Float): ValueAnimator =
+            ValueAnimator.ofFloat(initialValue, finalValue).apply {
+                addUpdateListener {
+                    val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
+                    val newMargin = it.animatedValue as Float
+                    newParams?.topMargin = newMargin.toInt()
+                    reward_snapshot?.layoutParams = newParams
+                }
+            }
+
+    private fun getMiniRewardHeight(miniRewardWidth: Float, location: ScreenLocation): Float {
+        val scale = miniRewardWidth / location.width
+        val scaledHeight = (location.height * scale).toInt()
+        return Math.min(resources.getDimensionPixelSize(R.dimen.mini_reward_height), scaledHeight).toFloat()
+    }
+
+    private fun getWidthAnimator(initialValue: Float, finalValue: Float) =
+            ValueAnimator.ofFloat(initialValue, finalValue).apply {
+                addUpdateListener {
+                    val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
+                    val newWidth = it.animatedValue as Float
+                    newParams?.width = newWidth.toInt()
+                    reward_snapshot?.layoutParams = newParams
+                }
+            }
+
+    private fun getYAnimator(initialValue: Float, finalValue: Float) =
+            ObjectAnimator.ofFloat(pledge_details, View.Y, initialValue, finalValue).apply {
+                addUpdateListener {
+                    val animatedFraction = it.animatedFraction
+                    pledge_details?.alpha = if (finalValue == 0f) animatedFraction else 1 - animatedFraction
+                }
+            }
+
+    private fun setDeliveryParams(miniRewardWidth: Float, margin: Float) {
+        val deliveryParams = (delivery.layoutParams as LinearLayout.LayoutParams).apply {
+            marginStart = (miniRewardWidth + margin).toInt()
+        }
+        delivery.layoutParams = deliveryParams
+    }
+
+    private fun setInitialViewStates(location: ScreenLocation, reward: Reward) {
+        positionRewardSnapshot(location, reward)
+        pledge_details.y = pledge_root.height.toFloat()
+    }
+
+    private fun updatePledgeCardSelection(positionAndSelected: Pair<Int, Boolean>) {
+        val position = positionAndSelected.first
+        val selected = positionAndSelected.second
+        val rewardCardAdapter = cards_recycler.adapter as RewardCardAdapter
+        if (selected) {
+            rewardCardAdapter.setSelectedPosition(position)
+            cards_recycler.scrollToPosition(position)
+        } else {
+            rewardCardAdapter.resetSelectedPosition(position)
+        }
+        (cards_recycler.layoutManager as FreezeLinearLayoutManager).setFrozen(selected)
     }
 
     companion object {
 
-        fun newInstance(pledgeData : PledgeData): PledgeFragment {
+        fun newInstance(pledgeData: PledgeData): PledgeFragment {
             val fragment = PledgeFragment()
             val argument = Bundle()
             argument.putParcelable(ArgumentsKey.PLEDGE_REWARD, pledgeData.reward)

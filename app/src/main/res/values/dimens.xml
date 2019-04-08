@@ -168,5 +168,6 @@
   <!-- Checkout -->
   <dimen name="reward_card_radius">16dp</dimen>
   <dimen name="mini_reward_width">90dp</dimen>
+  <dimen name="mini_reward_height">120dp</dimen>
 
 </resources>

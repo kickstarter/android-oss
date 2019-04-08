@@ -16,18 +16,22 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include
+    <View
       android:id="@+id/reward_to_copy"
-      layout="@layout/item_reward" />
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
 
     <!-- todo: what's the content description? -->
-    <ImageView
+    <com.kickstarter.ui.views.BottomCropImageView
       android:id="@+id/reward_snapshot"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_margin="@dimen/activity_horizontal_margin"
       android:background="@color/white"
       android:contentDescription="@null"
-      android:elevation="8dp" />
+      android:elevation="8dp"
+      tools:layout_height="@dimen/mini_reward_height"
+      tools:layout_width="@dimen/mini_reward_width" />
 
     <LinearLayout
       android:id="@+id/pledge_details"
@@ -37,13 +41,13 @@
 
       <LinearLayout
         android:id="@+id/delivery"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_4"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/grid_4">
 
         <TextView
           style="@style/CalloutSecondary"

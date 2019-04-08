@@ -14943,7 +14943,8 @@
     "new_project_header": "experimental",
     "featured_reward": "control",
     "thanks_page": "experimental",
-    "checkout_ksr_not_a_store_refresh": "control"
+    "checkout_ksr_not_a_store_refresh": "control",
+    "recaptcha_v3_user_sign_up": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

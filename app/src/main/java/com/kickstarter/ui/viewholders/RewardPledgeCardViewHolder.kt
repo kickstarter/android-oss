@@ -23,15 +23,15 @@ class RewardPledgeCardViewHolder(val view : View, val delegate : RewardPledgeCar
 
     init {
 
-        this.viewModel.outputs.issuerImage()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { view.reward_pledge_card_logo.setImageResource(it) }
-
         this.viewModel.outputs.expirationDate()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setExpirationDateTextView(it) }
+
+        this.viewModel.outputs.issuerImage()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { view.reward_pledge_card_logo.setImageResource(it) }
 
         this.viewModel.outputs.lastFour()
                 .compose(bindToLifecycle())

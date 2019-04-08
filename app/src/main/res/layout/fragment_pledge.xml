@@ -29,7 +29,7 @@
       android:layout_margin="@dimen/activity_horizontal_margin"
       android:background="@color/white"
       android:contentDescription="@null"
-      android:elevation="8dp"
+      android:elevation="@dimen/mini_reward_elevation"
       tools:layout_height="@dimen/mini_reward_height"
       tools:layout_width="@dimen/mini_reward_width" />
 
@@ -162,12 +162,12 @@
         <ImageButton
           android:id="@+id/google_pay"
           android:layout_width="match_parent"
-          android:layout_height="48dp"
+          android:layout_height="@dimen/grid_8"
           android:background="@drawable/googlepay_button_no_shadow_background"
           android:contentDescription="@string/googlepay_button_content_description"
           android:foreground="@drawable/googlepay_button_overlay"
-          android:paddingBottom="12dp"
-          android:paddingTop="14dp"
+          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/grid_2"
           android:scaleType="fitCenter"
           android:src="@drawable/googlepay_button_content" />
 
@@ -178,7 +178,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="20dp"
+        android:paddingBottom="@dimen/grid_3"
         tools:listitem="@layout/item_reward_credit_card" />
     </LinearLayout>
 

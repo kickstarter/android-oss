@@ -170,5 +170,6 @@
   <dimen name="mini_reward_width">90dp</dimen>
   <dimen name="mini_reward_height">120dp</dimen>
   <dimen name="stored_card_width">260dp</dimen>
+  <dimen name="mini_reward_elevation">8dp</dimen>
 
 </resources>

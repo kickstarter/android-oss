@@ -22,15 +22,15 @@ class RewardCardViewHolder(val view : View, val delegate : Delegate) : KSViewHol
 
     init {
 
-        this.viewModel.outputs.issuerImage()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { view.reward_card_logo.setImageResource(it) }
-
         this.viewModel.outputs.expirationDate()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setExpirationDateTextView(it) }
+
+        this.viewModel.outputs.issuerImage()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { view.reward_card_logo.setImageResource(it) }
 
         this.viewModel.outputs.lastFour()
                 .compose(bindToLifecycle())

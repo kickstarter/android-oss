@@ -185,7 +185,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
-        val screenLocation = ScreenLocation(0f, 0f, 0, 0)
+        val screenLocation = ScreenLocation(0f, 0f, 0f, 0f)
         val reward = RewardFactory.reward()
         this.vm.inputs.rewardClicked(screenLocation, reward)
         this.showPledgeFragment.assertValue(PledgeData(screenLocation, reward, project))

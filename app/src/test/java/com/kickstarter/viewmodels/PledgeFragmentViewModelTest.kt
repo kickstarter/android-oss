@@ -47,7 +47,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val reward = RewardFactory.rewardWithShipping()
         val project = ProjectFactory.project()
         val bundle = Bundle()
-        bundle.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, ScreenLocation(0f, 0f, 0, 0))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, ScreenLocation(0f, 0f, 0f, 0f))
         bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project)
         bundle.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)
         this.vm.arguments(bundle)

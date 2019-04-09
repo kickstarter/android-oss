@@ -260,7 +260,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         rewardsFragment.takeProject(project)
     }
 
-
     private fun startCampaignWebViewActivity(project: Project) {
         startWebViewActivity(getString(this.campaignString), project.descriptionUrl())
     }

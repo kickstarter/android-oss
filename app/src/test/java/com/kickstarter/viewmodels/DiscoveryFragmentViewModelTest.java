@@ -64,7 +64,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   }
 
   private void setUpInitialHomeAllProjectsParams() {
-    this.vm.inputs.paramsFromActivity(DiscoveryParams.getDefaultParams(null));
+    this.vm.inputs.paramsFromActivity(DiscoveryParams.getDefaultParams(null).toBuilder().sort(DiscoveryParams.Sort.HOME).build());
     this.vm.inputs.rootCategories(CategoryFactory.rootCategories());
   }
 

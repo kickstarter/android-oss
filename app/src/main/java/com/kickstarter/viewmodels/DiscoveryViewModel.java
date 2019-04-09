@@ -34,7 +34,6 @@ import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -42,7 +41,6 @@ import rx.subjects.PublishSubject;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-import static com.kickstarter.libs.utils.BooleanUtils.isFalse;
 
 public interface DiscoveryViewModel {
 
@@ -266,13 +264,6 @@ public interface DiscoveryViewModel {
         .filter(IntentMapper::appBannerIsSet)
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackOpenedAppBanner());
-    }
-
-    private DiscoveryParams getDefaultParams(final @Nullable User user) {
-      if (user != null && isFalse(user.optedOutOfRecommendations())) {
-        return DiscoveryParams.builder().recommended(true).backed(-1).build();
-      }
-      return DiscoveryParams.builder().build();
     }
 
     private final PublishSubject<Void> activityFeedClick = PublishSubject.create();

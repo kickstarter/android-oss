@@ -242,6 +242,10 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
             this.viewModel.inputs.notifyOfCommentReplies(!this.notifyMobileOfCommentReplies)
         }
 
+        comment_replies_row.setOnClickListener {
+            AnimationUtils.notificationBounceAnimation(null, comment_replies_mail_icon)
+        }
+
         comments_row.setOnClickListener {
             AnimationUtils.notificationBounceAnimation(comments_phone_icon, comments_mail_icon)
         }

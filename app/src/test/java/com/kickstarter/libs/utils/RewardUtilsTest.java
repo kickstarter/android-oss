@@ -1,17 +1,121 @@
 package com.kickstarter.libs.utils;
 
+import android.content.Context;
+
+import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.mock.factories.RewardFactory;
 import com.kickstarter.models.Reward;
 
-import junit.framework.TestCase;
+import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
+import org.junit.Test;
 
-public final class RewardUtilsTest extends TestCase {
+import java.util.Date;
 
+public final class RewardUtilsTest extends KSRobolectricTestCase {
+
+  @Test
+  public void testDeadlineCountdownDetailWithDaysLeft() {
+    final Context context = context();
+    final KSString ksString = ksString();
+    final Date date = DateTime.now().toDate();
+    final MutableDateTime currentDate = new MutableDateTime(date);
+    currentDate.addDays(31);
+
+    final Reward rewardWith30DaysRemaining = RewardFactory.reward().toBuilder()
+      .endsAt(currentDate.toDateTime())
+      .build();
+    assertEquals(RewardUtils.deadlineCountdownDetail(rewardWith30DaysRemaining, context, ksString), "days to go");
+  }
+
+  @Test
+  public void testDeadlineCountdownDetailWithHoursLeft() {
+    final Context context = context();
+    final KSString ksString = ksString();
+    final Date date = DateTime.now().toDate();
+    final MutableDateTime currentDate = new MutableDateTime(date);
+    currentDate.addHours(3);
+
+    final Reward rewardWith30DaysRemaining = RewardFactory.reward().toBuilder()
+      .endsAt(currentDate.toDateTime())
+      .build();
+    assertEquals(RewardUtils.deadlineCountdownDetail(rewardWith30DaysRemaining, context, ksString), "hours to go");
+  }
+
+  @Test
+  public void testDeadlineCountdownDetailWithSecondsLeft() {
+    final Context context = context();
+    final KSString ksString = ksString();
+    final Date date = DateTime.now().toDate();
+    final MutableDateTime currentDate = new MutableDateTime(date);
+    currentDate.addSeconds(3);
+
+    final Reward rewardWith30DaysRemaining = RewardFactory.reward().toBuilder()
+      .endsAt(currentDate.toDateTime())
+      .build();
+    assertEquals(RewardUtils.deadlineCountdownDetail(rewardWith30DaysRemaining, context, ksString), "secs to go");
+  }
+
+  @Test
+  public void testDeadlineCountdownUnitWithDaysLeft() {
+    final Context context = context();
+    final Date date = DateTime.now().toDate();
+    final MutableDateTime currentDate = new MutableDateTime(date);
+    currentDate.addDays(31);
+
+    final Reward rewardWithDaysRemaining = RewardFactory.reward().toBuilder()
+      .endsAt(currentDate.toDateTime())
+      .build();
+    assertEquals(RewardUtils.deadlineCountdownUnit(rewardWithDaysRemaining, context), "days");
+  }
+
+  @Test
+  public void testDeadlineCountdownUnitWithHoursLeft() {
+    final Context context = context();
+    final Date date = DateTime.now().toDate();
+    final MutableDateTime currentDate = new MutableDateTime(date);
+    currentDate.addHours(3);
+
+    final Reward rewardWithHoursRemaining = RewardFactory.reward().toBuilder()
+      .endsAt(currentDate.toDateTime())
+      .build();
+    assertEquals(RewardUtils.deadlineCountdownUnit(rewardWithHoursRemaining, context), "hours");
+  }
+
+  @Test
+  public void testDeadlineCountdownUnitWithMinutesLeft() {
+    final Context context = context();
+    final Date date = DateTime.now().toDate();
+    final MutableDateTime currentDate = new MutableDateTime(date);
+    currentDate.addMinutes(3);
+
+    final Reward rewardWithMinutesRemaining = RewardFactory.reward().toBuilder()
+      .endsAt(currentDate.toDateTime())
+      .build();
+    assertEquals(RewardUtils.deadlineCountdownUnit(rewardWithMinutesRemaining, context), "mins");
+  }
+
+  @Test
+  public void testDeadlineCountdownUnitWithSecondsLeft() {
+    final Context context = context();
+    final Date date = DateTime.now().toDate();
+    final MutableDateTime currentDate = new MutableDateTime(date);
+    currentDate.addSeconds(30);
+
+    final Reward rewardWithSecondsRemaining = RewardFactory.reward().toBuilder()
+      .endsAt(currentDate.toDateTime())
+      .build();
+    assertEquals(RewardUtils.deadlineCountdownUnit(rewardWithSecondsRemaining, context), "secs");
+  }
+
+  @Test
   public void testHasBackers() {
     assertTrue(RewardUtils.hasBackers(RewardFactory.backers()));
     assertFalse(RewardUtils.hasBackers(RewardFactory.noBackers()));
   }
 
+  @Test
   public void testIsLimited() {
     final Reward rewardWithRemaining = RewardFactory.reward().toBuilder()
       .remaining(5)
@@ -32,11 +136,13 @@ public final class RewardUtilsTest extends TestCase {
     assertFalse(RewardUtils.isLimited(rewardWithNoLimitAndRemainingSet));
   }
 
+  @Test
   public void testIsItemized() {
     assertFalse(RewardUtils.isItemized(RewardFactory.reward()));
     assertTrue(RewardUtils.isItemized(RewardFactory.itemized()));
   }
 
+  @Test
   public void testIsLimitReachedWhenLimitSetAndRemainingIsZero() {
     final Reward reward = RewardFactory.reward().toBuilder()
       .limit(100)
@@ -45,6 +151,7 @@ public final class RewardUtilsTest extends TestCase {
     assertTrue(RewardUtils.isLimitReached(reward));
   }
 
+  @Test
   public void testIsLimitNotReachedWhenLimitSetButRemainingIsNull() {
     final Reward reward = RewardFactory.reward().toBuilder()
       .limit(100)
@@ -52,6 +159,7 @@ public final class RewardUtilsTest extends TestCase {
     assertFalse(RewardUtils.isLimitReached(reward));
   }
 
+  @Test
   public void testIsLimitReachedWhenRemainingIsGreaterThanZero() {
     final Reward reward = RewardFactory.reward().toBuilder()
       .limit(100)
@@ -60,16 +168,19 @@ public final class RewardUtilsTest extends TestCase {
     assertFalse(RewardUtils.isLimitReached(reward));
   }
 
+  @Test
   public void testIsReward() {
     assertTrue(RewardUtils.isReward(RewardFactory.reward()));
     assertFalse(RewardUtils.isReward(RewardFactory.noReward()));
   }
 
+  @Test
   public void testIsNoReward() {
     assertTrue(RewardUtils.isNoReward(RewardFactory.noReward()));
     assertFalse(RewardUtils.isNoReward(RewardFactory.reward()));
   }
 
+  @Test
   public void testIsShippable() {
     final Reward rewardWithNullShippingEnabled = RewardFactory.reward().toBuilder()
       .shippingEnabled(null)
@@ -85,5 +196,33 @@ public final class RewardUtilsTest extends TestCase {
       .shippingEnabled(true)
       .build();
     assertTrue(RewardUtils.isShippable(rewardWithShippingEnabled));
+  }
+
+  @Test
+  public void testRewardWithoutExpiration() {
+    final Reward rewardWithoutEndDate = RewardFactory.reward();
+    assertFalse(RewardUtils.hasExpirationDate(rewardWithoutEndDate));
+  }
+
+  @Test
+  public void testRewardWithExpiration() {
+    final Date date = DateTime.now().toDate();
+    final MutableDateTime currentDate = new MutableDateTime(date);
+    currentDate.addDays(31);
+    final Reward rewardWithEndDate = RewardFactory.reward().toBuilder()
+      .endsAt(currentDate.toDateTime())
+      .build();
+
+    assertTrue(RewardUtils.hasExpirationDate(rewardWithEndDate));
+  }
+
+  @Test
+  public void testTimeInSecondsUntilDeadline() {
+    final Date date = DateTime.now().toDate();
+    final MutableDateTime currentDate = new MutableDateTime(date);
+    currentDate.addSeconds(120);
+    final Reward reward = RewardFactory.reward().toBuilder().endsAt(currentDate.toDateTime()).build();
+    final long timeInSecondsUntilDeadline = RewardUtils.timeInSecondsUntilDeadline(reward);
+    assertEquals(timeInSecondsUntilDeadline, 120);
   }
 }

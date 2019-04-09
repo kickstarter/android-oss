@@ -327,7 +327,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testProjectViewModel_ShowRewardsFragment() {
         setUpEnvironment(environment())
-        this.vm.inputs.nativeBackProjectButtonClicked()
+        this.vm.inputs.nativeCheckoutBackProjectButtonClicked()
         this.showRewardsFragment.assertValue(true)
     }
 }

@@ -63,9 +63,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.viewModel.outputs.showRewardsFragment()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe {
-                    animateRewards(it)
-                }
+                .subscribe { animateRewards(it) }
 
         this.viewModel.outputs.heartDrawableId()
                 .compose(bindToLifecycle())
@@ -151,7 +149,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         }
 
         native_back_this_project_button.setOnClickListener {
-            this.viewModel.inputs.nativeBackProjectButtonClicked()
+            this.viewModel.inputs.nativeCheckoutBackProjectButtonClicked()
         }
 
         manage_pledge_button.setOnClickListener {
@@ -176,11 +174,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.project_recycler_view.adapter = null
     }
 
-    private fun animateRewards(expanded: Boolean) {
+    private fun animateRewards(isRewardFragmentExpanded: Boolean) {
         this.showRewardsFragment.removeAllUpdateListeners()
         this.showRewardsFragment.addUpdateListener { valueAnim ->
             val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
-            val radius = initialRadius * if (expanded) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
+            val radius = initialRadius * if (isRewardFragmentExpanded) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
             this.rewards_container.radius = radius
         }
 
@@ -189,8 +187,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         TransitionManager.beginDelayedTransition(root, durationTransition)
 
         val rewardAlphaSet = AnimatorSet()
-        this.showRewardsFragment.target = if (!expanded) native_back_this_project_button else pledge_container
-        this.hideRewardsFragment.target = if (!expanded) pledge_container else native_back_this_project_button
+        this.showRewardsFragment.target = if (!isRewardFragmentExpanded) native_back_this_project_button else pledge_container
+        this.hideRewardsFragment.target = if (!isRewardFragmentExpanded) pledge_container else native_back_this_project_button
         rewardAlphaSet.playTogether(this.showRewardsFragment, this.hideRewardsFragment)
         rewardAlphaSet.duration = animDuration
 
@@ -199,14 +197,14 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
             override fun onAnimationCancel(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
-                if (expanded) {
+                if (isRewardFragmentExpanded) {
                     native_back_this_project_button.visibility = View.GONE
                 }
             }
 
             override fun onAnimationStart(animation: Animator?) {
-                setRewardConstraints(expanded)
-                if (!expanded) {
+                setRewardConstraints(isRewardFragmentExpanded)
+                if (!isRewardFragmentExpanded) {
                     native_back_this_project_button.visibility = View.VISIBLE
                 }
             }
@@ -216,9 +214,14 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     }
 
     private fun displayProjectAndRewards(projectCountryAndNativeCheckout: Pair<Pair<Project, String>, Boolean>) {
-        this.renderProject(projectCountryAndNativeCheckout.first.first, projectCountryAndNativeCheckout.first.second, projectCountryAndNativeCheckout.second)
-        if (projectCountryAndNativeCheckout.second) {
-            this.setupRewardsFragment(projectCountryAndNativeCheckout.first.first)
+        val project = projectCountryAndNativeCheckout.first.first
+        val country = projectCountryAndNativeCheckout.first.second
+        val nativeCheckoutEnabled = projectCountryAndNativeCheckout.second
+
+        this.renderProject(project, country, nativeCheckoutEnabled)
+
+        if (nativeCheckoutEnabled) {
+            this.setupRewardsFragment(project)
             rewards_container.visibility = View.VISIBLE
         } else if (!ViewUtils.isLandscape(this)) {
             project_action_buttons.visibility = View.VISIBLE

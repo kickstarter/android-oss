@@ -33,7 +33,7 @@
           style="@style/Headline"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="16dp"
+          android:layout_marginTop="@dimen/activity_vertical_margin"
           android:textSize="@dimen/title_1"
           android:text="@string/Make_a_pledge_without_a_reward" />
 

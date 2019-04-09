@@ -64,16 +64,12 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
         this.viewModel.outputs.minimumText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    setMinimumText(it)
-                }
+                .subscribe { setMinimumText(it) }
 
         this.viewModel.outputs.reward()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    view.horizontal_reward_ending_text_view.text = formattedDeadlineString(it)
-                }
+                .subscribe { view.horizontal_reward_ending_text_view.text = formattedDeadlineString(it) }
 
         this.viewModel.outputs.rewardEndDateSectionIsGone()
                 .compose(bindToLifecycle())

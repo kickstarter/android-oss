@@ -18,7 +18,6 @@ class RewardFragmentViewModel {
     interface Outputs {
         /** Emits the current project. */
         fun project(): Observable<Project>
-
     }
 
     class ViewModel(@NonNull environment: Environment) : FragmentViewModel<RewardsFragment>(environment), Inputs, Outputs {

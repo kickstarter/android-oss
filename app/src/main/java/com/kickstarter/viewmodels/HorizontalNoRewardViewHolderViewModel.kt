@@ -12,7 +12,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.viewholders.KSViewHolder
 import rx.Observable
-import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
 interface HorizontalNoRewardViewHolderViewModel {
@@ -36,7 +35,7 @@ interface HorizontalNoRewardViewHolderViewModel {
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
         private val rewardClicked = PublishSubject.create<Void>()
 
-        private val startBackingActivity :Observable<Project>
+        private val startBackingActivity: Observable<Project>
         private val startCheckoutActivity: Observable<Pair<Project, Reward>>
 
         val inputs: Inputs = this
@@ -44,7 +43,7 @@ interface HorizontalNoRewardViewHolderViewModel {
 
         init {
 
-           this.startBackingActivity= this.projectAndReward
+            this.startBackingActivity = this.projectAndReward
                     .compose<Pair<Project, Reward>>(Transformers.takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
                     .filter { pr -> ProjectUtils.isCompleted(pr.first) && BackingUtils.isBacked(pr.first, pr.second) }
                     .map { pr -> pr.first }
@@ -54,7 +53,6 @@ interface HorizontalNoRewardViewHolderViewModel {
                     .compose(Transformers.takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
 
         }
-
 
         override fun rewardClicked() {
             return this.rewardClicked.onNext(null)
@@ -78,10 +76,11 @@ interface HorizontalNoRewardViewHolderViewModel {
                 return true
             }
 
-            return if (!project.isLive) {
-                false
-            } else !RewardUtils.isLimitReached(reward)
+            if (!project.isLive) {
+                return false
+            }
 
+            return !RewardUtils.isLimitReached(reward)
         }
     }
 }

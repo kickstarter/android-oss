@@ -38,6 +38,11 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+//        rewards_recycler.adapter = null
+    }
+
     fun takeProject(project: Project) {
         this.viewModel.inputs.project(project)
     }

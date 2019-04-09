@@ -38,14 +38,14 @@ interface ProjectViewModel {
         /** Call when the heart button is clicked.  */
         fun heartButtonClicked()
 
-        /** Call when horizontal rewards fragment should hide */
+        /** Call when horizontal rewards fragment should hide. */
         fun hideRewardsFragmentClicked()
 
         /** Call when the manage pledge button is clicked.  */
         fun managePledgeButtonClicked()
 
         /** Call when the native back project button is clicked.  */
-        fun nativeBackProjectButtonClicked()
+        fun nativeCheckoutBackProjectButtonClicked()
 
         /** Call when the play video button is clicked.  */
         fun playVideoButtonClicked()
@@ -61,7 +61,7 @@ interface ProjectViewModel {
     }
 
     interface Outputs {
-        /** Emits when horizontal rewards fragment should show */
+        /** Emits when rewards fragment is expanded. */
         fun showRewardsFragment(): Observable<Boolean>
 
         /** Emits a drawable id that corresponds to whether the project is saved. */
@@ -71,7 +71,7 @@ interface ProjectViewModel {
          * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
         fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>>
 
-        /** Emits the back, manage, or view pledge button */
+        /** Emits the back, manage, view pledge button, or null. */
         fun setActionButtonId(): Observable<Int>
 
         /** Emits when the success prompt for saving should be displayed.  */
@@ -122,7 +122,7 @@ interface ProjectViewModel {
         private val heartButtonClicked = PublishSubject.create<Void>()
         private val hideRewardsFragment = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
-        private val nativeBackProjectButtonClicked = PublishSubject.create<Void>()
+        private val nativeCheckoutBackProjectButtonClicked = PublishSubject.create<Void>()
         private val playVideoButtonClicked = PublishSubject.create<Void>()
         private val shareButtonClicked = PublishSubject.create<Void>()
         private val updatesTextViewClicked = PublishSubject.create<Void>()
@@ -243,7 +243,7 @@ interface ProjectViewModel {
                     .compose<Pair<Project, User>>(takeWhen(this.viewPledgeButtonClicked))
                     .subscribe(this.startBackingActivity)
 
-            this.nativeBackProjectButtonClicked
+            this.nativeCheckoutBackProjectButtonClicked
                     .map { true }
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
@@ -298,7 +298,7 @@ interface ProjectViewModel {
                     .subscribe { _ -> this.koala.trackOpenedAppBanner() }
 
             currentProject
-                    .map { setActionButtons(it) }
+                    .map { getActionButtons(it) }
                     .take(1)
                     .compose(bindToLifecycle())
                     .subscribe { this.setActionButtonId.onNext(it) }
@@ -340,8 +340,8 @@ interface ProjectViewModel {
             this.managePledgeButtonClicked.onNext(null)
         }
 
-        override fun nativeBackProjectButtonClicked() {
-            this.nativeBackProjectButtonClicked.onNext(null)
+        override fun nativeCheckoutBackProjectButtonClicked() {
+            this.nativeCheckoutBackProjectButtonClicked.onNext(null)
         }
 
         override fun playVideoButtonClicked() {
@@ -450,15 +450,7 @@ interface ProjectViewModel {
             return this.startVideoActivity
         }
 
-        private fun getContainerIdToShow(isEnabled: Boolean): Int {
-            return if (isEnabled) {
-                R.id.rewards_container
-            } else {
-                R.id.project_action_buttons
-            }
-        }
-
-        private fun setActionButtons(project: Project): Int? {
+        private fun getActionButtons(project: Project): Int? {
             return if (!project.isBacking && project.isLive) {
                 R.id.back_project_button
             } else if (project.isBacking && project.isLive) {

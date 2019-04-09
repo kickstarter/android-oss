@@ -31,8 +31,6 @@ public final class ViewUtils {
   public static Bitmap getBitmap(final @NonNull View view, final int width, final int height) {
     final Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
     final Canvas canvas = new Canvas(bitmap);
-    //idk if this needs to happen if i pass in the size of the view 👀
-    //view.layout(0, 0, width, height);
     view.draw(canvas);
     return bitmap;
   }

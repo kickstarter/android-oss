@@ -31,7 +31,7 @@ class RewardPledgeCardViewHolder(val view : View, val delegate : RewardPledgeCar
         this.viewModel.outputs.issuerImage()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { view.reward_pledge_card_logo.setImageResource(it) }
+                .subscribe { this.view.reward_pledge_card_logo.setImageResource(it) }
 
         this.viewModel.outputs.lastFour()
                 .compose(bindToLifecycle())
@@ -53,12 +53,12 @@ class RewardPledgeCardViewHolder(val view : View, val delegate : RewardPledgeCar
     }
 
     private fun setExpirationDateTextView(date: String) {
-        view.reward_pledge_card_expiration_date.text = this.ksString.format(this.creditCardExpirationString,
+        this.view.reward_pledge_card_expiration_date.text = this.ksString.format(this.creditCardExpirationString,
                 "expiration_date", date)
     }
 
     private fun setLastFourTextView(lastFour: String) {
-        view.reward_pledge_card_last_four.text = this.ksString.format(this.cardEndingInString, "last_four", lastFour)
+        this.view.reward_pledge_card_last_four.text = this.ksString.format(this.cardEndingInString, "last_four", lastFour)
     }
 
 }

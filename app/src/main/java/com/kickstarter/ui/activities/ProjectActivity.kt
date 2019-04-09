@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -230,11 +231,15 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
     private fun renderProject(project: Project, configCountry: String, isHorizontalRewardsEnabled: Boolean) {
         this.adapter.takeProject(project, configCountry, isHorizontalRewardsEnabled)
+        this.setRecyclerViewConstraints(isHorizontalRewardsEnabled)
     }
 
-    private fun setupRewardsFragment(project: Project) {
-        val rewardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment
-        rewardsFragment.takeProject(project)
+    private fun setRecyclerViewConstraints(isHorizontalRewardsEnabled: Boolean) {
+        if (isHorizontalRewardsEnabled) {
+            val params = project_recycler_view.layoutParams as ConstraintLayout.LayoutParams
+            params.bottomToTop = rewards_container.id
+            project_recycler_view.requestLayout()
+        }
     }
 
     private fun setRewardConstraints(expanded: Boolean) {
@@ -249,6 +254,12 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         }
         constraintSet.applyTo(root)
     }
+
+    private fun setupRewardsFragment(project: Project) {
+        val rewardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment
+        rewardsFragment.takeProject(project)
+    }
+
 
     private fun startCampaignWebViewActivity(project: Project) {
         startWebViewActivity(getString(this.campaignString), project.descriptionUrl())

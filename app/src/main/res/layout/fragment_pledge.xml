@@ -116,7 +116,7 @@
           style="@style/CalloutPrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/Your_shipping_destination" />
+          android:text="@string/Your_shipping_location" />
 
         <TextView
           android:id="@+id/shipping_amount"
@@ -148,7 +148,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            tools:text="By pledging you agree to Kickstarter’s Terms of Use, Privacy Policy and Cookie Policy." />
+            android:text="@string/By_pledging_you_agree" />
 
           <TextView
             style="@style/PledgeCurrencySecondary"
@@ -170,6 +170,14 @@
           android:paddingTop="@dimen/grid_2"
           android:scaleType="fitCenter"
           android:src="@drawable/googlepay_button_content" />
+
+        <TextView
+          style="@style/FootnoteSecondary"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/grid_3"
+          android:gravity="center"
+          android:text="@string/Other_payment_methods" />
 
       </LinearLayout>
 

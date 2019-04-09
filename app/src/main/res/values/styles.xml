@@ -535,6 +535,11 @@
 
   <style name="ActivitySampleCard" parent="ActivitySampleCardBase" />
 
+  <style name="PledgeStoredCard">
+    <item name="cardCornerRadius">@dimen/reward_card_radius</item>
+    <item name="cardBackgroundColor">@color/white</item>
+  </style>
+
   <!-- Rewards -->
   <style name="RewardHeadline" parent="Caption2Primary">
     <item name="android:textColor">@color/ksr_dark_grey_400</item>

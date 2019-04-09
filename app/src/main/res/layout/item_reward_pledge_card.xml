@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
   android:id="@+id/card_container"
+  style="@style/PledgeStoredCard"
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  app:cardBackgroundColor="@android:color/white"
-  app:cardCornerRadius="@dimen/reward_card_radius">
+  android:layout_height="wrap_content">
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -33,9 +31,9 @@
 
       <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/grid_2"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -47,9 +45,9 @@
 
         <TextView
           android:id="@+id/reward_pledge_card_expiration_date"
+          style="@style/CreditCardExpiration"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          style="@style/CreditCardExpiration"
           tools:text="Expires in 03/2020" />
       </LinearLayout>
 
@@ -59,9 +57,9 @@
         android:id="@+id/close_pledge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_close"
         android:background="@drawable/circle_black_alpha"
-        android:contentDescription="@null" />
+        android:contentDescription="@null"
+        android:src="@drawable/ic_close" />
 
     </LinearLayout>
 

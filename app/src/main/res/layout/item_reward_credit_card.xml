@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
   android:id="@+id/card_container"
+  style="@style/PledgeStoredCard"
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="@dimen/stored_card_width"
-  android:layout_height="wrap_content"
-  app:cardBackgroundColor="@android:color/white"
-  app:cardCornerRadius="@dimen/reward_card_radius">
+  android:layout_height="wrap_content">
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -60,7 +58,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_2"
       android:backgroundTint="@android:color/black"
-      android:text="@string/rewards_select_label_select" />
+      android:text="@string/Select" />
   </LinearLayout>
 
 </androidx.cardview.widget.CardView>

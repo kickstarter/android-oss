@@ -9,7 +9,8 @@
   android:layout_height="?attr/actionBarSize"
   android:background="@color/white"
   app:contentInsetLeft="0dp"
-  app:contentInsetStart="0dp">
+  app:contentInsetStart="0dp"
+  android:elevation="@dimen/ks_toolbar_elevation">
 
   <RelativeLayout
     android:layout_width="match_parent"

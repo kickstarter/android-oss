@@ -132,7 +132,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.expandSortTabLayout.assertValues(true);
 
     // Toolbar params should be loaded with initial params.
-    this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
+    this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().build());
 
     // Select POPULAR sort.
     this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
@@ -141,11 +141,11 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.expandSortTabLayout.assertValues(true, true);
 
     // Unchanged toolbar params should not emit.
-    this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
+    this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().build());
 
     // Select ALL PROJECTS filter from drawer.
     this.vm.inputs.topFilterViewHolderRowClick(null,
-      NavigationDrawerData.Section.Row.builder().params(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build()).build()
+      NavigationDrawerData.Section.Row.builder().params(DiscoveryParams.builder().build()).build()
     );
 
     // Sort tab should be expanded.

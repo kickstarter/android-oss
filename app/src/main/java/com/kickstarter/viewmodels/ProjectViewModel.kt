@@ -8,11 +8,14 @@ import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.adapters.ProjectAdapter
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.intentmappers.IntentMapper
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.ui.viewholders.ProjectViewHolder
@@ -44,6 +47,9 @@ interface ProjectViewModel {
         /** Call when the play video button is clicked.  */
         fun playVideoButtonClicked()
 
+        /** Call when a reward is clicked with its current screen location to snapshot.  */
+        fun rewardClicked(screenLocation: ScreenLocation, reward: Reward)
+
         /** Call when the share button is clicked.  */
         fun shareButtonClicked()
 
@@ -61,6 +67,9 @@ interface ProjectViewModel {
         /** Emits a project and country when a new value is available. If the view model is created with a full project
          * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
         fun projectAndUserCountry(): Observable<Pair<Project, String>>
+
+        /** Emits when we should show the [com.kickstarter.ui.fragments.PledgeFragment].  */
+        fun showPledgeFragment(): Observable<PledgeData>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
@@ -110,6 +119,7 @@ interface ProjectViewModel {
         private val heartButtonClicked = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
         private val playVideoButtonClicked = PublishSubject.create<Void>()
+        private val rewardClicked = PublishSubject.create<Pair<ScreenLocation, Reward>>()
         private val shareButtonClicked = PublishSubject.create<Void>()
         private val updatesTextViewClicked = PublishSubject.create<Void>()
         private val viewPledgeButtonClicked = PublishSubject.create<Void>()
@@ -127,6 +137,7 @@ interface ProjectViewModel {
         private val startProjectUpdatesActivity = BehaviorSubject.create<Project>()
         private val startVideoActivity = BehaviorSubject.create<Project>()
         private val startBackingActivity = BehaviorSubject.create<Pair<Project, User>>()
+        private val showPledgeFragment = PublishSubject.create<PledgeData>()
 
         val inputs: ProjectViewModel.Inputs = this
         val outputs: ProjectViewModel.Outputs = this
@@ -178,6 +189,12 @@ interface ProjectViewModel {
                     projectOnUserChangeSave,
                     savedProjectOnLoginSuccess
             )
+
+            currentProject
+                    .compose<Pair<Project, Pair<ScreenLocation, Reward>>>(takePairWhen(this.rewardClicked))
+                    .map<PledgeData> { PledgeData(it.second.first, it.second.second, it.first) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showPledgeFragment)
 
             projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
                     .filter { p -> p.isStarred && p.isLive && !p.isApproachingDeadline }
@@ -336,6 +353,10 @@ interface ProjectViewModel {
             this.updatesTextViewClicked()
         }
 
+        override fun rewardClicked(screenLocation: ScreenLocation, reward: Reward) {
+            this.rewardClicked.onNext(Pair(screenLocation, reward))
+        }
+
         override fun shareButtonClicked() {
             this.shareButtonClicked.onNext(null)
         }
@@ -354,6 +375,10 @@ interface ProjectViewModel {
 
         override fun projectAndUserCountry(): Observable<Pair<Project, String>> {
             return this.projectAndUserCountry
+        }
+
+        override fun showPledgeFragment(): Observable<PledgeData> {
+            return this.showPledgeFragment
         }
 
         override fun showSavedPrompt(): Observable<Void> {

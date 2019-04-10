@@ -165,4 +165,11 @@
   <dimen name="delete_card_image_margin_top">24dp</dimen>
   <dimen name="payment_methods_list_item_8dp">8dp</dimen>
 
+  <!-- Checkout -->
+  <dimen name="reward_card_radius">16dp</dimen>
+  <dimen name="mini_reward_width">90dp</dimen>
+  <dimen name="mini_reward_height">120dp</dimen>
+  <dimen name="stored_card_width">260dp</dimen>
+  <dimen name="mini_reward_elevation">8dp</dimen>
+
 </resources>

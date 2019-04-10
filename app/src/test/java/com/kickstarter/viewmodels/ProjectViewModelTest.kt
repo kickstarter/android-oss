@@ -10,10 +10,13 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.ScreenLocation
 import org.junit.Test
 import rx.observers.TestSubscriber
 
@@ -21,6 +24,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm : ProjectViewModel.ViewModel
     private val heartDrawableId = TestSubscriber<Int>()
     private val projectTest = TestSubscriber<Project>()
+    private val showPledgeFragment = TestSubscriber<PledgeData>()
     private val showShareSheet = TestSubscriber<Project>()
     private val showSavedPromptTest = TestSubscriber<Void>()
     private val startLoginToutActivity = TestSubscriber<Void>()
@@ -37,6 +41,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm = ProjectViewModel.ViewModel(environment)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
         this.vm.outputs.projectAndUserCountry().map { pc -> pc.first }.subscribe(this.projectTest)
+        this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
@@ -171,6 +176,19 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.savedTest.assertValues(false, false, true)
         this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(0)
+    }
+
+    @Test
+    fun testProjectViewModel_ShowPledgeFragment() {
+        val project = ProjectFactory.project()
+
+        setUpEnvironment(environment())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        val screenLocation = ScreenLocation(0f, 0f, 0f, 0f)
+        val reward = RewardFactory.reward()
+        this.vm.inputs.rewardClicked(screenLocation, reward)
+        this.showPledgeFragment.assertValue(PledgeData(screenLocation, reward, project))
     }
 
     @Test

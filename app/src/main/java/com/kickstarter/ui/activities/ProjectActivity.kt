@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Pair
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
@@ -18,6 +19,8 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.project_layout.*
 import kotlinx.android.synthetic.main.project_toolbar.*
@@ -51,7 +54,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
         this.adapter = ProjectAdapter(this.viewModel)
         project_recycler_view.adapter = this.adapter
-        project_recycler_view.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        project_recycler_view.layoutManager = LinearLayoutManager(this)
 
         this.viewModel.outputs.heartDrawableId()
                 .compose(bindToLifecycle())
@@ -67,6 +70,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startCampaignWebViewActivity(it) }
+
+        this.viewModel.outputs.showPledgeFragment()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showPledgeFragment(it) }
 
         this.viewModel.outputs.startCommentsActivity()
                 .compose(bindToLifecycle())
@@ -136,6 +144,18 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
         view_pledge_button.setOnClickListener {
             this.viewModel.inputs.viewPledgeButtonClicked()
+        }
+    }
+
+    private fun showPledgeFragment(pledgeData: PledgeData) {
+        if (this.supportFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
+            val pledgeFragment = PledgeFragment.newInstance(pledgeData)
+            this.supportFragmentManager.beginTransaction()
+                    .add(R.id.fragment_container,
+                            pledgeFragment,
+                            PledgeFragment::class.java.simpleName)
+                    .addToBackStack(null)
+                    .commit()
         }
     }
 

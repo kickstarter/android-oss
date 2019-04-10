@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+  android:id="@+id/card_container"
+  style="@style/PledgeStoredCard"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/grid_3">
+
+    <LinearLayout
+      android:id="@+id/card_details"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/grid_8"
+      android:orientation="horizontal">
+
+      <!--Content description should be set programmatically in RewardCardsAdapter to the card brand-->
+      <ImageView
+        android:id="@+id/reward_pledge_card_logo"
+        android:layout_width="@dimen/credit_card_logo_width"
+        android:layout_height="@dimen/credit_card_logo_height"
+        android:contentDescription="@null"
+        android:scaleType="fitXY"
+        tools:src="@drawable/mastercard_md" />
+
+      <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/grid_2"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+          android:id="@+id/reward_pledge_card_last_four"
+          style="@style/CreditCardLastFour"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="Card ending in 1234" />
+
+        <TextView
+          android:id="@+id/reward_pledge_card_expiration_date"
+          style="@style/CreditCardExpiration"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="Expires in 03/2020" />
+      </LinearLayout>
+
+      <!--todo what should the content description be?-->
+      <!--todo this button is too smol-->
+      <ImageButton
+        android:id="@+id/close_pledge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_black_alpha"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_close" />
+
+    </LinearLayout>
+
+    <Button
+      android:id="@+id/pledge_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_2"
+      android:text="@string/Pledge" />
+  </LinearLayout>
+
+</androidx.cardview.widget.CardView>

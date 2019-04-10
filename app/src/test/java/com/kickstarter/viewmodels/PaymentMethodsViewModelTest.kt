@@ -1,23 +1,21 @@
 package com.kickstarter.viewmodels
 
 import DeletePaymentSourceMutation
-import UserPaymentsQuery
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.models.StoredCard
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
-import type.CreditCardPaymentType
-import type.CreditCardState
-import type.CreditCardTypes
 import java.util.*
 
 class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PaymentMethodsViewModel.ViewModel
 
-    private val cards = TestSubscriber<MutableList<UserPaymentsQuery.Node>>()
+    private val cards = TestSubscriber<List<StoredCard>>()
     private val dividerIsVisible = TestSubscriber<Boolean>()
     private val error = TestSubscriber<String>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
@@ -37,17 +35,15 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCards() {
-        val node = UserPaymentsQuery.Node("", "5555", Date(), "9876",
-                CreditCardState.ACTIVE, CreditCardPaymentType.CREDIT_CARD, CreditCardTypes.MASTERCARD)
+        val card = StoredCardFactory.discoverCard()
 
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
-                return Observable.just(UserPaymentsQuery.Data(UserPaymentsQuery.Me("",
-                        UserPaymentsQuery.StoredCards("", List(1) { _ -> node }))))
+            override fun getStoredCards(): Observable<List<StoredCard>> {
+                return Observable.just(Collections.singletonList(card))
             }
         }).build())
 
-        this.cards.assertValue(Collections.singletonList(node))
+        this.cards.assertValue(Collections.singletonList(card))
         this.koalaTest.assertValue("Viewed Payment Methods")
     }
 
@@ -61,9 +57,8 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testDividerIsVisible_noCards() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
-                return Observable.just(UserPaymentsQuery.Data(UserPaymentsQuery.Me("",
-                        UserPaymentsQuery.StoredCards("", Collections.emptyList()))))
+            override fun getStoredCards(): Observable<List<StoredCard>> {
+                return Observable.just(Collections.emptyList())
             }
         }).build())
 
@@ -73,7 +68,7 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testErrorGettingCards() {
         setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
+            override fun getStoredCards(): Observable<List<StoredCard>> {
                 return Observable.error(Exception("oops"))
             }
         }).build())

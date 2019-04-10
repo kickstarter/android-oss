@@ -14749,11 +14749,8 @@
     "ios_i18n": true,
     "ios_tappable_category_location": true,
     "ios_favorite_categories": true,
-    "ios_live_streams": true,
-    "ios_live_stream_discovery": true,
     "ios_live_stream_chat": true,
     "ios_backer_dashboard": true,
-    "new_project_build_reward_scheduling": true,
     "message_spam": true,
     "drip_iterate": true,
     "ksr_live_sunset_messaging": true,
@@ -14941,10 +14938,8 @@
   ],
   "ab_experiments": {
     "new_project_header": "experimental",
-    "featured_reward": "control",
-    "thanks_page": "experimental",
-    "checkout_ksr_not_a_store_refresh": "control",
-    "recaptcha_v3_user_sign_up": "control"
+    "featured_reward": "pinned_image_text_border",
+    "checkout_ksr_not_a_store_refresh": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

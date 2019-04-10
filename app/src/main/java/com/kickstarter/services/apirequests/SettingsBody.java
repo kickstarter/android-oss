@@ -18,6 +18,7 @@ public abstract class SettingsBody {
   public abstract boolean notifyMobileOfUpdates();
   public abstract boolean notifyOfBackings();
   public abstract boolean notifyOfComments();
+  public abstract boolean notifyOfCommentReplies();
   public abstract boolean notifyOfCreatorDigest();
   public abstract boolean notifyOfCreatorEdu();
   public abstract boolean notifyOfFollower();
@@ -50,6 +51,7 @@ public abstract class SettingsBody {
     public abstract Builder notifyMobileOfUpdates(boolean __);
     public abstract Builder notifyOfBackings(boolean __);
     public abstract Builder notifyOfComments(boolean __);
+    public abstract Builder notifyOfCommentReplies(boolean __);
     public abstract Builder notifyOfCreatorDigest(boolean __);
     public abstract Builder notifyOfCreatorEdu(boolean __);
     public abstract Builder notifyOfFollower(boolean __);

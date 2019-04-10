@@ -77,6 +77,7 @@
   <string name="Closes_project" formatted="false">プロジェクトを閉じる</string>
   <string name="Collapses_subcategories" formatted="false">サブカテゴリーを閉じる</string>
   <string name="Collections" formatted="false">コレクション</string>
+  <string name="Comment_reply_digest" formatted="false">Comment reply digest</string>
   <string name="Complete_payment" formatted="false">支払いを完了</string>
   <string name="Confirm_password" formatted="false">新しいパスワードの確認</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Facebookとリンクさせ、友達がプロジェクトを作成したりバックしたりした際に通知を受け取る</string>

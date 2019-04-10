@@ -81,6 +81,7 @@
         "few": "%{comments_count} comments",
         "many": "%{comments_count} comments"
       },
+      "Comment_reply_digest": "Comment reply digest",
       "Complete_payment": "Complete payment",
       "Confirm_password": "Confirm new password",
       "Connect_with_Facebook_to_follow_friends_and_get_notified": "Connect with Facebook to follow friends and get notified when they back or launch projects.",
@@ -2186,6 +2187,7 @@
         "few": "%{comments_count} Kommentare",
         "many": "%{comments_count} Kommentare"
       },
+      "Comment_reply_digest": "Comment reply digest",
       "Complete_payment": "Zahlung abschließen",
       "Confirm_password": "Neues Passwort bestätigen",
       "Connect_with_Facebook_to_follow_friends_and_get_notified": "Verknüpfe dein Konto mit Facebook - du kannst deinen Freunden folgen und wirst benachrichtigt, sobald sie ein Projekt veröffentlichen oder unterstützen.",
@@ -4291,6 +4293,7 @@
         "few": "%{comments_count} commentarios",
         "many": "%{comments_count} commentarios"
       },
+      "Comment_reply_digest": "Comment reply digest",
       "Complete_payment": "Completar pago",
       "Confirm_password": "Confirmar nueva contraseña",
       "Connect_with_Facebook_to_follow_friends_and_get_notified": "Si te conectas via Facebook puedes seguir a tus amigos y te avisaremos cada vez que publican o patrocinan un proyecto.",
@@ -6396,6 +6399,7 @@
         "few": "%{comments_count} commentaires",
         "many": "%{comments_count} commentaires"
       },
+      "Comment_reply_digest": "Comment reply digest",
       "Complete_payment": "Payer",
       "Confirm_password": "Confirmer le nouveau mot de passe",
       "Connect_with_Facebook_to_follow_friends_and_get_notified": "Si vous vous connectez avec votre compte Facebook, vous pourrez suivre vos amis et recevoir des notifications chaque fois qu'ils lancent ou soutiennent de nouveaux projets.",
@@ -8501,6 +8505,7 @@
         "few": "%{comments_count} comments",
         "many": "%{comments_count} comments"
       },
+      "Comment_reply_digest": "Comment reply digest",
       "Complete_payment": "Complete payment",
       "Confirm_password": "Confirm new password",
       "Connect_with_Facebook_to_follow_friends_and_get_notified": "Connect with Facebook to follow friends and get notified when they back or launch projects.",
@@ -10606,6 +10611,7 @@
         "few": "%{comments_count} のコメント",
         "many": "%{comments_count} のコメント"
       },
+      "Comment_reply_digest": "Comment reply digest",
       "Complete_payment": "支払いを完了",
       "Confirm_password": "新しいパスワードの確認",
       "Connect_with_Facebook_to_follow_friends_and_get_notified": "Facebookとリンクさせ、友達がプロジェクトを作成したりバックしたりした際に通知を受け取る",
@@ -12711,6 +12717,7 @@
         "few": "%{comments_count} comments",
         "many": "%{comments_count} comments"
       },
+      "Comment_reply_digest": "Comment reply digest",
       "Complete_payment": "Complete payment",
       "Confirm_password": "Confirm new password",
       "Connect_with_Facebook_to_follow_friends_and_get_notified": "Connect with Facebook to follow friends and get notified when they back or launch projects.",

@@ -78,6 +78,7 @@ patrocinadores</string>
   <string name="Closes_project" formatted="false">Cierra el proyecto.</string>
   <string name="Collapses_subcategories" formatted="false">Muestra menos subcategorías.</string>
   <string name="Collections" formatted="false">Colecciones</string>
+  <string name="Comment_reply_digest" formatted="false">Comment reply digest</string>
   <string name="Complete_payment" formatted="false">Completar pago</string>
   <string name="Confirm_password" formatted="false">Confirmar nueva contraseña</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Si te conectas via Facebook puedes seguir a tus amigos y te avisaremos cada vez que publican o patrocinan un proyecto.</string>

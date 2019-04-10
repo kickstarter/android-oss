@@ -78,6 +78,7 @@ contributeurs</string>
   <string name="Closes_project" formatted="false">Ferme le projet.</string>
   <string name="Collapses_subcategories" formatted="false">Masque les sous-catégories.</string>
   <string name="Collections" formatted="false">Collections</string>
+  <string name="Comment_reply_digest" formatted="false">Comment reply digest</string>
   <string name="Complete_payment" formatted="false">Payer</string>
   <string name="Confirm_password" formatted="false">Confirmer le nouveau mot de passe</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Si vous vous connectez avec votre compte Facebook, vous pourrez suivre vos amis et recevoir des notifications chaque fois qu\'ils lancent ou soutiennent de nouveaux projets.</string>

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -175,11 +174,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.project_recycler_view.adapter = null
     }
 
-    private fun animateRewards(isRewardFragmentExpanded: Boolean) {
+    private fun animateRewards(expanded: Boolean) {
         this.showRewardsFragment.removeAllUpdateListeners()
         this.showRewardsFragment.addUpdateListener { valueAnim ->
             val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
-            val radius = initialRadius * if (isRewardFragmentExpanded) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
+            val radius = initialRadius * if (expanded) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
             this.rewards_container.radius = radius
         }
 
@@ -188,8 +187,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         TransitionManager.beginDelayedTransition(root, durationTransition)
 
         val rewardAlphaSet = AnimatorSet()
-        this.showRewardsFragment.target = if (!isRewardFragmentExpanded) native_back_this_project_button else pledge_container
-        this.hideRewardsFragment.target = if (!isRewardFragmentExpanded) pledge_container else native_back_this_project_button
+        this.showRewardsFragment.target = if (!expanded) native_back_this_project_button else pledge_container
+        this.hideRewardsFragment.target = if (!expanded) pledge_container else native_back_this_project_button
         rewardAlphaSet.playTogether(this.showRewardsFragment, this.hideRewardsFragment)
         rewardAlphaSet.duration = animDuration
 
@@ -198,14 +197,14 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
             override fun onAnimationCancel(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
-                if (isRewardFragmentExpanded) {
+                if (expanded) {
                     native_back_this_project_button.visibility = View.GONE
                 }
             }
 
             override fun onAnimationStart(animation: Animator?) {
-                setRewardConstraints(isRewardFragmentExpanded)
-                if (!isRewardFragmentExpanded) {
+                setRewardConstraints(expanded)
+                if (!expanded) {
                     native_back_this_project_button.visibility = View.VISIBLE
                 }
             }
@@ -241,10 +240,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         }
     }
 
-    private fun setRewardConstraints(expanded: Boolean) {
+    private fun setRewardConstraints(expand: Boolean) {
         val constraintSet = ConstraintSet()
         constraintSet.clone(root)
-        if (!expanded) {
+        if (!expand) {
             constraintSet.clear(R.id.rewards_container, ConstraintSet.BOTTOM)
             constraintSet.connect(R.id.rewards_container, ConstraintSet.TOP, R.id.guideline, ConstraintSet.TOP, 0)
         } else {

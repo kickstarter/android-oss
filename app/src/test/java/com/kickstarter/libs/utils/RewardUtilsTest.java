@@ -110,6 +110,55 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testDeadlineCountdownValueWithMinutesLeft() {
+    final Date date = DateTime.now().toDate();
+    final MutableDateTime currentDate = new MutableDateTime(date);
+    currentDate.addSeconds(300);
+
+    final Reward rewardWithMinutesRemaining = RewardFactory.reward().toBuilder()
+      .endsAt(currentDate.toDateTime())
+      .build();
+    assertEquals(RewardUtils.deadlineCountdownValue(rewardWithMinutesRemaining), 5);
+  }
+
+  @Test
+  public void testDeadlineCountdownValueWithHoursLeft() {
+    final Date date = DateTime.now().toDate();
+    final MutableDateTime currentDate = new MutableDateTime(date);
+    currentDate.addSeconds(3600);
+
+    final Reward rewardWithHoursRemaining = RewardFactory.reward().toBuilder()
+      .endsAt(currentDate.toDateTime())
+      .build();
+    assertEquals(RewardUtils.deadlineCountdownValue(rewardWithHoursRemaining), 60);
+  }
+
+  @Test
+  public void testDeadlineCountdownValueWithDaysLeft() {
+    final Date date = DateTime.now().toDate();
+    final MutableDateTime currentDate = new MutableDateTime(date);
+    currentDate.addSeconds(86400);
+
+    final Reward rewardWithDaysRemaining = RewardFactory.reward().toBuilder()
+      .endsAt(currentDate.toDateTime())
+      .build();
+    assertEquals(RewardUtils.deadlineCountdownValue(rewardWithDaysRemaining), 24);
+  }
+
+
+  @Test
+  public void testDeadlineCountdownValueWithSecondsLeft() {
+    final Date date = DateTime.now().toDate();
+    final MutableDateTime currentDate = new MutableDateTime(date);
+    currentDate.addSeconds(30);
+
+    final Reward rewardWithSecondsRemaining = RewardFactory.reward().toBuilder()
+      .endsAt(currentDate.toDateTime())
+      .build();
+    assertEquals(RewardUtils.deadlineCountdownValue(rewardWithSecondsRemaining), 30);
+  }
+
+  @Test
   public void testHasBackers() {
     assertTrue(RewardUtils.hasBackers(RewardFactory.backers()));
     assertFalse(RewardUtils.hasBackers(RewardFactory.noBackers()));

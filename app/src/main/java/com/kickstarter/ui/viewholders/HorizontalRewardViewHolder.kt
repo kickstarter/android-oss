@@ -94,7 +94,7 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
         this.viewModel.outputs.startCheckoutActivity()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { pr -> startCheckoutActivity(pr.first, pr.second) }
+                .subscribe { startCheckoutActivity(it.first, it.second) }
 
         view.horizontal_reward_pledge_button.setOnClickListener {
             this.viewModel.inputs.rewardClicked()
@@ -116,22 +116,22 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
     }
 
     private fun setConversionTextView(@NonNull amount: String) {
-        view.horizontal_reward_usd_conversion_text_view.text = (this.ksString.format(
+        this.view.horizontal_reward_usd_conversion_text_view.text = (this.ksString.format(
                 this.currencyConversionString,
                 "reward_amount", amount
         ))
     }
 
     private fun setMinimumText(@NonNull minimum: String) {
-        view.horizontal_reward_minimum_text_view.text = minimum
-        view.horizontal_reward_pledge_button.text = (this.ksString.format(
+        this.view.horizontal_reward_minimum_text_view.text = minimum
+        this.view.horizontal_reward_pledge_button.text = (this.ksString.format(
                 this.pledgeRewardCurrencyOrMoreString,
                 "reward_currency", minimum
         ))
     }
 
     private fun setRemainingRewardsTextView(@NonNull remaining: String) {
-        view.horizontal_reward_remaining_text_view.text = (this.ksString.format(
+        this.view.horizontal_reward_remaining_text_view.text = (this.ksString.format(
                 this.remainingRewardsString, "left_count", remaining
         ))
     }

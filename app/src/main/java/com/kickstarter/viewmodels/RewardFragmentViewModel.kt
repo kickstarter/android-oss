@@ -11,7 +11,7 @@ import rx.subjects.PublishSubject
 
 class RewardFragmentViewModel {
     interface Inputs {
-        /** Call with a reward and project when data is bound to the view.  */
+        /** Configure with current project.  */
         fun project(project: Project)
     }
 

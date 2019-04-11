@@ -236,9 +236,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
     private fun setRecyclerViewConstraints(isHorizontalRewardsEnabled: Boolean) {
         if (isHorizontalRewardsEnabled) {
-            val params = project_recycler_view.layoutParams as ConstraintLayout.LayoutParams
-            params.bottomToTop = rewards_container.id
-            project_recycler_view.requestLayout()
+            val paddingBottom = resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
+            project_recycler_view.setPadding(0, 0, 0, paddingBottom)
         }
     }
 

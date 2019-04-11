@@ -8,14 +8,11 @@ import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.adapters.ProjectAdapter
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.intentmappers.IntentMapper
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.ui.viewholders.ProjectViewHolder
@@ -41,14 +38,17 @@ interface ProjectViewModel {
         /** Call when the heart button is clicked.  */
         fun heartButtonClicked()
 
+        /** Call when horizontal rewards fragment should hide. */
+        fun hideRewardsFragmentClicked()
+
         /** Call when the manage pledge button is clicked.  */
         fun managePledgeButtonClicked()
 
+        /** Call when the native back project button is clicked.  */
+        fun nativeCheckoutBackProjectButtonClicked()
+
         /** Call when the play video button is clicked.  */
         fun playVideoButtonClicked()
-
-        /** Call when a reward is clicked with its current screen location to snapshot.  */
-        fun rewardClicked(screenLocation: ScreenLocation, reward: Reward)
 
         /** Call when the share button is clicked.  */
         fun shareButtonClicked()
@@ -64,12 +64,15 @@ interface ProjectViewModel {
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
-        /** Emits a project and country when a new value is available. If the view model is created with a full project
-         * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
-        fun projectAndUserCountry(): Observable<Pair<Project, String>>
+        /** Emits a project,country, and the native checkout feature flag. If the view model is created with a full project
+         * model, this observable will emit that project immediately, and then again when it has updated from the api.*/
+        fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>>
 
-        /** Emits when we should show the [com.kickstarter.ui.fragments.PledgeFragment].  */
-        fun showPledgeFragment(): Observable<PledgeData>
+        /** Emits the back, manage, view pledge button, or null. */
+        fun setActionButtonId(): Observable<Int>
+
+        /** Emits when rewards fragment should expand. */
+        fun showRewardsFragment(): Observable<Boolean>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
@@ -117,15 +120,18 @@ interface ProjectViewModel {
         private val commentsTextViewClicked = PublishSubject.create<Void>()
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
         private val heartButtonClicked = PublishSubject.create<Void>()
+        private val hideRewardsFragment = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
+        private val nativeCheckoutBackProjectButtonClicked = PublishSubject.create<Void>()
         private val playVideoButtonClicked = PublishSubject.create<Void>()
-        private val rewardClicked = PublishSubject.create<Pair<ScreenLocation, Reward>>()
         private val shareButtonClicked = PublishSubject.create<Void>()
         private val updatesTextViewClicked = PublishSubject.create<Void>()
         private val viewPledgeButtonClicked = PublishSubject.create<Void>()
 
         private val heartDrawableId = BehaviorSubject.create<Int>()
-        private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
+        private val projectAndUserCountryAndIsFeatureEnabled = BehaviorSubject.create<Pair<Pair<Project, String>, Boolean>>()
+        private val setActionButtonId = BehaviorSubject.create<Int>()
+        private val showRewardsFragment = BehaviorSubject.create<Boolean>()
         private val startLoginToutActivity = BehaviorSubject.create<Void>()
         private val showShareSheet = BehaviorSubject.create<Project>()
         private val showSavedPrompt = BehaviorSubject.create<Void>()
@@ -137,7 +143,6 @@ interface ProjectViewModel {
         private val startProjectUpdatesActivity = BehaviorSubject.create<Project>()
         private val startVideoActivity = BehaviorSubject.create<Project>()
         private val startBackingActivity = BehaviorSubject.create<Pair<Project, User>>()
-        private val showPledgeFragment = PublishSubject.create<PledgeData>()
 
         val inputs: ProjectViewModel.Inputs = this
         val outputs: ProjectViewModel.Outputs = this
@@ -154,10 +159,10 @@ interface ProjectViewModel {
                     .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
 
             val refTag = intent()
-                    .flatMap({ ProjectIntentMapper.refTag(it) })
+                    .flatMap { ProjectIntentMapper.refTag(it) }
 
             val pushNotificationEnvelope = intent()
-                    .flatMap({ ProjectIntentMapper.pushNotificationEnvelope(it) })
+                    .flatMap { ProjectIntentMapper.pushNotificationEnvelope(it) }
 
             val loggedInUserOnHeartClick = this.currentUser.observable()
                     .compose<User>(takeWhen(this.heartButtonClicked))
@@ -169,7 +174,7 @@ interface ProjectViewModel {
 
             val projectOnUserChangeSave = initialProject
                     .compose(takeWhen<Project, User>(loggedInUserOnHeartClick))
-                    .switchMap({ this.toggleProjectSave(it) })
+                    .switchMap { this.toggleProjectSave(it) }
                     .share()
 
             loggedOutUserOnHeartClick
@@ -181,7 +186,7 @@ interface ProjectViewModel {
                     .filter { su -> su.second != null }
                     .withLatestFrom<Project, Project>(initialProject) { _, p -> p }
                     .take(1)
-                    .switchMap({ this.saveProject(it) })
+                    .switchMap { this.saveProject(it) }
                     .share()
 
             val currentProject = Observable.merge(
@@ -190,11 +195,7 @@ interface ProjectViewModel {
                     savedProjectOnLoginSuccess
             )
 
-            currentProject
-                    .compose<Pair<Project, Pair<ScreenLocation, Reward>>>(takePairWhen(this.rewardClicked))
-                    .map<PledgeData> { PledgeData(it.second.first, it.second.second, it.first) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showPledgeFragment)
+            val horizontalRewardsEnabled = Observable.just(environment.horizontalRewardsEnabled().get())
 
             projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
                     .filter { p -> p.isStarred && p.isLive && !p.isApproachingDeadline }
@@ -202,8 +203,9 @@ interface ProjectViewModel {
                     .subscribe(this.showSavedPrompt)
 
             currentProject
-                    .compose<Pair<Project, String>>(combineLatestPair(this.currentConfig.observable().map({ it.countryCode() })))
-                    .subscribe(this.projectAndUserCountry)
+                    .compose<Pair<Project, String>>(combineLatestPair(this.currentConfig.observable().map { it.countryCode() }))
+                    .compose<Pair<Pair<Project, String>, Boolean>>(combineLatestPair(horizontalRewardsEnabled))
+                    .subscribe(this.projectAndUserCountryAndIsFeatureEnabled)
 
             currentProject
                     .compose<Project>(takeWhen(this.shareButtonClicked))
@@ -237,17 +239,28 @@ interface ProjectViewModel {
                     .compose<Project>(takeWhen(this.playVideoButtonClicked))
                     .subscribe(this.startVideoActivity)
 
-            Observable.combineLatest<Project, User, Pair<Project, User>>(currentProject, this.currentUser.observable(), { a, b -> Pair.create(a, b) })
+            Observable.combineLatest<Project, User, Pair<Project, User>>(currentProject, this.currentUser.observable())
+            { project, user -> Pair.create(project, user) }
                     .compose<Pair<Project, User>>(takeWhen(this.viewPledgeButtonClicked))
                     .subscribe(this.startBackingActivity)
 
+            this.nativeCheckoutBackProjectButtonClicked
+                    .map { true }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showRewardsFragment)
+
+            this.hideRewardsFragment
+                    .map { false }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showRewardsFragment)
+
             this.showShareSheet
                     .compose(bindToLifecycle())
-                    .subscribe({ this.koala.trackShowProjectShareSheet(it) })
+                    .subscribe { this.koala.trackShowProjectShareSheet(it) }
 
             this.startVideoActivity
                     .compose(bindToLifecycle())
-                    .subscribe({ this.koala.trackVideoStart(it) })
+                    .subscribe { this.koala.trackVideoStart(it) }
 
             currentProject
                     .map { p -> if (p.isStarred) R.drawable.icon__heart else R.drawable.icon__heart_outline }
@@ -256,10 +269,10 @@ interface ProjectViewModel {
             projectOnUserChangeSave
                     .mergeWith(savedProjectOnLoginSuccess)
                     .compose(bindToLifecycle())
-                    .subscribe({ this.koala.trackProjectStar(it) })
+                    .subscribe { this.koala.trackProjectStar(it) }
 
-            Observable.combineLatest<RefTag, RefTag, Project, RefTagsAndProject>(refTag, cookieRefTag, currentProject,
-                    { refTagFromIntent, refTagFromCookie, project -> RefTagsAndProject(refTagFromIntent, refTagFromCookie, project) })
+            Observable.combineLatest<RefTag, RefTag, Project, RefTagsAndProject>(refTag, cookieRefTag, currentProject)
+            { refTagFromIntent, refTagFromCookie, project -> RefTagsAndProject(refTagFromIntent, refTagFromCookie, project) }
                     .take(1)
                     .compose(bindToLifecycle())
                     .subscribe { data ->
@@ -278,12 +291,19 @@ interface ProjectViewModel {
             pushNotificationEnvelope
                     .take(1)
                     .compose(bindToLifecycle())
-                    .subscribe({ this.koala.trackPushNotification(it) })
+                    .subscribe { this.koala.trackPushNotification(it) }
 
             intent()
-                    .filter({ IntentMapper.appBannerIsSet(it) })
+                    .filter { IntentMapper.appBannerIsSet(it) }
                     .compose(bindToLifecycle())
                     .subscribe { _ -> this.koala.trackOpenedAppBanner() }
+
+            currentProject
+                    .map { getActionButtons(it) }
+                    .take(1)
+                    .compose(bindToLifecycle())
+                    .subscribe { this.setActionButtonId.onNext(it) }
+
         }
 
         /**
@@ -313,8 +333,16 @@ interface ProjectViewModel {
             this.heartButtonClicked.onNext(null)
         }
 
+        override fun hideRewardsFragmentClicked() {
+            this.hideRewardsFragment.onNext(null)
+        }
+
         override fun managePledgeButtonClicked() {
             this.managePledgeButtonClicked.onNext(null)
+        }
+
+        override fun nativeCheckoutBackProjectButtonClicked() {
+            this.nativeCheckoutBackProjectButtonClicked.onNext(null)
         }
 
         override fun playVideoButtonClicked() {
@@ -353,10 +381,6 @@ interface ProjectViewModel {
             this.updatesTextViewClicked()
         }
 
-        override fun rewardClicked(screenLocation: ScreenLocation, reward: Reward) {
-            this.rewardClicked.onNext(Pair(screenLocation, reward))
-        }
-
         override fun shareButtonClicked() {
             this.shareButtonClicked.onNext(null)
         }
@@ -369,17 +393,19 @@ interface ProjectViewModel {
             this.viewPledgeButtonClicked.onNext(null)
         }
 
+        override fun showRewardsFragment(): Observable<Boolean> {
+            return this.showRewardsFragment
+        }
+
         override fun heartDrawableId(): Observable<Int> {
             return this.heartDrawableId
         }
 
-        override fun projectAndUserCountry(): Observable<Pair<Project, String>> {
-            return this.projectAndUserCountry
+        override fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>> {
+            return this.projectAndUserCountryAndIsFeatureEnabled
         }
 
-        override fun showPledgeFragment(): Observable<PledgeData> {
-            return this.showPledgeFragment
-        }
+        override fun setActionButtonId(): Observable<Int> = this.setActionButtonId
 
         override fun showSavedPrompt(): Observable<Void> {
             return this.showSavedPrompt
@@ -423,6 +449,18 @@ interface ProjectViewModel {
 
         override fun startVideoActivity(): Observable<Project> {
             return this.startVideoActivity
+        }
+
+        private fun getActionButtons(project: Project): Int? {
+            return if (!project.isBacking && project.isLive) {
+                R.id.back_project_button
+            } else if (project.isBacking && project.isLive) {
+                R.id.manage_pledge_button
+            } else if (project.isBacking && !project.isLive) {
+                R.id.view_pledge_button
+            } else {
+                return null
+            }
         }
 
         private fun saveProject(project: Project): Observable<Project> {

@@ -27,6 +27,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
@@ -82,6 +83,9 @@ public interface ProjectHolderViewModel {
 
     /** Emits the goal string for display. */
     Observable<String> goalStringForTextView();
+
+    /** Emits a boolean for to decide if we need to show the projectActionButtons */
+    Observable<Boolean> shouldShowProjectActionButtons();
 
     /** Emits the location for display. */
     Observable<String> locationTextViewText();
@@ -172,6 +176,7 @@ public interface ProjectHolderViewModel {
       super(environment);
 
       this.ksCurrency = environment.ksCurrency();
+      this.shouldShowProjectActionButtons.onNext(environment.horizontalRewardsEnabled().get());
 
       final Observable<Project> project = this.projectAndCountry.map(PairUtils::first);
       final Observable<ProjectUtils.Metadata> projectMetadata = project.map(ProjectUtils::metadataForProject);
@@ -319,6 +324,7 @@ public interface ProjectHolderViewModel {
     private final Observable<String> featuredTextViewRootCategory;
     private final Observable<Boolean> featuredViewGroupIsGone;
     private final Observable<String> goalStringForTextView;
+    private final BehaviorSubject<Boolean> shouldShowProjectActionButtons = BehaviorSubject.create();
     private final Observable<String> locationTextViewText;
     private final Observable<Integer> percentageFundedProgress;
     private final Observable<Boolean> percentageFundedProgressBarIsGone;
@@ -395,6 +401,9 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<String> goalStringForTextView() {
       return this.goalStringForTextView;
+    }
+    @Override public Observable<Boolean> shouldShowProjectActionButtons() {
+      return this.shouldShowProjectActionButtons;
     }
     @Override public @NonNull Observable<String> locationTextViewText() {
       return this.locationTextViewText;

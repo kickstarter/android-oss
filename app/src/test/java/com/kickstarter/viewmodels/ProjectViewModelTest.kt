@@ -21,14 +21,15 @@ import org.junit.Test
 import rx.observers.TestSubscriber
 
 class ProjectViewModelTest : KSRobolectricTestCase() {
-    private lateinit var vm : ProjectViewModel.ViewModel
+    private lateinit var vm: ProjectViewModel.ViewModel
     private val heartDrawableId = TestSubscriber<Int>()
     private val projectTest = TestSubscriber<Project>()
-    private val showPledgeFragment = TestSubscriber<PledgeData>()
     private val showShareSheet = TestSubscriber<Project>()
     private val showSavedPromptTest = TestSubscriber<Void>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val savedTest = TestSubscriber<Boolean>()
+    private val setActionButtonId = TestSubscriber<Int>()
+    private val showRewardsFragment = TestSubscriber<Boolean>()
     private val startBackingActivity = TestSubscriber<Pair<Project, User>>()
     private val startCampaignWebViewActivity = TestSubscriber<Project>()
     private val startCommentsActivity = TestSubscriber<Project>()
@@ -40,12 +41,13 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectViewModel.ViewModel(environment)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
-        this.vm.outputs.projectAndUserCountry().map { pc -> pc.first }.subscribe(this.projectTest)
-        this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
+        this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first }.subscribe(this.projectTest)
+        this.vm.outputs.setActionButtonId().subscribe(this.setActionButtonId)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
+        this.vm.outputs.showRewardsFragment().subscribe(this.showRewardsFragment)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
-        this.vm.outputs.projectAndUserCountry().map { pc -> pc.first.isStarred }.subscribe(this.savedTest)
+        this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first.isStarred }.subscribe(this.savedTest)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
         this.vm.outputs.startCampaignWebViewActivity().subscribe(this.startCampaignWebViewActivity)
         this.vm.outputs.startCommentsActivity().subscribe(this.startCommentsActivity)
@@ -179,19 +181,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_ShowPledgeFragment() {
-        val project = ProjectFactory.project()
-
-        setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        val screenLocation = ScreenLocation(0f, 0f, 0f, 0f)
-        val reward = RewardFactory.reward()
-        this.vm.inputs.rewardClicked(screenLocation, reward)
-        this.showPledgeFragment.assertValue(PledgeData(screenLocation, reward, project))
-    }
-
-    @Test
     fun testProjectViewModel_StartBackingActivity() {
         val project = ProjectFactory.project()
         val user = UserFactory.user()
@@ -275,5 +264,73 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.playVideoButtonClicked()
         this.startVideoActivity.assertValues(project)
+    }
+
+    @Test
+    fun testProjectViewModel_SetActionButtonId_NonBacked_Live_Project() {
+        setUpEnvironment(environment())
+
+        val project = ProjectFactory.project()
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.setActionButtonId.assertValue(R.id.back_project_button)
+    }
+
+    @Test
+    fun testProjectViewModel_SetActionButtonId_Backed_Live_Project() {
+        setUpEnvironment(environment())
+
+        val project = ProjectFactory.backedProject()
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.setActionButtonId.assertValue(R.id.manage_pledge_button)
+    }
+
+    @Test
+    fun testProjectViewModel_SetActionButtonId_Backed_Ended_Project() {
+        setUpEnvironment(environment())
+
+        val project = ProjectFactory.successfulProject()
+                .toBuilder()
+                .isBacking(true)
+                .build()
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.setActionButtonId.assertValue(R.id.view_pledge_button)
+    }
+
+    @Test
+    fun testProjectViewModel_SetActionButtonIdIsNull_NonBacked_Ended_Project() {
+        setUpEnvironment(environment())
+
+        val project = ProjectFactory.successfulProject()
+                .toBuilder()
+                .isBacking(false)
+                .build()
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.setActionButtonId.assertValue(null)
+    }
+
+    @Test
+    fun testProjectViewModel_HideRewardsFragment() {
+        setUpEnvironment(environment())
+        this.vm.inputs.hideRewardsFragmentClicked()
+        this.showRewardsFragment.assertValue(false)
+    }
+
+    @Test
+    fun testProjectViewModel_ShowRewardsFragment() {
+        setUpEnvironment(environment())
+        this.vm.inputs.nativeCheckoutBackProjectButtonClicked()
+        this.showRewardsFragment.assertValue(true)
     }
 }

@@ -5,7 +5,6 @@ import android.util.Pair;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.RewardFactory;
@@ -45,7 +44,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> selectedHeaderIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> shippingSummarySectionIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> shippingSummaryTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, Reward>> showPledgeFragment = new TestSubscriber<>();
   private final TestSubscriber<Project> startBackingActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, Reward>> startCheckoutActivity = new TestSubscriber<>();
   private final TestSubscriber<Boolean> titleTextViewIsGone = new TestSubscriber<>();
@@ -74,7 +72,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.selectedHeaderIsGone().subscribe(this.selectedHeaderIsGone);
     this.vm.outputs.shippingSummarySectionIsGone().subscribe(this.shippingSummarySectionIsGone);
     this.vm.outputs.shippingSummaryTextViewText().subscribe(this.shippingSummaryTextViewText);
-    this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment);
     this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity);
     this.vm.outputs.startCheckoutActivity().subscribe(this.startCheckoutActivity);
     this.vm.outputs.titleTextViewIsGone().subscribe(this.titleTextViewIsGone);
@@ -248,40 +245,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     this.startCheckoutActivity.assertNoValues();
 
     this.vm.inputs.rewardClicked();
-    this.startCheckoutActivity.assertNoValues();
-  }
-
-  @Test
-  public void testGoToCheckoutWhenProjectIsLiveAndHorizontalRewardsDisabled() {
-    final Reward reward = RewardFactory.reward();
-    final Project liveProject = ProjectFactory.project();
-    setUpEnvironment(environment());
-
-    this.vm.inputs.projectAndReward(liveProject, reward);
-    this.startCheckoutActivity.assertNoValues();
-    this.showPledgeFragment.assertNoValues();
-
-    // When a reward from a live project is clicked, start checkout.
-    this.vm.inputs.rewardClicked();
-    this.startCheckoutActivity.assertValue(Pair.create(liveProject, reward));
-    this.showPledgeFragment.assertNoValues();
-  }
-
-  @Test
-  public void testGoToPledgeFragmentWhenProjectIsLiveAndHorizontalRewardsEnabled() {
-    final Reward reward = RewardFactory.reward();
-    final Project liveProject = ProjectFactory.project();
-    final MockBooleanPreference horizontalRewardsEnabled = new MockBooleanPreference(true);
-
-    setUpEnvironment(environment().toBuilder().horizontalRewardsEnabled(horizontalRewardsEnabled).build());
-
-    this.vm.inputs.projectAndReward(liveProject, reward);
-    this.startCheckoutActivity.assertNoValues();
-    this.showPledgeFragment.assertNoValues();
-
-    // When a reward from a live project is clicked, show pledge fragment.
-    this.vm.inputs.rewardClicked();
-    this.showPledgeFragment.assertValue(Pair.create(liveProject, reward));
     this.startCheckoutActivity.assertNoValues();
   }
 

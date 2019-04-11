@@ -21,7 +21,7 @@ import rx.Observable;
 public final class ProjectAdapter extends KSAdapter {
   private final Delegate delegate;
 
-  public interface Delegate extends ProjectViewHolder.Delegate, RewardViewHolder.Delegate {}
+  public interface Delegate extends ProjectViewHolder.Delegate {}
 
   public ProjectAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
@@ -38,12 +38,13 @@ public final class ProjectAdapter extends KSAdapter {
   /**
    * Populate adapter data when we know we're working with a Project object.
    */
-  public void takeProject(final @NonNull Project project, final @NonNull String configCountry) {
+  public void takeProject(final @NonNull Project project, final @NonNull String configCountry,
+    final @NonNull Boolean isHorizontalRewardsEnabled) {
     sections().clear();
     sections().add(Collections.singletonList(Pair.create(project, configCountry)));
 
     final List<Reward> rewards = project.rewards();
-    if (rewards != null) {
+    if (rewards != null && !isHorizontalRewardsEnabled) {
       addSection(Observable.from(rewards)
         .filter(RewardUtils::isReward)
         .map(reward -> Pair.create(project, reward))
@@ -57,6 +58,6 @@ public final class ProjectAdapter extends KSAdapter {
     if (layout == R.layout.project_main_layout) {
       return new ProjectViewHolder(view, this.delegate);
     }
-    return new RewardViewHolder(view, this.delegate);
+    return new RewardViewHolder(view);
   }
 }

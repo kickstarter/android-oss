@@ -90,4 +90,12 @@ public final class RewardFactory {
       .description("")
       .build();
   }
+
+  public static @NonNull Reward rewardWithEndDate() {
+    return reward().toBuilder()
+      .shippingEnabled(true)
+      .shippingPreference("unrestricted")
+      .endsAt(DateTime.now())
+      .build();
+  }
 }

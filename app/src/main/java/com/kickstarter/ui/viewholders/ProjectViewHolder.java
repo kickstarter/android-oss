@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -78,6 +79,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_photo) ImageView photoImageView;
   protected @Bind(R.id.play_button_overlay) ImageButton playButton;
   protected @Bind(R.id.pledged) TextView pledgedTextView;
+  protected @Bind(R.id.landscape_project_action_buttons) @Nullable RelativeLayout projectActionButtons;
   protected @Bind(R.id.project_metadata_view_group) ViewGroup projectMetadataViewGroup;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.project_social_image) ImageView projectSocialImageView;
@@ -203,6 +205,11 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::setGoalTextView);
 
+    this.viewModel.outputs.shouldShowProjectActionButtons()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setProjectActionButtonsVisibility);
+
     this.viewModel.outputs.locationTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -276,7 +283,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(friends ->
-         this.projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(context(), friends, this.ksString))
+        this.projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(context(), friends, this.ksString))
       );
 
     this.viewModel.outputs.projectSocialImageViewIsGone()
@@ -372,13 +379,19 @@ public final class ProjectViewHolder extends KSViewHolder {
         this.convertedFromString, "pledged", pledgedAndGoal.first, "goal", pledgedAndGoal.second
       )
     );
-  };
+  }
 
   private void setGoalTextView(final @NonNull String goalString) {
     final String goalText = ViewUtils.isFontScaleLarge(context())
       ? this.ksString.format(this.ofGoalString, "goal", goalString)
       : this.ksString.format(this.pledgedOfGoalString, "goal", goalString);
     this.goalTextView.setText(goalText);
+  }
+
+  private void setProjectActionButtonsVisibility(final Boolean isHorizontalRewardsEnabled) {
+    if (ViewUtils.isLandscape(context()) && isHorizontalRewardsEnabled) {
+      ViewUtils.setGone(this.projectActionButtons, true);
+    }
   }
 
   private void setProjectPhoto(final @NonNull Photo photo) {
@@ -526,9 +539,10 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   private void setStatsContentDescription(final @NonNull Project project) {
-    final String backersCountContentDescription = NumberUtils.format(project.backersCount()) + " " +  this.backersString;
+    final String backersCountContentDescription = NumberUtils.format(project.backersCount()) + " " + this.backersString;
     final String pledgedContentDescription = this.pledgedTextView.getText() + " " + this.goalTextView.getText();
-    final String deadlineCountdownContentDescription = this.deadlineCountdownTextView.getText() + " " + this.deadlineCountdownUnitTextView.getText();
+    final String deadlineCountdownContentDescription = this.deadlineCountdownTextView.getText() + " " + this.deadlineCountdownUnitTextView
+      .getText();
 
     this.backersCountTextView.setContentDescription(backersCountContentDescription);
     this.pledgedTextView.setContentDescription(pledgedContentDescription);

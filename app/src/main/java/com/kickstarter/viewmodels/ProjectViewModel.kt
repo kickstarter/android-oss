@@ -61,18 +61,18 @@ interface ProjectViewModel {
     }
 
     interface Outputs {
-        /** Emits when rewards fragment is expanded. */
-        fun showRewardsFragment(): Observable<Boolean>
-
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
-        /** Emits a project and country when a new value is available. If the view model is created with a full project
-         * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
+        /** Emits a project,country, and the native checkout feature flag. If the view model is created with a full project
+         * model, this observable will emit that project immediately, and then again when it has updated from the api.*/
         fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>>
 
         /** Emits the back, manage, view pledge button, or null. */
         fun setActionButtonId(): Observable<Int>
+
+        /** Emits when rewards fragment should expand. */
+        fun showRewardsFragment(): Observable<Boolean>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
@@ -239,7 +239,8 @@ interface ProjectViewModel {
                     .compose<Project>(takeWhen(this.playVideoButtonClicked))
                     .subscribe(this.startVideoActivity)
 
-            Observable.combineLatest<Project, User, Pair<Project, User>>(currentProject, this.currentUser.observable()) { a, b -> Pair.create(a, b) }
+            Observable.combineLatest<Project, User, Pair<Project, User>>(currentProject, this.currentUser.observable())
+            { project, user -> Pair.create(project, user) }
                     .compose<Pair<Project, User>>(takeWhen(this.viewPledgeButtonClicked))
                     .subscribe(this.startBackingActivity)
 

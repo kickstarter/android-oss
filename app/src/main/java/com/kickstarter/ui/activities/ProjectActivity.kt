@@ -54,13 +54,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.project_layout)
 
+        this.ksString = environment().ksString()
+
         this.adapter = ProjectAdapter(this.viewModel)
         project_recycler_view.adapter = this.adapter
         project_recycler_view.layoutManager = LinearLayoutManager(this)
-        project_recycler_view.layoutManager = LinearLayoutManager(this)
-
-        this.ksString = environment().ksString()
-
 
         this.viewModel.outputs.heartDrawableId()
                 .compose(bindToLifecycle())
@@ -72,26 +70,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { displayProjectAndRewards(it) }
 
-        this.viewModel.outputs.startCampaignWebViewActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startCampaignWebViewActivity(it) }
-
-        this.viewModel.outputs.showRewardsFragment()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { animateRewards(it) }
-
-        this.viewModel.outputs.startCommentsActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startCommentsActivity(it) }
-
-        this.viewModel.outputs.startCreatorBioWebViewActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startCreatorBioWebViewActivity(it) }
-
         this.viewModel.outputs.setActionButtonId()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -102,10 +80,30 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                     }
                 }
 
+        this.viewModel.outputs.showRewardsFragment()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { animateRewards(it) }
+
         this.viewModel.outputs.showShareSheet()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startShareIntent(it) }
+
+        this.viewModel.outputs.startCampaignWebViewActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startCampaignWebViewActivity(it) }
+
+        this.viewModel.outputs.startCommentsActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startCommentsActivity(it) }
+
+        this.viewModel.outputs.startCreatorBioWebViewActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startCreatorBioWebViewActivity(it) }
 
         this.viewModel.outputs.startProjectUpdatesActivity()
                 .compose(bindToLifecycle())
@@ -176,11 +174,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.project_recycler_view.adapter = null
     }
 
-    private fun animateRewards(expanded: Boolean) {
+    private fun animateRewards(expand: Boolean) {
         this.showRewardsFragment.removeAllUpdateListeners()
         this.showRewardsFragment.addUpdateListener { valueAnim ->
             val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
-            val radius = initialRadius * if (expanded) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
+            val radius = initialRadius * if (expand) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
             this.rewards_container.radius = radius
         }
 
@@ -189,8 +187,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         TransitionManager.beginDelayedTransition(root, durationTransition)
 
         val rewardAlphaSet = AnimatorSet()
-        this.showRewardsFragment.target = if (!expanded) native_back_this_project_button else pledge_container
-        this.hideRewardsFragment.target = if (!expanded) pledge_container else native_back_this_project_button
+        this.showRewardsFragment.target = if (!expand) native_back_this_project_button else pledge_container
+        this.hideRewardsFragment.target = if (!expand) pledge_container else native_back_this_project_button
         rewardAlphaSet.playTogether(this.showRewardsFragment, this.hideRewardsFragment)
         rewardAlphaSet.duration = animDuration
 
@@ -199,14 +197,14 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
             override fun onAnimationCancel(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
-                if (expanded) {
+                if (expand) {
                     native_back_this_project_button.visibility = View.GONE
                 }
             }
 
             override fun onAnimationStart(animation: Animator?) {
-                setRewardConstraints(expanded)
-                if (!expanded) {
+                setRewardConstraints(expand)
+                if (!expand) {
                     native_back_this_project_button.visibility = View.VISIBLE
                 }
             }

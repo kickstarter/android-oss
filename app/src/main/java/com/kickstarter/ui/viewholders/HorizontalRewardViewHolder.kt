@@ -38,7 +38,7 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
         this.viewModel.outputs.conversionTextViewIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(view.horizontal_reward_usd_conversion_text_view))
+                .subscribe(ViewUtils.setGone(this.view.horizontal_reward_usd_conversion_text_view))
 
         this.viewModel.outputs.conversionText()
                 .compose(bindToLifecycle())
@@ -48,17 +48,17 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
         this.viewModel.outputs.descriptionText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { view.horizontal_reward_description_text_view.text = it }
+                .subscribe { this.view.horizontal_reward_description_text_view.text = it }
 
         this.viewModel.outputs.isClickable()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { view.horizontal_reward_pledge_button.isClickable = it }
+                .subscribe { this.view.horizontal_reward_pledge_button.isClickable = it }
 
         this.viewModel.outputs.limitAndRemainingTextViewIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(view.horizontal_reward_remaining_text_view))
+                .subscribe(ViewUtils.setGone(this.view.horizontal_reward_remaining_text_view))
 
         this.viewModel.outputs.limitAndRemainingText()
                 .compose(bindToLifecycle())
@@ -73,22 +73,22 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
         this.viewModel.outputs.reward()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { view.horizontal_reward_ending_text_view.text = formattedDeadlineString(it) }
+                .subscribe { this.view.horizontal_reward_ending_text_view.text = formattedDeadlineString(it) }
 
         this.viewModel.outputs.rewardEndDateSectionIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(view.horizontal_reward_ending_text_view, it) }
+                .subscribe { ViewUtils.setGone(this.view.horizontal_reward_ending_text_view, it) }
 
         this.viewModel.outputs.titleText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { view.horizontal_reward_title_text_view.text = it }
+                .subscribe { this.view.horizontal_reward_title_text_view.text = it }
 
         this.viewModel.outputs.titleTextViewIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(view.horizontal_reward_title_text_view, it) }
+                .subscribe { ViewUtils.setGone(this.view.horizontal_reward_title_text_view, it) }
 
         this.viewModel.outputs.showPledgeFragment()
                 .compose(bindToLifecycle())

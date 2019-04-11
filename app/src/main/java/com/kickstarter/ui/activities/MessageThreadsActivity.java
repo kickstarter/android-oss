@@ -19,6 +19,7 @@ import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.ToolbarUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.adapters.MessageThreadsAdapter;
+import com.kickstarter.ui.data.Mailbox;
 import com.kickstarter.viewmodels.MessageThreadsViewModel;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
@@ -39,10 +41,10 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   private MessageThreadsAdapter adapter;
   private KSString ksString;
   private RecyclerViewPaginator recyclerViewPaginator;
-  private SwipeRefresher swipeRefresher;
 
   protected @Bind(R.id.message_threads_app_bar_layout) AppBarLayout appBarLayout;
   protected @Bind(R.id.message_threads_collapsed_toolbar_title) View collapsedToolbarTitle;
+  //protected @Bind(R.id.message_threads_collapsed_toolbar_mailbox_title) TextView collapsedToolbarTitle;
   protected @Bind(R.id.message_threads_collapsing_toolbar_layout) CollapsingToolbarLayout collapsingToolbarLayout;
   protected @Bind(R.id.mailbox_text_view) TextView mailboxTextView;
   protected @Bind(R.id.message_threads_recycler_view) RecyclerView recyclerView;
@@ -51,6 +53,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   protected @Bind(R.id.message_threads_toolbar_unread_count_text_view) TextView unreadCountToolbarTextView;
 
   protected @BindString(R.string.messages_navigation_inbox) String inboxString;
+  protected @BindString(R.string.messages_navigation_sent) String sentString;
   protected @BindString(R.string.No_messages) String noMessagesString;
   protected @BindString(R.string.No_unread_messages) String noUnreadMessagesString;
   protected @BindString(R.string.font_family_sans_serif) String sansSerifString;
@@ -69,13 +72,21 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage, this.viewModel.outputs.isFetchingMessageThreads());
-    this.swipeRefresher = new SwipeRefresher(
+    new SwipeRefresher(
       this, this.swipeRefreshLayout, this.viewModel.inputs::swipeRefresh, this.viewModel.outputs::isFetchingMessageThreads
     );
 
-    this.mailboxTextView.setText(this.inboxString);  // todo: Sent mailbox logic enum
-
     ToolbarUtils.INSTANCE.fadeToolbarTitleOnExpand(this.appBarLayout, this.collapsedToolbarTitle);
+
+    this.viewModel.outputs.mailboxTitle()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(stringRes -> this.mailboxTextView.setText(stringRes));
+
+    this.viewModel.outputs.mailboxTitle()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(stringRes -> this.mailboxTextView.setText(stringRes));
 
     this.viewModel.outputs.hasNoMessages()
       .compose(bindToLifecycle())
@@ -129,6 +140,11 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   protected void onResume() {
     super.onResume();
     this.viewModel.inputs.onResume();
+  }
+
+  @OnClick(R.id.mailbox_switch)
+  protected void mailboxSwitchClicked() {
+    this.viewModel.inputs.mailbox(this.mailboxTextView.getText().equals(this.inboxString) ? Mailbox.SENT : Mailbox.INBOX);
   }
 
   private void setUnreadTextViewText(final @NonNull Integer unreadCount) {

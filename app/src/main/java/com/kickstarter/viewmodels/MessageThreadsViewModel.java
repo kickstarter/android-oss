@@ -29,6 +29,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
@@ -37,6 +38,8 @@ import static com.kickstarter.libs.utils.IntegerUtils.intValueOrZero;
 public interface MessageThreadsViewModel {
 
   interface Inputs {
+    void mailbox(Mailbox mailbox);
+
     /** Call when pagination should happen. */
     void nextPage();
 
@@ -56,6 +59,9 @@ public interface MessageThreadsViewModel {
 
     /** Emits a boolean indicating whether message threads are being fetched from the API. */
     Observable<Boolean> isFetchingMessageThreads();
+
+    /** Emits a string resource integer to set the mailbox title text view to. */
+    Observable<Integer> mailboxTitle();
 
     /** Emits a list of message threads to be displayed. */
     Observable<List<MessageThread>> messageThreadList();
@@ -127,20 +133,28 @@ public interface MessageThreadsViewModel {
         this.swipeRefresh
       );
 
-      final Observable<Project> startOverWith = Observable.combineLatest(
-        project,
+      final Observable<Mailbox> mailbox = this.mailbox
+        .startWith(Mailbox.INBOX);
+
+      mailbox
+        .map(this::getStringResForMailbox)
+        .compose(bindToLifecycle())
+        .subscribe(this.mailboxTitle);
+
+      final Observable<Pair<Project, Mailbox>> startOverWith = Observable.combineLatest(
+        project.compose(combineLatestPair(mailbox)),
         refreshMessageThreads,
         Pair::create
       )
         .map(PairUtils::first);
 
-      final ApiPaginator<MessageThread, MessageThreadsEnvelope, Project> paginator =
-        ApiPaginator.<MessageThread, MessageThreadsEnvelope, Project>builder()
+      final ApiPaginator<MessageThread, MessageThreadsEnvelope, Pair<Project, Mailbox>> paginator =
+        ApiPaginator.<MessageThread, MessageThreadsEnvelope, Pair<Project, Mailbox>>builder()
           .nextPage(this.nextPage)
           .startOverWith(startOverWith)
           .envelopeToListOfData(MessageThreadsEnvelope::messageThreads)
           .envelopeToMoreUrl(env -> env.urls().api().moreMessageThreads())
-          .loadWithParams(p -> this.client.fetchMessageThreads(p, Mailbox.INBOX))
+          .loadWithParams(projectAndMailbox -> this.client.fetchMessageThreads(projectAndMailbox.first, projectAndMailbox.second))
           .loadWithPaginationPath(this.client::fetchMessageThreadsWithPaginationPath)
           .build();
 
@@ -190,6 +204,15 @@ public interface MessageThreadsViewModel {
         .subscribe(projectAndRefTag -> this.koala.trackViewedMailbox(Mailbox.INBOX, projectAndRefTag.first, projectAndRefTag.second));
     }
 
+    private int getStringResForMailbox(final @NonNull Mailbox mailbox) {
+      if (mailbox == Mailbox.INBOX) {
+        return R.string.messages_navigation_inbox;
+      } else {
+        return R.string.messages_navigation_sent;
+      }
+    }
+
+    private final PublishSubject<Mailbox> mailbox = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Void> onResume = PublishSubject.create();
     private final PublishSubject<Void> swipeRefresh = PublishSubject.create();
@@ -197,6 +220,7 @@ public interface MessageThreadsViewModel {
     private final BehaviorSubject<Boolean> hasNoMessages = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> hasNoUnreadMessages = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> isFetchingMessageThreads = BehaviorSubject.create();
+    private final BehaviorSubject<Integer> mailboxTitle = BehaviorSubject.create();
     private final BehaviorSubject<List<MessageThread>> messageThreadList = BehaviorSubject.create();
     private final BehaviorSubject<Integer> unreadCountTextViewColorInt = BehaviorSubject.create();
     private final BehaviorSubject<Integer> unreadCountTextViewTypefaceInt = BehaviorSubject.create();
@@ -206,6 +230,9 @@ public interface MessageThreadsViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
+    @Override public void mailbox(Mailbox mailbox) {
+      this.mailbox.onNext(mailbox);
+    }
     @Override public void nextPage() {
       this.nextPage.onNext(null);
     }
@@ -224,6 +251,9 @@ public interface MessageThreadsViewModel {
     }
     @Override public @NonNull Observable<Boolean> isFetchingMessageThreads() {
       return this.isFetchingMessageThreads;
+    }
+    @Override public @NonNull Observable<Integer> mailboxTitle() {
+      return this.mailboxTitle;
     }
     @Override public @NonNull Observable<List<MessageThread>> messageThreadList() {
       return this.messageThreadList;

@@ -24,7 +24,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectViewModel.ViewModel
     private val heartDrawableId = TestSubscriber<Int>()
     private val projectTest = TestSubscriber<Project>()
-    private val showPledgeFragment = TestSubscriber<PledgeData>()
     private val showShareSheet = TestSubscriber<Project>()
     private val showSavedPromptTest = TestSubscriber<Void>()
     private val startLoginToutActivity = TestSubscriber<Void>()
@@ -44,8 +43,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
         this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first }.subscribe(this.projectTest)
         this.vm.outputs.setActionButtonId().subscribe(this.setActionButtonId)
-        this.vm.outputs.projectAndUserCountry().map { pc -> pc.first }.subscribe(this.projectTest)
-        this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
         this.vm.outputs.showRewardsFragment().subscribe(this.showRewardsFragment)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
@@ -181,19 +178,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.savedTest.assertValues(false, false, true)
         this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(0)
-    }
-
-    @Test
-    fun testProjectViewModel_ShowPledgeFragment() {
-        val project = ProjectFactory.project()
-
-        setUpEnvironment(environment())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        val screenLocation = ScreenLocation(0f, 0f, 0f, 0f)
-        val reward = RewardFactory.reward()
-        this.vm.inputs.rewardClicked(screenLocation, reward)
-        this.showPledgeFragment.assertValue(PledgeData(screenLocation, reward, project))
     }
 
     @Test

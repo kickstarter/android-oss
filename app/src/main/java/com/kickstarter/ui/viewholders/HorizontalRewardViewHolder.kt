@@ -15,18 +15,22 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.BackingActivity
-import com.kickstarter.ui.activities.CheckoutActivity
+import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.HorizontalRewardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward.view.*
 
-class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
+class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate) : KSViewHolder(view) {
+
+    interface Delegate {
+        fun rewardClicked(screenLocation: ScreenLocation, reward: Reward)
+    }
 
     private val ksString = environment().ksString()
+    private lateinit var reward: Reward
     private var viewModel = HorizontalRewardViewHolderViewModel.ViewModel(environment())
 
     private val currencyConversionString = context().getString(R.string.About_reward_amount)
     private val pledgeRewardCurrencyOrMoreString = context().getString(R.string.rewards_title_pledge_reward_currency_or_more)
-    private val projectBackButtonString = context().getString(R.string.project_back_button)
     private val remainingRewardsString = context().getString(R.string.Left_count_left_few)
 
     init {
@@ -86,15 +90,15 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(view.horizontal_reward_title_text_view, it) }
 
+        this.viewModel.outputs.showPledgeFragment()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.delegate.rewardClicked(getScreenLocationOfReward(), this.reward) }
+
         this.viewModel.outputs.startBackingActivity()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.startBackingActivity(it) }
-
-        this.viewModel.outputs.startCheckoutActivity()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { startCheckoutActivity(it.first, it.second) }
 
         view.horizontal_reward_pledge_button.setOnClickListener {
             this.viewModel.inputs.rewardClicked()
@@ -104,9 +108,9 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
     override fun bindData(data: Any?) {
         val projectAndReward = requireNonNull(data as Pair<Project, Reward>)
         val project = requireNonNull(projectAndReward.first, Project::class.java)
-        val reward = requireNonNull(projectAndReward.second, Reward::class.java)
+        this.reward = requireNonNull(projectAndReward.second, Reward::class.java)
 
-        this.viewModel.inputs.projectAndReward(project, reward)
+        this.viewModel.inputs.projectAndReward(project, this.reward)
     }
 
     private fun formattedDeadlineString(@NonNull reward: Reward): String {
@@ -145,14 +149,13 @@ class HorizontalRewardViewHolder(private val view: View) : KSViewHolder(view) {
         transition(context, slideInFromRight())
     }
 
-    private fun startCheckoutActivity(@NonNull project: Project, @NonNull reward: Reward) {
-        val context = context()
-        val intent = Intent(context, CheckoutActivity::class.java)
-                .putExtra(IntentKey.PROJECT, project)
-                .putExtra(IntentKey.TOOLBAR_TITLE, this.projectBackButtonString)
-                .putExtra(IntentKey.URL, project.rewardSelectedUrl(reward))
-
-        context.startActivity(intent)
-        transition(context, slideInFromRight())
+    private fun getScreenLocationOfReward(): ScreenLocation {
+        val rewardLocation = IntArray(2)
+        this.itemView.getLocationInWindow(rewardLocation)
+        val x = rewardLocation[0].toFloat()
+        val y = rewardLocation[1].toFloat()
+        val height = this.itemView.height
+        val width = this.itemView.width
+        return ScreenLocation(x, y, height.toFloat(), width.toFloat())
     }
 }

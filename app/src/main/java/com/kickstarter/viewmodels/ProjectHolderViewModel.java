@@ -176,7 +176,7 @@ public interface ProjectHolderViewModel {
       super(environment);
 
       this.ksCurrency = environment.ksCurrency();
-      this.shouldShowProjectActionButtons.onNext(environment.enableHorizontalRewards().get());
+      this.shouldShowProjectActionButtons.onNext(environment.horizontalRewardsEnabled().get());
 
       final Observable<Project> project = this.projectAndCountry.map(PairUtils::first);
       final Observable<ProjectUtils.Metadata> projectMetadata = project.map(ProjectUtils::metadataForProject);

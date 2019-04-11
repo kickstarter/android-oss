@@ -6,6 +6,7 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -60,11 +61,11 @@ interface HorizontalRewardViewHolderViewModel {
         /** Returns `true` if the items section should be hidden, `false` otherwise.  */
         fun rewardsItemsAreGone(): Observable<Boolean>
 
+        /** Show [com.kickstarter.ui.fragments.PledgeFragment] with the project's reward selected.  */
+        fun showPledgeFragment(): Observable<Pair<Project, Reward>>
+
         /** Start the [com.kickstarter.ui.activities.BackingActivity] with the project.  */
         fun startBackingActivity(): Observable<Project>
-
-        /** Start [com.kickstarter.ui.activities.CheckoutActivity] with the project's reward selected.  */
-        fun startCheckoutActivity(): Observable<Pair<Project, Reward>>
 
         /** Returns `true` if the title TextView should be hidden, `false` otherwise.  */
         fun titleTextViewIsGone(): Observable<Boolean>
@@ -96,8 +97,8 @@ interface HorizontalRewardViewHolderViewModel {
         private val rewardsItemsAreGone: Observable<Boolean>
         private val titleTextViewIsGone: Observable<Boolean>
         private val titleText: Observable<String>
+        private val showPledgeFragment: Observable<Pair<Project, Reward>>
         private val startBackingActivity: Observable<Project>
-        private val startCheckoutActivity: Observable<Pair<Project, Reward>>
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -136,10 +137,6 @@ interface HorizontalRewardViewHolderViewModel {
                     .map { it.description() }
 
             this.isClickable = isSelectable.distinctUntilChanged()
-
-            this.startCheckoutActivity = this.projectAndReward
-                    .filter { pr -> isSelectable(pr.first, pr.second) && pr.first.isLive }
-                    .compose(Transformers.takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
 
             this.startBackingActivity = this.projectAndReward
                     .compose<Pair<Project, Reward>>(Transformers.takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
@@ -184,6 +181,10 @@ interface HorizontalRewardViewHolderViewModel {
                     .map<String> { it.description() }
                     .map { it.isEmpty() }
 
+            this.showPledgeFragment = this.projectAndReward
+                    .filter { isSelectable(it.first, it.second) && it.first.isLive}
+                    .compose<Pair<Project, Reward>>(takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
+
             this.titleTextViewIsGone = reward
                     .map { it.title() }
                     .map { ObjectUtils.isNull(it) }
@@ -201,7 +202,9 @@ interface HorizontalRewardViewHolderViewModel {
 
             return if (!project.isLive) {
                 false
-            } else !RewardUtils.isLimitReached(reward)
+            } else {
+                !RewardUtils.isLimitReached(reward)
+            }
 
         }
 
@@ -264,14 +267,13 @@ interface HorizontalRewardViewHolderViewModel {
             return this.rewardsItemsAreGone
         }
 
-        @NonNull
-        override fun startBackingActivity(): Observable<Project> {
-            return this.startBackingActivity
+        override fun showPledgeFragment(): Observable<Pair<Project, Reward>> {
+            return this.showPledgeFragment
         }
 
         @NonNull
-        override fun startCheckoutActivity(): Observable<Pair<Project, Reward>> {
-            return this.startCheckoutActivity
+        override fun startBackingActivity(): Observable<Project> {
+            return this.startBackingActivity
         }
 
         @NonNull

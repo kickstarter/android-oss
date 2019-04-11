@@ -21,7 +21,7 @@ import rx.Observable;
 public final class ProjectAdapter extends KSAdapter {
   private final Delegate delegate;
 
-  public interface Delegate extends ProjectViewHolder.Delegate, RewardViewHolder.Delegate {}
+  public interface Delegate extends ProjectViewHolder.Delegate {}
 
   public ProjectAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
@@ -58,6 +58,6 @@ public final class ProjectAdapter extends KSAdapter {
     if (layout == R.layout.project_main_layout) {
       return new ProjectViewHolder(view, this.delegate);
     }
-    return new RewardViewHolder(view, this.delegate);
+    return new RewardViewHolder(view);
   }
 }

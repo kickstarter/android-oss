@@ -179,10 +179,7 @@
   <dimen name="item_reward_layout_width">294dp</dimen>
   <dimen name="reward_fragment_guideline_constraint_end">100dp</dimen>
   <dimen name="fragment_rewards_parent_min_height">@dimen/grid_20</dimen>
-
-  <!-- Checkout -->
   <dimen name="reward_card_radius">16dp</dimen>
-  <dimen name="mini_reward_width">90dp</dimen>
   <dimen name="mini_reward_height">120dp</dimen>
   <dimen name="stored_card_width">260dp</dimen>
   <dimen name="mini_reward_elevation">8dp</dimen>

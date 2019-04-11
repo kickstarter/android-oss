@@ -10,17 +10,20 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.kickstarter.R
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.RewardDecoration
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.HorizontalRewardsAdapter
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.RewardFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_rewards.*
 
 @RequiresFragmentViewModel(RewardFragmentViewModel.ViewModel::class)
-class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
+class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>(), HorizontalRewardsAdapter.Delegate {
 
-    private var rewardsAdapter = HorizontalRewardsAdapter()
+    private var rewardsAdapter = HorizontalRewardsAdapter(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -33,13 +36,23 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
 
         this.viewModel.outputs.project()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .compose(observeForUI())
                 .subscribe { rewardsAdapter.populateRewards(it) }
+
+        this.viewModel.outputs.showPledgeFragment()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { showPledgeFragment(it) }
+
     }
 
     override fun onDetach() {
         super.onDetach()
         rewards_recycler?.adapter = null
+    }
+
+    override fun rewardClicked(screenLocation: ScreenLocation, reward: Reward) {
+        this.viewModel.inputs.rewardClicked(screenLocation, reward)
     }
 
     fun takeProject(project: Project) {
@@ -65,5 +78,17 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
         rewards_recycler.adapter = rewardsAdapter
         addItemDecorator()
         addSnapHelper()
+    }
+
+    private fun showPledgeFragment(pledgeData: PledgeData) {
+        if (this.fragmentManager?.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
+            val pledgeFragment = PledgeFragment.newInstance(pledgeData)
+            this.fragmentManager?.beginTransaction()
+                    ?.add(R.id.fragment_container,
+                            pledgeFragment,
+                            PledgeFragment::class.java.simpleName)
+                    ?.addToBackStack(null)
+                    ?.commit()
+        }
     }
 }

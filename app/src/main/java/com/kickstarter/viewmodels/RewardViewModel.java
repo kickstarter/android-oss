@@ -102,9 +102,6 @@ public interface RewardViewModel {
     /** Set the shipping summary TextView's text. */
     Observable<String> shippingSummaryTextViewText();
 
-    /** Show {@link com.kickstarter.ui.fragments.PledgeFragment} with the project's reward selected. */
-    Observable<Pair<Project, Reward>> showPledgeFragment();
-
     /** Start the {@link com.kickstarter.ui.activities.BackingActivity} with the project. */
     Observable<Project> startBackingActivity();
 
@@ -180,13 +177,6 @@ public interface RewardViewModel {
       this.startCheckoutActivity = this.projectAndReward
         .compose(combineLatestPair(horizontalRewardsEnabled))
         .filter(prAndHorizontalRewards -> !prAndHorizontalRewards.second)
-        .map(prAndHorizontalRewards -> prAndHorizontalRewards.first)
-        .filter(pr -> isSelectable(pr.first, pr.second) && pr.first.isLive())
-        .compose(takeWhen(this.rewardClicked));
-
-      this.showPledgeFragment = this.projectAndReward
-        .compose(combineLatestPair(horizontalRewardsEnabled))
-        .filter(prAndHorizontalRewards -> prAndHorizontalRewards.second)
         .map(prAndHorizontalRewards -> prAndHorizontalRewards.first)
         .filter(pr -> isSelectable(pr.first, pr.second) && pr.first.isLive())
         .compose(takeWhen(this.rewardClicked));
@@ -295,7 +285,6 @@ public interface RewardViewModel {
     private final Observable<Boolean> selectedHeaderIsGone;
     private final Observable<Boolean> shippingSummarySectionIsGone;
     private final Observable<String> shippingSummaryTextViewText;
-    private final Observable<Pair<Project, Reward>> showPledgeFragment;
     private final Observable<Project> startBackingActivity;
     private final Observable<Pair<Project, Reward>> startCheckoutActivity;
     private final Observable<Boolean> whiteOverlayIsInvisible;
@@ -369,9 +358,6 @@ public interface RewardViewModel {
     }
     @Override public @NonNull Observable<String> shippingSummaryTextViewText() {
       return this.shippingSummaryTextViewText;
-    }
-    @Override public @NonNull Observable<Pair<Project, Reward>> showPledgeFragment() {
-      return this.showPledgeFragment;
     }
     @Override public @NonNull Observable<Project> startBackingActivity() {
       return this.startBackingActivity;

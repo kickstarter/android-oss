@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
@@ -26,8 +25,6 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.fragments.RewardsFragment
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.project_layout.*
 import kotlinx.android.synthetic.main.project_toolbar.*
@@ -64,10 +61,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
         this.ksString = environment().ksString()
 
-        this.viewModel.outputs.showRewardsFragment()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { animateRewards(it) }
 
         this.viewModel.outputs.heartDrawableId()
                 .compose(bindToLifecycle())
@@ -84,10 +77,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startCampaignWebViewActivity(it) }
 
-        this.viewModel.outputs.showPledgeFragment()
+        this.viewModel.outputs.showRewardsFragment()
                 .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showPledgeFragment(it) }
+                .compose(Transformers.observeForUI())
+                .subscribe { animateRewards(it) }
 
         this.viewModel.outputs.startCommentsActivity()
                 .compose(bindToLifecycle())
@@ -175,18 +168,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
         view_pledge_button.setOnClickListener {
             this.viewModel.inputs.viewPledgeButtonClicked()
-        }
-    }
-
-    private fun showPledgeFragment(pledgeData: PledgeData) {
-        if (this.supportFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
-            val pledgeFragment = PledgeFragment.newInstance(pledgeData)
-            this.supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment_container,
-                            pledgeFragment,
-                            PledgeFragment::class.java.simpleName)
-                    .addToBackStack(null)
-                    .commit()
         }
     }
 
@@ -360,10 +341,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     }
 
     override fun back() {
-        if (native_back_this_project_button.visibility == View.GONE) {
-            this.viewModel.inputs.hideRewardsFragmentClicked()
-        } else {
-            super.back()
+        when {
+            supportFragmentManager.backStackEntryCount > 0 -> supportFragmentManager.popBackStack()
+            native_back_this_project_button.visibility == View.GONE -> this.viewModel.inputs.hideRewardsFragmentClicked()
+            else -> super.back()
         }
     }
 }

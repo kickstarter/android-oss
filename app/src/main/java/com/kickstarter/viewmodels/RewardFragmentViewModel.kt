@@ -30,7 +30,6 @@ class RewardFragmentViewModel {
         val outputs: Outputs = this
 
         init {
-
              this.projectInput
                     .compose(bindToLifecycle())
                     .subscribe { this.project.onNext(it) }

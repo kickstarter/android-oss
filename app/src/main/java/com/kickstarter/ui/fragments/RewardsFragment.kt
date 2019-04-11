@@ -35,12 +35,11 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { rewardsAdapter.populateRewards(it) }
-
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-//        rewards_recycler.adapter = null
+    override fun onDetach() {
+        super.onDetach()
+        rewards_recycler?.adapter = null
     }
 
     fun takeProject(project: Project) {
@@ -62,8 +61,8 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>() {
     }
 
     private fun setupRecyclerView() {
+        rewards_recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rewards_recycler.adapter = rewardsAdapter
-        rewards_recycler.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         addItemDecorator()
         addSnapHelper()
     }

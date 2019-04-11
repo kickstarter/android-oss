@@ -448,7 +448,7 @@ public abstract class DiscoveryParams implements Parcelable {
   }
 
   public static DiscoveryParams getDefaultParams(final @Nullable User user) {
-    final Builder builder = DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME);
+    final Builder builder = DiscoveryParams.builder();
     if (user != null && isFalse(user.optedOutOfRecommendations())) {
       builder.recommended(true).backed(-1);
     }

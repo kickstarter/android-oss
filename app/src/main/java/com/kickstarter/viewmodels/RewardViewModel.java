@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.utils.BackingUtils;
@@ -29,6 +28,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.coalesce;
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface RewardViewModel {
@@ -102,6 +102,9 @@ public interface RewardViewModel {
     /** Set the shipping summary TextView's text. */
     Observable<String> shippingSummaryTextViewText();
 
+    /** Show {@link com.kickstarter.ui.fragments.PledgeFragment} with the project's reward selected. */
+    Observable<Pair<Project, Reward>> showPledgeFragment();
+
     /** Start the {@link com.kickstarter.ui.activities.BackingActivity} with the project. */
     Observable<Project> startBackingActivity();
 
@@ -119,13 +122,11 @@ public interface RewardViewModel {
   }
 
   final class ViewModel extends ActivityViewModel<RewardViewHolder> implements Inputs, Outputs {
-    private final CurrentConfigType currentConfig;
     private final KSCurrency ksCurrency;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.currentConfig = environment.currentConfig();
       this.ksCurrency = environment.ksCurrency();
 
       final Observable<String> formattedMinimum = this.projectAndReward
@@ -134,8 +135,7 @@ public interface RewardViewModel {
       final Observable<Boolean> isSelectable = this.projectAndReward
         .map(pr -> isSelectable(pr.first, pr.second));
 
-      final Observable<Project> project = this.projectAndReward
-        .map(pr -> pr.first);
+      final Observable<Boolean> horizontalRewardsEnabled = Observable.just(environment.horizontalRewardsEnabled().get());
 
       final Observable<Reward> reward = this.projectAndReward
         .map(pr -> pr.second);
@@ -178,6 +178,16 @@ public interface RewardViewModel {
       this.isClickable = isSelectable.distinctUntilChanged();
 
       this.startCheckoutActivity = this.projectAndReward
+        .compose(combineLatestPair(horizontalRewardsEnabled))
+        .filter(prAndHorizontalRewards -> !prAndHorizontalRewards.second)
+        .map(prAndHorizontalRewards -> prAndHorizontalRewards.first)
+        .filter(pr -> isSelectable(pr.first, pr.second) && pr.first.isLive())
+        .compose(takeWhen(this.rewardClicked));
+
+      this.showPledgeFragment = this.projectAndReward
+        .compose(combineLatestPair(horizontalRewardsEnabled))
+        .filter(prAndHorizontalRewards -> prAndHorizontalRewards.second)
+        .map(prAndHorizontalRewards -> prAndHorizontalRewards.first)
         .filter(pr -> isSelectable(pr.first, pr.second) && pr.first.isLive())
         .compose(takeWhen(this.rewardClicked));
 
@@ -210,7 +220,7 @@ public interface RewardViewModel {
 
       this.rewardsItemList = reward
         .map(Reward::rewardsItems)
-        .compose(coalesce(new ArrayList<RewardsItem>()));
+        .compose(coalesce(new ArrayList<>()));
 
       this.rewardsItemsAreGone = reward
         .map(RewardUtils::isItemized)
@@ -285,6 +295,7 @@ public interface RewardViewModel {
     private final Observable<Boolean> selectedHeaderIsGone;
     private final Observable<Boolean> shippingSummarySectionIsGone;
     private final Observable<String> shippingSummaryTextViewText;
+    private final Observable<Pair<Project, Reward>> showPledgeFragment;
     private final Observable<Project> startBackingActivity;
     private final Observable<Pair<Project, Reward>> startCheckoutActivity;
     private final Observable<Boolean> whiteOverlayIsInvisible;
@@ -358,6 +369,9 @@ public interface RewardViewModel {
     }
     @Override public @NonNull Observable<String> shippingSummaryTextViewText() {
       return this.shippingSummaryTextViewText;
+    }
+    @Override public @NonNull Observable<Pair<Project, Reward>> showPledgeFragment() {
+      return this.showPledgeFragment;
     }
     @Override public @NonNull Observable<Project> startBackingActivity() {
       return this.startBackingActivity;

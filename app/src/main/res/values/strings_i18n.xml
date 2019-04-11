@@ -7,7 +7,7 @@
   <string name="Account" formatted="false">Account</string>
   <string name="Add" formatted="false">Add</string>
   <string name="Add_attachments" formatted="false">Add attachments…</string>
-  <string name="Add_new_card" formatted="false">Add a new card</string>
+  <string name="Add_new_card" formatted="false">Add new card</string>
   <string name="All_Art_Projects" formatted="false">All Art Projects</string>
   <string name="All_Comics_Projects" formatted="false">All Comics Projects</string>
   <string name="All_Crafts_Projects" formatted="false">All Crafts Projects</string>
@@ -36,6 +36,7 @@
   <string name="Ask_me_anything" formatted="false">Ask me anything</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Available to watch for %{time} more %{units}</string>
   <string name="Back" formatted="false">Back</string>
+  <string name="Back_this_project" formatted="false">Back this project</string>
   <string name="Back_this_project_below" formatted="false">Back this project below</string>
   <string name="Backed_by_Friends" formatted="false">Backed by Friends</string>
   <string name="Backed_by_people_you_follow" formatted="false">Backed by people you follow</string>
@@ -56,6 +57,7 @@ backers</string>
   <string name="Biography" formatted="false">Biography</string>
   <string name="Bookmarks" formatted="false">Bookmarks</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Bring creative projects to life.</string>
+  <string name="By_pledging_you_agree" formatted="false">By pledging you agree to Kickstarter’s Terms of Use, Privacy Policy and Cookie Policy.</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">Cancel</string>
   <string name="Cancel_your_pledge" formatted="false">Cancel your pledge</string>
@@ -76,10 +78,12 @@ backers</string>
   <string name="Closes_project" formatted="false">Closes project.</string>
   <string name="Collapses_subcategories" formatted="false">Collapses subcategories.</string>
   <string name="Collections" formatted="false">Collections</string>
+  <string name="Comment_reply_digest" formatted="false">Comment reply digest</string>
   <string name="Complete_payment" formatted="false">Complete payment</string>
   <string name="Confirm_password" formatted="false">Confirm new password</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Connect with Facebook to follow friends and get notified when they back or launch projects.</string>
   <string name="Contact_creator" formatted="false">Contact creator</string>
+  <string name="Continue" formatted="false">Continue</string>
   <string name="Continue_to_payment" formatted="false">Continue to payment</string>
   <string name="Continue_to_update_pledge" formatted="false">Continue to update pledge</string>
   <string name="Couldnt_add_attachment" formatted="false">Couldn\'t add attachment</string>
@@ -105,7 +109,7 @@ backers</string>
   <string name="Currency_EUR" formatted="false">€ Euro (EUR)</string>
   <string name="Currency_GBP" formatted="false">£ Pound Sterling (GBP)</string>
   <string name="Currency_HKD" formatted="false">$ Hong Kong Dollar (HKD)</string>
-  <string name="Currency_JPY" formatted="false">¥ Yen (JPY)</string>
+  <string name="Currency_JPY" formatted="false">¥ Japanese Yen (JPY)</string>
   <string name="Currency_MXN" formatted="false">$ Mexican Peso (MXN)</string>
   <string name="Currency_NOK" formatted="false">kr Norwegian Krone (NOK)</string>
   <string name="Currency_NZD" formatted="false">$ New Zealand Dollar (NZD)</string>
@@ -137,6 +141,7 @@ backers</string>
   <string name="Email_unverified" formatted="false">This email address is unverified.</string>
   <string name="Ending_soon" formatted="false">Ending Soon</string>
   <string name="Estimated_delivery" formatted="false">Estimated delivery:</string>
+  <string name="Estimated_delivery_of" formatted="false">Estimated delivery of</string>
   <string name="Expands_subcategories" formatted="false">Expands subcategories.</string>
   <string name="Expiration" formatted="false">Expiration</string>
   <string name="Expired_date_at_time" formatted="false">Expired %{date} at %{time}</string>
@@ -367,6 +372,7 @@ daring ideas.</string>
   <string name="Replay_past_live_stream" formatted="false">Replay past live stream</string>
   <string name="Replay_past_live_streams" formatted="false">Replay past live streams</string>
   <string name="Reply_to_user_name" formatted="false">Reply to %{user_name}…</string>
+  <string name="Request_my_data" formatted="false">Request my data</string>
   <string name="Request_my_personal_data" formatted="false">Request my personal data</string>
   <string name="Resend_verification_email" formatted="false">Re-send verification email</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Reward Surveys</string>
@@ -397,6 +403,7 @@ daring ideas.</string>
   <string name="Say_something_kind" formatted="false">Say something kind...</string>
   <string name="Security_code" formatted="false">Security code</string>
   <string name="See_all_category_name_projects" formatted="false">See all %{category_name} projects</string>
+  <string name="Select" formatted="false">Select</string>
   <string name="Select_another_project" formatted="false">Select another project</string>
   <string name="Select_this_reward" formatted="false">Select this reward</string>
   <string name="Select_this_reward_instead" formatted="false">Select this reward instead</string>
@@ -454,6 +461,7 @@ catch your eye?</string>
   <string name="Top_pledge_sources" formatted="false">Top pledge sources</string>
   <string name="Top_ten_pledge_sources" formatted="false">Top 10 pledge sources</string>
   <string name="Top_ten_rewards" formatted="false">Top 10 rewards</string>
+  <string name="Total" formatted="false">Total</string>
   <string name="Total_pledged" formatted="false">Total pledged</string>
   <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>
   <string name="Unable_to_request" formatted="false">Unable to request data.</string>
@@ -498,17 +506,19 @@ Please try again later.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">You have successfully backed &lt;b>%{project_name}&lt;/b>. This project is now one step closer to a reality, thanks to you. Spread the word!</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>You pledged&lt;/b> on %{pledge_date}</string>
   <string name="You_saved_this_project" formatted="false">You saved this project.</string>
+  <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">You\'ll receive an email at %{email} when your download is ready.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Your chat message wasn\'t sent successfully.</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Your friends haven’t backed any projects yet, but once they do, you’ll see them listed here.</string>
   <string name="Your_name_displayed" formatted="false">Your name is always displayed on your profile.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Your payment method was successfully charged.</string>
   <string name="Your_pledge" formatted="false">Your pledge</string>
-  <string name="Your_pledge_amount" formatted="false">Your pledge amount:</string>
+  <string name="Your_pledge_amount" formatted="false">Your pledge amount</string>
   <string name="Your_pledge_was_canceled_or_the_creator_canceled" formatted="false">Your pledge was canceled or the creator canceled the project before its deadline.</string>
   <string name="Your_pledge_was_dropped" formatted="false">Your pledge was dropped.</string>
   <string name="Your_reward" formatted="false">Your reward</string>
   <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Your reward&lt;/b> estimated for delivery in %{delivery_date}</string>
   <string name="Your_shipping_destination" formatted="false">Your shipping destination</string>
+  <string name="Your_shipping_location" formatted="false">Your shipping location</string>
   <string name="Youre_a_backer" formatted="false">You’re a backer!</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">You\'re about to create a new Kickstarter account with the email address you use for Facebook. Please confirm that it’s correct before proceeding.</string>
   <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">You\'re connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.</string>
@@ -1385,7 +1395,6 @@ saved</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Shipping destinations</string>
   <string name="rewards_info_ships_to" formatted="false">Ships to</string>
   <string name="rewards_info_time_left" formatted="false">%{time} left</string>
-  <string name="rewards_select_label_select" formatted="false">Select</string>
   <string name="rewards_selected_label_you_selected" formatted="false">You selected</string>
   <string name="rewards_shipping_preferences_location_unrestricted" formatted="false">Shipping anywhere in the world</string>
   <string name="rewards_title_about_amount_usd" formatted="false">About %{reward_amount} USD</string>

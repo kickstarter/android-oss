@@ -1,10 +1,10 @@
 package com.kickstarter.ui.viewholders
 
-import UserPaymentsQuery
 import android.view.View
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.models.StoredCard
 import com.kickstarter.viewmodels.PaymentMethodsViewHolderViewModel
 import kotlinx.android.synthetic.main.item_payment_method.view.*
 
@@ -47,7 +47,7 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull val delegate: Deleg
     }
 
     override fun bindData(data: Any?) {
-        val card = requireNotNull(data as UserPaymentsQuery.Node)
+        val card = requireNotNull(data as StoredCard)
         this.vm.inputs.card(card)
     }
 

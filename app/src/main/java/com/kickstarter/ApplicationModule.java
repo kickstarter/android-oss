@@ -117,7 +117,7 @@ public final class ApplicationModule {
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfigType currentConfig,
     final @NonNull CurrentUserType currentUser,
-    final @NonNull @HorizontalRewardsPreference BooleanPreferenceType horizontalRewards,
+    final @NonNull @HorizontalRewardsPreference BooleanPreferenceType horizontalRewardsEnabled,
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
@@ -143,10 +143,10 @@ public final class ApplicationModule {
       .cookieManager(cookieManager)
       .currentConfig(currentConfig)
       .currentUser(currentUser)
-      .enableHorizontalRewards(horizontalRewards)
       .gson(gson)
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+      .horizontalRewardsEnabled(horizontalRewardsEnabled)
       .internalTools(internalToolsType)
       .koala(koala)
       .ksCurrency(ksCurrency)

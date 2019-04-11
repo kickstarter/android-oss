@@ -17,16 +17,16 @@ class FeatureFlagActivity : AppCompatActivity() {
 
         (applicationContext as KSApplication).component().inject(this)
 
-        val enabled = environment.enableHorizontalRewards().get()
+        val enabled = environment.horizontalRewardsEnabled().get()
         if (enabled) {
             horizontal_switch.isChecked = enabled
         }
 
-        horizontal_switch.setOnClickListener { enableHorizontalScrolling() }
+        horizontal_switch.setOnClickListener { enableHorizontalRewards() }
     }
 
-    private fun enableHorizontalScrolling() {
+    private fun enableHorizontalRewards() {
         val isEnabled = horizontal_switch.isChecked
-        this.environment.enableHorizontalRewards().set(isEnabled)
+        this.environment.horizontalRewardsEnabled().set(isEnabled)
     }
 }

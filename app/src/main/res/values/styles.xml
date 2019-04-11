@@ -355,6 +355,15 @@
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
+  <style name="Caption2Secondary" parent="TextSecondary">
+    <item name="android:textSize">@dimen/caption_2</item>
+    <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
+  </style>
+
+  <style name="Caption2SecondaryMedium" parent="Caption2Secondary">
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  </style>
+
   <style name="FootnotePrimary" parent="TextPrimary">
     <item name="android:textSize">@dimen/footnote</item>
   </style>
@@ -477,6 +486,25 @@
     <item name="android:textColor">@color/ksr_red_400</item>
   </style>
 
+  <style name="PledgeCurrency" parent="TextPrimary">
+    <item name="android:textSize">@dimen/title_1</item>
+  </style>
+
+  <style name="PledgeCurrencySecondary" parent="PledgeCurrency">
+    <item name="android:textColor">@color/primary</item>
+  </style>
+
+  <style name="CreditCardExpiration" parent="Caption2SecondaryMedium">
+    <item name="android:ellipsize">middle</item>
+    <item name="android:singleLine">true</item>
+  </style>
+
+  <style name="CreditCardLastFour" parent="BodyPrimaryMedium">
+    <item name="android:layout_marginBottom">@dimen/grid_1_half</item>
+    <item name="android:ellipsize">middle</item>
+    <item name="android:singleLine">true</item>
+  </style>
+
   <!-- Cards -->
   <style name="ActivityFeedCardBase">
     <item name="android:foreground">@drawable/click_indicator_light</item>
@@ -506,6 +534,11 @@
   </style>
 
   <style name="ActivitySampleCard" parent="ActivitySampleCardBase" />
+
+  <style name="PledgeStoredCard">
+    <item name="cardCornerRadius">@dimen/reward_card_radius</item>
+    <item name="cardBackgroundColor">@color/white</item>
+  </style>
 
   <!-- Rewards -->
   <style name="RewardHeadline" parent="Caption2Primary">

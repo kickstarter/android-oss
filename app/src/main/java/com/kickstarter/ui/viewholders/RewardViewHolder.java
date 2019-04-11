@@ -18,6 +18,7 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.BackingActivity;
 import com.kickstarter.ui.activities.CheckoutActivity;
 import com.kickstarter.ui.adapters.RewardsItemAdapter;
+import com.kickstarter.ui.data.ScreenLocation;
 import com.kickstarter.viewmodels.RewardViewModel;
 
 import androidx.annotation.NonNull;
@@ -37,6 +38,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.transition;
 public final class RewardViewHolder extends KSViewHolder {
   private final RewardViewModel.ViewModel viewModel;
   private final KSString ksString;
+  private final Delegate delegate;
 
   protected @Bind(R.id.reward_all_gone_text_view) TextView allGoneTextView;
   protected @Bind(R.id.reward_backers_text_view) TextView backersTextView;
@@ -59,10 +61,15 @@ public final class RewardViewHolder extends KSViewHolder {
   protected @BindString(R.string.rewards_title_pledge_reward_currency_or_more) String pledgeRewardCurrencyOrMoreString;
   protected @BindString(R.string.project_back_button) String projectBackButtonString;
   protected @BindString(R.string.About_reward_amount) String currencyConversionString;
+  private Reward reward;
 
-  public RewardViewHolder(final @NonNull View view) {
+  public interface Delegate {
+    void rewardClicked(ScreenLocation screenLocation, Reward reward);
+  }
+
+  public RewardViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
-
+    this.delegate = delegate;
     this.ksString = environment().ksString();
     this.viewModel = new RewardViewModel.ViewModel(environment());
 
@@ -117,6 +124,11 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(pr -> startCheckoutActivity(pr.first, pr.second));
+
+    this.viewModel.outputs.showPledgeFragment()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(pr -> this.delegate.rewardClicked(getScreenLocationOfReward(), this.reward));
 
     this.viewModel.outputs.startBackingActivity()
       .compose(bindToLifecycle())
@@ -199,9 +211,9 @@ public final class RewardViewHolder extends KSViewHolder {
   public void bindData(final @Nullable Object data) throws Exception {
     final Pair<Project, Reward> projectAndReward = requireNonNull((Pair<Project, Reward>) data);
     final Project project = requireNonNull(projectAndReward.first, Project.class);
-    final Reward reward = requireNonNull(projectAndReward.second, Reward.class);
+    this.reward = requireNonNull(projectAndReward.second, Reward.class);
 
-    this.viewModel.inputs.projectAndReward(project, reward);
+    this.viewModel.inputs.projectAndReward(project, this.reward);
   }
 
   private void setBackersTextView(final int count) {
@@ -250,6 +262,16 @@ public final class RewardViewHolder extends KSViewHolder {
 
     context.startActivity(intent);
     transition(context, slideInFromRight());
+  }
+
+  private ScreenLocation getScreenLocationOfReward()  {
+    final int[] rewardLocation = new int[2];
+    this.itemView.getLocationInWindow(rewardLocation);
+    final float x = rewardLocation[0];
+    final float y = rewardLocation[1];
+    final int height = this.itemView.getHeight();
+    final int width = this.itemView.getWidth();
+    return new ScreenLocation(x, y, height, width);
   }
 
   @Override

@@ -82,16 +82,20 @@ object AnimationUtils {
     return crossFadeAndReverseAnimatorSet
   }
 
-  fun notificationBounceAnimation(phoneIcon: ImageButton, mailIcon: ImageButton) {
+  fun notificationBounceAnimation(phoneIcon: ImageButton?, mailIcon: ImageButton?) {
     val pvhX = PropertyValuesHolder.ofFloat(View.SCALE_X, INITIAL_SCALE, MAX_SCALE, INITIAL_SCALE)
     val phvY = PropertyValuesHolder.ofFloat(View.SCALE_Y, INITIAL_SCALE, MAX_SCALE, INITIAL_SCALE)
-    val phoneScaleAnimation = ObjectAnimator.ofPropertyValuesHolder(phoneIcon, pvhX, phvY).setDuration(200)
-    phoneScaleAnimation.interpolator = AccelerateDecelerateInterpolator()
-    val mailScaleAnimation = ObjectAnimator.ofPropertyValuesHolder(mailIcon, pvhX, phvY).setDuration(200)
-    mailScaleAnimation.interpolator = AccelerateDecelerateInterpolator()
     val animatorSet = AnimatorSet()
-    animatorSet.play(phoneScaleAnimation)
-    animatorSet.play(mailScaleAnimation).after(100)
+    phoneIcon?.let { icon ->
+      val phoneScaleAnimation = ObjectAnimator.ofPropertyValuesHolder(icon, pvhX, phvY).setDuration(200)
+      phoneScaleAnimation.interpolator = AccelerateDecelerateInterpolator()
+      animatorSet.play(phoneScaleAnimation)
+    }
+    mailIcon?.let { icon ->
+      val mailScaleAnimation = ObjectAnimator.ofPropertyValuesHolder(icon, pvhX, phvY).setDuration(200)
+      mailScaleAnimation.interpolator = AccelerateDecelerateInterpolator()
+      animatorSet.play(mailScaleAnimation).after(100)
+    }
     animatorSet.start()
   }
 }

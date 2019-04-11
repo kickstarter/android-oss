@@ -1,11 +1,11 @@
 package com.kickstarter.viewmodels
 
 import DeletePaymentSourceMutation
-import UserPaymentsQuery
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.*
+import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.activities.PaymentMethodsSettingsActivity
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
@@ -28,7 +28,7 @@ interface PaymentMethodsViewModel {
 
     interface Outputs {
         /** Emits a list of stored cards for a user. */
-        fun cards(): Observable<MutableList<UserPaymentsQuery.Node>>
+        fun cards(): Observable<List<StoredCard>>
 
         /** Emits when the divider should be visible (if there are cards). */
         fun dividerIsVisible(): Observable<Boolean>
@@ -52,7 +52,7 @@ interface PaymentMethodsViewModel {
         private val deleteCardClicked = PublishSubject.create<String>()
         private val refreshCards = PublishSubject.create<Void>()
 
-        private val cards = BehaviorSubject.create<MutableList<UserPaymentsQuery.Node>>()
+        private val cards = BehaviorSubject.create<List<StoredCard>>()
         private val dividerIsVisible = BehaviorSubject.create<Boolean>()
         private val error = BehaviorSubject.create<String>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
@@ -115,7 +115,7 @@ interface PaymentMethodsViewModel {
 
         override fun refreshCards() = this.refreshCards.onNext(null)
 
-        override fun cards(): Observable<MutableList<UserPaymentsQuery.Node>> = this.cards
+        override fun cards(): Observable<List<StoredCard>> = this.cards
 
         override fun dividerIsVisible(): Observable<Boolean> = this.dividerIsVisible
 
@@ -127,13 +127,12 @@ interface PaymentMethodsViewModel {
 
         override fun success(): Observable<String> = this.success
 
-        private fun getListOfStoredCards(): Observable<MutableList<UserPaymentsQuery.Node>> {
+        private fun getListOfStoredCards(): Observable<List<StoredCard>> {
             return this.client.getStoredCards()
                     .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
                     .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
                     .compose(bindToLifecycle())
                     .compose(neverError())
-                    .map { cards -> cards.me()?.storedCards()?.nodes() }
         }
 
         private fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {

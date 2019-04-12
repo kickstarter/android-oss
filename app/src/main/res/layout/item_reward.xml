@@ -33,7 +33,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/grid_2"
-          android:textColor="@color/ksr_green_700"
+          android:textColor="@color/ksr_green_500"
           android:textSize="@dimen/title_3"
           android:textStyle="bold"
           tools:text="$20" />
@@ -43,7 +43,7 @@
           style="@style/Caption1Secondary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/ksr_green_700"
+          android:textColor="@color/ksr_green_500"
           tools:text="About $15 USD" />
 
         <TextView
@@ -56,8 +56,8 @@
           android:id="@+id/horizontal_rewards_item_section"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:orientation="vertical"
-          android:layout_marginTop="@dimen/grid_3">
+          android:layout_marginTop="@dimen/grid_3"
+          android:orientation="vertical">
 
           <TextView
             style="@style/RewardSectionTitle"
@@ -65,9 +65,9 @@
 
           <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/horizontal_rewards_item_recycler_view"
-            android:paddingTop="@dimen/grid_1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/grid_1" />
 
         </LinearLayout>
 
@@ -134,6 +134,7 @@
     android:layout_marginBottom="@dimen/card_padding"
     android:layout_marginEnd="@dimen/card_padding"
     android:layout_marginStart="@dimen/card_padding"
+    android:textAllCaps="false"
     tools:text="Pledge $10 or more" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

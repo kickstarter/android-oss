@@ -64,6 +64,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
+    android:textAllCaps="false"
     android:layout_marginBottom="@dimen/card_padding"
     android:layout_marginEnd="@dimen/card_padding"
     android:layout_marginStart="@dimen/card_padding"

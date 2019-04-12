@@ -57,9 +57,9 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="vertical"
-          android:paddingTop="@dimen/grid_4">
+          android:layout_marginTop="@dimen/grid_3">
 
-          <TextViewc
+          <TextView
             style="@style/RewardSectionTitle"
             android:text="@string/rewards_info_includes" />
 
@@ -74,7 +74,7 @@
         <TextView
           style="@style/RewardSectionTitle"
           android:layout_marginTop="@dimen/card_padding"
-          tools:text="Description" />
+          android:text="Description" />
 
         <TextView
           android:id="@+id/horizontal_reward_description_text_view"

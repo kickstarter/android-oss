@@ -2,23 +2,22 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  android:orientation="horizontal"
+  android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
-
-  <TextView
-    style="@style/BodySecondary"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/grid_1"
-    android:text="\u2022"
-    tools:ignore="HardcodedText" />
 
   <TextView
     style="@style/BodyPrimary"
     android:id="@+id/rewards_item_title"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/grid_2"
+    android:layout_marginBottom="@dimen/grid_2"
     tools:text="3 T-Shirts" />
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/ksr_grey_300" />
 
 </LinearLayout>

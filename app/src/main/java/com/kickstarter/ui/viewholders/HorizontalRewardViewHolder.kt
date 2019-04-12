@@ -4,6 +4,7 @@ import android.content.Intent
 import android.util.Pair
 import android.view.View
 import androidx.annotation.NonNull
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
@@ -15,6 +16,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.BackingActivity
+import com.kickstarter.ui.adapters.RewardsItemAdapter
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.HorizontalRewardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward.view.*
@@ -34,6 +36,10 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
     private val remainingRewardsString = context().getString(R.string.Left_count_left_few)
 
     init {
+
+        val rewardItemAdapter = RewardsItemAdapter()
+        view.horizontal_rewards_item_recycler_view.adapter = rewardItemAdapter
+        view.horizontal_rewards_item_recycler_view.layoutManager = LinearLayoutManager(context())
 
         this.viewModel.outputs.conversionTextViewIsGone()
                 .compose(bindToLifecycle())
@@ -79,6 +85,16 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(this.view.horizontal_reward_ending_text_view, it) }
+
+        this.viewModel.outputs.rewardsItemList()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe{ rewardItemAdapter.rewardsItems(it) }
+
+        this.viewModel.outputs.rewardsItemsAreGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe(ViewUtils.setGone(this.view.horizontal_rewards_item_section))
 
         this.viewModel.outputs.titleText()
                 .compose(bindToLifecycle())

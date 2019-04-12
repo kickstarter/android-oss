@@ -47,6 +47,7 @@
   <dimen name="title_2">22sp</dimen>
   <dimen name="title_1">28sp</dimen>
   <dimen name="title_thank_you">36sp</dimen>
+  <dimen name="reward_title_text_size">24dp</dimen>
 
   <dimen name="caption_line_spacing_extra">2dp</dimen>
   <dimen name="body_line_spacing_extra">2dp</dimen>

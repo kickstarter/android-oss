@@ -6,10 +6,12 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.coalesce
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.RewardsItem
 import com.kickstarter.ui.viewholders.KSViewHolder
 import rx.Observable
 import rx.subjects.PublishSubject
@@ -58,6 +60,9 @@ interface HorizontalRewardViewHolderViewModel {
         /** Returns true if the reward end date should be hidden,`false` otherwise. */
         fun rewardEndDateSectionIsGone(): Observable<Boolean>
 
+        /** Show the rewards items.  */
+        fun rewardsItemList(): Observable<List<RewardsItem>>
+
         /** Returns `true` if the items section should be hidden, `false` otherwise.  */
         fun rewardsItemsAreGone(): Observable<Boolean>
 
@@ -94,6 +99,7 @@ interface HorizontalRewardViewHolderViewModel {
         private val reward: Observable<Reward>
         private val rewardDescriptionIsGone: Observable<Boolean>
         private val rewardEndDateSectionIsGone: Observable<Boolean>
+        private val rewardsItemList: Observable<List<RewardsItem>>
         private val rewardsItemsAreGone: Observable<Boolean>
         private val titleTextViewIsGone: Observable<Boolean>
         private val titleText: Observable<String>
@@ -164,6 +170,10 @@ interface HorizontalRewardViewHolderViewModel {
                     .distinctUntilChanged()
 
             this.minimumText = formattedMinimum
+
+            this.rewardsItemList = reward
+                    .map { r -> r.rewardsItems() }
+                    .compose(coalesce(arrayListOf()))
 
             this.rewardsItemsAreGone = reward
                     .map<Boolean> { RewardUtils.isItemized(it) }
@@ -262,6 +272,9 @@ interface HorizontalRewardViewHolderViewModel {
 
         override fun rewardEndDateSectionIsGone(): Observable<Boolean> = this.rewardEndDateSectionIsGone
 
+        override fun rewardsItemList(): Observable<List<RewardsItem>> {
+            return this.rewardsItemList
+        }
         @NonNull
         override fun rewardsItemsAreGone(): Observable<Boolean> {
             return this.rewardsItemsAreGone

@@ -668,6 +668,26 @@
     <item name="cardTextErrorColor">@color/ksr_red_400</item>
   </style>
 
+  <!-- Native Checkout -->
+
+  <style name="RewardTitle">
+    <item name="android:textColor">@color/ksr_soft_black</item>
+    <item name="android:textSize">@dimen/reward_title_text_size</item>
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif</item>
+  </style>
+  
+  <style name="RewardSectionTitle" >
+    <item name="android:textColor">@color/ksr_dark_grey_400</item>
+    <item name="android:textSize">@dimen/callout</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif</item>
+  </style>
+
   <style name="ExtendedFab" parent="Widget.MaterialComponents.Button">
     <item name="android:paddingTop">@dimen/grid_2</item>
     <item name="android:paddingBottom">@dimen/grid_2</item>

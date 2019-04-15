@@ -118,14 +118,47 @@
           android:layout_height="wrap_content"
           android:text="@string/Your_shipping_location" />
 
-        <TextView
-          android:id="@+id/shipping_amount"
-          style="@style/PledgeCurrency"
-          android:layout_width="wrap_content"
+        <LinearLayout
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_gravity="end"
           android:layout_marginBottom="@dimen/grid_4"
-          tools:text="$20" />
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <AutoCompleteTextView
+            android:id="@+id/shipping_rules"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/rect_white_rounded"
+            android:dropDownWidth="match_parent"
+            android:ellipsize="end"
+            android:enabled="false"
+            android:hint="@string/Shipping"
+            android:minWidth="150dp"
+            android:text="@string/Loading" />
+
+          <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/plus_sign"
+            android:layout_marginEnd="@dimen/grid_1_half"
+            android:textColor="@color/ksr_dark_grey_500" />
+
+          <TextView
+            android:id="@+id/shipping_amount"
+            style="@style/PledgeCurrency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="$20.00" />
+
+        </LinearLayout>
 
         <include layout="@layout/horizontal_line_1dp_view" />
 
@@ -151,11 +184,12 @@
             android:text="@string/By_pledging_you_agree" />
 
           <TextView
+            android:id="@+id/total_amount"
             style="@style/PledgeCurrencySecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            tools:text="$40" />
+            tools:text="$40.00" />
 
         </LinearLayout>
 

@@ -10,8 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.FrameLayout
-import android.widget.LinearLayout
+import android.widget.*
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
@@ -20,7 +19,9 @@ import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.NewCardActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
@@ -55,9 +56,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             })
         }
 
-        cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        cards_recycler.adapter = RewardCardAdapter(this)
-        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)))
+        setUpCardsAdapter()
+        setUpShippingAdapter()
 
         this.animDuration = when (savedInstanceState) {
             null -> this.defaultAnimationDuration
@@ -96,6 +96,69 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     startActivityForResult(Intent(this.context, NewCardActivity::class.java),
                             ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD)
                 }
+
+        this.viewModel.outputs.shippingRules()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .filter { ObjectUtils.isNotNull(context) }
+                .subscribe { displayShippingRules(it) }
+
+        this.viewModel.outputs.shippingSelection()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { shipping_rules.setText(it.toString()) }
+
+        this.viewModel.outputs.shippingAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { shipping_amount.text = it }
+
+        this.viewModel.outputs.totalAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { total_amount.text = it }
+
+        shipping_rules.setOnClickListener { shipping_rules.showDropDown() }
+
+    }
+
+    private fun setUpShippingAdapter() {
+        //todo: add proper ViewHolder and ViewModel, we're going to need a KSArrayAdapter
+        shipping_rules.setAdapter(object : ArrayAdapter<ShippingRule>(this.context,
+                android.R.layout.simple_dropdown_item_1line, arrayListOf()) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
+                var view = convertView
+                if (view == null) {
+                    view = LayoutInflater.from(this.context).inflate(android.R.layout.simple_spinner_dropdown_item, parent, false)
+                }
+
+                val item = getItem(position)
+
+                val displayableName = item?.location()?.displayableName()
+                //todo: get this amount from KS currency
+                val cost = item?.cost()
+                (view as TextView).text = "$displayableName +($cost)"
+
+                return view
+            }
+        })
+        val itemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
+            this@PledgeFragment.viewModel.inputs.shippingRule(parent?.adapter?.getItem(position) as ShippingRule)
+        }
+        shipping_rules.onItemClickListener = itemClickListener
+    }
+
+    private fun setUpCardsAdapter() {
+        cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        cards_recycler.adapter = RewardCardAdapter(this)
+        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)))
+    }
+
+    private fun displayShippingRules(shippingRules: List<ShippingRule>) {
+        shipping_rules.isEnabled = true
+        val adapter = shipping_rules.adapter as ArrayAdapter<ShippingRule>
+        adapter.clear()
+        adapter.addAll(shippingRules)
     }
 
     override fun onDetach() {

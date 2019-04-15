@@ -1,9 +1,13 @@
 package com.kickstarter.libs;
 
 import android.os.Parcelable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
 
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.ui.views.CenterSpan;
 
 import java.math.RoundingMode;
 
@@ -85,6 +89,42 @@ public final class KSCurrency {
       .build();
 
     return NumberUtils.format(currencyOptions.value(), numberOptions);
+  }
+
+  /**
+   * Returns a currency string appropriate to the user's locale, chosenCurrency and project preferred currency.
+   *
+   * @param initialValue Value to display, local to the project's currency.
+   * @param project The project to use to look up currency information.
+   * @param roundingMode This determines whether we should round the values down or up.
+   */
+  public SpannableString formatWithProjectCurrency(final float initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode, final int precision) {
+
+    final CurrencyOptions currencyOptions = projectCurrencyOptions(initialValue, project);
+
+    final NumberOptions numberOptions = NumberOptions.builder()
+      .currencySymbol(currencyOptions.currencySymbol())
+      .roundingMode(roundingMode)
+      .precision(precision)
+      .build();
+
+    final String currency = NumberUtils.format(currencyOptions.value(), numberOptions);
+    final String symbol = currencyOptions.currencySymbol();
+    final SpannableString string = new SpannableString(currency);
+
+    final int startOfSymbol = currency.indexOf(symbol);
+    final int endOfSymbol = startOfSymbol + symbol.length();
+    string.setSpan(new RelativeSizeSpan(.5f), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    string.setSpan(new CenterSpan(), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+    if (precision > 0) {
+      final int length = string.length();
+      final int startOfPrecision = length - precision - 1;
+      string.setSpan(new RelativeSizeSpan(.5f), startOfPrecision, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+      string.setSpan(new CenterSpan(), startOfPrecision, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    }
+
+    return string;
   }
 
   /**

@@ -25,6 +25,7 @@ import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
+import com.kickstarter.models.Reward;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
@@ -38,6 +39,7 @@ import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
+import com.kickstarter.services.apiresponses.ShippingRulesEnvelope;
 import com.kickstarter.ui.data.Mailbox;
 import com.kickstarter.ui.data.MessageSubject;
 
@@ -201,6 +203,11 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreadsWithPaginationPath(final @NonNull String paginationPath) {
+    return Observable.empty();
+  }
+  @NonNull
+  @Override
+  public Observable<ShippingRulesEnvelope> fetchShippingRules(@NonNull Project project, @NonNull Reward reward) {
     return Observable.empty();
   }
 

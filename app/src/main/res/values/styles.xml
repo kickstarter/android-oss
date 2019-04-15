@@ -487,6 +487,7 @@
   </style>
 
   <style name="PledgeCurrency" parent="TextPrimary">
+    <item name="android:textColor">@color/ksr_dark_grey_500</item>
     <item name="android:textSize">@dimen/title_1</item>
   </style>
 

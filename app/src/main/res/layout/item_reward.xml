@@ -74,7 +74,7 @@
         <TextView
           style="@style/RewardSectionTitle"
           android:layout_marginTop="@dimen/card_padding"
-          android:text="Description" />
+          android:text="@string/Description" />
 
         <TextView
           android:id="@+id/horizontal_reward_description_text_view"

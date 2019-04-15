@@ -15,9 +15,4 @@
     android:layout_marginTop="@dimen/grid_2"
     tools:text="3 T-Shirts" />
 
-  <View
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:background="@color/ksr_grey_300" />
-
 </LinearLayout>

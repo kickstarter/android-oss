@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.util.Pair
 import android.view.View
 import androidx.annotation.NonNull
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
+import com.kickstarter.libs.utils.RewardItemDecorator
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromRight
 import com.kickstarter.libs.utils.TransitionUtils.transition
@@ -20,6 +22,7 @@ import com.kickstarter.ui.adapters.RewardsItemAdapter
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.HorizontalRewardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward.view.*
+
 
 class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate) : KSViewHolder(view) {
 
@@ -38,8 +41,10 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
     init {
 
         val rewardItemAdapter = RewardsItemAdapter()
+        val itemDivider: Drawable = context().getDrawable(R.drawable.divider_grey_500_horizontal)
         view.horizontal_rewards_item_recycler_view.adapter = rewardItemAdapter
         view.horizontal_rewards_item_recycler_view.layoutManager = LinearLayoutManager(context())
+        view.horizontal_rewards_item_recycler_view.addItemDecoration(RewardItemDecorator(itemDivider))
 
         this.viewModel.outputs.conversionTextViewIsGone()
                 .compose(bindToLifecycle())
@@ -89,7 +94,7 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
         this.viewModel.outputs.rewardsItemList()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe{ rewardItemAdapter.rewardsItems(it) }
+                .subscribe { rewardItemAdapter.rewardsItems(it) }
 
         this.viewModel.outputs.rewardsItemsAreGone()
                 .compose(bindToLifecycle())
@@ -174,4 +179,5 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
         val width = this.itemView.width
         return ScreenLocation(x, y, height.toFloat(), width.toFloat())
     }
+
 }

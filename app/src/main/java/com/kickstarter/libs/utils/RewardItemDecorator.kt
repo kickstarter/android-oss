@@ -11,7 +11,10 @@ class RewardItemDecorator(private val divider: Drawable) : RecyclerView.ItemDeco
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val pos = parent.getChildAdapterPosition(view)
-        if (pos != 0 && pos != parent.layoutManager!!.itemCount - 1) {
+        val itemCount = parent.layoutManager?.itemCount?.let { it } ?: return
+        val lastPosition = itemCount - 1
+
+        if (pos != 0 && pos != lastPosition) {
             outRect.bottom = divider.intrinsicHeight
         }
     }
@@ -25,7 +28,9 @@ class RewardItemDecorator(private val divider: Drawable) : RecyclerView.ItemDeco
             val child = parent.getChildAt(i)
 
             val pos = parent.getChildAdapterPosition(child)
-            if (pos != parent.layoutManager!!.itemCount - 1) {
+            val itemCount = parent.layoutManager?.itemCount?.let { it } ?: continue
+            val lastPosition = itemCount - 1
+            if (pos != lastPosition) {
 
                 val params = child.layoutParams as RecyclerView.LayoutParams
 

@@ -32,7 +32,6 @@
           android:id="@+id/horizontal_reward_minimum_text_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_2"
           android:textColor="@color/ksr_green_500"
           android:textSize="@dimen/title_3"
           android:textStyle="bold"
@@ -49,7 +48,7 @@
         <TextView
           android:id="@+id/horizontal_reward_title_text_view"
           style="@style/RewardTitle"
-          android:layout_marginTop="@dimen/activity_vertical_margin"
+          android:layout_marginTop="@dimen/grid_2"
           tools:text="Beep" />
 
         <LinearLayout
@@ -66,8 +65,7 @@
           <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/horizontal_rewards_item_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/grid_1" />
+            android:layout_height="wrap_content" />
 
         </LinearLayout>
 

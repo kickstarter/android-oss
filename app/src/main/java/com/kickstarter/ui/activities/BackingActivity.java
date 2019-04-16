@@ -26,6 +26,8 @@ import com.kickstarter.ui.adapters.RewardsItemAdapter;
 import com.kickstarter.viewmodels.BackingViewModel;
 import com.squareup.picasso.Picasso;
 
+import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -84,7 +86,7 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
     this.rewardsItemRecyclerView.setAdapter(rewardsItemAdapter);
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     this.rewardsItemRecyclerView.setLayoutManager(layoutManager);
-    this.rewardsItemRecyclerView.addItemDecoration(new RewardItemDecorator(getDrawable(R.drawable.divider_grey_500_horizontal)));
+    this.rewardsItemRecyclerView.addItemDecoration(new RewardItemDecorator(Objects.requireNonNull(getDrawable(R.drawable.divider_grey_300_horizontal))));
 
     final Environment environment = environment();
     this.ksString = environment.ksString();

@@ -168,9 +168,9 @@
 
   <!-- Native Checkout -->
   <dimen name="fab_radius">@dimen/grid_5</dimen>
-  <dimen name="reward_margin">16dp</dimen>
-  <dimen name="card_margin">16dp</dimen>
-  <dimen name="card_padding">16dp</dimen>
+  <dimen name="reward_margin">18dp</dimen>
+  <dimen name="card_margin">18dp</dimen>
+  <dimen name="card_padding">18dp</dimen>
   <dimen name="card_radius">@dimen/grid_2</dimen>
   <dimen name="circle_width">4dp</dimen>
   <dimen name="circle_radius">4dp</dimen>

@@ -172,8 +172,8 @@ interface HorizontalRewardViewHolderViewModel {
             this.minimumText = formattedMinimum
 
             this.rewardsItemList = reward
-                    .map { r -> r.rewardsItems() }
-                    .compose(coalesce(arrayListOf()))
+                    .filter { it.rewardsItems() != null }
+                    .map { it.rewardsItems() }
 
             this.rewardsItemsAreGone = reward
                     .map<Boolean> { RewardUtils.isItemized(it) }

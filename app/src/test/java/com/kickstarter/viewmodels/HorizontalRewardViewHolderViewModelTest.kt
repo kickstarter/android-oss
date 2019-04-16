@@ -260,12 +260,12 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
         // Items section should be hidden when there are no items.
         this.vm.inputs.projectAndReward(project, RewardFactory.reward())
         this.rewardsItemsAreGone.assertValue(true)
-        this.rewardsItemList.assertValue(emptyList())
+        this.rewardsItemList.assertNoValues()
 
         val itemizedReward = RewardFactory.itemized()
         this.vm.inputs.projectAndReward(project, itemizedReward)
         this.rewardsItemsAreGone.assertValues(true, false)
-        this.rewardsItemList.assertValues(emptyList(), itemizedReward.rewardsItems())
+        this.rewardsItemList.assertValues(itemizedReward.rewardsItems())
     }
 
     @Test

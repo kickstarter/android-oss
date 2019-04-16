@@ -41,10 +41,12 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
     init {
 
         val rewardItemAdapter = RewardsItemAdapter()
-        val itemDivider: Drawable = context().getDrawable(R.drawable.divider_grey_500_horizontal)
-        view.horizontal_rewards_item_recycler_view.adapter = rewardItemAdapter
-        view.horizontal_rewards_item_recycler_view.layoutManager = LinearLayoutManager(context())
-        view.horizontal_rewards_item_recycler_view.addItemDecoration(RewardItemDecorator(itemDivider))
+        val itemRecyclerView = view.horizontal_rewards_item_recycler_view
+        itemRecyclerView.adapter = rewardItemAdapter
+        itemRecyclerView.layoutManager = LinearLayoutManager(context())
+        this.context().getDrawable(R.drawable.divider_grey_300_horizontal)?.let {
+            itemRecyclerView.addItemDecoration(RewardItemDecorator(it))
+        }
 
         this.viewModel.outputs.conversionTextViewIsGone()
                 .compose(bindToLifecycle())

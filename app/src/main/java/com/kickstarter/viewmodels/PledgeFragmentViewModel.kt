@@ -66,6 +66,8 @@ interface PledgeFragmentViewModel {
         /** Emits the list of shipping rules to be selected. */
         fun shippingRules(): Observable<List<ShippingRule>>
 
+        fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>>
+
         /** Emits when the cards adapter should update selected position. */
         fun showPledgeCard(): Observable<Pair<Int, Boolean>>
 
@@ -91,6 +93,7 @@ interface PledgeFragmentViewModel {
         private val pledgeAmount = BehaviorSubject.create<SpannableString>()
         private val shippingAmount = BehaviorSubject.create<SpannableString>()
         private val shippingRules = BehaviorSubject.create<List<ShippingRule>>()
+        private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
         private val shippingSelection = BehaviorSubject.create<ShippingRule>()
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, Boolean>>()
         private val startNewCardActivity = PublishSubject.create<Void>()
@@ -145,6 +148,13 @@ interface PledgeFragmentViewModel {
             shippingRules
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRules)
+
+            val rulesAndProject = shippingRules
+                    .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))
+
+            rulesAndProject
+                    .compose(bindToLifecycle())
+                    .subscribe(this.shippingRulesAndProject)
 
             val defaultShippingRule = shippingRules
                     .filter { it.isNotEmpty() }
@@ -254,6 +264,7 @@ interface PledgeFragmentViewModel {
         @NonNull
         override fun shippingRules(): Observable<List<ShippingRule>> = this.shippingRules
 
+        override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject
         @NonNull
         override fun shippingSelection(): Observable<ShippingRule> = this.shippingSelection
 

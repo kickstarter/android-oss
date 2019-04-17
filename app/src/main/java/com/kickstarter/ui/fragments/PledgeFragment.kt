@@ -10,7 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
@@ -20,11 +21,13 @@ import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.NewCardActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
+import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
@@ -37,6 +40,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     private val defaultAnimationDuration = 200L
     private var animDuration = defaultAnimationDuration
+
+    private lateinit var adapter: ShippingRulesAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -97,11 +102,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                             ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD)
                 }
 
-        this.viewModel.outputs.shippingRules()
+        this.viewModel.outputs.shippingRulesAndProject()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .filter { ObjectUtils.isNotNull(context) }
-                .subscribe { displayShippingRules(it) }
+                .subscribe { displayShippingRules(it.first, it.second) }
 
         this.viewModel.outputs.shippingSelection()
                 .compose(bindToLifecycle())
@@ -124,28 +129,31 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     private fun setUpShippingAdapter() {
         //todo: add proper ViewHolder and ViewModel, we're going to need a KSArrayAdapter
-        shipping_rules.setAdapter(object : ArrayAdapter<ShippingRule>(this.context,
-                android.R.layout.simple_dropdown_item_1line, arrayListOf()) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
-                var view = convertView
-                if (view == null) {
-                    view = LayoutInflater.from(this.context).inflate(android.R.layout.simple_spinner_dropdown_item, parent, false)
-                }
 
-                val item = getItem(position)
+        adapter = ShippingRulesAdapter(context!!, R.layout.item_shipping_rule, arrayListOf())
 
-                val displayableName = item?.location()?.displayableName()
-                //todo: get this amount from KS currency
-                val cost = item?.cost()
-                (view as TextView).text = "$displayableName +($cost)"
-
-                return view
-            }
-        })
-        val itemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
-            this@PledgeFragment.viewModel.inputs.shippingRule(parent?.adapter?.getItem(position) as ShippingRule)
-        }
-        shipping_rules.onItemClickListener = itemClickListener
+//        shipping_rules.setAdapter(object : ArrayAdapter<ShippingRule>(this.context,
+//                android.R.layout.simple_dropdown_item_1line, arrayListOf()) {
+//            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
+//                var view = convertView
+//                if (view == null) {
+//                    view = LayoutInflater.from(this.context).inflate(android.R.layout.simple_spinner_dropdown_item, parent, false)
+//                }
+//
+//                val item = getItem(position)
+//
+//                val displayableName = item?.location()?.displayableName()
+//                //todo: get this amount from KS currency
+//                val cost = item?.cost()
+//                (view as TextView).text = "$displayableName +($cost)"
+//
+//                return view
+//            }
+//        })
+//        val itemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
+//            this@PledgeFragment.viewModel.inputs.shippingRule(parent?.adapter?.getItem(position) as ShippingRule)
+//        }
+//        shipping_rules.onItemClickListener = itemClickListener
     }
 
     private fun setUpCardsAdapter() {
@@ -154,11 +162,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)))
     }
 
-    private fun displayShippingRules(shippingRules: List<ShippingRule>) {
+    private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
         shipping_rules.isEnabled = true
-        val adapter = shipping_rules.adapter as ArrayAdapter<ShippingRule>
-        adapter.clear()
-        adapter.addAll(shippingRules)
+//        val adapter = shipping_rules.adapter as ArrayAdapter<ShippingRule>
+//        adapter.clear()
+//        adapter.addAll(shippingRules)
+        adapter.populateShippingRules(shippingRules, project)
     }
 
     override fun onDetach() {

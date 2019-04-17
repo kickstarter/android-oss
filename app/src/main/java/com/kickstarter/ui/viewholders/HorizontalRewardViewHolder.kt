@@ -1,7 +1,6 @@
 package com.kickstarter.ui.viewholders
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.util.Pair
 import android.view.View
 import androidx.annotation.NonNull
@@ -18,7 +17,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.BackingActivity
-import com.kickstarter.ui.adapters.RewardsItemAdapter
+import com.kickstarter.ui.adapters.RewardItemsAdapter
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.HorizontalRewardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward.view.*
@@ -40,13 +39,7 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
 
     init {
 
-        val rewardItemAdapter = RewardsItemAdapter()
-        val itemRecyclerView = view.horizontal_rewards_item_recycler_view
-        itemRecyclerView.adapter = rewardItemAdapter
-        itemRecyclerView.layoutManager = LinearLayoutManager(context())
-        this.context().getDrawable(R.drawable.divider_grey_300_horizontal)?.let {
-            itemRecyclerView.addItemDecoration(RewardItemDecorator(it))
-        }
+        val rewardItemAdapter = setUpRewardItemsAdapter()
 
         this.viewModel.outputs.conversionTextViewIsGone()
                 .compose(bindToLifecycle())
@@ -93,12 +86,12 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(this.view.horizontal_reward_ending_text_view, it) }
 
-        this.viewModel.outputs.rewardsItemList()
+        this.viewModel.outputs.rewardItems()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { rewardItemAdapter.rewardsItems(it) }
 
-        this.viewModel.outputs.rewardsItemsAreGone()
+        this.viewModel.outputs.rewardItemsAreGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe(ViewUtils.setGone(this.view.horizontal_rewards_item_section))
@@ -142,6 +135,16 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
         return "$value $detail"
     }
 
+    private fun getScreenLocationOfReward(): ScreenLocation {
+        val rewardLocation = IntArray(2)
+        this.itemView.getLocationInWindow(rewardLocation)
+        val x = rewardLocation[0].toFloat()
+        val y = rewardLocation[1].toFloat()
+        val height = this.itemView.height
+        val width = this.itemView.width
+        return ScreenLocation(x, y, height.toFloat(), width.toFloat())
+    }
+
     private fun setConversionTextView(@NonNull amount: String) {
         this.view.horizontal_reward_usd_conversion_text_view.text = (this.ksString.format(
                 this.currencyConversionString,
@@ -163,6 +166,17 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
         ))
     }
 
+    private fun setUpRewardItemsAdapter(): RewardItemsAdapter {
+        val rewardItemAdapter = RewardItemsAdapter()
+        val itemRecyclerView = view.horizontal_rewards_item_recycler_view
+        itemRecyclerView.adapter = rewardItemAdapter
+        itemRecyclerView.layoutManager = LinearLayoutManager(context())
+        this.context().getDrawable(R.drawable.divider_grey_300_horizontal)?.let {
+            itemRecyclerView.addItemDecoration(RewardItemDecorator(it))
+        }
+        return rewardItemAdapter
+    }
+
     private fun startBackingActivity(@NonNull project: Project) {
         val context = context()
         val intent = Intent(context, BackingActivity::class.java)
@@ -170,16 +184,6 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
 
         context.startActivity(intent)
         transition(context, slideInFromRight())
-    }
-
-    private fun getScreenLocationOfReward(): ScreenLocation {
-        val rewardLocation = IntArray(2)
-        this.itemView.getLocationInWindow(rewardLocation)
-        val x = rewardLocation[0].toFloat()
-        val y = rewardLocation[1].toFloat()
-        val height = this.itemView.height
-        val width = this.itemView.width
-        return ScreenLocation(x, y, height.toFloat(), width.toFloat())
     }
 
 }

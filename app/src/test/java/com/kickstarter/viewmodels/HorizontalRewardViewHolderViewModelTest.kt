@@ -26,8 +26,8 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
     private val reward = TestSubscriber<Reward>()
     private val rewardDescriptionIsGone = TestSubscriber<Boolean>()
     private val rewardEndDateSectionIsGone = TestSubscriber<Boolean>()
-    private val rewardsItemList = TestSubscriber<List<RewardsItem>>()
-    private val rewardsItemsAreGone = TestSubscriber<Boolean>()
+    private val rewardItems = TestSubscriber<List<RewardsItem>>()
+    private val rewardItemsAreGone = TestSubscriber<Boolean>()
     private val showPledgeFragment = TestSubscriber<Pair<Project, Reward>>()
     private val startBackingActivity = TestSubscriber<Project>()
     private val titleTextViewIsGone = TestSubscriber<Boolean>()
@@ -45,8 +45,8 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
         this.vm.outputs.reward().subscribe(this.reward)
         this.vm.outputs.rewardDescriptionIsGone().subscribe(this.rewardDescriptionIsGone)
         this.vm.outputs.rewardEndDateSectionIsGone().subscribe(this.rewardEndDateSectionIsGone)
-        this.vm.outputs.rewardsItemList().subscribe(this.rewardsItemList)
-        this.vm.outputs.rewardsItemsAreGone().subscribe(this.rewardsItemsAreGone)
+        this.vm.outputs.rewardItems().subscribe(this.rewardItems)
+        this.vm.outputs.rewardItemsAreGone().subscribe(this.rewardItemsAreGone)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
         this.vm.outputs.titleTextViewIsGone().subscribe(this.titleTextViewIsGone)
@@ -253,19 +253,19 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
     }
 
     @Test
-    fun testRewardsItems() {
+    fun testRewardItems() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
         // Items section should be hidden when there are no items.
         this.vm.inputs.projectAndReward(project, RewardFactory.reward())
-        this.rewardsItemsAreGone.assertValue(true)
-        this.rewardsItemList.assertNoValues()
+        this.rewardItemsAreGone.assertValue(true)
+        this.rewardItems.assertNoValues()
 
         val itemizedReward = RewardFactory.itemized()
         this.vm.inputs.projectAndReward(project, itemizedReward)
-        this.rewardsItemsAreGone.assertValues(true, false)
-        this.rewardsItemList.assertValues(itemizedReward.rewardsItems())
+        this.rewardItemsAreGone.assertValues(true, false)
+        this.rewardItems.assertValues(itemizedReward.rewardsItems())
     }
 
     @Test

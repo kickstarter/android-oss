@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/card_padding">
+        android:padding="@dimen/grid_3">
 
         <TextView
           android:id="@+id/horizontal_reward_minimum_text_view"
@@ -73,7 +73,7 @@
 
         <TextView
           style="@style/RewardSectionTitle"
-          android:layout_marginTop="@dimen/card_padding"
+          android:layout_marginTop="@dimen/grid_3"
           android:text="@string/Description" />
 
         <TextView
@@ -81,7 +81,7 @@
           style="@style/BodyPrimary"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/card_padding"
+          android:layout_marginBottom="@dimen/grid_3"
           android:layout_marginTop="@dimen/grid_1" />
 
         <LinearLayout
@@ -127,14 +127,10 @@
   </androidx.core.widget.NestedScrollView>
 
   <com.google.android.material.button.MaterialButton
+    style="@style/PledgeButton"
     android:id="@+id/horizontal_reward_pledge_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
-    android:layout_marginBottom="@dimen/card_padding"
-    android:layout_marginEnd="@dimen/card_padding"
-    android:layout_marginStart="@dimen/card_padding"
-    android:textAllCaps="false"
     tools:text="Pledge $10 or more" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

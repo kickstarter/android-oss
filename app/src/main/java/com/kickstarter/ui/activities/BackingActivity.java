@@ -17,7 +17,6 @@ import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.transformations.CircleTransformation;
-import com.kickstarter.libs.utils.RewardItemDecorator;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
@@ -25,8 +24,6 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.RewardItemsAdapter;
 import com.kickstarter.viewmodels.BackingViewModel;
 import com.squareup.picasso.Picasso;
-
-import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -86,7 +83,6 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
     this.rewardsItemRecyclerView.setAdapter(rewardItemsAdapter);
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     this.rewardsItemRecyclerView.setLayoutManager(layoutManager);
-    this.rewardsItemRecyclerView.addItemDecoration(new RewardItemDecorator(Objects.requireNonNull(getDrawable(R.drawable.divider_grey_500_horizontal))));
 
     final Environment environment = environment();
     this.ksString = environment.ksString();

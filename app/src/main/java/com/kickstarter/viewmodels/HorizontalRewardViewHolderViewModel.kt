@@ -172,7 +172,7 @@ interface HorizontalRewardViewHolderViewModel {
             this.minimumText = formattedMinimum
 
             this.rewardItems = reward
-                    .filter { ObjectUtils.isNotNull(it) }
+                    .filter { RewardUtils.isItemized(it) }
                     .map { it.rewardsItems() }
 
             this.rewardItemsAreGone = reward

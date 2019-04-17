@@ -86,7 +86,7 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
     this.rewardsItemRecyclerView.setAdapter(rewardItemsAdapter);
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     this.rewardsItemRecyclerView.setLayoutManager(layoutManager);
-    this.rewardsItemRecyclerView.addItemDecoration(new RewardItemDecorator(Objects.requireNonNull(getDrawable(R.drawable.divider_grey_300_horizontal))));
+    this.rewardsItemRecyclerView.addItemDecoration(new RewardItemDecorator(Objects.requireNonNull(getDrawable(R.drawable.divider_grey_500_horizontal))));
 
     final Environment environment = environment();
     this.ksString = environment.ksString();

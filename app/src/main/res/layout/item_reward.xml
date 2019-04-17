@@ -64,6 +64,8 @@
 
           <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/horizontal_rewards_item_recycler_view"
+            android:overScrollMode="never"
+            android:nestedScrollingEnabled="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

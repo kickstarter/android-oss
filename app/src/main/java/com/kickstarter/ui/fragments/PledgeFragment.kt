@@ -36,7 +36,7 @@ import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_pledge.*
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
-class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate {
+class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate, ShippingRulesAdapter.Delegate {
 
     private val defaultAnimationDuration = 200L
     private var animDuration = defaultAnimationDuration
@@ -130,7 +130,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun setUpShippingAdapter() {
         //todo: add proper ViewHolder and ViewModel, we're going to need a KSArrayAdapter
 
-        adapter = ShippingRulesAdapter(context!!, R.layout.item_shipping_rule, arrayListOf())
+        adapter = ShippingRulesAdapter(context!!, R.layout.item_shipping_rule, arrayListOf(), this)
+        shipping_rules.setAdapter(adapter)
 
 //        shipping_rules.setAdapter(object : ArrayAdapter<ShippingRule>(this.context,
 //                android.R.layout.simple_dropdown_item_1line, arrayListOf()) {
@@ -186,6 +187,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun pledgeButtonClicked(viewHolder: RewardPledgeCardViewHolder) {
         this.viewModel.inputs.pledgeButtonClicked()
     }
+    override fun ruleSelected(rule: ShippingRule) {
+        this.viewModel.inputs.shippingRule(rule)
+    }
+
 
     override fun selectCardButtonClicked(position: Int) {
         this.viewModel.inputs.selectCardButtonClicked(position)

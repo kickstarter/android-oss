@@ -9,7 +9,12 @@ import com.kickstarter.viewmodels.ShippingRuleViewHolderViewModel
 import kotlinx.android.synthetic.main.item_shipping_rule.view.*
 import rx.android.schedulers.AndroidSchedulers
 
-class ShippingRuleViewHolder(private val view: View) : KSArrayViewHolder(view) {
+class ShippingRuleViewHolder(private val view: View, val delegate: Delegate) : KSArrayViewHolder(view) {
+
+
+    interface Delegate {
+        fun ruleSelected(rule: ShippingRule)
+    }
 
     val viewModel = ShippingRuleViewHolderViewModel.ViewModel(environment())
 
@@ -19,8 +24,17 @@ class ShippingRuleViewHolder(private val view: View) : KSArrayViewHolder(view) {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    view.shipping_rules_item_text_view.text = it
+                    this.view.shipping_rules_item_text_view.text = it
                 }
+
+        this.viewModel.outputs.shippingRule()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.delegate.ruleSelected(it) }
+
+        this.view.shipping_rule_root.setOnClickListener {
+            this.viewModel.inputs.shippingRuleClicked()
+        }
 
     }
     override fun bindData(any: Any?) {
@@ -30,4 +44,5 @@ class ShippingRuleViewHolder(private val view: View) : KSArrayViewHolder(view) {
 
         this.viewModel.inputs.configureWith(shippingRule, project)
     }
+
 }

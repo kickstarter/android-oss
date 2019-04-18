@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders
 
 import android.content.Context
 import android.view.View
+import android.widget.AdapterView
 import com.kickstarter.KSApplication
 import com.kickstarter.libs.ActivityLifecycleType
 import com.kickstarter.libs.Environment
@@ -10,7 +11,7 @@ import com.trello.rxlifecycle.RxLifecycle
 import rx.Observable
 import rx.subjects.PublishSubject
 
-abstract class KSArrayViewHolder(private val view: View) : ActivityLifecycleType {
+abstract class KSArrayViewHolder(private val view: View) : AdapterView.OnItemClickListener, ActivityLifecycleType {
 
     private val lifecycle = PublishSubject.create<ActivityEvent>()
     abstract fun bindData(any: Any?)
@@ -64,5 +65,9 @@ abstract class KSArrayViewHolder(private val view: View) : ActivityLifecycleType
 
     protected fun environment(): Environment {
         return (context().applicationContext as KSApplication).component().environment()
+    }
+
+    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
     }
 }

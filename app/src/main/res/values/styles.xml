@@ -195,6 +195,25 @@
     <item name="android:text">@string/discovery_activity_sample_button_see_all_activity</item>
   </style>
 
+  <style name="ExtendedFab" parent="Widget.MaterialComponents.Button">
+    <item name="android:paddingTop">@dimen/grid_2</item>
+    <item name="android:paddingBottom">@dimen/grid_2</item>
+    <item name="android:paddingStart">@dimen/grid_4</item>
+    <item name="android:paddingEnd">@dimen/grid_4</item>
+    <item name="cornerRadius">@dimen/fab_radius</item>
+    <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
+    <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
+    <item name="android:minHeight">@dimen/grid_10</item>
+  </style>
+
+  <style name="PledgeButton">
+    <item name="android:layout_gravity">bottom</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:layout_marginBottom">@dimen/grid_3</item>
+    <item name="android:layout_marginEnd">@dimen/grid_3</item>
+    <item name="android:layout_marginStart">@dimen/grid_3</item>
+  </style>
+
   <style name="KSSettingsMailIcon">
     <item name="android:src">@drawable/icon__mail</item>
     <item name="android:focusable">true</item>
@@ -505,6 +524,18 @@
     <item name="android:singleLine">true</item>
   </style>
 
+  <style name="RewardTitle" parent="BodyPrimaryMedium">
+    <item name="android:textSize">@dimen/title_reward</item>
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+  </style>
+
+  <style name="RewardSectionTitle" parent="CalloutPrimaryMedium">
+    <item name="android:textColor">@color/ksr_dark_grey_400</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+  </style>
+
   <!-- Cards -->
   <style name="ActivityFeedCardBase">
     <item name="android:foreground">@drawable/click_indicator_light</item>
@@ -536,7 +567,7 @@
   <style name="ActivitySampleCard" parent="ActivitySampleCardBase" />
 
   <style name="PledgeStoredCard">
-    <item name="cardCornerRadius">@dimen/reward_card_radius</item>
+    <item name="cardCornerRadius">@dimen/stored_card_radius</item>
     <item name="cardBackgroundColor">@color/white</item>
   </style>
 
@@ -666,17 +697,6 @@
     <item name="android:layout_marginBottom">0dp</item>
     <item name="cardTint">@color/ksr_dark_grey_500</item>
     <item name="cardTextErrorColor">@color/ksr_red_400</item>
-  </style>
-
-  <style name="ExtendedFab" parent="Widget.MaterialComponents.Button">
-    <item name="android:paddingTop">@dimen/grid_2</item>
-    <item name="android:paddingBottom">@dimen/grid_2</item>
-    <item name="android:paddingStart">@dimen/grid_4</item>
-    <item name="android:paddingEnd">@dimen/grid_4</item>
-    <item name="cornerRadius">@dimen/fab_radius</item>
-    <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
-    <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
-    <item name="android:minHeight">@dimen/grid_10</item>
   </style>
 
 </resources>

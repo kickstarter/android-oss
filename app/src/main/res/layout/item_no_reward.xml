@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/card_padding">
+        android:padding="@dimen/grid_3">
 
         <TextView
           android:id="@+id/horizontal_reward_title_text_view"
@@ -42,8 +42,8 @@
           style="@style/BodyPrimary"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/card_padding"
-          android:layout_marginTop="@dimen/card_padding"
+          android:layout_marginBottom="@dimen/grid_3"
+          android:layout_marginTop="@dimen/grid_3"
           android:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life"/>
 
         <com.google.android.material.button.MaterialButton
@@ -61,12 +61,9 @@
 
   <com.google.android.material.button.MaterialButton
     android:id="@+id/horizontal_no_reward_pledge_button"
+    style="@style/PledgeButton"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
-    android:layout_marginBottom="@dimen/card_padding"
-    android:layout_marginEnd="@dimen/card_padding"
-    android:layout_marginStart="@dimen/card_padding"
     android:text="@string/Pledge_without_a_reward"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders
 
 import android.util.Pair
 import android.view.View
+import android.widget.AdapterView
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
@@ -13,7 +14,7 @@ class ShippingRuleViewHolder(private val view: View, val delegate: Delegate) : K
 
 
     interface Delegate {
-        fun ruleSelected(rule: ShippingRule)
+        fun ruleSelected(rule: ShippingRule): AdapterView.OnItemClickListener
     }
 
     val viewModel = ShippingRuleViewHolderViewModel.ViewModel(environment())

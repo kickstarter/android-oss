@@ -10,7 +10,7 @@
     android:id="@+id/shipping_rules_item_text_view"
     style="@style/CalloutPrimaryMedium"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="?android:attr/listPreferredItemHeight"
     android:layout_marginBottom="@dimen/grid_1"
     android:textColor="@color/ksr_soft_black"
     tools:text="United States" />

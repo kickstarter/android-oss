@@ -32,6 +32,8 @@ class ShippingRulesAdapter(ctx: Context, private val resourceId: Int, val items:
         return this.items[position]
     }
 
+    override fun getCount(): Int = this.items.size
+
     override fun getFilter(): Filter {
         return filter
     }

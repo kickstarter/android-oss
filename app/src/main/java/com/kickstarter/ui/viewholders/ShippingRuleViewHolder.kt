@@ -33,7 +33,7 @@ class ShippingRuleViewHolder(private val view: View, val delegate: Delegate) : K
 //                .compose(bindToLifecycle())
 //                .observeOn(AndroidSchedulers.mainThread())
 //                .subscribe { this.delegate.ruleSelected(it) }
-
+//
 //        this.view.shipping_rule_root.setOnClickListener {
 //            this.viewModel.inputs.shippingRuleClicked()
 //        }

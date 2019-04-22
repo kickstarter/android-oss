@@ -24,7 +24,7 @@ class ShippingRulesAdapter(ctx: Context, private val resourceId: Int, var items:
             constraint?.let {
                 if (it.isNotEmpty()) {
                     val list = (filterResults.values as ArrayList<Pair<ShippingRule, Project>>)
-                            .filter { srAndProject -> srAndProject.first.toString().startsWith(constraint) }
+                            .filter { srAndProject -> srAndProject.first.toString().contains(constraint) }
                     filterResults.values = list
                     filterResults.count = list.size
                 }
@@ -34,7 +34,7 @@ class ShippingRulesAdapter(ctx: Context, private val resourceId: Int, var items:
 
         override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
             if (results != null && results.count > 0) {
-                items = results.values as ArrayList<Pair<ShippingRule, Project>>
+//                items = results.values as ArrayList<Pair<ShippingRule, Project>>
                 notifyDataSetChanged()
             } else {
                 notifyDataSetInvalidated()

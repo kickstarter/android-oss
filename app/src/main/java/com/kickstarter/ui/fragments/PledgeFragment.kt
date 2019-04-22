@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.AdapterView
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -133,6 +134,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         adapter = ShippingRulesAdapter(context!!, R.layout.item_shipping_rule, arrayListOf(), this)
         shipping_rules.setAdapter(adapter)
 
+
+
 //        shipping_rules.setAdapter(object : ArrayAdapter<ShippingRule>(this.context,
 //                android.R.layout.simple_dropdown_item_1line, arrayListOf()) {
 //            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
@@ -187,8 +190,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun pledgeButtonClicked(viewHolder: RewardPledgeCardViewHolder) {
         this.viewModel.inputs.pledgeButtonClicked()
     }
-    override fun ruleSelected(rule: ShippingRule) {
+    override fun ruleSelected(rule: ShippingRule): AdapterView.OnItemClickListener {
         this.viewModel.inputs.shippingRule(rule)
+
+        shipping_rules.onItemClickListener = ruleSelected(rule)
+       return shipping_rules.onItemClickListener
     }
 
 

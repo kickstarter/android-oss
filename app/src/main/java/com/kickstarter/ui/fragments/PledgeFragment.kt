@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.AdapterView
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -190,11 +189,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun pledgeButtonClicked(viewHolder: RewardPledgeCardViewHolder) {
         this.viewModel.inputs.pledgeButtonClicked()
     }
-    override fun ruleSelected(rule: ShippingRule): AdapterView.OnItemClickListener {
+    override fun ruleSelected(rule: ShippingRule){
         this.viewModel.inputs.shippingRule(rule)
+        shipping_rules.dismissDropDown()
 
-        shipping_rules.onItemClickListener = ruleSelected(rule)
-       return shipping_rules.onItemClickListener
     }
 
 

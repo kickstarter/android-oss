@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders
 
 import android.util.Pair
 import android.view.View
-import android.widget.AdapterView
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
@@ -14,7 +13,7 @@ class ShippingRuleViewHolder(private val view: View, val delegate: Delegate) : K
 
 
     interface Delegate {
-        fun ruleSelected(rule: ShippingRule): AdapterView.OnItemClickListener
+        fun ruleSelected(rule: ShippingRule)
     }
 
     val viewModel = ShippingRuleViewHolderViewModel.ViewModel(environment())
@@ -29,14 +28,14 @@ class ShippingRuleViewHolder(private val view: View, val delegate: Delegate) : K
                 }
 
         //TODO - Something with these two methods are causing the app to freeze up.
-//        this.viewModel.outputs.shippingRule()
-//                .compose(bindToLifecycle())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe { this.delegate.ruleSelected(it) }
-//
-//        this.view.shipping_rule_root.setOnClickListener {
-//            this.viewModel.inputs.shippingRuleClicked()
-//        }
+        this.viewModel.outputs.shippingRule()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.delegate.ruleSelected(it) }
+
+        this.view.shipping_rule_root.setOnClickListener {
+            this.viewModel.inputs.shippingRuleClicked()
+        }
 
     }
     override fun bindData(any: Any?) {

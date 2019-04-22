@@ -9,7 +9,7 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
 import com.kickstarter.ui.viewholders.KSArrayViewHolder
 
-abstract class KSArrayAdapter<T>(val ctx: Context, private val resourceId: Int, items: ArrayList<T> = arrayListOf()) : ArrayAdapter<T>(ctx, resourceId, items) {
+abstract class KSArrayAdapter<T>(val ctx: Context, private val resourceId: Int, items: ArrayList<T> = arrayListOf()) : ArrayAdapter<T>(ctx, resourceId, items){
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context).inflate(resourceId, parent, false)

@@ -124,7 +124,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .subscribe { total_amount.text = it }
 
         shipping_rules.setOnClickListener { shipping_rules.showDropDown() }
-
     }
 
     private fun setUpShippingAdapter() {

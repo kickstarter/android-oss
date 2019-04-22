@@ -127,35 +127,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun setUpShippingAdapter() {
-        //todo: add proper ViewHolder and ViewModel, we're going to need a KSArrayAdapter
-
         adapter = ShippingRulesAdapter(context!!, R.layout.item_shipping_rule, arrayListOf(), this)
         shipping_rules.setAdapter(adapter)
-
-
-
-//        shipping_rules.setAdapter(object : ArrayAdapter<ShippingRule>(this.context,
-//                android.R.layout.simple_dropdown_item_1line, arrayListOf()) {
-//            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
-//                var view = convertView
-//                if (view == null) {
-//                    view = LayoutInflater.from(this.context).inflate(android.R.layout.simple_spinner_dropdown_item, parent, false)
-//                }
-//
-//                val item = getItem(position)
-//
-//                val displayableName = item?.location()?.displayableName()
-//                //todo: get this amount from KS currency
-//                val cost = item?.cost()
-//                (view as TextView).text = "$displayableName +($cost)"
-//
-//                return view
-//            }
-//        })
-//        val itemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
-//            this@PledgeFragment.viewModel.inputs.shippingRule(parent?.adapter?.getItem(position) as ShippingRule)
-//        }
-//        shipping_rules.onItemClickListener = itemClickListener
     }
 
     private fun setUpCardsAdapter() {
@@ -166,9 +139,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
         shipping_rules.isEnabled = true
-//        val adapter = shipping_rules.adapter as ArrayAdapter<ShippingRule>
-//        adapter.clear()
-//        adapter.addAll(shippingRules)
         adapter.populateShippingRules(shippingRules, project)
     }
 
@@ -191,9 +161,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun ruleSelected(rule: ShippingRule){
         this.viewModel.inputs.shippingRule(rule)
         shipping_rules.dismissDropDown()
-
     }
-
 
     override fun selectCardButtonClicked(position: Int) {
         this.viewModel.inputs.selectCardButtonClicked(position)
@@ -397,5 +365,4 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             return fragment
         }
     }
-
 }

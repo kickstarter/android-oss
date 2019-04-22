@@ -27,7 +27,6 @@ class ShippingRuleViewHolder(private val view: View, val delegate: Delegate) : K
                     this.view.shipping_rules_item_text_view.text = it
                 }
 
-        //TODO - Something with these two methods are causing the app to freeze up.
         this.viewModel.outputs.shippingRule()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -36,8 +35,8 @@ class ShippingRuleViewHolder(private val view: View, val delegate: Delegate) : K
         this.view.shipping_rule_root.setOnClickListener {
             this.viewModel.inputs.shippingRuleClicked()
         }
-
     }
+
     override fun bindData(any: Any?) {
         val shippingRuleAndProject = ObjectUtils.requireNonNull(any as Pair<ShippingRule, Project>)
         val shippingRule = ObjectUtils.requireNonNull(shippingRuleAndProject.first, ShippingRule::class.java)
@@ -45,5 +44,4 @@ class ShippingRuleViewHolder(private val view: View, val delegate: Delegate) : K
 
         this.viewModel.inputs.configureWith(shippingRule, project)
     }
-
 }

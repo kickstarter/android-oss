@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Pair
 import android.view.View
 import android.widget.Filter
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.viewholders.KSArrayViewHolder
@@ -22,9 +23,11 @@ class ShippingRulesAdapter(ctx: Context, private val resourceId: Int, val items:
     fun populateShippingRules(rules: List<ShippingRule>, project: Project) {
         this.items.clear()
 
-        this.items.addAll(Observable.from(rules)
-                .map { rule -> Pair.create(rule, project) }
-                .toList().toBlocking().single())
+        if (ObjectUtils.isNotNull(rules) || rules.isNotEmpty()) {
+            this.items.addAll(Observable.from(rules)
+                    .map { rule -> Pair.create(rule, project) }
+                    .toList().toBlocking().single())
+        }
         notifyDataSetChanged()
     }
 

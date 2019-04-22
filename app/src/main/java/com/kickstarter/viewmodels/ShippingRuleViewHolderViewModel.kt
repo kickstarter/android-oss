@@ -5,6 +5,7 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.viewholders.ShippingRuleViewHolder
@@ -41,18 +42,16 @@ interface ShippingRuleViewHolderViewModel {
 
         init {
             this.shippingRuleAndProject
+                    .filter { ObjectUtils.isNotNull(it.first) }
                     .map { formattedString(it.first, it.second) }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRuleText)
 
             this.shippingRuleAndProject
                     .map { it.first }
+                    .compose<ShippingRule>(takeWhen(this.shippingRuleClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRule)
-
-            this.shippingRule
-                    .compose<ShippingRule>(takeWhen(this.shippingRuleClicked))
-
         }
 
         override fun configureWith(shippingRule: ShippingRule, project: Project) = this.shippingRuleAndProject.onNext(Pair.create(shippingRule, project))

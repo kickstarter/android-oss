@@ -28,14 +28,15 @@ class ShippingRuleViewHolder(private val view: View, val delegate: Delegate) : K
                     this.view.shipping_rules_item_text_view.text = it
                 }
 
-        this.viewModel.outputs.shippingRule()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.delegate.ruleSelected(it) }
+        //TODO - Something with these two methods are causing the app to freeze up.
+//        this.viewModel.outputs.shippingRule()
+//                .compose(bindToLifecycle())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe { this.delegate.ruleSelected(it) }
 
-        this.view.shipping_rule_root.setOnClickListener {
-            this.viewModel.inputs.shippingRuleClicked()
-        }
+//        this.view.shipping_rule_root.setOnClickListener {
+//            this.viewModel.inputs.shippingRuleClicked()
+//        }
 
     }
     override fun bindData(any: Any?) {

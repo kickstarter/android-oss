@@ -10,6 +10,8 @@ import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.RewardsItem
+import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
 import rx.Observable
 import rx.subjects.PublishSubject
@@ -58,8 +60,11 @@ interface HorizontalRewardViewHolderViewModel {
         /** Returns true if the reward end date should be hidden,`false` otherwise. */
         fun rewardEndDateSectionIsGone(): Observable<Boolean>
 
+        /** Show the rewards items.  */
+        fun rewardItems(): Observable<List<RewardsItem>>
+
         /** Returns `true` if the items section should be hidden, `false` otherwise.  */
-        fun rewardsItemsAreGone(): Observable<Boolean>
+        fun rewardItemsAreGone(): Observable<Boolean>
 
         /** Show [com.kickstarter.ui.fragments.PledgeFragment] with the project's reward selected.  */
         fun showPledgeFragment(): Observable<Pair<Project, Reward>>
@@ -74,7 +79,7 @@ interface HorizontalRewardViewHolderViewModel {
         fun titleText(): Observable<String>
     }
 
-    class ViewModel(@NonNull environment: Environment) : ActivityViewModel<KSViewHolder>(environment), Inputs, Outputs {
+    class ViewModel(@NonNull environment: Environment) : ActivityViewModel<HorizontalRewardViewHolder>(environment), Inputs, Outputs {
         private val ksCurrency: KSCurrency = environment.ksCurrency()
 
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
@@ -94,7 +99,8 @@ interface HorizontalRewardViewHolderViewModel {
         private val reward: Observable<Reward>
         private val rewardDescriptionIsGone: Observable<Boolean>
         private val rewardEndDateSectionIsGone: Observable<Boolean>
-        private val rewardsItemsAreGone: Observable<Boolean>
+        private val rewardItems: Observable<List<RewardsItem>>
+        private val rewardItemsAreGone: Observable<Boolean>
         private val titleTextViewIsGone: Observable<Boolean>
         private val titleText: Observable<String>
         private val showPledgeFragment: Observable<Pair<Project, Reward>>
@@ -165,7 +171,11 @@ interface HorizontalRewardViewHolderViewModel {
 
             this.minimumText = formattedMinimum
 
-            this.rewardsItemsAreGone = reward
+            this.rewardItems = reward
+                    .filter { RewardUtils.isItemized(it) }
+                    .map { it.rewardsItems() }
+
+            this.rewardItemsAreGone = reward
                     .map<Boolean> { RewardUtils.isItemized(it) }
                     .map<Boolean> { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
@@ -258,33 +268,29 @@ interface HorizontalRewardViewHolderViewModel {
             return this.rewardDescriptionIsGone
         }
 
+        @NonNull
         override fun reward(): Observable<Reward> = this.reward
 
+        @NonNull
         override fun rewardEndDateSectionIsGone(): Observable<Boolean> = this.rewardEndDateSectionIsGone
 
         @NonNull
-        override fun rewardsItemsAreGone(): Observable<Boolean> {
-            return this.rewardsItemsAreGone
-        }
-
-        override fun showPledgeFragment(): Observable<Pair<Project, Reward>> {
-            return this.showPledgeFragment
-        }
+        override fun rewardItems(): Observable<List<RewardsItem>> = this.rewardItems
 
         @NonNull
-        override fun startBackingActivity(): Observable<Project> {
-            return this.startBackingActivity
-        }
+        override fun rewardItemsAreGone(): Observable<Boolean> = this.rewardItemsAreGone
 
         @NonNull
-        override fun titleTextViewIsGone(): Observable<Boolean> {
-            return this.titleTextViewIsGone
-        }
+        override fun showPledgeFragment(): Observable<Pair<Project, Reward>> = this.showPledgeFragment
 
         @NonNull
-        override fun titleText(): Observable<String> {
-            return this.titleText
-        }
+        override fun startBackingActivity(): Observable<Project> = this.startBackingActivity
+
+        @NonNull
+        override fun titleTextViewIsGone(): Observable<Boolean> = this.titleTextViewIsGone
+
+        @NonNull
+        override fun titleText(): Observable<String> = this.titleText
 
     }
 }

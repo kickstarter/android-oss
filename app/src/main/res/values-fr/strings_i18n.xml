@@ -123,6 +123,7 @@ contributeurs</string>
   <string name="Data_will_appear_here_once" formatted="false">Ces données seront visibles dès que vous aurez reçu votre première contribution.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Supprimer mon compte Kickstarter</string>
   <string name="Delivered" formatted="false">Distribué</string>
+  <string name="Description" formatted="false">Description</string>
   <string name="Developer" formatted="false">Développeur</string>
   <string name="Discover_arts_news" formatted="false">Des idées et des projets innovants à découvrir, soigneusement sélectionnés deux fois par mois par l\'équipe Design et technologie de Kickstarter.</string>
   <string name="Discover_more_projects" formatted="false">Découvrez plus de projets.</string>
@@ -259,6 +260,7 @@ contributeurs</string>
   <string name="MMYY" formatted="false">MM/AA</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">S\'engager sans recevoir de récompense</string>
   <string name="Making_this_change" formatted="false">Cette fonction vous permettra de voir votre objectif de financement et le montant de chaque engagement dans la devise de votre choix.</string>
+  <string name="Manage" formatted="false">Manage</string>
   <string name="Manage_your_pledge" formatted="false">Gérer mon engagement</string>
   <string name="Manage_your_pledge_below" formatted="false">Gérer mon engagement</string>
   <string name="Manage_your_reward" formatted="false">Gérer votre récompense</string>
@@ -267,6 +269,8 @@ contributeurs</string>
   <string name="Message_creator" formatted="false">Envoyer un message au créateur</string>
   <string name="Message_user_name" formatted="false">Envoyer un message à %{user_name}</string>
   <string name="Messages" formatted="false">Messages</string>
+  <string name="More_than_150000_creative_projects_have_come_to_life_on_Kickstarter_1" formatted="false">More than 150,000 creative projects have come to life on Kickstarter over the past decade, with support from over 15,000,000 backers.</string>
+  <string name="More_than_150000_creative_projects_have_come_to_life_on_Kickstarter_2" formatted="false">Thanks for being part of all the joy, hard work, and hope that’s gone into it — and cheers to what’s ahead.</string>
   <string name="Name" formatted="false">Nom</string>
   <string name="Never" formatted="false">Jamais</string>
   <string name="New_email" formatted="false">Nouvelle adresse e-mail</string>
@@ -437,6 +441,7 @@ n\'ont rien soutenu.</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Cliquez sur le cœur qui apparaît sur la page du projet pour l\'ajouter à vos favoris. Nous vous enverrons un petit rappel 48 heures avant la fin de la campagne.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Cliquez sur l\'icône en forme d\'étoile située à côté du projet pour recevoir une notification 48 avant la fin de sa campagne.</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Cliquez sur l\'étoile qui apparaît sur la page du projet pour l\'ajouter à vos favoris. Nous vous enverrons un petit rappel 48 heures avant la fin de la campagne.</string>
+  <string name="Ten_is_just_the_beginning" formatted="false">Ten is just the beginning.</string>
   <string name="Thank_you_exclamation" formatted="false">Merci !</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Merci pour votre soutien.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">L\'adresse e-mail associée à ce compte Facebook a déjà été enregistrée par un autre utilisateur Kickstarter.</string>

@@ -122,6 +122,7 @@
   <string name="Data_will_appear_here_once" formatted="false">誰かがプロジェクトをバック（支援）すると、ここにデータが表示されます。</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Kickstarter アカウントを削除</string>
   <string name="Delivered" formatted="false">発送済</string>
+  <string name="Description" formatted="false">Description</string>
   <string name="Developer" formatted="false">開発者</string>
   <string name="Discover_arts_news" formatted="false">Kickstarter の「デザイン＆テクノロジー」チーム選りすぐりの革新的なプロジェクトを毎月2回お届けします。</string>
   <string name="Discover_more_projects" formatted="false">プロジェクトをさがす</string>
@@ -258,6 +259,7 @@
   <string name="MMYY" formatted="false">月月/年年</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">リワードなしでプレッジ</string>
   <string name="Making_this_change" formatted="false">この変更によって、プロジェクトゴールとプレッジ額が選択された通貨で表示されます。</string>
+  <string name="Manage" formatted="false">Manage</string>
   <string name="Manage_your_pledge" formatted="false">プレッジを変更</string>
   <string name="Manage_your_pledge_below" formatted="false">以下のプレッジを変更</string>
   <string name="Manage_your_reward" formatted="false">リワードの管理</string>
@@ -266,6 +268,8 @@
   <string name="Message_creator" formatted="false">クリエーターにメッセージする</string>
   <string name="Message_user_name" formatted="false">%{user_name} にメッセージ</string>
   <string name="Messages" formatted="false">メッセージ</string>
+  <string name="More_than_150000_creative_projects_have_come_to_life_on_Kickstarter_1" formatted="false">More than 150,000 creative projects have come to life on Kickstarter over the past decade, with support from over 15,000,000 backers.</string>
+  <string name="More_than_150000_creative_projects_have_come_to_life_on_Kickstarter_2" formatted="false">Thanks for being part of all the joy, hard work, and hope that’s gone into it — and cheers to what’s ahead.</string>
   <string name="Name" formatted="false">名前</string>
   <string name="Never" formatted="false">通知を受けない</string>
   <string name="New_email" formatted="false">新しいメールアドレス</string>
@@ -436,6 +440,7 @@
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">ハートのアイコンを押して保存しましょう。終了48時間前に通知が届きます。</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">星のマークを押すと、終了48時間前に通知が届きます。</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">プロジェクトにスターを押して保存しましょう。プロジェクト終了４８時間前にリマインドします。</string>
+  <string name="Ten_is_just_the_beginning" formatted="false">Ten is just the beginning.</string>
   <string name="Thank_you_exclamation" formatted="false">ありがとうございます！</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">サポートいただきありがとうございます。</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">このFacebookのメールアドレスは他のKickstarterユーザーが使用中</string>

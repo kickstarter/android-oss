@@ -63,7 +63,7 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>(), Horiz
         val radius = resources.getDimensionPixelSize(R.dimen.circle_radius).toFloat()
         val inactiveColor = ContextCompat.getColor(rewards_recycler.context, R.color.ksr_dark_grey_400)
         val activeColor = ContextCompat.getColor(rewards_recycler.context, R.color.ksr_soft_black)
-        val margin = resources.getDimension(R.dimen.reward_margin).toInt()
+        val margin = resources.getDimension(R.dimen.grid_3).toInt()
         val padding = radius * 2
         rewards_recycler.addItemDecoration(RewardDecoration(margin, activeColor, inactiveColor, radius, padding))
     }

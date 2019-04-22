@@ -26,14 +26,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/card_padding">
+        android:padding="@dimen/grid_3">
 
         <TextView
           android:id="@+id/horizontal_reward_minimum_text_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_2"
-          android:textColor="@color/ksr_green_700"
+          android:textColor="@color/ksr_green_500"
           android:textSize="@dimen/title_3"
           android:textStyle="bold"
           tools:text="$20" />
@@ -43,25 +42,47 @@
           style="@style/Caption1Secondary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/ksr_green_700"
+          android:textColor="@color/ksr_green_500"
           tools:text="About $15 USD" />
 
         <TextView
           android:id="@+id/horizontal_reward_title_text_view"
-          style="@style/Headline"
+          style="@style/RewardTitle"
+          android:layout_marginTop="@dimen/grid_2"
+          tools:text="Beep" />
+
+        <LinearLayout
+          android:id="@+id/horizontal_rewards_item_section"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/activity_vertical_margin"
-          android:textSize="@dimen/title_1"
-          tools:text="Beep" />
+          android:layout_marginTop="@dimen/grid_3"
+          android:orientation="vertical">
+
+          <TextView
+            style="@style/RewardSectionTitle"
+            android:text="@string/rewards_info_includes" />
+
+          <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/horizontal_rewards_item_recycler_view"
+            android:overScrollMode="never"
+            android:nestedScrollingEnabled="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <TextView
+          style="@style/RewardSectionTitle"
+          android:layout_marginTop="@dimen/grid_3"
+          android:text="@string/Description" />
 
         <TextView
           android:id="@+id/horizontal_reward_description_text_view"
           style="@style/BodyPrimary"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/card_padding"
-          android:layout_marginTop="@dimen/card_padding" />
+          android:layout_marginBottom="@dimen/grid_3"
+          android:layout_marginTop="@dimen/grid_1" />
 
         <LinearLayout
           android:layout_width="wrap_content"
@@ -106,13 +127,10 @@
   </androidx.core.widget.NestedScrollView>
 
   <com.google.android.material.button.MaterialButton
+    style="@style/PledgeButton"
     android:id="@+id/horizontal_reward_pledge_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
-    android:layout_marginBottom="@dimen/card_padding"
-    android:layout_marginEnd="@dimen/card_padding"
-    android:layout_marginStart="@dimen/card_padding"
     tools:text="Pledge $10 or more" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

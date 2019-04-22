@@ -21,7 +21,7 @@ import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.adapters.RewardsItemAdapter;
+import com.kickstarter.ui.adapters.RewardItemsAdapter;
 import com.kickstarter.viewmodels.BackingViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -79,8 +79,8 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
     setContentView(R.layout.backing_layout);
     ButterKnife.bind(this);
 
-    final RewardsItemAdapter rewardsItemAdapter = new RewardsItemAdapter();
-    this.rewardsItemRecyclerView.setAdapter(rewardsItemAdapter);
+    final RewardItemsAdapter rewardItemsAdapter = new RewardItemsAdapter();
+    this.rewardsItemRecyclerView.setAdapter(rewardItemsAdapter);
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     this.rewardsItemRecyclerView.setLayoutManager(layoutManager);
 
@@ -155,7 +155,7 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
     this.viewModel.outputs.rewardsItemList()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(rewardsItemAdapter::rewardsItems);
+      .subscribe(rewardItemsAdapter::rewardsItems);
 
     this.viewModel.outputs.rewardsItemsAreGone()
       .compose(bindToLifecycle())

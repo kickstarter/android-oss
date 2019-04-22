@@ -385,6 +385,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             rewardCardAdapter.resetSelectedPosition(position)
         }
         (cards_recycler.layoutManager as FreezeLinearLayoutManager).setFrozen(selected)
+        shipping_rules.dismissDropDown()
     }
 
     companion object {

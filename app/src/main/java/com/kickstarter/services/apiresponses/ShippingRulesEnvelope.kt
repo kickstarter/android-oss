@@ -9,4 +9,14 @@ import com.kickstarter.models.ShippingRule
 @AutoParcel
 abstract class ShippingRulesEnvelope : Parcelable {
     abstract fun shippingRules(): List<ShippingRule>
+
+    @AutoParcel.Builder
+    abstract class Builder {
+        abstract fun shippingRules(rules: List<ShippingRule>): Builder
+        abstract fun build(): ShippingRulesEnvelope
+    }
+
+    fun builder(): Builder {
+        return AutoParcel_ShippingRulesEnvelope(shippingRules()).builder()
+    }
 }

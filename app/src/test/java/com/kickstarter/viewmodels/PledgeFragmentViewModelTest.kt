@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.SpannableString
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.ActivityRequestCodes
@@ -40,7 +41,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.animateRewardCard().subscribe(this.animateRewardCard)
         this.vm.outputs.cards().subscribe(this.cards)
         this.vm.outputs.estimatedDelivery().subscribe(this.estimatedDelivery)
-        this.vm.outputs.pledgeAmount().subscribe(this.pledgeAmount)
+        this.vm.outputs.pledgeAmount().map { it.toString() }.subscribe(this.pledgeAmount)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.startNewCardActivity().subscribe(this.startNewCardActivity)
 

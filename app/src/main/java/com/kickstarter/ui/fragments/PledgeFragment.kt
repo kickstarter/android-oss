@@ -3,6 +3,7 @@ package com.kickstarter.ui.fragments
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -170,6 +172,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun ruleSelected(rule: ShippingRule){
         this.viewModel.inputs.shippingRule(rule)
         shipping_rules.dismissDropDown()
+        shipping_rules?.let {
+            val input = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            input.let { it?.hideSoftInputFromWindow(shipping_rules.windowToken, 0) }
+        }
     }
 
     override fun selectCardButtonClicked(position: Int) {

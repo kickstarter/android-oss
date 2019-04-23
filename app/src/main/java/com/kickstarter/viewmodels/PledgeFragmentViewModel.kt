@@ -36,6 +36,9 @@ interface PledgeFragmentViewModel {
 
         /** Call when user selects a card they want to pledge with. */
         fun selectCardButtonClicked(position: Int)
+
+        /** Call when logged out user clicks the continue button. */
+        fun continueButtonClicked()
     }
 
     interface Outputs {
@@ -45,14 +48,23 @@ interface PledgeFragmentViewModel {
         /** Emits a list of stored cards for a user. */
         fun cards(): Observable<List<StoredCard>>
 
+        /**  Emits a boolean determining if the continue button should be hidden. */
+        fun continueButtonIsGone(): Observable<Boolean>
+
         /** Emits the estimated delivery date string of the reward. */
         fun estimatedDelivery(): Observable<String>
+
+        /**  Emits a boolean determining if the payment container should be hidden. */
+        fun paymentContainerIsGone(): Observable<Boolean>
 
         /** Emits the pledge amount string of the reward. */
         fun pledgeAmount(): Observable<String>
 
         /** Emits when the cards adapter should update selected position. */
         fun showPledgeCard(): Observable<Pair<Int, Boolean>>
+
+        /** Emits when we should start the [com.kickstarter.ui.activities.LoginToutActivity]. */
+        fun startLoginToutActivity(): Observable<Void>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.NewCardActivity]. */
         fun startNewCardActivity(): Observable<Void>
@@ -62,6 +74,7 @@ interface PledgeFragmentViewModel {
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
 
         private val closeCardButtonClicked = PublishSubject.create<Int>()
+        private val continueButtonClicked = PublishSubject.create<Void>()
         private val newCardButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
         private val pledgeButtonClicked = PublishSubject.create<Void>()
@@ -69,9 +82,12 @@ interface PledgeFragmentViewModel {
 
         private val animateReward = BehaviorSubject.create<Pair<Reward, ScreenLocation>>()
         private val cards = BehaviorSubject.create<List<StoredCard>>()
+        private val continueButtonIsGone = BehaviorSubject.create<Boolean>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
+        private val paymentContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<String>()
         private val pledgeCardPosition = BehaviorSubject.create<Pair<Int, Boolean>>()
+        private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startNewCardActivity = PublishSubject.create<Void>()
 
         private val client = environment.apolloClient()
@@ -117,6 +133,15 @@ interface PledgeFragmentViewModel {
                     .subscribe { this.animateReward.onNext(it) }
 
             userIsLoggedIn
+                    .map { BooleanUtils.negate(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.paymentContainerIsGone)
+
+            userIsLoggedIn
+                    .compose(bindToLifecycle())
+                    .subscribe(this.continueButtonIsGone)
+
+            userIsLoggedIn
                     .filter { BooleanUtils.isTrue(it) }
                     .switchMap { getListOfStoredCards() }
                     .compose(bindToLifecycle())
@@ -134,6 +159,10 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.startNewCardActivity.onNext(it) }
 
+            this.continueButtonClicked
+                    .compose(bindToLifecycle())
+                    .subscribe(this.startLoginToutActivity)
+
             activityResult()
                     .filter { it.isRequestCode(ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD) }
                     .filter(ActivityResult::isOk)
@@ -145,6 +174,10 @@ interface PledgeFragmentViewModel {
 
         override fun closeCardButtonClicked(position: Int) {
             this.closeCardButtonClicked.onNext(position)
+        }
+
+        override fun continueButtonClicked() {
+            this.continueButtonClicked.onNext(null)
         }
 
         override fun newCardButtonClicked() {
@@ -167,11 +200,17 @@ interface PledgeFragmentViewModel {
 
         override fun cards(): Observable<List<StoredCard>> = this.cards
 
+        override fun paymentContainerIsGone(): Observable<Boolean> = this.paymentContainerIsGone
+
+        override fun continueButtonIsGone(): Observable<Boolean> = this.continueButtonIsGone
+
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
 
         override fun pledgeAmount(): Observable<String> = this.pledgeAmount
 
         override fun showPledgeCard(): Observable<Pair<Int, Boolean>> = this.pledgeCardPosition
+
+        override fun startLoginToutActivity(): Observable<Void> = this.startLoginToutActivity
 
         override fun startNewCardActivity(): Observable<Void> = this.startNewCardActivity
 

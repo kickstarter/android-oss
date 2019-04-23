@@ -159,10 +159,32 @@
 
         </LinearLayout>
 
+        <Button
+          android:id="@+id/continue_to_tout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          android:text="@string/Continue"
+          android:layout_marginBottom="@dimen/grid_3"
+          android:visibility="gone"
+          tools:visibility="visible" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/payment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:orientation="vertical">
+
         <ImageButton
           android:id="@+id/google_pay"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_8"
+          android:layout_marginEnd="@dimen/activity_vertical_margin"
+          android:layout_marginStart="@dimen/activity_vertical_margin"
           android:background="@drawable/googlepay_button_no_shadow_background"
           android:contentDescription="@string/googlepay_button_content_description"
           android:foreground="@drawable/googlepay_button_overlay"
@@ -175,19 +197,22 @@
           style="@style/FootnoteSecondary"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_vertical_margin"
+          android:layout_marginStart="@dimen/activity_vertical_margin"
           android:layout_marginTop="@dimen/grid_3"
           android:gravity="center"
           android:text="@string/Other_payment_methods" />
 
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/cards_recycler"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          android:paddingBottom="@dimen/grid_3"
+          tools:listitem="@layout/item_reward_credit_card" />
       </LinearLayout>
 
-      <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/cards_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:paddingBottom="@dimen/grid_3"
-        tools:listitem="@layout/item_reward_credit_card" />
+
     </LinearLayout>
 
   </FrameLayout>

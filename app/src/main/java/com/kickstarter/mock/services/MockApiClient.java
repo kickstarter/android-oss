@@ -13,6 +13,7 @@ import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory;
 import com.kickstarter.mock.factories.MessageThreadsEnvelopeFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory;
 import com.kickstarter.mock.factories.SurveyResponseFactory;
 import com.kickstarter.mock.factories.UpdateFactory;
 import com.kickstarter.mock.factories.UserFactory;
@@ -209,7 +210,7 @@ public class MockApiClient implements ApiClientType {
   @NonNull
   @Override
   public Observable<ShippingRulesEnvelope> fetchShippingRules(@NonNull Project project, @NonNull Reward reward) {
-    return Observable.just(ShippingRulesEnvelope);
+    return Observable.just(ShippingRulesEnvelopeFactory.Companion.shippingRuleEvelope());
   }
 
   @Override

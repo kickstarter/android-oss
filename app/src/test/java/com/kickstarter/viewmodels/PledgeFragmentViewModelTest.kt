@@ -9,12 +9,11 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.RewardFactory
-import com.kickstarter.mock.factories.StoredCardFactory
-import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.ActivityResult
@@ -32,8 +31,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val cards = TestSubscriber<List<StoredCard>>()
     private val estimatedDelivery = TestSubscriber<String>()
     private val pledgeAmount = TestSubscriber<String>()
+    private val shippingAmount = TestSubscriber<String>()
+    private val shippingRuleAndProject = TestSubscriber<Pair<List<ShippingRule>, Project>>()
+    private val shippingRules = TestSubscriber<List<ShippingRule>>()
+    private val shippingRulesSectionIsGone = TestSubscriber<Boolean>()
+    private val shippingSelection = TestSubscriber<ShippingRule>()
     private val showPledgeCard = TestSubscriber<Pair<Int, Boolean>>()
     private val startNewCardActivity = TestSubscriber<Void>()
+    private val totalAmount = TestSubscriber<String>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = PledgeFragmentViewModel.ViewModel(environment)
@@ -42,11 +47,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.cards().subscribe(this.cards)
         this.vm.outputs.estimatedDelivery().subscribe(this.estimatedDelivery)
         this.vm.outputs.pledgeAmount().map { it.toString() }.subscribe(this.pledgeAmount)
+        this.vm.outputs.shippingAmount().map { it.toString() }.subscribe(this.shippingAmount)
+//        this.vm.outputs.shippingRulesAndProject(this.shippingRuleAndProject)
+        this.vm.outputs.shippingRules().subscribe(this.shippingRules)
+        this.vm.outputs.shippingSelection().subscribe(this.shippingSelection)
+        this.vm.outputs.shippingRulesSectionIsGone().subscribe(this.shippingRulesSectionIsGone)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.startNewCardActivity().subscribe(this.startNewCardActivity)
+        this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
 
         val reward = RewardFactory.rewardWithShipping()
         val project = ProjectFactory.project()
+
         val bundle = Bundle()
         bundle.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, ScreenLocation(0f, 0f, 0f, 0f))
         bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project)
@@ -99,6 +111,35 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testShippingAmount() {
+        setUpEnvironment(environment())
+
+
+    }
+
+    @Test
+    fun testShippingRules() {
+        setUpEnvironment(environment())
+
+        this.shippingRules.assertValue(ShippingRulesEnvelopeFactory.shippingRuleEvelope().shippingRules())
+    }
+
+    @Test
+    fun testShippingRuleAndProject() {
+
+    }
+
+    @Test
+    fun testShippingRuleSelection() {
+
+    }
+
+    @Test
+    fun testShippingRuleSelectionIsGone() {
+
+    }
+
+    @Test
     fun testShowPledgeCard() {
         setUpEnvironment(environment())
 
@@ -115,6 +156,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newCardButtonClicked()
         this.startNewCardActivity.assertValueCount(1)
+    }
+
+    @Test
+    fun testTotalAmount() {
+        setUpEnvironment(environment())
+
+        this.totalAmount.assertValue("")
     }
 
 }

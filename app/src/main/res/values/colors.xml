@@ -46,7 +46,6 @@
   <color name="gray_darken_10">@color/ksr_grey_500</color>
   <color name="green_alpha_10">#1A009E74</color>
   <color name="green_alpha_20">#33009E74</color>
-  <color name="green_alpha_42">#73009e74</color>
   <color name="green_alpha_50">#80009E74</color>
   <color name="green_darken_10">@color/soft_black_alpha_17</color>
   <color name="soft_black_alpha_17">#2B282828</color>

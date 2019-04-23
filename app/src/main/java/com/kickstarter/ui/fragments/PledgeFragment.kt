@@ -21,6 +21,7 @@ import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -107,6 +108,14 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .filter { ObjectUtils.isNotNull(context) }
                 .subscribe { displayShippingRules(it.first, it.second) }
+
+        this.viewModel.outputs.shippingRulesSectionIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    ViewUtils.setGone(shipping_rules_section_text_view, it)
+                    ViewUtils.setGone(shipping_rules_row, it)
+                }
 
         this.viewModel.outputs.shippingSelection()
                 .compose(bindToLifecycle())

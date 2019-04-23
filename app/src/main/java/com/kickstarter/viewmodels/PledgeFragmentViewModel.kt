@@ -9,6 +9,7 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -68,6 +69,9 @@ interface PledgeFragmentViewModel {
 
         fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>>
 
+        /** Emits when the shipping rules section should be hidden. */
+        fun shippingRulesSectionIsGone(): Observable<Boolean>
+
         /** Emits when the cards adapter should update selected position. */
         fun showPledgeCard(): Observable<Pair<Int, Boolean>>
 
@@ -95,6 +99,7 @@ interface PledgeFragmentViewModel {
         private val shippingRules = BehaviorSubject.create<List<ShippingRule>>()
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
         private val shippingSelection = BehaviorSubject.create<ShippingRule>()
+        private val shippingRulesSectionIsGone = BehaviorSubject.create<Boolean>()
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, Boolean>>()
         private val startNewCardActivity = PublishSubject.create<Void>()
         private val totalAmount = PublishSubject.create<SpannableString>()
@@ -155,6 +160,11 @@ interface PledgeFragmentViewModel {
             rulesAndProject
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesAndProject)
+
+            rulesAndProject
+                    .compose(bindToLifecycle())
+                    .map { ObjectUtils.isNull(it.first) || it.first.isEmpty() }
+                    .subscribe(this.shippingRulesSectionIsGone)
 
             val defaultShippingRule = shippingRules
                     .filter { it.isNotEmpty() }
@@ -265,8 +275,12 @@ interface PledgeFragmentViewModel {
         override fun shippingRules(): Observable<List<ShippingRule>> = this.shippingRules
 
         override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject
+
         @NonNull
         override fun shippingSelection(): Observable<ShippingRule> = this.shippingSelection
+
+        @NonNull
+        override fun shippingRulesSectionIsGone(): Observable<Boolean> = this.shippingRulesSectionIsGone
 
         @NonNull
         override fun showPledgeCard(): Observable<Pair<Int, Boolean>> = this.showPledgeCard

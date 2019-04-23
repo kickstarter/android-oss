@@ -113,12 +113,14 @@
           tools:text="$20" />
 
         <TextView
+          android:id="@+id/shipping_rules_section_text_view"
           style="@style/CalloutPrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/Your_shipping_location" />
 
         <LinearLayout
+          android:id="@+id/shipping_rules_row"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginBottom="@dimen/grid_4"

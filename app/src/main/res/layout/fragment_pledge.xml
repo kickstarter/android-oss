@@ -212,7 +212,6 @@
           tools:listitem="@layout/item_reward_credit_card" />
       </LinearLayout>
 
-
     </LinearLayout>
 
   </FrameLayout>

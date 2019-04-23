@@ -120,8 +120,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShippingRules() {
         setUpEnvironment(environment())
-
-        this.shippingRules.assertValue(ShippingRulesEnvelopeFactory.shippingRuleEvelope().shippingRules())
+        this.shippingRules.assertValue(ShippingRulesEnvelopeFactory.shippingRules().shippingRules())
     }
 
     @Test

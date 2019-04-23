@@ -210,7 +210,7 @@ public class MockApiClient implements ApiClientType {
   @NonNull
   @Override
   public Observable<ShippingRulesEnvelope> fetchShippingRules(@NonNull Project project, @NonNull Reward reward) {
-    return Observable.just(ShippingRulesEnvelopeFactory.Companion.shippingRuleEvelope());
+    return Observable.just(ShippingRulesEnvelopeFactory.Companion.shippingRules());
   }
 
   @Override

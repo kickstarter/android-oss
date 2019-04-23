@@ -7,13 +7,14 @@ class ShippingRulesEnvelopeFactory private constructor() {
 
     companion object {
 
-        fun shippingRuleEvelope(): ShippingRulesEnvelope {
+        fun shippingRules(): ShippingRulesEnvelope {
             return listOf(ShippingRule.builder()
                     .cost(30.00)
                     .id(1)
                     .location(LocationFactory.unitedStates())
                     .build()) as ShippingRulesEnvelope
         }
+
     }
 }
 

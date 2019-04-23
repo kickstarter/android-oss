@@ -10,13 +10,23 @@ import com.kickstarter.models.ShippingRule
 abstract class ShippingRulesEnvelope : Parcelable {
     abstract fun shippingRules(): List<ShippingRule>
 
-    @AutoParcel.Builder
-    abstract class Builder {
-        abstract fun shippingRules(rules: List<ShippingRule>): Builder
-        abstract fun build(): ShippingRulesEnvelope
-    }
+//    @AutoParcel.Builder
+//    abstract class Builder {
+//        abstract fun shippingRules(shippingRules: List<ShippingRule>)
+//        abstract fun build(): ShippingRulesEnvelope
+//    }
 
-    fun builder(): Builder {
-        return AutoParcel_ShippingRulesEnvelope(shippingRules()).builder()
-    }
+//    fun builder() {
+//        return AutoParcel_ShippingRulesEnvelope.Builder()
+//    }
+//
+//
+//    companion object {
+//
+//        fun builder(): Builder {
+//            return AutoParcel_ShippingRulesEnvelope.Builder()
+//        }
+//    }
+
+   // abstract fun toBuilder(): Builder
 }

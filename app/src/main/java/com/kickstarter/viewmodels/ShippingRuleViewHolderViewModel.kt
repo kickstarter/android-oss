@@ -64,7 +64,7 @@ interface ShippingRuleViewHolderViewModel {
 
         private fun formattedString(shippingRule: ShippingRule, project: Project): String {
             val displayableName = shippingRule.location().displayableName()
-            //todo: get this amount from KS currency
+            //todo: get this amount from KS currencyst
 
 //            KSCurrency().formatWithProjectCurrency()
             val cost = shippingRule.cost().toFloat()

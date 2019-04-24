@@ -15,8 +15,7 @@ class BottomCropImageView : AppCompatImageView {
         setup()
     }
 
-    constructor(context: Context, attrs: AttributeSet,
-                defStyle: Int) : super(context, attrs, defStyle) {
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
         setup()
     }
 
@@ -31,14 +30,9 @@ class BottomCropImageView : AppCompatImageView {
         val matrix = imageMatrix
 
         val viewWidth = (measuredWidth - paddingLeft - paddingRight).toFloat()
-        val viewHeight = (measuredHeight - paddingTop - paddingBottom).toFloat()
         val drawableWidth = drawable.intrinsicWidth.toFloat()
-        val drawableHeight = drawable.intrinsicHeight.toFloat()
 
-        val scale = when {
-            viewHeight > viewWidth -> viewHeight / drawableHeight
-            else -> viewWidth / drawableWidth
-        }
+        val scale = viewWidth / drawableWidth
 
         matrix.setScale(scale, scale, 0f, 0f)
 

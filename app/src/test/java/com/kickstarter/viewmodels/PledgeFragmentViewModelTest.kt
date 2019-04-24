@@ -3,12 +3,14 @@ package com.kickstarter.viewmodels
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.SpannableString
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.*
+import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -105,7 +107,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testPledgeAmount() {
         setUpEnvironment(environment())
-
         this.pledgeAmount.assertValue("$20")
     }
 
@@ -119,13 +120,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShippingRules() {
         setUpEnvironment(environment())
-
-        this.shippingRules.assertValue(ShippingRulesEnvelopeFactory.shippingRuleEvelope().shippingRules())
+        this.shippingRules.assertValue(ShippingRulesEnvelopeFactory.shippingRules().shippingRules())
     }
 
     @Test
     fun testShippingRuleAndProject() {
 
+        setUpEnvironment(environment())
     }
 
     @Test

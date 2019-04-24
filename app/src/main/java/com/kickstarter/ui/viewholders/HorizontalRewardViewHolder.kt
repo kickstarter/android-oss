@@ -59,8 +59,7 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
         this.viewModel.outputs.isClickable()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.horizontal_reward_pledge_button.isClickable = it
-                    this.view.horizontal_reward_pledge_button.isEnabled = it}
+                .subscribe { this.view.horizontal_reward_pledge_button.isClickable = it }
 
         this.viewModel.outputs.limitAndRemainingTextViewIsGone()
                 .compose(bindToLifecycle())

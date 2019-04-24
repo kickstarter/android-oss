@@ -117,6 +117,7 @@
           style="@style/CalloutPrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_1"
           android:text="@string/Your_shipping_location" />
 
         <LinearLayout
@@ -129,15 +130,16 @@
 
           <AutoCompleteTextView
             android:id="@+id/shipping_rules"
+            style="@style/AutocompleteStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/rect_white_rounded"
-            android:dropDownWidth="match_parent"
+            android:textColor="@color/ksr_green_500"
+            android:dropDownAnchor="@id/shipping_rules_row"
             android:ellipsize="end"
             android:enabled="false"
             android:hint="@string/Shipping"
-            android:minWidth="150dp"
+            android:maxLines="1"
             android:text="@string/Loading" />
 
           <Space
@@ -149,8 +151,8 @@
             style="@style/BodyPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/plus_sign"
             android:layout_marginEnd="@dimen/grid_1_half"
+            android:text="@string/plus_sign"
             android:textColor="@color/ksr_dark_grey_500" />
 
           <TextView

@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout android:id="@+id/shipping_rule_root"
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/shipping_rule_root"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
   android:orientation="vertical">
 
   <TextView
     android:id="@+id/shipping_rules_item_text_view"
-    style="@style/CalloutPrimaryMedium"
+    style="@style/BodySecondary"
     android:layout_width="wrap_content"
-    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/grid_1"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/grid_1"
+    android:background="@drawable/click_indicator_light"
     android:textColor="@color/ksr_soft_black"
     tools:text="United States" />
 

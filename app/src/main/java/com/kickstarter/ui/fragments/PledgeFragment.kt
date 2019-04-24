@@ -172,6 +172,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun ruleSelected(rule: ShippingRule){
         this.viewModel.inputs.shippingRule(rule)
         shipping_rules.dismissDropDown()
+        shipping_rules.clearFocus()
         shipping_rules?.let {
             val input = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             input.let { it?.hideSoftInputFromWindow(shipping_rules.windowToken, 0) }

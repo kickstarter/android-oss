@@ -200,11 +200,11 @@ interface PledgeFragmentViewModel {
 
         override fun cards(): Observable<List<StoredCard>> = this.cards
 
-        override fun paymentContainerIsGone(): Observable<Boolean> = this.paymentContainerIsGone
-
         override fun continueButtonIsGone(): Observable<Boolean> = this.continueButtonIsGone
 
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
+
+        override fun paymentContainerIsGone(): Observable<Boolean> = this.paymentContainerIsGone
 
         override fun pledgeAmount(): Observable<String> = this.pledgeAmount
 

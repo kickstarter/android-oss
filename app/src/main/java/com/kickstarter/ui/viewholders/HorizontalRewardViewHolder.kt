@@ -23,7 +23,7 @@ import com.kickstarter.viewmodels.HorizontalRewardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward.view.*
 
 
-class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate) : KSViewHolder(view) {
+class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?) : KSViewHolder(view) {
 
     interface Delegate {
         fun rewardClicked(screenLocation: ScreenLocation, reward: Reward)
@@ -109,7 +109,7 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
         this.viewModel.outputs.showPledgeFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.delegate.rewardClicked(getScreenLocationOfReward(), this.reward) }
+                .subscribe { this.delegate?.rewardClicked(getScreenLocationOfReward(), this.reward) }
 
         this.viewModel.outputs.startBackingActivity()
                 .compose(bindToLifecycle())
@@ -137,9 +137,9 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate)
 
     private fun getScreenLocationOfReward(): ScreenLocation {
         val rewardLocation = IntArray(2)
-        this.itemView.getLocationInWindow(rewardLocation)
-        val x = rewardLocation[0].toFloat()
-        val y = rewardLocation[1].toFloat()
+        this.itemView.horizontal_reward_card.getLocationInWindow(rewardLocation)
+        val x = this.itemView.left.toFloat()
+        val y = this.itemView.top.toFloat()
         val height = this.itemView.height
         val width = this.itemView.width
         return ScreenLocation(x, y, height.toFloat(), width.toFloat())

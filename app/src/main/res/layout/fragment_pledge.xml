@@ -5,7 +5,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_300"
+  android:background="@color/ksr_grey_400"
   android:fillViewport="true"
   android:scrollbars="none"
   android:visibility="invisible"
@@ -16,10 +16,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <View
+    <include
       android:id="@+id/reward_to_copy"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
+      layout="@layout/item_reward" />
 
     <!-- todo: what's the content description? -->
     <com.kickstarter.ui.views.BottomCropImageView
@@ -27,9 +26,9 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/activity_horizontal_margin"
-      android:background="@color/white"
       android:contentDescription="@null"
       android:elevation="@dimen/mini_reward_elevation"
+      tools:background="@color/white"
       tools:layout_height="@dimen/mini_reward_height"
       tools:layout_width="@dimen/mini_reward_width" />
 

@@ -8,13 +8,16 @@ class ShippingRulesEnvelopeFactory private constructor() {
     companion object {
 
         fun shippingRules(): ShippingRulesEnvelope {
-            return listOf(ShippingRule.builder()
-                    .cost(30.00)
-                    .id(1)
-                    .location(LocationFactory.unitedStates())
-                    .build()) as ShippingRulesEnvelope
+            return ShippingRulesEnvelope.builder()
+                    .shippingRules(shippingRules)
+                    .build()
         }
 
+        private val shippingRules = listOf(ShippingRule
+                .builder()
+                .id(1)
+                .cost(30.0)
+                .location(LocationFactory.unitedStates())
+                .build())
     }
 }
-

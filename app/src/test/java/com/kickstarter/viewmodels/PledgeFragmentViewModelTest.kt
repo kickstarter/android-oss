@@ -10,6 +10,7 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.*
+import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -106,7 +107,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testPledgeAmount() {
         setUpEnvironment(environment())
-
         this.pledgeAmount.assertValue("$20")
     }
 
@@ -126,6 +126,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShippingRuleAndProject() {
 
+        setUpEnvironment(environment())
     }
 
     @Test

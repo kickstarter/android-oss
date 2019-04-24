@@ -3,12 +3,12 @@ package com.kickstarter.viewmodels
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.SpannableString
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
@@ -16,6 +16,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
+import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.ScreenLocation
@@ -49,7 +50,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.estimatedDelivery().subscribe(this.estimatedDelivery)
         this.vm.outputs.pledgeAmount().map { it.toString() }.subscribe(this.pledgeAmount)
         this.vm.outputs.shippingAmount().map { it.toString() }.subscribe(this.shippingAmount)
-//        this.vm.outputs.shippingRulesAndProject(this.shippingRuleAndProject)
+        this.vm.outputs.shippingRulesAndProject().subscribe(this.shippingRuleAndProject)
         this.vm.outputs.shippingRules().subscribe(this.shippingRules)
         this.vm.outputs.shippingSelection().subscribe(this.shippingSelection)
         this.vm.outputs.shippingRulesSectionIsGone().subscribe(this.shippingRulesSectionIsGone)
@@ -112,25 +113,68 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShippingAmount() {
-        setUpEnvironment(environment())
+        val apiClient = object : MockApiClient() {
+            override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+                return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
+            }
+        }
 
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
 
+        val environment = environment().toBuilder()
+                .apiClient(apiClient)
+                .currentConfig(currentConfig)
+                .build()
+        setUpEnvironment(environment)
+
+        this.shippingAmount.assertValue("$30.00")
     }
 
     @Test
     fun testShippingRules() {
-        setUpEnvironment(environment())
-        this.shippingRules.assertValue(ShippingRulesEnvelopeFactory.shippingRules().shippingRules())
+        val apiClient = object : MockApiClient() {
+            override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+                return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
+            }
+        }
+
+        val environment = environment().toBuilder()
+                .apiClient(apiClient)
+                .build()
+        setUpEnvironment(environment)
+
+        this.shippingRules.assertValueCount(1)
     }
 
     @Test
     fun testShippingRuleAndProject() {
+        val apiClient = object : MockApiClient() {
+            override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+                return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
+            }
+        }
 
-        setUpEnvironment(environment())
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        val environment = environment().toBuilder()
+                .apiClient(apiClient)
+                .currentConfig(currentConfig)
+                .build()
+        setUpEnvironment(environment)
+
+        val project = ProjectFactory.project()
+        val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
+
+        this.shippingRuleAndProject.assertValues(Pair.create(shippingRules ,project))
     }
 
     @Test
     fun testShippingRuleSelection() {
+
 
     }
 
@@ -160,9 +204,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testTotalAmount() {
-        setUpEnvironment(environment())
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
 
-        this.totalAmount.assertValue("")
+        val environment = environment().toBuilder()
+                .currentConfig(currentConfig)
+                .build()
+        setUpEnvironment(environment)
+
+        this.totalAmount.assertValue("$50.00")
     }
-
 }

@@ -71,8 +71,5 @@ interface ShippingRuleViewHolderViewModel {
 
             return "$displayableName $formattedCost"
         }
-
     }
-
-
 }

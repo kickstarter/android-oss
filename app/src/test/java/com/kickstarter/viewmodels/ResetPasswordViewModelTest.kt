@@ -2,11 +2,9 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.factories.ApiExceptionFactory
-import com.kickstarter.models.User
 import com.kickstarter.mock.services.MockApiClient
-
+import com.kickstarter.models.User
 import org.junit.Test
-
 import rx.Observable
 import rx.observers.TestSubscriber
 

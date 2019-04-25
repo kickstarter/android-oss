@@ -71,12 +71,7 @@
           <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Kickstarter_is_not_a_store" />
-
-          <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/Its_a_way_to_bring_creative_projects_to_life" />
+            android:text="@string/Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" />
 
           <TextView
             android:layout_width="wrap_content"

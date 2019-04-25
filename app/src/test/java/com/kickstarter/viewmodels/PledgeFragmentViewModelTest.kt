@@ -30,10 +30,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PledgeFragmentViewModel.ViewModel
 
-    private val animateRewardCard = TestSubscriber<PledgeData>()
     private val project = ProjectFactory.project()
 
-    private val animateRewardCard = TestSubscriber<Pair<Reward, ScreenLocation>>()
+    private val animateRewardCard = TestSubscriber<PledgeData>()
     private val cards = TestSubscriber<List<StoredCard>>()
     private val estimatedDelivery = TestSubscriber<String>()
     private val pledgeAmount = TestSubscriber<String>()

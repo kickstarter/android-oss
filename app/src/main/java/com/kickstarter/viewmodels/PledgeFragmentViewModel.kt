@@ -93,7 +93,7 @@ interface PledgeFragmentViewModel {
         private val selectCardButtonClicked = PublishSubject.create<Int>()
         private val shippingRule = PublishSubject.create<ShippingRule>()
 
-        private val animateReward = BehaviorSubject.create<PledgeData>()
+        private val animateRewardCard = BehaviorSubject.create<PledgeData>()
         private val cards = BehaviorSubject.create<List<StoredCard>>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
         private val pledgeAmount = BehaviorSubject.create<SpannableString>()
@@ -169,8 +169,6 @@ interface PledgeFragmentViewModel {
                     .filter { it.isNotEmpty() }
                     .switchMap { getDefaultShippingRule(it) }
 
-            rewardAndLocation
-                    .compose<Pair<Reward, ScreenLocation>>(takeWhen(this.onGlobalLayout))
             Observable.combineLatest(screenLocation, reward, project, ::PledgeData)
                     .compose<PledgeData>(takeWhen(this.onGlobalLayout))
                     .compose(bindToLifecycle())
@@ -257,7 +255,7 @@ interface PledgeFragmentViewModel {
             this.selectCardButtonClicked.onNext(position)
         }
 
-        override fun animateRewardCard(): Observable<PledgeData> = this.animateReward
+        override fun animateRewardCard(): Observable<PledgeData> = this.animateRewardCard
 
         @NonNull
         override fun cards(): Observable<List<StoredCard>> = this.cards

@@ -17,6 +17,7 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.ActivityResult
+import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.fragments.PledgeFragment
 import rx.Observable
@@ -47,7 +48,7 @@ interface PledgeFragmentViewModel {
 
     interface Outputs {
         /** Emits when the reward card should be animated. */
-        fun animateRewardCard(): Observable<Pair<Reward, ScreenLocation>>
+        fun animateRewardCard(): Observable<PledgeData>
 
         /** Emits a list of stored cards for a user. */
         fun cards(): Observable<List<StoredCard>>
@@ -92,7 +93,7 @@ interface PledgeFragmentViewModel {
         private val selectCardButtonClicked = PublishSubject.create<Int>()
         private val shippingRule = PublishSubject.create<ShippingRule>()
 
-        private val animateRewardCard = BehaviorSubject.create<Pair<Reward, ScreenLocation>>()
+        private val animateReward = BehaviorSubject.create<PledgeData>()
         private val cards = BehaviorSubject.create<List<StoredCard>>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
         private val pledgeAmount = BehaviorSubject.create<SpannableString>()
@@ -124,9 +125,6 @@ interface PledgeFragmentViewModel {
 
             val screenLocation = arguments()
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION) as ScreenLocation }
-
-            val rewardAndLocation = reward
-                    .compose<Pair<Reward, ScreenLocation>>(combineLatestPair(screenLocation))
 
             val project = arguments()
                     .map { it.getParcelable(ArgumentsKey.PLEDGE_PROJECT) as Project }
@@ -173,6 +171,8 @@ interface PledgeFragmentViewModel {
 
             rewardAndLocation
                     .compose<Pair<Reward, ScreenLocation>>(takeWhen(this.onGlobalLayout))
+            Observable.combineLatest(screenLocation, reward, project, ::PledgeData)
+                    .compose<PledgeData>(takeWhen(this.onGlobalLayout))
                     .compose(bindToLifecycle())
                     .subscribe(this.animateRewardCard)
 
@@ -257,8 +257,7 @@ interface PledgeFragmentViewModel {
             this.selectCardButtonClicked.onNext(position)
         }
 
-        @NonNull
-        override fun animateRewardCard(): Observable<Pair<Reward, ScreenLocation>> = this.animateRewardCard
+        override fun animateRewardCard(): Observable<PledgeData> = this.animateReward
 
         @NonNull
         override fun cards(): Observable<List<StoredCard>> = this.cards

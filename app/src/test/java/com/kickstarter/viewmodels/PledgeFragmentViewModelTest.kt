@@ -19,6 +19,7 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.ActivityResult
+import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import org.junit.Test
 import rx.Observable
@@ -29,6 +30,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PledgeFragmentViewModel.ViewModel
 
+    private val animateRewardCard = TestSubscriber<PledgeData>()
     private val project = ProjectFactory.project()
 
     private val animateRewardCard = TestSubscriber<Pair<Reward, ScreenLocation>>()

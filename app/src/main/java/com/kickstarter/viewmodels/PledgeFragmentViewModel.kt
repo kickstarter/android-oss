@@ -8,6 +8,7 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
@@ -24,6 +25,12 @@ interface PledgeFragmentViewModel {
     interface Inputs {
         /** Call when user deselects a card they want to pledge with. */
         fun closeCardButtonClicked(position: Int)
+
+        /**  */
+        fun decreasePledgeButtonClicked()
+
+        /**  */
+        fun increasePledgeButtonClicked()
 
         /** Call when the new card button is clicked. */
         fun newCardButtonClicked()
@@ -42,11 +49,21 @@ interface PledgeFragmentViewModel {
         /** Emits when the reward card should be animated. */
         fun animateRewardCard(): Observable<Pair<Reward, ScreenLocation>>
 
+        fun additionalPledgeAmount(): Observable<String>
+
+        fun additionalPledgeAmountIsGone(): Observable<Boolean>
+
         /** Emits a list of stored cards for a user. */
         fun cards(): Observable<List<StoredCard>>
 
+        /**  */
+        fun decreasePledgeButtonIsEnabled(): Observable<Boolean>
+
         /** Emits the estimated delivery date string of the reward. */
         fun estimatedDelivery(): Observable<String>
+
+        /**  */
+        fun increasePledgeButtonIsEnabled(): Observable<Boolean>
 
         /** Emits the pledge amount string of the reward. */
         fun pledgeAmount(): Observable<String>
@@ -62,14 +79,20 @@ interface PledgeFragmentViewModel {
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
 
         private val closeCardButtonClicked = PublishSubject.create<Int>()
+        private val decreasePledgeButtonClicked = PublishSubject.create<Void>()
+        private val increasePledgeButtonClicked = PublishSubject.create<Void>()
         private val newCardButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
         private val pledgeButtonClicked = PublishSubject.create<Void>()
         private val selectCardButtonClicked = PublishSubject.create<Int>()
 
         private val animateReward = BehaviorSubject.create<Pair<Reward, ScreenLocation>>()
+        private val additionalPledgeAmount = BehaviorSubject.create<String>()
+        private val additionalPledgeAmountIsGone = BehaviorSubject.create<Boolean>()
         private val cards = BehaviorSubject.create<List<StoredCard>>()
+        private val decreasePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
+        private val increasePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<String>()
         private val pledgeCardPosition = BehaviorSubject.create<Pair<Int, Boolean>>()
         private val startNewCardActivity = PublishSubject.create<Void>()
@@ -103,6 +126,31 @@ interface PledgeFragmentViewModel {
                     .map { dateTime -> dateTime?.let { DateTimeUtils.estimatedDeliveryOn(it) } }
                     .compose(bindToLifecycle())
                     .subscribe{ this.estimatedDelivery.onNext(it) }
+
+            val additionalPledgeAmount = BehaviorSubject.create<Float>(0f)
+
+            this.increasePledgeButtonClicked
+                    .compose(bindToLifecycle())
+                    .subscribe { additionalPledgeAmount.onNext(additionalPledgeAmount.value + 1) }
+
+            this.decreasePledgeButtonClicked
+                    .compose(bindToLifecycle())
+                    .subscribe { additionalPledgeAmount.onNext(additionalPledgeAmount.value - 1) }
+
+            additionalPledgeAmount
+                    .compose<Pair<Float, Project>>(combineLatestPair(project))
+                    .map<String> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.additionalPledgeAmount)
+
+            additionalPledgeAmount
+                    .map { IntegerUtils.isZero(it.toInt()) }
+                    .subscribe(this.additionalPledgeAmountIsGone)
+
+            additionalPledgeAmount
+                    .map { IntegerUtils.isZero(it.toInt()) }
+                    .map { BooleanUtils.negate(it) }
+                    .subscribe(this.decreasePledgeButtonIsEnabled)
 
             reward
                     .map { it.minimum() }
@@ -147,6 +195,14 @@ interface PledgeFragmentViewModel {
             this.closeCardButtonClicked.onNext(position)
         }
 
+        override fun decreasePledgeButtonClicked() {
+            this.decreasePledgeButtonClicked.onNext(null)
+        }
+
+        override fun increasePledgeButtonClicked() {
+            this.increasePledgeButtonClicked.onNext(null)
+        }
+
         override fun newCardButtonClicked() {
             this.newCardButtonClicked.onNext(null)
         }
@@ -165,9 +221,17 @@ interface PledgeFragmentViewModel {
 
         override fun animateRewardCard(): Observable<Pair<Reward, ScreenLocation>> = this.animateReward
 
+        override fun additionalPledgeAmount(): Observable<String> = this.additionalPledgeAmount
+
+        override fun additionalPledgeAmountIsGone(): Observable<Boolean> = this.additionalPledgeAmountIsGone
+
         override fun cards(): Observable<List<StoredCard>> = this.cards
 
+        override fun decreasePledgeButtonIsEnabled(): Observable<Boolean> = this.decreasePledgeButtonIsEnabled
+
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
+
+        override fun increasePledgeButtonIsEnabled(): Observable<Boolean> = this.increasePledgeButtonIsEnabled
 
         override fun pledgeAmount(): Observable<String> = this.pledgeAmount
 

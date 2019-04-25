@@ -20,6 +20,7 @@ import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.NewCardActivity
@@ -96,6 +97,35 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     startActivityForResult(Intent(this.context, NewCardActivity::class.java),
                             ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD)
                 }
+
+        this.viewModel.outputs.additionalPledgeAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { additional_pledge_amount.text = it }
+
+        this.viewModel.outputs.additionalPledgeAmountIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(additional_pledge_amount, it) }
+
+        this.viewModel.outputs.decreasePledgeButtonIsEnabled()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { decrease_pledge.isEnabled = it }
+
+        this.viewModel.outputs.increasePledgeButtonIsEnabled()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { increase_pledge.isEnabled = it }
+
+        increase_pledge.setOnClickListener {
+            this.viewModel.inputs.increasePledgeButtonClicked()
+        }
+
+        decrease_pledge.setOnClickListener {
+            this.viewModel.inputs.decreasePledgeButtonClicked()
+        }
+
     }
 
     override fun onDetach() {

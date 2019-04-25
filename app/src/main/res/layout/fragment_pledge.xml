@@ -7,6 +7,7 @@
   android:layout_height="match_parent"
   android:background="@color/ksr_grey_300"
   android:fillViewport="true"
+  android:focusable="true"
   android:scrollbars="none"
   android:visibility="invisible"
   tools:visibility="visible">
@@ -104,13 +105,72 @@
           android:layout_marginTop="@dimen/grid_4"
           android:text="@string/Your_pledge_amount" />
 
-        <TextView
-          android:id="@+id/pledge_amount"
-          style="@style/PledgeCurrencySecondary"
-          android:layout_width="wrap_content"
+        <LinearLayout
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_gravity="end"
-          tools:text="$20" />
+          android:layout_marginBottom="@dimen/grid_4"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <!-- Needs final copy for content descriptions -->
+          <ImageButton
+            android:id="@+id/decrease_pledge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_decrease"
+            android:backgroundTint="@color/white_enabled_gray_disabled"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_remove"
+            android:tint="@color/green_enabled_dark_grey_disabled" />
+
+          <ImageButton
+            android:id="@+id/increase_pledge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_increase"
+            android:backgroundTint="@color/white_enabled_gray_disabled"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_add"
+            android:tint="@color/green_enabled_dark_grey_disabled" />
+
+          <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+          <LinearLayout
+            android:id="@+id/song_data_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/grid_2"
+            android:focusable="true"
+            android:orientation="horizontal">
+
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:src="@drawable/ic_add"
+              android:text="+"
+              android:tint="@color/ksr_dark_grey_400" />
+
+            <TextView
+              android:id="@+id/additional_pledge_amount"
+              style="@style/PledgeCurrency"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textSize="@dimen/headline"
+              tools:text="$20" />
+          </LinearLayout>
+
+          <TextView
+            android:id="@+id/pledge_amount"
+            style="@style/PledgeCurrencySecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rect_white_rounded"
+            tools:text="$20" />
+
+        </LinearLayout>
 
         <TextView
           style="@style/CalloutPrimaryMedium"

@@ -13,10 +13,10 @@ import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
-import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.ActivityResult
+import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import org.junit.Test
 import rx.Observable
@@ -27,7 +27,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PledgeFragmentViewModel.ViewModel
 
-    private val animateRewardCard = TestSubscriber<Pair<Reward, ScreenLocation>>()
+    private val animateRewardCard = TestSubscriber<PledgeData>()
     private val cards = TestSubscriber<List<StoredCard>>()
     private val continueButtonIsGone = TestSubscriber<Boolean>()
     private val estimatedDelivery = TestSubscriber<String>()

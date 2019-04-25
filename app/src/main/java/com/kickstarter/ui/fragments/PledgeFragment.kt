@@ -29,6 +29,7 @@ import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
+import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
 import com.kickstarter.ui.viewholders.RewardPledgeCardViewHolder
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_pledge.*
@@ -140,16 +141,17 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.selectCardButtonClicked(position)
     }
 
-    private fun showPledgeSection(rewardAndLocation: Pair<Reward, ScreenLocation>) {
-        val location = rewardAndLocation.second
-        val reward = rewardAndLocation.first
-        setInitialViewStates(location, reward)
-        startPledgeAnimatorSet(true, location)
+    private fun showPledgeSection(pledgeData: PledgeData) {
+        setInitialViewStates(pledgeData)
+        startPledgeAnimatorSet(true, pledgeData.rewardScreenLocation)
     }
 
-    private fun positionRewardSnapshot(location: ScreenLocation, reward: Reward) {
+    private fun positionRewardSnapshot(pledgeData: PledgeData) {
+        val location = pledgeData.rewardScreenLocation
+        val reward = pledgeData.reward
+        val project = pledgeData.project
         val rewardParams = reward_snapshot.layoutParams as FrameLayout.LayoutParams
-        rewardParams.marginStart = location.x.toInt()
+        rewardParams.leftMargin = location.x.toInt()
         rewardParams.topMargin = location.y.toInt()
         rewardParams.height = location.height.toInt()
         rewardParams.width = location.width.toInt()
@@ -157,13 +159,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         reward_snapshot.pivotX = 0f
         reward_snapshot.pivotY = 0f
 
-//        todo: blocked until rewards work is available
-//        val rewardViewHolder = RewardsAdapter.RewardViewHolder(reward_to_copy)
-//        rewardViewHolder.bind(reward)
+        val rewardViewHolder = HorizontalRewardViewHolder(reward_to_copy, null)
+        rewardViewHolder.bindData(Pair(project, reward))
 
         reward_to_copy.post {
             pledge_root.visibility = View.VISIBLE
-//            reward_snapshot.setImageBitmap(ViewUtils.getBitmap(reward_to_copy, location.width, location.width))
+            val bitmap = ViewUtils.getBitmap(reward_to_copy, location.width.toInt(), location.height.toInt())
+            reward_snapshot.setImageBitmap(bitmap)
             reward_to_copy.visibility = View.GONE
         }
     }
@@ -210,7 +212,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         }
 
         val (startMargin, topMargin) = margin.let {
-            getMarginStartAnimator(initMarginX, finalMarginX) to
+            getMarginLeftAnimator(initMarginX, finalMarginX) to
                     getMarginTopAnimator(initMarginY, finalMarginY)
         }
 
@@ -256,12 +258,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 }
             }
 
-    private fun getMarginStartAnimator(initialValue: Float, finalValue: Float) =
+    private fun getMarginLeftAnimator(initialValue: Float, finalValue: Float) =
             ValueAnimator.ofFloat(initialValue, finalValue).apply {
                 addUpdateListener {
                     val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
                     val newMargin = it.animatedValue as Float
-                    newParams?.marginStart = newMargin.toInt()
+                    newParams?.leftMargin = newMargin.toInt()
                     reward_snapshot?.layoutParams = newParams
                 }
             }
@@ -307,8 +309,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         delivery.layoutParams = deliveryParams
     }
 
-    private fun setInitialViewStates(location: ScreenLocation, reward: Reward) {
-        positionRewardSnapshot(location, reward)
+    private fun setInitialViewStates(pledgeData: PledgeData) {
+        positionRewardSnapshot(pledgeData)
         pledge_details.y = pledge_root.height.toFloat()
     }
 

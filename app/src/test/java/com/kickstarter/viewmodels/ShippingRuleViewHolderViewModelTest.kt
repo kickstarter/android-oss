@@ -5,6 +5,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
 import com.kickstarter.models.ShippingRule
 import org.junit.Test
@@ -28,10 +29,10 @@ class ShippingRuleViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testShippingRule() {
         setupEnvironment(environment())
 
-        val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules().single()
+        val shippingRule = ShippingRuleFactory.usShippingRule()
         val project = ProjectFactory.project()
 
-        this.vm.inputs.configureWith(shippingRules, project)
+        this.vm.inputs.configureWith(shippingRule, project)
         this.vm.inputs.shippingRuleClicked()
         this.shippingRule.assertValueCount(1)
     }
@@ -48,10 +49,10 @@ class ShippingRuleViewHolderViewModelTest : KSRobolectricTestCase() {
 
         setupEnvironment(environment)
 
-        val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules().single()
+        val shippingRule = ShippingRuleFactory.usShippingRule()
         val project = ProjectFactory.project()
 
-        this.vm.inputs.configureWith(shippingRules, project)
+        this.vm.inputs.configureWith(shippingRule, project)
         this.shippingRuleText.assertValue("Brooklyn, NY $30.00")
     }
 }

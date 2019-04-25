@@ -19,11 +19,11 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.ActivityResult
+import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
-import timber.log.Timber
 import java.util.*
 
 class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
@@ -32,7 +32,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private val project = ProjectFactory.project()
 
-    private val animateRewardCard = TestSubscriber<Pair<Reward, ScreenLocation>>()
+    private val animateRewardCard = TestSubscriber<PledgeData>()
     private val cards = TestSubscriber<List<StoredCard>>()
     private val estimatedDelivery = TestSubscriber<String>()
     private val pledgeAmount = TestSubscriber<String>()
@@ -129,7 +129,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
 
         val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
-        this.shippingRuleAndProject.assertValues(Pair.create(shippingRules ,project))
+        this.shippingRuleAndProject.assertValues(Pair.create(shippingRules, project))
     }
 
     @Test

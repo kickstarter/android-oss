@@ -27,7 +27,6 @@ import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.Reward;
-import com.kickstarter.models.ShippingRule;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
@@ -209,7 +208,7 @@ public class MockApiClient implements ApiClientType {
   }
   @NonNull
   @Override
-  public Observable<ShippingRulesEnvelope> fetchShippingRules(@NonNull Project project, @NonNull Reward reward) {
+  public Observable<ShippingRulesEnvelope> fetchShippingRules(@NonNull final Project project, @NonNull final Reward reward) {
     return Observable.just(ShippingRulesEnvelopeFactory.Companion.shippingRules());
   }
 

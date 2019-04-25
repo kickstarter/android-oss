@@ -12,6 +12,7 @@
   <!-- Kickstarter colors. NB: we should be transitioning to using this color palette. -->
   <color name="black">@android:color/black</color>
   <color name="ksr_apricot_500">#FFCBA9</color>
+  <color name="ksr_apricot_600">#F0AE81</color>
   <color name="ksr_cobalt_500">#4C6CF8</color>
   <color name="ksr_cobalt_600">#395AEB</color>
   <color name="ksr_dark_grey_400">#9B9E9E</color>
@@ -30,6 +31,7 @@
   <color name="ksr_soft_black">#282828</color>
   <color name="ksr_teal_500">#05F2BA</color>
   <color name="ksr_text_green_700">@color/ksr_green_700</color>
+  <color name="ksr10_coral">#f97b62</color>
   <color name="white">@android:color/white</color>
   <color name="transparent">@android:color/transparent</color>
 

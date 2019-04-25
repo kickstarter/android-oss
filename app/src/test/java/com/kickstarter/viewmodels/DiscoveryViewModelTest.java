@@ -3,19 +3,22 @@ package com.kickstarter.viewmodels;
 import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.libs.preferences.MockBooleanPreference;
+import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.mock.factories.InternalBuildEnvelopeFactory;
 import com.kickstarter.mock.factories.UserFactory;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.MockCurrentUser;
-import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -42,6 +45,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> showCreatorDashboard = new TestSubscriber<>();
   private final TestSubscriber<Void> showHelp = new TestSubscriber<>();
   private final TestSubscriber<Void> showInternalTools = new TestSubscriber<>();
+  private final TestSubscriber<Void> showKSR10 = new TestSubscriber<>();
   private final TestSubscriber<Void> showLoginTout = new TestSubscriber<>();
   private final TestSubscriber<Void> showProfile = new TestSubscriber<>();
   private final TestSubscriber<Void> showSettings = new TestSubscriber<>();
@@ -386,6 +390,74 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Root categories should not emit again for the same position.
     this.rootCategories.assertValueCount(2);
     this.position.assertValues(0, 1);
+  }
+
+  @Test
+  public void testShowKSR10_whenKSR10HasNotBeenSeen_beforeBirthday() {
+    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-04-30T00:00+00:00").getMillis());
+
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
+
+    this.vm.outputs.showKSR10().subscribe(this.showKSR10);
+
+    this.showKSR10.assertNoValues();
+  }
+
+  @Test
+  public void testShowKSR10_whenKSE10HasBeenSeen_beforeBirthday() {
+    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-04-30T00:00+00:00").getMillis());
+
+    this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder()
+      .hasSeenKSR10BirthdayModal(new MockBooleanPreference(true))
+      .build());
+
+    this.vm.outputs.showKSR10().subscribe(this.showKSR10);
+
+    this.showKSR10.assertNoValues();
+  }
+
+  @Test
+  public void testShowKSR10_whenKSR10HasNotBeenSeen_duringBirthday() {
+    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-04-30T00:01:01+00:00").getMillis());
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
+
+    this.vm.outputs.showKSR10().subscribe(this.showKSR10);
+
+    this.showKSR10.assertValueCount(1);
+  }
+
+  @Test
+  public void testShowKSR10_whenKSR10HasBeenSeen_duringBirthday() {
+    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-04-30T00:01:01+00:00").getMillis());
+    this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder()
+      .hasSeenKSR10BirthdayModal(new MockBooleanPreference(true))
+      .build());
+
+    this.vm.outputs.showKSR10().subscribe(this.showKSR10);
+
+    this.showKSR10.assertNoValues();
+  }
+
+  @Test
+  public void testShowKSR10_whenKSR10HasNotBeenSeen_afterBirthday() {
+    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-05-30T00:01:01+00:00").getMillis());
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
+
+    this.vm.outputs.showKSR10().subscribe(this.showKSR10);
+
+    this.showKSR10.assertNoValues();
+  }
+
+  @Test
+  public void testShowKSR10_whenKSR10HasBeenSeen_afterBirthday() {
+    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-05-30T00:01:01+00:00").getMillis());
+    this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder()
+      .hasSeenKSR10BirthdayModal(new MockBooleanPreference(true))
+      .build());
+
+    this.vm.outputs.showKSR10().subscribe(this.showKSR10);
+
+    this.showKSR10.assertNoValues();
   }
 
   private void setUpDefaultParamsTest(final @Nullable User user) {

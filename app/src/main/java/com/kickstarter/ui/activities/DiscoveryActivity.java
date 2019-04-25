@@ -17,6 +17,7 @@ import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.fragments.DiscoveryFragment;
+import com.kickstarter.ui.fragments.KSR10Fragment;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.views.SortTabLayout;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
@@ -137,6 +138,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(observeForUI())
       .subscribe(__ -> this.internalTools.maybeStartInternalToolsActivity(this));
 
+    this.viewModel.outputs.showKSR10()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.showKSR10Fragment());
+
     this.viewModel.outputs.showLoginTout()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -208,6 +214,14 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
 
   protected void startHelpSettingsActivity() {
     startActivity(new Intent(this, HelpSettingsActivity.class));
+  }
+
+  private void showKSR10Fragment() {
+    getSupportFragmentManager()
+      .beginTransaction()
+      .add(R.id.fragment_container, KSR10Fragment.newInstance())
+      .addToBackStack(null)
+      .commit();
   }
 
   private void startLoginToutActivity() {

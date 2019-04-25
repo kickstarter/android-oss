@@ -8,8 +8,10 @@ import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.UserUtils;
@@ -31,6 +33,8 @@ import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -39,6 +43,7 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
@@ -91,6 +96,9 @@ public interface DiscoveryViewModel {
     /** Start internal tools activity. */
     Observable<Void> showInternalTools();
 
+    /** Show {@link com.kickstarter.ui.fragments.KSR10Fragment}. */
+    Observable<Void> showKSR10();
+
     /** Start login tout activity for result. */
     Observable<Void> showLoginTout();
 
@@ -106,6 +114,7 @@ public interface DiscoveryViewModel {
     private final BuildCheck buildCheck;
     private final CurrentUserType currentUser;
     private final CurrentConfigType currentConfigType;
+    private final BooleanPreferenceType hasSeenKSR10BirthdayModal;
     private final WebClientType webClient;
 
     public ViewModel(final @NonNull Environment environment) {
@@ -115,6 +124,7 @@ public interface DiscoveryViewModel {
       this.buildCheck = environment.buildCheck();
       this.currentConfigType = environment.currentConfig();
       this.currentUser = environment.currentUser();
+      this.hasSeenKSR10BirthdayModal = environment.hasSeenKSR10BirthdayModal();
       this.webClient = environment.webClient();
 
       this.buildCheck.bind(this, this.webClient);
@@ -264,6 +274,16 @@ public interface DiscoveryViewModel {
         .filter(IntentMapper::appBannerIsSet)
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackOpenedAppBanner());
+
+      final Observable<Boolean> hasSeenKSR10BirthdayModal = Observable.defer(() -> Observable.just(this.hasSeenKSR10BirthdayModal
+        .get()));
+
+      this.showKSR10 = hasSeenKSR10BirthdayModal
+        .filter(BooleanUtils::isFalse)
+        .compose(ignoreValues())
+        .filter(__ -> DateTimeUtils.isWithinBirthdayCelebrationRange(DateTime.now()))
+        .take(1)
+        .compose(bindToLifecycle());
     }
 
     private final PublishSubject<Void> activityFeedClick = PublishSubject.create();
@@ -290,6 +310,7 @@ public interface DiscoveryViewModel {
     private final Observable<Void> showCreatorDashboard;
     private final Observable<Void> showHelp;
     private final Observable<Void> showInternalTools;
+    private final Observable<Void> showKSR10;
     private final Observable<Void> showLoginTout;
     private final Observable<Void> showProfile;
     private final Observable<Void> showSettings;
@@ -374,6 +395,9 @@ public interface DiscoveryViewModel {
     }
     @Override public @NonNull Observable<Void> showInternalTools() {
       return this.showInternalTools;
+    }
+    @Override public @NonNull Observable<Void> showKSR10() {
+      return this.showKSR10;
     }
     @Override public @NonNull Observable<Void> showLoginTout() {
       return this.showLoginTout;

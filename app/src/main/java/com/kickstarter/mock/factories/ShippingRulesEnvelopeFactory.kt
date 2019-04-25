@@ -9,15 +9,17 @@ class ShippingRulesEnvelopeFactory private constructor() {
 
         fun shippingRules(): ShippingRulesEnvelope {
             return ShippingRulesEnvelope.builder()
-                    .shippingRules(shippingRules)
+                    .shippingRules(listOf(
+                            ShippingRuleFactory.usShippingRule(),
+                            ShippingRuleFactory.germanyShippingRule())
+                    )
                     .build()
         }
 
-        private val shippingRules = listOf(ShippingRule
-                .builder()
-                .id(1)
-                .cost(30.0)
-                .location(LocationFactory.unitedStates())
-                .build())
+        fun emptyShippingRules(): ShippingRulesEnvelope {
+            return ShippingRulesEnvelope.builder()
+                    .shippingRules(listOf())
+                    .build()
+        }
     }
 }

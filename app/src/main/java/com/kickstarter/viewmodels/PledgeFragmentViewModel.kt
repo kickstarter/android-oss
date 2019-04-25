@@ -42,7 +42,7 @@ interface PledgeFragmentViewModel {
         fun selectCardButtonClicked(position: Int)
 
         /** Call when user selects a shipping location. */
-        fun shippingRule(shippingRule: ShippingRule)
+        fun shippingRuleSelected(shippingRule: ShippingRule)
     }
 
     interface Outputs {
@@ -58,15 +58,16 @@ interface PledgeFragmentViewModel {
         /** Emits the pledge amount string of the reward. */
         fun pledgeAmount(): Observable<SpannableString>
 
+        /** Emits the currently selected shipping rule. */
+        fun selectedShippingRule(): Observable<ShippingRule>
+
         /** Emits the shipping string of the selected shipping rule. */
         fun shippingAmount(): Observable<SpannableString>
-
-        /** Emits the currently selection shipping rule. */
-        fun shippingSelection(): Observable<ShippingRule>
 
         /** Emits the list of shipping rules to be selected. */
         fun shippingRules(): Observable<List<ShippingRule>>
 
+        /** Emits a pair of list of shipping rules to be selected and the project. */
         fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>>
 
         /** Emits when the shipping rules section should be hidden. */
@@ -98,7 +99,7 @@ interface PledgeFragmentViewModel {
         private val shippingAmount = BehaviorSubject.create<SpannableString>()
         private val shippingRules = BehaviorSubject.create<List<ShippingRule>>()
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
-        private val shippingSelection = BehaviorSubject.create<ShippingRule>()
+        private val selectedShippingRule = BehaviorSubject.create<ShippingRule>()
         private val shippingRulesSectionIsGone = BehaviorSubject.create<Boolean>()
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, Boolean>>()
         private val startNewCardActivity = PublishSubject.create<Void>()
@@ -185,7 +186,7 @@ interface PledgeFragmentViewModel {
 
             shippingRule
                     .compose(bindToLifecycle())
-                    .subscribe(this.shippingSelection)
+                    .subscribe(this.selectedShippingRule)
 
             val shippingAmount = shippingRule
                     .map { it.cost() }
@@ -248,7 +249,7 @@ interface PledgeFragmentViewModel {
             this.pledgeButtonClicked.onNext(null)
         }
 
-        override fun shippingRule(shippingRule: ShippingRule) {
+        override fun shippingRuleSelected(shippingRule: ShippingRule) {
             this.shippingRule.onNext(shippingRule)
         }
 
@@ -269,15 +270,15 @@ interface PledgeFragmentViewModel {
         override fun pledgeAmount(): Observable<SpannableString> = this.pledgeAmount
 
         @NonNull
+        override fun selectedShippingRule(): Observable<ShippingRule> = this.selectedShippingRule
+
+        @NonNull
         override fun shippingAmount(): Observable<SpannableString> = this.shippingAmount
 
         @NonNull
         override fun shippingRules(): Observable<List<ShippingRule>> = this.shippingRules
 
         override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject
-
-        @NonNull
-        override fun shippingSelection(): Observable<ShippingRule> = this.shippingSelection
 
         @NonNull
         override fun shippingRulesSectionIsGone(): Observable<Boolean> = this.shippingRulesSectionIsGone

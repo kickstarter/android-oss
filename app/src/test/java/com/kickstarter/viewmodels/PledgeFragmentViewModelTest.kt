@@ -33,11 +33,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val cards = TestSubscriber<List<StoredCard>>()
     private val estimatedDelivery = TestSubscriber<String>()
     private val pledgeAmount = TestSubscriber<String>()
+    private val selectedShippingRule = TestSubscriber<ShippingRule>()
     private val shippingAmount = TestSubscriber<String>()
     private val shippingRuleAndProject = TestSubscriber<Pair<List<ShippingRule>, Project>>()
     private val shippingRules = TestSubscriber<List<ShippingRule>>()
     private val shippingRulesSectionIsGone = TestSubscriber<Boolean>()
-    private val shippingSelection = TestSubscriber<ShippingRule>()
     private val showPledgeCard = TestSubscriber<Pair<Int, Boolean>>()
     private val startNewCardActivity = TestSubscriber<Void>()
     private val totalAmount = TestSubscriber<String>()
@@ -49,10 +49,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.cards().subscribe(this.cards)
         this.vm.outputs.estimatedDelivery().subscribe(this.estimatedDelivery)
         this.vm.outputs.pledgeAmount().map { it.toString() }.subscribe(this.pledgeAmount)
+        this.vm.outputs.selectedShippingRule().subscribe(this.selectedShippingRule)
         this.vm.outputs.shippingAmount().map { it.toString() }.subscribe(this.shippingAmount)
         this.vm.outputs.shippingRulesAndProject().subscribe(this.shippingRuleAndProject)
         this.vm.outputs.shippingRules().subscribe(this.shippingRules)
-        this.vm.outputs.shippingSelection().subscribe(this.shippingSelection)
         this.vm.outputs.shippingRulesSectionIsGone().subscribe(this.shippingRulesSectionIsGone)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.startNewCardActivity().subscribe(this.startNewCardActivity)
@@ -173,14 +173,67 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShippingRuleSelection() {
+    fun testShippingRuleSelection_NoShippingRules() {
 
+        val apiClient = object : MockApiClient() {
+            override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+                return Observable.just(ShippingRulesEnvelopeFactory.emptyShippingRules())
+            }
+        }
 
+        val environment = environment().toBuilder()
+                .apiClient(apiClient)
+                .build()
+        setUpEnvironment(environment)
+
+        this.shippingRulesSectionIsGone.assertValues(true)
     }
 
     @Test
-    fun testShippingRuleSelectionIsGone() {
+    fun testShippingRuleSelection_WithShippingRules() {
 
+        val apiClient = object : MockApiClient() {
+            override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+                return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
+            }
+        }
+
+        val environment = environment().toBuilder()
+                .apiClient(apiClient)
+                .build()
+        setUpEnvironment(environment)
+
+        this.shippingRulesSectionIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testShippingRuleSelection() {
+
+        val apiClient = object : MockApiClient() {
+            override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+                return Observable.just(ShippingRulesEnvelopeFactory.shippingRules())
+            }
+        }
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        val environment = environment().toBuilder()
+                .apiClient(apiClient)
+                .currentConfig(currentConfig)
+                .build()
+        setUpEnvironment(environment)
+
+        val defaultRule = ShippingRuleFactory.usShippingRule()
+
+        this.selectedShippingRule.assertValues(defaultRule)
+
+        val selectedRule = ShippingRuleFactory.germanyShippingRule()
+
+        this.vm.inputs.shippingRuleSelected(defaultRule)
+
+        this.selectedShippingRule.assertValues(defaultRule, selectedRule)
     }
 
     @Test

@@ -119,7 +119,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     ViewUtils.setGone(shipping_rules_row, it)
                 }
 
-        this.viewModel.outputs.shippingSelection()
+        this.viewModel.outputs.selectedShippingRule()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { shipping_rules.setText(it.toString()) }
@@ -170,7 +170,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.pledgeButtonClicked()
     }
     override fun ruleSelected(rule: ShippingRule){
-        this.viewModel.inputs.shippingRule(rule)
+        this.viewModel.inputs.shippingRuleSelected(rule)
         shipping_rules.dismissDropDown()
         shipping_rules.clearFocus()
         shipping_rules?.let {

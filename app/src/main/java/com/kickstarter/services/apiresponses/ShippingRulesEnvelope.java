@@ -20,7 +20,9 @@ public abstract class ShippingRulesEnvelope implements Parcelable {
     public abstract ShippingRulesEnvelope build();
   }
 
-  public static Builder builder() { return new AutoParcel_ShippingRulesEnvelope.Builder(); }
+  public static Builder builder() {
+    return new AutoParcel_ShippingRulesEnvelope.Builder();
+  }
 
   public abstract Builder toBuilder();
 }

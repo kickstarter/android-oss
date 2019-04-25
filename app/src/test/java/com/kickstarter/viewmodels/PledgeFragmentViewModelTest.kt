@@ -23,7 +23,6 @@ import com.kickstarter.ui.data.ScreenLocation
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
-import timber.log.Timber
 import java.util.*
 
 class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
@@ -129,7 +128,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
 
         val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
-        this.shippingRuleAndProject.assertValues(Pair.create(shippingRules ,project))
+        this.shippingRuleAndProject.assertValues(Pair.create(shippingRules, project))
     }
 
     @Test

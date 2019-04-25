@@ -29,9 +29,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private val animateRewardCard = TestSubscriber<PledgeData>()
     private val cards = TestSubscriber<List<StoredCard>>()
+    private val continueButtonIsGone = TestSubscriber<Boolean>()
     private val estimatedDelivery = TestSubscriber<String>()
+    private val paymentContainerIsGone = TestSubscriber<Boolean>()
     private val pledgeAmount = TestSubscriber<String>()
     private val showPledgeCard = TestSubscriber<Pair<Int, Boolean>>()
+    private val startLoginToutActivity = TestSubscriber<Void>()
     private val startNewCardActivity = TestSubscriber<Void>()
 
     private fun setUpEnvironment(environment: Environment) {
@@ -39,9 +42,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.outputs.animateRewardCard().subscribe(this.animateRewardCard)
         this.vm.outputs.cards().subscribe(this.cards)
+        this.vm.outputs.continueButtonIsGone().subscribe(this.continueButtonIsGone)
         this.vm.outputs.estimatedDelivery().subscribe(this.estimatedDelivery)
+        this.vm.outputs.paymentContainerIsGone().subscribe(this.paymentContainerIsGone)
         this.vm.outputs.pledgeAmount().subscribe(this.pledgeAmount)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
+        this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.startNewCardActivity().subscribe(this.startNewCardActivity)
 
         val reward = RewardFactory.rewardWithShipping()
@@ -84,6 +90,40 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testPaymentForLoggedInUser() {
+        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build())
+
+        this.cards.assertValueCount(1)
+        this.continueButtonIsGone.assertValue(true)
+        this.paymentContainerIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testPaymentForLoggedOutUser() {
+        setUpEnvironment(environment())
+
+        this.cards.assertNoValues()
+        this.continueButtonIsGone.assertValue(false)
+        this.paymentContainerIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testPaymentLoggingInUser() {
+        val mockCurrentUser = MockCurrentUser()
+        setUpEnvironment(environment().toBuilder().currentUser(mockCurrentUser).build())
+
+        this.cards.assertNoValues()
+        this.continueButtonIsGone.assertValue(false)
+        this.paymentContainerIsGone.assertValue(true)
+
+        mockCurrentUser.refresh(UserFactory.user())
+
+        this.cards.assertValueCount(1)
+        this.continueButtonIsGone.assertValues(false, true)
+        this.paymentContainerIsGone.assertValues(true, false)
+    }
+
+    @Test
     fun testEstimatedDelivery() {
         setUpEnvironment(environment())
 
@@ -106,6 +146,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.closeCardButtonClicked(2)
         this.showPledgeCard.assertValue(Pair(2, false))
+    }
+
+    @Test
+    fun testStartLoginToutActivity() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.continueButtonClicked()
+        this.startLoginToutActivity.assertValueCount(1)
     }
 
     @Test

@@ -21,7 +21,9 @@ import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.models.Reward
 import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.activities.NewCardActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.data.PledgeData
@@ -75,6 +77,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { pledge_estimated_delivery.text = it }
 
+        this.viewModel.outputs.continueButtonIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(continue_to_tout, it) }
+
+        this.viewModel.outputs.paymentContainerIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(payment_container, it) }
+
         this.viewModel.outputs.showPledgeCard()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -90,6 +102,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { (cards_recycler.adapter as RewardCardAdapter).takeCards(it) }
 
+        this.viewModel.outputs.startLoginToutActivity()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { startActivity(Intent(this.context, LoginToutActivity::class.java)) }
+
         this.viewModel.outputs.startNewCardActivity()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -97,6 +114,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     startActivityForResult(Intent(this.context, NewCardActivity::class.java),
                             ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD)
                 }
+
+        continue_to_tout.setOnClickListener {
+            this.viewModel.inputs.continueButtonClicked()
+        }
     }
 
     override fun onDetach() {

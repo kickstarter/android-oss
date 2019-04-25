@@ -90,7 +90,16 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testContinueButtonIsGone() {
+    fun testPaymentForLoggedInUser() {
+        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build())
+
+        this.cards.assertValueCount(1)
+        this.continueButtonIsGone.assertValue(true)
+        this.paymentContainerIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testPaymentForLoggedOutUser() {
         setUpEnvironment(environment())
 
         this.cards.assertNoValues()
@@ -99,7 +108,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testLoggingInUser() {
+    fun testPaymentLoggingInUser() {
         val mockCurrentUser = MockCurrentUser()
         setUpEnvironment(environment().toBuilder().currentUser(mockCurrentUser).build())
 
@@ -119,15 +128,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.estimatedDelivery.assertValue("March 2019")
-    }
-
-    @Test
-    fun testPaymentContainerIsGone() {
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build())
-
-        this.cards.assertValueCount(1)
-        this.continueButtonIsGone.assertValue(true)
-        this.paymentContainerIsGone.assertValue(false)
     }
 
     @Test

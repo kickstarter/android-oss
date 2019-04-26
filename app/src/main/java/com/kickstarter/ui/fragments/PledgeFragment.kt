@@ -24,9 +24,8 @@ import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.activities.NewCardActivity
@@ -130,7 +129,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.shippingAmount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { shipping_amount.text = it }
+                .subscribe {
+                    shipping_amount.text = it
+                    ViewUtils.setGone(shipping_amount_loading_view, true)
+                }
 
         this.viewModel.outputs.shippingRulesAndProject()
                 .compose(bindToLifecycle())
@@ -149,7 +151,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.totalAmount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { total_amount.text = it }
+                .subscribe {
+                    total_amount.text = it
+                    ViewUtils.setGone(total_amount_loading_view, true)
+                }
 
         shipping_rules.setOnClickListener { shipping_rules.showDropDown() }
 
@@ -174,7 +179,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun pledgeButtonClicked(viewHolder: RewardPledgeCardViewHolder) {
         this.viewModel.inputs.pledgeButtonClicked()
     }
-    override fun ruleSelected(rule: ShippingRule){
+
+    override fun ruleSelected(rule: ShippingRule) {
         this.viewModel.inputs.shippingRuleSelected(rule)
         shipping_rules.dismissDropDown()
         shipping_rules.clearFocus()

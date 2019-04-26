@@ -128,13 +128,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/ksr_green_500"
             android:dropDownAnchor="@id/shipping_rules_row"
             android:ellipsize="end"
             android:enabled="false"
             android:hint="@string/Shipping"
             android:maxLines="1"
-            android:text="@string/Loading" />
+            android:text="@string/Loading"
+            android:textColor="@color/ksr_green_500" />
 
           <Space
             android:layout_width="0dp"
@@ -149,12 +149,26 @@
             android:text="@string/plus_sign"
             android:textColor="@color/ksr_dark_grey_500" />
 
-          <TextView
-            android:id="@+id/shipping_amount"
-            style="@style/PledgeCurrency"
+          <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="$20.00" />
+            android:layout_height="wrap_content">
+
+            <TextView
+              android:id="@+id/shipping_amount"
+              style="@style/PledgeCurrency"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="end"
+              tools:text="$20.00" />
+
+            <View
+              android:id="@+id/shipping_amount_loading_view"
+              android:layout_width="@dimen/grid_8"
+              android:layout_height="@dimen/grid_2"
+              android:layout_gravity="center|end"
+              android:background="@drawable/pledge_amounts_loading_states" />
+          </FrameLayout>
+
 
         </LinearLayout>
 
@@ -181,13 +195,25 @@
             android:layout_weight="1"
             android:text="@string/By_pledging_you_agree" />
 
-          <TextView
-            android:id="@+id/total_amount"
-            style="@style/PledgeCurrencySecondary"
+          <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            tools:text="$40.00" />
+            android:layout_height="wrap_content">
+
+            <TextView
+              android:id="@+id/total_amount"
+              style="@style/PledgeCurrencySecondary"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="end"
+              tools:text="$40.00" />
+
+            <View
+              android:id="@+id/total_amount_loading_view"
+              android:layout_width="@dimen/grid_11"
+              android:layout_height="@dimen/grid_2"
+              android:layout_gravity="center|end"
+              android:background="@drawable/pledge_amounts_loading_states" />
+          </FrameLayout>
 
         </LinearLayout>
 
@@ -196,8 +222,8 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
-          android:text="@string/Continue"
           android:layout_marginBottom="@dimen/grid_3"
+          android:text="@string/Continue"
           android:visibility="gone"
           tools:visibility="visible" />
 
@@ -207,9 +233,9 @@
         android:id="@+id/payment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="visible"
-        android:orientation="vertical">
+        tools:visibility="visible">
 
         <ImageButton
           android:id="@+id/google_pay"

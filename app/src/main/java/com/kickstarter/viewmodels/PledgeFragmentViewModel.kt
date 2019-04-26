@@ -65,9 +65,6 @@ interface PledgeFragmentViewModel {
         /** Emits the shipping string of the selected shipping rule. */
         fun shippingAmount(): Observable<SpannableString>
 
-        /** Emits the list of shipping rules to be selected. */
-        fun shippingRules(): Observable<List<ShippingRule>>
-
         /** Emits a pair of list of shipping rules to be selected and the project. */
         fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>>
 
@@ -271,9 +268,6 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun shippingAmount(): Observable<SpannableString> = this.shippingAmount
-
-        @NonNull
-        override fun shippingRules(): Observable<List<ShippingRule>> = this.shippingRules
 
         override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject
 

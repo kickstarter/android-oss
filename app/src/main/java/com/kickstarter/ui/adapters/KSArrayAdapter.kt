@@ -19,7 +19,7 @@ abstract class KSArrayAdapter<T>(val ctx: Context, private val resourceId: Int, 
     }
 
     /**
-     * Returns a new KSViewHolder given a layout and view.
+     * Returns a new KSArrayViewHolder given a layout and view.
      */
     @NonNull
     protected abstract fun viewHolder(@LayoutRes layout: Int, @NonNull view: View): KSArrayViewHolder

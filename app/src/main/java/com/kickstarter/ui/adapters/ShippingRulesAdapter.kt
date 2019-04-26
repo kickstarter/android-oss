@@ -46,15 +46,6 @@ class ShippingRulesAdapter(ctx: Context, private val resourceId: Int, val items:
         return ShippingRuleViewHolder(view, delegate)
     }
 
-    fun populateShippingRules(rules: List<ShippingRule>, project: Project) {
-        this.filteredItems.clear()
-
-        this.filteredItems.addAll(Observable.from(rules)
-                .map { rule -> Pair.create(rule, project) }
-                .toList().toBlocking().single())
-        notifyDataSetChanged()
-    }
-
     override fun getItem(position: Int): Pair<ShippingRule, Project>? {
         return this.filteredItems[position]
     }
@@ -64,4 +55,14 @@ class ShippingRulesAdapter(ctx: Context, private val resourceId: Int, val items:
     override fun getFilter(): Filter {
         return ruleFilter
     }
+
+    fun populateShippingRules(rules: List<ShippingRule>, project: Project) {
+        this.filteredItems.clear()
+
+        this.filteredItems.addAll(Observable.from(rules)
+                .map { rule -> Pair.create(rule, project) }
+                .toList().toBlocking().single())
+        notifyDataSetChanged()
+    }
+
 }

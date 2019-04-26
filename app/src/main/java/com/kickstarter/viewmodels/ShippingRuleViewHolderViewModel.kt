@@ -17,15 +17,18 @@ import java.math.RoundingMode
 interface ShippingRuleViewHolderViewModel {
 
     interface Inputs {
+        /** Call with a shipping rule and project when data is bound to the view.  */
         fun configureWith(shippingRule: ShippingRule, project: Project)
 
+        /** Call when the user clicks on a shipping rule. */
         fun shippingRuleClicked()
     }
 
     interface Outputs {
-
+        /** Emits the selected Shipping rule. */
         fun shippingRule(): Observable<ShippingRule>
 
+        /** Returns the Shipping Rule text. */
         fun shippingRuleText(): Observable<String>
     }
 

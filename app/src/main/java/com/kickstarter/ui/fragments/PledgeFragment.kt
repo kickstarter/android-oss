@@ -25,7 +25,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.NewCardActivity
@@ -106,6 +105,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                             ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD)
                 }
 
+        this.viewModel.outputs.selectedShippingRule()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { shipping_rules.setText(it.toString()) }
+
+        this.viewModel.outputs.shippingAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { shipping_amount.text = it }
+
         this.viewModel.outputs.shippingRulesAndProject()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -120,38 +129,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     ViewUtils.setGone(shipping_rules_row, it)
                 }
 
-        this.viewModel.outputs.selectedShippingRule()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { shipping_rules.setText(it.toString()) }
-
-        this.viewModel.outputs.shippingAmount()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { shipping_amount.text = it }
-
         this.viewModel.outputs.totalAmount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { total_amount.text = it }
 
         shipping_rules.setOnClickListener { shipping_rules.showDropDown() }
-    }
-
-    private fun setUpShippingAdapter() {
-        adapter = ShippingRulesAdapter(context!!, R.layout.item_shipping_rule, arrayListOf(), this)
-        shipping_rules.setAdapter(adapter)
-    }
-
-    private fun setUpCardsAdapter() {
-        cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        cards_recycler.adapter = RewardCardAdapter(this)
-        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)))
-    }
-
-    private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
-        shipping_rules.isEnabled = true
-        adapter.populateShippingRules(shippingRules, project)
     }
 
     override fun onDetach() {
@@ -184,9 +167,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.selectCardButtonClicked(position)
     }
 
-    private fun showPledgeSection(pledgeData: PledgeData) {
-        setInitialViewStates(pledgeData)
-        startPledgeAnimatorSet(true, pledgeData.rewardScreenLocation)
+    private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
+        shipping_rules.isEnabled = true
+        adapter.populateShippingRules(shippingRules, project)
     }
 
     private fun positionRewardSnapshot(pledgeData: PledgeData) {
@@ -211,6 +194,22 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             reward_snapshot.setImageBitmap(bitmap)
             reward_to_copy.visibility = View.GONE
         }
+    }
+
+    private fun setUpCardsAdapter() {
+        cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        cards_recycler.adapter = RewardCardAdapter(this)
+        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)))
+    }
+
+    private fun setUpShippingAdapter() {
+        adapter = ShippingRulesAdapter(context!!, R.layout.item_shipping_rule, arrayListOf(), this)
+        shipping_rules.setAdapter(adapter)
+    }
+
+    private fun showPledgeSection(pledgeData: PledgeData) {
+        setInitialViewStates(pledgeData)
+        startPledgeAnimatorSet(true, pledgeData.rewardScreenLocation)
     }
 
     private fun startPledgeAnimatorSet(reveal: Boolean, location: ScreenLocation) {

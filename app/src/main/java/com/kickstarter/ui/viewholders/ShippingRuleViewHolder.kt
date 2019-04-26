@@ -11,26 +11,23 @@ import rx.android.schedulers.AndroidSchedulers
 
 class ShippingRuleViewHolder(private val view: View, val delegate: Delegate) : KSArrayViewHolder(view) {
 
-
     interface Delegate {
         fun ruleSelected(rule: ShippingRule)
     }
 
-    val viewModel = ShippingRuleViewHolderViewModel.ViewModel(environment())
+    private val viewModel = ShippingRuleViewHolderViewModel.ViewModel(environment())
 
     init {
-
-        this.viewModel.outputs.shippingRuleText()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    this.view.shipping_rules_item_text_view.text = it
-                }
 
         this.viewModel.outputs.shippingRule()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.delegate.ruleSelected(it) }
+
+        this.viewModel.outputs.shippingRuleText()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.view.shipping_rules_item_text_view.text = it }
 
         this.view.shipping_rule_root.setOnClickListener {
             this.viewModel.inputs.shippingRuleClicked()

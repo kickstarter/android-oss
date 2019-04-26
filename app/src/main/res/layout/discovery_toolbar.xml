@@ -56,6 +56,14 @@
       android:orientation="horizontal">
 
       <ImageButton
+        android:id="@+id/ksr_10"
+        style="@style/ToolbarIcon"
+        android:contentDescription="@string/Ten_is_just_the_beginning"
+        android:src="@drawable/ic_chubby_k"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+      <ImageButton
         android:id="@+id/search_button"
         style="@style/ToolbarIcon"
         android:contentDescription="@string/tabbar_search"

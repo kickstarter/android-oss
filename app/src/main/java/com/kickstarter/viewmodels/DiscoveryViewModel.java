@@ -58,6 +58,8 @@ public interface DiscoveryViewModel {
   }
 
   interface Outputs {
+    /** Emits when the current date is during our birthday celebration. */
+    Observable<Void> animateKSR10Icon();
 
     /** Emits a boolean that determines if the drawer is open or not. */
     Observable<Boolean> drawerIsOpen();
@@ -284,6 +286,12 @@ public interface DiscoveryViewModel {
         .filter(__ -> DateTimeUtils.isWithinBirthdayCelebrationRange(DateTime.now()))
         .take(1)
         .compose(bindToLifecycle());
+
+      this.animateKSR10Icon = Observable.just(DateTimeUtils.isWithinBirthdayCelebrationRange(DateTime.now()))
+        .filter(BooleanUtils::isTrue)
+        .compose(ignoreValues())
+        .compose(bindToLifecycle());
+
     }
 
     private final PublishSubject<Void> activityFeedClick = PublishSubject.create();
@@ -300,6 +308,7 @@ public interface DiscoveryViewModel {
     private final PublishSubject<Void> settingsClick = PublishSubject.create();
     private final PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
 
+    private final Observable<Void> animateKSR10Icon;
     private final BehaviorSubject<List<Integer>> clearPages = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> drawerIsOpen = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> expandSortTabLayout = BehaviorSubject.create();
@@ -366,6 +375,9 @@ public interface DiscoveryViewModel {
       this.topFilterRowClick.onNext(row);
     }
 
+    @Override public @NonNull Observable<Void> animateKSR10Icon() {
+      return this.animateKSR10Icon;
+    }
     @Override public @NonNull Observable<List<Integer>> clearPages() {
       return this.clearPages;
     }

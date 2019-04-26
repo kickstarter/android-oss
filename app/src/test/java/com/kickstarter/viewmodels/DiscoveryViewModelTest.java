@@ -30,6 +30,7 @@ import rx.observers.TestSubscriber;
 
 public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private DiscoveryViewModel.ViewModel vm;
+  private final TestSubscriber<Void> animateKSR10Icon = new TestSubscriber<>();
   private final TestSubscriber<List<Integer>> clearPages = new TestSubscriber<>();
   private final TestSubscriber<Boolean> drawerIsOpen = new TestSubscriber<>();
   private final TestSubscriber<Boolean> expandSortTabLayout = new TestSubscriber<>();
@@ -393,70 +394,82 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testShowKSR10_whenKSR10HasNotBeenSeen_beforeBirthday() {
+  public void testKSR10_whenKSR10HasNotBeenSeen_beforeBirthday() {
     DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-04-30T00:00+00:00").getMillis());
 
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
+    this.vm.outputs.animateKSR10Icon().subscribe(this.animateKSR10Icon);
     this.vm.outputs.showKSR10().subscribe(this.showKSR10);
 
+    this.animateKSR10Icon.assertNoValues();
     this.showKSR10.assertNoValues();
   }
 
   @Test
-  public void testShowKSR10_whenKSE10HasBeenSeen_beforeBirthday() {
+  public void testKSR10_whenKSR10HasBeenSeen_beforeBirthday() {
     DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-04-30T00:00+00:00").getMillis());
 
     this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder()
       .hasSeenKSR10BirthdayModal(new MockBooleanPreference(true))
       .build());
 
+    this.vm.outputs.animateKSR10Icon().subscribe(this.animateKSR10Icon);
     this.vm.outputs.showKSR10().subscribe(this.showKSR10);
 
+    this.animateKSR10Icon.assertNoValues();
     this.showKSR10.assertNoValues();
   }
 
   @Test
-  public void testShowKSR10_whenKSR10HasNotBeenSeen_duringBirthday() {
+  public void testKSR10_whenKSR10HasNotBeenSeen_duringBirthday() {
     DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-04-30T00:01:01+00:00").getMillis());
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
+    this.vm.outputs.animateKSR10Icon().subscribe(this.animateKSR10Icon);
     this.vm.outputs.showKSR10().subscribe(this.showKSR10);
 
+    this.animateKSR10Icon.assertValueCount(1);
     this.showKSR10.assertValueCount(1);
   }
 
   @Test
-  public void testShowKSR10_whenKSR10HasBeenSeen_duringBirthday() {
+  public void testKSR10_whenKSR10HasBeenSeen_duringBirthday() {
     DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-04-30T00:01:01+00:00").getMillis());
     this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder()
       .hasSeenKSR10BirthdayModal(new MockBooleanPreference(true))
       .build());
 
+    this.vm.outputs.animateKSR10Icon().subscribe(this.animateKSR10Icon);
     this.vm.outputs.showKSR10().subscribe(this.showKSR10);
 
+    this.animateKSR10Icon.assertValueCount(1);
     this.showKSR10.assertNoValues();
   }
 
   @Test
-  public void testShowKSR10_whenKSR10HasNotBeenSeen_afterBirthday() {
+  public void testKSR10_whenKSR10HasNotBeenSeen_afterBirthday() {
     DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-05-30T00:01:01+00:00").getMillis());
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
+    this.vm.outputs.animateKSR10Icon().subscribe(this.showKSR10);
     this.vm.outputs.showKSR10().subscribe(this.showKSR10);
 
+    this.animateKSR10Icon.assertNoValues();
     this.showKSR10.assertNoValues();
   }
 
   @Test
-  public void testShowKSR10_whenKSR10HasBeenSeen_afterBirthday() {
+  public void testKSR10_whenKSR10HasBeenSeen_afterBirthday() {
     DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-05-30T00:01:01+00:00").getMillis());
     this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder()
       .hasSeenKSR10BirthdayModal(new MockBooleanPreference(true))
       .build());
 
+    this.vm.outputs.animateKSR10Icon().subscribe(this.animateKSR10Icon);
     this.vm.outputs.showKSR10().subscribe(this.showKSR10);
 
+    this.animateKSR10Icon.assertNoValues();
     this.showKSR10.assertNoValues();
   }
 

@@ -20,7 +20,7 @@ abstract class KSArrayViewHolder(private val view: View) :  ActivityLifecycleTyp
     }
 
     /**
-     * This method is intended to be called only from `KSAdapter` in order for it to inform the view holder
+     * This method is intended to be called only from `KSArrayAdapter` in order for it to inform the view holder
      * of its lifecycle.
      */
     fun lifecycleEvent(event: ActivityEvent) {

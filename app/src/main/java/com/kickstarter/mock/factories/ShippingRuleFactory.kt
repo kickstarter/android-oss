@@ -17,7 +17,7 @@ class ShippingRuleFactory private constructor() {
             return ShippingRule.builder()
                     .id(10)
                     .cost(30.0)
-                    .location(LocationFactory.unitedStates())
+                    .location(LocationFactory.germany())
                     .build()
         }
     }

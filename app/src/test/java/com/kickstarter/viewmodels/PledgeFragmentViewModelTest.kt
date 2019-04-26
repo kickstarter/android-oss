@@ -39,7 +39,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val selectedShippingRule = TestSubscriber<ShippingRule>()
     private val shippingAmount = TestSubscriber<String>()
     private val shippingRuleAndProject = TestSubscriber<Pair<List<ShippingRule>, Project>>()
-    private val shippingRules = TestSubscriber<List<ShippingRule>>()
     private val shippingRulesSectionIsGone = TestSubscriber<Boolean>()
     private val showPledgeCard = TestSubscriber<Pair<Int, Boolean>>()
     private val startNewCardActivity = TestSubscriber<Void>()
@@ -55,7 +54,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.selectedShippingRule().subscribe(this.selectedShippingRule)
         this.vm.outputs.shippingAmount().map { it.toString() }.subscribe(this.shippingAmount)
         this.vm.outputs.shippingRulesAndProject().subscribe(this.shippingRuleAndProject)
-        this.vm.outputs.shippingRules().subscribe(this.shippingRules)
         this.vm.outputs.shippingRulesSectionIsGone().subscribe(this.shippingRulesSectionIsGone)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.startNewCardActivity().subscribe(this.startNewCardActivity)
@@ -119,12 +117,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShippingRules() {
-        setUpEnvironmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
-        this.shippingRules.assertValueCount(1)
-    }
-
-    @Test
     fun testShippingRuleAndProject() {
         setUpEnvironmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
 
@@ -153,7 +145,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val selectedRule = ShippingRuleFactory.germanyShippingRule()
 
-        this.vm.inputs.shippingRuleSelected(defaultRule)
+        this.vm.inputs.shippingRuleSelected(selectedRule)
 
         this.selectedShippingRule.assertValues(defaultRule, selectedRule)
     }

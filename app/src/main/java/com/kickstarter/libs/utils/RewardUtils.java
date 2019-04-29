@@ -54,7 +54,7 @@ public final class RewardUtils {
       && remaining <= 0;
   }
 
-  public static boolean isMaxRewardAmount(double amount) {
+  public static boolean isMaxRewardAmount(final double amount) {
     return amount >= MAX_REWARD_LIMIT;
   }
 

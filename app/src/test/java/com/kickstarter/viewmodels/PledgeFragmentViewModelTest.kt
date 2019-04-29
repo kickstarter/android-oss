@@ -218,7 +218,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testTotalAmount() {
+    fun testTotalAmountWithShippingRules() {
         val config = ConfigFactory.configForUSUser()
         val currentConfig = MockCurrentConfig()
         currentConfig.config(config)
@@ -228,7 +228,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment)
 
-        this.totalAmount.assertValue("$50.00")
+        this.totalAmount.assertValues("$20", "$50.00")
+    }
+
+    @Test
+    fun testTotalAmountWithoutShippingRules() {
+        setUpEnvironmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
+        this.totalAmount.assertValue("$20")
     }
 
     private fun setUpEnvironmentForShippingRules(envelope: ShippingRulesEnvelope) {

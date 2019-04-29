@@ -117,7 +117,7 @@ interface PledgeFragmentViewModel {
         private val pledgeAmount = BehaviorSubject.create<SpannableString>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startNewCardActivity = PublishSubject.create<Void>()
-        private val totalAmount = PublishSubject.create<SpannableString>()
+        private val totalAmount = BehaviorSubject.create<SpannableString>()
 
         private val apiClient = environment.apiClient()
         private val apolloClient = environment.apolloClient()
@@ -217,11 +217,19 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmount)
 
-            rewardAmount
+            val initialTotalAmount = rewardAmount
+                    .compose<Pair<Float, Project>>(combineLatestPair(project))
+                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 0) }
+                    .compose(bindToLifecycle())
+
+            val totalWithShippingRule = rewardAmount
                     .compose<Pair<Float, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first + it.second }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first.toFloat(), it.second, RoundingMode.UP, 2) }
+                    .compose(bindToLifecycle())
+
+            Observable.merge(initialTotalAmount, totalWithShippingRule)
                     .compose(bindToLifecycle())
                     .subscribe(this.totalAmount)
 

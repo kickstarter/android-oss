@@ -4,8 +4,8 @@
   <solid android:color="@color/white" />
   <corners android:radius="@dimen/grid_1" />
   <padding
-    android:bottom="@dimen/grid_2"
+    android:bottom="@dimen/grid_1"
     android:left="@dimen/grid_3_half"
     android:right="@dimen/grid_3_half"
-    android:top="@dimen/grid_2"/>
+    android:top="@dimen/grid_1"/>
 </shape>

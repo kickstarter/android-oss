@@ -5,7 +5,8 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_400"
+  android:background="@color/ksr_grey_300"
+  android:clickable="true"
   android:fillViewport="true"
   android:focusable="true"
   android:scrollbars="none"
@@ -96,6 +97,7 @@
           style="@style/CalloutPrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_1"
           android:layout_marginTop="@dimen/grid_4"
           android:text="@string/Your_pledge_amount" />
 
@@ -106,7 +108,7 @@
           android:gravity="center_vertical"
           android:orientation="horizontal">
 
-          <!-- Needs final copy for content descriptions -->
+          <!-- TODO: Needs final copy for content descriptions -->
           <ImageButton
             android:id="@+id/decrease_pledge"
             android:layout_width="wrap_content"
@@ -133,18 +135,21 @@
             android:layout_weight="1" />
 
           <LinearLayout
-            android:id="@+id/song_data_container"
+            android:id="@+id/additional_pledge_amount_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/grid_2"
+            android:animateLayoutChanges="true"
             android:focusable="true"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
+            <!-- todo: needs some a11y plz-->
+            <ImageView
+              android:layout_width="@dimen/grid_3"
+              android:layout_height="@dimen/grid_3"
+              android:contentDescription="@null"
               android:src="@drawable/ic_add"
-              android:text="+"
               android:tint="@color/ksr_dark_grey_400" />
 
             <TextView
@@ -218,8 +223,8 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
-          android:text="@string/Continue"
           android:layout_marginBottom="@dimen/grid_3"
+          android:text="@string/Continue"
           android:visibility="gone"
           tools:visibility="visible" />
 
@@ -229,9 +234,9 @@
         android:id="@+id/payment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="visible"
-        android:orientation="vertical">
+        tools:visibility="visible">
 
         <ImageButton
           android:id="@+id/google_pay"

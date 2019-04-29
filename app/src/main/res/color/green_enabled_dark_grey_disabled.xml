@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:exitFadeDuration="@android:integer/config_mediumAnimTime">
   <item android:color="@color/ksr_dark_grey_400" android:state_enabled="false" />
   <item android:color="@color/ksr_green_500" />
 </selector>

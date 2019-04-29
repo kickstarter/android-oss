@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-  android:id="@+id/rewards_root"
+<androidx.recyclerview.widget.RecyclerView
+  android:id="@+id/rewards_recycler"
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:minHeight="@dimen/fragment_rewards_parent_min_height"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
-
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/rewards_recycler"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/ksr_grey_400"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:listitem="@layout/item_reward" />
-
-</FrameLayout>
+  android:layout_height="match_parent"
+  android:background="@color/ksr_grey_400"
+  tools:listitem="@layout/item_reward" />

@@ -21,7 +21,6 @@ import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.models.Reward
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.activities.NewCardActivity
@@ -123,7 +122,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.additionalPledgeAmountIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(additional_pledge_amount, it) }
+                .subscribe { ViewUtils.setGone(additional_pledge_amount_container, it) }
 
         this.viewModel.outputs.decreasePledgeButtonIsEnabled()
                 .compose(bindToLifecycle())

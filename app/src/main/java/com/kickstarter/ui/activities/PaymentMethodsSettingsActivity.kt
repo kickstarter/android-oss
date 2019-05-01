@@ -92,17 +92,15 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
     private fun setUpRecyclerView() {
         this.adapter = PaymentMethodsAdapter(this.viewModel, object: DiffUtil.ItemCallback<Any>() {
             override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                return compareCards(oldItem, newItem)
+                return areCardsTheSame(oldItem as StoredCard, newItem as StoredCard)
             }
 
             override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-                return compareCards(oldItem, newItem)
+                return areCardsTheSame(oldItem as StoredCard, newItem as StoredCard)
             }
 
-            private fun compareCards(oldItem: Any, newItem: Any): Boolean {
-                val oldCard = oldItem as StoredCard
-                val newCard = newItem as StoredCard
-                return oldCard.id() == newCard.id()
+            private fun areCardsTheSame(oldItem: StoredCard, newItem: StoredCard): Boolean {
+                return oldItem.id() == newItem.id()
             }
         })
         recycler_view.adapter = this.adapter

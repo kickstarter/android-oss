@@ -86,7 +86,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.viewModel.outputs.setInitialRewardsContainerY()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe{ setInitialRewardsContainerY() }
+                .subscribe { setInitialRewardsContainerY() }
 
         this.viewModel.outputs.showRewardsFragment()
                 .compose(bindToLifecycle())
@@ -183,11 +183,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     }
 
     private fun animateRewards(expand: Boolean) {
-        val showTarget = if (!expand) native_back_this_project_button else pledge_container
-        val showRewardsFragment: ObjectAnimator = ObjectAnimator.ofFloat(showTarget, View.ALPHA, 0f, 1f)
+        val targetToShow = if (!expand) native_back_this_project_button else pledge_container
+        val showRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToShow, View.ALPHA, 0f, 1f)
 
-        val hideTarget = if (!expand) pledge_container else native_back_this_project_button
-        val hideRewardsFragment: ObjectAnimator = ObjectAnimator.ofFloat(hideTarget, View.ALPHA, 1f, 0f)
+        val targetToHide = if (!expand) pledge_container else native_back_this_project_button
+        val hideRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToHide, View.ALPHA, 1f, 0f)
 
         val guideline = resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
         val initialValue = (if (expand) rewards_container.height - guideline else 0).toFloat()
@@ -202,7 +202,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         }
 
         AnimatorSet().apply {
-            playTogether(showRewardsFragment, hideRewardsFragment, rewardsContainerYAnimator)
+            playTogether(showRewardsFragmentAnimator, hideRewardsFragmentAnimator, rewardsContainerYAnimator)
             duration = animDuration
 
             addListener(object : Animator.AnimatorListener {

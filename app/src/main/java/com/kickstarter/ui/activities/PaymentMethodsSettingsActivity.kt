@@ -99,8 +99,8 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
                 return areCardsTheSame(oldItem as StoredCard, newItem as StoredCard)
             }
 
-            private fun areCardsTheSame(oldItem: StoredCard, newItem: StoredCard): Boolean {
-                return oldItem.id() == newItem.id()
+            private fun areCardsTheSame(oldCard: StoredCard, newCard: StoredCard): Boolean {
+                return oldCard.id() == newCard.id()
             }
         })
         recycler_view.adapter = this.adapter

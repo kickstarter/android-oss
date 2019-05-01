@@ -12,7 +12,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
-import com.kickstarter.ui.viewholders.KSViewHolder
 import rx.Observable
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
@@ -192,7 +191,7 @@ interface HorizontalRewardViewHolderViewModel {
                     .map { it.isEmpty() }
 
             this.showPledgeFragment = this.projectAndReward
-                    .filter { isSelectable(it.first, it.second) && it.first.isLive}
+                    .filter { isSelectable(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Project, Reward>>(takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
 
             this.titleTextViewIsGone = reward

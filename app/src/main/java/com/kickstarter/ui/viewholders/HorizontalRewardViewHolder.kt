@@ -59,7 +59,9 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.viewModel.outputs.isClickable()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.horizontal_reward_pledge_button.isClickable = it }
+                .subscribe {
+                    configureRewardButton(it)
+                }
 
         this.viewModel.outputs.limitAndRemainingTextViewIsGone()
                 .compose(bindToLifecycle())
@@ -129,6 +131,11 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.viewModel.inputs.projectAndReward(project, this.reward)
     }
 
+    private fun configureRewardButton(isRewardAvailable: Boolean) {
+        this.view.horizontal_reward_pledge_button.isClickable = isRewardAvailable
+        this.view.horizontal_reward_pledge_button.isEnabled = isRewardAvailable
+    }
+
     private fun formattedDeadlineString(@NonNull reward: Reward): String {
         val detail = RewardUtils.deadlineCountdownDetail(reward, context(), this.ksString)
         val value = RewardUtils.deadlineCountdownValue(reward)
@@ -154,10 +161,15 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
 
     private fun setMinimumText(@NonNull minimum: String) {
         this.view.horizontal_reward_minimum_text_view.text = minimum
-        this.view.horizontal_reward_pledge_button.text = (this.ksString.format(
-                this.pledgeRewardCurrencyOrMoreString,
-                "reward_currency", minimum
-        ))
+
+        if (RewardUtils.isLimitReached(this.reward)) {
+            this.view.horizontal_reward_pledge_button.text = "No Longer available"
+        } else {
+            this.view.horizontal_reward_pledge_button.text = (this.ksString.format(
+                    this.pledgeRewardCurrencyOrMoreString,
+                    "reward_currency", minimum
+            ))
+        }
     }
 
     private fun setRemainingRewardsTextView(@NonNull remaining: String) {

@@ -4,20 +4,17 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:foreground="@drawable/click_indicator_light"
   android:orientation="vertical">
 
   <TextView
     android:id="@+id/shipping_rules_item_text_view"
     style="@style/BodySecondary"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/grid_1"
+    android:layout_height="@dimen/grid_8"
     android:layout_marginEnd="@dimen/activity_horizontal_margin"
     android:layout_marginStart="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="@dimen/grid_1"
-    android:foreground="@drawable/click_indicator_light"
     android:gravity="center_vertical"
-    android:minHeight="@dimen/grid_8"
     android:textColor="@color/ksr_soft_black"
     tools:text="United States" />
 

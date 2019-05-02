@@ -2,9 +2,11 @@ package com.kickstarter.ui.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.preferences.BooleanPreferenceType
 import kotlinx.android.synthetic.internal.activity_feature_flag.*
 import javax.inject.Inject
 
@@ -16,17 +18,19 @@ class FeatureFlagActivity : AppCompatActivity() {
         setContentView(R.layout.activity_feature_flag)
 
         (applicationContext as KSApplication).component().inject(this)
-
-        val enabled = environment.horizontalRewardsEnabled().get()
-        if (enabled) {
-            horizontal_switch.isChecked = enabled
-        }
-
-        horizontal_switch.setOnClickListener { enableHorizontalRewards() }
+        displayPreference(environment.horizontalRewardsEnabled(), horizontal_switch)
+        displayPreference(environment.hasSeenKSR10BirthdayModal(), ksr10_birthday_switch)
     }
 
-    private fun enableHorizontalRewards() {
-        val isEnabled = horizontal_switch.isChecked
-        this.environment.horizontalRewardsEnabled().set(isEnabled)
+    private fun displayPreference(booleanPreferenceType: BooleanPreferenceType, switchCompat: SwitchCompat) {
+        val enabled = booleanPreferenceType.get()
+        if (enabled) {
+            switchCompat.isChecked = enabled
+        }
+
+        switchCompat.setOnClickListener {
+            val isEnabled = switchCompat.isChecked
+            booleanPreferenceType.set(isEnabled)
+        }
     }
 }

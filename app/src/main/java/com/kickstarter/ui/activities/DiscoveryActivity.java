@@ -1,7 +1,10 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
@@ -17,6 +20,7 @@ import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.fragments.DiscoveryFragment;
+import com.kickstarter.ui.fragments.KSR10Fragment;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.views.SortTabLayout;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
@@ -55,6 +59,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
   protected @Bind(R.id.discovery_tab_layout) SortTabLayout sortTabLayout;
   protected @Bind(R.id.discovery_view_pager) ViewPager sortViewPager;
   protected @Bind(R.id.discovery_sort_app_bar_layout) AppBarLayout sortAppBarLayout;
+  protected @Bind(R.id.ksr_10) ImageButton ksr10ImageButton;
 
   protected @BindString(R.string.A_newer_build_is_available) String aNewerBuildIsAvailableString;
   protected @BindString(R.string.Upgrade_app) String upgradeAppString;
@@ -137,6 +142,16 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(observeForUI())
       .subscribe(__ -> this.internalTools.maybeStartInternalToolsActivity(this));
 
+    this.viewModel.outputs.animateKSR10Icon()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.animateKSR10Icon());
+
+    this.viewModel.outputs.showKSR10()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.showKSR10Fragment());
+
     this.viewModel.outputs.showLoginTout()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -167,6 +182,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.viewModel.inputs::openDrawer);
+
   }
 
   private static @NonNull List<DiscoveryFragment> createFragments(final int pages) {
@@ -198,6 +214,12 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     });
   }
 
+  private void animateKSR10Icon() {
+    this.ksr10ImageButton.setVisibility(View.VISIBLE);
+    final AnimatedVectorDrawable animatedVectorDrawable = (AnimatedVectorDrawable) this.ksr10ImageButton.getDrawable();
+    animatedVectorDrawable.start();
+  }
+
   protected void startActivityFeedActivity() {
     startActivity(new Intent(this, ActivityFeedActivity.class));
   }
@@ -208,6 +230,14 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
 
   protected void startHelpSettingsActivity() {
     startActivity(new Intent(this, HelpSettingsActivity.class));
+  }
+
+  public void showKSR10Fragment() {
+    getSupportFragmentManager()
+      .beginTransaction()
+      .add(R.id.fragment_container, KSR10Fragment.newInstance())
+      .addToBackStack(null)
+      .commit();
   }
 
   private void startLoginToutActivity() {

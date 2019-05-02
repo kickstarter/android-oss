@@ -70,19 +70,28 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel.ViewModel
       .compose(observeForUI())
       .subscribe(__ -> showConfirmGamesNewsletterDialog());
 
+    //I'm not sure why we would attempt to show a dialog after a delay but hopefully this helps
     this.viewModel.outputs.showGamesNewsletterDialog()
       .compose(bindToLifecycle())
       .take(1)
       .delay(700L, TimeUnit.MILLISECONDS)
       .compose(observeForUI())
-      .subscribe(__ -> showGamesNewsletterDialog());
+      .subscribe(__ -> {
+        if (!isFinishing()) {
+          showGamesNewsletterDialog();
+        }
+      });
 
     this.viewModel.outputs.showRatingDialog()
       .compose(bindToLifecycle())
       .take(1)
       .delay(700L, TimeUnit.MILLISECONDS)
       .compose(observeForUI())
-      .subscribe(__ -> showRatingDialog());
+      .subscribe(__ -> {
+        if (!isFinishing()) {
+          showRatingDialog();
+        }
+      });
 
     this.viewModel.outputs.startDiscoveryActivity()
       .compose(bindToLifecycle())

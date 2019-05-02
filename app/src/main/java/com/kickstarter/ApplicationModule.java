@@ -51,6 +51,7 @@ import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.GamesNewsletterPreference;
 import com.kickstarter.libs.qualifiers.HorizontalRewardsPreference;
+import com.kickstarter.libs.qualifiers.KSR10BirthdayModalPreference;
 import com.kickstarter.libs.qualifiers.KoalaEndpoint;
 import com.kickstarter.libs.qualifiers.KoalaRetrofit;
 import com.kickstarter.libs.qualifiers.PackageNameString;
@@ -121,6 +122,7 @@ public final class ApplicationModule {
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
+    final @NonNull @KSR10BirthdayModalPreference BooleanPreferenceType hasSeenKSR10BirthdayModal,
     final @NonNull InternalToolsType internalToolsType,
     final @NonNull Koala koala,
     final @NonNull KSCurrency ksCurrency,
@@ -146,6 +148,7 @@ public final class ApplicationModule {
       .gson(gson)
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+      .hasSeenKSR10BirthdayModal(hasSeenKSR10BirthdayModal)
       .horizontalRewardsEnabled(horizontalRewardsEnabled)
       .internalTools(internalToolsType)
       .koala(koala)
@@ -507,6 +510,14 @@ public final class ApplicationModule {
       .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
       .registerTypeAdapterFactory(new AutoParcelAdapterFactory())
       .create();
+  }
+
+  @Provides
+  @Singleton
+  @KSR10BirthdayModalPreference
+  @NonNull
+  static BooleanPreferenceType provideKSR10BirthdayPreference(final @NonNull SharedPreferences sharedPreferences) {
+    return new BooleanPreference(sharedPreferences, SharedPreferenceKey.HAS_SEEN_KSR10_BIRTHDAY_MODAL);
   }
 
   @Provides

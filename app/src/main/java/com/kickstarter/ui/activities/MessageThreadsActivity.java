@@ -18,6 +18,7 @@ import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.ToolbarUtils;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.models.MessageThread;
 import com.kickstarter.ui.adapters.MessageThreadsAdapter;
 import com.kickstarter.ui.data.Mailbox;
 import com.kickstarter.viewmodels.MessageThreadsViewModel;
@@ -25,6 +26,7 @@ import com.kickstarter.viewmodels.MessageThreadsViewModel;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -65,7 +67,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     setContentView(R.layout.message_threads_layout);
     ButterKnife.bind(this);
 
-    this.adapter = new MessageThreadsAdapter();
+    setUpAdapter();
     this.ksString = environment().ksString();
 
     this.recyclerView.setAdapter(this.adapter);
@@ -153,5 +155,25 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
       this.ksString.format(this.unreadCountUnreadString, "unread_count", unreadCountString)
     );
     this.unreadCountToolbarTextView.setText(StringUtils.wrapInParentheses(unreadCountString));
+  }
+
+  private void setUpAdapter() {
+    this.adapter = new MessageThreadsAdapter(new DiffUtil.ItemCallback<Object>() {
+      @Override
+      public boolean areItemsTheSame(@NonNull Object oldItem, @NonNull Object newItem) {
+        return itemsAreTheSame(oldItem, newItem);
+      }
+      @Override
+      public boolean areContentsTheSame(@NonNull Object oldItem, @NonNull Object newItem) {
+        return itemsAreTheSame(oldItem, newItem);
+      }
+
+      private boolean itemsAreTheSame(final @NonNull Object oldItem, final @NonNull Object newItem) {
+        final MessageThread oldThread = (MessageThread) oldItem;
+        final MessageThread newThread = (MessageThread) newItem;
+
+        return oldThread.id() == newThread.id();
+      }
+    });
   }
 }

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.annotation.NonNull
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.crashlytics.android.Crashlytics
@@ -53,7 +54,7 @@ abstract class KSListAdapter(diffUtil: DiffUtil.ItemCallback<Any>) : ListAdapter
     /**
      * Fetch the layout id associated with a sectionRow.
      */
-    protected abstract fun layout(sectionRow: SectionRow): Int
+    protected abstract fun layout(@NonNull sectionRow: SectionRow): Int
 
     /**
      * Returns a new KSViewHolder given a layout and view.

@@ -50,6 +50,12 @@ public final class DiscoveryToolbar extends KSToolbar {
     this.ksString = environment().ksString();
   }
 
+  @OnClick(R.id.ksr_10)
+  protected void ksr10ButtonClick() {
+    final DiscoveryActivity activity = (DiscoveryActivity) getContext();
+    activity.showKSR10Fragment();
+  }
+
   @OnClick({R.id.menu_button, R.id.filter_text_view})
   protected void menuButtonClick() {
     final DiscoveryActivity activity = (DiscoveryActivity) getContext();

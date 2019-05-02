@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+  android:id="@+id/reward_container"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="@dimen/item_reward_layout_width"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+  <androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:overScrollMode="never">
+
+    <androidx.cardview.widget.CardView
+      android:id="@+id/horizontal_no_reward_card"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      app:cardCornerRadius="@dimen/card_radius"
+      app:cardElevation="0dp">
+
+      <LinearLayout
+        android:id="@+id/reward_contents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/grid_3">
+
+        <TextView
+          android:id="@+id/horizontal_reward_title_text_view"
+          style="@style/Headline"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/activity_vertical_margin"
+          android:textSize="@dimen/title_1"
+          android:text="@string/Make_a_pledge_without_a_reward" />
+
+        <TextView
+          android:id="@+id/horizontal_reward_description_text_view"
+          style="@style/BodyPrimary"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_3"
+          android:layout_marginTop="@dimen/grid_3"
+          android:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life"/>
+
+        <com.google.android.material.button.MaterialButton
+          android:id="@+id/placeholder"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="invisible"
+          android:text="@string/Pledge_without_a_reward"/>
+
+      </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+  </androidx.core.widget.NestedScrollView>
+
+  <com.google.android.material.button.MaterialButton
+    android:id="@+id/horizontal_no_reward_pledge_button"
+    style="@style/PledgeButton"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/Pledge_without_a_reward"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

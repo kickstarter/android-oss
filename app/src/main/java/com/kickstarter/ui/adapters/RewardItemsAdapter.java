@@ -14,9 +14,9 @@ import androidx.annotation.NonNull;
 
 import static java.util.Collections.emptyList;
 
-public final class RewardsItemAdapter extends KSAdapter {
+public final class RewardItemsAdapter extends KSAdapter {
 
-  public RewardsItemAdapter() {
+  public RewardItemsAdapter() {
     addSection(emptyList());
   }
 

@@ -38,12 +38,13 @@ public final class ProjectAdapter extends KSAdapter {
   /**
    * Populate adapter data when we know we're working with a Project object.
    */
-  public void takeProject(final @NonNull Project project, final @NonNull String configCountry) {
+  public void takeProject(final @NonNull Project project, final @NonNull String configCountry,
+    final @NonNull Boolean isHorizontalRewardsEnabled) {
     sections().clear();
     sections().add(Collections.singletonList(Pair.create(project, configCountry)));
 
     final List<Reward> rewards = project.rewards();
-    if (rewards != null) {
+    if (rewards != null && !isHorizontalRewardsEnabled) {
       addSection(Observable.from(rewards)
         .filter(RewardUtils::isReward)
         .map(reward -> Pair.create(project, reward))

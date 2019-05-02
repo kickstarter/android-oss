@@ -1,37 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.coordinatorlayout.widget.CoordinatorLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
 
-  <LinearLayout
+  <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
     <include layout="@layout/feature_flag_toolbar" />
+
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/activity_horizontal_margin"
-      android:layout_marginStart="@dimen/activity_horizontal_margin"
-      android:layout_marginTop="@dimen/grid_2"
-      android:orientation="horizontal">
+      android:orientation="vertical">
 
-      <TextView
-        style="@style/CalloutPrimaryMedium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_1"
-        android:gravity="center_horizontal"
-        android:text="@string/Horizontal_rewards" />
-
-      <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/horizontal_switch"
+      <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/grid_2"
+        android:orientation="horizontal">
 
+        <TextView
+          style="@style/CalloutPrimary"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="@string/Horizontal_rewards" />
+
+        <androidx.appcompat.widget.SwitchCompat
+          android:id="@+id/horizontal_switch"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/grid_2"
+        android:orientation="horizontal">
+
+        <TextView
+          style="@style/CalloutPrimary"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:text="@string/feature_flag_ksr10" />
+
+        <androidx.appcompat.widget.SwitchCompat
+          android:id="@+id/ksr10_birthday_switch"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+      </LinearLayout>
     </LinearLayout>
-  </LinearLayout>
-</ScrollView>
+
+  </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

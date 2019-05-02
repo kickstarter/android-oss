@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Pair;
 
+import com.crashlytics.android.Crashlytics;
 import com.kickstarter.ApplicationComponent;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -116,7 +117,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     this.back
       .compose(bindUntilEvent(ActivityEvent.STOP))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> goBack());
+      .subscribe(__ -> goBack(), Crashlytics::logException);
 
     ConnectivityReceiver.setConnectivityReceiverListener(this);
   }

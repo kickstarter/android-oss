@@ -175,11 +175,11 @@
 
     <View
       android:id="@+id/reward_white_overlay_view"
-      android:visibility="invisible"
-      android:alpha="0.6"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/white" />
+      android:alpha="0.6"
+      android:background="@color/white"
+      android:visibility="invisible" />
 
   </FrameLayout>
 

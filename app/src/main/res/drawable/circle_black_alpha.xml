@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<inset xmlns:android="http://schemas.android.com/apk/res/android"
-  android:insetBottom="@dimen/grid_2"
-  android:insetLeft="@dimen/grid_2"
-  android:insetRight="@dimen/grid_2"
-  android:insetTop="@dimen/grid_2">
+<inset xmlns:android="http://schemas.android.com/apk/res/android">
   <shape
     android:shape="oval">
     <solid android:color="@color/soft_black_alpha_17" />
     <padding
-      android:bottom="7dp"
-      android:left="7dp"
-      android:right="7dp"
-      android:top="7dp" />
+      android:bottom="@dimen/grid_1"
+      android:left="@dimen/grid_1"
+      android:right="@dimen/grid_1"
+      android:top="@dimen/grid_1" />
   </shape>
 </inset>

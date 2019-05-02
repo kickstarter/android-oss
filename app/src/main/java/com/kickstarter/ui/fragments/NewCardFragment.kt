@@ -63,7 +63,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.success()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { onCardSavedListener?.cardSaved() }
+                .subscribe { this.onCardSavedListener?.cardSaved() }
 
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())

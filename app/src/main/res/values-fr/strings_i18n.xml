@@ -78,7 +78,7 @@ contributeurs</string>
   <string name="Closes_project" formatted="false">Ferme le projet.</string>
   <string name="Collapses_subcategories" formatted="false">Masque les sous-catégories.</string>
   <string name="Collections" formatted="false">Collections</string>
-  <string name="Comment_reply_digest" formatted="false">Comment reply digest</string>
+  <string name="Comment_reply_digest" formatted="false">Résumé des réponses aux commentaires</string>
   <string name="Complete_payment" formatted="false">Payer</string>
   <string name="Confirm_password" formatted="false">Confirmer le nouveau mot de passe</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Si vous vous connectez avec votre compte Facebook, vous pourrez suivre vos amis et recevoir des notifications chaque fois qu\'ils lancent ou soutiennent de nouveaux projets.</string>
@@ -123,6 +123,7 @@ contributeurs</string>
   <string name="Data_will_appear_here_once" formatted="false">Ces données seront visibles dès que vous aurez reçu votre première contribution.</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Supprimer mon compte Kickstarter</string>
   <string name="Delivered" formatted="false">Distribué</string>
+  <string name="Description" formatted="false">Description</string>
   <string name="Developer" formatted="false">Développeur</string>
   <string name="Discover_arts_news" formatted="false">Des idées et des projets innovants à découvrir, soigneusement sélectionnés deux fois par mois par l\'équipe Design et technologie de Kickstarter.</string>
   <string name="Discover_more_projects" formatted="false">Découvrez plus de projets.</string>
@@ -222,9 +223,9 @@ contributeurs</string>
   <string name="Info" formatted="false">Info</string>
   <string name="Introduce_yourself" formatted="false">Présentez-vous ici.</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">La préparation de vos données personnelles peut prendre jusqu\'à 24 heures. Nous vous enverrons des instructions de téléchargement à l\'adresse e-mail associée à ce compte une fois que tout sera prêt. Si vous ne recevez rien, revenez ici pour réessayer.</string>
-  <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">C\'est un outil qui permet de donner vie à des projets créatifs.</string>
   <string name="Its_better_with_friends" formatted="false">On est mieux ensemble.</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">Un peu comme la radio, mais en mieux. Une lettre d\'information, quoi.</string>
+  <string name="Its_our_birthday" formatted="false">C\'est notre anniversaire ! Au cours des dix dernières années, plus de 160 000 projets créatifs ont vu le jour sur Kickstarter grâce au soutien de plus de 16 000 000 contributeurs.</string>
   <string name="Join_our_secret_society" formatted="false">Notre société secrète n\'attend que vous.</string>
   <string name="Joining_the_live_stream" formatted="false">Connexion à la diffusion en direct en cours</string>
   <string name="Just_for_you" formatted="false">Rien que pour vous.</string>
@@ -233,7 +234,7 @@ contributeurs</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Soyez informé des prochaines diffusions en direct</string>
   <string name="Kickstarter_Music" formatted="false">Kickstarter Music</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (si le projet est financé)</string>
-  <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter n\'est pas un magasin.</string>
+  <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter n\'est pas un magasin, mais un moyen de faire vivre des projets créatifs.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Activez vos notifications pour savoir quand un créateur ou un contributeur vous envoie un message.</string>
   <string name="Learn_more_about_accountability" formatted="false">En savoir plus sur la responsabilité</string>
   <string name="Left_count_left_few" formatted="false">%{left_count} restantes</string>
@@ -259,6 +260,7 @@ contributeurs</string>
   <string name="MMYY" formatted="false">MM/AA</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">S\'engager sans recevoir de récompense</string>
   <string name="Making_this_change" formatted="false">Cette fonction vous permettra de voir votre objectif de financement et le montant de chaque engagement dans la devise de votre choix.</string>
+  <string name="Manage" formatted="false">Gérer</string>
   <string name="Manage_your_pledge" formatted="false">Gérer mon engagement</string>
   <string name="Manage_your_pledge_below" formatted="false">Gérer mon engagement</string>
   <string name="Manage_your_reward" formatted="false">Gérer votre récompense</string>
@@ -370,7 +372,7 @@ n\'ont rien soutenu.</string>
   <string name="Replay_past_live_stream" formatted="false">Rediffusion</string>
   <string name="Replay_past_live_streams" formatted="false">Revoir des diffusions en direct passées</string>
   <string name="Reply_to_user_name" formatted="false">Répondre à %{user_name}…</string>
-  <string name="Request_my_data" formatted="false">Request my data</string>
+  <string name="Request_my_data" formatted="false">Demander mes données</string>
   <string name="Request_my_personal_data" formatted="false">Demander mes données personnelles</string>
   <string name="Resend_verification_email" formatted="false">Renvoyer l\'e-mail de vérification</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} questionnaires</string>
@@ -416,6 +418,7 @@ n\'ont rien soutenu.</string>
   <string name="Shipping" formatted="false">Expédition</string>
   <string name="Shipping_addresses" formatted="false">Adresses de livraison</string>
   <string name="Ships_to" formatted="false">Livraison :</string>
+  <string name="Show_me_projects" formatted="false">Montrez-moi des projets</string>
   <string name="Show_password" formatted="false">Afficher le mot de passe</string>
   <string name="Shows_list_of_subcategories" formatted="false">Affiche la liste des sous-catégories.</string>
   <string name="Sign_up_newsletter" formatted="false">Inscrivez-vous à Coups de cœur pour recevoir une sélection hebdomadaire de projets marquants qui nous ont plu.</string>
@@ -437,8 +440,10 @@ n\'ont rien soutenu.</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Cliquez sur le cœur qui apparaît sur la page du projet pour l\'ajouter à vos favoris. Nous vous enverrons un petit rappel 48 heures avant la fin de la campagne.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Cliquez sur l\'icône en forme d\'étoile située à côté du projet pour recevoir une notification 48 avant la fin de sa campagne.</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Cliquez sur l\'étoile qui apparaît sur la page du projet pour l\'ajouter à vos favoris. Nous vous enverrons un petit rappel 48 heures avant la fin de la campagne.</string>
+  <string name="Ten_is_just_the_beginning" formatted="false">Dix, ce n\'est que le début.</string>
   <string name="Thank_you_exclamation" formatted="false">Merci !</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Merci pour votre soutien.</string>
+  <string name="Thanks_for_being_part_of_all_the_joy" formatted="false">Vous avez partagé nos joies, nos espoirs et l\'ardeur de notre travail. Sans vous, nous ne serions pas là.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">L\'adresse e-mail associée à ce compte Facebook a déjà été enregistrée par un autre utilisateur Kickstarter.</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">Échec de connexion à la diffusion en direct</string>
   <string name="The_live_stream_was_interrupted" formatted="false">Diffusion en direct interrompue</string>

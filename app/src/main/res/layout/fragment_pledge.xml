@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+  android:id="@+id/pledge_root"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/ksr_grey_400"
+  android:fillViewport="true"
+  android:scrollbars="none"
+  android:visibility="invisible"
+  tools:visibility="visible">
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include
+      android:id="@+id/reward_to_copy"
+      layout="@layout/item_reward" />
+
+    <!-- todo: what's the content description? -->
+    <com.kickstarter.ui.views.BottomCropImageView
+      android:id="@+id/reward_snapshot"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/activity_horizontal_margin"
+      android:contentDescription="@null"
+      android:elevation="@dimen/mini_reward_elevation"
+      tools:background="@color/white"
+      tools:layout_height="@dimen/mini_reward_height"
+      tools:layout_width="@dimen/mini_reward_width" />
+
+    <LinearLayout
+      android:id="@+id/pledge_details"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <LinearLayout
+        android:id="@+id/delivery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_4"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/grid_4">
+
+        <TextView
+          style="@style/CalloutSecondary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/Estimated_delivery" />
+
+        <TextView
+          android:id="@+id/pledge_estimated_delivery"
+          style="@style/CalloutPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_1"
+          tools:text="December 2019" />
+
+        <LinearLayout
+          android:id="@+id/accountability"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" />
+
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Learn_more_about_accountability"
+            android:textColor="@color/primary" />
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/activity_vertical_margin"
+        android:paddingStart="@dimen/activity_vertical_margin">
+
+        <include layout="@layout/horizontal_line_1dp_view" />
+
+        <TextView
+          style="@style/CalloutPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/grid_4"
+          android:text="@string/Your_pledge_amount" />
+
+        <TextView
+          android:id="@+id/pledge_amount"
+          style="@style/PledgeCurrencySecondary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="end"
+          tools:text="$20" />
+
+        <TextView
+          style="@style/CalloutPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/Your_shipping_location" />
+
+        <TextView
+          android:id="@+id/shipping_amount"
+          style="@style/PledgeCurrency"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="end"
+          android:layout_marginBottom="@dimen/grid_4"
+          tools:text="$20" />
+
+        <include layout="@layout/horizontal_line_1dp_view" />
+
+        <TextView
+          style="@style/CalloutPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_1"
+          android:layout_marginTop="@dimen/grid_4"
+          android:text="@string/dashboard_graphs_funding_total" />
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_4"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/FootnoteSecondary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/By_pledging_you_agree" />
+
+          <TextView
+            style="@style/PledgeCurrencySecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:text="$40" />
+
+        </LinearLayout>
+
+        <Button
+          android:id="@+id/continue_to_tout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          android:text="@string/Continue"
+          android:layout_marginBottom="@dimen/grid_3"
+          android:visibility="gone"
+          tools:visibility="visible" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/payment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:orientation="vertical">
+
+        <ImageButton
+          android:id="@+id/google_pay"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_8"
+          android:layout_marginEnd="@dimen/activity_vertical_margin"
+          android:layout_marginStart="@dimen/activity_vertical_margin"
+          android:background="@drawable/googlepay_button_no_shadow_background"
+          android:contentDescription="@string/googlepay_button_content_description"
+          android:foreground="@drawable/googlepay_button_overlay"
+          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/grid_2"
+          android:scaleType="fitCenter"
+          android:src="@drawable/googlepay_button_content" />
+
+        <TextView
+          style="@style/FootnoteSecondary"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/activity_vertical_margin"
+          android:layout_marginStart="@dimen/activity_vertical_margin"
+          android:layout_marginTop="@dimen/grid_3"
+          android:gravity="center"
+          android:text="@string/Other_payment_methods" />
+
+        <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/cards_recycler"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          android:paddingBottom="@dimen/grid_3"
+          tools:listitem="@layout/item_reward_credit_card" />
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </FrameLayout>
+</ScrollView>

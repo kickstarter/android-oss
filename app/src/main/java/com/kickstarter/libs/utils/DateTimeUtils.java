@@ -22,6 +22,9 @@ import androidx.annotation.Nullable;
 public final class DateTimeUtils {
   private DateTimeUtils() {}
 
+  public static final DateTime KSR10_BIRTHDAY = DateTime.parse("2019-04-30T00:01:00+00:00");
+  public static final DateTime END_OF_BIRTHDAY_CELEBRATION = DateTime.parse("2019-05-14T23:59:59+00:00");
+
   /**
    * e.g.: December 2015.
    */
@@ -47,6 +50,17 @@ public final class DateTimeUtils {
    */
   public static boolean isEpoch(final @NonNull DateTime dateTime) {
     return dateTime.getMillis() == 0;
+  }
+
+  /**
+   * Returns a boolean indicating whether or not a DateTime value is falls within the range of the KSR10 birthday
+   * celebration.
+   */
+  public static boolean isWithinBirthdayCelebrationRange(final @NonNull DateTime dateTime) {
+    final boolean isAfterBirthday = dateTime.isEqual(KSR10_BIRTHDAY) || dateTime.isAfter(KSR10_BIRTHDAY);
+    final boolean isBeforeEndOfBirthdayCelebration = dateTime.isEqual(END_OF_BIRTHDAY_CELEBRATION)
+      || dateTime.isBefore(END_OF_BIRTHDAY_CELEBRATION);
+    return isAfterBirthday && isBeforeEndOfBirthdayCelebration;
   }
 
   /**

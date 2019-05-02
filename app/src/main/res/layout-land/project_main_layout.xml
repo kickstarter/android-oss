@@ -72,7 +72,7 @@
         layout="@layout/project_stats_view" />
 
       <RelativeLayout
-        android:id="@+id/project_action_buttons"
+        android:id="@+id/landscape_project_action_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

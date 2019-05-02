@@ -1,23 +1,28 @@
 package com.kickstarter.ui.activities
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.project_layout.*
 import kotlinx.android.synthetic.main.project_toolbar.*
@@ -28,8 +33,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     private lateinit var adapter: ProjectAdapter
     private lateinit var ksString: KSString
 
-    private var grid8Dimen = R.dimen.grid_8
-
     private val projectBackButtonString = R.string.project_back_button
     private val managePledgeString = R.string.project_checkout_manage_navbar_title
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
@@ -38,30 +41,62 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     private val campaignString = R.string.project_subpages_menu_buttons_campaign
     private val creatorString = R.string.project_subpages_menu_buttons_creator
 
+    private val animDuration = 200L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.project_layout)
-        this.ksString = environment().ksString()
 
-        project_action_buttons.visibility = when {
-            ViewUtils.isLandscape(this) -> View.GONE
-            else -> View.VISIBLE
-        }
+        this.ksString = environment().ksString()
 
         this.adapter = ProjectAdapter(this.viewModel)
         project_recycler_view.adapter = this.adapter
-        project_recycler_view.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        project_recycler_view.layoutManager = LinearLayoutManager(this)
+
+        val viewTreeObserver = rewards_container.viewTreeObserver
+        if (viewTreeObserver.isAlive) {
+            viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    this@ProjectActivity.viewModel.inputs.onGlobalLayout()
+                    rewards_container.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
+        }
 
         this.viewModel.outputs.heartDrawableId()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { heart_icon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
 
-        this.viewModel.outputs.projectAndUserCountry()
+        this.viewModel.outputs.projectAndUserCountryAndIsFeatureEnabled()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.renderProject(it.first, it.second) }
+                .subscribe { displayProjectAndRewards(it) }
+
+        this.viewModel.outputs.setActionButtonId()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    it?.let {
+                        val view = findViewById<View>(it)
+                        ViewUtils.setGone(view, false)
+                    }
+                }
+
+        this.viewModel.outputs.setInitialRewardsContainerY()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { setInitialRewardsContainerY() }
+
+        this.viewModel.outputs.showRewardsFragment()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { animateRewards(it) }
+
+        this.viewModel.outputs.showShareSheet()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startShareIntent(it) }
 
         this.viewModel.outputs.startCampaignWebViewActivity()
                 .compose(bindToLifecycle())
@@ -77,11 +112,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startCreatorBioWebViewActivity(it) }
-
-        this.viewModel.outputs.showShareSheet()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startShareIntent(it) }
 
         this.viewModel.outputs.startProjectUpdatesActivity()
                 .compose(bindToLifecycle())
@@ -126,8 +156,16 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
             this.viewModel.inputs.heartButtonClicked()
         }
 
+        native_back_this_project_button.setOnClickListener {
+            this.viewModel.inputs.nativeCheckoutBackProjectButtonClicked()
+        }
+
         manage_pledge_button.setOnClickListener {
             this.viewModel.inputs.managePledgeButtonClicked()
+        }
+
+        rewards_toolbar.setNavigationOnClickListener {
+            this.viewModel.inputs.hideRewardsFragmentClicked()
         }
 
         share_icon.setOnClickListener {
@@ -144,9 +182,85 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.project_recycler_view.adapter = null
     }
 
-    private fun renderProject(project: Project, configCountry: String) {
-        this.adapter.takeProject(project, configCountry)
-        ProjectUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
+    private fun animateRewards(expand: Boolean) {
+        val targetToShow = if (!expand) native_back_this_project_button else pledge_container
+        val showRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToShow, View.ALPHA, 0f, 1f)
+
+        val targetToHide = if (!expand) pledge_container else native_back_this_project_button
+        val hideRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToHide, View.ALPHA, 1f, 0f)
+
+        val guideline = resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
+        val initialValue = (if (expand) rewards_container.height - guideline else 0).toFloat()
+        val finalValue = (if (expand) 0 else rewards_container.height - guideline).toFloat()
+        val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
+
+        val rewardsContainerYAnimator = ObjectAnimator.ofFloat(rewards_container, View.Y, initialValue, finalValue).apply {
+            addUpdateListener { valueAnim ->
+                val radius = initialRadius * if (expand) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
+                rewards_container.radius = radius
+            }
+        }
+
+        AnimatorSet().apply {
+            playTogether(showRewardsFragmentAnimator, hideRewardsFragmentAnimator, rewardsContainerYAnimator)
+            duration = animDuration
+
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationCancel(animation: Animator?) {}
+
+                override fun onAnimationEnd(animation: Animator?) {
+                    if (expand) {
+                        native_back_this_project_button.visibility = View.GONE
+                    }
+                }
+
+                override fun onAnimationStart(animation: Animator?) {
+                    if (!expand) {
+                        native_back_this_project_button.visibility = View.VISIBLE
+                    }
+                }
+            })
+
+            start()
+        }
+    }
+
+    private fun displayProjectAndRewards(projectCountryAndNativeCheckout: Pair<Pair<Project, String>, Boolean>) {
+        val project = projectCountryAndNativeCheckout.first.first
+        val country = projectCountryAndNativeCheckout.first.second
+        val nativeCheckoutEnabled = projectCountryAndNativeCheckout.second
+
+        this.renderProject(project, country, nativeCheckoutEnabled)
+
+        if (nativeCheckoutEnabled) {
+            this.setupRewardsFragment(project)
+            rewards_container.visibility = View.VISIBLE
+        } else if (!ViewUtils.isLandscape(this)) {
+            project_action_buttons.visibility = View.VISIBLE
+        }
+    }
+
+    private fun renderProject(project: Project, configCountry: String, isHorizontalRewardsEnabled: Boolean) {
+        this.adapter.takeProject(project, configCountry, isHorizontalRewardsEnabled)
+        setProjectRecyclerViewPadding(isHorizontalRewardsEnabled)
+    }
+
+    private fun setInitialRewardsContainerY() {
+        val guideline = resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
+        rewards_container.y = (rewards_container.height - guideline).toFloat()
+    }
+
+    private fun setProjectRecyclerViewPadding(isHorizontalRewardsEnabled: Boolean) {
+        if (isHorizontalRewardsEnabled) {
+            val paddingBottom = resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
+            project_recycler_view.setPadding(0, 0, 0, paddingBottom)
+        }
+    }
+
+    private fun setupRewardsFragment(project: Project) {
+        val rewardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment?
+        rewardsFragment?.takeProject(project)
     }
 
     private fun startCampaignWebViewActivity(project: Project) {
@@ -164,7 +278,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     }
 
     private fun showStarToast() {
-        ViewUtils.showToastFromTop(this, getString(this.projectStarConfirmationString), 0, resources.getDimensionPixelSize(this.grid8Dimen))
+        ViewUtils.showToastFromTop(this, getString(this.projectStarConfirmationString), 0, resources.getDimensionPixelSize(R.dimen.grid_8))
     }
 
     private fun startCheckoutActivity(project: Project) {
@@ -227,5 +341,13 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
     override fun exitTransition(): Pair<Int, Int>? {
         return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
+    }
+
+    override fun back() {
+        when {
+            supportFragmentManager.backStackEntryCount > 0 -> supportFragmentManager.popBackStack()
+            native_back_this_project_button.visibility == View.GONE -> this.viewModel.inputs.hideRewardsFragmentClicked()
+            else -> super.back()
+        }
     }
 }

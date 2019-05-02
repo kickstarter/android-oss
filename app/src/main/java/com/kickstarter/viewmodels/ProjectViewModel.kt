@@ -38,8 +38,17 @@ interface ProjectViewModel {
         /** Call when the heart button is clicked.  */
         fun heartButtonClicked()
 
+        /** Call when horizontal rewards fragment should hide. */
+        fun hideRewardsFragmentClicked()
+
         /** Call when the manage pledge button is clicked.  */
         fun managePledgeButtonClicked()
+
+        /** Call when the native back project button is clicked.  */
+        fun nativeCheckoutBackProjectButtonClicked()
+
+        /** Call when the view has been laid out. */
+        fun onGlobalLayout()
 
         /** Call when the play video button is clicked.  */
         fun playVideoButtonClicked()
@@ -58,9 +67,18 @@ interface ProjectViewModel {
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
-        /** Emits a project and country when a new value is available. If the view model is created with a full project
-         * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
-        fun projectAndUserCountry(): Observable<Pair<Project, String>>
+        /** Emits a project,country, and the native checkout feature flag. If the view model is created with a full project
+         * model, this observable will emit that project immediately, and then again when it has updated from the api.*/
+        fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>>
+
+        /** Emits the back, manage, view pledge button, or null. */
+        fun setActionButtonId(): Observable<Int>
+
+        /** Emits when we should set the Y position of the rewards container. */
+        fun setInitialRewardsContainerY(): Observable<Void>
+
+        /** Emits when rewards fragment should expand. */
+        fun showRewardsFragment(): Observable<Boolean>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
@@ -108,14 +126,20 @@ interface ProjectViewModel {
         private val commentsTextViewClicked = PublishSubject.create<Void>()
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
         private val heartButtonClicked = PublishSubject.create<Void>()
+        private val hideRewardsFragment = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
+        private val nativeCheckoutBackProjectButtonClicked = PublishSubject.create<Void>()
+        private val onGlobalLayout = PublishSubject.create<Void>()
         private val playVideoButtonClicked = PublishSubject.create<Void>()
         private val shareButtonClicked = PublishSubject.create<Void>()
         private val updatesTextViewClicked = PublishSubject.create<Void>()
         private val viewPledgeButtonClicked = PublishSubject.create<Void>()
 
         private val heartDrawableId = BehaviorSubject.create<Int>()
-        private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
+        private val projectAndUserCountryAndIsFeatureEnabled = BehaviorSubject.create<Pair<Pair<Project, String>, Boolean>>()
+        private val setActionButtonId = BehaviorSubject.create<Int>()
+        private val setInitialRewardPosition = BehaviorSubject.create<Void>()
+        private val showRewardsFragment = BehaviorSubject.create<Boolean>()
         private val startLoginToutActivity = BehaviorSubject.create<Void>()
         private val showShareSheet = BehaviorSubject.create<Project>()
         private val showSavedPrompt = BehaviorSubject.create<Void>()
@@ -143,10 +167,10 @@ interface ProjectViewModel {
                     .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
 
             val refTag = intent()
-                    .flatMap({ ProjectIntentMapper.refTag(it) })
+                    .flatMap { ProjectIntentMapper.refTag(it) }
 
             val pushNotificationEnvelope = intent()
-                    .flatMap({ ProjectIntentMapper.pushNotificationEnvelope(it) })
+                    .flatMap { ProjectIntentMapper.pushNotificationEnvelope(it) }
 
             val loggedInUserOnHeartClick = this.currentUser.observable()
                     .compose<User>(takeWhen(this.heartButtonClicked))
@@ -158,7 +182,7 @@ interface ProjectViewModel {
 
             val projectOnUserChangeSave = initialProject
                     .compose(takeWhen<Project, User>(loggedInUserOnHeartClick))
-                    .switchMap({ this.toggleProjectSave(it) })
+                    .switchMap { this.toggleProjectSave(it) }
                     .share()
 
             loggedOutUserOnHeartClick
@@ -170,7 +194,7 @@ interface ProjectViewModel {
                     .filter { su -> su.second != null }
                     .withLatestFrom<Project, Project>(initialProject) { _, p -> p }
                     .take(1)
-                    .switchMap({ this.saveProject(it) })
+                    .switchMap { this.saveProject(it) }
                     .share()
 
             val currentProject = Observable.merge(
@@ -179,14 +203,17 @@ interface ProjectViewModel {
                     savedProjectOnLoginSuccess
             )
 
+            val horizontalRewardsEnabled = Observable.just(environment.horizontalRewardsEnabled().get())
+
             projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
                     .filter { p -> p.isStarred && p.isLive && !p.isApproachingDeadline }
                     .compose(ignoreValues())
                     .subscribe(this.showSavedPrompt)
 
             currentProject
-                    .compose<Pair<Project, String>>(combineLatestPair(this.currentConfig.observable().map({ it.countryCode() })))
-                    .subscribe(this.projectAndUserCountry)
+                    .compose<Pair<Project, String>>(combineLatestPair(this.currentConfig.observable().map { it.countryCode() }))
+                    .compose<Pair<Pair<Project, String>, Boolean>>(combineLatestPair(horizontalRewardsEnabled))
+                    .subscribe(this.projectAndUserCountryAndIsFeatureEnabled)
 
             currentProject
                     .compose<Project>(takeWhen(this.shareButtonClicked))
@@ -220,17 +247,32 @@ interface ProjectViewModel {
                     .compose<Project>(takeWhen(this.playVideoButtonClicked))
                     .subscribe(this.startVideoActivity)
 
-            Observable.combineLatest<Project, User, Pair<Project, User>>(currentProject, this.currentUser.observable(), { a, b -> Pair.create(a, b) })
+            Observable.combineLatest<Project, User, Pair<Project, User>>(currentProject, this.currentUser.observable())
+            { project, user -> Pair.create(project, user) }
                     .compose<Pair<Project, User>>(takeWhen(this.viewPledgeButtonClicked))
                     .subscribe(this.startBackingActivity)
 
+            this.onGlobalLayout
+                    .compose(bindToLifecycle())
+                    .subscribe(this.setInitialRewardPosition)
+
+            this.nativeCheckoutBackProjectButtonClicked
+                    .map { true }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showRewardsFragment)
+
+            this.hideRewardsFragment
+                    .map { false }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showRewardsFragment)
+
             this.showShareSheet
                     .compose(bindToLifecycle())
-                    .subscribe({ this.koala.trackShowProjectShareSheet(it) })
+                    .subscribe { this.koala.trackShowProjectShareSheet(it) }
 
             this.startVideoActivity
                     .compose(bindToLifecycle())
-                    .subscribe({ this.koala.trackVideoStart(it) })
+                    .subscribe { this.koala.trackVideoStart(it) }
 
             currentProject
                     .map { p -> if (p.isStarred) R.drawable.icon__heart else R.drawable.icon__heart_outline }
@@ -239,10 +281,10 @@ interface ProjectViewModel {
             projectOnUserChangeSave
                     .mergeWith(savedProjectOnLoginSuccess)
                     .compose(bindToLifecycle())
-                    .subscribe({ this.koala.trackProjectStar(it) })
+                    .subscribe { this.koala.trackProjectStar(it) }
 
-            Observable.combineLatest<RefTag, RefTag, Project, RefTagsAndProject>(refTag, cookieRefTag, currentProject,
-                    { refTagFromIntent, refTagFromCookie, project -> RefTagsAndProject(refTagFromIntent, refTagFromCookie, project) })
+            Observable.combineLatest<RefTag, RefTag, Project, RefTagsAndProject>(refTag, cookieRefTag, currentProject)
+            { refTagFromIntent, refTagFromCookie, project -> RefTagsAndProject(refTagFromIntent, refTagFromCookie, project) }
                     .take(1)
                     .compose(bindToLifecycle())
                     .subscribe { data ->
@@ -261,12 +303,19 @@ interface ProjectViewModel {
             pushNotificationEnvelope
                     .take(1)
                     .compose(bindToLifecycle())
-                    .subscribe({ this.koala.trackPushNotification(it) })
+                    .subscribe { this.koala.trackPushNotification(it) }
 
             intent()
-                    .filter({ IntentMapper.appBannerIsSet(it) })
+                    .filter { IntentMapper.appBannerIsSet(it) }
                     .compose(bindToLifecycle())
                     .subscribe { _ -> this.koala.trackOpenedAppBanner() }
+
+            currentProject
+                    .map { getActionButtons(it) }
+                    .take(1)
+                    .compose(bindToLifecycle())
+                    .subscribe { this.setActionButtonId.onNext(it) }
+
         }
 
         /**
@@ -296,8 +345,20 @@ interface ProjectViewModel {
             this.heartButtonClicked.onNext(null)
         }
 
+        override fun hideRewardsFragmentClicked() {
+            this.hideRewardsFragment.onNext(null)
+        }
+
         override fun managePledgeButtonClicked() {
             this.managePledgeButtonClicked.onNext(null)
+        }
+
+        override fun nativeCheckoutBackProjectButtonClicked() {
+            this.nativeCheckoutBackProjectButtonClicked.onNext(null)
+        }
+
+        override fun onGlobalLayout() {
+            this.onGlobalLayout.onNext(null)
         }
 
         override fun playVideoButtonClicked() {
@@ -348,56 +409,67 @@ interface ProjectViewModel {
             this.viewPledgeButtonClicked.onNext(null)
         }
 
+        override fun showRewardsFragment(): Observable<Boolean> {
+            return this.showRewardsFragment
+        }
+
         override fun heartDrawableId(): Observable<Int> {
             return this.heartDrawableId
         }
 
-        override fun projectAndUserCountry(): Observable<Pair<Project, String>> {
-            return this.projectAndUserCountry
+        override fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>> {
+            return this.projectAndUserCountryAndIsFeatureEnabled
         }
 
-        override fun showSavedPrompt(): Observable<Void> {
-            return this.showSavedPrompt
-        }
+        @NonNull
+        override fun setActionButtonId(): Observable<Int> = this.setActionButtonId
 
-        override fun showShareSheet(): Observable<Project> {
-            return this.showShareSheet
-        }
+        @NonNull
+        override fun setInitialRewardsContainerY(): Observable<Void> = this.setInitialRewardPosition
 
-        override fun startBackingActivity(): Observable<Pair<Project, User>> {
-            return this.startBackingActivity
-        }
+        @NonNull
+        override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
 
-        override fun startCampaignWebViewActivity(): Observable<Project> {
-            return this.startCampaignWebViewActivity
-        }
+        @NonNull
+        override fun showShareSheet(): Observable<Project> = this.showShareSheet
 
-        override fun startCheckoutActivity(): Observable<Project> {
-            return this.startCheckoutActivity
-        }
+        @NonNull
+        override fun startBackingActivity(): Observable<Pair<Project, User>> = this.startBackingActivity
 
-        override fun startCommentsActivity(): Observable<Project> {
-            return this.startCommentsActivity
-        }
+        @NonNull
+        override fun startCampaignWebViewActivity(): Observable<Project> = this.startCampaignWebViewActivity
 
-        override fun startCreatorBioWebViewActivity(): Observable<Project> {
-            return this.startCreatorBioWebViewActivity
-        }
+        @NonNull
+        override fun startCheckoutActivity(): Observable<Project> = this.startCheckoutActivity
 
-        override fun startLoginToutActivity(): Observable<Void> {
-            return this.startLoginToutActivity
-        }
+        @NonNull
+        override fun startCommentsActivity(): Observable<Project> = this.startCommentsActivity
 
-        override fun startManagePledgeActivity(): Observable<Project> {
-            return this.startManagePledgeActivity
-        }
+        @NonNull
+        override fun startCreatorBioWebViewActivity(): Observable<Project> = this.startCreatorBioWebViewActivity
 
-        override fun startProjectUpdatesActivity(): Observable<Project> {
-            return this.startProjectUpdatesActivity
-        }
+        @NonNull
+        override fun startLoginToutActivity(): Observable<Void> = this.startLoginToutActivity
 
-        override fun startVideoActivity(): Observable<Project> {
-            return this.startVideoActivity
+        @NonNull
+        override fun startManagePledgeActivity(): Observable<Project> = this.startManagePledgeActivity
+
+        @NonNull
+        override fun startProjectUpdatesActivity(): Observable<Project> = this.startProjectUpdatesActivity
+
+        @NonNull
+        override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
+
+        private fun getActionButtons(project: Project): Int? {
+            return if (!project.isBacking && project.isLive) {
+                R.id.back_project_button
+            } else if (project.isBacking && project.isLive) {
+                R.id.manage_pledge_button
+            } else if (project.isBacking && !project.isLive) {
+                R.id.view_pledge_button
+            } else {
+                return null
+            }
         }
 
         private fun saveProject(project: Project): Observable<Project> {

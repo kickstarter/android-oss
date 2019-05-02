@@ -1,6 +1,7 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel;
 import com.kickstarter.libs.utils.BundleUtils;
+import com.kickstarter.ui.data.ActivityResult;
 import com.trello.rxlifecycle.FragmentEvent;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.components.FragmentLifecycleProvider;
@@ -188,6 +190,14 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
     }
 
     outState.putBundle(VIEW_MODEL_KEY, viewModelEnvelope);
+  }
+
+  @CallSuper
+  @Override
+  public void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    Timber.d("onActivityResult %s", this.toString());
+    this.viewModel.activityResult(ActivityResult.create(requestCode, resultCode, data));
   }
 
   private void assignViewModel(final @Nullable Bundle viewModelEnvelope) {

@@ -33,6 +33,7 @@
   <dimen name="grid_40">240dp</dimen>
   <dimen name="grid_41">246dp</dimen>
   <dimen name="grid_46">276dp</dimen>
+  <dimen name="grid_49">294dp</dimen>
   <dimen name="grid_57">342dp</dimen>
 
   <!-- Typography-->
@@ -43,8 +44,10 @@
   <dimen name="subheadline">15sp</dimen>
   <dimen name="callout">16sp</dimen>
   <dimen name="headline">18sp</dimen>
+  <dimen name="ksr10_title">39sp</dimen>
   <dimen name="title_3">20sp</dimen>
   <dimen name="title_2">22sp</dimen>
+  <dimen name="title_reward">24sp</dimen>
   <dimen name="title_1">28sp</dimen>
   <dimen name="title_thank_you">36sp</dimen>
 
@@ -164,5 +167,21 @@
   <dimen name="delete_card_image_width">24dp</dimen>
   <dimen name="delete_card_image_margin_top">24dp</dimen>
   <dimen name="payment_methods_list_item_8dp">8dp</dimen>
+
+  <!-- Native Checkout -->
+  <dimen name="fab_radius">@dimen/grid_5</dimen>
+  <dimen name="card_radius">@dimen/grid_2</dimen>
+  <dimen name="circle_width">4dp</dimen>
+  <dimen name="circle_radius">4dp</dimen>
+  <dimen name="indicator_radius">4dp</dimen>
+  <dimen name="pledge_margin">@dimen/grid_4</dimen>
+  <dimen name="mini_reward_width">@dimen/grid_15</dimen>
+  <dimen name="item_reward_layout_width">@dimen/grid_49</dimen>
+  <dimen name="reward_fragment_guideline_constraint_end">100dp</dimen>
+  <dimen name="fragment_rewards_parent_min_height">@dimen/grid_20</dimen>
+  <dimen name="stored_card_radius">16dp</dimen>
+  <dimen name="mini_reward_height">@dimen/grid_20</dimen>
+  <dimen name="stored_card_width">260dp</dimen>
+  <dimen name="mini_reward_elevation">8dp</dimen>
 
 </resources>

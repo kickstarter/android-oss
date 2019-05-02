@@ -13,6 +13,7 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
+import com.kickstarter.models.StoredCard
 import rx.Observable
 import rx.subjects.PublishSubject
 import type.CurrencyCode
@@ -20,26 +21,26 @@ import type.PaymentTypes
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
-        return Observable.defer{
+        return Observable.defer {
             val ps = PublishSubject.create<CreatePasswordMutation.Data>()
-        service.mutate(CreatePasswordMutation.builder()
-                .password(password)
-                .passwordConfirmation(confirmPassword)
-                .build())
-                .enqueue(object : ApolloCall.Callback<CreatePasswordMutation.Data>() {
-                    override fun onFailure(exception: ApolloException) {
-                        ps.onError(exception)
-                    }
-
-                    override fun onResponse(response: Response<CreatePasswordMutation.Data>) {
-                        if (response.hasErrors()) {
-                            ps.onError(java.lang.Exception(response.errors().first().message()))
+            service.mutate(CreatePasswordMutation.builder()
+                    .password(password)
+                    .passwordConfirmation(confirmPassword)
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<CreatePasswordMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
                         }
-                        ps.onNext(response.data())
-                        ps.onCompleted()
-                    }
 
-                })
+                        override fun onResponse(response: Response<CreatePasswordMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(java.lang.Exception(response.errors().first().message()))
+                            }
+                            ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+
+                    })
             return@defer ps
         }
     }
@@ -68,10 +69,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun getStoredCards(): Observable<UserPaymentsQuery.Data> {
+    override fun getStoredCards(): Observable<List<StoredCard>> {
         return Observable.defer {
-            val ps = PublishSubject.create<UserPaymentsQuery.Data>()
-            service.query(UserPaymentsQuery.builder().build())
+            val ps = PublishSubject.create<List<StoredCard>>()
+            this.service.query(UserPaymentsQuery.builder().build())
                     .enqueue(object : ApolloCall.Callback<UserPaymentsQuery.Data>() {
                         override fun onFailure(exception: ApolloException) {
                             ps.onError(exception)
@@ -81,8 +82,26 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             if (response.hasErrors()) {
                                 ps.onError(Exception(response.errors().first().message()))
                             }
-                            ps.onNext(response.data())
-                            ps.onCompleted()
+                            Observable.just(response.data())
+                                    .map { cards -> cards?.me()?.storedCards()?.nodes() }
+                                    .map { list ->
+                                        val storedCards = list?.asSequence()?.map {
+                                            val id = it.id()
+                                            when (id) {
+                                                null -> null
+                                                else -> StoredCard.builder()
+                                                        .expiration(it.expirationDate())
+                                                        .id(id)
+                                                        .lastFourDigits(it.lastFour())
+                                                        .type(it.type())
+                                                        .build()
+                                            }
+                                        }?.toMutableList()
+                                        storedCards?.filterNotNull() ?: listOf()
+                                    }.subscribe{
+                                        ps.onNext(it)
+                                        ps.onCompleted()
+                                    }
                         }
                     })
             return@defer ps

@@ -1,16 +1,13 @@
 package com.kickstarter.viewmodels
 
-import UserPaymentsQuery
-import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import type.CreditCardPaymentType
-import type.CreditCardTypes
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -18,7 +15,7 @@ interface PaymentMethodsViewHolderViewModel {
 
     interface Inputs {
         /** Supply the view holder with the list item. */
-        fun card(creditCard: UserPaymentsQuery.Node)
+        fun card(creditCard: StoredCard)
 
         /** Call when the user clicks the delete icon. */
         fun deleteIconClicked()
@@ -36,51 +33,42 @@ interface PaymentMethodsViewHolderViewModel {
 
         /** Emits the last four digits of the credit card. */
         fun lastFour(): Observable<String>
-
-        /** Emits the payment type(Credit_Card or Bank_Account). */
-        fun paymentType(): Observable<CreditCardPaymentType>
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<PaymentMethodsViewHolder>(environment), Inputs, Outputs {
 
-        private val card = PublishSubject.create<UserPaymentsQuery.Node>()
+        private val card = PublishSubject.create<StoredCard>()
         private val deleteCardClick = PublishSubject.create<Void>()
 
         private val cardIssuer = BehaviorSubject.create<Int>()
         private val expirationDate = BehaviorSubject.create<String>()
         private val id = BehaviorSubject.create<String>()
         private val lastFour = BehaviorSubject.create<String>()
-        private val paymentType = BehaviorSubject.create<CreditCardPaymentType>()
 
-        private val sdf = SimpleDateFormat("MM/yyyy", Locale.getDefault())
+        private val sdf = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
-            this.card.map { expiration -> expiration.expirationDate() }
+            this.card.map { it.expiration() }
                     .map { sdf.format(it).toString() }
                     .subscribe { this.expirationDate.onNext(it) }
 
-            this.card.map { id -> id.id() }
+            this.card.map { it.id() }
                     .compose<String>(takeWhen(this.deleteCardClick))
                     .subscribe { this.id.onNext(it) }
 
-            this.card.map { last -> last.lastFour() }
+            this.card.map { it.lastFourDigits() }
                     .subscribe { this.lastFour.onNext(it) }
 
-            this.card.map { payment -> payment.paymentType() }
-                    .subscribe { this.paymentType.onNext(it) }
-
-            this.card.map { type -> type.type() }
-                    .map { setCreditCardType(it) }
+            this.card.map { it.type() }
+                    .map { StoredCard.getCardTypeDrawable(it) }
                     .subscribe { this.cardIssuer.onNext(it) }
 
         }
 
-        override fun card(creditCard: UserPaymentsQuery.Node) {
-            this.card.onNext(creditCard)
-        }
+        override fun card(creditCard: StoredCard) = this.card.onNext(creditCard)
 
         override fun deleteIconClicked() = this.deleteCardClick.onNext(null)
 
@@ -91,19 +79,5 @@ interface PaymentMethodsViewHolderViewModel {
         override fun id(): Observable<String> = this.id
 
         override fun lastFour(): Observable<String> = this.lastFour
-
-        override fun paymentType(): Observable<CreditCardPaymentType> = this.paymentType
-
-        private fun setCreditCardType(cardType: CreditCardTypes): Int {
-            return when (cardType) {
-                CreditCardTypes.AMEX -> R.drawable.amex_md
-                CreditCardTypes.DISCOVER -> R.drawable.discover_md
-                CreditCardTypes.JCB -> R.drawable.jcb_md
-                CreditCardTypes.MASTERCARD -> R.drawable.mastercard_md
-                CreditCardTypes.UNION_PAY -> R.drawable.union_pay_md
-                CreditCardTypes.VISA -> R.drawable.visa_md
-                else -> R.drawable.generic_bank_md
-            }
-        }
     }
 }

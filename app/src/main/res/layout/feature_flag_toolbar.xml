@@ -3,9 +3,8 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  tools:showIn="@layout/internal_tools_layout"
+  tools:showIn="@layout/activity_feature_flag"
   style="@style/Toolbar"
-  android:id="@+id/internal_tools_toolbar"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
 
@@ -27,4 +26,3 @@
   </RelativeLayout>
 
 </com.kickstarter.ui.toolbars.KSToolbar>
-

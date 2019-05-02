@@ -17,7 +17,7 @@ import com.kickstarter.models.Reward;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.BackingActivity;
 import com.kickstarter.ui.activities.CheckoutActivity;
-import com.kickstarter.ui.adapters.RewardsItemAdapter;
+import com.kickstarter.ui.adapters.RewardItemsAdapter;
 import com.kickstarter.viewmodels.RewardViewModel;
 
 import androidx.annotation.NonNull;
@@ -62,13 +62,12 @@ public final class RewardViewHolder extends KSViewHolder {
 
   public RewardViewHolder(final @NonNull View view) {
     super(view);
-
     this.ksString = environment().ksString();
     this.viewModel = new RewardViewModel.ViewModel(environment());
 
     ButterKnife.bind(this, view);
-    final RewardsItemAdapter rewardsItemAdapter = new RewardsItemAdapter();
-    this.rewardsItemRecyclerView.setAdapter(rewardsItemAdapter);
+    final RewardItemsAdapter rewardItemsAdapter = new RewardItemsAdapter();
+    this.rewardsItemRecyclerView.setAdapter(rewardItemsAdapter);
     final LinearLayoutManager layoutManager = new LinearLayoutManager(context());
     this.rewardsItemRecyclerView.setLayoutManager(layoutManager);
 
@@ -146,7 +145,7 @@ public final class RewardViewHolder extends KSViewHolder {
     this.viewModel.outputs.rewardsItemList()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(rewardsItemAdapter::rewardsItems);
+      .subscribe(rewardItemsAdapter::rewardsItems);
 
     this.viewModel.outputs.rewardsItemsAreGone()
       .compose(bindToLifecycle())

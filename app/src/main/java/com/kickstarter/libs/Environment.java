@@ -28,10 +28,11 @@ public abstract class Environment implements Parcelable {
   public abstract CookieManager cookieManager();
   public abstract CurrentConfigType currentConfig();
   public abstract CurrentUserType currentUser();
-  public abstract BooleanPreferenceType enableHorizontalRewards();
   public abstract Gson gson();
   public abstract BooleanPreferenceType hasSeenAppRatingPreference();
   public abstract BooleanPreferenceType hasSeenGamesNewsletterPreference();
+  public abstract BooleanPreferenceType hasSeenKSR10BirthdayModal();
+  public abstract BooleanPreferenceType horizontalRewardsEnabled();
   public abstract InternalToolsType internalTools();
   public abstract Koala koala();
   public abstract KSCurrency ksCurrency();
@@ -55,10 +56,11 @@ public abstract class Environment implements Parcelable {
     public abstract Builder cookieManager(CookieManager __);
     public abstract Builder currentConfig(CurrentConfigType __);
     public abstract Builder currentUser(CurrentUserType __);
-    public abstract Builder enableHorizontalRewards(BooleanPreferenceType __);
     public abstract Builder gson(Gson __);
     public abstract Builder hasSeenAppRatingPreference(BooleanPreferenceType __);
     public abstract Builder hasSeenGamesNewsletterPreference(BooleanPreferenceType __);
+    public abstract Builder hasSeenKSR10BirthdayModal(BooleanPreferenceType __);
+    public abstract Builder horizontalRewardsEnabled(BooleanPreferenceType __);
     public abstract Builder internalTools(InternalToolsType __);
     public abstract Builder koala(Koala __);
     public abstract Builder ksCurrency(KSCurrency __);

@@ -195,6 +195,25 @@
     <item name="android:text">@string/discovery_activity_sample_button_see_all_activity</item>
   </style>
 
+  <style name="ExtendedFab" parent="Widget.MaterialComponents.Button">
+    <item name="android:paddingTop">@dimen/grid_2</item>
+    <item name="android:paddingBottom">@dimen/grid_2</item>
+    <item name="android:paddingStart">@dimen/grid_4</item>
+    <item name="android:paddingEnd">@dimen/grid_4</item>
+    <item name="cornerRadius">@dimen/fab_radius</item>
+    <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
+    <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
+    <item name="android:minHeight">@dimen/grid_10</item>
+  </style>
+
+  <style name="PledgeButton">
+    <item name="android:layout_gravity">bottom</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:layout_marginBottom">@dimen/grid_3</item>
+    <item name="android:layout_marginEnd">@dimen/grid_3</item>
+    <item name="android:layout_marginStart">@dimen/grid_3</item>
+  </style>
+
   <style name="KSSettingsMailIcon">
     <item name="android:src">@drawable/icon__mail</item>
     <item name="android:focusable">true</item>
@@ -355,6 +374,15 @@
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
+  <style name="Caption2Secondary" parent="TextSecondary">
+    <item name="android:textSize">@dimen/caption_2</item>
+    <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
+  </style>
+
+  <style name="Caption2SecondaryMedium" parent="Caption2Secondary">
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  </style>
+
   <style name="FootnotePrimary" parent="TextPrimary">
     <item name="android:textSize">@dimen/footnote</item>
   </style>
@@ -477,6 +505,37 @@
     <item name="android:textColor">@color/ksr_red_400</item>
   </style>
 
+  <style name="PledgeCurrency" parent="TextPrimary">
+    <item name="android:textSize">@dimen/title_1</item>
+  </style>
+
+  <style name="PledgeCurrencySecondary" parent="PledgeCurrency">
+    <item name="android:textColor">@color/primary</item>
+  </style>
+
+  <style name="CreditCardExpiration" parent="Caption2SecondaryMedium">
+    <item name="android:ellipsize">middle</item>
+    <item name="android:singleLine">true</item>
+  </style>
+
+  <style name="CreditCardLastFour" parent="BodyPrimaryMedium">
+    <item name="android:layout_marginBottom">@dimen/grid_1_half</item>
+    <item name="android:ellipsize">middle</item>
+    <item name="android:singleLine">true</item>
+  </style>
+
+  <style name="RewardTitle" parent="BodyPrimaryMedium">
+    <item name="android:textSize">@dimen/title_reward</item>
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+  </style>
+
+  <style name="RewardSectionTitle" parent="CalloutPrimaryMedium">
+    <item name="android:textColor">@color/ksr_dark_grey_400</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+  </style>
+
   <!-- Cards -->
   <style name="ActivityFeedCardBase">
     <item name="android:foreground">@drawable/click_indicator_light</item>
@@ -506,6 +565,11 @@
   </style>
 
   <style name="ActivitySampleCard" parent="ActivitySampleCardBase" />
+
+  <style name="PledgeStoredCard">
+    <item name="cardCornerRadius">@dimen/stored_card_radius</item>
+    <item name="cardBackgroundColor">@color/white</item>
+  </style>
 
   <!-- Rewards -->
   <style name="RewardHeadline" parent="Caption2Primary">

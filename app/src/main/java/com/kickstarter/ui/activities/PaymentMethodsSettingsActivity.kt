@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities
 
-import UserPaymentsQuery
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -13,6 +12,7 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
 import com.kickstarter.viewmodels.PaymentMethodsViewModel
 import kotlinx.android.synthetic.main.activity_settings_payment_methods.*
@@ -87,16 +87,22 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
         return this.showDeleteCardDialog!!
     }
 
-    private fun setCards(cards: MutableList<UserPaymentsQuery.Node>) = this.adapter.populateCards(cards)
+    private fun setCards(cards: List<StoredCard>) = this.adapter.populateCards(cards)
 
     private fun setUpRecyclerView() {
         this.adapter = PaymentMethodsAdapter(this.viewModel, object: DiffUtil.ItemCallback<Any>() {
             override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                return (oldItem as UserPaymentsQuery.Node).id() == (newItem as UserPaymentsQuery.Node).id()
+                return compareCards(oldItem, newItem)
             }
 
             override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-                return (oldItem as UserPaymentsQuery.Node).id() == (newItem as UserPaymentsQuery.Node).id()
+                return compareCards(oldItem, newItem)
+            }
+
+            private fun compareCards(oldItem: Any, newItem: Any): Boolean {
+                val oldCard = oldItem as StoredCard
+                val newCard = newItem as StoredCard
+                return oldCard.id() == newCard.id()
             }
         })
         recycler_view.adapter = this.adapter

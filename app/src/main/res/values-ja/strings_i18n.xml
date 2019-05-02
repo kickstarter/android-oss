@@ -222,6 +222,7 @@
   <string name="Info" formatted="false">インフォメーション</string>
   <string name="Introduce_yourself" formatted="false">自己紹介</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
+  <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">It\'s a way to bring creative projects to life.</string>
   <string name="Its_better_with_friends" formatted="false">友達にとってより良い。</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">ラジオみたいな (でもつまらない内容をダラダラと語ったりしない) ニュースレター。</string>
   <string name="Its_our_birthday" formatted="false">Kickstarter の誕生日です！過去10年の間に、16万以上のクリエイティブなプロジェクトが、1600万人以上のバッカーの支援のもと、Kickstarter で実現化しました。</string>
@@ -233,6 +234,7 @@
   <string name="Keep_up_with_future_live_streams" formatted="false">ライブ配信を通知</string>
   <string name="Kickstarter_Music" formatted="false">Kickstarter Music</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (達成した時)</string>
+  <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter is not a store.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter は普通のお店とは全く違います。クリエイティブなプロジェクトに生命を吹き込む場です。</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。</string>
   <string name="Learn_more_about_accountability" formatted="false">報告義務に関してさらに詳しく</string>

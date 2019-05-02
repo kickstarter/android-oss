@@ -34,6 +34,7 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
     private var viewModel = HorizontalRewardViewHolderViewModel.ViewModel(environment())
 
     private val currencyConversionString = context().getString(R.string.About_reward_amount)
+    private val noLongerAvailbleString = context().getString(R.string.No_longer_available)
     private val pledgeRewardCurrencyOrMoreString = context().getString(R.string.rewards_title_pledge_reward_currency_or_more)
     private val remainingRewardsString = context().getString(R.string.Left_count_left_few)
 
@@ -163,7 +164,7 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.view.horizontal_reward_minimum_text_view.text = minimum
 
         if (RewardUtils.isLimitReached(this.reward)) {
-            this.view.horizontal_reward_pledge_button.text = "No Longer available"
+            this.view.horizontal_reward_pledge_button.text =
         } else {
             this.view.horizontal_reward_pledge_button.text = (this.ksString.format(
                     this.pledgeRewardCurrencyOrMoreString,

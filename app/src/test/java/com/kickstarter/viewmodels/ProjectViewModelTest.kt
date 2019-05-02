@@ -10,13 +10,10 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.ScreenLocation
 import org.junit.Test
 import rx.observers.TestSubscriber
 
@@ -29,6 +26,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val savedTest = TestSubscriber<Boolean>()
     private val setActionButtonId = TestSubscriber<Int>()
+    private val setInitialRewardsContainerY = TestSubscriber<Void>()
     private val showRewardsFragment = TestSubscriber<Boolean>()
     private val startBackingActivity = TestSubscriber<Pair<Project, User>>()
     private val startCampaignWebViewActivity = TestSubscriber<Project>()
@@ -43,6 +41,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
         this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first }.subscribe(this.projectTest)
         this.vm.outputs.setActionButtonId().subscribe(this.setActionButtonId)
+        this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
         this.vm.outputs.showRewardsFragment().subscribe(this.showRewardsFragment)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
@@ -332,5 +331,12 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
         this.vm.inputs.nativeCheckoutBackProjectButtonClicked()
         this.showRewardsFragment.assertValue(true)
+    }
+
+    @Test
+    fun testProjectViewModel_SetInitialRewardsContainerY() {
+        setUpEnvironment(environment())
+        this.vm.inputs.onGlobalLayout()
+        this.setInitialRewardsContainerY.assertValueCount(1)
     }
 }

@@ -9,7 +9,7 @@
         android:endColor="@color/transparent"
         android:type="linear" />
       <corners
-        android:radius="@dimen/grid_1" >
+        android:radius="@dimen/grid_2" >
       </corners>
     </shape>
   </item>

@@ -103,9 +103,9 @@ interface PledgeFragmentViewModel {
         private val pledgeButtonClicked = PublishSubject.create<Void>()
         private val selectCardButtonClicked = PublishSubject.create<Int>()
 
-        private val animateRewardCard = BehaviorSubject.create<PledgeData>()
         private val additionalPledgeAmount = BehaviorSubject.create<String>()
         private val additionalPledgeAmountIsGone = BehaviorSubject.create<Boolean>()
+        private val animateRewardCard = BehaviorSubject.create<PledgeData>()
         private val cards = BehaviorSubject.create<List<StoredCard>>()
         private val continueButtonIsGone = BehaviorSubject.create<Boolean>()
         private val decreasePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
@@ -265,11 +265,11 @@ interface PledgeFragmentViewModel {
             this.selectCardButtonClicked.onNext(position)
         }
 
-        override fun animateRewardCard(): Observable<PledgeData> = this.animateRewardCard
-
         override fun additionalPledgeAmount(): Observable<String> = this.additionalPledgeAmount
 
         override fun additionalPledgeAmountIsGone(): Observable<Boolean> = this.additionalPledgeAmountIsGone
+
+        override fun animateRewardCard(): Observable<PledgeData> = this.animateRewardCard
 
         override fun cards(): Observable<List<StoredCard>> = this.cards
 

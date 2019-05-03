@@ -120,19 +120,21 @@
           android:layout_height="wrap_content"
           android:layout_marginBottom="@dimen/grid_4"
           android:gravity="center_vertical"
-          android:orientation="horizontal">
+          android:orientation="horizontal"
+          android:weightSum="1.8">
 
           <AutoCompleteTextView
             android:id="@+id/shipping_rules"
             style="@style/AutocompleteStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".7"
             android:dropDownAnchor="@id/shipping_rules_row"
             android:ellipsize="end"
             android:enabled="false"
             android:hint="@string/Shipping"
-            android:maxLines="1"
+            android:maxLines="2"
+            android:scrollHorizontally="true"
             android:text="@string/Loading"
             android:textColor="@color/ksr_green_500" />
 
@@ -151,7 +153,8 @@
 
           <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight=".1">
 
             <TextView
               android:id="@+id/shipping_amount"
@@ -186,7 +189,8 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginBottom="@dimen/grid_4"
-          android:orientation="horizontal">
+          android:orientation="horizontal"
+          android:weightSum="1.1">
 
           <TextView
             style="@style/FootnoteSecondary"
@@ -197,7 +201,8 @@
 
           <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight=".1">
 
             <TextView
               android:id="@+id/total_amount"

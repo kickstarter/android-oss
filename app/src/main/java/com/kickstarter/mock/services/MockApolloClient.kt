@@ -34,6 +34,10 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(SavePaymentMethodMutation.Data(SavePaymentMethodMutation.CreatePaymentSource("", null, true)))
     }
 
+    override fun sendMessage(projectId: String, recipientId: String, body: String): Observable<Long> {
+        return Observable.just(1L)
+    }
+
     override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
         return Observable.just(SendEmailVerificationMutation.Data(SendEmailVerificationMutation.UserSendEmailVerification("",
                 "12345")))

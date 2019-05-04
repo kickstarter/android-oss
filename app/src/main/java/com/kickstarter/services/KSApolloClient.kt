@@ -4,6 +4,7 @@ import CreatePasswordMutation
 import DeletePaymentSourceMutation
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
+import SendMessageMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
@@ -13,6 +14,7 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.StoredCard
 import rx.Observable
 import rx.subjects.PublishSubject
@@ -132,6 +134,39 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             } else {
                                 ps.onNext(response.data())
                                 ps.onCompleted()
+                            }
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    override fun sendMessage(projectId: String, recipientId: String, body: String): Observable<Long> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Long>()
+            service.mutate(SendMessageMutation.builder()
+                    .projectId(projectId)
+                    .recipientId(recipientId)
+                    .body(body)
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<SendMessageMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<SendMessageMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors().first().message()))
+                            }
+                            val conversationId = response.data()?.sendMessage()?.conversation()?.id()
+                            conversationId.let {
+                                when {
+                                    ObjectUtils.isNull(it) -> ps.onError(Exception())
+                                    else -> {
+                                        ps.onNext(it?.toLong())
+                                        ps.onCompleted()
+                                    }
+                                }
                             }
                         }
                     })

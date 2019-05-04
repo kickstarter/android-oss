@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <com.google.android.material.appbar.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.kickstarter.ui.toolbars.KSToolbar
+      style="@style/Toolbar"
+      app:contentInsetLeft="0dp"
+      app:contentInsetStart="0dp">
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.kickstarter.ui.views.IconButton
+          style="@style/ToolbarIconBackButton"
+          android:id="@+id/back_button" />
+
+        <TextView
+          style="@style/ToolbarTitle"
+          android:id="@+id/title_text_view"
+          android:text="@string/Message_creator" />
+
+      </RelativeLayout>
+
+    </com.kickstarter.ui.toolbars.KSToolbar>
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <com.google.android.material.textfield.TextInputLayout
+    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <com.google.android.material.textfield.TextInputEditText
+      android:id="@+id/message_body"
+      android:inputType="textMultiLine"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
+
+  </com.google.android.material.textfield.TextInputLayout>
+
+  <Button
+    android:id="@+id/send_message_button"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:enabled="false"
+    android:focusable="true"
+    android:layout_gravity="bottom|end"
+    android:text="@string/social_buttons_send" />
+
+</LinearLayout>

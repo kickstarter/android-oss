@@ -266,6 +266,8 @@
           android:scheme="https" />
       </intent-filter>
     </activity>
+    <activity android:name=".ui.activities.CreatorBioActivity" />
+    <activity android:name=".ui.activities.ComposeMessageActivity" />
 
     <!-- SERVICES, PROVIDERS, RECEIVERS -->
 

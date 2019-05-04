@@ -151,9 +151,9 @@ public interface MessagesViewModel {
         .map(i -> {
           final MessageThread messageThread = i.getParcelableExtra(IntentKey.MESSAGE_THREAD);
           return messageThread != null
-            ? new Either.Left<MessageThread, Pair<Project, Backing>>(messageThread)
-            : new Either.Right<MessageThread, Pair<Project, Backing>>(
-              Pair.create(i.getParcelableExtra(IntentKey.PROJECT), i.getParcelableExtra(IntentKey.BACKING))
+            ? new Either.Left<>(messageThread)
+            : new Either.Right<>(
+            Pair.create(i.getParcelableExtra(IntentKey.PROJECT), i.getParcelableExtra(IntentKey.BACKING))
           );
         });
 
@@ -171,8 +171,8 @@ public interface MessagesViewModel {
         .filter(ObjectUtils::isNotNull);
 
       final Observable<Either<Backing, MessageThread>> backingOrThread = Observable.merge(
-        configBacking.map(backing -> new Either.Left<>(backing)),
-        configThread.map(thread -> new Either.Right<>(thread))
+        configBacking.map(Either.Left::new),
+        configThread.map(Either.Right::new)
       );
 
       final PublishSubject<Boolean> messageIsSending = PublishSubject.create();

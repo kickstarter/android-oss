@@ -21,7 +21,7 @@ public abstract class Reward implements Parcelable {
   public abstract @Nullable DateTime endsAt();
   public abstract long id();
   public abstract @Nullable Integer limit();
-  public abstract float minimum();
+  public abstract double minimum();
   public abstract @Nullable DateTime estimatedDeliveryOn();
   public abstract @Nullable Integer remaining();
   public abstract @Nullable List<RewardsItem> rewardsItems();
@@ -37,7 +37,7 @@ public abstract class Reward implements Parcelable {
     public abstract Builder endsAt(DateTime __);
     public abstract Builder id(long __);
     public abstract Builder limit(Integer __);
-    public abstract Builder minimum(float __);
+    public abstract Builder minimum(double __);
     public abstract Builder estimatedDeliveryOn(DateTime __);
     public abstract Builder remaining(Integer __);
     public abstract Builder rewardsItems(List<RewardsItem> __);

@@ -134,13 +134,14 @@ public final class KSCurrency {
    * @param project The project to use to look up currency information.
    * @param roundingMode This determines whether we should round the values down or up.
    */
-  public String formatWithUserPreference(final float initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode) {
+  public String formatWithUserPreference(final float initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode, final int precision) {
 
     final CurrencyOptions currencyOptions = userCurrencyOptions(initialValue, project);
 
     final NumberOptions numberOptions = NumberOptions.builder()
       .currencySymbol(currencyOptions.currencySymbol())
       .roundingMode(roundingMode)
+      .precision(precision)
       .build();
 
     return NumberUtils.format(currencyOptions.value(), numberOptions);

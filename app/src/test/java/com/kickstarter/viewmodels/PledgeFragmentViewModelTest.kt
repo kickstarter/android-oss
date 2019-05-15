@@ -35,6 +35,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val animateRewardCard = TestSubscriber<PledgeData>()
     private val cards = TestSubscriber<List<StoredCard>>()
     private val continueButtonIsGone = TestSubscriber<Boolean>()
+    private val conversionText = TestSubscriber<String>()
+    private val conversionTextViewIsGone = TestSubscriber<Boolean>()
     private val estimatedDelivery = TestSubscriber<String>()
     private val paymentContainerIsGone = TestSubscriber<Boolean>()
     private val pledgeAmount = TestSubscriber<String>()
@@ -53,6 +55,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.animateRewardCard().subscribe(this.animateRewardCard)
         this.vm.outputs.cards().subscribe(this.cards)
         this.vm.outputs.continueButtonIsGone().subscribe(this.continueButtonIsGone)
+        this.vm.outputs.conversionText().subscribe(this.conversionText)
+        this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone)
         this.vm.outputs.estimatedDelivery().subscribe(this.estimatedDelivery)
         this.vm.outputs.paymentContainerIsGone().subscribe(this.paymentContainerIsGone)
         this.vm.outputs.pledgeAmount().map { it.toString() }.subscribe(this.pledgeAmount)
@@ -102,6 +106,32 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.activityResult(ActivityResult.create(ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD, Activity.RESULT_OK, Intent()))
 
         this.cards.assertValueCount(2)
+    }
+
+    @Test
+    fun testConversionHiddenForProject() {
+        // Set the project currency and the user's chosen currency to the same value
+        setUpEnvironment(environment())
+        val project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("USD").build()
+        val reward = RewardFactory.reward()
+
+        // the conversion should be hidden.
+//        this.vm.inputs.projectAndReward(project, reward)
+        this.conversionText.assertValueCount(1)
+        this.conversionTextViewIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testConversionShownForProject() {
+        // Set the project currency and the user's chosen currency to different values
+        setUpEnvironment(environment())
+        val project = ProjectFactory.project().toBuilder().currency("CAD").currentCurrency("USD").build()
+        val reward = RewardFactory.reward()
+
+        // USD conversion should shown.
+//        this.vm.inputs.projectAndReward(project, reward)
+        this.conversionText.assertValueCount(1)
+        this.conversionTextViewIsGone.assertValue(false)
     }
 
     @Test

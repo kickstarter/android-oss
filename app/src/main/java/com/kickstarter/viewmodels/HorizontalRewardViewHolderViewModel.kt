@@ -12,7 +12,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
-import com.kickstarter.ui.viewholders.KSViewHolder
 import rx.Observable
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
@@ -136,7 +135,7 @@ interface HorizontalRewardViewHolderViewModel {
 
             this.conversionText = this.projectAndReward
                     .filter { RewardUtils.isReward(it.second) }
-                    .map { pr -> this.ksCurrency.formatWithUserPreference(pr.second.minimum(), pr.first, RoundingMode.UP) }
+                    .map { pr -> this.ksCurrency.formatWithUserPreference(pr.second.minimum(), pr.first, RoundingMode.UP, 0) }
 
             this.descriptionText = reward
                     .filter { RewardUtils.isReward(it) }

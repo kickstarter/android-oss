@@ -228,7 +228,7 @@ interface PledgeFragmentViewModel {
 
             val initialTotalAmount = rewardAmount
                     .compose<Pair<Float, Project>>(combineLatestPair(project))
-                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 0) }
+                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 2) }
                     .compose(bindToLifecycle())
 
             val totalWithShippingRule = rewardAmount
@@ -238,10 +238,9 @@ interface PledgeFragmentViewModel {
                     .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first.toFloat(), it.second, RoundingMode.UP, 2) }
                     .compose(bindToLifecycle())
 
-            val total = Observable.merge(initialTotalAmount, totalWithShippingRule)
+            Observable.merge(initialTotalAmount, totalWithShippingRule)
                     .compose(bindToLifecycle())
-
-            total.subscribe(this.totalAmount)
+                    .subscribe(this.totalAmount)
 
             val projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
@@ -254,30 +253,12 @@ interface PledgeFragmentViewModel {
                     .map { BooleanUtils.negate(it) }
                     .subscribe { this.conversionTextViewIsGone.onNext(it) }
 
-//            projectAndReward
-//                    .filter { RewardUtils.isReward(it.second) }
-//                    .map { pr -> this.ksCurrency.formatWithUserPreference(pr.second.minimum(), pr.first, RoundingMode.UP) }
-//                    .subscribe(this.conversionText)
-
-
-            //TODO Need to add up total amount and convert it.
-
-            val conversionAmount = rewardAmount
+            rewardAmount
                     .compose<Pair<Float, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first + it.second }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map { this.ksCurrency.formatWithUserPreference(it.first.toFloat(), it.second, RoundingMode.UP) }
-//
-            conversionAmount.subscribe(this.conversionText)
-
-//            val totalConversionAmount = rewardAmount
-//                    .compose<Pair<Float, Double>>(combineLatestPair(shippingAmount))
-//                    .map { it.first + it.second }
-//                    .compose<Pair<Double, Project>>(combineLatestPair(project))
-//                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first.toFloat(), it.second, RoundingMode.UP, 2) }
-
-
-//            totalConversionAmount.subscribe(this.conversionText)
+                    .map { this.ksCurrency.formatWithUserPreference(it.first.toFloat(), it.second, RoundingMode.UP, 2) }
+                    .subscribe(this.conversionText)
 
             this.selectCardButtonClicked
                     .compose(bindToLifecycle())

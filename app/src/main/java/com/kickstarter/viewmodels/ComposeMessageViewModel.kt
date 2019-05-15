@@ -36,7 +36,7 @@ interface ComposeMessageViewModel {
         fun messageEditTextHint(): Observable<String>
 
         /**  */
-        fun success(): Observable<Long>
+        fun success(): Observable<String>
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<ComposeMessageActivity>(environment), Inputs, Outputs {
@@ -48,7 +48,7 @@ interface ComposeMessageViewModel {
         private val messageEditTextHint = BehaviorSubject.create<String>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
         private val sendButtonIsEnabled = BehaviorSubject.create<Boolean>()
-        private val success = BehaviorSubject.create<Long>()
+        private val success = BehaviorSubject.create<String>()
 
         private val apolloClient: ApolloClientType = environment.apolloClient()
 
@@ -58,6 +58,11 @@ interface ComposeMessageViewModel {
         init {
             val project = intent()
                     .map { it.getParcelableExtra(IntentKey.PROJECT) as Project }
+
+            project
+                    .map { it.creator().name() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.messageEditTextHint)
 
             val sendMessage = Observable.combineLatest(project, this.messageBodyChanged)
             { p, u -> SendMessage(p, u) }
@@ -82,10 +87,8 @@ interface ComposeMessageViewModel {
                     .subscribe(this.success)
         }
 
-        private fun sendMessage(sendMessage: SendMessage): Observable<Long>{
-            val recipientId = sendMessage.project.creator().id().toString()
-            val projectId = sendMessage.project.id().toString()
-            return this.apolloClient.sendMessage(projectId, recipientId, sendMessage.body)
+        private fun sendMessage(sendMessage: SendMessage): Observable<String> {
+            return this.apolloClient.sendMessage(sendMessage.project, sendMessage.project.creator(), sendMessage.body)
                     .doOnSubscribe {
                         this.progressBarIsVisible.onNext(true)
                         this.sendButtonIsEnabled.onNext(false)
@@ -117,7 +120,7 @@ interface ComposeMessageViewModel {
         override fun sendButtonIsEnabled(): Observable<Boolean> = this.sendButtonIsEnabled
 
         @NonNull
-        override fun success(): Observable<Long> = this.success
+        override fun success(): Observable<String> = this.success
 
         data class SendMessage(val project: Project, val body: String)
     }

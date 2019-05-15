@@ -267,7 +267,8 @@
       </intent-filter>
     </activity>
     <activity android:name=".ui.activities.CreatorBioActivity" />
-    <activity android:name=".ui.activities.ComposeMessageActivity" />
+    <activity android:name=".ui.activities.ComposeMessageActivity"
+      android:windowSoftInputMode="adjustResize"/>
 
     <!-- SERVICES, PROVIDERS, RECEIVERS -->
 

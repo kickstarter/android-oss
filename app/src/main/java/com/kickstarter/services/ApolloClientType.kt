@@ -8,7 +8,9 @@ import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
+import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.User
 import rx.Observable
 import type.CurrencyCode
 import type.PaymentTypes
@@ -23,7 +25,7 @@ interface ApolloClientType {
 
     fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
 
-    fun sendMessage(projectId: String, recipientId: String, body: String): Observable<Long>
+    fun sendMessage(project: Project, recipient: User, body: String): Observable<String>
 
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
 

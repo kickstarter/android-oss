@@ -22,7 +22,7 @@ import auto.parcel.AutoParcel;
 
 @AutoGson
 @AutoParcel
-public abstract class Project implements Parcelable {
+public abstract class Project implements Parcelable, Relay {
   public abstract int backersCount();
   public abstract String blurb();
   public abstract @Nullable Backing backing();

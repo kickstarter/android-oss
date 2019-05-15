@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:orientation="vertical">
 
   <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
@@ -21,12 +21,12 @@
         android:orientation="horizontal">
 
         <com.kickstarter.ui.views.IconButton
-          style="@style/ToolbarIconBackButton"
-          android:id="@+id/back_button" />
+          android:id="@+id/back_button"
+          style="@style/ToolbarIconBackButton" />
 
         <TextView
-          style="@style/ToolbarTitle"
           android:id="@+id/title_text_view"
+          style="@style/ToolbarTitle"
           android:text="@string/Message_creator" />
 
       </RelativeLayout>
@@ -34,26 +34,42 @@
     </com.kickstarter.ui.toolbars.KSToolbar>
   </com.google.android.material.appbar.AppBarLayout>
 
-  <com.google.android.material.textfield.TextInputLayout
-    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+    android:layout_marginEnd="@dimen/activity_vertical_margin"
+    android:layout_marginStart="@dimen/activity_vertical_margin"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <com.google.android.material.textfield.TextInputEditText
-      android:id="@+id/message_body"
-      android:inputType="textMultiLine"
+    <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/message_body_til"
+      style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toTopOf="@id/send_message_button"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0">
 
-  </com.google.android.material.textfield.TextInputLayout>
+      <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/message_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine" />
 
-  <Button
-    android:id="@+id/send_message_button"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:enabled="false"
-    android:focusable="true"
-    android:layout_gravity="bottom|end"
-    android:text="@string/social_buttons_send" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-</LinearLayout>
+    <Button
+      android:id="@+id/send_message_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:enabled="false"
+      android:focusable="true"
+      android:text="@string/social_buttons_send"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

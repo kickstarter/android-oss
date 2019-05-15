@@ -14,6 +14,7 @@ import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.annotation.NonNull
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
@@ -87,6 +88,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(continue_to_tout, it) }
+
+        this.viewModel.outputs.conversionTextViewIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe(ViewUtils.setGone(total_amount_conversion))
+
+        this.viewModel.outputs.conversionText()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setConversionTextView(it) }
 
         this.viewModel.outputs.paymentContainerIsGone()
                 .compose(bindToLifecycle())
@@ -370,6 +381,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     pledge_details?.alpha = if (finalValue == 0f) animatedFraction else 1 - animatedFraction
                 }
             }
+
+    private fun setConversionTextView(@NonNull amount: String) {
+        val currencyConversionString = context?.getString(R.string.About_reward_amount)
+        total_amount_conversion.text = (currencyConversionString?.let {
+            this.viewModel.environment.ksString().format(
+                    it,
+                "reward_amount", amount
+        )
+        })
+    }
 
     private fun setDeliveryParams(miniRewardWidth: Float, margin: Float) {
         val deliveryParams = (delivery.layoutParams as LinearLayout.LayoutParams).apply {

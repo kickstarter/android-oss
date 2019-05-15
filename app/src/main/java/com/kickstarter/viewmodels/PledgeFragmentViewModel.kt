@@ -10,6 +10,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -59,6 +60,12 @@ interface PledgeFragmentViewModel {
         /**  Emits a boolean determining if the continue button should be hidden. */
         fun continueButtonIsGone(): Observable<Boolean>
 
+        /** Returns `true` if the USD conversion section should be hidden, `false` otherwise.  */
+        fun conversionTextViewIsGone(): Observable<Boolean>
+
+        /** Set the USD conversion.  */
+        fun conversionText(): Observable<String>
+
         /** Emits the estimated delivery date string of the reward. */
         fun estimatedDelivery(): Observable<String>
 
@@ -106,6 +113,8 @@ interface PledgeFragmentViewModel {
         private val animateRewardCard = BehaviorSubject.create<PledgeData>()
         private val cards = BehaviorSubject.create<List<StoredCard>>()
         private val continueButtonIsGone = BehaviorSubject.create<Boolean>()
+        private val conversionText = BehaviorSubject.create<String>()
+        private val conversionTextViewIsGone = BehaviorSubject.create<Boolean>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
         private val shippingAmount = BehaviorSubject.create<SpannableString>()
         private val shippingRules = BehaviorSubject.create<List<ShippingRule>>()
@@ -146,7 +155,7 @@ interface PledgeFragmentViewModel {
                     .map { it.estimatedDeliveryOn() }
                     .map { dateTime -> dateTime?.let { DateTimeUtils.estimatedDeliveryOn(it) } }
                     .compose(bindToLifecycle())
-                    .subscribe{ this.estimatedDelivery.onNext(it) }
+                    .subscribe { this.estimatedDelivery.onNext(it) }
 
             val rewardAmount = reward
                     .map { it.minimum() }
@@ -155,7 +164,7 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Float, Project>>(combineLatestPair(project))
                     .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 0) }
                     .compose(bindToLifecycle())
-                    .subscribe{ this.pledgeAmount.onNext(it) }
+                    .subscribe { this.pledgeAmount.onNext(it) }
 
             val shippingRules = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
@@ -229,9 +238,46 @@ interface PledgeFragmentViewModel {
                     .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first.toFloat(), it.second, RoundingMode.UP, 2) }
                     .compose(bindToLifecycle())
 
-            Observable.merge(initialTotalAmount, totalWithShippingRule)
+            val total = Observable.merge(initialTotalAmount, totalWithShippingRule)
                     .compose(bindToLifecycle())
-                    .subscribe(this.totalAmount)
+
+            total.subscribe(this.totalAmount)
+
+            val projectAndReward = project
+                    .compose<Pair<Project, Reward>>(combineLatestPair(reward))
+
+            projectAndReward
+                    .compose(bindToLifecycle())
+
+            projectAndReward
+                    .map { p -> p.first.currency() != p.first.currentCurrency() || RewardUtils.isNoReward(p.second) }
+                    .map { BooleanUtils.negate(it) }
+                    .subscribe { this.conversionTextViewIsGone.onNext(it) }
+
+//            projectAndReward
+//                    .filter { RewardUtils.isReward(it.second) }
+//                    .map { pr -> this.ksCurrency.formatWithUserPreference(pr.second.minimum(), pr.first, RoundingMode.UP) }
+//                    .subscribe(this.conversionText)
+
+
+            //TODO Need to add up total amount and convert it.
+
+            val conversionAmount = rewardAmount
+                    .compose<Pair<Float, Double>>(combineLatestPair(shippingAmount))
+                    .map { it.first + it.second }
+                    .compose<Pair<Double, Project>>(combineLatestPair(project))
+                    .map { this.ksCurrency.formatWithUserPreference(it.first.toFloat(), it.second, RoundingMode.UP) }
+//
+            conversionAmount.subscribe(this.conversionText)
+
+//            val totalConversionAmount = rewardAmount
+//                    .compose<Pair<Float, Double>>(combineLatestPair(shippingAmount))
+//                    .map { it.first + it.second }
+//                    .compose<Pair<Double, Project>>(combineLatestPair(project))
+//                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first.toFloat(), it.second, RoundingMode.UP, 2) }
+
+
+//            totalConversionAmount.subscribe(this.conversionText)
 
             this.selectCardButtonClicked
                     .compose(bindToLifecycle())
@@ -260,7 +306,8 @@ interface PledgeFragmentViewModel {
         private fun getDefaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
             return currentConfig.observable()
                     .map { it.countryCode() }
-                    .map { countryCode -> shippingRules.firstOrNull { it.location().country() == countryCode }
+                    .map { countryCode ->
+                        shippingRules.firstOrNull { it.location().country() == countryCode }
                                 ?: shippingRules.first()
                     }
         }
@@ -300,6 +347,16 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun continueButtonIsGone(): Observable<Boolean> = this.continueButtonIsGone
+
+        @NonNull
+        override fun conversionTextViewIsGone(): Observable<Boolean> {
+            return this.conversionTextViewIsGone
+        }
+
+        @NonNull
+        override fun conversionText(): Observable<String> {
+            return this.conversionText
+        }
 
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
 

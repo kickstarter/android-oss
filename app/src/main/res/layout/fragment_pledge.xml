@@ -218,6 +218,16 @@
               android:layout_height="@dimen/grid_2"
               android:layout_gravity="center|end"
               android:background="@drawable/pledge_amounts_loading_states" />
+
+            <TextView
+              android:id="@+id/total_amount_conversion"
+              style="@style/Caption1Secondary"
+              android:textSize="@dimen/caption_1"
+              android:layout_marginTop="@dimen/grid_6"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="bottom|end"
+              tools:text="About $40.00" />
           </FrameLayout>
 
         </LinearLayout>

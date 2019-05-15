@@ -80,6 +80,13 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("$100", currency.format(100.9f, project));
   }
 
+  public void testFormatWithUserPreference() {
+    final KSCurrency currency = createKSCurrency("US");
+    final Project project = ProjectFactory.project();
+    assertEquals("$101", currency.formatWithUserPreference(100.1f, project, RoundingMode.UP));
+    assertEquals("$100", currency.formatWithUserPreference(100.9f, project, RoundingMode.DOWN));
+  }
+
   private static KSCurrency createKSCurrency(final String countryCode) {
     final Config config = ConfigFactory.config().toBuilder()
       .countryCode(countryCode)

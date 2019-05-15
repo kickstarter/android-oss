@@ -109,27 +109,38 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testConversionHiddenForProject() {
+    fun testConversionHiddenForPledgeTotal() {
+        this.vm = PledgeFragmentViewModel.ViewModel(environment())
+        this.vm.outputs.conversionText().subscribe(this.conversionText)
+        this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone)
+
         // Set the project currency and the user's chosen currency to the same value
-        setUpEnvironment(environment())
         val project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("USD").build()
         val reward = RewardFactory.reward()
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project)
+        bundle.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)
+        this.vm.arguments(bundle)
 
         // the conversion should be hidden.
-//        this.vm.inputs.projectAndReward(project, reward)
         this.conversionText.assertValueCount(1)
         this.conversionTextViewIsGone.assertValue(true)
     }
 
     @Test
-    fun testConversionShownForProject() {
+    fun testConversionShownForPledgeTotal() {
+        this.vm = PledgeFragmentViewModel.ViewModel(environment())
+        this.vm.outputs.conversionText().subscribe(this.conversionText)
+        this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone)
         // Set the project currency and the user's chosen currency to different values
-        setUpEnvironment(environment())
         val project = ProjectFactory.project().toBuilder().currency("CAD").currentCurrency("USD").build()
         val reward = RewardFactory.reward()
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project)
+        bundle.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)
+        this.vm.arguments(bundle)
 
         // USD conversion should shown.
-//        this.vm.inputs.projectAndReward(project, reward)
         this.conversionText.assertValueCount(1)
         this.conversionTextViewIsGone.assertValue(false)
     }
@@ -258,13 +269,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment)
 
-        this.totalAmount.assertValues("$20", "$50.00")
+        this.totalAmount.assertValues("$20.00", "$50.00")
     }
 
     @Test
     fun testTotalAmountWithoutShippingRules() {
         setUpEnvironmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
-        this.totalAmount.assertValue("$20")
+        this.totalAmount.assertValue("$20.00")
     }
 
     private fun setUpEnvironmentForShippingRules(envelope: ShippingRulesEnvelope) {

@@ -21,7 +21,7 @@ public class KSCurrencyTest extends KSRobolectricTestCase {
     assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject()));
 
     assertEquals("$100", currency.formatWithUserPreference(100.0f, ProjectFactory.project(), RoundingMode.DOWN, 0));
-    assertEquals("CA$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.caProject(), RoundingMode.DOWN,0));
+    assertEquals("CA$ 100", currency.formatWithUserPreference(100.0f, ProjectFactory.caProject(), RoundingMode.DOWN, 0));
     assertEquals("£100", currency.formatWithUserPreference(100.0f, ProjectFactory.ukProject(), RoundingMode.DOWN, 0));
   }
 

@@ -253,12 +253,20 @@ interface PledgeFragmentViewModel {
                     .map { BooleanUtils.negate(it) }
                     .subscribe { this.conversionTextViewIsGone.onNext(it) }
 
-            rewardAmount
+            val initialTotalConversionAmount = rewardAmount
+                    .compose<Pair<Float, Project>>(combineLatestPair(project))
+                    .map { this.ksCurrency.formatWithUserPreference(it.first, it.second, RoundingMode.UP, 2) }
+                    .compose(bindToLifecycle())
+
+            val totalConversionAmount = rewardAmount
                     .compose<Pair<Float, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first + it.second }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map { this.ksCurrency.formatWithUserPreference(it.first.toFloat(), it.second, RoundingMode.UP, 2) }
-                    .subscribe(this.conversionText)
+
+            Observable.merge(initialTotalConversionAmount, totalConversionAmount)
+                    .compose(bindToLifecycle())
+                    .subscribe { this.conversionText.onNext(it) }
 
             this.selectCardButtonClicked
                     .compose(bindToLifecycle())

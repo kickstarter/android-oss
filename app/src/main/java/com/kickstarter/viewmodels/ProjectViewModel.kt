@@ -47,6 +47,9 @@ interface ProjectViewModel {
         /** Call when the native back project button is clicked.  */
         fun nativeCheckoutBackProjectButtonClicked()
 
+        /** Call when the view has been laid out. */
+        fun onGlobalLayout()
+
         /** Call when the play video button is clicked.  */
         fun playVideoButtonClicked()
 
@@ -70,6 +73,9 @@ interface ProjectViewModel {
 
         /** Emits the back, manage, view pledge button, or null. */
         fun setActionButtonId(): Observable<Int>
+
+        /** Emits when we should set the Y position of the rewards container. */
+        fun setInitialRewardsContainerY(): Observable<Void>
 
         /** Emits when rewards fragment should expand. */
         fun showRewardsFragment(): Observable<Boolean>
@@ -123,6 +129,7 @@ interface ProjectViewModel {
         private val hideRewardsFragment = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
         private val nativeCheckoutBackProjectButtonClicked = PublishSubject.create<Void>()
+        private val onGlobalLayout = PublishSubject.create<Void>()
         private val playVideoButtonClicked = PublishSubject.create<Void>()
         private val shareButtonClicked = PublishSubject.create<Void>()
         private val updatesTextViewClicked = PublishSubject.create<Void>()
@@ -131,6 +138,7 @@ interface ProjectViewModel {
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val projectAndUserCountryAndIsFeatureEnabled = BehaviorSubject.create<Pair<Pair<Project, String>, Boolean>>()
         private val setActionButtonId = BehaviorSubject.create<Int>()
+        private val setInitialRewardPosition = BehaviorSubject.create<Void>()
         private val showRewardsFragment = BehaviorSubject.create<Boolean>()
         private val startLoginToutActivity = BehaviorSubject.create<Void>()
         private val showShareSheet = BehaviorSubject.create<Project>()
@@ -244,6 +252,10 @@ interface ProjectViewModel {
                     .compose<Pair<Project, User>>(takeWhen(this.viewPledgeButtonClicked))
                     .subscribe(this.startBackingActivity)
 
+            this.onGlobalLayout
+                    .compose(bindToLifecycle())
+                    .subscribe(this.setInitialRewardPosition)
+
             this.nativeCheckoutBackProjectButtonClicked
                     .map { true }
                     .compose(bindToLifecycle())
@@ -345,6 +357,10 @@ interface ProjectViewModel {
             this.nativeCheckoutBackProjectButtonClicked.onNext(null)
         }
 
+        override fun onGlobalLayout() {
+            this.onGlobalLayout.onNext(null)
+        }
+
         override fun playVideoButtonClicked() {
             this.playVideoButtonClicked.onNext(null)
         }
@@ -405,51 +421,44 @@ interface ProjectViewModel {
             return this.projectAndUserCountryAndIsFeatureEnabled
         }
 
+        @NonNull
         override fun setActionButtonId(): Observable<Int> = this.setActionButtonId
 
-        override fun showSavedPrompt(): Observable<Void> {
-            return this.showSavedPrompt
-        }
+        @NonNull
+        override fun setInitialRewardsContainerY(): Observable<Void> = this.setInitialRewardPosition
 
-        override fun showShareSheet(): Observable<Project> {
-            return this.showShareSheet
-        }
+        @NonNull
+        override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
 
-        override fun startBackingActivity(): Observable<Pair<Project, User>> {
-            return this.startBackingActivity
-        }
+        @NonNull
+        override fun showShareSheet(): Observable<Project> = this.showShareSheet
 
-        override fun startCampaignWebViewActivity(): Observable<Project> {
-            return this.startCampaignWebViewActivity
-        }
+        @NonNull
+        override fun startBackingActivity(): Observable<Pair<Project, User>> = this.startBackingActivity
 
-        override fun startCheckoutActivity(): Observable<Project> {
-            return this.startCheckoutActivity
-        }
+        @NonNull
+        override fun startCampaignWebViewActivity(): Observable<Project> = this.startCampaignWebViewActivity
 
-        override fun startCommentsActivity(): Observable<Project> {
-            return this.startCommentsActivity
-        }
+        @NonNull
+        override fun startCheckoutActivity(): Observable<Project> = this.startCheckoutActivity
 
-        override fun startCreatorBioWebViewActivity(): Observable<Project> {
-            return this.startCreatorBioWebViewActivity
-        }
+        @NonNull
+        override fun startCommentsActivity(): Observable<Project> = this.startCommentsActivity
 
-        override fun startLoginToutActivity(): Observable<Void> {
-            return this.startLoginToutActivity
-        }
+        @NonNull
+        override fun startCreatorBioWebViewActivity(): Observable<Project> = this.startCreatorBioWebViewActivity
 
-        override fun startManagePledgeActivity(): Observable<Project> {
-            return this.startManagePledgeActivity
-        }
+        @NonNull
+        override fun startLoginToutActivity(): Observable<Void> = this.startLoginToutActivity
 
-        override fun startProjectUpdatesActivity(): Observable<Project> {
-            return this.startProjectUpdatesActivity
-        }
+        @NonNull
+        override fun startManagePledgeActivity(): Observable<Project> = this.startManagePledgeActivity
 
-        override fun startVideoActivity(): Observable<Project> {
-            return this.startVideoActivity
-        }
+        @NonNull
+        override fun startProjectUpdatesActivity(): Observable<Project> = this.startProjectUpdatesActivity
+
+        @NonNull
+        override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
 
         private fun getActionButtons(project: Project): Int? {
             return if (!project.isBacking && project.isLive) {

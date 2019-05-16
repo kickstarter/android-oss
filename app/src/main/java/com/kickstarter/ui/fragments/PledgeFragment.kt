@@ -74,10 +74,30 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             else -> 0L
         }
 
+        this.viewModel.outputs.additionalPledgeAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { additional_pledge_amount.text = it }
+
+        this.viewModel.outputs.additionalPledgeAmountIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(additional_pledge_amount_container, it) }
+
         this.viewModel.outputs.animateRewardCard()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { showPledgeSection(it) }
+
+        this.viewModel.outputs.decreasePledgeButtonIsEnabled()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { decrease_pledge.isEnabled = it }
+
+        this.viewModel.outputs.increasePledgeButtonIsEnabled()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { increase_pledge.isEnabled = it }
 
         this.viewModel.outputs.estimatedDelivery()
                 .compose(bindToLifecycle())
@@ -171,6 +191,14 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         continue_to_tout.setOnClickListener {
             this.viewModel.inputs.continueButtonClicked()
+        }
+
+        decrease_pledge.setOnClickListener {
+            this.viewModel.inputs.decreasePledgeButtonClicked()
+        }
+
+        increase_pledge.setOnClickListener {
+            this.viewModel.inputs.increasePledgeButtonClicked()
         }
     }
 

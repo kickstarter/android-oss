@@ -89,7 +89,7 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
 
         // Set project's country to CA and reward minimum to $0.30.
         val project = ProjectFactory.caProject()
-        val reward = RewardFactory.reward().toBuilder().minimum(0.3f).build()
+        val reward = RewardFactory.reward().toBuilder().minimum(0.3).build()
 
         // USD conversion should be rounded up.
         this.vm.inputs.projectAndReward(project, reward)
@@ -232,7 +232,7 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
     fun testMinimumTextViewText() {
         val project = ProjectFactory.project()
         val reward = RewardFactory.reward().toBuilder()
-                .minimum(10f)
+                .minimum(10.0)
                 .build()
         setUpEnvironment(environment())
 
@@ -244,7 +244,7 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
     fun testMinimumTextViewTextCAD() {
         val project = ProjectFactory.caProject()
         val reward = RewardFactory.reward().toBuilder()
-                .minimum(10f)
+                .minimum(10.0)
                 .build()
         setUpEnvironment(environment())
 

@@ -113,12 +113,12 @@
 
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-          android:id="@+id/placeholder"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:visibility="invisible"
-          tools:text="Pledge $10 or more" />
+          <com.google.android.material.button.MaterialButton
+            android:id="@+id/placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            tools:text="Pledge $10 or more" />
 
       </LinearLayout>
 
@@ -126,11 +126,25 @@
 
   </androidx.core.widget.NestedScrollView>
 
-  <com.google.android.material.button.MaterialButton
-    style="@style/PledgeButton"
-    android:id="@+id/horizontal_reward_pledge_button"
-    android:layout_width="match_parent"
+  <FrameLayout
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:text="Pledge $10 or more" />
+    android:layout_gravity="bottom">
+
+    <View
+      android:id="@+id/total_amount_loading_view"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/grid_20"
+      android:background="@drawable/white_gradient_background" />
+
+    <com.google.android.material.button.MaterialButton
+      style="@style/PledgeButton"
+      android:id="@+id/horizontal_reward_pledge_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      tools:text="Pledge $10 or more" />
+
+  </FrameLayout>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

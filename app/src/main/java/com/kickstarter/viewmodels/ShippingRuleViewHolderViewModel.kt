@@ -50,7 +50,7 @@ interface ShippingRuleViewHolderViewModel {
 
         private fun formattedString(shippingRule: ShippingRule, project: Project): String {
             val displayableName = shippingRule.location().displayableName()
-            val cost = shippingRule.cost().toFloat()
+            val cost = shippingRule.cost()
 
             val formattedCost = KSCurrency(this.environment.currentConfig())
                     .formatWithProjectCurrency(cost, project, RoundingMode.UP, 2).toString()

@@ -8,6 +8,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApiClient
@@ -28,7 +29,7 @@ import java.util.*
 
 class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
-    private late init var vm: PledgeFragmentViewModel.ViewModel
+    private lateinit var vm: PledgeFragmentViewModel.ViewModel
 
     private val project = ProjectFactory.project()
 
@@ -77,11 +78,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startNewCardActivity().subscribe(this.startNewCardActivity)
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
 
-        val reward = RewardFactory.rewardWithShipping()
-
-        val project = ProjectFactory.project()
         val bundle = Bundle()
-
         bundle.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, ScreenLocation(0f, 0f, 0f, 0f))
         bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project)
         bundle.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)
@@ -128,6 +125,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("USD").build()
         val reward = RewardFactory.reward()
         val bundle = Bundle()
+        bundle.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, ScreenLocation(0f, 0f, 0f, 0f))
         bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project)
         bundle.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)
         this.vm.arguments(bundle)
@@ -143,9 +141,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.conversionText().subscribe(this.conversionText)
         this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone)
         // Set the project currency and the user's chosen currency to different values
+
         val project = ProjectFactory.project().toBuilder().currency("CAD").currentCurrency("USD").build()
         val reward = RewardFactory.reward()
         val bundle = Bundle()
+        bundle.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, ScreenLocation(0f, 0f, 0f, 0f))
         bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project)
         bundle.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)
         this.vm.arguments(bundle)

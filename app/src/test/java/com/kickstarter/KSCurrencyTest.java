@@ -95,11 +95,12 @@ public class KSCurrencyTest extends KSRobolectricTestCase {
     assertEquals("$100.00", currency.formatWithProjectCurrency(100, project, RoundingMode.UP, 2).toString());
   }
 
+  @Test
   public void testFormatWithUserPreference() {
     final KSCurrency currency = createKSCurrency("US");
     final Project project = ProjectFactory.project();
-    assertEquals("$101", currency.formatWithUserPreference(100.1f, project, RoundingMode.UP));
-    assertEquals("$100", currency.formatWithUserPreference(100.9f, project, RoundingMode.DOWN));
+    assertEquals("$101", currency.formatWithUserPreference(100.1f, project, RoundingMode.UP, 0));
+    assertEquals("$100", currency.formatWithUserPreference(100.9f, project, RoundingMode.DOWN, 0));
   }
 
   private static KSCurrency createKSCurrency(final String countryCode) {

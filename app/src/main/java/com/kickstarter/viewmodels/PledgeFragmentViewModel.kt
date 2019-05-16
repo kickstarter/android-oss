@@ -7,11 +7,7 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.*
-import com.kickstarter.libs.utils.BooleanUtils
-import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.IntegerUtils
-import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -253,12 +249,6 @@ interface PledgeFragmentViewModel {
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
                     .subscribe(this.increasePledgeButtonIsEnabled)
-
-            rewardMinimum
-                    .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 0) }
-                    .compose(bindToLifecycle())
-                    .subscribe { this.pledgeAmount.onNext(it) }
 
             Observable.combineLatest(screenLocation, reward, project, ::PledgeData)
                     .compose<PledgeData>(takeWhen(this.onGlobalLayout))

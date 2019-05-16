@@ -30,7 +30,6 @@ import java.util.*
 class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PledgeFragmentViewModel.ViewModel
-
     private val project = ProjectFactory.project()
 
     private val additionalPledgeAmount = TestSubscriber<String>()

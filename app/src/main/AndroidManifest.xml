@@ -55,6 +55,7 @@
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@style/CommentsActivity">
     </activity>
+    <activity android:name=".ui.activities.CreatorBioActivity" />
     <activity android:name=".ui.activities.CreatePasswordActivity"
       android:theme="@style/SettingsActivity"/>
     <activity
@@ -148,6 +149,9 @@
     <activity
       android:name=".ui.activities.MessagesActivity"
       android:parentActivityName=".ui.activities.MessageThreadsActivity"
+      android:windowSoftInputMode="adjustResize">
+    </activity>
+    <activity android:name=".ui.activities.MessageCreatorActivity"
       android:windowSoftInputMode="adjustResize">
     </activity>
     <activity
@@ -266,9 +270,6 @@
           android:scheme="https" />
       </intent-filter>
     </activity>
-    <activity android:name=".ui.activities.CreatorBioActivity" />
-    <activity android:name=".ui.activities.MessageCreatorActivity"
-      android:windowSoftInputMode="adjustResize"/>
 
     <!-- SERVICES, PROVIDERS, RECEIVERS -->
 

@@ -222,6 +222,7 @@
   <string name="Info" formatted="false">インフォメーション</string>
   <string name="Introduce_yourself" formatted="false">自己紹介</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
+  <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">It\'s a way to bring creative projects to life.</string>
   <string name="Its_better_with_friends" formatted="false">友達にとってより良い。</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">ラジオみたいな (でもつまらない内容をダラダラと語ったりしない) ニュースレター。</string>
   <string name="Its_our_birthday" formatted="false">Kickstarter の誕生日です！過去10年の間に、16万以上のクリエイティブなプロジェクトが、1600万人以上のバッカーの支援のもと、Kickstarter で実現化しました。</string>
@@ -233,6 +234,7 @@
   <string name="Keep_up_with_future_live_streams" formatted="false">ライブ配信を通知</string>
   <string name="Kickstarter_Music" formatted="false">Kickstarter Music</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (達成した時)</string>
+  <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter is not a store.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter は普通のお店とは全く違います。クリエイティブなプロジェクトに生命を吹き込む場です。</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。</string>
   <string name="Learn_more_about_accountability" formatted="false">報告義務に関してさらに詳しく</string>
@@ -278,6 +280,7 @@
   <string name="Newsletters" formatted="false">ニュースレター</string>
   <string name="No_Results" formatted="false">該当結果なし</string>
   <string name="No_comments_yet" formatted="false">まだコメントはありません。</string>
+  <string name="No_longer_available" formatted="false">No longer available</string>
   <string name="No_messages" formatted="false">メッセージがありません。</string>
   <string name="No_nevermind" formatted="false">いいえ、削除しません</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">まだアップデートの投稿はありません。</string>
@@ -510,6 +513,7 @@
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">ダウンロードの準備が整い次第、%{email} にメールが届きます。</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">メッセージの送信に失敗。</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">バックした友達はまだいませんが、今後こちらに表示されます。</string>
+  <string name="Your_message_has_been_sent" formatted="false">Your message has been sent!</string>
   <string name="Your_name_displayed" formatted="false">あなたの名前はプロフィールに常に表示されます。</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">支払方法の登録完了。</string>
   <string name="Your_pledge" formatted="false">プレッジ</string>
@@ -1286,7 +1290,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
 \n
 %{update_url}</string>
   <string name="project_checkout_share_title_via_kickstarter" formatted="false">Kickstarterの%{project_or_update_title}</string>
-  <string name="project_checkout_share_twitter_I_just_backed_project_on_kickstarter" formatted="false">\@Kickstarterで%{project_name} をバックしました</string>
+  <string name="project_checkout_share_twitter_I_just_backed_project_on_kickstarter" formatted="false">%{project_name} を @Kickstarter_JP でバックしました</string>
   <string name="project_checkout_share_twitter_via_kickstarter" formatted="false">Kickstarterの%{project_or_update_title}</string>
   <string name="project_checkout_share_you_just_backed_project_share_this_project" formatted="false">%{project_name} をバックしました。プロジェクトをシェアして友達に伝えよう！</string>
   <string name="project_checkout_share_you_just_backed_project_share_this_project_html" formatted="false">&lt;b>%{project_name}&lt;/b>にバックしました。プロジェクトをシェアして友達に伝えよう！</string>
@@ -1318,7 +1322,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="project_menu_buttons_updates" formatted="false">アップデート</string>
   <string name="project_menu_created_by" formatted="false">製作者</string>
   <string name="project_menu_explore_this_project" formatted="false">このプロジェクトをさらに知る</string>
-  <string name="project_share_twitter_message" formatted="false">\@Kickstarter公式の%{project_title}</string>
+  <string name="project_share_twitter_message" formatted="false">%{project_title} (@Kickstarter_JP より)</string>
   <string name="project_social_friend_and_friend_are_backers" formatted="false">%{friend_name} と%{second_friend_name} がバッカー</string>
   <string name="project_social_friend_is_backer" formatted="false">%{friend_name} がバッカー</string>
   <string name="project_social_friends_are_backers_and_more_bold_few" formatted="false">%{backer_count} 人以上</string>

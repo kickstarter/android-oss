@@ -17,7 +17,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/white"
-      android:elevation="@dimen/ks_toolbar_elevation"
       app:contentScrim="@color/white"
       app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -73,7 +72,8 @@
     android:clipToPadding="false"
     android:scrollbars="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:ignore="RtlSymmetry" />
+    tools:ignore="RtlSymmetry"
+    tools:listitem="@layout/message_view" />
 
   <ProgressBar
     android:id="@+id/messages_loading_indicator"

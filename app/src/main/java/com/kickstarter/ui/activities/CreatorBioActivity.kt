@@ -7,9 +7,12 @@ import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.KoalaContext
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.AnimationUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
+import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.models.Project
 import com.kickstarter.services.KSWebViewClient
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.viewmodels.CreatorBioViewModel
@@ -25,27 +28,25 @@ class CreatorBioActivity : BaseActivity<CreatorBioViewModel.ViewModel>(), KSWebV
 
         web_view.client().setDelegate(this)
 
-        this.viewModel.outputs.url()
-                .compose(bindToLifecycle())
+        this.viewModel.outputs.messageIconIsGone()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe{ web_view.loadUrl(it) }
+                .compose(bindToLifecycle())
+                .subscribe { ViewUtils.setGone(message_button, it) }
+
+        this.viewModel.outputs.url()
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindToLifecycle())
+                .subscribe { web_view.loadUrl(it) }
 
         this.viewModel.outputs.startComposeMessageActivity()
-                .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    startActivity(Intent(this, ComposeMessageActivity::class.java)
-                        .putExtra(IntentKey.PROJECT, it))
-                }
+                .compose(bindToLifecycle())
+                .subscribe { startComposeMessageActivity(it) }
 
-        this.viewModel.outputs.startMessageActivity()
-                .compose(bindToLifecycle())
+        this.viewModel.outputs.startMessagesActivity()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    startActivity(Intent(this, MessagesActivity::class.java)
-                            .putExtra(IntentKey.PROJECT, it)
-                            .putExtra(IntentKey.BACKING, it.backing()))
-                }
+                .compose(bindToLifecycle())
+                .subscribe { startMessagesActivity(it) }
 
         message_button.setOnClickListener {
             this.viewModel.inputs.messageButtonClicked()
@@ -67,6 +68,18 @@ class CreatorBioActivity : BaseActivity<CreatorBioViewModel.ViewModel>(), KSWebV
     @NonNull
     override fun exitTransition(): Pair<Int, Int>? {
         return slideInFromLeft()
+    }
+
+    private fun startComposeMessageActivity(it: Project?) {
+        startActivity(Intent(this, MessageCreatorActivity::class.java)
+                .putExtra(IntentKey.PROJECT, it))
+    }
+
+    private fun startMessagesActivity(project: Project) {
+        startActivity(Intent(this, MessagesActivity::class.java)
+                .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.CREATOR_BIO_MODAL)
+                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.BACKING, project.backing()))
     }
 
 }

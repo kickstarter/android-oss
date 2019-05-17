@@ -4,6 +4,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.appbar.AppBarLayout;
@@ -44,9 +45,10 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   private KSString ksString;
   private RecyclerViewPaginator recyclerViewPaginator;
 
+  protected @Bind(R.id.mailbox_switch) Button mailboxSwitch;
   protected @Bind(R.id.message_threads_app_bar_layout) AppBarLayout appBarLayout;
   protected @Bind(R.id.message_threads_collapsed_toolbar_title) View collapsedToolbarTitle;
-  //protected @Bind(R.id.message_threads_collapsed_toolbar_mailbox_title) TextView collapsedToolbarTitle;
+  protected @Bind(R.id.message_threads_collapsed_toolbar_mailbox_title) TextView collapsedToolbarMailboxTitle;
   protected @Bind(R.id.message_threads_collapsing_toolbar_layout) CollapsingToolbarLayout collapsingToolbarLayout;
   protected @Bind(R.id.mailbox_text_view) TextView mailboxTextView;
   protected @Bind(R.id.message_threads_recycler_view) RecyclerView recyclerView;
@@ -83,12 +85,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     this.viewModel.outputs.mailboxTitle()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(stringRes -> this.mailboxTextView.setText(stringRes));
-
-    this.viewModel.outputs.mailboxTitle()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(stringRes -> this.mailboxTextView.setText(stringRes));
+      .subscribe(this::setMailboxStrings);
 
     this.viewModel.outputs.hasNoMessages()
       .compose(bindToLifecycle())
@@ -126,6 +123,13 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
       .subscribe(this::setUnreadTextViewText);
   }
 
+  private void setMailboxStrings(final @NonNull Integer stringRes) {
+    final String mailbox = getString(stringRes);
+    this.mailboxTextView.setText(mailbox);
+    this.collapsedToolbarMailboxTitle.setText(mailbox);
+    this.mailboxSwitch.setText(mailbox.equals(this.inboxString) ? this.sentString : this.inboxString);
+  }
+
   @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
@@ -160,15 +164,15 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   private void setUpAdapter() {
     this.adapter = new MessageThreadsAdapter(new DiffUtil.ItemCallback<Object>() {
       @Override
-      public boolean areItemsTheSame(@NonNull Object oldItem, @NonNull Object newItem) {
-        return itemsAreTheSame(oldItem, newItem);
+      public boolean areItemsTheSame(final @NonNull Object oldItem, final @NonNull Object newItem) {
+        return threadsAreTheSame(oldItem, newItem);
       }
       @Override
-      public boolean areContentsTheSame(@NonNull Object oldItem, @NonNull Object newItem) {
-        return itemsAreTheSame(oldItem, newItem);
+      public boolean areContentsTheSame(final @NonNull Object oldItem, final @NonNull Object newItem) {
+        return threadsAreTheSame(oldItem, newItem);
       }
 
-      private boolean itemsAreTheSame(final @NonNull Object oldItem, final @NonNull Object newItem) {
+      private boolean threadsAreTheSame(final @NonNull Object oldItem, final @NonNull Object newItem) {
         final MessageThread oldThread = (MessageThread) oldItem;
         final MessageThread newThread = (MessageThread) newItem;
 

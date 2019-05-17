@@ -38,17 +38,20 @@ public interface MessageThreadHolderViewModel {
     /** Emits the date to display. */
     Observable<DateTime> dateDateTime();
 
-    /** Emits when the date font weight is medium. */
-    Observable<Boolean> dateTextViewIsMediumWeight();
+    /** Emits when the date typeface is bold. */
+    Observable<Boolean> dateTextViewIsBold();
 
     /** Emits the message body to display. */
     Observable<String> messageBodyTextViewText();
 
+    /** Emits when the message body typeface is bold. */
+    Observable<Boolean> messageBodyTextIsBold();
+
     /** Emits the participant's avatar url to display. */
     Observable<String> participantAvatarUrl();
 
-    /** Emits when the participant name font weight is medium. */
-    Observable<Boolean> participantNameTextViewIsMediumWeight();
+    /** Emits when the participant name typeface is bold. */
+    Observable<Boolean> participantNameTextViewIsBold();
 
     /** Emits the participant name to display. */
     Observable<String> participantNameTextViewText();
@@ -61,9 +64,6 @@ public interface MessageThreadHolderViewModel {
 
     /** Emits the unread count text view text to be displayed. */
     Observable<String> unreadCountTextViewText();
-
-    /** Emits a boolean to determine if the unread indicator should be hidden. */
-    Observable<Boolean> unreadIndicatorViewHidden();
   }
 
   final class ViewModel extends ActivityViewModel<MessageThreadViewHolder> implements Inputs, Outputs {
@@ -89,18 +89,17 @@ public interface MessageThreadHolderViewModel {
 
       this.cardViewIsElevated = hasUnreadMessages;
       this.dateDateTime = lastMessage.map(Message::createdAt);
-      this.dateTextViewIsMediumWeight = hasUnreadMessages;
+      this.dateTextViewIsBold = hasUnreadMessages;
+      this.messageBodyTextIsBold = hasUnreadMessages;
       this.messageBodyTextViewText = lastMessage.map(Message::body);
       this.participantAvatarUrl = participant.map(p -> p.avatar().medium());
-      this.participantNameTextViewIsMediumWeight = hasUnreadMessages;
+      this.participantNameTextViewIsBold = hasUnreadMessages;
       this.participantNameTextViewText = participant.map(User::name);
       this.startMessagesActivity = this.messageThread.compose(takeWhen(this.messageThreadCardViewClicked));
       this.unreadCountTextViewIsGone = hasUnreadMessages.map(BooleanUtils::negate);
       this.unreadCountTextViewText = this.messageThread
         .map(MessageThread::unreadMessagesCount)
         .map(NumberUtils::format);
-
-      this.unreadIndicatorViewHidden = hasUnreadMessages.map(BooleanUtils::negate);
 
       this.messageThread
         .compose(takeWhen(this.messageThreadCardViewClicked))
@@ -136,15 +135,15 @@ public interface MessageThreadHolderViewModel {
 
     private final Observable<Boolean> cardViewIsElevated;
     private final Observable<DateTime> dateDateTime;
-    private final Observable<Boolean> dateTextViewIsMediumWeight;
+    private final Observable<Boolean> dateTextViewIsBold;
+    private final Observable<Boolean> messageBodyTextIsBold;
     private final Observable<String> messageBodyTextViewText;
     private final Observable<String> participantAvatarUrl;
-    private final Observable<Boolean> participantNameTextViewIsMediumWeight;
+    private final Observable<Boolean> participantNameTextViewIsBold;
     private final Observable<String> participantNameTextViewText;
     private final Observable<MessageThread> startMessagesActivity;
     private final Observable<Boolean> unreadCountTextViewIsGone;
     private final Observable<String> unreadCountTextViewText;
-    private final Observable<Boolean> unreadIndicatorViewHidden;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -162,17 +161,20 @@ public interface MessageThreadHolderViewModel {
     @Override public @NonNull Observable<DateTime> dateDateTime() {
       return this.dateDateTime;
     }
-    @Override public @NonNull Observable<Boolean> dateTextViewIsMediumWeight() {
-      return this.dateTextViewIsMediumWeight;
+    @Override public @NonNull Observable<Boolean> dateTextViewIsBold() {
+      return this.dateTextViewIsBold;
     }
     @Override public @NonNull Observable<String> messageBodyTextViewText() {
       return this.messageBodyTextViewText;
     }
+    @Override public @NonNull Observable<Boolean> messageBodyTextIsBold() {
+      return this.messageBodyTextIsBold;
+    }
     @Override public @NonNull Observable<String> participantAvatarUrl() {
       return this.participantAvatarUrl;
     }
-    @Override public @NonNull Observable<Boolean> participantNameTextViewIsMediumWeight() {
-      return this.participantNameTextViewIsMediumWeight;
+    @Override public @NonNull Observable<Boolean> participantNameTextViewIsBold() {
+      return this.participantNameTextViewIsBold;
     }
     @Override public @NonNull Observable<String> participantNameTextViewText() {
       return this.participantNameTextViewText;
@@ -185,9 +187,6 @@ public interface MessageThreadHolderViewModel {
     }
     @Override public @NonNull Observable<String> unreadCountTextViewText() {
       return this.unreadCountTextViewText;
-    }
-    @Override public @NonNull Observable<Boolean> unreadIndicatorViewHidden() {
-      return this.unreadIndicatorViewHidden;
     }
   }
 }

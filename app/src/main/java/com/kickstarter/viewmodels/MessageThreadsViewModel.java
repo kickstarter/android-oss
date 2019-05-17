@@ -156,6 +156,7 @@ public interface MessageThreadsViewModel {
           .envelopeToMoreUrl(env -> env.urls().api().moreMessageThreads())
           .loadWithParams(projectAndMailbox -> this.client.fetchMessageThreads(projectAndMailbox.first, projectAndMailbox.second))
           .loadWithPaginationPath(this.client::fetchMessageThreadsWithPaginationPath)
+          .clearWhenStartingOver(true)
           .build();
 
       paginator.isFetching()
@@ -176,7 +177,7 @@ public interface MessageThreadsViewModel {
         .subscribe(this.hasNoUnreadMessages);
 
       unreadMessagesCount
-        .map(count -> intValueOrZero(count) > 0 ? R.color.ksr_text_green_700 : R.color.ksr_dark_grey_400)
+        .map(count -> intValueOrZero(count) > 0 ? R.color.accent : R.color.ksr_dark_grey_400)
         .subscribe(this.unreadCountTextViewColorInt);
 
       unreadMessagesCount
@@ -230,7 +231,7 @@ public interface MessageThreadsViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override public void mailbox(Mailbox mailbox) {
+    @Override public void mailbox(final @NonNull Mailbox mailbox) {
       this.mailbox.onNext(mailbox);
     }
     @Override public void nextPage() {

@@ -191,7 +191,7 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull Long messageThreadId) {
-    return Observable.empty();
+    return Observable.just(MessageThreadEnvelopeFactory.messageThreadEnvelope());
   }
 
   @Override

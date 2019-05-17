@@ -124,6 +124,23 @@ public final class Koala {
     this.client.track(project.isStarred() ? KoalaEvent.STARRED_PROJECT : KoalaEvent.UNSTARRED_PROJECT, props);
   }
 
+  // PROJECT CREATOR BIO
+  public void trackViewedCreatorBioModal(final @NonNull Project project) {
+    final User loggedInUser = this.client.loggedInUser();
+    final Map<String, Object> props = KoalaUtils.projectProperties(project, loggedInUser);
+    props.put("modal_title", "creatorBioModal");
+
+    this.client.track(KoalaEvent.MODAL_DIALOG_VIEW, props);
+  }
+
+  public void trackViewedMessageCreatorModal(final @NonNull Project project) {
+    final User loggedInUser = this.client.loggedInUser();
+    final Map<String, Object> props = KoalaUtils.projectProperties(project, loggedInUser);
+    props.put("modal_title", "messageCreatorModal");
+
+    this.client.track(KoalaEvent.MODAL_DIALOG_VIEW, props);
+  }
+
   // COMMENTS
   public void trackLoadedOlderComments(final @NonNull Project project, final @Nullable Update update,
     final @NonNull KoalaContext.Comments context) {

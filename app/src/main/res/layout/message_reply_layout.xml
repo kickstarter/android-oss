@@ -1,6 +1,7 @@
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
   android:id="@+id/message_reply_layout"
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
@@ -9,45 +10,42 @@
   android:background="@color/white">
 
   <View
-    android:id="@+id/divider_view"
     android:layout_width="match_parent"
     android:layout_height="0.5dp"
-    android:background="@color/ksr_grey_500" />
+    android:background="@color/ksr_grey_500"
+    app:layout_constraintTop_toTopOf="parent" />
 
-  <RelativeLayout
-    android:layout_width="match_parent"
+  <EditText
+    android:id="@+id/message_edit_text"
+    style="@style/BodySecondary"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:layout_below="@id/divider_view"
+    android:layout_alignParentBottom="true"
+    android:layout_marginEnd="@dimen/grid_1"
+    android:layout_marginStart="@dimen/activity_vertical_margin"
+    android:ellipsize="end"
+    android:importantForAutofill="no"
+    android:inputType="textMultiLine|textCapSentences"
+    android:maxLines="3"
+    android:minHeight="@dimen/message_reply_layout_height"
+    android:textColor="@color/text_primary"
+    android:textColorHint="@color/text_secondary"
+    android:textCursorDrawable="@null"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/send_message_button"
+    app:layout_constraintStart_toStartOf="parent"
+    tools:hint="Message Blob..."
+    tools:ignore="LabelFor,UnusedAttribute" />
+
+  <Button
+    android:id="@+id/send_message_button"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/activity_vertical_margin"
-    android:layout_marginStart="@dimen/activity_vertical_margin">
+    android:enabled="false"
+    android:focusable="true"
+    android:text="@string/social_buttons_send"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent" />
 
-    <EditText
-      android:id="@+id/message_edit_text"
-      style="@style/BodySecondary"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_toStartOf="@+id/send_message_button"
-      android:background="@color/transparent"
-      android:ellipsize="end"
-      android:importantForAutofill="no"
-      android:inputType="textCapSentences"
-      android:minHeight="@dimen/message_reply_layout_height"
-      android:textColor="@color/text_primary"
-      android:textColorHint="@color/text_secondary"
-      android:textCursorDrawable="@null"
-      tools:hint="Message Blob..."
-      tools:ignore="LabelFor,UnusedAttribute" />
-
-    <Button
-      android:id="@+id/send_message_button"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentEnd="true"
-      android:layout_centerVertical="true"
-      android:enabled="false"
-      android:focusable="true"
-      android:text="@string/social_buttons_send" />
-
-  </RelativeLayout>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

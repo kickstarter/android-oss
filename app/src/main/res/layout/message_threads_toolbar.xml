@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/grid_1"
         android:layout_marginStart="@dimen/grid_1"
-        android:textColor="@color/ksr_text_green_700"
+        android:textColor="@color/ksr_green_500"
         tools:text="(3)" />
 
     </LinearLayout>

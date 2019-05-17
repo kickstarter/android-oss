@@ -49,6 +49,7 @@ class KoalaContext {
   enum class Message(val trackingString: String) {
     BACKER_MODAL("backer_modal"),
     CREATOR_ACTIVITY("creator_activity"),
+    CREATOR_BIO_MODAL("creator_bio_modal"),
     MESSAGES("messages"),
     PROJECT_MESSAGES("project_messages"),
     PROJECT_PAGE("project_page"),

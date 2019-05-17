@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import static java.util.Collections.emptyList;
 
 public final class MessageThreadsAdapter extends KSListAdapter {
-  public MessageThreadsAdapter(@NotNull DiffUtil.ItemCallback<Object> diffUtil) {
+  public MessageThreadsAdapter(final @NotNull DiffUtil.ItemCallback<Object> diffUtil) {
     super(diffUtil);
     addSection(emptyList());
   }

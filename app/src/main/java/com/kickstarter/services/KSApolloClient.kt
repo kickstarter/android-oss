@@ -25,6 +25,7 @@ import rx.subjects.PublishSubject
 import type.CurrencyCode
 import type.PaymentTypes
 import java.nio.charset.Charset
+import kotlin.math.absoluteValue
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
@@ -146,12 +147,12 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun sendMessage(project: Project, recipient: User, body: String): Observable<String> {
+    override fun sendMessage(project: Project, recipient: User, body: String): Observable<Long> {
         return Observable.defer {
-            val ps = PublishSubject.create<String>()
+            val ps = PublishSubject.create<Long>()
             service.mutate(SendMessageMutation.builder()
-                    .projectId(getRelayId(project))
-                    .recipientId(getRelayId(recipient))
+                    .projectId(encodeRelayId(project))
+                    .recipientId(encodeRelayId(recipient))
                     .body(body)
                     .build())
                     .enqueue(object : ApolloCall.Callback<SendMessageMutation.Data>() {
@@ -163,8 +164,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             if (response.hasErrors()) {
                                 ps.onError(Exception(response.errors().first().message()))
                             }
-                            val conversationId = response.data()?.sendMessage()?.conversation()?.id()
-                            conversationId.let {
+                            decodeRelayId(response.data()?.sendMessage()?.conversation()?.id()).let {
                                 when {
                                     ObjectUtils.isNull(it) -> ps.onError(Exception())
                                     else -> {
@@ -292,8 +292,19 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     }
 }
 
-fun <T : Relay> getRelayId(relay: T): String {
+fun <T : Relay> encodeRelayId(relay: T): String {
     val classSimpleName = relay.javaClass.simpleName.replaceFirst("AutoParcel_", "")
     val id = relay.id()
     return Base64Utils.encodeUrlSafe(("$classSimpleName-$id").toByteArray(Charset.defaultCharset()))
+}
+
+fun decodeRelayId(encodedRelayId: String?): Long? {
+    return try {
+        String(Base64Utils.decode(encodedRelayId), Charset.defaultCharset())
+                .replaceBeforeLast("-", "", "")
+                .toLong()
+                .absoluteValue
+    } catch (e: Exception) {
+        null
+    }
 }

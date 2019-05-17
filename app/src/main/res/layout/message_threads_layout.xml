@@ -28,11 +28,12 @@
         android:clipToPadding="false"
         android:focusable="true"
         android:importantForAccessibility="yes"
+        android:nextFocusDown="@id/mailbox_switch"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/grid_9"
-        android:paddingEnd="@dimen/grid_2"
-        android:paddingStart="@dimen/grid_3"
-        android:paddingTop="@dimen/grid_9"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/grid_9"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         app:layout_collapseMode="parallax"
         app:layout_collapseParallaxMultiplier="0.2">
 
@@ -54,17 +55,20 @@
             style="@style/FootnotePrimaryMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/ksr_text_green_700"
+            android:textColor="@color/accent"
             tools:text="3 unread" />
 
         </LinearLayout>
 
-        <ImageButton
+        <Button
           android:id="@+id/mailbox_switch"
-          android:contentDescription="@string/messages_navigation_sent"
+          style="@style/Widget.MaterialComponents.Button.OutlinedButton"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:src="@drawable/ic_switch"/>
+          android:contentDescription="@string/messages_navigation_sent"
+          android:text="@string/messages_navigation_sent"
+          app:icon="@drawable/ic_switch"
+          app:strokeColor="@color/accent" />
 
       </LinearLayout>
 
@@ -84,7 +88,8 @@
       android:id="@+id/message_threads_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:scrollbars="vertical" />
+      android:scrollbars="none"
+      tools:listitem="@layout/message_thread_view" />
 
   </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

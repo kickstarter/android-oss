@@ -25,7 +25,7 @@ interface ApolloClientType {
 
     fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
 
-    fun sendMessage(project: Project, recipient: User, body: String): Observable<String>
+    fun sendMessage(project: Project, recipient: User, body: String): Observable<Long>
 
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
 

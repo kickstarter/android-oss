@@ -29,7 +29,6 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
@@ -134,15 +133,19 @@ public interface MessageThreadsViewModel {
       );
 
       final Observable<Mailbox> mailbox = this.mailbox
-        .startWith(Mailbox.INBOX);
+        .startWith(Mailbox.INBOX)
+        .distinctUntilChanged();
 
       mailbox
         .map(this::getStringResForMailbox)
         .compose(bindToLifecycle())
         .subscribe(this.mailboxTitle);
 
+      final Observable<Pair<Project, Mailbox>> projectAndMailbox = Observable.combineLatest(
+        project.distinctUntilChanged(), mailbox.distinctUntilChanged(), Pair::create);
+
       final Observable<Pair<Project, Mailbox>> startOverWith = Observable.combineLatest(
-        project.compose(combineLatestPair(mailbox)),
+        projectAndMailbox,
         refreshMessageThreads,
         Pair::create
       )
@@ -154,7 +157,7 @@ public interface MessageThreadsViewModel {
           .startOverWith(startOverWith)
           .envelopeToListOfData(MessageThreadsEnvelope::messageThreads)
           .envelopeToMoreUrl(env -> env.urls().api().moreMessageThreads())
-          .loadWithParams(projectAndMailbox -> this.client.fetchMessageThreads(projectAndMailbox.first, projectAndMailbox.second))
+          .loadWithParams(pm -> this.client.fetchMessageThreads(pm.first, pm.second))
           .loadWithPaginationPath(this.client::fetchMessageThreadsWithPaginationPath)
           .clearWhenStartingOver(true)
           .build();
@@ -199,10 +202,16 @@ public interface MessageThreadsViewModel {
       final Observable<RefTag> refTag = intent()
         .flatMap(ProjectIntentMapper::refTag);
 
-      Observable.combineLatest(project, refTag, Pair::create)
-        .take(1)
+      Observable.combineLatest(projectAndMailbox, refTag, Pair::create)
         .compose(bindToLifecycle())
-        .subscribe(projectAndRefTag -> this.koala.trackViewedMailbox(Mailbox.INBOX, projectAndRefTag.first, projectAndRefTag.second));
+        .subscribe(this::trackMailboxView);
+    }
+
+    private void trackMailboxView(final @NonNull Pair<Pair<Project, Mailbox>, RefTag> projectMailboxAndRedTag) {
+      final Mailbox mailbox = projectMailboxAndRedTag.first.second;
+      final Project project = projectMailboxAndRedTag.first.first;
+      final RefTag refTag = projectMailboxAndRedTag.second;
+      this.koala.trackViewedMailbox(mailbox, project, refTag);
     }
 
     private int getStringResForMailbox(final @NonNull Mailbox mailbox) {

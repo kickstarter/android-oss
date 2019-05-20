@@ -33,7 +33,7 @@ class ShippingRulesAdapter(ctx: Context, private val resourceId: Int, val items:
         }
 
         override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-            if (results != null && results.count > 0) {
+            if (results != null) {
                 filteredItems = results.values as ArrayList<Pair<ShippingRule, Project>>
                 notifyDataSetChanged()
             } else {

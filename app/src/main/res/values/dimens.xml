@@ -141,7 +141,7 @@
 
   <!-- Messages -->
   <dimen name="message_card_view_corner_radius">4dp</dimen>
-  <dimen name="message_reply_layout_height">@dimen/grid_10</dimen>
+  <dimen name="message_reply_layout_height">@dimen/grid_8</dimen>
 
   <!-- Popup menus -->
   <dimen name="popup_menu_horizontal_offset">-151dp</dimen>

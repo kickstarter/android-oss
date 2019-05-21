@@ -106,7 +106,7 @@ public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewM
     this.viewModel.outputs.backingInfoViewIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.backingInfoView));
+      .subscribe(gone -> ViewUtils.setGone(this.backingInfoView, gone));
 
     this.viewModel.outputs.closeButtonIsGone()
       .compose(bindToLifecycle())

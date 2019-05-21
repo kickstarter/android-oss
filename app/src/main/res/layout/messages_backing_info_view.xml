@@ -8,7 +8,9 @@
   android:layout_height="wrap_content"
   android:background="@color/white"
   android:orientation="vertical"
-  tools:showIn="@layout/messages_layout">
+  android:visibility="gone"
+  tools:showIn="@layout/messages_layout"
+  tools:visibility="visible">
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -29,6 +31,7 @@
       tools:text="$42 pledged on June 9, 2017" />
 
     <Button
+      style="@style/AlternatePrimaryButton"
       android:id="@+id/messages_view_pledge_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

@@ -98,7 +98,7 @@ interface ProjectViewModel {
         /** Emits when we should start [com.kickstarter.ui.activities.CommentsActivity].  */
         fun startCommentsActivity(): Observable<Project>
 
-        /** Emits when we should start the creator bio [com.kickstarter.ui.activities.WebViewActivity].  */
+        /** Emits when we should start the creator bio [com.kickstarter.ui.activities.CreatorBioActivity].  */
         fun startCreatorBioWebViewActivity(): Observable<Project>
 
         /** Emits when we should start [com.kickstarter.ui.activities.LoginToutActivity].  */

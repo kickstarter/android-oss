@@ -268,7 +268,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     }
 
     private fun startCreatorBioWebViewActivity(project: Project) {
-        startWebViewActivity(getString(this.creatorString), project.creatorBioUrl())
+        val intent = Intent(this, CreatorBioActivity::class.java)
+                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.URL, project.creatorBioUrl())
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startProjectUpdatesActivity(project: Project) {

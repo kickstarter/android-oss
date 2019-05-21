@@ -208,11 +208,6 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesAndProject)
 
-//            rulesAndProject
-//                    .compose(bindToLifecycle())
-//                    .map { ObjectUtils.isNull(it.first) || it.first.isEmpty() }
-//                    .subscribe(this.shippingRulesSectionIsGone)
-
             val defaultShippingRule = shippingRules
                     .filter { it.isNotEmpty() }
                     .switchMap { getDefaultShippingRule(it) }
@@ -291,7 +286,7 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.shippingAmount)
 
             val initialTotalAmount = reward
-                    .filter { BooleanUtils.negate(it.shippingEnabled()!!) }
+                    .filter { BooleanUtils.negate(it.shippingEnabled) }
                     .map { it.minimum() }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 2) }

@@ -330,7 +330,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment)
 
-        this.totalAmount.assertValues("$20.00", "$50.00")
+        this.totalAmount.assertValues("$50.00")
     }
 
     @Test

@@ -181,11 +181,6 @@ interface PledgeFragmentViewModel {
             val rewardAmount = reward
                     .map { it.minimum() }
 
-            reward
-                    .map { ObjectUtils.coalesce(it.shippingEnabled(), false) }
-                    .map { BooleanUtils.negate(it) }
-                    .subscribe { this.shippingRulesSectionIsGone.onNext(it) }
-
             rewardAmount
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 0) }
@@ -196,6 +191,7 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
                     .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second) }
                     .map { it.shippingRules() }
+                    .distinctUntilChanged()
 
             shippingRules
                     .compose(bindToLifecycle())
@@ -207,6 +203,11 @@ interface PledgeFragmentViewModel {
             rulesAndProject
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesAndProject)
+
+            rulesAndProject
+                    .compose(bindToLifecycle())
+                    .map { ObjectUtils.isNull(it.first) || it.first.isEmpty() }
+                    .subscribe(this.shippingRulesSectionIsGone)
 
             val defaultShippingRule = shippingRules
                     .filter { it.isNotEmpty() }
@@ -285,9 +286,12 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmount)
 
-            val initialTotalAmount = reward
-                    .filter { BooleanUtils.negate(it.shippingEnabled) }
-                    .map { it.minimum() }
+            val rulesAndReward = shippingRules
+                    .compose<Pair<List<ShippingRule>, Reward>>(combineLatestPair(reward))
+
+            val initialTotalAmount = rulesAndReward
+                    .filter { ObjectUtils.isNull(it.first) || it.first.isEmpty() }
+                    .map { it.second.minimum() }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 2) }
                     .compose(bindToLifecycle())

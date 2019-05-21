@@ -318,7 +318,9 @@ interface PledgeFragmentViewModel {
                     .map { BooleanUtils.negate(it) }
                     .subscribe { this.conversionTextViewIsGone.onNext(it) }
 
-            val initialTotalConversionAmount = rewardAmount
+            val initialTotalConversionAmount = rulesAndReward
+                    .filter { ObjectUtils.isNull(it.first) || it.first.isEmpty() }
+                    .map { it.second.minimum() }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map { this.ksCurrency.formatWithUserPreference(it.first, it.second, RoundingMode.UP, 2) }
                     .compose(bindToLifecycle())

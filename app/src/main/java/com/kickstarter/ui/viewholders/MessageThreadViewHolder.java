@@ -38,9 +38,9 @@ public final class MessageThreadViewHolder extends KSViewHolder {
   protected @Bind(R.id.message_thread_date_text_view) TextView dateTextView;
   protected @Bind(R.id.message_thread_body_text_view) TextView messageBodyTextView;
   protected @Bind(R.id.message_thread_container) ConstraintLayout messageThreadContainer;
-  protected @Bind(R.id.message_thread_unread_count_text_view) TextView unreadCountTextView;
   protected @Bind(R.id.participant_avatar_image_view) ImageView participantAvatarImageView;
   protected @Bind(R.id.participant_name_text_view) TextView participantNameTextView;
+  protected @Bind(R.id.message_thread_unread_count_text_view) TextView unreadCountTextView;
 
   protected @BindString(R.string.unread_count_unread) String unreadCountUnreadString;
 

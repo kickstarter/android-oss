@@ -33,14 +33,14 @@ class CreatorBioViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testLoggedOutUser() {
+    fun testMessageIconIsGone_WhenUserIsLoggedOut() {
         setUpEnvironment(environment())
 
         this.messageIconIsGone.assertValue(true)
     }
 
     @Test
-    fun testLoggedInUser() {
+    fun testGoToComposeMessageActivity_WhenLoggedInUserIsNotBacker() {
         setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build())
 
         this.messageIconIsGone.assertValue(false)
@@ -50,7 +50,7 @@ class CreatorBioViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testLoggedInBacker() {
+    fun testGoToMessagesActivity_WhenLoggedInUserIsABacker() {
         val project = ProjectFactory.project().toBuilder().isBacking(true).build()
         setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build(), project)
 
@@ -61,7 +61,7 @@ class CreatorBioViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testLoggedInCreatorOfProject() {
+    fun testMessageIconIsGone_WhenLoggedInUserIsCreatorOfProject() {
         val creator = UserFactory.creator()
         val project = ProjectFactory.project().toBuilder().creator(creator).build()
         setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(creator)).build(), project)

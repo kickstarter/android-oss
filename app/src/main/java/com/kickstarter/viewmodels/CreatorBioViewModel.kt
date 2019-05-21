@@ -70,6 +70,7 @@ interface CreatorBioViewModel {
                     .filter { !it.isBacking }
                     .compose(bindToLifecycle())
                     .subscribe(this.startComposeMessageActivity)
+
             project
                     .compose<Project>(takeWhen(this.messageButtonClicked))
                     .filter { it.isBacking }

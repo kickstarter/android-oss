@@ -45,7 +45,6 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   private KSString ksString;
   private RecyclerViewPaginator recyclerViewPaginator;
 
-  protected @Bind(R.id.mailbox_switch) Button mailboxSwitch;
   protected @Bind(R.id.message_threads_app_bar_layout) AppBarLayout appBarLayout;
   protected @Bind(R.id.message_threads_collapsed_toolbar_title) View collapsedToolbarTitle;
   protected @Bind(R.id.message_threads_collapsed_toolbar_mailbox_title) TextView collapsedToolbarMailboxTitle;
@@ -53,6 +52,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
   protected @Bind(R.id.mailbox_text_view) TextView mailboxTextView;
   protected @Bind(R.id.message_threads_recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.message_threads_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+  protected @Bind(R.id.switch_mailbox_button) Button switchMailboxButton;
   protected @Bind(R.id.unread_count_text_view) TextView unreadCountTextView;
   protected @Bind(R.id.message_threads_toolbar_unread_count_text_view) TextView unreadCountToolbarTextView;
 
@@ -127,7 +127,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     final String mailbox = getString(stringRes);
     this.mailboxTextView.setText(mailbox);
     this.collapsedToolbarMailboxTitle.setText(mailbox);
-    this.mailboxSwitch.setText(mailbox.equals(this.inboxString) ? this.sentString : this.inboxString);
+    this.switchMailboxButton.setText(mailbox.equals(this.inboxString) ? this.sentString : this.inboxString);
   }
 
   @Override
@@ -148,7 +148,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     this.viewModel.inputs.onResume();
   }
 
-  @OnClick(R.id.mailbox_switch)
+  @OnClick(R.id.switch_mailbox_button)
   protected void mailboxSwitchClicked() {
     this.viewModel.inputs.mailbox(this.mailboxTextView.getText().equals(this.inboxString) ? Mailbox.SENT : Mailbox.INBOX);
   }

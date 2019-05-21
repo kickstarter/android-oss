@@ -28,7 +28,7 @@
         android:clipToPadding="false"
         android:focusable="true"
         android:importantForAccessibility="yes"
-        android:nextFocusDown="@id/mailbox_switch"
+        android:nextFocusDown="@id/switch_mailbox_button"
         android:orientation="horizontal"
         android:paddingEnd="@dimen/activity_horizontal_margin"
         android:paddingStart="@dimen/activity_horizontal_margin"
@@ -61,7 +61,7 @@
         </LinearLayout>
 
         <Button
-          android:id="@+id/mailbox_switch"
+          android:id="@+id/switch_mailbox_button"
           style="@style/Widget.MaterialComponents.Button.OutlinedButton"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

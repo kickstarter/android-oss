@@ -38,19 +38,19 @@ public interface MessageThreadHolderViewModel {
     /** Emits the date to display. */
     Observable<DateTime> dateDateTime();
 
-    /** Emits when the date typeface is bold. */
+    /** Emits a boolean determining if the date typeface is bold. */
     Observable<Boolean> dateTextViewIsBold();
 
     /** Emits the message body to display. */
     Observable<String> messageBodyTextViewText();
 
-    /** Emits when the message body typeface is bold. */
+    /** Emits a boolean determining if the message body typeface is bold. */
     Observable<Boolean> messageBodyTextIsBold();
 
     /** Emits the participant's avatar url to display. */
     Observable<String> participantAvatarUrl();
 
-    /** Emits when the participant name typeface is bold. */
+    /** Emits a boolean determining if the participant name typeface is bold. */
     Observable<Boolean> participantNameTextViewIsBold();
 
     /** Emits the participant name to display. */

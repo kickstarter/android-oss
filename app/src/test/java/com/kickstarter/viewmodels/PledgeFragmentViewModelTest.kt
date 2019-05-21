@@ -116,7 +116,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testConversionHiddenForPledgeTotal() {
-        this.vm = PledgeFragmentViewModel.ViewModel(environment())
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        this.vm = PledgeFragmentViewModel.ViewModel(environment)
+
         this.vm.outputs.conversionText().subscribe(this.conversionText)
         this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone)
 
@@ -136,7 +138,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testConversionShownForPledgeTotal() {
-        this.vm = PledgeFragmentViewModel.ViewModel(environment())
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        this.vm = PledgeFragmentViewModel.ViewModel(environment)
         this.vm.outputs.conversionText().subscribe(this.conversionText)
         this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone)
         // Set the project currency and the user's chosen currency to different values
@@ -254,13 +257,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShippingAmount() {
-        setUpEnvironmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        setUpEnvironment(environment)
         this.shippingAmount.assertValue("$30.00")
     }
 
     @Test
     fun testShippingRuleAndProject() {
-        setUpEnvironmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        setUpEnvironment(environment)
 
         val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
         this.shippingRuleAndProject.assertValues(Pair.create(shippingRules, project))
@@ -268,19 +273,23 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShippingRuleSelection_NoShippingRules() {
-        setUpEnvironmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
+        setUpEnvironment(environment)
         this.shippingRulesSectionIsGone.assertValues(true)
     }
 
     @Test
     fun testShippingRuleSelection_WithShippingRules() {
-        setUpEnvironmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        setUpEnvironment(environment)
         this.shippingRulesSectionIsGone.assertValues(false)
     }
 
     @Test
     fun testShippingRuleSelection() {
-        setUpEnvironmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        setUpEnvironment(environment)
+
         val defaultRule = ShippingRuleFactory.usShippingRule()
 
         this.selectedShippingRule.assertValues(defaultRule)
@@ -335,11 +344,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testTotalAmountWithoutShippingRules() {
-        setUpEnvironmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
+        setUpEnvironment(environment)
         this.totalAmount.assertValue("$20.00")
     }
 
-    private fun setUpEnvironmentForShippingRules(envelope: ShippingRulesEnvelope) {
+    private fun environmentForShippingRules(envelope: ShippingRulesEnvelope): Environment {
         val apiClient = object : MockApiClient() {
             override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
                 return Observable.just(envelope)
@@ -350,10 +360,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val currentConfig = MockCurrentConfig()
         currentConfig.config(config)
 
-        val environment = environment().toBuilder()
+        return environment().toBuilder()
                 .apiClient(apiClient)
                 .currentConfig(currentConfig)
                 .build()
-        setUpEnvironment(environment)
     }
 }

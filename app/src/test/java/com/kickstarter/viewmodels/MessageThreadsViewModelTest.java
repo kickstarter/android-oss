@@ -7,6 +7,7 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.mock.factories.MessageThreadFactory;
@@ -83,7 +84,9 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
       environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
     );
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, Empty.INSTANCE));
+    final Intent intent = new Intent().putExtra(IntentKey.PROJECT, Empty.INSTANCE)
+      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.PROFILE);
+    this.vm.intent(intent);
     this.messageThreadList.assertValueCount(2);
     this.messageThreadListCount.assertValues(0, 1);
 
@@ -132,7 +135,9 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
       environment().toBuilder().apiClient(apiClient).currentUser(currentUser).build()
     );
 
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    final Intent intent = new Intent().putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.CREATOR_DASHBOARD);
+    this.vm.intent(intent);
     this.messageThreadList.assertValueCount(2);
     this.messageThreadListCount.assertValues(0, 1);
 
@@ -161,7 +166,7 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.intent(new Intent());
+    this.vm.intent(new Intent().putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.DRAWER));
     this.vm.inputs.onResume();
 
     // Unread count text view is shown.
@@ -183,7 +188,7 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.intent(new Intent());
+    this.vm.intent(new Intent().putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.DRAWER));
     this.vm.inputs.onResume();
 
     this.hasNoMessages.assertValues(true);
@@ -204,7 +209,7 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    this.vm.intent(new Intent());
+    this.vm.intent(new Intent().putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.DRAWER));
     this.vm.inputs.onResume();
 
     this.hasNoUnreadMessages.assertValues(true);

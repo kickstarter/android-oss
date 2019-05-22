@@ -54,13 +54,47 @@
     android:drawableStart="@drawable/ic_person"
     android:text="@string/tabbar_profile" />
 
+  <LinearLayout
+    android:id="@+id/drawer_messages"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/grid_1"
+    android:layout_marginStart="@dimen/grid_1"
+    android:contentDescription="@string/Messages"
+    android:focusable="true"
+    android:foreground="@drawable/click_indicator_light"
+    android:orientation="horizontal">
+
+    <TextView
+      style="@style/DrawerTextView"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="0dp"
+      android:layout_weight="1"
+      android:drawableStart="@drawable/ic_mail"
+      android:drawableTint="@color/ksr_dark_grey_500"
+      android:foreground="@null"
+      android:text="@string/Messages" />
+
+    <TextView
+      android:id="@+id/unread_messages_count"
+      style="@style/DrawerCountTextView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/grid_3_half"
+      tools:text="3000" />
+
+  </LinearLayout>
+
   <TextView
     android:id="@+id/drawer_dashboard"
     style="@style/DrawerTextView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:drawableStart="@drawable/ic_dashboard"
-    android:text="@string/tabbar_dashboard" />
+    android:text="@string/tabbar_dashboard"
+    android:visibility="gone"
+    tools:visibility="visible" />
 
   <TextView
     android:id="@+id/drawer_activity"

@@ -104,6 +104,9 @@ public interface DiscoveryViewModel {
     /** Start login tout activity for result. */
     Observable<Void> showLoginTout();
 
+    /** Start {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
+    Observable<Void> showMessages();
+
     /** Start profile activity. */
     Observable<Void> showProfile();
 
@@ -137,6 +140,7 @@ public interface DiscoveryViewModel {
       this.showHelp = this.loggedOutSettingsClick;
       this.showInternalTools = this.internalToolsClick;
       this.showLoginTout = this.loggedOutLoginToutClick;
+      this.showMessages = this.messagesClick;
       this.showProfile = this.profileClick;
       this.showSettings = this.settingsClick;
 
@@ -260,6 +264,8 @@ public interface DiscoveryViewModel {
         this.topFilterRowClick.map(__ -> false),
         this.internalToolsClick.map(__ -> false),
         this.loggedOutLoginToutClick.map(__ -> false),
+        this.messagesClick.map(__ -> false),
+        this.creatorDashboardClick.map(__ -> false),
         this.profileClick.map(__ -> false),
         this.settingsClick.map(__ -> false)
       )
@@ -304,6 +310,7 @@ public interface DiscoveryViewModel {
     private final PublishSubject<Boolean> openDrawer = PublishSubject.create();
     private final PublishSubject<Integer> pagerSetPrimaryPage = PublishSubject.create();
     private final PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
+    private final PublishSubject<Void> messagesClick = PublishSubject.create();
     private final PublishSubject<Void> profileClick = PublishSubject.create();
     private final PublishSubject<Void> settingsClick = PublishSubject.create();
     private final PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
@@ -321,6 +328,7 @@ public interface DiscoveryViewModel {
     private final Observable<Void> showInternalTools;
     private final Observable<Void> showKSR10;
     private final Observable<Void> showLoginTout;
+    private final Observable<Void> showMessages;
     private final Observable<Void> showProfile;
     private final Observable<Void> showSettings;
     private final BehaviorSubject<DiscoveryParams> updateParamsForPage = BehaviorSubject.create();
@@ -346,6 +354,9 @@ public interface DiscoveryViewModel {
     }
     @Override public void loggedInViewHolderProfileClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
       this.profileClick.onNext(null);
+    }
+    @Override public void loggedInViewHolderMessagesClick(final @NonNull LoggedInViewHolder viewHolder) {
+      this.messagesClick.onNext(null);
     }
     @Override public void loggedInViewHolderSettingsClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
       this.settingsClick.onNext(null);
@@ -413,6 +424,9 @@ public interface DiscoveryViewModel {
     }
     @Override public @NonNull Observable<Void> showLoginTout() {
       return this.showLoginTout;
+    }
+    @Override public @NonNull Observable<Void> showMessages() {
+      return this.showMessages;
     }
     @Override public @NonNull Observable<Void> showProfile() {
       return this.showProfile;

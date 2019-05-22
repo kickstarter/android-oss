@@ -13,6 +13,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.InternalToolsType;
+import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
@@ -157,6 +158,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(observeForUI())
       .subscribe(__ -> this.startLoginToutActivity());
 
+    this.viewModel.outputs.showMessages()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.startMessageThreadsActivity());
+
     this.viewModel.outputs.showProfile()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -247,6 +253,13 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     transition(this, slideInFromRight());
   }
 
+  private void startMessageThreadsActivity() {
+    final Intent intent = new Intent(this, MessageThreadsActivity.class)
+      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.DRAWER);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
   private void startProfileActivity() {
     final Intent intent = new Intent(this, ProfileActivity.class);
     startActivity(intent);
@@ -255,7 +268,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
 
   private void startSettingsActivity() {
     final Intent intent = new Intent(this, SettingsActivity.class);
-    intent.putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
     startActivity(intent);
     overridePendingTransition(0, 0);
   }

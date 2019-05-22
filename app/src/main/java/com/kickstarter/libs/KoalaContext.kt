@@ -1,5 +1,7 @@
 package com.kickstarter.libs
 
+import java.io.Serializable
+
 class KoalaContext {
 
   /**
@@ -32,9 +34,22 @@ class KoalaContext {
    * PROJECT_UPDATE:  The project update page.
    * PROJECT_UPDATES: The project updates page.
    */
-  enum class ExternalLink(val trackingString: String) {
+  enum class ExternalLink(val trackingString: String) : Serializable {
     PROJECT_UPDATE("project_update"),
     PROJECT_UPDATES("project_updates")
+  }
+
+  /**
+   * Determines the place from which the Mailbox was presented.
+   *
+   * CREATOR_DASHBOARD    The Messages from in the creator dashboard.
+   * DRAWER:              The Discovery navigation drawer.
+   * PROFILE:             The creator's activity feed.
+   */
+  enum class Mailbox(val trackingString: String) {
+    CREATOR_DASHBOARD("creator_dashboard"),
+    DRAWER("drawer"),
+    PROFILE("profile"),
   }
 
   /**
@@ -42,6 +57,7 @@ class KoalaContext {
    *
    * BACKER_MODAL:        The backing view, usually seen by pressing "View pledge" on the project page.
    * CREATOR_ACTIVITY:    The creator's activity feed.
+   * CREATOR_BIO_MODAL:   The creator bio.
    * MESSAGES:            The messages inbox.
    * PROJECT_MESSAGES:    The messages inbox for a particular project of a creator's.
    * PROJECT_PAGE:        The project page.

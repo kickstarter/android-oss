@@ -1,7 +1,5 @@
 package com.kickstarter.libs
 
-import java.io.Serializable
-
 class KoalaContext {
 
   /**
@@ -34,13 +32,13 @@ class KoalaContext {
    * PROJECT_UPDATE:  The project update page.
    * PROJECT_UPDATES: The project updates page.
    */
-  enum class ExternalLink(val trackingString: String) : Serializable {
+  enum class ExternalLink(val trackingString: String) {
     PROJECT_UPDATE("project_update"),
     PROJECT_UPDATES("project_updates")
   }
 
   /**
-   * Determines the place from which the Mailbox was presented.
+   * Determines the place from where the Mailbox was presented.
    *
    * CREATOR_DASHBOARD    The Messages from in the creator dashboard.
    * DRAWER:              The Discovery navigation drawer.

@@ -11,7 +11,6 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.LoggedInViewHolderViewModel
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.internal.internal_tools_button_view.view.*
 import kotlinx.android.synthetic.main.discovery_drawer_logged_in_view.view.*
 
 class LoggedInViewHolder(@NonNull view: View, @NonNull private val delegate: Delegate) : KSViewHolder(view) {
@@ -68,7 +67,7 @@ class LoggedInViewHolder(@NonNull view: View, @NonNull private val delegate: Del
         view.drawer_activity.setOnClickListener { this.delegate.loggedInViewHolderActivityClick(this) }
         view.drawer_dashboard.setOnClickListener { this.delegate.loggedInViewHolderDashboardClick(this) }
         view.drawer_messages.setOnClickListener { this.delegate.loggedInViewHolderMessagesClick(this) }
-        view.internal_tools?.setOnClickListener { this.delegate.loggedInViewHolderInternalToolsClick(this) }
+        view.internal_tools.setOnClickListener { this.delegate.loggedInViewHolderInternalToolsClick(this) }
     }
 
     @Throws(Exception::class)

@@ -12,7 +12,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
-import com.kickstarter.ui.viewholders.KSViewHolder
 import rx.Observable
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
@@ -60,6 +59,8 @@ interface HorizontalRewardViewHolderViewModel {
         /** Returns true if the reward end date should be hidden,`false` otherwise. */
         fun rewardEndDateSectionIsGone(): Observable<Boolean>
 
+        fun rewardIsSelected(): Observable<Boolean>
+
         /** Show the rewards items.  */
         fun rewardItems(): Observable<List<RewardsItem>>
 
@@ -99,6 +100,7 @@ interface HorizontalRewardViewHolderViewModel {
         private val reward: Observable<Reward>
         private val rewardDescriptionIsGone: Observable<Boolean>
         private val rewardEndDateSectionIsGone: Observable<Boolean>
+        private val rewardIsSelected: Observable<Boolean>
         private val rewardItems: Observable<List<RewardsItem>>
         private val rewardItemsAreGone: Observable<Boolean>
         private val titleTextViewIsGone: Observable<Boolean>
@@ -120,6 +122,9 @@ interface HorizontalRewardViewHolderViewModel {
 
             val reward = this.projectAndReward
                     .map { pr -> pr.second }
+
+            this.rewardIsSelected = this.projectAndReward
+                    .map { pr -> BackingUtils.isBacked(pr.first, pr.second) }
 
             this.backersTextViewIsGone = reward
                     .map { r -> RewardUtils.isNoReward(r) || !RewardUtils.hasBackers(r) }
@@ -273,6 +278,8 @@ interface HorizontalRewardViewHolderViewModel {
 
         @NonNull
         override fun rewardEndDateSectionIsGone(): Observable<Boolean> = this.rewardEndDateSectionIsGone
+
+        override fun rewardIsSelected(): Observable<Boolean> = this.rewardIsSelected
 
         @NonNull
         override fun rewardItems(): Observable<List<RewardsItem>> = this.rewardItems

@@ -77,6 +77,10 @@ interface ProjectViewModel {
         /** Emits when we should set the Y position of the rewards container. */
         fun setInitialRewardsContainerY(): Observable<Void>
 
+        fun setRewardButtonColor(): Observable<Int>
+
+        fun setRewardButtonString(): Observable<Int>
+
         /** Emits when rewards fragment should expand. */
         fun showRewardsFragment(): Observable<Boolean>
 
@@ -139,6 +143,8 @@ interface ProjectViewModel {
         private val projectAndUserCountryAndIsFeatureEnabled = BehaviorSubject.create<Pair<Pair<Project, String>, Boolean>>()
         private val setActionButtonId = BehaviorSubject.create<Int>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
+        private val setRewardButtonColor = BehaviorSubject.create<Int>()
+        private val setRewardButtonString = BehaviorSubject.create<Int>()
         private val showRewardsFragment = BehaviorSubject.create<Boolean>()
         private val startLoginToutActivity = BehaviorSubject.create<Void>()
         private val showShareSheet = BehaviorSubject.create<Project>()
@@ -316,6 +322,18 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.setActionButtonId.onNext(it) }
 
+            currentProject
+                    .map { getRewardButtonString(it) }
+                    .take(1)
+                    .compose(bindToLifecycle())
+                    .subscribe { this.setRewardButtonString.onNext(it) }
+
+            currentProject
+                    .map { getRewardButtonColor(it) }
+                    .take(1)
+                    .compose(bindToLifecycle())
+                    .subscribe { this.setRewardButtonColor.onNext(it) }
+
         }
 
         /**
@@ -427,6 +445,10 @@ interface ProjectViewModel {
         @NonNull
         override fun setInitialRewardsContainerY(): Observable<Void> = this.setInitialRewardPosition
 
+        override fun setRewardButtonColor(): Observable<Int> = this.setRewardButtonColor
+
+        override fun setRewardButtonString(): Observable<Int> = this.setRewardButtonString
+
         @NonNull
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
 
@@ -467,6 +489,30 @@ interface ProjectViewModel {
                 R.id.manage_pledge_button
             } else if (project.isBacking && !project.isLive) {
                 R.id.view_pledge_button
+            } else {
+                return null
+            }
+        }
+
+        private fun getRewardButtonString(project: Project): Int? {
+            return if (!project.isBacking && project.isLive) {
+                R.string.Back_this_project
+            } else if (project.isBacking && project.isLive) {
+                R.string.Manage_your_pledge
+            } else if (project.isBacking && !project.isLive) {
+                R.string.View_your_pledge
+            } else {
+                return null
+            }
+        }
+
+        private fun getRewardButtonColor(project: Project): Int? {
+            return if (!project.isBacking && project.isLive) {
+                R.color.primary
+            } else if (project.isBacking && project.isLive) {
+                R.color.blue_darken_10
+            } else if (project.isBacking && !project.isLive) {
+                R.color.black
             } else {
                 return null
             }

@@ -33,6 +33,8 @@ class HorizontalRewardsAdapter(private val delegate: Delegate) : KSAdapter() {
     fun populateRewards(project: Project) {
         sections().clear()
 
+        //TODO set selection of pledged reward
+
         val rewards = project.rewards()
 
         if (rewards != null) {

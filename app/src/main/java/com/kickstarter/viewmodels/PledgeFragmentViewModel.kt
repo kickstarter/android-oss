@@ -190,8 +190,8 @@ interface PledgeFragmentViewModel {
             val shippingRules = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
                     .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second) }
+                    .take(1)
                     .map { it.shippingRules() }
-                    .distinctUntilChanged()
 
             shippingRules
                     .compose(bindToLifecycle())

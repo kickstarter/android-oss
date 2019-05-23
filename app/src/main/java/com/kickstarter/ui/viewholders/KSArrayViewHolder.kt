@@ -61,7 +61,6 @@ abstract class KSArrayViewHolder(private val view: View) :  ActivityLifecycleTyp
         return this.view.context
     }
 
-
     protected fun environment(): Environment {
         return (context().applicationContext as KSApplication).component().environment()
     }

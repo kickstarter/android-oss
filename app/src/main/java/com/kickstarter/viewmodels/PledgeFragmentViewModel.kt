@@ -93,7 +93,7 @@ interface PledgeFragmentViewModel {
         /** Emits the currently selected shipping rule. */
         fun selectedShippingRule(): Observable<ShippingRule>
 
-        /** Emits the shipping string of the selected shipping rule. */
+        /** Emits the shipping amount of the selected shipping rule. */
         fun shippingAmount(): Observable<SpannableString>
 
         /** Emits a pair of list of shipping rules to be selected and the project. */

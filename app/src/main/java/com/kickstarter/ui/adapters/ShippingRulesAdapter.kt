@@ -23,7 +23,7 @@ class ShippingRulesAdapter(ctx: Context, private val resourceId: Int, val items:
             constraint?.let {
                 if (it.isNotEmpty()) {
                     val list = (results.values as ArrayList<Pair<ShippingRule, Project>>)
-                            .filter { srAndProject -> srAndProject.first.toString().startsWith(constraint, ignoreCase = true) }
+                            .filter { shippingRule -> shippingRule.first.toString().startsWith(constraint, ignoreCase = true) }
                     results.values = list
                     results.count = list.size
                 }

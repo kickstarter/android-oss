@@ -223,9 +223,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.shippingRuleSelected(rule)
         shipping_rules.dismissDropDown()
         shipping_rules.clearFocus()
-        shipping_rules?.let {
+        shipping_rules.let {
             val input = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            input.let { it?.hideSoftInputFromWindow(shipping_rules.windowToken, 0) }
+            input?.let { it.hideSoftInputFromWindow(shipping_rules.windowToken, 0) }
         }
     }
 
@@ -269,8 +269,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun setUpShippingAdapter() {
-        adapter = ShippingRulesAdapter(context!!, R.layout.item_shipping_rule, arrayListOf(), this)
-        shipping_rules.setAdapter(adapter)
+        context?.let {
+            adapter = ShippingRulesAdapter(it, R.layout.item_shipping_rule, arrayListOf(), this)
+            shipping_rules.setAdapter(adapter)
+        }
     }
 
     private fun showPledgeSection(pledgeData: PledgeData) {
@@ -413,10 +415,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun setConversionTextView(@NonNull amount: String) {
         val currencyConversionString = context?.getString(R.string.About_reward_amount)
         total_amount_conversion.text = (currencyConversionString?.let {
-            this.viewModel.environment.ksString().format(
-                    it,
-                "reward_amount", amount
-        )
+            this.viewModel.environment.ksString().format(it, "reward_amount", amount)
         })
     }
 

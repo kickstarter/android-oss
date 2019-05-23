@@ -368,41 +368,23 @@ interface PledgeFragmentViewModel {
                     }
         }
 
-        override fun closeCardButtonClicked(position: Int) {
-            this.closeCardButtonClicked.onNext(position)
-        }
+        override fun closeCardButtonClicked(position: Int) = this.closeCardButtonClicked.onNext(position)
 
-        override fun continueButtonClicked() {
-            this.continueButtonClicked.onNext(null)
-        }
+        override fun continueButtonClicked() = this.continueButtonClicked.onNext(null)
 
-        override fun decreasePledgeButtonClicked() {
-            this.decreasePledgeButtonClicked.onNext(null)
-        }
+        override fun decreasePledgeButtonClicked() = this.decreasePledgeButtonClicked.onNext(null)
 
-        override fun increasePledgeButtonClicked() {
-            this.increasePledgeButtonClicked.onNext(null)
-        }
+        override fun increasePledgeButtonClicked() = this.increasePledgeButtonClicked.onNext(null)
 
-        override fun newCardButtonClicked() {
-            this.newCardButtonClicked.onNext(null)
-        }
+        override fun newCardButtonClicked() = this.newCardButtonClicked.onNext(null)
 
-        override fun onGlobalLayout() {
-            this.onGlobalLayout.onNext(null)
-        }
+        override fun onGlobalLayout() = this.onGlobalLayout.onNext(null)
 
-        override fun pledgeButtonClicked() {
-            this.pledgeButtonClicked.onNext(null)
-        }
+        override fun pledgeButtonClicked() = this.pledgeButtonClicked.onNext(null)
 
-        override fun shippingRuleSelected(shippingRule: ShippingRule) {
-            this.shippingRule.onNext(shippingRule)
-        }
+        override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRule.onNext(shippingRule)
 
-        override fun selectCardButtonClicked(position: Int) {
-            this.selectCardButtonClicked.onNext(position)
-        }
+        override fun selectCardButtonClicked(position: Int) = this.selectCardButtonClicked.onNext(position)
 
         override fun additionalPledgeAmount(): Observable<String> = this.additionalPledgeAmount
 
@@ -417,14 +399,10 @@ interface PledgeFragmentViewModel {
         override fun continueButtonIsGone(): Observable<Boolean> = this.continueButtonIsGone
 
         @NonNull
-        override fun conversionTextViewIsGone(): Observable<Boolean> {
-            return this.conversionTextViewIsGone
-        }
+        override fun conversionTextViewIsGone(): Observable<Boolean> = this.conversionTextViewIsGone
 
         @NonNull
-        override fun conversionText(): Observable<String> {
-            return this.conversionText
-        }
+        override fun conversionText(): Observable<String> = this.conversionText
 
         override fun decreasePledgeButtonIsEnabled(): Observable<Boolean> = this.decreasePledgeButtonIsEnabled
 

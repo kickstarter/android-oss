@@ -209,7 +209,7 @@ public final class KSCurrency {
       .country(project.country())
       .currencyCode("")
       .currencySymbol(shouldShowDollar ? "$": getSymbolForCurrency(project.currentCurrency()))
-      .value(roundingMode == RoundingMode.UP ? (float) Math.ceil(value) : (float) Math.floor(value) * fxRate)
+      .value((roundingMode == RoundingMode.UP ? (float) Math.ceil(value) : (float) Math.floor(value)) * fxRate)
       .build();
   }
 

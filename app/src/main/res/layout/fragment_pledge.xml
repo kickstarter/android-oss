@@ -191,7 +191,7 @@
           <AutoCompleteTextView
             android:id="@+id/shipping_rules"
             style="@style/AutocompleteStyle"
-            android:layout_width="140dp"
+            android:layout_width="@dimen/autocomplete_text_view_width"
             android:layout_height="wrap_content"
             android:layout_weight=".7"
             android:dropDownAnchor="@id/shipping_rules_row"
@@ -208,13 +208,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-          <TextView
-            style="@style/BodyPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/grid_1_half"
-            android:text="@string/plus_sign"
-            android:textColor="@color/ksr_dark_grey_500" />
+          <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/plus_sign_width"
+            android:layout_height="@dimen/plus_sign_height"
+            android:backgroundTint="@color/ksr_grey_500"
+            android:src="@drawable/ic_add"
+            android:layout_marginEnd="@dimen/grid_1_half" />
 
           <FrameLayout
             android:layout_width="wrap_content"
@@ -236,7 +235,6 @@
               android:layout_gravity="center|end"
               android:background="@drawable/pledge_amounts_loading_states" />
           </FrameLayout>
-
 
         </LinearLayout>
 
@@ -287,11 +285,11 @@
             <TextView
               android:id="@+id/total_amount_conversion"
               style="@style/Caption1Secondary"
-              android:textSize="@dimen/caption_1"
-              android:layout_marginTop="@dimen/grid_6"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_gravity="bottom|end"
+              android:layout_marginTop="@dimen/grid_6"
+              android:textSize="@dimen/caption_1"
               tools:text="About $40.00" />
           </FrameLayout>
 

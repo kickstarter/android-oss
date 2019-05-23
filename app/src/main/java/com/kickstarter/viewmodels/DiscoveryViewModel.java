@@ -61,6 +61,9 @@ public interface DiscoveryViewModel {
     /** Emits when the current date is during our birthday celebration. */
     Observable<Void> animateKSR10Icon();
 
+    /**  */
+    Observable<Void> animateMenuIcon();
+
     /** Emits a boolean that determines if the drawer is open or not. */
     Observable<Boolean> drawerIsOpen();
 
@@ -277,6 +280,11 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackOpenedAppBanner());
 
+      this.animateMenuIcon = currentUser
+        //.filter(user -> IntegerUtils.isNonZero(IntegerUtils.intValueOrZero(user.unreadMessagesCount())))
+        .compose(ignoreValues())
+        .compose(bindToLifecycle());
+
       final Observable<Boolean> hasSeenKSR10BirthdayModal = Observable.defer(() -> Observable.just(this.hasSeenKSR10BirthdayModal
         .get()));
 
@@ -309,6 +317,7 @@ public interface DiscoveryViewModel {
     private final PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
 
     private final Observable<Void> animateKSR10Icon;
+    private final Observable<Void> animateMenuIcon;
     private final BehaviorSubject<List<Integer>> clearPages = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> drawerIsOpen = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> expandSortTabLayout = BehaviorSubject.create();
@@ -375,6 +384,9 @@ public interface DiscoveryViewModel {
       this.topFilterRowClick.onNext(row);
     }
 
+    @Override public @NonNull Observable<Void> animateMenuIcon() {
+      return this.animateMenuIcon;
+    }
     @Override public @NonNull Observable<Void> animateKSR10Icon() {
       return this.animateKSR10Icon;
     }

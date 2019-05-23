@@ -56,6 +56,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
   protected @Bind(R.id.discovery_layout) DrawerLayout discoveryLayout;
   protected @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
   protected @Bind(R.id.discovery_drawer_recycler_view) RecyclerView drawerRecyclerView;
+  protected @Bind(R.id.menu_button) ImageButton menuImageButton;
   protected @Bind(R.id.discovery_tab_layout) SortTabLayout sortTabLayout;
   protected @Bind(R.id.discovery_view_pager) ViewPager sortViewPager;
   protected @Bind(R.id.discovery_sort_app_bar_layout) AppBarLayout sortAppBarLayout;
@@ -177,6 +178,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(observeForUI())
       .subscribe(RxDrawerLayout.open(this.discoveryLayout, GravityCompat.START));
 
+    this.viewModel.outputs.animateMenuIcon()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> animateMenuIcon());
+
     RxDrawerLayout.drawerOpen(this.discoveryLayout, GravityCompat.START)
       .skip(1)
       .compose(bindToLifecycle())
@@ -218,6 +224,23 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     this.ksr10ImageButton.setVisibility(View.VISIBLE);
     final AnimatedVectorDrawable animatedVectorDrawable = (AnimatedVectorDrawable) this.ksr10ImageButton.getDrawable();
     animatedVectorDrawable.start();
+  }
+
+  private void animateMenuIcon() {
+    final AnimatedVectorDrawable menuDrawable = (AnimatedVectorDrawable) this.menuImageButton.getDrawable();
+    //menuDrawable.clearAnimationCallbacks();
+    //menuDrawable.registerAnimationCallback(new Animatable2.AnimationCallback() {
+    //  int count;
+    //  @Override
+    //  public void onAnimationEnd(final Drawable drawable) {
+    //    super.onAnimationEnd(drawable);
+    //    if (this.count < 1) {
+    //      menuDrawable.start();
+    //      this.count++;
+    //    }
+    //  }
+    //});
+    menuDrawable.start();
   }
 
   protected void startActivityFeedActivity() {

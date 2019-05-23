@@ -62,10 +62,4 @@ public abstract class Reward implements Parcelable {
     return this.limit() != null && !this.isAllGone();
   }
 
-  public boolean getShippingEnabled() {
-    if (this.shippingEnabled() == null) {
-      return false;
-    }
-    return this.shippingEnabled();
-  }
 }

@@ -249,7 +249,7 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, reward)
-        this.minimumTextViewText.assertValue("CA$ 10")
+        this.minimumTextViewText.assertValue("$10 CAD")
     }
 
     @Test

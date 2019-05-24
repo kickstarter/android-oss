@@ -78,6 +78,9 @@ public interface MessageThreadsViewModel {
 
     /** Emits the unread message count to be displayed. */
     Observable<Integer> unreadMessagesCount();
+
+    /** Emits the unread message count to be displayed. */
+    Observable<Boolean> unreadMessagesCountIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<MessageThreadsActivity> implements Inputs, Outputs {
@@ -198,12 +201,17 @@ public interface MessageThreadsViewModel {
         this.hasNoUnreadMessages,
         Pair::create
       )
-        .map(noMessagesAndNoUnread -> noMessagesAndNoUnread.first || noMessagesAndNoUnread.second);
+        .map(noMessagesAndNoUnread -> noMessagesAndNoUnread.first || noMessagesAndNoUnread.second)
+        .compose(combineLatestPair(mailbox))
+        .map(noMessagesAndMailbox -> noMessagesAndMailbox.first || noMessagesAndMailbox.second.equals(Mailbox.SENT));
 
       unreadMessagesCount
         .filter(ObjectUtils::isNotNull)
         .filter(IntegerUtils::isNonZero)
         .subscribe(this.unreadMessagesCount);
+
+      this.unreadMessagesCountIsGone = mailbox
+      .map(m -> m.equals(Mailbox.SENT));
 
       final Observable<RefTag> refTag = intent()
         .flatMap(ProjectIntentMapper::refTag);
@@ -246,6 +254,7 @@ public interface MessageThreadsViewModel {
     private final BehaviorSubject<Integer> unreadCountTextViewTypefaceInt = BehaviorSubject.create();
     private final Observable<Boolean> unreadCountToolbarTextViewIsGone;
     private final BehaviorSubject<Integer> unreadMessagesCount = BehaviorSubject.create();
+    private final Observable<Boolean> unreadMessagesCountIsGone;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -289,6 +298,9 @@ public interface MessageThreadsViewModel {
     }
     @Override public @NonNull Observable<Integer> unreadMessagesCount() {
       return this.unreadMessagesCount;
+    }
+    @Override public @NonNull Observable<Boolean> unreadMessagesCountIsGone() {
+      return this.unreadMessagesCountIsGone;
     }
   }
 }

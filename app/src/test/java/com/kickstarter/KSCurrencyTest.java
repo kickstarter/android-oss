@@ -62,15 +62,24 @@ public class KSCurrencyTest extends TestCase {
   public void testPreferUSD_withUserInUS() {
     final KSCurrency currency = createKSCurrency("US");
 
-    final Project preferUSD_USProject = ProjectFactory.project().toBuilder().currentCurrency(CurrencyCode.USD.rawValue()).build();
+    final Project preferUSD_USProject = ProjectFactory.project()
+      .toBuilder()
+      .currentCurrency(CurrencyCode.USD.rawValue())
+      .build();
     assertEquals("$100", currency.formatWithUserPreference(100.9f, preferUSD_USProject, RoundingMode.DOWN));
     assertEquals("$101", currency.formatWithUserPreference(100.9f, preferUSD_USProject, RoundingMode.UP));
 
-    final Project preferUSD_CAProject = ProjectFactory.caProject().toBuilder().currentCurrency(CurrencyCode.USD.rawValue()).build();
-    assertEquals("$75", currency.formatWithUserPreference(100.9f,preferUSD_CAProject, RoundingMode.DOWN));
-    assertEquals("$76", currency.formatWithUserPreference(100.9f,preferUSD_CAProject, RoundingMode.UP));
+    final Project preferUSD_CAProject = ProjectFactory.caProject()
+      .toBuilder()
+      .currentCurrency(CurrencyCode.USD.rawValue())
+      .build();
+    assertEquals("$75", currency.formatWithUserPreference(100.9f, preferUSD_CAProject, RoundingMode.DOWN));
+    assertEquals("$76", currency.formatWithUserPreference(100.9f, preferUSD_CAProject, RoundingMode.UP));
 
-    final Project preferUSD_UKProject = ProjectFactory.ukProject().toBuilder().currentCurrency(CurrencyCode.USD.rawValue()).build();
+    final Project preferUSD_UKProject = ProjectFactory.ukProject()
+      .toBuilder()
+      .currentCurrency(CurrencyCode.USD.rawValue())
+      .build();
     assertEquals("$150", currency.formatWithUserPreference(100.9f, preferUSD_UKProject, RoundingMode.DOWN));
     assertEquals("$152", currency.formatWithUserPreference(100.9f, preferUSD_UKProject, RoundingMode.UP));
   }
@@ -78,15 +87,27 @@ public class KSCurrencyTest extends TestCase {
   public void testPreferUSD_withUserInCA() {
     final KSCurrency currency = createKSCurrency("CA");
 
-    final Project preferUSD_USProject = ProjectFactory.project().toBuilder().fxRate(1f).currentCurrency(CurrencyCode.USD.rawValue()).build();
+    final Project preferUSD_USProject = ProjectFactory.project()
+      .toBuilder()
+      .fxRate(1f)
+      .currentCurrency(CurrencyCode.USD.rawValue())
+      .build();
     assertEquals("US$ 100", currency.formatWithUserPreference(100.9f, preferUSD_USProject, RoundingMode.DOWN));
     assertEquals("US$ 101", currency.formatWithUserPreference(100.9f, preferUSD_USProject, RoundingMode.UP));
 
-    final Project preferUSD_CAProject = ProjectFactory.caProject().toBuilder().fxRate(.75f).currentCurrency(CurrencyCode.USD.rawValue()).build();
-    assertEquals("US$ 75", currency.formatWithUserPreference(100.9f,preferUSD_CAProject, RoundingMode.DOWN));
-    assertEquals("US$ 76", currency.formatWithUserPreference(100.9f,preferUSD_CAProject, RoundingMode.UP));
+    final Project preferUSD_CAProject = ProjectFactory.caProject()
+      .toBuilder()
+      .fxRate(.75f)
+      .currentCurrency(CurrencyCode.USD.rawValue())
+      .build();
+    assertEquals("US$ 75", currency.formatWithUserPreference(100.9f, preferUSD_CAProject, RoundingMode.DOWN));
+    assertEquals("US$ 76", currency.formatWithUserPreference(100.9f, preferUSD_CAProject, RoundingMode.UP));
 
-    final Project preferUSD_UKProject = ProjectFactory.ukProject().toBuilder().fxRate(1.5f).currentCurrency(CurrencyCode.USD.rawValue()).build();
+    final Project preferUSD_UKProject = ProjectFactory.ukProject()
+      .toBuilder()
+      .fxRate(1.5f)
+      .currentCurrency(CurrencyCode.USD.rawValue())
+      .build();
     assertEquals("US$ 150", currency.formatWithUserPreference(100.9f, preferUSD_UKProject, RoundingMode.DOWN));
     assertEquals("US$ 152", currency.formatWithUserPreference(100.9f, preferUSD_UKProject, RoundingMode.UP));
   }
@@ -94,15 +115,27 @@ public class KSCurrencyTest extends TestCase {
   public void testPreferUSD_withUserInUK() {
     final KSCurrency currency = createKSCurrency("UK");
 
-    final Project preferUSD_USProject = ProjectFactory.project().toBuilder().fxRate(1f).currentCurrency(CurrencyCode.USD.rawValue()).build();
+    final Project preferUSD_USProject = ProjectFactory.project()
+      .toBuilder()
+      .fxRate(1f)
+      .currentCurrency(CurrencyCode.USD.rawValue())
+      .build();
     assertEquals("US$ 100", currency.formatWithUserPreference(100.9f, preferUSD_USProject, RoundingMode.DOWN));
     assertEquals("US$ 101", currency.formatWithUserPreference(100.9f, preferUSD_USProject, RoundingMode.UP));
 
-    final Project preferUSD_CAProject = ProjectFactory.caProject().toBuilder().fxRate(.75f).currentCurrency(CurrencyCode.USD.rawValue()).build();
-    assertEquals("US$ 75", currency.formatWithUserPreference(100.9f,preferUSD_CAProject, RoundingMode.DOWN));
-    assertEquals("US$ 76", currency.formatWithUserPreference(100.9f,preferUSD_CAProject, RoundingMode.UP));
+    final Project preferUSD_CAProject = ProjectFactory.caProject()
+      .toBuilder()
+      .fxRate(.75f)
+      .currentCurrency(CurrencyCode.USD.rawValue())
+      .build();
+    assertEquals("US$ 75", currency.formatWithUserPreference(100.9f, preferUSD_CAProject, RoundingMode.DOWN));
+    assertEquals("US$ 76", currency.formatWithUserPreference(100.9f, preferUSD_CAProject, RoundingMode.UP));
 
-    final Project preferUSD_UKProject = ProjectFactory.ukProject().toBuilder().fxRate(1.5f).currentCurrency(CurrencyCode.USD.rawValue()).build();
+    final Project preferUSD_UKProject = ProjectFactory.ukProject()
+      .toBuilder()
+      .fxRate(1.5f)
+      .currentCurrency(CurrencyCode.USD.rawValue())
+      .build();
     assertEquals("US$ 150", currency.formatWithUserPreference(100.9f, preferUSD_UKProject, RoundingMode.DOWN));
     assertEquals("US$ 152", currency.formatWithUserPreference(100.9f, preferUSD_UKProject, RoundingMode.UP));
   }
@@ -110,15 +143,27 @@ public class KSCurrencyTest extends TestCase {
   public void testPreferUSD_withUserInUnlaunchedCountry() {
     final KSCurrency currency = createKSCurrency("XX");
 
-    final Project preferUSD_USProject = ProjectFactory.project().toBuilder().fxRate(1f).currentCurrency(CurrencyCode.USD.rawValue()).build();
+    final Project preferUSD_USProject = ProjectFactory.project()
+      .toBuilder()
+      .fxRate(1f)
+      .currentCurrency(CurrencyCode.USD.rawValue())
+      .build();
     assertEquals("US$ 100", currency.formatWithUserPreference(100.9f, preferUSD_USProject, RoundingMode.DOWN));
     assertEquals("US$ 101", currency.formatWithUserPreference(100.9f, preferUSD_USProject, RoundingMode.UP));
 
-    final Project preferUSD_CAProject = ProjectFactory.caProject().toBuilder().fxRate(.75f).currentCurrency(CurrencyCode.USD.rawValue()).build();
-    assertEquals("US$ 75", currency.formatWithUserPreference(100.9f,preferUSD_CAProject, RoundingMode.DOWN));
-    assertEquals("US$ 76", currency.formatWithUserPreference(100.9f,preferUSD_CAProject, RoundingMode.UP));
+    final Project preferUSD_CAProject = ProjectFactory.caProject()
+      .toBuilder()
+      .fxRate(.75f)
+      .currentCurrency(CurrencyCode.USD.rawValue())
+      .build();
+    assertEquals("US$ 75", currency.formatWithUserPreference(100.9f, preferUSD_CAProject, RoundingMode.DOWN));
+    assertEquals("US$ 76", currency.formatWithUserPreference(100.9f, preferUSD_CAProject, RoundingMode.UP));
 
-    final Project preferUSD_UKProject = ProjectFactory.ukProject().toBuilder().fxRate(1.5f).currentCurrency(CurrencyCode.USD.rawValue()).build();
+    final Project preferUSD_UKProject = ProjectFactory.ukProject()
+      .toBuilder()
+      .fxRate(1.5f)
+      .currentCurrency(CurrencyCode.USD.rawValue())
+      .build();
     assertEquals("US$ 150", currency.formatWithUserPreference(100.9f, preferUSD_UKProject, RoundingMode.DOWN));
     assertEquals("US$ 152", currency.formatWithUserPreference(100.9f, preferUSD_UKProject, RoundingMode.UP));
   }
@@ -126,15 +171,27 @@ public class KSCurrencyTest extends TestCase {
   public void testPreferCAD_withUserInCA() {
     final KSCurrency currency = createKSCurrency("CA");
 
-    final Project preferCAD_USProject = ProjectFactory.project().toBuilder().fxRate(1.5f).currentCurrency(CurrencyCode.CAD.rawValue()).build();
+    final Project preferCAD_USProject = ProjectFactory.project()
+      .toBuilder()
+      .fxRate(1.5f)
+      .currentCurrency(CurrencyCode.CAD.rawValue())
+      .build();
     assertEquals("CA$ 150", currency.formatWithUserPreference(100.9f, preferCAD_USProject, RoundingMode.DOWN));
     assertEquals("CA$ 152", currency.formatWithUserPreference(100.9f, preferCAD_USProject, RoundingMode.UP));
 
-    final Project preferCAD_CAProject = ProjectFactory.caProject().toBuilder().fxRate(1f).currentCurrency(CurrencyCode.CAD.rawValue()).build();
-    assertEquals("CA$ 100", currency.formatWithUserPreference(100.9f,preferCAD_CAProject, RoundingMode.DOWN));
-    assertEquals("CA$ 101", currency.formatWithUserPreference(100.9f,preferCAD_CAProject, RoundingMode.UP));
+    final Project preferCAD_CAProject = ProjectFactory.caProject()
+      .toBuilder()
+      .fxRate(1f)
+      .currentCurrency(CurrencyCode.CAD.rawValue())
+      .build();
+    assertEquals("CA$ 100", currency.formatWithUserPreference(100.9f, preferCAD_CAProject, RoundingMode.DOWN));
+    assertEquals("CA$ 101", currency.formatWithUserPreference(100.9f, preferCAD_CAProject, RoundingMode.UP));
 
-    final Project preferCAD_UKProject = ProjectFactory.ukProject().toBuilder().fxRate(.75f).currentCurrency(CurrencyCode.CAD.rawValue()).build();
+    final Project preferCAD_UKProject = ProjectFactory.ukProject()
+      .toBuilder()
+      .fxRate(.75f)
+      .currentCurrency(CurrencyCode.CAD.rawValue())
+      .build();
     assertEquals("CA$ 75", currency.formatWithUserPreference(100.9f, preferCAD_UKProject, RoundingMode.DOWN));
     assertEquals("CA$ 76", currency.formatWithUserPreference(100.9f, preferCAD_UKProject, RoundingMode.UP));
   }
@@ -142,15 +199,27 @@ public class KSCurrencyTest extends TestCase {
   public void testPreferGBP_withUserInUK() {
     final KSCurrency currency = createKSCurrency("UK");
 
-    final Project preferGBP_USProject = ProjectFactory.project().toBuilder().fxRate(.75f).currentCurrency(CurrencyCode.GBP.rawValue()).build();
+    final Project preferGBP_USProject = ProjectFactory.project()
+      .toBuilder()
+      .fxRate(.75f)
+      .currentCurrency(CurrencyCode.GBP.rawValue())
+      .build();
     assertEquals("£75", currency.formatWithUserPreference(100.9f, preferGBP_USProject, RoundingMode.DOWN));
     assertEquals("£76", currency.formatWithUserPreference(100.9f, preferGBP_USProject, RoundingMode.UP));
 
-    final Project preferGBP_CAProject = ProjectFactory.caProject().toBuilder().fxRate(1.5f).currentCurrency(CurrencyCode.GBP.rawValue()).build();
-    assertEquals("£150", currency.formatWithUserPreference(100.9f,preferGBP_CAProject, RoundingMode.DOWN));
-    assertEquals("£152", currency.formatWithUserPreference(100.9f,preferGBP_CAProject, RoundingMode.UP));
+    final Project preferGBP_CAProject = ProjectFactory.caProject()
+      .toBuilder()
+      .fxRate(1.5f)
+      .currentCurrency(CurrencyCode.GBP.rawValue())
+      .build();
+    assertEquals("£150", currency.formatWithUserPreference(100.9f, preferGBP_CAProject, RoundingMode.DOWN));
+    assertEquals("£152", currency.formatWithUserPreference(100.9f, preferGBP_CAProject, RoundingMode.UP));
 
-    final Project preferGBP_UKProject = ProjectFactory.ukProject().toBuilder().fxRate(1f).currentCurrency(CurrencyCode.GBP.rawValue()).build();
+    final Project preferGBP_UKProject = ProjectFactory.ukProject()
+      .toBuilder()
+      .fxRate(1f)
+      .currentCurrency(CurrencyCode.GBP.rawValue())
+      .build();
     assertEquals("£100", currency.formatWithUserPreference(100.9f, preferGBP_UKProject, RoundingMode.DOWN));
     assertEquals("£101", currency.formatWithUserPreference(100.9f, preferGBP_UKProject, RoundingMode.UP));
   }

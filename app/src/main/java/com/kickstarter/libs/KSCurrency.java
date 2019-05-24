@@ -97,9 +97,6 @@ public final class KSCurrency {
     final boolean preferUSD) {
 
     final Config config = this.currentConfig.getConfig();
-    final boolean shouldShowDollar = config.countryCode().equals("US") &&
-      project.currency().equals(CurrencyCode.USD.rawValue())
-      && project.currentCurrency().equals(CurrencyCode.USD.rawValue());
 
     final Float staticUsdRate = project.staticUsdRate();
     if (preferUSD && config.countryCode().equals("US") && staticUsdRate != null) {
@@ -112,8 +109,8 @@ public final class KSCurrency {
     } else {
       return CurrencyOptions.builder()
         .country(project.country())
-        .currencyCode("")
-        .currencySymbol(shouldShowDollar ? "$" : getSymbolForCurrency(project.currency()))
+        .currencyCode(project.currency())
+        .currencySymbol(project.currencySymbol())
         .value(value)
         .build();
     }

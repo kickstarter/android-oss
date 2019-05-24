@@ -178,10 +178,10 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(observeForUI())
       .subscribe(RxDrawerLayout.open(this.discoveryLayout, GravityCompat.START));
 
-    this.viewModel.outputs.animateMenuIcon()
+    this.viewModel.outputs.showMenuIconWithIndicator()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(__ -> animateMenuIcon());
+      .subscribe(this::showMenuIconWithIndicator);
 
     RxDrawerLayout.drawerOpen(this.discoveryLayout, GravityCompat.START)
       .skip(1)
@@ -226,21 +226,14 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     animatedVectorDrawable.start();
   }
 
-  private void animateMenuIcon() {
-    final AnimatedVectorDrawable menuDrawable = (AnimatedVectorDrawable) this.menuImageButton.getDrawable();
-    //menuDrawable.clearAnimationCallbacks();
-    //menuDrawable.registerAnimationCallback(new Animatable2.AnimationCallback() {
-    //  int count;
-    //  @Override
-    //  public void onAnimationEnd(final Drawable drawable) {
-    //    super.onAnimationEnd(drawable);
-    //    if (this.count < 1) {
-    //      menuDrawable.start();
-    //      this.count++;
-    //    }
-    //  }
-    //});
-    menuDrawable.start();
+  private void showMenuIconWithIndicator(final boolean withIndicator) {
+    if (withIndicator) {
+      this.menuImageButton.setImageResource(R.drawable.ic_menu_indicator);
+      final AnimatedVectorDrawable menuDrawable = (AnimatedVectorDrawable) this.menuImageButton.getDrawable();
+      menuDrawable.start();
+    } else {
+      this.menuImageButton.setImageResource(R.drawable.ic_menu);
+    }
   }
 
   protected void startActivityFeedActivity() {

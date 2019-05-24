@@ -48,6 +48,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> showInternalTools = new TestSubscriber<>();
   private final TestSubscriber<Void> showKSR10 = new TestSubscriber<>();
   private final TestSubscriber<Void> showLoginTout = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> showMenuIconWithIndicator = new TestSubscriber<>();
   private final TestSubscriber<Void> showProfile = new TestSubscriber<>();
   private final TestSubscriber<Void> showSettings = new TestSubscriber<>();
   private final TestSubscriber<Integer> updatePage = new TestSubscriber<>();
@@ -471,6 +472,56 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     this.animateKSR10Icon.assertNoValues();
     this.showKSR10.assertNoValues();
+  }
+
+  @Test
+  public void testAnimateMenuIcon_whenLoggedOut() {
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
+
+    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
+
+    this.showMenuIconWithIndicator.assertValue(false);
+  }
+
+  @Test
+  public void testAnimateMenuIcon_afterLogIn() {
+    final MockCurrentUser currentUser = new MockCurrentUser();
+
+    this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder().currentUser(currentUser).build());
+    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
+
+    this.showMenuIconWithIndicator.assertValue(false);
+
+    currentUser.refresh(UserFactory.user().toBuilder().unreadMessagesCount(4).build());
+
+    this.showMenuIconWithIndicator.assertValues(false, true);
+  }
+
+  @Test
+  public void testAnimateMenuIcon_whenUserHasNoMessages() {
+    final MockCurrentUser currentUser = new MockCurrentUser(UserFactory.user());
+    this.vm = new DiscoveryViewModel.ViewModel(environment()
+      .toBuilder()
+      .currentUser(currentUser)
+      .build());
+
+    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
+
+    this.showMenuIconWithIndicator.assertValue(false);
+  }
+
+  @Test
+  public void testAnimateMenuIcon_whenUserHasMessages() {
+    final User user = UserFactory.user().toBuilder().unreadMessagesCount(3).build();
+    final MockCurrentUser currentUser = new MockCurrentUser(user);
+    this.vm = new DiscoveryViewModel.ViewModel(environment()
+      .toBuilder()
+      .currentUser(currentUser)
+      .build());
+
+    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
+
+    this.showMenuIconWithIndicator.assertValue(true);
   }
 
   private void setUpDefaultParamsTest(final @Nullable User user) {

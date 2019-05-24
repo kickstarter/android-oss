@@ -12,6 +12,8 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.viewmodels.CreatorDashboardReferrerStatsRowHolderViewModel;
 
+import java.math.RoundingMode;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -66,7 +68,7 @@ public final class CreatorDashboardReferrerStatsRowViewHolder extends KSViewHold
   }
 
   private void setPledgedColumnValue(final @NonNull Pair<Project, Float> projectAndPledgedForReferrer) {
-    final String goalString = this.ksCurrency.format(projectAndPledgedForReferrer.second, projectAndPledgedForReferrer.first);
+    final String goalString = this.ksCurrency.format(projectAndPledgedForReferrer.second, projectAndPledgedForReferrer.first, RoundingMode.DOWN);
     this.amountPledgedForReferrerTextView.setText(goalString);
   }
 

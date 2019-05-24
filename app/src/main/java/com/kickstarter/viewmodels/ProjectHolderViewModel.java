@@ -202,8 +202,8 @@ public interface ProjectHolderViewModel {
 
       this.conversionPledgedAndGoalText = project
         .map(p -> {
-          final String pledged = this.ksCurrency.formatWithProjectCurrency(p.pledged(), p, RoundingMode.DOWN);
-          final String goal = this.ksCurrency.formatWithProjectCurrency(p.goal(), p, RoundingMode.DOWN);
+          final String pledged = this.ksCurrency.format(p.pledged(), p, RoundingMode.DOWN);
+          final String goal = this.ksCurrency.format(p.goal(), p, RoundingMode.DOWN);
           return Pair.create(pledged, goal);
         });
 

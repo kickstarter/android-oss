@@ -174,6 +174,7 @@ public final class ProjectFactory {
       .currencySymbol("$")
       .currency("CAD")
       .staticUsdRate(0.75f)
+      .fxRate(0.75f)
       .build();
   }
 
@@ -186,6 +187,7 @@ public final class ProjectFactory {
       .currencySymbol("$")
       .currency("CAD")
       .staticUsdRate(0.75f)
+      .fxRate(.75f)
       .build();
   }
 
@@ -198,6 +200,7 @@ public final class ProjectFactory {
       .currencySymbol("£")
       .currency("GBP")
       .staticUsdRate(1.5f)
+      .fxRate(1.5f)
       .build();
   }
 

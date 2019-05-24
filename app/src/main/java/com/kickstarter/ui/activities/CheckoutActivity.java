@@ -49,6 +49,7 @@ import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.CheckoutViewModel;
 import com.squareup.picasso.Picasso;
 
+import java.math.RoundingMode;
 import java.util.Arrays;
 
 import androidx.annotation.NonNull;
@@ -312,7 +313,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewM
       this.ksString.format(
         this.pledgeDisclaimerString,
         "charge_amount",
-        this.ksCurrency.format(Float.valueOf(payload.cart().totalPrice()), this.project)
+        this.ksCurrency.format(Float.valueOf(payload.cart().totalPrice()), this.project, RoundingMode.UP)
       )
     ));
 

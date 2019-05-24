@@ -12,7 +12,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
-import com.kickstarter.ui.viewholders.KSViewHolder
 import rx.Observable
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
@@ -113,7 +112,7 @@ interface HorizontalRewardViewHolderViewModel {
 
             val formattedMinimum = this.projectAndReward
                     .filter { RewardUtils.isReward(it.second) }
-                    .map { pr -> this.ksCurrency.formatWithProjectCurrency(pr.second.minimum(), pr.first, RoundingMode.UP) }
+                    .map { pr -> this.ksCurrency.format(pr.second.minimum(), pr.first, RoundingMode.UP) }
 
             val isSelectable = this.projectAndReward
                     .map { pr -> isSelectable(pr.first, pr.second) }

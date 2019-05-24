@@ -24,8 +24,8 @@ public final class KSCurrency {
    * @param initialValue Value to display, local to the project's currency.
    * @param project      The project to use to look up currency information.
    */
-  public @NonNull String format(final float initialValue, final @NonNull Project project) {
-    return format(initialValue, project, false, false, RoundingMode.DOWN);
+  public @NonNull String format(final double initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode) {
+    return format(initialValue, project, false, false, roundingMode);
   }
 
   /**
@@ -36,7 +36,7 @@ public final class KSCurrency {
    * @param excludeCurrencyCode If true, hide the currency code, even if that makes the returned value ambiguous.
    *                            This is used when space is constrained and the currency code can be determined elsewhere.
    */
-  public @NonNull String format(final float initialValue, final @NonNull Project project,
+  public @NonNull String format(final double initialValue, final @NonNull Project project,
     final boolean excludeCurrencyCode) {
 
     return format(initialValue, project, excludeCurrencyCode, false, RoundingMode.DOWN);
@@ -52,34 +52,16 @@ public final class KSCurrency {
    * @param preferUSD           Attempt to convert a project from it's local currency to USD, if the user is located in
    *                            the US.
    */
-  public @NonNull String format(final float initialValue, final @NonNull Project project,
+  public @NonNull String format(final double initialValue, final @NonNull Project project,
     final boolean excludeCurrencyCode, final boolean preferUSD, final @NonNull RoundingMode roundingMode) {
 
-    final CurrencyOptions currencyOptions = currencyOptions(initialValue, project, preferUSD);
+    final float unconvertedValue = roundingMode == RoundingMode.UP ? (float) Math.ceil(initialValue) : (float) Math.floor(initialValue);
+    final CurrencyOptions currencyOptions = currencyOptions(unconvertedValue, project, preferUSD);
 
     final boolean showCurrencyCode = showCurrencyCode(currencyOptions, excludeCurrencyCode);
 
     final NumberOptions numberOptions = NumberOptions.builder()
       .currencyCode(showCurrencyCode ? currencyOptions.currencyCode() : "")
-      .currencySymbol(currencyOptions.currencySymbol())
-      .roundingMode(roundingMode)
-      .build();
-
-    return NumberUtils.format(currencyOptions.value(), numberOptions);
-  }
-
-  /**
-   * Returns a currency string appropriate to the user's locale, chosenCurrency and project preferred currency.
-   *
-   * @param initialValue Value to display, local to the project's currency.
-   * @param project The project to use to look up currency information.
-   * @param roundingMode This determines whether we should round the values down or up.
-   */
-  public String formatWithProjectCurrency(final double initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode) {
-
-    final CurrencyOptions currencyOptions = projectCurrencyOptions(initialValue, roundingMode, project);
-
-    final NumberOptions numberOptions = NumberOptions.builder()
       .currencySymbol(currencyOptions.currencySymbol())
       .roundingMode(roundingMode)
       .build();
@@ -96,7 +78,8 @@ public final class KSCurrency {
    */
   public String formatWithUserPreference(final double initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode) {
 
-    final CurrencyOptions currencyOptions = userCurrencyOptions(initialValue, roundingMode, project);
+    final float unconvertedValue = roundingMode == RoundingMode.UP ? (float) Math.ceil(initialValue) : (float) Math.floor(initialValue);
+    final CurrencyOptions currencyOptions = userCurrencyOptions(unconvertedValue, project);
 
     final NumberOptions numberOptions = NumberOptions.builder()
       .currencySymbol(currencyOptions.currencySymbol())
@@ -132,31 +115,11 @@ public final class KSCurrency {
     }
   }
 
-  /** Show's the pledge amount for a project's Reward in the project's currency. If the user's preference is USD and
-   * the user is located in the US then $ will show for the currency symbol. If the user has a preference of USD
-   * and is located outside of the US and the project is a US based project the currency symbol will show as $US
-   */
-  private @NonNull CurrencyOptions projectCurrencyOptions(final double value, final @NonNull RoundingMode roundingMode, final @NonNull Project project) {
-    final Config config = this.currentConfig.getConfig();
-
-    final boolean shouldShowDollar = config.countryCode().equals("US") &&
-      project.currency().equals(CurrencyCode.USD.rawValue())
-      && project.currentCurrency().equals(CurrencyCode.USD.rawValue());
-
-
-    return CurrencyOptions.builder()
-      .country(project.country())
-      .currencyCode("")
-      .currencySymbol(shouldShowDollar ? "$" : getSymbolForCurrency(project.currency()))
-      .value(roundingMode == RoundingMode.UP ? (float) Math.ceil(value) : (float) Math.floor(value))
-      .build();
-  }
-
   /** Show's the project in the user's preferred currency. If the user has no preferred currency the project is shown
    * in $ as a default if the user is in the US. If the user is located outside of the US the default will show as
    * $US.
    */
-  private @NonNull CurrencyOptions userCurrencyOptions(final double value, final @NonNull RoundingMode roundingMode, final @NonNull Project project) {
+  private @NonNull CurrencyOptions userCurrencyOptions(final float value, final @NonNull Project project) {
     final Config config = this.currentConfig.getConfig();
     final Float fxRate = project.fxRate();
 
@@ -167,7 +130,7 @@ public final class KSCurrency {
       .country(project.country())
       .currencyCode("")
       .currencySymbol(shouldShowDollar ? "$": getSymbolForCurrency(project.currentCurrency()))
-      .value(roundingMode == RoundingMode.UP ? (float) Math.ceil(value) : (float) Math.floor(value) * fxRate)
+      .value(value * fxRate)
       .build();
   }
 

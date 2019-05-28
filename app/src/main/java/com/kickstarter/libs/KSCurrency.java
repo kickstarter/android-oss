@@ -108,8 +108,8 @@ public final class KSCurrency {
 
     final String country = project.country();
     final String currency = useProjectCurrency ? project.currency() : project.currentCurrency();
-    final boolean projectInUS = country.equals("US");
-    final boolean userInUS = config.countryCode().equals("US");
+    final boolean projectInUS = "US".equals(project.country());
+    final boolean userInUS = "US".equals(config.countryCode());
     final CurrencyCode code = CurrencyCode.safeValueOf(currency);
 
     if (userInUS && excludeCurrencyCode) {
@@ -161,8 +161,9 @@ public final class KSCurrency {
     final Config config = this.currentConfig.getConfig();
     final boolean currencyIsDupe = config.currencyNeedsCode(currencyOptions.currencySymbol());
 
-    if (!currencyIsDupe)
+    if (!currencyIsDupe) {
       return true;
+    }
 
     final boolean userIsUS = config.countryCode().equals("US");
     final boolean projectIsUS = currencyOptions.country().equals("US");

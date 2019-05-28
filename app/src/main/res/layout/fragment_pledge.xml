@@ -37,8 +37,8 @@
 
     <ImageView
       android:id="@+id/expand_icon"
-      android:layout_width="@dimen/grid_4"
-      android:layout_height="@dimen/grid_4"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:alpha="0"
       android:contentDescription="@null"
       android:elevation="@dimen/mini_reward_elevation"

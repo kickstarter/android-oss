@@ -206,6 +206,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun onDetach() {
         super.onDetach()
         cards_recycler?.adapter = null
+        context?.let { hideKeyboard(it) }
     }
 
     override fun addNewCardButtonClicked() {

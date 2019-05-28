@@ -201,12 +201,8 @@ interface PledgeFragmentViewModel {
             val shippingRules = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
                     .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second) }
-                    .take(1)
                     .map { it.shippingRules() }
-
-            shippingRules
-                    .compose(bindToLifecycle())
-                    .subscribe(this.shippingRules)
+                    .share()
 
             val rulesAndProject = shippingRules
                     .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))

@@ -631,16 +631,4 @@ public final class Koala {
 
     this.client.track(KoalaEvent.VIEWED_PROJECT_DASHBOARD, properties);
   }
-
-  // EASTER EGG
-  public void trackViewedKSR10BirthdayModal() {
-    final Map<String, Object> properties = new HashMap<String, Object>() {
-      {
-        put("type", "easteregg");
-
-      }
-    };
-
-    this.client.track(KoalaEvent.VIEWED_KSR10_BIRTHDAY_MODAL, properties);
-  }
 }

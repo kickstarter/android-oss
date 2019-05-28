@@ -14,6 +14,8 @@ import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
+import com.kickstarter.libs.utils.IntegerUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.User;
@@ -103,6 +105,9 @@ public interface DiscoveryViewModel {
 
     /** Start login tout activity for result. */
     Observable<Void> showLoginTout();
+
+    /** Emits a boolean that determines if the menu icon should be shown with an indicator. */
+    Observable<Boolean> showMenuIconWithIndicator();
 
     /** Start {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
     Observable<Void> showMessages();
@@ -283,6 +288,12 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackOpenedAppBanner());
 
+      this.showMenuIconWithIndicator = currentUser
+        .map(user -> ObjectUtils.isNull(user) || IntegerUtils.isZero(IntegerUtils.intValueOrZero(user.unreadMessagesCount())))
+        .map(BooleanUtils::negate)
+        .distinctUntilChanged()
+        .compose(bindToLifecycle());
+
       final Observable<Boolean> hasSeenKSR10BirthdayModal = Observable.defer(() -> Observable.just(this.hasSeenKSR10BirthdayModal
         .get()));
 
@@ -328,6 +339,7 @@ public interface DiscoveryViewModel {
     private final Observable<Void> showInternalTools;
     private final Observable<Void> showKSR10;
     private final Observable<Void> showLoginTout;
+    private final Observable<Boolean> showMenuIconWithIndicator;
     private final Observable<Void> showMessages;
     private final Observable<Void> showProfile;
     private final Observable<Void> showSettings;
@@ -424,6 +436,9 @@ public interface DiscoveryViewModel {
     }
     @Override public @NonNull Observable<Void> showLoginTout() {
       return this.showLoginTout;
+    }
+    @Override public @NonNull Observable<Boolean> showMenuIconWithIndicator() {
+      return this.showMenuIconWithIndicator;
     }
     @Override public @NonNull Observable<Void> showMessages() {
       return this.showMessages;

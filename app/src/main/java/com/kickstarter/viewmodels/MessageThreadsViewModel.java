@@ -8,6 +8,7 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -29,6 +30,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
@@ -76,6 +78,9 @@ public interface MessageThreadsViewModel {
 
     /** Emits the unread message count to be displayed. */
     Observable<Integer> unreadMessagesCount();
+
+    /** Emits a boolean determining the unread messages count visibility. */
+    Observable<Boolean> unreadMessagesCountIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<MessageThreadsActivity> implements Inputs, Outputs {
@@ -91,6 +96,10 @@ public interface MessageThreadsViewModel {
       // NB: project from intent can be null.
       final Observable<Project> initialProject = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT));
+
+      final Observable<KoalaContext.Mailbox> koalaContext = intent()
+        .map(i -> i.getSerializableExtra(IntentKey.KOALA_CONTEXT))
+        .ofType(KoalaContext.Mailbox.class);
 
       final Observable<Void> refreshUserOrProject = Observable.merge(this.onResume, this.swipeRefresh);
 
@@ -192,26 +201,35 @@ public interface MessageThreadsViewModel {
         this.hasNoUnreadMessages,
         Pair::create
       )
-        .map(noMessagesAndNoUnread -> noMessagesAndNoUnread.first || noMessagesAndNoUnread.second);
+        .map(noMessagesAndNoUnread -> noMessagesAndNoUnread.first || noMessagesAndNoUnread.second)
+        .compose(combineLatestPair(mailbox))
+        .map(noMessagesAndMailbox -> noMessagesAndMailbox.first || noMessagesAndMailbox.second.equals(Mailbox.SENT));
 
       unreadMessagesCount
         .filter(ObjectUtils::isNotNull)
         .filter(IntegerUtils::isNonZero)
         .subscribe(this.unreadMessagesCount);
 
+      this.unreadMessagesCountIsGone = mailbox
+      .map(m -> m.equals(Mailbox.SENT));
+
       final Observable<RefTag> refTag = intent()
         .flatMap(ProjectIntentMapper::refTag);
 
-      Observable.combineLatest(projectAndMailbox, refTag, Pair::create)
+      final Observable<Pair<RefTag, KoalaContext.Mailbox>> refTagAndContext = refTag
+        .compose(combineLatestPair(koalaContext));
+
+      Observable.combineLatest(projectAndMailbox, refTagAndContext, Pair::create)
         .compose(bindToLifecycle())
         .subscribe(this::trackMailboxView);
     }
 
-    private void trackMailboxView(final @NonNull Pair<Pair<Project, Mailbox>, RefTag> projectMailboxAndRedTag) {
+    private void trackMailboxView(final @NonNull Pair<Pair<Project, Mailbox>, Pair<RefTag, KoalaContext.Mailbox>> projectMailboxAndRedTag) {
       final Mailbox mailbox = projectMailboxAndRedTag.first.second;
       final Project project = projectMailboxAndRedTag.first.first;
-      final RefTag refTag = projectMailboxAndRedTag.second;
-      this.koala.trackViewedMailbox(mailbox, project, refTag);
+      final RefTag refTag = projectMailboxAndRedTag.second.first;
+      final KoalaContext.Mailbox context = projectMailboxAndRedTag.second.second;
+      this.koala.trackViewedMailbox(mailbox, project, refTag, context);
     }
 
     private int getStringResForMailbox(final @NonNull Mailbox mailbox) {
@@ -236,6 +254,7 @@ public interface MessageThreadsViewModel {
     private final BehaviorSubject<Integer> unreadCountTextViewTypefaceInt = BehaviorSubject.create();
     private final Observable<Boolean> unreadCountToolbarTextViewIsGone;
     private final BehaviorSubject<Integer> unreadMessagesCount = BehaviorSubject.create();
+    private final Observable<Boolean> unreadMessagesCountIsGone;
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -279,6 +298,9 @@ public interface MessageThreadsViewModel {
     }
     @Override public @NonNull Observable<Integer> unreadMessagesCount() {
       return this.unreadMessagesCount;
+    }
+    @Override public @NonNull Observable<Boolean> unreadMessagesCountIsGone() {
+      return this.unreadMessagesCountIsGone;
     }
   }
 }

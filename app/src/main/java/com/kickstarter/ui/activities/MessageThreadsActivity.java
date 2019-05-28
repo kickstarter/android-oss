@@ -121,6 +121,11 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setUnreadTextViewText);
+
+    this.viewModel.outputs.unreadMessagesCountIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(gone -> ViewUtils.setGone(this.unreadCountTextView, gone));
   }
 
   private void setMailboxStrings(final @NonNull Integer stringRes) {

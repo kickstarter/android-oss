@@ -346,6 +346,7 @@ public interface MessagesViewModel {
         .compose(errors())
         .map(ErrorEnvelope::fromThrowable)
         .map(ErrorEnvelope::errorMessage)
+        .compose(bindToLifecycle())
         .subscribe(this.showMessageErrorToast::onNext);
 
       project

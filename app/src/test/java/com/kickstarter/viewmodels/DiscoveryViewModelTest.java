@@ -49,6 +49,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> showKSR10 = new TestSubscriber<>();
   private final TestSubscriber<Void> showLoginTout = new TestSubscriber<>();
   private final TestSubscriber<Boolean> showMenuIconWithIndicator = new TestSubscriber<>();
+  private final TestSubscriber<Void> showMessages = new TestSubscriber<>();
   private final TestSubscriber<Void> showProfile = new TestSubscriber<>();
   private final TestSubscriber<Void> showSettings = new TestSubscriber<>();
   private final TestSubscriber<Integer> updatePage = new TestSubscriber<>();
@@ -192,6 +193,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.showHelp().subscribe(this.showHelp);
     this.vm.outputs.showInternalTools().subscribe(this.showInternalTools);
     this.vm.outputs.showLoginTout().subscribe(this.showLoginTout);
+    this.vm.outputs.showMessages().subscribe(this.showMessages);
     this.vm.outputs.showProfile().subscribe(this.showProfile);
     this.vm.outputs.showSettings().subscribe(this.showSettings);
 
@@ -200,6 +202,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.showHelp.assertNoValues();
     this.showInternalTools.assertNoValues();
     this.showLoginTout.assertNoValues();
+    this.showMessages.assertNoValues();
     this.showProfile.assertNoValues();
     this.showSettings.assertNoValues();
 
@@ -209,6 +212,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.loggedOutViewHolderHelpClick(null);
     this.vm.inputs.loggedInViewHolderInternalToolsClick(null);
     this.vm.inputs.loggedOutViewHolderLoginToutClick(null);
+    this.vm.inputs.loggedInViewHolderMessagesClick(null);
     this.vm.inputs.loggedInViewHolderProfileClick(null, UserFactory.user());
     this.vm.inputs.loggedInViewHolderSettingsClick(null, UserFactory.user());
 
@@ -217,6 +221,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.showHelp.assertValueCount(1);
     this.showInternalTools.assertValueCount(1);
     this.showLoginTout.assertValueCount(1);
+    this.showMessages.assertValueCount(1);
     this.showProfile.assertValueCount(1);
     this.showSettings.assertValueCount(1);
   }

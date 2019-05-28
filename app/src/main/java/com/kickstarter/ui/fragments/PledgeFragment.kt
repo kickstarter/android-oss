@@ -3,6 +3,7 @@ package com.kickstarter.ui.fragments
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -223,10 +224,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.shippingRuleSelected(rule)
         shipping_rules.dismissDropDown()
         shipping_rules.clearFocus()
-        shipping_rules.let {
-            val input = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            input?.let { it.hideSoftInputFromWindow(shipping_rules.windowToken, 0) }
-        }
+        context?.let { hideKeyboard(it) }
     }
 
     override fun selectCardButtonClicked(position: Int) {
@@ -260,6 +258,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             reward_snapshot.setImageBitmap(bitmap)
             reward_to_copy.visibility = View.GONE
         }
+    }
+
+    private fun hideKeyboard(ctx: Context) {
+        val inputManager = ctx.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val view = (ctx as Activity).currentFocus ?: return
+        inputManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun setUpCardsAdapter() {

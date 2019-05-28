@@ -25,7 +25,7 @@ public final class KSCurrency {
    * @param project      The project to use to look up currency information.
    */
   public @NonNull String format(final double initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode) {
-    return format(initialValue, project, false, false, roundingMode);
+    return format(initialValue, project, true, roundingMode);
   }
 
   /**
@@ -39,7 +39,7 @@ public final class KSCurrency {
   public @NonNull String format(final double initialValue, final @NonNull Project project,
     final boolean excludeCurrencyCode) {
 
-    return format(initialValue, project, excludeCurrencyCode, false, RoundingMode.DOWN);
+    return format(initialValue, project, excludeCurrencyCode, RoundingMode.DOWN);
   }
 
   /**
@@ -49,14 +49,12 @@ public final class KSCurrency {
    * @param project             The project to use to look up currency information.
    * @param excludeCurrencyCode If true, hide the currency code, even if that makes the returned value ambiguous.
    *                            This is used when space is constrained and the currency code can be determined elsewhere.
-   * @param preferUSD           Attempt to convert a project from it's local currency to USD, if the user is located in
-   *                            the US.
    */
   public @NonNull String format(final double initialValue, final @NonNull Project project,
-    final boolean excludeCurrencyCode, final boolean preferUSD, final @NonNull RoundingMode roundingMode) {
+    final boolean excludeCurrencyCode, final @NonNull RoundingMode roundingMode) {
 
     final float unconvertedValue = roundingMode == RoundingMode.UP ? (float) Math.ceil(initialValue) : (float) Math.floor(initialValue);
-    final CurrencyOptions currencyOptions = currencyOptions(unconvertedValue, project, preferUSD);
+    final CurrencyOptions currencyOptions = currencyOptions(unconvertedValue, project, excludeCurrencyCode, true);
 
     final boolean showCurrencyCode = showCurrencyCode(currencyOptions, excludeCurrencyCode);
 
@@ -79,7 +77,7 @@ public final class KSCurrency {
   public String formatWithUserPreference(final double initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode) {
 
     final float unconvertedValue = roundingMode == RoundingMode.UP ? (float) Math.ceil(initialValue) : (float) Math.floor(initialValue);
-    final CurrencyOptions currencyOptions = userCurrencyOptions(unconvertedValue, project);
+    final CurrencyOptions currencyOptions = currencyOptions(unconvertedValue, project, true, false);
 
     final NumberOptions numberOptions = NumberOptions.builder()
       .currencySymbol(currencyOptions.currencySymbol())
@@ -93,92 +91,66 @@ public final class KSCurrency {
    * Build {@link CurrencyOptions} based on the project and whether we would prefer to show USD. Even if USD is preferred,
    * we only show USD if the user is in the US.
    */
-  private @NonNull CurrencyOptions currencyOptions(final float value, final @NonNull Project project,
-    final boolean preferUSD) {
-
-    final Config config = this.currentConfig.getConfig();
-
-    final Float staticUsdRate = project.staticUsdRate();
-    if (preferUSD && config.countryCode().equals("US") && staticUsdRate != null) {
-      return CurrencyOptions.builder()
-        .country("US")
-        .currencySymbol("$")
-        .currencyCode("")
-        .value(value * staticUsdRate)
-        .build();
-    } else {
-      return CurrencyOptions.builder()
-        .country(project.country())
-        .currencyCode(project.currency())
-        .currencySymbol(project.currencySymbol())
-        .value(value)
-        .build();
-    }
-  }
-
-  /** Show's the project in the user's preferred currency. If the user has no preferred currency the project is shown
-   * in $ as a default if the user is in the US. If the user is located outside of the US the default will show as
-   * $US.
-   */
-  private @NonNull CurrencyOptions userCurrencyOptions(final float value, final @NonNull Project project) {
-    final Config config = this.currentConfig.getConfig();
+  private @NonNull CurrencyOptions currencyOptions(final float value, final @NonNull Project project, final boolean excludeCurrencyCode,
+    final boolean useProjectCurrency) {
     final Float fxRate = project.fxRate();
-
-    final boolean shouldShowDollar = config.countryCode().equals("US") &&
-      project.currentCurrency().equals(CurrencyCode.USD.rawValue());
 
     return CurrencyOptions.builder()
       .country(project.country())
       .currencyCode("")
-      .currencySymbol(shouldShowDollar ? "$": getSymbolForCurrency(project.currentCurrency()))
-      .value(value * fxRate)
+      .currencySymbol(getSymbolForCurrency(project, excludeCurrencyCode, useProjectCurrency))
+      .value(useProjectCurrency ? value : value * fxRate)
       .build();
   }
 
-  /**
-   * Returns the proper currency symbol based on the user's chosenCurrency preference.
-   */
-  private String getSymbolForCurrency(final String chosenCurrency) {
-    final String symbol;
+  private String getSymbolForCurrency(final @NonNull Project project, final boolean excludeCurrencyCode, final boolean useProjectCurrency) {
     final Config config = this.currentConfig.getConfig();
 
-    if (config.countryCode().equals("XX")) {
-      symbol = "US$ ";
-      return symbol;
+    final String country = project.country();
+    final String currency = useProjectCurrency ? project.currency() : project.currentCurrency();
+    final boolean projectInUS = country.equals("US");
+    final boolean userInUS = config.countryCode().equals("US");
+    final CurrencyCode code = CurrencyCode.safeValueOf(currency);
+
+    if (userInUS && excludeCurrencyCode) {
+      if (useProjectCurrency && projectInUS) {
+        return "$";
+      } else if (!useProjectCurrency) {
+        return "$";
+      }
     }
 
-    if (chosenCurrency.equals(CurrencyCode.AUD.rawValue())) {
+    if (code == CurrencyCode.AUD) {
       return "AU$ ";
-    } else if (chosenCurrency.equals(CurrencyCode.CAD.rawValue())) {
+    } else if (code == CurrencyCode.CAD) {
       return "CA$ ";
-    } else if (chosenCurrency.equals(CurrencyCode.CHF.rawValue())) {
-      return "CHF";
-    } else if (chosenCurrency.equals(CurrencyCode.DKK.rawValue())) {
-      return "DKK";
-    } else if (chosenCurrency.equals(CurrencyCode.EUR.rawValue())) {
+    } else if (code == CurrencyCode.CHF) {
+      return "CHF ";
+    } else if (code == CurrencyCode.DKK) {
+      return "DKK ";
+    } else if (code == CurrencyCode.EUR) {
       return "€";
-    } else if (chosenCurrency.equals(CurrencyCode.GBP.rawValue())) {
+    } else if (code == CurrencyCode.GBP) {
       return "£";
-    } else if (chosenCurrency.equals(CurrencyCode.HKD.rawValue())) {
+    } else if (code == CurrencyCode.HKD) {
       return "HK$ ";
-    } else if (chosenCurrency.equals(CurrencyCode.JPY.rawValue())) {
+    } else if (code == CurrencyCode.JPY) {
       return "¥";
-    } else if (chosenCurrency.equals(CurrencyCode.MXN.rawValue())) {
+    } else if (code == CurrencyCode.MXN) {
       return "MX$ ";
-    } else if (chosenCurrency.equals(CurrencyCode.NOK.rawValue())) {
-      return "NOK";
-    } else if (chosenCurrency.equals(CurrencyCode.NZD.rawValue())) {
+    } else if (code == CurrencyCode.NOK) {
+      return "NOK ";
+    } else if (code == CurrencyCode.NZD) {
       return "NZ$ ";
-    } else if (chosenCurrency.equals(CurrencyCode.SEK.rawValue())) {
-      return "SEK";
-    } else if (chosenCurrency.equals(CurrencyCode.SGD.rawValue())) {
+    } else if (code == CurrencyCode.SEK) {
+      return "SEK ";
+    } else if (code == CurrencyCode.SGD) {
       return "S$ ";
-    } else if (chosenCurrency.equals(CurrencyCode.USD.rawValue())) {
+    } else if (code == CurrencyCode.USD) {
       return "US$ ";
     } else {
-      symbol = "US$ ";
+      return "US$ ";
     }
-    return symbol;
   }
 
   /**
@@ -186,16 +158,20 @@ public final class KSCurrency {
    * we show the currency code if the user is not in the US, or the project is not in the US.
    */
   private boolean showCurrencyCode(final @NonNull CurrencyOptions currencyOptions, final boolean excludeCurrencyCode) {
-    if (excludeCurrencyCode) {
-      return false;
-    }
-
     final Config config = this.currentConfig.getConfig();
     final boolean currencyIsDupe = config.currencyNeedsCode(currencyOptions.currencySymbol());
+
+    if (!currencyIsDupe)
+      return true;
+
     final boolean userIsUS = config.countryCode().equals("US");
     final boolean projectIsUS = currencyOptions.country().equals("US");
 
-    return (currencyIsDupe && !userIsUS) || (currencyIsDupe && !projectIsUS);
+    if (excludeCurrencyCode && userIsUS && projectIsUS) {
+      return false;
+    }
+
+    return true;
   }
 
   @AutoParcel

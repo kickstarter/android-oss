@@ -182,7 +182,7 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   }
 
   private void setAmountPledgedTextViewText(final @NonNull Pair<Project, Float> projectAndAmount, final TextView textview) {
-    final String amountString = this.ksCurrency.format(projectAndAmount.second, projectAndAmount.first, false, true, RoundingMode.DOWN);
+    final String amountString = this.ksCurrency.format(projectAndAmount.second, projectAndAmount.first, RoundingMode.DOWN);
     textview.setText(amountString);
   }
 }

@@ -18,44 +18,44 @@ public class KSCurrencyTest extends TestCase {
   public void testFormatCurrency_withUserInUS() {
     final KSCurrency currency = createKSCurrency("US");
     assertEquals("$100", currency.format(100.9f, ProjectFactory.project(), RoundingMode.DOWN));
-    assertEquals("$100 CAD", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.DOWN));
+    assertEquals("CA$ 100", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.DOWN));
     assertEquals("£100", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.DOWN));
 
     assertEquals("$101", currency.format(100.9f, ProjectFactory.project(), RoundingMode.UP));
-    assertEquals("$101 CAD", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.UP));
+    assertEquals("CA$ 101", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.UP));
     assertEquals("£101", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.UP));
   }
 
   public void testFormatCurrency_withUserInCA() {
     final KSCurrency currency = createKSCurrency("CA");
-    assertEquals("$100 USD", currency.format(100.9f, ProjectFactory.project(), RoundingMode.DOWN));
-    assertEquals("$100 CAD", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.DOWN));
+    assertEquals("US$ 100", currency.format(100.9f, ProjectFactory.project(), RoundingMode.DOWN));
+    assertEquals("CA$ 100", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.DOWN));
     assertEquals("£100", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.DOWN));
 
-    assertEquals("$101 USD", currency.format(100.9f, ProjectFactory.project(), RoundingMode.UP));
-    assertEquals("$101 CAD", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.UP));
+    assertEquals("US$ 101", currency.format(100.9f, ProjectFactory.project(), RoundingMode.UP));
+    assertEquals("CA$ 101", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.UP));
     assertEquals("£101", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.UP));
   }
 
   public void testFormatCurrency_withUserInUK() {
     final KSCurrency currency = createKSCurrency("UK");
-    assertEquals("$100 USD", currency.format(100.9f, ProjectFactory.project(), RoundingMode.DOWN));
-    assertEquals("$100 CAD", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.DOWN));
+    assertEquals("US$ 100", currency.format(100.9f, ProjectFactory.project(), RoundingMode.DOWN));
+    assertEquals("CA$ 100", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.DOWN));
     assertEquals("£100", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.DOWN));
 
-    assertEquals("$101 USD", currency.format(100.9f, ProjectFactory.project(), RoundingMode.UP));
-    assertEquals("$101 CAD", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.UP));
+    assertEquals("US$ 101", currency.format(100.9f, ProjectFactory.project(), RoundingMode.UP));
+    assertEquals("CA$ 101", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.UP));
     assertEquals("£101", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.UP));
   }
 
   public void testFormatCurrency_withUserInUnlaunchedCountry() {
     final KSCurrency currency = createKSCurrency("XX");
-    assertEquals("$100 USD", currency.format(100.9f, ProjectFactory.project(), RoundingMode.DOWN));
-    assertEquals("$100 CAD", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.DOWN));
+    assertEquals("US$ 100", currency.format(100.9f, ProjectFactory.project(), RoundingMode.DOWN));
+    assertEquals("CA$ 100", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.DOWN));
     assertEquals("£100", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.DOWN));
 
-    assertEquals("$101 USD", currency.format(100.9f, ProjectFactory.project(), RoundingMode.UP));
-    assertEquals("$101 CAD", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.UP));
+    assertEquals("US$ 101", currency.format(100.9f, ProjectFactory.project(), RoundingMode.UP));
+    assertEquals("CA$ 101", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.UP));
     assertEquals("£101", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.UP));
   }
 
@@ -225,18 +225,17 @@ public class KSCurrencyTest extends TestCase {
   }
 
   public void testFormatCurrency_withCurrencyCodeExcluded() {
-    final KSCurrency currency = createKSCurrency("CA");
-    assertEquals("$100", currency.format(100.0f, ProjectFactory.project(), true));
-  }
+    final KSCurrency caCurrency = createKSCurrency("CA");
+    assertEquals("US$ 100", caCurrency.format(100.0f, ProjectFactory.project(), true));
+    assertEquals("US$ 100", caCurrency.format(100.0f, ProjectFactory.project(), false));
+    assertEquals("CA$ 100", caCurrency.format(100.0f, ProjectFactory.caProject(), true));
+    assertEquals("CA$ 100", caCurrency.format(100.0f, ProjectFactory.caProject(), false));
 
-  public void testFormatCurrency_withUserInUSAndUSDPreferred() {
-    final KSCurrency currency = createKSCurrency("US");
-    assertEquals("$150", currency.format(100.0f, ProjectFactory.ukProject(), false, true, RoundingMode.DOWN));
-  }
-
-  public void testFormatCurrency_withUserInUKAndUSDPreferred() {
-    final KSCurrency currency = createKSCurrency("UK");
-    assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject(), false, true, RoundingMode.DOWN));
+    final KSCurrency usCurrency = createKSCurrency("US");
+    assertEquals("$100", usCurrency.format(100.0f, ProjectFactory.project(), true));
+    assertEquals("US$ 100", usCurrency.format(100.0f, ProjectFactory.project(), false));
+    assertEquals("CA$ 100", usCurrency.format(100.0f, ProjectFactory.caProject(), true));
+    assertEquals("CA$ 100", usCurrency.format(100.0f, ProjectFactory.caProject(), false));
   }
 
   private static KSCurrency createKSCurrency(final String countryCode) {

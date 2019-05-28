@@ -389,7 +389,7 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     this.vm.inputs.projectAndReward(project, reward);
-    this.minimumTextViewText.assertValue("$10 CAD");
+    this.minimumTextViewText.assertValue("$CA 10");
   }
 
   @Test

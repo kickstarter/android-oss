@@ -79,7 +79,7 @@ public interface MessageThreadsViewModel {
     /** Emits the unread message count to be displayed. */
     Observable<Integer> unreadMessagesCount();
 
-    /** Emits the unread message count to be displayed. */
+    /** Emits a boolean determining the unread messages count visibility. */
     Observable<Boolean> unreadMessagesCountIsGone();
   }
 

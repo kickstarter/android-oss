@@ -306,11 +306,11 @@ public interface DiscoveryViewModel {
     private final PublishSubject<Void> internalToolsClick = PublishSubject.create();
     private final PublishSubject<Void> loggedOutLoginToutClick = PublishSubject.create();
     private final PublishSubject<Void> loggedOutSettingsClick = PublishSubject.create();
+    private final PublishSubject<Void> messagesClick = PublishSubject.create();
     private final PublishSubject<InternalBuildEnvelope> newerBuildIsAvailable = PublishSubject.create();
     private final PublishSubject<Boolean> openDrawer = PublishSubject.create();
     private final PublishSubject<Integer> pagerSetPrimaryPage = PublishSubject.create();
     private final PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
-    private final PublishSubject<Void> messagesClick = PublishSubject.create();
     private final PublishSubject<Void> profileClick = PublishSubject.create();
     private final PublishSubject<Void> settingsClick = PublishSubject.create();
     private final PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
@@ -352,11 +352,11 @@ public interface DiscoveryViewModel {
     @Override public void loggedInViewHolderInternalToolsClick(final @NonNull LoggedInViewHolder viewHolder) {
       this.internalToolsClick.onNext(null);
     }
-    @Override public void loggedInViewHolderProfileClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
-      this.profileClick.onNext(null);
-    }
     @Override public void loggedInViewHolderMessagesClick(final @NonNull LoggedInViewHolder viewHolder) {
       this.messagesClick.onNext(null);
+    }
+    @Override public void loggedInViewHolderProfileClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
+      this.profileClick.onNext(null);
     }
     @Override public void loggedInViewHolderSettingsClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
       this.settingsClick.onNext(null);

@@ -21,7 +21,7 @@ interface LoggedInViewHolderViewModel {
         /** Emits the user's medium avatar URL. */
         fun avatarUrl(): Observable<String>
 
-        /** Emits a boolean determining if the user is a creator. */
+        /** Emits a boolean determining the dashboard row's visibility depending on if the user is a creator/collaborator. */
         fun dashboardRowIsGone(): Observable<Boolean>
 
         /** Emits the user's name. */
@@ -39,8 +39,8 @@ interface LoggedInViewHolderViewModel {
         private val user = PublishSubject.create<User>()
 
         private val avatarUrl = BehaviorSubject.create<String>()
-        private val name = BehaviorSubject.create<String>()
         private val dashboardRowIsGone = BehaviorSubject.create<Boolean>()
+        private val name = BehaviorSubject.create<String>()
         private val unreadMessagesCount = BehaviorSubject.create<Int>()
         private val userOutput = BehaviorSubject.create<User>()
 

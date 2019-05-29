@@ -140,7 +140,6 @@ interface PledgeFragmentViewModel {
         private val paymentContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<SpannableString>()
         private val shippingAmount = BehaviorSubject.create<SpannableString>()
-        private val shippingRules = BehaviorSubject.create<List<ShippingRule>>()
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
         private val selectedShippingRule = BehaviorSubject.create<ShippingRule>()
         private val shippingRulesSectionIsGone = BehaviorSubject.create<Boolean>()
@@ -285,14 +284,21 @@ interface PledgeFragmentViewModel {
             val rulesAndReward = shippingRules
                     .compose<Pair<List<ShippingRule>, Reward>>(combineLatestPair(reward))
 
-            val initialTotalAmount = rulesAndReward
+            val rewardAmountPlusAdditional = rewardAmount
+                    .compose<Pair<Double, Double>>(combineLatestPair(additionalPledgeAmount))
+                    .map { it.first + it.second }
+
+            val rulesAndRewardAndAdditional = rulesAndReward
                     .filter { ObjectUtils.isNull(it.first) || it.first.isEmpty() }
-                    .map { it.second.minimum() }
+                    .compose<Pair<Pair<List<ShippingRule>, Reward>, Double>>(combineLatestPair(rewardAmountPlusAdditional))
+
+            val initialTotalAmount = rulesAndRewardAndAdditional
+                    .map { it.second }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 2) }
                     .compose(bindToLifecycle())
 
-            val totalWithShippingRule = rewardAmount
+            val totalWithShippingRule = rewardAmountPlusAdditional
                     .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first + it.second }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
@@ -314,14 +320,13 @@ interface PledgeFragmentViewModel {
                     .map { BooleanUtils.negate(it) }
                     .subscribe { this.conversionTextViewIsGone.onNext(it) }
 
-            val initialTotalConversionAmount = rulesAndReward
-                    .filter { ObjectUtils.isNull(it.first) || it.first.isEmpty() }
-                    .map { it.second.minimum() }
+            val initialTotalConversionAmount = rulesAndRewardAndAdditional
+                    .map { it.second }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map { this.ksCurrency.formatWithUserPreference(it.first, it.second, RoundingMode.UP, 2) }
                     .compose(bindToLifecycle())
 
-            val totalConversionAmount = rewardAmount
+            val totalConversionAmount = rewardAmountPlusAdditional
                     .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first + it.second }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))

@@ -88,8 +88,7 @@ public final class KSCurrency {
   }
 
   /**
-   * Build {@link CurrencyOptions} based on the project and whether we would prefer to show USD. Even if USD is preferred,
-   * we only show USD if the user is in the US.
+   * Build {@link CurrencyOptions} based on the project and whether we are using the project's currency or a user's preference.
    */
   private @NonNull CurrencyOptions currencyOptions(final float value, final @NonNull Project project, final boolean excludeCurrencyCode,
     final boolean useProjectCurrency) {
@@ -108,7 +107,7 @@ public final class KSCurrency {
 
     final String country = project.country();
     final String currency = useProjectCurrency ? project.currency() : project.currentCurrency();
-    final boolean projectInUS = "US".equals(project.country());
+    final boolean projectInUS = "US".equals(country);
     final boolean userInUS = "US".equals(config.countryCode());
     final CurrencyCode code = CurrencyCode.safeValueOf(currency);
 

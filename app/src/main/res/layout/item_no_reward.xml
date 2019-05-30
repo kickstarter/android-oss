@@ -20,7 +20,6 @@
       app:cardElevation="0dp">
 
       <LinearLayout
-        android:id="@+id/reward_contents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -45,7 +44,7 @@
         <com.google.android.material.button.MaterialButton
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:visibility="invisible"
+          android:visibility="invisible"reward_contents
           android:text="@string/Pledge_without_a_reward"/>
 
       </LinearLayout>

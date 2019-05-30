@@ -14,30 +14,30 @@ import rx.observers.TestSubscriber
 class HorizontalNoRewardViewHolderViewModelTest: KSRobolectricTestCase() {
 
     private lateinit var vm: HorizontalNoRewardViewHolderViewModel.ViewModel
+    private val showPledgeFragment = TestSubscriber<Pair<Project, Reward>>()
     private val startBackingActivity = TestSubscriber<Project>()
-    private val startCheckoutActivity = TestSubscriber<Pair<Project, Reward>>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = HorizontalNoRewardViewHolderViewModel.ViewModel(environment)
+        this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
-        this.vm.outputs.startCheckoutActivity().subscribe(this.startCheckoutActivity)
     }
 
     @Test
-    fun testGoToCheckoutWhenProjectIsSuccessful() {
+    fun testShowPledgeFragmentWhenProjectIsSuccessful() {
         val project = ProjectFactory.successfulProject()
         val reward = RewardFactory.reward()
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, reward)
-        this.startCheckoutActivity.assertNoValues()
+        this.showPledgeFragment.assertNoValues()
 
         this.vm.inputs.rewardClicked()
-        this.startCheckoutActivity.assertNoValues()
+        this.showPledgeFragment.assertNoValues()
     }
 
     @Test
-    fun testGoToCheckoutWhenProjectIsSuccessfulAndHasBeenBacked() {
+    fun testShowPledgeFragmentWhenProjectIsSuccessfulAndHasBeenBacked() {
         val project = ProjectFactory.backedProject().toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
@@ -45,24 +45,24 @@ class HorizontalNoRewardViewHolderViewModelTest: KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, reward!!)
-        this.startCheckoutActivity.assertNoValues()
+        this.showPledgeFragment.assertNoValues()
 
         this.vm.inputs.rewardClicked()
-        this.startCheckoutActivity.assertNoValues()
+        this.showPledgeFragment.assertNoValues()
     }
 
     @Test
-    fun testGoToCheckoutWhenProjectIsLive() {
+    fun testShowPledgeFragmentWhenProjectIsLive() {
         val reward = RewardFactory.reward()
         val liveProject = ProjectFactory.project()
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(liveProject, reward)
-        this.startCheckoutActivity.assertNoValues()
+        this.showPledgeFragment.assertNoValues()
 
         // When a reward from a live project is clicked, start checkout.
         this.vm.inputs.rewardClicked()
-        this.startCheckoutActivity.assertValue(Pair.create(liveProject, reward))
+        this.showPledgeFragment.assertValue(Pair.create(liveProject, reward))
     }
 
     @Test

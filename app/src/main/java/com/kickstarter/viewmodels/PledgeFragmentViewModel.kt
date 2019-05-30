@@ -6,10 +6,7 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.*
-import com.kickstarter.libs.utils.BooleanUtils
-import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.IntegerUtils
-import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
@@ -72,6 +69,9 @@ interface PledgeFragmentViewModel {
         /** Emits the estimated delivery date string of the reward. */
         fun estimatedDelivery(): Observable<String>
 
+        /**  Emits a boolean determining if the estimated delivery info should be hidden. */
+        fun estimatedDeliveryInfoIsGone(): Observable<Boolean>
+
         /**  Emits a boolean determining if the increase pledge button should be enabled.*/
         fun increasePledgeButtonIsEnabled(): Observable<Boolean>
 
@@ -110,6 +110,7 @@ interface PledgeFragmentViewModel {
         private val continueButtonIsGone = BehaviorSubject.create<Boolean>()
         private val decreasePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
+        private val estimatedDeliveryInfoIsGone = BehaviorSubject.create<Boolean>()
         private val increasePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val paymentContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<String>()
@@ -140,9 +141,15 @@ interface PledgeFragmentViewModel {
 
             reward
                     .map { it.estimatedDeliveryOn() }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .map { dateTime -> dateTime?.let { DateTimeUtils.estimatedDeliveryOn(it) } }
                     .compose(bindToLifecycle())
                     .subscribe { this.estimatedDelivery.onNext(it) }
+
+            reward
+                    .map { RewardUtils.isNoReward(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.estimatedDeliveryInfoIsGone)
 
             val additionalPledgeAmount = BehaviorSubject.create<Double>(0.0)
 
@@ -278,6 +285,8 @@ interface PledgeFragmentViewModel {
         override fun decreasePledgeButtonIsEnabled(): Observable<Boolean> = this.decreasePledgeButtonIsEnabled
 
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
+
+        override fun estimatedDeliveryInfoIsGone(): Observable<Boolean> = this.estimatedDeliveryInfoIsGone
 
         override fun increasePledgeButtonIsEnabled(): Observable<Boolean> = this.increasePledgeButtonIsEnabled
 

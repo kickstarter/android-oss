@@ -3,8 +3,6 @@ package com.kickstarter.ui.fragments
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
@@ -12,13 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.NonNull
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
+import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.FreezeLinearLayoutManager
@@ -206,7 +204,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun onDetach() {
         super.onDetach()
         cards_recycler?.adapter = null
-        context?.let { hideKeyboard(it) }
+        context?.hideKeyboard()
     }
 
     override fun addNewCardButtonClicked() {
@@ -225,7 +223,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.shippingRuleSelected(rule)
         shipping_rules.dismissDropDown()
         shipping_rules.clearFocus()
-        context?.let { hideKeyboard(it) }
+        context?.hideKeyboard()
     }
 
     override fun selectCardButtonClicked(position: Int) {
@@ -259,12 +257,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             reward_snapshot.setImageBitmap(bitmap)
             reward_to_copy.visibility = View.GONE
         }
-    }
-
-    private fun hideKeyboard(ctx: Context) {
-        val inputManager = ctx.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        val view = (ctx as Activity).currentFocus ?: return
-        inputManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun setUpCardsAdapter() {

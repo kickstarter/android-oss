@@ -282,6 +282,7 @@ with friends.</string>
   <string name="Newsletters" formatted="false">Newsletters</string>
   <string name="No_Results" formatted="false">No Results</string>
   <string name="No_comments_yet" formatted="false">No comments yet.</string>
+  <string name="No_longer_available" formatted="false">No longer available</string>
   <string name="No_messages" formatted="false">No messages</string>
   <string name="No_nevermind" formatted="false">No, nevermind</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">No one has posted an update yet.</string>
@@ -516,6 +517,7 @@ Please try again later.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">You\'ll receive an email at %{email} when your download is ready.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Your chat message wasn\'t sent successfully.</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Your friends haven’t backed any projects yet, but once they do, you’ll see them listed here.</string>
+  <string name="Your_message_has_been_sent" formatted="false">Your message has been sent!</string>
   <string name="Your_name_displayed" formatted="false">Your name is always displayed on your profile.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Your payment method was successfully charged.</string>
   <string name="Your_pledge" formatted="false">Your pledge</string>

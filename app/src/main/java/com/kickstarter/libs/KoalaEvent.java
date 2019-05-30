@@ -24,6 +24,7 @@ public final class KoalaEvent {
   public static final String LOADED_OLDER_COMMENTS = "Loaded Older Comments";
   public static final String LOADED_SEARCH_RESULTS = "Loaded Search Results";
   public static final String LOGIN = "Login";
+  public static final String MODAL_DIALOG_VIEW = "Modal Dialog View";
   public static final String NEW_USER = "New User";
   public static final String NOTIFICATION_OPENED_LEGACY = "Notification Opened";
   public static final String OPENED_DEEP_LINK = "Opened Deep Link";

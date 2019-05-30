@@ -8,11 +8,13 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.ActivityResult
@@ -27,30 +29,37 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PledgeFragmentViewModel.ViewModel
 
+    private val additionalPledgeAmount = TestSubscriber<String>()
+    private val additionalPledgeAmountIsGone = TestSubscriber<Boolean>()
     private val animateRewardCard = TestSubscriber<PledgeData>()
     private val cards = TestSubscriber<List<StoredCard>>()
     private val continueButtonIsGone = TestSubscriber<Boolean>()
+    private val decreasePledgeButtonIsEnabled = TestSubscriber<Boolean>()
     private val estimatedDelivery = TestSubscriber<String>()
+    private val increasePledgeButtonIsEnabled = TestSubscriber<Boolean>()
     private val paymentContainerIsGone = TestSubscriber<Boolean>()
     private val pledgeAmount = TestSubscriber<String>()
     private val showPledgeCard = TestSubscriber<Pair<Int, Boolean>>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val startNewCardActivity = TestSubscriber<Void>()
 
-    private fun setUpEnvironment(environment: Environment) {
+    private fun setUpEnvironment(environment: Environment, reward: Reward? = RewardFactory.rewardWithShipping()) {
         this.vm = PledgeFragmentViewModel.ViewModel(environment)
 
+        this.vm.outputs.additionalPledgeAmount().subscribe(this.additionalPledgeAmount)
+        this.vm.outputs.additionalPledgeAmountIsGone().subscribe(this.additionalPledgeAmountIsGone)
         this.vm.outputs.animateRewardCard().subscribe(this.animateRewardCard)
         this.vm.outputs.cards().subscribe(this.cards)
         this.vm.outputs.continueButtonIsGone().subscribe(this.continueButtonIsGone)
+        this.vm.outputs.decreasePledgeButtonIsEnabled().subscribe(this.decreasePledgeButtonIsEnabled)
         this.vm.outputs.estimatedDelivery().subscribe(this.estimatedDelivery)
+        this.vm.outputs.increasePledgeButtonIsEnabled().subscribe(this.increasePledgeButtonIsEnabled)
         this.vm.outputs.paymentContainerIsGone().subscribe(this.paymentContainerIsGone)
         this.vm.outputs.pledgeAmount().subscribe(this.pledgeAmount)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.startNewCardActivity().subscribe(this.startNewCardActivity)
 
-        val reward = RewardFactory.rewardWithShipping()
         val project = ProjectFactory.project()
         val bundle = Bundle()
         bundle.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, ScreenLocation(0f, 0f, 0f, 0f))
@@ -135,6 +144,58 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.pledgeAmount.assertValue("$20")
+    }
+
+    @Test
+    fun testPledgeStepping() {
+        setUpEnvironment(environment())
+
+        this.decreasePledgeButtonIsEnabled.assertValue(false)
+        this.increasePledgeButtonIsEnabled.assertValue(true)
+        this.additionalPledgeAmountIsGone.assertValue(true)
+        this.additionalPledgeAmount.assertValue("$0")
+
+        this.vm.inputs.increasePledgeButtonClicked()
+
+        this.decreasePledgeButtonIsEnabled.assertValues(false, true)
+        this.increasePledgeButtonIsEnabled.assertValue(true)
+        this.additionalPledgeAmountIsGone.assertValues(true, false)
+        this.additionalPledgeAmount.assertValues("$0", "$1")
+
+        this.vm.inputs.decreasePledgeButtonClicked()
+
+        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false)
+        this.increasePledgeButtonIsEnabled.assertValue(true)
+        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
+        this.additionalPledgeAmount.assertValues("$0", "$1", "$0")
+    }
+
+    @Test
+    fun testPledgeStepping_maxReward() {
+        setUpEnvironment(environment(), RewardFactory.maxReward())
+
+        this.decreasePledgeButtonIsEnabled.assertValue(false)
+        this.increasePledgeButtonIsEnabled.assertValue(false)
+        this.additionalPledgeAmountIsGone.assertValue(true)
+        this.additionalPledgeAmount.assertValue("$0")
+    }
+
+    @Test
+    fun testPledgeStepping_almostMaxReward() {
+        val oneLessThanMax = RewardUtils.MAX_REWARD_LIMIT - 1
+        setUpEnvironment(environment(), RewardFactory.reward().toBuilder().minimum(oneLessThanMax).build())
+
+        this.decreasePledgeButtonIsEnabled.assertValue(false)
+        this.increasePledgeButtonIsEnabled.assertValue(true)
+        this.additionalPledgeAmountIsGone.assertValue(true)
+        this.additionalPledgeAmount.assertValue("$0")
+
+        this.vm.inputs.increasePledgeButtonClicked()
+
+        this.decreasePledgeButtonIsEnabled.assertValues(false, true)
+        this.increasePledgeButtonIsEnabled.assertValues(true, false)
+        this.additionalPledgeAmountIsGone.assertValues(true, false)
+        this.additionalPledgeAmount.assertValues("$0", "$1")
     }
 
     @Test

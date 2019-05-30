@@ -223,7 +223,7 @@ Unterstützer</string>
   <string name="Info" formatted="false">Info</string>
   <string name="Introduce_yourself" formatted="false">Stelle dich vor</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">Die Zusammenstellung deiner Daten kann bis zu 24 Stunden dauern. Sobald sie zum Download bereitstehen, werden wir dir eine Anleitung dazu per E-Mail schicken. Solltest du nichts von uns hören, versuche es von hier aus noch einmal.</string>
-  <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">It\'s a way to bring creative projects to life.</string>
+  <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">Es ist eine Plattform, um kreative Projekte ins Leben zu rufen.</string>
   <string name="Its_better_with_friends" formatted="false">Gemeinsam mehr erreichen</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">Fast wie Radio, nur ohne die schlechten Nachrichten - unser Newsletter!</string>
   <string name="Its_our_birthday" formatted="false">Mithilfe von über 16.000.000 Unterstützern wurden in den letzten zehn Jahren über 160.000 kreative Projekte auf Kickstarter verwirklicht.</string>
@@ -235,7 +235,7 @@ Unterstützer</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Zeitnahe Info zu zukünftigen Live-Streams</string>
   <string name="Kickstarter_Music" formatted="false">Kickstarter Music</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (bei Finanzierung)</string>
-  <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter is not a store.</string>
+  <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter ist kein Geschäft.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter ist kein Geschäft, sondern eine Plattform, um kreative Projekte zu verwirklichen.</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Aktiviere Benachrichtigungen, damit du über eingehende Nachrichten von Projektgründern und Unterstützern Bescheid weißt.</string>
   <string name="Learn_more_about_accountability" formatted="false">Weitere Informationen zur Rechenschaftspflicht</string>
@@ -281,6 +281,7 @@ Unterstützer</string>
   <string name="Newsletters" formatted="false">Newsletter</string>
   <string name="No_Results" formatted="false">Keine Ergebnisse</string>
   <string name="No_comments_yet" formatted="false">Bisher noch keine Kommentare.</string>
+  <string name="No_longer_available" formatted="false">No longer available</string>
   <string name="No_messages" formatted="false">Keine Nachrichten</string>
   <string name="No_nevermind" formatted="false">Nein, ich habe es mir anders überlegt</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Es wurden noch keine Updates gepostet.</string>
@@ -512,6 +513,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">Du wirst per E-Mail unter %{email} benachrichtigt, sobald dein Download bereit ist.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Deine Chat-Nachricht konnte leider nicht gesendet werden.</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Deine Freunde haben bisher noch kein Projekt unterstützt. Aber sobald sie das tun, wird es hier angezeigt.</string>
+  <string name="Your_message_has_been_sent" formatted="false">Your message has been sent!</string>
   <string name="Your_name_displayed" formatted="false">Dein Name wird auf deinem Profil angezeigt.</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">Deine Zahlungsmethode wurde erfolgreich belastet.</string>
   <string name="Your_pledge" formatted="false">Dein Beitrag</string>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical">
+
+  <com.google.android.material.appbar.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.kickstarter.ui.toolbars.KSToolbar
+      style="@style/Toolbar"
+      app:contentInsetLeft="0dp"
+      app:contentInsetStart="0dp">
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.kickstarter.ui.views.IconButton
+          android:id="@+id/back_button"
+          style="@style/ToolbarIconBackButton" />
+
+        <TextView
+          android:id="@+id/title_text_view"
+          style="@style/ToolbarTitle"
+          android:text="@string/Message_creator" />
+
+      </RelativeLayout>
+
+    </com.kickstarter.ui.toolbars.KSToolbar>
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+    android:layout_marginEnd="@dimen/activity_vertical_margin"
+    android:layout_marginStart="@dimen/activity_vertical_margin"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/message_body_til"
+      style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toTopOf="@id/send_message_button"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0">
+
+      <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/message_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine" />
+
+      <requestFocus />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+      android:id="@+id/send_message_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:enabled="false"
+      android:text="@string/social_buttons_send"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+  <ProgressBar
+    android:id="@+id/progress_bar"
+    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="-6dp"
+    android:indeterminate="true"
+    android:visibility="gone"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:visibility="visible" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

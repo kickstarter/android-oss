@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
   android:id="@+id/root"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,14 +14,10 @@
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/project_recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="match_parent"
     android:clipToPadding="false"
-    android:layout_above="@+id/rewards_container"
-    android:layout_below="@id/project_toolbar"
-    app:layout_constraintBottom_toTopOf="@+id/project_action_buttons"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/project_toolbar" />
+    android:layout_above="@+id/project_action_buttons"
+    android:layout_below="@id/project_toolbar"/>
 
   <RelativeLayout
     android:id="@+id/project_action_buttons"
@@ -29,8 +25,8 @@
     android:layout_height="wrap_content"
     android:focusable="true"
     android:visibility="gone"
-    app:layout_constrainedHeight="false"
-    app:layout_constraintBottom_toBottomOf="parent">
+    tools:visibility="visible"
+    android:layout_alignParentBottom="true">
 
     <Button
       android:id="@+id/back_project_button"
@@ -57,13 +53,11 @@
   <androidx.cardview.widget.CardView
     android:id="@+id/rewards_container"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="match_parent"
     android:visibility="invisible"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="30dp"
-    app:cardElevation="@dimen/grid_2"
-    app:layout_constrainedHeight="false"
-    app:layout_constraintTop_toTopOf="@+id/guideline">
+    app:cardElevation="@dimen/grid_2">
 
     <LinearLayout
       android:id="@+id/pledge_container"
@@ -112,8 +106,7 @@
       android:textAllCaps="false"
       android:layout_marginEnd="@dimen/activity_horizontal_margin"
       android:layout_marginStart="@dimen/activity_horizontal_margin"
-      android:text="@string/project_back_button"
-      app:icon="@null" />
+      android:text="@string/project_back_button" />
 
   </androidx.cardview.widget.CardView>
 
@@ -124,4 +117,4 @@
     android:orientation="horizontal"
     app:layout_constraintGuide_end="@dimen/reward_fragment_guideline_constraint_end" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

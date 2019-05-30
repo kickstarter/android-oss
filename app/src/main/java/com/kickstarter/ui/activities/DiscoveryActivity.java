@@ -1,7 +1,9 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
+import android.widget.ImageButton;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
@@ -10,6 +12,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.InternalToolsType;
+import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
@@ -52,6 +55,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
   protected @Bind(R.id.discovery_layout) DrawerLayout discoveryLayout;
   protected @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
   protected @Bind(R.id.discovery_drawer_recycler_view) RecyclerView drawerRecyclerView;
+  protected @Bind(R.id.menu_button) ImageButton menuImageButton;
   protected @Bind(R.id.discovery_tab_layout) SortTabLayout sortTabLayout;
   protected @Bind(R.id.discovery_view_pager) ViewPager sortViewPager;
   protected @Bind(R.id.discovery_sort_app_bar_layout) AppBarLayout sortAppBarLayout;
@@ -142,6 +146,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(observeForUI())
       .subscribe(__ -> this.startLoginToutActivity());
 
+    this.viewModel.outputs.showMessages()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> this.startMessageThreadsActivity());
+
     this.viewModel.outputs.showProfile()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -162,11 +171,17 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(observeForUI())
       .subscribe(RxDrawerLayout.open(this.discoveryLayout, GravityCompat.START));
 
+    this.viewModel.outputs.showMenuIconWithIndicator()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::showMenuIconWithIndicator);
+
     RxDrawerLayout.drawerOpen(this.discoveryLayout, GravityCompat.START)
       .skip(1)
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.viewModel.inputs::openDrawer);
+
   }
 
   private static @NonNull List<DiscoveryFragment> createFragments(final int pages) {
@@ -198,6 +213,16 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     });
   }
 
+  private void showMenuIconWithIndicator(final boolean withIndicator) {
+    if (withIndicator) {
+      this.menuImageButton.setImageResource(R.drawable.ic_menu_indicator);
+      final AnimatedVectorDrawable menuDrawable = (AnimatedVectorDrawable) this.menuImageButton.getDrawable();
+      menuDrawable.start();
+    } else {
+      this.menuImageButton.setImageResource(R.drawable.ic_menu);
+    }
+  }
+
   protected void startActivityFeedActivity() {
     startActivity(new Intent(this, ActivityFeedActivity.class));
   }
@@ -217,6 +242,13 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     transition(this, slideInFromRight());
   }
 
+  private void startMessageThreadsActivity() {
+    final Intent intent = new Intent(this, MessageThreadsActivity.class)
+      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.DRAWER);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
   private void startProfileActivity() {
     final Intent intent = new Intent(this, ProfileActivity.class);
     startActivity(intent);
@@ -225,7 +257,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
 
   private void startSettingsActivity() {
     final Intent intent = new Intent(this, SettingsActivity.class);
-    intent.putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
     startActivity(intent);
     overridePendingTransition(0, 0);
   }

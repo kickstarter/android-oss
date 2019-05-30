@@ -3,13 +3,13 @@ package com.kickstarter.viewmodels;
 import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.mock.factories.CategoryFactory;
-import com.kickstarter.mock.factories.InternalBuildEnvelopeFactory;
-import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.DiscoveryUtils;
+import com.kickstarter.mock.factories.CategoryFactory;
+import com.kickstarter.mock.factories.InternalBuildEnvelopeFactory;
+import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
@@ -43,6 +43,8 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> showHelp = new TestSubscriber<>();
   private final TestSubscriber<Void> showInternalTools = new TestSubscriber<>();
   private final TestSubscriber<Void> showLoginTout = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> showMenuIconWithIndicator = new TestSubscriber<>();
+  private final TestSubscriber<Void> showMessages = new TestSubscriber<>();
   private final TestSubscriber<Void> showProfile = new TestSubscriber<>();
   private final TestSubscriber<Void> showSettings = new TestSubscriber<>();
   private final TestSubscriber<Integer> updatePage = new TestSubscriber<>();
@@ -186,6 +188,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.showHelp().subscribe(this.showHelp);
     this.vm.outputs.showInternalTools().subscribe(this.showInternalTools);
     this.vm.outputs.showLoginTout().subscribe(this.showLoginTout);
+    this.vm.outputs.showMessages().subscribe(this.showMessages);
     this.vm.outputs.showProfile().subscribe(this.showProfile);
     this.vm.outputs.showSettings().subscribe(this.showSettings);
 
@@ -194,6 +197,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.showHelp.assertNoValues();
     this.showInternalTools.assertNoValues();
     this.showLoginTout.assertNoValues();
+    this.showMessages.assertNoValues();
     this.showProfile.assertNoValues();
     this.showSettings.assertNoValues();
 
@@ -203,6 +207,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.loggedOutViewHolderHelpClick(null);
     this.vm.inputs.loggedInViewHolderInternalToolsClick(null);
     this.vm.inputs.loggedOutViewHolderLoginToutClick(null);
+    this.vm.inputs.loggedInViewHolderMessagesClick(null);
     this.vm.inputs.loggedInViewHolderProfileClick(null, UserFactory.user());
     this.vm.inputs.loggedInViewHolderSettingsClick(null, UserFactory.user());
 
@@ -211,6 +216,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.showHelp.assertValueCount(1);
     this.showInternalTools.assertValueCount(1);
     this.showLoginTout.assertValueCount(1);
+    this.showMessages.assertValueCount(1);
     this.showProfile.assertValueCount(1);
     this.showSettings.assertValueCount(1);
   }
@@ -386,6 +392,56 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Root categories should not emit again for the same position.
     this.rootCategories.assertValueCount(2);
     this.position.assertValues(0, 1);
+  }
+
+  @Test
+  public void testShowMenuIconWithIndicator_whenLoggedOut() {
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
+
+    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
+
+    this.showMenuIconWithIndicator.assertValue(false);
+  }
+
+  @Test
+  public void testShowMenuIconWithIndicator_afterLogIn() {
+    final MockCurrentUser currentUser = new MockCurrentUser();
+
+    this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder().currentUser(currentUser).build());
+    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
+
+    this.showMenuIconWithIndicator.assertValue(false);
+
+    currentUser.refresh(UserFactory.user().toBuilder().unreadMessagesCount(4).build());
+
+    this.showMenuIconWithIndicator.assertValues(false, true);
+  }
+
+  @Test
+  public void testShowMenuIconWithIndicator_whenUserHasNoMessages() {
+    final MockCurrentUser currentUser = new MockCurrentUser(UserFactory.user());
+    this.vm = new DiscoveryViewModel.ViewModel(environment()
+      .toBuilder()
+      .currentUser(currentUser)
+      .build());
+
+    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
+
+    this.showMenuIconWithIndicator.assertValue(false);
+  }
+
+  @Test
+  public void testShowMenuIconWithIndicator_whenUserHasMessages() {
+    final User user = UserFactory.user().toBuilder().unreadMessagesCount(3).build();
+    final MockCurrentUser currentUser = new MockCurrentUser(user);
+    this.vm = new DiscoveryViewModel.ViewModel(environment()
+      .toBuilder()
+      .currentUser(currentUser)
+      .build());
+
+    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
+
+    this.showMenuIconWithIndicator.assertValue(true);
   }
 
   private void setUpDefaultParamsTest(final @Nullable User user) {

@@ -1,117 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
+  android:id="@+id/message_thread_container"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:orientation="vertical"
+  android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_width="match_parent">
+  android:focusable="true"
+  android:foreground="@drawable/click_indicator_light"
+  android:orientation="vertical">
 
-  <androidx.cardview.widget.CardView
-    android:id="@+id/message_thread_card_view"
-    android:focusable="true"
-    android:foreground="@drawable/message_thread_click_indicator"
-    android:layout_marginStart="@dimen/grid_2"
-    android:layout_marginEnd="@dimen/grid_2"
-    android:layout_marginTop="@dimen/grid_1"
-    android:layout_marginBottom="@dimen/grid_1"
-    android:orientation="vertical"
+  <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/white"
-    app:cardElevation="@dimen/card_no_elevation"
-    app:cardCornerRadius="@dimen/card_corner_radius">
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
-    <RelativeLayout
-      android:padding="@dimen/grid_2"
-      android:background="@drawable/rect_white_grey_stroke"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+    <ImageView
+      android:id="@+id/participant_avatar_image_view"
+      android:layout_width="@dimen/grid_5"
+      android:layout_height="@dimen/grid_5"
+      android:layout_alignParentStart="true"
+      android:layout_centerVertical="true"
+      tools:background="@color/accent"
+      tools:ignore="ContentDescription" />
 
-      <ImageView
-        android:id="@+id/participant_avatar_image_view"
-        android:layout_width="@dimen/grid_5"
-        android:layout_height="@dimen/grid_5"
-        tools:background="@color/ksr_green_700"
-        tools:ignore="ContentDescription"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true" />
+    <TextView
+      android:id="@+id/message_thread_date_text_view"
+      style="@style/Caption2Primary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentTop="true"
+      tools:text="Yesterday" />
 
-      <TextView
-        android:id="@+id/message_thread_date_text_view"
-        style="@style/Caption2Primary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="Yesterday"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/grid_2"
+      android:layout_marginStart="@dimen/grid_2"
+      android:layout_toEndOf="@+id/participant_avatar_image_view"
+      android:layout_toStartOf="@+id/message_thread_date_text_view"
+      android:orientation="vertical">
 
       <LinearLayout
-        android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/participant_avatar_image_view"
-        android:layout_marginStart="@dimen/grid_2"
-        android:layout_marginEnd="@dimen/grid_2"
-        android:layout_toStartOf="@+id/message_thread_date_text_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-          android:orientation="horizontal"
-          android:layout_marginBottom="@dimen/grid_1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
-
-          <TextView
-            android:id="@+id/participant_name_text_view"
-            style="@style/FootnotePrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:layout_weight="1"
-            android:layout_marginEnd="@dimen/grid_1"
-            tools:text="Somebody once told me that" />
-
-          <TextView
-            android:id="@+id/message_thread_unread_count_text_view"
-            style="@style/Caption1Primary"
-            android:textColor="@color/ksr_text_green_700"
-            android:textStyle="bold"
-            android:layout_weight="0"
-            android:layout_marginEnd="@dimen/grid_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="(2)"/>
-
-        </LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_1_half"
+        android:orientation="horizontal">
 
         <TextView
-          android:id="@+id/message_thread_body_text_view"
-          style="@style/FootnoteSecondary"
-          android:lines="2"
-          android:ellipsize="end"
+          android:id="@+id/participant_name_text_view"
+          style="@style/BodyPrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:importantForAccessibility="no"
-          tools:text="Thanks for backing our project!" />
+          android:layout_marginEnd="@dimen/grid_1_half"
+          android:layout_weight="1"
+          android:ellipsize="end"
+          android:lines="1"
+          tools:text="Somebody once told me that" />
+
+        <TextView
+          android:id="@+id/message_thread_unread_count_text_view"
+          style="@style/Caption1Primary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/grid_1"
+          android:layout_weight="0"
+          android:textColor="@color/accent"
+          android:textStyle="bold"
+          tools:text="(2)" />
 
       </LinearLayout>
 
-    </RelativeLayout>
+      <TextView
+        android:id="@+id/message_thread_body_text_view"
+        style="@style/FootnoteSecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:importantForAccessibility="no"
+        android:lines="1"
+        tools:text="Thanks for backing our project!" />
 
-  </androidx.cardview.widget.CardView>
+    </LinearLayout>
 
-  <ImageView
-    android:id="@+id/unread_indicator_image_view"
-    android:background="@drawable/unread_message_indicator"
-    android:foregroundGravity="center"
-    android:translationZ="3dp"
-    android:layout_width="@dimen/grid_2"
-    android:layout_height="@dimen/grid_2"
-    android:layout_marginStart="@dimen/grid_1"
-    android:layout_centerVertical="true"
-    android:layout_alignParentStart="true"
-    tools:ignore="ContentDescription"/>
+  </RelativeLayout>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

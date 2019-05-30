@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities
 
-import UserPaymentsQuery
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -93,11 +92,15 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
     private fun setUpRecyclerView() {
         this.adapter = PaymentMethodsAdapter(this.viewModel, object: DiffUtil.ItemCallback<Any>() {
             override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                return (oldItem as UserPaymentsQuery.Node).id() == (newItem as UserPaymentsQuery.Node).id()
+                return areCardsTheSame(oldItem as StoredCard, newItem as StoredCard)
             }
 
             override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-                return (oldItem as UserPaymentsQuery.Node).id() == (newItem as UserPaymentsQuery.Node).id()
+                return areCardsTheSame(oldItem as StoredCard, newItem as StoredCard)
+            }
+
+            private fun areCardsTheSame(oldCard: StoredCard, newCard: StoredCard): Boolean {
+                return oldCard.id() == newCard.id()
             }
         })
         recycler_view.adapter = this.adapter

@@ -29,10 +29,11 @@
       android:layout_height="match_parent">
 
       <TextView
+        android:id="@+id/message_threads_collapsed_toolbar_mailbox_title"
         style="@style/Subheadline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/messages_navigation_inbox" />
+        tools:text="@string/messages_navigation_inbox" />
 
       <TextView
         android:id="@+id/message_threads_toolbar_unread_count_text_view"
@@ -41,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/grid_1"
         android:layout_marginStart="@dimen/grid_1"
-        android:textColor="@color/ksr_text_green_700"
+        android:textColor="@color/ksr_green_500"
         tools:text="(3)" />
 
     </LinearLayout>

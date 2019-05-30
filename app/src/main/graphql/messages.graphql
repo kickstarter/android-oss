@@ -1,0 +1,7 @@
+mutation SendMessage($recipientId: ID!, $projectId: ID!, $body: String!)  {
+  sendMessage(input: {recipientId: $recipientId, projectId: $projectId, body: $body, gRecaptchaResponse: "" }) {
+    conversation {
+      id
+    }
+  }
+}

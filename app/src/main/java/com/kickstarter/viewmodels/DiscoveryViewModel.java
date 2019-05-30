@@ -12,6 +12,8 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
+import com.kickstarter.libs.utils.IntegerUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.User;
@@ -53,7 +55,6 @@ public interface DiscoveryViewModel {
   }
 
   interface Outputs {
-
     /** Emits a boolean that determines if the drawer is open or not. */
     Observable<Boolean> drawerIsOpen();
 
@@ -94,6 +95,12 @@ public interface DiscoveryViewModel {
     /** Start login tout activity for result. */
     Observable<Void> showLoginTout();
 
+    /** Emits a boolean that determines if the menu icon should be shown with an indicator. */
+    Observable<Boolean> showMenuIconWithIndicator();
+
+    /** Start {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
+    Observable<Void> showMessages();
+
     /** Start profile activity. */
     Observable<Void> showProfile();
 
@@ -125,6 +132,7 @@ public interface DiscoveryViewModel {
       this.showHelp = this.loggedOutSettingsClick;
       this.showInternalTools = this.internalToolsClick;
       this.showLoginTout = this.loggedOutLoginToutClick;
+      this.showMessages = this.messagesClick;
       this.showProfile = this.profileClick;
       this.showSettings = this.settingsClick;
 
@@ -248,6 +256,8 @@ public interface DiscoveryViewModel {
         this.topFilterRowClick.map(__ -> false),
         this.internalToolsClick.map(__ -> false),
         this.loggedOutLoginToutClick.map(__ -> false),
+        this.messagesClick.map(__ -> false),
+        this.creatorDashboardClick.map(__ -> false),
         this.profileClick.map(__ -> false),
         this.settingsClick.map(__ -> false)
       )
@@ -264,6 +274,12 @@ public interface DiscoveryViewModel {
         .filter(IntentMapper::appBannerIsSet)
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackOpenedAppBanner());
+
+      this.showMenuIconWithIndicator = currentUser
+        .map(user -> ObjectUtils.isNull(user) || IntegerUtils.isZero(IntegerUtils.intValueOrZero(user.unreadMessagesCount())))
+        .map(BooleanUtils::negate)
+        .distinctUntilChanged()
+        .compose(bindToLifecycle());
     }
 
     private final PublishSubject<Void> activityFeedClick = PublishSubject.create();
@@ -272,6 +288,7 @@ public interface DiscoveryViewModel {
     private final PublishSubject<Void> internalToolsClick = PublishSubject.create();
     private final PublishSubject<Void> loggedOutLoginToutClick = PublishSubject.create();
     private final PublishSubject<Void> loggedOutSettingsClick = PublishSubject.create();
+    private final PublishSubject<Void> messagesClick = PublishSubject.create();
     private final PublishSubject<InternalBuildEnvelope> newerBuildIsAvailable = PublishSubject.create();
     private final PublishSubject<Boolean> openDrawer = PublishSubject.create();
     private final PublishSubject<Integer> pagerSetPrimaryPage = PublishSubject.create();
@@ -291,6 +308,8 @@ public interface DiscoveryViewModel {
     private final Observable<Void> showHelp;
     private final Observable<Void> showInternalTools;
     private final Observable<Void> showLoginTout;
+    private final Observable<Boolean> showMenuIconWithIndicator;
+    private final Observable<Void> showMessages;
     private final Observable<Void> showProfile;
     private final Observable<Void> showSettings;
     private final BehaviorSubject<DiscoveryParams> updateParamsForPage = BehaviorSubject.create();
@@ -313,6 +332,9 @@ public interface DiscoveryViewModel {
     }
     @Override public void loggedInViewHolderInternalToolsClick(final @NonNull LoggedInViewHolder viewHolder) {
       this.internalToolsClick.onNext(null);
+    }
+    @Override public void loggedInViewHolderMessagesClick(final @NonNull LoggedInViewHolder viewHolder) {
+      this.messagesClick.onNext(null);
     }
     @Override public void loggedInViewHolderProfileClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
       this.profileClick.onNext(null);
@@ -377,6 +399,12 @@ public interface DiscoveryViewModel {
     }
     @Override public @NonNull Observable<Void> showLoginTout() {
       return this.showLoginTout;
+    }
+    @Override public @NonNull Observable<Boolean> showMenuIconWithIndicator() {
+      return this.showMenuIconWithIndicator;
+    }
+    @Override public @NonNull Observable<Void> showMessages() {
+      return this.showMessages;
     }
     @Override public @NonNull Observable<Void> showProfile() {
       return this.showProfile;

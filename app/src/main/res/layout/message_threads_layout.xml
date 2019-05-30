@@ -23,34 +23,52 @@
       <LinearLayout
         android:id="@+id/mailbox_and_unread_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerVertical="true"
+        android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:clipToPadding="false"
         android:focusable="true"
         android:importantForAccessibility="yes"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/grid_9"
-        android:paddingEnd="@dimen/grid_2"
-        android:paddingStart="@dimen/grid_3"
-        android:paddingTop="@dimen/grid_9"
+        android:nextFocusDown="@id/switch_mailbox_button"
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/grid_9"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         app:layout_collapseMode="parallax"
         app:layout_collapseParallaxMultiplier="0.2">
 
-        <TextView
-          android:id="@+id/mailbox_text_view"
-          style="@style/Title1"
-          android:layout_width="wrap_content"
+        <LinearLayout
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
-          tools:text="Inbox" />
+          android:layout_weight="1"
+          android:orientation="vertical">
 
-        <TextView
-          android:id="@+id/unread_count_text_view"
-          style="@style/FootnotePrimaryMedium"
+          <TextView
+            android:id="@+id/mailbox_text_view"
+            style="@style/Title1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Inbox" />
+
+          <TextView
+            android:id="@+id/unread_count_text_view"
+            style="@style/FootnotePrimaryMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/accent"
+            tools:text="3 unread" />
+
+        </LinearLayout>
+
+        <Button
+          android:id="@+id/switch_mailbox_button"
+          style="@style/Widget.MaterialComponents.Button.OutlinedButton"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/ksr_text_green_700"
-          tools:text="3 unread" />
+          android:contentDescription="@string/messages_navigation_sent"
+          android:text="@string/messages_navigation_sent"
+          app:icon="@drawable/ic_switch"
+          app:strokeColor="@color/accent" />
 
       </LinearLayout>
 
@@ -70,7 +88,8 @@
       android:id="@+id/message_threads_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:scrollbars="vertical" />
+      android:scrollbars="none"
+      tools:listitem="@layout/message_thread_view" />
 
   </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

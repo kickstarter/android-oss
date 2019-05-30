@@ -14,7 +14,7 @@ import auto.parcel.AutoParcel;
 
 @AutoGson
 @AutoParcel
-public abstract class User implements Parcelable {
+public abstract class User implements Parcelable, Relay {
   public abstract @Nullable Boolean alumniNewsletter();
   public abstract @Nullable Boolean artsCultureNewsletter();
   public abstract Avatar avatar();

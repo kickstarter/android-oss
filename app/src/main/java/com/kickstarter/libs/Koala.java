@@ -10,7 +10,6 @@ import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.data.Mailbox;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -122,6 +121,23 @@ public final class Koala {
     this.client.track(project.isStarred() ? KoalaEvent.PROJECT_STAR : KoalaEvent.PROJECT_UNSTAR, props);
 
     this.client.track(project.isStarred() ? KoalaEvent.STARRED_PROJECT : KoalaEvent.UNSTARRED_PROJECT, props);
+  }
+
+  // PROJECT CREATOR BIO
+  public void trackViewedCreatorBioModal(final @NonNull Project project) {
+    final User loggedInUser = this.client.loggedInUser();
+    final Map<String, Object> props = KoalaUtils.projectProperties(project, loggedInUser);
+    props.put("modal_title", "creatorBioModal");
+
+    this.client.track(KoalaEvent.MODAL_DIALOG_VIEW, props);
+  }
+
+  public void trackViewedMessageCreatorModal(final @NonNull Project project) {
+    final User loggedInUser = this.client.loggedInUser();
+    final Map<String, Object> props = KoalaUtils.projectProperties(project, loggedInUser);
+    props.put("modal_title", "messageCreatorModal");
+
+    this.client.track(KoalaEvent.MODAL_DIALOG_VIEW, props);
   }
 
   // COMMENTS
@@ -505,9 +521,11 @@ public final class Koala {
     this.client.track(KoalaEvent.SENT_MESSAGE, props);
   }
 
-  public void trackViewedMailbox(final @NonNull Mailbox mailbox, final @Nullable Project project, final @Nullable RefTag intentRefTag) {
-    final Map<String, Object> props = project == null ? Collections.emptyMap() : KoalaUtils.projectProperties(project, this.client.loggedInUser());
+  public void trackViewedMailbox(final @NonNull Mailbox mailbox, final @Nullable Project project,
+    final @Nullable RefTag intentRefTag, final @NonNull KoalaContext.Mailbox context) {
+    final Map<String, Object> props = project == null ? new HashMap<>() : KoalaUtils.projectProperties(project, this.client.loggedInUser());
 
+    props.put("context", context.getTrackingString());
     if (intentRefTag != null) {
       props.put("ref_tag", intentRefTag.tag());
     }

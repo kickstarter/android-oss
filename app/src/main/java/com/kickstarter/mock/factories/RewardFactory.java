@@ -1,5 +1,6 @@
 package com.kickstarter.mock.factories;
 
+import com.kickstarter.libs.utils.RewardUtils;
 import com.kickstarter.models.Reward;
 
 import org.joda.time.DateTime;
@@ -52,6 +53,13 @@ public final class RewardFactory {
 
   public static @NonNull Reward noBackers() {
     return reward().toBuilder()
+      .backersCount(0)
+      .build();
+  }
+
+  public static @NonNull Reward maxReward() {
+    return reward().toBuilder()
+      .minimum(RewardUtils.MAX_REWARD_LIMIT)
       .backersCount(0)
       .build();
   }

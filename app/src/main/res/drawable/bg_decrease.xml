@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+  android:color="?attr/colorControlHighlight">
+  <item android:id="@android:id/mask">
+    <shape android:shape="rectangle">
+      <corners
+        android:bottomLeftRadius="@dimen/grid_3_half"
+        android:topLeftRadius="@dimen/grid_3_half" />
+    </shape>
+  </item>
+  <item>
+    <shape
+      android:shape="rectangle">
+      <corners
+        android:bottomLeftRadius="@dimen/grid_3_half"
+        android:topLeftRadius="@dimen/grid_3_half" />
+      <solid android:color="@color/white" />
+      <padding
+        android:bottom="@dimen/grid_3_half"
+        android:left="@dimen/grid_3"
+        android:right="@dimen/grid_3"
+        android:top="@dimen/grid_3_half" />
+    </shape>
+  </item>
+</ripple>

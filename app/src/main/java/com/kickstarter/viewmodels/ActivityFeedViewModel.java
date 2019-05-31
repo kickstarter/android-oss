@@ -124,7 +124,7 @@ public interface ActivityFeedViewModel {
         .switchMap(__ -> this.apolloClient.clearUnseenActivity().compose(neverError()))
         .switchMap(__ -> this.apiClient.fetchCurrentUser().compose(neverError()))
         .compose(bindToLifecycle())
-        .subscribe(this.currentUser::refresh);
+        .subscribe(freshUser -> this.currentUser.refresh(freshUser));
 
       final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
         .nextPage(this.nextPage)

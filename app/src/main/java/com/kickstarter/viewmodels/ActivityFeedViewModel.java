@@ -5,11 +5,14 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext.Update;
+import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.adapters.ActivityFeedAdapter;
@@ -77,13 +80,15 @@ public interface ActivityFeedViewModel {
   }
 
   final class ViewModel extends ActivityViewModel<ActivityFeedActivity> implements Inputs, Outputs {
-    private final ApiClientType client;
+    private final ApiClientType apiClient;
+    private final ApolloClientType apolloClient;
     private final CurrentUserType currentUser;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      this.client = environment.apiClient();
+      this.apiClient = environment.apiClient();
+      this.apolloClient = environment.apolloClient();
       this.currentUser = environment.currentUser();
 
       this.goToDiscovery = this.discoverProjectsClick;
@@ -102,19 +107,32 @@ public interface ActivityFeedViewModel {
 
       final Observable<Void> refreshSurvey = Observable.merge(this.refresh, this.resume).share();
 
-      this.currentUser.loggedInUser()
+      final Observable<User> loggedInUser = this.currentUser.loggedInUser();
+
+      loggedInUser
         .compose(takeWhen(refreshSurvey))
-        .switchMap(__ -> this.client.fetchUnansweredSurveys().compose(neverError()).share())
+        .switchMap(__ -> this.apiClient.fetchUnansweredSurveys().compose(neverError()).share())
         .compose(bindToLifecycle())
         .subscribe(this.surveys);
+
+      loggedInUser
+        .compose(takeWhen(refreshSurvey))
+        .map(User::unseenActivityCount)
+        .map(IntegerUtils::intValueOrZero)
+        .filter(IntegerUtils::isNonZero)
+        .distinctUntilChanged()
+        .switchMap(__ -> this.apolloClient.clearUnseenActivity().compose(neverError()))
+        .switchMap(__ -> this.apiClient.fetchCurrentUser().compose(neverError()))
+        .compose(bindToLifecycle())
+        .subscribe(this.currentUser::refresh);
 
       final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
         .nextPage(this.nextPage)
         .startOverWith(this.refresh)
         .envelopeToListOfData(ActivityEnvelope::activities)
         .envelopeToMoreUrl(env -> env.urls().api().moreActivities())
-        .loadWithParams(__ -> this.client.fetchActivities())
-        .loadWithPaginationPath(this.client::fetchActivitiesWithPaginationPath)
+        .loadWithParams(__ -> this.apiClient.fetchActivities())
+        .loadWithPaginationPath(this.apiClient::fetchActivitiesWithPaginationPath)
         .build();
 
       paginator.paginatedData()

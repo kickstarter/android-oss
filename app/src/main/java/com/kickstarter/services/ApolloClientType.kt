@@ -17,13 +17,15 @@ import type.PaymentTypes
 
 interface ApolloClientType {
 
+    fun clearUnseenActivity(): Observable<Long>
+
+    fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
+
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
 
     fun getStoredCards(): Observable<List<StoredCard>>
 
     fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data>
-
-    fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
 
     fun sendMessage(project: Project, recipient: User, body: String): Observable<Long>
 

@@ -1,5 +1,6 @@
 package com.kickstarter.services
 
+import ClearUserUnseenActivityMutation
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
 import SavePaymentMethodMutation
@@ -28,6 +29,30 @@ import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
+
+    override fun clearUnseenActivity(): Observable<Long> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Long>()
+            service.mutate(ClearUserUnseenActivityMutation.builder()
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<ClearUserUnseenActivityMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<ClearUserUnseenActivityMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(java.lang.Exception(response.errors().first().message()))
+                            }
+                            response.data()?.clearUserUnseenActivity()?.activityIndicatorCount().let {
+                                handleResponse(it, ps)
+                            }
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<CreatePasswordMutation.Data>()
@@ -165,13 +190,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                 ps.onError(Exception(response.errors().first().message()))
                             }
                             decodeRelayId(response.data()?.sendMessage()?.conversation()?.id()).let {
-                                when {
-                                    ObjectUtils.isNull(it) -> ps.onError(Exception())
-                                    else -> {
-                                        ps.onNext(it)
-                                        ps.onCompleted()
-                                    }
-                                }
+                                handleResponse(it, ps)
                             }
                         }
                     })
@@ -306,5 +325,17 @@ fun decodeRelayId(encodedRelayId: String?): Long? {
                 .absoluteValue
     } catch (e: Exception) {
         null
+    }
+}
+
+private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {
+    when {
+        ObjectUtils.isNull(it) -> {
+            ps.onError(Exception())
+        }
+        else -> {
+            ps.onNext(it)
+            ps.onCompleted()
+        }
     }
 }

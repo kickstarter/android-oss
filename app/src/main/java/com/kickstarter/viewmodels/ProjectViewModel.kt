@@ -17,9 +17,11 @@ import com.kickstarter.ui.intentmappers.IntentMapper
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.ui.viewholders.ProjectViewHolder
 import rx.Observable
+import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.net.CookieManager
+import java.util.concurrent.TimeUnit
 
 interface ProjectViewModel {
     interface Inputs {
@@ -263,6 +265,7 @@ interface ProjectViewModel {
 
             this.hideRewardsFragment
                     .map { false }
+                    .delay(500, TimeUnit.MILLISECONDS, Schedulers.trampoline()) // We delay in case the keyboard is open in the PledgeFragment, so it will give the Rewards container time to readjust its height.
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
 

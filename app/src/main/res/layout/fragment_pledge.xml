@@ -2,6 +2,7 @@
 <ScrollView
   android:id="@+id/pledge_root"
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
@@ -208,17 +209,19 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-          <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/plus_sign_width"
-            android:layout_height="@dimen/plus_sign_height"
-            android:backgroundTint="@color/ksr_grey_500"
-            android:src="@drawable/ic_add"
-            android:layout_marginEnd="@dimen/grid_1_half" />
-
           <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".1">
+
+            <ImageView
+              android:layout_width="@dimen/grid_3"
+              android:layout_height="@dimen/grid_3"
+              android:layout_gravity="center|start"
+              android:layout_marginEnd="@dimen/grid_2"
+              android:contentDescription="@null"
+              android:src="@drawable/ic_add"
+              android:tint="@color/ksr_dark_grey_400" />
 
             <TextView
               android:id="@+id/shipping_amount"
@@ -226,6 +229,7 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_gravity="end"
+              android:layout_marginStart="@dimen/grid_1"
               tools:text="$20.00" />
 
             <View

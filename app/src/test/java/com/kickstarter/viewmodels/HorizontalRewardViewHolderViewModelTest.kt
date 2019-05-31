@@ -4,6 +4,8 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.KSCurrency
+import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
@@ -80,20 +82,43 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
     }
 
     @Test
-    fun testConversionTextRoundsUp() {
+    fun testConversionTextRoundsUp_USUser_prefersUSD() {
         // Set user's country to US.
-        val config = ConfigFactory.configForUSUser()
-        val environment = environment()
-        environment.currentConfig().config(config)
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(ConfigFactory.configForUSUser())
+        val environment = environment().toBuilder()
+                .currentConfig(currentConfig)
+                .ksCurrency(KSCurrency(currentConfig))
+                .build()
         setUpEnvironment(environment)
 
-        // Set project's country to CA and reward minimum to $0.30.
-        val project = ProjectFactory.caProject()
+        // Set project's country to CA with USD preference and reward minimum to $0.30.
+        val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
         val reward = RewardFactory.reward().toBuilder().minimum(0.3).build()
 
         // USD conversion should be rounded up.
         this.vm.inputs.projectAndReward(project, reward)
         this.conversionTextViewText.assertValue("$1")
+    }
+
+    @Test
+    fun testConversionTextRoundsUp_ITUser_prefersUSD() {
+        // Set user's country to IT.
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(ConfigFactory.configForITUser())
+        val environment = environment().toBuilder()
+                .currentConfig(currentConfig)
+                .ksCurrency(KSCurrency(currentConfig))
+                .build()
+        setUpEnvironment(environment)
+
+        // Set project's country to CA with USD preference and reward minimum to $0.30.
+        val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
+        val reward = RewardFactory.reward().toBuilder().minimum(0.3).build()
+
+        // USD conversion should be rounded up.
+        this.vm.inputs.projectAndReward(project, reward)
+        this.conversionTextViewText.assertValue("US$ 1")
     }
 
     @Test

@@ -54,7 +54,7 @@ public interface RewardViewModel {
     /** Returns `true` if the USD conversion section should be hidden, `false` otherwise. */
     Observable<Boolean> conversionTextViewIsGone();
 
-    /** Set the USD conversion. */
+    /** Set the preferred conversion. */
     Observable<String> conversionTextViewText();
 
     /** Set the description TextView's text. */

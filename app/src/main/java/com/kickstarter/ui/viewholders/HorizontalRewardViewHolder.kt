@@ -164,7 +164,7 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.view.horizontal_reward_minimum_text_view.text = minimum
 
         if (RewardUtils.isLimitReached(this.reward)) {
-            this.view.horizontal_reward_pledge_button.text =
+            this.view.horizontal_reward_pledge_button.text = noLongerAvailbleString
         } else {
             this.view.horizontal_reward_pledge_button.text = (this.ksString.format(
                     this.pledgeRewardCurrencyOrMoreString,

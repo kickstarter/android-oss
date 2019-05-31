@@ -115,11 +115,11 @@ public final class KSCurrency {
       .build();
   }
 
-  private float getRoundedValue(double initialValue, @NonNull RoundingMode roundingMode) {
+  private float getRoundedValue(final double initialValue, final @NonNull RoundingMode roundingMode) {
     return roundingMode == RoundingMode.UP ? (float) Math.ceil(initialValue) : (float) Math.floor(initialValue);
   }
 
-  private String getSymbolForCurrency(final @NonNull Country country, final boolean excludeCurrencyCode, final Config config) {
+  private String getSymbolForCurrency(final @NonNull Country country, final boolean excludeCurrencyCode, final @NonNull Config config) {
     final boolean countryIsUS = country == Country.US;
     final boolean userInUS = config.countryCode().equals(Country.US.getCountryCode());
 

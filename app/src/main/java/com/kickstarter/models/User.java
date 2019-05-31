@@ -53,6 +53,7 @@ public abstract class User implements Parcelable, Relay {
   public abstract @Nullable Boolean social();
   public abstract @Nullable Integer starredProjectsCount();
   public abstract @Nullable Integer unreadMessagesCount();
+  public abstract @Nullable Integer unseenActivityCount();
   public abstract @Nullable Boolean weeklyNewsletter();
 
   @AutoParcel.Builder
@@ -95,6 +96,7 @@ public abstract class User implements Parcelable, Relay {
     public abstract Builder social(Boolean __);
     public abstract Builder starredProjectsCount(Integer __);
     public abstract Builder unreadMessagesCount(Integer __);
+    public abstract Builder unseenActivityCount(Integer __);
     public abstract Builder weeklyNewsletter(Boolean __);
     public abstract User build();
   }

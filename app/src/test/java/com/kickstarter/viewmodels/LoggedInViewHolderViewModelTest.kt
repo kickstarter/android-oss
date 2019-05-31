@@ -13,6 +13,7 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
     private val dashboardRowIsGone = TestSubscriber<Boolean>()
     private val name = TestSubscriber<String>()
     private val unreadMessagesCount = TestSubscriber<Int>()
+    private val unseenActivityCount = TestSubscriber<Int>()
     private val user = TestSubscriber<User>()
 
     fun setUpEnvironment(environment: Environment) {
@@ -21,6 +22,7 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.dashboardRowIsGone().subscribe(this.dashboardRowIsGone)
         this.vm.outputs.name().subscribe(this.name)
         this.vm.outputs.unreadMessagesCount().subscribe(this.unreadMessagesCount)
+        this.vm.outputs.unseenActivityCount().subscribe(this.unseenActivityCount)
         this.vm.outputs.user().subscribe(this.user)
     }
 
@@ -56,12 +58,21 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testUnreadMessagesCount() {
+    fun testUnseenActivityCount() {
         setUpEnvironment(environment())
 
         this.vm.inputs.configureWith(UserFactory.user().toBuilder().unreadMessagesCount(5).build())
 
         this.unreadMessagesCount.assertValue(5)
+    }
+
+    @Test
+    fun testUnreadMessagesCount() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(UserFactory.user().toBuilder().unseenActivityCount(2).build())
+
+        this.unreadMessagesCount.assertValue(2)
     }
 
     @Test

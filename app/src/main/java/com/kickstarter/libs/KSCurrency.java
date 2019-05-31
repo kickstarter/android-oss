@@ -33,8 +33,7 @@ public final class KSCurrency {
    *
    * @param initialValue        Value to display, local to the project's currency.
    * @param project             The project to use to look up currency information.
-   * @param excludeCurrencyCode If true, hide the currency code, even if that makes the returned value ambiguous.
-   *                            This is used when space is constrained and the currency code can be determined elsewhere.
+   * @param excludeCurrencyCode If true, hide the US currency code for US users only.
    */
   public @NonNull String format(final double initialValue, final @NonNull Project project,
     final boolean excludeCurrencyCode) {
@@ -47,8 +46,7 @@ public final class KSCurrency {
    *
    * @param initialValue        Value to display, local to the project's currency.
    * @param project             The project to use to look up currency information.
-   * @param excludeCurrencyCode If true, hide the currency code, even if that makes the returned value ambiguous.
-   *                            This is used when space is constrained and the currency code can be determined elsewhere.
+   * @param excludeCurrencyCode If true, hide the US currency code for US users only.
    */
   public @NonNull String format(final double initialValue, final @NonNull Project project,
     final boolean excludeCurrencyCode, final @NonNull RoundingMode roundingMode) {
@@ -61,10 +59,8 @@ public final class KSCurrency {
     final float roundedValue = getRoundedValue(initialValue, roundingMode);
     final CurrencyOptions currencyOptions = currencyOptions(roundedValue, country, excludeCurrencyCode);
 
-    final boolean showCurrencyCode = showCurrencyCode(currencyOptions, excludeCurrencyCode);
-
     final NumberOptions numberOptions = NumberOptions.builder()
-      .currencyCode(showCurrencyCode ? currencyOptions.currencyCode() : "")
+      .currencyCode(currencyOptions.currencyCode())
       .currencySymbol(currencyOptions.currencySymbol())
       .roundingMode(roundingMode)
       .build();
@@ -72,14 +68,10 @@ public final class KSCurrency {
     return trim(NumberUtils.format(currencyOptions.value(), numberOptions));
   }
 
-  private String trim(final @NonNull String formattedString) {
-    return formattedString.replace('\u00A0', ' ').trim();
-  }
-
   /**
    * Returns a currency string appropriate to the user's locale and preferred currency.
    *
-   * @param initialValue Value to display, local to the project's currency.
+   * @param initialValue Value to convert, local to the project's currency.
    * @param project The project to use to look up currency information.
    * @param roundingMode This determines whether we should round the values down or up.
    */
@@ -104,7 +96,7 @@ public final class KSCurrency {
   }
 
   /**
-   * Build {@link CurrencyOptions} based on the project and whether we are using the project's currency or a user's preference.
+   * Build {@link CurrencyOptions} based on the country.
    */
   private @NonNull CurrencyOptions currencyOptions(final float value, final @NonNull Country country, final boolean excludeCurrencyCode) {
     return CurrencyOptions.builder()
@@ -141,27 +133,8 @@ public final class KSCurrency {
     }
   }
 
-  /**
-   * Determines whether the currency code should be shown. If the currency is ambiguous (e.g. CAD and USD both use `$`),
-   * we show the currency code if the user is not in the US, or the project is not in the US.
-   */
-  private boolean showCurrencyCode(final @NonNull CurrencyOptions currencyOptions, final boolean excludeCurrencyCode) {
-    final Config config = this.currentConfig.getConfig();
-    final boolean currencyIsDupe = config.currencyNeedsCode(currencyOptions.currencySymbol());
-
-    if (!currencyIsDupe) {
-      return true;
-    }
-
-    final String usCountryCode = Country.US.getCountryCode();
-    final boolean userIsUS = config.countryCode().equals(usCountryCode);
-    final boolean projectIsUS = currencyOptions.country().equals(usCountryCode);
-
-    if (excludeCurrencyCode && userIsUS && projectIsUS) {
-      return false;
-    }
-
-    return true;
+  private String trim(final @NonNull String formattedString) {
+    return formattedString.replace('\u00A0', ' ').trim();
   }
 
   @AutoParcel

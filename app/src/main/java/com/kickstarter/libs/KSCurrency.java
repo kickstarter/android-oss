@@ -2,6 +2,7 @@ package com.kickstarter.libs;
 
 import android.os.Parcelable;
 
+import com.kickstarter.libs.models.Country;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 
@@ -9,7 +10,6 @@ import java.math.RoundingMode;
 
 import androidx.annotation.NonNull;
 import auto.parcel.AutoParcel;
-import type.CurrencyCode;
 
 public final class KSCurrency {
   private final CurrentConfigType currentConfig;
@@ -53,8 +53,13 @@ public final class KSCurrency {
   public @NonNull String format(final double initialValue, final @NonNull Project project,
     final boolean excludeCurrencyCode, final @NonNull RoundingMode roundingMode) {
 
-    final float unconvertedValue = roundingMode == RoundingMode.UP ? (float) Math.ceil(initialValue) : (float) Math.floor(initialValue);
-    final CurrencyOptions currencyOptions = currencyOptions(unconvertedValue, project, excludeCurrencyCode, true);
+    final Country country = Country.findByCurrencyCode(project.currency());
+    if (country == null) {
+      return "";
+    }
+
+    final float roundedValue = getRoundedValue(initialValue, roundingMode);
+    final CurrencyOptions currencyOptions = currencyOptions(roundedValue, country, excludeCurrencyCode);
 
     final boolean showCurrencyCode = showCurrencyCode(currencyOptions, excludeCurrencyCode);
 
@@ -64,7 +69,11 @@ public final class KSCurrency {
       .roundingMode(roundingMode)
       .build();
 
-    return NumberUtils.format(currencyOptions.value(), numberOptions);
+    return trim(NumberUtils.format(currencyOptions.value(), numberOptions));
+  }
+
+  private String trim(final @NonNull String formattedString) {
+    return formattedString.replace('\u00A0', ' ').trim();
   }
 
   /**
@@ -74,81 +83,61 @@ public final class KSCurrency {
    * @param project The project to use to look up currency information.
    * @param roundingMode This determines whether we should round the values down or up.
    */
-  public String formatWithUserPreference(final double initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode) {
+  public String formatWithUserPreference(final double initialValue, final @NonNull Project project,
+    final @NonNull RoundingMode roundingMode) {
 
-    final float unconvertedValue = roundingMode == RoundingMode.UP ? (float) Math.ceil(initialValue) : (float) Math.floor(initialValue);
-    final CurrencyOptions currencyOptions = currencyOptions(unconvertedValue, project, true, false);
+    final Country country = Country.findByCurrencyCode(project.currentCurrency());
+
+    if (country == null) {
+      return "";
+    }
+
+    final float convertedValue = getRoundedValue(initialValue, roundingMode) * project.fxRate();
+    final CurrencyOptions currencyOptions = currencyOptions(convertedValue, country, true);
 
     final NumberOptions numberOptions = NumberOptions.builder()
       .currencySymbol(currencyOptions.currencySymbol())
       .roundingMode(roundingMode)
       .build();
 
-    return NumberUtils.format(currencyOptions.value(), numberOptions);
+    return trim(NumberUtils.format(currencyOptions.value(), numberOptions));
   }
 
   /**
    * Build {@link CurrencyOptions} based on the project and whether we are using the project's currency or a user's preference.
    */
-  private @NonNull CurrencyOptions currencyOptions(final float value, final @NonNull Project project, final boolean excludeCurrencyCode,
-    final boolean useProjectCurrency) {
-    final Float fxRate = project.fxRate();
-
+  private @NonNull CurrencyOptions currencyOptions(final float value, final @NonNull Country country, final boolean excludeCurrencyCode) {
     return CurrencyOptions.builder()
-      .country(project.country())
+      .country(country.getCountryCode())
       .currencyCode("")
-      .currencySymbol(getSymbolForCurrency(project, excludeCurrencyCode, useProjectCurrency))
-      .value(useProjectCurrency ? value : value * fxRate)
+      .currencySymbol(getSymbolForCurrency(country, excludeCurrencyCode, this.currentConfig.getConfig()))
+      .value(value)
       .build();
   }
 
-  private String getSymbolForCurrency(final @NonNull Project project, final boolean excludeCurrencyCode, final boolean useProjectCurrency) {
-    final Config config = this.currentConfig.getConfig();
+  private float getRoundedValue(double initialValue, @NonNull RoundingMode roundingMode) {
+    return roundingMode == RoundingMode.UP ? (float) Math.ceil(initialValue) : (float) Math.floor(initialValue);
+  }
 
-    final String country = project.country();
-    final String currency = useProjectCurrency ? project.currency() : project.currentCurrency();
-    final boolean projectInUS = "US".equals(country);
-    final boolean userInUS = "US".equals(config.countryCode());
-    final CurrencyCode code = CurrencyCode.safeValueOf(currency);
+  private String getSymbolForCurrency(final @NonNull Country country, final boolean excludeCurrencyCode, final Config config) {
+    final boolean countryIsUS = country == Country.US;
+    final boolean userInUS = config.countryCode().equals(Country.US.getCountryCode());
 
-    if (userInUS && excludeCurrencyCode) {
-      if (useProjectCurrency && projectInUS) {
-        return "$";
-      } else if (!useProjectCurrency) {
-        return "$";
-      }
+    if (!config.currencyNeedsCode(country.getCurrencySymbol())) {
+      return country.getCurrencySymbol();
     }
 
-    if (code == CurrencyCode.AUD) {
-      return "AU$ ";
-    } else if (code == CurrencyCode.CAD) {
-      return "CA$ ";
-    } else if (code == CurrencyCode.CHF) {
-      return "CHF ";
-    } else if (code == CurrencyCode.DKK) {
-      return "DKK ";
-    } else if (code == CurrencyCode.EUR) {
-      return "€";
-    } else if (code == CurrencyCode.GBP) {
-      return "£";
-    } else if (code == CurrencyCode.HKD) {
-      return "HK$ ";
-    } else if (code == CurrencyCode.JPY) {
-      return "¥";
-    } else if (code == CurrencyCode.MXN) {
-      return "MX$ ";
-    } else if (code == CurrencyCode.NOK) {
-      return "NOK ";
-    } else if (code == CurrencyCode.NZD) {
-      return "NZ$ ";
-    } else if (code == CurrencyCode.SEK) {
-      return "SEK ";
-    } else if (code == CurrencyCode.SGD) {
-      return "S$ ";
-    } else if (code == CurrencyCode.USD) {
-      return "US$ ";
+    if (userInUS && excludeCurrencyCode && countryIsUS) {
+      // US people looking at US projects just get the currency symbol
+      return Country.US.getCurrencySymbol();
+    } else if (country == Country.SG) {
+      // Singapore projects get a special currency prefix
+      return "\u00A0" + "S" + country.getCurrencySymbol() + "\u00A0";
+    } else if (country.getCurrencySymbol().equals("kr") || country.getCurrencySymbol().equals("kr")) {
+      // Kroner projects use the currency code prefix
+      return "\u00A0" + country.getCurrencyCode() + "\u00A0";
     } else {
-      return "US$ ";
+      return "\u00A0" + country.getCountryCode() + country.getCurrencySymbol() + "\u00A0";
     }
   }
 
@@ -164,8 +153,9 @@ public final class KSCurrency {
       return true;
     }
 
-    final boolean userIsUS = config.countryCode().equals("US");
-    final boolean projectIsUS = currencyOptions.country().equals("US");
+    final String usCountryCode = Country.US.getCountryCode();
+    final boolean userIsUS = config.countryCode().equals(usCountryCode);
+    final boolean projectIsUS = currencyOptions.country().equals(usCountryCode);
 
     if (excludeCurrencyCode && userIsUS && projectIsUS) {
       return false;

@@ -251,13 +251,15 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val detailsY = getYAnimator(initY, finalY)
 
         if (reveal) {
-            reward_snapshot.setOnClickListener {
+            val shrinkClickListener = View.OnClickListener { v ->
                 if (!width.isRunning) {
-                    it.setOnClickListener(null)
-                    this.animDuration = this.defaultAnimationDuration
+                    v?.setOnClickListener(null)
+                    this@PledgeFragment.animDuration = this@PledgeFragment.defaultAnimationDuration
                     startPledgeAnimatorSet(false, location)
                 }
             }
+            reward_snapshot.setOnClickListener(shrinkClickListener)
+            expand_icon_container.setOnClickListener(shrinkClickListener)
         } else {
             width.addUpdateListener {
                 if (it.animatedFraction == 1f) {
@@ -318,7 +320,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     val newWidth = it.animatedValue as Float
                     newParams?.width = newWidth.toInt()
                     reward_snapshot?.layoutParams = newParams
-                    expand_icon?.alpha = if (finalValue < initialValue) animatedFraction else 1 - animatedFraction
+                    expand_icon_container?.alpha = if (finalValue < initialValue) animatedFraction else 1 - animatedFraction
                 }
             }
 

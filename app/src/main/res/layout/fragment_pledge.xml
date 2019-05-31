@@ -35,17 +35,27 @@
       tools:layout_height="@dimen/mini_reward_height"
       tools:layout_width="@dimen/mini_reward_width" />
 
-    <ImageView
-      android:id="@+id/expand_icon"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+    <!-- todo: what's the content description? -->
+    <FrameLayout
+      android:id="@+id/expand_icon_container"
+      android:layout_width="@dimen/grid_8"
+      android:layout_height="@dimen/grid_8"
       android:alpha="0"
-      android:contentDescription="@null"
       android:elevation="@dimen/mini_reward_elevation"
-      android:src="@drawable/ic_expand"
       app:layout_anchor="@id/reward_snapshot"
       app:layout_anchorGravity="end"
-      tools:alpha="1" />
+      tools:alpha="1">
+
+      <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/grid_1"
+        android:layout_marginTop="@dimen/grid_2"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_expand"
+        />
+    </FrameLayout>
+
 
     <LinearLayout
       android:id="@+id/pledge_details"

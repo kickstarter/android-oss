@@ -14,6 +14,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
@@ -169,7 +170,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     this.viewModel.outputs.drawerIsOpen()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(RxDrawerLayout.open(this.discoveryLayout, GravityCompat.START));
+      .subscribe(ViewUtils.open(this.discoveryLayout, GravityCompat.START));
 
     this.viewModel.outputs.showMenuIconWithIndicator()
       .compose(bindToLifecycle())
@@ -225,14 +226,17 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
 
   protected void startActivityFeedActivity() {
     startActivity(new Intent(this, ActivityFeedActivity.class));
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   protected void startCreatorDashboardActivity() {
     startActivity(new Intent(this, CreatorDashboardActivity.class));
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   protected void startHelpSettingsActivity() {
     startActivity(new Intent(this, HelpSettingsActivity.class));
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private void startLoginToutActivity() {

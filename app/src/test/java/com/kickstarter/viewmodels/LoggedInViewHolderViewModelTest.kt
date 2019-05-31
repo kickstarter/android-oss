@@ -58,7 +58,7 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testUnseenActivityCount() {
+    fun testUnreadMessagesCount() {
         setUpEnvironment(environment())
 
         this.vm.inputs.configureWith(UserFactory.user().toBuilder().unreadMessagesCount(5).build())
@@ -67,12 +67,12 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testUnreadMessagesCount() {
+    fun testUnseenActivityCount() {
         setUpEnvironment(environment())
 
         this.vm.inputs.configureWith(UserFactory.user().toBuilder().unseenActivityCount(2).build())
 
-        this.unreadMessagesCount.assertValue(2)
+        this.unseenActivityCount.assertValue(2)
     }
 
     @Test

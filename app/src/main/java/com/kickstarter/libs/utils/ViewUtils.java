@@ -17,12 +17,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding.internal.Preconditions;
 import com.kickstarter.R;
 import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.ConfirmDialog;
 
+import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.drawerlayout.widget.DrawerLayout;
 import rx.functions.Action1;
 
 public final class ViewUtils {
@@ -177,5 +180,28 @@ public final class ViewUtils {
 
   public static Action1<Boolean> setInvisible(final @NonNull View view) {
     return (invisible) -> setInvisible(view, invisible);
+  }
+
+  /**
+   * From {@link com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout}
+   *
+   * An action which sets whether the drawer with {@code gravity} of {@code view} is open.
+   * If it's closing, we don't animate because it looks janky when opening another activity.
+   * <p>
+   * <em>Warning:</em> The created observable keeps a strong reference to {@code view}. Unsubscribe
+   * to free this reference.
+   *
+   * */
+  @CheckResult
+  @NonNull
+  public static Action1<? super Boolean> open(@NonNull final DrawerLayout view, final int gravity) {
+    Preconditions.checkNotNull(view, "view == null");
+    return (Action1<Boolean>) aBoolean -> {
+      if (aBoolean) {
+        view.openDrawer(gravity);
+      } else {
+        view.closeDrawer(gravity, false);
+      }
+    };
   }
 }

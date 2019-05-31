@@ -33,6 +33,7 @@ import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -251,17 +252,21 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackDiscoveryFilterSelected);
 
-      Observable.merge(
+      final List<Observable<Boolean>> drawerOpenObservables = Arrays.asList(
         this.openDrawer,
         this.childFilterRowClick.map(__ -> false),
         this.topFilterRowClick.map(__ -> false),
         this.internalToolsClick.map(__ -> false),
         this.loggedOutLoginToutClick.map(__ -> false),
+        this.loggedOutSettingsClick.map(__ -> false),
+        this.activityFeedClick.map(__ -> false),
         this.messagesClick.map(__ -> false),
         this.creatorDashboardClick.map(__ -> false),
         this.profileClick.map(__ -> false),
         this.settingsClick.map(__ -> false)
-      )
+      );
+
+      Observable.merge(drawerOpenObservables)
         .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.drawerIsOpen);

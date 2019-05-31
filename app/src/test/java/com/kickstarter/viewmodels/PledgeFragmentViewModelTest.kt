@@ -158,6 +158,27 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testConversionText_WhenStepperChangesValue() {
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        this.vm = PledgeFragmentViewModel.ViewModel(environment)
+        this.vm.outputs.conversionText().subscribe(this.conversionText)
+
+        // Set the project currency and the user's chosen currency to different values
+        val project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("CAD").build()
+        val reward = RewardFactory.reward()
+        val bundle = Bundle()
+        bundle.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, ScreenLocation(0f, 0f, 0f, 0f))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project)
+        bundle.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)
+        this.vm.arguments(bundle)
+
+        this.conversionText.assertValue("CA$ 50.00")
+
+        this.vm.decreasePledgeButtonClicked()
+        this.conversionText.assertValues("CA$ 50.00", "CA$ 49.00")
+    }
+
+    @Test
     fun testPaymentForLoggedInUser() {
         setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build())
 
@@ -343,10 +364,39 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testTotalAmountWithShippingRules_WhenStepperChangesValue() {
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        val environment = environment().toBuilder()
+                .currentConfig(currentConfig)
+                .build()
+        setUpEnvironment(environment)
+
+        this.totalAmount.assertValues("$50.00")
+        this.vm.decreasePledgeButtonClicked()
+        this.totalAmount.assertValues("$50.00", "$49.00")
+        this.vm.increasePledgeButtonClicked()
+        this.totalAmount.assertValues("$50.00", "$49.00", "$50.00")
+    }
+
+    @Test
     fun testTotalAmountWithoutShippingRules() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
         setUpEnvironment(environment)
         this.totalAmount.assertValue("$20.00")
+    }
+
+    @Test
+    fun testTotalAmountWithoutShippingRules_WhenStepperChangesValue() {
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
+        setUpEnvironment(environment)
+        this.totalAmount.assertValue("$20.00")
+        this.vm.decreasePledgeButtonClicked()
+        this.totalAmount.assertValues("$20.00", "$19.00")
+        this.vm.increasePledgeButtonClicked()
+        this.totalAmount.assertValues("$20.00", "$19.00", "$20.00")
     }
 
     private fun environmentForShippingRules(envelope: ShippingRulesEnvelope): Environment {

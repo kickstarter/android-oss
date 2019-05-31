@@ -10,8 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
@@ -177,7 +177,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val location = pledgeData.rewardScreenLocation
         val reward = pledgeData.reward
         val project = pledgeData.project
-        val rewardParams = reward_snapshot.layoutParams as FrameLayout.LayoutParams
+        val rewardParams = reward_snapshot.layoutParams as CoordinatorLayout.LayoutParams
         rewardParams.leftMargin = location.x.toInt()
         rewardParams.topMargin = location.y.toInt()
         rewardParams.height = location.height.toInt()
@@ -251,13 +251,15 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val detailsY = getYAnimator(initY, finalY)
 
         if (reveal) {
-            reward_snapshot.setOnClickListener {
+            val shrinkClickListener = View.OnClickListener { v ->
                 if (!width.isRunning) {
-                    it.setOnClickListener(null)
-                    this.animDuration = this.defaultAnimationDuration
+                    v?.setOnClickListener(null)
+                    this@PledgeFragment.animDuration = this@PledgeFragment.defaultAnimationDuration
                     startPledgeAnimatorSet(false, location)
                 }
             }
+            reward_snapshot.setOnClickListener(shrinkClickListener)
+            expand_icon_container.setOnClickListener(shrinkClickListener)
         } else {
             width.addUpdateListener {
                 if (it.animatedFraction == 1f) {
@@ -278,7 +280,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun getHeightAnimator(initialValue: Float, finalValue: Float) =
             ValueAnimator.ofFloat(initialValue, finalValue).apply {
                 addUpdateListener {
-                    val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
+                    val newParams = reward_snapshot?.layoutParams as CoordinatorLayout.LayoutParams?
                     val newHeight = it.animatedValue as Float
                     newParams?.height = newHeight.toInt()
                     reward_snapshot?.layoutParams = newParams
@@ -288,7 +290,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun getMarginLeftAnimator(initialValue: Float, finalValue: Float) =
             ValueAnimator.ofFloat(initialValue, finalValue).apply {
                 addUpdateListener {
-                    val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
+                    val newParams = reward_snapshot?.layoutParams as CoordinatorLayout.LayoutParams?
                     val newMargin = it.animatedValue as Float
                     newParams?.leftMargin = newMargin.toInt()
                     reward_snapshot?.layoutParams = newParams
@@ -298,7 +300,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun getMarginTopAnimator(initialValue: Float, finalValue: Float): ValueAnimator =
             ValueAnimator.ofFloat(initialValue, finalValue).apply {
                 addUpdateListener {
-                    val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
+                    val newParams = reward_snapshot?.layoutParams as CoordinatorLayout.LayoutParams?
                     val newMargin = it.animatedValue as Float
                     newParams?.topMargin = newMargin.toInt()
                     reward_snapshot?.layoutParams = newParams
@@ -314,10 +316,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun getWidthAnimator(initialValue: Float, finalValue: Float) =
             ValueAnimator.ofFloat(initialValue, finalValue).apply {
                 addUpdateListener {
-                    val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
+                    val newParams = reward_snapshot?.layoutParams as CoordinatorLayout.LayoutParams?
                     val newWidth = it.animatedValue as Float
                     newParams?.width = newWidth.toInt()
                     reward_snapshot?.layoutParams = newParams
+                    expand_icon_container?.alpha = if (finalValue < initialValue) animatedFraction else 1 - animatedFraction
                 }
             }
 

@@ -92,13 +92,16 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment)
 
-        // Set project's country to CA with USD preference and reward minimum to $0.30.
+        // Set project's country to CA with USD preference and reward minimum to $1.30.
         val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
-        val reward = RewardFactory.reward().toBuilder().minimum(0.3).build()
+        val reward = RewardFactory.reward().toBuilder().minimum(1.3).build()
 
-        // USD conversion should be rounded up.
+        // USD conversion should be rounded normally.
         this.vm.inputs.projectAndReward(project, reward)
-        this.conversionTextViewText.assertValue("$1")
+        this.conversionTextViewText.assertValuesAndClear("$1")
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(1.9).build())
+        this.conversionTextViewText.assertValue("$2")
     }
 
     @Test
@@ -112,13 +115,16 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment)
 
-        // Set project's country to CA with USD preference and reward minimum to $0.30.
+        // Set project's country to CA with USD preference and reward minimum to $1.30.
         val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
-        val reward = RewardFactory.reward().toBuilder().minimum(0.3).build()
+        val reward = RewardFactory.reward().toBuilder().minimum(1.3).build()
 
-        // USD conversion should be rounded up.
+        // USD conversion should be rounded normally.
         this.vm.inputs.projectAndReward(project, reward)
-        this.conversionTextViewText.assertValue("US$ 1")
+        this.conversionTextViewText.assertValuesAndClear("US$ 1")
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(1.9).build())
+        this.conversionTextViewText.assertValue("US$ 2")
     }
 
     @Test

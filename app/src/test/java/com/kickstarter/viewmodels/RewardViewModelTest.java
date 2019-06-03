@@ -171,13 +171,16 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
       .build();
     setUpEnvironment(environment);
 
-    // Set project's country to CA with USD preference and reward minimum to $0.30.
+    // Set project's country to CA with USD preference and reward minimum to $1.30.
     final Project project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build();
-    final Reward reward = RewardFactory.reward().toBuilder().minimum(0.3f).build();
+    final Reward reward = RewardFactory.reward().toBuilder().minimum(1.3f).build();
 
     // USD conversion should be rounded up.
     this.vm.inputs.projectAndReward(project, reward);
-    this.conversionTextViewText.assertValue("$1");
+    this.conversionTextViewText.assertValuesAndClear("$1");
+
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(1.9f).build());
+    this.conversionTextViewText.assertValue("$2");
   }
 
   @Test
@@ -191,13 +194,16 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
       .build();
     setUpEnvironment(environment);
 
-    // Set project's country to CA with USD preference and reward minimum to $0.30.
+    // Set project's country to CA with USD preference and reward minimum to $1.30.
     final Project project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build();
-    final Reward reward = RewardFactory.reward().toBuilder().minimum(0.3f).build();
+    final Reward reward = RewardFactory.reward().toBuilder().minimum(1.3f).build();
 
-    // USD conversion should be rounded up.
+    // USD conversion should be rounded normally.
     this.vm.inputs.projectAndReward(project, reward);
-    this.conversionTextViewText.assertValue("US$ 1");
+    this.conversionTextViewText.assertValuesAndClear("US$ 1");
+
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(1.9f).build());
+    this.conversionTextViewText.assertValue("US$ 2");
   }
 
   @Test

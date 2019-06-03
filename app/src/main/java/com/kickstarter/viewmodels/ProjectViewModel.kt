@@ -265,7 +265,6 @@ interface ProjectViewModel {
 
             this.hideRewardsFragment
                     .map { false }
-                    .delay(500, TimeUnit.MILLISECONDS, Schedulers.trampoline()) // We delay in case the keyboard is open in the PledgeFragment, so it will give the Rewards container time to readjust its height.
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
 

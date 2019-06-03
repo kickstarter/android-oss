@@ -105,18 +105,18 @@ public interface ActivityFeedViewModel {
 
       this.startUpdateActivity = this.projectUpdateClick;
 
-      final Observable<Void> refreshSurvey = Observable.merge(this.refresh, this.resume).share();
+      final Observable<Void> refreshOrResume = Observable.merge(this.refresh, this.resume).share();
 
       final Observable<User> loggedInUser = this.currentUser.loggedInUser();
 
       loggedInUser
-        .compose(takeWhen(refreshSurvey))
+        .compose(takeWhen(refreshOrResume))
         .switchMap(__ -> this.apiClient.fetchUnansweredSurveys().compose(neverError()).share())
         .compose(bindToLifecycle())
         .subscribe(this.surveys);
 
       loggedInUser
-        .compose(takeWhen(refreshSurvey))
+        .compose(takeWhen(refreshOrResume))
         .map(User::unseenActivityCount)
         .map(IntegerUtils::intValueOrZero)
         .filter(IntegerUtils::isNonZero)

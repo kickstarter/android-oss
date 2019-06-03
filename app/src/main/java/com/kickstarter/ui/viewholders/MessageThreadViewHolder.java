@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,10 +24,8 @@ import org.joda.time.DateTime;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import butterknife.Bind;
-import butterknife.BindDimen;
-import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
@@ -40,19 +37,11 @@ public final class MessageThreadViewHolder extends KSViewHolder {
 
   protected @Bind(R.id.message_thread_date_text_view) TextView dateTextView;
   protected @Bind(R.id.message_thread_body_text_view) TextView messageBodyTextView;
-  protected @Bind(R.id.message_thread_card_view) CardView messageThreadCardView;
-  protected @Bind(R.id.message_thread_unread_count_text_view) TextView unreadCountTextView;
+  protected @Bind(R.id.message_thread_container) ConstraintLayout messageThreadContainer;
   protected @Bind(R.id.participant_avatar_image_view) ImageView participantAvatarImageView;
   protected @Bind(R.id.participant_name_text_view) TextView participantNameTextView;
-  protected @Bind(R.id.unread_indicator_image_view) ImageView unreadIndicatorImageView;
+  protected @Bind(R.id.message_thread_unread_count_text_view) TextView unreadCountTextView;
 
-  protected @BindDimen(R.dimen.card_elevation) int cardElevationDimen;
-  protected @BindDimen(R.dimen.card_no_elevation) int cardNoElevationDimen;
-
-  protected @BindDrawable(R.drawable.click_indicator_light) Drawable clickIndicatorLightDrawable;
-  protected @BindDrawable(R.drawable.message_thread_click_indicator) Drawable messageThreadClickIndicator;
-
-  protected @BindString(R.string.font_family_sans_serif_medium) String fontFamilyMediumString;
   protected @BindString(R.string.unread_count_unread) String unreadCountUnreadString;
 
   private KSString ksString;
@@ -65,40 +54,40 @@ public final class MessageThreadViewHolder extends KSViewHolder {
 
     ButterKnife.bind(this, view);
 
-    RxView.clicks(this.messageThreadCardView)
+    RxView.clicks(this.messageThreadContainer)
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> this.viewModel.inputs.messageThreadCardViewClicked());
-
-    this.viewModel.outputs.cardViewIsElevated()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setCardViewElevation);
 
     this.viewModel.outputs.dateDateTime()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setDateTextView);
 
-    this.viewModel.outputs.dateTextViewIsMediumWeight()
+    this.viewModel.outputs.dateTextViewIsBold()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::setDateTextViewFontFamily);
+      .subscribe(bold -> setTypeface(this.dateTextView, bold));
 
     this.viewModel.outputs.messageBodyTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.messageBodyTextView::setText);
 
+    this.viewModel.outputs.messageBodyTextIsBold()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(bold -> setTypeface(this.messageBodyTextView, bold));
+
     this.viewModel.outputs.participantAvatarUrl()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setParticipantAvatarImageView);
 
-    this.viewModel.outputs.participantNameTextViewIsMediumWeight()
+    this.viewModel.outputs.participantNameTextViewIsBold()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::setParticipantNameTextViewFontFamily);
+      .subscribe(bold -> setTypeface(this.participantNameTextView, bold));
 
     this.viewModel.outputs.participantNameTextViewText()
       .compose(bindToLifecycle())
@@ -119,11 +108,6 @@ public final class MessageThreadViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setUnreadCountTextView);
-
-    this.viewModel.outputs.unreadIndicatorViewHidden()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.unreadIndicatorImageView));
   }
 
   @Override
@@ -132,26 +116,13 @@ public final class MessageThreadViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(messageThread);
   }
 
-  private void setCardViewElevation(final boolean isElevated) {
-    if (isElevated) {
-      this.messageThreadCardView.setCardElevation(this.cardElevationDimen);
-      this.messageThreadCardView.setForeground(this.clickIndicatorLightDrawable);
-    } else {
-      this.messageThreadCardView.setCardElevation(this.cardNoElevationDimen);
-      this.messageThreadCardView.setForeground(this.messageThreadClickIndicator);
-    }
-  }
-
   private void setDateTextView(final @NonNull DateTime date) {
     this.dateTextView.setText(DateTimeUtils.relative(context(), this.ksString, date));
   }
 
-  private void setDateTextViewFontFamily(final boolean isMediumWeight) {
-    if (isMediumWeight) {
-      this.dateTextView.setTypeface(Typeface.create(this.fontFamilyMediumString, Typeface.NORMAL));
-    } else {
-      this.dateTextView.setTypeface(Typeface.DEFAULT);
-    }
+  private void setTypeface(final @NonNull TextView textView, final boolean bold) {
+    final int style = bold ? Typeface.BOLD : Typeface.NORMAL;
+    textView.setTypeface(Typeface.create(textView.getTypeface(), style));
   }
 
   private void startMessagesActivity(final @NonNull MessageThread messageThread) {
@@ -166,14 +137,6 @@ public final class MessageThreadViewHolder extends KSViewHolder {
     Picasso.with(context()).load(avatarUrl)
       .transform(new CircleTransformation())
       .into(this.participantAvatarImageView);
-  }
-
-  private void setParticipantNameTextViewFontFamily(final boolean isMediumWeight) {
-    if (isMediumWeight) {
-      this.participantNameTextView.setTypeface(Typeface.create(this.fontFamilyMediumString, Typeface.NORMAL));
-    } else {
-      this.participantNameTextView.setTypeface(Typeface.DEFAULT);
-    }
   }
 
   private void setUnreadCountTextView(final @NonNull String unreadCount) {

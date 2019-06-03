@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <com.google.android.material.appbar.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.kickstarter.ui.toolbars.KSToolbar
+      android:id="@+id/web_view_toolbar"
+      style="@style/Toolbar"
+      app:contentInsetLeft="0dp"
+      app:contentInsetStart="0dp">
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.kickstarter.ui.views.IconButton
+          android:id="@+id/back_button"
+          style="@style/ToolbarIconBackButton" />
+
+        <TextView
+          android:id="@+id/title_text_view"
+          style="@style/ToolbarTitle"
+          android:text="@string/Creator" />
+
+        <ImageButton
+          android:id="@+id/message_button"
+          style="@style/ToolbarIcon"
+          android:layout_alignParentEnd="true"
+          android:contentDescription="@string/Message_creator"
+          android:src="@drawable/ic_mail"
+          android:visibility="gone"
+          tools:visibility="visible" />
+
+      </RelativeLayout>
+
+    </com.kickstarter.ui.toolbars.KSToolbar>
+
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <com.kickstarter.ui.views.KSWebView
+    android:id="@+id/web_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+  <include
+    android:id="@+id/loading_indicator_view"
+    layout="@layout/loading_overlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

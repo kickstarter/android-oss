@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.KoalaContext
 import com.kickstarter.libs.RecyclerViewPaginator
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
@@ -50,7 +51,7 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         this.viewModel.outputs.backedCountTextViewText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe( { backed_count_text_view.text = it })
+                .subscribe { backed_count_text_view.text = it }
 
         this.viewModel.outputs.backedTextViewHidden()
                 .compose(bindToLifecycle())
@@ -65,7 +66,7 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         this.viewModel.outputs.createdCountTextViewText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe({ created_count_text_view.text = it })
+                .subscribe { created_count_text_view.text = it }
 
         this.viewModel.outputs.createdTextViewHidden()
                 .compose(bindToLifecycle())
@@ -95,12 +96,12 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         this.viewModel.outputs.startProjectActivity()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe({ this.startProjectActivity(it) })
+                .subscribe { this.startProjectActivity(it) }
 
         this.viewModel.outputs.userNameTextViewText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe({ user_name_text_view.text = it })
+                .subscribe { user_name_text_view.text = it }
 
         messages_button.setOnClickListener { this.viewModel.inputs.messagesButtonClicked() }
     }
@@ -136,6 +137,7 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
 
     private fun startMessageThreadsActivity() {
         val intent = Intent(this, MessageThreadsActivity::class.java)
+                .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.PROFILE)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 

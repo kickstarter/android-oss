@@ -28,7 +28,7 @@
       android:focusable="true"
       android:paddingEnd="@dimen/grid_2"
       android:paddingStart="@dimen/grid_2"
-      android:src="@drawable/icon__mail" />
+      android:src="@drawable/ic_mail" />
 
   </RelativeLayout>
 

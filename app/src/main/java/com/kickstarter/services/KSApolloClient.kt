@@ -4,6 +4,7 @@ import CreatePasswordMutation
 import DeletePaymentSourceMutation
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
+import SendMessageMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
@@ -13,11 +14,18 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
+import com.google.android.gms.common.util.Base64Utils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.models.Project
+import com.kickstarter.models.Relay
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.User
 import rx.Observable
 import rx.subjects.PublishSubject
 import type.CurrencyCode
 import type.PaymentTypes
+import java.nio.charset.Charset
+import kotlin.math.absoluteValue
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
@@ -139,6 +147,38 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
+    override fun sendMessage(project: Project, recipient: User, body: String): Observable<Long> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Long>()
+            service.mutate(SendMessageMutation.builder()
+                    .projectId(encodeRelayId(project))
+                    .recipientId(encodeRelayId(recipient))
+                    .body(body)
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<SendMessageMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<SendMessageMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors().first().message()))
+                            }
+                            decodeRelayId(response.data()?.sendMessage()?.conversation()?.id()).let {
+                                when {
+                                    ObjectUtils.isNull(it) -> ps.onError(Exception())
+                                    else -> {
+                                        ps.onNext(it)
+                                        ps.onCompleted()
+                                    }
+                                }
+                            }
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
     override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<SendEmailVerificationMutation.Data>()
@@ -249,5 +289,22 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     })
             return@defer ps
         }
+    }
+}
+
+fun <T : Relay> encodeRelayId(relay: T): String {
+    val classSimpleName = relay.javaClass.simpleName.replaceFirst("AutoParcel_", "")
+    val id = relay.id()
+    return Base64Utils.encodeUrlSafe(("$classSimpleName-$id").toByteArray(Charset.defaultCharset()))
+}
+
+fun decodeRelayId(encodedRelayId: String?): Long? {
+    return try {
+        String(Base64Utils.decode(encodedRelayId), Charset.defaultCharset())
+                .replaceBeforeLast("-", "", "")
+                .toLong()
+                .absoluteValue
+    } catch (e: Exception) {
+        null
     }
 }

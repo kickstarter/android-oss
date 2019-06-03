@@ -7,22 +7,26 @@ import com.kickstarter.models.MessageThread;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.MessageThreadViewHolder;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 
 import static java.util.Collections.emptyList;
 
-public final class MessageThreadsAdapter extends KSAdapter {
-  public MessageThreadsAdapter() {
+public final class MessageThreadsAdapter extends KSListAdapter {
+  public MessageThreadsAdapter(final @NotNull DiffUtil.ItemCallback<Object> diffUtil) {
+    super(diffUtil);
     addSection(emptyList());
   }
 
   public void messageThreads(final @NonNull List<MessageThread> messageThreads) {
     clearSections();
     addSection(messageThreads);
-    notifyDataSetChanged();
+    submitList(items());
   }
 
   @Override

@@ -10,17 +10,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.FrameLayout
 import android.widget.LinearLayout
+import com.kickstarter.libs.BaseFragment
+import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
+import com.kickstarter.ui.adapters.RewardCardAdapter
+import com.kickstarter.ui.adapters.ShippingRulesAdapter
+import com.kickstarter.viewmodels.PledgeFragmentViewModel
+
 import androidx.annotation.NonNull
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.libs.ActivityRequestCodes
-import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.FreezeLinearLayoutManager
-import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
@@ -29,14 +33,11 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.activities.NewCardActivity
-import com.kickstarter.ui.adapters.RewardCardAdapter
-import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
 import com.kickstarter.ui.viewholders.RewardPledgeCardViewHolder
-import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_pledge.*
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
@@ -239,7 +240,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val location = pledgeData.rewardScreenLocation
         val reward = pledgeData.reward
         val project = pledgeData.project
-        val rewardParams = reward_snapshot.layoutParams as FrameLayout.LayoutParams
+        val rewardParams = reward_snapshot.layoutParams as CoordinatorLayout.LayoutParams
         rewardParams.leftMargin = location.x.toInt()
         rewardParams.topMargin = location.y.toInt()
         rewardParams.height = location.height.toInt()
@@ -331,13 +332,15 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val detailsY = getYAnimator(initY, finalY)
 
         if (reveal) {
-            reward_snapshot.setOnClickListener {
+            val shrinkClickListener = View.OnClickListener { v ->
                 if (!width.isRunning) {
-                    it.setOnClickListener(null)
-                    this.animDuration = this.defaultAnimationDuration
+                    v?.setOnClickListener(null)
+                    this@PledgeFragment.animDuration = this@PledgeFragment.defaultAnimationDuration
                     startPledgeAnimatorSet(false, location)
                 }
             }
+            reward_snapshot.setOnClickListener(shrinkClickListener)
+            expand_icon_container.setOnClickListener(shrinkClickListener)
         } else {
             width.addUpdateListener {
                 if (it.animatedFraction == 1f) {
@@ -358,7 +361,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun getHeightAnimator(initialValue: Float, finalValue: Float) =
             ValueAnimator.ofFloat(initialValue, finalValue).apply {
                 addUpdateListener {
-                    val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
+                    val newParams = reward_snapshot?.layoutParams as CoordinatorLayout.LayoutParams?
                     val newHeight = it.animatedValue as Float
                     newParams?.height = newHeight.toInt()
                     reward_snapshot?.layoutParams = newParams
@@ -368,7 +371,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun getMarginLeftAnimator(initialValue: Float, finalValue: Float) =
             ValueAnimator.ofFloat(initialValue, finalValue).apply {
                 addUpdateListener {
-                    val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
+                    val newParams = reward_snapshot?.layoutParams as CoordinatorLayout.LayoutParams?
                     val newMargin = it.animatedValue as Float
                     newParams?.leftMargin = newMargin.toInt()
                     reward_snapshot?.layoutParams = newParams
@@ -378,7 +381,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun getMarginTopAnimator(initialValue: Float, finalValue: Float): ValueAnimator =
             ValueAnimator.ofFloat(initialValue, finalValue).apply {
                 addUpdateListener {
-                    val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
+                    val newParams = reward_snapshot?.layoutParams as CoordinatorLayout.LayoutParams?
                     val newMargin = it.animatedValue as Float
                     newParams?.topMargin = newMargin.toInt()
                     reward_snapshot?.layoutParams = newParams
@@ -394,10 +397,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun getWidthAnimator(initialValue: Float, finalValue: Float) =
             ValueAnimator.ofFloat(initialValue, finalValue).apply {
                 addUpdateListener {
-                    val newParams = reward_snapshot?.layoutParams as FrameLayout.LayoutParams?
+                    val newParams = reward_snapshot?.layoutParams as CoordinatorLayout.LayoutParams?
                     val newWidth = it.animatedValue as Float
                     newParams?.width = newWidth.toInt()
                     reward_snapshot?.layoutParams = newParams
+                    expand_icon_container?.alpha = if (finalValue < initialValue) animatedFraction else 1 - animatedFraction
                 }
             }
 

@@ -44,7 +44,6 @@
   <dimen name="subheadline">15sp</dimen>
   <dimen name="callout">16sp</dimen>
   <dimen name="headline">18sp</dimen>
-  <dimen name="ksr10_title">39sp</dimen>
   <dimen name="title_3">20sp</dimen>
   <dimen name="title_2">22sp</dimen>
   <dimen name="title_reward">24sp</dimen>
@@ -141,7 +140,7 @@
 
   <!-- Messages -->
   <dimen name="message_card_view_corner_radius">4dp</dimen>
-  <dimen name="message_reply_layout_height">@dimen/grid_10</dimen>
+  <dimen name="message_reply_layout_height">@dimen/grid_8</dimen>
 
   <!-- Popup menus -->
   <dimen name="popup_menu_horizontal_offset">-151dp</dimen>

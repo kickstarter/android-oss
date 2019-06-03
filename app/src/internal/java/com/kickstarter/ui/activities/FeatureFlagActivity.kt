@@ -19,7 +19,6 @@ class FeatureFlagActivity : AppCompatActivity() {
 
         (applicationContext as KSApplication).component().inject(this)
         displayPreference(environment.horizontalRewardsEnabled(), horizontal_switch)
-        displayPreference(environment.hasSeenKSR10BirthdayModal(), ksr10_birthday_switch)
     }
 
     private fun displayPreference(booleanPreferenceType: BooleanPreferenceType, switchCompat: SwitchCompat) {

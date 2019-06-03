@@ -75,7 +75,7 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
 
   private void setRewardMinimumText(final @NonNull Pair<Project, Integer> projectAndMinimumForReward) {
     final String minimumString = IntegerUtils.isZero(projectAndMinimumForReward.second) ?
-      this.noRewardString : this.ksCurrency.format(projectAndMinimumForReward.second, projectAndMinimumForReward.first, RoundingMode.UP);
+      this.noRewardString : this.ksCurrency.format(projectAndMinimumForReward.second, projectAndMinimumForReward.first, RoundingMode.HALF_UP);
     this.rewardMinimumTextView.setText(minimumString);
   }
 }

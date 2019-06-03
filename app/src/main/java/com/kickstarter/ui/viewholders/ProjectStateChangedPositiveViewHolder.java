@@ -17,8 +17,6 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
-import java.math.RoundingMode;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -86,7 +84,7 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
       case Activity.CATEGORY_LAUNCH:
         final DateTime launchedAt = coalesce(project.launchedAt(), new DateTime());
         this.cardView.setCardBackgroundColor(this.blueDarken10Color);
-        this.leftStatFirstTextView.setText(this.ksCurrency.format(project.goal(), project, RoundingMode.DOWN));
+        this.leftStatFirstTextView.setText(this.ksCurrency.format(project.goal(), project, true));
         this.leftStatSecondTextView.setText(this.goalString);
         this.rightStatFirstTextView.setText(this.launchedString);
         this.rightStatSecondTextView.setText(DateTimeUtils.mediumDate(launchedAt));
@@ -100,7 +98,7 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
         break;
       case Activity.CATEGORY_SUCCESS:
         this.cardView.setCardBackgroundColor(this.greenDarken10Color);
-        this.leftStatFirstTextView.setText(this.ksCurrency.format(project.pledged(), project, RoundingMode.DOWN));
+        this.leftStatFirstTextView.setText(this.ksCurrency.format(project.pledged(), project, true));
         this.leftStatSecondTextView.setText(this.ksString.format(
           this.pledgedOfGoalString,
           "goal",

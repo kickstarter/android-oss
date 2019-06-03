@@ -108,7 +108,7 @@ public final class KSCurrency {
   }
 
   private float getRoundedValue(final double initialValue, final @NonNull RoundingMode roundingMode) {
-    return roundingMode == RoundingMode.UP ? (float) Math.ceil(initialValue) : (float) Math.floor(initialValue);
+    return roundingMode == RoundingMode.DOWN ? (float) Math.floor(initialValue) : (float) Math.round(initialValue);
   }
 
   private String getSymbolForCurrency(final @NonNull Country country, final boolean excludeCurrencyCode, final @NonNull Config config) {

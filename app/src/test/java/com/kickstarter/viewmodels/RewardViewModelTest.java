@@ -175,7 +175,7 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     final Project project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build();
     final Reward reward = RewardFactory.reward().toBuilder().minimum(1.3f).build();
 
-    // USD conversion should be rounded up.
+    // USD conversion should be rounded normally.
     this.vm.inputs.projectAndReward(project, reward);
     this.conversionTextViewText.assertValuesAndClear("$1");
 

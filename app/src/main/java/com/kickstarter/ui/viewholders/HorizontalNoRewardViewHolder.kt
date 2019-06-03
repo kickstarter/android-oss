@@ -22,7 +22,7 @@ class HorizontalNoRewardViewHolder(val view: View, val delegate: HorizontalNoRew
         fun rewardClicked(screenLocation: ScreenLocation, reward: Reward)
     }
 
-    private var viewModel = HorizontalNoRewardViewHolderViewModel.ViewModel(environment())
+    private val viewModel = HorizontalNoRewardViewHolderViewModel.ViewModel(environment())
 
     init {
 

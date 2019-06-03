@@ -29,7 +29,7 @@ interface HorizontalRewardViewHolderViewModel {
         /** Returns `true` if the USD conversion section should be hidden, `false` otherwise.  */
         fun conversionTextViewIsGone(): Observable<Boolean>
 
-        /** Set the preferred conversion.  */
+        /** Set the preferred conversion text.  */
         fun conversionText(): Observable<String>
 
         /** Set the description TextView's text.  */

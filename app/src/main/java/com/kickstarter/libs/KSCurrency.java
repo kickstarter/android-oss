@@ -125,7 +125,7 @@ public final class KSCurrency {
     } else if (country == Country.SG) {
       // Singapore projects get a special currency prefix
       return "\u00A0" + "S" + country.getCurrencySymbol() + "\u00A0";
-    } else if (country.getCurrencySymbol().equals("kr") || country.getCurrencySymbol().equals("kr")) {
+    } else if (country.getCurrencySymbol().equals("kr") || country.getCurrencySymbol().equals("Fr")) {
       // Kroner projects use the currency code prefix
       return "\u00A0" + country.getCurrencyCode() + "\u00A0";
     } else {

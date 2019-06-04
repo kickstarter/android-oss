@@ -30,7 +30,6 @@ import java.util.*
 class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PledgeFragmentViewModel.ViewModel
-    private val project = ProjectFactory.project()
 
     private val additionalPledgeAmount = TestSubscriber<String>()
     private val additionalPledgeAmountIsGone = TestSubscriber<Boolean>()
@@ -53,7 +52,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val startNewCardActivity = TestSubscriber<Void>()
     private val totalAmount = TestSubscriber<String>()
 
-    private fun setUpEnvironment(environment: Environment, reward: Reward? = RewardFactory.rewardWithShipping()) {
+    private fun setUpEnvironment(environment: Environment, reward: Reward? = RewardFactory.rewardWithShipping(),
+                                 project: Project? = ProjectFactory.project()) {
         this.vm = PledgeFragmentViewModel.ViewModel(environment)
 
         this.vm.outputs.additionalPledgeAmount().subscribe(this.additionalPledgeAmount)
@@ -117,19 +117,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testConversionHiddenForPledgeTotal() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
-        this.vm = PledgeFragmentViewModel.ViewModel(environment)
-
-        this.vm.outputs.conversionText().subscribe(this.conversionText)
-        this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone)
 
         // Set the project currency and the user's chosen currency to the same value
         val project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("USD").build()
         val reward = RewardFactory.reward()
-        val bundle = Bundle()
-        bundle.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, ScreenLocation(0f, 0f, 0f, 0f))
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project)
-        bundle.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)
-        this.vm.arguments(bundle)
+
+        setUpEnvironment(environment, reward, project)
 
         // the conversion should be hidden.
         this.conversionText.assertValueCount(1)
@@ -139,18 +132,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testConversionShownForPledgeTotal() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
-        this.vm = PledgeFragmentViewModel.ViewModel(environment)
-        this.vm.outputs.conversionText().subscribe(this.conversionText)
-        this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone)
-        // Set the project currency and the user's chosen currency to different values
 
+        // Set the project currency and the user's chosen currency to different values
         val project = ProjectFactory.project().toBuilder().currency("CAD").currentCurrency("USD").build()
         val reward = RewardFactory.reward()
-        val bundle = Bundle()
-        bundle.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, ScreenLocation(0f, 0f, 0f, 0f))
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project)
-        bundle.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)
-        this.vm.arguments(bundle)
+
+        setUpEnvironment(environment, reward, project)
 
         // USD conversion should shown.
         this.conversionText.assertValueCount(1)
@@ -160,17 +147,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testConversionText_WhenStepperChangesValue() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
-        this.vm = PledgeFragmentViewModel.ViewModel(environment)
-        this.vm.outputs.conversionText().subscribe(this.conversionText)
 
         // Set the project currency and the user's chosen currency to different values
         val project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("CAD").build()
         val reward = RewardFactory.reward()
-        val bundle = Bundle()
-        bundle.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, ScreenLocation(0f, 0f, 0f, 0f))
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project)
-        bundle.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)
-        this.vm.arguments(bundle)
+
+        setUpEnvironment(environment, reward, project)
 
         this.conversionText.assertValue("CA$ 50.00")
 
@@ -286,7 +268,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShippingRuleAndProject() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
-        setUpEnvironment(environment)
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment, project = project)
 
         val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
         this.shippingRuleAndProject.assertValues(Pair.create(shippingRules, project))

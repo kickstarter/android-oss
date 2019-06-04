@@ -224,7 +224,7 @@ public interface ProjectHolderViewModel {
         .map(Category::name);
 
       this.goalStringForTextView = project
-        .map(p -> this.ksCurrency.formatWithUserPreference(p.goal(), p, true));
+        .map(p -> this.ksCurrency.formatWithUserPreference(p.goal(), p, RoundingMode.DOWN));
 
       this.locationTextViewText = project
         .map(Project::location)
@@ -239,7 +239,7 @@ public interface ProjectHolderViewModel {
       this.playButtonIsGone = project.map(Project::hasVideo).map(BooleanUtils::negate);
 
       this.pledgedTextViewText = project
-        .map(p -> this.ksCurrency.formatWithUserPreference(p.pledged(), p, true));
+        .map(p -> this.ksCurrency.formatWithUserPreference(p.pledged(), p, RoundingMode.DOWN));
 
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)

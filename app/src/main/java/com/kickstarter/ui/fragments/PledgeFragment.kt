@@ -11,12 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.LinearLayout
-import com.kickstarter.libs.BaseFragment
-import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.ui.adapters.RewardCardAdapter
-import com.kickstarter.ui.adapters.ShippingRulesAdapter
-import com.kickstarter.viewmodels.PledgeFragmentViewModel
-
 import androidx.annotation.NonNull
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -24,7 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.FreezeLinearLayoutManager
+import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
@@ -33,11 +29,14 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.activities.NewCardActivity
+import com.kickstarter.ui.adapters.RewardCardAdapter
+import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
 import com.kickstarter.ui.viewholders.RewardPledgeCardViewHolder
+import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_pledge.*
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
@@ -205,7 +204,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun onDetach() {
         super.onDetach()
         cards_recycler?.adapter = null
-        context?.hideKeyboard()
+        activity?.hideKeyboard()
     }
 
     override fun addNewCardButtonClicked() {
@@ -222,9 +221,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     override fun ruleSelected(rule: ShippingRule) {
         this.viewModel.inputs.shippingRuleSelected(rule)
-        shipping_rules.dismissDropDown()
+//        shipping_rules.dismissDropDown()
+        activity?.hideKeyboard()
         shipping_rules.clearFocus()
-        context?.hideKeyboard()
     }
 
     override fun selectCardButtonClicked(position: Int) {

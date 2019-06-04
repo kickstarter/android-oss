@@ -12,7 +12,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
-import com.kickstarter.ui.viewholders.KSViewHolder
 import rx.Observable
 import rx.subjects.PublishSubject
 import java.math.RoundingMode

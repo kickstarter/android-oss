@@ -19,9 +19,21 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include
+    <FrameLayout
       android:id="@+id/reward_to_copy"
-      layout="@layout/item_reward" />
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
+
+      <include
+        android:id="@+id/reward_layout"
+        android:visibility="invisible"
+        layout="@layout/item_reward" />
+
+      <include
+        android:id="@+id/no_reward_layout"
+        android:visibility="invisible"
+        layout="@layout/item_no_reward" />
+    </FrameLayout>
 
     <!-- todo: what's the content description? -->
     <com.kickstarter.ui.views.BottomCropImageView
@@ -69,24 +81,32 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_4"
         android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:minHeight="@dimen/mini_reward_height"
         android:orientation="vertical"
         android:paddingEnd="@dimen/activity_horizontal_margin"
         android:paddingStart="@dimen/grid_4">
 
-        <TextView
-          style="@style/CalloutSecondary"
+        <LinearLayout
+          android:id="@+id/pledge_estimated_delivery_container"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/Estimated_delivery" />
+          android:orientation="vertical">
 
-        <TextView
-          android:id="@+id/pledge_estimated_delivery"
-          style="@style/CalloutPrimaryMedium"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_1"
-          tools:text="December 2019" />
+          <TextView
+            style="@style/CalloutSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Estimated_delivery" />
 
+          <TextView
+            android:id="@+id/pledge_estimated_delivery"
+            style="@style/CalloutPrimaryMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_1"
+            tools:text="December 2019" />
+
+        </LinearLayout>
         <LinearLayout
           android:id="@+id/accountability"
           android:layout_width="wrap_content"

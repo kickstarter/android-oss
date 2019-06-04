@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-  android:id="@+id/reward_container"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="@dimen/item_reward_layout_width"
   android:layout_height="wrap_content"
   android:orientation="vertical">
@@ -22,14 +20,12 @@
       app:cardElevation="0dp">
 
       <LinearLayout
-        android:id="@+id/reward_contents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/grid_3">
 
         <TextView
-          android:id="@+id/horizontal_reward_title_text_view"
           style="@style/Headline"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -38,7 +34,6 @@
           android:text="@string/Make_a_pledge_without_a_reward" />
 
         <TextView
-          android:id="@+id/horizontal_reward_description_text_view"
           style="@style/BodyPrimary"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -47,7 +42,6 @@
           android:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life"/>
 
         <com.google.android.material.button.MaterialButton
-          android:id="@+id/placeholder"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:visibility="invisible"

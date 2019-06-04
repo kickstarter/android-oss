@@ -258,8 +258,7 @@ interface PledgeFragmentViewModel {
                     .distinctUntilChanged()
                     .subscribe(this.decreasePledgeButtonIsEnabled)
 
-            val rewardMinimum = reward
-                    .map { it.minimum() }
+            val rewardMinimum = reward.map { it.minimum() }
 
             Observable
                     .merge(rewardMinimum, rewardMinimum.compose<Pair<Double, Double>>(combineLatestPair(additionalPledgeAmount)).map { it.first + it.second })

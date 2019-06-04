@@ -492,6 +492,7 @@
   </style>
 
   <style name="PledgeCurrency" parent="TextPrimary">
+    <item name="android:textColor">@color/ksr_dark_grey_500</item>
     <item name="android:textSize">@dimen/title_1</item>
   </style>
 
@@ -683,6 +684,15 @@
     <item name="android:layout_marginBottom">0dp</item>
     <item name="cardTint">@color/ksr_dark_grey_500</item>
     <item name="cardTextErrorColor">@color/ksr_red_400</item>
+  </style>
+  
+  <!-- AutoComplete -->
+  <style name="AutocompleteStyle" parent="Widget.AppCompat.Light.AutoCompleteTextView">
+    <item name="android:colorControlActivated">@color/ksr_green_500</item>
+    <item name="android:background">@drawable/rect_white_rounded</item>
+    <item name="android:dropDownWidth">@dimen/autocomplete_drop_down_width</item>
+    <item name="android:textSize">@dimen/callout</item>
+    <item name="android:dropDownHeight">wrap_content</item>
   </style>
 
   <!-- Drawer -->

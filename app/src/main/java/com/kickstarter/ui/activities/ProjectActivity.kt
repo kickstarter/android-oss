@@ -11,6 +11,7 @@ import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
+import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
@@ -165,6 +166,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         }
 
         rewards_toolbar.setNavigationOnClickListener {
+            this.hideKeyboard()
             this.viewModel.inputs.hideRewardsFragmentClicked()
         }
 

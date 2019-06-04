@@ -1,10 +1,14 @@
 package com.kickstarter.libs;
 
 import android.os.Parcelable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
 
 import com.kickstarter.libs.models.Country;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.ui.views.CenterSpan;
 
 import java.math.RoundingMode;
 
@@ -69,6 +73,48 @@ public final class KSCurrency {
   }
 
   /**
+   * Returns a currency string appropriate to the user's locale, chosenCurrency and project preferred currency.
+   *
+   * @param initialValue Value to display, local to the project's currency.
+   * @param project The project to use to look up currency information.
+   * @param roundingMode This determines whether we should round the values down or up.
+   */
+  public SpannableString formatWithProjectCurrency(final double initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode, final int precision) {
+
+    final Country country = Country.findByCurrencyCode(project.currency());
+    if (country == null) {
+      return SpannableString.valueOf("");
+    }
+
+    final float roundedValue = getRoundedValue(initialValue, roundingMode);
+    final CurrencyOptions currencyOptions = currencyOptions(roundedValue, country, true);
+
+    final NumberOptions numberOptions = NumberOptions.builder()
+      .currencySymbol(currencyOptions.currencySymbol())
+      .roundingMode(roundingMode)
+      .precision(precision)
+      .build();
+
+    final String currency = NumberUtils.format(currencyOptions.value(), numberOptions);
+    final String symbol = currencyOptions.currencySymbol();
+    final SpannableString string = new SpannableString(currency);
+
+    final int startOfSymbol = currency.indexOf(symbol);
+    final int endOfSymbol = startOfSymbol + symbol.length();
+    string.setSpan(new RelativeSizeSpan(.5f), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    string.setSpan(new CenterSpan(), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+    if (precision > 0) {
+      final int length = string.length();
+      final int startOfPrecision = length - precision - 1;
+      string.setSpan(new RelativeSizeSpan(.5f), startOfPrecision, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+      string.setSpan(new CenterSpan(), startOfPrecision, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    }
+
+    return string;
+  }
+
+  /**
    * Returns a currency string appropriate to the user's locale and preferred currency.
    *
    * @param initialValue Value to convert, local to the project's currency.
@@ -76,7 +122,7 @@ public final class KSCurrency {
    * @param roundingMode This determines whether we should round the values down or up.
    */
   public String formatWithUserPreference(final double initialValue, final @NonNull Project project,
-    final @NonNull RoundingMode roundingMode) {
+    final @NonNull RoundingMode roundingMode, final @NonNull int precision) {
 
     final Country country = Country.findByCurrencyCode(project.currentCurrency());
 
@@ -90,6 +136,7 @@ public final class KSCurrency {
     final NumberOptions numberOptions = NumberOptions.builder()
       .currencySymbol(currencyOptions.currencySymbol())
       .roundingMode(roundingMode)
+      .precision(precision)
       .build();
 
     return trim(NumberUtils.format(currencyOptions.value(), numberOptions));

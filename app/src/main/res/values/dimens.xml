@@ -182,5 +182,9 @@
   <dimen name="mini_reward_height">@dimen/grid_20</dimen>
   <dimen name="stored_card_width">260dp</dimen>
   <dimen name="mini_reward_elevation">8dp</dimen>
+  <dimen name="plus_sign_height">20dp</dimen>
+  <dimen name="plus_sign_width">9dp</dimen>
+  <dimen name="autocomplete_text_view_width">140dp</dimen>
+  <dimen name="autocomplete_drop_down_width">265dp</dimen>
 
 </resources>

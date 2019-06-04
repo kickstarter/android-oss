@@ -135,7 +135,7 @@ interface HorizontalRewardViewHolderViewModel {
 
             this.conversionText = this.projectAndReward
                     .filter { RewardUtils.isReward(it.second) }
-                    .map { pr -> this.ksCurrency.formatWithUserPreference(pr.second.minimum(), pr.first, RoundingMode.HALF_UP) }
+                    .map { pr -> this.ksCurrency.formatWithUserPreference(pr.second.minimum(), pr.first, RoundingMode.HALF_UP, 0) }
 
             this.descriptionText = reward
                     .filter { RewardUtils.isReward(it) }

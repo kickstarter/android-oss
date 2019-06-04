@@ -11,21 +11,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.LinearLayout
+import androidx.annotation.NonNull
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
+import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.models.Project
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.activities.NewCardActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
+import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
@@ -36,10 +42,12 @@ import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_pledge.*
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
-class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate {
+class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate, ShippingRulesAdapter.Delegate {
 
     private val defaultAnimationDuration = 200L
     private var animDuration = defaultAnimationDuration
+
+    private lateinit var adapter: ShippingRulesAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -59,19 +67,38 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             })
         }
 
-        cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        cards_recycler.adapter = RewardCardAdapter(this)
-        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)))
+        setUpCardsAdapter()
+        setUpShippingAdapter()
 
         this.animDuration = when (savedInstanceState) {
             null -> this.defaultAnimationDuration
             else -> 0L
         }
 
+        this.viewModel.outputs.additionalPledgeAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { additional_pledge_amount.text = it }
+
+        this.viewModel.outputs.additionalPledgeAmountIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(additional_pledge_amount_container, it) }
+
         this.viewModel.outputs.animateRewardCard()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { showPledgeSection(it) }
+
+        this.viewModel.outputs.decreasePledgeButtonIsEnabled()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { decrease_pledge.isEnabled = it }
+
+        this.viewModel.outputs.increasePledgeButtonIsEnabled()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { increase_pledge.isEnabled = it }
 
         this.viewModel.outputs.estimatedDelivery()
                 .compose(bindToLifecycle())
@@ -87,6 +114,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(continue_to_tout, it) }
+
+        this.viewModel.outputs.conversionTextViewIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe(ViewUtils.setGone(total_amount_conversion))
+
+        this.viewModel.outputs.conversionText()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setConversionTextView(it) }
 
         this.viewModel.outputs.paymentContainerIsGone()
                 .compose(bindToLifecycle())
@@ -121,42 +158,60 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                             ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD)
                 }
 
-        this.viewModel.outputs.additionalPledgeAmount()
+        this.viewModel.outputs.selectedShippingRule()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { additional_pledge_amount.text = it }
+                .subscribe { shipping_rules.setText(it.toString()) }
 
-        this.viewModel.outputs.additionalPledgeAmountIsGone()
+        this.viewModel.outputs.shippingAmount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(additional_pledge_amount_container, it) }
+                .subscribe {
+                    shipping_amount.text = it
+                    ViewUtils.setGone(shipping_amount_loading_view, true)
+                }
 
-        this.viewModel.outputs.decreasePledgeButtonIsEnabled()
+        this.viewModel.outputs.shippingRulesAndProject()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { decrease_pledge.isEnabled = it }
+                .filter { ObjectUtils.isNotNull(context) }
+                .subscribe { displayShippingRules(it.first, it.second) }
 
-        this.viewModel.outputs.increasePledgeButtonIsEnabled()
+        this.viewModel.outputs.shippingRulesSectionIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { increase_pledge.isEnabled = it }
+                .subscribe {
+                    ViewUtils.setGone(shipping_rules_section_text_view, it)
+                    ViewUtils.setGone(shipping_rules_row, it)
+                }
 
-        increase_pledge.setOnClickListener {
-            this.viewModel.inputs.increasePledgeButtonClicked()
+        this.viewModel.outputs.totalAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    total_amount.text = it
+                    ViewUtils.setGone(total_amount_loading_view, true)
+                }
+
+        shipping_rules.setOnClickListener { shipping_rules.showDropDown() }
+
+        continue_to_tout.setOnClickListener {
+            this.viewModel.inputs.continueButtonClicked()
         }
 
         decrease_pledge.setOnClickListener {
             this.viewModel.inputs.decreasePledgeButtonClicked()
         }
 
-        continue_to_tout.setOnClickListener {
-            this.viewModel.inputs.continueButtonClicked()
+        increase_pledge.setOnClickListener {
+            this.viewModel.inputs.increasePledgeButtonClicked()
         }
     }
 
     override fun onDetach() {
         super.onDetach()
         cards_recycler?.adapter = null
+        activity?.hideKeyboard()
     }
 
     override fun addNewCardButtonClicked() {
@@ -171,13 +226,19 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.pledgeButtonClicked()
     }
 
+    override fun ruleSelected(rule: ShippingRule) {
+        this.viewModel.inputs.shippingRuleSelected(rule)
+        activity?.hideKeyboard()
+        shipping_rules.clearFocus()
+    }
+
     override fun selectCardButtonClicked(position: Int) {
         this.viewModel.inputs.selectCardButtonClicked(position)
     }
 
-    private fun showPledgeSection(pledgeData: PledgeData) {
-        setInitialViewStates(pledgeData)
-        startPledgeAnimatorSet(true, pledgeData.rewardScreenLocation)
+    private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
+        shipping_rules.isEnabled = true
+        adapter.populateShippingRules(shippingRules, project)
     }
 
     private fun positionRewardSnapshot(pledgeData: PledgeData) {
@@ -207,6 +268,24 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             reward_snapshot.setImageBitmap(bitmap)
             reward_to_copy.visibility = View.GONE
         }
+    }
+
+    private fun setUpCardsAdapter() {
+        cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        cards_recycler.adapter = RewardCardAdapter(this)
+        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)))
+    }
+
+    private fun setUpShippingAdapter() {
+        context?.let {
+            adapter = ShippingRulesAdapter(it, R.layout.item_shipping_rule, arrayListOf(), this)
+            shipping_rules.setAdapter(adapter)
+        }
+    }
+
+    private fun showPledgeSection(pledgeData: PledgeData) {
+        setInitialViewStates(pledgeData)
+        startPledgeAnimatorSet(true, pledgeData.rewardScreenLocation)
     }
 
     private fun startPledgeAnimatorSet(reveal: Boolean, location: ScreenLocation) {
@@ -344,6 +423,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 }
             }
 
+    private fun setConversionTextView(@NonNull amount: String) {
+        val currencyConversionString = context?.getString(R.string.About_reward_amount)
+        total_amount_conversion.text = (currencyConversionString?.let {
+            this.viewModel.environment.ksString().format(it, "reward_amount", amount)
+        })
+    }
+
     private fun setDeliveryParams(miniRewardWidth: Float, margin: Float) {
         val deliveryParams = (delivery.layoutParams as LinearLayout.LayoutParams).apply {
             marginStart = (miniRewardWidth + margin).toInt()
@@ -381,5 +467,4 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             return fragment
         }
     }
-
 }

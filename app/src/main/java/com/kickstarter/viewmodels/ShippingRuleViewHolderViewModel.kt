@@ -3,8 +3,6 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KSCurrency
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
@@ -12,7 +10,6 @@ import com.kickstarter.ui.viewholders.ShippingRuleViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import java.math.RoundingMode
 
 interface ShippingRuleViewHolderViewModel {
 
@@ -52,8 +49,7 @@ interface ShippingRuleViewHolderViewModel {
             val displayableName = shippingRule.location().displayableName()
             val cost = shippingRule.cost()
 
-            val formattedCost = KSCurrency(this.environment.currentConfig())
-                    .formatWithProjectCurrency(cost, project, RoundingMode.UP, 2).toString()
+            val formattedCost = this.environment.ksCurrency().format(cost, project, true).toString()
 
             return "$displayableName $formattedCost"
         }

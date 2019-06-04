@@ -198,7 +198,7 @@ interface PledgeFragmentViewModel {
 
             rewardAmount
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.HALF_UP, 0) }
+                    .map<SpannableString> { this.ksCurrency.formatSpanned(it.first, it.second) }
                     .compose(bindToLifecycle())
                     .subscribe { this.pledgeAmount.onNext(it) }
 
@@ -298,7 +298,7 @@ interface PledgeFragmentViewModel {
 
             shippingAmount
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 2) }
+                    .map<SpannableString> { this.ksCurrency.formatSpanned(it.first, it.second) }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmount)
 
@@ -316,14 +316,14 @@ interface PledgeFragmentViewModel {
             val initialTotalAmount = rulesAndRewardAndAdditional
                     .map { it.second }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 2) }
+                    .map<SpannableString> { this.ksCurrency.formatSpanned(it.first, it.second) }
                     .compose(bindToLifecycle())
 
             val totalWithShippingRule = rewardAmountPlusAdditional
                     .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first + it.second }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 2) }
+                    .map<SpannableString> { this.ksCurrency.formatSpanned(it.first, it.second) }
                     .compose(bindToLifecycle())
 
             Observable.merge(initialTotalAmount, totalWithShippingRule)

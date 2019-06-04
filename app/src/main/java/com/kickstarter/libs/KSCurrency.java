@@ -29,7 +29,7 @@ public final class KSCurrency {
    * @param project      The project to use to look up currency information.
    */
   public @NonNull String format(final double initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode) {
-    return format(initialValue, project, true, roundingMode);
+    return format(initialValue, project, true, roundingMode, 0);
   }
 
   /**
@@ -41,8 +41,7 @@ public final class KSCurrency {
    */
   public @NonNull String format(final double initialValue, final @NonNull Project project,
     final boolean excludeCurrencyCode) {
-
-    return format(initialValue, project, excludeCurrencyCode, RoundingMode.DOWN);
+    return format(initialValue, project, excludeCurrencyCode, RoundingMode.DOWN, 0);
   }
 
   /**
@@ -53,7 +52,7 @@ public final class KSCurrency {
    * @param excludeCurrencyCode If true, hide the US currency code for US users only.
    */
   public @NonNull String format(final double initialValue, final @NonNull Project project,
-    final boolean excludeCurrencyCode, final @NonNull RoundingMode roundingMode) {
+    final boolean excludeCurrencyCode, final @NonNull RoundingMode roundingMode, final int precision) {
 
     final Country country = Country.findByCurrencyCode(project.currency());
     if (country == null) {
@@ -67,51 +66,21 @@ public final class KSCurrency {
       .currencyCode(currencyOptions.currencyCode())
       .currencySymbol(currencyOptions.currencySymbol())
       .roundingMode(roundingMode)
+      .precision(precision > 0 ? 2 : 0)
       .build();
 
     return trim(NumberUtils.format(currencyOptions.value(), numberOptions));
   }
 
-  /**
-   * Returns a currency string appropriate to the user's locale, chosenCurrency and project preferred currency.
-   *
-   * @param initialValue Value to display, local to the project's currency.
-   * @param project The project to use to look up currency information.
-   * @param roundingMode This determines whether we should round the values down or up.
-   */
-  public SpannableString formatWithProjectCurrency(final double initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode, final int precision) {
-
+  public @NonNull SpannableString formatSpanned(final double initialValue, final @NonNull Project project) {
     final Country country = Country.findByCurrencyCode(project.currency());
     if (country == null) {
       return SpannableString.valueOf("");
     }
 
-    final float roundedValue = getRoundedValue(initialValue, roundingMode);
-    final CurrencyOptions currencyOptions = currencyOptions(roundedValue, country, true);
-
-    final NumberOptions numberOptions = NumberOptions.builder()
-      .currencySymbol(currencyOptions.currencySymbol())
-      .roundingMode(roundingMode)
-      .precision(precision)
-      .build();
-
-    final String currency = NumberUtils.format(currencyOptions.value(), numberOptions);
-    final String symbol = currencyOptions.currencySymbol();
-    final SpannableString string = new SpannableString(currency);
-
-    final int startOfSymbol = currency.indexOf(symbol);
-    final int endOfSymbol = startOfSymbol + symbol.length();
-    string.setSpan(new RelativeSizeSpan(.5f), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-    string.setSpan(new CenterSpan(), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
-    if (precision > 0) {
-      final int length = string.length();
-      final int startOfPrecision = length - precision - 1;
-      string.setSpan(new RelativeSizeSpan(.5f), startOfPrecision, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-      string.setSpan(new CenterSpan(), startOfPrecision, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-    }
-
-    return string;
+    final String currencySymbol = trim(getSymbolForCurrency(country, true, this.currentConfig.getConfig()));
+    final String formattedCurrency = format(initialValue, project, true, RoundingMode.HALF_UP, 2);
+    return getSpannedString(currencySymbol, formattedCurrency);
   }
 
   /**
@@ -121,8 +90,21 @@ public final class KSCurrency {
    * @param project The project to use to look up currency information.
    * @param roundingMode This determines whether we should round the values down or up.
    */
+  public @NonNull String formatWithUserPreference(final double initialValue, final @NonNull Project project,
+    final @NonNull RoundingMode roundingMode) {
+    return formatWithUserPreference(initialValue, project, roundingMode, 0);
+  }
+
+  /**
+   * Returns a currency string appropriate to the user's locale and preferred currency.
+   *
+   * @param initialValue Value to convert, local to the project's currency.
+   * @param project The project to use to look up currency information.
+   * @param roundingMode This determines whether we should round the values down or up.
+   * @param precision How much of the change we should show.
+   */
   public String formatWithUserPreference(final double initialValue, final @NonNull Project project,
-    final @NonNull RoundingMode roundingMode, final @NonNull int precision) {
+    final @NonNull RoundingMode roundingMode, final int precision) {
 
     final Country country = Country.findByCurrencyCode(project.currentCurrency());
 
@@ -136,7 +118,7 @@ public final class KSCurrency {
     final NumberOptions numberOptions = NumberOptions.builder()
       .currencySymbol(currencyOptions.currencySymbol())
       .roundingMode(roundingMode)
-      .precision(precision)
+      .precision(precision > 0 ? 2 : 0)
       .build();
 
     return trim(NumberUtils.format(currencyOptions.value(), numberOptions));
@@ -156,6 +138,23 @@ public final class KSCurrency {
 
   private float getRoundedValue(final double initialValue, final @NonNull RoundingMode roundingMode) {
     return roundingMode == RoundingMode.DOWN ? (float) Math.floor(initialValue) : (float) Math.round(initialValue);
+  }
+
+  private SpannableString getSpannedString(String currencySymbol, String currency) {
+    final SpannableString string = new SpannableString(currency);
+
+    final int startOfSymbol = currency.indexOf(currencySymbol);
+    final int endOfSymbol = startOfSymbol + currencySymbol.length();
+    string.setSpan(new RelativeSizeSpan(.5f), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    string.setSpan(new CenterSpan(), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+    final int precision = 2;
+    final int length = string.length();
+    final int startOfPrecision = length - precision - 1;
+    string.setSpan(new RelativeSizeSpan(.5f), startOfPrecision, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    string.setSpan(new CenterSpan(), startOfPrecision, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+    return string;
   }
 
   private String getSymbolForCurrency(final @NonNull Country country, final boolean excludeCurrencyCode, final @NonNull Config config) {

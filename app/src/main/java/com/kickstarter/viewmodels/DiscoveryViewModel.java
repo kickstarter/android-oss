@@ -33,9 +33,11 @@ import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -250,17 +252,21 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackDiscoveryFilterSelected);
 
-      Observable.merge(
+      final List<Observable<Boolean>> drawerOpenObservables = Arrays.asList(
         this.openDrawer,
         this.childFilterRowClick.map(__ -> false),
         this.topFilterRowClick.map(__ -> false),
         this.internalToolsClick.map(__ -> false),
         this.loggedOutLoginToutClick.map(__ -> false),
+        this.loggedOutSettingsClick.map(__ -> false),
+        this.activityFeedClick.map(__ -> false),
         this.messagesClick.map(__ -> false),
         this.creatorDashboardClick.map(__ -> false),
         this.profileClick.map(__ -> false),
         this.settingsClick.map(__ -> false)
-      )
+      );
+
+      Observable.merge(drawerOpenObservables)
         .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.drawerIsOpen);
@@ -276,10 +282,20 @@ public interface DiscoveryViewModel {
         .subscribe(__ -> this.koala.trackOpenedAppBanner());
 
       this.showMenuIconWithIndicator = currentUser
-        .map(user -> ObjectUtils.isNull(user) || IntegerUtils.isZero(IntegerUtils.intValueOrZero(user.unreadMessagesCount())))
+        .map(this::userHasNoUnreadMessagesOrUnseenActivity)
         .map(BooleanUtils::negate)
         .distinctUntilChanged()
         .compose(bindToLifecycle());
+    }
+
+    private boolean userHasNoUnreadMessagesOrUnseenActivity(final @Nullable User user) {
+      if (ObjectUtils.isNull(user)) {
+        return true;
+      }
+
+      final int unreadMessagesCount = IntegerUtils.intValueOrZero(user.unreadMessagesCount());
+      final int unseenActivityCount = IntegerUtils.intValueOrZero(user.unseenActivityCount());
+      return IntegerUtils.isZero(unreadMessagesCount + unseenActivityCount);
     }
 
     private final PublishSubject<Void> activityFeedClick = PublishSubject.create();

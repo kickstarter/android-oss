@@ -19,6 +19,11 @@ import type.PaymentTypes
 import java.util.*
 
 open class MockApolloClient : ApolloClientType {
+
+    override fun clearUnseenActivity(): Observable<Long> {
+        return Observable.just(0L)
+    }
+
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
         return Observable.just(CreatePasswordMutation.Data(CreatePasswordMutation.UpdateUserAccount("",
                 CreatePasswordMutation.User("", "sample@ksr.com", true))))

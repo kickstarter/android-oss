@@ -30,6 +30,9 @@ interface LoggedInViewHolderViewModel {
         /** Emits the user's unread messages count. */
         fun unreadMessagesCount(): Observable<Int>
 
+        /** Emits the user's unseen activity count. */
+        fun unseenActivityCount(): Observable<Int>
+
         /** Emits the user to pass to delegate. */
         fun user(): Observable<User>
     }
@@ -42,6 +45,7 @@ interface LoggedInViewHolderViewModel {
         private val dashboardRowIsGone = BehaviorSubject.create<Boolean>()
         private val name = BehaviorSubject.create<String>()
         private val unreadMessagesCount = BehaviorSubject.create<Int>()
+        private val unseenActivityCount = BehaviorSubject.create<Int>()
         private val userOutput = BehaviorSubject.create<User>()
 
         val inputs: Inputs = this
@@ -69,6 +73,11 @@ interface LoggedInViewHolderViewModel {
                     .subscribe(this.unreadMessagesCount)
 
             this.user
+                    .map { it.unseenActivityCount() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.unseenActivityCount)
+
+            this.user
                     .map { IntegerUtils.isZero(IntegerUtils.intValueOrZero(it.memberProjectsCount())) }
                     .compose(bindToLifecycle())
                     .subscribe(this.dashboardRowIsGone)
@@ -90,6 +99,9 @@ interface LoggedInViewHolderViewModel {
 
         @NonNull
         override fun unreadMessagesCount(): Observable<Int> = this.unreadMessagesCount
+
+        @NonNull
+        override fun unseenActivityCount(): Observable<Int> = this.unseenActivityCount
 
         @NonNull
         override fun user(): Observable<User> = this.userOutput

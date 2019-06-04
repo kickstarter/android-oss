@@ -16,7 +16,7 @@ import auto.parcel.AutoParcel;
 @AutoGson
 @AutoParcel
 public abstract class Backing implements Parcelable {
-  public abstract float amount();
+  public abstract double amount();
   public abstract @Nullable User backer();
   public abstract @Nullable String backerNote();
   public abstract long backerId();
@@ -36,7 +36,7 @@ public abstract class Backing implements Parcelable {
 
   @AutoParcel.Builder
   public abstract static class Builder {
-    public abstract Builder amount(float __);
+    public abstract Builder amount(double __);
     public abstract Builder backer(User __);
     public abstract Builder backerNote(String __);
     public abstract Builder backerId(long __);

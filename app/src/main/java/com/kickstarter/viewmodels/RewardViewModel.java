@@ -54,7 +54,7 @@ public interface RewardViewModel {
     /** Returns `true` if the USD conversion section should be hidden, `false` otherwise. */
     Observable<Boolean> conversionTextViewIsGone();
 
-    /** Set the USD conversion. */
+    /** Set the preferred conversion text. */
     Observable<String> conversionTextViewText();
 
     /** Set the description TextView's text. */
@@ -127,7 +127,7 @@ public interface RewardViewModel {
       this.ksCurrency = environment.ksCurrency();
 
       final Observable<String> formattedMinimum = this.projectAndReward
-        .map(pr -> this.ksCurrency.formatWithProjectCurrency(pr.second.minimum(), pr.first, RoundingMode.UP));
+        .map(pr -> this.ksCurrency.format(pr.second.minimum(), pr.first, RoundingMode.HALF_UP));
 
       final Observable<Boolean> isSelectable = this.projectAndReward
         .map(pr -> isSelectable(pr.first, pr.second));
@@ -159,7 +159,7 @@ public interface RewardViewModel {
         .map(BooleanUtils::negate);
 
       this.conversionTextViewText = this.projectAndReward
-        .map(pr -> this.ksCurrency.formatWithUserPreference(pr.second.minimum(), pr.first, RoundingMode.UP));
+        .map(pr -> this.ksCurrency.formatWithUserPreference(pr.second.minimum(), pr.first, RoundingMode.HALF_UP));
 
       this.descriptionTextViewText = reward.map(Reward::description);
 

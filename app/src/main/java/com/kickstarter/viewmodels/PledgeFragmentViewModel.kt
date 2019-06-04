@@ -163,7 +163,7 @@ interface PledgeFragmentViewModel {
 
             additionalPledgeAmount
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<String> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP) }
+                    .map<String> { this.ksCurrency.format(it.first, it.second, RoundingMode.HALF_UP) }
                     .compose(bindToLifecycle())
                     .distinctUntilChanged()
                     .subscribe(this.additionalPledgeAmount)
@@ -191,7 +191,7 @@ interface PledgeFragmentViewModel {
 
             rewardMinimum
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<String> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP) }
+                    .map<String> { this.ksCurrency.format(it.first, it.second, RoundingMode.HALF_UP) }
                     .compose(bindToLifecycle())
                     .subscribe { this.pledgeAmount.onNext(it) }
 

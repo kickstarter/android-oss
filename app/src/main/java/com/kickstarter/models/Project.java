@@ -39,7 +39,7 @@ public abstract class Project implements Parcelable, Relay {
   public abstract @Nullable List<User> friends();
   public abstract Float fxRate();
   public abstract @Nullable DateTime deadline();
-  public abstract float goal();
+  public abstract double goal();
   public abstract long id(); // in the Kickstarter app, this is project.pid not project.id
   public abstract boolean isBacking();
   public abstract boolean isStarred();
@@ -48,7 +48,7 @@ public abstract class Project implements Parcelable, Relay {
   public abstract @Nullable Location location();
   public abstract String name();
   public abstract @Nullable List<Permission> permissions();
-  public abstract float pledged();
+  public abstract double pledged();
   public abstract @Nullable Photo photo();
   public abstract @Nullable List<Reward> rewards();
   public abstract @Nullable String slug();
@@ -81,7 +81,7 @@ public abstract class Project implements Parcelable, Relay {
     public abstract Builder featuredAt(DateTime __);
     public abstract Builder friends(List<User> __);
     public abstract Builder fxRate(Float __);
-    public abstract Builder goal(float __);
+    public abstract Builder goal(double __);
     public abstract Builder id(long __);
     public abstract Builder isBacking(boolean __);
     public abstract Builder isStarred(boolean __);
@@ -90,7 +90,7 @@ public abstract class Project implements Parcelable, Relay {
     public abstract Builder location(Location __);
     public abstract Builder name(String __);
     public abstract Builder permissions(List<Permission> __);
-    public abstract Builder pledged(float __);
+    public abstract Builder pledged(double __);
     public abstract Builder photo(Photo __);
     public abstract Builder rewards(List<Reward> __);
     public abstract Builder slug(String __);
@@ -307,7 +307,7 @@ public abstract class Project implements Parcelable, Relay {
 
   public float percentageFunded() {
     if (goal() > 0.0f) {
-      return (pledged() / goal()) * 100.0f;
+      return ((float) pledged() / (float) goal()) * 100.0f;
     }
 
     return 0.0f;

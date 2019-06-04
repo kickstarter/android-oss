@@ -22,8 +22,6 @@ import com.kickstarter.ui.activities.MessageThreadsActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.viewmodels.CreatorDashboardHeaderHolderViewModel;
 
-import java.math.RoundingMode;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -147,10 +145,10 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   }
 
   private void setPledgedOfGoalString(final @NonNull Project currentProject) {
-    final String pledgedString = this.ksCurrency.format(currentProject.pledged(), currentProject, RoundingMode.DOWN);
+    final String pledgedString = this.ksCurrency.format(currentProject.pledged(), currentProject, true);
     this.amountRaisedTextView.setText(pledgedString);
 
-    final String goalString = this.ksCurrency.format(currentProject.goal(), currentProject, RoundingMode.DOWN);
+    final String goalString = this.ksCurrency.format(currentProject.goal(), currentProject, true);
     final String goalText = this.ksString.format(this.pledgedOfGoalString, "goal", goalString);
     this.fundingTextTextView.setText(goalText);
   }

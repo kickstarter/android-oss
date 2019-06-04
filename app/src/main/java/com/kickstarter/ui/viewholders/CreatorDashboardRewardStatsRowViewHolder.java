@@ -69,7 +69,7 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
 
   private void setPledgedColumnValue(final @NonNull Pair<Project, Float> projectAndPledgedForReward) {
     final String goalString = this.ksCurrency
-      .format(projectAndPledgedForReward.second, projectAndPledgedForReward.first, RoundingMode.DOWN);
+      .format(projectAndPledgedForReward.second, projectAndPledgedForReward.first, true);
     this.amountForRewardPledgedTextView.setText(goalString);
   }
 

@@ -268,12 +268,6 @@ interface PledgeFragmentViewModel {
                     .distinctUntilChanged()
                     .subscribe(this.increasePledgeButtonIsEnabled)
 
-            rewardMinimum
-                    .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 0) }
-                    .compose(bindToLifecycle())
-                    .subscribe { this.pledgeAmount.onNext(it) }
-
             Observable.combineLatest(screenLocation, reward, project, ::PledgeData)
                     .compose<PledgeData>(takeWhen(this.onGlobalLayout))
                     .compose(bindToLifecycle())

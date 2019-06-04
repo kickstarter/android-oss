@@ -270,7 +270,7 @@ interface PledgeFragmentViewModel {
 
             rewardMinimum
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<String> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP) }
+                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 0) }
                     .compose(bindToLifecycle())
                     .subscribe { this.pledgeAmount.onNext(it) }
 

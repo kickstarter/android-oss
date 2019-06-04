@@ -81,7 +81,13 @@ public final class KSCurrency {
    */
   public SpannableString formatWithProjectCurrency(final double initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode, final int precision) {
 
-    final CurrencyOptions currencyOptions = projectCurrencyOptions(initialValue, roundingMode, project);
+    final Country country = Country.findByCurrencyCode(project.currency());
+    if (country == null) {
+      return SpannableString.valueOf("");
+    }
+
+    final float roundedValue = getRoundedValue(initialValue, roundingMode);
+    final CurrencyOptions currencyOptions = currencyOptions(roundedValue, country, true);
 
     final NumberOptions numberOptions = NumberOptions.builder()
       .currencySymbol(currencyOptions.currencySymbol())
@@ -116,7 +122,7 @@ public final class KSCurrency {
    * @param roundingMode This determines whether we should round the values down or up.
    */
   public String formatWithUserPreference(final double initialValue, final @NonNull Project project,
-    final @NonNull RoundingMode roundingMode) {
+    final @NonNull RoundingMode roundingMode, final @NonNull int precision) {
 
     final Country country = Country.findByCurrencyCode(project.currentCurrency());
 

@@ -221,7 +221,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     override fun ruleSelected(rule: ShippingRule) {
         this.viewModel.inputs.shippingRuleSelected(rule)
-//        shipping_rules.dismissDropDown()
         activity?.hideKeyboard()
         shipping_rules.clearFocus()
     }

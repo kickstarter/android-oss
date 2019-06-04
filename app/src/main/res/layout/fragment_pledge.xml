@@ -217,7 +217,7 @@
             android:layout_width="@dimen/autocomplete_text_view_width"
             android:layout_height="wrap_content"
             android:layout_weight=".7"
-            android:dropDownAnchor="@id/increase_pledge"
+            android:dropDownAnchor="@id/shipping_rules_row"
             android:ellipsize="end"
             android:enabled="false"
             android:hint="@string/Shipping"

@@ -46,7 +46,7 @@
           tools:text="$20 AUD" />
 
         <TextView
-          android:id="@+id/reward_usd_conversion_text_view"
+          android:id="@+id/reward_preferred_conversion_text_view"
           style="@style/Caption1Secondary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

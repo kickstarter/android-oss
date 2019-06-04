@@ -261,7 +261,7 @@ public interface BackingViewModel {
 
       project
         .compose(zipPair(shippableBacking))
-        .map(pb -> this.ksCurrency.formatWithProjectCurrency(pb.second.shippingAmount(), pb.first, RoundingMode.UP))
+        .map(pb -> this.ksCurrency.format(pb.second.shippingAmount(), pb.first, true))
         .compose(bindToLifecycle())
         .subscribe(this.shippingAmountTextViewText);
 
@@ -322,7 +322,7 @@ public interface BackingViewModel {
     private static @NonNull Pair<String, String> backingAmountAndDate(final @NonNull KSCurrency ksCurrency,
       final @NonNull Project project, final @NonNull Backing backing) {
 
-      final String amount = ksCurrency.formatWithProjectCurrency(backing.amount(), project, RoundingMode.UP);
+      final String amount = ksCurrency.format(backing.amount(), project, RoundingMode.HALF_UP);
       final String date = DateTimeUtils.fullDate(backing.pledgedAt());
 
       return Pair.create(amount, date);
@@ -331,7 +331,7 @@ public interface BackingViewModel {
     private static @NonNull Pair<String, String> rewardMinimumAndDescription(final @NonNull KSCurrency ksCurrency,
       final @NonNull Project project, final @NonNull Reward reward) {
 
-      final String minimum = ksCurrency.formatWithProjectCurrency(reward.minimum(), project, RoundingMode.UP);
+      final String minimum = ksCurrency.format(reward.minimum(), project, RoundingMode.HALF_UP);
       return Pair.create(minimum, reward.description());
     }
 

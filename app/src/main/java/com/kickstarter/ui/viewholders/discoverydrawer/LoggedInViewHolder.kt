@@ -52,6 +52,16 @@ class LoggedInViewHolder(@NonNull view: View, @NonNull private val delegate: Del
                     }
                 }
 
+        this.viewModel.outputs.unseenActivityCount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    view.unseen_activity_count.text = when {
+                        IntegerUtils.isZero(it) -> null
+                        else -> NumberUtils.format(it)
+                    }
+                }
+
         this.viewModel.outputs.dashboardRowIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())

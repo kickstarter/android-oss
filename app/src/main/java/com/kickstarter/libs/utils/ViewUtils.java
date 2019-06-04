@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kickstarter.R;
+import com.kickstarter.ui.data.ScreenLocation;
 import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.ConfirmDialog;
 
@@ -37,6 +38,10 @@ public final class ViewUtils {
 
   public static float getScreenDensity(final @NonNull Context context) {
     return context.getResources().getDisplayMetrics().density;
+  }
+
+  public static ScreenLocation getScreenLocation(final  @NonNull View view) {
+    return new ScreenLocation(view.getLeft(), view.getTop(), view.getHeight(), view.getWidth());
   }
 
   public static int getScreenHeightDp(final @NonNull Context context) {

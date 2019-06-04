@@ -22,6 +22,7 @@ import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
@@ -34,6 +35,7 @@ import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
+import com.kickstarter.ui.viewholders.HorizontalNoRewardViewHolder
 import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
 import com.kickstarter.ui.viewholders.RewardPledgeCardViewHolder
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
@@ -102,6 +104,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { pledge_estimated_delivery.text = it }
+
+        this.viewModel.outputs.estimatedDeliveryInfoIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(pledge_estimated_delivery_container, it) }
 
         this.viewModel.outputs.continueButtonIsGone()
                 .compose(bindToLifecycle())
@@ -247,7 +254,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         reward_snapshot.pivotX = 0f
         reward_snapshot.pivotY = 0f
 
-        val rewardViewHolder = HorizontalRewardViewHolder(reward_to_copy, null)
+        val rewardViewHolder = when {
+            RewardUtils.isNoReward(reward) -> HorizontalNoRewardViewHolder(no_reward_layout, null)
+            else -> HorizontalRewardViewHolder(reward_layout, null)
+        }
+
+        rewardViewHolder.itemView.visibility = View.VISIBLE
         rewardViewHolder.bindData(Pair(project, reward))
 
         reward_to_copy.post {

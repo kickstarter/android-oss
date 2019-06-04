@@ -40,7 +40,7 @@ public final class RewardViewHolder extends KSViewHolder {
 
   protected @Bind(R.id.reward_all_gone_text_view) TextView allGoneTextView;
   protected @Bind(R.id.reward_backers_text_view) TextView backersTextView;
-  protected @Bind(R.id.reward_usd_conversion_text_view) TextView conversionTextView;
+  protected @Bind(R.id.reward_preferred_conversion_text_view) TextView conversionTextView;
   protected @Bind(R.id.reward_description_text_view) TextView descriptionTextView;
   protected @Bind(R.id.reward_estimated_delivery_date_section) View estimatedDeliveryDateSection;
   protected @Bind(R.id.reward_estimated_delivery_date_text_view) TextView estimatedDeliveryDateTextView;

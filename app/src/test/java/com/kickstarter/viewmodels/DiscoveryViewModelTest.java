@@ -415,10 +415,18 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     currentUser.refresh(UserFactory.user().toBuilder().unreadMessagesCount(4).build());
 
     this.showMenuIconWithIndicator.assertValues(false, true);
+
+    currentUser.logout();
+
+    this.showMenuIconWithIndicator.assertValues(false, true, false);
+
+    currentUser.refresh(UserFactory.user().toBuilder().unseenActivityCount(2).build());
+
+    this.showMenuIconWithIndicator.assertValues(false, true, false, true);
   }
 
   @Test
-  public void testShowMenuIconWithIndicator_whenUserHasNoMessages() {
+  public void testShowMenuIconWithIndicator_whenUserHasNoMessagesOrUnseenActivity() {
     final MockCurrentUser currentUser = new MockCurrentUser(UserFactory.user());
     this.vm = new DiscoveryViewModel.ViewModel(environment()
       .toBuilder()
@@ -431,7 +439,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testShowMenuIconWithIndicator_whenUserHasMessages() {
+  public void testShowMenuIconWithIndicator_whenUserHasUnreadMessagesOrUnseenActivity() {
     final User user = UserFactory.user().toBuilder().unreadMessagesCount(3).build();
     final MockCurrentUser currentUser = new MockCurrentUser(user);
     this.vm = new DiscoveryViewModel.ViewModel(environment()
@@ -440,6 +448,10 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
       .build());
 
     this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
+
+    this.showMenuIconWithIndicator.assertValue(true);
+
+    currentUser.refresh(UserFactory.user().toBuilder().unreadMessagesCount(0).unseenActivityCount(2).build());
 
     this.showMenuIconWithIndicator.assertValue(true);
   }

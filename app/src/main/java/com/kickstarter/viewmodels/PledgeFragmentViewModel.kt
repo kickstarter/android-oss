@@ -81,6 +81,9 @@ interface PledgeFragmentViewModel {
         /** Emits the estimated delivery date string of the reward. */
         fun estimatedDelivery(): Observable<String>
 
+        /**  Emits a boolean determining if the estimated delivery info should be hidden. */
+        fun estimatedDeliveryInfoIsGone(): Observable<Boolean>
+
         /**  Emits a boolean determining if the increase pledge button should be enabled.*/
         fun increasePledgeButtonIsEnabled(): Observable<Boolean>
 
@@ -136,6 +139,7 @@ interface PledgeFragmentViewModel {
         private val conversionTextViewIsGone = BehaviorSubject.create<Boolean>()
         private val decreasePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
+        private val estimatedDeliveryInfoIsGone = BehaviorSubject.create<Boolean>()
         private val increasePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val paymentContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<SpannableString>()
@@ -173,6 +177,7 @@ interface PledgeFragmentViewModel {
 
             reward
                     .map { it.estimatedDeliveryOn() }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .map { dateTime -> dateTime?.let { DateTimeUtils.estimatedDeliveryOn(it) } }
                     .compose(bindToLifecycle())
                     .subscribe { this.estimatedDelivery.onNext(it) }
@@ -193,7 +198,7 @@ interface PledgeFragmentViewModel {
 
             rewardAmount
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 0) }
+                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.HALF_UP, 0) }
                     .compose(bindToLifecycle())
                     .subscribe { this.pledgeAmount.onNext(it) }
 
@@ -219,6 +224,11 @@ interface PledgeFragmentViewModel {
                     .filter { it.isNotEmpty() }
                     .switchMap { getDefaultShippingRule(it) }
 
+            reward
+                    .map { RewardUtils.isNoReward(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.estimatedDeliveryInfoIsGone)
+
             val additionalPledgeAmount = BehaviorSubject.create<Double>(0.0)
 
             this.increasePledgeButtonClicked
@@ -231,7 +241,8 @@ interface PledgeFragmentViewModel {
 
             additionalPledgeAmount
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<String> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP) }
+                    .map<String> { this.ksCurrency.format(it.first, it.second, RoundingMode.HALF_UP) }
+                    .compose(bindToLifecycle())
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.additionalPledgeAmount)
@@ -256,6 +267,12 @@ interface PledgeFragmentViewModel {
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
                     .subscribe(this.increasePledgeButtonIsEnabled)
+
+            rewardMinimum
+                    .compose<Pair<Double, Project>>(combineLatestPair(project))
+                    .map<String> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP) }
+                    .compose(bindToLifecycle())
+                    .subscribe { this.pledgeAmount.onNext(it) }
 
             Observable.combineLatest(screenLocation, reward, project, ::PledgeData)
                     .compose<PledgeData>(takeWhen(this.onGlobalLayout))
@@ -408,6 +425,8 @@ interface PledgeFragmentViewModel {
         override fun decreasePledgeButtonIsEnabled(): Observable<Boolean> = this.decreasePledgeButtonIsEnabled
 
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
+
+        override fun estimatedDeliveryInfoIsGone(): Observable<Boolean> = this.estimatedDeliveryInfoIsGone
 
         override fun increasePledgeButtonIsEnabled(): Observable<Boolean> = this.increasePledgeButtonIsEnabled
 

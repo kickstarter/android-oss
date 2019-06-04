@@ -40,6 +40,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val conversionTextViewIsGone = TestSubscriber<Boolean>()
     private val decreasePledgeButtonIsEnabled = TestSubscriber<Boolean>()
     private val estimatedDelivery = TestSubscriber<String>()
+    private val estimatedDeliveryInfoIsGone = TestSubscriber<Boolean>()
     private val increasePledgeButtonIsEnabled = TestSubscriber<Boolean>()
     private val paymentContainerIsGone = TestSubscriber<Boolean>()
     private val pledgeAmount = TestSubscriber<String>()
@@ -65,6 +66,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone)
         this.vm.outputs.decreasePledgeButtonIsEnabled().subscribe(this.decreasePledgeButtonIsEnabled)
         this.vm.outputs.estimatedDelivery().subscribe(this.estimatedDelivery)
+        this.vm.outputs.estimatedDeliveryInfoIsGone().subscribe(this.estimatedDeliveryInfoIsGone)
         this.vm.outputs.increasePledgeButtonIsEnabled().subscribe(this.increasePledgeButtonIsEnabled)
         this.vm.outputs.paymentContainerIsGone().subscribe(this.paymentContainerIsGone)
         this.vm.outputs.pledgeAmount().map { it.toString() }.subscribe(this.pledgeAmount)
@@ -198,6 +200,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testEstimatedDelivery() {
         setUpEnvironment(environment())
         this.estimatedDelivery.assertValue("March 2019")
+        this.estimatedDeliveryInfoIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testDelivery_whenNoReward() {
+        setUpEnvironment(environment(), RewardFactory.noReward())
+
+        this.estimatedDelivery.assertNoValues()
+        this.estimatedDeliveryInfoIsGone.assertValue(true)
     }
 
     @Test

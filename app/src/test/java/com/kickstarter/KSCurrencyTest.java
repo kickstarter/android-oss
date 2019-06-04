@@ -285,21 +285,6 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("£101", currency.formatWithUserPreference(100.9f, preferGBP_UKProject, RoundingMode.HALF_UP, 0));
   }
 
-  @Test
-  public void testFormatWithProjectCurrency() {
-    final KSCurrency currency = createKSCurrency("US");
-    final Project project = ProjectFactory.project();
-    assertEquals("$100.00", currency.formatWithProjectCurrency(100, project, RoundingMode.UP, 2).toString());
-  }
-
-  @Test
-  public void testFormatWithUserPreference() {
-    final KSCurrency currency = createKSCurrency("US");
-    final Project project = ProjectFactory.project();
-    assertEquals("$101", currency.formatWithUserPreference(100.1f, project, RoundingMode.UP, 0));
-    assertEquals("$100", currency.formatWithUserPreference(100.9f, project, RoundingMode.DOWN, 0));
-  }
-
   public void testFormatCurrency_withCurrencyCodeExcluded() {
     final KSCurrency caCurrency = createKSCurrency("CA");
     assertEquals("US$ 100", caCurrency.format(100.0f, ProjectFactory.project(), true));

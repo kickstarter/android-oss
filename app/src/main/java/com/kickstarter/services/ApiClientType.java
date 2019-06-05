@@ -10,6 +10,7 @@ import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
+import com.kickstarter.models.Reward;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
@@ -21,6 +22,7 @@ import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
+import com.kickstarter.services.apiresponses.ShippingRulesEnvelope;
 import com.kickstarter.ui.data.Mailbox;
 import com.kickstarter.ui.data.MessageSubject;
 
@@ -80,6 +82,8 @@ public interface ApiClientType {
   @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreads(final @Nullable Project project, final @NonNull Mailbox mailbox);
 
   @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreadsWithPaginationPath(final @NonNull String paginationPath);
+
+  @NonNull Observable<ShippingRulesEnvelope> fetchShippingRules(final @NonNull Project project, final @NonNull Reward reward);
 
   @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam);
 

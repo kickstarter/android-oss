@@ -5,6 +5,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.BackingUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.RewardUtils
@@ -24,19 +25,19 @@ interface HorizontalNoRewardViewHolderViewModel {
     }
 
     interface Outputs {
+        /** Show [com.kickstarter.ui.fragments.PledgeFragment].  */
+        fun showPledgeFragment(): Observable<Pair<Project, Reward>>
+
         /** Start the [com.kickstarter.ui.activities.BackingActivity] with the project.  */
         fun startBackingActivity(): Observable<Project>
-
-        /** Start [com.kickstarter.ui.activities.CheckoutActivity] with the project's reward selected.  */
-        fun startCheckoutActivity(): Observable<Pair<Project, Reward>>
     }
 
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<KSViewHolder>(environment), Inputs, Outputs {
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
         private val rewardClicked = PublishSubject.create<Void>()
 
+        private val showPledgeFragment: Observable<Pair<Project, Reward>>
         private val startBackingActivity: Observable<Project>
-        private val startCheckoutActivity: Observable<Pair<Project, Reward>>
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -44,32 +45,29 @@ interface HorizontalNoRewardViewHolderViewModel {
         init {
 
             this.startBackingActivity = this.projectAndReward
-                    .compose<Pair<Project, Reward>>(Transformers.takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
+                    .compose<Pair<Project, Reward>>(takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
                     .filter { pr -> ProjectUtils.isCompleted(pr.first) && BackingUtils.isBacked(pr.first, pr.second) }
                     .map { pr -> pr.first }
 
-            this.startCheckoutActivity = this.projectAndReward
+            this.showPledgeFragment = this.projectAndReward
                     .filter { pr -> isSelectable(pr.first, pr.second) && pr.first.isLive }
                     .compose(Transformers.takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
 
+        }
+
+        override fun projectAndReward(@NonNull project: Project, @NonNull reward: Reward) {
+            this.projectAndReward.onNext(Pair.create(project, reward))
         }
 
         override fun rewardClicked() {
             return this.rewardClicked.onNext(null)
         }
 
-        override fun startBackingActivity(): Observable<Project> {
-            return this.startBackingActivity
-        }
+        @NonNull
+        override fun showPledgeFragment(): Observable<Pair<Project, Reward>> = this.showPledgeFragment
 
         @NonNull
-        override fun startCheckoutActivity(): Observable<Pair<Project, Reward>> {
-            return this.startCheckoutActivity
-        }
-
-        override fun projectAndReward(@NonNull project: Project, @NonNull reward: Reward) {
-            this.projectAndReward.onNext(Pair.create(project, reward))
-        }
+        override fun startBackingActivity(): Observable<Project> = this.startBackingActivity
 
         private fun isSelectable(@NonNull project: Project, @NonNull reward: Reward): Boolean {
             if (BackingUtils.isBacked(project, reward)) {

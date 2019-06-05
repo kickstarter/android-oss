@@ -9,13 +9,15 @@ import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.utils.RewardUtils
-import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.RewardFactory
-import com.kickstarter.mock.factories.StoredCardFactory
-import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.factories.*
+import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
+import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.PledgeData
@@ -34,16 +36,25 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val animateRewardCard = TestSubscriber<PledgeData>()
     private val cards = TestSubscriber<List<StoredCard>>()
     private val continueButtonIsGone = TestSubscriber<Boolean>()
+    private val conversionText = TestSubscriber<String>()
+    private val conversionTextViewIsGone = TestSubscriber<Boolean>()
     private val decreasePledgeButtonIsEnabled = TestSubscriber<Boolean>()
     private val estimatedDelivery = TestSubscriber<String>()
+    private val estimatedDeliveryInfoIsGone = TestSubscriber<Boolean>()
     private val increasePledgeButtonIsEnabled = TestSubscriber<Boolean>()
     private val paymentContainerIsGone = TestSubscriber<Boolean>()
     private val pledgeAmount = TestSubscriber<String>()
+    private val selectedShippingRule = TestSubscriber<ShippingRule>()
+    private val shippingAmount = TestSubscriber<String>()
+    private val shippingRuleAndProject = TestSubscriber<Pair<List<ShippingRule>, Project>>()
+    private val shippingRulesSectionIsGone = TestSubscriber<Boolean>()
     private val showPledgeCard = TestSubscriber<Pair<Int, Boolean>>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val startNewCardActivity = TestSubscriber<Void>()
+    private val totalAmount = TestSubscriber<String>()
 
-    private fun setUpEnvironment(environment: Environment, reward: Reward? = RewardFactory.rewardWithShipping()) {
+    private fun setUpEnvironment(environment: Environment, reward: Reward? = RewardFactory.rewardWithShipping(),
+                                 project: Project? = ProjectFactory.project()) {
         this.vm = PledgeFragmentViewModel.ViewModel(environment)
 
         this.vm.outputs.additionalPledgeAmount().subscribe(this.additionalPledgeAmount)
@@ -51,16 +62,23 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.animateRewardCard().subscribe(this.animateRewardCard)
         this.vm.outputs.cards().subscribe(this.cards)
         this.vm.outputs.continueButtonIsGone().subscribe(this.continueButtonIsGone)
+        this.vm.outputs.conversionText().subscribe(this.conversionText)
+        this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone)
         this.vm.outputs.decreasePledgeButtonIsEnabled().subscribe(this.decreasePledgeButtonIsEnabled)
         this.vm.outputs.estimatedDelivery().subscribe(this.estimatedDelivery)
+        this.vm.outputs.estimatedDeliveryInfoIsGone().subscribe(this.estimatedDeliveryInfoIsGone)
         this.vm.outputs.increasePledgeButtonIsEnabled().subscribe(this.increasePledgeButtonIsEnabled)
         this.vm.outputs.paymentContainerIsGone().subscribe(this.paymentContainerIsGone)
-        this.vm.outputs.pledgeAmount().subscribe(this.pledgeAmount)
+        this.vm.outputs.pledgeAmount().map { it.toString() }.subscribe(this.pledgeAmount)
+        this.vm.outputs.selectedShippingRule().subscribe(this.selectedShippingRule)
+        this.vm.outputs.shippingAmount().map { it.toString() }.subscribe(this.shippingAmount)
+        this.vm.outputs.shippingRulesAndProject().subscribe(this.shippingRuleAndProject)
+        this.vm.outputs.shippingRulesSectionIsGone().subscribe(this.shippingRulesSectionIsGone)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.startNewCardActivity().subscribe(this.startNewCardActivity)
+        this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
 
-        val project = ProjectFactory.project()
         val bundle = Bundle()
         bundle.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, ScreenLocation(0f, 0f, 0f, 0f))
         bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project)
@@ -96,6 +114,52 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.activityResult(ActivityResult.create(ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD, Activity.RESULT_OK, Intent()))
 
         this.cards.assertValueCount(2)
+    }
+
+    @Test
+    fun testConversionHiddenForPledgeTotal() {
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+
+        // Set the project currency and the user's chosen currency to the same value
+        val project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("USD").build()
+        val reward = RewardFactory.reward()
+
+        setUpEnvironment(environment, reward, project)
+
+        // the conversion should be hidden.
+        this.conversionText.assertValueCount(1)
+        this.conversionTextViewIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testConversionShownForPledgeTotal() {
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+
+        // Set the project currency and the user's chosen currency to different values
+        val project = ProjectFactory.project().toBuilder().currency("CAD").currentCurrency("USD").build()
+        val reward = RewardFactory.reward()
+
+        setUpEnvironment(environment, reward, project)
+
+        // USD conversion should shown.
+        this.conversionText.assertValueCount(1)
+        this.conversionTextViewIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testConversionText_WhenStepperChangesValue() {
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+
+        // Set the project currency and the user's chosen currency to different values
+        val project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("CAD").build()
+        val reward = RewardFactory.reward()
+
+        setUpEnvironment(environment, reward, project)
+
+        this.conversionText.assertValue("CA$ 50.00")
+
+        this.vm.decreasePledgeButtonClicked()
+        this.conversionText.assertValues("CA$ 50.00", "CA$ 49.00")
     }
 
     @Test
@@ -135,14 +199,21 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testEstimatedDelivery() {
         setUpEnvironment(environment())
-
         this.estimatedDelivery.assertValue("March 2019")
+        this.estimatedDeliveryInfoIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testDelivery_whenNoReward() {
+        setUpEnvironment(environment(), RewardFactory.noReward())
+
+        this.estimatedDelivery.assertNoValues()
+        this.estimatedDeliveryInfoIsGone.assertValue(true)
     }
 
     @Test
     fun testPledgeAmount() {
         setUpEnvironment(environment())
-
         this.pledgeAmount.assertValue("$20")
     }
 
@@ -199,6 +270,53 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testShippingAmount() {
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        setUpEnvironment(environment)
+        this.shippingAmount.assertValue("$30.00")
+    }
+
+    @Test
+    fun testShippingRuleAndProject() {
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment, project = project)
+
+        val shippingRules = ShippingRulesEnvelopeFactory.shippingRules().shippingRules()
+        this.shippingRuleAndProject.assertValues(Pair.create(shippingRules, project))
+    }
+
+    @Test
+    fun testShippingRuleSelection_NoShippingRules() {
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
+        setUpEnvironment(environment)
+        this.shippingRulesSectionIsGone.assertValues(true)
+    }
+
+    @Test
+    fun testShippingRuleSelection_WithShippingRules() {
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        setUpEnvironment(environment)
+        this.shippingRulesSectionIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testShippingRuleSelection() {
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        setUpEnvironment(environment)
+
+        val defaultRule = ShippingRuleFactory.usShippingRule()
+
+        this.selectedShippingRule.assertValues(defaultRule)
+
+        val selectedRule = ShippingRuleFactory.germanyShippingRule()
+
+        this.vm.inputs.shippingRuleSelected(selectedRule)
+
+        this.selectedShippingRule.assertValues(defaultRule, selectedRule)
+    }
+
+    @Test
     fun testShowPledgeCard() {
         setUpEnvironment(environment())
 
@@ -225,4 +343,70 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.startNewCardActivity.assertValueCount(1)
     }
 
+    @Test
+    fun testTotalAmountWithShippingRules() {
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        val environment = environment().toBuilder()
+                .currentConfig(currentConfig)
+                .build()
+        setUpEnvironment(environment)
+
+        this.totalAmount.assertValues("$50.00")
+    }
+
+    @Test
+    fun testTotalAmountWithShippingRules_WhenStepperChangesValue() {
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        val environment = environment().toBuilder()
+                .currentConfig(currentConfig)
+                .build()
+        setUpEnvironment(environment)
+
+        this.totalAmount.assertValues("$50.00")
+        this.vm.decreasePledgeButtonClicked()
+        this.totalAmount.assertValues("$50.00", "$49.00")
+        this.vm.increasePledgeButtonClicked()
+        this.totalAmount.assertValues("$50.00", "$49.00", "$50.00")
+    }
+
+    @Test
+    fun testTotalAmountWithoutShippingRules() {
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
+        setUpEnvironment(environment)
+        this.totalAmount.assertValue("$20.00")
+    }
+
+    @Test
+    fun testTotalAmountWithoutShippingRules_WhenStepperChangesValue() {
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
+        setUpEnvironment(environment)
+        this.totalAmount.assertValue("$20.00")
+        this.vm.decreasePledgeButtonClicked()
+        this.totalAmount.assertValues("$20.00", "$19.00")
+        this.vm.increasePledgeButtonClicked()
+        this.totalAmount.assertValues("$20.00", "$19.00", "$20.00")
+    }
+
+    private fun environmentForShippingRules(envelope: ShippingRulesEnvelope): Environment {
+        val apiClient = object : MockApiClient() {
+            override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+                return Observable.just(envelope)
+            }
+        }
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        return environment().toBuilder()
+                .apiClient(apiClient)
+                .currentConfig(currentConfig)
+                .build()
+    }
 }

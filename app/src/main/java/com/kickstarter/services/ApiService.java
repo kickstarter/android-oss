@@ -33,6 +33,7 @@ import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
+import com.kickstarter.services.apiresponses.ShippingRulesEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
 import java.util.List;
@@ -166,6 +167,9 @@ public interface ApiService {
 
   @POST("/v1/projects/{project_id}/messages")
   Observable<Response<Message>> sendMessageToProject(@Path("project_id") long projectId, @Body MessageBody body);
+
+  @GET("/v1/projects/{project_id}/rewards/{reward_id}/shipping_rules")
+  Observable<Response<ShippingRulesEnvelope>> shippingRules(@Path("project_id") long projectId, @Path("reward_id") long rewardId);
 
   @POST("/v1/users")
   Observable<Response<AccessTokenEnvelope>> signup(@Body SignupBody body);

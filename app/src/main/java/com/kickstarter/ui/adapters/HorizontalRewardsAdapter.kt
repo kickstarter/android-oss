@@ -13,7 +13,7 @@ import rx.Observable
 
 class HorizontalRewardsAdapter(private val delegate: Delegate) : KSAdapter() {
 
-    interface Delegate: HorizontalRewardViewHolder.Delegate
+    interface Delegate: HorizontalRewardViewHolder.Delegate, HorizontalNoRewardViewHolder.Delegate
 
     override fun layout(sectionRow: SectionRow): Int {
         return when (sectionRow.section()) {
@@ -24,7 +24,7 @@ class HorizontalRewardsAdapter(private val delegate: Delegate) : KSAdapter() {
 
     override fun viewHolder(layout: Int, view: View): KSViewHolder {
         return when(layout) {
-            R.layout.item_no_reward -> HorizontalNoRewardViewHolder(view)
+            R.layout.item_no_reward -> HorizontalNoRewardViewHolder(view, this.delegate)
             R.layout.item_reward -> HorizontalRewardViewHolder(view, this.delegate)
             else -> EmptyViewHolder(view)
         }

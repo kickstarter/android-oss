@@ -112,7 +112,7 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.viewModel.outputs.showPledgeFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.delegate?.rewardClicked(getScreenLocationOfReward(), this.reward) }
+                .subscribe { this.delegate?.rewardClicked(ViewUtils.getScreenLocation(this.itemView), this.reward) }
 
         this.viewModel.outputs.startBackingActivity()
                 .compose(bindToLifecycle())
@@ -144,8 +144,6 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
     }
 
     private fun getScreenLocationOfReward(): ScreenLocation {
-        val rewardLocation = IntArray(2)
-        this.itemView.horizontal_reward_card.getLocationInWindow(rewardLocation)
         val x = this.itemView.left.toFloat()
         val y = this.itemView.top.toFloat()
         val height = this.itemView.height

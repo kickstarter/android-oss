@@ -4,23 +4,25 @@ import android.content.Intent
 import android.util.Pair
 import android.view.View
 import androidx.annotation.NonNull
-import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.BackingActivity
-import com.kickstarter.ui.activities.CheckoutActivity
+import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.HorizontalNoRewardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_no_reward.view.*
 
-class HorizontalNoRewardViewHolder(val view: View): KSViewHolder(view) {
+class HorizontalNoRewardViewHolder(val view: View, val delegate: HorizontalNoRewardViewHolder.Delegate?): KSViewHolder(view) {
 
-    private var viewModel = HorizontalNoRewardViewHolderViewModel.ViewModel(environment())
+    interface Delegate {
+        fun rewardClicked(screenLocation: ScreenLocation, reward: Reward)
+    }
 
-    private val projectBackButtonString = context().getString(R.string.project_back_button)
+    private val viewModel = HorizontalNoRewardViewHolderViewModel.ViewModel(environment())
 
     init {
 
@@ -29,10 +31,10 @@ class HorizontalNoRewardViewHolder(val view: View): KSViewHolder(view) {
                 .compose(Transformers.observeForUI())
                 .subscribe { startBackingActivity(it) }
 
-        this.viewModel.outputs.startCheckoutActivity()
+        this.viewModel.outputs.showPledgeFragment()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { pr -> startCheckoutActivity(pr.first, pr.second) }
+                .subscribe { this.delegate?.rewardClicked(ViewUtils.getScreenLocation(this.itemView), it.second) }
 
         view.horizontal_no_reward_pledge_button.setOnClickListener {
             this.viewModel.inputs.rewardClicked()
@@ -51,17 +53,6 @@ class HorizontalNoRewardViewHolder(val view: View): KSViewHolder(view) {
         val context = context()
         val intent = Intent(context, BackingActivity::class.java)
                 .putExtra(IntentKey.PROJECT, project)
-
-        context.startActivity(intent)
-        TransitionUtils.transition(context, TransitionUtils.slideInFromRight())
-    }
-
-    private fun startCheckoutActivity(@NonNull project: Project, @NonNull reward: Reward) {
-        val context = context()
-        val intent = Intent(context, CheckoutActivity::class.java)
-                .putExtra(IntentKey.PROJECT, project)
-                .putExtra(IntentKey.TOOLBAR_TITLE, this.projectBackButtonString)
-                .putExtra(IntentKey.URL, project.rewardSelectedUrl(reward))
 
         context.startActivity(intent)
         TransitionUtils.transition(context, TransitionUtils.slideInFromRight())

@@ -57,7 +57,7 @@ public interface DashboardRewardStatsRowHolderViewModel {
         .map(projectRewardStats -> {
           final Project p = projectRewardStats.first;
           final ProjectStatsEnvelope.RewardStats rs = projectRewardStats.second;
-          return NumberUtils.flooredPercentage((rs.pledged() / p.pledged()) * 100);
+          return NumberUtils.flooredPercentage((rs.pledged() / (float) p.pledged()) * 100);
         })
         .map(StringUtils::wrapInParentheses);
     }

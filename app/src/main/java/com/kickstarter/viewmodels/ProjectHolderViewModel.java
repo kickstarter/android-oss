@@ -22,7 +22,6 @@ import com.kickstarter.ui.viewholders.ProjectViewHolder;
 
 import org.joda.time.DateTime;
 
-import java.math.RoundingMode;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -202,8 +201,8 @@ public interface ProjectHolderViewModel {
 
       this.conversionPledgedAndGoalText = project
         .map(p -> {
-          final String pledged = this.ksCurrency.format(p.pledged(), p, true);
-          final String goal = this.ksCurrency.format(p.goal(), p, true);
+          final String pledged = this.ksCurrency.format(p.pledged(), p);
+          final String goal = this.ksCurrency.format(p.goal(), p);
           return Pair.create(pledged, goal);
         });
 
@@ -224,7 +223,7 @@ public interface ProjectHolderViewModel {
         .map(Category::name);
 
       this.goalStringForTextView = project
-        .map(p -> this.ksCurrency.formatWithUserPreference(p.goal(), p, RoundingMode.DOWN));
+        .map(p -> this.ksCurrency.formatWithUserPreference(p.goal(), p));
 
       this.locationTextViewText = project
         .map(Project::location)
@@ -239,7 +238,7 @@ public interface ProjectHolderViewModel {
       this.playButtonIsGone = project.map(Project::hasVideo).map(BooleanUtils::negate);
 
       this.pledgedTextViewText = project
-        .map(p -> this.ksCurrency.formatWithUserPreference(p.pledged(), p, RoundingMode.DOWN));
+        .map(p -> this.ksCurrency.formatWithUserPreference(p.pledged(), p));
 
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)
@@ -247,7 +246,7 @@ public interface ProjectHolderViewModel {
 
       this.projectDisclaimerGoalNotReachedString = project
         .filter(p -> p.deadline() != null && p.isLive() && !p.isFunded())
-        .map(p -> Pair.create(this.ksCurrency.format(p.goal(), p, true), p.deadline()));
+        .map(p -> Pair.create(this.ksCurrency.format(p.goal(), p), p.deadline()));
 
       this.projectDisclaimerTextViewIsGone = project.map(p -> p.deadline() == null || !p.isLive());
 

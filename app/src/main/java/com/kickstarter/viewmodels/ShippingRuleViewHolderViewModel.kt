@@ -19,7 +19,6 @@ interface ShippingRuleViewHolderViewModel {
     }
 
     interface Outputs {
-
         /** Returns the Shipping Rule text. */
         fun shippingRuleText(): Observable<String>
     }
@@ -29,6 +28,8 @@ interface ShippingRuleViewHolderViewModel {
         private val shippingRuleAndProject = PublishSubject.create<Pair<ShippingRule, Project>>()
 
         private val shippingRuleText = BehaviorSubject.create<String>()
+
+        private val ksCurrency = this.environment.ksCurrency()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -49,7 +50,7 @@ interface ShippingRuleViewHolderViewModel {
             val displayableName = shippingRule.location().displayableName()
             val cost = shippingRule.cost()
 
-            val formattedCost = this.environment.ksCurrency().format(cost, project, true).toString()
+            val formattedCost = this.ksCurrency.format(cost, project)
 
             return "$displayableName $formattedCost"
         }

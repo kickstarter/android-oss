@@ -261,7 +261,7 @@ public interface BackingViewModel {
 
       project
         .compose(zipPair(shippableBacking))
-        .map(pb -> this.ksCurrency.format(pb.second.shippingAmount(), pb.first, true))
+        .map(pb -> this.ksCurrency.format(pb.second.shippingAmount(), pb.first))
         .compose(bindToLifecycle())
         .subscribe(this.shippingAmountTextViewText);
 

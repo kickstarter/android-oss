@@ -112,7 +112,7 @@ interface HorizontalRewardViewHolderViewModel {
 
             val formattedMinimum = this.projectAndReward
                     .filter { RewardUtils.isReward(it.second) }
-                    .map { pr -> this.ksCurrency.format(pr.second.minimum(), pr.first, true) }
+                    .map { pr -> this.ksCurrency.format(pr.second.minimum(), pr.first) }
 
             val isSelectable = this.projectAndReward
                     .map { pr -> isSelectable(pr.first, pr.second) }

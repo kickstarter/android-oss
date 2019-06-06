@@ -8,6 +8,9 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.net.Uri;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +21,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.models.Country;
+import com.kickstarter.models.Project;
 import com.kickstarter.ui.data.ScreenLocation;
 import com.kickstarter.ui.views.AppRatingDialog;
+import com.kickstarter.ui.views.CenterSpan;
 import com.kickstarter.ui.views.ConfirmDialog;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.math.RoundingMode;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,6 +61,33 @@ public final class ViewUtils {
 
   public static int getScreenWidthDp(final @NonNull Context context) {
     return context.getResources().getConfiguration().screenWidthDp;
+  }
+
+  /**
+   * Returns a SpannableString that shrinks and centers currency code if it's necessary.
+   * Special case: US people looking at US currency just get the currency symbol.
+   *
+   */
+  public static @NotNull SpannableString styleCurrency(final double value, final Project project, final @NonNull KSCurrency ksCurrency) {
+    final String formattedCurrency = ksCurrency.format(value, project, RoundingMode.HALF_UP);
+    final SpannableString spannableString = new SpannableString(formattedCurrency);
+
+    final Country country = Country.findByCurrencyCode(project.currency());
+    if (country == null) {
+      return spannableString;
+    }
+
+    final boolean currencyNeedsCode = ksCurrency.currencyNeedsCode(country, true);
+    final String currencySymbolToDisplay = StringUtils.trim(ksCurrency.getCurrencySymbol(country, true));
+
+    if (currencyNeedsCode) {
+      final int startOfSymbol = formattedCurrency.indexOf(currencySymbolToDisplay);
+      final int endOfSymbol = startOfSymbol + currencySymbolToDisplay.length();
+      spannableString.setSpan(new RelativeSizeSpan(.5f), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+      spannableString.setSpan(new CenterSpan(), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    }
+
+    return spannableString;
   }
 
   public static boolean isFontScaleLarge(final @NonNull Context context) {

@@ -8,12 +8,12 @@ import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
-import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
+import com.kickstarter.libs.utils.IntegerUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.User;
@@ -33,17 +33,16 @@ import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 
-import org.joda.time.DateTime;
-
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
@@ -58,9 +57,6 @@ public interface DiscoveryViewModel {
   }
 
   interface Outputs {
-    /** Emits when the current date is during our birthday celebration. */
-    Observable<Void> animateKSR10Icon();
-
     /** Emits a boolean that determines if the drawer is open or not. */
     Observable<Boolean> drawerIsOpen();
 
@@ -98,11 +94,14 @@ public interface DiscoveryViewModel {
     /** Start internal tools activity. */
     Observable<Void> showInternalTools();
 
-    /** Show {@link com.kickstarter.ui.fragments.KSR10Fragment}. */
-    Observable<Void> showKSR10();
-
     /** Start login tout activity for result. */
     Observable<Void> showLoginTout();
+
+    /** Emits a boolean that determines if the menu icon should be shown with an indicator. */
+    Observable<Boolean> showMenuIconWithIndicator();
+
+    /** Start {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
+    Observable<Void> showMessages();
 
     /** Start profile activity. */
     Observable<Void> showProfile();
@@ -116,7 +115,6 @@ public interface DiscoveryViewModel {
     private final BuildCheck buildCheck;
     private final CurrentUserType currentUser;
     private final CurrentConfigType currentConfigType;
-    private final BooleanPreferenceType hasSeenKSR10BirthdayModal;
     private final WebClientType webClient;
 
     public ViewModel(final @NonNull Environment environment) {
@@ -126,7 +124,6 @@ public interface DiscoveryViewModel {
       this.buildCheck = environment.buildCheck();
       this.currentConfigType = environment.currentConfig();
       this.currentUser = environment.currentUser();
-      this.hasSeenKSR10BirthdayModal = environment.hasSeenKSR10BirthdayModal();
       this.webClient = environment.webClient();
 
       this.buildCheck.bind(this, this.webClient);
@@ -137,6 +134,7 @@ public interface DiscoveryViewModel {
       this.showHelp = this.loggedOutSettingsClick;
       this.showInternalTools = this.internalToolsClick;
       this.showLoginTout = this.loggedOutLoginToutClick;
+      this.showMessages = this.messagesClick;
       this.showProfile = this.profileClick;
       this.showSettings = this.settingsClick;
 
@@ -254,15 +252,21 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackDiscoveryFilterSelected);
 
-      Observable.merge(
+      final List<Observable<Boolean>> drawerOpenObservables = Arrays.asList(
         this.openDrawer,
         this.childFilterRowClick.map(__ -> false),
         this.topFilterRowClick.map(__ -> false),
         this.internalToolsClick.map(__ -> false),
         this.loggedOutLoginToutClick.map(__ -> false),
+        this.loggedOutSettingsClick.map(__ -> false),
+        this.activityFeedClick.map(__ -> false),
+        this.messagesClick.map(__ -> false),
+        this.creatorDashboardClick.map(__ -> false),
         this.profileClick.map(__ -> false),
         this.settingsClick.map(__ -> false)
-      )
+      );
+
+      Observable.merge(drawerOpenObservables)
         .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.drawerIsOpen);
@@ -277,21 +281,21 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackOpenedAppBanner());
 
-      final Observable<Boolean> hasSeenKSR10BirthdayModal = Observable.defer(() -> Observable.just(this.hasSeenKSR10BirthdayModal
-        .get()));
-
-      this.showKSR10 = hasSeenKSR10BirthdayModal
-        .filter(BooleanUtils::isFalse)
-        .compose(ignoreValues())
-        .filter(__ -> DateTimeUtils.isWithinBirthdayCelebrationRange(DateTime.now()))
-        .take(1)
+      this.showMenuIconWithIndicator = currentUser
+        .map(this::userHasNoUnreadMessagesOrUnseenActivity)
+        .map(BooleanUtils::negate)
+        .distinctUntilChanged()
         .compose(bindToLifecycle());
+    }
 
-      this.animateKSR10Icon = Observable.just(DateTimeUtils.isWithinBirthdayCelebrationRange(DateTime.now()))
-        .filter(BooleanUtils::isTrue)
-        .compose(ignoreValues())
-        .compose(bindToLifecycle());
+    private boolean userHasNoUnreadMessagesOrUnseenActivity(final @Nullable User user) {
+      if (ObjectUtils.isNull(user)) {
+        return true;
+      }
 
+      final int unreadMessagesCount = IntegerUtils.intValueOrZero(user.unreadMessagesCount());
+      final int unseenActivityCount = IntegerUtils.intValueOrZero(user.unseenActivityCount());
+      return IntegerUtils.isZero(unreadMessagesCount + unseenActivityCount);
     }
 
     private final PublishSubject<Void> activityFeedClick = PublishSubject.create();
@@ -300,6 +304,7 @@ public interface DiscoveryViewModel {
     private final PublishSubject<Void> internalToolsClick = PublishSubject.create();
     private final PublishSubject<Void> loggedOutLoginToutClick = PublishSubject.create();
     private final PublishSubject<Void> loggedOutSettingsClick = PublishSubject.create();
+    private final PublishSubject<Void> messagesClick = PublishSubject.create();
     private final PublishSubject<InternalBuildEnvelope> newerBuildIsAvailable = PublishSubject.create();
     private final PublishSubject<Boolean> openDrawer = PublishSubject.create();
     private final PublishSubject<Integer> pagerSetPrimaryPage = PublishSubject.create();
@@ -308,7 +313,6 @@ public interface DiscoveryViewModel {
     private final PublishSubject<Void> settingsClick = PublishSubject.create();
     private final PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
 
-    private final Observable<Void> animateKSR10Icon;
     private final BehaviorSubject<List<Integer>> clearPages = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> drawerIsOpen = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> expandSortTabLayout = BehaviorSubject.create();
@@ -319,8 +323,9 @@ public interface DiscoveryViewModel {
     private final Observable<Void> showCreatorDashboard;
     private final Observable<Void> showHelp;
     private final Observable<Void> showInternalTools;
-    private final Observable<Void> showKSR10;
     private final Observable<Void> showLoginTout;
+    private final Observable<Boolean> showMenuIconWithIndicator;
+    private final Observable<Void> showMessages;
     private final Observable<Void> showProfile;
     private final Observable<Void> showSettings;
     private final BehaviorSubject<DiscoveryParams> updateParamsForPage = BehaviorSubject.create();
@@ -343,6 +348,9 @@ public interface DiscoveryViewModel {
     }
     @Override public void loggedInViewHolderInternalToolsClick(final @NonNull LoggedInViewHolder viewHolder) {
       this.internalToolsClick.onNext(null);
+    }
+    @Override public void loggedInViewHolderMessagesClick(final @NonNull LoggedInViewHolder viewHolder) {
+      this.messagesClick.onNext(null);
     }
     @Override public void loggedInViewHolderProfileClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
       this.profileClick.onNext(null);
@@ -375,9 +383,6 @@ public interface DiscoveryViewModel {
       this.topFilterRowClick.onNext(row);
     }
 
-    @Override public @NonNull Observable<Void> animateKSR10Icon() {
-      return this.animateKSR10Icon;
-    }
     @Override public @NonNull Observable<List<Integer>> clearPages() {
       return this.clearPages;
     }
@@ -408,11 +413,14 @@ public interface DiscoveryViewModel {
     @Override public @NonNull Observable<Void> showInternalTools() {
       return this.showInternalTools;
     }
-    @Override public @NonNull Observable<Void> showKSR10() {
-      return this.showKSR10;
-    }
     @Override public @NonNull Observable<Void> showLoginTout() {
       return this.showLoginTout;
+    }
+    @Override public @NonNull Observable<Boolean> showMenuIconWithIndicator() {
+      return this.showMenuIconWithIndicator;
+    }
+    @Override public @NonNull Observable<Void> showMessages() {
+      return this.showMessages;
     }
     @Override public @NonNull Observable<Void> showProfile() {
       return this.showProfile;

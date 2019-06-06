@@ -44,7 +44,9 @@
 
   <include layout="@layout/horizontal_line_1dp_view" />
 
-  <include layout="@layout/internal_tools_button_view" />
+  <include
+    android:id="@+id/internal_tools"
+    layout="@layout/internal_tools_button_view" />
 
   <TextView
     android:id="@+id/drawer_profile"
@@ -54,21 +56,64 @@
     android:drawableStart="@drawable/ic_person"
     android:text="@string/tabbar_profile" />
 
+  <LinearLayout
+    android:id="@+id/drawer_messages"
+    style="@style/DrawerCountContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:contentDescription="@string/Messages">
+
+    <TextView
+      style="@style/DrawerTextViewWithCount"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:drawableStart="@drawable/ic_mail"
+      android:text="@string/Messages" />
+
+    <TextView
+      android:id="@+id/unread_messages_count"
+      style="@style/DrawerCountTextView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="3000" />
+
+  </LinearLayout>
+
   <TextView
     android:id="@+id/drawer_dashboard"
     style="@style/DrawerTextView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:drawableStart="@drawable/ic_dashboard"
-    android:text="@string/tabbar_dashboard" />
+    android:text="@string/tabbar_dashboard"
+    android:visibility="gone"
+    tools:visibility="visible" />
 
-  <TextView
+  <LinearLayout
     android:id="@+id/drawer_activity"
-    style="@style/DrawerTextView"
+    style="@style/DrawerCountContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:drawableStart="@drawable/icon__bolt"
-    android:text="@string/tabbar_activity" />
+    android:contentDescription="@string/tabbar_activity"
+    android:orientation="horizontal">
+
+    <TextView
+      style="@style/DrawerTextViewWithCount"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:drawableStart="@drawable/icon__bolt"
+      android:text="@string/tabbar_activity" />
+
+    <TextView
+      android:id="@+id/unseen_activity_count"
+      style="@style/DrawerCountTextView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="2000" />
+
+  </LinearLayout>
 
   <TextView
     android:id="@+id/drawer_settings"

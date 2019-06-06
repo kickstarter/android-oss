@@ -11,8 +11,6 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.viewmodels.CreatorDashboardReferrerBreakdownHolderViewModel;
 
-import java.math.RoundingMode;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -182,7 +180,7 @@ public class CreatorDashboardReferrerBreakdownViewHolder extends KSViewHolder {
   }
 
   private void setAmountPledgedTextViewText(final @NonNull Pair<Project, Float> projectAndAmount, final TextView textview) {
-    final String amountString = this.ksCurrency.format(projectAndAmount.second, projectAndAmount.first, false, true, RoundingMode.DOWN);
+    final String amountString = this.ksCurrency.format(projectAndAmount.second, projectAndAmount.first, true);
     textview.setText(amountString);
   }
 }

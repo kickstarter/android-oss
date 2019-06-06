@@ -10,7 +10,6 @@ import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.data.Mailbox;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -522,9 +521,11 @@ public final class Koala {
     this.client.track(KoalaEvent.SENT_MESSAGE, props);
   }
 
-  public void trackViewedMailbox(final @NonNull Mailbox mailbox, final @Nullable Project project, final @Nullable RefTag intentRefTag) {
-    final Map<String, Object> props = project == null ? Collections.emptyMap() : KoalaUtils.projectProperties(project, this.client.loggedInUser());
+  public void trackViewedMailbox(final @NonNull Mailbox mailbox, final @Nullable Project project,
+    final @Nullable RefTag intentRefTag, final @NonNull KoalaContext.Mailbox context) {
+    final Map<String, Object> props = project == null ? new HashMap<>() : KoalaUtils.projectProperties(project, this.client.loggedInUser());
 
+    props.put("context", context.getTrackingString());
     if (intentRefTag != null) {
       props.put("ref_tag", intentRefTag.tag());
     }
@@ -629,17 +630,5 @@ public final class Koala {
     final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
 
     this.client.track(KoalaEvent.VIEWED_PROJECT_DASHBOARD, properties);
-  }
-
-  // EASTER EGG
-  public void trackViewedKSR10BirthdayModal() {
-    final Map<String, Object> properties = new HashMap<String, Object>() {
-      {
-        put("type", "easteregg");
-
-      }
-    };
-
-    this.client.track(KoalaEvent.VIEWED_KSR10_BIRTHDAY_MODAL, properties);
   }
 }

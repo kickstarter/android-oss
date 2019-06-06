@@ -12,6 +12,7 @@ import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.viewmodels.ActivityFeedViewModel.ViewModel;
 
@@ -35,6 +36,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> loggedInEmptyStateIsVisible = new TestSubscriber<>();
   private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
   private final TestSubscriber<List<SurveyResponse>> surveys = new TestSubscriber<>();
+  private final TestSubscriber<User> user = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ViewModel(environment);
@@ -180,5 +182,34 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.refresh();
     this.surveys.assertValueCount(2);
+  }
+
+  @Test
+  public void testUser_LoggedIn_SwipeRefreshed() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+    final User initialUser = UserFactory.user().toBuilder().unseenActivityCount(3).build();
+    currentUser.login(initialUser, "deadbeef");
+
+    final User updatedUser = UserFactory.user();
+    final Environment environment = this.environment().toBuilder()
+      .apiClient(new MockApiClient(){
+        @NonNull
+        @Override
+        public Observable<User> fetchCurrentUser() {
+          return Observable.just(updatedUser);
+        }
+      })
+      .currentUser(currentUser)
+      .build();
+
+    environment.currentUser().loggedInUser().subscribe(this.user);
+
+    setUpEnvironment(environment);
+    this.surveys.assertValueCount(1);
+    this.user.assertValues(initialUser, updatedUser);
+
+    this.vm.inputs.refresh();
+    this.surveys.assertValueCount(2);
+    this.user.assertValues(initialUser, updatedUser);
   }
 }

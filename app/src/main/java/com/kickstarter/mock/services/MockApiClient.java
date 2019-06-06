@@ -13,6 +13,7 @@ import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.mock.factories.MessageThreadEnvelopeFactory;
 import com.kickstarter.mock.factories.MessageThreadsEnvelopeFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
+import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory;
 import com.kickstarter.mock.factories.SurveyResponseFactory;
 import com.kickstarter.mock.factories.UpdateFactory;
 import com.kickstarter.mock.factories.UserFactory;
@@ -25,6 +26,7 @@ import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.ProjectNotification;
+import com.kickstarter.models.Reward;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
@@ -38,6 +40,7 @@ import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
+import com.kickstarter.services.apiresponses.ShippingRulesEnvelope;
 import com.kickstarter.ui.data.Mailbox;
 import com.kickstarter.ui.data.MessageSubject;
 
@@ -202,6 +205,11 @@ public class MockApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<MessageThreadsEnvelope> fetchMessageThreadsWithPaginationPath(final @NonNull String paginationPath) {
     return Observable.empty();
+  }
+  @NonNull
+  @Override
+  public Observable<ShippingRulesEnvelope> fetchShippingRules(@NonNull final Project project, @NonNull final Reward reward) {
+    return Observable.just(ShippingRulesEnvelopeFactory.Companion.shippingRules());
   }
 
   @Override

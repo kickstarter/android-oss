@@ -132,7 +132,6 @@
     android:layout_gravity="bottom">
 
     <View
-      android:id="@+id/total_amount_loading_view"
       android:layout_width="match_parent"
       android:layout_height="@dimen/grid_20"
       android:background="@drawable/white_gradient_background" />

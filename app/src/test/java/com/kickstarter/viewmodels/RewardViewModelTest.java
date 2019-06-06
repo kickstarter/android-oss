@@ -3,8 +3,10 @@ package com.kickstarter.viewmodels;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Config;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.RewardFactory;
@@ -159,20 +161,49 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testConversionTextRoundsUp() {
+  public void testConversionTextRoundsUp_USUser_prefersUSD() {
     // Set user's country to US.
-    final Config config = ConfigFactory.configForUSUser();
-    final Environment environment = environment();
-    environment.currentConfig().config(config);
+    final CurrentConfigType currentConfig = new MockCurrentConfig();
+    currentConfig.config(ConfigFactory.configForUSUser());
+    final Environment environment = environment().toBuilder()
+      .currentConfig(currentConfig)
+      .ksCurrency(new KSCurrency(currentConfig))
+      .build();
     setUpEnvironment(environment);
 
-    // Set project's country to CA and reward minimum to $0.30.
-    final Project project = ProjectFactory.caProject();
-    final Reward reward = RewardFactory.reward().toBuilder().minimum(0.3f).build();
+    // Set project's country to CA with USD preference and reward minimum to $1.30.
+    final Project project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build();
+    final Reward reward = RewardFactory.reward().toBuilder().minimum(1.3f).build();
 
-    // USD conversion should be rounded up.
+    // USD conversion should be rounded normally.
     this.vm.inputs.projectAndReward(project, reward);
-    this.conversionTextViewText.assertValue("CA$ 1");
+    this.conversionTextViewText.assertValuesAndClear("$1");
+
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(1.9f).build());
+    this.conversionTextViewText.assertValue("$2");
+  }
+
+  @Test
+  public void testConversionTextRoundsUp_ITUser_prefersUSD() {
+    // Set user's country to IT.
+    final CurrentConfigType currentConfig = new MockCurrentConfig();
+    currentConfig.config(ConfigFactory.configForITUser());
+    final Environment environment = environment().toBuilder()
+      .currentConfig(currentConfig)
+      .ksCurrency(new KSCurrency(currentConfig))
+      .build();
+    setUpEnvironment(environment);
+
+    // Set project's country to CA with USD preference and reward minimum to $1.30.
+    final Project project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build();
+    final Reward reward = RewardFactory.reward().toBuilder().minimum(1.3f).build();
+
+    // USD conversion should be rounded normally.
+    this.vm.inputs.projectAndReward(project, reward);
+    this.conversionTextViewText.assertValuesAndClear("US$ 1");
+
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(1.9f).build());
+    this.conversionTextViewText.assertValue("US$ 2");
   }
 
   @Test

@@ -5,7 +5,6 @@ import android.content.Intent;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
-import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.mock.factories.CategoryFactory;
@@ -17,8 +16,6 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -30,7 +27,6 @@ import rx.observers.TestSubscriber;
 
 public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private DiscoveryViewModel.ViewModel vm;
-  private final TestSubscriber<Void> animateKSR10Icon = new TestSubscriber<>();
   private final TestSubscriber<List<Integer>> clearPages = new TestSubscriber<>();
   private final TestSubscriber<Boolean> drawerIsOpen = new TestSubscriber<>();
   private final TestSubscriber<Boolean> expandSortTabLayout = new TestSubscriber<>();
@@ -46,8 +42,9 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> showCreatorDashboard = new TestSubscriber<>();
   private final TestSubscriber<Void> showHelp = new TestSubscriber<>();
   private final TestSubscriber<Void> showInternalTools = new TestSubscriber<>();
-  private final TestSubscriber<Void> showKSR10 = new TestSubscriber<>();
   private final TestSubscriber<Void> showLoginTout = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> showMenuIconWithIndicator = new TestSubscriber<>();
+  private final TestSubscriber<Void> showMessages = new TestSubscriber<>();
   private final TestSubscriber<Void> showProfile = new TestSubscriber<>();
   private final TestSubscriber<Void> showSettings = new TestSubscriber<>();
   private final TestSubscriber<Integer> updatePage = new TestSubscriber<>();
@@ -191,6 +188,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.showHelp().subscribe(this.showHelp);
     this.vm.outputs.showInternalTools().subscribe(this.showInternalTools);
     this.vm.outputs.showLoginTout().subscribe(this.showLoginTout);
+    this.vm.outputs.showMessages().subscribe(this.showMessages);
     this.vm.outputs.showProfile().subscribe(this.showProfile);
     this.vm.outputs.showSettings().subscribe(this.showSettings);
 
@@ -199,6 +197,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.showHelp.assertNoValues();
     this.showInternalTools.assertNoValues();
     this.showLoginTout.assertNoValues();
+    this.showMessages.assertNoValues();
     this.showProfile.assertNoValues();
     this.showSettings.assertNoValues();
 
@@ -208,6 +207,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.loggedOutViewHolderHelpClick(null);
     this.vm.inputs.loggedInViewHolderInternalToolsClick(null);
     this.vm.inputs.loggedOutViewHolderLoginToutClick(null);
+    this.vm.inputs.loggedInViewHolderMessagesClick(null);
     this.vm.inputs.loggedInViewHolderProfileClick(null, UserFactory.user());
     this.vm.inputs.loggedInViewHolderSettingsClick(null, UserFactory.user());
 
@@ -216,6 +216,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.showHelp.assertValueCount(1);
     this.showInternalTools.assertValueCount(1);
     this.showLoginTout.assertValueCount(1);
+    this.showMessages.assertValueCount(1);
     this.showProfile.assertValueCount(1);
     this.showSettings.assertValueCount(1);
   }
@@ -394,83 +395,65 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testKSR10_whenKSR10HasNotBeenSeen_beforeBirthday() {
-    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-04-30T00:00+00:00").getMillis());
-
+  public void testShowMenuIconWithIndicator_whenLoggedOut() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.animateKSR10Icon().subscribe(this.animateKSR10Icon);
-    this.vm.outputs.showKSR10().subscribe(this.showKSR10);
+    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
 
-    this.animateKSR10Icon.assertNoValues();
-    this.showKSR10.assertNoValues();
+    this.showMenuIconWithIndicator.assertValue(false);
   }
 
   @Test
-  public void testKSR10_whenKSR10HasBeenSeen_beforeBirthday() {
-    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-04-30T00:00+00:00").getMillis());
+  public void testShowMenuIconWithIndicator_afterLogIn() {
+    final MockCurrentUser currentUser = new MockCurrentUser();
 
-    this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder()
-      .hasSeenKSR10BirthdayModal(new MockBooleanPreference(true))
+    this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder().currentUser(currentUser).build());
+    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
+
+    this.showMenuIconWithIndicator.assertValue(false);
+
+    currentUser.refresh(UserFactory.user().toBuilder().unreadMessagesCount(4).build());
+
+    this.showMenuIconWithIndicator.assertValues(false, true);
+
+    currentUser.logout();
+
+    this.showMenuIconWithIndicator.assertValues(false, true, false);
+
+    currentUser.refresh(UserFactory.user().toBuilder().unseenActivityCount(2).build());
+
+    this.showMenuIconWithIndicator.assertValues(false, true, false, true);
+  }
+
+  @Test
+  public void testShowMenuIconWithIndicator_whenUserHasNoMessagesOrUnseenActivity() {
+    final MockCurrentUser currentUser = new MockCurrentUser(UserFactory.user());
+    this.vm = new DiscoveryViewModel.ViewModel(environment()
+      .toBuilder()
+      .currentUser(currentUser)
       .build());
 
-    this.vm.outputs.animateKSR10Icon().subscribe(this.animateKSR10Icon);
-    this.vm.outputs.showKSR10().subscribe(this.showKSR10);
+    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
 
-    this.animateKSR10Icon.assertNoValues();
-    this.showKSR10.assertNoValues();
+    this.showMenuIconWithIndicator.assertValue(false);
   }
 
   @Test
-  public void testKSR10_whenKSR10HasNotBeenSeen_duringBirthday() {
-    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-04-30T00:01:01+00:00").getMillis());
-    this.vm = new DiscoveryViewModel.ViewModel(environment());
-
-    this.vm.outputs.animateKSR10Icon().subscribe(this.animateKSR10Icon);
-    this.vm.outputs.showKSR10().subscribe(this.showKSR10);
-
-    this.animateKSR10Icon.assertValueCount(1);
-    this.showKSR10.assertValueCount(1);
-  }
-
-  @Test
-  public void testKSR10_whenKSR10HasBeenSeen_duringBirthday() {
-    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-04-30T00:01:01+00:00").getMillis());
-    this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder()
-      .hasSeenKSR10BirthdayModal(new MockBooleanPreference(true))
+  public void testShowMenuIconWithIndicator_whenUserHasUnreadMessagesOrUnseenActivity() {
+    final User user = UserFactory.user().toBuilder().unreadMessagesCount(3).build();
+    final MockCurrentUser currentUser = new MockCurrentUser(user);
+    this.vm = new DiscoveryViewModel.ViewModel(environment()
+      .toBuilder()
+      .currentUser(currentUser)
       .build());
 
-    this.vm.outputs.animateKSR10Icon().subscribe(this.animateKSR10Icon);
-    this.vm.outputs.showKSR10().subscribe(this.showKSR10);
+    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
 
-    this.animateKSR10Icon.assertValueCount(1);
-    this.showKSR10.assertNoValues();
-  }
+    this.showMenuIconWithIndicator.assertValue(true);
 
-  @Test
-  public void testKSR10_whenKSR10HasNotBeenSeen_afterBirthday() {
-    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-05-30T00:01:01+00:00").getMillis());
-    this.vm = new DiscoveryViewModel.ViewModel(environment());
+    currentUser.refresh(UserFactory.user().toBuilder().unreadMessagesCount(0).unseenActivityCount(2).build());
 
-    this.vm.outputs.animateKSR10Icon().subscribe(this.showKSR10);
-    this.vm.outputs.showKSR10().subscribe(this.showKSR10);
-
-    this.animateKSR10Icon.assertNoValues();
-    this.showKSR10.assertNoValues();
-  }
-
-  @Test
-  public void testKSR10_whenKSR10HasBeenSeen_afterBirthday() {
-    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2019-05-30T00:01:01+00:00").getMillis());
-    this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder()
-      .hasSeenKSR10BirthdayModal(new MockBooleanPreference(true))
-      .build());
-
-    this.vm.outputs.animateKSR10Icon().subscribe(this.animateKSR10Icon);
-    this.vm.outputs.showKSR10().subscribe(this.showKSR10);
-
-    this.animateKSR10Icon.assertNoValues();
-    this.showKSR10.assertNoValues();
+    this.showMenuIconWithIndicator.assertValue(true);
   }
 
   private void setUpDefaultParamsTest(final @Nullable User user) {

@@ -11,6 +11,8 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.viewmodels.DashboardRewardStatsRowHolderViewModel;
 
+import java.math.RoundingMode;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import butterknife.Bind;
@@ -67,13 +69,13 @@ public class CreatorDashboardRewardStatsRowViewHolder extends KSViewHolder {
 
   private void setPledgedColumnValue(final @NonNull Pair<Project, Float> projectAndPledgedForReward) {
     final String goalString = this.ksCurrency
-      .format(projectAndPledgedForReward.second, projectAndPledgedForReward.first);
+      .format(projectAndPledgedForReward.second, projectAndPledgedForReward.first, true);
     this.amountForRewardPledgedTextView.setText(goalString);
   }
 
   private void setRewardMinimumText(final @NonNull Pair<Project, Integer> projectAndMinimumForReward) {
     final String minimumString = IntegerUtils.isZero(projectAndMinimumForReward.second) ?
-      this.noRewardString : this.ksCurrency.format(projectAndMinimumForReward.second, projectAndMinimumForReward.first);
+      this.noRewardString : this.ksCurrency.format(projectAndMinimumForReward.second, projectAndMinimumForReward.first, RoundingMode.HALF_UP);
     this.rewardMinimumTextView.setText(minimumString);
   }
 }

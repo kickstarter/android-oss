@@ -35,20 +35,6 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testKSR10Birthday() {
-    assertEquals(DateTime.parse("2019-04-30T00:01:00+00:00"), DateTimeUtils.KSR10_BIRTHDAY);
-    assertEquals(DateTime.parse("2019-05-14T23:59:59+00:00"), DateTimeUtils.END_OF_BIRTHDAY_CELEBRATION);
-    assertFalse(DateTimeUtils.isWithinBirthdayCelebrationRange(DateTime.parse("2019-04-19T21:28:39+00:00")));
-    assertFalse(DateTimeUtils.isWithinBirthdayCelebrationRange(DateTime.parse("2019-04-29T00:00:00+00:00")));
-    assertFalse(DateTimeUtils.isWithinBirthdayCelebrationRange(DateTime.parse("2019-04-30T00:00:00+00:00")));
-    assertTrue(DateTimeUtils.isWithinBirthdayCelebrationRange(DateTime.parse("2019-04-30T00:01:00+00:00")));
-    assertTrue(DateTimeUtils.isWithinBirthdayCelebrationRange(DateTime.parse("2019-05-1T12:30:01+00:00")));
-    assertTrue(DateTimeUtils.isWithinBirthdayCelebrationRange(DateTime.parse("2019-05-14T23:59:59+00:00")));
-    assertFalse(DateTimeUtils.isWithinBirthdayCelebrationRange(DateTime.parse("2019-05-15T00:00:00+00:00")));
-    assertFalse(DateTimeUtils.isWithinBirthdayCelebrationRange(DateTime.parse("2019-05-25T00:00:00+00:00")));
-  }
-
-  @Test
   public void testLongDate() {
     assertEquals("December 17, 2015", DateTimeUtils.longDate(DateTime.parse("2015-12-17T18:35:05Z")));
     assertEquals("17 décembre 2015", DateTimeUtils.longDate(DateTime.parse("2015-12-17T18:35:05Z"), Locale.FRENCH));

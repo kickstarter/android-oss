@@ -17,11 +17,9 @@ import com.kickstarter.ui.intentmappers.IntentMapper
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.ui.viewholders.ProjectViewHolder
 import rx.Observable
-import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.net.CookieManager
-import java.util.concurrent.TimeUnit
 
 interface ProjectViewModel {
     interface Inputs {
@@ -79,8 +77,10 @@ interface ProjectViewModel {
         /** Emits when we should set the Y position of the rewards container. */
         fun setInitialRewardsContainerY(): Observable<Void>
 
+        /** Emits the color for the reward button based on (View, Manage, or Back this project). */
         fun setRewardButtonColor(): Observable<Int>
 
+        /** Emits the proper string for the reward button. */
         fun setRewardButtonString(): Observable<Int>
 
         /** Emits when rewards fragment should expand. */

@@ -34,6 +34,7 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
     private var viewModel = HorizontalRewardViewHolderViewModel.ViewModel(environment())
 
     private val currencyConversionString = context().getString(R.string.About_reward_amount)
+    private val noLongerAvailbleString = context().getString(R.string.No_longer_available)
     private val pledgeRewardCurrencyOrMoreString = context().getString(R.string.rewards_title_pledge_reward_currency_or_more)
     private val remainingRewardsString = context().getString(R.string.Left_count_left_few)
 
@@ -59,7 +60,7 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.viewModel.outputs.isClickable()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.horizontal_reward_pledge_button.isClickable = it }
+                .subscribe { configureRewardButton(it) }
 
         this.viewModel.outputs.limitAndRemainingTextViewIsGone()
                 .compose(bindToLifecycle())
@@ -74,7 +75,10 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.viewModel.outputs.minimumText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { setMinimumText(it) }
+                .subscribe {
+                    setMinimumText(it)
+                    setMinimumButtonText(it)
+                }
 
         this.viewModel.outputs.reward()
                 .compose(bindToLifecycle())
@@ -129,6 +133,11 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.viewModel.inputs.projectAndReward(project, this.reward)
     }
 
+    private fun configureRewardButton(isRewardAvailable: Boolean) {
+        this.view.horizontal_reward_pledge_button.isClickable = isRewardAvailable
+        this.view.horizontal_reward_pledge_button.isEnabled = isRewardAvailable
+    }
+
     private fun formattedDeadlineString(@NonNull reward: Reward): String {
         val detail = RewardUtils.deadlineCountdownDetail(reward, context(), this.ksString)
         val value = RewardUtils.deadlineCountdownValue(reward)
@@ -152,10 +161,17 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
 
     private fun setMinimumText(@NonNull minimum: String) {
         this.view.horizontal_reward_minimum_text_view.text = minimum
-        this.view.horizontal_reward_pledge_button.text = (this.ksString.format(
-                this.pledgeRewardCurrencyOrMoreString,
-                "reward_currency", minimum
-        ))
+    }
+
+    private fun setMinimumButtonText(@NonNull minimum: String) {
+        if (RewardUtils.isLimitReached(this.reward)) {
+            this.view.horizontal_reward_pledge_button.text = noLongerAvailbleString
+        } else {
+            this.view.horizontal_reward_pledge_button.text = (this.ksString.format(
+                    this.pledgeRewardCurrencyOrMoreString,
+                    "reward_currency", minimum
+            ))
+        }
     }
 
     private fun setRemainingRewardsTextView(@NonNull remaining: String) {

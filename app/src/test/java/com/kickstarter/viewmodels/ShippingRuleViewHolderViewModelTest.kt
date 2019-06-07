@@ -6,8 +6,6 @@ import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
-import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
-import com.kickstarter.models.ShippingRule
 import org.junit.Test
 import rx.observers.TestSubscriber
 
@@ -39,6 +37,6 @@ class ShippingRuleViewHolderViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
 
         this.vm.inputs.configureWith(shippingRule, project)
-        this.shippingRuleText.assertValue("Brooklyn, NY $30.00")
+        this.shippingRuleText.assertValue("Brooklyn, NY $30")
     }
 }

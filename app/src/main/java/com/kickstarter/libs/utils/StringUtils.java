@@ -39,6 +39,13 @@ public final class StringUtils {
   }
 
   /**
+   * Returns a string with no leading or trailing whitespace.
+   */
+  public static String trim(final @NonNull String str) {
+    return str.replace('\u00A0', ' ').trim();
+  }
+
+  /**
    * Returns a string wrapped in parentheses.
    */
   public static @NonNull String wrapInParentheses(final @NonNull String str) {

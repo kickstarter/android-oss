@@ -112,7 +112,7 @@ interface HorizontalRewardViewHolderViewModel {
 
             val formattedMinimum = this.projectAndReward
                     .filter { RewardUtils.isReward(it.second) }
-                    .map { pr -> this.ksCurrency.format(pr.second.minimum(), pr.first, true) }
+                    .map { pr -> this.ksCurrency.format(pr.second.minimum(), pr.first) }
 
             val isSelectable = this.projectAndReward
                     .map { pr -> isSelectable(pr.first, pr.second) }
@@ -191,7 +191,7 @@ interface HorizontalRewardViewHolderViewModel {
                     .map { it.isEmpty() }
 
             this.showPledgeFragment = this.projectAndReward
-                    .filter { isSelectable(it.first, it.second) && it.first.isLive}
+                    .filter { isSelectable(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Project, Reward>>(takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
 
             this.titleTextViewIsGone = reward

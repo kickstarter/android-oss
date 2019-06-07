@@ -69,10 +69,10 @@ interface PledgeFragmentViewModel {
         /**  Emits a boolean determining if the continue button should be hidden. */
         fun continueButtonIsGone(): Observable<Boolean>
 
-        /** Set the USD conversion.  */
+        /** Emits a string representing the total pledge amount in the user's preferred currency.  */
         fun conversionText(): Observable<String>
 
-        /** Returns `true` if the USD conversion section should be hidden, `false` otherwise.  */
+        /** Returns `true` if the conversion should be hidden, `false` otherwise.  */
         fun conversionTextViewIsGone(): Observable<Boolean>
 
         /**  Emits a boolean determining if the decrease pledge button should be enabled. */
@@ -198,7 +198,7 @@ interface PledgeFragmentViewModel {
 
             rewardAmount
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.HALF_UP, 0) }
+                    .map<SpannableString> { ViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe { this.pledgeAmount.onNext(it) }
 
@@ -304,7 +304,7 @@ interface PledgeFragmentViewModel {
 
             shippingAmount
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 2) }
+                    .map<SpannableString> { ViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmount)
 
@@ -335,7 +335,7 @@ interface PledgeFragmentViewModel {
 
             Observable.merge(initialAmount, totalAmount)
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 2) }
+                    .map<SpannableString> { ViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe(this.totalAmount)
 

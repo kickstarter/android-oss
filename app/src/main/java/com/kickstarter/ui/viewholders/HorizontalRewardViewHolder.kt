@@ -75,7 +75,10 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.viewModel.outputs.minimumText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { setMinimumText(it) }
+                .subscribe {
+                    setMinimumText(it)
+                    setMinimumButtonText(it)
+                }
 
         this.viewModel.outputs.reward()
                 .compose(bindToLifecycle())
@@ -158,7 +161,9 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
 
     private fun setMinimumText(@NonNull minimum: String) {
         this.view.horizontal_reward_minimum_text_view.text = minimum
+    }
 
+    private fun setMinimumButtonText(@NonNull minimum: String) {
         if (RewardUtils.isLimitReached(this.reward)) {
             this.view.horizontal_reward_pledge_button.text = noLongerAvailbleString
         } else {

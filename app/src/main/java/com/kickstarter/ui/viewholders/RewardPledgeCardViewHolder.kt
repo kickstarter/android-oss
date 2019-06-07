@@ -8,10 +8,10 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.viewmodels.RewardPledgeCardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward_pledge_card.view.*
 
-class RewardPledgeCardViewHolder(val view : View, val delegate : RewardPledgeCardViewHolder.Delegate) : KSViewHolder(view) {
+class RewardPledgeCardViewHolder(val view : View, val delegate : Delegate) : KSViewHolder(view) {
 
     interface Delegate {
-        fun pledgeButtonClicked(viewHolder: RewardPledgeCardViewHolder)
+        fun pledgeButtonClicked(id: String)
         fun closePledgeButtonClicked(position: Int)
     }
 
@@ -38,9 +38,14 @@ class RewardPledgeCardViewHolder(val view : View, val delegate : RewardPledgeCar
                 .compose(observeForUI())
                 .subscribe { setLastFourTextView(it) }
 
-        this.view.pledge_button.setOnClickListener {
-            this.delegate.pledgeButtonClicked(this)
-        }
+        this.viewModel.outputs.id()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {id ->
+                    this.view.pledge_button.setOnClickListener {
+                        this.delegate.pledgeButtonClicked(id)
+                    }
+                }
 
         this.view.close_pledge.setOnClickListener {
             this.delegate.closePledgeButtonClicked(adapterPosition)

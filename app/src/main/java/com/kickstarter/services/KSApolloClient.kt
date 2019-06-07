@@ -1,5 +1,6 @@
 package com.kickstarter.services
 
+import CheckoutMutation
 import ClearUserUnseenActivityMutation
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
@@ -17,18 +18,45 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.models.Project
-import com.kickstarter.models.Relay
-import com.kickstarter.models.StoredCard
-import com.kickstarter.models.User
+import com.kickstarter.models.*
 import rx.Observable
 import rx.subjects.PublishSubject
+import type.CheckoutState
 import type.CurrencyCode
 import type.PaymentTypes
 import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
+
+    override fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Boolean>()
+            service.mutate(CheckoutMutation.builder()
+                    .projectId(encodeRelayId(project))
+                    .amount(amount)
+                    .paymentSourceId(paymentSourceId)
+                    .locationId(locationId?.let { it })
+                    .rewardId(reward?.let { encodeRelayId(it) })
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<CheckoutMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<CheckoutMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(java.lang.Exception(response.errors().first().message()))
+                            }
+                            val state = response.data()?.nativeCheckout()?.checkout()?.state()
+                            val success = state == CheckoutState.VERIFYING
+                            ps.onNext(success)
+                            ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
 
     override fun clearUnseenActivity(): Observable<Long> {
         return Observable.defer {

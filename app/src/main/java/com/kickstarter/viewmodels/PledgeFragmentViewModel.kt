@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
+import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
@@ -12,6 +13,7 @@ import com.kickstarter.models.*
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.ActivityResult
+import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.fragments.PledgeFragment
@@ -102,10 +104,10 @@ interface PledgeFragmentViewModel {
         /** Emits when the shipping rules section should be hidden. */
         fun shippingRulesSectionIsGone(): Observable<Boolean>
 
-        /** Emits when the cards adapter should update selected position. */
-        fun showPledgeCard(): Observable<Pair<Int, Boolean>>
+        /** Emits when the cards adapter should update the selected position. */
+        fun showPledgeCard(): Observable<Pair<Int, CardState>>
 
-        /**  */
+        /**  Emits when the pledge call was unsuccessful. */
         fun showPledgeError(): Observable<Void>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.LoginToutActivity]. */
@@ -150,7 +152,7 @@ interface PledgeFragmentViewModel {
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
         private val selectedShippingRule = BehaviorSubject.create<ShippingRule>()
         private val shippingRulesSectionIsGone = BehaviorSubject.create<Boolean>()
-        private val showPledgeCard = BehaviorSubject.create<Pair<Int, Boolean>>()
+        private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
         private val showPledgeError = BehaviorSubject.create<Void>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startNewCardActivity = PublishSubject.create<Void>()
@@ -209,7 +211,7 @@ interface PledgeFragmentViewModel {
 
             val shippingRules = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
-                    .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second) }
+                    .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second).compose(neverError()) }
                     .map { it.shippingRules() }
                     .share()
 
@@ -350,13 +352,20 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.conversionText.onNext(it) }
 
+            val selectedPosition = BehaviorSubject.create(RecyclerView.NO_POSITION)
+
+            this.showPledgeCard
+                    .map { it.first }
+                    .compose(bindToLifecycle())
+                    .subscribe(selectedPosition)
+
             this.selectCardButtonClicked
                     .compose(bindToLifecycle())
-                    .subscribe { this.showPledgeCard.onNext(Pair(it, true)) }
+                    .subscribe { this.showPledgeCard.onNext(Pair(it, CardState.PLEDGE)) }
 
             this.closeCardButtonClicked
                     .compose(bindToLifecycle())
-                    .subscribe { this.showPledgeCard.onNext(Pair(it, false)) }
+                    .subscribe { this.showPledgeCard.onNext(Pair(it, CardState.SELECT)) }
 
             this.newCardButtonClicked
                     .compose(bindToLifecycle())
@@ -381,21 +390,24 @@ interface PledgeFragmentViewModel {
                     location.map { it?.id()?.toString() },
                     reward)
             { p, a, id, l, r -> Checkout(p, a, id, l, r) }
-                    .switchMap { this.apolloClient.checkout(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward).materialize() }
+                    .switchMap { this.apolloClient.checkout(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward)
+                            .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }
+                            .materialize() }
                     .share()
 
             val checkoutValues = checkoutNotification
                     .compose(values())
 
-            Observable.merge(checkoutNotification.compose(errors()),
-                    checkoutValues.filter { BooleanUtils.isFalse(it) } )
+            Observable.merge(checkoutNotification.compose(errors()), checkoutValues.filter { BooleanUtils.isFalse(it) })
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
-                    .subscribe(this.showPledgeError)
+                    .subscribe{
+                        this.showPledgeError.onNext(null)
+                        this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.PLEDGE))
+                    }
 
             project
-                    .compose<Project>(takeWhen(checkoutValues
-                            .filter { BooleanUtils.isTrue(it) }))
+                    .compose<Project>(takeWhen(checkoutValues.filter { BooleanUtils.isTrue(it) }))
                     .compose(bindToLifecycle())
                     .subscribe(this.startThanksActivity)
         }
@@ -476,7 +488,7 @@ interface PledgeFragmentViewModel {
         override fun shippingRulesSectionIsGone(): Observable<Boolean> = this.shippingRulesSectionIsGone
 
         @NonNull
-        override fun showPledgeCard(): Observable<Pair<Int, Boolean>> = this.showPledgeCard
+        override fun showPledgeCard(): Observable<Pair<Int, CardState>> = this.showPledgeCard
 
         @NonNull
         override fun showPledgeError(): Observable<Void> = this.showPledgeError

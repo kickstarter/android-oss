@@ -19,6 +19,7 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
@@ -48,7 +49,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val shippingAmount = TestSubscriber<String>()
     private val shippingRuleAndProject = TestSubscriber<Pair<List<ShippingRule>, Project>>()
     private val shippingRulesSectionIsGone = TestSubscriber<Boolean>()
-    private val showPledgeCard = TestSubscriber<Pair<Int, Boolean>>()
+    private val showPledgeCard = TestSubscriber<Pair<Int, RewardCardAdapter.CardState>>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val startNewCardActivity = TestSubscriber<Void>()
     private val totalAmount = TestSubscriber<String>()
@@ -321,10 +322,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.selectCardButtonClicked(2)
-        this.showPledgeCard.assertValuesAndClear(Pair(2, true))
+        this.showPledgeCard.assertValuesAndClear(Pair(2, RewardCardAdapter.CardState.PLEDGE))
 
         this.vm.inputs.closeCardButtonClicked(2)
-        this.showPledgeCard.assertValue(Pair(2, false))
+        this.showPledgeCard.assertValue(Pair(2, RewardCardAdapter.CardState.SELECT))
     }
 
     @Test

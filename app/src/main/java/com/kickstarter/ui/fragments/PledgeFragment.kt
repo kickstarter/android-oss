@@ -35,6 +35,7 @@ import com.kickstarter.ui.activities.NewCardActivity
 import com.kickstarter.ui.activities.ThanksActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.adapters.ShippingRulesAdapter
+import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
@@ -234,6 +235,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun addNewCardButtonClicked() {
         this.viewModel.inputs.newCardButtonClicked()
     }
+
+
 
     override fun closePledgeButtonClicked(position: Int) {
         this.viewModel.inputs.closeCardButtonClicked(position)
@@ -459,17 +462,24 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         pledge_details.y = pledge_root.height.toFloat()
     }
 
-    private fun updatePledgeCardSelection(positionAndSelected: Pair<Int, Boolean>) {
+    private fun updatePledgeCardSelection(positionAndSelected: Pair<Int, CardState>) {
         val position = positionAndSelected.first
-        val selected = positionAndSelected.second
+        val cardState = positionAndSelected.second
         val rewardCardAdapter = cards_recycler.adapter as RewardCardAdapter
-        if (selected) {
-            rewardCardAdapter.setSelectedPosition(position)
-            cards_recycler.scrollToPosition(position)
+
+        val freezeLinearLayoutManager = cards_recycler.layoutManager as FreezeLinearLayoutManager
+        if (cardState == CardState.SELECT) {
+            rewardCardAdapter.resetPledgePosition(position)
+            freezeLinearLayoutManager.setFrozen(false)
         } else {
-            rewardCardAdapter.resetSelectedPosition(position)
+            if (cardState == CardState.PLEDGE) {
+                rewardCardAdapter.setPledgePosition(position)
+            } else {
+                rewardCardAdapter.setLoadingPosition(position)
+            }
+            cards_recycler.scrollToPosition(position)
+            freezeLinearLayoutManager.setFrozen(true)
         }
-        (cards_recycler.layoutManager as FreezeLinearLayoutManager).setFrozen(selected)
     }
 
     companion object {

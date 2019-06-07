@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+  android:id="@+id/card_container"
+  style="@style/PledgeStoredCard"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/grid_3">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/grid_8"
+      android:orientation="horizontal">
+
+      <!--Content description should be set programmatically in RewardCardsAdapter to the card brand-->
+      <ImageView
+        android:id="@+id/reward_loading_card_logo"
+        android:layout_width="@dimen/credit_card_logo_width"
+        android:layout_height="@dimen/credit_card_logo_height"
+        android:contentDescription="@null"
+        android:scaleType="fitXY"
+        tools:src="@drawable/mastercard_md" />
+
+      <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/grid_2"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+          android:id="@+id/reward_loading_card_last_four"
+          style="@style/CreditCardLastFour"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="Card ending in 1234" />
+
+        <TextView
+          android:id="@+id/reward_loading_card_expiration_date"
+          style="@style/CreditCardExpiration"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="Expires in 03/2020" />
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_marginTop="@dimen/grid_2"
+      android:animateLayoutChanges="true"
+      android:layout_height="wrap_content">
+
+      <Button
+        android:stateListAnimator="@null"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+      <ProgressBar
+        android:id="@+id/reward_loading_progress_bar"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_in"
+        android:indeterminateTint="@color/white"
+        android:layout_gravity="center"
+        android:scaleX="0"
+        android:scaleY="0"
+        android:alpha="0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    </FrameLayout>
+
+  </LinearLayout>
+
+</androidx.cardview.widget.CardView>

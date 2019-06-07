@@ -191,7 +191,7 @@ interface HorizontalRewardViewHolderViewModel {
                     .map { it.isEmpty() }
 
             this.showPledgeFragment = this.projectAndReward
-                    .filter { isSelectable(it.first, it.second) && it.first.isLive}
+                    .filter { isSelectable(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Project, Reward>>(takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
 
             this.titleTextViewIsGone = reward

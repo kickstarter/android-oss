@@ -1,13 +1,12 @@
 package com.kickstarter.mock.factories
 
-import com.kickstarter.models.Location
 import com.kickstarter.models.ShippingRule
 
 class ShippingRuleFactory private constructor() {
     companion object {
         fun usShippingRule(): ShippingRule {
             return ShippingRule.builder()
-                    .id(10)
+                    .id(1L)
                     .cost(30.0)
                     .location(LocationFactory.unitedStates())
                     .build()
@@ -15,8 +14,8 @@ class ShippingRuleFactory private constructor() {
 
         fun germanyShippingRule(): ShippingRule {
             return ShippingRule.builder()
-                    .id(10)
-                    .cost(30.0)
+                    .id(2L)
+                    .cost(40.0)
                     .location(LocationFactory.germany())
                     .build()
         }

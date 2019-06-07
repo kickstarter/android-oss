@@ -42,4 +42,21 @@ public class StringUtilsTest extends KSRobolectricTestCase {
     assertEquals("Snapple apple", StringUtils.sentenceCase("Snapple Apple"));
     assertEquals("Snapple apple snapple", StringUtils.sentenceCase("Snapple Apple Snapple"));
   }
+
+  @Test
+  public void testTrim() {
+    assertEquals("", StringUtils.trim(""));
+    assertEquals("", StringUtils.trim(" "));
+    assertEquals("A", StringUtils.trim(" A"));
+    assertEquals("A", StringUtils.trim("A "));
+    assertEquals("A", StringUtils.trim(" A "));
+    assertEquals("", StringUtils.trim("\u00A0"));
+    assertEquals("A", StringUtils.trim("\u00A0A"));
+    assertEquals("A", StringUtils.trim("A\u00A0"));
+    assertEquals("A", StringUtils.trim("\u00A0A\u00A0"));
+    assertEquals("", StringUtils.trim("\u00A0 "));
+    assertEquals("A", StringUtils.trim("\u00A0 A"));
+    assertEquals("A", StringUtils.trim("A\u00A0 "));
+    assertEquals("A", StringUtils.trim("\u00A0 A \u00A0"));
+  }
 }

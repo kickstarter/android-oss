@@ -177,9 +177,11 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     // USD conversion should be rounded normally.
     this.vm.inputs.projectAndReward(project, reward);
+    // converts to $0.98
     this.conversionTextViewText.assertValuesAndClear("$1");
 
-    this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(1.9f).build());
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(2f).build());
+    // converts to $1.50
     this.conversionTextViewText.assertValue("$2");
   }
 
@@ -200,9 +202,11 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     // USD conversion should be rounded normally.
     this.vm.inputs.projectAndReward(project, reward);
+    // converts to $0.98
     this.conversionTextViewText.assertValuesAndClear("US$ 1");
 
-    this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(1.9f).build());
+    this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(2f).build());
+    // converts to $1.50
     this.conversionTextViewText.assertValue("US$ 2");
   }
 

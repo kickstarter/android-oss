@@ -204,7 +204,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDelivery_whenNoReward() {
+    fun testEstimatedDelivery_whenNoShippingRules() {
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        setUpEnvironment(environment, reward = RewardFactory.reward())
+        this.estimatedDelivery.assertNoValues()
+        this.estimatedDeliveryInfoIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testEstimatedDelivery_whenNoReward() {
         setUpEnvironment(environment(), RewardFactory.noReward())
 
         this.estimatedDelivery.assertNoValues()
@@ -287,14 +295,20 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShippingRuleSelection_NoShippingRules() {
+    fun testShippingRulesSection_NoReward() {
+        setUpEnvironment(environment(), RewardFactory.noReward())
+        this.shippingRulesSectionIsGone.assertValues(true)
+    }
+
+    @Test
+    fun testShippingRulesSection_NoShippingRules() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
         setUpEnvironment(environment)
         this.shippingRulesSectionIsGone.assertValues(true)
     }
 
     @Test
-    fun testShippingRuleSelection_WithShippingRules() {
+    fun testShippingRulesSection_WithShippingRules() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
         setUpEnvironment(environment)
         this.shippingRulesSectionIsGone.assertValues(false)

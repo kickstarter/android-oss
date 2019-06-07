@@ -136,7 +136,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
 
         // Set the project currency and the user's chosen currency to different values
-        val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
+        val project = ProjetFactory.caProject().toBuilder().currentCurrency("USD").build()
         val reward = RewardFactory.reward()
 
         setUpEnvironment(environment, reward, project)

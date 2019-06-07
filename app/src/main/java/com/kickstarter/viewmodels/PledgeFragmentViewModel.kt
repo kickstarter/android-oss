@@ -189,7 +189,7 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
 
             projectAndReward
-                    .map { p -> p.first.currency() != p.first.currentCurrency() || RewardUtils.isNoReward(p.second) }
+                    .map { p -> p.first.currency() != p.first.currentCurrency() }
                     .map { BooleanUtils.negate(it) }
                     .subscribe { this.conversionTextViewIsGone.onNext(it) }
 

@@ -223,13 +223,13 @@ interface PledgeFragmentViewModel {
                     .filter { RewardUtils.isNoReward(it) }
                     .map { true }
 
-            this.shippingRulesSectionIsGone
-                    .compose(bindToLifecycle())
-                    .subscribe(this.estimatedDeliveryInfoIsGone)
-
             Observable.merge(hasNoShippingRules, isNoReward)
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesSectionIsGone)
+
+            this.shippingRulesSectionIsGone
+                    .compose(bindToLifecycle())
+                    .subscribe(this.estimatedDeliveryInfoIsGone)
 
             val defaultShippingRule = shippingRules
                     .filter { it.isNotEmpty() }

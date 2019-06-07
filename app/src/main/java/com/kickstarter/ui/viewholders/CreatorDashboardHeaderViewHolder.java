@@ -145,10 +145,10 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   }
 
   private void setPledgedOfGoalString(final @NonNull Project currentProject) {
-    final String pledgedString = this.ksCurrency.format(currentProject.pledged(), currentProject, true);
+    final String pledgedString = this.ksCurrency.format(currentProject.pledged(), currentProject);
     this.amountRaisedTextView.setText(pledgedString);
 
-    final String goalString = this.ksCurrency.format(currentProject.goal(), currentProject, true);
+    final String goalString = this.ksCurrency.format(currentProject.goal(), currentProject);
     final String goalText = this.ksString.format(this.pledgedOfGoalString, "goal", goalString);
     this.fundingTextTextView.setText(goalText);
   }

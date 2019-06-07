@@ -68,10 +68,10 @@ interface PledgeFragmentViewModel {
         /**  Emits a boolean determining if the continue button should be hidden. */
         fun continueButtonIsGone(): Observable<Boolean>
 
-        /** Set the USD conversion.  */
+        /** Emits a string representing the total pledge amount in the user's preferred currency.  */
         fun conversionText(): Observable<String>
 
-        /** Returns `true` if the USD conversion section should be hidden, `false` otherwise.  */
+        /** Returns `true` if the conversion should be hidden, `false` otherwise.  */
         fun conversionTextViewIsGone(): Observable<Boolean>
 
         /**  Emits a boolean determining if the decrease pledge button should be enabled. */
@@ -196,7 +196,7 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
 
             projectAndReward
-                    .map { p -> p.first.currency() != p.first.currentCurrency() || RewardUtils.isNoReward(p.second) }
+                    .map { p -> p.first.currency() != p.first.currentCurrency() }
                     .map { BooleanUtils.negate(it) }
                     .subscribe { this.conversionTextViewIsGone.onNext(it) }
 
@@ -205,13 +205,14 @@ interface PledgeFragmentViewModel {
 
             rewardAmount
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.HALF_UP, 0) }
+                    .map<SpannableString> { ViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe { this.pledgeAmount.onNext(it) }
 
             val shippingRules = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
-                    .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second).compose(neverError()) }
+                    .filter { RewardUtils.isReward(it.second) }
+                    .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second).compose(neverError())  }
                     .map { it.shippingRules() }
                     .share()
 
@@ -222,19 +223,24 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesAndProject)
 
-            rulesAndProject
-                    .compose(bindToLifecycle())
+            val hasNoShippingRules = rulesAndProject
                     .map { ObjectUtils.isNull(it.first) || it.first.isEmpty() }
+
+            val isNoReward = reward
+                    .filter { RewardUtils.isNoReward(it) }
+                    .map { true }
+
+            Observable.merge(hasNoShippingRules, isNoReward)
+                    .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesSectionIsGone)
+
+            this.shippingRulesSectionIsGone
+                    .compose(bindToLifecycle())
+                    .subscribe(this.estimatedDeliveryInfoIsGone)
 
             val defaultShippingRule = shippingRules
                     .filter { it.isNotEmpty() }
                     .switchMap { getDefaultShippingRule(it) }
-
-            reward
-                    .map { RewardUtils.isNoReward(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.estimatedDeliveryInfoIsGone)
 
             val additionalPledgeAmount = BehaviorSubject.create<Double>(0.0)
 
@@ -304,7 +310,7 @@ interface PledgeFragmentViewModel {
 
             shippingAmount
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 2) }
+                    .map<SpannableString> { ViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmount)
 
@@ -319,35 +325,28 @@ interface PledgeFragmentViewModel {
                     .filter { ObjectUtils.isNull(it.first) || it.first.isEmpty() }
                     .compose<Pair<Pair<List<ShippingRule>, Reward>, Double>>(combineLatestPair(rewardAmountPlusAdditional))
 
-            val initialTotalAmount = rulesAndRewardAndAdditional
+            val initialAmountWithReward = rulesAndRewardAndAdditional
                     .map { it.second }
-                    .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .compose(bindToLifecycle())
 
-            val totalWithShippingRule = rewardAmountPlusAdditional
+            val initialAmountNoReward = rewardAmountPlusAdditional
+                    .compose<Pair<Double, Reward>>(combineLatestPair(reward))
+                    .filter { RewardUtils.isNoReward(it.second) }
+                    .map { it.first }
+
+            val initialAmount = Observable.merge(initialAmountNoReward, initialAmountWithReward)
+
+            val totalAmount = rewardAmountPlusAdditional
                     .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first + it.second }
+
+            Observable.merge(initialAmount, totalAmount)
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .compose(bindToLifecycle())
-
-            val totalAmount = Observable.merge(initialTotalAmount, totalWithShippingRule)
-
-            totalAmount
-                    .map<SpannableString> { this.ksCurrency.formatWithProjectCurrency(it.first, it.second, RoundingMode.UP, 2) }
+                    .map<SpannableString> { ViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe(this.totalAmount)
 
-            val initialTotalConversionAmount = rulesAndRewardAndAdditional
-                    .map { it.second }
+            Observable.merge(initialAmount, totalAmount)
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .compose(bindToLifecycle())
-
-            val totalConversionAmount = rewardAmountPlusAdditional
-                    .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
-                    .map { it.first + it.second }
-                    .compose<Pair<Double, Project>>(combineLatestPair(project))
-
-            Observable.merge(initialTotalConversionAmount, totalConversionAmount)
                     .map { this.ksCurrency.formatWithUserPreference(it.first, it.second, RoundingMode.UP, 2) }
                     .compose(bindToLifecycle())
                     .subscribe { this.conversionText.onNext(it) }

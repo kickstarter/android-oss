@@ -60,9 +60,7 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.viewModel.outputs.isClickable()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    configureRewardButton(it)
-                }
+                .subscribe { configureRewardButton(it) }
 
         this.viewModel.outputs.limitAndRemainingTextViewIsGone()
                 .compose(bindToLifecycle())

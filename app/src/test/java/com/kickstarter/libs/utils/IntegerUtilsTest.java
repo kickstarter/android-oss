@@ -22,4 +22,11 @@ public class IntegerUtilsTest extends TestCase {
     assertEquals(5, IntegerUtils.intValueOrZero(5));
     assertEquals(0, IntegerUtils.intValueOrZero(null));
   }
+
+  public void testIsNullOrZero() {
+    assertFalse(IntegerUtils.isNullOrZero(1));
+    assertFalse(IntegerUtils.isNullOrZero(-1));
+    assertTrue(IntegerUtils.isNullOrZero(0));
+    assertTrue(IntegerUtils.isNullOrZero(null));
+  }
 }

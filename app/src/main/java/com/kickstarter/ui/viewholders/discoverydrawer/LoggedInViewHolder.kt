@@ -47,7 +47,7 @@ class LoggedInViewHolder(@NonNull view: View, @NonNull private val delegate: Del
                 .compose(observeForUI())
                 .subscribe {
                     view.unread_messages_count.text = when {
-                        IntegerUtils.isZero(it) -> null
+                        IntegerUtils.isNullOrZero(it) -> null
                         else -> NumberUtils.format(it)
                     }
                 }
@@ -57,7 +57,7 @@ class LoggedInViewHolder(@NonNull view: View, @NonNull private val delegate: Del
                 .compose(observeForUI())
                 .subscribe {
                     view.unseen_activity_count.text = when {
-                        IntegerUtils.isZero(it) -> null
+                        IntegerUtils.isNullOrZero(it) -> null
                         else -> NumberUtils.format(it)
                     }
                 }

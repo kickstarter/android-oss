@@ -24,7 +24,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:focusable="true"
-    android:visibility="gone"
     tools:visibility="visible"
     android:layout_alignParentBottom="true">
 
@@ -95,6 +94,56 @@
           tools:layout="@layout/fragment_rewards" />
 
       </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginStart="@dimen/activity_horizontal_margin"
+      android:layout_marginEnd="@dimen/activity_horizontal_margin"
+      >
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:layout_gravity="center_vertical"
+      android:layout_weight="1"
+     >
+
+      <TextView
+        android:id="@+id/you_backer_text"
+        style="@style/CalloutPrimaryMedium"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:textSize="@dimen/grid_5_half"
+        android:layout_height="match_parent"
+        android:text="@string/Youre_a_backer"/>
+
+      <TextView
+        android:id="@+id/reward_infos"
+        style="@style/CalloutPrimaryMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textColor="@color/ksr_dark_grey_500"
+        android:textSize="@dimen/grid_2"
+        android:lines="1"
+        android:text="$20 . Funky Reward Title..."/>
+    </LinearLayout>
+
+      <com.google.android.material.button.MaterialButton
+        android:id="@+id/native_manage_pledge_button"
+        style="@style/ProjectActionButton"
+        app:cornerRadius="@dimen/grid_2"
+        android:layout_width="@dimen/grid_16"
+        android:layout_height="@dimen/grid_8"
+        android:layout_gravity="end"
+        android:backgroundTint="@color/blue_darken_10"
+        android:textAllCaps="false"
+        android:text="@string/Manage" />
 
     </LinearLayout>
 

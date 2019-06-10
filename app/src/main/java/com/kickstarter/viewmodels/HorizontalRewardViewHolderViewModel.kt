@@ -120,7 +120,7 @@ interface HorizontalRewardViewHolderViewModel {
         init {
 
             this.minimumAmountStyled = this.projectAndReward
-                    .map { ViewUtils.styleCurrencyBottom(it.second.minimum(), it.first, this.ksCurrency) }
+                    .map { ViewUtils.styleCurrency(it.second.minimum(), it.first, this.ksCurrency, false) }
 
             val reward = this.projectAndReward
                     .map { it.second }

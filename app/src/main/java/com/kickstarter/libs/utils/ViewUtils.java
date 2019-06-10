@@ -69,25 +69,7 @@ public final class ViewUtils {
    *
    */
   public static @NotNull SpannableString styleCurrency(final double value, final Project project, final @NonNull KSCurrency ksCurrency) {
-    final String formattedCurrency = ksCurrency.format(value, project, RoundingMode.HALF_UP);
-    final SpannableString spannableString = new SpannableString(formattedCurrency);
-
-    final Country country = Country.findByCurrencyCode(project.currency());
-    if (country == null) {
-      return spannableString;
-    }
-
-    final boolean currencyNeedsCode = ksCurrency.currencyNeedsCode(country, true);
-    final String currencySymbolToDisplay = StringUtils.trim(ksCurrency.getCurrencySymbol(country, true));
-
-    if (currencyNeedsCode) {
-      final int startOfSymbol = formattedCurrency.indexOf(currencySymbolToDisplay);
-      final int endOfSymbol = startOfSymbol + currencySymbolToDisplay.length();
-      spannableString.setSpan(new RelativeSizeSpan(.5f), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-      spannableString.setSpan(new CenterSpan(), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-    }
-
-    return spannableString;
+    return styleCurrency(value, project, ksCurrency, true);
   }
 
   /**
@@ -95,7 +77,7 @@ public final class ViewUtils {
    * Special case: US people looking at US currency just get the currency symbol.
    *
    */
-  public static @NotNull SpannableString styleCurrencyBottom(final double value, final Project project, final @NonNull KSCurrency ksCurrency) {
+  public static @NotNull SpannableString styleCurrency(final double value, final Project project, final @NonNull KSCurrency ksCurrency, final boolean centered) {
     final String formattedCurrency = ksCurrency.format(value, project, RoundingMode.HALF_UP);
     final SpannableString spannableString = new SpannableString(formattedCurrency);
 
@@ -110,7 +92,14 @@ public final class ViewUtils {
     if (currencyNeedsCode) {
       final int startOfSymbol = formattedCurrency.indexOf(currencySymbolToDisplay);
       final int endOfSymbol = startOfSymbol + currencySymbolToDisplay.length();
-      spannableString.setSpan(new RelativeSizeSpan(.7f), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+      final float proportion;
+      if (centered) {
+        proportion = .5f;
+        spannableString.setSpan(new CenterSpan(), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+      } else {
+        proportion = .7f;
+      }
+      spannableString.setSpan(new RelativeSizeSpan(proportion), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
     }
 
     return spannableString;

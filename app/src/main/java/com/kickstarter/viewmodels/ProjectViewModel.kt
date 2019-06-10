@@ -77,11 +77,11 @@ interface ProjectViewModel {
         /** Emits when we should set the Y position of the rewards container. */
         fun setInitialRewardsContainerY(): Observable<Void>
 
-        /** Emits the color for the reward button based on (View, Manage, or Back this project). */
-        fun setRewardButtonColor(): Observable<Int>
+        /** Emits the color resource ID for the reward button based on (View, Manage, or Back this project). */
+        fun setRewardsButtonColor(): Observable<Int>
 
-        /** Emits the proper string for the reward button. */
-        fun setRewardButtonString(): Observable<Int>
+        /** Emits the proper string resource ID for the reward button. */
+        fun setRewardsButtonText(): Observable<Int>
 
         /** Emits when rewards fragment should expand. */
         fun showRewardsFragment(): Observable<Boolean>
@@ -145,8 +145,8 @@ interface ProjectViewModel {
         private val projectAndUserCountryAndIsFeatureEnabled = BehaviorSubject.create<Pair<Pair<Project, String>, Boolean>>()
         private val setActionButtonId = BehaviorSubject.create<Int>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
-        private val setRewardButtonColor = BehaviorSubject.create<Int>()
-        private val setRewardButtonString = BehaviorSubject.create<Int>()
+        private val setRewardsButtonColor = BehaviorSubject.create<Int>()
+        private val setRewardsButtonText = BehaviorSubject.create<Int>()
         private val showRewardsFragment = BehaviorSubject.create<Boolean>()
         private val startLoginToutActivity = BehaviorSubject.create<Void>()
         private val showShareSheet = BehaviorSubject.create<Project>()
@@ -326,15 +326,13 @@ interface ProjectViewModel {
 
             currentProject
                     .map { getRewardButtonString(it) }
-                    .take(1)
                     .compose(bindToLifecycle())
-                    .subscribe { this.setRewardButtonString.onNext(it) }
+                    .subscribe { this.setRewardsButtonText.onNext(it) }
 
             currentProject
                     .map { getRewardButtonColor(it) }
-                    .take(1)
                     .compose(bindToLifecycle())
-                    .subscribe { this.setRewardButtonColor.onNext(it) }
+                    .subscribe { this.setRewardsButtonColor.onNext(it) }
 
         }
 
@@ -447,9 +445,9 @@ interface ProjectViewModel {
         @NonNull
         override fun setInitialRewardsContainerY(): Observable<Void> = this.setInitialRewardPosition
 
-        override fun setRewardButtonColor(): Observable<Int> = this.setRewardButtonColor
+        override fun setRewardsButtonColor(): Observable<Int> = this.setRewardsButtonColor
 
-        override fun setRewardButtonString(): Observable<Int> = this.setRewardButtonString
+        override fun setRewardsButtonText(): Observable<Int> = this.setRewardsButtonText
 
         @NonNull
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt

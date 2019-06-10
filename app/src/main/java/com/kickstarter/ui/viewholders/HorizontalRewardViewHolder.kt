@@ -151,23 +151,18 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
     }
 
     private fun setConversionTextView(@NonNull amount: String) {
-        this.view.horizontal_reward_usd_conversion_text_view.text = (this.ksString.format(
-                this.currencyConversionString,
-                "reward_amount", amount
-        ))
+        this.view.horizontal_reward_usd_conversion_text_view.text = this.ksString.format(this.currencyConversionString,
+                "reward_amount", amount)
     }
 
     private fun setMinimumButtonText(@NonNull minimum: String) {
-        this.view.horizontal_reward_pledge_button.text = (this.ksString.format(
-                this.pledgeRewardCurrencyOrMoreString,
-                "reward_currency", minimum
-        ))
+        this.view.horizontal_reward_pledge_button.text = this.ksString.format(this.pledgeRewardCurrencyOrMoreString,
+                "reward_currency", minimum)
     }
 
     private fun setRemainingRewardsTextView(@NonNull remaining: String) {
-        this.view.horizontal_reward_remaining_text_view.text = (this.ksString.format(
-                this.remainingRewardsString, "left_count", remaining
-        ))
+        this.view.horizontal_reward_remaining_text_view.text = this.ksString.format(this.remainingRewardsString,
+                "left_count", remaining)
     }
 
     private fun setUpRewardItemsAdapter(): RewardItemsAdapter {

@@ -33,13 +33,13 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textColor="@color/ksr_green_500"
-          android:textSize="@dimen/title_3"
+          android:textSize="@dimen/title_reward"
           android:textStyle="bold"
           tools:text="$20" />
 
         <TextView
           android:id="@+id/horizontal_reward_usd_conversion_text_view"
-          style="@style/Caption1Secondary"
+          style="@style/FootnotePrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textColor="@color/ksr_green_500"

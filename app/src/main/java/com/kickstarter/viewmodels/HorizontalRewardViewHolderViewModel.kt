@@ -97,11 +97,11 @@ interface HorizontalRewardViewHolderViewModel {
         private val conversionTextViewIsGone: Observable<Boolean>
         private val descriptionText: Observable<String>
         private val isClickable: Observable<Boolean>
-        private val isLimitReachedButtonTextVisible: Observable<Void>
         private val limitAndBackersSeparatorIsGone: Observable<Boolean>
         private val limitAndRemainingTextViewIsGone: Observable<Boolean>
         private val limitAndRemainingText: Observable<Pair<String, String>>
         private val limitHeaderIsGone: Observable<Boolean>
+        private val limitReachedButtonTextIsVisible: Observable<Void>
         private val minimumAmount: Observable<String>
         private val minimumAmountStyled: Observable<SpannableString>
         private val reward: Observable<Reward>
@@ -125,7 +125,7 @@ interface HorizontalRewardViewHolderViewModel {
             val reward = this.projectAndReward
                     .map { it.second }
 
-            this.isLimitReachedButtonTextVisible = reward
+            this.limitReachedButtonTextIsVisible = reward
                     .filter { RewardUtils.isLimitReached(it) }
                     .compose(ignoreValues())
 
@@ -248,9 +248,6 @@ interface HorizontalRewardViewHolderViewModel {
         override fun isClickable(): Observable<Boolean> = this.isClickable
 
         @NonNull
-        override fun limitReachedButtonTextIsVisible(): Observable<Void> = this.isLimitReachedButtonTextVisible
-
-        @NonNull
         override fun limitAndRemainingTextViewIsGone(): Observable<Boolean> = this.limitAndRemainingTextViewIsGone
 
         @NonNull
@@ -258,6 +255,9 @@ interface HorizontalRewardViewHolderViewModel {
 
         @NonNull
         override fun limitHeaderIsGone(): Observable<Boolean> = this.limitHeaderIsGone
+
+        @NonNull
+        override fun limitReachedButtonTextIsVisible(): Observable<Void> = this.limitReachedButtonTextIsVisible
 
         @NonNull
         override fun minimumAmount(): Observable<String> = this.minimumAmount

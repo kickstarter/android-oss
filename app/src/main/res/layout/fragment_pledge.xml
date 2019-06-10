@@ -26,13 +26,13 @@
 
       <include
         android:id="@+id/reward_layout"
-        android:visibility="invisible"
-        layout="@layout/item_reward" />
+        layout="@layout/item_reward"
+        android:visibility="invisible" />
 
       <include
         android:id="@+id/no_reward_layout"
-        android:visibility="invisible"
-        layout="@layout/item_no_reward" />
+        layout="@layout/item_no_reward"
+        android:visibility="invisible" />
     </FrameLayout>
 
     <!-- todo: what's the content description? -->
@@ -107,6 +107,7 @@
             tools:text="December 2019" />
 
         </LinearLayout>
+
         <LinearLayout
           android:id="@+id/accountability"
           android:layout_width="wrap_content"
@@ -258,26 +259,28 @@
 
             <LinearLayout
               android:id="@+id/shipping_amount_container"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:visibility="gone"
-              android:orientation="horizontal">
-
-            <ImageView
-              android:layout_width="@dimen/grid_3"
-              android:layout_height="@dimen/grid_3"
-              android:layout_gravity="start|center_vertical"
-              android:contentDescription="@null"
-              android:src="@drawable/ic_add"
-              android:tint="@color/ksr_dark_grey_400" />
-
-            <TextView
-              android:id="@+id/shipping_amount"
-              style="@style/PledgeCurrency"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_gravity="end"
-              tools:text="$20.00" />
+              android:orientation="horizontal"
+              android:visibility="invisible"
+              tools:visibility="visible">
+
+              <ImageView
+                android:layout_width="@dimen/grid_3"
+                android:layout_height="@dimen/grid_3"
+                android:layout_gravity="start|center_vertical"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_add"
+                android:tint="@color/ksr_dark_grey_400" />
+
+              <TextView
+                android:id="@+id/shipping_amount"
+                style="@style/PledgeCurrency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                tools:text="$20" />
             </LinearLayout>
 
             <View

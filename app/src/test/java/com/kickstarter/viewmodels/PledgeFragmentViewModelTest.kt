@@ -19,8 +19,8 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.data.ActivityResult
+import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import org.junit.Test
@@ -49,9 +49,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val shippingAmount = TestSubscriber<String>()
     private val shippingRuleAndProject = TestSubscriber<Pair<List<ShippingRule>, Project>>()
     private val shippingRulesSectionIsGone = TestSubscriber<Boolean>()
-    private val showPledgeCard = TestSubscriber<Pair<Int, RewardCardAdapter.CardState>>()
+    private val showPledgeCard = TestSubscriber<Pair<Int, CardState>>()
+    private val showPledgeError = TestSubscriber<Void>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val startNewCardActivity = TestSubscriber<Void>()
+    private val startThanksActivity = TestSubscriber<Project>()
     private val totalAmount = TestSubscriber<String>()
 
     private fun setUpEnvironment(environment: Environment, reward: Reward? = RewardFactory.rewardWithShipping(),
@@ -76,8 +78,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.shippingRulesAndProject().subscribe(this.shippingRuleAndProject)
         this.vm.outputs.shippingRulesSectionIsGone().subscribe(this.shippingRulesSectionIsGone)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
+        this.vm.outputs.showPledgeError().subscribe(this.showPledgeError)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.startNewCardActivity().subscribe(this.startNewCardActivity)
+        this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
 
         val bundle = Bundle()
@@ -123,26 +127,49 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         // Set the project currency and the user's chosen currency to the same value
         val project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("USD").build()
-        val reward = RewardFactory.reward()
 
-        setUpEnvironment(environment, reward, project)
+        setUpEnvironment(environment, project = project)
 
         // the conversion should be hidden.
+        this.totalAmount.assertValue("$50")
         this.conversionText.assertValue("$50.00")
         this.conversionTextViewIsGone.assertValue(true)
     }
 
     @Test
-    fun testConversionShownForPledgeTotal() {
+    fun testConversionShownForPledgeTotal_shippableReward() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
 
         // Set the project currency and the user's chosen currency to different values
         val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
-        val reward = RewardFactory.reward()
 
-        setUpEnvironment(environment, reward, project)
+        setUpEnvironment(environment, project = project)
 
         this.conversionText.assertValue("$37.50")
+        this.conversionTextViewIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testConversionShownForPledgeTotal_noReward() {
+        // Set the project currency and the user's chosen currency to different values
+        val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
+
+        setUpEnvironment(environment(), RewardFactory.noReward(), project)
+
+        this.totalAmount.assertValue("CA$ 1")
+        this.conversionText.assertValue("$0.75")
+        this.conversionTextViewIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testConversionShownForPledgeTotal_digitalReward() {
+        // Set the project currency and the user's chosen currency to different values
+        val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
+
+        setUpEnvironment(environment(), RewardFactory.reward(), project)
+
+        this.totalAmount.assertValue("CA$ 20")
+        this.conversionText.assertValue("$15.00")
         this.conversionTextViewIsGone.assertValue(false)
     }
 
@@ -152,9 +179,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         // Set the project currency and the user's chosen currency to different values
         val project = ProjectFactory.project().toBuilder().currentCurrency("CAD").build()
-        val reward = RewardFactory.reward()
 
-        setUpEnvironment(environment, reward, project)
+        setUpEnvironment(environment, project = project)
 
         this.conversionText.assertValue("CA$ 50.00")
 
@@ -205,11 +231,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testEstimatedDelivery_whenNoShippingRules() {
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
-        setUpEnvironment(environment, reward = RewardFactory.reward())
+    fun testEstimatedDelivery_whenDigitalReward() {
+        setUpEnvironment(environment(), reward = RewardFactory.reward())
+
         this.estimatedDelivery.assertNoValues()
-        this.estimatedDeliveryInfoIsGone.assertValue(false)
+        this.estimatedDeliveryInfoIsGone.assertValue(true)
     }
 
     @Test
@@ -286,7 +312,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShippingRuleAndProject() {
+    fun testShippingRulesAndProject_shippableReward() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
         val project = ProjectFactory.project()
         setUpEnvironment(environment, project = project)
@@ -296,23 +322,36 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShippingRulesSection_NoReward() {
+    fun testShippingRulesAndProject_noReward() {
         setUpEnvironment(environment(), RewardFactory.noReward())
+
         this.shippingRulesSectionIsGone.assertValues(true)
+        this.shippingRuleAndProject.assertNoValues()
     }
 
     @Test
-    fun testShippingRulesSection_NoShippingRules() {
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
-        setUpEnvironment(environment)
+    fun testShippingRulesAndProject_digitalReward() {
+        setUpEnvironment(environment(), RewardFactory.reward())
+
         this.shippingRulesSectionIsGone.assertValues(true)
+        this.shippingRuleAndProject.assertNoValues()
     }
 
     @Test
-    fun testShippingRulesSection_WithShippingRules() {
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
-        setUpEnvironment(environment)
+    fun testShippingRulesAndProject_error() {
+        val environment = environment().toBuilder()
+                .apiClient(object : MockApiClient() {
+                    override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+                        return Observable.error(Throwable("error"))
+                    }
+                })
+                .build()
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment, project = project)
+
         this.shippingRulesSectionIsGone.assertValues(false)
+        this.shippingRuleAndProject.assertNoValues()
+        this.totalAmount.assertNoValues()
     }
 
     @Test
@@ -330,17 +369,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.totalAmount.assertValues("$50", "$60")
         this.selectedShippingRule.assertValues(defaultRule, selectedRule)
-    }
-
-    @Test
-    fun testShowPledgeCard() {
-        setUpEnvironment(environment())
-
-        this.vm.inputs.selectCardButtonClicked(2)
-        this.showPledgeCard.assertValuesAndClear(Pair(2, RewardCardAdapter.CardState.PLEDGE))
-
-        this.vm.inputs.closeCardButtonClicked(2)
-        this.showPledgeCard.assertValue(Pair(2, RewardCardAdapter.CardState.SELECT))
     }
 
     @Test
@@ -375,18 +403,116 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testTotalAmountWithoutShippingRules() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
         setUpEnvironment(environment)
-        this.totalAmount.assertValue("$20")
+        this.totalAmount.assertNoValues()
     }
 
     @Test
     fun testTotalAmountWithoutShippingRules_WhenStepperChangesValue() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
         setUpEnvironment(environment)
-        this.totalAmount.assertValue("$20")
+        this.totalAmount.assertNoValues()
         this.vm.decreasePledgeButtonClicked()
-        this.totalAmount.assertValues("$20", "$19")
+        this.totalAmount.assertNoValues()
         this.vm.increasePledgeButtonClicked()
-        this.totalAmount.assertValues("$20", "$19", "$20")
+        this.totalAmount.assertNoValues()
+    }
+
+    @Test
+    fun testStartThanksActivity_noReward() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment(), RewardFactory.noReward(), project)
+
+        this.vm.inputs.selectCardButtonClicked(0)
+
+        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+
+        this.vm.inputs.pledgeButtonClicked("t3st")
+
+        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
+        this.startThanksActivity.assertValue(project)
+        this.showPledgeError.assertNoValues()
+    }
+
+    @Test
+    fun testStartThanksActivity_digitalReward() {
+        setUpEnvironment(environment(), RewardFactory.reward())
+
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment(), RewardFactory.noReward(), project)
+
+        this.vm.inputs.selectCardButtonClicked(0)
+
+        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+
+        this.vm.inputs.pledgeButtonClicked("t3st")
+
+        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
+        this.startThanksActivity.assertValue(project)
+        this.showPledgeError.assertNoValues()
+    }
+
+    @Test
+    fun testStartThanksActivity_physicalReward() {
+        setUpEnvironment(environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules()), RewardFactory.rewardWithShipping())
+
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment(), RewardFactory.noReward(), project)
+
+        this.vm.inputs.selectCardButtonClicked(0)
+
+        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+
+        this.vm.inputs.pledgeButtonClicked("t3st")
+
+        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
+        this.startThanksActivity.assertValue(project)
+        this.showPledgeError.assertNoValues()
+    }
+
+    @Test
+    fun testStartThanksActivity_error() {
+        val project = ProjectFactory.project()
+        val environment = environment().toBuilder()
+                .apolloClient(object : MockApolloClient() {
+                    override fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+                        return Observable.error(Throwable("error"))
+                    }
+                })
+                .build()
+        setUpEnvironment(environment, RewardFactory.noReward(), project)
+
+        this.vm.inputs.selectCardButtonClicked(0)
+
+        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+
+        this.vm.inputs.pledgeButtonClicked("t3st")
+
+        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.startThanksActivity.assertNoValues()
+        this.showPledgeError.assertValueCount(1)
+    }
+
+    @Test
+    fun testStartThanksActivity_unsuccessful() {
+        val project = ProjectFactory.project()
+        val environment = environment().toBuilder()
+                .apolloClient(object : MockApolloClient() {
+                    override fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+                        return Observable.just(false)
+                    }
+                })
+                .build()
+        setUpEnvironment(environment, RewardFactory.noReward(), project)
+
+        this.vm.inputs.selectCardButtonClicked(0)
+
+        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+
+        this.vm.inputs.pledgeButtonClicked("t3st")
+
+        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.startThanksActivity.assertNoValues()
+        this.showPledgeError.assertValueCount(1)
     }
 
     private fun environmentForShippingRules(envelope: ShippingRulesEnvelope): Environment {

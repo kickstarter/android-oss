@@ -171,7 +171,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe {
                     shipping_amount.text = it
-                    ViewUtils.setGone(shipping_amount_container, false)
+                    ViewUtils.setInvisible(shipping_amount_container, false)
                     ViewUtils.setGone(shipping_amount_loading_view, true)
                 }
 

@@ -100,11 +100,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCards() {
+    fun testCards_whenPhysicalReward() {
         val card = StoredCardFactory.discoverCard()
         val mockCurrentUser = MockCurrentUser(UserFactory.user())
 
-        val environment = environment()
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
                 .currentUser(mockCurrentUser)
                 .apolloClient(object : MockApolloClient() {
@@ -113,6 +113,28 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     }
                 }).build()
         setUpEnvironment(environment)
+
+        this.cards.assertValue(Collections.singletonList(card))
+
+        this.vm.activityResult(ActivityResult.create(ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD, Activity.RESULT_OK, Intent()))
+
+        this.cards.assertValueCount(2)
+    }
+
+    @Test
+    fun testCards_digitalReward() {
+        val card = StoredCardFactory.discoverCard()
+        val mockCurrentUser = MockCurrentUser(UserFactory.user())
+
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+                .toBuilder()
+                .currentUser(mockCurrentUser)
+                .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(Collections.singletonList(card))
+                    }
+                }).build()
+        setUpEnvironment(environment, RewardFactory.reward())
 
         this.cards.assertValue(Collections.singletonList(card))
 
@@ -137,7 +159,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testConversionShownForPledgeTotal_shippableReward() {
+    fun testConversionShownForPledgeTotal_whenPhysicalReward() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
 
         // Set the project currency and the user's chosen currency to different values
@@ -150,7 +172,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testConversionShownForPledgeTotal_noReward() {
+    fun testConversionShownForPledgeTotal_whenNoReward() {
         // Set the project currency and the user's chosen currency to different values
         val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
 
@@ -162,7 +184,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testConversionShownForPledgeTotal_digitalReward() {
+    fun testConversionShownForPledgeTotal_whenDigitalReward() {
         // Set the project currency and the user's chosen currency to different values
         val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
 
@@ -190,8 +212,26 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPaymentForLoggedInUser() {
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(UserFactory.user())).build())
+    fun testPaymentForLoggedInUser_whenPhysicalReward() {
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+                .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
+                .build()
+        setUpEnvironment(environment)
+
+        this.cards.assertValueCount(1)
+        this.continueButtonIsGone.assertValue(true)
+        this.paymentContainerIsGone.assertValue(false)
+    }
+
+
+    @Test
+    fun testPaymentForLoggedInUser_whenDigitalReward() {
+        val environment = environment()
+                .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
+                .build()
+        setUpEnvironment(environment, RewardFactory.reward())
 
         this.cards.assertValueCount(1)
         this.continueButtonIsGone.assertValue(true)
@@ -208,9 +248,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPaymentLoggingInUser() {
+    fun testPaymentLoggingInUser_whenPhysicalReward() {
         val mockCurrentUser = MockCurrentUser()
-        setUpEnvironment(environment().toBuilder().currentUser(mockCurrentUser).build())
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+                .toBuilder()
+                .currentUser(mockCurrentUser)
+                .build()
+        setUpEnvironment(environment)
 
         this.cards.assertNoValues()
         this.continueButtonIsGone.assertValue(false)
@@ -224,7 +268,23 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testEstimatedDelivery() {
+    fun testPaymentLoggingInUser_whenDigitalReward() {
+        val mockCurrentUser = MockCurrentUser()
+        setUpEnvironment(environment().toBuilder().currentUser(mockCurrentUser).build(), RewardFactory.reward())
+
+        this.cards.assertNoValues()
+        this.continueButtonIsGone.assertValue(false)
+        this.paymentContainerIsGone.assertValue(true)
+
+        mockCurrentUser.refresh(UserFactory.user())
+
+        this.cards.assertValueCount(1)
+        this.continueButtonIsGone.assertValues(false, true)
+        this.paymentContainerIsGone.assertValues(true, false)
+    }
+
+    @Test
+    fun testEstimatedDelivery_whenPhysicalReward() {
         setUpEnvironment(environment())
         this.estimatedDelivery.assertValue("March 2019")
         this.estimatedDeliveryInfoIsGone.assertValue(false)
@@ -312,7 +372,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShippingRulesAndProject_shippableReward() {
+    fun testShippingRulesAndProject_whenPhysicalReward() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
         val project = ProjectFactory.project()
         setUpEnvironment(environment, project = project)
@@ -322,7 +382,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShippingRulesAndProject_noReward() {
+    fun testShippingRulesAndProject_whenNoReward() {
         setUpEnvironment(environment(), RewardFactory.noReward())
 
         this.shippingRulesSectionIsGone.assertValues(true)
@@ -330,7 +390,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShippingRulesAndProject_digitalReward() {
+    fun testShippingRulesAndProject_whenDigitalReward() {
         setUpEnvironment(environment(), RewardFactory.reward())
 
         this.shippingRulesSectionIsGone.assertValues(true)
@@ -418,7 +478,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testStartThanksActivity_noReward() {
+    fun testStartThanksActivity_whenNoReward() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment(), RewardFactory.noReward(), project)
 
@@ -434,7 +494,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testStartThanksActivity_digitalReward() {
+    fun testStartThanksActivity_whenDigitalReward() {
         setUpEnvironment(environment(), RewardFactory.reward())
 
         val project = ProjectFactory.project()
@@ -452,7 +512,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testStartThanksActivity_physicalReward() {
+    fun testStartThanksActivity_whenPhysicalReward() {
         setUpEnvironment(environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules()), RewardFactory.rewardWithShipping())
 
         val project = ProjectFactory.project()

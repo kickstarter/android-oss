@@ -311,6 +311,7 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Double, Reward>>(combineLatestPair(reward))
                     .filter { RewardUtils.isNoReward(it.second) || !RewardUtils.isShippable(it.second) }
                     .map<Double> { it.first }
+                    .distinctUntilChanged()
 
             val shippableTotal = basePledgeAmount
                     .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
@@ -318,6 +319,7 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Double, Reward>>(combineLatestPair(reward))
                     .filter { RewardUtils.isReward(it.second) && RewardUtils.isShippable(it.second) }
                     .map<Double> { it.first }
+                    .distinctUntilChanged()
 
             val total = Observable.merge(unshippableTotal, shippableTotal)
                     .compose<Pair<Double, Project>>(combineLatestPair(project))

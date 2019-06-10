@@ -499,8 +499,6 @@ interface ProjectViewModel {
         private fun getRewardButtonString(project: Project): Int? {
             return if (!project.isBacking && project.isLive) {
                 R.string.Back_this_project
-            } else if (project.isBacking && project.isLive) {
-                R.string.Manage_your_pledge
             } else if (project.isBacking && !project.isLive) {
                 R.string.View_your_pledge
             } else {
@@ -511,8 +509,6 @@ interface ProjectViewModel {
         private fun getRewardButtonColor(project: Project): Int? {
             return if (!project.isBacking && project.isLive) {
                 R.color.primary
-            } else if (project.isBacking && project.isLive) {
-                R.color.blue_darken_10
             } else if (project.isBacking && !project.isLive) {
                 R.color.black
             } else {

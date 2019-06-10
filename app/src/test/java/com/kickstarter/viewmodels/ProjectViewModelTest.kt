@@ -337,19 +337,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_SetRewardButtonStringAndColor_Backed_Live_Project() {
-        setUpEnvironment(environment())
-
-        val project = ProjectFactory.backedProject()
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.setRewardButtonColor.assertValue(R.color.blue_darken_10)
-        this.setRewardButtonString.assertValue(R.string.Manage_your_pledge)
-    }
-
-    @Test
     fun testProjectViewModel_SetRewardButtonStringAndColor_Backed_Ended_Project() {
         setUpEnvironment(environment())
 

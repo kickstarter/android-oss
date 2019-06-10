@@ -6,12 +6,12 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.AnimationUtils
 import com.kickstarter.models.StoredCard
-import com.kickstarter.viewmodels.RewardCardViewHolderViewModel
+import com.kickstarter.viewmodels.RewardLoadingCardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward_loading_card.view.*
 
 class RewardLoadingCardViewHolder(val view: View) : KSViewHolder(view) {
 
-    private val viewModel: RewardCardViewHolderViewModel.ViewModel = RewardCardViewHolderViewModel.ViewModel(environment())
+    private val viewModel: RewardLoadingCardViewHolderViewModel.ViewModel = RewardLoadingCardViewHolderViewModel.ViewModel(environment())
     private val ksString: KSString = environment().ksString()
 
     private val creditCardExpirationString = this.context().getString(R.string.Credit_card_expiration)

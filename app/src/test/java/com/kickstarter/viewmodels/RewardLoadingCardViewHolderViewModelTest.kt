@@ -8,9 +8,9 @@ import org.junit.Test
 import rx.observers.TestSubscriber
 import java.util.*
 
-class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
+class RewardLoadingCardViewHolderViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: RewardCardViewHolderViewModel.ViewModel
+    private lateinit var vm: RewardLoadingCardViewHolderViewModel.ViewModel
 
     private val estimatedDelivery = TestSubscriber.create<String>()
     private val id = TestSubscriber.create<String>()
@@ -18,7 +18,7 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val lastFour = TestSubscriber.create<String>()
 
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = RewardCardViewHolderViewModel.ViewModel(environment)
+        this.vm = RewardLoadingCardViewHolderViewModel.ViewModel(environment)
 
         this.vm.outputs.expirationDate().subscribe(this.estimatedDelivery)
         this.vm.outputs.id().subscribe(this.id)

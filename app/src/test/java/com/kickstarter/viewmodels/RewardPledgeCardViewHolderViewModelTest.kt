@@ -13,6 +13,7 @@ class RewardPledgeCardViewHolderViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: RewardPledgeCardViewHolderViewModel.ViewModel
 
     private val estimatedDelivery = TestSubscriber.create<String>()
+    private val id = TestSubscriber.create<String>()
     private val issuerImage = TestSubscriber.create<Int>()
     private val lastFour = TestSubscriber.create<String>()
 
@@ -20,6 +21,7 @@ class RewardPledgeCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm = RewardPledgeCardViewHolderViewModel.ViewModel(environment)
 
         this.vm.outputs.expirationDate().subscribe(this.estimatedDelivery)
+        this.vm.outputs.id().subscribe(this.id)
         this.vm.outputs.issuerImage().subscribe(this.issuerImage)
         this.vm.outputs.lastFour().subscribe(this.lastFour)
     }
@@ -37,6 +39,16 @@ class RewardPledgeCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(creditCard)
 
         this.estimatedDelivery.assertValue("03/2019")
+    }
+
+    @Test
+    fun testId() {
+        setUpEnvironment(environment())
+        val creditCard = StoredCardFactory.discoverCard()
+
+        this.vm.inputs.configureWith(creditCard)
+
+        this.id.assertValue(creditCard.id())
     }
 
     @Test

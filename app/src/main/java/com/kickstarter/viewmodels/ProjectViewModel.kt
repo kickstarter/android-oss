@@ -325,12 +325,14 @@ interface ProjectViewModel {
                     .subscribe { this.setActionButtonId.onNext(it) }
 
             currentProject
-                    .map { getRewardButtonString(it) }
+                    .map { getRewardButtonText(it) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe { this.setRewardsButtonText.onNext(it) }
 
             currentProject
                     .map { getRewardButtonColor(it) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe { this.setRewardsButtonColor.onNext(it) }
 
@@ -494,7 +496,7 @@ interface ProjectViewModel {
             }
         }
 
-        private fun getRewardButtonString(project: Project): Int? {
+        private fun getRewardButtonText(project: Project): Int? {
             return if (!project.isBacking && project.isLive) {
                 R.string.Back_this_project
             } else if (project.isBacking && !project.isLive) {

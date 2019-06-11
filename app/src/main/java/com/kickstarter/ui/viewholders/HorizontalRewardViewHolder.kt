@@ -30,11 +30,10 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
     }
 
     private val ksString = environment().ksString()
-    private lateinit var reward: Reward
     private var viewModel = HorizontalRewardViewHolderViewModel.ViewModel(environment())
 
     private val currencyConversionString = context().getString(R.string.About_reward_amount)
-    private val noLongerAvailbleString = context().getString(R.string.No_longer_available)
+    private val noLongerAvailableString = context().getString(R.string.No_longer_available)
     private val pledgeRewardCurrencyOrMoreString = context().getString(R.string.rewards_title_pledge_reward_currency_or_more)
     private val remainingRewardsString = context().getString(R.string.Left_count_left_few)
 
@@ -72,13 +71,20 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
                 .compose(observeForUI())
                 .subscribe { setRemainingRewardsTextView(it.second) }
 
-        this.viewModel.outputs.minimumText()
+        this.viewModel.outputs.limitReachedButtonTextIsVisible()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    setMinimumText(it)
-                    setMinimumButtonText(it)
-                }
+                .subscribe { this.view.horizontal_reward_pledge_button.text = this.noLongerAvailableString }
+
+        this.viewModel.outputs.minimumAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setMinimumButtonText(it) }
+
+        this.viewModel.outputs.minimumAmountTitle()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.horizontal_reward_minimum_text_view.text = it }
 
         this.viewModel.outputs.reward()
                 .compose(bindToLifecycle())
@@ -113,7 +119,7 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.viewModel.outputs.showPledgeFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.delegate?.rewardClicked(ViewUtils.getScreenLocation(this.itemView), this.reward) }
+                .subscribe { this.delegate?.rewardClicked(ViewUtils.getScreenLocation(this.itemView), it.second) }
 
         this.viewModel.outputs.startBackingActivity()
                 .compose(bindToLifecycle())
@@ -128,9 +134,9 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
     override fun bindData(data: Any?) {
         val projectAndReward = requireNonNull(data as Pair<Project, Reward>)
         val project = requireNonNull(projectAndReward.first, Project::class.java)
-        this.reward = requireNonNull(projectAndReward.second, Reward::class.java)
+        val reward = requireNonNull(projectAndReward.second, Reward::class.java)
 
-        this.viewModel.inputs.projectAndReward(project, this.reward)
+        this.viewModel.inputs.projectAndReward(project, reward)
     }
 
     private fun configureRewardButton(isRewardAvailable: Boolean) {
@@ -144,40 +150,19 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         return "$value $detail"
     }
 
-    private fun getScreenLocationOfReward(): ScreenLocation {
-        val x = this.itemView.left.toFloat()
-        val y = this.itemView.top.toFloat()
-        val height = this.itemView.height
-        val width = this.itemView.width
-        return ScreenLocation(x, y, height.toFloat(), width.toFloat())
-    }
-
     private fun setConversionTextView(@NonNull amount: String) {
-        this.view.horizontal_reward_usd_conversion_text_view.text = (this.ksString.format(
-                this.currencyConversionString,
-                "reward_amount", amount
-        ))
-    }
-
-    private fun setMinimumText(@NonNull minimum: String) {
-        this.view.horizontal_reward_minimum_text_view.text = minimum
+        this.view.horizontal_reward_usd_conversion_text_view.text = this.ksString.format(this.currencyConversionString,
+                "reward_amount", amount)
     }
 
     private fun setMinimumButtonText(@NonNull minimum: String) {
-        if (RewardUtils.isLimitReached(this.reward)) {
-            this.view.horizontal_reward_pledge_button.text = noLongerAvailbleString
-        } else {
-            this.view.horizontal_reward_pledge_button.text = (this.ksString.format(
-                    this.pledgeRewardCurrencyOrMoreString,
-                    "reward_currency", minimum
-            ))
-        }
+        this.view.horizontal_reward_pledge_button.text = this.ksString.format(this.pledgeRewardCurrencyOrMoreString,
+                "reward_currency", minimum)
     }
 
     private fun setRemainingRewardsTextView(@NonNull remaining: String) {
-        this.view.horizontal_reward_remaining_text_view.text = (this.ksString.format(
-                this.remainingRewardsString, "left_count", remaining
-        ))
+        this.view.horizontal_reward_remaining_text_view.text = this.ksString.format(this.remainingRewardsString,
+                "left_count", remaining)
     }
 
     private fun setUpRewardItemsAdapter(): RewardItemsAdapter {

@@ -17,11 +17,9 @@ import com.kickstarter.ui.intentmappers.IntentMapper
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.ui.viewholders.ProjectViewHolder
 import rx.Observable
-import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.net.CookieManager
-import java.util.concurrent.TimeUnit
 
 interface ProjectViewModel {
     interface Inputs {
@@ -72,6 +70,12 @@ interface ProjectViewModel {
         /** Emits a project,country, and the native checkout feature flag. If the view model is created with a full project
          * model, this observable will emit that project immediately, and then again when it has updated from the api.*/
         fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>>
+
+        /** Emits the color resource ID for the reward button based on (View, Manage, or Back this project). */
+        fun rewardsButtonColor(): Observable<Int>
+
+        /** Emits the proper string resource ID for the reward button. */
+        fun rewardsButtonText(): Observable<Int>
 
         /** Emits the back, manage, view pledge button, or null. */
         fun setActionButtonId(): Observable<Int>
@@ -139,20 +143,22 @@ interface ProjectViewModel {
 
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val projectAndUserCountryAndIsFeatureEnabled = BehaviorSubject.create<Pair<Pair<Project, String>, Boolean>>()
+        private val rewardsButtonColor = BehaviorSubject.create<Int>()
+        private val rewardsButtonText = BehaviorSubject.create<Int>()
         private val setActionButtonId = BehaviorSubject.create<Int>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
         private val showRewardsFragment = BehaviorSubject.create<Boolean>()
-        private val startLoginToutActivity = BehaviorSubject.create<Void>()
-        private val showShareSheet = BehaviorSubject.create<Project>()
-        private val showSavedPrompt = BehaviorSubject.create<Void>()
-        private val startCampaignWebViewActivity = BehaviorSubject.create<Project>()
-        private val startCheckoutActivity = BehaviorSubject.create<Project>()
-        private val startCommentsActivity = BehaviorSubject.create<Project>()
-        private val startCreatorBioWebViewActivity = BehaviorSubject.create<Project>()
-        private val startManagePledgeActivity = BehaviorSubject.create<Project>()
-        private val startProjectUpdatesActivity = BehaviorSubject.create<Project>()
-        private val startVideoActivity = BehaviorSubject.create<Project>()
-        private val startBackingActivity = BehaviorSubject.create<Pair<Project, User>>()
+        private val startLoginToutActivity = PublishSubject.create<Void>()
+        private val showShareSheet = PublishSubject.create<Project>()
+        private val showSavedPrompt = PublishSubject.create<Void>()
+        private val startCampaignWebViewActivity = PublishSubject.create<Project>()
+        private val startCheckoutActivity = PublishSubject.create<Project>()
+        private val startCommentsActivity = PublishSubject.create<Project>()
+        private val startCreatorBioWebViewActivity = PublishSubject.create<Project>()
+        private val startManagePledgeActivity = PublishSubject.create<Project>()
+        private val startProjectUpdatesActivity = PublishSubject.create<Project>()
+        private val startVideoActivity = PublishSubject.create<Project>()
+        private val startBackingActivity = PublishSubject.create<Pair<Project, User>>()
 
         val inputs: ProjectViewModel.Inputs = this
         val outputs: ProjectViewModel.Outputs = this
@@ -318,6 +324,18 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.setActionButtonId.onNext(it) }
 
+            currentProject
+                    .map { getRewardButtonText(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe { this.rewardsButtonText.onNext(it) }
+
+            currentProject
+                    .map { getRewardButtonColor(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe { this.rewardsButtonColor.onNext(it) }
+
         }
 
         /**
@@ -423,6 +441,10 @@ interface ProjectViewModel {
             return this.projectAndUserCountryAndIsFeatureEnabled
         }
 
+        override fun rewardsButtonColor(): Observable<Int> = this.rewardsButtonColor
+
+        override fun rewardsButtonText(): Observable<Int> = this.rewardsButtonText
+
         @NonNull
         override fun setActionButtonId(): Observable<Int> = this.setActionButtonId
 
@@ -469,6 +491,26 @@ interface ProjectViewModel {
                 R.id.manage_pledge_button
             } else if (project.isBacking && !project.isLive) {
                 R.id.view_pledge_button
+            } else {
+                return null
+            }
+        }
+
+        private fun getRewardButtonText(project: Project): Int? {
+            return if (!project.isBacking && project.isLive) {
+                R.string.Back_this_project
+            } else if (project.isBacking && !project.isLive) {
+                R.string.View_your_pledge
+            } else {
+                return null
+            }
+        }
+
+        private fun getRewardButtonColor(project: Project): Int? {
+            return if (!project.isBacking && project.isLive) {
+                R.color.primary
+            } else if (project.isBacking && !project.isLive) {
+                R.color.black
             } else {
                 return null
             }

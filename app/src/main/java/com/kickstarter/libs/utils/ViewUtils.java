@@ -69,6 +69,15 @@ public final class ViewUtils {
    *
    */
   public static @NotNull SpannableString styleCurrency(final double value, final Project project, final @NonNull KSCurrency ksCurrency) {
+    return styleCurrency(value, project, ksCurrency, true);
+  }
+
+  /**
+   * Returns a SpannableString that shrinks currency code if it's necessary.
+   * Special case: US people looking at US currency just get the currency symbol.
+   *
+   */
+  public static @NotNull SpannableString styleCurrency(final double value, final Project project, final @NonNull KSCurrency ksCurrency, final boolean centered) {
     final String formattedCurrency = ksCurrency.format(value, project, RoundingMode.HALF_UP);
     final SpannableString spannableString = new SpannableString(formattedCurrency);
 
@@ -83,8 +92,14 @@ public final class ViewUtils {
     if (currencyNeedsCode) {
       final int startOfSymbol = formattedCurrency.indexOf(currencySymbolToDisplay);
       final int endOfSymbol = startOfSymbol + currencySymbolToDisplay.length();
-      spannableString.setSpan(new RelativeSizeSpan(.5f), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-      spannableString.setSpan(new CenterSpan(), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+      final float proportion;
+      if (centered) {
+        proportion = .5f;
+        spannableString.setSpan(new CenterSpan(), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+      } else {
+        proportion = .7f;
+      }
+      spannableString.setSpan(new RelativeSizeSpan(proportion), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
     }
 
     return spannableString;

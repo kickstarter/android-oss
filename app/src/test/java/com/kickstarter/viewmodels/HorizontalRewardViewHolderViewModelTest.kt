@@ -24,7 +24,9 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
     private val isClickable = TestSubscriber<Boolean>()
     private val limitAndRemainingTextViewIsGone = TestSubscriber<Boolean>()
     private val limitAndRemainingTextViewText = TestSubscriber<Pair<String, String>>()
-    private val minimumTextViewText = TestSubscriber<String>()
+    private val limitReachedButtonTextIsVisible = TestSubscriber<Void>()
+    private val minimumAmount = TestSubscriber<String>()
+    private val minimumAmountTitle = TestSubscriber<String>()
     private val reward = TestSubscriber<Reward>()
     private val rewardDescriptionIsGone = TestSubscriber<Boolean>()
     private val rewardEndDateSectionIsGone = TestSubscriber<Boolean>()
@@ -43,7 +45,9 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
         this.vm.outputs.isClickable().subscribe(this.isClickable)
         this.vm.outputs.limitAndRemainingText().subscribe(this.limitAndRemainingTextViewText)
         this.vm.outputs.limitAndRemainingTextViewIsGone().subscribe(this.limitAndRemainingTextViewIsGone)
-        this.vm.outputs.minimumText().subscribe(this.minimumTextViewText)
+        this.vm.outputs.limitReachedButtonTextIsVisible().subscribe(this.limitReachedButtonTextIsVisible)
+        this.vm.outputs.minimumAmount().map { it.toString() }.subscribe(this.minimumAmount)
+        this.vm.outputs.minimumAmountTitle().map { it.toString() }.subscribe(this.minimumAmountTitle)
         this.vm.outputs.reward().subscribe(this.reward)
         this.vm.outputs.rewardDescriptionIsGone().subscribe(this.rewardDescriptionIsGone)
         this.vm.outputs.rewardEndDateSectionIsGone().subscribe(this.rewardEndDateSectionIsGone)
@@ -264,7 +268,7 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
     }
 
     @Test
-    fun testMinimumTextViewText() {
+    fun testMinimumAmount_whenAvailable() {
         val project = ProjectFactory.project()
         val reward = RewardFactory.reward().toBuilder()
                 .minimum(10.0)
@@ -272,11 +276,23 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, reward)
-        this.minimumTextViewText.assertValue("$10")
+        this.minimumAmount.assertValue("$10")
+        this.limitReachedButtonTextIsVisible.assertNoValues()
     }
 
     @Test
-    fun testMinimumTextViewTextCAD() {
+    fun testMinimumAmount_whenUnavailable() {
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.limitReached()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(project, reward)
+        this.minimumAmount.assertNoValues()
+        this.limitReachedButtonTextIsVisible.assertValueCount(1)
+    }
+
+    @Test
+    fun testMinimumAmount_whenCAProject() {
         val project = ProjectFactory.caProject()
         val reward = RewardFactory.reward().toBuilder()
                 .minimum(10.0)
@@ -284,7 +300,27 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, reward)
-        this.minimumTextViewText.assertValue("CA$ 10")
+        this.minimumAmount.assertValue("CA$ 10")
+    }
+
+    @Test
+    fun testMinimumAmountTitle() {
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.reward()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(project, reward)
+        this.minimumAmountTitle.assertValue("$20")
+    }
+
+    @Test
+    fun testMinimumAmountTitle_whenUKProject() {
+        val project = ProjectFactory.ukProject()
+        val reward = RewardFactory.reward()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(project, reward)
+        this.minimumAmountTitle.assertValue("£20")
     }
 
     @Test

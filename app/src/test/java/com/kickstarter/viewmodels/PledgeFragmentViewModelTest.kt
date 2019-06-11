@@ -224,7 +224,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.paymentContainerIsGone.assertValue(false)
     }
 
-
     @Test
     fun testPaymentForLoggedInUser_whenDigitalReward() {
         val environment = environment()

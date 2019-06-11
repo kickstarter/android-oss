@@ -136,7 +136,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showPledgeCard()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { updatePledgeCardSelection(it) }
+                .subscribe { updatePledgeCardState(it) }
 
         this.viewModel.outputs.pledgeAmount()
                 .compose(bindToLifecycle())
@@ -236,8 +236,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun addNewCardButtonClicked() {
         this.viewModel.inputs.newCardButtonClicked()
     }
-
-
 
     override fun closePledgeButtonClicked(position: Int) {
         this.viewModel.inputs.closeCardButtonClicked(position)
@@ -463,9 +461,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         pledge_details.y = pledge_root.height.toFloat()
     }
 
-    private fun updatePledgeCardSelection(positionAndSelected: Pair<Int, CardState>) {
-        val position = positionAndSelected.first
-        val cardState = positionAndSelected.second
+    private fun updatePledgeCardState(positionAndCardState: Pair<Int, CardState>) {
+        val position = positionAndCardState.first
+        val cardState = positionAndCardState.second
         val rewardCardAdapter = cards_recycler.adapter as RewardCardAdapter
 
         val freezeLinearLayoutManager = cards_recycler.layoutManager as FreezeLinearLayoutManager

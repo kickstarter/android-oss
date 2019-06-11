@@ -92,14 +92,12 @@ public final class ViewUtils {
     if (currencyNeedsCode) {
       final int startOfSymbol = formattedCurrency.indexOf(currencySymbolToDisplay);
       final int endOfSymbol = startOfSymbol + currencySymbolToDisplay.length();
-      final float proportion;
       if (centered) {
-        proportion = .5f;
+        spannableString.setSpan(new RelativeSizeSpan(.5f), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         spannableString.setSpan(new CenterSpan(), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
       } else {
-        proportion = .7f;
+        spannableString.setSpan(new RelativeSizeSpan(.7f), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
       }
-      spannableString.setSpan(new RelativeSizeSpan(proportion), startOfSymbol, endOfSymbol, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
     }
 
     return spannableString;

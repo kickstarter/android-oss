@@ -71,17 +71,17 @@ interface ProjectViewModel {
          * model, this observable will emit that project immediately, and then again when it has updated from the api.*/
         fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>>
 
+        /** Emits the color resource ID for the reward button based on (View, Manage, or Back this project). */
+        fun rewardsButtonColor(): Observable<Int>
+
+        /** Emits the proper string resource ID for the reward button. */
+        fun rewardsButtonText(): Observable<Int>
+
         /** Emits the back, manage, view pledge button, or null. */
         fun setActionButtonId(): Observable<Int>
 
         /** Emits when we should set the Y position of the rewards container. */
         fun setInitialRewardsContainerY(): Observable<Void>
-
-        /** Emits the color resource ID for the reward button based on (View, Manage, or Back this project). */
-        fun setRewardsButtonColor(): Observable<Int>
-
-        /** Emits the proper string resource ID for the reward button. */
-        fun setRewardsButtonText(): Observable<Int>
 
         /** Emits when rewards fragment should expand. */
         fun showRewardsFragment(): Observable<Boolean>
@@ -143,10 +143,10 @@ interface ProjectViewModel {
 
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val projectAndUserCountryAndIsFeatureEnabled = BehaviorSubject.create<Pair<Pair<Project, String>, Boolean>>()
+        private val rewardsButtonColor = BehaviorSubject.create<Int>()
+        private val rewardsButtonText = BehaviorSubject.create<Int>()
         private val setActionButtonId = BehaviorSubject.create<Int>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
-        private val setRewardsButtonColor = BehaviorSubject.create<Int>()
-        private val setRewardsButtonText = BehaviorSubject.create<Int>()
         private val showRewardsFragment = BehaviorSubject.create<Boolean>()
         private val startLoginToutActivity = BehaviorSubject.create<Void>()
         private val showShareSheet = BehaviorSubject.create<Project>()
@@ -328,13 +328,13 @@ interface ProjectViewModel {
                     .map { getRewardButtonText(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe { this.setRewardsButtonText.onNext(it) }
+                    .subscribe { this.rewardsButtonText.onNext(it) }
 
             currentProject
                     .map { getRewardButtonColor(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe { this.setRewardsButtonColor.onNext(it) }
+                    .subscribe { this.rewardsButtonColor.onNext(it) }
 
         }
 
@@ -441,15 +441,15 @@ interface ProjectViewModel {
             return this.projectAndUserCountryAndIsFeatureEnabled
         }
 
+        override fun rewardsButtonColor(): Observable<Int> = this.rewardsButtonColor
+
+        override fun rewardsButtonText(): Observable<Int> = this.rewardsButtonText
+
         @NonNull
         override fun setActionButtonId(): Observable<Int> = this.setActionButtonId
 
         @NonNull
         override fun setInitialRewardsContainerY(): Observable<Void> = this.setInitialRewardPosition
-
-        override fun setRewardsButtonColor(): Observable<Int> = this.setRewardsButtonColor
-
-        override fun setRewardsButtonText(): Observable<Int> = this.setRewardsButtonText
 
         @NonNull
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt

@@ -21,14 +21,14 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectViewModel.ViewModel
     private val heartDrawableId = TestSubscriber<Int>()
     private val projectTest = TestSubscriber<Project>()
+    private val rewardsButtonColor = TestSubscriber<Int>()
+    private val rewardsButtonText = TestSubscriber<Int>()
     private val showShareSheet = TestSubscriber<Project>()
     private val showSavedPromptTest = TestSubscriber<Void>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val savedTest = TestSubscriber<Boolean>()
     private val setActionButtonId = TestSubscriber<Int>()
     private val setInitialRewardsContainerY = TestSubscriber<Void>()
-    private val setRewardsButtonColor = TestSubscriber<Int>()
-    private val setRewardsButtonText = TestSubscriber<Int>()
     private val showRewardsFragment = TestSubscriber<Boolean>()
     private val startBackingActivity = TestSubscriber<Pair<Project, User>>()
     private val startCampaignWebViewActivity = TestSubscriber<Project>()
@@ -42,10 +42,10 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm = ProjectViewModel.ViewModel(environment)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
         this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first }.subscribe(this.projectTest)
+        this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
+        this.vm.outputs.rewardsButtonText().subscribe(this.rewardsButtonText)
         this.vm.outputs.setActionButtonId().subscribe(this.setActionButtonId)
         this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
-        this.vm.outputs.setRewardsButtonColor().subscribe(this.setRewardsButtonColor)
-        this.vm.outputs.setRewardsButtonText().subscribe(this.setRewardsButtonText)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
         this.vm.outputs.showRewardsFragment().subscribe(this.showRewardsFragment)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
@@ -332,8 +332,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a project.
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
-        this.setRewardsButtonColor.assertValue(R.color.primary)
-        this.setRewardsButtonText.assertValue(R.string.Back_this_project)
+        this.rewardsButtonColor.assertValue(R.color.primary)
+        this.rewardsButtonText.assertValue(R.string.Back_this_project)
     }
 
     @Test
@@ -348,8 +348,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a project.
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
-        this.setRewardsButtonColor.assertValue(R.color.black)
-        this.setRewardsButtonText.assertValue(R.string.View_your_pledge)
+        this.rewardsButtonColor.assertValue(R.color.black)
+        this.rewardsButtonText.assertValue(R.string.View_your_pledge)
     }
 
     @Test

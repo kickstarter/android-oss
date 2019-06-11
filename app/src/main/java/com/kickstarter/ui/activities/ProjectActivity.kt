@@ -84,12 +84,12 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                     }
                 }
 
-        this.viewModel.outputs.setRewardsButtonColor()
+        this.viewModel.outputs.rewardsButtonColor()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { rewardButtonColor -> rewardButtonColor?.let { native_back_this_project_button.setBackgroundColor(getColor(it)) } }
 
-        this.viewModel.outputs.setRewardsButtonText()
+        this.viewModel.outputs.rewardsButtonText()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { rewardButtonString -> rewardButtonString?.let { native_back_this_project_button.text = getString(it) } }

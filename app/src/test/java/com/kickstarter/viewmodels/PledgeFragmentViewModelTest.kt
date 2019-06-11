@@ -293,8 +293,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testEstimatedDelivery_whenDigitalReward() {
         setUpEnvironment(environment(), reward = RewardFactory.reward())
 
-        this.estimatedDelivery.assertNoValues()
-        this.estimatedDeliveryInfoIsGone.assertValue(true)
+        this.estimatedDelivery.assertValue("March 2019")
+        this.estimatedDeliveryInfoIsGone.assertValue(false)
     }
 
     @Test

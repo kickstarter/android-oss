@@ -18,6 +18,7 @@ public final class RewardFactory {
       .backersCount(123)
       .id(IdFactory.id())
       .description(description)
+      .estimatedDeliveryOn(DateTime.parse("2019-03-26T19:26:09Z"))
       .minimum(20.0f)
       .title("Digital Bundle")
       .build();

@@ -187,7 +187,7 @@ interface PledgeFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { dateTime -> dateTime?.let { DateTimeUtils.estimatedDeliveryOn(it) } }
                     .compose(bindToLifecycle())
-                    .subscribe { this.estimatedDelivery.onNext(it) }
+                    .subscribe(this.estimatedDelivery)
 
             val projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
@@ -196,9 +196,9 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
 
             projectAndReward
-                    .map { p -> p.first.currency() != p.first.currentCurrency() }
+                    .map { it.first.currency() != it.first.currentCurrency() }
                     .map { BooleanUtils.negate(it) }
-                    .subscribe { this.conversionTextViewIsGone.onNext(it) }
+                    .subscribe(this.conversionTextViewIsGone)
 
             val rewardMinimum = reward
                     .map { it.minimum() }
@@ -207,7 +207,7 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map<SpannableString> { ViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
-                    .subscribe { this.pledgeAmount.onNext(it) }
+                    .subscribe(this.pledgeAmount)
 
             val shippingRules = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
@@ -223,15 +223,14 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesAndProject)
 
-            val rewardNotShippable = reward
+            reward
                     .map { RewardUtils.isShippable(it) }
                     .map { BooleanUtils.negate(it) }
-
-            rewardNotShippable
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesSectionIsGone)
 
-            rewardNotShippable
+            reward
+                    .map { ObjectUtils.isNull(it.estimatedDeliveryOn()) || RewardUtils.isNoReward(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.estimatedDeliveryInfoIsGone)
 
@@ -332,7 +331,7 @@ interface PledgeFragmentViewModel {
             total
                     .map { this.ksCurrency.formatWithUserPreference(it.first, it.second, RoundingMode.UP, 2) }
                     .compose(bindToLifecycle())
-                    .subscribe { this.conversionText.onNext(it) }
+                    .subscribe(this.conversionText)
 
             userIsLoggedIn
                     .filter { BooleanUtils.isTrue(it) }
@@ -369,7 +368,7 @@ interface PledgeFragmentViewModel {
                     .filter(ActivityResult::isOk)
                     .switchMap { getListOfStoredCards() }
                     .compose(bindToLifecycle())
-                    .subscribe { this.cards.onNext(it) }
+                    .subscribe(this.cards)
 
             val location: Observable<Location?> = Observable.merge(Observable.just(null as Location?), shippingRule.map { it.location() })
 

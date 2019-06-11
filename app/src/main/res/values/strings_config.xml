@@ -2,10 +2,10 @@
 <resources>
   <string name="app_name">Kickstarter</string>
   <string name="facebook_app_id">69103156693</string>
+  <string name="fb_login_protocol_scheme">fb69103156693</string>
   <string name="font_family_maison_neue_book">maison-neue-book</string>
   <string name="font_family_sans_serif">sans-serif</string>
   <string name="font_family_sans_serif_medium">sans-serif-medium</string>
-  <string name="woohoo_duration">2000</string>
 
   <string-array name="facebook_permissions_array">
     <item>public_profile</item>

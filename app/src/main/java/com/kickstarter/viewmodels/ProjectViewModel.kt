@@ -6,8 +6,12 @@ import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*
+import com.kickstarter.libs.utils.BackingUtils
+import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.RefTagUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.BackingActivity
@@ -17,11 +21,9 @@ import com.kickstarter.ui.intentmappers.IntentMapper
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.ui.viewholders.ProjectViewHolder
 import rx.Observable
-import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.net.CookieManager
-import java.util.concurrent.TimeUnit
 
 interface ProjectViewModel {
     interface Inputs {
@@ -49,6 +51,9 @@ interface ProjectViewModel {
         /** Call when the native back project button is clicked.  */
         fun nativeCheckoutBackProjectButtonClicked()
 
+        /** Call when the native manage pledge button is clicked  */
+        fun nativeCheckoutManagePledgeButtonClicked()
+
         /** Call when the view has been laid out. */
         fun onGlobalLayout()
 
@@ -69,6 +74,12 @@ interface ProjectViewModel {
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
+        /** Emits the initial rewards container view (Pledge/View pledge or Manage pledge)*/
+        fun initialRewardsContainerViewId(): Observable<Int>
+
+        /** Emits the text to be presented on the manage pledge container description */
+        fun managePledgeViewText(): Observable<String>
+
         /** Emits a project,country, and the native checkout feature flag. If the view model is created with a full project
          * model, this observable will emit that project immediately, and then again when it has updated from the api.*/
         fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>>
@@ -80,7 +91,7 @@ interface ProjectViewModel {
         fun setInitialRewardsContainerY(): Observable<Void>
 
         /** Emits when rewards fragment should expand. */
-        fun showRewardsFragment(): Observable<Boolean>
+        fun showRewardsFragment(): Observable<Pair<Boolean, Int>>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
@@ -131,6 +142,7 @@ interface ProjectViewModel {
         private val hideRewardsFragment = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
         private val nativeCheckoutBackProjectButtonClicked = PublishSubject.create<Void>()
+        private val nativeCheckoutManagePledgeButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
         private val playVideoButtonClicked = PublishSubject.create<Void>()
         private val shareButtonClicked = PublishSubject.create<Void>()
@@ -138,10 +150,12 @@ interface ProjectViewModel {
         private val viewPledgeButtonClicked = PublishSubject.create<Void>()
 
         private val heartDrawableId = BehaviorSubject.create<Int>()
+        private val initialRewardsContainerViewId = BehaviorSubject.create<Int>()
+        private val managePledgeViewText = BehaviorSubject.create<String>()
         private val projectAndUserCountryAndIsFeatureEnabled = BehaviorSubject.create<Pair<Pair<Project, String>, Boolean>>()
         private val setActionButtonId = BehaviorSubject.create<Int>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
-        private val showRewardsFragment = BehaviorSubject.create<Boolean>()
+        private val showRewardsFragment = BehaviorSubject.create<Pair<Boolean, Int>>()
         private val startLoginToutActivity = BehaviorSubject.create<Void>()
         private val showShareSheet = BehaviorSubject.create<Project>()
         private val showSavedPrompt = BehaviorSubject.create<Void>()
@@ -217,6 +231,12 @@ interface ProjectViewModel {
                     .compose<Pair<Pair<Project, String>, Boolean>>(combineLatestPair(horizontalRewardsEnabled))
                     .subscribe(this.projectAndUserCountryAndIsFeatureEnabled)
 
+            this.projectAndUserCountryAndIsFeatureEnabled
+                    .filter { BooleanUtils.isTrue(it.second) }
+                    .map<Int> { getInitialRewardsContainerViewId(it.first.first) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.initialRewardsContainerViewId)
+
             currentProject
                     .compose<Project>(takeWhen(this.shareButtonClicked))
                     .subscribe(this.showShareSheet)
@@ -258,15 +278,29 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.setInitialRewardPosition)
 
-            this.nativeCheckoutBackProjectButtonClicked
+            Observable.merge(this.nativeCheckoutBackProjectButtonClicked, this.nativeCheckoutManagePledgeButtonClicked)
                     .map { true }
+                    .compose<Pair<Boolean, Int>>(combineLatestPair(this.initialRewardsContainerViewId))
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showRewardsFragment)
+
+            this.nativeCheckoutManagePledgeButtonClicked
+                    .map { true }
+                    .compose<Pair<Boolean, Int>>(combineLatestPair(this.initialRewardsContainerViewId))
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
 
             this.hideRewardsFragment
                     .map { false }
+                    .compose<Pair<Boolean, Int>>(combineLatestPair(this.initialRewardsContainerViewId))
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
+
+            this.projectAndUserCountryAndIsFeatureEnabled
+                    .filter { BooleanUtils.isTrue(it.first.first.isBacking) && BooleanUtils.isTrue(it.second) }
+                    .map { setManagePledgeViewText(it.first.first) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.managePledgeViewText)
 
             this.showShareSheet
                     .compose(bindToLifecycle())
@@ -359,6 +393,10 @@ interface ProjectViewModel {
             this.nativeCheckoutBackProjectButtonClicked.onNext(null)
         }
 
+        override fun nativeCheckoutManagePledgeButtonClicked() {
+            this.nativeCheckoutManagePledgeButtonClicked.onNext(null)
+        }
+
         override fun onGlobalLayout() {
             this.onGlobalLayout.onNext(null)
         }
@@ -403,16 +441,16 @@ interface ProjectViewModel {
             this.shareButtonClicked.onNext(null)
         }
 
+        override fun showRewardsFragment(): Observable<Pair<Boolean, Int>> {
+            return this.showRewardsFragment
+        }
+
         override fun updatesTextViewClicked() {
             this.updatesTextViewClicked.onNext(null)
         }
 
         override fun viewPledgeButtonClicked() {
             this.viewPledgeButtonClicked.onNext(null)
-        }
-
-        override fun showRewardsFragment(): Observable<Boolean> {
-            return this.showRewardsFragment
         }
 
         override fun heartDrawableId(): Observable<Int> {
@@ -422,6 +460,12 @@ interface ProjectViewModel {
         override fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>> {
             return this.projectAndUserCountryAndIsFeatureEnabled
         }
+
+        @NonNull
+        override fun initialRewardsContainerViewId(): Observable<Int> = this.initialRewardsContainerViewId
+
+        @NonNull
+        override fun managePledgeViewText(): Observable<String> = this.managePledgeViewText
 
         @NonNull
         override fun setActionButtonId(): Observable<Int> = this.setActionButtonId
@@ -472,6 +516,31 @@ interface ProjectViewModel {
             } else {
                 return null
             }
+        }
+
+        private fun getInitialRewardsContainerViewId(project: Project): Int? {
+            return if (!project.isBacking && project.isLive || project.isBacking && !project.isLive) {
+                R.id.native_back_this_project_button
+            } else if (project.isBacking && project.isLive) {
+                R.id.manage_pledge_container
+            } else {
+                return null
+            }
+        }
+
+        private fun setManagePledgeViewText(project: Project): String {
+            val rewards = project.rewards()
+
+            val selectedReward = rewards?.
+                    first { BackingUtils.isBacked(project, it) }
+            selectedReward?.let {
+                return if (RewardUtils.isReward(it)) {
+                     "${project.currencySymbol()} ${it.minimum()} - ${it.title()}"
+                } else {
+                     "${it.minimum()}"
+                }
+            }
+            return ""
         }
 
         private fun saveProject(project: Project): Observable<Project> {

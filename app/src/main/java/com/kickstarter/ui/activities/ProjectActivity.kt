@@ -26,6 +26,7 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.project_layout.*
+import kotlinx.android.synthetic.main.project_layout.view.*
 import kotlinx.android.synthetic.main.project_toolbar.*
 import rx.android.schedulers.AndroidSchedulers
 
@@ -69,10 +70,27 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .compose(Transformers.observeForUI())
                 .subscribe { heart_icon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
 
+        this.viewModel.outputs.initialRewardsContainerViewId()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    it?.let {
+                        val view = findViewById<View>(it)
+                        ViewUtils.setGone(view, false)
+                    }
+                }
+
         this.viewModel.outputs.projectAndUserCountryAndIsFeatureEnabled()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { displayProjectAndRewards(it) }
+
+        this.viewModel.outputs.managePledgeViewText()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { string -> String
+                    reward_infos.text = string
+                }
 
         this.viewModel.outputs.setActionButtonId()
                 .compose(bindToLifecycle())
@@ -92,7 +110,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.viewModel.outputs.showRewardsFragment()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { animateRewards(it) }
+                .subscribe { animateRewards(it.first, it.second) }
 
         this.viewModel.outputs.showShareSheet()
                 .compose(bindToLifecycle())
@@ -161,6 +179,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
             this.viewModel.inputs.nativeCheckoutBackProjectButtonClicked()
         }
 
+        native_manage_pledge_button.setOnClickListener {
+            this.viewModel.inputs.nativeCheckoutManagePledgeButtonClicked()
+        }
+
         manage_pledge_button.setOnClickListener {
             this.viewModel.inputs.managePledgeButtonClicked()
         }
@@ -184,11 +206,13 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.project_recycler_view.adapter = null
     }
 
-    private fun animateRewards(expand: Boolean) {
-        val targetToShow = if (!expand) native_back_this_project_button else pledge_container
+    private fun animateRewards(expand: Boolean, viewId: Int) {
+
+        val view = findViewById<View>(viewId)
+        val targetToShow = if (!expand) view else pledge_container
         val showRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToShow, View.ALPHA, 0f, 1f)
 
-        val targetToHide = if (!expand) pledge_container else native_back_this_project_button
+        val targetToHide = if (!expand) pledge_container else view
         val hideRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToHide, View.ALPHA, 1f, 0f)
 
         val guideline = resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
@@ -213,13 +237,13 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
                 override fun onAnimationEnd(animation: Animator?) {
                     if (expand) {
-                        native_back_this_project_button.visibility = View.GONE
+                        view.visibility = View.GONE
                     }
                 }
 
                 override fun onAnimationStart(animation: Animator?) {
                     if (!expand) {
-                        native_back_this_project_button.visibility = View.VISIBLE
+                        view.visibility = View.VISIBLE
                     }
                 }
             })

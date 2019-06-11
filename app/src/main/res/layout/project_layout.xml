@@ -98,9 +98,11 @@
     </LinearLayout>
 
     <LinearLayout
+      android:id="@+id/manage_pledge_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
+      android:visibility="gone"
       android:layout_marginTop="@dimen/grid_3"
       android:layout_marginStart="@dimen/activity_horizontal_margin"
       android:layout_marginEnd="@dimen/activity_horizontal_margin"
@@ -153,6 +155,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:textAllCaps="false"
+      android:visibility="gone"
       android:layout_marginEnd="@dimen/activity_horizontal_margin"
       android:layout_marginStart="@dimen/activity_horizontal_margin"
       android:text="@string/project_back_button" />

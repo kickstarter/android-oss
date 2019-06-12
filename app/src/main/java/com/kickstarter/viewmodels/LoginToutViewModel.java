@@ -186,7 +186,8 @@ public interface LoginToutViewModel {
     @VisibleForTesting
     final PublishSubject<String> facebookAccessToken = PublishSubject.create();
     private final PublishSubject<Void> loginClick = PublishSubject.create();
-    private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
+    @VisibleForTesting
+    final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
     private final PublishSubject<LoginReason> loginReason = PublishSubject.create();
     private final PublishSubject<Void> signupClick = PublishSubject.create();
 

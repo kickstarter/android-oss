@@ -10,6 +10,7 @@ import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.services.ApolloClientType
@@ -19,6 +20,10 @@ import type.PaymentTypes
 import java.util.*
 
 open class MockApolloClient : ApolloClientType {
+
+    override fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+        return Observable.just(true)
+    }
 
     override fun clearUnseenActivity(): Observable<Long> {
         return Observable.just(0L)

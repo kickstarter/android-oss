@@ -1,0 +1,7 @@
+mutation Checkout($projectId: ID!, $amount: String!,  $paymentSourceId: String!, $locationId: String, $rewardId: ID)  {
+  nativeCheckout(input: { projectId: $projectId, amount: $amount, paymentSourceId: $paymentSourceId, locationId: $locationId, rewardId: $rewardId }) {
+    checkout {
+      state
+    }
+  }
+}

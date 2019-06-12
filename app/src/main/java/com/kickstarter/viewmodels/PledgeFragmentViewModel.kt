@@ -3,18 +3,17 @@ package com.kickstarter.viewmodels
 import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
+import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
-import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
-import com.kickstarter.models.ShippingRule
-import com.kickstarter.models.StoredCard
+import com.kickstarter.models.*
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.ActivityResult
+import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.fragments.PledgeFragment
@@ -44,7 +43,7 @@ interface PledgeFragmentViewModel {
         fun onGlobalLayout()
 
         /** Call when user clicks the pledge button. */
-        fun pledgeButtonClicked()
+        fun pledgeButtonClicked(cardId: String)
 
         /** Call when user selects a card they want to pledge with. */
         fun selectCardButtonClicked(position: Int)
@@ -105,14 +104,20 @@ interface PledgeFragmentViewModel {
         /** Emits when the shipping rules section should be hidden. */
         fun shippingRulesSectionIsGone(): Observable<Boolean>
 
-        /** Emits when the cards adapter should update selected position. */
-        fun showPledgeCard(): Observable<Pair<Int, Boolean>>
+        /** Emits when the cards adapter should update the selected position. */
+        fun showPledgeCard(): Observable<Pair<Int, CardState>>
+
+        /**  Emits when the pledge call was unsuccessful. */
+        fun showPledgeError(): Observable<Void>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.LoginToutActivity]. */
         fun startLoginToutActivity(): Observable<Void>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.NewCardActivity]. */
         fun startNewCardActivity(): Observable<Void>
+
+        /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
+        fun startThanksActivity(): Observable<Project>
 
         /** Emits the total amount string of the pledge.*/
         fun totalAmount(): Observable<SpannableString>
@@ -126,7 +131,7 @@ interface PledgeFragmentViewModel {
         private val increasePledgeButtonClicked = PublishSubject.create<Void>()
         private val newCardButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
-        private val pledgeButtonClicked = PublishSubject.create<Void>()
+        private val pledgeButtonClicked = PublishSubject.create<String>()
         private val selectCardButtonClicked = PublishSubject.create<Int>()
         private val shippingRule = PublishSubject.create<ShippingRule>()
 
@@ -147,9 +152,11 @@ interface PledgeFragmentViewModel {
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
         private val selectedShippingRule = BehaviorSubject.create<ShippingRule>()
         private val shippingRulesSectionIsGone = BehaviorSubject.create<Boolean>()
-        private val showPledgeCard = BehaviorSubject.create<Pair<Int, Boolean>>()
+        private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
+        private val showPledgeError = BehaviorSubject.create<Void>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startNewCardActivity = PublishSubject.create<Void>()
+        private val startThanksActivity = PublishSubject.create<Project>()
         private val totalAmount = BehaviorSubject.create<SpannableString>()
 
         private val apiClient = environment.apiClient()
@@ -180,7 +187,7 @@ interface PledgeFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { dateTime -> dateTime?.let { DateTimeUtils.estimatedDeliveryOn(it) } }
                     .compose(bindToLifecycle())
-                    .subscribe { this.estimatedDelivery.onNext(it) }
+                    .subscribe(this.estimatedDelivery)
 
             val projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
@@ -189,23 +196,23 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
 
             projectAndReward
-                    .map { p -> p.first.currency() != p.first.currentCurrency() }
+                    .map { it.first.currency() != it.first.currentCurrency() }
                     .map { BooleanUtils.negate(it) }
-                    .subscribe { this.conversionTextViewIsGone.onNext(it) }
+                    .subscribe(this.conversionTextViewIsGone)
 
-            val rewardAmount = reward
+            val rewardMinimum = reward
                     .map { it.minimum() }
 
-            rewardAmount
+            rewardMinimum
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map<SpannableString> { ViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
-                    .subscribe { this.pledgeAmount.onNext(it) }
+                    .subscribe(this.pledgeAmount)
 
             val shippingRules = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
-                    .filter { RewardUtils.isReward(it.second) }
-                    .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second) }
+                    .filter { RewardUtils.isShippable(it.second) }
+                    .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second).compose(neverError()) }
                     .map { it.shippingRules() }
                     .share()
 
@@ -216,18 +223,14 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesAndProject)
 
-            val hasNoShippingRules = rulesAndProject
-                    .map { ObjectUtils.isNull(it.first) || it.first.isEmpty() }
-
-            val isNoReward = reward
-                    .filter { RewardUtils.isNoReward(it) }
-                    .map { true }
-
-            Observable.merge(hasNoShippingRules, isNoReward)
+            reward
+                    .map { RewardUtils.isShippable(it) }
+                    .map { BooleanUtils.negate(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesSectionIsGone)
 
-            this.shippingRulesSectionIsGone
+            reward
+                    .map { ObjectUtils.isNull(it.estimatedDeliveryOn()) || RewardUtils.isNoReward(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.estimatedDeliveryInfoIsGone)
 
@@ -248,7 +251,6 @@ interface PledgeFragmentViewModel {
             additionalPledgeAmount
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map<String> { this.ksCurrency.format(it.first, it.second, RoundingMode.HALF_UP) }
-                    .compose(bindToLifecycle())
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.additionalPledgeAmount)
@@ -263,8 +265,6 @@ interface PledgeFragmentViewModel {
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
                     .subscribe(this.decreasePledgeButtonIsEnabled)
-
-            val rewardMinimum = reward.map { it.minimum() }
 
             Observable
                     .merge(rewardMinimum, rewardMinimum.compose<Pair<Double, Double>>(combineLatestPair(additionalPledgeAmount)).map { it.first + it.second })
@@ -287,12 +287,6 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.continueButtonIsGone)
 
-            userIsLoggedIn
-                    .filter { BooleanUtils.isTrue(it) }
-                    .switchMap { getListOfStoredCards() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.cards)
-
             val shippingRule = Observable.merge(this.shippingRule, defaultShippingRule)
 
             shippingRule
@@ -308,50 +302,58 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmount)
 
-            val rulesAndReward = shippingRules
-                    .compose<Pair<List<ShippingRule>, Reward>>(combineLatestPair(reward))
-
-            val rewardAmountPlusAdditional = rewardAmount
+            val basePledgeAmount = rewardMinimum
                     .compose<Pair<Double, Double>>(combineLatestPair(additionalPledgeAmount))
                     .map { it.first + it.second }
 
-            val rulesAndRewardAndAdditional = rulesAndReward
-                    .filter { ObjectUtils.isNull(it.first) || it.first.isEmpty() }
-                    .compose<Pair<Pair<List<ShippingRule>, Reward>, Double>>(combineLatestPair(rewardAmountPlusAdditional))
-
-            val initialAmountWithReward = rulesAndRewardAndAdditional
-                    .map { it.second }
-
-            val initialAmountNoReward = rewardAmountPlusAdditional
+            val unshippableTotal = basePledgeAmount
                     .compose<Pair<Double, Reward>>(combineLatestPair(reward))
-                    .filter { RewardUtils.isNoReward(it.second) }
-                    .map { it.first }
+                    .filter { RewardUtils.isNoReward(it.second) || !RewardUtils.isShippable(it.second) }
+                    .map<Double> { it.first }
+                    .distinctUntilChanged()
 
-            val initialAmount = Observable.merge(initialAmountNoReward, initialAmountWithReward)
-
-            val totalAmount = rewardAmountPlusAdditional
+            val shippableTotal = basePledgeAmount
                     .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first + it.second }
+                    .compose<Pair<Double, Reward>>(combineLatestPair(reward))
+                    .filter { RewardUtils.isReward(it.second) && RewardUtils.isShippable(it.second) }
+                    .map<Double> { it.first }
+                    .distinctUntilChanged()
 
-            Observable.merge(initialAmount, totalAmount)
+            val total = Observable.merge(unshippableTotal, shippableTotal)
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
+
+            total
                     .map<SpannableString> { ViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe(this.totalAmount)
 
-            Observable.merge(initialAmount, totalAmount)
-                    .compose<Pair<Double, Project>>(combineLatestPair(project))
+            total
                     .map { this.ksCurrency.formatWithUserPreference(it.first, it.second, RoundingMode.UP, 2) }
                     .compose(bindToLifecycle())
-                    .subscribe { this.conversionText.onNext(it) }
+                    .subscribe(this.conversionText)
+
+            userIsLoggedIn
+                    .filter { BooleanUtils.isTrue(it) }
+                    .switchMap { getListOfStoredCards() }
+                    .delaySubscription(total)
+                    .compose(bindToLifecycle())
+                    .subscribe(this.cards)
+
+            val selectedPosition = BehaviorSubject.create(RecyclerView.NO_POSITION)
+
+            this.showPledgeCard
+                    .map { it.first }
+                    .compose(bindToLifecycle())
+                    .subscribe(selectedPosition)
 
             this.selectCardButtonClicked
                     .compose(bindToLifecycle())
-                    .subscribe { this.showPledgeCard.onNext(Pair(it, true)) }
+                    .subscribe { this.showPledgeCard.onNext(Pair(it, CardState.PLEDGE)) }
 
             this.closeCardButtonClicked
                     .compose(bindToLifecycle())
-                    .subscribe { this.showPledgeCard.onNext(Pair(it, false)) }
+                    .subscribe { this.showPledgeCard.onNext(Pair(it, CardState.SELECT)) }
 
             this.newCardButtonClicked
                     .compose(bindToLifecycle())
@@ -366,7 +368,38 @@ interface PledgeFragmentViewModel {
                     .filter(ActivityResult::isOk)
                     .switchMap { getListOfStoredCards() }
                     .compose(bindToLifecycle())
-                    .subscribe { this.cards.onNext(it) }
+                    .subscribe(this.cards)
+
+            val location: Observable<Location?> = Observable.merge(Observable.just(null as Location?), shippingRule.map { it.location() })
+
+            val checkoutNotification = Observable.combineLatest(project,
+                    total.map { it.first.toString() },
+                    this.pledgeButtonClicked,
+                    location.map { it?.id()?.toString() },
+                    reward)
+            { p, a, id, l, r -> Checkout(p, a, id, l, r) }
+                    .switchMap {
+                        this.apolloClient.checkout(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward)
+                            .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }
+                            .materialize()
+                    }
+                    .share()
+
+            val checkoutValues = checkoutNotification
+                    .compose(values())
+
+            Observable.merge(checkoutNotification.compose(errors()), checkoutValues.filter { BooleanUtils.isFalse(it) })
+                    .compose(ignoreValues())
+                    .compose(bindToLifecycle())
+                    .subscribe{
+                        this.showPledgeError.onNext(null)
+                        this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.PLEDGE))
+                    }
+
+            project
+                    .compose<Project>(takeWhen(checkoutValues.filter { BooleanUtils.isTrue(it) }))
+                    .compose(bindToLifecycle())
+                    .subscribe(this.startThanksActivity)
         }
 
         private fun getDefaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
@@ -390,7 +423,7 @@ interface PledgeFragmentViewModel {
 
         override fun onGlobalLayout() = this.onGlobalLayout.onNext(null)
 
-        override fun pledgeButtonClicked() = this.pledgeButtonClicked.onNext(null)
+        override fun pledgeButtonClicked(cardId: String) = this.pledgeButtonClicked.onNext(cardId)
 
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRule.onNext(shippingRule)
 
@@ -414,14 +447,19 @@ interface PledgeFragmentViewModel {
         @NonNull
         override fun conversionText(): Observable<String> = this.conversionText
 
+        @NonNull
         override fun decreasePledgeButtonIsEnabled(): Observable<Boolean> = this.decreasePledgeButtonIsEnabled
 
+        @NonNull
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
 
+        @NonNull
         override fun estimatedDeliveryInfoIsGone(): Observable<Boolean> = this.estimatedDeliveryInfoIsGone
 
+        @NonNull
         override fun increasePledgeButtonIsEnabled(): Observable<Boolean> = this.increasePledgeButtonIsEnabled
 
+        @NonNull
         override fun paymentContainerIsGone(): Observable<Boolean> = this.paymentContainerIsGone
 
         @NonNull
@@ -433,18 +471,26 @@ interface PledgeFragmentViewModel {
         @NonNull
         override fun shippingAmount(): Observable<SpannableString> = this.shippingAmount
 
+        @NonNull
         override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject
 
         @NonNull
         override fun shippingRulesSectionIsGone(): Observable<Boolean> = this.shippingRulesSectionIsGone
 
         @NonNull
-        override fun showPledgeCard(): Observable<Pair<Int, Boolean>> = this.showPledgeCard
+        override fun showPledgeCard(): Observable<Pair<Int, CardState>> = this.showPledgeCard
+
+        @NonNull
+        override fun showPledgeError(): Observable<Void> = this.showPledgeError
 
         @NonNull
         override fun startLoginToutActivity(): Observable<Void> = this.startLoginToutActivity
 
+        @NonNull
         override fun startNewCardActivity(): Observable<Void> = this.startNewCardActivity
+
+        @NonNull
+        override fun startThanksActivity(): Observable<Project> = this.startThanksActivity
 
         @NonNull
         override fun totalAmount(): Observable<SpannableString> = this.totalAmount
@@ -454,6 +500,8 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .compose(neverError())
         }
+
+        data class Checkout(val project: Project, val amount: String, val paymentSourceId: String, val locationId: String?, val reward: Reward?)
 
     }
 }

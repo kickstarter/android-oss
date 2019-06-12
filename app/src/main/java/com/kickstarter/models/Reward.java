@@ -15,7 +15,7 @@ import static com.kickstarter.libs.utils.IntegerUtils.isZero;
 
 @AutoGson
 @AutoParcel
-public abstract class Reward implements Parcelable {
+public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable Integer backersCount();
   public abstract @Nullable String description();
   public abstract @Nullable DateTime endsAt();

@@ -75,7 +75,7 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
       .currentUser(currentUser)
       .apiClient(new MockApiClient() {
         @Override
-        public @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull String accessToken) {
+        public @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken) {
           return Observable.error(new Throwable("error"));
         }
       })

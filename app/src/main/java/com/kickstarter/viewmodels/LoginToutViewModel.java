@@ -24,6 +24,7 @@ import com.kickstarter.ui.data.LoginReason;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -182,7 +183,8 @@ public interface LoginToutViewModel {
       });
     }
 
-    private final PublishSubject<String> facebookAccessToken = PublishSubject.create();
+    @VisibleForTesting
+    final PublishSubject<String> facebookAccessToken = PublishSubject.create();
     private final PublishSubject<Void> loginClick = PublishSubject.create();
     private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
     private final PublishSubject<LoginReason> loginReason = PublishSubject.create();

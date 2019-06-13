@@ -4,22 +4,18 @@ import android.view.View
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.utils.AnimationUtils
 import com.kickstarter.models.StoredCard
-import com.kickstarter.viewmodels.RewardPledgeCardViewHolderViewModel
-import kotlinx.android.synthetic.main.item_reward_pledge_card.view.*
+import com.kickstarter.viewmodels.RewardLoadingCardViewHolderViewModel
+import kotlinx.android.synthetic.main.item_reward_loading_card.view.*
 
-class RewardPledgeCardViewHolder(val view : View, val delegate : Delegate) : KSViewHolder(view) {
+class RewardLoadingCardViewHolder(val view: View) : KSViewHolder(view) {
 
-    interface Delegate {
-        fun pledgeButtonClicked(id: String)
-        fun closePledgeButtonClicked(position: Int)
-    }
+    private val viewModel: RewardLoadingCardViewHolderViewModel.ViewModel = RewardLoadingCardViewHolderViewModel.ViewModel(environment())
+    private val ksString: KSString = environment().ksString()
 
     private val creditCardExpirationString = this.context().getString(R.string.Credit_card_expiration)
     private val cardEndingInString = this.context().getString(R.string.Card_ending_in_last_four)
-
-    private val viewModel: RewardPledgeCardViewHolderViewModel.ViewModel = RewardPledgeCardViewHolderViewModel.ViewModel(environment())
-    private val ksString: KSString = environment().ksString()
 
     init {
 
@@ -31,7 +27,7 @@ class RewardPledgeCardViewHolder(val view : View, val delegate : Delegate) : KSV
         this.viewModel.outputs.issuerImage()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.reward_pledge_card_logo.setImageResource(it) }
+                .subscribe { this.view.reward_loading_card_logo.setImageResource(it) }
 
         this.viewModel.outputs.lastFour()
                 .compose(bindToLifecycle())
@@ -41,15 +37,11 @@ class RewardPledgeCardViewHolder(val view : View, val delegate : Delegate) : KSV
         this.viewModel.outputs.id()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {id ->
-                    this.view.pledge_button.setOnClickListener {
-                        this.delegate.pledgeButtonClicked(id)
-                    }
-                }
+                .subscribe { animateProgressBar() }
+    }
 
-        this.view.close_pledge.setOnClickListener {
-            this.delegate.closePledgeButtonClicked(adapterPosition)
-        }
+    private fun animateProgressBar() {
+        AnimationUtils.fadeInAndScale(this.view.reward_loading_progress_bar, 120L).start()
     }
 
     override fun bindData(data: Any?) {
@@ -58,12 +50,12 @@ class RewardPledgeCardViewHolder(val view : View, val delegate : Delegate) : KSV
     }
 
     private fun setExpirationDateTextView(date: String) {
-        this.view.reward_pledge_card_expiration_date.text = this.ksString.format(this.creditCardExpirationString,
+        this.view.reward_loading_card_expiration_date.text = this.ksString.format(this.creditCardExpirationString,
                 "expiration_date", date)
     }
 
     private fun setLastFourTextView(lastFour: String) {
-        this.view.reward_pledge_card_last_four.text = this.ksString.format(this.cardEndingInString, "last_four", lastFour)
+        this.view.reward_loading_card_last_four.text = this.ksString.format(this.cardEndingInString, "last_four", lastFour)
     }
 
 }

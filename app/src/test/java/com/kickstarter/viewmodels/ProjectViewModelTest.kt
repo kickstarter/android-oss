@@ -21,6 +21,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectViewModel.ViewModel
     private val heartDrawableId = TestSubscriber<Int>()
     private val projectTest = TestSubscriber<Project>()
+    private val rewardsButtonColor = TestSubscriber<Int>()
+    private val rewardsButtonText = TestSubscriber<Int>()
     private val showShareSheet = TestSubscriber<Project>()
     private val showSavedPromptTest = TestSubscriber<Void>()
     private val startLoginToutActivity = TestSubscriber<Void>()
@@ -40,6 +42,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm = ProjectViewModel.ViewModel(environment)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
         this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first }.subscribe(this.projectTest)
+        this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
+        this.vm.outputs.rewardsButtonText().subscribe(this.rewardsButtonText)
         this.vm.outputs.setActionButtonId().subscribe(this.setActionButtonId)
         this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
@@ -317,6 +321,35 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.setActionButtonId.assertValue(null)
+    }
+
+    @Test
+    fun testProjectViewModel_SetRewardButtonStringAndColor_NonBacked_Live_Project() {
+        setUpEnvironment(environment())
+
+        val project = ProjectFactory.project()
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.rewardsButtonColor.assertValue(R.color.primary)
+        this.rewardsButtonText.assertValue(R.string.Back_this_project)
+    }
+
+    @Test
+    fun testProjectViewModel_SetRewardButtonStringAndColor_Backed_Ended_Project() {
+        setUpEnvironment(environment())
+
+        val project = ProjectFactory.successfulProject()
+                .toBuilder()
+                .isBacking(true)
+                .build()
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.rewardsButtonColor.assertValue(R.color.black)
+        this.rewardsButtonText.assertValue(R.string.View_your_pledge)
     }
 
     @Test

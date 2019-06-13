@@ -17,6 +17,9 @@ interface BaseRewardCardViewHolderViewModel {
     }
 
     interface Outputs {
+        /** Emits the id of the stored card. */
+        fun id(): Observable<String>
+
         /** Emits the expiration date for a credit card. */
         fun expirationDate(): Observable<String>
 
@@ -30,13 +33,17 @@ interface BaseRewardCardViewHolderViewModel {
     abstract class ViewModel(val environment: Environment) : ActivityViewModel<KSViewHolder>(environment), Inputs, Outputs {
         private val card = PublishSubject.create<StoredCard>()
 
-        private val issuerImage = BehaviorSubject.create<Int>()
         private val expirationDate = BehaviorSubject.create<String>()
+        private val id = BehaviorSubject.create<String>()
+        private val issuerImage = BehaviorSubject.create<Int>()
         private val lastFour = BehaviorSubject.create<String>()
 
         private val sdf = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
 
         init {
+            this.card.map { it.id() }
+                    .subscribe(this.id)
+
             this.card.map { it.expiration() }
                     .map { sdf.format(it).toString() }
                     .subscribe { this.expirationDate.onNext(it) }
@@ -50,6 +57,8 @@ interface BaseRewardCardViewHolderViewModel {
 
         }
         override fun configureWith(storedCard: StoredCard) = this.card.onNext(storedCard)
+
+        override fun id(): Observable<String> = this.id
 
         override fun issuerImage(): Observable<Int> = this.issuerImage
 

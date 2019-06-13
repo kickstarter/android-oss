@@ -5,12 +5,13 @@ import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.models.StoredCard
+import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.viewholders.*
 
 class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
     interface Delegate : RewardCardViewHolder.Delegate, RewardPledgeCardViewHolder.Delegate, RewardAddCardViewHolder.Delegate
 
-    private var selectedPosition = RecyclerView.NO_POSITION
+    private var selectedPosition = Pair(RecyclerView.NO_POSITION, CardState.SELECT)
 
     init {
         val placeholders = arrayOfNulls<Any>(3).toList()
@@ -22,8 +23,12 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
             R.layout.item_reward_placeholder_card
         } else {
             if (sectionRow.section() == 0) {
-                if (sectionRow.row() == this.selectedPosition) {
-                    return R.layout.item_reward_pledge_card
+                if (sectionRow.row() == this.selectedPosition.first) {
+                    return when {
+                        this.selectedPosition.second == CardState.SELECT -> R.layout.item_reward_credit_card
+                        this.selectedPosition.second == CardState.PLEDGE -> R.layout.item_reward_pledge_card
+                        else -> R.layout.item_reward_loading_card
+                    }
                 }
                 R.layout.item_reward_credit_card
             } else {
@@ -37,6 +42,7 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
             R.layout.item_reward_add_card -> RewardAddCardViewHolder(view, this.delegate)
             R.layout.item_reward_pledge_card -> RewardPledgeCardViewHolder(view, this.delegate)
             R.layout.item_reward_credit_card -> RewardCardViewHolder(view, this.delegate)
+            R.layout.item_reward_loading_card -> RewardLoadingCardViewHolder(view)
             else -> EmptyViewHolder(view)
         }
     }
@@ -48,13 +54,18 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
         notifyDataSetChanged()
     }
 
-    fun setSelectedPosition(position: Int) {
-        this.selectedPosition = position
+    fun setLoadingPosition(position: Int) {
+        this.selectedPosition = Pair(position, CardState.LOADING)
         notifyItemChanged(position)
     }
 
-    fun resetSelectedPosition(position: Int) {
-        this.selectedPosition = RecyclerView.NO_POSITION
+    fun setPledgePosition(position: Int) {
+        this.selectedPosition = Pair(position, CardState.PLEDGE)
+        notifyItemChanged(position)
+    }
+
+    fun resetPledgePosition(position: Int) {
+        this.selectedPosition = Pair(RecyclerView.NO_POSITION, CardState.SELECT)
         notifyItemChanged(position)
     }
 

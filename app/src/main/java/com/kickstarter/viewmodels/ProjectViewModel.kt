@@ -81,6 +81,12 @@ interface ProjectViewModel {
          * model, this observable will emit that project immediately, and then again when it has updated from the api.*/
         fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>>
 
+        /** Emits the color resource ID for the reward button based on (View, Manage, or Back this project). */
+        fun rewardsButtonColor(): Observable<Int>
+
+        /** Emits the proper string resource ID for the reward button. */
+        fun rewardsButtonText(): Observable<Int>
+
         /** Emits the back, manage, view pledge button, or null. */
         fun setActionButtonId(): Observable<Int>
 
@@ -150,6 +156,8 @@ interface ProjectViewModel {
         private val initialRewardsContainerViewId = BehaviorSubject.create<Int>()
         private val managePledgeViewText = BehaviorSubject.create<String>()
         private val projectAndUserCountryAndIsFeatureEnabled = BehaviorSubject.create<Pair<Pair<Project, String>, Boolean>>()
+        private val rewardsButtonColor = BehaviorSubject.create<Int>()
+        private val rewardsButtonText = BehaviorSubject.create<Int>()
         private val setActionButtonId = BehaviorSubject.create<Int>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
         private val showRewardsFragment = BehaviorSubject.create<Pair<Boolean, Int>>()
@@ -350,6 +358,18 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.setActionButtonId.onNext(it) }
 
+            currentProject
+                    .map { getRewardButtonText(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe { this.rewardsButtonText.onNext(it) }
+
+            currentProject
+                    .map { getRewardButtonColor(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe { this.rewardsButtonColor.onNext(it) }
+
         }
 
         /**
@@ -459,6 +479,10 @@ interface ProjectViewModel {
             return this.projectAndUserCountryAndIsFeatureEnabled
         }
 
+        override fun rewardsButtonColor(): Observable<Int> = this.rewardsButtonColor
+
+        override fun rewardsButtonText(): Observable<Int> = this.rewardsButtonText
+
         @NonNull
         override fun initialRewardsContainerViewId(): Observable<Int> = this.initialRewardsContainerViewId
 
@@ -526,6 +550,16 @@ interface ProjectViewModel {
             }
         }
 
+        private fun getRewardButtonText(project: Project): Int? {
+            return if (!project.isBacking && project.isLive) {
+                R.string.Back_this_project
+            } else if (project.isBacking && !project.isLive) {
+                R.string.View_your_pledge
+            } else {
+                return null
+            }
+        }
+
         private fun setManagePledgeViewText(project: Project): String? {
 
             val backing = project.backing()
@@ -541,6 +575,16 @@ interface ProjectViewModel {
                 return null
             }
             return null
+        }
+
+        private fun getRewardButtonColor(project: Project): Int? {
+            return if (!project.isBacking && project.isLive) {
+                R.color.primary
+            } else if (project.isBacking && !project.isLive) {
+                R.color.black
+            } else {
+                return null
+            }
         }
 
         private fun saveProject(project: Project): Observable<Project> {

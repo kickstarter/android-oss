@@ -9,6 +9,7 @@ import android.util.Pair
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
@@ -375,7 +376,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     override fun back() {
         when {
             supportFragmentManager.backStackEntryCount > 0 -> supportFragmentManager.popBackStack()
-            native_back_this_project_button.visibility == View.GONE -> this.viewModel.inputs.hideRewardsFragmentClicked()
             else -> super.back()
         }
     }

@@ -6,10 +6,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*
-import com.kickstarter.libs.utils.BackingUtils
-import com.kickstarter.libs.utils.BooleanUtils
-import com.kickstarter.libs.utils.RefTagUtils
-import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.User
@@ -299,6 +296,7 @@ interface ProjectViewModel {
             this.projectAndUserCountryAndIsFeatureEnabled
                     .filter { BooleanUtils.isTrue(it.first.first.isBacking) && BooleanUtils.isTrue(it.second) }
                     .map { setManagePledgeViewText(it.first.first) }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.managePledgeViewText)
 
@@ -528,19 +526,21 @@ interface ProjectViewModel {
             }
         }
 
-        private fun setManagePledgeViewText(project: Project): String {
-            val rewards = project.rewards()
+        private fun setManagePledgeViewText(project: Project): String? {
 
-            val selectedReward = rewards?.
-                    first { BackingUtils.isBacked(project, it) }
-            selectedReward?.let {
-                return if (RewardUtils.isReward(it)) {
-                     "${project.currencySymbol()} ${it.minimum()} - ${it.title()}"
-                } else {
-                     "${it.minimum()}"
+            val backing = project.backing()
+            backing?.let {
+                val backingAmount = it.amount() - it.shippingAmount()
+                val reward = project.rewards()?.first { it.id() == backing.rewardId() }
+                reward?.let {
+                    return when {
+                        RewardUtils.isNoReward(it) -> "${project.currencySymbol() + backingAmount}"
+                        else -> "${project.currencySymbol() + backingAmount} - ${it.title()}"
+                    }
                 }
+                return null
             }
-            return ""
+            return null
         }
 
         private fun saveProject(project: Project): Observable<Project> {

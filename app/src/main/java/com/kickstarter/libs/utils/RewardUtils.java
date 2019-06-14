@@ -157,7 +157,7 @@ public final class RewardUtils {
   }
 
   /**
-   * Returns the color resource ID of the rewards button based on project and backing status.
+   * Returns the color resource ID of the rewards button based on project and if user has backed reward.
    */
   public static @ColorRes int pledgeButtonColor(final @NonNull Project project, final @NonNull Reward reward) {
     if (BackingUtils.isBacked(project, reward) && project.isLive()) {

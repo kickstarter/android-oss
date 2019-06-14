@@ -43,6 +43,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
+import static com.kickstarter.libs.utils.TransitionUtils.fadeIn;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
@@ -185,7 +186,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     final Intent intent = new Intent(getActivity(), LoginToutActivity.class)
       .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
-    transition(getActivity(), slideInFromRight());
+    transition(getActivity(), fadeIn());
   }
 
   private void startProjectActivity(final @NonNull Project project, final @NonNull RefTag refTag) {

@@ -1,5 +1,6 @@
 package com.kickstarter;
 
+import com.facebook.FacebookSdk;
 import com.google.android.gms.common.ConnectionResult;
 
 import org.robolectric.shadows.gms.ShadowGooglePlayServicesUtil;
@@ -12,6 +13,8 @@ public class TestKSApplication extends KSApplication {
     // For now we just return that Play Services is disabled.
     ShadowGooglePlayServicesUtil.setIsGooglePlayServicesAvailable(ConnectionResult.SERVICE_DISABLED);
     super.onCreate();
+
+    FacebookSdk.sdkInitialize(this);
   }
 
   @Override

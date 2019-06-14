@@ -239,6 +239,7 @@ interface ProjectViewModel {
             this.projectAndUserCountryAndIsFeatureEnabled
                     .filter { BooleanUtils.isTrue(it.second) }
                     .map<Int> { getInitialRewardsContainerViewId(it.first.first) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.initialRewardsContainerViewId)
 
@@ -289,12 +290,6 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
 
-            this.nativeCheckoutManagePledgeButtonClicked
-                    .map { true }
-                    .compose<Pair<Boolean, Int>>(combineLatestPair(this.initialRewardsContainerViewId))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showRewardsFragment)
-
             this.hideRewardsFragment
                     .map { false }
                     .compose<Pair<Boolean, Int>>(combineLatestPair(this.initialRewardsContainerViewId))
@@ -305,6 +300,7 @@ interface ProjectViewModel {
                     .filter { BooleanUtils.isTrue(it.first.first.isBacking) && BooleanUtils.isTrue(it.second) }
                     .map { setManagePledgeViewText(it.first.first) }
                     .filter { ObjectUtils.isNotNull(it) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.managePledgeViewText)
 
@@ -561,18 +557,15 @@ interface ProjectViewModel {
         }
 
         private fun setManagePledgeViewText(project: Project): String? {
-
             val backing = project.backing()
             backing?.let {
-                val backingAmount = it.amount() - it.shippingAmount()
-                val reward = project.rewards()?.first { it.id() == backing.rewardId() }
-                reward?.let {
-                    return when {
-                        RewardUtils.isNoReward(it) -> "${project.currencySymbol() + backingAmount}"
-                        else -> "${project.currencySymbol() + backingAmount} - ${it.title()}"
-                    }
+                val backingAmount = (it.amount() - it.shippingAmount()).toInt()
+                val reward = project.rewards()?.firstOrNull { it.id() == backing.rewardId() }
+                return if (ObjectUtils.isNotNull(reward)) {
+                    "${project.currencySymbol() + backingAmount} \u2022 ${reward?.title()}"
+                } else {
+                    "${project.currencySymbol() + backingAmount}"
                 }
-                return null
             }
             return null
         }

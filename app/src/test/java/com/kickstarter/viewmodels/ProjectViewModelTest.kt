@@ -7,11 +7,12 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KoalaEvent
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.preferences.BooleanPreferenceType
+import com.kickstarter.libs.preferences.MockBooleanPreference
 import com.kickstarter.mock.MockCurrentConfig
-import com.kickstarter.mock.factories.ConfigFactory
-import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import org.junit.Test
@@ -20,6 +21,8 @@ import rx.observers.TestSubscriber
 class ProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectViewModel.ViewModel
     private val heartDrawableId = TestSubscriber<Int>()
+    private val initialRewardsContainerViewId = TestSubscriber<Int>()
+    private val managePledgeViewText = TestSubscriber<String>()
     private val projectTest = TestSubscriber<Project>()
     private val rewardsButtonColor = TestSubscriber<Int>()
     private val rewardsButtonText = TestSubscriber<Int>()
@@ -41,13 +44,15 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectViewModel.ViewModel(environment)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
+        this.vm.outputs.initialRewardsContainerViewId().subscribe(this.initialRewardsContainerViewId)
+        this.vm.outputs.managePledgeViewText().subscribe(this.managePledgeViewText)
         this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first }.subscribe(this.projectTest)
         this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
         this.vm.outputs.rewardsButtonText().subscribe(this.rewardsButtonText)
         this.vm.outputs.setActionButtonId().subscribe(this.setActionButtonId)
         this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
-        this.vm.outputs.showRewardsFragment().subscribe(this.showRewardsFragment)
+        this.vm.outputs.showRewardsFragment().map { it.first }.subscribe(this.showRewardsFragment)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first.isStarred }.subscribe(this.savedTest)
@@ -354,16 +359,18 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectViewModel_HideRewardsFragment() {
-        setUpEnvironment(environment())
+        this.initializeViewModelWithProject(ProjectFactory.project())
         this.vm.inputs.hideRewardsFragmentClicked()
         this.showRewardsFragment.assertValue(false)
     }
 
     @Test
     fun testProjectViewModel_ShowRewardsFragment() {
-        setUpEnvironment(environment())
+        this.initializeViewModelWithProject(ProjectFactory.project())
         this.vm.inputs.nativeCheckoutBackProjectButtonClicked()
         this.showRewardsFragment.assertValue(true)
+        this.vm.inputs.nativeCheckoutManagePledgeButtonClicked()
+        this.showRewardsFragment.assertValues(true, true)
     }
 
     @Test
@@ -371,5 +378,75 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
         this.vm.inputs.onGlobalLayout()
         this.setInitialRewardsContainerY.assertValueCount(1)
+    }
+
+    @Test
+    fun testProjectViewModel_InitialRewardsContainerViewId_ManagePledge() {
+        this.initializeViewModelWithProject(ProjectFactory.backedProject())
+        this.initialRewardsContainerViewId.assertValues(R.id.manage_pledge_container)
+    }
+
+    @Test
+    fun testProjectViewModel_InitialRewardsContainerViewId_NativeBackThisProjectButton() {
+        this.initializeViewModelWithProject(ProjectFactory.project())
+        this.initialRewardsContainerViewId.assertValues(R.id.native_back_this_project_button)
+    }
+
+    @Test
+    fun testProjectViewModel_ManagePledgeViewText_WithReward() {
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .id(4)
+                .build()
+
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .rewardId(4)
+                .build()
+
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .rewards(listOf(reward))
+                .build()
+
+        this.initializeViewModelWithProject(project)
+        this.managePledgeViewText.assertValues("$10 • Digital Bundle")
+    }
+
+    @Test
+    fun testProjectViewModel_ManagePledgeViewText_WithNoReward() {
+
+        val reward = RewardFactory.noReward()
+
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(15.0)
+                .reward(reward)
+                .build()
+
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        this.initializeViewModelWithProject(project)
+        this.managePledgeViewText.assertValues("$15")
+    }
+
+    private fun initializeViewModelWithProject(project: Project) {
+        val currentUser = MockCurrentUser()
+        val rewardsEnabled: BooleanPreferenceType = MockBooleanPreference(true)
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(ConfigFactory.config())
+
+        val environment = environment().toBuilder()
+                .currentConfig(currentConfig)
+                .currentUser(currentUser)
+                .horizontalRewardsEnabled(rewardsEnabled)
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
     }
 }

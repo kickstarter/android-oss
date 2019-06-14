@@ -50,7 +50,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
       this.koala.trackAppOpen();
 
       // Facebook: logs 'install' and 'app activate' App Events.
-      AppEventsLogger.activateApp(activity);
+      AppEventsLogger.activateApp(activity.getApplication());
 
       // Refresh the config file
       this.client.config()

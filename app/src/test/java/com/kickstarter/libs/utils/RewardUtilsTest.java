@@ -3,8 +3,11 @@ package com.kickstarter.libs.utils;
 import android.content.Context;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.RewardFactory;
+import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
 import org.joda.time.DateTime;
@@ -254,21 +257,36 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testRewardWithoutExpiration() {
-    final Reward rewardWithoutEndDate = RewardFactory.reward();
-    assertFalse(RewardUtils.hasExpirationDate(rewardWithoutEndDate));
+  public void isTimeLimited() {
+    assertFalse(RewardUtils.isTimeLimited(RewardFactory.reward()));
+    assertTrue(RewardUtils.isTimeLimited(RewardFactory.endingSoon()));
   }
 
   @Test
-  public void testRewardWithExpiration() {
-    final Date date = DateTime.now().toDate();
-    final MutableDateTime currentDate = new MutableDateTime(date);
-    currentDate.addDays(31);
-    final Reward rewardWithEndDate = RewardFactory.reward().toBuilder()
-      .endsAt(currentDate.toDateTime())
+  public void testIsExpired() {
+    assertFalse(RewardUtils.isExpired(RewardFactory.reward()));
+    final Reward rewardEnded2DaysAgo = RewardFactory.reward()
+      .toBuilder()
+      .endsAt(DateTime.now().minusDays(2))
       .build();
+    assertTrue(RewardUtils.isExpired(rewardEnded2DaysAgo));
+    final Reward rewardEndingIn2Days = RewardFactory.reward()
+      .toBuilder()
+      .endsAt(DateTime.now().plusDays(2))
+      .build();
+    assertFalse(RewardUtils.isExpired(rewardEndingIn2Days));
+  }
 
-    assertTrue(RewardUtils.hasExpirationDate(rewardWithEndDate));
+  @Test
+  public void testPledgeButtonColor() {
+    assertEquals(R.color.button_pledge_primary, RewardUtils.pledgeButtonColor(ProjectFactory.project(), RewardFactory.reward()));
+    final Project backedProject = ProjectFactory.backedProject();
+    final Reward backedReward = backedProject.backing().reward();
+    assertEquals(R.color.button_pledge_primary, RewardUtils.pledgeButtonColor(backedProject, backedReward));
+    final Project backedSuccessfulProject = ProjectFactory.backedProject().toBuilder().state(Project.STATE_SUCCESSFUL).build();
+    final Reward backedSuccessfulReward = backedSuccessfulProject.backing().reward();
+    assertEquals(R.color.button_pledge_ended, RewardUtils.pledgeButtonColor(backedSuccessfulProject, backedSuccessfulReward));
+    assertEquals(R.color.button_pledge_ended, RewardUtils.pledgeButtonColor(ProjectFactory.successfulProject(), RewardFactory.reward()));
   }
 
   @Test

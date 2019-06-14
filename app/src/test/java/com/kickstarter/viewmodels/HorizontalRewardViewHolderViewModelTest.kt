@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.mock.MockCurrentConfig
@@ -12,77 +13,141 @@ import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
+import org.joda.time.DateTime
 import org.junit.Test
 import rx.observers.TestSubscriber
 
-class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
+class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: HorizontalRewardViewHolderViewModel.ViewModel
-    private val conversionTextViewText = TestSubscriber.create<String>()
-    private val conversionSectionIsGone = TestSubscriber.create<Boolean>()
-    private val descriptionTextViewText = TestSubscriber<String>()
+    private val buttonIsGone = TestSubscriber.create<Boolean>()
+    private val buttonTint = TestSubscriber.create<Int>()
+    private val checkIsInvisible = TestSubscriber.create<Boolean>()
+    private val conversion = TestSubscriber.create<String>()
+    private val conversionIsGone = TestSubscriber.create<Boolean>()
+    private val description = TestSubscriber<String>()
+    private val descriptionIsGone = TestSubscriber<Boolean>()
+    private val endDateSectionIsGone = TestSubscriber<Boolean>()
     private val isClickable = TestSubscriber<Boolean>()
-    private val limitAndRemainingTextViewIsGone = TestSubscriber<Boolean>()
-    private val limitAndRemainingTextViewText = TestSubscriber<Pair<String, String>>()
-    private val limitReachedButtonTextIsVisible = TestSubscriber<Void>()
+    private val limitContainerIsGone = TestSubscriber<Boolean>()
+    private val limitReachedIsVisible = TestSubscriber<Void>()
     private val minimumAmount = TestSubscriber<String>()
     private val minimumAmountTitle = TestSubscriber<String>()
+    private val remaining = TestSubscriber<String>()
+    private val remainingIsGone = TestSubscriber<Boolean>()
     private val reward = TestSubscriber<Reward>()
-    private val rewardDescriptionIsGone = TestSubscriber<Boolean>()
-    private val rewardEndDateSectionIsGone = TestSubscriber<Boolean>()
     private val rewardItems = TestSubscriber<List<RewardsItem>>()
     private val rewardItemsAreGone = TestSubscriber<Boolean>()
     private val showPledgeFragment = TestSubscriber<Pair<Project, Reward>>()
     private val startBackingActivity = TestSubscriber<Project>()
-    private val titleTextViewIsGone = TestSubscriber<Boolean>()
-    private val titleTextViewText = TestSubscriber<String>()
+    private val title = TestSubscriber<String>()
+    private val titleIsGone = TestSubscriber<Boolean>()
+    private val viewYourPledgeIsVisible = TestSubscriber<Void>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = HorizontalRewardViewHolderViewModel.ViewModel(environment)
-        this.vm.outputs.conversionText().subscribe(this.conversionTextViewText)
-        this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionSectionIsGone)
-        this.vm.outputs.descriptionText().subscribe(this.descriptionTextViewText)
+        this.vm.outputs.buttonIsGone().subscribe(this.buttonIsGone)
+        this.vm.outputs.buttonTint().subscribe(this.buttonTint)
+        this.vm.outputs.checkIsInvisible().subscribe(this.checkIsInvisible)
+        this.vm.outputs.conversion().subscribe(this.conversion)
+        this.vm.outputs.conversionIsGone().subscribe(this.conversionIsGone)
+        this.vm.outputs.description().subscribe(this.description)
+        this.vm.outputs.descriptionIsGone().subscribe(this.descriptionIsGone)
+        this.vm.outputs.endDateSectionIsGone().subscribe(this.endDateSectionIsGone)
         this.vm.outputs.isClickable().subscribe(this.isClickable)
-        this.vm.outputs.limitAndRemainingText().subscribe(this.limitAndRemainingTextViewText)
-        this.vm.outputs.limitAndRemainingTextViewIsGone().subscribe(this.limitAndRemainingTextViewIsGone)
-        this.vm.outputs.limitReachedButtonTextIsVisible().subscribe(this.limitReachedButtonTextIsVisible)
+        this.vm.outputs.remaining().subscribe(this.remaining)
+        this.vm.outputs.remainingIsGone().subscribe(this.remainingIsGone)
+        this.vm.outputs.limitContainerIsGone().subscribe(this.limitContainerIsGone)
+        this.vm.outputs.limitReachedIsVisible().subscribe(this.limitReachedIsVisible)
         this.vm.outputs.minimumAmount().map { it.toString() }.subscribe(this.minimumAmount)
         this.vm.outputs.minimumAmountTitle().map { it.toString() }.subscribe(this.minimumAmountTitle)
         this.vm.outputs.reward().subscribe(this.reward)
-        this.vm.outputs.rewardDescriptionIsGone().subscribe(this.rewardDescriptionIsGone)
-        this.vm.outputs.rewardEndDateSectionIsGone().subscribe(this.rewardEndDateSectionIsGone)
         this.vm.outputs.rewardItems().subscribe(this.rewardItems)
         this.vm.outputs.rewardItemsAreGone().subscribe(this.rewardItemsAreGone)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
-        this.vm.outputs.titleTextViewIsGone().subscribe(this.titleTextViewIsGone)
-        this.vm.outputs.titleText().subscribe(this.titleTextViewText)
+        this.vm.outputs.title().subscribe(this.title)
+        this.vm.outputs.titleIsGone().subscribe(this.titleIsGone)
+        this.vm.outputs.viewYourPledgeIsVisible().subscribe(this.viewYourPledgeIsVisible)
     }
 
     @Test
-    fun testConversionHiddenForProject() {
-        // Set the project currency and the user's chosen currency to the same value
+    fun testButtonUIOutputs() {
         setUpEnvironment(environment())
-        val project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("USD").build()
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.reward()
+
+        this.vm.inputs.projectAndReward(project, reward)
+        this.buttonIsGone.assertValue(false)
+        this.buttonTint.assertValue(R.color.button_pledge_primary)
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.limitReached())
+        this.buttonIsGone.assertValue(false)
+        this.buttonTint.assertValue(R.color.button_pledge_primary)
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.ended())
+        this.buttonIsGone.assertValue(false)
+        this.buttonTint.assertValue(R.color.button_pledge_primary)
+
+        val backedProject = ProjectFactory.backedProject()
+        this.vm.inputs.projectAndReward(backedProject, backedProject.backing()?.reward()?: RewardFactory.reward())
+        this.buttonIsGone.assertValues(false)
+        this.buttonTint.assertValue(R.color.button_pledge_primary)
+
+        this.vm.inputs.projectAndReward(ProjectFactory.successfulProject(), reward)
+        this.buttonIsGone.assertValues(false, true)
+        this.buttonTint.assertValues(R.color.button_pledge_primary, R.color.button_pledge_ended)
+    }
+
+    @Test
+    fun testCheckIsInvisible() {
+        setUpEnvironment(environment())
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.reward()
+
+        this.vm.inputs.projectAndReward(project, reward)
+        this.checkIsInvisible.assertValue(true)
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.limitReached())
+        this.checkIsInvisible.assertValue(true)
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.ended())
+        this.checkIsInvisible.assertValue(true)
+
+        val successfulProject = ProjectFactory.successfulProject()
+        this.vm.inputs.projectAndReward(successfulProject, reward)
+        this.checkIsInvisible.assertValue(true)
+
+        val backedLiveProject = ProjectFactory.backedProject()
+        this.vm.inputs.projectAndReward(backedLiveProject, backedLiveProject.backing()?.reward()?: RewardFactory.reward())
+        this.checkIsInvisible.assertValue(true)
+
+        val backedEndedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+        this.vm.inputs.projectAndReward(backedEndedProject, backedEndedProject.backing()?.reward()?: RewardFactory.reward())
+        this.checkIsInvisible.assertValues(true, false)
+    }
+
+    @Test
+    fun testConversion() {
+        setUpEnvironment(environment())
+        // Set the project currency and the user's chosen currency to the same value
+        val usProject = ProjectFactory.project()
         val reward = RewardFactory.reward()
 
         // the conversion should be hidden.
-        this.vm.inputs.projectAndReward(project, reward)
-        this.conversionTextViewText.assertValueCount(1)
-        this.conversionSectionIsGone.assertValue(true)
-    }
+        this.vm.inputs.projectAndReward(usProject, reward)
+        this.conversion.assertValueCount(1)
+        this.conversionIsGone.assertValuesAndClear(true)
 
-    @Test
-    fun testConversionShownForProject() {
-        // Set the project currency and the user's chosen currency to different values
-        setUpEnvironment(environment())
-        val project = ProjectFactory.project().toBuilder().currency("CAD").currentCurrency("USD").build()
-        val reward = RewardFactory.reward()
+        val caProject = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
 
         // USD conversion should shown.
-        this.vm.inputs.projectAndReward(project, reward)
-        this.conversionTextViewText.assertValueCount(1)
-        this.conversionSectionIsGone.assertValue(false)
+        this.vm.inputs.projectAndReward(caProject, reward)
+        this.conversion.assertValueCount(2)
+        this.conversionIsGone.assertValues(false)
     }
 
     @Test
@@ -103,11 +168,11 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
         // USD conversion should be rounded normally.
         this.vm.inputs.projectAndReward(project, reward)
         // converts to $0.98
-        this.conversionTextViewText.assertValuesAndClear("$1")
+        this.conversion.assertValuesAndClear("$1")
 
         this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(2.0).build())
         // converts to $1.50
-        this.conversionTextViewText.assertValue("$2")
+        this.conversion.assertValue("$2")
     }
 
     @Test
@@ -128,11 +193,11 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
         // USD conversion should be rounded normally.
         this.vm.inputs.projectAndReward(project, reward)
         // converts to $0.98
-        this.conversionTextViewText.assertValuesAndClear("US$ 1")
+        this.conversion.assertValuesAndClear("US$ 1")
 
         this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(2.0).build())
         // converts to $1.50
-        this.conversionTextViewText.assertValue("US$ 2")
+        this.conversion.assertValue("US$ 2")
     }
 
     @Test
@@ -142,7 +207,35 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, reward)
-        this.descriptionTextViewText.assertValue(reward.description())
+        this.description.assertValue(reward.description())
+    }
+
+    @Test
+    fun testEndDateSectionIsGone() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.reward())
+        this.endDateSectionIsGone.assertValue(true)
+
+        val expiredReward = RewardFactory.reward()
+                .toBuilder()
+                .endsAt(DateTime.now().minusDays(2))
+                .build()
+
+        this.vm.inputs.projectAndReward(project, expiredReward)
+        this.endDateSectionIsGone.assertValue(true)
+
+        val expiringReward = RewardFactory.reward()
+                .toBuilder()
+                .endsAt(DateTime.now().plusDays(2))
+                .build()
+
+        this.vm.inputs.projectAndReward(project, expiringReward)
+        this.endDateSectionIsGone.assertValues(true, false)
+
+        this.vm.inputs.projectAndReward(ProjectFactory.successfulProject(), expiringReward)
+        this.endDateSectionIsGone.assertValues(true, false, true)
     }
 
     @Test
@@ -245,50 +338,71 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
     }
 
     @Test
-    fun testLimitAndRemaining() {
+    fun testLimitContainerIsGone() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
-        // When reward is limited, quantity should be shown.
-        val limitedReward = RewardFactory.reward().toBuilder()
+        this.vm.inputs.projectAndReward(project, RewardFactory.reward())
+        this.limitContainerIsGone.assertValue(true)
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.limited())
+        this.limitContainerIsGone.assertValues(true, false)
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.endingSoon())
+        this.limitContainerIsGone.assertValues(true, false)
+
+        val limitedExpiringReward = RewardFactory.endingSoon().toBuilder()
                 .limit(10)
                 .remaining(5)
                 .build()
-        this.vm.inputs.projectAndReward(project, limitedReward)
-        this.limitAndRemainingTextViewText.assertValue(Pair.create("10", "5"))
-        this.limitAndRemainingTextViewIsGone.assertValue(false)
+        this.vm.inputs.projectAndReward(project, limitedExpiringReward)
+        this.limitContainerIsGone.assertValues(true, false)
 
-        // When reward's limit has been reached, don't show quantity.
+        this.vm.inputs.projectAndReward(ProjectFactory.successfulProject(), limitedExpiringReward)
+        this.limitContainerIsGone.assertValues(true, false, true)
+    }
+
+    @Test
+    fun testButtonTextOutputs() {
+        setUpEnvironment(environment())
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.reward()
+
+        this.vm.inputs.projectAndReward(project, reward)
+        this.minimumAmount.assertValuesAndClear("$20")
+        this.limitReachedIsVisible.assertNoValues()
+        this.viewYourPledgeIsVisible.assertNoValues()
+
         this.vm.inputs.projectAndReward(project, RewardFactory.limitReached())
-        this.limitAndRemainingTextViewIsGone.assertValues(false, true)
-
-        // When reward has no limit, don't show quantity (distinct until changed).
-        this.vm.inputs.projectAndReward(project, RewardFactory.reward())
-        this.limitAndRemainingTextViewIsGone.assertValues(false, true)
-    }
-
-    @Test
-    fun testMinimumAmount_whenAvailable() {
-        val project = ProjectFactory.project()
-        val reward = RewardFactory.reward().toBuilder()
-                .minimum(10.0)
-                .build()
-        setUpEnvironment(environment())
-
-        this.vm.inputs.projectAndReward(project, reward)
-        this.minimumAmount.assertValue("$10")
-        this.limitReachedButtonTextIsVisible.assertNoValues()
-    }
-
-    @Test
-    fun testMinimumAmount_whenUnavailable() {
-        val project = ProjectFactory.project()
-        val reward = RewardFactory.limitReached()
-        setUpEnvironment(environment())
-
-        this.vm.inputs.projectAndReward(project, reward)
         this.minimumAmount.assertNoValues()
-        this.limitReachedButtonTextIsVisible.assertValueCount(1)
+        this.viewYourPledgeIsVisible.assertNoValues()
+        this.limitReachedIsVisible.assertValueCount(1)
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.ended())
+        this.minimumAmount.assertNoValues()
+        this.viewYourPledgeIsVisible.assertNoValues()
+        this.limitReachedIsVisible.assertValueCount(2)
+
+        val successfulProject = ProjectFactory.successfulProject()
+        this.vm.inputs.projectAndReward(successfulProject, reward)
+        this.minimumAmount.assertNoValues()
+        this.viewYourPledgeIsVisible.assertNoValues()
+        this.limitReachedIsVisible.assertValueCount(2)
+
+        val backedLiveProject = ProjectFactory.backedProject()
+        this.vm.inputs.projectAndReward(backedLiveProject, backedLiveProject.backing()?.reward()?: RewardFactory.reward())
+        this.minimumAmount.assertValuesAndClear("$20")
+        this.viewYourPledgeIsVisible.assertNoValues()
+        this.limitReachedIsVisible.assertValueCount(2)
+
+        val backedEndedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+        this.vm.inputs.projectAndReward(backedEndedProject, backedEndedProject.backing()?.reward()?: RewardFactory.reward())
+        this.minimumAmount.assertNoValues()
+        this.limitReachedIsVisible.assertValueCount(2)
+        this.viewYourPledgeIsVisible.assertValueCount(1)
     }
 
     @Test
@@ -324,6 +438,28 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
     }
 
     @Test
+    fun testRemaining() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        // When reward is limited, quantity should be shown.
+        this.vm.inputs.projectAndReward(project, RewardFactory.limited())
+        this.remaining.assertValue("5")
+        this.remainingIsGone.assertValue(false)
+
+        // When reward's limit has been reached, don't show quantity.
+        this.vm.inputs.projectAndReward(project, RewardFactory.limitReached())
+        this.remainingIsGone.assertValues(false, true)
+
+        this.vm.inputs.projectAndReward(ProjectFactory.successfulProject(), RewardFactory.limitReached())
+        this.remainingIsGone.assertValues(false, true)
+
+        // When reward has no limit, don't show quantity (distinct until changed).
+        this.vm.inputs.projectAndReward(project, RewardFactory.reward())
+        this.remainingIsGone.assertValues(false, true)
+    }
+
+    @Test
     fun testRewardItems() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
@@ -340,7 +476,7 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
     }
 
     @Test
-    fun testTitleTextViewText() {
+    fun testTitle() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
@@ -349,8 +485,8 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
                 .title(null)
                 .build()
         this.vm.inputs.projectAndReward(project, rewardWithNoTitle)
-        this.titleTextViewIsGone.assertValues(true)
-        this.titleTextViewText.assertNoValues()
+        this.titleIsGone.assertValues(true)
+        this.title.assertNoValues()
 
         // Reward with title should be visible.
         val title = "Digital bundle"
@@ -358,35 +494,20 @@ class HorizontalRewardViewHolderViewModelTest: KSRobolectricTestCase() {
                 .title(title)
                 .build()
         this.vm.inputs.projectAndReward(project, rewardWithTitle)
-        this.titleTextViewIsGone.assertValues(true, false)
-        this.titleTextViewText.assertValue(title)
+        this.titleIsGone.assertValues(true, false)
+        this.title.assertValue(title)
     }
 
     @Test
-    fun testNonEmptyRewardsDescriptionAreShown() {
+    fun testDescriptionIsGone() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, RewardFactory.reward())
-        this.rewardDescriptionIsGone.assertValue(false)
-    }
-
-    @Test
-    fun testEmptyRewardsDescriptionAreGone() {
-        val project = ProjectFactory.project()
-        setUpEnvironment(environment())
+        this.descriptionIsGone.assertValuesAndClear(false)
 
         this.vm.inputs.projectAndReward(project, RewardFactory.noDescription())
-        this.rewardDescriptionIsGone.assertValue(true)
-    }
-
-    @Test
-    fun testRewardEndDateSectionIsGone() {
-        val project = ProjectFactory.project()
-        setUpEnvironment(environment())
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.rewardWithEndDate())
-        this.rewardDescriptionIsGone.assertValue(false)
+        this.descriptionIsGone.assertValue(true)
     }
 
     @Test

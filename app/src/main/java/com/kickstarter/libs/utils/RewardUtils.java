@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.models.RewardsItem;
 
@@ -12,6 +13,7 @@ import org.joda.time.Duration;
 
 import java.util.List;
 
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
@@ -26,6 +28,13 @@ public final class RewardUtils {
    */
   public static boolean hasBackers(final @NonNull Reward reward) {
     return IntegerUtils.isNonZero(reward.backersCount());
+  }
+
+  /**
+   * Returns `true` if the reward has expired.
+   */
+  public static boolean isExpired(final @NonNull Reward reward) {
+    return isTimeLimited(reward) && reward.endsAt().isBeforeNow();
   }
 
   /**
@@ -83,8 +92,9 @@ public final class RewardUtils {
   /**
    * Returns `true` if the reward has a valid expiration date.
    */
-  public static boolean hasExpirationDate(final @NonNull Reward reward) {
-    return reward.endsAt() != null && reward.endsAt().compareTo(DateTime.now()) > 0;
+  public static boolean isTimeLimited(final @NonNull Reward reward) {
+    // TODO: 2019-06-14 remove epoch check after Garrow fixes `current` bug in backend
+    return reward.endsAt() != null && !DateTimeUtils.isEpoch(reward.endsAt());
   }
 
   /**
@@ -144,5 +154,19 @@ public final class RewardUtils {
       return (int) Math.floor(seconds / 60.0 / 60.0); // hours
     }
     return (int) Math.floor(seconds / 60.0 / 60.0 / 24.0); // days
+  }
+
+  /**
+   * Returns the color resource ID of the rewards button based on project and backing status.
+   */
+  public static @ColorRes int pledgeButtonColor(final @NonNull Project project, final @NonNull Reward reward) {
+    if (BackingUtils.isBacked(project, reward) && project.isLive()) {
+      //todo: manage my pledge will be blue
+      return R.color.button_pledge_primary;
+    } else if (!project.isLive()) {
+      return R.color.button_pledge_ended;
+    } else {
+      return R.color.button_pledge_primary;
+    }
   }
 }

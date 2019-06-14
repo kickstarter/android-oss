@@ -2,7 +2,8 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:layout_width="@dimen/item_reward_layout_width"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="@dimen/item_reward_width"
   android:layout_height="wrap_content"
   android:orientation="vertical">
 
@@ -25,27 +26,40 @@
         android:orientation="vertical"
         android:padding="@dimen/grid_3">
 
+        <!--todo: i don't think we need a content desc here but flagging-->
+        <ImageView
+          android:id="@+id/no_reward_check"
+          android:layout_width="@dimen/grid_4"
+          android:layout_height="@dimen/grid_4"
+          android:background="@drawable/circle_black_alpha"
+          android:contentDescription="@null"
+          android:layout_gravity="end"
+          android:src="@drawable/icon__check_reward"
+          android:visibility="gone"
+          tools:visibility="visible" />
+
         <TextView
           style="@style/Headline"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/activity_vertical_margin"
-          android:textSize="@dimen/title_1"
-          android:text="@string/Make_a_pledge_without_a_reward" />
+          android:text="@string/Make_a_pledge_without_a_reward"
+          android:textSize="@dimen/title_1" />
 
         <TextView
           style="@style/BodyPrimary"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_3"
           android:layout_marginTop="@dimen/grid_3"
-          android:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life"/>
+          android:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
 
         <com.google.android.material.button.MaterialButton
+          android:id="@+id/no_reward_placeholder_button"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:visibility="invisible"
-          android:text="@string/Pledge_without_a_reward"/>
+          android:layout_marginTop="@dimen/grid_3"
+          android:text="@string/Pledge_without_a_reward"
+          android:visibility="invisible" />
 
       </LinearLayout>
 
@@ -58,6 +72,6 @@
     style="@style/PledgeButton"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="@string/Pledge_without_a_reward"/>
+    android:text="@string/Pledge_without_a_reward" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

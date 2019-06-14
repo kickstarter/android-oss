@@ -27,49 +27,58 @@ interface HorizontalRewardViewHolderViewModel {
     }
 
     interface Outputs {
-        /** Returns `true` if the USD conversion section should be hidden, `false` otherwise.  */
-        fun conversionTextViewIsGone(): Observable<Boolean>
+        /** Emits a boolean determining if the pledge button should be shown. */
+        fun buttonIsGone(): Observable<Boolean>
 
-        /** Set the preferred conversion text.  */
-        fun conversionText(): Observable<String>
+        /** Emits the color resource ID to tint the pledge button. */
+        fun buttonTint(): Observable<Int>
 
-        /** Set the description TextView's text.  */
-        fun descriptionText(): Observable<String>
+        /** Emits `true` if the backed check should be hidden, `false` otherwise.  */
+        fun checkIsInvisible(): Observable<Boolean>
 
-        /** Returns `true` if reward can be clicked, `false` otherwise.  */
+        /** Emits `true` if the conversion should be hidden, `false` otherwise.  */
+        fun conversionIsGone(): Observable<Boolean>
+
+        /** Emits the reward's minimum converted to the user's preference  */
+        fun conversion(): Observable<String>
+
+        /** Emits the reward's description.  */
+        fun description(): Observable<String>
+
+        /** Emits `true` if the reward end date should be hidden,`false` otherwise. */
+        fun endDateSectionIsGone(): Observable<Boolean>
+
+        /** Emits `true` if reward can be clicked, `false` otherwise.  */
         fun isClickable(): Observable<Boolean>
 
-        /** Returns `true` if the limit TextView should be hidden, `false` otherwise.  */
-        fun limitAndRemainingTextViewIsGone(): Observable<Boolean>
+        /** Emits `true` if the limits container should be hidden, `false` otherwise. */
+        fun limitContainerIsGone(): Observable<Boolean>
 
-        /** Set the limit and remaining TextView's text.  */
-        fun limitAndRemainingText(): Observable<Pair<String, String>>
+        /** Emits when the pledge button should display the reward unavailable copy. */
+        fun limitReachedIsVisible(): Observable<Void>
 
-        /** Returns `true` if the limit header should be hidden, `false` otherwise.  */
-        fun limitHeaderIsGone(): Observable<Boolean>
-
-        /** Emits when the pledge button should display the reward unavailable copy.  */
-        fun limitReachedButtonTextIsVisible(): Observable<Void>
-
-        /** Returns the minimum pledge amount in the project's currency.  */
+        /** Emits the minimum pledge amount in the project's currency.  */
         fun minimumAmount(): Observable<String>
 
-        /** Returns the minimum pledge amount in the project's currency.  */
+        /** Emits the minimum pledge amount in the project's currency.  */
         fun minimumAmountTitle(): Observable<SpannableString>
 
-        /** Returns `true` if the reward description is empty and should be hidden in the UI.  */
-        fun rewardDescriptionIsGone(): Observable<Boolean>
+        /** Emits `true` if the reward description is empty and should be hidden in the UI.  */
+        fun descriptionIsGone(): Observable<Boolean>
 
-        /** Returns the reward. */
+        /** Emits the remaining count of the reward.  */
+        fun remaining(): Observable<String>
+
+        /** Emits `true` if the remaining count should be hidden, `false` otherwise.  */
+        fun remainingIsGone(): Observable<Boolean>
+
+        /** Emits the reward to use to display the reward's expiration. */
         fun reward(): Observable<Reward>
 
-        /** Returns true if the reward end date should be hidden,`false` otherwise. */
-        fun rewardEndDateSectionIsGone(): Observable<Boolean>
-
-        /** Show the rewards items.  */
+        /** Emits the reward's items.  */
         fun rewardItems(): Observable<List<RewardsItem>>
 
-        /** Returns `true` if the items section should be hidden, `false` otherwise.  */
+        /** Emits `true` if the items section should be hidden, `false` otherwise.  */
         fun rewardItemsAreGone(): Observable<Boolean>
 
         /** Show [com.kickstarter.ui.fragments.PledgeFragment] with the project's reward selected.  */
@@ -78,11 +87,14 @@ interface HorizontalRewardViewHolderViewModel {
         /** Start the [com.kickstarter.ui.activities.BackingActivity] with the project.  */
         fun startBackingActivity(): Observable<Project>
 
-        /** Returns `true` if the title TextView should be hidden, `false` otherwise.  */
-        fun titleTextViewIsGone(): Observable<Boolean>
+        /** Emits `true` if the title should be hidden, `false` otherwise.  */
+        fun titleIsGone(): Observable<Boolean>
 
-        /** Use the reward's title to set the title text.  */
-        fun titleText(): Observable<String>
+        /** Emits the reward's title.  */
+        fun title(): Observable<String>
+
+        /** Emits when the pledge button should display the view pledge copy. */
+        fun viewYourPledgeIsVisible(): Observable<Void>
     }
 
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<HorizontalRewardViewHolder>(environment), Inputs, Outputs {
@@ -91,65 +103,80 @@ interface HorizontalRewardViewHolderViewModel {
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
         private val rewardClicked = PublishSubject.create<Void>()
 
-        private val backersTextViewIsGone: Observable<Boolean>
-        private val backersText: Observable<Int>
-        private val conversionText: Observable<String>
-        private val conversionTextViewIsGone: Observable<Boolean>
-        private val descriptionText: Observable<String>
+        private val buttonIsGone: Observable<Boolean>
+        private val buttonTintColor: Observable<Int>
+        private val checkIsInvisible: Observable<Boolean>
+        private val conversion: Observable<String>
+        private val conversionIsGone: Observable<Boolean>
+        private val description: Observable<String>
         private val isClickable: Observable<Boolean>
-        private val limitAndBackersSeparatorIsGone: Observable<Boolean>
-        private val limitAndRemainingTextViewIsGone: Observable<Boolean>
-        private val limitAndRemainingText: Observable<Pair<String, String>>
-        private val limitHeaderIsGone: Observable<Boolean>
-        private val limitReachedButtonTextIsVisible: Observable<Void>
+        private val limitContainerIsGone: Observable<Boolean>
+        private val limitReachedIsVisible: Observable<Void>
         private val minimumAmount: Observable<String>
-        private val minimumAmountStyled: Observable<SpannableString>
+        private val minimumAmountTitle: Observable<SpannableString>
+        private val remaining: Observable<String>
+        private val remainingIsGone: Observable<Boolean>
         private val reward: Observable<Reward>
-        private val rewardDescriptionIsGone: Observable<Boolean>
-        private val rewardEndDateSectionIsGone: Observable<Boolean>
+        private val descriptionIsGone: Observable<Boolean>
+        private val endDateSectionIsGone: Observable<Boolean>
         private val rewardItems: Observable<List<RewardsItem>>
         private val rewardItemsAreGone: Observable<Boolean>
-        private val titleTextViewIsGone: Observable<Boolean>
-        private val titleText: Observable<String>
         private val showPledgeFragment: Observable<Pair<Project, Reward>>
         private val startBackingActivity: Observable<Project>
+        private val title: Observable<String>
+        private val titleIsGone: Observable<Boolean>
+        private val viewYourPledgeIsVisible: Observable<Void>
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
 
-            this.minimumAmountStyled = this.projectAndReward
+            this.minimumAmountTitle = this.projectAndReward
                     .map { ViewUtils.styleCurrency(it.second.minimum(), it.first, this.ksCurrency, false) }
 
             val reward = this.projectAndReward
                     .map { it.second }
 
-            this.limitReachedButtonTextIsVisible = reward
-                    .filter { RewardUtils.isLimitReached(it) }
+            this.buttonIsGone = this.projectAndReward
+                    .map { BackingUtils.isBacked(it.first, it.second) || it.first.isLive }
+                    .map { BooleanUtils.negate(it) }
+                    .distinctUntilChanged()
+
+            this.buttonTintColor = this.projectAndReward
+                    .map { RewardUtils.pledgeButtonColor(it.first, it.second) }
+                    .distinctUntilChanged()
+
+            this.checkIsInvisible = this.projectAndReward
+                    .map { !it.first.isLive && BackingUtils.isBacked(it.first, it.second) }
+                    .map { BooleanUtils.negate(it) }
+                    .distinctUntilChanged()
+
+            this.viewYourPledgeIsVisible = this.projectAndReward
+                    .filter { !it.first.isLive }
+                    .filter { BackingUtils.isBacked(it.first, it.second) }
+                    .compose(ignoreValues())
+
+            this.limitReachedIsVisible = this.projectAndReward
+                    .filter { !BackingUtils.isBacked(it.first, it.second) }
+                    .map { it.second }
+                    .filter { RewardUtils.isLimitReached(it) || RewardUtils.isExpired(it) }
                     .compose(ignoreValues())
 
             this.minimumAmount = this.projectAndReward
+                    .filter { it.first.isLive }
                     .filter { !RewardUtils.isLimitReached(it.second) }
+                    .filter { !RewardUtils.isExpired(it.second) }
                     .map { this.ksCurrency.format(it.second.minimum(), it.first) }
 
-            this.backersTextViewIsGone = reward
-                    .map { !RewardUtils.hasBackers(it) }
-                    .distinctUntilChanged()
-
-            this.backersText = reward
-                    .filter { RewardUtils.hasBackers(it) }
-                    .map<Int>(Reward::backersCount)
-                    .filter { ObjectUtils.isNotNull(it) }
-
-            this.conversionTextViewIsGone = this.projectAndReward
+            this.conversionIsGone = this.projectAndReward
                     .map { it.first.currency() != it.first.currentCurrency() }
                     .map { BooleanUtils.negate(it) }
 
-            this.conversionText = this.projectAndReward
+            this.conversion = this.projectAndReward
                     .map { this.ksCurrency.formatWithUserPreference(it.second.minimum(), it.first, RoundingMode.HALF_UP, 0) }
 
-            this.descriptionText = reward
+            this.description = reward
                     .map { it.description() }
 
             this.isClickable = this.projectAndReward
@@ -161,25 +188,15 @@ interface HorizontalRewardViewHolderViewModel {
                     .filter { ProjectUtils.isCompleted(it.first) && BackingUtils.isBacked(it.first, it.second) }
                     .map { it.first }
 
-            this.limitAndBackersSeparatorIsGone = reward
-                    .map { IntegerUtils.isNonZero(it.limit()) && IntegerUtils.isNonZero(it.backersCount()) }
+            this.remainingIsGone = this.projectAndReward
+                    .map<Boolean> { it.first.isLive && RewardUtils.isLimited(it.second) }
                     .map<Boolean> { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
 
-            this.limitAndRemainingTextViewIsGone = reward
-                    .map<Boolean> { RewardUtils.isLimited(it) }
-                    .map<Boolean> { BooleanUtils.negate(it) }
-                    .distinctUntilChanged()
-
-            this.limitAndRemainingText = reward
-                    .map { Pair.create<Int, Int>(it.limit(), it.remaining()) }
-                    .filter { it.first != null && it.second != null }
-                    .map { Pair.create(NumberUtils.format(it.first), NumberUtils.format(it.second)) }
-
-            // Hide limit header if reward is not limited, or reward has been backed by user.
-            this.limitHeaderIsGone = this.projectAndReward
-                    .map { !RewardUtils.isLimited(it.second) || BackingUtils.isBacked(it.first, it.second) }
-                    .distinctUntilChanged()
+            this.remaining = reward
+                    .filter { RewardUtils.isLimited(it) }
+                    .map { it.remaining() }
+                    .map { remaining -> remaining?.let { NumberUtils.format(it) } }
 
             this.rewardItems = reward
                     .filter { RewardUtils.isItemized(it) }
@@ -192,12 +209,16 @@ interface HorizontalRewardViewHolderViewModel {
 
             this.reward = reward
 
-            this.rewardEndDateSectionIsGone = reward
-                    .map { RewardUtils.hasExpirationDate(it) }
-                    .map { BooleanUtils.negate(it) }
+            this.endDateSectionIsGone = this.projectAndReward
+                    .map { expirationDateIsGone(it) }
                     .distinctUntilChanged()
 
-            this.rewardDescriptionIsGone = reward
+            this.limitContainerIsGone = Observable.combineLatest(this.endDateSectionIsGone, this.remainingIsGone)
+            { endDateGone, remainingGone  -> Pair(endDateGone, remainingGone)}
+                    .map { it.first && it.second }
+                    .distinctUntilChanged()
+
+            this.descriptionIsGone = reward
                     .map<String> { it.description() }
                     .map { it.isEmpty() }
 
@@ -205,13 +226,21 @@ interface HorizontalRewardViewHolderViewModel {
                     .filter { isSelectable(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Project, Reward>>(takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
 
-            this.titleTextViewIsGone = reward
+            this.titleIsGone = reward
                     .map { it.title() }
                     .map { ObjectUtils.isNull(it) }
 
-            this.titleText = reward
+            this.title = reward
                     .map<String> { it.title() }
                     .filter { ObjectUtils.isNotNull(it) }
+        }
+
+        private fun expirationDateIsGone(it: Pair<Project, Reward>): Boolean {
+            return when {
+                !it.first.isLive -> true
+                RewardUtils.isTimeLimited(it.second) -> RewardUtils.isExpired(it.second)
+                else -> true
+            }
         }
 
         private fun isSelectable(@NonNull project: Project, @NonNull reward: Reward): Boolean {
@@ -236,43 +265,52 @@ interface HorizontalRewardViewHolderViewModel {
         }
 
         @NonNull
-        override fun conversionTextViewIsGone(): Observable<Boolean> = this.conversionTextViewIsGone
+        override fun buttonIsGone(): Observable<Boolean> = this.buttonIsGone
 
         @NonNull
-        override fun conversionText(): Observable<String> = this.conversionText
+        override fun buttonTint(): Observable<Int> = this.buttonTintColor
 
         @NonNull
-        override fun descriptionText(): Observable<String> = this.descriptionText
+        override fun checkIsInvisible(): Observable<Boolean> = this.checkIsInvisible
+
+        @NonNull
+        override fun conversionIsGone(): Observable<Boolean> = this.conversionIsGone
+
+        @NonNull
+        override fun conversion(): Observable<String> = this.conversion
+
+        @NonNull
+        override fun description(): Observable<String> = this.description
 
         @NonNull
         override fun isClickable(): Observable<Boolean> = this.isClickable
 
         @NonNull
-        override fun limitAndRemainingTextViewIsGone(): Observable<Boolean> = this.limitAndRemainingTextViewIsGone
+        override fun remaining(): Observable<String> = this.remaining
 
         @NonNull
-        override fun limitAndRemainingText(): Observable<Pair<String, String>> = this.limitAndRemainingText
+        override fun remainingIsGone(): Observable<Boolean> = this.remainingIsGone
 
         @NonNull
-        override fun limitHeaderIsGone(): Observable<Boolean> = this.limitHeaderIsGone
+        override fun limitContainerIsGone(): Observable<Boolean> = this.limitContainerIsGone
 
         @NonNull
-        override fun limitReachedButtonTextIsVisible(): Observable<Void> = this.limitReachedButtonTextIsVisible
+        override fun limitReachedIsVisible(): Observable<Void> = this.limitReachedIsVisible
 
         @NonNull
         override fun minimumAmount(): Observable<String> = this.minimumAmount
 
         @NonNull
-        override fun minimumAmountTitle(): Observable<SpannableString> = this.minimumAmountStyled
+        override fun minimumAmountTitle(): Observable<SpannableString> = this.minimumAmountTitle
 
         @NonNull
-        override fun rewardDescriptionIsGone(): Observable<Boolean> = this.rewardDescriptionIsGone
+        override fun descriptionIsGone(): Observable<Boolean> = this.descriptionIsGone
 
         @NonNull
         override fun reward(): Observable<Reward> = this.reward
 
         @NonNull
-        override fun rewardEndDateSectionIsGone(): Observable<Boolean> = this.rewardEndDateSectionIsGone
+        override fun endDateSectionIsGone(): Observable<Boolean> = this.endDateSectionIsGone
 
         @NonNull
         override fun rewardItems(): Observable<List<RewardsItem>> = this.rewardItems
@@ -287,10 +325,12 @@ interface HorizontalRewardViewHolderViewModel {
         override fun startBackingActivity(): Observable<Project> = this.startBackingActivity
 
         @NonNull
-        override fun titleTextViewIsGone(): Observable<Boolean> = this.titleTextViewIsGone
+        override fun title(): Observable<String> = this.title
 
         @NonNull
-        override fun titleText(): Observable<String> = this.titleText
+        override fun titleIsGone(): Observable<Boolean> = this.titleIsGone
 
+        @NonNull
+        override fun viewYourPledgeIsVisible(): Observable<Void> = this.viewYourPledgeIsVisible
     }
 }

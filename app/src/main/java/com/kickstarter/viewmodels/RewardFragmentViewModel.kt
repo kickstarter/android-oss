@@ -5,6 +5,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.BackingUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeData
@@ -24,6 +25,9 @@ class RewardFragmentViewModel {
     }
 
     interface Outputs {
+        /**  Emits the position of the backed reward. */
+        fun backedRewardPosition(): Observable<Int>
+
         /** Emits the current project. */
         fun project(): Observable<Project>
 
@@ -36,6 +40,7 @@ class RewardFragmentViewModel {
         private val projectInput = PublishSubject.create<Project>()
         private val rewardClicked = PublishSubject.create<Pair<ScreenLocation, Reward>>()
 
+        private val backedRewardPosition = BehaviorSubject.create<Int>()
         private val project = BehaviorSubject.create<Project>()
         private val showPledgeFragment = PublishSubject.create<PledgeData>()
 
@@ -45,14 +50,32 @@ class RewardFragmentViewModel {
         init {
             this.projectInput
                     .compose(bindToLifecycle())
-                    .subscribe { this.project.onNext(it) }
+                    .subscribe(this.project)
+
+            this.projectInput
+                    .filter { it.isBacking && !it.isLive }
+                    .map { indexOfBackedReward(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.backedRewardPosition)
 
             this.projectInput
                     .compose<Pair<Project, Pair<ScreenLocation, Reward>>>(Transformers.takePairWhen(this.rewardClicked))
                     .map<PledgeData> { PledgeData(it.second.first, it.second.second, it.first) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeFragment)
+        }
 
+        private fun indexOfBackedReward(project: Project): Int {
+            project.rewards()?.run {
+                for ((index, reward) in withIndex()) {
+                    if (BackingUtils.isBacked(project, reward)) {
+                        return index
+                    }
+                }
+            }
+
+            return 0
         }
 
         override fun project(project: Project) {
@@ -63,8 +86,13 @@ class RewardFragmentViewModel {
             this.rewardClicked.onNext(Pair.create(screenLocation, reward))
         }
 
+        @NonNull
+        override fun backedRewardPosition(): Observable<Int> = this.backedRewardPosition
+
+        @NonNull
         override fun project(): Observable<Project> = this.project
 
+        @NonNull
         override fun showPledgeFragment(): Observable<PledgeData> = this.showPledgeFragment
     }
 }

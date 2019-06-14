@@ -25,10 +25,16 @@ class RewardDecoration(private val margin: Int, private val colorActive: Int, pr
         super.getItemOffsets(outRect, view, parent, state)
 
         with(outRect) {
-            if (parent.getChildAdapterPosition(view) == 0) {
-                left = margin * 2
+            val position = parent.getChildAdapterPosition(view)
+            val itemCount = state.itemCount
+            left = when (position) {
+                0 -> margin
+                else -> margin / 2
             }
-            right = margin * 2
+            right = when (position) {
+                itemCount - 1 -> margin
+                else -> margin / 2
+            }
             top = margin
             bottom = (height * 3/2).toInt()
         }
@@ -42,7 +48,7 @@ class RewardDecoration(private val margin: Int, private val colorActive: Int, pr
         val dividerY = parent.height - height
         c.drawLine(0f, dividerY, parent.width.toFloat(), dividerY, paint)
 
-        val itemCount = parent.adapter?.itemCount ?: 0
+        val itemCount = state.itemCount
 
         if (itemCount == 0) {
             return

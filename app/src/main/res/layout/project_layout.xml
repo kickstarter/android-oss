@@ -15,17 +15,17 @@
     android:id="@+id/project_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
     android:layout_above="@+id/project_action_buttons"
-    android:layout_below="@id/project_toolbar"/>
+    android:layout_below="@id/project_toolbar"
+    android:clipToPadding="false" />
 
   <RelativeLayout
     android:id="@+id/project_action_buttons"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
     android:focusable="true"
-    tools:visibility="visible"
-    android:layout_alignParentBottom="true">
+    tools:visibility="visible">
 
     <Button
       android:id="@+id/back_project_button"
@@ -54,6 +54,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="invisible"
+    tools:visibility="visible"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="30dp"
     app:cardElevation="@dimen/grid_2">
@@ -63,6 +64,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:alpha="0"
+      tools:alpha="1"
       android:orientation="vertical">
 
       <com.google.android.material.appbar.AppBarLayout
@@ -101,51 +103,47 @@
       android:id="@+id/manage_pledge_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/activity_horizontal_margin"
+      android:layout_marginStart="@dimen/activity_horizontal_margin"
+      android:layout_marginTop="@dimen/grid_3"
       android:orientation="horizontal"
       android:visibility="gone"
-      android:layout_marginTop="@dimen/grid_3"
-      android:layout_marginStart="@dimen/activity_horizontal_margin"
-      android:layout_marginEnd="@dimen/activity_horizontal_margin"
-      >
+      tools:visibility="visible">
 
-    <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:layout_gravity="center_vertical"
-      android:layout_weight="1"
-     >
+      <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-      <TextView
-        android:id="@+id/you_backer_text"
-        style="@style/CalloutPrimaryMedium"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:textSize="@dimen/grid_5_half"
-        android:layout_height="match_parent"
-        android:text="@string/Youre_a_backer"/>
+        <TextView
+          android:id="@+id/you_backer_text"
+          style="@style/SubheadlineMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:text="@string/Youre_a_backer" />
 
-      <TextView
-        android:id="@+id/reward_infos"
-        style="@style/CalloutPrimaryMedium"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:textColor="@color/ksr_dark_grey_500"
-        android:textSize="@dimen/grid_2"
-        android:lines="1"
-        android:text="$20 . Funky Reward Title..."/>
-    </LinearLayout>
+        <TextView
+          android:id="@+id/reward_infos"
+          style="@style/Caption1Secondary"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:ellipsize="end"
+          android:lines="1"
+          tools:text="$20 . Funky Reward Title..." />
+      </LinearLayout>
 
       <com.google.android.material.button.MaterialButton
         android:id="@+id/native_manage_pledge_button"
         style="@style/ProjectActionButton"
-        app:cornerRadius="@dimen/grid_2"
         android:layout_width="@dimen/grid_16"
         android:layout_height="@dimen/grid_8"
         android:layout_gravity="end"
         android:backgroundTint="@color/blue_darken_10"
+        android:text="@string/Manage"
         android:textAllCaps="false"
-        android:text="@string/Manage" />
+        app:cornerRadius="@dimen/grid_2" />
 
     </LinearLayout>
 
@@ -154,11 +152,11 @@
       style="@style/ExtendedFab"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:textAllCaps="false"
-      android:visibility="gone"
       android:layout_marginEnd="@dimen/activity_horizontal_margin"
       android:layout_marginStart="@dimen/activity_horizontal_margin"
-      android:text="@string/project_back_button" />
+      android:text="@string/project_back_button"
+      android:textAllCaps="false"
+      android:visibility="gone" />
 
   </androidx.cardview.widget.CardView>
 

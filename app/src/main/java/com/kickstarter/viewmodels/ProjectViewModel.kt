@@ -7,6 +7,8 @@ import com.kickstarter.R
 import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
@@ -169,8 +171,8 @@ interface ProjectViewModel {
         private val startVideoActivity = PublishSubject.create<Project>()
         private val startBackingActivity = PublishSubject.create<Pair<Project, User>>()
 
-        val inputs: ProjectViewModel.Inputs = this
-        val outputs: ProjectViewModel.Outputs = this
+        val inputs: Inputs = this
+        val outputs: Outputs = this
 
         init {
 
@@ -355,10 +357,10 @@ interface ProjectViewModel {
                     .subscribe { this.rewardsButtonText.onNext(it) }
 
             currentProject
-                    .map { getRewardButtonColor(it) }
+                    .map { ProjectUtils.pledgeButtonColor(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe { this.rewardsButtonColor.onNext(it) }
+                    .subscribe(this.rewardsButtonColor)
 
         }
 

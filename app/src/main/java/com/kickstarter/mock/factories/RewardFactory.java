@@ -30,6 +30,18 @@ public final class RewardFactory {
       .build();
   }
 
+  public static @NonNull Reward ended() {
+    return reward().toBuilder()
+      .endsAt(DateTime.now().minusDays(2))
+      .build();
+  }
+
+  public static @NonNull Reward endingSoon() {
+    return reward().toBuilder()
+      .endsAt(DateTime.now().plusDays(2))
+      .build();
+  }
+
   public static @NonNull Reward itemized() {
     final long rewardId = IdFactory.id();
 
@@ -98,14 +110,6 @@ public final class RewardFactory {
   public static @NonNull Reward noDescription() {
     return reward().toBuilder()
       .description("")
-      .build();
-  }
-
-  public static @NonNull Reward rewardWithEndDate() {
-    return reward().toBuilder()
-      .shippingEnabled(true)
-      .shippingPreference("unrestricted")
-      .endsAt(DateTime.now())
       .build();
   }
 }

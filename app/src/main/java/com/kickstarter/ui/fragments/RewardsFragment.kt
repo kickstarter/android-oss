@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
 import com.kickstarter.R
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
@@ -39,11 +38,27 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>(), Horiz
                 .compose(observeForUI())
                 .subscribe { rewardsAdapter.populateRewards(it) }
 
+        this.viewModel.outputs.backedRewardPosition()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { scrollToReward(it) }
+
         this.viewModel.outputs.showPledgeFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { showPledgeFragment(it) }
 
+    }
+
+    private fun scrollToReward(position: Int) {
+        if (position != 0) {
+            val recyclerWidth = (rewards_recycler?.width ?: 0)
+            val linearLayoutManager = rewards_recycler?.layoutManager as LinearLayoutManager
+            val rewardWidth = resources.getDimensionPixelSize(R.dimen.item_reward_width)
+            val rewardMargin = resources.getDimensionPixelSize(R.dimen.reward_margin)
+            val center = (recyclerWidth - rewardWidth - rewardMargin) / 2
+            linearLayoutManager.scrollToPositionWithOffset(position, center)
+        }
     }
 
     override fun onDetach() {
@@ -63,21 +78,15 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>(), Horiz
         val radius = resources.getDimensionPixelSize(R.dimen.circle_radius).toFloat()
         val inactiveColor = ContextCompat.getColor(rewards_recycler.context, R.color.ksr_dark_grey_400)
         val activeColor = ContextCompat.getColor(rewards_recycler.context, R.color.ksr_soft_black)
-        val margin = resources.getDimension(R.dimen.grid_3).toInt()
+        val margin = resources.getDimension(R.dimen.reward_margin).toInt()
         val padding = radius * 2
         rewards_recycler.addItemDecoration(RewardDecoration(margin, activeColor, inactiveColor, radius, padding))
-    }
-
-    private fun addSnapHelper() {
-        val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(rewards_recycler)
     }
 
     private fun setupRecyclerView() {
         rewards_recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rewards_recycler.adapter = rewardsAdapter
         addItemDecorator()
-        addSnapHelper()
     }
 
     private fun showPledgeFragment(pledgeData: PledgeData) {

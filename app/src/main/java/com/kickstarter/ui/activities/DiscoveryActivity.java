@@ -1,7 +1,7 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
-import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.widget.ImageButton;
 
@@ -216,7 +216,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
   private void showMenuIconWithIndicator(final boolean withIndicator) {
     if (withIndicator) {
       this.menuImageButton.setImageResource(R.drawable.ic_menu_indicator);
-      final AnimatedVectorDrawable menuDrawable = (AnimatedVectorDrawable) this.menuImageButton.getDrawable();
+      final Animatable menuDrawable = (Animatable) this.menuImageButton.getDrawable();
       menuDrawable.start();
     } else {
       this.menuImageButton.setImageResource(R.drawable.ic_menu);

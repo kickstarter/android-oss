@@ -70,7 +70,7 @@ public final class ProjectUtilsTest extends KSRobolectricTestCase {
   @Test
   public void testPledgeButtonColor() {
     assertEquals(R.color.button_pledge_live, ProjectUtils.pledgeButtonColor(ProjectFactory.project()));
-    assertEquals(R.color.button_pledge_live, ProjectUtils.pledgeButtonColor(ProjectFactory.backedProject()));
+    assertEquals(R.color.button_manage_pledge, ProjectUtils.pledgeButtonColor(ProjectFactory.backedProject()));
     assertEquals(R.color.button_pledge_live, ProjectUtils.pledgeButtonColor(ProjectFactory.successfulProject()));
     final Project backedSuccessfulProject = ProjectFactory.backedProject()
       .toBuilder()

@@ -392,7 +392,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     override fun back() {
         when {
             supportFragmentManager.backStackEntryCount > 0 -> supportFragmentManager.popBackStack()
-            native_project_action_button.visibility == View.GONE -> this.viewModel.inputs.hideRewardsFragmentClicked()
+            action_buttons.visibility == View.GONE -> this.viewModel.inputs.hideRewardsFragmentClicked()
             else -> super.back()
         }
     }

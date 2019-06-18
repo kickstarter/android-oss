@@ -100,7 +100,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.viewModel.outputs.rewardsButtonColor()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { native_back_this_project_button.backgroundTintList = ContextCompat.getColorStateList(this@ProjectActivity, it) }
+                .subscribe { native_project_action_button.backgroundTintList = ContextCompat.getColorStateList(this@ProjectActivity, it) }
 
         this.viewModel.outputs.rewardsButtonText()
                 .compose(bindToLifecycle())

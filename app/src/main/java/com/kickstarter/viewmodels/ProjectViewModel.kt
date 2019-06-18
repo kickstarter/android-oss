@@ -555,18 +555,6 @@ interface ProjectViewModel {
             }
         }
 
-        private fun getRewardButtonColor(project: Project): Int? {
-            return if (!project.isBacking && project.isLive) {
-                R.color.primary
-            } else if (project.isBacking && project.isLive) {
-                R.color.ksr_cobalt_500
-            } else if (project.isBacking && !project.isLive) {
-                R.color.black
-            } else {
-                return null
-            }
-        }
-
         private fun saveProject(project: Project): Observable<Project> {
             return this.client.saveProject(project)
                     .compose(neverError())
